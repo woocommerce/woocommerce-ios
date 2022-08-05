@@ -10,7 +10,7 @@
 - [**] Login: You can now install WooCommerce to your self-hosted sites from the login flow. [https://github.com/woocommerce/woocommerce-ios/pull/7401]
 - [**] Orders: Now you can quickly mark an order as completed by swiping it to the left! [https://github.com/woocommerce/woocommerce-ios/pull/7385]
 - [*] In-Person Payments: The purchase card reader information card appears also in the Orders list screen. [https://github.com/woocommerce/woocommerce-ios/pull/7326]
-- [*] Login: a local notification is scheduled after the user encounters an error from logging in with an invalid site address or WP.com email. Please see testing scenarios in the PR, with regression testing on order/review remote notifications. [https://github.com/woocommerce/woocommerce-ios/pull/7323, https://github.com/woocommerce/woocommerce-ios/pull/7372]
+- [*] Login: a local notification is scheduled after the user encounters an error from logging in with an invalid site address or WP.com email/password. Please see testing scenarios in the PR, with regression testing on order/review remote notifications. [https://github.com/woocommerce/woocommerce-ios/pull/7323, https://github.com/woocommerce/woocommerce-ios/pull/7372, https://github.com/woocommerce/woocommerce-ios/pull/7422]
 
 9.7
 -----

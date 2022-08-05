@@ -1,3 +1,5 @@
-Ni har bett oss om möjligheten att skapa rabatttkoder i appen. Vi är glada att kunna meddela att vi har en smygtitt redo om ni vill hjälpa oss att testa funktionen! Gå till inställningarna i appen och aktivera den experimentella funktionen för rabattkoder.
+Vi är glada att kunna meddela att det nu är möjligt att redigera en beställning direkt från appen. Du kan nu redigera eller ta bort produkter, avgifter, frakt samt ändra produktkvantitet.
 
-Vi har även gjort flera förbättringar av uppladdning av produktbilder och fysiska betalningar, inklusive möjligheten att ta betalt via kontanter, kort eller betalningslänk för alla obetalda beställningar. Fortsätt att skicka feedback till oss – vi lyssnar!
+Vissa tredjepartsutökningar visade inte beställningsmetadata logiskt i beställningsinformationen. Vi har gjort några ändringar så att dessa anpassade fält kan visas för en beställning. Vi har även gjort flertalet förbättringar av vårt betalnings- och inloggningsflöde, inklusive möjligheten att installera Jetpack direkt från appen.
+
+Fortsätt att skicka feedback till oss – vi lyssnar!

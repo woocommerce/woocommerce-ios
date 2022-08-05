@@ -1,3 +1,5 @@
-Hai chiesto di creare codici promozionali dall'app. Siamo felici di dire che abbiamo un'anteprima pronta se vuoi aiutarci a fare una prova. Passa alle impostazioni nell'app e attiva la funzionalità sperimentale per Codici promozionali.
+Siamo entusiasti di annunciare che ora è possibile modificare un ordine dall'app. Ora, puoi modificare o rimuovere prodotti, tariffe, spedizione e modificare le quantità dei prodotti.
 
-Abbiamo anche apportato vari miglioramenti ai caricamenti delle immagini del prodotto e ai pagamenti di persona, inclusa l'opzione per la ricezione dei pagamenti tramite contanti, carta o link di pagamento per tutti gli ordini non pagati. Continua a inviarci feedback: siamo lieti di ascoltarli.
+Nei dettagli dell'ordine, alcune estensioni di terze parti non mostravano logicamente i metadati dell'ordine. Abbiamo apportato alcune modifiche per visualizzare questi campi personalizzati per un ordine. Abbiamo anche apportato diversi miglioramenti ai nostri pagamenti e al flusso di accesso, inclusa l'opzione di installare Jetpack direttamente dall'app.
+
+Continua a inviarci feedback: siamo lieti di ascoltarli.

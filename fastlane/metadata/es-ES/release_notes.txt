@@ -1,3 +1,5 @@
-Ahora que has solicitado crear cupones en la aplicación, estamos encantados de comunicarte que tenemos un anticipo listo para que puedas probar esa opción. Ve a los ajustes de la aplicación y activa la función experimental para Cupones.
+Es un placer anunciar que ya puedes editar un pedido desde la aplicación. Ahora puedes modificar o eliminar productos, tarifas o envíos y cambiar la cantidad de productos.
 
-También hemos introducido varias mejoras en la subida de imágenes de productos y en los pagos en persona, como la opción de recibir pagos en efectivo, con tarjeta o mediante un enlace de pago para todos los pedidos pendientes de pago. Sigue enviando tus comentarios: ¡te escuchamos!
+En los detalles del pedido, algunas extensiones de terceros no mostraban lógicamente los metadatos del pedido. Hemos aplicado algunos cambios para mostrar estos campos personalizados de un pedido. Además, hemos introducido varias mejoras en el proceso de pagos y de inicio de sesión, incluida la opción de instalar Jetpack directamente desde la aplicación.
+
+Sigue enviando tus comentarios: ¡te escuchamos!

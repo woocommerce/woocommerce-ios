@@ -1,3 +1,5 @@
-Vous souhaitiez pouvoir créer des codes promo dans l’application. Nous sommes heureux de vous annoncer le lancement d’une fonctionnalité en version d’essai que vous pouvez nous aider à tester. Pour cela, accédez aux réglages de l’application et activez la version bêta de la fonctionnalité Codes promo.
+Nous sommes ravis d’annoncer qu’il est désormais possible de modifier une commande depuis l’application. Dès maintenant, vous pouvez modifier ou retirer des produits, des frais ou des livraisons, ainsi que modifier la quantité de produits.
 
-Nous avons également apporté plusieurs améliorations au chargement des images de produits et aux paiements en personne. De plus, vous avez désormais la possibilité, pour toutes les commandes impayées, d’encaisser les paiements en espèces, par carte ou via un lien de paiement. Continuez à nous envoyer vos commentaires, votre avis nous intéresse !
+Dans les détails de la commande, certaines extensions tierces n’affichaient pas logiquement les métadonnées de commandes. Nous avons apporté quelques modifications pour afficher ces champs personnalisés lors d’une commande. Nous avons également apporté quelques améliorations à notre flux de paiement et de connexion, notamment la possibilité d’installer Jetpack directement depuis l’application.
+
+Continuez à nous envoyer vos commentaires, votre avis nous intéresse !

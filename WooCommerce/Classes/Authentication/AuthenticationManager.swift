@@ -183,7 +183,7 @@ class AuthenticationManager: Authentication {
         guard matcher.match(originalURL: siteURL) else {
             DDLogWarn("⚠️ Present account mismatch error for site: \(String(describing: siteURL))")
             let viewModel = WrongAccountErrorViewModel(siteURL: siteURL)
-            let mismatchAccountUI = ULAccountMismatchViewController(viewModel: viewModel)
+            let mismatchAccountUI = ULAccountMismatchViewController(viewModel: viewModel, showsConnectedStores: matcher.hasConnectedStores)
             return mismatchAccountUI
         }
 
@@ -330,6 +330,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
         let matcher = ULAccountMatcher(storageManager: storageManager)
         matcher.refreshStoredSites()
+  
         if let vc = errorViewController(for: siteURL, with: matcher, navigationController: navigationController) {
             loggedOutAppSettings?.setErrorLoginSiteAddress(siteURL)
             navigationController.show(vc, sender: nil)
@@ -470,6 +471,10 @@ private extension AuthenticationManager {
             notification = LocalNotification(scenario: .invalidEmailFromSiteAddressLogin)
         case .invalidEmailFromWPComLogin:
             notification = LocalNotification(scenario: .invalidEmailFromWPComLogin)
+        case .invalidPasswordFromSiteAddressLogin:
+            notification = LocalNotification(scenario: .invalidPasswordFromSiteAddressLogin)
+        case .invalidPasswordFromWPComLogin:
+            notification = LocalNotification(scenario: .invalidPasswordFromWPComLogin)
         default:
             notification = nil
         }
@@ -544,7 +549,7 @@ extension AuthenticationManager {
             return NotWPErrorViewModel()
         case .noSecureConnection:
             return NoSecureConnectionErrorViewModel()
-        case .unknown:
+        case .unknown, .invalidPasswordFromWPComLogin, .invalidPasswordFromSiteAddressLogin:
             return nil
         }
     }
@@ -558,6 +563,8 @@ private extension AuthenticationManager {
         case emailDoesNotMatchWPAccount
         case invalidEmailFromSiteAddressLogin
         case invalidEmailFromWPComLogin
+        case invalidPasswordFromSiteAddressLogin
+        case invalidPasswordFromWPComLogin
         case notWPSite
         case notValidAddress
         case noSecureConnection
@@ -572,6 +579,13 @@ private extension AuthenticationManager {
                         return .invalidEmailFromWPComLogin
                     case .wpComSiteAddress:
                         return .invalidEmailFromSiteAddressLogin
+                    }
+                case .invalidWPComPassword(let source):
+                    switch source {
+                    case .wpCom:
+                        return .invalidPasswordFromWPComLogin
+                    case .wpComSiteAddress:
+                        return .invalidPasswordFromSiteAddressLogin
                     }
                 }
             }

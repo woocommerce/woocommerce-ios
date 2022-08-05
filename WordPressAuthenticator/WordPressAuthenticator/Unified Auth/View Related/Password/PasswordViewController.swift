@@ -21,6 +21,8 @@ class PasswordViewController: LoginViewController {
     ///
     var trackAsPasswordChallenge = true
 
+    var source: SignInSource?
+
     override var loginFields: LoginFields {
         didSet {
             loginFields.password = ""
@@ -120,6 +122,15 @@ class PasswordViewController: LoginViewController {
         let nsError = error as NSError
         let errorCode = nsError.code
         let errorDomain = nsError.domain
+
+        if let source = source, loginFields.meta.userIsDotCom {
+            let passwordError = SignInError.invalidWPComPassword(source: source)
+            if authenticationDelegate.shouldHandleError(passwordError) {
+                authenticationDelegate.handleError(passwordError) { [weak self] _ in
+                    // No custom navigation is expected in this case.
+                }
+            }
+        }
 
         if errorDomain == WordPressComOAuthClient.WordPressComOAuthErrorDomain,
             errorCode == WordPressComOAuthError.invalidRequest.rawValue {

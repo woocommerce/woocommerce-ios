@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import protocol Storage.StorageManagerType
 
 /// Used to match a site address with a wordpress.com account, as part
 /// of the Unified Login process
@@ -7,15 +8,19 @@ final class ULAccountMatcher {
     private let wpComURL = "https://wordpress.com"
     /// ResultsController: Loads all Sites from the Storage Layer.
     ///
-    private let resultsController: ResultsController<StorageSite> = {
-        let storageManager = ServiceLocator.storageManager
+    private lazy var resultsController: ResultsController<StorageSite> = {
         let descriptor = NSSortDescriptor(key: "name", ascending: true)
-
         return ResultsController(storageManager: storageManager, sortedBy: [descriptor])
     }()
 
     private var sites: [Site] {
         resultsController.fetchedObjects
+    }
+
+    private let storageManager: StorageManagerType
+
+    init(storageManager: StorageManagerType = ServiceLocator.storageManager) {
+        self.storageManager = storageManager
     }
 
     /// Checks if the user has any site that has WooCommerce.

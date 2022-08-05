@@ -95,7 +95,8 @@ public enum WooAnalyticsStat: String {
     case dashboardTopPerformersDate = "dashboard_top_performers_date"
     case dashboardTopPerformersLoaded = "dashboard_top_performers_loaded"
     case dashboardUnfulfilledOrdersLoaded = "dashboard_unfulfilled_orders_loaded"
-    case dashboardWaitingTimeLoaded = "dashboard_waiting_time_loaded"
+    case dashboardMainStatsWaitingTimeLoaded = "dashboard_main_stats_waiting_time_loaded"
+    case dashboardTopPerformersWaitingTimeLoaded = "dashboard_top_performers_waiting_time_loaded"
 
     // MARK: Dashboard Stats v3/v4 Events
     //
@@ -257,7 +258,6 @@ public enum WooAnalyticsStat: String {
     case collectPaymentTapped = "payments_flow_order_collect_payment_tapped"
     case orderViewCustomFieldsTapped = "order_view_custom_fields_tapped"
     case orderDetailWaitingTimeLoaded = "order_detail_waiting_time_loaded"
-    case orderListWaitingTimeLoaded = "order_list_waiting_time_loaded"
 
     // MARK: Order List Sorting/Filtering
     //

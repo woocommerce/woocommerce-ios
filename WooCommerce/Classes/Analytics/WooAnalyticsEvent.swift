@@ -1351,8 +1351,8 @@ extension WooAnalyticsEvent {
         ///
         enum Scenario {
             case orderDetails
-            case orderList
-            case dashboard
+            case dashboardTopPerformers
+            case dashboardMainStats
         }
 
         private enum Keys {
@@ -1363,10 +1363,10 @@ extension WooAnalyticsEvent {
             switch scenario {
             case .orderDetails:
                 return WooAnalyticsEvent(statName: .orderDetailWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
-            case .orderList:
-                return WooAnalyticsEvent(statName: .orderListWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
-            case .dashboard:
-                return WooAnalyticsEvent(statName: .dashboardWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
+            case .dashboardTopPerformers:
+                return WooAnalyticsEvent(statName: .dashboardTopPerformersWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
+            case .dashboardMainStats:
+                return WooAnalyticsEvent(statName: .dashboardMainStatsWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
             }
         }
     }

@@ -13,6 +13,7 @@ public enum SignInSource {
 /// The error during the sign in flow.
 public enum SignInError: Error {
     case invalidWPComEmail(source: SignInSource)
+    case invalidWPComPassword(source: SignInSource)
 
     init?(error: Error, source: SignInSource?) {
         let error = error as NSError
@@ -520,6 +521,7 @@ private extension GetStartedViewController {
             return
         }
 
+        vc.source = source
         vc.loginFields = loginFields
         vc.trackAsPasswordChallenge = false
 

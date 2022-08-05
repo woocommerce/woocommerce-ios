@@ -6,7 +6,7 @@ protocol LoggedOutAppSettingsProtocol {
     func setHasFinishedOnboarding(_ hasFinishedOnboarding: Bool)
 
     var errorLoginSiteAddress: String? { get }
-    func setErrorLoginSiteAddress(_ address: String)
+    func setErrorLoginSiteAddress(_ address: String?)
 }
 
 /// UserDefaults based settings when the app is in logged out state.
@@ -32,7 +32,12 @@ extension LoggedOutAppSettings: LoggedOutAppSettingsProtocol {
         userDefaults.object(forKey: .errorLoginSiteAddress)
     }
 
-    func setErrorLoginSiteAddress(_ address: String) {
-        userDefaults.set(address, forKey: .errorLoginSiteAddress)
+    func setErrorLoginSiteAddress(_ address: String?) {
+        if let address = address {
+            userDefaults.set(address, forKey: .errorLoginSiteAddress)
+        } else {
+            userDefaults.removeObject(forKey: .errorLoginSiteAddress)
+        }
+        
     }
 }

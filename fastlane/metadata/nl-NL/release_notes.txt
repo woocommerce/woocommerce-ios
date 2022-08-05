@@ -1,5 +1,5 @@
-We’re thrilled to announce that it’s now possible to edit an order from the app. Right now, you can edit or remove products, fees, shipping and change product quantity.
+We zijn erg blij te kunnen vertellen dat het nu mogelijk is om een bestelling via de app te bewerken. Op dit moment kan je producten, kosten en verzending bewerken of verwijderen en de producthoeveelheid wijzigen.
 
-Sommige extensies van derden gaven product-metagegevens niet op logische wijze weer in de bestellingsgegevens. We’ve made some changes to display these custom fields for an order. We’ve also made several improvements to our payments and login flow, including the option to install Jetpack directly from the app.
+Sommige extensies van derden gaven metagegevens van bestellingen niet op logische wijze weer in de bestellingsgegevens. We hebben wat wijzigingen aangebracht zodat deze aangepaste velden kunnen worden weergegeven. We hebben ook verschillende verbeteringen doorgevoerd aan de betalings- en login-workflow, waaronder de optie om Jetpack rechtstreeks vanuit de app te installeren.
 
 Blijf ons feedback sturen – wij luisteren!

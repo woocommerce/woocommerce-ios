@@ -52,7 +52,8 @@ struct JetpackErrorViewModel: ULErrorViewModel {
             return
         }
 
-        let connectionController = JetpackSetupWebViewController(siteURL: siteURL, analytics: analytics, onCompletion: jetpackSetupCompletionHandler)
+        let viewModel = JetpackSetupWebViewModel(siteURL: siteURL, analytics: analytics, onCompletion: jetpackSetupCompletionHandler)
+        let connectionController = PluginSetupWebViewController(viewModel: viewModel)
         viewController.navigationController?.show(connectionController, sender: nil)
     }
 

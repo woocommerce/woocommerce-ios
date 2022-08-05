@@ -283,19 +283,27 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
         guard matcher.match(originalURL: siteURL) else {
             DDLogWarn("⚠️ Present account mismatch error for site: \(String(describing: siteURL))")
-            let viewModel = WrongAccountErrorViewModel(siteURL: siteURL)
+            let viewModel = WrongAccountErrorViewModel(siteURL: siteURL, showsConnectedStores: matcher.hasConnectedStores)
             let mismatchAccountUI = ULAccountMismatchViewController(viewModel: viewModel)
 
             return navigationController.show(mismatchAccountUI, sender: nil)
         }
 
-        storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)
-        storePickerCoordinator?.onDismiss = onDismiss
-        if let site = matcher.matchedSite(originalURL: siteURL) {
-            storePickerCoordinator?.didSelectStore(with: site.siteID, onCompletion: onDismiss)
-        } else {
-            storePickerCoordinator?.start()
+        let matchedSite = matcher.matchedSite(originalURL: siteURL)
+        if let matchedSite = matchedSite, matchedSite.isWooCommerceActive == false {
+            let viewModel = NoWooErrorViewModel(
+                siteURL: siteURL,
+                showsConnectedStores: matcher.hasConnectedStores,
+                showsInstallButton: matchedSite.isJetpackConnected,
+                onSetupCompletion: { [weak self] siteID in
+                    guard let self = self else { return }
+                    self.startStorePicker(with: siteID, in: navigationController, onDismiss: onDismiss)
+            })
+            let noWooUI = ULErrorViewController(viewModel: viewModel)
+            return navigationController.show(noWooUI, sender: nil)
         }
+
+        self.startStorePicker(with: matchedSite?.siteID, in: navigationController, onDismiss: onDismiss)
     }
 
     /// Presents the Signup Epilogue, in the specified NavigationController.
@@ -313,8 +321,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         //
         // This is effectively a useless screen for them other than telling them to install Jetpack.
         sync(credentials: credentials) { [weak self] in
-            self?.storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)
-            self?.storePickerCoordinator?.start()
+            self?.startStorePicker(in: navigationController)
         }
     }
 
@@ -429,6 +436,10 @@ private extension AuthenticationManager {
             notification = LocalNotification(scenario: .invalidEmailFromSiteAddressLogin)
         case .invalidEmailFromWPComLogin:
             notification = LocalNotification(scenario: .invalidEmailFromWPComLogin)
+        case .invalidPasswordFromSiteAddressLogin:
+            notification = LocalNotification(scenario: .invalidPasswordFromSiteAddressLogin)
+        case .invalidPasswordFromWPComLogin:
+            notification = LocalNotification(scenario: .invalidPasswordFromWPComLogin)
         default:
             notification = nil
         }
@@ -477,6 +488,16 @@ private extension AuthenticationManager {
         let installJetpackUI = ULErrorViewController(viewModel: viewModel)
         navigationController.show(installJetpackUI, sender: nil)
     }
+
+    func startStorePicker(with siteID: Int64? = nil, in navigationController: UINavigationController, onDismiss: @escaping () -> Void = {}) {
+        storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)
+        storePickerCoordinator?.onDismiss = onDismiss
+        if let siteID = siteID {
+            storePickerCoordinator?.didSelectStore(with: siteID, onCompletion: onDismiss)
+        } else {
+            storePickerCoordinator?.start()
+        }
+    }
 }
 
 // MARK: - ViewModel Factory
@@ -493,7 +514,7 @@ extension AuthenticationManager {
             return NotWPErrorViewModel()
         case .noSecureConnection:
             return NoSecureConnectionErrorViewModel()
-        case .unknown:
+        case .unknown, .invalidPasswordFromWPComLogin, .invalidPasswordFromSiteAddressLogin:
             return nil
         }
     }
@@ -507,6 +528,8 @@ private extension AuthenticationManager {
         case emailDoesNotMatchWPAccount
         case invalidEmailFromSiteAddressLogin
         case invalidEmailFromWPComLogin
+        case invalidPasswordFromSiteAddressLogin
+        case invalidPasswordFromWPComLogin
         case notWPSite
         case notValidAddress
         case noSecureConnection
@@ -521,6 +544,13 @@ private extension AuthenticationManager {
                         return .invalidEmailFromWPComLogin
                     case .wpComSiteAddress:
                         return .invalidEmailFromSiteAddressLogin
+                    }
+                case .invalidWPComPassword(let source):
+                    switch source {
+                    case .wpCom:
+                        return .invalidPasswordFromWPComLogin
+                    case .wpComSiteAddress:
+                        return .invalidPasswordFromSiteAddressLogin
                     }
                 }
             }

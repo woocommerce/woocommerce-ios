@@ -24,7 +24,7 @@ struct LoginOnboardingSurveyView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 52) {
-            Text("What brings you to the WooCommerce app today?")
+            Text(Localization.title)
                 .secondaryTitleStyle()
 
             VStack(spacing: 16) {
@@ -54,6 +54,8 @@ struct LoginOnboardingSurveyView: View {
 
 private extension LoginOnboardingSurveyView {
     enum Localization {
+        static let title = NSLocalizedString("What brings you to the WooCommerce app today?",
+                                             comment: "Login onboarding survey title.")
         static func title(for surveyOption: LoginOnboardingSurveyOption) -> String {
             switch surveyOption {
             case .exploring:

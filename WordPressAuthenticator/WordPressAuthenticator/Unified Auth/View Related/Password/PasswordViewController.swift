@@ -126,7 +126,7 @@ class PasswordViewController: LoginViewController {
         if let source = source, loginFields.meta.userIsDotCom {
             let passwordError = SignInError.invalidWPComPassword(source: source)
             if authenticationDelegate.shouldHandleError(passwordError) {
-                authenticationDelegate.handleError(passwordError) { [weak self] _ in
+                authenticationDelegate.handleError(passwordError) { _ in
                     // No custom navigation is expected in this case.
                 }
             }

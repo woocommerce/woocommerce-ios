@@ -2,15 +2,13 @@ import Foundation
 import Combine
 
 class WaitingTimeTracker {
-    private let waitingTimeout: TimeInterval
     private let trackEvent: WooAnalyticsStat
 
     private var waitingStartedTimestamp: TimeInterval? = nil
 
     /// Initialize the WaitingTimeTracker with a specific timeout, if none is provided it will set 30 seconds as the default
     ///
-    init(trackEvent: WooAnalyticsStat, waitingTimeout: TimeInterval = 30) {
-        self.waitingTimeout = waitingTimeout
+    init(trackEvent: WooAnalyticsStat) {
         self.trackEvent = trackEvent
     }
 

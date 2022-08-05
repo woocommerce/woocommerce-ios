@@ -10,9 +10,7 @@ class WaitingTimeTrackerTests: XCTestCase {
         var currentTimeCallCounter = 0.0
 
         // Given
-        let waitingTracker = WaitingTimeTracker(trackScenario: .orderDetails,
-                                                analyticsService: testAnalytics
-        ) {
+        let waitingTracker = WaitingTimeTracker(trackScenario: .orderDetails, analyticsService: testAnalytics) {
             currentTimeCallCounter += 1
             return currentTimeCallCounter * 10
         }
@@ -26,10 +24,7 @@ class WaitingTimeTrackerTests: XCTestCase {
 
     func testOrderDetailsTrackScenarioTriggersExpectedAnalyticsStat() {
         // Given
-        let waitingTracker = WaitingTimeTracker(trackScenario: .orderDetails,
-                                                analyticsService: testAnalytics,
-                                                currentTimeInMillis: { 0 }
-        )
+        let waitingTracker = WaitingTimeTracker(trackScenario: .orderDetails, analyticsService: testAnalytics, currentTimeInMillis: { 0 })
 
         // When
         waitingTracker.end()

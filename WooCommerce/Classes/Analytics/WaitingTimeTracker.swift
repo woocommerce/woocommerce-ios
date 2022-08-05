@@ -4,7 +4,7 @@ import Combine
 /// Tracks the waiting time for a given scenario, allowing to evaluate as analytics
 /// how much time in seconds it took between the init and `end` function call
 ///
-class WaitingTimeTracker {
+final class WaitingTimeTracker {
     private let trackScenario: WooAnalyticsEvent.WaitingTime.Scenario
     private let currentTimeInMillis: () -> TimeInterval
     private let analyticsService: Analytics

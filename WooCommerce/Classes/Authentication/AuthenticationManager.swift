@@ -39,7 +39,7 @@ class AuthenticationManager: Authentication {
     init(storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.storageManager = storageManager
     }
-    
+
     /// Initializes the WordPress Authenticator.
     ///
     func initialize() {
@@ -182,8 +182,8 @@ class AuthenticationManager: Authentication {
         /// Account mismatched case
         guard matcher.match(originalURL: siteURL) else {
             DDLogWarn("⚠️ Present account mismatch error for site: \(String(describing: siteURL))")
-            let viewModel = WrongAccountErrorViewModel(siteURL: siteURL)
-            let mismatchAccountUI = ULAccountMismatchViewController(viewModel: viewModel, showsConnectedStores: matcher.hasConnectedStores)
+            let viewModel = WrongAccountErrorViewModel(siteURL: siteURL, showsConnectedStores: matcher.hasConnectedStores)
+            let mismatchAccountUI = ULAccountMismatchViewController(viewModel: viewModel)
             return mismatchAccountUI
         }
 

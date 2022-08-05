@@ -38,6 +38,5 @@ extension LoggedOutAppSettings: LoggedOutAppSettingsProtocol {
         } else {
             userDefaults.removeObject(forKey: .errorLoginSiteAddress)
         }
-        
     }
 }

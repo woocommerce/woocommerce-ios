@@ -1343,3 +1343,26 @@ extension WooAnalyticsEvent {
         }
     }
 }
+
+extension WooAnalyticsEvent {
+    // Namespace
+    enum WaitingTime {
+        /// Possible Waiting time scenarios
+        ///
+        enum Scenario {
+            case orderDetails
+            case orderList
+            case dashboard
+        }
+
+        private enum Keys {
+            static let waitingTime = "waiting_time"
+        }
+
+        static func waitingFinished(scenario: Scenario, elapsedTime: TimeInterval) {
+            switch scenario {
+
+            }
+        }
+    }
+}

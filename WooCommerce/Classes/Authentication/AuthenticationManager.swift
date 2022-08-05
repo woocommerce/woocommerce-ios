@@ -330,7 +330,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
         let matcher = ULAccountMatcher(storageManager: storageManager)
         matcher.refreshStoredSites()
-  
+
         if let vc = errorViewController(for: siteURL, with: matcher, navigationController: navigationController) {
             loggedOutAppSettings?.setErrorLoginSiteAddress(siteURL)
             navigationController.show(vc, sender: nil)

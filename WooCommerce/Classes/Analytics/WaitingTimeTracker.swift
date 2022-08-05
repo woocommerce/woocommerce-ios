@@ -1,6 +1,9 @@
 import Foundation
 import Combine
 
+/// Tracks the waiting time for a given scenario, allowing to evaluate as analytics
+/// how much time in seconds it took between the `start` and `end` function calls
+///
 class WaitingTimeTracker {
     private let trackScenario: WooAnalyticsEvent.WaitingTime.Scenario
     private let currentTimeInMillis: () -> TimeInterval
@@ -8,8 +11,6 @@ class WaitingTimeTracker {
 
     private var waitingStartedTimestamp: TimeInterval? = nil
 
-    /// Initialize the WaitingTimeTracker with a specific timeout, if none is provided it will set 30 seconds as the default
-    ///
     init(trackScenario: WooAnalyticsEvent.WaitingTime.Scenario,
          analyticsService: Analytics = ServiceLocator.analytics,
          currentTimeInMillis: @escaping () -> TimeInterval = { Date().timeIntervalSince1970 }
@@ -19,16 +20,12 @@ class WaitingTimeTracker {
         self.currentTimeInMillis = currentTimeInMillis
     }
 
-    /// Set the Tracker state to `.waiting`, triggering the waiting cycle
-    ///
-    /// - parameter analyticsStat: The stat to be send to Tracks when the waiting time ends
-    ///
     func start() {
         waitingStartedTimestamp = currentTimeInMillis()
     }
 
-    /// Set the Tracker state to `.done`, ending the waiting cycle. Only accepts it if the current state is `.waiting`
-    /// otherwise, it will ignore the call
+    /// End the waiting time by evaluating the elapsed time between `start` and `end`,
+    /// and sending it as an analytics event.
     ///
     func end() {
         guard let waitingStartedTimestamp = waitingStartedTimestamp else {

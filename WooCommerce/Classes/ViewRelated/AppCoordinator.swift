@@ -4,6 +4,7 @@ import UIKit
 import WordPressAuthenticator
 import Yosemite
 import class AutomatticTracks.CrashLogging
+import protocol Storage.StorageManagerType
 
 /// Coordinates app navigation based on authentication state: tab bar UI is shown when the app is logged in, and authentication UI is shown
 /// when the app is logged out.
@@ -13,6 +14,7 @@ final class AppCoordinator {
 
     private let window: UIWindow
     private let stores: StoresManager
+    private let storageManager: StorageManagerType
     private let authenticationManager: Authentication
     private let roleEligibilityUseCase: RoleEligibilityUseCaseProtocol
     private let analytics: Analytics
@@ -27,6 +29,7 @@ final class AppCoordinator {
 
     init(window: UIWindow,
          stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
          authenticationManager: Authentication = ServiceLocator.authenticationManager,
          roleEligibilityUseCase: RoleEligibilityUseCaseProtocol = RoleEligibilityUseCase(),
          analytics: Analytics = ServiceLocator.analytics,
@@ -42,6 +45,7 @@ final class AppCoordinator {
             return tabBarController
         }()
         self.stores = stores
+        self.storageManager = storageManager
         self.authenticationManager = authenticationManager
         self.roleEligibilityUseCase = roleEligibilityUseCase
         self.analytics = analytics
@@ -178,18 +182,18 @@ private extension AppCoordinator {
             return
         }
 
-        let matcher = ULAccountMatcher()
+        let matcher = ULAccountMatcher(storageManager: storageManager)
         matcher.refreshStoredSites()
 
         // Show error for the current site URL if exists.
         if let siteURL = loggedOutAppSettings.errorLoginSiteAddress {
             let authenticationUI = authenticationManager.authenticationUI()
-            if let nc = authenticationUI as? UINavigationController,
-               let vc = authenticationManager.errorViewController(for: siteURL, with: matcher, navigationController: nc) {
+            if let authenticationUI = authenticationUI as? UINavigationController,
+               let errorController = authenticationManager.errorViewController(for: siteURL, with: matcher, navigationController: authenticationUI) {
                 window.rootViewController = authenticationUI
                 // don't let user navigate back to the login screen unless they tap log out.
-                vc.navigationItem.hidesBackButton = true
-                nc.show(vc, sender: nil)
+                authenticationUI.navigationItem.hidesBackButton = true
+                authenticationUI.show(errorController, sender: nil)
                 return
             }
         }

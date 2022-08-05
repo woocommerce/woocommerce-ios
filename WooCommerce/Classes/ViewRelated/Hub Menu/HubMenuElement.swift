@@ -1,17 +1,31 @@
 import SwiftUI
 
+enum HubMenuBadgeType {
+    case newFeature
+    case number(number: Int)
+
+    var shouldBeRendered: Bool {
+        switch self {
+        case .newFeature:
+            return true
+        case let .number(number):
+            return number > 0
+        }
+    }
+}
+
 /// This view represent a single element of the HubMenu
 ///
 struct HubMenuElement: View {
     private let image: UIImage
     private let imageColor: UIColor
     private let text: String
-    private let badge: Int
+    private let badge: HubMenuBadgeType
     private let onTapGesture: (() -> Void)
 
     @Binding private var isDisabled: Bool
 
-    init(image: UIImage, imageColor: UIColor, text: String, badge: Int, isDisabled: Binding<Bool>, onTapGesture: @escaping (() -> Void)) {
+    init(image: UIImage, imageColor: UIColor, text: String, badge: HubMenuBadgeType, isDisabled: Binding<Bool>, onTapGesture: @escaping (() -> Void)) {
         self.image = image
         self.imageColor = imageColor
         self.text = text
@@ -52,26 +66,38 @@ struct HubMenuElement: View {
                     Spacer()
                 }
                 .frame(width: Constants.itemSize, height: Constants.itemSize)
-                HubMenuBadge(value: badge)
+                HubMenuBadge(type: badge)
                     .padding([.top, .trailing], 8)
-                    .renderedIf(badge > 0)
+                    .renderedIf(badge.shouldBeRendered)
             }
         }
         .disabled(isDisabled)
     }
 
     private struct HubMenuBadge: View {
-        let value: Int
+        let type: HubMenuBadgeType
+
+        var color: Color {
+            switch type {
+            case .newFeature:
+                return Color(.accent)
+            case .number(_):
+                return .purple
+            }
+        }
 
         var body: some View {
             ZStack (alignment: .center) {
-                Rectangle()
-                    .fill(.purple)
+                Circle()
+                    .fill(color)
                     .cornerRadius(Constants.cornerRadius)
-                Text(String(value))
-                    .foregroundColor(.white)
-                    .bodyStyle()
-                    .padding([.leading, .trailing], Constants.paddingBetweenElements)
+                if case let .number(value) = type {
+                    Text(String(value))
+                        .foregroundColor(.white)
+                        .bodyStyle()
+                        .padding([.leading, .trailing], Constants.paddingBetweenElements)
+                }
+
             }
             .frame(height: Constants.badgeSize)
             .fixedSize()
@@ -95,7 +121,7 @@ struct HubMenuElement_Previews: PreviewProvider {
         HubMenuElement(image: .starOutlineImage(),
                        imageColor: .brand,
                        text: "Menu",
-                       badge: 1,
+                       badge: .number(number: 1),
                        isDisabled: .constant(false),
                        onTapGesture: {})
             .previewLayout(.fixed(width: 160, height: 160))

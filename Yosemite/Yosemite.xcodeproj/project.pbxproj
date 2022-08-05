@@ -202,7 +202,6 @@
 		45ED6096257E7472007B4AC6 /* ProductAttributeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45ED6095257E7472007B4AC6 /* ProductAttributeStore.swift */; };
 		570B05CF246B6AAD00C186AE /* RetrieveProductReviewFromNoteUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570B05CE246B6AAD00C186AE /* RetrieveProductReviewFromNoteUseCase.swift */; };
 		57150E1124F462D900E81611 /* TestKit in Frameworks */ = {isa = PBXBuildFile; productRef = 57150E1024F462D900E81611 /* TestKit */; };
-		571D7E3F251BB9FA00606E96 /* LogErrorAndExit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571D7E3E251BB9FA00606E96 /* LogErrorAndExit.swift */; };
 		5726456F250BD4E4005BBD7C /* OrdersUpsertUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5726456E250BD4E4005BBD7C /* OrdersUpsertUseCase.swift */; };
 		57264572250BE2E7005BBD7C /* OrdersUpsertUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57264571250BE2E7005BBD7C /* OrdersUpsertUseCaseTests.swift */; };
 		573B448B2424082B00E71ADC /* OrderStoreTests+FetchFilteredAndAllOrders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 573B448A2424082B00E71ADC /* OrderStoreTests+FetchFilteredAndAllOrders.swift */; };
@@ -598,7 +597,6 @@
 		45ED6091257E72F4007B4AC6 /* ProductAttributeAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAttributeAction.swift; sourceTree = "<group>"; };
 		45ED6095257E7472007B4AC6 /* ProductAttributeStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAttributeStore.swift; sourceTree = "<group>"; };
 		570B05CE246B6AAD00C186AE /* RetrieveProductReviewFromNoteUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetrieveProductReviewFromNoteUseCase.swift; sourceTree = "<group>"; };
-		571D7E3E251BB9FA00606E96 /* LogErrorAndExit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogErrorAndExit.swift; sourceTree = "<group>"; };
 		5726456E250BD4E4005BBD7C /* OrdersUpsertUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersUpsertUseCase.swift; sourceTree = "<group>"; };
 		57264571250BE2E7005BBD7C /* OrdersUpsertUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersUpsertUseCaseTests.swift; sourceTree = "<group>"; };
 		573B448A2424082B00E71ADC /* OrderStoreTests+FetchFilteredAndAllOrders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStoreTests+FetchFilteredAndAllOrders.swift"; sourceTree = "<group>"; };
@@ -1517,7 +1515,6 @@
 				933A27342222352500C2143A /* Logging.swift */,
 				743057B2218B69D100441A76 /* Queue.swift */,
 				02E4F5E323CD5628003B0010 /* NSOrderedSet+Array.swift */,
-				571D7E3E251BB9FA00606E96 /* LogErrorAndExit.swift */,
 				247CE7AA2582DB9300F9D9D1 /* String+Extensions.swift */,
 			);
 			path = Internal;
@@ -2000,7 +1997,6 @@
 				D4CBAE6426D4464500BBE6D1 /* AnnouncementsAction.swift in Sources */,
 				CE43A90222A072D800A4FF29 /* ProductDownload+ReadOnlyConvertible.swift in Sources */,
 				B5C9DE182087FF0E006B910A /* Assert.swift in Sources */,
-				571D7E3F251BB9FA00606E96 /* LogErrorAndExit.swift in Sources */,
 				DE3C5B1D286AEDA10049E6AA /* MockOrderCardPresentPaymentEligibilityActionHandler.swift in Sources */,
 				CE0DB6C0233EB3F300A27E7A /* OrderRefundCondensed+ReadOnlyConvertible.swift in Sources */,
 				247CE87225832E7000F9D9D1 /* MockProductReviewAction.swift in Sources */,

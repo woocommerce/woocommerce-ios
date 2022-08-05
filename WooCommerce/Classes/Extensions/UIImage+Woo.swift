@@ -457,6 +457,10 @@ extension UIImage {
         return UIImage(named: "woo-payments-card")!
     }
 
+    static var walletImage: UIImage {
+        return UIImage(named: "woo-payments-wallet")!
+    }
+
     /// Searching for Card Reader, Card Reader with radio waves
     ///
     static var cardReaderScanning: UIImage {

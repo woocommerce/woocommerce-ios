@@ -40,6 +40,7 @@ public enum WooAnalyticsStat: String {
     case loginJetpackRequiredViewInstructionsButtonTapped = "login_jetpack_required_view_instructions_button_tapped"
     case loginLocalNotificationTapped = "login_local_notification_tapped"
     case loginLocalNotificationDismissed = "login_local_notification_dismissed"
+    case loginLocalNotificationScheduled = "login_local_notification_scheduled"
     case loginWhatIsJetpackHelpScreenViewed = "login_what_is_jetpack_help_screen_viewed"
     case loginWhatIsJetpackHelpScreenOkButtonTapped = "login_what_is_jetpack_help_screen_ok_button_tapped"
     case loginWhatIsJetpackHelpScreenLearnMoreButtonTapped = "login_what_is_jetpack_help_screen_learn_more_button_tapped"
@@ -640,6 +641,12 @@ public enum WooAnalyticsStat: String {
     case loginJetpackSetupDismissed = "login_jetpack_setup_dismissed"
     case loginJetpackSetupCompleted = "login_jetpack_setup_completed"
     case loginJetpackSetupFlow = "login_jetpack_setup_flow"
+
+    // MARK: Login WooCommerce setup
+    case loginWooCommerceErrorShown = "login_woocommerce_error_shown"
+    case loginWooCommerceSetupButtonTapped = "login_woocommerce_setup_button_tapped"
+    case loginWooCommerceSetupDismissed = "login_woocommerce_setup_dismissed"
+    case loginWooCommerceSetupCompleted = "login_woocommerce_setup_completed"
 }
 
 public extension WooAnalyticsStat {

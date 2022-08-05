@@ -9,6 +9,8 @@ struct HubMenu: View {
     @ObservedObject private var iO = Inject.observer
 
     @ObservedObject private var viewModel: HubMenuViewModel
+
+    @State private var showingPayments = false
     @State private var showingWooCommerceAdmin = false
     @State private var showingViewStore = false
     @State private var showingInbox = false
@@ -49,10 +51,13 @@ struct HubMenu: View {
                         HubMenuElement(image: menu.icon,
                                        imageColor: menu.iconColor,
                                        text: menu.title,
-                                       badge: 0,
+                                       badge: menu.badge,
                                        isDisabled: $shouldDisableItemTaps,
                                        onTapGesture: {
                             switch menu {
+                            case .payments:
+                                ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "payments_menu"])
+                                showingPayments = true
                             case .woocommerceAdmin:
                                 ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "admin_menu"])
                                 showingWooCommerceAdmin = true
@@ -84,6 +89,11 @@ struct HubMenu: View {
             .safariSheet(isPresented: $showingViewStore,
                          url: viewModel.storeURL,
                          onDismiss: enableMenuItemTaps)
+            NavigationLink(destination:
+                            InPersonPaymentsView(viewModel: .init()),
+                           isActive: $showingPayments) {
+                EmptyView()
+            }.hidden()
             NavigationLink(destination:
                             Inbox(viewModel: .init(siteID: viewModel.siteID)),
                            isActive: $showingInbox) {

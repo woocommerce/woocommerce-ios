@@ -1,24 +1,28 @@
 import Foundation
 import Yosemite
 
-/// Used to match a store address with a wordpress.com account, as part
+/// Used to match a site address with a wordpress.com account, as part
 /// of the Unified Login process
 final class ULAccountMatcher {
     private let wpComURL = "https://wordpress.com"
-    /// ResultsController: Loads Sites from the Storage Layer.
+    /// ResultsController: Loads all Sites from the Storage Layer.
     ///
     private let resultsController: ResultsController<StorageSite> = {
         let storageManager = ServiceLocator.storageManager
-        let predicate = NSPredicate(format: "isWooCommerceActive == YES")
         let descriptor = NSSortDescriptor(key: "name", ascending: true)
 
-        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+        return ResultsController(storageManager: storageManager, sortedBy: [descriptor])
     }()
 
     private var sites: [Site] {
         resultsController.fetchedObjects
     }
 
+    /// Checks if the user has any site that has WooCommerce.
+    ///
+    var hasConnectedStores: Bool {
+        sites.first(where: { $0.isWooCommerceActive }) != nil
+    }
 
     /// Checks if the URL passed as parameter is one of the sites
     /// saved in Storage

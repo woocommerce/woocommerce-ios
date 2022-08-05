@@ -27,6 +27,10 @@ class AuthenticationManager: Authentication {
     ///
     private var currentSelfHostedSite: WordPressComSiteInfo?
 
+    /// App settings when the app is in logged out state.
+    ///
+    private var loggedOutAppSettings: LoggedOutAppSettingsProtocol?
+
     /// Initializes the WordPress Authenticator.
     ///
     func initialize() {
@@ -156,37 +160,41 @@ class AuthenticationManager: Authentication {
         return false
     }
 
-    /// Checks the given site address and decides how to present the epilogue screen.
+    /// Injects `loggedOutAppSettings`
     ///
-    func presentLoginEpilogue(in navigationController: UINavigationController, for siteURL: String, onDismiss: @escaping () -> Void) {
-        let matcher = ULAccountMatcher()
-        matcher.refreshStoredSites()
+    func setLoggedOutAppSettings(_ settings: LoggedOutAppSettingsProtocol) {
+        loggedOutAppSettings = settings
+    }
+
+    /// Checks the given site address and see if it's valid
+    /// and returns an error view controller if not.
+    func errorViewController(for siteURL: String, with matcher: ULAccountMatcher, navigationController: UINavigationController) -> UIViewController? {
 
         /// Account mismatched case
         guard matcher.match(originalURL: siteURL) else {
             DDLogWarn("⚠️ Present account mismatch error for site: \(String(describing: siteURL))")
             let viewModel = WrongAccountErrorViewModel(siteURL: siteURL)
             let mismatchAccountUI = ULAccountMismatchViewController(viewModel: viewModel)
-
-            return navigationController.show(mismatchAccountUI, sender: nil)
+            return mismatchAccountUI
         }
 
         /// No Woo found
-        let matchedSite = matcher.matchedSite(originalURL: siteURL)
-        if let matchedSite = matchedSite, matchedSite.isWooCommerceActive == false {
+        if let matchedSite = matcher.matchedSite(originalURL: siteURL),
+           matchedSite.isWooCommerceActive == false {
             let viewModel = NoWooErrorViewModel(
                 siteURL: siteURL,
                 showsConnectedStores: matcher.hasConnectedStores,
                 showsInstallButton: matchedSite.isJetpackConnected,
                 onSetupCompletion: { [weak self] siteID in
                     guard let self = self else { return }
-                    self.startStorePicker(with: siteID, in: navigationController, onDismiss: onDismiss)
+                    self.startStorePicker(with: siteID, in: navigationController)
             })
             let noWooUI = ULErrorViewController(viewModel: viewModel)
-            return navigationController.show(noWooUI, sender: nil)
+            return noWooUI
         }
 
-        self.startStorePicker(with: matchedSite?.siteID, in: navigationController, onDismiss: onDismiss)
+        // All good!
+        return nil
     }
 }
 
@@ -311,7 +319,16 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: [.loginSiteAddressError])
         }
 
-        presentLoginEpilogue(in: navigationController, for: siteURL, onDismiss: onDismiss)
+        let matcher = ULAccountMatcher()
+        matcher.refreshStoredSites()
+        if let vc = errorViewController(for: siteURL, with: matcher, navigationController: navigationController) {
+            loggedOutAppSettings?.setErrorLoginSiteAddress(siteURL)
+            navigationController.show(vc, sender: nil)
+        } else {
+            loggedOutAppSettings?.setErrorLoginSiteAddress(nil)
+            let matchedSite = matcher.matchedSite(originalURL: siteURL)
+            startStorePicker(with: matchedSite?.siteID, in: navigationController, onDismiss: onDismiss)
+        }
     }
 
     /// Presents the Signup Epilogue, in the specified NavigationController.

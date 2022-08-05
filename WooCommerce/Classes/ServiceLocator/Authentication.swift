@@ -21,4 +21,13 @@ protocol Authentication {
     /// Initializes the WordPress Authenticator.
     ///
     func initialize()
+
+    /// Injects `loggedOutAppSettings`
+    ///
+    func setLoggedOutAppSettings(_ settings: LoggedOutAppSettingsProtocol)
+
+    /// Checks the given site address and see if it's valid
+    /// and returns an error view controller if not.
+    ///
+    func errorViewController(for siteURL: String, with matcher: ULAccountMatcher, navigationController: UINavigationController) -> UIViewController?
 }

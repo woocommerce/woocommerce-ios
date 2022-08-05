@@ -192,7 +192,7 @@ private extension AppCoordinator {
                let errorController = authenticationManager.errorViewController(for: siteURL, with: matcher, navigationController: authenticationUI) {
                 window.rootViewController = authenticationUI
                 // don't let user navigate back to the login screen unless they tap log out.
-                authenticationUI.navigationItem.hidesBackButton = true
+                errorController.navigationItem.hidesBackButton = true
                 authenticationUI.show(errorController, sender: nil)
                 return
             }

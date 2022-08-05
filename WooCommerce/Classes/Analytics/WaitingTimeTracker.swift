@@ -10,6 +10,8 @@ class WaitingTimeTracker {
     private var waitingTimer: Timer? = nil
     private var subscriptions: Set<AnyCancellable> = []
 
+    private var waitingStartedTimestamp: TimeInterval? = nil
+
     /// Initialize the WaitingTimeTracker with a specific timeout, if none is provided it will set 30 seconds as the default
     ///
     init(trackEvent: WooAnalyticsStat, waitingTimeout: TimeInterval = 30) {
@@ -47,18 +49,21 @@ class WaitingTimeTracker {
     /// - parameter analyticsStat: The stat to be send to Tracks when the waiting time ends
     ///
     func onWaitingStarted(analyticsStat: WooAnalyticsStat) {
-        currentState = .waiting(NSDate().timeIntervalSince1970, analyticsStat)
+        waitingStartedTimestamp = NSDate().timeIntervalSince1970
     }
 
     /// Set the Tracker state to `.done`, ending the waiting cycle. Only accepts it if the current state is `.waiting`
     /// otherwise, it will ignore the call
     ///
     func onWaitingEnded() {
-        guard case .waiting = currentState else {
+        guard let waitingStartedTimestamp = waitingStartedTimestamp else {
             return
         }
 
-        currentState = .done(NSDate().timeIntervalSince1970)
+        let elapsedTime = NSDate().timeIntervalSince1970 - waitingStartedTimestamp
+        ServiceLocator.analytics.track(trackEvent, withProperties: [
+            "waiting_time": elapsedTime
+        ])
     }
 
     /// Calculates the elapsed time with the difference between the `.done` and `.waiting` time interval
@@ -75,9 +80,7 @@ class WaitingTimeTracker {
 
         let elapsedTime = waitingEndedTime - waitingStartedTime
         if 0.0...waitingTimeout ~= elapsedTime {
-            ServiceLocator.analytics.track(analyticsStat, withProperties: [
-                "waiting_time": elapsedTime
-            ])
+
         }
     }
 

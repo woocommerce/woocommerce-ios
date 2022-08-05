@@ -3,6 +3,7 @@ import Combine
 
 class WaitingTimeTracker {
     private let waitingTimeout: TimeInterval
+    private let trackEvent: WooAnalyticsStat
 
     @Published private(set) var currentState: State = .idle
 
@@ -11,8 +12,9 @@ class WaitingTimeTracker {
 
     /// Initialize the WaitingTimeTracker with a specific timeout, if none is provided it will set 30 seconds as the default
     ///
-    init(waitingTimeout: TimeInterval = 30) {
+    init(trackEvent: WooAnalyticsStat, waitingTimeout: TimeInterval = 30) {
         self.waitingTimeout = waitingTimeout
+        self.trackEvent = trackEvent
         configureCurrentState()
     }
 

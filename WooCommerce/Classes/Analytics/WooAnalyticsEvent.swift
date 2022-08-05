@@ -1359,9 +1359,14 @@ extension WooAnalyticsEvent {
             static let waitingTime = "waiting_time"
         }
 
-        static func waitingFinished(scenario: Scenario, elapsedTime: TimeInterval) {
+        static func waitingFinished(scenario: Scenario, elapsedTime: TimeInterval) -> WooAnalyticsEvent {
             switch scenario {
-
+            case .orderDetails:
+                return WooAnalyticsEvent(statName: .orderDetailWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
+            case .orderList:
+                return WooAnalyticsEvent(statName: .orderListWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
+            case .dashboard:
+                return WooAnalyticsEvent(statName: .dashboardWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
             }
         }
     }

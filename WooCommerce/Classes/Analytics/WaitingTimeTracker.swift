@@ -2,7 +2,7 @@ import Foundation
 import Combine
 
 class WaitingTimeTracker {
-    private let trackEvent: WooAnalyticsStat
+    private let trackScenario: WooAnalyticsEvent.WaitingTime.Scenario
     private let currentTimeInMillis: () -> TimeInterval
     private let analyticsService: Analytics
 
@@ -10,11 +10,11 @@ class WaitingTimeTracker {
 
     /// Initialize the WaitingTimeTracker with a specific timeout, if none is provided it will set 30 seconds as the default
     ///
-    init(trackEvent: WooAnalyticsStat,
+    init(trackScenario: WooAnalyticsEvent.WaitingTime.Scenario,
          analyticsService: Analytics = ServiceLocator.analytics,
          currentTimeInMillis: @escaping () -> TimeInterval = { Date().timeIntervalSince1970 }
     ) {
-        self.trackEvent = trackEvent
+        self.trackScenario = trackScenario
         self.analyticsService = analyticsService
         self.currentTimeInMillis = currentTimeInMillis
     }
@@ -36,8 +36,7 @@ class WaitingTimeTracker {
         }
 
         let elapsedTime = currentTimeInMillis() - waitingStartedTimestamp
-        analyticsService.track(trackEvent, withProperties: [
-            "waiting_time": elapsedTime
-        ])
+        let analyticsEvent = WooAnalyticsEvent.WaitingTime.waitingFinished(scenario: trackScenario, elapsedTime: elapsedTime)
+        analyticsService.track(event: analyticsEvent)
     }
 }

@@ -1,3 +1,5 @@
+import Experiments
+import SwiftUI
 import UIKit
 
 /// Contains a feature carousel with buttons that end up on the login prologue screen.
@@ -8,14 +10,29 @@ final class LoginOnboardingViewController: UIViewController {
         case skip
     }
 
+    /// The content that is shown above the buttons container.
+    private enum Content {
+        case features
+        case survey
+    }
+    private var content: Content = .features
+    private var selectedSurveyOption: LoginOnboardingSurveyOption?
+
     private let stackView: UIStackView = .init()
     private lazy var pageViewController = LoginProloguePageViewController(pageTypes: [.products, .orderManagement, .stats],
                                                                           showsSubtitle: true)
+    private lazy var buttonStackView: UIStackView = .init()
+    private lazy var nextButton: UIButton = createNextButton()
+
     private let analytics: Analytics
+    private let featureFlagService: FeatureFlagService
     private let onDismiss: (DismissAction) -> Void
 
-    init(analytics: Analytics = ServiceLocator.analytics, onDismiss: @escaping (DismissAction) -> Void) {
+    init(analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         onDismiss: @escaping (DismissAction) -> Void) {
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
         self.onDismiss = onDismiss
         super.init(nibName: nil, bundle: nil)
     }
@@ -92,14 +109,10 @@ private extension LoginOnboardingViewController {
     func configureStackViewSubviews() {
         let carousel = createFeatureCarousel()
 
-        let nextButton = createNextButton()
         let skipButton = createSkipButton()
-        let buttonStackView: UIStackView = {
-            let stackView = UIStackView(arrangedSubviews: [nextButton, skipButton])
-            stackView.spacing = Constants.buttonStackViewSpacing
-            stackView.axis = .vertical
-            return stackView
-        }()
+        buttonStackView.addArrangedSubviews([nextButton, skipButton])
+        buttonStackView.spacing = Constants.buttonStackViewSpacing
+        buttonStackView.axis = .vertical
 
         stackView.addArrangedSubviews([carousel, buttonStackView])
     }
@@ -118,10 +131,22 @@ private extension LoginOnboardingViewController {
         button.setTitle(Localization.continueButtonTitle, for: .normal)
         button.on(.touchUpInside) { [weak self] _ in
             guard let self = self else { return }
-            guard self.pageViewController.goToNextPageIfPossible() else {
-                return self.onDismiss(.next)
+
+            switch self.content {
+            case .features:
+                guard self.pageViewController.goToNextPageIfPossible() else {
+                    guard self.featureFlagService.isFeatureFlagEnabled(.loginPrologueOnboardingSurvey) else {
+                        return self.onDismiss(.next)
+                    }
+                    return self.showSurvey()
+                }
+                self.analytics.track(event: .LoginOnboarding.loginOnboardingNextButtonTapped(isFinalPage: false))
+            case .survey:
+                if let selectedSurveyOption = self.selectedSurveyOption {
+                    self.analytics.track(event: .LoginOnboarding.loginOnboardingSurveySubmitted(option: selectedSurveyOption))
+                }
+                self.onDismiss(.next)
             }
-            self.analytics.track(event: .LoginOnboarding.loginOnboardingNextButtonTapped(isFinalPage: false))
         }
         return button
     }
@@ -135,6 +160,38 @@ private extension LoginOnboardingViewController {
             self?.onDismiss(.skip)
         }
         return button
+    }
+}
+
+// MARK: - Survey
+
+private extension LoginOnboardingViewController {
+    @MainActor
+    func showSurvey() {
+        content = .survey
+        nextButton.isEnabled = false
+
+        analytics.track(event: .LoginOnboarding.loginOnboardingSurveyShown())
+
+        let surveyView = LoginOnboardingSurveyView(onSelection: { [weak self] option in
+            self?.selectedSurveyOption = option
+            self?.nextButton.isEnabled = true
+        })
+        let surveyController = UIHostingController(rootView: surveyView)
+        surveyController.view.backgroundColor = .authPrologueBottomBackgroundColor
+        view.backgroundColor = .authPrologueBottomBackgroundColor
+
+        addChild(surveyController)
+        surveyController.didMove(toParent: self)
+
+        view.addSubview(surveyController.view)
+        surveyController.view.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            surveyController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            surveyController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            surveyController.view.topAnchor.constraint(equalTo: view.safeTopAnchor),
+            surveyController.view.bottomAnchor.constraint(equalTo: buttonStackView.topAnchor)
+        ])
     }
 }
 

@@ -1,3 +1,5 @@
-Jullie hebben gevraagd om in de app coupons te kunnen creëren. We hebben vanaf nu een sneakpeek beschikbaar voor mensen die ons willen helpen met uittesten! Ga naar de instellingen in de app en zet de experimentele functie aan voor coupons.
+We zijn erg blij te kunnen vertellen dat het nu mogelijk is om een bestelling via de app te bewerken. Op dit moment kan je producten, kosten en verzending bewerken of verwijderen en de producthoeveelheid wijzigen.
 
-Daarnaast hebben we enkele verbeteringen doorgevoerd wat betreft het uploaden van productafbeeldingen en fysieke betalingen. Zo kun je nu betalingen met cash, betaalkaart of betaallinks innen voor alle onbetaalde bestellingen. Blijf ons feedback sturen - wij luisteren!
+Sommige extensies van derden gaven metagegevens van bestellingen niet op logische wijze weer in de bestellingsgegevens. We hebben wat wijzigingen aangebracht zodat deze aangepaste velden kunnen worden weergegeven. We hebben ook verschillende verbeteringen doorgevoerd aan de betalings- en login-workflow, waaronder de optie om Jetpack rechtstreeks vanuit de app te installeren.
+
+Blijf ons feedback sturen – wij luisteren!

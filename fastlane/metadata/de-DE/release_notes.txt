@@ -1,3 +1,5 @@
-Du hattest den Wunsch, Gutscheine in der App zu erstellen. Wir freuen uns, dir mitteilen zu können, dass es nun eine Vorschau dieser Funktion gibt – du kannst sie gerne testen! Rufe in der App die Einstellungen auf und aktiviere die experimentelle Funktion für Gutscheine.
+Tolle Neuigkeiten: Ab sofort ist es möglich, eine Bestellung von der App aus zu bearbeiten. Jetzt kannst du Produkte, Gebühren und Lieferung bearbeiten und entfernen und die Anzahl der Produkte ändern.
 
-Wir haben auch diverse Optimierungen an Produktbild-Uploads und persönlichen Zahlungen vorgenommen, darunter die Möglichkeit, für alle unbezahlten Bestellungen Zahlungen in bar, per Karte oder per Zahlungslink zu empfangen. Sende uns bitte weiter Feedback – wir freuen uns darauf!
+In den Bestelldetails haben einige Erweiterungen von Drittanbietern die Bestellungs-Metadaten nicht logisch angezeigt. Wir haben einige Änderungen vorgenommen, um diese benutzerdefinierten Felder für eine Bestellung anzuzeigen. Zudem haben wir mehrere Verbesserungen am Zahlungs- und Anmeldevorgang vorgenommen, wie z. B. die Option, Jetpack direkt aus der App zu installieren.
+
+Sende uns bitte weiter Feedback – wir freuen uns darauf!

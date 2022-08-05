@@ -151,11 +151,7 @@ private extension InAppFeedbackCardViewControllerTests {
 private class MockStoreReviewController: SKStoreReviewControllerProtocol {
     private(set) static var requestReviewInvoked = false
 
-    @available(iOS 10.3, *) static func requestReview() {
-        requestReviewInvoked = true
-    }
-
-    @available(iOS 14.0, *) static func requestReview(in windowScene: UIWindowScene) {
+    static func requestReview(in windowScene: UIWindowScene) {
         requestReviewInvoked = true
     }
 

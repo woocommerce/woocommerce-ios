@@ -7,10 +7,6 @@ final class VerifyEmailViewController: LoginViewController {
     @IBOutlet private weak var tableView: UITableView!
     private let rows = Row.allCases
 
-    override var sourceTag: WordPressSupportSourceTag {
-        .verifyEmailInstructions
-    }
-
     // MARK: - Actions
     @IBAction private func handleSendLinkButtonTapped(_ sender: NUXButton) {
         configureViewLoading(false)
@@ -44,6 +40,10 @@ final class VerifyEmailViewController: LoginViewController {
     }
 
     // MARK: - Overrides
+
+    override var sourceTag: WordPressSupportSourceTag {
+        .verifyEmailInstructions
+    }
 
     /// Style individual ViewController backgrounds, for now.
     ///

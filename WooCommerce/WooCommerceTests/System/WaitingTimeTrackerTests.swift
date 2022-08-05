@@ -24,7 +24,21 @@ class WaitingTimeTrackerTests: XCTestCase {
         XCTAssertEqual(testAnalytics.lastReceivedWaitingTime, 10.0)
     }
 
-    func testTrackScenarioTriggersExpectedAnalyticsStat() {
+    func testOrderDetailsTrackScenarioTriggersExpectedAnalyticsStat() {
+        // Given
+        let waitingTracker = WaitingTimeTracker(trackScenario: .orderDetails,
+                                                analyticsService: testAnalytics,
+                                                currentTimeInMillis: { 0 }
+        )
+
+        // When
+        waitingTracker.end()
+
+        // Then
+        XCTAssertEqual(testAnalytics.lastReceivedStat, .orderDetailWaitingTimeLoaded)
+    }
+
+    func testTopPerformersTrackScenarioTriggersExpectedAnalyticsStat() {
         // Given
         let waitingTracker = WaitingTimeTracker(trackScenario: .dashboardTopPerformers,
                                                 analyticsService: testAnalytics,
@@ -36,6 +50,20 @@ class WaitingTimeTrackerTests: XCTestCase {
 
         // Then
         XCTAssertEqual(testAnalytics.lastReceivedStat, .dashboardTopPerformersWaitingTimeLoaded)
+    }
+
+    func testMainStatsTrackScenarioTriggersExpectedAnalyticsStat() {
+        // Given
+        let waitingTracker = WaitingTimeTracker(trackScenario: .dashboardMainStats,
+                                                analyticsService: testAnalytics,
+                                                currentTimeInMillis: { 0 }
+        )
+
+        // When
+        waitingTracker.end()
+
+        // Then
+        XCTAssertEqual(testAnalytics.lastReceivedStat, .dashboardMainStatsWaitingTimeLoaded)
     }
 
     class TestAnalytics: Analytics {

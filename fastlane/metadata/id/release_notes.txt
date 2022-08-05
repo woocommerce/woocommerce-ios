@@ -1,3 +1,5 @@
-Banyak permintaan untuk dapat membuat kupon melalui aplikasi. Dengan senang hati, kami sampaikan bahwa kami telah menyiapkan bocoran jika Anda ingin membantu kami mengujinya! Buka pengaturan pada aplikasi, lalu aktifkan fitur eksperimental untuk Kupon.
+Kami senang dapat memberitahukan bahwa sekarang Anda dapat menyunting pesanan dari aplikasi. Sekarang Anda dapat menyunting atau menghapus produk, biaya, pengiriman, serta mengubah jumlah produk.
 
-Kami juga telah membuat beberapa peningkatan pada pengunggahan gambar produk dan pembayaran secara langsung, termasuk pilihan untuk menerima pembayaran melalui tunai, kartu, atau tautan pembayaran, untuk semua pesanan yang belum dibayar. Mohon terus berikan feedback – kami siap mendengarkan!
+Pada detail pesanan, beberapa ekstensi pihak ketiga tidak secara logis menampilkan metadata pesanan. Kami telah melakukan perubahan guna menampilkan kolom khusus ini untuk sebuah pesanan. Kami juga melakukan peningkatan untuk alur pembayaran dan login, termasuk pilihan untuk menginstal Jetpack langsung dari aplikasi.
+
+Mohon terus berikan feedback – kami siap mendengarkan feedback Anda!

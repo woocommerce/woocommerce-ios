@@ -5,6 +5,7 @@ import WordPressKit
 import Yosemite
 import class Networking.UserAgent
 import struct Networking.Settings
+import protocol Storage.StorageManagerType
 
 
 /// Encapsulates all of the interactions with the WordPress Authenticator
@@ -31,6 +32,14 @@ class AuthenticationManager: Authentication {
     ///
     private var loggedOutAppSettings: LoggedOutAppSettingsProtocol?
 
+    /// Storage manager to inject to account matcher
+    ///
+    private let storageManager: StorageManagerType
+
+    init(storageManager: StorageManagerType = ServiceLocator.storageManager) {
+        self.storageManager = storageManager
+    }
+    
     /// Initializes the WordPress Authenticator.
     ///
     func initialize() {
@@ -319,7 +328,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: [.loginSiteAddressError])
         }
 
-        let matcher = ULAccountMatcher()
+        let matcher = ULAccountMatcher(storageManager: storageManager)
         matcher.refreshStoredSites()
         if let vc = errorViewController(for: siteURL, with: matcher, navigationController: navigationController) {
             loggedOutAppSettings?.setErrorLoginSiteAddress(siteURL)

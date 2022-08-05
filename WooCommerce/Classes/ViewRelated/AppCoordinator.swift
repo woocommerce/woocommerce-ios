@@ -48,6 +48,8 @@ final class AppCoordinator {
         self.loggedOutAppSettings = loggedOutAppSettings
         self.pushNotesManager = pushNotesManager
         self.featureFlagService = featureFlagService
+
+        authenticationManager.setLoggedOutAppSettings(loggedOutAppSettings)
     }
 
     func start() {
@@ -60,7 +62,7 @@ final class AppCoordinator {
                 case (false, true), (false, false):
                     self.displayAuthenticator()
                 case (true, true):
-                    self.displayStorePicker()
+                    self.handleLoggedInStateWithoutDefaultStore()
                 case (true, false):
                     self.validateRoleEligibility {
                         self.displayLoggedInUI()
@@ -166,18 +168,43 @@ private extension AppCoordinator {
         setWindowRootViewControllerAndAnimateIfNeeded(tabBarController)
     }
 
-    /// If the app is authenticated but there is no default store ID on launch: Let's display the Store Picker.
+    /// If the app is authenticated but there is no default store ID on launch,
+    /// check for errors and display store picker if none exists.
     ///
-    func displayStorePicker() {
+    func handleLoggedInStateWithoutDefaultStore() {
         // Store picker is only displayed by `AppCoordinator` on launch, when the window's root is uninitialized.
         // In other cases when the app is authenticated but there is no default store ID, the store picker is shown by authentication UI.
         guard window.rootViewController == nil else {
             return
         }
 
-        DDLogInfo("💬 Authenticated user does not have a Woo store selected — launching store picker.")
+        let matcher = ULAccountMatcher()
+        matcher.refreshStoredSites()
+
+        // Show error for the current site URL if exists.
+        if let siteURL = loggedOutAppSettings.errorLoginSiteAddress {
+            let authenticationUI = authenticationManager.authenticationUI()
+            if let nc = authenticationUI as? UINavigationController,
+               let vc = authenticationManager.errorViewController(for: siteURL, with: matcher, navigationController: nc) {
+                window.rootViewController = authenticationUI
+                // don't let user navigate back to the login screen unless they tap log out.
+                vc.navigationItem.hidesBackButton = true
+                nc.show(vc, sender: nil)
+                return
+            }
+        }
+
+        // If no store is found and no error is detected, log the user out.
+        if matcher.hasConnectedStores == false {
+            stores.deauthenticate()
+            displayAuthenticator()
+            return
+        }
+
+        // All good, show store picker
         let navigationController = WooNavigationController()
         setWindowRootViewControllerAndAnimateIfNeeded(navigationController)
+        DDLogInfo("💬 Authenticated user does not have a Woo store selected — launching store picker.")
         storePickerCoordinator = StorePickerCoordinator(navigationController, config: .standard)
         storePickerCoordinator?.start()
         storePickerCoordinator?.onDismiss = { [weak self] in

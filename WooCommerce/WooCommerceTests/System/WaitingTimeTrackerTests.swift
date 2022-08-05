@@ -14,24 +14,40 @@ class WaitingTimeTrackerTests: XCTestCase {
                                                 analyticsService: testAnalytics
         ) {
             currentTimeCallCounter += 1
-            return currentTimeCallCounter * 1000
+            return currentTimeCallCounter * 10
         }
 
         // When
         waitingTracker.end()
 
         // Then
-        XCTAssertNotNil(testAnalytics.lastReceivedEvent)
+        XCTAssertEqual(testAnalytics.lastReceivedWaitingTime, 10.0)
+    }
+
+    func testTrackScenarioTriggersExpectedAnalyticsStat() {
+        // Given
+        let waitingTracker = WaitingTimeTracker(trackScenario: .dashboardTopPerformers,
+                                                analyticsService: testAnalytics,
+                                                currentTimeInMillis: { 0 }
+        )
+
+        // When
+        waitingTracker.end()
+
+        // Then
+        XCTAssertEqual(testAnalytics.lastReceivedStat, .dashboardTopPerformersWaitingTimeLoaded)
     }
 
     class TestAnalytics: Analytics {
-        var lastReceivedEvent: WooAnalyticsStat? = nil
+        var lastReceivedStat: WooAnalyticsStat? = nil
+        var lastReceivedWaitingTime: TimeInterval? = nil
 
         func track(_ stat: WooAnalyticsStat, properties: [AnyHashable: Any]?, error: Error?) {
-            lastReceivedEvent = stat
+            lastReceivedStat = stat
+            lastReceivedWaitingTime = properties?["waiting_time"] as? TimeInterval
         }
 
-        // Protocol conformance code
+        // MARK: - Protocol conformance
 
         func initialize() {
         }

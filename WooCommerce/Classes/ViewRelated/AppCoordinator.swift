@@ -187,8 +187,7 @@ private extension AppCoordinator {
 
         // Show error for the current site URL if exists.
         if let siteURL = loggedOutAppSettings.errorLoginSiteAddress {
-            let authenticationUI = authenticationManager.authenticationUI()
-            if let authenticationUI = authenticationUI as? UINavigationController,
+            if let authenticationUI = authenticationManager.authenticationUI() as? UINavigationController,
                let errorController = authenticationManager.errorViewController(for: siteURL, with: matcher, navigationController: authenticationUI) {
                 window.rootViewController = authenticationUI
                 // don't let user navigate back to the login screen unless they tap log out.

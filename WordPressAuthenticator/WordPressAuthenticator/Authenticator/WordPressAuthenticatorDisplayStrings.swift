@@ -16,6 +16,7 @@ public struct WordPressAuthenticatorDisplayStrings {
     public let openMailSignupInstructions: String
     public let openMailLoginInstructions: String
     public let verifyMailLoginInstructions: String
+    public let alternativelyEnterPasswordInstructions: String
     public let checkSpamInstructions: String
     public let oopsInstructions: String
     public let googleSignupInstructions: String
@@ -31,6 +32,8 @@ public struct WordPressAuthenticatorDisplayStrings {
     public let continueWithWPButtonTitle: String
     public let enterYourSiteAddressButtonTitle: String
     public let signInWithSiteCredentialsButtonTitle: String
+    public let sendEmailVerificationLinkButtonTitle: String
+    public let loginWithAccountPasswordButtonTitle: String
 
     /// Large titles displayed in unified auth flows.
     ///
@@ -48,7 +51,6 @@ public struct WordPressAuthenticatorDisplayStrings {
     public let loginTermsOfService: String
     public let signupTermsOfService: String
     public let whatIsWPComLinkTitle: String
-    public let typePasswordButtonTitle: String
 
 	/// Placeholder text for textfields.
 	///
@@ -71,6 +73,7 @@ public struct WordPressAuthenticatorDisplayStrings {
                 openMailSignupInstructions: String = defaultStrings.openMailSignupInstructions,
                 openMailLoginInstructions: String = defaultStrings.openMailLoginInstructions,
                 verifyMailLoginInstructions: String = defaultStrings.verifyMailLoginInstructions,
+                alternativelyEnterPasswordInstructions: String = defaultStrings.alternativelyEnterPasswordInstructions,
                 checkSpamInstructions: String = defaultStrings.checkSpamInstructions,
                 oopsInstructions: String = defaultStrings.oopsInstructions,
                 googleSignupInstructions: String = defaultStrings.googleSignupInstructions,
@@ -83,8 +86,9 @@ public struct WordPressAuthenticatorDisplayStrings {
                 continueWithWPButtonTitle: String = defaultStrings.continueWithWPButtonTitle,
                 enterYourSiteAddressButtonTitle: String = defaultStrings.enterYourSiteAddressButtonTitle,
                 signInWithSiteCredentialsButtonTitle: String = defaultStrings.signInWithSiteCredentialsButtonTitle,
+                sendEmailVerificationLinkButtonTitle: String = defaultStrings.sendEmailVerificationLinkButtonTitle,
+                loginWithAccountPasswordButtonTitle: String = defaultStrings.loginWithAccountPasswordButtonTitle,
                 findSiteButtonTitle: String = defaultStrings.findSiteButtonTitle,
-                typePasswordButtonTitle: String = defaultStrings.typePasswordButtonTitle,
                 resetPasswordButtonTitle: String = defaultStrings.resetPasswordButtonTitle,
                 getLoginLinkButtonTitle: String = defaultStrings.getLoginLinkButtonTitle,
                 textCodeButtonTitle: String = defaultStrings.textCodeButtonTitle,
@@ -111,6 +115,7 @@ public struct WordPressAuthenticatorDisplayStrings {
         self.openMailSignupInstructions = openMailSignupInstructions
         self.openMailLoginInstructions = openMailLoginInstructions
         self.verifyMailLoginInstructions = verifyMailLoginInstructions
+        self.alternativelyEnterPasswordInstructions = alternativelyEnterPasswordInstructions
         self.checkSpamInstructions = checkSpamInstructions
         self.oopsInstructions = oopsInstructions
         self.googleSignupInstructions = googleSignupInstructions
@@ -123,8 +128,9 @@ public struct WordPressAuthenticatorDisplayStrings {
         self.continueWithWPButtonTitle = continueWithWPButtonTitle
         self.enterYourSiteAddressButtonTitle = enterYourSiteAddressButtonTitle
         self.signInWithSiteCredentialsButtonTitle = signInWithSiteCredentialsButtonTitle
+        self.sendEmailVerificationLinkButtonTitle = sendEmailVerificationLinkButtonTitle
+        self.loginWithAccountPasswordButtonTitle = loginWithAccountPasswordButtonTitle
         self.findSiteButtonTitle = findSiteButtonTitle
-        self.typePasswordButtonTitle = typePasswordButtonTitle
         self.resetPasswordButtonTitle = resetPasswordButtonTitle
         self.getLoginLinkButtonTitle = getLoginLinkButtonTitle
         self.textCodeButtonTitle = textCodeButtonTitle
@@ -166,8 +172,10 @@ public extension WordPressAuthenticatorDisplayStrings {
                                                           comment: "Instruction text after a signup Magic Link was requested."),
             openMailLoginInstructions: NSLocalizedString("Check your email on this device, and tap the link in the email you receive from WordPress.com.",
                                                          comment: "Instruction text after a login Magic Link was requested."),
-            verifyMailLoginInstructions: NSLocalizedString("Almost there! We just need to verify your Jetpack connected email address",
+            verifyMailLoginInstructions: NSLocalizedString("A WordPress.com account is connected to your store credentials. To continue, we will send a verification link to the email address above.",
                                                          comment: "Instruction text to explain magic link login step."),
+            alternativelyEnterPasswordInstructions: NSLocalizedString("Alternatively, you may enter the password for this account.",
+                                                                      comment: "Instruction text to explain to help users type their password instead of using magic link login option."),
             checkSpamInstructions: NSLocalizedString("Not seeing the email? Check your Spam or Junk Mail folder.", comment: "Instructions after a Magic Link was sent, but the email can't be found in their inbox."),
             oopsInstructions: NSLocalizedString("Didn't mean to create a new account? Go back to re-enter your email address.", comment: "Instructions after a Magic Link was sent, but email is incorrect."),
             googleSignupInstructions: NSLocalizedString("We'll use this email address to create your new WordPress.com account.", comment: "Text confirming email address to be used for new account."),
@@ -189,10 +197,12 @@ public extension WordPressAuthenticatorDisplayStrings {
                                                                comment: "Button title. Takes the user to the login by site address flow."),
             signInWithSiteCredentialsButtonTitle: NSLocalizedString("Sign in with site credentials",
                                                                    comment: "Button title. Takes the user the Enter site credentials screen."),
+            sendEmailVerificationLinkButtonTitle: NSLocalizedString("Send email verification link",
+                                                                   comment: "Button title. Sends a email verification link (Magin link) for signing in."),
+            loginWithAccountPasswordButtonTitle: NSLocalizedString("Login with account password",
+                                                                   comment: "Button title. Takes the user to the Enter account password screen."),
             findSiteButtonTitle: NSLocalizedString("Find your site address",
                                                    comment: "The hint button's title text to help users find their site address."),
-            typePasswordButtonTitle: NSLocalizedString("Or type your password",
-                                                   comment: "The hint button's title text to help users type their password instead of using magic link login option."),
             resetPasswordButtonTitle: NSLocalizedString("Reset your password",
                                                         comment: "The button title for a secondary call-to-action button. When the user can't remember their password."),
             getLoginLinkButtonTitle: NSLocalizedString("Get a login link by email",

@@ -121,8 +121,7 @@ private extension VerifyEmailViewController {
     func registerTableViewCells() {
         let cells = [
             GravatarEmailTableViewCell.reuseIdentifier: GravatarEmailTableViewCell.loadNib(),
-            TextLabelTableViewCell.reuseIdentifier: TextLabelTableViewCell.loadNib(),
-            TextLinkButtonTableViewCell.reuseIdentifier: TextLinkButtonTableViewCell.loadNib()
+            TextLabelTableViewCell.reuseIdentifier: TextLabelTableViewCell.loadNib()
         ]
 
         for (reuseIdentifier, nib) in cells {
@@ -138,7 +137,7 @@ private extension VerifyEmailViewController {
             configureGravatarEmail(cell)
         case let cell as TextLabelTableViewCell where row == .instructions:
             configureInstructionLabel(cell)
-        case let cell as TextLinkButtonTableViewCell where row == .typePassword:
+        case let cell as TextLabelTableViewCell where row == .typePassword:
             configureTypePasswordButton(cell)
         default:
             DDLogError("Error: Unidentified tableViewCell type found.")
@@ -154,27 +153,15 @@ private extension VerifyEmailViewController {
     /// Configure the instructions cell.
     ///
     func configureInstructionLabel(_ cell: TextLabelTableViewCell) {
-        let instructionColor = WordPressAuthenticator.shared.unifiedStyle?.textSubtleColor ?? WordPressAuthenticator.shared.style.subheadlineColor
-        let emailColor = WordPressAuthenticator.shared.unifiedStyle?.textColor ?? WordPressAuthenticator.shared.style.instructionColor
-        let font = WPStyleGuide.mediumWeightFont(forStyle: .body)
-
-        let instructions = NSMutableAttributedString(string: WordPressAuthenticator.shared.displayStrings.verifyMailLoginInstructions, attributes: [.foregroundColor: instructionColor, .font: font])
-        let email = NSAttributedString(string: " " + loginFields.username, attributes: [.font: font, .foregroundColor: emailColor])
-        instructions.append(email)
-        cell.configureLabel(attributedText: instructions)
+        cell.configureLabel(text: WordPressAuthenticator.shared.displayStrings.verifyMailLoginInstructions,
+                            style: .body)
     }
 
-    /// Configure the "Or type your password" cell.
+    /// Configure the enter password instructions cell.
     ///
-    func configureTypePasswordButton(_ cell: TextLinkButtonTableViewCell) {
-        cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.typePasswordButtonTitle)
-
-        cell.actionHandler = { [weak self] in
-            guard let self = self else { return }
-
-            self.tracker.track(click: .orTypeYourPassword)
-            self.presentUnifiedPassword()
-        }
+    func configureTypePasswordButton(_ cell: TextLabelTableViewCell) {
+        cell.configureLabel(text: WordPressAuthenticator.shared.displayStrings.alternativelyEnterPasswordInstructions,
+                            style: .body)
     }
 
     /// Makes the call to request a magic authentication link be emailed to the user.
@@ -239,10 +226,8 @@ private extension VerifyEmailViewController {
             switch self {
             case .persona:
                 return GravatarEmailTableViewCell.reuseIdentifier
-            case .instructions:
+            case .instructions, .typePassword:
                 return TextLabelTableViewCell.reuseIdentifier
-            case .typePassword:
-                return TextLinkButtonTableViewCell.reuseIdentifier
             }
         }
     }

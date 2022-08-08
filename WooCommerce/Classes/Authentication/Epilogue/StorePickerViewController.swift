@@ -354,9 +354,6 @@ private extension StorePickerViewController {
     /// Sets the first available Store as the default one. If possible!
     ///
     func preselectStoreIfPossible() {
-        guard configuration != .listStores else {
-            return
-        }
 
         guard case let .available(sites) = state, let firstSite = sites.first else {
             return

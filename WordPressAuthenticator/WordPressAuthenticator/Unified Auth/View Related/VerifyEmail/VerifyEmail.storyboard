@@ -21,47 +21,47 @@
                                 <rect key="frame" x="0.0" y="44" width="414" height="818"/>
                                 <subviews>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" bounces="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="pfu-Jh-ubT">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="742"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="768"/>
                                         <sections/>
                                         <connections>
                                             <outlet property="dataSource" destination="Kyc-Xo-vx1" id="wYG-7B-H0U"/>
                                             <outlet property="delegate" destination="Kyc-Xo-vx1" id="fsd-qV-Pgj"/>
                                         </connections>
                                     </tableView>
-                                    <view contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="acY-8s-fU4" userLabel="Button background view">
-                                        <rect key="frame" x="0.0" y="742" width="414" height="76"/>
+                                    <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="I1o-Lz-r19">
+                                        <rect key="frame" x="0.0" y="768" width="414" height="50"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8aU-U3-ges" userLabel="Primary Button" customClass="NUXButton" customModule="WordPressAuthenticator" customModuleProvider="target">
-                                                <rect key="frame" x="16" y="16" width="382" height="44"/>
-                                                <accessibility key="accessibilityConfiguration" identifier="submitButton"/>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="oOi-bU-Xng">
+                                                <rect key="frame" x="0.0" y="0.0" width="414" height="50"/>
+                                                <subviews>
+                                                    <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LCc-0X-Ybb" userLabel="Button Container View">
+                                                        <rect key="frame" x="0.0" y="0.0" width="414" height="50"/>
+                                                        <connections>
+                                                            <segue destination="0f2-Vg-sfb" kind="embed" id="Ruh-yZ-gdI"/>
+                                                        </connections>
+                                                    </containerView>
+                                                </subviews>
                                                 <constraints>
-                                                    <constraint firstAttribute="height" constant="44" id="brU-Sp-bqC"/>
+                                                    <constraint firstAttribute="height" priority="250" constant="50" id="vZx-Lm-PLF"/>
                                                 </constraints>
-                                                <state key="normal" title="Button"/>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="isPrimary" value="YES"/>
-                                                </userDefinedRuntimeAttributes>
-                                                <connections>
-                                                    <action selector="handleSendLinkButtonTapped:" destination="Kyc-Xo-vx1" eventType="touchUpInside" id="p1D-H8-IjT"/>
-                                                </connections>
-                                            </button>
+                                            </stackView>
                                         </subviews>
-                                        <viewLayoutGuide key="safeArea" id="fke-hl-RqK"/>
-                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <constraints>
-                                            <constraint firstAttribute="bottomMargin" secondItem="8aU-U3-ges" secondAttribute="bottom" constant="8" id="cFF-F8-XeD"/>
-                                            <constraint firstItem="8aU-U3-ges" firstAttribute="top" secondItem="acY-8s-fU4" secondAttribute="topMargin" constant="8" id="iAf-MX-VqG"/>
+                                            <constraint firstItem="oOi-bU-Xng" firstAttribute="height" secondItem="I1o-Lz-r19" secondAttribute="height" id="7El-NG-9aZ"/>
+                                            <constraint firstAttribute="bottom" secondItem="oOi-bU-Xng" secondAttribute="bottom" id="PbI-vK-NBT"/>
+                                            <constraint firstItem="oOi-bU-Xng" firstAttribute="top" secondItem="I1o-Lz-r19" secondAttribute="top" id="TA1-Pn-Wfn"/>
+                                            <constraint firstItem="oOi-bU-Xng" firstAttribute="width" secondItem="I1o-Lz-r19" secondAttribute="width" id="TIr-LJ-kq2"/>
+                                            <constraint firstAttribute="trailing" secondItem="oOi-bU-Xng" secondAttribute="trailing" id="dAw-Cz-gXs"/>
+                                            <constraint firstItem="oOi-bU-Xng" firstAttribute="leading" secondItem="I1o-Lz-r19" secondAttribute="leading" id="yuh-jz-Tun"/>
                                         </constraints>
-                                    </view>
+                                    </scrollView>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
-                                    <constraint firstItem="acY-8s-fU4" firstAttribute="top" secondItem="pfu-Jh-ubT" secondAttribute="bottom" id="8ip-ju-lmM"/>
-                                    <constraint firstItem="acY-8s-fU4" firstAttribute="bottom" secondItem="E8K-Dx-YzL" secondAttribute="bottomMargin" constant="8" id="BDz-Tw-lI7"/>
-                                    <constraint firstItem="acY-8s-fU4" firstAttribute="trailing" secondItem="E8K-Dx-YzL" secondAttribute="trailing" id="NbW-zb-dB4"/>
-                                    <constraint firstItem="acY-8s-fU4" firstAttribute="leading" secondItem="E8K-Dx-YzL" secondAttribute="leading" id="Qd7-mb-zk6"/>
-                                    <constraint firstItem="pfu-Jh-ubT" firstAttribute="trailing" secondItem="8aU-U3-ges" secondAttribute="trailing" constant="16" id="rxl-c5-gog"/>
-                                    <constraint firstItem="8aU-U3-ges" firstAttribute="leading" secondItem="pfu-Jh-ubT" secondAttribute="leading" constant="16" id="wPq-gH-3RV"/>
+                                    <constraint firstItem="I1o-Lz-r19" firstAttribute="leading" secondItem="E8K-Dx-YzL" secondAttribute="leading" id="GiQ-Qs-gaK"/>
+                                    <constraint firstAttribute="trailing" secondItem="I1o-Lz-r19" secondAttribute="trailing" id="ejg-M4-Hcj"/>
+                                    <constraint firstAttribute="bottom" secondItem="I1o-Lz-r19" secondAttribute="bottom" id="fpd-Gc-kpQ"/>
+                                    <constraint firstItem="I1o-Lz-r19" firstAttribute="top" secondItem="pfu-Jh-ubT" secondAttribute="bottom" id="yGl-Zk-cTV"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -79,7 +79,6 @@
                     </view>
                     <navigationItem key="navigationItem" id="RXK-oM-uW0"/>
                     <connections>
-                        <outlet property="submitButton" destination="8aU-U3-ges" id="1ov-f4-aKA"/>
                         <outlet property="tableView" destination="pfu-Jh-ubT" id="iMn-f4-DOH"/>
                         <outlet property="tableViewLeadingConstraint" destination="H0g-kw-Qqv" id="lcz-Ci-CnX"/>
                         <outlet property="tableViewTrailingConstraint" destination="maJ-SL-tfy" id="Ytd-1o-EIc"/>
@@ -88,6 +87,16 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6j3-BE-46b" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1702" y="-34"/>
+        </scene>
+        <!--ButtonView-->
+        <scene sceneID="fWW-cl-abG">
+            <objects>
+                <viewControllerPlaceholder storyboardName="NUXButtonView" referencedIdentifier="ButtonView" id="0f2-Vg-sfb" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="xKC-U7-C7l"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="58W-Tn-hrf" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1701" y="390"/>
         </scene>
     </scenes>
     <resources>

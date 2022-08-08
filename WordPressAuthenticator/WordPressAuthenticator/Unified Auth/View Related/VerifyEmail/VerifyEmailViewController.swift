@@ -5,14 +5,8 @@ final class VerifyEmailViewController: LoginViewController {
     // MARK: - Properties
 
     @IBOutlet private weak var tableView: UITableView!
+    private var buttonViewController: NUXButtonViewController?
     private let rows = Row.allCases
-
-    // MARK: - Actions
-    @IBAction private func handleSendLinkButtonTapped(_ sender: NUXButton) {
-        configureViewLoading(false)
-        tracker.track(click: .requestMagicLink)
-        requestAuthenticationLink()
-    }
 
     // MARK: - View lifecycle
     override func viewDidLoad() {
@@ -25,8 +19,8 @@ final class VerifyEmailViewController: LoginViewController {
         defaultTableViewMargin = tableViewLeadingConstraint?.constant ?? 0
         setTableViewMargins(forWidth: view.frame.width)
 
-        localizePrimaryButton()
         registerTableViewCells()
+        configureButtonViewController()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -36,6 +30,14 @@ final class VerifyEmailViewController: LoginViewController {
             tracker.track(step: .verifyEmailInstructions)
         } else {
             tracker.set(step: .verifyEmailInstructions)
+        }
+    }
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        super.prepare(for: segue, sender: sender)
+
+        if let vc = segue.destination as? NUXButtonViewController {
+            buttonViewController = vc
         }
     }
 
@@ -60,13 +62,6 @@ final class VerifyEmailViewController: LoginViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
         WordPressAuthenticator.shared.unifiedStyle?.statusBarStyle ?? WordPressAuthenticator.shared.style.statusBarStyle
     }
-
-    /// Override the title on 'Send link by Email' button
-    ///
-    override func localizePrimaryButton() {
-        submitButton?.setTitle(WordPressAuthenticator.shared.displayStrings.magicLinkButtonTitle, for: .normal)
-        submitButton?.accessibilityIdentifier = "Send Link by Email Button"
-    }
 }
 
 // MARK: - UITableViewDataSource
@@ -90,6 +85,37 @@ extension VerifyEmailViewController: UITableViewDataSource {
 
 // MARK: - Private Methods
 private extension VerifyEmailViewController {
+    /// Configure bottom buttons.
+    ///
+    func configureButtonViewController() {
+        guard let buttonViewController = buttonViewController else {
+            return
+        }
+
+        buttonViewController.hideShadowView()
+
+        // Setup `Send email verification link` button
+        buttonViewController.setupTopButton(title: ButtonConfiguration.SendEmailVerificationLink.title,
+                                            isPrimary: true,
+                                            onTap: handleSendEmailVerificationLinkButtonTapped)
+
+        // Setup `Login with account password` button
+        buttonViewController.setupBottomButton(title: ButtonConfiguration.LoginWithAccountPassword.title,
+                                            isPrimary: false,
+                                            onTap: handleLoginWithAccountPasswordButtonTapped)
+    }
+
+    // MARK: - Actions
+    @objc func handleSendEmailVerificationLinkButtonTapped() {
+        tracker.track(click: .requestMagicLink)
+        requestAuthenticationLink()
+    }
+
+    @objc func handleLoginWithAccountPasswordButtonTapped() {
+        tracker.track(click: .loginWithAccountPassword)
+        presentUnifiedPassword()
+    }
+
     /// Registers all of the available TableViewCells.
     ///
     func registerTableViewCells() {
@@ -218,6 +244,19 @@ private extension VerifyEmailViewController {
             case .typePassword:
                 return TextLinkButtonTableViewCell.reuseIdentifier
             }
+        }
+    }
+}
+
+// MARK: - Button configuration
+private extension VerifyEmailViewController {
+    enum ButtonConfiguration {
+        enum SendEmailVerificationLink {
+            static let title = WordPressAuthenticator.shared.displayStrings.sendEmailVerificationLinkButtonTitle
+        }
+
+        enum LoginWithAccountPassword {
+            static let title = WordPressAuthenticator.shared.displayStrings.loginWithAccountPasswordButtonTitle
         }
     }
 }

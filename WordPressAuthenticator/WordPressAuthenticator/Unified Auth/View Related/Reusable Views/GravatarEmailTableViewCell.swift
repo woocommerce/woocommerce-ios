@@ -20,7 +20,7 @@ class GravatarEmailTableViewCell: UITableViewCell {
     ///
     public func configure(withEmail email: String?, andPlaceholder placeholderImage: UIImage? = nil) {
         gravatarImageView?.tintColor = WordPressAuthenticator.shared.unifiedStyle?.borderColor ?? WordPressAuthenticator.shared.style.primaryNormalBorderColor
-        emailLabel?.textColor = WordPressAuthenticator.shared.unifiedStyle?.textSubtleColor ?? WordPressAuthenticator.shared.style.subheadlineColor
+        emailLabel?.textColor = WordPressAuthenticator.shared.unifiedStyle?.textColor ?? WordPressAuthenticator.shared.style.instructionColor
         emailLabel?.font = UIFont.preferredFont(forTextStyle: .body)
         emailLabel?.text = email
 

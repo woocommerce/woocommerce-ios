@@ -1,7 +1,3 @@
-- [***] Login: Introduce a way to sign in using store credentials.  [https://github.com/woocommerce/woocommerce-ios/pull/7320]
-- [**] Login: You can now install WooCommerce to your self-hosted sites from the login flow. [https://github.com/woocommerce/woocommerce-ios/pull/7401]
-- [**] Orders: Now you can quickly mark an order as completed by swiping it to the left! [https://github.com/woocommerce/woocommerce-ios/pull/7385]
-- [*] In-Person Payments: The purchase card reader information card appears also in the Orders list screen. [https://github.com/woocommerce/woocommerce-ios/pull/7326]
-- [*] Login: in release 9.7, when the app is in logged out state, an onboarding screen is shown before the prologue screen if the user hasn't finished or skipped it. In release 9.8, a survey is added to the end of the onboarding screen. [https://github.com/woocommerce/woocommerce-ios/pull/7416]
-- [*] Login: a local notification is scheduled after the user encounters an error from logging in with an invalid site address or WP.com email/password. Please see testing scenarios in the PR, with regression testing on order/review remote notifications. [https://github.com/woocommerce/woocommerce-ios/pull/7323, https://github.com/woocommerce/woocommerce-ios/pull/7372, https://github.com/woocommerce/woocommerce-ios/pull/7422]
+You’ll notice a new banner to accept payments directly from the app with WooCommerce Payments. That’s not all! It’s possible to swipe an order to the left to mark it complete!
 
+We’ve also made several improvements to the login experience including the option to login with your wp-admin credentials. You can also install WooCommerce plugin directly from the app now!

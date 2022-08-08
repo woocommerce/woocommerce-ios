@@ -242,9 +242,9 @@ public class AuthenticatorAnalyticsTracker {
         ///
         case signInWithSiteCredentials = "sign_in_with_site_credentials"
 
-        /// When the user clicks on “Or type your password” on `VerifyEmailViewController`
+        /// When the user clicks on “Login with account password” on `VerifyEmailViewController`
         ///
-        case orTypeYourPassword = "login_with_password"
+        case loginWithAccountPassword = "login_with_password"
     }
 
     /// Shared Instance.

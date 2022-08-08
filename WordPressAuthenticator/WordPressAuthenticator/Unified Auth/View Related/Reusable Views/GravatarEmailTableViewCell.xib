@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -18,7 +18,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="odI-Gb-fXa" customClass="CircularImageView" customModule="WordPressAuthenticator">
-                        <rect key="frame" x="11" y="11" width="48" height="48"/>
+                        <rect key="frame" x="16" y="11" width="48" height="48"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="48" id="RU3-mW-PAl"/>
                             <constraint firstAttribute="width" secondItem="odI-Gb-fXa" secondAttribute="height" multiplier="1:1" id="TSH-sA-5Pw"/>
@@ -26,7 +26,7 @@
                         </constraints>
                     </imageView>
                     <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Email Label" textAlignment="natural" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="3kD-7a-MeN">
-                        <rect key="frame" x="70" y="13" width="239" height="44"/>
+                        <rect key="frame" x="75" y="13" width="229" height="44"/>
                         <accessibility key="accessibilityConfiguration">
                             <accessibilityTraits key="traits" staticText="YES"/>
                         </accessibility>
@@ -42,11 +42,11 @@
                 </subviews>
                 <constraints>
                     <constraint firstItem="3kD-7a-MeN" firstAttribute="leading" secondItem="odI-Gb-fXa" secondAttribute="trailing" constant="11" id="M5P-4D-Dig"/>
-                    <constraint firstAttribute="trailing" secondItem="3kD-7a-MeN" secondAttribute="trailing" constant="11" id="Uu4-bo-sjK"/>
+                    <constraint firstAttribute="trailing" secondItem="3kD-7a-MeN" secondAttribute="trailing" constant="16" id="Uu4-bo-sjK"/>
                     <constraint firstItem="odI-Gb-fXa" firstAttribute="bottom" secondItem="H2p-sc-9uM" secondAttribute="bottomMargin" constant="-2" id="YZD-yX-ic3"/>
                     <constraint firstItem="3kD-7a-MeN" firstAttribute="centerY" secondItem="odI-Gb-fXa" secondAttribute="centerY" id="guc-Ls-SYV"/>
                     <constraint firstItem="odI-Gb-fXa" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="hPB-Uy-lLS"/>
-                    <constraint firstItem="odI-Gb-fXa" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="11" id="kVa-7e-I73"/>
+                    <constraint firstItem="odI-Gb-fXa" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="kVa-7e-I73"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>

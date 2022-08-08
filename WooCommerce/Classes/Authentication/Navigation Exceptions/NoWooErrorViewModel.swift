@@ -102,7 +102,7 @@ private extension NoWooErrorViewModel {
             matcher.refreshStoredSites()
             guard let site = matcher.matchedSite(originalURL: self.siteURL),
                   site.isWooCommerceActive else {
-                if retryCount < 1 {
+                if retryCount < 2 {
                     return self.handleSetupCompletion(in: viewController, retryCount: retryCount + 1)
                 }
                 return self.showSetupErrorNotice(in: viewController)

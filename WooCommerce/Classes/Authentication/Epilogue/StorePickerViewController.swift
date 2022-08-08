@@ -670,7 +670,7 @@ extension StorePickerViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
-        guard state.multipleStoresAvailable && configuration != .listStores else {
+        guard state.multipleStoresAvailable else {
             // If we only have a single store available, don't allow the row to be selected
             return false
         }

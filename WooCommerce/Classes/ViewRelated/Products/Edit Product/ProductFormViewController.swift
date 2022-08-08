@@ -604,7 +604,6 @@ private extension ProductFormViewController {
     }
 
     func updateDataSourceActions() {
-        tableViewDataSource.parentVC = self
         tableViewDataSource.openLinkedProductsAction = { [weak self] in
             self?.editLinkedProducts()
         }

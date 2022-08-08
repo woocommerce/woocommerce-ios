@@ -49,8 +49,7 @@ final class VerifyEmailViewController: LoginViewController {
     ///
     override func styleBackground() {
         guard let unifiedBackgroundColor = WordPressAuthenticator.shared.unifiedStyle?.viewControllerBackgroundColor else {
-            super.styleBackground()
-            return
+            return super.styleBackground()
         }
 
         view.backgroundColor = unifiedBackgroundColor

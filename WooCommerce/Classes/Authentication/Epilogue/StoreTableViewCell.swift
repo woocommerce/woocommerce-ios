@@ -24,6 +24,9 @@ class StoreTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var urlLabel: UILabel!
 
+    /// Button to install Woo
+    ///
+    @IBOutlet private var wooInstallButton: UIButton!
 
     /// Store's Name
     ///

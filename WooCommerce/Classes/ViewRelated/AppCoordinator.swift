@@ -197,13 +197,6 @@ private extension AppCoordinator {
             }
         }
 
-        // If no store is found and no error is detected, log the user out.
-        if matcher.hasConnectedStores == false {
-            stores.deauthenticate()
-            displayAuthenticator()
-            return
-        }
-
         // All good, show store picker
         let navigationController = WooNavigationController()
         setWindowRootViewControllerAndAnimateIfNeeded(navigationController)

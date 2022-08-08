@@ -188,7 +188,10 @@ private extension AppCoordinator {
         // Show error for the current site URL if exists.
         if let siteURL = loggedOutAppSettings.errorLoginSiteAddress {
             if let authenticationUI = authenticationManager.authenticationUI() as? UINavigationController,
-               let errorController = authenticationManager.errorViewController(for: siteURL, with: matcher, navigationController: authenticationUI) {
+               let errorController = authenticationManager.errorViewController(for: siteURL,
+                                                                               with: matcher,
+                                                                               navigationController: authenticationUI,
+                                                                               onStorePickerDismiss: {}) {
                 window.rootViewController = authenticationUI
                 // don't let user navigate back to the login screen unless they tap log out.
                 errorController.navigationItem.hidesBackButton = true

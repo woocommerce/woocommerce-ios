@@ -200,7 +200,7 @@ final class AuthenticationManagerTests: XCTestCase {
         let matcher = ULAccountMatcher(storageManager: storage)
 
         // When
-        let controller = manager.errorViewController(for: testSite, with: matcher, navigationController: navigationController)
+        let controller = manager.errorViewController(for: testSite, with: matcher, navigationController: navigationController) {}
 
         // Then
         XCTAssertNotNil(controller)
@@ -221,7 +221,7 @@ final class AuthenticationManagerTests: XCTestCase {
         matcher.refreshStoredSites()
 
         // When
-        let controller = manager.errorViewController(for: testSiteURL, with: matcher, navigationController: navigationController)
+        let controller = manager.errorViewController(for: testSiteURL, with: matcher, navigationController: navigationController) {}
 
         // Then
         XCTAssertNotNil(controller)
@@ -242,7 +242,7 @@ final class AuthenticationManagerTests: XCTestCase {
         matcher.refreshStoredSites()
 
         // When
-        let controller = manager.errorViewController(for: testSiteURL, with: matcher, navigationController: navigationController)
+        let controller = manager.errorViewController(for: testSiteURL, with: matcher, navigationController: navigationController) {}
 
         // Then
         XCTAssertNil(controller)

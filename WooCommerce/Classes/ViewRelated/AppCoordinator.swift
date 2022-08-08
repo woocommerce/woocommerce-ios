@@ -66,7 +66,7 @@ final class AppCoordinator {
                 case (false, true), (false, false):
                     self.displayAuthenticator()
                 case (true, true):
-                    self.handleLoggedInStateWithoutDefaultStore()
+                    self.displayLoggedInStateWithoutDefaultStore()
                 case (true, false):
                     self.validateRoleEligibility {
                         self.displayLoggedInUI()
@@ -175,7 +175,7 @@ private extension AppCoordinator {
     /// If the app is authenticated but there is no default store ID on launch,
     /// check for errors and display store picker if none exists.
     ///
-    func handleLoggedInStateWithoutDefaultStore() {
+    func displayLoggedInStateWithoutDefaultStore() {
         // Store picker is only displayed by `AppCoordinator` on launch, when the window's root is uninitialized.
         // In other cases when the app is authenticated but there is no default store ID, the store picker is shown by authentication UI.
         guard window.rootViewController == nil else {

@@ -109,4 +109,8 @@ public enum FeatureFlag: Int {
     /// Banner promoting cross-sells and upsells in product details
     ///
     case linkedProductsPromo
+
+    /// Whether to show a survey at the end of the login onboarding screen after feature carousel
+    ///
+    case loginPrologueOnboardingSurvey
 }

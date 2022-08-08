@@ -1,3 +1,5 @@
-Uygulamada kupon oluşturabilmek istediğinizi bildirmiştiniz. Test etmemize yardımcı olmak isterseniz, söz konusu işlevselliği deneyebileceğinizi söylemekten memnuniyet duyuyoruz! Uygulamadaki ayarlara gidin ve Kuponlar için deneme özelliğini açın.
+Artık uygulamadan bir siparişi düzenlemenin mümkün olduğunu duyurmaktan heyecan duyuyoruz. Şu andan itibaren ürünleri, ücretleri, gönderim bilgilerini düzenleyebilir veya kaldırabilir ve ürün miktarını değiştirebilirsiniz.
 
-Ayrıca tüm ödenmemiş siparişler için ödemeleri nakit, kart veya ödeme bağlantısı yoluyla tahsil etme seçeneği de dahil olmak üzere, ürün görseli yüklemelerinde ve şahsen ödemelerde çeşitli iyileştirmeler yaptık.  Lütfen bize geri bildirim göndermeye devam edin, sizi dinliyoruz.
+Sipariş ayrıntılarında, bazı üçüncü taraf uzantıları sipariş meta verilerini mantıksal olarak göstermiyordu. Bir sipariş için bu özel alanların görüntülenmesi konusunda bazı değişiklikler yaptık. Ayrıca Jetpack'i doğrudan uygulamadan yükleme seçeneği de dahil olmak üzere ödeme ve oturum açma akışımızda çeşitli iyileştirmeler yaptık.
+
+Lütfen bize geri bildirim göndermeye devam edin, sizi dinliyoruz.

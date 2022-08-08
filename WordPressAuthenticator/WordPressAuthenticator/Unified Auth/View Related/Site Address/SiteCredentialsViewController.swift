@@ -360,7 +360,7 @@ private extension SiteCredentialsViewController {
     /// - Parameters:
     ///   - loginFields: `LoginFields` instance created using `makeLoginFieldsUsing` helper method
     ///
-    func presentVerifyEmailPage(loginFields: LoginFields) {
+    func presentVerifyEmail(loginFields: LoginFields) {
         guard let vc = VerifyEmailViewController.instantiate(from: .verifyEmail) else {
             DDLogError("Failed to navigate from SiteCredentialsViewController to VerifyEmailViewController")
             return
@@ -483,7 +483,7 @@ extension SiteCredentialsViewController {
 
         // Present verify email instructions screen. Passing loginFields will prefill the jetpack email in `VerifyEmailViewController`
         //
-        presentVerifyEmailPage(loginFields: loginFields)
+        presentVerifyEmail(loginFields: loginFields)
     }
 
     override func displayRemoteError(_ error: Error) {

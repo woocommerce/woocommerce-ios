@@ -179,8 +179,6 @@ final class StorePickerViewController: UIViewController {
             startABTesting()
         case .switchingStores:
             secondaryActionButton.isHidden = true
-        case .listStores:
-            hideActionButtons()
         default:
             break
         }
@@ -248,11 +246,6 @@ private extension StorePickerViewController {
         title = NSLocalizedString("Connected Stores", comment: "Page title for the list of connected stores")
     }
 
-    func hideActionButtons() {
-        actionButton.isHidden = true
-        secondaryActionButton.isHidden = true
-    }
-
     func setupViewForCurrentConfiguration() {
         guard isViewLoaded else {
             return
@@ -262,7 +255,6 @@ private extension StorePickerViewController {
         case .switchingStores:
             setupNavigation()
         case .listStores:
-            hideActionButtons()
             setupNavigationForListOfConnectedStores()
         default:
             navigationController?.setNavigationBarHidden(true, animated: true)

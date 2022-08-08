@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-07-13 15:54:03+0000 */
+/* Translation-Revision-Date: 2022-07-27 15:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -715,7 +715,10 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the Automattic website */
 "Automattic family" = "Família Automattic";
 
-/* Awaiting payment via (payment method title) */
+/* The title on the payment row of the Order Details screen when the payment is still pending */
+"Awaiting payment" = "Aguardando pagamento";
+
+/* The title on the payment row of the Order Details screenwhen the payment for a specific payment method is still pending.Reads like: Awaiting payment via Stripe. */
 "Awaiting payment via %@" = "Aguardando pagamento via %@";
 
 /* Details section title in the Edit Address Form */
@@ -961,9 +964,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Alert title for check your email during logIn/signUp. */
 "Check your email!" = "Verifique seu e-mail!";
-
-/* Navigates to Chipper Card Reader manual */
-"Chipper 2X card reader manual" = "Manual do leitor de cartão Chipper 2X";
 
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "Escolher o tamanho do papel";
@@ -1351,6 +1351,9 @@ which should be translated separately and considered part of this sentence. */
    Title of button to add a custom tracking carrier if filtering the list yields no results. */
 "Custom Carrier" = "Transportadora personalizada";
 
+/* Title for the order custom fields list */
+"Custom Fields" = "Campos personalizados";
+
 /* Custom line index in Customs Form of Shipping Label flow */
 "Custom Line %1$d" = "Linha personalizada %1$d";
 
@@ -1536,6 +1539,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Não tem uma conta? _Cadastre-se_";
 
+/* Alert button text on a feature announcement which prevents the banner being shown again */
+"Don't show again" = "Não mostrar novamente";
+
 /* Action title to select products to add to a grouped product from search results
    Button to dismiss the Order Editing screen
    Button to finish selecting the Coupon expiry date in the Add or Edit Coupon screen
@@ -1642,10 +1648,10 @@ which should be translated separately and considered part of this sentence. */
 "Easily identify your products with unique codes" = "Identifique com facilidade seus produtos usando códigos exclusivos";
 
 /* Button to edit a customer on the New Order screen
+   Button to edit an order on Order Details screen
    Button to edit an order status on the New Order screen
    Button to edit the customer note on the New Order screen
-   Title text of the button that edits a note when creating a simple payment
-   Title to edit an order */
+   Title text of the button that edits a note when creating a simple payment */
 "Edit" = "Editar";
 
 /* Action to edit the address in Shipping Label Suggested screen */
@@ -1934,6 +1940,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Formatted content for coupon expiry date, reads like: Expires August 4, 2022 */
 "Expires %1$@" = "Expira em %1$@";
+
+/* The detailed message shown in the Orders → All Orders tab if the list is empty. */
+"Explore how you can increase your store sales" = "Veja como aumentar as vendas da sua loja";
 
 /* Action sheet option when the user wants to change the Product type to external product */
 "External product" = "Produto externo";
@@ -2271,6 +2280,7 @@ which should be translated separately and considered part of this sentence. */
 "In-Person Payment for Order #%1$@ for %2$@ blog_id %3$@" = "Pagamento presencial do pedido #%1$@ para %2$@ blog_id %3$@";
 
 /* Navigates to In-Person Payments screen
+   Title for a dismissal alert on the upsell card reader feature announcement banner
    Title for the In-Person Payments settings screen */
 "In-Person Payments" = "Pagamentos presenciais";
 
@@ -2353,7 +2363,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the app's Instagram profile */
 "Instagram" = "Instagram";
 
-/* Navigates to Install Jetpack screen.
+/* Action button for installing Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation
+   Navigates to Install Jetpack screen.
    Title of install action in the Jetpack benefits view.
    Title of the Install Jetpack intro view
    Title of the Install Jetpack view */
@@ -2463,6 +2474,9 @@ which should be translated separately and considered part of this sentence. */
 /* Description for Top Performers right column header */
 "Items Sold" = "Itens vendidos";
 
+/* Title of the Jetpack Setup screen */
+"Jetpack Setup" = "Configuração do Jetpack";
+
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "O Jetpack é um plugin gratuito do WordPress que conecta sua loja às ferramentas necessárias para proporcionar a você a melhor experiência em dispositivos móveis, incluindo notificações push e estatísticas";
 
@@ -2509,6 +2523,7 @@ which should be translated separately and considered part of this sentence. */
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
    Button title in the shipping label creation info screen
    Settings > Privacy Settings. A text link to the cookie policy.
+   Title of button shown in the Orders → All Orders tab if the list is empty.
    Title of button shown in the Reviews tab if the list is empty
    Title of button shown on the Product Reviews screen if the list is empty */
 "Learn more" = "Saiba mais";
@@ -2540,6 +2555,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "Carta (22 x 28 cm)";
+
+/* Caption displayed in the prologue screen shown after onboarding during the login flow. */
+"Let’s get started!" = "Vamos começar!";
 
 /* Title for the limit usage to X items row in coupon usage restrictions screen. */
 "Limit Usage to X Items" = "Limitar o uso a X itens";
@@ -2667,14 +2685,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to open browser to manage plugins */
 "Manage Plugins" = "Gerenciar plugins";
 
+/* Caption displayed in promotional screens shown during the login flow. */
+"Manage and edit orders on the go" = "Gerencie e edite seus pedidos de qualquer lugar";
+
 /* Navigates to Card Reader management screen */
 "Manage card reader" = "Gerenciar leitor de cartão";
 
 /* Title of the cell in Product Inventory Settings > Manage stock */
 "Manage stock" = "Gerenciar estoque";
-
-/* Caption displayed in promotional screens shown during the login flow. */
-"Manage your store orders on the go " = "Gerencie os pedidos da sua loja em qualquer lugar ";
 
 /* Section name for manual offsets in time zone selector */
 "Manual Offsets" = "Ajustes manuais";
@@ -2858,6 +2876,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action navigate to the variation creation screen
    Next nav bar button title in Add Product Attribute Options screen
    Next nav bar button title in Add Product Attribute screen
+   The button title on the login onboarding screen to continue to the next step.
    Title for the button to confirm the amount in the simple payments screen
    Title of a button.
    Title of a button. The text should be capitalized.
@@ -2948,6 +2967,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
 "No tax classes yet" = "Não há classes de imposto";
+
+/* Message for a dismissal alert on the upsell card reader feature announcement banner */
+"No worries! You can always get started with In-Person Payments in Settings" = "Não se preocupe! Você pode começar a usar os pagamentos presenciais quando quiser em Configurações";
 
 /* Coupon expiry date placeholder in the view for adding or editing a coupon
    Display label for the order fee's tax status setting option
@@ -3102,6 +3124,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Order Total label for payment view
    Title text of the row that shows the total to charge when creating a simple payment */
 "Order Total" = "Total de pedidos";
+
+/* Accessibility label for button triggering more actions menu sheet. */
+"Order actions" = "Ações de pedido";
 
 /* Navigates to Card Reader ordering screen */
 "Order card reader" = "Pedir leitor de cartão";
@@ -3758,6 +3783,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "Preço normal: %@";
 
+/* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time */
+"Remind me later" = "Lembre-me depois";
+
 /* Confirm button on the alert when the user taps to delete a Product image
    Confirmation button on the alert when the user is deleting a variation
    Title for removing an attribute in the edit attribute action sheet. */
@@ -4014,9 +4042,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button linking to a list of connected stores.Presented when logging in with a store address that does not match the account entered */
 "See Connected Stores" = "Ver lojas conectadas";
 
-/* Action button linking to instructions for installing Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
-"See Instructions" = "Ver as instruções";
-
 /* Text on the button to see a saved receipt */
 "See Receipt" = "Ver recibo";
 
@@ -4258,6 +4283,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show the billing details for this order." = "Exibe os detalhes de cobrança para este pedido.";
 
+/* VoiceOver accessibility hint, informing the user that the button can be used to view the order custom fields information. */
+"Show the custom fields for this order." = "Exiba os campos personalizados deste pedido.";
+
 /* VoiceOver accessibility hint, informing the user that the button can be used to view the items inside the shipping label package */
 "Show the items included inside this shipping label package." = "Mostre os itens incluídos neste pacote de etiqueta de envio.";
 
@@ -4308,6 +4336,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "O endereço do site deve ter pelo menos 4 caracteres.";
+
+/* The button title on the login onboarding screen to skip to the prologue screen. */
+"Skip" = "Pular";
 
 /* Placeholder in the Product Slug row on Edit Product Slug screen.
    Product Slug navigation title
@@ -4461,9 +4492,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "Tachado";
-
-/* Navigates to Stripe M2 Card Reader manual */
-"Stripe M2 card reader manual" = "Manual do leitor de cartão M2 da Stripe";
 
 /* Display label for subscription product type. */
 "Subscription" = "Assinatura";
@@ -5558,6 +5586,10 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button on bottom of Customer's information to show the billing details */
 "View Billing Information" = "Visualizar informações de cobranças";
 
+/* Accessibility label for the 'View Custom Fields' button
+   Custom Fields section title */
+"View Custom Fields" = "Visualizar campos personalizados";
+
 /* Button title View product in store in Edit Product More Options Action Sheet */
 "View Product in Store" = "Visualizar produto na loja";
 
@@ -5651,6 +5683,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country */
 "We don’t support In-Person Payments with Stripe in your country" = "Não aceitamos pagamentos presenciais com Stripe em seu país";
 
+/* Subtitle displayed in promotional screens shown during the login flow. */
+"We enable you to process them effortlessly." = "Nós simplificamos o processamento.";
+
 /* Message displayed in the error prompt when loading total discounted amount in Coupon Details screen fails */
 "We encountered a problem loading analytics" = "Ocorreu um problema ao carregar a análise";
 
@@ -5659,6 +5694,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* message to ask a user to check their email for a WordPress.com email */
 "We just emailed a link to %@. Please check your mail app and tap the link to log in." = "Acabamos de enviar um link para %@. Verifique seu aplicativo de e-mail e toque no link para fazer login.";
+
+/* Subtitle displayed in promotional screens shown during the login flow. */
+"We know it’s essential to your business." = "Sabemos que isso é essencial para o seu negócio.";
 
 /* Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect. */
 "We use other tracking tools, including some from third parties. Read about these and how to control them." = "Nós usamos outras ferramentas de acompanhamento, inclusive algumas de terceiros. Leia mais sobre elas e como controlá-las.";
@@ -5760,9 +5798,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the cell in Product Shipping Settings > Width */
 "Width" = "Largura";
 
-/* Navigates to WisePad 3 Card Reader manual */
-"WisePad 3 card reader manual" = "Manual do leitor de cartão WisePad 3";
-
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";
 
@@ -5811,6 +5846,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "Você pode editar complementos de produtos no painel da Web.";
+
+/* Subtitle displayed in promotional screens shown during the login flow. */
+"You can manage quickly and easily." = "Você pode gerenciar com rapidez e facilidade.";
 
 /* The info of the shipping labels top banner in order details */
 "You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "Agora você pode criar etiquetas de envio para todos os pedidos físicos diretamente no seu dispositivo com o plugin gratuito do WooCommerce Shipping. Toque em Criar etiqueta de envio para experimentar nossa funcionalidade beta!";

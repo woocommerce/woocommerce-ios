@@ -177,7 +177,10 @@ class AuthenticationManager: Authentication {
 
     /// Checks the given site address and see if it's valid
     /// and returns an error view controller if not.
-    func errorViewController(for siteURL: String, with matcher: ULAccountMatcher, navigationController: UINavigationController) -> UIViewController? {
+    func errorViewController(for siteURL: String,
+                             with matcher: ULAccountMatcher,
+                             navigationController: UINavigationController,
+                             onStorePickerDismiss: @escaping () -> Void) -> UIViewController? {
 
         /// Account mismatched case
         guard matcher.match(originalURL: siteURL) else {
@@ -196,7 +199,7 @@ class AuthenticationManager: Authentication {
                 showsInstallButton: matchedSite.isJetpackConnected,
                 onSetupCompletion: { [weak self] siteID in
                     guard let self = self else { return }
-                    self.startStorePicker(with: siteID, in: navigationController)
+                    self.startStorePicker(with: siteID, in: navigationController, onDismiss: onStorePickerDismiss)
             })
             let noWooUI = ULErrorViewController(viewModel: viewModel)
             return noWooUI
@@ -331,7 +334,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         let matcher = ULAccountMatcher(storageManager: storageManager)
         matcher.refreshStoredSites()
 
-        if let vc = errorViewController(for: siteURL, with: matcher, navigationController: navigationController) {
+        if let vc = errorViewController(for: siteURL, with: matcher, navigationController: navigationController, onStorePickerDismiss: onDismiss) {
             loggedOutAppSettings?.setErrorLoginSiteAddress(siteURL)
             navigationController.show(vc, sender: nil)
         } else {

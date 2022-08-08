@@ -3,13 +3,15 @@ import Yosemite
 
 /// Configuration and actions for an ULErrorViewController,
 /// modelling an error when WooCommerce is not installed or activated.
-struct NoWooErrorViewModel: ULErrorViewModel {
+final class NoWooErrorViewModel: ULErrorViewModel {
     private let siteURL: String
     private let showsConnectedStores: Bool
     private let showsInstallButton: Bool
     private let analytics: Analytics
     private let stores: StoresManager
     private let setupCompletionHandler: (Int64) -> Void
+
+    private var storePickerCoordinator: StorePickerCoordinator?
 
     init(siteURL: String?,
          showsConnectedStores: Bool,
@@ -57,9 +59,10 @@ struct NoWooErrorViewModel: ULErrorViewModel {
         guard let viewController = viewController else {
             return
         }
-        let viewModel = WooSetupWebViewModel(siteURL: siteURL, onCompletion: {
+        let viewModel = WooSetupWebViewModel(siteURL: siteURL, onCompletion: { [weak self] in
+            guard let self = self else { return }
             viewController.navigationController?.popViewController(animated: true)
-            handleSetupCompletion(in: viewController)
+            self.handleSetupCompletion(in: viewController)
         })
         let setupViewController = PluginSetupWebViewController(viewModel: viewModel)
         viewController.navigationController?.show(setupViewController, sender: nil)
@@ -76,10 +79,8 @@ struct NoWooErrorViewModel: ULErrorViewModel {
             return
         }
 
-        let storePicker = StorePickerViewController()
-        storePicker.configuration = .listStores
-
-        navigationController.pushViewController(storePicker, animated: true)
+        storePickerCoordinator = StorePickerCoordinator(navigationController, config: .listStores)
+        storePickerCoordinator?.start()
     }
 
     func viewDidLoad() {
@@ -92,20 +93,21 @@ private extension NoWooErrorViewModel {
     func handleSetupCompletion(in viewController: UIViewController, retryCount: Int = 0) {
         showInProgressView(in: viewController)
 
-        ServiceLocator.stores.synchronizeEntities {
+        ServiceLocator.stores.synchronizeEntities { [weak self] in
+            guard let self = self else { return }
             // dismisses the in-progress view
             viewController.navigationController?.dismiss(animated: true)
 
             let matcher = ULAccountMatcher()
             matcher.refreshStoredSites()
-            guard let site = matcher.matchedSite(originalURL: siteURL),
+            guard let site = matcher.matchedSite(originalURL: self.siteURL),
                   site.isWooCommerceActive else {
-                if retryCount < 1 {
-                    return handleSetupCompletion(in: viewController, retryCount: retryCount + 1)
+                if retryCount < 2 {
+                    return self.handleSetupCompletion(in: viewController, retryCount: retryCount + 1)
                 }
-                return showSetupErrorNotice(in: viewController)
+                return self.showSetupErrorNotice(in: viewController)
             }
-            setupCompletionHandler(site.siteID)
+            self.setupCompletionHandler(site.siteID)
         }
     }
 

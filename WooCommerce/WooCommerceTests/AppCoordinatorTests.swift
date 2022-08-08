@@ -59,7 +59,7 @@ final class AppCoordinatorTests: XCTestCase {
 
         let site = Site.fake().copy(siteID: 123, isWooCommerceActive: true)
         storageManager.insertSampleSite(readOnlySite: site)
-        let appCoordinator = makeCoordinator(window: window, stores: stores, storageManager: storageManager, authenticationManager: authenticationManager)
+        let appCoordinator = makeCoordinator(window: window, stores: stores, authenticationManager: authenticationManager)
 
         // When
         appCoordinator.start()
@@ -69,7 +69,7 @@ final class AppCoordinatorTests: XCTestCase {
         assertThat(storePickerNavigationController.topViewController, isAnInstanceOf: StorePickerViewController.self)
     }
 
-    func test_starting_app_logged_in_without_selected_site_presents_authentication_if_there_are_no_connected_stores() throws {
+    func test_starting_app_logged_in_without_selected_site_presents_store_picker_if_there_are_no_connected_stores() throws {
         // Given
         // Authenticates the app without selecting a site, so that the store picker is shown.
         stores.authenticate(credentials: SessionSettings.credentials)
@@ -77,13 +77,14 @@ final class AppCoordinatorTests: XCTestCase {
 
         let site = Site.fake().copy(siteID: 123, isWooCommerceActive: false)
         storageManager.insertSampleSite(readOnlySite: site)
-        let appCoordinator = makeCoordinator(window: window, stores: stores, storageManager: storageManager, authenticationManager: authenticationManager)
+        let appCoordinator = makeCoordinator(window: window, stores: stores, authenticationManager: authenticationManager)
 
         // When
         appCoordinator.start()
 
         // Then
-        assertThat(window.rootViewController, isAnInstanceOf: LoginNavigationController.self)
+        let storePickerNavigationController = try XCTUnwrap(window.rootViewController?.presentedViewController as? UINavigationController)
+        assertThat(storePickerNavigationController.topViewController, isAnInstanceOf: StorePickerViewController.self)
     }
 
     func test_starting_app_logged_in_without_selected_site_presents_account_mismatched_if_there_is_no_store_matching_the_error_site_address() throws {
@@ -98,7 +99,6 @@ final class AppCoordinatorTests: XCTestCase {
         let settings = MockLoggedOutAppSettings(errorLoginSiteAddress: "https://test.com")
         let appCoordinator = makeCoordinator(window: window,
                                              stores: stores,
-                                             storageManager: storageManager,
                                              authenticationManager: authenticationManager,
                                              loggedOutAppSettings: settings)
 
@@ -128,7 +128,6 @@ final class AppCoordinatorTests: XCTestCase {
         let settings = MockLoggedOutAppSettings(errorLoginSiteAddress: siteURL)
         let appCoordinator = makeCoordinator(window: window,
                                              stores: stores,
-                                             storageManager: storageManager,
                                              authenticationManager: authenticationManager,
                                              loggedOutAppSettings: settings)
 
@@ -388,7 +387,6 @@ private extension AppCoordinatorTests {
     /// Convenience method to make AppCoordinator instances.
     func makeCoordinator(window: UIWindow? = nil,
                          stores: StoresManager? = nil,
-                         storageManager: StorageManagerType? = nil,
                          authenticationManager: Authentication? = nil,
                          roleEligibilityUseCase: RoleEligibilityUseCaseProtocol? = nil,
                          analytics: Analytics = ServiceLocator.analytics,

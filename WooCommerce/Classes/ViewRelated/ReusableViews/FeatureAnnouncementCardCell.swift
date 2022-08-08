@@ -35,6 +35,9 @@ class FeatureAnnouncementCardCell: UITableViewCell {
     @IBOutlet private weak var topSeparator: UIView!
     @IBOutlet private weak var bottomSeparator: UIView!
 
+    var dismiss: (() -> Void)?
+    var callToAction: (() -> Void)?
+
     func configure(with viewModel: FeatureAnnouncementCardViewModel) {
         self.viewModel = viewModel
 
@@ -46,6 +49,25 @@ class FeatureAnnouncementCardCell: UITableViewCell {
 
         topSeparator.isHidden = !viewModel.showDividers
         bottomSeparator.isHidden = !viewModel.showDividers
+
+        closeButton.addTarget(self, action: #selector(tapClose), for: .touchUpInside)
+        ctaButton.addTarget(self, action: #selector(tapCTA), for: .touchUpInside)
+    }
+
+    override func didMoveToSuperview() {
+        super.didMoveToSuperview()
+
+        viewModel?.onAppear()
+    }
+
+    @objc func tapClose() {
+        viewModel?.dontShowAgainTapped()
+        dismiss?()
+    }
+
+    @objc func tapCTA() {
+        viewModel?.ctaTapped()
+        callToAction?()
     }
 }
 

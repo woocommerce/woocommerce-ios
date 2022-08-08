@@ -204,6 +204,9 @@ private extension ProductFormTableViewDataSource {
         }
 
         cell.configure(with: viewModel)
+        cell.callToAction = { [weak self] in
+            self?.openLinkedProductsAction?()
+        }
 
         cell.selectionStyle = .none
         cell.hideSeparator()

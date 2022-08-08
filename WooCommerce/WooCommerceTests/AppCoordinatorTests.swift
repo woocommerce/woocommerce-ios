@@ -59,7 +59,7 @@ final class AppCoordinatorTests: XCTestCase {
 
         let site = Site.fake().copy(siteID: 123, isWooCommerceActive: true)
         storageManager.insertSampleSite(readOnlySite: site)
-        let appCoordinator = makeCoordinator(window: window, stores: stores, storageManager: storageManager, authenticationManager: authenticationManager)
+        let appCoordinator = makeCoordinator(window: window, stores: stores, authenticationManager: authenticationManager)
 
         // When
         appCoordinator.start()
@@ -77,7 +77,7 @@ final class AppCoordinatorTests: XCTestCase {
 
         let site = Site.fake().copy(siteID: 123, isWooCommerceActive: false)
         storageManager.insertSampleSite(readOnlySite: site)
-        let appCoordinator = makeCoordinator(window: window, stores: stores, storageManager: storageManager, authenticationManager: authenticationManager)
+        let appCoordinator = makeCoordinator(window: window, stores: stores, authenticationManager: authenticationManager)
 
         // When
         appCoordinator.start()
@@ -99,7 +99,6 @@ final class AppCoordinatorTests: XCTestCase {
         let settings = MockLoggedOutAppSettings(errorLoginSiteAddress: "https://test.com")
         let appCoordinator = makeCoordinator(window: window,
                                              stores: stores,
-                                             storageManager: storageManager,
                                              authenticationManager: authenticationManager,
                                              loggedOutAppSettings: settings)
 
@@ -129,7 +128,6 @@ final class AppCoordinatorTests: XCTestCase {
         let settings = MockLoggedOutAppSettings(errorLoginSiteAddress: siteURL)
         let appCoordinator = makeCoordinator(window: window,
                                              stores: stores,
-                                             storageManager: storageManager,
                                              authenticationManager: authenticationManager,
                                              loggedOutAppSettings: settings)
 
@@ -389,7 +387,6 @@ private extension AppCoordinatorTests {
     /// Convenience method to make AppCoordinator instances.
     func makeCoordinator(window: UIWindow? = nil,
                          stores: StoresManager? = nil,
-                         storageManager: StorageManagerType? = nil,
                          authenticationManager: Authentication? = nil,
                          roleEligibilityUseCase: RoleEligibilityUseCaseProtocol? = nil,
                          analytics: Analytics = ServiceLocator.analytics,

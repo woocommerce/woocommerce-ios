@@ -2,7 +2,7 @@ import UIKit
 
 final class VerifyEmailViewController: LoginViewController {
 
-    // MARK: Properties
+    // MARK: - Properties
 
     @IBOutlet private weak var tableView: UITableView!
     private let rows = Row.allCases

@@ -62,6 +62,16 @@ final class VerifyEmailViewController: LoginViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
         WordPressAuthenticator.shared.unifiedStyle?.statusBarStyle ?? WordPressAuthenticator.shared.style.statusBarStyle
     }
+
+    /// Customise loading state of view.
+    ///
+    override func configureViewLoading(_ loading: Bool) {
+        buttonViewController?.setTopButtonState(isLoading: loading,
+                                                isEnabled: !loading)
+        buttonViewController?.setBottomButtonState(isLoading: false,
+                                                   isEnabled: !loading)
+        navigationItem.hidesBackButton = loading
+    }
 }
 
 // MARK: - UITableViewDataSource

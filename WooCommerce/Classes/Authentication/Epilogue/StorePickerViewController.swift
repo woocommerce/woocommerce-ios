@@ -657,7 +657,7 @@ extension StorePickerViewController: UITableViewDataSource {
         cell.name = site.name
         cell.url = site.url
         cell.allowsCheckmark = state.multipleStoresAvailable
-        cell.displaysCheckmark = currentlySelectedSite?.siteID == site.siteID
+        cell.displaysCheckmark = currentlySelectedSite?.siteID == site.siteID && site.isWooCommerceActive
 
         return cell
     }
@@ -686,6 +686,11 @@ extension StorePickerViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let site = state.site(at: indexPath) else {
+            tableView.deselectRow(at: indexPath, animated: true)
+            return
+        }
+
+        guard site.isWooCommerceActive else {
             tableView.deselectRow(at: indexPath, animated: true)
             return
         }

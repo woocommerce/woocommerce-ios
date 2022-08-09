@@ -107,7 +107,13 @@ extension StorePickerViewModel {
         guard let rawStatus = resultsController.sections[safe: index]?.name else {
             return nil
         }
-        return rawStatus
+
+        let isWooCommerceActive = (rawStatus as NSString).boolValue
+        if isWooCommerceActive {
+            return multipleStoresAvailable ? Localization.pickStore : Localization.connectedStore
+        } else {
+            return Localization.otherSites
+        }
     }
 
     /// Number of rows in a specified table view section index.
@@ -152,6 +158,10 @@ private extension StorePickerViewModel {
         static let connectedStore = NSLocalizedString(
             "Connected Store",
             comment: "Store Picker's Section Title: Displayed when there's a single pre-selected Store."
+        )
+        static let otherSites = NSLocalizedString(
+            "Other Sites",
+            comment: "Store Picker's Section Title: Displayed when there are sites without WooCommerce"
         )
     }
 }

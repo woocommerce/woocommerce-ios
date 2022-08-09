@@ -27,7 +27,7 @@ final class HubMenuViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNil(viewModel.menuElements.firstIndex(where: { item in
-            type(of: item).id == HubMenuViewModel.Inbox.id
+            item.id == HubMenuViewModel.Inbox.id
         }))
     }
 
@@ -41,7 +41,7 @@ final class HubMenuViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNil(viewModel.menuElements.firstIndex(where: { item in
-            type(of: item).id == HubMenuViewModel.Payments.id
+            item.id == HubMenuViewModel.Payments.id
         }))
     }
 
@@ -55,7 +55,7 @@ final class HubMenuViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(viewModel.menuElements.firstIndex(where: { item in
-            type(of: item).id == HubMenuViewModel.Payments.id
+            item.id == HubMenuViewModel.Payments.id
         }))
     }
 
@@ -91,11 +91,11 @@ final class HubMenuViewModelTests: XCTestCase {
 
         // Then both inbox and coupons are in the menu
         XCTAssertNotNil(viewModel.menuElements.firstIndex(where: { item in
-            type(of: item).id == HubMenuViewModel.Inbox.id
+            item.id == HubMenuViewModel.Inbox.id
         }))
 
         XCTAssertNotNil(viewModel.menuElements.firstIndex(where: { item in
-            type(of: item).id == HubMenuViewModel.Coupons.id
+            item.id == HubMenuViewModel.Coupons.id
         }))
     }
 
@@ -131,7 +131,7 @@ final class HubMenuViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNil(viewModel.menuElements.firstIndex(where: { item in
-            type(of: item).id == HubMenuViewModel.Inbox.id
+            item.id == HubMenuViewModel.Inbox.id
         }))
     }
 
@@ -167,11 +167,11 @@ final class HubMenuViewModelTests: XCTestCase {
 
         // Then neither inbox nor coupons is in the menu
         XCTAssertNil(viewModel.menuElements.firstIndex(where: { item in
-            type(of: item).id == HubMenuViewModel.Inbox.id
+            item.id == HubMenuViewModel.Inbox.id
         }))
 
         XCTAssertNil(viewModel.menuElements.firstIndex(where: { item in
-            type(of: item).id == HubMenuViewModel.Coupons.id
+            item.id == HubMenuViewModel.Coupons.id
         }))
     }
 
@@ -194,7 +194,7 @@ final class HubMenuViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(viewModel.menuElements.firstIndex(where: { item in
-            type(of: item).id == HubMenuViewModel.Coupons.id
+            item.id == HubMenuViewModel.Coupons.id
         }))
     }
 
@@ -216,7 +216,7 @@ final class HubMenuViewModelTests: XCTestCase {
         viewModel.setupMenuElements()
 
         XCTAssertNil(viewModel.menuElements.firstIndex(where: { item in
-            type(of: item).id == HubMenuViewModel.Coupons.id
+            item.id == HubMenuViewModel.Coupons.id
         }))
     }
 
@@ -319,7 +319,7 @@ final class HubMenuViewModelTests: XCTestCase {
 
         var paymentsBadgeIsNewFeature = false
         if let paymentsMenuItemIndex = viewModel.menuElements.firstIndex(where: { item in
-            type(of: item).id == HubMenuViewModel.Payments.id
+            item.id == HubMenuViewModel.Payments.id
         }) {
             if case .newFeature = viewModel.menuElements[paymentsMenuItemIndex].badge {
                 paymentsBadgeIsNewFeature = true
@@ -348,7 +348,7 @@ final class HubMenuViewModelTests: XCTestCase {
 
         var paymentsBadgeIsNumberZero = false
         if let paymentsMenuItemIndex = viewModel.menuElements.firstIndex(where: { item in
-            type(of: item).id == HubMenuViewModel.Payments.id
+            item.id == HubMenuViewModel.Payments.id
         }) {
             if case let .number(number) = viewModel.menuElements[paymentsMenuItemIndex].badge {
                 paymentsBadgeIsNumberZero = number == 0
@@ -379,7 +379,7 @@ final class HubMenuViewModelTests: XCTestCase {
 
         var paymentsBadgeIsNumberZero = false
         if let paymentsMenuItemIndex = viewModel.menuElements.firstIndex(where: { item in
-            type(of: item).id == HubMenuViewModel.Payments.id
+            item.id == HubMenuViewModel.Payments.id
         }) {
             if case let .number(number) = viewModel.menuElements[paymentsMenuItemIndex].badge {
                 paymentsBadgeIsNumberZero = number == 0

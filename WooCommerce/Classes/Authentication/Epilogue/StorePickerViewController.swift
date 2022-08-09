@@ -683,7 +683,9 @@ private extension StorePickerViewController {
                                             message: Localization.noWooDescription,
                                             preferredStyle: .actionSheet)
         let installAction = UIAlertAction(title: Localization.installWoo, style: .default) { [weak self] _ in
-            self?.showWooSetup(for: site)
+            guard let self = self else { return }
+            ServiceLocator.analytics.track(.loginWooCommerceSetupButtonTapped)
+            self.showWooSetup(for: site)
         }
         let cancelAction = UIAlertAction(title: Localization.cancel, style: .cancel)
         actionSheet.addAction(installAction)

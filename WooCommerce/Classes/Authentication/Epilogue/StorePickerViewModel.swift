@@ -37,8 +37,25 @@ final class StorePickerViewModel {
         refetchSitesAndUpdateState()
         ServiceLocator.analytics.track(.sitePickerStoresShown, withProperties: ["num_of_stores": resultsController.numberOfObjects])
 
-        synchronizeSites(currentlySelectedSite: currentlySelectedSite) { [weak self] _ in
+        synchronizeSites(selectedSiteID: currentlySelectedSite?.siteID) { [weak self] _ in
             self?.refetchSitesAndUpdateState()
+        }
+    }
+
+    func handleWooSetupCompletion(for siteID: Int64) async -> Site? {
+        await withCheckedContinuation { [weak self] continuation in
+            guard let self = self else { return }
+            self.synchronizeSites(selectedSiteID: siteID) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success:
+                    self.refetchSitesAndUpdateState()
+                    let site = self.resultsController.fetchedObjects.first(where: { $0.siteID == siteID })
+                    continuation.resume(returning: site)
+                case .failure:
+                    continuation.resume(returning: nil)
+                }
+            }
         }
     }
 }
@@ -50,11 +67,11 @@ private extension StorePickerViewModel {
         state = StorePickerState(sites: resultsController.fetchedObjects)
     }
 
-    func synchronizeSites(currentlySelectedSite: Site?, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func synchronizeSites(selectedSiteID: Int64?, onCompletion: @escaping (Result<Void, Error>) -> Void) {
         let syncStartTime = Date()
         let isJetpackConnectionPackageSupported = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport)
         let action = AccountAction
-            .synchronizeSites(selectedSiteID: currentlySelectedSite?.siteID,
+            .synchronizeSites(selectedSiteID: selectedSiteID,
                               isJetpackConnectionPackageSupported: isJetpackConnectionPackageSupported) { result in
                 switch result {
                 case .success(let containsJCPSites):
@@ -175,10 +192,10 @@ private extension StorePickerConfiguration {
 
     var predicate: NSPredicate? {
         switch self {
-        case .listStores:
-            return nil
-        default:
+        case .switchingStores:
             return NSPredicate(format: "isWooCommerceActive == YES")
+        default:
+            return nil
         }
     }
 
@@ -186,10 +203,10 @@ private extension StorePickerConfiguration {
         let nameDescriptor = NSSortDescriptor(keyPath: \StorageSite.name, ascending: true)
         let wooDescriptor = NSSortDescriptor(keyPath: \StorageSite.isWooCommerceActive, ascending: false)
         switch self {
-        case .listStores:
-            return [wooDescriptor, nameDescriptor]
-        default:
+        case .switchingStores:
             return [nameDescriptor]
+        default:
+            return [wooDescriptor, nameDescriptor]
         }
     }
 }

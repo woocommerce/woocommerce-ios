@@ -51,9 +51,9 @@ final class InPersonPaymentsMenuViewController: UITableViewController {
 
 private extension InPersonPaymentsMenuViewController {
     func listenToCardPaymentReadiness() {
-        cardPresentPaymentsReadinessUseCase.$readiness.sink(receiveValue: { readiness in
-            debugPrint("readiness", readiness)
-
+        cardPresentPaymentsReadinessUseCase.$readiness.sink(receiveValue: { [weak self] readiness in
+            self?.animateBottomActivityIndicator(readiness == .loading)
+            self?.tableView.reloadData()
         }).store(in: &cancellables)
     }
 }
@@ -98,6 +98,25 @@ private extension InPersonPaymentsMenuViewController {
 
         tableView.dataSource = self
         tableView.delegate = self
+
+        setupBottomActivityIndicator()
+    }
+
+    func setupBottomActivityIndicator() {
+        let activityIndicator = UIActivityIndicatorView(style: .medium)
+        //activityIndicator.startAnimating()
+
+        tableView.tableFooterView = activityIndicator
+    }
+
+    /// Assumes that the activity indicator was previously setup into the table view footer
+    ///
+    func animateBottomActivityIndicator(_ shouldAnimate: Bool) {
+        guard let activityIndicator = tableView.tableFooterView as? UIActivityIndicatorView else {
+            return
+        }
+
+        shouldAnimate ? activityIndicator.startAnimating() : activityIndicator.stopAnimating()
     }
 
     func registerTableViewCells() {
@@ -133,10 +152,13 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     func configureManageCardReader(cell: LeftImageTableViewCell) {
+        let cellShouldBeEnabled = cardPresentPaymentsReadinessUseCase.readiness == .ready
         cell.imageView?.tintColor = .text
-        cell.accessoryType = .disclosureIndicator
+        cell.accessoryType = cellShouldBeEnabled ? .disclosureIndicator : .none
         cell.selectionStyle = .default
         cell.configure(image: .creditCardIcon, text: Localization.manageCardReader)
+
+        updateEnabledState(in: cell, shouldBeEnabled: cellShouldBeEnabled)
     }
 
     func configureManagePaymentGateways(cell: LeftImageTitleSubtitleTableViewCell) {
@@ -144,6 +166,8 @@ private extension InPersonPaymentsMenuViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.configure(image: .rectangleOnRectangleAngled, text: Localization.managePaymentGateways, subtitle: pluginState?.preferred.pluginName ?? "")
+
+        updateEnabledState(in: cell)
     }
 
     func configureCardReaderManuals(cell: LeftImageTableViewCell) {
@@ -151,6 +175,8 @@ private extension InPersonPaymentsMenuViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.configure(image: .cardReaderManualIcon, text: Localization.cardReaderManuals)
+
+        updateEnabledState(in: cell)
     }
 
     func configureCollectPayment(cell: LeftImageTableViewCell) {
@@ -158,6 +184,14 @@ private extension InPersonPaymentsMenuViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.configure(image: .moneyIcon, text: Localization.collectPayment)
+
+        updateEnabledState(in: cell)
+    }
+
+    func updateEnabledState(in cell: UITableViewCell, shouldBeEnabled: Bool = true) {
+        let alpha = shouldBeEnabled ? 1 : 0.3
+        cell.imageView?.alpha = alpha
+        cell.textLabel?.alpha = alpha
     }
 }
 

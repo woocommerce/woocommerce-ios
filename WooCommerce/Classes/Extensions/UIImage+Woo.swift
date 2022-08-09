@@ -559,6 +559,13 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Cash give icon
+    ///
+    static var moneyIcon: UIImage {
+        return UIImage(named: "icon-money")!
+            .withRenderingMode(.alwaysTemplate)
+    }
+
     /// Files Download Icon
     ///
     static var cloudImage: UIImage {

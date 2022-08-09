@@ -88,7 +88,8 @@ struct HubMenu: View {
                          url: viewModel.storeURL,
                          onDismiss: enableMenuItemTaps)
             NavigationLink(destination:
-                            InPersonPaymentsView(viewModel: .init()),
+                            InPersonPaymentsMenu(pluginState: nil, onPluginSelected: nil, onPluginSelectionCleared: nil)
+                .navigationTitle(InPersonPaymentsView.Localization.title),
                            isActive: $showingPayments) {
                 EmptyView()
             }.hidden()

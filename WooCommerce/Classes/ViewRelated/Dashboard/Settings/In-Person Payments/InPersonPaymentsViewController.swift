@@ -109,14 +109,15 @@ struct InPersonPaymentsView: View {
         })
         .navigationTitle(Localization.title)
     }
+
+    enum Localization {
+        static let title = NSLocalizedString(
+            "In-Person Payments",
+            comment: "Title for the In-Person Payments settings screen"
+        )
+    }
 }
 
-private enum Localization {
-    static let title = NSLocalizedString(
-        "In-Person Payments",
-        comment: "Title for the In-Person Payments settings screen"
-    )
-}
 
 struct InPersonPaymentsView_Previews: PreviewProvider {
     static var previews: some View {

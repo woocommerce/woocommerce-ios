@@ -5,17 +5,17 @@ import Experiments
 
 final class InPersonPaymentsMenuViewController: UITableViewController {
     private let stores: StoresManager
-    private let pluginState: CardPresentPaymentsPluginState
+    private let pluginState: CardPresentPaymentsPluginState?
     private var sections = [Section]()
     private let configurationLoader: CardPresentConfigurationLoader
-    private let onPluginSelected: (CardPresentPaymentsPlugin) -> Void
-    private let onPluginSelectionCleared: () -> Void
+    private let onPluginSelected: ((CardPresentPaymentsPlugin) -> Void)?
+    private let onPluginSelectionCleared: (() -> Void)?
     private let featureFlagService: FeatureFlagService
 
     init(
-        pluginState: CardPresentPaymentsPluginState,
-        onPluginSelected: @escaping (CardPresentPaymentsPlugin) -> Void,
-        onPluginSelectionCleared: @escaping () -> Void,
+        pluginState: CardPresentPaymentsPluginState?,
+        onPluginSelected: ((CardPresentPaymentsPlugin) -> Void)?,
+        onPluginSelectionCleared: ( () -> Void)?,
         stores: StoresManager = ServiceLocator.stores,
         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService
     ) {
@@ -70,7 +70,7 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     var paymentOptionsSection: Section? {
-        guard pluginState.available.containsMoreThanOne else {
+        guard pluginState?.available.containsMoreThanOne ?? false else {
             return nil
         }
         return Section(header: Localization.paymentOptionsSectionTitle, rows: [.managePaymentGateways])
@@ -126,7 +126,7 @@ private extension InPersonPaymentsMenuViewController {
         cell.imageView?.tintColor = .text
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.configure(image: .rectangleOnRectangleAngled, text: Localization.managePaymentGateways, subtitle: pluginState.preferred.pluginName)
+        cell.configure(image: .rectangleOnRectangleAngled, text: Localization.managePaymentGateways, subtitle: pluginState?.preferred.pluginName ?? "")
     }
 
     func configureCardReaderManuals(cell: LeftImageTableViewCell) {
@@ -177,7 +177,7 @@ extension InPersonPaymentsMenuViewController {
 
     func managePaymentGatewaysWasPressed() {
         ServiceLocator.analytics.track(.settingsCardPresentSelectedPaymentGatewayTapped)
-        onPluginSelectionCleared()
+        onPluginSelectionCleared?()
     }
 
     func collectPaymentWasPressed() {
@@ -310,9 +310,9 @@ private enum Row: CaseIterable {
 /// SwiftUI wrapper for CardReaderSettingsPresentingViewController
 ///
 struct InPersonPaymentsMenu: UIViewControllerRepresentable {
-    let pluginState: CardPresentPaymentsPluginState
-    let onPluginSelected: (CardPresentPaymentsPlugin) -> Void
-    let onPluginSelectionCleared: () -> Void
+    let pluginState: CardPresentPaymentsPluginState?
+    let onPluginSelected: ((CardPresentPaymentsPlugin) -> Void)?
+    let onPluginSelectionCleared: (() -> Void)?
 
     func makeUIViewController(context: Context) -> some UIViewController {
         InPersonPaymentsMenuViewController(pluginState: pluginState, onPluginSelected: onPluginSelected, onPluginSelectionCleared: onPluginSelectionCleared)

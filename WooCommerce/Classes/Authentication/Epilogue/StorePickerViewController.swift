@@ -56,7 +56,11 @@ final class StorePickerViewController: UIViewController {
 
     /// Selected configuration for the store picker
     ///
-    let configuration: StorePickerConfiguration
+    private let configuration: StorePickerConfiguration
+
+    /// View model for the controller
+    ///
+    private let viewModel: StorePickerViewModel
 
     // MARK: - Private Properties
 
@@ -158,6 +162,7 @@ final class StorePickerViewController: UIViewController {
         self.appleIDCredentialChecker = appleIDCredentialChecker
         self.stores = stores
         self.featureFlagService = featureFlagService
+        self.viewModel = StorePickerViewModel(configuration: configuration)
         super.init(nibName: Self.nibName, bundle: nil)
     }
 

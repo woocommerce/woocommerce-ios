@@ -8,12 +8,11 @@
           {
             "key" : "BUILDKITE_ANALYTICS_TOKEN",
             "value" : "$(BUILDKITE_ANALYTICS_TOKEN_UI_TESTS_IPHONE)"
-          }
+          },
         ]
       }
     },
     {
-      "enabled" : false,
       "id" : "9B6F0B72-4EBF-4541-926F-C9C95D531FED",
       "name" : "iPadOS",
       "options" : {
@@ -21,7 +20,7 @@
           {
             "key" : "BUILDKITE_ANALYTICS_TOKEN",
             "value" : "$(BUILDKITE_ANALYTICS_TOKEN_UI_TESTS_IPAD)"
-          }
+          },
         ]
       }
     }

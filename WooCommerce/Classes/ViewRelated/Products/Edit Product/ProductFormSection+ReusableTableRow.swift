@@ -41,10 +41,6 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
         return cellType.reuseIdentifier
     }
 
-    var registerWithNib: Bool {
-        return true
-    }
-
     private var cellType: UITableViewCell.Type {
         switch self {
         case .images:

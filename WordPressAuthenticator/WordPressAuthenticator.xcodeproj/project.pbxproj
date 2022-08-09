@@ -166,6 +166,8 @@
 		D881A315256B5B5800FE5605 /* NavigateToEnterAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = D881A314256B5B5800FE5605 /* NavigateToEnterAccount.swift */; };
 		E8AF6B9EF50902F2117DFAF9 /* Pods_WordPressAuthenticatorTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A441EC80D2B8D2209C2E228 /* Pods_WordPressAuthenticatorTests.framework */; };
 		EE633D02287560E50002DE03 /* UITableView+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE633D01287560E50002DE03 /* UITableView+Helpers.swift */; };
+		EEEAC912289272F20066D419 /* VerifyEmailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEAC911289272F20066D419 /* VerifyEmailViewController.swift */; };
+		EEEAC9142892731E0066D419 /* VerifyEmail.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EEEAC9132892731E0066D419 /* VerifyEmail.storyboard */; };
 		F11448EC258B827B0048203D /* URL+JetpackConnect.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11448EB258B827B0048203D /* URL+JetpackConnect.swift */; };
 		F12F9FB424D8A68E00771BCE /* AuthenticatorAnalyticsTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12F9FB324D8A68E00771BCE /* AuthenticatorAnalyticsTracker.swift */; };
 		F12F9FB824D8A7FC00771BCE /* AnalyticsTrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12F9FB724D8A7FC00771BCE /* AnalyticsTrackerTests.swift */; };
@@ -378,6 +380,8 @@
 		D881A314256B5B5800FE5605 /* NavigateToEnterAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigateToEnterAccount.swift; sourceTree = "<group>"; };
 		E9414A95E29F3297555AC92B /* Pods-WordPressAuthenticator.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WordPressAuthenticator.debug.xcconfig"; path = "Pods/Target Support Files/Pods-WordPressAuthenticator/Pods-WordPressAuthenticator.debug.xcconfig"; sourceTree = "<group>"; };
 		EE633D01287560E50002DE03 /* UITableView+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Helpers.swift"; sourceTree = "<group>"; };
+		EEEAC911289272F20066D419 /* VerifyEmailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyEmailViewController.swift; sourceTree = "<group>"; };
+		EEEAC9132892731E0066D419 /* VerifyEmail.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = VerifyEmail.storyboard; sourceTree = "<group>"; };
 		F11448EB258B827B0048203D /* URL+JetpackConnect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+JetpackConnect.swift"; sourceTree = "<group>"; };
 		F12F9FB324D8A68E00771BCE /* AuthenticatorAnalyticsTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticatorAnalyticsTracker.swift; sourceTree = "<group>"; };
 		F12F9FB724D8A7FC00771BCE /* AnalyticsTrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsTrackerTests.swift; sourceTree = "<group>"; };
@@ -852,6 +856,7 @@
 		CEC77C6424854EE400FB9050 /* View Related */ = {
 			isa = PBXGroup;
 			children = (
+				EEEAC91028926F7D0066D419 /* VerifyEmail */,
 				98BC47E124F5B959000275AD /* Get Started */,
 				984D508024D4B1FD00251A63 /* Password */,
 				988AD89F24CB820200BD045E /* 2FA */,
@@ -912,6 +917,15 @@
 				D8611A62257622ED00A5DF27 /* NavigateBack.swift */,
 			);
 			path = Navigation;
+			sourceTree = "<group>";
+		};
+		EEEAC91028926F7D0066D419 /* VerifyEmail */ = {
+			isa = PBXGroup;
+			children = (
+				EEEAC911289272F20066D419 /* VerifyEmailViewController.swift */,
+				EEEAC9132892731E0066D419 /* VerifyEmail.storyboard */,
+			);
+			path = VerifyEmail;
 			sourceTree = "<group>";
 		};
 		F12F9FB524D8A7DB00771BCE /* Analytics */ = {
@@ -1067,6 +1081,7 @@
 				984D508424D4B24500251A63 /* Password.storyboard in Resources */,
 				CE811D6924EDC14A00F4CCD6 /* LoginMagicLink.storyboard in Resources */,
 				98ED48392480300500992B2D /* GoogleAuth.storyboard in Resources */,
+				EEEAC9142892731E0066D419 /* VerifyEmail.storyboard in Resources */,
 				CE1BBF8D24D48580001D2E3E /* GravatarEmailTableViewCell.xib in Resources */,
 				B560913F208A563800399AE4 /* Login.storyboard in Resources */,
 				CE6BCD3924A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.xib in Resources */,
@@ -1232,6 +1247,7 @@
 				B5ED7920207E993E00A8FD8C /* WPAuthenticatorLogging.m in Sources */,
 				B5609138208A563800399AE4 /* LoginSiteAddressViewController.swift in Sources */,
 				B560910B208A54F800399AE4 /* LoginFacade.m in Sources */,
+				EEEAC912289272F20066D419 /* VerifyEmailViewController.swift in Sources */,
 				CE30A2AD2257CECC00DF3CDA /* AuthenticatorCredentials.swift in Sources */,
 				B5609145208A563800399AE4 /* LoginViewController.swift in Sources */,
 				B5609139208A563800399AE4 /* LoginEmailViewController.swift in Sources */,

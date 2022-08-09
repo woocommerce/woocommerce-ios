@@ -355,16 +355,17 @@ private extension SiteCredentialsViewController {
         }
     }
 
-    /// Presents unified password screen
+    /// Presents verify email instructions screen
     ///
     /// - Parameters:
     ///   - loginFields: `LoginFields` instance created using `makeLoginFieldsUsing` helper method
     ///
-    func presentUnifiedPassword(loginFields: LoginFields) {
-        guard let vc = PasswordViewController.instantiate(from: .password) else {
-            DDLogError("Failed to navigate from SiteCredentialsViewController to PasswordViewController")
+    func presentVerifyEmail(loginFields: LoginFields) {
+        guard let vc = VerifyEmailViewController.instantiate(from: .verifyEmail) else {
+            DDLogError("Failed to navigate from SiteCredentialsViewController to VerifyEmailViewController")
             return
         }
+
         vc.loginFields = loginFields
         navigationController?.pushViewController(vc, animated: true)
     }
@@ -480,9 +481,9 @@ extension SiteCredentialsViewController {
             return
         }
 
-        // Present unified password screen. Passing loginFields will prefill the jetpack email in `PasswordViewController`
+        // Present verify email instructions screen. Passing loginFields will prefill the jetpack email in `VerifyEmailViewController`
         //
-        presentUnifiedPassword(loginFields: loginFields)
+        presentVerifyEmail(loginFields: loginFields)
     }
 
     override func displayRemoteError(_ error: Error) {

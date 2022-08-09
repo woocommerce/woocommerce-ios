@@ -28,6 +28,7 @@ public final class TextLabelTableViewCell: UITableViewCell {
     /// Override methods
     ///
     public override func prepareForReuse() {
+        super.prepareForReuse()
         label.text = nil
     }
 }

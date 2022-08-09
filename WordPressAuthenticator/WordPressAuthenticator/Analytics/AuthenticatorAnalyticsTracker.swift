@@ -121,6 +121,10 @@ public class AuthenticatorAnalyticsTracker {
 
         /// When we ask user to input the code from the 2 factor authentication
         case twoFactorAuthentication = "2fa"
+
+        /// Triggered when a user enters site credentials and sees the screen with instructions to verify email. (`VerifyEmailViewController`)
+        ///
+        case verifyEmailInstructions = "instructions_to_verify_email"
     }
 
     public enum ClickTarget: String {
@@ -237,6 +241,10 @@ public class AuthenticatorAnalyticsTracker {
         /// When the user taps of "Sign in with site credentials" button in `GetStartedViewController`
         ///
         case signInWithSiteCredentials = "sign_in_with_site_credentials"
+
+        /// When the user clicks on “Login with account password” on `VerifyEmailViewController`
+        ///
+        case loginWithAccountPassword = "login_with_password"
     }
 
     /// Shared Instance.

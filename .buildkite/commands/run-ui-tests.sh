@@ -28,7 +28,7 @@ echo "--- 🧪 Testing"
 xcrun simctl list >> /dev/null
 rake mocks &
 bundle exec fastlane test_without_building \
-  name:UITests \
+  name:UITests-CI \
   configuration:"$CONFIGURATION" \
   device:"$DEVICE" \
   ios_version:"$IOS_VERSION"

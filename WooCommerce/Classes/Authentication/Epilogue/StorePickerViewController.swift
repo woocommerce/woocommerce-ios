@@ -255,7 +255,8 @@ private extension StorePickerViewController {
     }
 
     func refreshResults() {
-        viewModel.refreshSites(currentlySelectedSite: currentlySelectedSite)
+        viewModel.refreshSites(currentlySelectedSiteID: currentlySelectedSite?.siteID)
+        viewModel.trackScreenView()
     }
 
     func observeStateChange() {
@@ -644,7 +645,7 @@ extension StorePickerViewController: UITableViewDelegate {
 
         guard site.isWooCommerceActive else {
             tableView.deselectRow(at: indexPath, animated: true)
-            showNoWooErrorActionSheet(for: site)
+            showNoWooError(for: site)
             return
         }
 
@@ -678,82 +679,31 @@ private extension StorePickerViewController {
         }
     }
 
-    func showNoWooErrorActionSheet(for site: Site) {
-        let actionSheet = UIAlertController(title: Localization.noWoo,
-                                            message: Localization.noWooDescription,
-                                            preferredStyle: .actionSheet)
-        let installAction = UIAlertAction(title: Localization.installWoo, style: .default) { [weak self] _ in
-            guard let self = self else { return }
-            ServiceLocator.analytics.track(.loginWooCommerceSetupButtonTapped)
-            self.showWooSetup(for: site)
-        }
-        let cancelAction = UIAlertAction(title: Localization.cancel, style: .cancel)
-        actionSheet.addAction(installAction)
-        actionSheet.addAction(cancelAction)
-        present(actionSheet, animated: true)
-    }
-
-    func showWooSetup(for site: Site) {
-        let viewModel = WooSetupWebViewModel(siteURL: site.url, onCompletion: { [weak self] in
-            guard let self = self else { return }
-            self.navigationController?.popViewController(animated: true)
-            Task { @MainActor [weak self] in
-                await self?.handleSetupCompletion(for: site)
-            }
+    func showNoWooError(for site: Site) {
+        let viewModel = NoWooErrorViewModel(
+            siteURL: site.url,
+            showsConnectedStores: false, // avoid looping from store picker > no woo > store picker
+            showsInstallButton: true,
+            onSetupCompletion: { [weak self] siteID in
+                guard let self = self else { return }
+                self.navigationController?.popViewController(animated: true)
+                self.viewModel.refreshSites(currentlySelectedSiteID: siteID)
+                if let indexPath = self.viewModel.indexPath(for: siteID),
+                   let updatedSite = self.viewModel.site(at: indexPath) {
+                    self.reloadSelectedStoreRows() {
+                        self.currentlySelectedSite = updatedSite
+                    }
+                    self.tableView.scrollToRow(at: indexPath, at: .middle, animated: true)
+                }
         })
-        let setupViewController = PluginSetupWebViewController(viewModel: viewModel)
-        navigationController?.show(setupViewController, sender: nil)
-    }
-
-    func handleSetupCompletion(for site: Site, retryCount: Int = 0) async {
-        let updatedSite = await viewModel.handleWooSetupCompletion(for: site.siteID)
-        guard let updatedSite = updatedSite,
-            updatedSite.isWooCommerceActive else {
-            if retryCount < 2 {
-                return await handleSetupCompletion(for: site, retryCount: retryCount + 1)
-            }
-            return showSetupErrorNotice()
-        }
-
-        reloadSelectedStoreRows() {
-            currentlySelectedSite = updatedSite
-        }
-
-        if let indexPath = viewModel.indexPath(for: site.siteID) {
-            tableView.scrollToRow(at: indexPath, at: .middle, animated: true)
-        }
-    }
-
-    func showSetupErrorNotice() {
-        let message = Localization.setupErrorMessage
-        let notice = Notice(title: message, feedbackType: .error)
-        let noticePresenter = DefaultNoticePresenter()
-        noticePresenter.presentingViewController = self
-        noticePresenter.enqueue(notice: notice)
+        let noWooUI = ULErrorViewController(viewModel: viewModel)
+        navigationController?.pushViewController(noWooUI, animated: true)
     }
 }
 
 private extension StorePickerViewController {
     enum Localization {
         static let continueButton = NSLocalizedString("Continue", comment: "Button on the Store Picker screen to select a store")
-        static let setupErrorMessage = NSLocalizedString("Cannot verify your site's WooCommerce installation.",
-                                                         comment: "Error message displayed when failed to check for WooCommerce in a site.")
-        static let noWoo = NSLocalizedString(
-            "No WooCommerce Found", comment:
-                "Alert title displayed when selecting a site without WooCommerce"
-        )
-        static let noWooDescription = NSLocalizedString(
-            "This site doesn't have WooCommerce. Would you like to install the plugin?",
-            comment: "Alert message displayed when selecting a site without WooCommerce"
-        )
-        static let installWoo = NSLocalizedString(
-            "Install WooCommerce",
-            comment: "Action button for install WooCommerce for a site"
-        )
-        static let cancel = NSLocalizedString(
-            "Cancel",
-            comment: "Action button to dismiss No WooCommerce alert"
-        )
     }
 }
 

@@ -33,9 +33,7 @@ final class StorePickerViewModel {
         self.storageManager = storageManager
     }
 
-    func refreshSites(currentlySelectedSite: Site?) {
-        refetchSitesAndUpdateState()
-
+    func trackScreenView() {
         let objects = resultsController.fetchedObjects
         let stores = objects.filter { $0.isWooCommerceActive == true }
         let nonWooSites = objects.filter { $0.isWooCommerceActive == false }
@@ -43,26 +41,13 @@ final class StorePickerViewModel {
             "num_of_stores": stores.count,
             "number_of_non_woo_sites": nonWooSites.count
         ])
-
-        synchronizeSites(selectedSiteID: currentlySelectedSite?.siteID) { [weak self] _ in
-            self?.refetchSitesAndUpdateState()
-        }
     }
 
-    func handleWooSetupCompletion(for siteID: Int64) async -> Site? {
-        await withCheckedContinuation { [weak self] continuation in
-            guard let self = self else { return }
-            self.synchronizeSites(selectedSiteID: siteID) { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case .success:
-                    self.refetchSitesAndUpdateState()
-                    let site = self.resultsController.fetchedObjects.first(where: { $0.siteID == siteID })
-                    continuation.resume(returning: site)
-                case .failure:
-                    continuation.resume(returning: nil)
-                }
-            }
+    func refreshSites(currentlySelectedSiteID: Int64?) {
+        refetchSitesAndUpdateState()
+
+        synchronizeSites(selectedSiteID: currentlySelectedSiteID) { [weak self] _ in
+            self?.refetchSitesAndUpdateState()
         }
     }
 }

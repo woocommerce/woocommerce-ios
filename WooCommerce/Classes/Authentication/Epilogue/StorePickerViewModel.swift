@@ -35,7 +35,14 @@ final class StorePickerViewModel {
 
     func refreshSites(currentlySelectedSite: Site?) {
         refetchSitesAndUpdateState()
-        ServiceLocator.analytics.track(.sitePickerStoresShown, withProperties: ["num_of_stores": resultsController.numberOfObjects])
+
+        let objects = resultsController.fetchedObjects
+        let stores = objects.filter { $0.isWooCommerceActive == true }
+        let nonWooSites = objects.filter { $0.isWooCommerceActive == false }
+        ServiceLocator.analytics.track(.sitePickerStoresShown, withProperties: [
+            "num_of_stores": stores.count,
+            "number_of_non_woo_sites": nonWooSites.count
+        ])
 
         synchronizeSites(selectedSiteID: currentlySelectedSite?.siteID) { [weak self] _ in
             self?.refetchSitesAndUpdateState()

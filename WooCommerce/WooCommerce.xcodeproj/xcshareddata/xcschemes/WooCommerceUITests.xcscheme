@@ -52,7 +52,7 @@
       </MacroExpansion>
       <TestPlans>
          <TestPlanReference
-            reference = "container:WooCommerceUITests/UITests-CI.xctestplan"
+            reference = "container:WooCommerceUITests/UITests.xctestplan"
             default = "YES">
          </TestPlanReference>
       </TestPlans>

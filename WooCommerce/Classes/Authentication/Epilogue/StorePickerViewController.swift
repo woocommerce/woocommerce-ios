@@ -56,7 +56,7 @@ final class StorePickerViewController: UIViewController {
 
     /// Selected configuration for the store picker
     ///
-    var configuration: StorePickerConfiguration = .login
+    let configuration: StorePickerConfiguration
 
     // MARK: - Private Properties
 
@@ -150,9 +150,11 @@ final class StorePickerViewController: UIViewController {
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
 
-    init(appleIDCredentialChecker: AppleIDCredentialCheckerProtocol = AppleIDCredentialChecker(),
+    init(configuration: StorePickerConfiguration,
+         appleIDCredentialChecker: AppleIDCredentialCheckerProtocol = AppleIDCredentialChecker(),
          stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+        self.configuration = configuration
         self.appleIDCredentialChecker = appleIDCredentialChecker
         self.stores = stores
         self.featureFlagService = featureFlagService

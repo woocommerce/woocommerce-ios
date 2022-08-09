@@ -230,6 +230,10 @@ public struct WordPressAuthenticatorUnifiedStyle {
     public let navButtonTextColor: UIColor
     public let navTitleTextColor: UIColor
 
+    /// Style: Text color to be used for email in `GravatarEmailTableViewCell`
+    ///
+    public let gravatarEmailTextColor: UIColor?
+
     /// Designated initializer
     ///
     public init(borderColor: UIColor,
@@ -244,7 +248,8 @@ public struct WordPressAuthenticatorUnifiedStyle {
                 statusBarStyle: UIStatusBarStyle = .default,
                 navBarBackgroundColor: UIColor,
                 navButtonTextColor: UIColor,
-                navTitleTextColor: UIColor) {
+                navTitleTextColor: UIColor,
+                gravatarEmailTextColor: UIColor? = nil) {
         self.borderColor = borderColor
         self.errorColor = errorColor
         self.textColor = textColor
@@ -258,5 +263,6 @@ public struct WordPressAuthenticatorUnifiedStyle {
         self.navBarBackgroundColor = navBarBackgroundColor
         self.navButtonTextColor = navButtonTextColor
         self.navTitleTextColor = navTitleTextColor
+        self.gravatarEmailTextColor = gravatarEmailTextColor
     }
 }

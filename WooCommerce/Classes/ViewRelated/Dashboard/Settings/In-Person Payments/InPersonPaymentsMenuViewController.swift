@@ -2,6 +2,7 @@ import UIKit
 import SwiftUI
 import Yosemite
 import Experiments
+import Combine
 
 final class InPersonPaymentsMenuViewController: UITableViewController {
     private let stores: StoresManager
@@ -11,6 +12,8 @@ final class InPersonPaymentsMenuViewController: UITableViewController {
     private let onPluginSelected: ((CardPresentPaymentsPlugin) -> Void)?
     private let onPluginSelectionCleared: (() -> Void)?
     private let featureFlagService: FeatureFlagService
+    private let cardPresentPaymentsReadinessUseCase: CardPresentPaymentsReadinessUseCase
+    private var cancellables: Set<AnyCancellable> = []
 
     init(
         pluginState: CardPresentPaymentsPluginState?,
@@ -24,6 +27,8 @@ final class InPersonPaymentsMenuViewController: UITableViewController {
         self.onPluginSelectionCleared = onPluginSelectionCleared
         self.stores = stores
         self.featureFlagService = featureFlagService
+        self.cardPresentPaymentsReadinessUseCase = CardPresentPaymentsReadinessUseCase(onboardingUseCase: CardPresentPaymentsOnboardingUseCase(stores: stores),
+                                                                                       stores: stores)
         configurationLoader = CardPresentConfigurationLoader()
         super.init(style: .grouped)
     }
@@ -38,6 +43,18 @@ final class InPersonPaymentsMenuViewController: UITableViewController {
         configureSections()
         configureTableView()
         registerTableViewCells()
+        listenToCardPaymentReadiness()
+    }
+}
+
+// MARK: - Card Present Payments Readiness
+
+private extension InPersonPaymentsMenuViewController {
+    func listenToCardPaymentReadiness() {
+        cardPresentPaymentsReadinessUseCase.$readiness.sink(receiveValue: { readiness in
+            debugPrint("readiness", readiness)
+
+        }).store(in: &cancellables)
     }
 }
 

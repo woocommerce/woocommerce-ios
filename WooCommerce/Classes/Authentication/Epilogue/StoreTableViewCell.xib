@@ -38,16 +38,16 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rmH-TD-Oll" userLabel="TextContainerView">
-                                <rect key="frame" x="35" y="0.0" width="257" height="72"/>
+                                <rect key="frame" x="35" y="0.0" width="324" height="72"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="750" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ejj-Pj-vZz">
-                                        <rect key="frame" x="0.0" y="10" width="257" height="17"/>
+                                        <rect key="frame" x="0.0" y="10" width="324" height="17"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="URL" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CjK-ri-inj">
-                                        <rect key="frame" x="0.0" y="27" width="257" height="35"/>
+                                        <rect key="frame" x="0.0" y="27" width="324" height="35"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -63,11 +63,6 @@
                                     <constraint firstItem="CjK-ri-inj" firstAttribute="leading" secondItem="rmH-TD-Oll" secondAttribute="leading" id="xAD-Oc-lC1"/>
                                 </constraints>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="D7u-kZ-yVY">
-                                <rect key="frame" x="292" y="0.0" width="67" height="72"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" title="Button"/>
-                            </button>
                         </subviews>
                     </stackView>
                 </subviews>
@@ -83,7 +78,6 @@
                 <outlet property="checkmarkImageView" destination="eHN-Ud-mEG" id="7bk-gd-EGI"/>
                 <outlet property="nameLabel" destination="ejj-Pj-vZz" id="x64-S0-SqW"/>
                 <outlet property="urlLabel" destination="CjK-ri-inj" id="yxp-cr-eOp"/>
-                <outlet property="wooInstallButton" destination="D7u-kZ-yVY" id="Lyq-7T-lox"/>
             </connections>
             <point key="canvasLocation" x="-153.5" y="-188"/>
         </tableViewCell>

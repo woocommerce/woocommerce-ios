@@ -170,20 +170,15 @@ private extension StorePickerViewModel {
 //
 private extension StorePickerConfiguration {
     var sectionNameKeyPath: String? {
-        switch self {
-        case .switchingStores:
-            return nil
-        default:
-            return "isWooCommerceActive"
-        }
+        return "isWooCommerceActive"
     }
 
     var predicate: NSPredicate? {
         switch self {
-        case .switchingStores:
-            return NSPredicate(format: "isWooCommerceActive == YES")
-        default:
+        case .listStores:
             return nil
+        default:
+            return NSPredicate(format: "isWooCommerceActive == YES")
         }
     }
 
@@ -191,10 +186,10 @@ private extension StorePickerConfiguration {
         let nameDescriptor = NSSortDescriptor(keyPath: \StorageSite.name, ascending: true)
         let wooDescriptor = NSSortDescriptor(keyPath: \StorageSite.isWooCommerceActive, ascending: false)
         switch self {
-        case .switchingStores:
-            return [nameDescriptor]
-        default:
+        case .listStores:
             return [wooDescriptor, nameDescriptor]
+        default:
+            return [nameDescriptor]
         }
     }
 }

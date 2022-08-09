@@ -1369,3 +1369,32 @@ extension WooAnalyticsEvent {
         }
     }
 }
+
+
+// MARK: - Waiting Time measurement
+//
+extension WooAnalyticsEvent {
+    enum WaitingTime {
+        /// Possible Waiting time scenarios
+        enum Scenario {
+            case orderDetails
+            case dashboardTopPerformers
+            case dashboardMainStats
+        }
+
+        private enum Keys {
+            static let waitingTime = "waiting_time"
+        }
+
+        static func waitingFinished(scenario: Scenario, elapsedTime: TimeInterval) -> WooAnalyticsEvent {
+            switch scenario {
+            case .orderDetails:
+                return WooAnalyticsEvent(statName: .orderDetailWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
+            case .dashboardTopPerformers:
+                return WooAnalyticsEvent(statName: .dashboardTopPerformersWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
+            case .dashboardMainStats:
+                return WooAnalyticsEvent(statName: .dashboardMainStatsWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
+            }
+        }
+    }
+}

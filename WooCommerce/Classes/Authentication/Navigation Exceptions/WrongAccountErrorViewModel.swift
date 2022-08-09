@@ -6,11 +6,13 @@ import Yosemite
 
 /// Configuration and actions for an ULErrorViewController, modelling
 /// an error when Jetpack is not installed or is not connected
-struct WrongAccountErrorViewModel: ULAccountMismatchViewModel {
+final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
     private let siteURL: String
     private let showsConnectedStores: Bool
     private let defaultAccount: Account?
     private let storesManager: StoresManager
+
+    private var storePickerCoordinator: StorePickerCoordinator?
 
     init(siteURL: String?,
          showsConnectedStores: Bool,
@@ -86,10 +88,8 @@ struct WrongAccountErrorViewModel: ULAccountMismatchViewModel {
             return
         }
 
-        let storePicker = StorePickerViewController()
-        storePicker.configuration = .listStores
-
-        navigationController.pushViewController(storePicker, animated: true)
+        storePickerCoordinator = StorePickerCoordinator(navigationController, config: .listStores)
+        storePickerCoordinator?.start()
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {

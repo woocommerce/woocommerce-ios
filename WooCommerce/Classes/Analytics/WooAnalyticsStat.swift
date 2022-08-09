@@ -54,6 +54,8 @@ public enum WooAnalyticsStat: String {
     case loginOnboardingShown = "login_onboarding_shown"
     case loginOnboardingNextButtonTapped = "login_onboarding_next_button_tapped"
     case loginOnboardingSkipButtonTapped = "login_onboarding_skip_button_tapped"
+    case loginOnboardingSurveyShown = "login_onboarding_survey_shown"
+    case loginOnboardingSurveySubmitted = "login_onboarding_survey_submitted"
     case loginPasswordFormViewed = "login_password_form_viewed"
     case loginURLFormViewed = "login_url_form_viewed"
     case loginURLHelpScreenViewed = "login_url_help_screen_viewed"
@@ -95,6 +97,8 @@ public enum WooAnalyticsStat: String {
     case dashboardTopPerformersDate = "dashboard_top_performers_date"
     case dashboardTopPerformersLoaded = "dashboard_top_performers_loaded"
     case dashboardUnfulfilledOrdersLoaded = "dashboard_unfulfilled_orders_loaded"
+    case dashboardMainStatsWaitingTimeLoaded = "dashboard_main_stats_waiting_time_loaded"
+    case dashboardTopPerformersWaitingTimeLoaded = "dashboard_top_performers_waiting_time_loaded"
 
     // MARK: Dashboard Stats v3/v4 Events
     //
@@ -255,6 +259,7 @@ public enum WooAnalyticsStat: String {
     case orderSyncFailed = "order_sync_failed"
     case collectPaymentTapped = "payments_flow_order_collect_payment_tapped"
     case orderViewCustomFieldsTapped = "order_view_custom_fields_tapped"
+    case orderDetailWaitingTimeLoaded = "order_detail_waiting_time_loaded"
 
     // MARK: Order List Sorting/Filtering
     //

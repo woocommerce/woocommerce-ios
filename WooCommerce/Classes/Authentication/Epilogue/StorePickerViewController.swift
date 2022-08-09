@@ -179,8 +179,6 @@ final class StorePickerViewController: UIViewController {
             startABTesting()
         case .switchingStores:
             secondaryActionButton.isHidden = true
-        case .listStores:
-            hideActionButtons()
         default:
             break
         }
@@ -248,11 +246,6 @@ private extension StorePickerViewController {
         title = NSLocalizedString("Connected Stores", comment: "Page title for the list of connected stores")
     }
 
-    func hideActionButtons() {
-        actionButton.isHidden = true
-        secondaryActionButton.isHidden = true
-    }
-
     func setupViewForCurrentConfiguration() {
         guard isViewLoaded else {
             return
@@ -262,7 +255,6 @@ private extension StorePickerViewController {
         case .switchingStores:
             setupNavigation()
         case .listStores:
-            hideActionButtons()
             setupNavigationForListOfConnectedStores()
         default:
             navigationController?.setNavigationBarHidden(true, animated: true)
@@ -362,9 +354,6 @@ private extension StorePickerViewController {
     /// Sets the first available Store as the default one. If possible!
     ///
     func preselectStoreIfPossible() {
-        guard configuration != .listStores else {
-            return
-        }
 
         guard case let .available(sites) = state, let firstSite = sites.first else {
             return
@@ -681,7 +670,7 @@ extension StorePickerViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
-        guard state.multipleStoresAvailable && configuration != .listStores else {
+        guard state.multipleStoresAvailable else {
             // If we only have a single store available, don't allow the row to be selected
             return false
         }

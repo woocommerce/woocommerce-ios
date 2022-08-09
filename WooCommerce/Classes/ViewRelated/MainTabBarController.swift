@@ -552,7 +552,7 @@ private extension MainTabBarController {
             orderTab.badgeColor = .primary
         }
 
-        viewModel.startObservingOrdersCount()
+        viewModel.updateBadgeFromCache()
     }
 }
 

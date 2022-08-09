@@ -718,8 +718,7 @@ private extension StorePickerViewController {
         }
 
         if let indexPath = viewModel.indexPath(for: site.siteID) {
-            tableView.selectRow(at: indexPath, animated: false, scrollPosition: .middle)
-            tableView.deselectRow(at: indexPath, animated: true)
+            tableView.scrollToRow(at: indexPath, at: .middle, animated: true)
         }
     }
 

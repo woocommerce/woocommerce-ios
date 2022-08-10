@@ -700,7 +700,8 @@ private extension StorePickerViewController {
                 }
         })
         let noWooUI = ULErrorViewController(viewModel: viewModel)
-        navigationController?.pushViewController(noWooUI, animated: true)
+        navigationController?.show(noWooUI, sender: nil)
+        navigationController?.setNavigationBarHidden(false, animated: true)
     }
 }
 

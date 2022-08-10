@@ -8,10 +8,6 @@ public enum SignInSource {
     case wpCom
     /// Initiated from the WP.com login flow that starts with site address.
     case wpComSiteAddress
-    /// Initiated from the WP.com login flow that starts with site address and then site credentials.
-    case wpComSiteCredentials
-    /// Initiated from the Google login flow.
-    case googleAuth
 }
 
 /// The error during the sign in flow.

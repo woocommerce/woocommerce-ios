@@ -7,7 +7,6 @@ final class VerifyEmailViewController: LoginViewController {
     @IBOutlet private weak var tableView: UITableView!
     private var buttonViewController: NUXButtonViewController?
     private let rows = Row.allCases
-    private var passwordCoordinator: PasswordCoordinator?
 
     // MARK: - View lifecycle
     override func viewDidLoad() {
@@ -216,18 +215,12 @@ private extension VerifyEmailViewController {
     /// Presents unified password screen
     ///
     func presentUnifiedPassword() {
-        guard let navigationController = navigationController else {
+        guard let vc = PasswordViewController.instantiate(from: .password) else {
+            DDLogError("Failed to navigate to PasswordViewController from VerifyEmailViewController")
             return
         }
-        let coordinator = PasswordCoordinator(navigationController: navigationController,
-                                              source: .wpComSiteCredentials,
-                                              loginFields: loginFields,
-                                              tracker: tracker,
-                                              configuration: WordPressAuthenticator.shared.configuration)
-        passwordCoordinator = coordinator
-        Task { @MainActor in
-            await coordinator.start()
-        }
+        vc.loginFields = loginFields
+        navigationController?.pushViewController(vc, animated: true)
     }
 
     // MARK: - Private Constants

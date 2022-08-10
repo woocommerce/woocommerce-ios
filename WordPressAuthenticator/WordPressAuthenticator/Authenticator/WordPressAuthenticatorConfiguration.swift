@@ -104,6 +104,10 @@ public struct WordPressAuthenticatorConfiguration {
     ///  Disabled by default
     let isWPComLoginRequiredForSiteCredentialsLogin: Bool
 
+    /// If enabled, a magic link is sent automatically in place of password then fall back to password.
+    /// If disabled, password is shown by default with an option to send a magic link.
+    let isWPComMagicLinkPreferredToPassword: Bool
+
     /// Designated Initializer
     ///
     public init (wpcomClientId: String,
@@ -126,7 +130,8 @@ public struct WordPressAuthenticatorConfiguration {
                  displayHintButtons: Bool = true,
                  continueWithSiteAddressFirst: Bool = false,
                  enableSiteCredentialsLoginForSelfHostedSites: Bool = false,
-                 isWPComLoginRequiredForSiteCredentialsLogin: Bool = false) {
+                 isWPComLoginRequiredForSiteCredentialsLogin: Bool = false,
+                 isWPComMagicLinkPreferredToPassword: Bool = false) {
 
         self.wpcomClientId = wpcomClientId
         self.wpcomSecret = wpcomSecret
@@ -149,5 +154,6 @@ public struct WordPressAuthenticatorConfiguration {
         self.continueWithSiteAddressFirst = continueWithSiteAddressFirst
         self.enableSiteCredentialsLoginForSelfHostedSites = enableSiteCredentialsLoginForSelfHostedSites
         self.isWPComLoginRequiredForSiteCredentialsLogin = isWPComLoginRequiredForSiteCredentialsLogin
+        self.isWPComMagicLinkPreferredToPassword = isWPComMagicLinkPreferredToPassword
     }
 }

@@ -68,31 +68,30 @@ private extension InPersonPaymentsMenuViewController {
             .debounce(for: .milliseconds(100), scheduler: DispatchQueue.main)
             .removeDuplicates()
             .sink(receiveValue: { [weak self] state in
-            guard let self = self else { return }
+                guard let self = self else { return }
 
-            self.pluginState = nil
+                self.pluginState = nil
 
-            guard state != .loading else {
-                return self.animateBottomActivityIndicator(true)
-            }
+                guard state != .loading else {
+                    return self.animateBottomActivityIndicator(true)
+                }
 
-            switch state {
-            case let .completed(newPluginState):
-                self.pluginState = newPluginState
-            case let .selectPlugin(pluginSelectionWasCleared):
-                // If it was cleared it means that we triggered it manually (e.g by tapping in this view on the plugin selection row)
-                // No need to show the onboarding notice
-                if !pluginSelectionWasCleared {
+                switch state {
+                case let .completed(newPluginState):
+                    self.pluginState = newPluginState
+                case let .selectPlugin(pluginSelectionWasCleared):
+                    // If it was cleared it means that we triggered it manually (e.g by tapping in this view on the plugin selection row)
+                    // No need to show the onboarding notice
+                    if !pluginSelectionWasCleared {
+                        self.showCardPresentPaymentsOnboardingNotice()
+                    }
+                default:
                     self.showCardPresentPaymentsOnboardingNotice()
                 }
-            default:
-                self.showCardPresentPaymentsOnboardingNotice()
-            }
 
-            self.animateBottomActivityIndicator(false)
-            self.configureSections()
-            self.tableView.reloadData()
-
+                self.animateBottomActivityIndicator(false)
+                self.configureSections()
+                self.tableView.reloadData()
         }).store(in: &cancellables)
     }
 
@@ -109,18 +108,17 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     func showOnboardingIfRequired() {
-        guard cardPresentPaymentsOnboardingPresenter == nil,
-              let navigationController = self.navigationController else {
+        guard let navigationController = self.navigationController else {
             return
         }
 
+        // Recreating it ensures that the readiness state is up to date.
+        // Keeping a reference ensures that the callback closure is retained.
         cardPresentPaymentsOnboardingPresenter = CardPresentPaymentsOnboardingPresenter()
 
-        cardPresentPaymentsOnboardingPresenter?.showOnboardingIfRequired(
-            from: navigationController) { [weak self] in
-                self?.cardPresentPaymentsOnboardingUseCase.refresh()
-                self?.cardPresentPaymentsOnboardingPresenter = nil
-            }
+        cardPresentPaymentsOnboardingPresenter?.showOnboardingIfRequired(from: navigationController) { [weak self] in
+            self?.cardPresentPaymentsOnboardingUseCase.refresh()
+        }
     }
 }
 

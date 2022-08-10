@@ -118,7 +118,6 @@ struct InPersonPaymentsView: View {
     }
 }
 
-
 struct InPersonPaymentsView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {

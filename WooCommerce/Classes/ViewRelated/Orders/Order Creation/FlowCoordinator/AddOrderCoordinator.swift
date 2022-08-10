@@ -1,6 +1,7 @@
 import UIKit
 import Yosemite
 import Combine
+import SwiftUI
 
 final class AddOrderCoordinator: Coordinator {
     var navigationController: UINavigationController
@@ -55,7 +56,8 @@ private extension AddOrderCoordinator {
     func presentOrderCreationFlow(bottomSheetOrderType: BottomSheetOrderType) {
         switch bottomSheetOrderType {
         case .simple:
-            presentSimplePaymentsAmountController()
+            //presentSimplePaymentsAmountController()
+            test_featureRedirectionNoticeToHubMenu()
         case .full:
             presentNewOrderController()
             return
@@ -66,6 +68,12 @@ private extension AddOrderCoordinator {
     ///
     func presentSimplePaymentsAmountController() {
         SimplePaymentsAmountFlowOpener.openSimplePaymentsAmountFlow(from: navigationController, siteID: siteID)
+    }
+    /// Presents `FeatureRedirectionNoticeHostingController` modally.
+    ///
+    func test_featureRedirectionNoticeToHubMenu() {
+        let viewController = FeatureRedirectionNoticeHostingController()
+        navigationController.present(viewController, animated: true) // presents modally
     }
 
     /// Presents `OrderFormHostingController`.
@@ -86,3 +94,14 @@ private extension AddOrderCoordinator {
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderAddNew())
     }
 }
+
+// Temporary, for testing -> ReusableViews: SwiftUI Components
+final class FeatureRedirectionNoticeHostingController: UIHostingController<BadgeView> {
+    init() {
+        super.init(rootView: BadgeView(type: BadgeView.BadgeType.tip))
+    }
+    required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+

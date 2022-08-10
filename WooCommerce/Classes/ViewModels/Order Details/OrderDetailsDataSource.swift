@@ -1241,10 +1241,10 @@ extension OrderDetailsDataSource {
                      shippingNotice,
                      products,
                      customFields,
-                     installWCShipSection] +
+                     installWCShipSection,
+                     refundedProducts] +
                     shippingLabelSections +
-                    [refundedProducts,
-                     payment,
+                    [payment,
                      customerInformation,
                      tracking,
                      addTracking,

@@ -106,7 +106,7 @@ private extension MagicLinkRequestedViewController {
 
     func setupTitleLabel() {
         titleLabel.text = Localization.title
-        titleLabel.font = WPStyleGuide.fontForTextStyle(.title3, fontWeight: .bold)
+        titleLabel.font = WPStyleGuide.mediumWeightFont(forStyle: .title3)
         titleLabel.textColor = WordPressAuthenticator.shared.unifiedStyle?.textColor
         titleLabel.numberOfLines = 0
     }

@@ -76,9 +76,9 @@ private extension InPersonPaymentsMenuViewController {
             case let .completed(newPluginState):
                 self.pluginState = newPluginState
             case let .selectPlugin(pluginSelectionWasCleared):
-                if pluginSelectionWasCleared {
-                    self.showOnboardingIfRequired()
-                } else {
+                // If it was cleared it means that we triggered it manually (e.g by tapping in this view on the plugin selection row)
+                // No need to show the onboarding notice
+                if !pluginSelectionWasCleared {
                     DispatchQueue.main.async {
                         self.showCardPresentPaymentsOnboardingNotice()
                     }
@@ -113,6 +113,8 @@ private extension InPersonPaymentsMenuViewController {
               let navigationController = self.navigationController else {
             return
         }
+
+        self.navigationItem.setHidesBackButton(true, animated: true)
 
         cardPresentPaymentsOnboardingPresenter = CardPresentPaymentsOnboardingPresenter()
 
@@ -293,7 +295,13 @@ extension InPersonPaymentsMenuViewController {
         ServiceLocator.analytics.track(.settingsCardPresentSelectedPaymentGatewayTapped)
         onPluginSelectionCleared?()
 
-        cardPresentPaymentsOnboardingUseCase.clearPluginSelection()
+        let view = InPersonPaymentsSelectPluginView(selectedPlugin: nil) { [weak self] plugin in
+            self?.cardPresentPaymentsOnboardingUseCase.clearPluginSelection()
+            self?.cardPresentPaymentsOnboardingUseCase.selectPlugin(plugin)
+            self?.navigationController?.popViewController(animated: true)
+        }
+
+        navigationController?.pushViewController(InPersonPaymentsSelectPluginViewController(rootView: view), animated: true)
     }
 
     func collectPaymentWasPressed() {

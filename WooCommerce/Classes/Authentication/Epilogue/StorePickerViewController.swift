@@ -339,8 +339,10 @@ private extension StorePickerViewController {
             return
         }
 
-        // Otherwise select the first site in the list
-        currentlySelectedSite = firstSite
+        // Otherwise select the first site in the list if it has Woo
+        if firstSite.isWooCommerceActive {
+            currentlySelectedSite = firstSite
+        }
     }
 
     /// Reloads the UI.

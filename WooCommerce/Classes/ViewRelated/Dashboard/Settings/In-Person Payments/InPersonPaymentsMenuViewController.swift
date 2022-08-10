@@ -51,7 +51,10 @@ final class InPersonPaymentsMenuViewController: UITableViewController {
         configureSections()
         configureTableView()
         registerTableViewCells()
-        runCardPresentPaymentsOnboarding()
+
+        if featureFlagService.isFeatureFlagEnabled(.paymentsHubMenuSection) {
+            runCardPresentPaymentsOnboarding()
+        }
     }
 }
 
@@ -113,8 +116,6 @@ private extension InPersonPaymentsMenuViewController {
               let navigationController = self.navigationController else {
             return
         }
-
-        self.navigationItem.setHidesBackButton(true, animated: true)
 
         cardPresentPaymentsOnboardingPresenter = CardPresentPaymentsOnboardingPresenter()
 
@@ -295,6 +296,12 @@ extension InPersonPaymentsMenuViewController {
         ServiceLocator.analytics.track(.settingsCardPresentSelectedPaymentGatewayTapped)
         onPluginSelectionCleared?()
 
+        if featureFlagService.isFeatureFlagEnabled(.paymentsHubMenuSection) {
+            navigateToInPersonPaymentsSelectPluginView()
+        }
+    }
+
+    func navigateToInPersonPaymentsSelectPluginView() {
         let view = InPersonPaymentsSelectPluginView(selectedPlugin: nil) { [weak self] plugin in
             self?.cardPresentPaymentsOnboardingUseCase.clearPluginSelection()
             self?.cardPresentPaymentsOnboardingUseCase.selectPlugin(plugin)

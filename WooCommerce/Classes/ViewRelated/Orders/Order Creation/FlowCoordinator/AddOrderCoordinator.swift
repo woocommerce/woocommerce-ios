@@ -125,7 +125,7 @@ class BaseViewController: UIViewController {
     }
 
     func setupAnnouncementView() {
-        let announcementView = BottomAnnouncementView(completionHandler: completionHandler)
+        let announcementView = BottomAnnouncementView(buttonTapped: completionHandler)
         let controller = UIHostingController(rootView: announcementView)
         addChild(controller)
         view.addSubview(controller.view)

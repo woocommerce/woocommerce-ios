@@ -3,7 +3,7 @@ import SwiftUI
 struct BottomAnnouncementView: View {
     @Environment(\.presentationMode) private var presentation
 
-    var completionHandler: (() -> Void)?
+    var buttonTapped: (() -> Void)?
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -18,7 +18,7 @@ struct BottomAnnouncementView: View {
                 .multilineTextAlignment(.leading)
                 .fixedSize(horizontal: false, vertical: true)
             Button(Localization.confirmationButton) {
-                if let completionHandler = completionHandler {
+                if let completionHandler = buttonTapped {
                     completionHandler()
                 }
                 presentation.wrappedValue.dismiss()

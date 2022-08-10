@@ -6,6 +6,7 @@ class GoogleAuthViewController: LoginViewController {
 
     private var hasShownGoogle = false
     @IBOutlet var titleLabel: UILabel?
+    private var passwordCoordinator: PasswordCoordinator?
 
     override var sourceTag: WordPressSupportSourceTag {
         get {
@@ -121,13 +122,18 @@ extension GoogleAuthViewController: GoogleAuthenticatorDelegate {
     func googleExistingUserNeedsConnection(loginFields: LoginFields) {
         self.loginFields = loginFields
 
-        guard let vc = PasswordViewController.instantiate(from: .password) else {
-            DDLogError("Failed to navigate from GoogleAuthViewController to PasswordViewController")
+        guard let navigationController = navigationController else {
             return
         }
-
-        vc.loginFields = loginFields
-        navigationController?.pushViewController(vc, animated: true)
+        let coordinator = PasswordCoordinator(navigationController: navigationController,
+                                              source: .googleAuth,
+                                              loginFields: loginFields,
+                                              tracker: tracker,
+                                              configuration: WordPressAuthenticator.shared.configuration)
+        passwordCoordinator = coordinator
+        Task { @MainActor in
+            await coordinator.start()
+        }
     }
 
     func googleLoginFailed(errorTitle: String, errorDescription: String, loginFields: LoginFields, unknownUser: Bool) {

@@ -8,6 +8,10 @@ public enum SignInSource {
     case wpCom
     /// Initiated from the WP.com login flow that starts with site address.
     case wpComSiteAddress
+    /// Initiated from the WP.com login flow that starts with site address and then site credentials.
+    case wpComSiteCredentials
+    /// Initiated from the Google login flow.
+    case googleAuth
 }
 
 /// The error during the sign in flow.
@@ -72,6 +76,8 @@ class GetStartedViewController: LoginViewController, NUXKeyboardResponder {
     private var buttonViewController: NUXButtonViewController?
     private let configuration = WordPressAuthenticator.shared.configuration
     private var shouldChangeVoiceOverFocus: Bool = false
+
+    private var passwordCoordinator: PasswordCoordinator?
 
     /// Sign in with site credentials button will be displayed based on the `screenMode`
     ///
@@ -516,16 +522,21 @@ private extension GetStartedViewController {
     /// Show the Password entry view.
     ///
     func showPasswordView() {
-        guard let vc = PasswordViewController.instantiate(from: .password) else {
-            DDLogError("Failed to navigate to PasswordViewController from GetStartedViewController")
+        guard let navigationController = navigationController else {
             return
         }
-
-        vc.source = source
-        vc.loginFields = loginFields
-        vc.trackAsPasswordChallenge = false
-
-        navigationController?.pushViewController(vc, animated: true)
+        configureViewLoading(true)
+        let coordinator = PasswordCoordinator(navigationController: navigationController,
+                                              source: source,
+                                              loginFields: loginFields,
+                                              tracker: tracker,
+                                              configuration: WordPressAuthenticator.shared.configuration)
+        passwordCoordinator = coordinator
+        Task { @MainActor [weak self] in
+            guard let self = self else { return }
+            await coordinator.start()
+            self.configureViewLoading(false)
+        }
     }
 
     /// Handle errors when attempting to log in with an email address

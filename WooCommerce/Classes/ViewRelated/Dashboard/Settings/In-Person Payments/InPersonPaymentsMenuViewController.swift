@@ -64,15 +64,16 @@ private extension InPersonPaymentsMenuViewController {
     func runCardPresentPaymentsOnboarding() {
         cardPresentPaymentsOnboardingUseCase.refresh()
 
-        cardPresentPaymentsOnboardingUseCase.$state.sink(receiveValue: { [weak self] state in
+        cardPresentPaymentsOnboardingUseCase.$state
+            .debounce(for: .milliseconds(100), scheduler: DispatchQueue.main)
+            .removeDuplicates()
+            .sink(receiveValue: { [weak self] state in
             guard let self = self else { return }
 
             self.pluginState = nil
 
             guard state != .loading else {
-                self.animateBottomActivityIndicator(true)
-
-                return
+                return self.animateBottomActivityIndicator(true)
             }
 
             switch state {
@@ -82,14 +83,10 @@ private extension InPersonPaymentsMenuViewController {
                 // If it was cleared it means that we triggered it manually (e.g by tapping in this view on the plugin selection row)
                 // No need to show the onboarding notice
                 if !pluginSelectionWasCleared {
-                    DispatchQueue.main.async {
-                        self.showCardPresentPaymentsOnboardingNotice()
-                    }
-                }
-            default:
-                DispatchQueue.main.async {
                     self.showCardPresentPaymentsOnboardingNotice()
                 }
+            default:
+                self.showCardPresentPaymentsOnboardingNotice()
             }
 
             self.animateBottomActivityIndicator(false)

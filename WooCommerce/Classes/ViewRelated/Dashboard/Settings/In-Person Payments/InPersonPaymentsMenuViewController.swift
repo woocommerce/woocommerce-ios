@@ -15,7 +15,7 @@ final class InPersonPaymentsMenuViewController: UITableViewController {
     private let cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCase
     private var cancellables: Set<AnyCancellable> = []
 
-    private let cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting = CardPresentPaymentsOnboardingPresenter()
+    private var cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting?
 
     private lazy var noticePresenter: DefaultNoticePresenter = {
         let noticePresenter = DefaultNoticePresenter()
@@ -51,20 +51,20 @@ final class InPersonPaymentsMenuViewController: UITableViewController {
         configureSections()
         configureTableView()
         registerTableViewCells()
-        listenToCardPaymentReadiness()
+        runCardPresentPaymentsOnboarding()
     }
 }
 
 // MARK: - Card Present Payments Readiness
 
 private extension InPersonPaymentsMenuViewController {
-    func listenToCardPaymentReadiness() {
+    func runCardPresentPaymentsOnboarding() {
         cardPresentPaymentsOnboardingUseCase.refresh()
 
         cardPresentPaymentsOnboardingUseCase.$state.sink(receiveValue: { [weak self] state in
             guard let self = self else { return }
 
-            debugPrint("state", state)
+            self.pluginState = nil
 
             guard state != .loading else {
                 self.animateBottomActivityIndicator(true)
@@ -75,6 +75,14 @@ private extension InPersonPaymentsMenuViewController {
             switch state {
             case let .completed(newPluginState):
                 self.pluginState = newPluginState
+            case let .selectPlugin(pluginSelectionWasCleared):
+                if pluginSelectionWasCleared {
+                    self.showOnboardingIfRequired()
+                } else {
+                    DispatchQueue.main.async {
+                        self.showCardPresentPaymentsOnboardingNotice()
+                    }
+                }
             default:
                 DispatchQueue.main.async {
                     self.showCardPresentPaymentsOnboardingNotice()
@@ -93,20 +101,26 @@ private extension InPersonPaymentsMenuViewController {
                             message: Localization.inPersonPaymentsSetupNotFinishedNotice,
                             feedbackType: .error,
                             actionTitle: Localization.inPersonPaymentsSetupNotFinishedNoticeButtonTitle,
-                            actionHandler: {
-            guard let navigationController = self.navigationController else {
-                return
-            }
-
-            self.cardPresentPaymentsOnboardingPresenter.showOnboardingIfRequired(
-                from: navigationController) { [weak self] in
-                    debugPrint("finish onboarding")
-                    //self?.tableView.reloadData()
-                    self?.cardPresentPaymentsOnboardingUseCase.refresh()
-                }
+                            actionHandler: { [weak self] in
+            self?.showOnboardingIfRequired()
         })
 
         self.noticePresenter.enqueue(notice: notice)
+    }
+
+    func showOnboardingIfRequired() {
+        guard cardPresentPaymentsOnboardingPresenter == nil,
+              let navigationController = self.navigationController else {
+            return
+        }
+
+        cardPresentPaymentsOnboardingPresenter = CardPresentPaymentsOnboardingPresenter()
+
+        cardPresentPaymentsOnboardingPresenter?.showOnboardingIfRequired(
+            from: navigationController) { [weak self] in
+                self?.cardPresentPaymentsOnboardingUseCase.refresh()
+                self?.cardPresentPaymentsOnboardingPresenter = nil
+            }
     }
 }
 
@@ -278,6 +292,8 @@ extension InPersonPaymentsMenuViewController {
     func managePaymentGatewaysWasPressed() {
         ServiceLocator.analytics.track(.settingsCardPresentSelectedPaymentGatewayTapped)
         onPluginSelectionCleared?()
+
+        cardPresentPaymentsOnboardingUseCase.clearPluginSelection()
     }
 
     func collectPaymentWasPressed() {

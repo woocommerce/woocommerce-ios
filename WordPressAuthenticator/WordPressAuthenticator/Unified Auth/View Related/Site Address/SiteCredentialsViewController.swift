@@ -303,7 +303,8 @@ private extension SiteCredentialsViewController {
     ///
     func configurePasswordTextField(_ cell: TextFieldTableViewCell) {
         cell.configure(withStyle: .password,
-                       placeholder: WordPressAuthenticator.shared.displayStrings.passwordPlaceholder)
+                       placeholder: WordPressAuthenticator.shared.displayStrings.passwordPlaceholder,
+                       text: loginFields.password)
         passwordField = cell.textField
         cell.textField.delegate = self
         cell.onChangeSelectionHandler = { [weak self] textfield in

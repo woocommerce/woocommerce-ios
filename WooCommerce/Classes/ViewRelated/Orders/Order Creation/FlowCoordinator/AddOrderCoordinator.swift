@@ -65,14 +65,7 @@ private extension AddOrderCoordinator {
     /// Presents `SimplePaymentsAmountHostingController`.
     ///
     func presentSimplePaymentsAmountController() {
-        let presentNoticeSubject = PassthroughSubject<SimplePaymentsNotice, Never>()
-        let viewModel = SimplePaymentsAmountViewModel(siteID: siteID, presentNoticeSubject: presentNoticeSubject)
-
-        let viewController = SimplePaymentsAmountHostingController(viewModel: viewModel, presentNoticePublisher: presentNoticeSubject.eraseToAnyPublisher())
-        let simplePaymentsNC = WooNavigationController(rootViewController: viewController)
-        navigationController.present(simplePaymentsNC, animated: true)
-
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowStarted())
+        SimplePaymentsAmountFlowOpener.openSimplePaymentsAmountFlow(from: navigationController, siteID: siteID)
     }
 
     /// Presents `OrderFormHostingController`.

@@ -222,9 +222,6 @@ which should be translated separately and considered part of this sentence. */
 /* Comment Attachment Label */
 "[COMMENT]" = "[COMMENT]";
 
-/* Navigates to page with details about What is WordPress.com. The underscores _..._ denote underline. */
-"_What is WordPress.com?_" = "_What is WordPress.com?_";
-
 /* Placeholder of the Product Short Description row on Product main screen */
 "A brief excerpt about the product" = "A brief excerpt about the product";
 
@@ -778,6 +775,9 @@ which should be translated separately and considered part of this sentence. */
 /* The details text on the placeholder overlay when there are no coupons on the coupon list screen. */
 "Boost your business by sending customers special offers and discounts." = "Boost your business by sending customers special offers and discounts.";
 
+/* Title for the Linked Products announcement banner */
+"Boost your sales with linked products" = "Boost your sales with linked products";
+
 /* Box package type, used to create a custom package in the Shipping Label flow */
 "Box" = "Box";
 
@@ -896,6 +896,9 @@ which should be translated separately and considered part of this sentence. */
    Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "Cannot upload image";
 
+/* Error message displayed when failed to check for WooCommerce in a site. */
+"Cannot verify your site's WooCommerce installation." = "Cannot verify your site's WooCommerce installation.";
+
 /* Detailed message shown in the Reviews tab if the list is empty
    Detailed message shown on the Product Reviews screen if the list is empty */
 "Capture high-quality product reviews for your store." = "Capture high-quality product reviews for your store.";
@@ -954,6 +957,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title text of the row that has a switch when creating a simple payment */
 "Charge Taxes" = "Charge Taxes";
+
+/* Login onboarding survey option: check my analytics. */
+"Check my analytics" = "Check my analytics";
 
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "Check that the URL entered is valid";
@@ -1124,7 +1130,8 @@ which should be translated separately and considered part of this sentence. */
 /* Contact Email title */
 "Contact Email" = "Contact Email";
 
-/* Action button to contact support on enable analytics screen */
+/* Action button to contact support on enable analytics screen
+   Local notification action to contact support. */
 "Contact support" = "Contact support";
 
 /* Action button to contact support when Jetpack install fails
@@ -1299,6 +1306,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "Create new package";
+
+/* Login onboarding survey option: create or update my products. */
+"Create or update my products" = "Create or update my products";
 
 /* Action sheet option when the user wants to create full manual order */
 "Create order" = "Create order";
@@ -1892,6 +1902,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the notice about an error saving an image uploaded in the background to a product variation. */
 "Error saving variation image" = "Error saving variation image";
 
+/* Notice title when marking an order as completed via a swipe action fails. Parameter: Order Number */
+"Error updating Order #%1$d" = "Error updating Order #%1$d";
+
 /* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store.
    The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
 "Everyone loves a deal" = "Everyone loves a deal";
@@ -2104,6 +2117,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message for the feature announcement banner intended to upsell card readers */
 "Get ready to accept payments with a card reader." = "Get ready to accept payments with a card reader.";
 
+/* Local notification body when the user encounters an error logging in with site address. */
+"Get some help!" = "Get some help!";
+
 /* Title of install action in the Jetpack Install view.
    View title for initial auth views. */
 "Get Started" = "Get Started";
@@ -2136,6 +2152,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the feedback action button on the coupon list screen */
 "Give Feedback" = "Give Feedback";
+
+/* Message for the Linked Products announcement banner */
+"Give your customers helpful and relevant product recommendations by adding upsells and cross-sells." = "Give your customers helpful and relevant product recommendations by adding upsells and cross-sells.";
 
 /* Option to select the Gmail app when logging in with magic links */
 "Gmail" = "Gmail";
@@ -2379,6 +2398,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for the Install WCShip banner in the Order Detail */
 "Install the WCShip extension." = "Install the WCShip extension.";
 
+/* Action button for installing WooCommerce.Presented when logging in with a site address that does not have WooCommerce */
+"Install WooCommerce" = "Install WooCommerce";
+
 /* Title for the error screen when WooCommerce Payments is not installed */
 "Install WooCommerce Payments" = "Install WooCommerce Payments";
 
@@ -2441,6 +2463,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message explaining that the site entered and the acount logged into do not match. Reads like 'It looks like awebsite.com is connected to a different account */
 "It looks like %@ is connected to a different account." = "It looks like %@ is connected to a different account.";
 
+/* Message explaining that the site entered doesn't have WooCommerce installed or activated. Reads like 'It looks like awebsite.com is not a WooCommerce site. */
+"It looks like %@ is not a WooCommerce site." = "It looks like %@ is not a WooCommerce site.";
+
 /* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
 "It looks like this email isn't associated with a WordPress.com account." = "It looks like this email isn't associated with a WordPress.com account.";
 
@@ -2491,6 +2516,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "Join from anywhere";
+
+/* Login onboarding survey option: just exploring. */
+"Just exploring" = "Just exploring";
 
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "Keep Editing";
@@ -2650,6 +2678,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Action button that will restart the login flow.Presented when logging in with a site address that appears to be invalid.
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
+   Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
    Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Log In With Another Account" = "Log In With Another Account";
 
@@ -2667,6 +2696,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Alert button title - confirms and logs out the user
    Log out button title */
 "Log Out" = "Log Out";
+
+/* Local notification action to log in with WordPress.com. */
+"Login with WordPress.com" = "Login with WordPress.com";
 
 /* Title of a button.  */
 "Lost your password?" = "Lost your password?";
@@ -2700,6 +2732,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the action sheet displayed from the Coupon Details screen */
 "Manage Coupon" = "Manage Coupon";
 
+/* Login onboarding survey option: manage my orders. */
+"Manage my orders" = "Manage my orders";
+
 /* Button to open browser to manage plugins */
 "Manage Plugins" = "Manage Plugins";
 
@@ -2732,6 +2767,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Alert title when selecting the cash payment method */
 "Mark as Paid?" = "Mark as Paid?";
+
+/* Title for the swipe order action to mark it as completed */
+"Mark Completed" = "Mark Completed";
 
 /* Action button on Review Order screen
    Fulfill Order Action Button */
@@ -2867,7 +2905,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for table view section of network active plugins */
 "Network Active Plugins" = "Network Active Plugins";
 
-/* Title of the new badge shown when advertising a new feature */
+/* Title of the badge shown when advertising a new feature */
 "New" = "New";
 
 /* Subtitle of analytics as part of Jetpack benefits. */
@@ -3126,6 +3164,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Order number title. Parameters: %1$@ - order number */
 "Order #%1$@" = "Order #%1$@";
 
+/* Notice title when an order is marked as completed via a swipe action. Parameter: Order Number */
+"Order #%1$d marked as completed" = "Order #%1$d marked as completed";
+
 /* Accessibility label for button triggering more actions menu sheet. */
 "Order actions" = "Order actions";
 
@@ -3281,6 +3322,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message when payment is declined for a non specific reason. */
 "Payment was declined for an unspecified reason. Try another means of payment" = "Payment was declined for an unspecified reason. Try another means of payment";
+
+/* Title of the hub menu payments button */
+"Payments" = "Payments";
 
 /* Display label for pending order status.
    Display label for the review's pending status */
@@ -3547,6 +3591,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Display label for the product's private status */
 "Privately published" = "Privately published";
+
+/* Local notification title when the user encounters an error logging in with site address. */
+"Problems with logging in?" = "Problems with logging in?";
 
 /* Display label for processing order status. */
 "Processing" = "Processing";
@@ -4042,7 +4089,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for the product's catalog visibility */
 "Search results only" = "Search results only";
 
-/* Action button linking to a list of connected stores.Presented when logging in with a store address that does not match the account entered */
+/* Action button linking to a list of connected stores. Presented when logging in with a store address that does not have WooCommerce.
+   Action button linking to a list of connected stores.Presented when logging in with a store address that does not match the account entered */
 "See Connected Stores" = "See Connected Stores";
 
 /* Link title to see all paper size options */
@@ -4304,6 +4352,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility hint for Delete Shipment button in Order details screen */
 "Shows more options." = "Shows more options.";
 
+/* Button title. Takes the user the Enter site credentials screen. */
+"Sign in with site credentials" = "Sign in with site credentials";
+
+/* Button title. Takes the user to the site credentials entry screen. */
+"Sign in with store credentials" = "Sign in with store credentials";
+
 /* When social login fails, this button offers to let them signup for a new WordPress.com account */
 "Sign up" = "Sign up";
 
@@ -4543,6 +4597,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message from the in-person payment card reader prompting user to swipe their card */
 "Swipe Card" = "Swipe Card";
+
+/* Login onboarding survey option: switch between multiple Stores. */
+"Switch between multiple Stores" = "Switch between multiple Stores";
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "Switch Store";
@@ -5082,6 +5139,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Top Performers section title - this year */
 "This Year" = "This Year";
 
+/* Title of the badge shown when promoting an existing feature */
+"Tip" = "Tip";
+
 /* Add Product Category. Placeholder of cell presenting the title of the category.
    Placeholder in the Product Title row on Product form screen. */
 "Title" = "Title";
@@ -5227,6 +5287,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to try to collect a payment again. Presented to users after collecting a payment fails */
 "Try Collecting Again" = "Try Collecting Again";
 
+/* Title for the button on the Linked Products announcement banner */
+"Try it now" = "Try it now";
+
 /* Button to trigger connection to another account in store picker */
 "Try With Another Account" = "Try With Another Account";
 
@@ -5238,6 +5301,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message when a card is declined due to a potentially temporary problem. */
 "Trying again may succeed, or try another means of payment" = "Trying again may succeed, or try another means of payment";
+
+/* Login onboarding survey option: trying to set up a store. */
+"Trying to set up a store" = "Trying to set up a store";
 
 /* Settings > Manage Card Reader > Connect > Hint to power on reader */
 "Turn card reader on and place it next to mobile device" = "Turn card reader on and place it next to mobile device";
@@ -5597,6 +5663,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Step 1 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network." = "Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network.";
 
+/* Message displayed when checking whether a site has successfully installed WooCommerce */
+"Verifying installation..." = "Verifying installation...";
+
 /* Displays the connected reader software version */
 "Version: %1$@" = "Version: %1$@";
 
@@ -5790,6 +5859,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Content of the feedback banner on the coupon list screen */
 "We’ve been working on making it possible to view and edit coupons from your device!" = "We’ve been working on making it possible to view and edit coupons from your device!";
 
+/* Login onboarding survey title. */
+"What brings you to the WooCommerce app today?" = "What brings you to the WooCommerce app today?";
+
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "What email do I use to sign in?";
 
@@ -5802,6 +5874,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button in the CTA View about what is the WCShip extension */
 "What is WooCommerce Shipping?" = "What is WooCommerce Shipping?";
+
+/* Navigates to page with details about What is WordPress.com. */
+"What is WordPress.com?" = "What is WordPress.com?";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "What's my site address?";
@@ -5842,6 +5917,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation title of the webview which used by the merchant to update their store address */
 "WooCommerce Settings" = "WooCommerce Settings";
+
+/* Title for the WooCommerce Setup screen in the login flow */
+"WooCommerce Setup" = "WooCommerce Setup";
 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce Shipping";
@@ -5939,6 +6017,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Your receipt from %1$@" = "Your receipt from %1$@";
 
 /* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need...
+   Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have WooCommerce.The error would read: to use this app for your site you'll need...
    Placeholder for site url, if the url is unknown.Presented when logging in with a store address that does not match the account entered. */
 "your site" = "your site";
 

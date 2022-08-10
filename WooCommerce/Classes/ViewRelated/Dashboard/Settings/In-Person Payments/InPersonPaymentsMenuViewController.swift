@@ -1,22 +1,29 @@
 import UIKit
 import SwiftUI
 import Yosemite
+import Experiments
 
 final class InPersonPaymentsMenuViewController: UITableViewController {
+    private let stores: StoresManager
     private let pluginState: CardPresentPaymentsPluginState
     private var sections = [Section]()
     private let configurationLoader: CardPresentConfigurationLoader
     private let onPluginSelected: (CardPresentPaymentsPlugin) -> Void
     private let onPluginSelectionCleared: () -> Void
+    private let featureFlagService: FeatureFlagService
 
     init(
         pluginState: CardPresentPaymentsPluginState,
         onPluginSelected: @escaping (CardPresentPaymentsPlugin) -> Void,
-        onPluginSelectionCleared: @escaping () -> Void
+        onPluginSelectionCleared: @escaping () -> Void,
+        stores: StoresManager = ServiceLocator.stores,
+        featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService
     ) {
         self.pluginState = pluginState
         self.onPluginSelected = onPluginSelected
         self.onPluginSelectionCleared = onPluginSelectionCleared
+        self.stores = stores
+        self.featureFlagService = featureFlagService
         configurationLoader = CardPresentConfigurationLoader()
         super.init(style: .grouped)
     }
@@ -39,9 +46,18 @@ final class InPersonPaymentsMenuViewController: UITableViewController {
 private extension InPersonPaymentsMenuViewController {
     func configureSections() {
         sections = [
+            actionsSection,
             cardReadersSection,
             paymentOptionsSection
         ].compactMap { $0 }
+    }
+
+    var actionsSection: Section? {
+        guard featureFlagService.isFeatureFlagEnabled(.paymentsHubMenuSection) else {
+            return nil
+        }
+
+        return Section(header: Localization.paymentActionsSectionTitle, rows: [.collectPayment])
     }
 
     var cardReadersSection: Section? {
@@ -85,6 +101,8 @@ private extension InPersonPaymentsMenuViewController {
             configureManagePaymentGateways(cell: cell)
         case let cell as LeftImageTableViewCell where row == .cardReaderManuals:
             configureCardReaderManuals(cell: cell)
+        case let cell as LeftImageTableViewCell where row == .collectPayment:
+            configureCollectPayment(cell: cell)
         default:
             fatalError()
         }
@@ -116,6 +134,13 @@ private extension InPersonPaymentsMenuViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.configure(image: .cardReaderManualIcon, text: Localization.cardReaderManuals)
+    }
+
+    func configureCollectPayment(cell: LeftImageTableViewCell) {
+        cell.imageView?.tintColor = .text
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.configure(image: .moneyIcon, text: Localization.collectPayment)
     }
 }
 
@@ -153,6 +178,15 @@ extension InPersonPaymentsMenuViewController {
     func managePaymentGatewaysWasPressed() {
         ServiceLocator.analytics.track(.settingsCardPresentSelectedPaymentGatewayTapped)
         onPluginSelectionCleared()
+    }
+
+    func collectPaymentWasPressed() {
+        guard let siteID = stores.sessionManager.defaultStoreID,
+              let navigationController = navigationController else {
+            return
+        }
+
+        SimplePaymentsAmountFlowOpener.openSimplePaymentsAmountFlow(from: navigationController, siteID: siteID)
     }
 }
 
@@ -195,6 +229,8 @@ extension InPersonPaymentsMenuViewController {
             cardReaderManualsWasPressed()
         case .managePaymentGateways:
             managePaymentGatewaysWasPressed()
+        case .collectPayment:
+            collectPaymentWasPressed()
         }
     }
 }
@@ -210,6 +246,10 @@ private extension InPersonPaymentsMenuViewController {
         static let paymentOptionsSectionTitle = NSLocalizedString(
             "Payment options",
             comment: "Title for the section related to payments inside In-Person Payments settings")
+
+        static let paymentActionsSectionTitle = NSLocalizedString(
+            "Actions",
+            comment: "Title for the section related to actions inside In-Person Payments settings")
 
         static let orderCardReader = NSLocalizedString(
             "Order card reader",
@@ -230,6 +270,11 @@ private extension InPersonPaymentsMenuViewController {
             "Card Reader Manuals",
             comment: "Navigates to Card Reader Manuals screen"
         )
+
+        static let collectPayment = NSLocalizedString(
+            "Collect Payment",
+            comment: "Navigates to Collect a payment via the Simple Payment screen"
+        )
     }
 }
 
@@ -243,6 +288,7 @@ private enum Row: CaseIterable {
     case manageCardReader
     case cardReaderManuals
     case managePaymentGateways
+    case collectPayment
 
     var type: UITableViewCell.Type {
         switch self {

@@ -120,6 +120,10 @@ class BaseViewController: UIViewController {
         setupAnnouncementView()
     }
 
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+    }
+
     func setupView() {
         view.backgroundColor = UIColor.black.withAlphaComponent(0)
     }
@@ -137,9 +141,9 @@ class BaseViewController: UIViewController {
         let extraBottomSpace: CGFloat = navigationController?.view.safeAreaInsets.bottom ?? CGFloat(Layout.bottomSpace)
 
         controller.view.translatesAutoresizingMaskIntoConstraints = false
-        controller.view.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 300)
+        controller.view.frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height)
         controller.view.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
-        controller.view.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        controller.view.heightAnchor.constraint(equalToConstant: self.view.intrinsicContentSize.width + Layout.bottomSpace).isActive = true
         controller.view.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -extraBottomSpace).isActive = true
     }
 }

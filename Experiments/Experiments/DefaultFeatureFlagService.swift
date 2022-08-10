@@ -56,7 +56,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .loginPrologueOnboardingSurvey:
             return true
         case .loginMagicLinkEmphasis:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         default:
             return true
         }

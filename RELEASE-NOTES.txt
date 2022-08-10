@@ -3,6 +3,7 @@
 9.9
 -----
 - [*] [Sign in with store credentials]: New screen added with instructions to verify Jetpack connected email.
+- [*] Login: after entering WP.com email, a magic link is automatically sent when it is enabled (magic links are disabled for A8C emails and WP.com accounts with recently changed password) and a new screen is shown with an option to log in with password. [https://github.com/woocommerce/woocommerce-ios/pull/7449]
 
 
 9.8

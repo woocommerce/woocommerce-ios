@@ -2,7 +2,7 @@
 
 9.9
 -----
-- [*] [Sign in with store credentials]: New screen added with instructions to verify Jetpack connected email.
+- [*] [Sign in with store credentials]: New screen added with instructions to verify Jetpack connected email. [https://github.com/woocommerce/woocommerce-ios/pull/7424]
 
 
 9.8

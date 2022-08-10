@@ -589,14 +589,21 @@ private extension ProductFormViewController {
     }
 
     /// Recreates `tableViewDataSource` and reloads the `tableView` data.
+    /// - Parameters:
+    ///   - reloadClosure: custom tableView reload action, by default `reloadData()` will be triggered
     ///
-    func reconfigureDataSource(tableViewModel: ProductFormTableViewModel, statuses: [ProductImageStatus]) {
+    func reconfigureDataSource(tableViewModel: ProductFormTableViewModel, statuses: [ProductImageStatus], reloadClosure: (() -> Void)? = nil) {
         tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
                                                              productImageStatuses: statuses,
                                                              productUIImageLoader: productUIImageLoader)
         updateDataSourceActions()
         tableView.dataSource = tableViewDataSource
-        tableView.reloadData()
+
+        if let reloadClosure = reloadClosure {
+            reloadClosure()
+        } else {
+            tableView.reloadData()
+        }
     }
 
     func updateDataSourceActions() {

@@ -114,7 +114,7 @@ class AuthenticationManager: Authentication {
                                                               textColor: .text,
                                                               textSubtleColor: .textSubtle,
                                                               textButtonColor: .accent,
-                                                              textButtonHighlightColor: .accent,
+                                                              textButtonHighlightColor: .accentDark,
                                                               viewControllerBackgroundColor: .basicBackground,
                                                               prologueButtonsBackgroundColor: .authPrologueBottomBackgroundColor,
                                                               prologueViewBackgroundColor: .authPrologueBottomBackgroundColor,

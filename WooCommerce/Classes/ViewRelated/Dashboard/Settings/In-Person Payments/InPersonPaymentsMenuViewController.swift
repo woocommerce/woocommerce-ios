@@ -165,7 +165,9 @@ private extension InPersonPaymentsMenuViewController {
         tableView.dataSource = self
         tableView.delegate = self
 
-        setupBottomActivityIndicator()
+        if featureFlagService.isFeatureFlagEnabled(.paymentsHubMenuSection) {
+            setupBottomActivityIndicator()
+        }
     }
 
     func setupBottomActivityIndicator() {

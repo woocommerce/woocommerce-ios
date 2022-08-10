@@ -95,13 +95,11 @@ private extension AddOrderCoordinator {
     }
 }
 
-// Temporary, for testing -> ReusableViews: SwiftUI Components
-final class FeatureRedirectionNoticeHostingController: UIHostingController<BadgeView> {
+final class FeatureRedirectionNoticeHostingController: UIHostingController<BottomAnnouncementView> {
     init() {
-        super.init(rootView: BadgeView(type: BadgeView.BadgeType.tip))
+        super.init(rootView: BottomAnnouncementView())
     }
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
-

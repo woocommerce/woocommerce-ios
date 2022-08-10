@@ -586,14 +586,12 @@ private extension AuthenticationManager {
                         return .invalidEmailFromWPComLogin
                     case .wpComSiteAddress:
                         return .invalidEmailFromSiteAddressLogin
-                    default:
-                        return .unknown
                     }
                 case .invalidWPComPassword(let source):
                     switch source {
-                    case .wpCom, .googleAuth:
+                    case .wpCom:
                         return .invalidPasswordFromWPComLogin
-                    case .wpComSiteAddress, .wpComSiteCredentials:
+                    case .wpComSiteAddress:
                         return .invalidPasswordFromSiteAddressLogin
                     }
                 }

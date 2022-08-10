@@ -2,12 +2,18 @@ import SwiftUI
 
 struct BottomAnnouncementView: View {
     @Environment(\.presentationMode) private var presentation
+
     var body: some View {
-        Text(Localization.title)
-        Text(Localization.message)
-        Button(Localization.okButton) {
-            presentation.wrappedValue.dismiss()
+        GeometryReader { geo in
+            VStack {
+                Text(Localization.title)
+                Text(Localization.message)
+                Button(Localization.okButton) {
+                    presentation.wrappedValue.dismiss()
+                }
+            }
         }
+        .onAppear { print("SwiftUI view appeared")}
     }
 }
 

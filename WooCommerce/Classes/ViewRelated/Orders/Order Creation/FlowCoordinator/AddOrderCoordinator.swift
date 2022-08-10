@@ -71,10 +71,10 @@ private extension AddOrderCoordinator {
     /// Presents `FeatureRedirectionNoticeHostingController` modally.
     ///
     func test_featureRedirectionNoticeToHubMenu() {
-        // 1 - Present the "we've moved this" sheet
-        let viewController = FeatureRedirectionNoticeHostingController()
-        navigationController.present(viewController, animated: true)
-        // 2 - redirect the merchant by using app's tabbarcontroller
+        // 1 - Setup base UIView and announcement View via hosting controller
+        let baseViewController = BaseViewController()
+        navigationController.present(baseViewController, animated: true)
+        // 3 - Redirect the merchant by using app's tabbarcontroller
         let mainTabBarController = AppDelegate.shared.tabBarController
         mainTabBarController?.navigateTo(.hubMenu)
 
@@ -98,11 +98,23 @@ private extension AddOrderCoordinator {
     }
 }
 
-final class FeatureRedirectionNoticeHostingController: UIHostingController<BottomAnnouncementView> {
-    init() {
-        super.init(rootView: BottomAnnouncementView())
+class BaseViewController: UIViewController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupStuff()
+        addAnnouncementView()
     }
-    required dynamic init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }    
+    func setupStuff() {
+        view.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+    }
+    func addAnnouncementView() {
+        let announcementView = BottomAnnouncementView()
+        let controller = UIHostingController(rootView: announcementView)
+        addChild(controller)
+        controller.view.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(controller.view)
+        controller.didMove(toParent: self)
+        controller.view.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        controller.view.widthAnchor.constraint(equalToConstant: 300).isActive = true
+    }
 }

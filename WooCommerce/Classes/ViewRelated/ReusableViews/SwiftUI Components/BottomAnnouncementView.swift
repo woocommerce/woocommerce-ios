@@ -2,12 +2,10 @@ import SwiftUI
 
 struct BottomAnnouncementView: View {
     @Environment(\.presentationMode) private var presentation
-
     var body: some View {
         Text(Localization.title)
         Text(Localization.message)
         Button(Localization.okButton) {
-            //print("Button tapped")
             presentation.wrappedValue.dismiss()
         }
     }

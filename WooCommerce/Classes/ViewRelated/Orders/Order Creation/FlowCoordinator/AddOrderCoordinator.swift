@@ -56,7 +56,6 @@ private extension AddOrderCoordinator {
     func presentOrderCreationFlow(bottomSheetOrderType: BottomSheetOrderType) {
         switch bottomSheetOrderType {
         case .simple:
-            //presentSimplePaymentsAmountController()
             test_featureRedirectionNoticeToHubMenu()
         case .full:
             presentNewOrderController()
@@ -72,10 +71,14 @@ private extension AddOrderCoordinator {
     /// Presents `FeatureRedirectionNoticeHostingController` modally.
     ///
     func test_featureRedirectionNoticeToHubMenu() {
+        // 1 - Present the "we've moved this" sheet
         let viewController = FeatureRedirectionNoticeHostingController()
-        navigationController.present(viewController, animated: true) // presents modally
-    }
+        navigationController.present(viewController, animated: true)
+        // 2 - redirect the merchant by using app's tabbarcontroller
+        let mainTabBarController = AppDelegate.shared.tabBarController
+        mainTabBarController?.navigateTo(.hubMenu)
 
+    }
     /// Presents `OrderFormHostingController`.
     ///
     func presentNewOrderController() {
@@ -101,11 +104,5 @@ final class FeatureRedirectionNoticeHostingController: UIHostingController<Botto
     }
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        // iOS 14 still doesn't have support for SwiftUI half-modals. Workaround. Nope, this is iOS 15+
-        //if let presentation = sheetPresentationController {}
-    }
-    
+    }    
 }

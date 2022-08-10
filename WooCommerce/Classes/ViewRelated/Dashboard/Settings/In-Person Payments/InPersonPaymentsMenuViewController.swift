@@ -6,14 +6,22 @@ import Combine
 
 final class InPersonPaymentsMenuViewController: UITableViewController {
     private let stores: StoresManager
-    private let pluginState: CardPresentPaymentsPluginState?
+    private var pluginState: CardPresentPaymentsPluginState?
     private var sections = [Section]()
     private let configurationLoader: CardPresentConfigurationLoader
     private let onPluginSelected: ((CardPresentPaymentsPlugin) -> Void)?
     private let onPluginSelectionCleared: (() -> Void)?
     private let featureFlagService: FeatureFlagService
-    private let cardPresentPaymentsReadinessUseCase: CardPresentPaymentsReadinessUseCase
+    private let cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCase
     private var cancellables: Set<AnyCancellable> = []
+
+    private let cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting = CardPresentPaymentsOnboardingPresenter()
+
+    private lazy var noticePresenter: DefaultNoticePresenter = {
+        let noticePresenter = DefaultNoticePresenter()
+        noticePresenter.presentingViewController = navigationController
+        return noticePresenter
+    }()
 
     init(
         pluginState: CardPresentPaymentsPluginState?,
@@ -27,9 +35,9 @@ final class InPersonPaymentsMenuViewController: UITableViewController {
         self.onPluginSelectionCleared = onPluginSelectionCleared
         self.stores = stores
         self.featureFlagService = featureFlagService
-        self.cardPresentPaymentsReadinessUseCase = CardPresentPaymentsReadinessUseCase(onboardingUseCase: CardPresentPaymentsOnboardingUseCase(stores: stores),
-                                                                                       stores: stores)
+        self.cardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase()
         configurationLoader = CardPresentConfigurationLoader()
+
         super.init(style: .grouped)
     }
 
@@ -51,10 +59,54 @@ final class InPersonPaymentsMenuViewController: UITableViewController {
 
 private extension InPersonPaymentsMenuViewController {
     func listenToCardPaymentReadiness() {
-        cardPresentPaymentsReadinessUseCase.$readiness.sink(receiveValue: { [weak self] readiness in
-            self?.animateBottomActivityIndicator(readiness == .loading)
-            self?.tableView.reloadData()
+        cardPresentPaymentsOnboardingUseCase.refresh()
+
+        cardPresentPaymentsOnboardingUseCase.$state.sink(receiveValue: { [weak self] state in
+            guard let self = self else { return }
+
+            debugPrint("state", state)
+
+            guard state != .loading else {
+                self.animateBottomActivityIndicator(true)
+
+                return
+            }
+
+            switch state {
+            case let .completed(newPluginState):
+                self.pluginState = newPluginState
+            default:
+                DispatchQueue.main.async {
+                    self.showCardPresentPaymentsOnboardingNotice()
+                }
+            }
+
+            self.animateBottomActivityIndicator(false)
+            self.configureSections()
+            self.tableView.reloadData()
+
         }).store(in: &cancellables)
+    }
+
+    func showCardPresentPaymentsOnboardingNotice() {
+        let notice = Notice(title: "",
+                            message: Localization.inPersonPaymentsSetupNotFinishedNotice,
+                            feedbackType: .error,
+                            actionTitle: Localization.inPersonPaymentsSetupNotFinishedNoticeButtonTitle,
+                            actionHandler: {
+            guard let navigationController = self.navigationController else {
+                return
+            }
+
+            self.cardPresentPaymentsOnboardingPresenter.showOnboardingIfRequired(
+                from: navigationController) { [weak self] in
+                    debugPrint("finish onboarding")
+                    //self?.tableView.reloadData()
+                    self?.cardPresentPaymentsOnboardingUseCase.refresh()
+                }
+        })
+
+        self.noticePresenter.enqueue(notice: notice)
     }
 }
 
@@ -103,10 +155,7 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     func setupBottomActivityIndicator() {
-        let activityIndicator = UIActivityIndicatorView(style: .medium)
-        //activityIndicator.startAnimating()
-
-        tableView.tableFooterView = activityIndicator
+        tableView.tableFooterView = UIActivityIndicatorView(style: .medium)
     }
 
     /// Assumes that the activity indicator was previously setup into the table view footer
@@ -152,7 +201,7 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     func configureManageCardReader(cell: LeftImageTableViewCell) {
-        let cellShouldBeEnabled = cardPresentPaymentsReadinessUseCase.readiness == .ready
+        let cellShouldBeEnabled = cardPresentPaymentsOnboardingUseCase.state.isCompleted
         cell.imageView?.tintColor = .text
         cell.accessoryType = cellShouldBeEnabled ? .disclosureIndicator : .none
         cell.selectionStyle = .default
@@ -325,6 +374,16 @@ private extension InPersonPaymentsMenuViewController {
         static let collectPayment = NSLocalizedString(
             "Collect Payment",
             comment: "Navigates to Collect a payment via the Simple Payment screen"
+        )
+
+        static let inPersonPaymentsSetupNotFinishedNotice = NSLocalizedString(
+            "ℹ️ We've noticed that you have not yet finished the In-Person Payments setup.",
+            comment: "Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled"
+        )
+
+        static let inPersonPaymentsSetupNotFinishedNoticeButtonTitle = NSLocalizedString(
+            "Continue Setup",
+            comment: "Call to Action to finish the setup of In-Person Payments in the Menu"
         )
     }
 }

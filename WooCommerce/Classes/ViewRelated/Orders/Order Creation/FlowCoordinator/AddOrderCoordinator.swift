@@ -102,4 +102,10 @@ final class FeatureRedirectionNoticeHostingController: UIHostingController<Botto
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        // iOS 14 still doesn't have support for SwiftUI half-modals. Workaround. Nope, this is iOS 15+
+        //if let presentation = sheetPresentationController {}
+    }
+    
 }

@@ -687,7 +687,7 @@ private extension StorePickerViewController {
         let viewModel = NoWooErrorViewModel(
             siteURL: site.url,
             showsConnectedStores: false, // avoid looping from store picker > no woo > store picker
-            showsInstallButton: site.isJetpackConnected,
+            showsInstallButton: site.isJetpackConnected && site.isJetpackThePluginInstalled,
             onSetupCompletion: { [weak self] siteID in
                 guard let self = self else { return }
                 self.navigationController?.popViewController(animated: true)

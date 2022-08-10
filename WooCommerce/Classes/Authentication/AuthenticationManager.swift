@@ -43,6 +43,7 @@ class AuthenticationManager: Authentication {
     /// Initializes the WordPress Authenticator.
     ///
     func initialize() {
+        let isWPComMagicLinkPreferredToPassword = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasis)
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
                                                                 wpcomScheme: ApiCredentials.dotcomAuthScheme,
@@ -60,7 +61,8 @@ class AuthenticationManager: Authentication {
                                                                 enableUnifiedAuth: true,
                                                                 continueWithSiteAddressFirst: true,
                                                                 enableSiteCredentialsLoginForSelfHostedSites: true,
-                                                                isWPComLoginRequiredForSiteCredentialsLogin: true)
+                                                                isWPComLoginRequiredForSiteCredentialsLogin: true,
+                                                                isWPComMagicLinkPreferredToPassword: isWPComMagicLinkPreferredToPassword)
 
         let systemGray3LightModeColor = UIColor(red: 199/255.0, green: 199/255.0, blue: 204/255.0, alpha: 1)
         let systemLabelLightModeColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)
@@ -584,12 +586,14 @@ private extension AuthenticationManager {
                         return .invalidEmailFromWPComLogin
                     case .wpComSiteAddress:
                         return .invalidEmailFromSiteAddressLogin
+                    default:
+                        return .unknown
                     }
                 case .invalidWPComPassword(let source):
                     switch source {
-                    case .wpCom:
+                    case .wpCom, .googleAuth:
                         return .invalidPasswordFromWPComLogin
-                    case .wpComSiteAddress:
+                    case .wpComSiteAddress, .wpComSiteCredentials:
                         return .invalidPasswordFromSiteAddressLogin
                     }
                 }

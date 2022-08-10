@@ -24,20 +24,23 @@ final class StorePickerViewModel {
 
     private let storageManager: StorageManagerType
     private let stores: StoresManager
+    private let analytics: Analytics
 
     init(configuration: StorePickerConfiguration,
          stores: StoresManager = ServiceLocator.stores,
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.configuration = configuration
         self.stores = stores
         self.storageManager = storageManager
+        self.analytics = analytics
     }
 
     func trackScreenView() {
         let objects = resultsController.fetchedObjects
         let stores = objects.filter { $0.isWooCommerceActive == true }
         let nonWooSites = objects.filter { $0.isWooCommerceActive == false }
-        ServiceLocator.analytics.track(.sitePickerStoresShown, withProperties: [
+        analytics.track(.sitePickerStoresShown, withProperties: [
             "num_of_stores": stores.count,
             "number_of_non_woo_sites": nonWooSites.count
         ])

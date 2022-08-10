@@ -56,7 +56,7 @@ private extension AddOrderCoordinator {
     func presentOrderCreationFlow(bottomSheetOrderType: BottomSheetOrderType) {
         switch bottomSheetOrderType {
         case .simple:
-            test_featureRedirectionNoticeToHubMenu()
+            presentBottomAnnouncement()
         case .full:
             presentNewOrderController()
             return
@@ -68,17 +68,22 @@ private extension AddOrderCoordinator {
     func presentSimplePaymentsAmountController() {
         SimplePaymentsAmountFlowOpener.openSimplePaymentsAmountFlow(from: navigationController, siteID: siteID)
     }
-    /// Presents `FeatureRedirectionNoticeHostingController` modally.
+
+    /// Presents `BottomAnnouncementView`UIHostingController  modally.
     ///
-    func test_featureRedirectionNoticeToHubMenu() {
-        // 1 - Setup base UIView and announcement View via hosting controller
+    func presentBottomAnnouncement() {
         let baseViewController = BaseViewController()
+        baseViewController.completionHandler = redirectToHubMenu
         navigationController.present(baseViewController, animated: true)
-        // 3 - Redirect the merchant by using app's tabbarcontroller
+    }
+
+    /// Redirects to `HubMenu`tabBar
+    ///
+    func redirectToHubMenu() {
         let mainTabBarController = AppDelegate.shared.tabBarController
         mainTabBarController?.navigateTo(.hubMenu)
-
     }
+
     /// Presents `OrderFormHostingController`.
     ///
     func presentNewOrderController() {
@@ -99,22 +104,30 @@ private extension AddOrderCoordinator {
 }
 
 class BaseViewController: UIViewController {
+    /// Assign this closure for a callback method when the BottomAnnouncementView button is tapped
+    ///
+    var completionHandler: (() -> Void)? = nil
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupStuff()
+        setupView()
         addAnnouncementView()
     }
-    func setupStuff() {
-        view.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+
+    func setupView() {
+        view.backgroundColor = UIColor.black.withAlphaComponent(0)
     }
+
     func addAnnouncementView() {
-        let announcementView = BottomAnnouncementView()
+        let announcementView = BottomAnnouncementView(completionHandler: completionHandler)
         let controller = UIHostingController(rootView: announcementView)
         addChild(controller)
         controller.view.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(controller.view)
         controller.didMove(toParent: self)
+        controller.view.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 300)
+        controller.view.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
         controller.view.heightAnchor.constraint(equalToConstant: 100).isActive = true
-        controller.view.widthAnchor.constraint(equalToConstant: 300).isActive = true
+        controller.view.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -200).isActive = true
     }
 }

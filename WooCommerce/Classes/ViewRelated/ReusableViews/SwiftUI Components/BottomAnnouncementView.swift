@@ -2,6 +2,7 @@ import SwiftUI
 
 struct BottomAnnouncementView: View {
     @Environment(\.presentationMode) private var presentation
+    var completionHandler: (() -> Void)?
 
     var body: some View {
         GeometryReader { geo in
@@ -9,11 +10,13 @@ struct BottomAnnouncementView: View {
                 Text(Localization.title)
                 Text(Localization.message)
                 Button(Localization.okButton) {
+                    if let completionHandler = completionHandler {
+                        completionHandler()
+                    }
                     presentation.wrappedValue.dismiss()
                 }
             }
         }
-        .onAppear { print("SwiftUI view appeared")}
     }
 }
 

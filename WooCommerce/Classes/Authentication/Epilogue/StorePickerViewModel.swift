@@ -42,7 +42,7 @@ final class StorePickerViewModel {
         let nonWooSites = objects.filter { $0.isWooCommerceActive == false }
         analytics.track(.sitePickerStoresShown, withProperties: [
             "num_of_stores": stores.count,
-            "number_of_non_woo_sites": nonWooSites.count
+            "num_of_non_woo_sites": nonWooSites.count
         ])
     }
 

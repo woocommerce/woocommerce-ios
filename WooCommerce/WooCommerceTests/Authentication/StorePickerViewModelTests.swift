@@ -177,7 +177,7 @@ final class StorePickerViewModelTests: XCTestCase {
         let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "site_picker_stores_shown" }))
         let properties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
         XCTAssertEqual(properties["num_of_stores"] as? Int, 2)
-        XCTAssertEqual(properties["number_of_non_woo_sites"] as? Int, 1)
+        XCTAssertEqual(properties["num_of_non_woo_sites"] as? Int, 1)
     }
 }
 

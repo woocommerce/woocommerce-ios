@@ -237,6 +237,38 @@ final class SettingsViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.removeAppleIDAccess) })
     }
+
+    func test_sections_when_paymentsHubMenuSection_is_enabled_then_it_hides_inPersonPayments_row() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isPaymentsHubMenuSectionEnabled: true)
+        let appleIDCredentialChecker = MockAppleIDCredentialChecker(hasAppleUserID: true)
+        let viewModel = SettingsViewModel(stores: stores,
+                                          storageManager: storageManager,
+                                          featureFlagService: featureFlagService,
+                                          appleIDCredentialChecker: appleIDCredentialChecker)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.inPersonPayments) })
+    }
+
+    func test_sections_when_paymentsHubMenuSection_is_not_enabled_then_it_shows_inPersonPayments_row() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isPaymentsHubMenuSectionEnabled: false)
+        let appleIDCredentialChecker = MockAppleIDCredentialChecker(hasAppleUserID: true)
+        let viewModel = SettingsViewModel(stores: stores,
+                                          storageManager: storageManager,
+                                          featureFlagService: featureFlagService,
+                                          appleIDCredentialChecker: appleIDCredentialChecker)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.inPersonPayments) })
+    }
 }
 
 private final class MockSettingsPresenter: SettingsViewPresenter {

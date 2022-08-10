@@ -647,6 +647,7 @@ extension StorePickerViewController: UITableViewDelegate {
         }
 
         guard site.isWooCommerceActive else {
+            ServiceLocator.analytics.track(.sitePickerNonWooSiteTapped, withProperties: ["is_non_atomic": site.isJetpackConnected])
             tableView.deselectRow(at: indexPath, animated: true)
             showNoWooError(for: site)
             return

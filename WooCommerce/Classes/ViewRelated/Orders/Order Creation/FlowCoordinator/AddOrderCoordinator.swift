@@ -84,8 +84,10 @@ private extension AddOrderCoordinator {
     /// Redirects to `HubMenu`tabBar
     ///
     func redirectToHubMenu() {
-        let mainTabBarController = AppDelegate.shared.tabBarController
-        mainTabBarController?.navigateTo(.hubMenu)
+        guard let mainTabBarController = AppDelegate.shared.tabBarController else {
+            return
+        }
+        mainTabBarController.navigateTo(.hubMenu)
     }
 
     /// Presents `OrderFormHostingController`.
@@ -115,20 +117,24 @@ class BaseViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
-        addAnnouncementView()
+        setupAnnouncementView()
     }
 
     func setupView() {
         view.backgroundColor = UIColor.black.withAlphaComponent(0)
     }
 
-    func addAnnouncementView() {
+    func setupAnnouncementView() {
         let announcementView = BottomAnnouncementView(completionHandler: completionHandler)
         let controller = UIHostingController(rootView: announcementView)
         addChild(controller)
-        controller.view.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(controller.view)
         controller.didMove(toParent: self)
+        setupConstraints(for: controller)
+    }
+
+    func setupConstraints(for controller: UIHostingController<BottomAnnouncementView>) {
+        controller.view.translatesAutoresizingMaskIntoConstraints = false
         controller.view.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 300)
         controller.view.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
         controller.view.heightAnchor.constraint(equalToConstant: 100).isActive = true

@@ -1,5 +1,3 @@
-
-
 <h1 align="center"><img src="docs/images/logo-woocommerce.svg" width="300"><br>for iOS</h1>
 
 <p align="center">A Jetpack-powered companion app for WooCommerce.</p>
@@ -83,7 +81,7 @@ Please, remember to not add this information on your commits and PRs.
     - [Networking](docs/NETWORKING.md)
     - [Storage](docs/STORAGE.md)
     - [Yosemite](docs/YOSEMITE.md)
-    - [Hardware](docs/HARDWARE.md)    
+    - [Hardware](docs/HARDWARE.md)
 - Coding Guidelines
     - [Coding Style](docs/coding-style-guide.md)
     - [Naming Conventions](docs/naming-conventions.md)

@@ -559,7 +559,9 @@ private extension StorePickerViewController {
         guard ServiceLocator.stores.isAuthenticated else {
             return
         }
-        ABTest.start()
+        Task { @MainActor in
+            await ABTest.start()
+        }
     }
 }
 

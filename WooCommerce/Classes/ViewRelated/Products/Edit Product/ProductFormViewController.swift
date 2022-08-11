@@ -773,6 +773,10 @@ private extension ProductFormViewController {
                 // Dismisses the in-progress UI, then presents the confirmation alert.
                 self?.navigationController?.dismiss(animated: true, completion: nil)
                 self?.presentProductConfirmationSaveAlert()
+
+                // Show linked products promo banner after product save
+                (self?.viewModel as? ProductFormViewModel)?.isLinkedProductsPromoEnabled = true
+                self?.reloadLinkedPromoCellAnimated()
             }
         }
     }

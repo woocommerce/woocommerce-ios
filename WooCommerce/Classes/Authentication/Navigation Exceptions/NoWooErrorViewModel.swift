@@ -64,6 +64,8 @@ final class NoWooErrorViewModel: ULErrorViewModel {
             viewController.navigationController?.popViewController(animated: true)
             self.showInProgressView(in: viewController)
             self.handleSetupCompletion(in: viewController)
+        }, onDismiss: {
+            viewController.navigationController?.popViewController(animated: true)
         })
         let setupViewController = PluginSetupWebViewController(viewModel: viewModel)
         viewController.navigationController?.show(setupViewController, sender: nil)

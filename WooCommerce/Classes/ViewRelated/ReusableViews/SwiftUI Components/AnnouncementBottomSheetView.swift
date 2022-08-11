@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct BottomAnnouncementView: View {
+struct AnnouncementBottomSheetView: View {
     @Environment(\.presentationMode) private var presentation
 
     var buttonTapped: (() -> Void)?
@@ -33,7 +33,7 @@ struct BottomAnnouncementView: View {
     }
 }
 
-extension BottomAnnouncementView {
+extension AnnouncementBottomSheetView {
     enum Localization {
         static let title = NSLocalizedString("Payments from the Menu tab",
                                              comment: "Title of the bottom announcement modal when a merchant taps on Simple Payment")

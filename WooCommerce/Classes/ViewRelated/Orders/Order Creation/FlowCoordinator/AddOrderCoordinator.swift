@@ -10,8 +10,8 @@ final class AddOrderCoordinator: Coordinator {
     private let siteID: Int64
     private let sourceBarButtonItem: UIBarButtonItem?
     private let sourceView: UIView?
-    private lazy var baseViewController: BaseViewController = {
-        BaseViewController()
+    private lazy var baseViewController: AnnouncementBottomSheetViewController = {
+        AnnouncementBottomSheetViewController()
     }()
 
     /// Assign this closure to be notified when a new order is created
@@ -113,7 +113,7 @@ private extension AddOrderCoordinator {
     }
 }
 
-class BaseViewController: UIViewController {
+class AnnouncementBottomSheetViewController: UIViewController {
     /// Assign this closure for a callback method when the BottomAnnouncementView button is tapped
     ///
     var completionHandler: (() -> Void)? = nil
@@ -128,7 +128,7 @@ class BaseViewController: UIViewController {
     }
 
     func setupAnnouncementView() {
-        let announcementView = BottomAnnouncementView(buttonTapped: completionHandler)
+        let announcementView = AnnouncementBottomSheetView(buttonTapped: completionHandler)
         let controller = UIHostingController(rootView: announcementView)
         addChild(controller)
         view.addSubview(controller.view)
@@ -136,7 +136,7 @@ class BaseViewController: UIViewController {
         setupConstraints(for: controller)
     }
 
-    func setupConstraints(for controller: UIHostingController<BottomAnnouncementView>) {
+    func setupConstraints(for controller: UIHostingController<AnnouncementBottomSheetView>) {
         controller.view.translatesAutoresizingMaskIntoConstraints = false
         controller.view.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
         controller.view.heightAnchor.constraint(equalToConstant: self.view.intrinsicContentSize.width + Layout.bottomSpace).isActive = true
@@ -144,7 +144,7 @@ class BaseViewController: UIViewController {
     }
 }
 
-extension BaseViewController: DrawerPresentable {
+extension AnnouncementBottomSheetViewController: DrawerPresentable {
     var collapsedHeight: DrawerHeight {
         return .contentHeight(200)
     }
@@ -154,7 +154,7 @@ extension BaseViewController: DrawerPresentable {
     }
 }
 
-private extension BaseViewController {
+private extension AnnouncementBottomSheetViewController {
     enum Layout {
         static let bottomSpace: CGFloat = 100
     }

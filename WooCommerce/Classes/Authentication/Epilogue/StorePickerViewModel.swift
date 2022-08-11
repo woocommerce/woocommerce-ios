@@ -116,10 +116,13 @@ extension StorePickerViewModel {
             return nil
         }
 
+        // Section name derived from results controller's `sectionNameKeyPath`
         guard let rawStatus = resultsController.sections[safe: index]?.name else {
             return nil
         }
 
+        // The value is returned as either 0 or 1 in String,
+        // so the trick is to convert it to NSString and get the `boolValue`.
         let isWooCommerceActive = (rawStatus as NSString).boolValue
         if isWooCommerceActive {
             return multipleStoresAvailable ? Localization.pickStore : Localization.connectedStore

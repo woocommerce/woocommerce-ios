@@ -12,8 +12,8 @@ final class StorePickerViewModelTests: XCTestCase {
     }
 
     override func tearDown() {
-        super.tearDown()
         storageManager = nil
+        super.tearDown()
     }
 
     func test_multipleStoresAvailable_is_correct_for_single_store() {

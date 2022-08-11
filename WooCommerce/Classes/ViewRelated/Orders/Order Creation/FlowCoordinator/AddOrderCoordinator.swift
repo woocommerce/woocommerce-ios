@@ -4,12 +4,17 @@ import Combine
 import SwiftUI
 import WordPressUI
 
+/// Manages the different navigation flows that start from the Orders view
+///
 final class AddOrderCoordinator: Coordinator {
     var navigationController: UINavigationController
 
     private let siteID: Int64
     private let sourceBarButtonItem: UIBarButtonItem?
     private let sourceView: UIView?
+
+    /// We need to keep a reference to AnnouncementBottomSheetViewController in order to use it as child of the WordPressUI BottomSheetViewController component later on
+    ///
     private lazy var baseViewController: AnnouncementBottomSheetViewController = {
         AnnouncementBottomSheetViewController()
     }()
@@ -144,6 +149,8 @@ class AnnouncementBottomSheetViewController: UIViewController {
     }
 }
 
+/// `BottomSheetViewController` conformance
+///
 extension AnnouncementBottomSheetViewController: DrawerPresentable {
     var collapsedHeight: DrawerHeight {
         return .contentHeight(200)

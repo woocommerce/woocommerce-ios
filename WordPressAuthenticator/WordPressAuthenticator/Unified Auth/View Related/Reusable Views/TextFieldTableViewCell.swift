@@ -56,7 +56,13 @@ final class TextFieldTableViewCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
 
+        textField.keyboardType = .default
+        textField.returnKeyType = .default
+        setSecureTextEntry(false)
+        showSecureTextEntryToggle = false
         textField.rightView = nil
+        textField.accessibilityLabel = nil
+        textField.accessibilityIdentifier = nil
     }
 }
 

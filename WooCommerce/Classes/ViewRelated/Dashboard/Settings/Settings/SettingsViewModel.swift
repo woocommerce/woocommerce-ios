@@ -223,12 +223,24 @@ private extension SettingsViewModel {
         }()
 
         // Store settings
-        let storeSettingsSection: Section = {
-            var rows: [Row] = upsellCardReadersAnnouncementViewModel.shouldBeVisible ? [.upsellCardReadersFeatureAnnouncement] : []
-            rows.append(.inPersonPayments)
+        let storeSettingsSection: Section? = {
+            var rows: [Row] = []
+
+            if !featureFlagService.isFeatureFlagEnabled(.paymentsHubMenuSection) {
+                if upsellCardReadersAnnouncementViewModel.shouldBeVisible {
+                    rows.append(.upsellCardReadersFeatureAnnouncement)
+                }
+
+                rows.append(.inPersonPayments)
+            }
+
             if stores.sessionManager.defaultSite?.isJetpackCPConnected == true,
                 featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport) {
                 rows.append(.installJetpack)
+            }
+
+            guard rows.isNotEmpty else {
+                return nil
             }
 
             return Section(title: Localization.storeSettingsTitle,

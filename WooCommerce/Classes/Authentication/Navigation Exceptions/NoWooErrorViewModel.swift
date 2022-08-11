@@ -62,6 +62,7 @@ final class NoWooErrorViewModel: ULErrorViewModel {
         let viewModel = WooSetupWebViewModel(siteURL: site.url, onCompletion: { [weak self] in
             guard let self = self else { return }
             viewController.navigationController?.popViewController(animated: true)
+            self.showInProgressView(in: viewController)
             self.handleSetupCompletion(in: viewController)
         })
         let setupViewController = PluginSetupWebViewController(viewModel: viewModel)
@@ -91,24 +92,28 @@ final class NoWooErrorViewModel: ULErrorViewModel {
 // MARK: - Private helpers
 private extension NoWooErrorViewModel {
     func handleSetupCompletion(in viewController: UIViewController, retryCount: Int = 0) {
-        showInProgressView(in: viewController)
-
-        ServiceLocator.stores.synchronizeEntities { [weak self] in
+        let action = AccountAction.synchronizeSites(selectedSiteID: site.siteID, isJetpackConnectionPackageSupported: true) { [weak self] _ in
             guard let self = self else { return }
-            // dismisses the in-progress view
-            viewController.navigationController?.dismiss(animated: true)
 
             let matcher = ULAccountMatcher()
             matcher.refreshStoredSites()
             guard let site = matcher.matchedSite(originalURL: self.site.url),
                   site.isWooCommerceActive else {
                 if retryCount < 2 {
-                    return self.handleSetupCompletion(in: viewController, retryCount: retryCount + 1)
+                    // delays for 2 seconds to buy some time for the data to be synced
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        return self.handleSetupCompletion(in: viewController, retryCount: retryCount + 1)
+                    }
                 }
+                // dismisses the in-progress view
+                viewController.navigationController?.dismiss(animated: true)
                 return self.showSetupErrorNotice(in: viewController)
             }
+            // dismisses the in-progress view
+            viewController.navigationController?.dismiss(animated: true)
             self.setupCompletionHandler(site.siteID)
         }
+        stores.dispatch(action)
     }
 
     func showInProgressView(in viewController: UIViewController) {

@@ -142,7 +142,7 @@ extension StorePickerViewModel {
 
     /// Returns the site to be displayed at a given IndexPath
     ///
-    func site(at indexPath: IndexPath) -> Yosemite.Site? {
+    func site(at indexPath: IndexPath) -> Site? {
         guard resultsController.numberOfObjects > 0 else {
             return nil
         }

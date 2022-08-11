@@ -71,6 +71,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Yosemite Initialization
         synchronizeEntitiesIfPossible()
 
+        // Upgrade check...
+        checkForUpgrades()
+
         // Since we are using Injection for refreshing the content of the app in debug mode,
         // we are going to enable Inject.animation that will be used when
         // ever new source code is injected into our application.
@@ -81,15 +84,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
-        Task { @MainActor in
-            await startABTesting()
-
-            // Upgrade check...
-            // This has to be called after A/B testing setup in `startABTesting` if any of the Tracks events
-            // in `checkForUpgrades` is used as an exposure event for an experiment.
-            // For example, `application_installed` could be the exposure event for logged-out experiments.
-            checkForUpgrades()
-        }
+        startABTesting()
 
         // Setup the Interface!
         setupMainWindow()
@@ -372,8 +367,8 @@ private extension AppDelegate {
 
     /// Starts the AB testing platform
     ///
-    func startABTesting() async {
-        await ABTest.start()
+    func startABTesting() {
+        ABTest.start()
     }
 }
 

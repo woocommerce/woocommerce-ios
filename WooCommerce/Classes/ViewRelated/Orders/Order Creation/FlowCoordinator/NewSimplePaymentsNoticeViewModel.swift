@@ -1,8 +1,8 @@
 import SwiftUI
 
-class NewSimplePaymentsNoticeViewModel {
+final class NewSimplePaymentsNoticeViewModel {
 
-    let simplePaymentsNoticeView: NewSimplePaymentsNoticeView
+    private let simplePaymentsNoticeView: NewSimplePaymentsNoticeView
 
     /// Redirects to `HubMenu`tabBar
     ///
@@ -25,7 +25,7 @@ class NewSimplePaymentsNoticeViewModel {
         setupConstraints(for: hostingController, with: viewController)
     }
 
-    func setupConstraints(for hostingController: UIHostingController<NewSimplePaymentsNoticeView>, with viewController: UIViewController) {
+    private func setupConstraints(for hostingController: UIHostingController<NewSimplePaymentsNoticeView>, with viewController: UIViewController) {
         hostingController.view.translatesAutoresizingMaskIntoConstraints = false
         hostingController.view.widthAnchor.constraint(equalTo: viewController.view.widthAnchor).isActive = true
         hostingController.view.heightAnchor.constraint(equalToConstant: viewController.view.intrinsicContentSize.height + Layout.verticalSpace).isActive = true

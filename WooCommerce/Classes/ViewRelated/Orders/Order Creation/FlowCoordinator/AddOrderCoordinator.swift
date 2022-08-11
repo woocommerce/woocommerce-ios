@@ -85,7 +85,6 @@ private extension AddOrderCoordinator {
     /// Presents `BottomAnnouncementView`UIHostingController  modally.
     ///
     func presentBottomAnnouncement() {
-        //newSimplePaymentsNoticeViewController.completionHandler = redirectToHubMenu
         let bottomSheet = BottomSheetViewController(childViewController: newSimplePaymentsNoticeViewController)
         bottomSheet.show(from: navigationController, sourceView: sourceView, sourceBarButtonItem: sourceBarButtonItem, arrowDirections: .any)
     }
@@ -109,7 +108,7 @@ private extension AddOrderCoordinator {
     }
 }
 
-class NewSimplePaymentsNoticeViewController: UIViewController {
+final class NewSimplePaymentsNoticeViewController: UIViewController {
 
     private let viewModel: NewSimplePaymentsNoticeViewModel
 

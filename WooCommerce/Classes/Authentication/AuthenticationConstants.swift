@@ -65,6 +65,13 @@ struct AuthenticationConstants {
         comment: "Button title. Takes the user to the site credentials entry screen."
     )
 
+    /// Instruction in Enter Site Credentials screen.
+    //
+    static let siteCredentialInstructions = NSLocalizedString(
+        "Enter your store credentials for %@.",
+        comment: "Enter your store credentials for {site url}. Asks the user to enter .org site credentials for their store."
+    )
+
     /// Title of views in Unified Login
     //
     static let loginTitle = NSLocalizedString(

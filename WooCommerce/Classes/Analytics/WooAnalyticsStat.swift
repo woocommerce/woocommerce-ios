@@ -113,6 +113,7 @@ public enum WooAnalyticsStat: String {
     case sitePickerContinueTapped = "site_picker_continue_tapped"
     case sitePickerStoresShown = "site_picker_stores_shown"
     case sitePickerHelpButtonTapped = "site_picker_help_button_tapped"
+    case sitePickerNonWooSiteTapped = "site_picker_non_woo_site_tapped"
 
     // MARK: Help & Support Events
     //

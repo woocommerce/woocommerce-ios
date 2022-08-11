@@ -42,7 +42,7 @@ PODS:
   - WordPress-Aztec-iOS (1.11.0)
   - WordPress-Editor-iOS (1.11.0):
     - WordPress-Aztec-iOS (= 1.11.0)
-  - WordPressAuthenticator (2.2.0-beta.3):
+  - WordPressAuthenticator (2.2.0-beta.4):
     - Alamofire (~> 4.8)
     - CocoaLumberjack (~> 3.5)
     - GoogleSignIn (~> 6.0.1)
@@ -92,7 +92,7 @@ DEPENDENCIES:
   - Sourcery (~> 1.0.3)
   - StripeTerminal (~> 2.7)
   - WordPress-Editor-iOS (~> 1.11.0)
-  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, commit `74830ef88500460a525ad4b0f103b0b1e25a44d1`)
+  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, commit `51f90cd6d9a0a2e0494069afce5eff894baa8348`)
   - WordPressKit (~> 4.49.0)
   - WordPressShared (~> 1.15)
   - WordPressUI (~> 1.12.5)
@@ -141,12 +141,12 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   WordPressAuthenticator:
-    :commit: 74830ef88500460a525ad4b0f103b0b1e25a44d1
+    :commit: 51f90cd6d9a0a2e0494069afce5eff894baa8348
     :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
 
 CHECKOUT OPTIONS:
   WordPressAuthenticator:
-    :commit: 74830ef88500460a525ad4b0f103b0b1e25a44d1
+    :commit: 51f90cd6d9a0a2e0494069afce5eff894baa8348
     :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
 
 SPEC CHECKSUMS:
@@ -171,7 +171,7 @@ SPEC CHECKSUMS:
   UIDeviceIdentifier: af4e11e25a2ea670078e2bd677bb0e8144f9f063
   WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348
   WordPress-Editor-iOS: 304098424f1051cb271546c99f906aac296b1b81
-  WordPressAuthenticator: 40eca420e6e53e07af2c617cf9a9d2da7f465e68
+  WordPressAuthenticator: aa037491876133fb025c04c6eaee050e4d79f771
   WordPressKit: 96deb6ba37ea5eaec4ddcaa53eca04d653246152
   WordPressShared: 5477f179c7fe03b5d574f91adda66f67d131827e
   WordPressUI: c5be816f6c7b3392224ac21de9e521e89fa108ac
@@ -187,6 +187,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2bdf8544f7cd0fd4c002546f5704b813845beb2a
   ZendeskSupportSDK: 3a8e508ab1d9dd22dc038df6c694466414e037ba
 
-PODFILE CHECKSUM: f3c96959bf0fd0474b0a4c0903c135dd7ec9e309
+PODFILE CHECKSUM: f564433da26d306849fd32f88b5ca36e1fffb628
 
 COCOAPODS: 1.11.2

@@ -406,7 +406,7 @@ private extension InPersonPaymentsMenuViewController {
         )
 
         static let inPersonPaymentsSetupNotFinishedNotice = NSLocalizedString(
-            "ℹ️ We've noticed that you have not yet finished the In-Person Payments setup.",
+            "We've noticed that you have not yet finished the In-Person Payments setup.",
             comment: "Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled"
         )
 

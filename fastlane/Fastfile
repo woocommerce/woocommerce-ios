@@ -332,7 +332,7 @@ platform :ios do
     version = ios_get_app_version
     removebranchprotection(repository: GHHELPER_REPO, branch: "release/#{version}")
     setfrozentag(repository: GHHELPER_REPO, milestone: version, freeze: false)
-    create_new_milestone(repository: GHHELPER_REPO)
+    create_new_milestone(repository:GHHELPER_REPO, need_appstore_submission: true, milestone_duration:7, number_of_days_from_code_freeze_to_release: 10)
     close_milestone(repository: GHHELPER_REPO, milestone: version)
 
     # Start the build

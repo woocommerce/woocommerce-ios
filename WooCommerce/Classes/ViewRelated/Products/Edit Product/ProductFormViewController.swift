@@ -646,6 +646,10 @@ private extension ProductFormViewController {
         tableViewDataSource.openLinkedProductsAction = { [weak self] in
             self?.editLinkedProducts()
         }
+        tableViewDataSource.reloadLinkedPromoAction = { [weak self] in
+            guard let self = self else { return }
+            self.reloadLinkedPromoCellAnimated()
+        }
         tableViewDataSource.configureActions(onNameChange: { [weak self] name in
             self?.onEditProductNameCompletion(newName: name ?? "")
         }, onStatusChange: { [weak self] isEnabled in

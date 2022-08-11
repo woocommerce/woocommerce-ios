@@ -7,6 +7,11 @@ public enum ABTest: String, CaseIterable {
     /// `An enum with no cases cannot declare a raw type`
     case null
 
+    /// A/A test for ExPlat integration.
+    /// Experiment ref: pbxNRc-1QS-p2
+    ///
+    case aaTest202208 = "woocommerceios_explat_aa_test_202208"
+
     /// A/A test to make sure there is no bias in the logged out state.
     case loggedOutAATest = "woocommerceios_explat_aa_test_logged_out_202208"
 

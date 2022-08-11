@@ -1,5 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+9.9
+-----
+- [*] [Sign in with store credentials]: New screen added with instructions to verify Jetpack connected email. [https://github.com/woocommerce/woocommerce-ios/pull/7424]
+- [*] [Sign in with store credentials]: Stop clearing username/password after an invalid attempt to enable users to fix typos. [https://github.com/woocommerce/woocommerce-ios/pull/7444]
+
 9.8
 -----
 - [***] Login: Introduce a way to sign in using store credentials.  [https://github.com/woocommerce/woocommerce-ios/pull/7320]

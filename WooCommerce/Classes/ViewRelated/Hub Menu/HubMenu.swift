@@ -42,7 +42,7 @@ struct HubMenu: View {
                 let gridItemLayout = [GridItem(.adaptive(minimum: Constants.itemSize), spacing: Constants.itemSpacing)]
 
                 LazyVGrid(columns: gridItemLayout, spacing: Constants.itemSpacing) {
-                    ForEach(viewModel.menuElements, id: \.self) { menu in
+                    ForEach(viewModel.menuElements, id: \.id) { menu in
                         // Currently the badge is always zero, because we are not handling push notifications count
                         // correctly due to the first behavior described here p91TBi-66O:
                         // AppDelegate’s `application(_:didReceiveRemoteNotification:fetchCompletionHandler:)`
@@ -54,25 +54,23 @@ struct HubMenu: View {
                                        badge: menu.badge,
                                        isDisabled: $shouldDisableItemTaps,
                                        onTapGesture: {
-                            switch menu {
-                            case .payments:
-                                ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "payments_menu"])
+                            ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: menu.trackingOption])
+                            switch type(of: menu).id {
+                            case HubMenuViewModel.Payments.id:
+                                viewModel.paymentsScreenWasOpened()
                                 showingPayments = true
-                            case .woocommerceAdmin:
-                                ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "admin_menu"])
+                            case HubMenuViewModel.WoocommerceAdmin.id:
                                 showingWooCommerceAdmin = true
-                            case .viewStore:
-                                ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "view_store"])
+                            case HubMenuViewModel.ViewStore.id:
                                 showingViewStore = true
-                            case .inbox:
-                                ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "inbox"])
+                            case HubMenuViewModel.Inbox.id:
                                 showingInbox = true
-                            case .reviews:
-                                ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "reviews"])
+                            case HubMenuViewModel.Reviews.id:
                                 showingReviews = true
-                            case .coupons:
-                                ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "coupons"])
+                            case HubMenuViewModel.Coupons.id:
                                 showingCoupons = true
+                            default:
+                                break
                             }
                         }).accessibilityIdentifier(menu.accessibilityIdentifier)
                     }

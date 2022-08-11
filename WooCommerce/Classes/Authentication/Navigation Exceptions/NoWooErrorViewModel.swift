@@ -4,24 +4,21 @@ import Yosemite
 /// Configuration and actions for an ULErrorViewController,
 /// modelling an error when WooCommerce is not installed or activated.
 final class NoWooErrorViewModel: ULErrorViewModel {
-    private let siteURL: String
+    private let site: Site
     private let showsConnectedStores: Bool
-    private let showsInstallButton: Bool
     private let analytics: Analytics
     private let stores: StoresManager
     private let setupCompletionHandler: (Int64) -> Void
 
     private var storePickerCoordinator: StorePickerCoordinator?
 
-    init(siteURL: String?,
+    init(site: Site,
          showsConnectedStores: Bool,
-         showsInstallButton: Bool,
          analytics: Analytics = ServiceLocator.analytics,
          stores: StoresManager = ServiceLocator.stores,
          onSetupCompletion: @escaping (Int64) -> Void) {
-        self.siteURL = siteURL ?? Localization.yourSite
+        self.site = site
         self.showsConnectedStores = showsConnectedStores
-        self.showsInstallButton = showsInstallButton
         self.analytics = analytics
         self.stores = stores
         self.setupCompletionHandler = onSetupCompletion
@@ -34,8 +31,8 @@ final class NoWooErrorViewModel: ULErrorViewModel {
         let font: UIFont = .body
         let boldFont: UIFont = font.bold
 
-        let boldSiteAddress = NSAttributedString(string: siteURL.trimHTTPScheme(),
-                                                           attributes: [.font: boldFont])
+        let boldSiteAddress = NSAttributedString(string: site.url.trimHTTPScheme(),
+                                                 attributes: [.font: boldFont])
         let message = NSMutableAttributedString(string: Localization.errorMessage)
 
         message.replaceFirstOccurrence(of: "%@", with: boldSiteAddress)
@@ -49,7 +46,10 @@ final class NoWooErrorViewModel: ULErrorViewModel {
 
     let primaryButtonTitle = Localization.primaryButtonTitle
 
-    var isPrimaryButtonHidden: Bool { !showsInstallButton }
+    var isPrimaryButtonHidden: Bool {
+        // Exclude simple sites and JCP sites - the web installation flow doesn't look great on these.
+        !site.isJetpackConnected || !site.isJetpackThePluginInstalled
+    }
 
     let secondaryButtonTitle = Localization.secondaryButtonTitle
 
@@ -59,7 +59,7 @@ final class NoWooErrorViewModel: ULErrorViewModel {
         guard let viewController = viewController else {
             return
         }
-        let viewModel = WooSetupWebViewModel(siteURL: siteURL, onCompletion: { [weak self] in
+        let viewModel = WooSetupWebViewModel(siteURL: site.url, onCompletion: { [weak self] in
             guard let self = self else { return }
             viewController.navigationController?.popViewController(animated: true)
             self.handleSetupCompletion(in: viewController)
@@ -100,7 +100,7 @@ private extension NoWooErrorViewModel {
 
             let matcher = ULAccountMatcher()
             matcher.refreshStoredSites()
-            guard let site = matcher.matchedSite(originalURL: self.siteURL),
+            guard let site = matcher.matchedSite(originalURL: self.site.url),
                   site.isWooCommerceActive else {
                 if retryCount < 2 {
                     return self.handleSetupCompletion(in: viewController, retryCount: retryCount + 1)

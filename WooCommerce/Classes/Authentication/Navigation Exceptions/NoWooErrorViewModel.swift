@@ -156,10 +156,6 @@ private extension NoWooErrorViewModel {
                                                             comment: "Action button that will restart the login flow."
                                                             + "Presented when logging in with a site address that does not have WooCommerce")
 
-        static let yourSite = NSLocalizedString("your site",
-                                                comment: "Placeholder for site url, if the url is unknown."
-                                                    + "Presented when logging in with a site address that does not have WooCommerce."
-                                                + "The error would read: to use this app for your site you'll need...")
         static let verifyingInstallation = NSLocalizedString("Verifying installation...",
                                                              comment: "Message displayed when checking whether a site has successfully installed WooCommerce")
         static let setupErrorMessage = NSLocalizedString("Cannot verify your site's WooCommerce installation.",

@@ -2,7 +2,7 @@ import SwiftUI
 
 final class NewSimplePaymentsNoticeViewModel {
 
-    private let simplePaymentsNoticeView: NewSimplePaymentsNoticeView
+    private let simplePaymentsNoticeView: BottomSheetNoticeView
 
     /// Redirects to `HubMenu`tabBar
     ///
@@ -14,7 +14,12 @@ final class NewSimplePaymentsNoticeViewModel {
     }
 
     init() {
-        simplePaymentsNoticeView = NewSimplePaymentsNoticeView(buttonTapped: completionHandler )
+        simplePaymentsNoticeView = BottomSheetNoticeView(
+            buttonTapped: completionHandler,
+            title: Localization.title,
+            message: Localization.message,
+            confirmationButtonMessage: Localization.confirmationButton
+        )
     }
 
     func setupNewSimplePaymentsNoticeView(for viewController: UIViewController) {
@@ -25,7 +30,7 @@ final class NewSimplePaymentsNoticeViewModel {
         setupConstraints(for: hostingController, with: viewController)
     }
 
-    private func setupConstraints(for hostingController: UIHostingController<NewSimplePaymentsNoticeView>, with viewController: UIViewController) {
+    private func setupConstraints(for hostingController: UIHostingController<BottomSheetNoticeView>, with viewController: UIViewController) {
         hostingController.view.translatesAutoresizingMaskIntoConstraints = false
         hostingController.view.widthAnchor.constraint(equalTo: viewController.view.widthAnchor).isActive = true
         hostingController.view.heightAnchor.constraint(equalToConstant: viewController.view.intrinsicContentSize.height + Layout.verticalSpace).isActive = true
@@ -34,6 +39,15 @@ final class NewSimplePaymentsNoticeViewModel {
 }
 
 private extension NewSimplePaymentsNoticeViewModel {
+    enum Localization {
+        static let title = NSLocalizedString("Payments from the Menu tab",
+                                             comment: "Title of the bottom announcement modal when a merchant taps on Simple Payment")
+        static let message = NSLocalizedString("Now you can quickly access In-Person Payments and other features with ease.",
+                                               comment: "Message of the bottom announcement modal when a merchant taps on Simple Payment")
+        static let confirmationButton = NSLocalizedString("Got it!",
+                                                          comment: "Confirmation text of the button on the bottom announcement modal" +
+                                                          "when a merchant taps on Simple Payment")
+    }
     enum Layout {
         static let verticalSpace: CGFloat = 160
     }

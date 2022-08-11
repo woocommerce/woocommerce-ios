@@ -1,19 +1,22 @@
 import SwiftUI
 
-struct NewSimplePaymentsNoticeView: View {
+struct BottomSheetNoticeView: View {
     @Environment(\.presentationMode) private var presentation
     @ScaledMetric private var scale: CGFloat = 1.0
 
     var buttonTapped: (() -> Void)?
+    var title: String
+    var message: String
+    var confirmationButtonMessage: String
 
     var body: some View {
         VStack(alignment: .leading) {
             Spacer()
-            Text(Localization.title)
+            Text(title)
                 .font(.headline)
                 .padding(.bottom, Layout.verticalPadding)
             HStack(alignment: .center, spacing: 16.0) {
-                Text(Localization.message)
+                Text(message)
                     .font(.caption)
                     .foregroundColor(.gray)
                     .multilineTextAlignment(.leading)
@@ -26,7 +29,7 @@ struct NewSimplePaymentsNoticeView: View {
                 Spacer()
             }
             .padding(.bottom, Layout.verticalPadding)
-            Button(Localization.confirmationButton) {
+            Button(confirmationButtonMessage) {
                 if let completionHandler = buttonTapped {
                     completionHandler()
                 }
@@ -42,17 +45,7 @@ struct NewSimplePaymentsNoticeView: View {
     }
 }
 
-extension NewSimplePaymentsNoticeView {
-    enum Localization {
-        static let title = NSLocalizedString("Payments from the Menu tab",
-                                             comment: "Title of the bottom announcement modal when a merchant taps on Simple Payment")
-        static let message = NSLocalizedString("Now you can quickly access In-Person Payments and other features with ease.",
-                                               comment: "Message of the bottom announcement modal when a merchant taps on Simple Payment")
-        static let confirmationButton = NSLocalizedString("Got it!",
-                                                          comment: "Confirmation text of the button on the bottom announcement modal" +
-                                                          "when a merchant taps on Simple Payment")
-    }
-
+extension BottomSheetNoticeView {
     enum Layout {
         static let horizontalPadding: CGFloat = 16
         static let verticalPadding: CGFloat = 16

@@ -163,8 +163,8 @@ final class StorePickerViewController: UIViewController {
         setupMainView()
         setupAccountHeader()
         setupTableView()
-        observeStateChange()
         refreshResults()
+        observeStateChange()
 
         switch configuration {
         case .login:

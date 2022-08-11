@@ -4,6 +4,15 @@ import Yosemite
 
 final class NoWooErrorViewModelTests: XCTestCase {
 
+    func test_title_is_correct() {
+        // Given
+        let site = Site.fake().copy(name: "Test")
+        let viewModel = NoWooErrorViewModel(site: site, showsConnectedStores: false, onSetupCompletion: { _ in })
+
+        // Then
+        XCTAssertEqual(viewModel.title, "Test")
+    }
+
     func test_image_is_correct() {
         // Given
         let site = Site.fake()

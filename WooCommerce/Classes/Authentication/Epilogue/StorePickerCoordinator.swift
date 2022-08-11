@@ -28,9 +28,8 @@ final class StorePickerCoordinator: Coordinator {
     /// Site Picker VC
     ///
     private lazy var storePicker: StorePickerViewController = {
-        let pickerVC = StorePickerViewController()
+        let pickerVC = StorePickerViewController(configuration: selectedConfiguration)
         pickerVC.delegate = self
-        pickerVC.configuration = selectedConfiguration
         return pickerVC
     }()
 

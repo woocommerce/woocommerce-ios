@@ -206,7 +206,7 @@ extension HubMenuViewModel {
         let iconColor: UIColor = .withColorStudio(.orange)
         var badge: HubMenuBadgeType = .number(number: 0)
         let accessibilityIdentifier: String = "menu-payments"
-        let trackingOption: String = "payments_menu"
+        let trackingOption: String = "payments"
     }
 
     struct WoocommerceAdmin: HubMenuItem {

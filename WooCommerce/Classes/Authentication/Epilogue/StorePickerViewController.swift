@@ -709,8 +709,6 @@ private extension StorePickerViewController {
 // MARK: - StorePickerConstants: Contains all of the constants required by the Picker.
 //
 private enum StorePickerConstants {
-    static let numberOfSections = 1
-    static let emptyStateRowCount = 1
     static let estimatedRowHeight = CGFloat(50)
 }
 

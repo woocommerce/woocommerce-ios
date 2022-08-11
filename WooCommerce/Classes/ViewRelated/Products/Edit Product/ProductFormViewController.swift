@@ -459,11 +459,7 @@ private extension ProductFormViewController {
             case .primaryFields(let rows):
                 rows.forEach { row in
                     row.cellTypes.forEach { cellType in
-                        if row.registerWithNib {
-                            tableView.registerNib(for: cellType)
-                        } else {
-                            tableView.register(cellType)
-                        }
+                        tableView.registerNib(for: cellType)
                     }
                 }
             case .settings(let rows):
@@ -604,7 +600,6 @@ private extension ProductFormViewController {
     }
 
     func updateDataSourceActions() {
-        tableViewDataSource.parentVC = self
         tableViewDataSource.openLinkedProductsAction = { [weak self] in
             self?.editLinkedProducts()
         }

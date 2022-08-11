@@ -76,6 +76,7 @@ struct FeatureAnnouncementCardView: View {
                             .bodyStyle()
                             .padding(.bottom, viewModel.buttonTitle == nil ? Layout.bottomNoButtonPadding : Layout.largeSpacing)
                     }
+                    .fixedSize(horizontal: false, vertical: true)
                     .accessibilityElement(children: .combine)
                     if let buttonTitle = viewModel.buttonTitle {
                         Button(buttonTitle) {

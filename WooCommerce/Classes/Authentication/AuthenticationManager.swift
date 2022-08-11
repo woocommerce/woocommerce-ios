@@ -97,6 +97,7 @@ class AuthenticationManager: Authentication {
                                                                   getStartedInstructions: AuthenticationConstants.getStartedInstructions,
                                                                   jetpackLoginInstructions: AuthenticationConstants.jetpackInstructions,
                                                                   siteLoginInstructions: AuthenticationConstants.siteInstructions,
+                                                                  siteCredentialInstructions: AuthenticationConstants.siteCredentialInstructions,
                                                                   usernamePasswordInstructions: AuthenticationConstants.usernamePasswordInstructions,
                                                                   continueWithWPButtonTitle: AuthenticationConstants.continueWithWPButtonTitle,
                                                                   enterYourSiteAddressButtonTitle: AuthenticationConstants.enterYourSiteAddressButtonTitle,
@@ -197,7 +198,7 @@ class AuthenticationManager: Authentication {
             let viewModel = NoWooErrorViewModel(
                 siteURL: siteURL,
                 showsConnectedStores: matcher.hasConnectedStores,
-                showsInstallButton: matchedSite.isJetpackConnected,
+                showsInstallButton: matchedSite.isJetpackConnected && matchedSite.isJetpackThePluginInstalled,
                 onSetupCompletion: { [weak self] siteID in
                     guard let self = self else { return }
                     self.startStorePicker(with: siteID, in: navigationController, onDismiss: onStorePickerDismiss)

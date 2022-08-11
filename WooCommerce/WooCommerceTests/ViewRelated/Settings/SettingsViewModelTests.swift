@@ -241,7 +241,6 @@ final class SettingsViewModelTests: XCTestCase {
     func test_sections_when_paymentsHubMenuSection_is_enabled_then_it_hides_inPersonPayments_row() {
         // Given
         let featureFlagService = MockFeatureFlagService(isPaymentsHubMenuSectionEnabled: true)
-        let appleIDCredentialChecker = MockAppleIDCredentialChecker(hasAppleUserID: true)
         let viewModel = SettingsViewModel(stores: stores,
                                           storageManager: storageManager,
                                           featureFlagService: featureFlagService,
@@ -257,7 +256,6 @@ final class SettingsViewModelTests: XCTestCase {
     func test_sections_when_paymentsHubMenuSection_is_not_enabled_then_it_shows_inPersonPayments_row() {
         // Given
         let featureFlagService = MockFeatureFlagService(isPaymentsHubMenuSectionEnabled: false)
-        let appleIDCredentialChecker = MockAppleIDCredentialChecker(hasAppleUserID: true)
         let viewModel = SettingsViewModel(stores: stores,
                                           storageManager: storageManager,
                                           featureFlagService: featureFlagService,

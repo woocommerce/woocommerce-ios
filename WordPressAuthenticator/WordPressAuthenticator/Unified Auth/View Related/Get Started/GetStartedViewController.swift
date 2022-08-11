@@ -501,7 +501,7 @@ private extension GetStartedViewController {
                                       success: { [weak self] passwordless in
                                         self?.configureViewLoading(false)
                                         self?.loginFields.meta.passwordless = passwordless
-                                        passwordless ? self?.requestAuthenticationLink() : self?.showPasswordView()
+                                        passwordless ? self?.requestAuthenticationLink() : self?.showPasswordOrMagicLinkView()
             },
                                       failure: { [weak self] error in
                                         WordPressAuthenticator.track(.loginFailed, error: error)
@@ -518,6 +518,21 @@ private extension GetStartedViewController {
     /// Show the Password entry view.
     ///
     func showPasswordView() {
+        guard let vc = PasswordViewController.instantiate(from: .password) else {
+            DDLogError("Failed to navigate to PasswordViewController from GetStartedViewController")
+            return
+        }
+
+        vc.source = source
+        vc.loginFields = loginFields
+        vc.trackAsPasswordChallenge = false
+
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
+    /// Show the password or magic link view based on the configuration.
+    ///
+    func showPasswordOrMagicLinkView() {
         guard let navigationController = navigationController else {
             return
         }

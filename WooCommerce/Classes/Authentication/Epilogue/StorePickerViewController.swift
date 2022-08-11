@@ -692,12 +692,8 @@ private extension StorePickerViewController {
                 guard let self = self else { return }
                 self.navigationController?.popViewController(animated: true)
                 self.viewModel.refreshSites(currentlySelectedSiteID: siteID)
-                if let indexPath = self.viewModel.indexPath(for: siteID),
-                   let updatedSite = self.viewModel.site(at: indexPath) {
-                    self.reloadSelectedStoreRows() {
-                        self.currentlySelectedSite = updatedSite
-                    }
-                    self.tableView.scrollToRow(at: indexPath, at: .middle, animated: true)
+                self.delegate?.didSelectStore(with: siteID) { [weak self] in
+                    self?.dismiss()
                 }
         })
         let noWooUI = ULErrorViewController(viewModel: viewModel)

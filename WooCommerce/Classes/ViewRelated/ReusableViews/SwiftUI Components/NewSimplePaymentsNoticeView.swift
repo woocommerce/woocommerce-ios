@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct AnnouncementBottomSheetView: View {
+struct NewSimplePaymentsNoticeView: View {
     @Environment(\.presentationMode) private var presentation
     @ScaledMetric private var scale: CGFloat = 1.0
 
@@ -42,7 +42,7 @@ struct AnnouncementBottomSheetView: View {
     }
 }
 
-extension AnnouncementBottomSheetView {
+extension NewSimplePaymentsNoticeView {
     enum Localization {
         static let title = NSLocalizedString("Payments from the Menu tab",
                                              comment: "Title of the bottom announcement modal when a merchant taps on Simple Payment")

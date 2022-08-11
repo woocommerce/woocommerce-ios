@@ -2,7 +2,7 @@ import SwiftUI
 
 class NewSimplePaymentsNoticeViewModel {
 
-    let announcementView: AnnouncementBottomSheetView
+    let simplePaymentsNoticeView: NewSimplePaymentsNoticeView
 
     /// Redirects to `HubMenu`tabBar
     ///
@@ -14,18 +14,18 @@ class NewSimplePaymentsNoticeViewModel {
     }
 
     init() {
-        announcementView = AnnouncementBottomSheetView(buttonTapped: completionHandler )
+        simplePaymentsNoticeView = NewSimplePaymentsNoticeView(buttonTapped: completionHandler )
     }
 
     func setupNewSimplePaymentsNoticeView(for viewController: UIViewController) {
-        let controller = UIHostingController(rootView: announcementView)
-        viewController.addChild(controller)
-        viewController.view.addSubview(controller.view)
-        controller.didMove(toParent: viewController)
-        setupConstraints(for: controller, with: viewController)
+        let hostingController = UIHostingController(rootView: simplePaymentsNoticeView)
+        viewController.addChild(hostingController)
+        viewController.view.addSubview(hostingController.view)
+        hostingController.didMove(toParent: viewController)
+        setupConstraints(for: hostingController, with: viewController)
     }
 
-    func setupConstraints(for hostingController: UIHostingController<AnnouncementBottomSheetView>, with viewController: UIViewController) {
+    func setupConstraints(for hostingController: UIHostingController<NewSimplePaymentsNoticeView>, with viewController: UIViewController) {
         hostingController.view.translatesAutoresizingMaskIntoConstraints = false
         hostingController.view.widthAnchor.constraint(equalTo: viewController.view.widthAnchor).isActive = true
         hostingController.view.heightAnchor.constraint(equalToConstant: viewController.view.intrinsicContentSize.height + Layout.verticalSpace).isActive = true

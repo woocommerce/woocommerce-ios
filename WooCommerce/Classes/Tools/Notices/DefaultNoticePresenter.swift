@@ -28,6 +28,11 @@ class DefaultNoticePresenter: NoticePresenter {
     ///
     private var keyboardFrameObserver: KeyboardFrameObserver?
 
+    /// Whether to dismiss the notice automatically after a delay.
+    /// Default is true.
+    /// 
+    var dismissAutomatically = true
+
     /// Enqueues the specified Notice for display.
     ///
     @discardableResult
@@ -179,8 +184,11 @@ private extension DefaultNoticePresenter {
             generator.notificationOccurred(feedbackType)
         }
 
-        animatePresentation(fromState: offScreenState, toState: onScreenState, completion: {
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Animations.dismissDelay, execute: dismiss)
+        animatePresentation(fromState: offScreenState, toState: onScreenState, completion: { [weak self] in
+            guard let self = self else { return }
+            if self.dismissAutomatically {
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Animations.dismissDelay, execute: dismiss)
+            }
         })
     }
 

@@ -11,8 +11,8 @@ public enum ABTest: String, CaseIterable {
     case loggedOutAATest = "woocommerceios_explat_aa_test_logged_out_202208"
 
     /// Returns a variation for the given experiment
-    var variation: Variation {
-        return ExPlat.shared?.experiment(self.rawValue) ?? .control
+    public var variation: Variation {
+        ExPlat.shared?.experiment(rawValue) ?? .control
     }
 }
 

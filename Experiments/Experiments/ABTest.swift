@@ -31,6 +31,6 @@ public extension ABTest {
             ExPlat.shared?.refresh {
                 continuation.resume(returning: ())
             }
-        } as Void
+        }
     }
 }

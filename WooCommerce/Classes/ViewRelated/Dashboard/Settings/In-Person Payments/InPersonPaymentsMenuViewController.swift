@@ -295,7 +295,7 @@ extension InPersonPaymentsMenuViewController {
     }
 
     func managePaymentGatewaysWasPressed() {
-        ServiceLocator.analytics.track(.paymentsMenuManagePaymentGatewaysTapped)
+        ServiceLocator.analytics.track(.paymentsMenuPaymentProviderTapped)
         onPluginSelectionCleared?()
 
         if featureFlagService.isFeatureFlagEnabled(.paymentsHubMenuSection) {

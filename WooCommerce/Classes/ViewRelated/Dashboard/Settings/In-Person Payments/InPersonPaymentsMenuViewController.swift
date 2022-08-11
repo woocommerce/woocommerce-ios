@@ -23,6 +23,8 @@ final class InPersonPaymentsMenuViewController: UITableViewController {
         return noticePresenter
     }()
 
+    private var activityIndicator: UIActivityIndicatorView?
+
     init(
         pluginState: CardPresentPaymentsPluginState?,
         onPluginSelected: ((CardPresentPaymentsPlugin) -> Void)?,
@@ -73,7 +75,8 @@ private extension InPersonPaymentsMenuViewController {
                 self.pluginState = nil
 
                 guard state != .loading else {
-                    return self.animateBottomActivityIndicator(true)
+                    self.activityIndicator?.startAnimating()
+                    return
                 }
 
                 switch state {
@@ -89,7 +92,7 @@ private extension InPersonPaymentsMenuViewController {
                     self.showCardPresentPaymentsOnboardingNotice()
                 }
 
-                self.animateBottomActivityIndicator(false)
+                self.activityIndicator?.stopAnimating()
                 self.configureSections()
                 self.tableView.reloadData()
         }).store(in: &cancellables)
@@ -169,17 +172,15 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     func setupBottomActivityIndicator() {
-        tableView.tableFooterView = UIActivityIndicatorView(style: .medium)
-    }
+        let containerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: Layout.tableViewFooterHeight))
+        let newActivityIndicator = UIActivityIndicatorView(style: .medium)
 
-    /// Assumes that the activity indicator was previously setup into the table view footer
-    ///
-    func animateBottomActivityIndicator(_ shouldAnimate: Bool) {
-        guard let activityIndicator = tableView.tableFooterView as? UIActivityIndicatorView else {
-            return
-        }
+        newActivityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(newActivityIndicator)
+        containerView.pinSubviewAtCenter(newActivityIndicator)
 
-        shouldAnimate ? activityIndicator.startAnimating() : activityIndicator.stopAnimating()
+        activityIndicator = newActivityIndicator
+        tableView.tableFooterView = containerView
     }
 
     func registerTableViewCells() {
@@ -439,6 +440,12 @@ private enum Row: CaseIterable {
 
     var reuseIdentifier: String {
         return type.reuseIdentifier
+    }
+}
+
+private extension InPersonPaymentsMenuViewController {
+    enum Layout {
+        static let tableViewFooterHeight = CGFloat(200)
     }
 }
 

@@ -22,7 +22,6 @@ final class PasswordCoordinator {
 
     func start() async {
         if configuration.isWPComMagicLinkPreferredToPassword {
-            tracker.track(click: .requestMagicLink)
             let result = await requestMagicLink()
             switch result {
             case .success:

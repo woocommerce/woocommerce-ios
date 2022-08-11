@@ -318,7 +318,7 @@ private extension StorePickerViewController {
     ///
     func preselectStoreIfPossible() {
 
-        guard case let .available(sites) = viewModel.state, let firstSite = sites.first else {
+        guard case let .available(sites) = viewModel.state, let firstSite = sites.first(where: { $0.isWooCommerceActive }) else {
             return
         }
         guard currentlySelectedSite == nil else {
@@ -339,10 +339,8 @@ private extension StorePickerViewController {
             return
         }
 
-        // Otherwise select the first site in the list if it has Woo
-        if firstSite.isWooCommerceActive {
-            currentlySelectedSite = firstSite
-        }
+        // Otherwise select the first site in the list
+        currentlySelectedSite = firstSite
     }
 
     /// Reloads the UI.

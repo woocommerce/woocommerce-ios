@@ -28,7 +28,7 @@ final class MagicLinkRequestedViewController: LoginViewController {
     }
 
     override var sourceTag: WordPressSupportSourceTag {
-        .loginMagicLink
+        .wpComLoginMagicLinkAutoRequested
     }
 
     // MARK: - View lifecycle

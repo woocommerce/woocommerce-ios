@@ -4,7 +4,7 @@ import Combine
 import SwiftUI
 import WordPressUI
 
-/// Manages the different navigation flows that start from the Orders view
+/// Manages the different navigation flows that start from the Orders main tab
 ///
 final class AddOrderCoordinator: Coordinator {
     var navigationController: UINavigationController
@@ -13,10 +13,10 @@ final class AddOrderCoordinator: Coordinator {
     private let sourceBarButtonItem: UIBarButtonItem?
     private let sourceView: UIView?
 
-    /// Keep a reference to AnnouncementBottomSheetViewController in order to use it as child of the WordPressUI BottomSheetViewController component
+    /// Keeps a reference to AnnouncementBottomSheetViewController in order to use it as child of WordPressUI's BottomSheetViewController component
     ///
-    private lazy var baseViewController: AnnouncementBottomSheetViewController = {
-        AnnouncementBottomSheetViewController()
+    private lazy var newSimplePaymentsNoticeViewController: NewSimplePaymentsNoticeViewController = {
+        NewSimplePaymentsNoticeViewController()
     }()
 
     /// Assign this closure to be notified when a new order is created
@@ -85,18 +85,9 @@ private extension AddOrderCoordinator {
     /// Presents `BottomAnnouncementView`UIHostingController  modally.
     ///
     func presentBottomAnnouncement() {
-        baseViewController.completionHandler = redirectToHubMenu
-        let bottomSheet = BottomSheetViewController(childViewController: baseViewController)
+        //newSimplePaymentsNoticeViewController.completionHandler = redirectToHubMenu
+        let bottomSheet = BottomSheetViewController(childViewController: newSimplePaymentsNoticeViewController)
         bottomSheet.show(from: navigationController, sourceView: sourceView, sourceBarButtonItem: sourceBarButtonItem, arrowDirections: .any)
-    }
-
-    /// Redirects to `HubMenu`tabBar
-    ///
-    func redirectToHubMenu() {
-        guard let mainTabBarController = AppDelegate.shared.tabBarController else {
-            return
-        }
-        mainTabBarController.navigateTo(.hubMenu)
     }
 
     /// Presents `OrderFormHostingController`.
@@ -118,46 +109,71 @@ private extension AddOrderCoordinator {
     }
 }
 
-class AnnouncementBottomSheetViewController: UIViewController {
-    /// Assign this closure for a callback method when the BottomAnnouncementView button is tapped
-    ///
-    var completionHandler: (() -> Void)? = nil
+class NewSimplePaymentsNoticeViewController: UIViewController {
+
+    private let viewModel: NewSimplePaymentsNoticeViewModel
+
+    init() {
+        viewModel = NewSimplePaymentsNoticeViewModel()
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupAnnouncementView()
+        viewModel.setupNewSimplePaymentsNoticeView(for: self)
     }
 
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
     }
+}
 
-    func setupAnnouncementView() {
-        let announcementView = AnnouncementBottomSheetView(buttonTapped: completionHandler)
-        let controller = UIHostingController(rootView: announcementView)
-        addChild(controller)
-        view.addSubview(controller.view)
-        controller.didMove(toParent: self)
-        setupConstraints(for: controller)
+class NewSimplePaymentsNoticeViewModel {
+
+    let announcementView: AnnouncementBottomSheetView
+
+    /// Redirects to `HubMenu`tabBar
+    ///
+    private var completionHandler: (() -> Void)? = {
+        guard let mainTabBarController = AppDelegate.shared.tabBarController else {
+            return
+        }
+        mainTabBarController.navigateTo(.hubMenu)
     }
 
-    func setupConstraints(for controller: UIHostingController<AnnouncementBottomSheetView>) {
-        controller.view.translatesAutoresizingMaskIntoConstraints = false
-        controller.view.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
-        controller.view.heightAnchor.constraint(equalToConstant: self.view.intrinsicContentSize.height + Layout.verticalSpace).isActive = true
-        controller.view.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 0).isActive = true
+    init() {
+        announcementView = AnnouncementBottomSheetView(buttonTapped: completionHandler )
+    }
+
+    func setupNewSimplePaymentsNoticeView(for viewController: UIViewController) {
+        let controller = UIHostingController(rootView: announcementView)
+        viewController.addChild(controller)
+        viewController.view.addSubview(controller.view)
+        controller.didMove(toParent: viewController)
+        setupConstraints(for: controller, with: viewController)
+    }
+
+    func setupConstraints(for hostingController: UIHostingController<AnnouncementBottomSheetView>, with viewController: UIViewController) {
+        hostingController.view.translatesAutoresizingMaskIntoConstraints = false
+        hostingController.view.widthAnchor.constraint(equalTo: viewController.view.widthAnchor).isActive = true
+        hostingController.view.heightAnchor.constraint(equalToConstant: viewController.view.intrinsicContentSize.height + Layout.verticalSpace).isActive = true
+        hostingController.view.topAnchor.constraint(equalTo: viewController.view.topAnchor, constant: 0).isActive = true
     }
 }
 
 /// `BottomSheetViewController` conformance
 ///
-extension AnnouncementBottomSheetViewController: DrawerPresentable {
+extension NewSimplePaymentsNoticeViewController: DrawerPresentable {
     var collapsedHeight: DrawerHeight {
-        return .contentHeight(Layout.verticalSpace)
+        return .contentHeight(160)
     }
 }
 
-private extension AnnouncementBottomSheetViewController {
+private extension NewSimplePaymentsNoticeViewModel {
     enum Layout {
         static let verticalSpace: CGFloat = 160
     }

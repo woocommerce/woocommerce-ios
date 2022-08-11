@@ -19,6 +19,7 @@ final class InPersonPaymentsMenuViewController: UITableViewController {
 
     private lazy var noticePresenter: DefaultNoticePresenter = {
         let noticePresenter = DefaultNoticePresenter()
+        noticePresenter.dismissAutomatically = false
         noticePresenter.presentingViewController = navigationController
         return noticePresenter
     }()
@@ -107,7 +108,7 @@ private extension InPersonPaymentsMenuViewController {
             self?.showOnboardingIfRequired()
         })
 
-        self.noticePresenter.enqueue(notice: notice)
+        noticePresenter.enqueue(notice: notice)
     }
 
     func showOnboardingIfRequired() {
@@ -406,8 +407,12 @@ private extension InPersonPaymentsMenuViewController {
         )
 
         static let inPersonPaymentsSetupNotFinishedNotice = NSLocalizedString(
-            "We've noticed that you have not yet finished the In-Person Payments setup.",
-            comment: "Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled"
+            "We've noticed that you have not yet finished the In-\u{2060}Person Payments setup.",
+            comment: """
+                     Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled.
+                     The \u{2060} character helps to avoid breaking In-Person in two lines.
+                     If you are not using the hyphen character (In-Person) you can skip it.
+                     """
         )
 
         static let inPersonPaymentsSetupNotFinishedNoticeButtonTitle = NSLocalizedString(

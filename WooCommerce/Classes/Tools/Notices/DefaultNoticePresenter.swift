@@ -21,7 +21,7 @@ class DefaultNoticePresenter: NoticePresenter {
     private var noticeOnScreen: Notice?
 
     /// Contains the notice view
-    /// 
+    ///
     private var noticeContainerView: NoticeContainerView?
 
     /// UIViewController to be used as Notice(s) Presenter
@@ -53,6 +53,8 @@ class DefaultNoticePresenter: NoticePresenter {
         return true
     }
 
+    /// Dismisses the currently shown notice.
+    ///
     func dismiss() {
         noticeOnScreen = nil
         keyboardFrameObserver = nil

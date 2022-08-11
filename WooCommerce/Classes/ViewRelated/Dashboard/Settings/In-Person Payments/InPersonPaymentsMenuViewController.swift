@@ -4,7 +4,7 @@ import Yosemite
 import Experiments
 import Combine
 
-final class InPersonPaymentsMenuViewController: UITableViewController {
+final class InPersonPaymentsMenuViewController: UIViewController {
     private let stores: StoresManager
     private var pluginState: CardPresentPaymentsPluginState?
     private var sections = [Section]()
@@ -20,8 +20,15 @@ final class InPersonPaymentsMenuViewController: UITableViewController {
     private lazy var noticePresenter: DefaultNoticePresenter = {
         let noticePresenter = DefaultNoticePresenter()
         noticePresenter.dismissAutomatically = false
-        noticePresenter.presentingViewController = navigationController
+        noticePresenter.presentingViewController = self
         return noticePresenter
+    }()
+
+    /// Main TableView
+    ///
+    private lazy var tableView: UITableView = {
+        let tableView = UITableView(frame: .zero, style: .grouped)
+        return tableView
     }()
 
     private var activityIndicator: UIActivityIndicatorView?
@@ -41,7 +48,7 @@ final class InPersonPaymentsMenuViewController: UITableViewController {
         self.cardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase()
         configurationLoader = CardPresentConfigurationLoader()
 
-        super.init(style: .grouped)
+        super.init(nibName: nil, bundle: nil)
     }
 
     required init?(coder: NSCoder) {
@@ -121,6 +128,7 @@ private extension InPersonPaymentsMenuViewController {
         cardPresentPaymentsOnboardingPresenter = CardPresentPaymentsOnboardingPresenter()
 
         cardPresentPaymentsOnboardingPresenter?.showOnboardingIfRequired(from: navigationController) { [weak self] in
+            self?.noticePresenter.dismiss()
             self?.cardPresentPaymentsOnboardingUseCase.refresh()
         }
     }
@@ -162,6 +170,10 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     func configureTableView() {
+        view.addSubview(tableView)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        view.pinSubviewToAllEdges(tableView)
+
         tableView.rowHeight = UITableView.automaticDimension
 
         tableView.dataSource = self
@@ -321,20 +333,20 @@ extension InPersonPaymentsMenuViewController {
 }
 
 // MARK: - UITableViewDataSource
-extension InPersonPaymentsMenuViewController {
-    override func numberOfSections(in tableView: UITableView) -> Int {
+extension InPersonPaymentsMenuViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
         sections.count
     }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         sections[section].rows.count
     }
 
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         sections[section].header
     }
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let row = rowAtIndexPath(indexPath)
         let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
         configure(cell, for: row, at: indexPath)
@@ -345,8 +357,8 @@ extension InPersonPaymentsMenuViewController {
 
 // MARK: - UITableViewDelegate
 //
-extension InPersonPaymentsMenuViewController {
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+extension InPersonPaymentsMenuViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
         // listed in the order they are displayed

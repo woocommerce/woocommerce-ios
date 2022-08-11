@@ -25,6 +25,8 @@ final class NoWooErrorViewModel: ULErrorViewModel {
     }
 
     // MARK: - Data and configuration
+    var title: String? { site.name }
+
     let image: UIImage = .noStoreImage
 
     var text: NSAttributedString {

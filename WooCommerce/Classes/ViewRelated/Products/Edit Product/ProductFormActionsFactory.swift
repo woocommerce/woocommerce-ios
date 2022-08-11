@@ -49,6 +49,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     private let addOnsFeatureEnabled: Bool
     private let variationsPrice: VariationsPrice
 
+    private let isLinkedProductsPromoEnabled: Bool
     private let linkedProductsPromoCampaign = LinkedProductsPromoCampaign()
     private var linkedProductsPromoViewModel: FeatureAnnouncementCardViewModel {
         .init(analytics: ServiceLocator.analytics,
@@ -56,26 +57,34 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     }
 
     // TODO: Remove default parameter
-    init(product: EditableProductModel, formType: ProductFormType, addOnsFeatureEnabled: Bool = true, variationsPrice: VariationsPrice = .unknown) {
+    init(product: EditableProductModel,
+         formType: ProductFormType,
+         addOnsFeatureEnabled: Bool = true,
+         isLinkedProductsPromoEnabled: Bool = false,
+         variationsPrice: VariationsPrice = .unknown) {
         self.product = product
         self.formType = formType
         self.editable = formType != .readonly
         self.addOnsFeatureEnabled = addOnsFeatureEnabled
         self.variationsPrice = variationsPrice
+        self.isLinkedProductsPromoEnabled = isLinkedProductsPromoEnabled
     }
 
     /// Returns an array of actions that are visible in the product form primary section.
     func primarySectionActions() -> [ProductFormEditAction] {
         let shouldShowImagesRow = editable || product.images.isNotEmpty
         let shouldShowDescriptionRow = editable || product.description?.isNotEmpty == true
+
+        let newLinkedProductsPromoViewModel = linkedProductsPromoViewModel
         let shouldShowLinkedProductsPromo = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.linkedProductsPromo)
-        && linkedProductsPromoViewModel.shouldBeVisible
+        && isLinkedProductsPromoEnabled
+        && newLinkedProductsPromoViewModel.shouldBeVisible
         && product.upsellIDs.isEmpty
         && product.crossSellIDs.isEmpty
 
         let actions: [ProductFormEditAction?] = [
             shouldShowImagesRow ? .images(editable: editable): nil,
-            shouldShowLinkedProductsPromo ? .linkedProductsPromo(viewModel: linkedProductsPromoViewModel) : nil,
+            shouldShowLinkedProductsPromo ? .linkedProductsPromo(viewModel: newLinkedProductsPromoViewModel) : nil,
             .name(editable: editable),
             shouldShowDescriptionRow ? .description(editable: editable): nil
         ]

@@ -88,7 +88,7 @@ extension StorePickerViewModel {
     /// Indicates if there is more than one Store.
     ///
     var multipleStoresAvailable: Bool {
-        return resultsController.fetchedObjects.count > 1
+        return resultsController.numberOfObjects > 1
     }
 
     // Results Table's Separator Style

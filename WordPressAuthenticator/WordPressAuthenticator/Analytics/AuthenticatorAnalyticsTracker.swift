@@ -125,6 +125,10 @@ public class AuthenticatorAnalyticsTracker {
         /// Triggered when a user enters site credentials and sees the screen with instructions to verify email. (`VerifyEmailViewController`)
         ///
         case verifyEmailInstructions = "instructions_to_verify_email"
+
+        /// Triggered when a magic link is automatically requested after filling in email address and the requested screen is shown
+        ///
+        case magicLinkAutoRequested = "magic_link_auto_requested"
     }
 
     public enum ClickTarget: String {

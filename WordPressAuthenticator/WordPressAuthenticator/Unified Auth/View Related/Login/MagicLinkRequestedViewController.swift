@@ -51,10 +51,10 @@ final class MagicLinkRequestedViewController: LoginViewController {
 
         tracker.set(flow: .loginWithMagicLink)
 
-        if isMovingToParent {
-            tracker.track(step: .magicLinkRequested)
+        if isBeingPresentedInAnyWay {
+            tracker.track(step: .magicLinkAutoRequested)
         } else {
-            tracker.set(step: .magicLinkRequested)
+            tracker.set(step: .magicLinkAutoRequested)
         }
     }
 

@@ -13,7 +13,7 @@ final class AddOrderCoordinator: Coordinator {
     private let sourceBarButtonItem: UIBarButtonItem?
     private let sourceView: UIView?
 
-    /// We need to keep a reference to AnnouncementBottomSheetViewController in order to use it as child of the WordPressUI BottomSheetViewController component later on
+    /// Keep a reference to AnnouncementBottomSheetViewController in order to use it as child of the WordPressUI BottomSheetViewController component
     ///
     private lazy var baseViewController: AnnouncementBottomSheetViewController = {
         AnnouncementBottomSheetViewController()
@@ -144,7 +144,7 @@ class AnnouncementBottomSheetViewController: UIViewController {
     func setupConstraints(for controller: UIHostingController<AnnouncementBottomSheetView>) {
         controller.view.translatesAutoresizingMaskIntoConstraints = false
         controller.view.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
-        controller.view.heightAnchor.constraint(equalToConstant: self.view.intrinsicContentSize.width + Layout.bottomSpace).isActive = true
+        controller.view.heightAnchor.constraint(equalToConstant: self.view.intrinsicContentSize.height + Layout.verticalSpace).isActive = true
         controller.view.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 0).isActive = true
     }
 }
@@ -153,16 +153,12 @@ class AnnouncementBottomSheetViewController: UIViewController {
 ///
 extension AnnouncementBottomSheetViewController: DrawerPresentable {
     var collapsedHeight: DrawerHeight {
-        return .contentHeight(200)
-    }
-
-    var expandedHeight: DrawerHeight {
-        return .contentHeight(200)
+        return .contentHeight(Layout.verticalSpace)
     }
 }
 
 private extension AnnouncementBottomSheetViewController {
     enum Layout {
-        static let bottomSpace: CGFloat = 100
+        static let verticalSpace: CGFloat = 160
     }
 }

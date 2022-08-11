@@ -2,6 +2,7 @@ import SwiftUI
 
 struct AnnouncementBottomSheetView: View {
     @Environment(\.presentationMode) private var presentation
+    @ScaledMetric private var scale: CGFloat = 1.0
 
     var buttonTapped: (() -> Void)?
 
@@ -10,13 +11,21 @@ struct AnnouncementBottomSheetView: View {
             Spacer()
             Text(Localization.title)
                 .font(.headline)
-                .padding(.bottom, Layout.titleFontSize)
-            Text(Localization.message)
-                .font(.caption)
-                .foregroundColor(.gray)
-                .padding(.bottom, Layout.messageFontSize)
-                .multilineTextAlignment(.leading)
-                .fixedSize(horizontal: false, vertical: true)
+                .padding(.bottom, Layout.verticalPadding)
+            HStack(alignment: .center, spacing: 16.0) {
+                Text(Localization.message)
+                    .font(.caption)
+                    .foregroundColor(.gray)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
+                Spacer()
+                Image(uiImage: .walletImage)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: Layout.iconSize * scale, height: Layout.iconSize * scale)
+                Spacer()
+            }
+            .padding(.bottom, Layout.verticalPadding)
             Button(Localization.confirmationButton) {
                 if let completionHandler = buttonTapped {
                     completionHandler()
@@ -24,7 +33,7 @@ struct AnnouncementBottomSheetView: View {
                 presentation.wrappedValue.dismiss()
             }
             .buttonStyle(SecondaryButtonStyle())
-            .padding(.bottom, Layout.bottomPadding)
+            .padding(.bottom, Layout.verticalPadding)
         }
         .padding(.leading, Layout.horizontalPadding)
         .padding(.trailing, Layout.horizontalPadding)
@@ -45,11 +54,9 @@ extension AnnouncementBottomSheetView {
     }
 
     enum Layout {
-        static let titleFontSize: CGFloat = 16
-        static let messageFontSize: CGFloat = 16
-        static let horizontalPadding: CGFloat = 6
-        static let verticalPadding: CGFloat = 4
-        static let bottomPadding: CGFloat = 6
+        static let horizontalPadding: CGFloat = 16
+        static let verticalPadding: CGFloat = 16
         static let cornerRadius: CGFloat = 12
+        static let iconSize: CGFloat = 32
     }
 }

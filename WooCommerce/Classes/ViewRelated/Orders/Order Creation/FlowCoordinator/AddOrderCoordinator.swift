@@ -2,6 +2,7 @@ import UIKit
 import Yosemite
 import Combine
 import SwiftUI
+import WordPressUI
 
 final class AddOrderCoordinator: Coordinator {
     var navigationController: UINavigationController
@@ -9,6 +10,9 @@ final class AddOrderCoordinator: Coordinator {
     private let siteID: Int64
     private let sourceBarButtonItem: UIBarButtonItem?
     private let sourceView: UIView?
+    private lazy var baseViewController: BaseViewController = {
+        BaseViewController()
+    }()
 
     /// Assign this closure to be notified when a new order is created
     ///
@@ -76,9 +80,9 @@ private extension AddOrderCoordinator {
     /// Presents `BottomAnnouncementView`UIHostingController  modally.
     ///
     func presentBottomAnnouncement() {
-        let baseViewController = BaseViewController()
         baseViewController.completionHandler = redirectToHubMenu
-        navigationController.present(baseViewController, animated: true)
+        let bottomSheet = BottomSheetViewController(childViewController: baseViewController)
+        bottomSheet.show(from: navigationController, sourceView: sourceView, sourceBarButtonItem: sourceBarButtonItem, arrowDirections: .any)
     }
 
     /// Redirects to `HubMenu`tabBar
@@ -116,16 +120,11 @@ class BaseViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupView()
         setupAnnouncementView()
     }
 
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-    }
-
-    func setupView() {
-        view.backgroundColor = UIColor.black.withAlphaComponent(0)
     }
 
     func setupAnnouncementView() {
@@ -138,13 +137,20 @@ class BaseViewController: UIViewController {
     }
 
     func setupConstraints(for controller: UIHostingController<BottomAnnouncementView>) {
-        let extraBottomSpace: CGFloat = navigationController?.view.safeAreaInsets.bottom ?? CGFloat(Layout.bottomSpace)
-
         controller.view.translatesAutoresizingMaskIntoConstraints = false
-        controller.view.frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height)
         controller.view.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
         controller.view.heightAnchor.constraint(equalToConstant: self.view.intrinsicContentSize.width + Layout.bottomSpace).isActive = true
-        controller.view.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -extraBottomSpace).isActive = true
+        controller.view.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 0).isActive = true
+    }
+}
+
+extension BaseViewController: DrawerPresentable {
+    var collapsedHeight: DrawerHeight {
+        return .contentHeight(200)
+    }
+
+    var expandedHeight: DrawerHeight {
+        return .contentHeight(200)
     }
 }
 

@@ -30,8 +30,6 @@ struct BottomAnnouncementView: View {
         .padding(.trailing, Layout.horizontalPadding)
         .padding(.top, Layout.verticalPadding)
         .padding(.bottom, Layout.verticalPadding)
-        .background(RoundedRectangle(cornerRadius: Layout.cornerRadius)
-            .fill(Color(.withColorStudio(.gray, shade: .shade0))))
     }
 }
 

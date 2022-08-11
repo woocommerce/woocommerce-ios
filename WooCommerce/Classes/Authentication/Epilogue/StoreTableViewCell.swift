@@ -77,7 +77,7 @@ class StoreTableViewCell: UITableViewCell {
 
     /// When enabled, the Notice ImageView will be displayed.
     ///
-    var allowsNotice: Bool = false {
+    var displaysNotice: Bool = false {
         didSet {
             refreshNoticeVisibility()
         }
@@ -108,7 +108,7 @@ class StoreTableViewCell: UITableViewCell {
     /// Displays (or hides) the Notice ContainerView, based on the `allowsNotice` property.
     ///
     private func refreshNoticeVisibility() {
-        noticeContainerView.isHidden = !allowsNotice
+        noticeContainerView.isHidden = !displaysNotice
     }
 }
 

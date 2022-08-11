@@ -611,7 +611,7 @@ extension StorePickerViewController: UITableViewDataSource {
         cell.url = site.url
         cell.allowsCheckmark = viewModel.multipleStoresAvailable && site.isWooCommerceActive
         cell.displaysCheckmark = currentlySelectedSite?.siteID == site.siteID && site.isWooCommerceActive
-        cell.allowsNotice = site.isWooCommerceActive == false
+        cell.displaysNotice = site.isWooCommerceActive == false
 
         return cell
     }

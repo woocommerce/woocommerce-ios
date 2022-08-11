@@ -9,8 +9,8 @@ final class MagicLinkRequestedViewController: LoginViewController {
     @IBOutlet private weak var subtitleLabel: UILabel!
     @IBOutlet private weak var emailLabel: UILabel!
     @IBOutlet private weak var cannotFindEmailLabel: UILabel!
-    @IBOutlet weak var buttonContainerView: UIView!
-    @IBOutlet weak var loginWithPasswordButton: UIButton!
+    @IBOutlet private weak var buttonContainerView: UIView!
+    @IBOutlet private weak var loginWithPasswordButton: UIButton!
 
     private let email: String
     private let loginWithPassword: () -> Void

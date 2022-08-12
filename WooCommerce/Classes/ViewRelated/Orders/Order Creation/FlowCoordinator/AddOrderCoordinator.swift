@@ -15,8 +15,8 @@ final class AddOrderCoordinator: Coordinator {
 
     /// Keeps a reference to AnnouncementBottomSheetViewController in order to use it as child of WordPressUI's BottomSheetViewController component
     ///
-    private lazy var newSimplePaymentsNoticeViewController: NewSimplePaymentsNoticeViewController = {
-        NewSimplePaymentsNoticeViewController()
+    private lazy var newSimplePaymentsNoticeViewController: NewSimplePaymentsLocationNoticeViewController = {
+        NewSimplePaymentsLocationNoticeViewController()
     }()
 
     /// Assign this closure to be notified when a new order is created
@@ -108,7 +108,7 @@ private extension AddOrderCoordinator {
     }
 }
 
-final class NewSimplePaymentsNoticeViewController: UIViewController {
+final class NewSimplePaymentsLocationNoticeViewController: UIViewController {
     private let viewModel: NewSimplePaymentsNoticeViewModel
     init() {
         viewModel = NewSimplePaymentsNoticeViewModel()
@@ -131,7 +131,7 @@ final class NewSimplePaymentsNoticeViewController: UIViewController {
 
 /// `BottomSheetViewController` conformance
 ///
-extension NewSimplePaymentsNoticeViewController: DrawerPresentable {
+extension NewSimplePaymentsLocationNoticeViewController: DrawerPresentable {
     var collapsedHeight: DrawerHeight {
         return .contentHeight(160)
     }

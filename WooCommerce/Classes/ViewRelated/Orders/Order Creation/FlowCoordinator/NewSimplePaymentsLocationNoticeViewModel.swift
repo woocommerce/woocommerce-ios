@@ -1,35 +1,39 @@
 import SwiftUI
 
 final class NewSimplePaymentsLocationNoticeViewModel {
-    let simplePaymentsNoticeView: DismissableNoticeView
-
     /// Redirects to `HubMenu`tabBar
     ///
-    private var navigateToMenuButtonWasTapped: (() -> Void)? = {
+    var navigateToMenuButtonWasTapped: () -> Void = {
         guard let mainTabBarController = AppDelegate.shared.tabBarController else {
             return
         }
         mainTabBarController.navigateTo(.hubMenu)
     }
+    /// Uses the "woo-payments-wallet" UIImage+Woo as icon
+    ///
+    var icon: UIImage {
+        guard let image = UIImage(named: "woo-payments-wallet") else { return UIImage() }
+        return image
+    }
+    let title: String
+    let message: String
+    let confirmationButtonMessage: String
 
     init() {
-        simplePaymentsNoticeView = DismissableNoticeView(
-            buttonTapped: navigateToMenuButtonWasTapped,
-            title: Localization.title,
-            message: Localization.message,
-            confirmationButtonMessage: Localization.confirmationButton,
-            icon: .walletImage
-        )
+        title = Localization.title
+        message = Localization.message
+        confirmationButtonMessage = Localization.confirmationButtonMessage
     }
+
 }
 
-private extension NewSimplePaymentsLocationNoticeViewModel {
+extension NewSimplePaymentsLocationNoticeViewModel {
     enum Localization {
         static let title = NSLocalizedString("Payments from the Menu tab",
                                              comment: "Title of the bottom announcement modal when a merchant taps on Simple Payment")
         static let message = NSLocalizedString("Now you can quickly access In-Person Payments and other features with ease.",
                                                comment: "Message of the bottom announcement modal when a merchant taps on Simple Payment")
-        static let confirmationButton = NSLocalizedString("Got it!",
+        static let confirmationButtonMessage = NSLocalizedString("Got it!",
                                                           comment: "Confirmation text of the button on the bottom announcement modal" +
                                                           "when a merchant taps on Simple Payment")
     }

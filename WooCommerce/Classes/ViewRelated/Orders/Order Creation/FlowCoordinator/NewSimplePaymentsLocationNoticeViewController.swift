@@ -4,9 +4,17 @@ import WordPressUI
 
 final class NewSimplePaymentsLocationNoticeViewController: UIViewController {
     private let viewModel: NewSimplePaymentsLocationNoticeViewModel
+    private let simplePaymentsNoticeView: DismissableNoticeView
 
     init() {
         viewModel = NewSimplePaymentsLocationNoticeViewModel()
+        simplePaymentsNoticeView = DismissableNoticeView(
+            buttonTapped: viewModel.navigateToMenuButtonWasTapped,
+            title: viewModel.title,
+            message: viewModel.message,
+            confirmationButtonMessage: viewModel.confirmationButtonMessage,
+            icon: viewModel.icon
+        )
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -24,7 +32,7 @@ final class NewSimplePaymentsLocationNoticeViewController: UIViewController {
     }
 
     func setupNewSimplePaymentsNoticeView() {
-        let hostingController = UIHostingController(rootView: viewModel.simplePaymentsNoticeView)
+        let hostingController = UIHostingController(rootView: simplePaymentsNoticeView)
         addChild(hostingController)
         view.addSubview(hostingController.view)
         hostingController.didMove(toParent: self)

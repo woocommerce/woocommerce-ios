@@ -103,6 +103,7 @@ private extension InPersonPaymentsMenuViewController {
         let permanentNoticeView = PermanentNoticeView(message: Localization.inPersonPaymentsSetupNotFinishedNotice,
                                                       callToActionTitle: Localization.inPersonPaymentsSetupNotFinishedNoticeButtonTitle,
                                                       callToActionHandler: {[weak self] in
+            ServiceLocator.analytics.track(.paymentsMenuOnboardingErrorTapped)
             self?.showOnboardingIfRequired()
         })
 
@@ -285,11 +286,12 @@ private extension InPersonPaymentsMenuViewController {
 //
 extension InPersonPaymentsMenuViewController {
     func orderCardReaderWasPressed() {
+        ServiceLocator.analytics.track(.paymentsMenuOrderCardReaderTapped)
         WebviewHelper.launch(configurationLoader.configuration.purchaseCardReaderUrl(), with: self)
     }
 
     func manageCardReaderWasPressed() {
-        ServiceLocator.analytics.track(.settingsCardReadersTapped)
+        ServiceLocator.analytics.track(.paymentsMenuManageCardReadersTapped)
         guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: CardReaderSettingsPresentingViewController.self) else {
             fatalError("Cannot instantiate `CardReaderSettingsPresentingViewController` from Dashboard storyboard")
         }
@@ -300,12 +302,13 @@ extension InPersonPaymentsMenuViewController {
     }
 
     func cardReaderManualsWasPressed() {
+        ServiceLocator.analytics.track(.paymentsMenuCardReadersManualsTapped)
         let view = UIHostingController(rootView: CardReaderManualsView())
         navigationController?.pushViewController(view, animated: true)
     }
 
     func managePaymentGatewaysWasPressed() {
-        ServiceLocator.analytics.track(.settingsCardPresentSelectedPaymentGatewayTapped)
+        ServiceLocator.analytics.track(.paymentsMenuPaymentProviderTapped)
         onPluginSelectionCleared?()
 
         if featureFlagService.isFeatureFlagEnabled(.paymentsHubMenuSection) {
@@ -324,6 +327,8 @@ extension InPersonPaymentsMenuViewController {
     }
 
     func collectPaymentWasPressed() {
+        ServiceLocator.analytics.track(.paymentsMenuCollectPaymentTapped)
+
         guard let siteID = stores.sessionManager.defaultStoreID,
               let navigationController = navigationController else {
             return

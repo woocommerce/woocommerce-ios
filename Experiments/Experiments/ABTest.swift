@@ -12,9 +12,13 @@ public enum ABTest: String, CaseIterable {
     ///
     case aaTest202208 = "woocommerceios_explat_aa_test_202208"
 
+    /// A/A test to make sure there is no bias in the logged out state.
+    /// Experiment ref: pbxNRc-1S0-p2
+    case aaTestLoggedOut202208 = "woocommerceios_explat_aa_test_logged_out_202208"
+
     /// Returns a variation for the given experiment
-    var variation: Variation {
-        return ExPlat.shared?.experiment(self.rawValue) ?? .control
+    public var variation: Variation {
+        ExPlat.shared?.experiment(rawValue) ?? .control
     }
 }
 

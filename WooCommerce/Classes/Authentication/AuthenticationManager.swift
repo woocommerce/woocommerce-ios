@@ -198,9 +198,8 @@ class AuthenticationManager: Authentication {
         if let matchedSite = matcher.matchedSite(originalURL: siteURL),
            matchedSite.isWooCommerceActive == false {
             let viewModel = NoWooErrorViewModel(
-                siteURL: siteURL,
+                site: matchedSite,
                 showsConnectedStores: matcher.hasConnectedStores,
-                showsInstallButton: matchedSite.isJetpackConnected && matchedSite.isJetpackThePluginInstalled,
                 onSetupCompletion: { [weak self] siteID in
                     guard let self = self else { return }
                     self.startStorePicker(with: siteID, in: navigationController, onDismiss: onStorePickerDismiss)

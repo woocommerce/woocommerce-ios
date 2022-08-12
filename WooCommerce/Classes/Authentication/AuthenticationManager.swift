@@ -43,6 +43,7 @@ class AuthenticationManager: Authentication {
     /// Initializes the WordPress Authenticator.
     ///
     func initialize() {
+        let isWPComMagicLinkPreferredToPassword = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasis)
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
                                                                 wpcomScheme: ApiCredentials.dotcomAuthScheme,
@@ -60,7 +61,8 @@ class AuthenticationManager: Authentication {
                                                                 enableUnifiedAuth: true,
                                                                 continueWithSiteAddressFirst: true,
                                                                 enableSiteCredentialsLoginForSelfHostedSites: true,
-                                                                isWPComLoginRequiredForSiteCredentialsLogin: true)
+                                                                isWPComLoginRequiredForSiteCredentialsLogin: true,
+                                                                isWPComMagicLinkPreferredToPassword: isWPComMagicLinkPreferredToPassword)
 
         let systemGray3LightModeColor = UIColor(red: 199/255.0, green: 199/255.0, blue: 204/255.0, alpha: 1)
         let systemLabelLightModeColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)
@@ -112,7 +114,7 @@ class AuthenticationManager: Authentication {
                                                               textColor: .text,
                                                               textSubtleColor: .textSubtle,
                                                               textButtonColor: .accent,
-                                                              textButtonHighlightColor: .accent,
+                                                              textButtonHighlightColor: .accentDark,
                                                               viewControllerBackgroundColor: .basicBackground,
                                                               prologueButtonsBackgroundColor: .authPrologueBottomBackgroundColor,
                                                               prologueViewBackgroundColor: .authPrologueBottomBackgroundColor,
@@ -196,9 +198,8 @@ class AuthenticationManager: Authentication {
         if let matchedSite = matcher.matchedSite(originalURL: siteURL),
            matchedSite.isWooCommerceActive == false {
             let viewModel = NoWooErrorViewModel(
-                siteURL: siteURL,
+                site: matchedSite,
                 showsConnectedStores: matcher.hasConnectedStores,
-                showsInstallButton: matchedSite.isJetpackConnected && matchedSite.isJetpackThePluginInstalled,
                 onSetupCompletion: { [weak self] siteID in
                     guard let self = self else { return }
                     self.startStorePicker(with: siteID, in: navigationController, onDismiss: onStorePickerDismiss)

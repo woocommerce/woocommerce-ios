@@ -26,6 +26,7 @@ final class ProductFormTableViewDataSource: NSObject {
     private let productUIImageLoader: ProductUIImageLoader
 
     var openLinkedProductsAction: (() -> Void)?
+    var reloadLinkedPromoAction: (() -> Void)?
 
     init(viewModel: ProductFormTableViewModel,
          productImageStatuses: [ProductImageStatus],
@@ -204,6 +205,10 @@ private extension ProductFormTableViewDataSource {
         }
 
         cell.configure(with: viewModel)
+
+        cell.dismiss = { [weak self] in
+            self?.reloadLinkedPromoAction?()
+        }
         cell.callToAction = { [weak self] in
             self?.openLinkedProductsAction?()
         }

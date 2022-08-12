@@ -41,6 +41,7 @@ final class ULErrorViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        configureTitle()
         configureImageView()
         configureErrorMessage()
         configureExtraInfoButton()
@@ -69,6 +70,10 @@ final class ULErrorViewController: UIViewController {
 
 // MARK: - View configuration
 private extension ULErrorViewController {
+    func configureTitle() {
+        title = viewModel.title
+    }
+
     func configureImageView() {
         imageView.image = viewModel.image
     }

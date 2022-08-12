@@ -1,11 +1,22 @@
 import XCTest
+import Yosemite
 @testable import WooCommerce
 
 final class NoWooErrorViewModelTests: XCTestCase {
 
+    func test_title_is_correct() {
+        // Given
+        let site = Site.fake().copy(name: "Test")
+        let viewModel = NoWooErrorViewModel(site: site, showsConnectedStores: false, onSetupCompletion: { _ in })
+
+        // Then
+        XCTAssertEqual(viewModel.title, "Test")
+    }
+
     func test_image_is_correct() {
         // Given
-        let viewModel = NoWooErrorViewModel(siteURL: nil, showsConnectedStores: false, showsInstallButton: false, onSetupCompletion: { _ in })
+        let site = Site.fake()
+        let viewModel = NoWooErrorViewModel(site: site, showsConnectedStores: false, onSetupCompletion: { _ in })
 
         // Then
         XCTAssertEqual(viewModel.image, UIImage.noStoreImage)
@@ -13,8 +24,8 @@ final class NoWooErrorViewModelTests: XCTestCase {
 
     func test_error_message_is_correct() {
         // Given
-        let siteAddress = "https://test.com"
-        let viewModel = NoWooErrorViewModel(siteURL: siteAddress, showsConnectedStores: false, showsInstallButton: false, onSetupCompletion: { _ in })
+        let site = Site.fake().copy(url: "https://test.com")
+        let viewModel = NoWooErrorViewModel(site: site, showsConnectedStores: false, onSetupCompletion: { _ in })
 
         // Then
         XCTAssertEqual(viewModel.text.string, String(format: Localization.errorMessage, "test.com"))
@@ -22,8 +33,8 @@ final class NoWooErrorViewModelTests: XCTestCase {
 
     func test_auxiliary_button_is_hidden_when_connected_stores_are_not_shown() {
         // Given
-        let siteAddress = "https://test.com"
-        let viewModel = NoWooErrorViewModel(siteURL: siteAddress, showsConnectedStores: false, showsInstallButton: false, onSetupCompletion: { _ in })
+        let site = Site.fake().copy(url: "https://test.com")
+        let viewModel = NoWooErrorViewModel(site: site, showsConnectedStores: false, onSetupCompletion: { _ in })
 
         // Then
         XCTAssertTrue(viewModel.isAuxiliaryButtonHidden)
@@ -31,8 +42,8 @@ final class NoWooErrorViewModelTests: XCTestCase {
 
     func test_auxiliary_button_is_not_hidden_when_connected_stores_are_shown() {
         // Given
-        let siteAddress = "https://test.com"
-        let viewModel = NoWooErrorViewModel(siteURL: siteAddress, showsConnectedStores: true, showsInstallButton: false, onSetupCompletion: { _ in })
+        let site = Site.fake().copy(url: "https://test.com")
+        let viewModel = NoWooErrorViewModel(site: site, showsConnectedStores: true, onSetupCompletion: { _ in })
 
         // Then
         XCTAssertFalse(viewModel.isAuxiliaryButtonHidden)
@@ -40,8 +51,8 @@ final class NoWooErrorViewModelTests: XCTestCase {
 
     func test_auxiliary_button_title_is_correct() {
         // Given
-        let siteAddress = "https://test.com"
-        let viewModel = NoWooErrorViewModel(siteURL: siteAddress, showsConnectedStores: false, showsInstallButton: false, onSetupCompletion: { _ in })
+        let site = Site.fake().copy(url: "https://test.com")
+        let viewModel = NoWooErrorViewModel(site: site, showsConnectedStores: false, onSetupCompletion: { _ in })
 
         //  Then
         XCTAssertEqual(viewModel.auxiliaryButtonTitle, Localization.seeConnectedStores)
@@ -49,26 +60,35 @@ final class NoWooErrorViewModelTests: XCTestCase {
 
     func test_primary_button_title_is_correct() {
         // Given
-        let siteAddress = "https://test.com"
-        let viewModel = NoWooErrorViewModel(siteURL: siteAddress, showsConnectedStores: false, showsInstallButton: false, onSetupCompletion: { _ in })
+        let site = Site.fake().copy(url: "https://test.com")
+        let viewModel = NoWooErrorViewModel(site: site, showsConnectedStores: false, onSetupCompletion: { _ in })
 
         //  Then
         XCTAssertEqual(viewModel.primaryButtonTitle, Localization.primaryButtonTitle)
     }
 
-    func test_primary_button_is_hidden_when_install_button_is_not_shown() {
+    func test_primary_button_is_hidden_when_the_site_does_not_have_jetpack_connection() {
         // Given
-        let siteAddress = "https://test.com"
-        let viewModel = NoWooErrorViewModel(siteURL: siteAddress, showsConnectedStores: false, showsInstallButton: false, onSetupCompletion: { _ in })
+        let site = Site.fake().copy(url: "https://test.com", isJetpackThePluginInstalled: true, isJetpackConnected: false)
+        let viewModel = NoWooErrorViewModel(site: site, showsConnectedStores: false, onSetupCompletion: { _ in })
 
         // Then
         XCTAssertTrue(viewModel.isPrimaryButtonHidden)
     }
 
-    func test_primary_button_is_not_hidden_when_install_button_is_shown() {
+    func test_primary_button_is_hidden_when_the_site_does_not_have_jetpack_the_plugin() {
         // Given
-        let siteAddress = "https://test.com"
-        let viewModel = NoWooErrorViewModel(siteURL: siteAddress, showsConnectedStores: false, showsInstallButton: true, onSetupCompletion: { _ in })
+        let site = Site.fake().copy(url: "https://test.com", isJetpackThePluginInstalled: false, isJetpackConnected: true)
+        let viewModel = NoWooErrorViewModel(site: site, showsConnectedStores: false, onSetupCompletion: { _ in })
+
+        // Then
+        XCTAssertTrue(viewModel.isPrimaryButtonHidden)
+    }
+
+    func test_primary_button_is_not_hidden_when_the_site_has_both_jetpack_connection_and_the_plugin() {
+        // Given
+        let site = Site.fake().copy(url: "https://test.com", isJetpackThePluginInstalled: true, isJetpackConnected: true)
+        let viewModel = NoWooErrorViewModel(site: site, showsConnectedStores: false, onSetupCompletion: { _ in })
 
         // Then
         XCTAssertFalse(viewModel.isPrimaryButtonHidden)
@@ -76,8 +96,8 @@ final class NoWooErrorViewModelTests: XCTestCase {
 
     func test_secondary_button_title_is_correct() {
         // Given
-        let siteAddress = "https://test.com"
-        let viewModel = NoWooErrorViewModel(siteURL: siteAddress, showsConnectedStores: false, showsInstallButton: false, onSetupCompletion: { _ in })
+        let site = Site.fake().copy(url: "https://test.com")
+        let viewModel = NoWooErrorViewModel(site: site, showsConnectedStores: false, onSetupCompletion: { _ in })
 
         //  Then
         XCTAssertEqual(viewModel.secondaryButtonTitle, Localization.secondaryButtonTitle)
@@ -85,11 +105,10 @@ final class NoWooErrorViewModelTests: XCTestCase {
 
     func test_user_is_logged_out_when_tapping_secondary_button() {
         // Given
-        let siteAddress = "https://test.com"
+        let site = Site.fake().copy(url: "https://test.com")
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
-        let viewModel = NoWooErrorViewModel(siteURL: siteAddress,
+        let viewModel = NoWooErrorViewModel(site: site,
                                             showsConnectedStores: false,
-                                            showsInstallButton: false,
                                             stores: stores,
                                             onSetupCompletion: { _ in })
         let rootViewController = UIViewController()
@@ -108,12 +127,11 @@ final class NoWooErrorViewModelTests: XCTestCase {
 
     func test_woocommerce_setup_button_tapped_is_tracked_when_tapping_primary_button() {
         // Given
-        let siteAddress = "https://test.com"
+        let site = Site.fake().copy(url: "https://test.com")
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let viewModel = NoWooErrorViewModel(siteURL: siteAddress,
+        let viewModel = NoWooErrorViewModel(site: site,
                                             showsConnectedStores: false,
-                                            showsInstallButton: false,
                                             analytics: analytics,
                                             onSetupCompletion: { _ in })
 
@@ -126,12 +144,11 @@ final class NoWooErrorViewModelTests: XCTestCase {
 
     func test_woocommerce_error_screen_is_tracked_when_the_view_is_loaded() {
         // Given
-        let siteAddress = "https://test.com"
+        let site = Site.fake().copy(url: "https://test.com")
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let viewModel = NoWooErrorViewModel(siteURL: siteAddress,
+        let viewModel = NoWooErrorViewModel(site: site,
                                             showsConnectedStores: false,
-                                            showsInstallButton: false,
                                             analytics: analytics,
                                             onSetupCompletion: { _ in })
 

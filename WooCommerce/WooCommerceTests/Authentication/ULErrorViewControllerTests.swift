@@ -16,6 +16,19 @@ final class ULErrorViewControllerTests: XCTestCase {
         super.tearDown()
     }
 
+    func test_viewcontroller_presents_title_provided_by_viewmodel() throws {
+        // Given
+        let viewModel = ErrorViewModel()
+        let viewController = ULErrorViewController(viewModel: viewModel)
+
+        // When
+        _ = try XCTUnwrap(viewController.view)
+        let title = viewController.title
+
+        // Then
+        XCTAssertEqual(title, viewModel.title)
+    }
+
     func test_viewcontroller_presents_image_provided_by_viewmodel() throws {
         // Given
         let viewModel = ErrorViewModel()
@@ -155,6 +168,8 @@ final class ULErrorViewControllerTests: XCTestCase {
 
 
 private final class ErrorViewModel: ULErrorViewModel {
+    let title: String? = "Test"
+
     let image: UIImage = .loginNoJetpackError
 
     let text: NSAttributedString = NSAttributedString(string: "woocommerce")

@@ -656,7 +656,7 @@ public enum WooAnalyticsStat: String {
     case paymentsMenuOrderCardReaderTapped = "payments_hub_order_card_reader_tapped"
     case paymentsMenuCardReadersManualsTapped = "payments_hub_card_readers_manuals_tapped"
     case paymentsMenuManageCardReadersTapped = "payments_hub_manage_card_readers_tapped"
-    case paymentsMenuPaymentProviderTapped = "payments_hub_payment_provider_tapped"
+    case paymentsMenuPaymentProviderTapped = "settings_card_present_select_payment_gateway_tapped"
 }
 
 public extension WooAnalyticsStat {

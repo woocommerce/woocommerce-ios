@@ -109,9 +109,7 @@ private extension AddOrderCoordinator {
 }
 
 final class NewSimplePaymentsNoticeViewController: UIViewController {
-
     private let viewModel: NewSimplePaymentsNoticeViewModel
-
     init() {
         viewModel = NewSimplePaymentsNoticeViewModel()
         super.init(nibName: nil, bundle: nil)

@@ -1,7 +1,6 @@
 import SwiftUI
 
 final class NewSimplePaymentsNoticeViewModel {
-
     private let simplePaymentsNoticeView: BottomSheetNoticeView
 
     /// Redirects to `HubMenu`tabBar

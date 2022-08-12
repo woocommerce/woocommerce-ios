@@ -1,7 +1,7 @@
 import SwiftUI
 
 final class NewSimplePaymentsNoticeViewModel {
-    private let simplePaymentsNoticeView: BottomSheetNoticeView
+    private let simplePaymentsNoticeView: DismissableNoticeView
 
     /// Redirects to `HubMenu`tabBar
     ///
@@ -13,7 +13,7 @@ final class NewSimplePaymentsNoticeViewModel {
     }
 
     init() {
-        simplePaymentsNoticeView = BottomSheetNoticeView(
+        simplePaymentsNoticeView = DismissableNoticeView(
             buttonTapped: completionHandler,
             title: Localization.title,
             message: Localization.message,
@@ -29,7 +29,7 @@ final class NewSimplePaymentsNoticeViewModel {
         setupConstraints(for: hostingController, with: viewController)
     }
 
-    private func setupConstraints(for hostingController: UIHostingController<BottomSheetNoticeView>, with viewController: UIViewController) {
+    private func setupConstraints(for hostingController: UIHostingController<DismissableNoticeView>, with viewController: UIViewController) {
         hostingController.view.translatesAutoresizingMaskIntoConstraints = false
         hostingController.view.widthAnchor.constraint(equalTo: viewController.view.widthAnchor).isActive = true
         hostingController.view.heightAnchor.constraint(equalToConstant: viewController.view.intrinsicContentSize.height + Layout.verticalSpace).isActive = true

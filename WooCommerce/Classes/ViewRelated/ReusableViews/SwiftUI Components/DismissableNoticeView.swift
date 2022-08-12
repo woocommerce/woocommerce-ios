@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct BottomSheetNoticeView: View {
+struct DismissableNoticeView: View {
     @Environment(\.presentationMode) private var presentation
     @ScaledMetric private var scale: CGFloat = 1.0
 
@@ -45,7 +45,7 @@ struct BottomSheetNoticeView: View {
     }
 }
 
-extension BottomSheetNoticeView {
+extension DismissableNoticeView {
     enum Layout {
         static let horizontalPadding: CGFloat = 16
         static let verticalPadding: CGFloat = 16

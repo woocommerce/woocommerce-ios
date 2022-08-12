@@ -6681,12 +6681,11 @@
 		B58B4ABC2108F7F800076FDD /* Notices */ = {
 			isa = PBXGroup;
 			children = (
-				B9B0391728A6838400DC1C83 /* PermanentNoticeView.swift */,
+				B9B0391B28A690DA00DC1C83 /* PermanentNotice */,
 				B58B4AB52108F11C00076FDD /* Notice.swift */,
 				B58B4AB72108F14700076FDD /* NoticeNotificationInfo.swift */,
 				B58B4AB02108F01600076FDD /* DefaultNoticePresenter.swift */,
 				B58B4AAF2108F01400076FDD /* NoticeView.swift */,
-				B9B0391528A6824200DC1C83 /* PermanentNoticePresenter.swift */,
 			);
 			path = Notices;
 			sourceTree = "<group>";
@@ -6858,6 +6857,15 @@
 				53284C9FD06F2BDABC554BEE /* OrderFormCustomerNoteViewModel.swift */,
 			);
 			path = CustomerNoteSection;
+			sourceTree = "<group>";
+		};
+		B9B0391B28A690DA00DC1C83 /* PermanentNotice */ = {
+			isa = PBXGroup;
+			children = (
+				B9B0391528A6824200DC1C83 /* PermanentNoticePresenter.swift */,
+				B9B0391728A6838400DC1C83 /* PermanentNoticeView.swift */,
+			);
+			path = PermanentNotice;
 			sourceTree = "<group>";
 		};
 		BA143222273662DE00E4B3AB /* Settings */ = {

@@ -2,15 +2,22 @@ import Foundation
 import UIKit
 import SwiftUI
 
+/// This struct encapsulates the content to displayed in a Permanent Notice
+///
 struct PermanentNotice {
     let message: String
     let callToActionTitle: String
     let callToActionHandler: () -> Void
 }
 
+/// Presents a banner permanently, that is, will remain until it is called to dismiss, unlike `DefaultNoticePresenter`, which dismiss the notice after a delay.
+/// The design also differs with the latter to represent a more permanent air.
+///
 final class PermanentNoticePresenter {
     private var hostingController: UIHostingController<PermanentNoticeView>?
 
+    /// Presents the given notice into the passed view controller with an animation
+    ///
     func presentNotice(notice: PermanentNotice, from viewController: UIViewController) {
         let permanentNoticeView = PermanentNoticeView(notice: notice)
         let newHostingController = ConstraintsUpdatingHostingController(rootView: permanentNoticeView)
@@ -28,6 +35,8 @@ final class PermanentNoticePresenter {
         self.hostingController = newHostingController
     }
 
+    /// Dismiss the permanent notice presented by calling `presentNotice`. If there is no one presented this method does nothing.
+    ///
     func dismiss() {
         animateDismiss()
     }

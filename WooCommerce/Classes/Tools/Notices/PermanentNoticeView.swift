@@ -1,6 +1,8 @@
 import Foundation
 import SwiftUI
 
+/// Renders a permanent notice with a separator line on top
+///
 struct PermanentNoticeView: View {
     let notice: PermanentNotice
 
@@ -31,13 +33,14 @@ private struct PermanentNoticeContentView: View {
             }.padding(.top, Layout.vStackTopPadding)
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
-        .padding(16)
+        .padding(Layout.hStackPadding)
     }
 }
 
 private extension PermanentNoticeContentView {
     enum Layout {
         static let hStackSpacing: CGFloat = 15
+        static let hStackPadding: CGFloat = 10
         static let vStackSpacing: CGFloat = 10
         static let vStackTopPadding: CGFloat = 2
     }

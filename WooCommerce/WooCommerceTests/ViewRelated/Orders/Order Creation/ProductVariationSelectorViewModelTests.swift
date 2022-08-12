@@ -208,26 +208,35 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
     func test_selectVariation_invokes_onVariationSelected_closure_for_existing_variation() {
         // Given
         var selectedVariationID: Int64?
-        let product = Product.fake().copy(productID: sampleProductID)
+        var selectedProductID: Int64?
+
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID)
         let productVariation = sampleProductVariation.copy(productVariationID: 1)
         insert(productVariation)
+        insert(product)
+
         let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID,
                                                             product: product,
                                                             storageManager: storageManager,
-                                                            onVariationSelected: { selectedVariationID = $0.productVariationID })
+                                                            onVariationSelected: { variation, product in
+            selectedVariationID = variation.productVariationID
+            selectedProductID = product.productID
+        })
 
         // When
         viewModel.selectVariation(productVariation.productVariationID)
 
         // Then
         XCTAssertEqual(selectedVariationID, productVariation.productVariationID)
+        XCTAssertEqual(selectedProductID, product.productID)
     }
 
     func test_selecting_a_variation_set_its_row_to_selected() {
         // Given
-        let product = Product.fake().copy(productID: sampleProductID)
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID)
         let productVariation = sampleProductVariation.copy(productVariationID: 1)
         insert(productVariation)
+        insert(product)
         let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID,
                                                           product: product,
                                                           storageManager: storageManager)
@@ -243,9 +252,10 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
 
     func test_clearSelection_unselects_previously_selected_rows() {
         // Given
-        let product = Product.fake().copy(productID: sampleProductID)
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID)
         let productVariation = sampleProductVariation.copy(productVariationID: 1)
         insert(productVariation)
+        insert(product)
         let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID,
                                                           product: product,
                                                           storageManager: storageManager)
@@ -278,6 +288,12 @@ private extension ProductVariationSelectorViewModelTests {
             storageAttributes.append(newStorageAttribute)
         }
         productVariation.attributes = NSOrderedSet(array: storageAttributes)
+    }
+
+    /// Insert a `Product` into storage.
+    func insert(_ readOnlyProduct: Yosemite.Product) {
+        let product = storage.insertNewObject(ofType: StorageProduct.self)
+        product.update(with: readOnlyProduct)
     }
 
     /// Insert an array of `ProductVariation`s into storage

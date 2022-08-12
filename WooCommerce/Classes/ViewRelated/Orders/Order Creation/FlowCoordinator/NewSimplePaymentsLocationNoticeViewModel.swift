@@ -1,7 +1,7 @@
 import SwiftUI
 
-final class NewSimplePaymentsNoticeViewModel {
-    private let simplePaymentsNoticeView: DismissableNoticeView
+final class NewSimplePaymentsLocationNoticeViewModel {
+    let simplePaymentsNoticeView: DismissableNoticeView
 
     /// Redirects to `HubMenu`tabBar
     ///
@@ -21,24 +21,9 @@ final class NewSimplePaymentsNoticeViewModel {
             icon: .walletImage
         )
     }
-
-    func setupNewSimplePaymentsNoticeView(for viewController: UIViewController) {
-        let hostingController = UIHostingController(rootView: simplePaymentsNoticeView)
-        viewController.addChild(hostingController)
-        viewController.view.addSubview(hostingController.view)
-        hostingController.didMove(toParent: viewController)
-        setupConstraints(for: hostingController, with: viewController)
-    }
-
-    private func setupConstraints(for hostingController: UIHostingController<DismissableNoticeView>, with viewController: UIViewController) {
-        hostingController.view.translatesAutoresizingMaskIntoConstraints = false
-        hostingController.view.widthAnchor.constraint(equalTo: viewController.view.widthAnchor).isActive = true
-        hostingController.view.heightAnchor.constraint(equalToConstant: viewController.view.intrinsicContentSize.height + Layout.verticalSpace).isActive = true
-        hostingController.view.topAnchor.constraint(equalTo: viewController.view.topAnchor, constant: 0).isActive = true
-    }
 }
 
-private extension NewSimplePaymentsNoticeViewModel {
+private extension NewSimplePaymentsLocationNoticeViewModel {
     enum Localization {
         static let title = NSLocalizedString("Payments from the Menu tab",
                                              comment: "Title of the bottom announcement modal when a merchant taps on Simple Payment")
@@ -47,8 +32,5 @@ private extension NewSimplePaymentsNoticeViewModel {
         static let confirmationButton = NSLocalizedString("Got it!",
                                                           comment: "Confirmation text of the button on the bottom announcement modal" +
                                                           "when a merchant taps on Simple Payment")
-    }
-    enum Layout {
-        static let verticalSpace: CGFloat = 160
     }
 }

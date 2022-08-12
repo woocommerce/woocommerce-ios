@@ -107,32 +107,3 @@ private extension AddOrderCoordinator {
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderAddNew())
     }
 }
-
-final class NewSimplePaymentsLocationNoticeViewController: UIViewController {
-    private let viewModel: NewSimplePaymentsNoticeViewModel
-    init() {
-        viewModel = NewSimplePaymentsNoticeViewModel()
-        super.init(nibName: nil, bundle: nil)
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        viewModel.setupNewSimplePaymentsNoticeView(for: self)
-    }
-
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-    }
-}
-
-/// `BottomSheetViewController` conformance
-///
-extension NewSimplePaymentsLocationNoticeViewController: DrawerPresentable {
-    var collapsedHeight: DrawerHeight {
-        return .contentHeight(160)
-    }
-}

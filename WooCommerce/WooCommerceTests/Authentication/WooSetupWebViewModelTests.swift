@@ -6,7 +6,7 @@ final class WooSetupWebViewModelTests: XCTestCase {
     func test_initial_url_is_correct() {
         // Given
         let siteURL = "https://test.com"
-        let viewModel = WooSetupWebViewModel(siteURL: siteURL, onCompletion: {})
+        let viewModel = WooSetupWebViewModel(siteURL: siteURL, onCompletion: {}, onDismiss: {})
 
         // Then
         let expectedURL = "https://wordpress.com/plugins/woocommerce/test.com"
@@ -20,7 +20,7 @@ final class WooSetupWebViewModelTests: XCTestCase {
         let completionHandler: () -> Void = {
             triggeredCompletion = true
         }
-        let viewModel = WooSetupWebViewModel(siteURL: siteURL, onCompletion: completionHandler)
+        let viewModel = WooSetupWebViewModel(siteURL: siteURL, onCompletion: completionHandler, onDismiss: {})
 
         // When
         let url = URL(string: "https://wordpress.com/marketplace/thank-you/woocommerce/")
@@ -35,7 +35,7 @@ final class WooSetupWebViewModelTests: XCTestCase {
         let siteURL = "https://test.com"
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let viewModel = WooSetupWebViewModel(siteURL: siteURL, analytics: analytics, onCompletion: {})
+        let viewModel = WooSetupWebViewModel(siteURL: siteURL, analytics: analytics, onCompletion: {}, onDismiss: {})
 
         // When
         viewModel.handleDismissal()
@@ -51,7 +51,7 @@ final class WooSetupWebViewModelTests: XCTestCase {
         let siteURL = "https://test.com"
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let viewModel = WooSetupWebViewModel(siteURL: siteURL, analytics: analytics, onCompletion: {})
+        let viewModel = WooSetupWebViewModel(siteURL: siteURL, analytics: analytics, onCompletion: {}, onDismiss: {})
 
         // When
         let url = URL(string: "https://wordpress.com/marketplace/thank-you/woocommerce/")
@@ -68,7 +68,7 @@ final class WooSetupWebViewModelTests: XCTestCase {
         let siteURL = "https://test.com"
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let viewModel = WooSetupWebViewModel(siteURL: siteURL, analytics: analytics, onCompletion: {})
+        let viewModel = WooSetupWebViewModel(siteURL: siteURL, analytics: analytics, onCompletion: {}, onDismiss: {})
 
         // When
         let url = URL(string: "https://wordpress.com/marketplace/thank-you/woocommerce/")

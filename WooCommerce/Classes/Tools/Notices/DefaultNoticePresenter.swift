@@ -20,10 +20,6 @@ class DefaultNoticePresenter: NoticePresenter {
     ///
     private var noticeOnScreen: Notice?
 
-    /// Contains the notice view
-    ///
-    private var noticeContainerView: NoticeContainerView?
-
     /// UIViewController to be used as Notice(s) Presenter
     ///
     weak var presentingViewController: UIViewController?
@@ -31,12 +27,6 @@ class DefaultNoticePresenter: NoticePresenter {
     /// Observes keyboard and repositions Notice
     ///
     private var keyboardFrameObserver: KeyboardFrameObserver?
-
-    /// Whether to dismiss the notice automatically after a delay,
-    /// or when pressing the call to action button.
-    /// Default is true.
-    /// 
-    var dismissAutomatically = true
 
     /// Enqueues the specified Notice for display.
     ///
@@ -51,15 +41,6 @@ class DefaultNoticePresenter: NoticePresenter {
         notices.append(notice)
         presentNextNoticeIfPossible()
         return true
-    }
-
-    /// Dismisses the currently shown notice.
-    ///
-    func dismiss() {
-        noticeOnScreen = nil
-        keyboardFrameObserver = nil
-        noticeContainerView?.removeFromSuperview()
-        presentNextNoticeIfPossible()
     }
 }
 
@@ -123,7 +104,6 @@ private extension DefaultNoticePresenter {
         noticeView.translatesAutoresizingMaskIntoConstraints = false
 
         let noticeContainerView = NoticeContainerView(noticeView: noticeView)
-        self.noticeContainerView = noticeContainerView
 
         var onScreenBottomOffsetAdjustedForKeyboard: CGFloat = 0
         keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
@@ -193,20 +173,21 @@ private extension DefaultNoticePresenter {
             })
         }
 
-        if dismissAutomatically {
-            noticeView.dismissHandler = dismiss
-        }
+        noticeView.dismissHandler = dismiss
 
         if let feedbackType = notice.feedbackType {
             generator.notificationOccurred(feedbackType)
         }
 
-        animatePresentation(fromState: offScreenState, toState: onScreenState, completion: { [weak self] in
-            guard let self = self else { return }
-            if self.dismissAutomatically {
-                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Animations.dismissDelay, execute: dismiss)
-            }
+        animatePresentation(fromState: offScreenState, toState: onScreenState, completion: {
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Animations.dismissDelay, execute: dismiss)
         })
+    }
+
+    func dismiss() {
+        noticeOnScreen = nil
+        keyboardFrameObserver = nil
+        presentNextNoticeIfPossible()
     }
 
     func addNoticeContainerToPresentingViewController(_ noticeContainer: UIView) {

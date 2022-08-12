@@ -19,7 +19,6 @@ final class InPersonPaymentsMenuViewController: UIViewController {
 
     private lazy var noticePresenter: DefaultNoticePresenter = {
         let noticePresenter = DefaultNoticePresenter()
-        noticePresenter.dismissAutomatically = false
         noticePresenter.presentingViewController = self
         return noticePresenter
     }()
@@ -128,7 +127,6 @@ private extension InPersonPaymentsMenuViewController {
         cardPresentPaymentsOnboardingPresenter = CardPresentPaymentsOnboardingPresenter()
 
         cardPresentPaymentsOnboardingPresenter?.showOnboardingIfRequired(from: navigationController) { [weak self] in
-            self?.noticePresenter.dismiss()
             self?.cardPresentPaymentsOnboardingUseCase.refresh()
         }
     }

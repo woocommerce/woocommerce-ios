@@ -51,7 +51,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
 
     /// Closure to be invoked when a product variation is selected
     ///
-    let onVariationSelected: ((ProductVariation) -> Void)?
+    let onVariationSelected: ((ProductVariation, Product) -> Void)?
 
     /// All selected product variations if the selector supports multiple selections.
     ///
@@ -79,6 +79,15 @@ final class ProductVariationSelectorViewModel: ObservableObject {
         }
     }
 
+    /// Product Result Controller.
+    /// Used the retrieve the parent product upon selecting a variation.
+    ///
+    private lazy var productResultsController: ResultsController<StorageProduct> = {
+        let predicate = NSPredicate(format: "siteID == %lld AND productID == %lld", siteID, productID)
+        let resultsController = ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [])
+        return resultsController
+    }()
+
     /// Product Variations Results Controller.
     ///
     private lazy var productVariationsResultsController: ResultsController<StorageProductVariation> = {
@@ -103,7 +112,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
          purchasableItemsOnly: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
-         onVariationSelected: ((ProductVariation) -> Void)? = nil) {
+         onVariationSelected: ((ProductVariation, Product) -> Void)? = nil) {
         self.siteID = siteID
         self.productID = productID
         self.productName = productName
@@ -125,7 +134,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
                      purchasableItemsOnly: Bool = false,
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
                      stores: StoresManager = ServiceLocator.stores,
-                     onVariationSelected: ((ProductVariation) -> Void)? = nil) {
+                     onVariationSelected: ((ProductVariation, Product) -> Void)? = nil) {
         self.init(siteID: siteID,
                   productID: product.productID,
                   productName: product.name,
@@ -140,11 +149,18 @@ final class ProductVariationSelectorViewModel: ObservableObject {
     /// Select a product variation to add to the order
     ///
     func selectVariation(_ variationID: Int64) {
-        guard let selectedVariation = productVariations.first(where: { $0.productVariationID == variationID }) else {
+
+        // Fetch parent product
+        // Needed because the parent product contains the product name & attributes.
+        try? productResultsController.performFetch()
+
+        guard let parentProduct = productResultsController.fetchedObjects.first,
+              let selectedVariation = productVariations.first(where: { $0.productVariationID == variationID }) else {
             return
         }
+
         if let onVariationSelected = onVariationSelected {
-            onVariationSelected(selectedVariation)
+            onVariationSelected(selectedVariation, parentProduct)
         } else {
             toggleSelection(productVariationID: variationID)
         }

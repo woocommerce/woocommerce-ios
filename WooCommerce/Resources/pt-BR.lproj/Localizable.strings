@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-07-27 15:54:04+0000 */
+/* Translation-Revision-Date: 2022-08-12 09:54:15+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -773,6 +773,9 @@ which should be translated separately and considered part of this sentence. */
 /* The details text on the placeholder overlay when there are no coupons on the coupon list screen. */
 "Boost your business by sending customers special offers and discounts." = "Envie descontos e ofertas especiais aos seus clientes para turbinar seus negócios.";
 
+/* Title for the Linked Products announcement banner */
+"Boost your sales with linked products" = "Impulsione suas vendas com produtos vinculados";
+
 /* Box package type, used to create a custom package in the Shipping Label flow */
 "Box" = "Caixa";
 
@@ -894,6 +897,9 @@ which should be translated separately and considered part of this sentence. */
    Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "Não foi possível carregar a imagem";
 
+/* Error message displayed when failed to check for WooCommerce in a site. */
+"Cannot verify your site's WooCommerce installation." = "Não foi possível verificar a instalação do WooCommerce no seu site.";
+
 /* Detailed message shown in the Reviews tab if the list is empty
    Detailed message shown on the Product Reviews screen if the list is empty */
 "Capture high-quality product reviews for your store." = "Colete avaliações de alta qualidade do produto para sua loja.";
@@ -952,6 +958,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title text of the row that has a switch when creating a simple payment */
 "Charge Taxes" = "Cobrar impostos";
+
+/* Login onboarding survey option: check my analytics. */
+"Check my analytics" = "Verificar minhas análises";
 
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "Verifique se a URL inserida é válida";
@@ -1132,7 +1141,8 @@ which should be translated separately and considered part of this sentence. */
 /* Contact WooComerce Payments Support title */
 "Contact WooCommerce Payments Support" = "Entre em contato com o suporte do WooCommerce Payments";
 
-/* Action button to contact support on enable analytics screen */
+/* Action button to contact support on enable analytics screen
+   Local notification action to contact support. */
 "Contact support" = "Contate o suporte";
 
 /* Title of a button to contact support in the error screen for In-Person payments */
@@ -1302,6 +1312,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "Criar novo pacote";
+
+/* Login onboarding survey option: create or update my products. */
+"Create or update my products" = "Criar ou atualizar meus produtos";
 
 /* Action sheet option when the user wants to create full manual order */
 "Create order" = "Criar pedido";
@@ -1887,6 +1900,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the notice about an error saving an image uploaded in the background to a product variation. */
 "Error saving variation image" = "Erro ao salvar a imagem da variação";
 
+/* Notice title when marking an order as completed via a swipe action fails. Parameter: Order Number */
+"Error updating Order #%1$d" = "Erro ao atualizar o pedido nº %1$d";
+
 /* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store.
    The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
 "Everyone loves a deal" = "Quem não ama uma oferta?";
@@ -2102,6 +2118,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message for the feature announcement banner intended to upsell card readers */
 "Get ready to accept payments with a card reader." = "Prepare-se para aceitar pagamentos com um leitor de cartão.";
 
+/* Local notification body when the user encounters an error logging in with site address. */
+"Get some help!" = "Peça ajuda!";
+
 /* Title of the Jetpack benefits banner. */
 "Get the full experience with Jetpack" = "Obtenha uma experiência completa com o Jetpack";
 
@@ -2127,6 +2146,9 @@ which should be translated separately and considered part of this sentence. */
    Title of the button to give feedback about the Orders features
    Title on the navigation bar for the products feedback survey */
 "Give feedback" = "Dê sua opinião";
+
+/* Message for the Linked Products announcement banner */
+"Give your customers helpful and relevant product recommendations by adding upsells and cross-sells." = "Dê aos seus clientes recomendações de produtos úteis e relevantes com upselling e cross-selling.";
 
 /* Option to select the Gmail app when logging in with magic links */
 "Gmail" = "Gmail";
@@ -2373,6 +2395,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to install Jetpack on WP-Admin instead of on app */
 "Install Jetpack in WP-Admin" = "Instalar o Jetpack no Painel WP Admin";
 
+/* Action button for installing WooCommerce.Presented when logging in with a site address that does not have WooCommerce */
+"Install WooCommerce" = "Instalar o WooCommerce";
+
 /* Title for the error screen when WooCommerce Payments is not installed */
 "Install WooCommerce Payments" = "Instale o WooCommerce Payments";
 
@@ -2444,6 +2469,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message explaining that the site entered and the acount logged into do not match. Reads like 'It looks like awebsite.com is connected to a different account */
 "It looks like %@ is connected to a different account." = "Parece que %@ está conectado a uma conta diferente.";
 
+/* Message explaining that the site entered doesn't have WooCommerce installed or activated. Reads like 'It looks like awebsite.com is not a WooCommerce site. */
+"It looks like %@ is not a WooCommerce site." = "Parece que %@ não é um site do WooCommerce.";
+
 /* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
 "It looks like this email isn't associated with a WordPress.com account." = "Parece que não há nenhuma conta do WordPress.com associada a este e-mail.";
 
@@ -2482,6 +2510,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "Participe de qualquer lugar";
+
+/* Login onboarding survey option: just exploring. */
+"Just exploring" = "Apenas explorando";
 
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "Continuar editando";
@@ -2622,6 +2653,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Action button that will restart the login flow.Presented when logging in with a site address that appears to be invalid.
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
+   Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
    Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Log In With Another Account" = "Faça login com outra conta";
 
@@ -2655,6 +2687,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Instructions on the WordPress.com username / password log in form. */
 "Log in with your WordPress.com username and password." = "Faça login com seu nome de usuário e sua senha do WordPress.com.";
+
+/* Local notification action to log in with WordPress.com. */
+"Login with WordPress.com" = "Fazer login com o WordPress.com";
 
 /* Title of a button. */
 "Lost your password?" = "Esqueceu sua senha?";
@@ -2691,6 +2726,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigates to Card Reader management screen */
 "Manage card reader" = "Gerenciar leitor de cartão";
 
+/* Login onboarding survey option: manage my orders. */
+"Manage my orders" = "Gerenciar meus pedidos";
+
 /* Title of the cell in Product Inventory Settings > Manage stock */
 "Manage stock" = "Gerenciar estoque";
 
@@ -2702,6 +2740,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "Domínio mapeado";
+
+/* Title for the swipe order action to mark it as completed */
+"Mark Completed" = "Marcar como concluído";
 
 /* Action button on Review Order screen
    Fulfill Order Action Button */
@@ -2852,7 +2893,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for table view section of network active plugins */
 "Network Active Plugins" = "Plugins ativos de rede";
 
-/* Title of the new badge shown when advertising a new feature */
+/* Title of the badge shown when advertising a new feature */
 "New" = "Novos";
 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
@@ -3111,6 +3152,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Order number title. Parameters: %1$@ - order number */
 "Order #%1$@" = "Pedido %1$@";
 
+/* Notice title when an order is marked as completed via a swipe action. Parameter: Order Number */
+"Order #%1$d marked as completed" = "Pedido nº %1$d marcado como concluído";
+
 /* Order notes section title */
 "Order Notes" = "Observações do pedido";
 
@@ -3266,6 +3310,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message when payment is declined for a non specific reason. */
 "Payment was declined for an unspecified reason. Try another means of payment" = "Pagamento recusado por motivo não especificado. Tente outro meio de pagamento";
+
+/* Title of the hub menu payments button */
+"Payments" = "Pagamentos";
 
 /* Display label for pending order status.
    Display label for the review's pending status */
@@ -3532,6 +3579,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Display label for the product's private status */
 "Privately published" = "Publicado de maneira privada";
+
+/* Local notification title when the user encounters an error logging in with site address. */
+"Problems with logging in?" = "Com problemas para fazer login?";
 
 /* Display label for processing order status. */
 "Processing" = "Processando";
@@ -4039,7 +4089,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for the product's catalog visibility */
 "Search results only" = "Apenas resultados da busca";
 
-/* Action button linking to a list of connected stores.Presented when logging in with a store address that does not match the account entered */
+/* Action button linking to a list of connected stores. Presented when logging in with a store address that does not have WooCommerce.
+   Action button linking to a list of connected stores.Presented when logging in with a store address that does not match the account entered */
 "See Connected Stores" = "Ver lojas conectadas";
 
 /* Text on the button to see a saved receipt */
@@ -4301,6 +4352,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* View title during the sign up process. */
 "Sign Up" = "Registrar-se";
 
+/* Button title. Takes the user the Enter site credentials screen. */
+"Sign in with site credentials" = "Fazer login com credenciais do site";
+
+/* Button title. Takes the user to the site credentials entry screen. */
+"Sign in with store credentials" = "Fazer login com credenciais da loja";
+
 /* When social login fails, this button offers to let them signup for a new WordPress.com account */
 "Sign up" = "Registrar-se";
 
@@ -4522,6 +4579,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "Alterar loja";
+
+/* Login onboarding survey option: switch between multiple Stores. */
+"Switch between multiple Stores" = "Alternar entre várias lojas";
 
 /* Switch store option in the hub menu */
 "Switch store" = "Alterar loja";
@@ -5058,6 +5118,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Alert info when selecting the cash payment method during payments */
 "This will mark your order as complete if you received (total) outside of WooCommerce" = "Isso marcará o seu pedido como concluído se você tiver recebido (o valor integral) fora do WooCommerce";
 
+/* Title of the badge shown when promoting an existing feature */
+"Tip" = "Dica";
+
 /* Add Product Category. Placeholder of cell presenting the title of the category.
    Placeholder in the Product Title row on Product form screen. */
 "Title" = "Titulo";
@@ -5203,6 +5266,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
 "Try another means of payment" = "Tente outro meio de pagamento";
 
+/* Title for the button on the Linked Products announcement banner */
+"Try it now" = "Experimente já";
+
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Tentar com outro e-mail";
 
@@ -5211,6 +5277,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message when a card is declined due to a potentially temporary problem. */
 "Trying again may succeed, or try another means of payment" = "Tente novamente ou experimente outro meio de pagamento";
+
+/* Login onboarding survey option: trying to set up a store. */
+"Trying to set up a store" = "Tentar montar uma loja";
 
 /* Settings > Manage Card Reader > Connect > Hint to power on reader */
 "Turn card reader on and place it next to mobile device" = "Ative o leitor de cartão e coloque-o próximo ao dispositivo móvel";
@@ -5567,6 +5636,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Step 1 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network." = "Primeiro, garanta que sua impressora e o dispositivo estejam conectados à **mesma rede Wi-Fi**.\n\nVerifique a documentação da sua impressora para obter informações sobre como conectá-la à sua rede Wi-Fi.";
 
+/* Message displayed when checking whether a site has successfully installed WooCommerce */
+"Verifying installation..." = "Verificando instalação...";
+
 /* Displays the connected reader software version */
 "Version: %1$@" = "Versão: %1$@";
 
@@ -5763,6 +5835,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Content of the feedback banner on the coupon list screen */
 "We’ve been working on making it possible to view and edit coupons from your device!" = "Trabalhamos para que seja possível visualizar e editar cupons no seu dispositivo.";
 
+/* Login onboarding survey title. */
+"What brings you to the WooCommerce app today?" = "O que traz você para o aplicativo WooCommerce hoje?";
+
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "Qual e-mail posso usar para me conectar?";
 
@@ -5775,6 +5850,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button in the CTA View about what is the WCShip extension */
 "What is WooCommerce Shipping?" = "O que é WooCommerce Shipping?";
+
+/* Navigates to page with details about What is WordPress.com. */
+"What is WordPress.com?" = "_O que é o WordPress.com?_";
 
 /* Navigates to screen containing the latest WooCommerce Features */
 "What's New in WooCommerce" = "Novidades no WooCommerce";
@@ -5812,6 +5890,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation title of the webview which used by the merchant to update their store address */
 "WooCommerce Settings" = "Configurações do WooCommerce";
+
+/* Title for the WooCommerce Setup screen in the login flow */
+"WooCommerce Setup" = "Configuração do WooCommerce";
 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce Shipping";
@@ -5920,9 +6001,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Comment Attachment Label */
 "[COMMENT]" = "[COMENTÁRIO]";
 
-/* Navigates to page with details about What is WordPress.com. The underscores _..._ denote underline. */
-"_What is WordPress.com?_" = "_O que é o WordPress.com?_";
-
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "exemplo.com";
@@ -5964,6 +6042,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "unknown url" = "URL desconhecida";
 
 /* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need...
+   Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have WooCommerce.The error would read: to use this app for your site you'll need...
    Placeholder for site url, if the url is unknown.Presented when logging in with a store address that does not match the account entered. */
 "your site" = "seu site";
 

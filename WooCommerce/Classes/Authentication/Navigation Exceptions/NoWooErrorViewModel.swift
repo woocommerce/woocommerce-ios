@@ -105,9 +105,10 @@ private extension NoWooErrorViewModel {
                   site.isWooCommerceActive else {
                 if retryCount < 2 {
                     // delays for 2 seconds to buy some time for the data to be synced
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        return self.handleSetupCompletion(in: viewController, retryCount: retryCount + 1)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+                        self?.handleSetupCompletion(in: viewController, retryCount: retryCount + 1)
                     }
+                    return
                 }
                 // dismisses the in-progress view
                 viewController.navigationController?.dismiss(animated: true)

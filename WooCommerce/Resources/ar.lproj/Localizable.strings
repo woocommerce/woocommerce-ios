@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-07-27 13:54:03+0000 */
+/* Translation-Revision-Date: 2022-08-10 18:54:03+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -773,6 +773,9 @@ which should be translated separately and considered part of this sentence. */
 /* The details text on the placeholder overlay when there are no coupons on the coupon list screen. */
 "Boost your business by sending customers special offers and discounts." = "قم بتعزيز أعمالك عن طريق إرسال عروض وخصومات خاصة إلى العملاء.";
 
+/* Title for the Linked Products announcement banner */
+"Boost your sales with linked products" = "تعزيز مبيعاتك باستخدام المنتجات المرتبطة";
+
 /* Box package type, used to create a custom package in the Shipping Label flow */
 "Box" = "صندوق";
 
@@ -894,6 +897,9 @@ which should be translated separately and considered part of this sentence. */
    Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "تعذر تحميل الصورة";
 
+/* Error message displayed when failed to check for WooCommerce in a site. */
+"Cannot verify your site's WooCommerce installation." = "يتعذر التحقُّق من تثبيت WooCommerce الخاص بموقعك.";
+
 /* Detailed message shown in the Reviews tab if the list is empty
    Detailed message shown on the Product Reviews screen if the list is empty */
 "Capture high-quality product reviews for your store." = "احصل على مراجعات منتج ذات جودة عالية لمخزنك.";
@@ -952,6 +958,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title text of the row that has a switch when creating a simple payment */
 "Charge Taxes" = "دفع الضرائب";
+
+/* Login onboarding survey option: check my analytics. */
+"Check my analytics" = "التحقُّق من تحليلاتي";
 
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "تحقق من أن عنوان URL الذي تم إدخاله صحيح";
@@ -1132,7 +1141,8 @@ which should be translated separately and considered part of this sentence. */
 /* Contact WooComerce Payments Support title */
 "Contact WooCommerce Payments Support" = "الاتصال بدعم مدفوعات WooCommerce";
 
-/* Action button to contact support on enable analytics screen */
+/* Action button to contact support on enable analytics screen
+   Local notification action to contact support. */
 "Contact support" = "الاتصال بالدعم";
 
 /* Title of a button to contact support in the error screen for In-Person payments */
@@ -1302,6 +1312,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "إنشاء حزمة جديدة";
+
+/* Login onboarding survey option: create or update my products. */
+"Create or update my products" = "إنشاء منتجاتي أو تحديثها";
 
 /* Action sheet option when the user wants to create full manual order */
 "Create order" = "إنشاء طلب";
@@ -1887,6 +1900,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the notice about an error saving an image uploaded in the background to a product variation. */
 "Error saving variation image" = "خطأ في أثناء حفظ تنوع الصور";
 
+/* Notice title when marking an order as completed via a swipe action fails. Parameter: Order Number */
+"Error updating Order #%1$d" = "خطأ في أثناء تحديث الطلب رقم ⁦%1$d⁩";
+
 /* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store.
    The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
 "Everyone loves a deal" = "يحب الجميع الصفقات";
@@ -2102,6 +2118,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message for the feature announcement banner intended to upsell card readers */
 "Get ready to accept payments with a card reader." = "استعد لقبول المدفوعات باستخدام قارئ بطاقة.";
 
+/* Local notification body when the user encounters an error logging in with site address. */
+"Get some help!" = "احصل على بعض المساعدة!";
+
 /* Title of the Jetpack benefits banner. */
 "Get the full experience with Jetpack" = "الحصول على التجربة الكاملة باستخدام Jetpack";
 
@@ -2127,6 +2146,9 @@ which should be translated separately and considered part of this sentence. */
    Title of the button to give feedback about the Orders features
    Title on the navigation bar for the products feedback survey */
 "Give feedback" = "تقديم الملاحظات";
+
+/* Message for the Linked Products announcement banner */
+"Give your customers helpful and relevant product recommendations by adding upsells and cross-sells." = "امنح عملائك توصيات مفيدة وذات صلة بالمنتج عن طريق إضافة عمليات الارتقاء بالصفقة وعمليات البيع العابر.";
 
 /* Option to select the Gmail app when logging in with magic links */
 "Gmail" = "Gmail";
@@ -2373,6 +2395,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to install Jetpack on WP-Admin instead of on app */
 "Install Jetpack in WP-Admin" = "تثبيت Jetpack في مسؤول ووردبريس";
 
+/* Action button for installing WooCommerce.Presented when logging in with a site address that does not have WooCommerce */
+"Install WooCommerce" = "تثبيت WooCommerce";
+
 /* Title for the error screen when WooCommerce Payments is not installed */
 "Install WooCommerce Payments" = "تثبيت مدفوعات WooCommerce";
 
@@ -2444,6 +2469,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message explaining that the site entered and the acount logged into do not match. Reads like 'It looks like awebsite.com is connected to a different account */
 "It looks like %@ is connected to a different account." = "يبدو أن %@ متصل بحساب مختلف.";
 
+/* Message explaining that the site entered doesn't have WooCommerce installed or activated. Reads like 'It looks like awebsite.com is not a WooCommerce site. */
+"It looks like %@ is not a WooCommerce site." = "يبدو أنَّ %@ ليس موقع WooCommerce.";
+
 /* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
 "It looks like this email isn't associated with a WordPress.com account." = "يبدو أنَّ هذا البريد الإلكتروني غير مرتبط بحساب على ووردبريس.كوم.";
 
@@ -2482,6 +2510,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "الانضمام من أي مكان";
+
+/* Login onboarding survey option: just exploring. */
+"Just exploring" = "استكشف فحسب";
 
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "متابعة التحرير";
@@ -2622,6 +2653,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Action button that will restart the login flow.Presented when logging in with a site address that appears to be invalid.
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
+   Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
    Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Log In With Another Account" = "تسجيل الدخول باستخدام حساب آخر";
 
@@ -2655,6 +2687,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Instructions on the WordPress.com username / password log in form. */
 "Log in with your WordPress.com username and password." = "سجِّل الدخول من خلال اسم المستخدم وكلمة المرور الخاصين بحسابك على ووردبريس.كوم.";
+
+/* Local notification action to log in with WordPress.com. */
+"Login with WordPress.com" = "تسجيل الدخول باستخدام ووردبريس.كوم";
 
 /* Title of a button. */
 "Lost your password?" = "هل فقدت كلمة مرورك؟";
@@ -2691,6 +2726,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigates to Card Reader management screen */
 "Manage card reader" = "إدارة قارئ البطاقة";
 
+/* Login onboarding survey option: manage my orders. */
+"Manage my orders" = "إدارة طلباتي";
+
 /* Title of the cell in Product Inventory Settings > Manage stock */
 "Manage stock" = "إدارة المخزون";
 
@@ -2702,6 +2740,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "النطاق المعيّن";
+
+/* Title for the swipe order action to mark it as completed */
+"Mark Completed" = "وضع علامة بأنه مكتمل";
 
 /* Action button on Review Order screen
    Fulfill Order Action Button */
@@ -2852,7 +2893,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for table view section of network active plugins */
 "Network Active Plugins" = "الإضافات النشطة الخاصة بالشبكة";
 
-/* Title of the new badge shown when advertising a new feature */
+/* Title of the badge shown when advertising a new feature */
 "New" = "جديد";
 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
@@ -3111,6 +3152,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Order number title. Parameters: %1$@ - order number */
 "Order #%1$@" = "الطلب رقم %1$@";
 
+/* Notice title when an order is marked as completed via a swipe action. Parameter: Order Number */
+"Order #%1$d marked as completed" = "تم وضع علامة على الطلب رقم ⁦%1$d⁩ بأنه مكتمل";
+
 /* Order notes section title */
 "Order Notes" = "ملاحظات الطلب";
 
@@ -3266,6 +3310,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message when payment is declined for a non specific reason. */
 "Payment was declined for an unspecified reason. Try another means of payment" = "تم رفض عملية الدفع لسبب غير محدَّد. تجربة وسائل دفع أخرى";
+
+/* Title of the hub menu payments button */
+"Payments" = "المدفوعات";
 
 /* Display label for pending order status.
    Display label for the review's pending status */
@@ -3532,6 +3579,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Display label for the product's private status */
 "Privately published" = "تم النشر سرًا";
+
+/* Local notification title when the user encounters an error logging in with site address. */
+"Problems with logging in?" = "هل تواجه مشكلات في تسجيل الدخول؟";
 
 /* Display label for processing order status. */
 "Processing" = "قيد المعالجة";
@@ -4039,7 +4089,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for the product's catalog visibility */
 "Search results only" = "نتائج البحث فقط";
 
-/* Action button linking to a list of connected stores.Presented when logging in with a store address that does not match the account entered */
+/* Action button linking to a list of connected stores. Presented when logging in with a store address that does not have WooCommerce.
+   Action button linking to a list of connected stores.Presented when logging in with a store address that does not match the account entered */
 "See Connected Stores" = "الاطلاع على المخازن التي تم الاتصال بها";
 
 /* Text on the button to see a saved receipt */
@@ -4301,6 +4352,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* View title during the sign up process. */
 "Sign Up" = "اشترك";
 
+/* Button title. Takes the user the Enter site credentials screen. */
+"Sign in with site credentials" = "تسجيل الدخول باستخدام بيانات اعتماد الموقع";
+
+/* Button title. Takes the user to the site credentials entry screen. */
+"Sign in with store credentials" = "تسجيل الدخول باستخدام بيانات اعتماد المتجر";
+
 /* When social login fails, this button offers to let them signup for a new WordPress.com account */
 "Sign up" = "التسجيل";
 
@@ -4522,6 +4579,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "تحويل المتجر";
+
+/* Login onboarding survey option: switch between multiple Stores. */
+"Switch between multiple Stores" = "التبديل بين متاجر متعددة";
 
 /* Switch store option in the hub menu */
 "Switch store" = "تبديل المخزن";
@@ -5058,6 +5118,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Alert info when selecting the cash payment method during payments */
 "This will mark your order as complete if you received (total) outside of WooCommerce" = "سيقوم هذا بوضع علامة على طلبك بأنه مكتمل إذا تلقيته (الإجمالي) خارج WooCommerce";
 
+/* Title of the badge shown when promoting an existing feature */
+"Tip" = "نصيحة";
+
 /* Add Product Category. Placeholder of cell presenting the title of the category.
    Placeholder in the Product Title row on Product form screen. */
 "Title" = "العنوان";
@@ -5203,6 +5266,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
 "Try another means of payment" = "تجربة وسائل دفع أخرى";
 
+/* Title for the button on the Linked Products announcement banner */
+"Try it now" = "جرّبه الآن";
+
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "حاول ببريد إلكتروني آخر";
 
@@ -5211,6 +5277,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message when a card is declined due to a potentially temporary problem. */
 "Trying again may succeed, or try another means of payment" = "قد تنجح المحاولة مجددًا أو قم بتجربة وسائل دفع أخرى";
+
+/* Login onboarding survey option: trying to set up a store. */
+"Trying to set up a store" = "محاولة إعداد متجر";
 
 /* Settings > Manage Card Reader > Connect > Hint to power on reader */
 "Turn card reader on and place it next to mobile device" = "تشغيل قارئ البطاقة ووضعه بجوار الجهاز المحمول";
@@ -5567,6 +5636,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Step 1 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network." = "تأكَّد من اتصال طابعتك وجهازك **بشبكة WiFi نفسها**.\n\nراجع مستندات طابعتك للحصول على معلومات حول توصيلها بشبكة Wi-Fi الخاصة بك.";
 
+/* Message displayed when checking whether a site has successfully installed WooCommerce */
+"Verifying installation..." = "جارٍ التحقُّق من التثبيت...";
+
 /* Displays the connected reader software version */
 "Version: %1$@" = "الإصدار: %1$@";
 
@@ -5763,6 +5835,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Content of the feedback banner on the coupon list screen */
 "We’ve been working on making it possible to view and edit coupons from your device!" = "لقد كنا نعمل على إتاحة عرض القسائم وتحريرها من جهازك!";
 
+/* Login onboarding survey title. */
+"What brings you to the WooCommerce app today?" = "ما الذي أتى بك إلى تطبيق WooCommerce اليوم؟";
+
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "ما البريد الإلكتروني الذي أستخدمه لتسجيل الدخول؟";
 
@@ -5775,6 +5850,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button in the CTA View about what is the WCShip extension */
 "What is WooCommerce Shipping?" = "ما المقصود بـ WooCommerce Shipping؟";
+
+/* Navigates to page with details about What is WordPress.com. */
+"What is WordPress.com?" = "_ما هو ووردبريس.كوم؟_";
 
 /* Navigates to screen containing the latest WooCommerce Features */
 "What's New in WooCommerce" = "ما الجديد في WooCommerce";
@@ -5812,6 +5890,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation title of the webview which used by the merchant to update their store address */
 "WooCommerce Settings" = "إعدادات WooCommerce";
+
+/* Title for the WooCommerce Setup screen in the login flow */
+"WooCommerce Setup" = "إعداد WooCommerce";
 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "الشحن عبر WooCommerce";
@@ -5920,9 +6001,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Comment Attachment Label */
 "[COMMENT]" = "[COMMENT]";
 
-/* Navigates to page with details about What is WordPress.com. The underscores _..._ denote underline. */
-"_What is WordPress.com?_" = "_ما هو ووردبريس.كوم؟_";
-
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "example.com";
@@ -5964,6 +6042,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "unknown url" = "عنوان url غير معروف";
 
 /* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need...
+   Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have WooCommerce.The error would read: to use this app for your site you'll need...
    Placeholder for site url, if the url is unknown.Presented when logging in with a store address that does not match the account entered. */
 "your site" = "موقعك";
 

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-07-27 15:54:03+0000 */
+/* Translation-Revision-Date: 2022-08-11 14:13:02+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -773,6 +773,9 @@ which should be translated separately and considered part of this sentence. */
 /* The details text on the placeholder overlay when there are no coupons on the coupon list screen. */
 "Boost your business by sending customers special offers and discounts." = "Öka din försäljning genom att skicka specialerbjudanden och rabatter till kunder.";
 
+/* Title for the Linked Products announcement banner */
+"Boost your sales with linked products" = "Öka din försäljning med länkade produkter";
+
 /* Box package type, used to create a custom package in the Shipping Label flow */
 "Box" = "Låda";
 
@@ -894,6 +897,9 @@ which should be translated separately and considered part of this sentence. */
    Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "Det går inte att ladda upp bilden";
 
+/* Error message displayed when failed to check for WooCommerce in a site. */
+"Cannot verify your site's WooCommerce installation." = "Det gick inte att verifiera din webbplats WooCommerce-installation.";
+
 /* Detailed message shown in the Reviews tab if the list is empty
    Detailed message shown on the Product Reviews screen if the list is empty */
 "Capture high-quality product reviews for your store." = "Samla produktrecensioner av hög kvalitet till din butik.";
@@ -952,6 +958,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title text of the row that has a switch when creating a simple payment */
 "Charge Taxes" = "Debitera moms";
+
+/* Login onboarding survey option: check my analytics. */
+"Check my analytics" = "Kolla min analys";
 
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "Kontrollera att angiven URL är giltig";
@@ -1132,7 +1141,8 @@ which should be translated separately and considered part of this sentence. */
 /* Contact WooComerce Payments Support title */
 "Contact WooCommerce Payments Support" = "Kontakta WooCommerce Payments-supporten";
 
-/* Action button to contact support on enable analytics screen */
+/* Action button to contact support on enable analytics screen
+   Local notification action to contact support. */
 "Contact support" = "Kontakta supporten";
 
 /* Title of a button to contact support in the error screen for In-Person payments */
@@ -1302,6 +1312,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "Skapa nytt paket";
+
+/* Login onboarding survey option: create or update my products. */
+"Create or update my products" = "Skapa eller uppdatera mina produkter";
 
 /* Action sheet option when the user wants to create full manual order */
 "Create order" = "Skapa beställning";
@@ -1887,6 +1900,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the notice about an error saving an image uploaded in the background to a product variation. */
 "Error saving variation image" = "Det gick inte att spara variationsbilden";
 
+/* Notice title when marking an order as completed via a swipe action fails. Parameter: Order Number */
+"Error updating Order #%1$d" = "Det gick inte att uppdatera beställning #%1$d";
+
 /* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store.
    The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
 "Everyone loves a deal" = "Alla gillar ett erbjudande";
@@ -2102,6 +2118,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message for the feature announcement banner intended to upsell card readers */
 "Get ready to accept payments with a card reader." = "Gör dig redo att ta emot betalningar med en kortläsare.";
 
+/* Local notification body when the user encounters an error logging in with site address. */
+"Get some help!" = "Skaffa lite hjälp!";
+
 /* Title of the Jetpack benefits banner. */
 "Get the full experience with Jetpack" = "Få den fullständiga upplevelsen med Jetpack";
 
@@ -2127,6 +2146,9 @@ which should be translated separately and considered part of this sentence. */
    Title of the button to give feedback about the Orders features
    Title on the navigation bar for the products feedback survey */
 "Give feedback" = "Ge feedback";
+
+/* Message for the Linked Products announcement banner */
+"Give your customers helpful and relevant product recommendations by adding upsells and cross-sells." = "Ge dina kunder användbara och relevanta produktrekommendationer genom att lägga till merförsäljning och korsförsäljning.";
 
 /* Option to select the Gmail app when logging in with magic links */
 "Gmail" = "Gmail";
@@ -2373,6 +2395,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to install Jetpack on WP-Admin instead of on app */
 "Install Jetpack in WP-Admin" = "Installera Jetpack i WP-Admin";
 
+/* Action button for installing WooCommerce.Presented when logging in with a site address that does not have WooCommerce */
+"Install WooCommerce" = "Installera WooCommerce";
+
 /* Title for the error screen when WooCommerce Payments is not installed */
 "Install WooCommerce Payments" = "Installera WooCommerce Payments";
 
@@ -2444,6 +2469,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message explaining that the site entered and the acount logged into do not match. Reads like 'It looks like awebsite.com is connected to a different account */
 "It looks like %@ is connected to a different account." = "Det ser ut om att %@ är ansluten till ett annat konto.";
 
+/* Message explaining that the site entered doesn't have WooCommerce installed or activated. Reads like 'It looks like awebsite.com is not a WooCommerce site. */
+"It looks like %@ is not a WooCommerce site." = "Det verkar som att %@ inte är en WooCommerce-webbplats.";
+
 /* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
 "It looks like this email isn't associated with a WordPress.com account." = "Det verkar som att den här e-postadressen inte har associerats med något WordPress.com-konto.";
 
@@ -2482,6 +2510,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "Gå med var du än är";
+
+/* Login onboarding survey option: just exploring. */
+"Just exploring" = "Utforskar bara";
 
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "Fortsätt redigera";
@@ -2622,6 +2653,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Action button that will restart the login flow.Presented when logging in with a site address that appears to be invalid.
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
+   Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
    Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Log In With Another Account" = "Logga in med ett annat konto";
 
@@ -2655,6 +2687,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Instructions on the WordPress.com username / password log in form. */
 "Log in with your WordPress.com username and password." = "Logga in med ditt WordPress.com-användarnamn och lösenord.";
+
+/* Local notification action to log in with WordPress.com. */
+"Login with WordPress.com" = "Logga in med WordPress.com";
 
 /* Title of a button. */
 "Lost your password?" = "Glömt ditt lösenord?";
@@ -2691,6 +2726,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigates to Card Reader management screen */
 "Manage card reader" = "Hantera kortläsare";
 
+/* Login onboarding survey option: manage my orders. */
+"Manage my orders" = "Hantera mina beställningar";
+
 /* Title of the cell in Product Inventory Settings > Manage stock */
 "Manage stock" = "Hantera lager";
 
@@ -2702,6 +2740,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "Ompekad domän";
+
+/* Title for the swipe order action to mark it as completed */
+"Mark Completed" = "Markera som slutförd";
 
 /* Action button on Review Order screen
    Fulfill Order Action Button */
@@ -2852,7 +2893,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for table view section of network active plugins */
 "Network Active Plugins" = "Nätverksaktiva tillägg";
 
-/* Title of the new badge shown when advertising a new feature */
+/* Title of the badge shown when advertising a new feature */
 "New" = "Nya";
 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
@@ -3111,6 +3152,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Order number title. Parameters: %1$@ - order number */
 "Order #%1$@" = "Beställning nummer%1$@";
 
+/* Notice title when an order is marked as completed via a swipe action. Parameter: Order Number */
+"Order #%1$d marked as completed" = "Beställning #%1$d har markerats som slutförd";
+
 /* Order notes section title */
 "Order Notes" = "Ordernoteringar";
 
@@ -3266,6 +3310,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message when payment is declined for a non specific reason. */
 "Payment was declined for an unspecified reason. Try another means of payment" = "Betalningen avvisades av ospecificerad anledning. Prova en annan betalningsmetod";
+
+/* Title of the hub menu payments button */
+"Payments" = "Betalningar";
 
 /* Display label for pending order status.
    Display label for the review's pending status */
@@ -3532,6 +3579,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Display label for the product's private status */
 "Privately published" = "Publicerat privat";
+
+/* Local notification title when the user encounters an error logging in with site address. */
+"Problems with logging in?" = "Har du problem med att logga in?";
 
 /* Display label for processing order status. */
 "Processing" = "Behandlas";
@@ -4039,7 +4089,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for the product's catalog visibility */
 "Search results only" = "Endast sökresultat";
 
-/* Action button linking to a list of connected stores.Presented when logging in with a store address that does not match the account entered */
+/* Action button linking to a list of connected stores. Presented when logging in with a store address that does not have WooCommerce.
+   Action button linking to a list of connected stores.Presented when logging in with a store address that does not match the account entered */
 "See Connected Stores" = "Se anslutna butiker";
 
 /* Text on the button to see a saved receipt */
@@ -4301,6 +4352,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* View title during the sign up process. */
 "Sign Up" = "Registrera";
 
+/* Button title. Takes the user the Enter site credentials screen. */
+"Sign in with site credentials" = "Logga in med webbplatsuppgifter";
+
+/* Button title. Takes the user to the site credentials entry screen. */
+"Sign in with store credentials" = "Logga in med butiksuppgifter";
+
 /* When social login fails, this button offers to let them signup for a new WordPress.com account */
 "Sign up" = "Skapa konto";
 
@@ -4522,6 +4579,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "Växla butik";
+
+/* Login onboarding survey option: switch between multiple Stores. */
+"Switch between multiple Stores" = "Växla mellan flera olika butiker";
 
 /* Switch store option in the hub menu */
 "Switch store" = "Växla butik";
@@ -5058,6 +5118,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Alert info when selecting the cash payment method during payments */
 "This will mark your order as complete if you received (total) outside of WooCommerce" = "Detta kommer att markera din beställning som slutförd om du har mottagit (totalbelopp) utanför WooCommerce";
 
+/* Title of the badge shown when promoting an existing feature */
+"Tip" = "Tips";
+
 /* Add Product Category. Placeholder of cell presenting the title of the category.
    Placeholder in the Product Title row on Product form screen. */
 "Title" = "Rubrik";
@@ -5203,6 +5266,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
 "Try another means of payment" = "Prova en annan betalningsmetod";
 
+/* Title for the button on the Linked Products announcement banner */
+"Try it now" = "Prova det nu";
+
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Prova med en annan e-postadress";
 
@@ -5211,6 +5277,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message when a card is declined due to a potentially temporary problem. */
 "Trying again may succeed, or try another means of payment" = "Det kan fungera att försöka igen, eller så kan du prova en annan betalningsmetod";
+
+/* Login onboarding survey option: trying to set up a store. */
+"Trying to set up a store" = "Försöker ställa in en butik";
 
 /* Settings > Manage Card Reader > Connect > Hint to power on reader */
 "Turn card reader on and place it next to mobile device" = "Starta kortläsaren och placera den bredvid den mobila enheten";
@@ -5567,6 +5636,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Step 1 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network." = "Se till att din skrivare och din enhet är anslutna till **samma Wi-Fi-nätverk**.\n\nKontrollera dokumentationen för din skrivare för information om hur du ansluter den till ditt Wi-Fi-nätverk.";
 
+/* Message displayed when checking whether a site has successfully installed WooCommerce */
+"Verifying installation..." = "Verifierar installation …";
+
 /* Displays the connected reader software version */
 "Version: %1$@" = "Version: %1$@";
 
@@ -5763,6 +5835,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Content of the feedback banner on the coupon list screen */
 "We’ve been working on making it possible to view and edit coupons from your device!" = "Vi har arbetat med att göra det möjligt att se och redigera rabattkoder från din enhet!";
 
+/* Login onboarding survey title. */
+"What brings you to the WooCommerce app today?" = "Vad för dig till WooCommerce-appen idag?";
+
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "Vilken e-post ska jag använda för att logga in?";
 
@@ -5775,6 +5850,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button in the CTA View about what is the WCShip extension */
 "What is WooCommerce Shipping?" = "Vad är WooCommerce Shipping?";
+
+/* Navigates to page with details about What is WordPress.com. */
+"What is WordPress.com?" = "_Vad är WordPress.com?_";
 
 /* Navigates to screen containing the latest WooCommerce Features */
 "What's New in WooCommerce" = "Vad som är nytt i WooCommerce";
@@ -5812,6 +5890,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation title of the webview which used by the merchant to update their store address */
 "WooCommerce Settings" = "Inställningar för WooCommerce";
+
+/* Title for the WooCommerce Setup screen in the login flow */
+"WooCommerce Setup" = "WooCommerce-konfiguration";
 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce Shipping";
@@ -5920,9 +6001,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Comment Attachment Label */
 "[COMMENT]" = "[COMMENT]";
 
-/* Navigates to page with details about What is WordPress.com. The underscores _..._ denote underline. */
-"_What is WordPress.com?_" = "_Vad är WordPress.com?_";
-
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "exempel.com";
@@ -5964,6 +6042,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "unknown url" = "okänd URL";
 
 /* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need...
+   Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have WooCommerce.The error would read: to use this app for your site you'll need...
    Placeholder for site url, if the url is unknown.Presented when logging in with a store address that does not match the account entered. */
 "your site" = "din webbplats";
 

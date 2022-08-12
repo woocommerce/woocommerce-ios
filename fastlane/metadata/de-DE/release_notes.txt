@@ -1,5 +1,3 @@
-Tolle Neuigkeiten: Ab sofort ist es möglich, eine Bestellung von der App aus zu bearbeiten. Jetzt kannst du Produkte, Gebühren und Lieferung bearbeiten und entfernen und die Anzahl der Produkte ändern.
+Diese Version enthält ein neues Banner, um Zahlungen mit WooCommerce Payments direkt in der App zu empfangen. Und es gibt noch mehr! Du kannst jetzt bei einer Bestellung nach links wischen, um sie als abgeschlossen zu markieren!
 
-In den Bestelldetails haben einige Erweiterungen von Drittanbietern die Bestellungs-Metadaten nicht logisch angezeigt. Wir haben einige Änderungen vorgenommen, um diese benutzerdefinierten Felder für eine Bestellung anzuzeigen. Zudem haben wir mehrere Verbesserungen am Zahlungs- und Anmeldevorgang vorgenommen, wie z. B. die Option, Jetpack direkt aus der App zu installieren.
-
-Sende uns bitte weiter Feedback – wir freuen uns darauf!
+Darüber hinaus haben wir mehrere Verbesserungen beim Anmeldeprozess vorgenommen: Du hast ab sofort z. B. die Möglichkeit, dich mit deinen wp-admin-Anmeldedaten anzumelden. Und du kannst das WooCommerce-Plugin nun direkt über die App installieren!

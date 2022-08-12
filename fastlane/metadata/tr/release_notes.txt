@@ -1,5 +1,3 @@
-Artık uygulamadan bir siparişi düzenlemenin mümkün olduğunu duyurmaktan heyecan duyuyoruz. Şu andan itibaren ürünleri, ücretleri, gönderim bilgilerini düzenleyebilir veya kaldırabilir ve ürün miktarını değiştirebilirsiniz.
+WooCommerce Payments ile doğrudan uygulamadan ödemeleri kabul etmeye yönelik yeni bir reklam bandı göreceksiniz. Hepsi bu değil. Bir siparişi sola kaydırarak Tamamlandı olarak işaretlemek mümkündür!
 
-Sipariş ayrıntılarında, bazı üçüncü taraf uzantıları sipariş meta verilerini mantıksal olarak göstermiyordu. Bir sipariş için bu özel alanların görüntülenmesi konusunda bazı değişiklikler yaptık. Ayrıca Jetpack'i doğrudan uygulamadan yükleme seçeneği de dahil olmak üzere ödeme ve oturum açma akışımızda çeşitli iyileştirmeler yaptık.
-
-Lütfen bize geri bildirim göndermeye devam edin, sizi dinliyoruz.
+Ayrıca, wp-admin kimlik bilgilerinizle oturum açma seçeneği de dahil olmak üzere oturum açma deneyiminde birkaç iyileştirme yapılmıştır. WooCommerce eklentisini şimdi doğrudan uygulamadan da yükleyebilirsiniz!

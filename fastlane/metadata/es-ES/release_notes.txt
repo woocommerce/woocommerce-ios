@@ -1,5 +1,3 @@
-Es un placer anunciar que ya puedes editar un pedido desde la aplicación. Ahora puedes modificar o eliminar productos, tarifas o envíos y cambiar la cantidad de productos.
+Verás que aparece un nuevo banner para aceptar los pagos directamente desde la aplicación con WooCommerce Payments. ¡Y eso no es todo! Puedes deslizar un pedido hacia la izquierda para marcarlo como completado.
 
-En los detalles del pedido, algunas extensiones de terceros no mostraban lógicamente los metadatos del pedido. Hemos aplicado algunos cambios para mostrar estos campos personalizados de un pedido. Además, hemos introducido varias mejoras en el proceso de pagos y de inicio de sesión, incluida la opción de instalar Jetpack directamente desde la aplicación.
-
-Sigue enviando tus comentarios: ¡te escuchamos!
+También hemos hecho algunas mejoras en la experiencia de acceso, ya que hemos incluido la opción de que puedas iniciar sesión tus credenciales de wp-admin. Ahora, también puedes instalar el plugin de WooCommerce directamente desde la aplicación.

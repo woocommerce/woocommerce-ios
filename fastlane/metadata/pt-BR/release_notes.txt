@@ -1,5 +1,3 @@
-Estamos muito felizes em anunciar que agora é possível editar um pedido no aplicativo. Agora mesmo, você pode editar ou remover produtos, taxas e frete e alterar a quantidade de produtos.
+Você verá um novo banner para aceitar pagamentos diretamente no aplicativo com o WooCommerce Payments. E isso não é tudo! É possível deslizar um pedido para a esquerda para marcá-lo como concluído.
 
-Em "Detalhes do pedido", algumas extensões de terceiros não mostravam os metadados do pedido como deveriam. Fizemos algumas mudanças na exibição desses campos personalizados para um pedido. Também fizemos várias melhorias no nosso sistema de pagamento e no processo de login, incluindo a opção de instalar o Jetpack pelo aplicativo.
-
-Continue compartilhando seu feedback conosco. Estamos ouvindo.
+Fizemos também várias melhorias na experiência de login, incluindo a opção de entrar com suas credenciais wp-admin. Agora você também pode instalar o plugin WooCommerce diretamente pelo aplicativo.

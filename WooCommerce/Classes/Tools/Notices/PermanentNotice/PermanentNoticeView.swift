@@ -8,7 +8,8 @@ struct PermanentNoticeView: View {
 
     var body: some View {
         PermanentNoticeContentView(notice: notice)
-            .overlay(Rectangle().frame(width: nil, height: 1, alignment: .top)
+            .overlay(Rectangle()
+                .frame(width: nil, height: 1, alignment: .top)
                 .foregroundColor(Color(.gray(.shade5))), alignment: .top)
     }
 }

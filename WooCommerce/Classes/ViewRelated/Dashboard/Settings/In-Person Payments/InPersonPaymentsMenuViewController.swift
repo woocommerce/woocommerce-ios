@@ -24,6 +24,10 @@ final class InPersonPaymentsMenuViewController: UIViewController {
         return tableView
     }()
 
+    private lazy var permanentNoticePresenter: PermanentNoticePresenter = {
+        PermanentNoticePresenter()
+    }()
+
     private var activityIndicator: UIActivityIndicatorView?
 
     init(
@@ -83,6 +87,7 @@ private extension InPersonPaymentsMenuViewController {
                 switch state {
                 case let .completed(newPluginState):
                     self.pluginState = newPluginState
+                    self.dismissCardPresentPaymentsOnboardingNoticeIfPresent()
                 case let .selectPlugin(pluginSelectionWasCleared):
                     // If it was cleared it means that we triggered it manually (e.g by tapping in this view on the plugin selection row)
                     // No need to show the onboarding notice
@@ -100,25 +105,18 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     func showCardPresentPaymentsOnboardingNotice() {
-        let permanentNoticeView = PermanentNoticeView(message: Localization.inPersonPaymentsSetupNotFinishedNotice,
-                                                      callToActionTitle: Localization.inPersonPaymentsSetupNotFinishedNoticeButtonTitle,
-                                                      callToActionHandler: {[weak self] in
+        let permanentNotice = PermanentNotice(message: Localization.inPersonPaymentsSetupNotFinishedNotice,
+                                              callToActionTitle: Localization.inPersonPaymentsSetupNotFinishedNoticeButtonTitle,
+                                              callToActionHandler: { [weak self] in
             ServiceLocator.analytics.track(.paymentsMenuOnboardingErrorTapped)
             self?.showOnboardingIfRequired()
         })
 
-        guard let hostingView = HostingController(rootView: permanentNoticeView).view else {
-            return
-        }
+        permanentNoticePresenter.presentNotice(notice: permanentNotice, from: self)
+    }
 
-        hostingView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(hostingView)
-
-        NSLayoutConstraint.activate([
-            view.leadingAnchor.constraint(equalTo: hostingView.leadingAnchor, constant: 0),
-            view.trailingAnchor.constraint(equalTo: hostingView.trailingAnchor, constant: 0),
-            view.bottomAnchor.constraint(equalTo: hostingView.bottomAnchor, constant: 0),
-            ])
+    func dismissCardPresentPaymentsOnboardingNoticeIfPresent() {
+        permanentNoticePresenter.dismiss()
     }
 
     func showOnboardingIfRequired() {
@@ -425,7 +423,7 @@ private extension InPersonPaymentsMenuViewController {
         )
 
         static let inPersonPaymentsSetupNotFinishedNotice = NSLocalizedString(
-            "In-Person Payments Setup in incomplete",
+            "In-Person Payments Setup in incomplete.",
             comment: "Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled."
         )
 

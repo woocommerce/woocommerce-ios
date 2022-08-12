@@ -17,12 +17,6 @@ final class InPersonPaymentsMenuViewController: UIViewController {
 
     private var cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting?
 
-    private lazy var noticePresenter: DefaultNoticePresenter = {
-        let noticePresenter = DefaultNoticePresenter()
-        noticePresenter.presentingViewController = self
-        return noticePresenter
-    }()
-
     /// Main TableView
     ///
     private lazy var tableView: UITableView = {
@@ -106,15 +100,24 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     func showCardPresentPaymentsOnboardingNotice() {
-        let notice = Notice(title: "",
-                            message: Localization.inPersonPaymentsSetupNotFinishedNotice,
-                            feedbackType: .error,
-                            actionTitle: Localization.inPersonPaymentsSetupNotFinishedNoticeButtonTitle,
-                            actionHandler: { [weak self] in
+        let permanentNoticeView = PermanentNoticeView(message: Localization.inPersonPaymentsSetupNotFinishedNotice,
+                                                      callToActionTitle: Localization.inPersonPaymentsSetupNotFinishedNoticeButtonTitle,
+                                                      callToActionHandler: {[weak self] in
             self?.showOnboardingIfRequired()
         })
 
-        noticePresenter.enqueue(notice: notice)
+        guard let hostingView = HostingController(rootView: permanentNoticeView).view else {
+            return
+        }
+
+        hostingView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(hostingView)
+
+        NSLayoutConstraint.activate([
+            view.leadingAnchor.constraint(equalTo: hostingView.leadingAnchor, constant: 0),
+            view.trailingAnchor.constraint(equalTo: hostingView.trailingAnchor, constant: 0),
+            view.bottomAnchor.constraint(equalTo: hostingView.bottomAnchor, constant: 0),
+            ])
     }
 
     func showOnboardingIfRequired() {
@@ -417,12 +420,8 @@ private extension InPersonPaymentsMenuViewController {
         )
 
         static let inPersonPaymentsSetupNotFinishedNotice = NSLocalizedString(
-            "We've noticed that you have not yet finished the In-\u{2060}Person Payments setup.",
-            comment: """
-                     Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled.
-                     The \u{2060} character helps to avoid breaking In-Person in two lines.
-                     If you are not using the hyphen character (In-Person) you can skip it.
-                     """
+            "In-Person Payments Setup in incomplete",
+            comment: "Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled."
         )
 
         static let inPersonPaymentsSetupNotFinishedNoticeButtonTitle = NSLocalizedString(

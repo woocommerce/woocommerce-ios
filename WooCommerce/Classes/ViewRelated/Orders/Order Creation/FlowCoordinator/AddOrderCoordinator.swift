@@ -13,7 +13,7 @@ final class AddOrderCoordinator: Coordinator {
     private let sourceBarButtonItem: UIBarButtonItem?
     private let sourceView: UIView?
 
-    /// Keeps a reference to AnnouncementBottomSheetViewController in order to use it as child of WordPressUI's BottomSheetViewController component
+    /// Keeps a reference to NewSimplePaymentsLocationNoticeViewController in order to use it as child of WordPressUI's BottomSheetViewController component
     ///
     private lazy var newSimplePaymentsNoticeViewController: NewSimplePaymentsLocationNoticeViewController = {
         NewSimplePaymentsLocationNoticeViewController()

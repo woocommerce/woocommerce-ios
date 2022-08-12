@@ -77,8 +77,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         let shouldShowDescriptionRow = editable || product.description?.isNotEmpty == true
 
         let newLinkedProductsPromoViewModel = linkedProductsPromoViewModel
-        let shouldShowLinkedProductsPromo = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.linkedProductsPromo)
-        && ABTest.linkedProductsPromo.variation == .treatment(nil)
+        let shouldShowLinkedProductsPromo = ABTest.linkedProductsPromo.variation == .treatment(nil)
         && isLinkedProductsPromoEnabled
         && newLinkedProductsPromoViewModel.shouldBeVisible
         && product.upsellIDs.isEmpty

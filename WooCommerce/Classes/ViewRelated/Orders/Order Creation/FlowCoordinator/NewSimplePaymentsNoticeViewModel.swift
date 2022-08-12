@@ -5,7 +5,7 @@ final class NewSimplePaymentsNoticeViewModel {
 
     /// Redirects to `HubMenu`tabBar
     ///
-    private var completionHandler: (() -> Void)? = {
+    private var navigateToMenuButtonWasTapped: (() -> Void)? = {
         guard let mainTabBarController = AppDelegate.shared.tabBarController else {
             return
         }
@@ -14,7 +14,7 @@ final class NewSimplePaymentsNoticeViewModel {
 
     init() {
         simplePaymentsNoticeView = DismissableNoticeView(
-            buttonTapped: completionHandler,
+            buttonTapped: navigateToMenuButtonWasTapped,
             title: Localization.title,
             message: Localization.message,
             confirmationButtonMessage: Localization.confirmationButton

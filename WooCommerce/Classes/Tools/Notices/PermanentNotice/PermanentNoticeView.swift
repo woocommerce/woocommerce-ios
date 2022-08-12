@@ -8,9 +8,10 @@ struct PermanentNoticeView: View {
 
     var body: some View {
         PermanentNoticeContentView(notice: notice)
+            .background(Color(.listForeground))
             .overlay(Rectangle()
-                .frame(width: nil, height: 1, alignment: .top)
-                .foregroundColor(Color(.gray(.shade5))), alignment: .top)
+                .frame(width: nil, height: 0.5, alignment: .top)
+                .foregroundColor(Color(UIColor.systemColor(.separator))), alignment: .top)
     }
 }
 

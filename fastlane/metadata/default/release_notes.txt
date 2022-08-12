@@ -1,5 +1,3 @@
-We’re thrilled to announce that it’s now possible to edit an order from the app. Right now, you can edit or remove products, fees, shipping and change product quantity. 
+You’ll notice a new banner to accept payments directly from the app with WooCommerce Payments. That’s not all! It’s possible to swipe an order to the left to mark it complete!
 
-In order details, some third-party extensions were not logically showing order metadata. We’ve made some changes to display these custom fields for an order. We’ve also made several improvements to our payments and login flow, including the option to install Jetpack directly from the app. 
-
-Please continue to send us feedback – we are listening!
+We’ve also made several improvements to the login experience including the option to login with your wp-admin credentials. You can also install WooCommerce plugin directly from the app now!

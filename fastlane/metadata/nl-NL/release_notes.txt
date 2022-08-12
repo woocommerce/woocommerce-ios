@@ -1,5 +1,3 @@
-We zijn erg blij te kunnen vertellen dat het nu mogelijk is om een bestelling via de app te bewerken. Op dit moment kan je producten, kosten en verzending bewerken of verwijderen en de producthoeveelheid wijzigen.
+Er is een nieuwe banner om betalingen rechtstreeks vanuit de app aan te nemen met WooCommerce Payments. En er is meer! Je kunt een bestelling naar links vegen om deze af te ronden!
 
-Sommige extensies van derden gaven metagegevens van bestellingen niet op logische wijze weer in de bestellingsgegevens. We hebben wat wijzigingen aangebracht zodat deze aangepaste velden kunnen worden weergegeven. We hebben ook verschillende verbeteringen doorgevoerd aan de betalings- en login-workflow, waaronder de optie om Jetpack rechtstreeks vanuit de app te installeren.
-
-Blijf ons feedback sturen – wij luisteren!
+Ook is de login-ervaring verbeterd; je hebt nu onder andere de mogelijkheid om in te loggen met je wp-admin-inloggegevens. Je kunt de WooCommerce-plugin nu ook rechtstreeks vanuit de app installeren!

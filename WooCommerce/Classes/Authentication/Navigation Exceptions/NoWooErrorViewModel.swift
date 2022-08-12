@@ -18,6 +18,7 @@ final class NoWooErrorViewModel: ULErrorViewModel {
          stores: StoresManager = ServiceLocator.stores,
          onSetupCompletion: @escaping (Int64) -> Void) {
         self.site = site
+        self.title = site.name
         self.showsConnectedStores = showsConnectedStores
         self.analytics = analytics
         self.stores = stores
@@ -25,7 +26,7 @@ final class NoWooErrorViewModel: ULErrorViewModel {
     }
 
     // MARK: - Data and configuration
-    var title: String? { site.name }
+    let title: String?
 
     let image: UIImage = .noStoreImage
 

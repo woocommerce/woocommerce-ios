@@ -1,5 +1,15 @@
 import SwiftUI
 
+/// A generic View that shows a dismissable Notice.
+/// This contains a title, left-side message, right-side icon, and a button that dismisses the View when tapped.
+///
+/// - Parameters:
+///     - buttonTapped: The callback to dismiss the View.
+///     - title: Title to be displayed on the top of the View.
+///     - message: Left-side message to be displayed.
+///     - confirmationButtonMessage: The text inside the button component.
+///     - icon: Right-side icon to be displayed.
+///
 struct DismissableNoticeView: View {
     @Environment(\.presentationMode) private var presentation
     @ScaledMetric private var scale: CGFloat = 1.0

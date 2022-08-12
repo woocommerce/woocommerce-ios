@@ -76,11 +76,13 @@ final class MainTabViewModel {
         saveInstallationDateIfNecessary()
     }
 
-    /// Get last known data from cache (if exists) and draw it on a badge
+    /// Bootstrap the data pipeline for the orders badge
+    /// Fetches the initial badge count and observes notifications requesting a refresh
+    /// The notification observed will be `ordersBadgeReloadRequired`
     ///
-    func updateBadgeFromCache() {
-        let initialCachedOrderStatus = statusResultsController?.fetchedObjects.first
-        processBadgeCount(initialCachedOrderStatus)
+    func startObservingOrdersCount() {
+        observeBadgeRefreshNotifications()
+        updateBadgeFromCache()
     }
 
     /// Loads the the hub Menu tab badge and listens to any change to update it
@@ -117,6 +119,13 @@ private extension MainTabViewModel {
 
         try? statusResultsController?.performFetch()
         updateBadgeFromCache()
+    }
+
+    /// Get last known data from cache (if exists) and draw it on a badge
+    ///
+    func updateBadgeFromCache() {
+        let initialCachedOrderStatus = statusResultsController?.fetchedObjects.first
+        processBadgeCount(initialCachedOrderStatus)
     }
 
     /// Trigger network action to update underlying cache. Badge redraw will be triggered by `statusResultsController`

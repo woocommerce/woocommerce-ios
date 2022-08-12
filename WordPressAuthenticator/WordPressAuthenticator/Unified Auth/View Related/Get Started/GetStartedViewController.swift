@@ -73,6 +73,8 @@ class GetStartedViewController: LoginViewController, NUXKeyboardResponder {
     private let configuration = WordPressAuthenticator.shared.configuration
     private var shouldChangeVoiceOverFocus: Bool = false
 
+    private var passwordCoordinator: PasswordCoordinator?
+
     /// Sign in with site credentials button will be displayed based on the `screenMode`
     ///
     private var screenMode: ScreenMode {
@@ -499,7 +501,7 @@ private extension GetStartedViewController {
                                       success: { [weak self] passwordless in
                                         self?.configureViewLoading(false)
                                         self?.loginFields.meta.passwordless = passwordless
-                                        passwordless ? self?.requestAuthenticationLink() : self?.showPasswordView()
+                                        passwordless ? self?.requestAuthenticationLink() : self?.showPasswordOrMagicLinkView()
             },
                                       failure: { [weak self] error in
                                         WordPressAuthenticator.track(.loginFailed, error: error)
@@ -526,6 +528,26 @@ private extension GetStartedViewController {
         vc.trackAsPasswordChallenge = false
 
         navigationController?.pushViewController(vc, animated: true)
+    }
+
+    /// Show the password or magic link view based on the configuration.
+    ///
+    func showPasswordOrMagicLinkView() {
+        guard let navigationController = navigationController else {
+            return
+        }
+        configureViewLoading(true)
+        let coordinator = PasswordCoordinator(navigationController: navigationController,
+                                              source: source,
+                                              loginFields: loginFields,
+                                              tracker: tracker,
+                                              configuration: WordPressAuthenticator.shared.configuration)
+        passwordCoordinator = coordinator
+        Task { @MainActor [weak self] in
+            guard let self = self else { return }
+            await coordinator.start()
+            self.configureViewLoading(false)
+        }
     }
 
     /// Handle errors when attempting to log in with an email address

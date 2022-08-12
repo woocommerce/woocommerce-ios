@@ -75,4 +75,7 @@ extension WordPressSupportSourceTag {
         return WordPressSupportSourceTag(name: "wpComSignupApple", origin: "origin:signup-apple")
     }
 
+    public static var wpComLoginMagicLinkAutoRequested: WordPressSupportSourceTag {
+        return WordPressSupportSourceTag(name: "wpComLoginMagicLinkAutoRequested", origin: "origin:login-email")
+    }
 }

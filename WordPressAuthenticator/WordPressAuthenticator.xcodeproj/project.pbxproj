@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		020BE74A23B0BD2E007FE54C /* WordPressAuthenticatorDisplayImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020BE74923B0BD2E007FE54C /* WordPressAuthenticatorDisplayImages.swift */; };
+		02A526CA28A3499C00FD1812 /* MagicLinkRequestedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A526C828A3499C00FD1812 /* MagicLinkRequestedViewController.swift */; };
+		02A526CB28A3499C00FD1812 /* MagicLinkRequestedViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02A526C928A3499C00FD1812 /* MagicLinkRequestedViewController.xib */; };
+		02A526CD28A3A23900FD1812 /* UIButton+Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A526CC28A3A23900FD1812 /* UIButton+Styles.swift */; };
+		02A526CF28A3A35D00FD1812 /* PasswordCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A526CE28A3A35D00FD1812 /* PasswordCoordinator.swift */; };
 		1A21EE9822832BC300C940C6 /* WordPressComOAuthClientFacade+Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A21EE9722832BC200C940C6 /* WordPressComOAuthClientFacade+Swift.swift */; };
 		1A4095182271AEFC009AA86D /* WPAuthenticator-Swift.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4095152271AEFC009AA86D /* WPAuthenticator-Swift.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		3108613125AFA4830022F75E /* PasteboardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3108613025AFA4830022F75E /* PasteboardTests.swift */; };
@@ -209,6 +213,10 @@
 
 /* Begin PBXFileReference section */
 		020BE74923B0BD2E007FE54C /* WordPressAuthenticatorDisplayImages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressAuthenticatorDisplayImages.swift; sourceTree = "<group>"; };
+		02A526C828A3499C00FD1812 /* MagicLinkRequestedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicLinkRequestedViewController.swift; sourceTree = "<group>"; };
+		02A526C928A3499C00FD1812 /* MagicLinkRequestedViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MagicLinkRequestedViewController.xib; sourceTree = "<group>"; };
+		02A526CC28A3A23900FD1812 /* UIButton+Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Styles.swift"; sourceTree = "<group>"; };
+		02A526CE28A3A35D00FD1812 /* PasswordCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordCoordinator.swift; sourceTree = "<group>"; };
 		1A21EE9722832BC200C940C6 /* WordPressComOAuthClientFacade+Swift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "WordPressComOAuthClientFacade+Swift.swift"; sourceTree = "<group>"; };
 		1A4095152271AEFC009AA86D /* WPAuthenticator-Swift.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WPAuthenticator-Swift.h"; sourceTree = "<group>"; };
 		276354F054C34AD36CA32AB6 /* Pods-WordPressAuthenticator.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WordPressAuthenticator.release-alpha.xcconfig"; path = "Pods/Target Support Files/Pods-WordPressAuthenticator/Pods-WordPressAuthenticator.release-alpha.xcconfig"; sourceTree = "<group>"; };
@@ -478,6 +486,7 @@
 			children = (
 				984D508124D4B21A00251A63 /* PasswordViewController.swift */,
 				984D508324D4B24500251A63 /* Password.storyboard */,
+				02A526CE28A3A35D00FD1812 /* PasswordCoordinator.swift */,
 			);
 			path = Password;
 			sourceTree = "<group>";
@@ -691,6 +700,7 @@
 				CE9091FD249A720E00AB50BD /* UIView+AuthHelpers.swift */,
 				F11448EB258B827B0048203D /* URL+JetpackConnect.swift */,
 				EE633D01287560E50002DE03 /* UITableView+Helpers.swift */,
+				02A526CC28A3A23900FD1812 /* UIButton+Styles.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -849,6 +859,8 @@
 			children = (
 				CE811D6624EDC0FB00F4CCD6 /* LoginMagicLinkViewController.swift */,
 				CE811D6824EDC14A00F4CCD6 /* LoginMagicLink.storyboard */,
+				02A526C828A3499C00FD1812 /* MagicLinkRequestedViewController.swift */,
+				02A526C928A3499C00FD1812 /* MagicLinkRequestedViewController.xib */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -1069,6 +1081,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				02A526CB28A3499C00FD1812 /* MagicLinkRequestedViewController.xib in Resources */,
 				B5E07FF4208FD13800657A9A /* Assets.xcassets in Resources */,
 				98F40AF024F5E13200A72911 /* TextWithLinkTableViewCell.xib in Resources */,
 				B56090CA208A4F5400399AE4 /* NUXButtonView.storyboard in Resources */,
@@ -1218,6 +1231,7 @@
 				D8611A63257622ED00A5DF27 /* NavigateBack.swift in Sources */,
 				B5609143208A563800399AE4 /* LoginSocialErrorViewController.swift in Sources */,
 				B56090F8208A533200399AE4 /* WordPressAuthenticator+Notifications.swift in Sources */,
+				02A526CF28A3A35D00FD1812 /* PasswordCoordinator.swift in Sources */,
 				98ED483624802F8F00992B2D /* GoogleAuthViewController.swift in Sources */,
 				F5C817E72582B2F300BD5A3B /* UIPasteboard+Detect.swift in Sources */,
 				B56090EA208A51D000399AE4 /* LoginFields+Validation.swift in Sources */,
@@ -1242,6 +1256,7 @@
 				CE2D03E024E5DD4500D18942 /* UnifiedSignupViewController.swift in Sources */,
 				98CF18F7248725370047B66C /* GoogleSignupConfirmationViewController.swift in Sources */,
 				1A21EE9822832BC300C940C6 /* WordPressComOAuthClientFacade+Swift.swift in Sources */,
+				02A526CD28A3A23900FD1812 /* UIButton+Styles.swift in Sources */,
 				CEC77C6624854F2E00FB9050 /* SiteAddressViewController.swift in Sources */,
 				CEDE0D952420121D00CB3345 /* UIStoryboard+Helpers.swift in Sources */,
 				B5ED7920207E993E00A8FD8C /* WPAuthenticatorLogging.m in Sources */,
@@ -1307,6 +1322,7 @@
 				B56090D0208A4F5400399AE4 /* NUXViewControllerBase.swift in Sources */,
 				3F550D5123DA4A9C007E5897 /* LinkMailPresenter.swift in Sources */,
 				98D9A4B12474A526002E491C /* GoogleAuthenticator.swift in Sources */,
+				02A526CA28A3499C00FD1812 /* MagicLinkRequestedViewController.swift in Sources */,
 				CE1BBF8C24D48580001D2E3E /* GravatarEmailTableViewCell.swift in Sources */,
 				B56090DE208A4F9D00399AE4 /* WPWalkthroughOverlayView.m in Sources */,
 				B560910A208A54F800399AE4 /* WordPressComAccountService.swift in Sources */,

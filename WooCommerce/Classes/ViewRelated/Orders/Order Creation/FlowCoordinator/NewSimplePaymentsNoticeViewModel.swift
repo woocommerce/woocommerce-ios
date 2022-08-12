@@ -17,7 +17,8 @@ final class NewSimplePaymentsNoticeViewModel {
             buttonTapped: navigateToMenuButtonWasTapped,
             title: Localization.title,
             message: Localization.message,
-            confirmationButtonMessage: Localization.confirmationButton
+            confirmationButtonMessage: Localization.confirmationButton,
+            icon: .walletImage
         )
     }
 

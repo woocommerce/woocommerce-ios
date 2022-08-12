@@ -8,6 +8,7 @@ struct DismissableNoticeView: View {
     var title: String
     var message: String
     var confirmationButtonMessage: String
+    var icon: UIImage
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -22,7 +23,7 @@ struct DismissableNoticeView: View {
                     .multilineTextAlignment(.leading)
                     .fixedSize(horizontal: false, vertical: true)
                 Spacer()
-                Image(uiImage: .walletImage)
+                Image(uiImage: icon)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: Layout.iconSize * scale, height: Layout.iconSize * scale)

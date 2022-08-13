@@ -1,3 +1,4 @@
-You’ll notice a new banner to accept payments directly from the app with WooCommerce Payments. That’s not all! It’s possible to swipe an order to the left to mark it complete!
+- [*] [Sign in with store credentials]: New screen added with instructions to verify Jetpack connected email. [https://github.com/woocommerce/woocommerce-ios/pull/7424]
+- [*] [Sign in with store credentials]: Stop clearing username/password after an invalid attempt to enable users to fix typos. [https://github.com/woocommerce/woocommerce-ios/pull/7444]
+- [*] Login: after entering WP.com email, a magic link is automatically sent when it is enabled (magic links are disabled for A8C emails and WP.com accounts with recently changed password) and a new screen is shown with an option to log in with password. [https://github.com/woocommerce/woocommerce-ios/pull/7449]
 
-We’ve also made several improvements to the login experience including the option to login with your wp-admin credentials. You can also install WooCommerce plugin directly from the app now!

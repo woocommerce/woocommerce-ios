@@ -261,6 +261,9 @@ which should be translated separately and considered part of this sentence. */
 /* Shown when a user types a non-number into the two factor field. */
 "A verification code will only contain numbers." = "A verification code will only contain numbers.";
 
+/* Instruction text to explain magic link login step. */
+"A WordPress.com account is connected to your store credentials. To continue, we will send a verification link to the email address above." = "A WordPress.com account is connected to your store credentials. To continue, we will send a verification link to the email address above.";
+
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "About the App";
 
@@ -275,6 +278,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Reads as 'Account Type'. Part of the mandatory data in receipts */
 "Account Type" = "Account Type";
+
+/* Title for the section related to actions inside In-Person Payments settings */
+"Actions" = "Actions";
 
 /* Title for the error screen when a Card Present Payments extension is installed but not activated */
 "Activate %1$@" = "Activate %1$@";
@@ -538,6 +544,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "Almost there! Please enter the verification code from your authenticator app.";
+
+/* Instruction text to explain to help users type their password instead of using magic link login option. */
+"Alternatively, you may enter the password for this account." = "Alternatively, you may enter the password for this account.";
 
 /* String displayed before offering alternative login methods */
 "Alternatively:" = "Alternatively:";
@@ -964,6 +973,9 @@ which should be translated separately and considered part of this sentence. */
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "Check that the URL entered is valid";
 
+/* The title text on the magic link requested screen. */
+"Check your email on this device!" = "Check your email on this device!";
+
 /* Instruction text after a login Magic Link was requested. */
 "Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Check your email on this device, and tap the link in the email you receive from WordPress.com.";
 
@@ -1042,7 +1054,8 @@ which should be translated separately and considered part of this sentence. */
 /* Alert title when starting the collect payment flow without a user name. */
 "Collect payment" = "Collect payment";
 
-/* Text on the button that starts collecting a card present payment. */
+/* Navigates to Collect a payment via the Simple Payment screen
+   Text on the button that starts collecting a card present payment. */
 "Collect Payment" = "Collect Payment";
 
 /* Alert title when starting the collect payment flow with a user name. */
@@ -1156,7 +1169,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Content Type row in Customs screen of Shipping Label flow */
 "Content Type" = "Content Type";
 
-/* Continue button inside every cell inside Create Shipping Label form
+/* Button on the Store Picker screen to select a store
+   Continue button inside every cell inside Create Shipping Label form
    The button title text when there is a next step for logging in or signing up.
    Title of continue button
    Title of dismiss button presented when users attempt to log in without Jetpack installed or connected */
@@ -1875,6 +1889,9 @@ which should be translated separately and considered part of this sentence. */
    Button title. Takes the user to the login by store address flow. */
 "Enter Your Store Address" = "Enter Your Store Address";
 
+/* Enter your store credentials for {site url}. Asks the user to enter .org site credentials for their store. */
+"Enter your store credentials for %@." = "Enter your store credentials for %@.";
+
 /* Envelope package type, used to create a custom package in the Shipping Label flow */
 "Envelope" = "Envelope";
 
@@ -2278,6 +2295,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Step 4 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "If you are still experiencing issues printing from your phone, you can save your label as PDF and **send it by email** to print it from another device." = "If you are still experiencing issues printing from your phone, you can save your label as PDF and **send it by email** to print it from another device.";
+
+/* The instructions text about not being able to find the magic link email. */
+"If you can’t find the email, please check your junk or spam email folder" = "If you can’t find the email, please check your junk or spam email folder";
 
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "If you continue with Apple and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_.";
@@ -2696,6 +2716,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Alert button title - confirms and logs out the user
    Log out button title */
 "Log Out" = "Log Out";
+
+/* Button title. Takes the user to the Enter account password screen. */
+"Login with account password" = "Login with account password";
 
 /* Local notification action to log in with WordPress.com. */
 "Login with WordPress.com" = "Login with WordPress.com";
@@ -3214,6 +3237,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Restriction type Other for contents declared in the customs form for Shipping Label flow
    Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "Other";
+
+/* Store Picker's Section Title: Displayed when there are sites without WooCommerce */
+"Other Sites" = "Other Sites";
 
 /* Display label for the product's inventory stock status */
 "Out of stock" = "Out of stock";
@@ -4167,6 +4193,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
 "Selected Store" = "Selected Store";
+
+/* Button title. Sends a email verification link (Magin link) for signing in. */
+"Send email verification link" = "Send email verification link";
 
 /* Presents a survey to gather feedback from the user. */
 "Send Feedback" = "Send Feedback";
@@ -5616,6 +5645,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the Use as Shipping Address switch in the Address form */
 "Use as Shipping Address" = "Use as Shipping Address";
 
+/* The button title text for logging in with WP.com password instead of magic link. */
+"Use password to sign in" = "Use password to sign in";
+
 /* Action to use the address in Shipping Label Suggested screen as suggested */
 "Use Suggested Address" = "Use Suggested Address";
 
@@ -5790,6 +5822,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* message to ask a user to check their email for a WordPress.com email */
 "We just emailed a link to %@. Please check your mail app and tap the link to log in." = "We just emailed a link to %@. Please check your mail app and tap the link to log in.";
+
+/* The subtitle text on the magic link requested screen followed by the email address. */
+"We just sent a magic link to" = "We just sent a magic link to";
 
 /* Subtitle displayed in promotional screens shown during the login flow. */
 "We know it’s essential to your business." = "We know it’s essential to your business.";
@@ -6017,7 +6052,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Your receipt from %1$@" = "Your receipt from %1$@";
 
 /* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need...
-   Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have WooCommerce.The error would read: to use this app for your site you'll need...
    Placeholder for site url, if the url is unknown.Presented when logging in with a store address that does not match the account entered. */
 "your site" = "your site";
 

@@ -3,6 +3,9 @@ import UIKit
 /// Abstracts different configurations and logic related to user interaction
 /// for error view controllers presented as part of the Unified Login flow
 protocol ULErrorViewModel {
+    /// A title for the error screen
+    var title: String? { get }
+
     /// An illustration accompanying the error
     var image: UIImage { get }
 
@@ -42,5 +45,7 @@ protocol ULErrorViewModel {
 
 // MARK: - Default implementation for optional variables
 extension ULErrorViewModel {
+    var title: String? { nil }
+
     var isPrimaryButtonHidden: Bool { false }
 }

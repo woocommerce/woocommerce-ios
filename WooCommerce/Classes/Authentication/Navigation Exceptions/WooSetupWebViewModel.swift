@@ -5,12 +5,14 @@ final class WooSetupWebViewModel: PluginSetupWebViewModel {
     private let siteURL: String
     private let analytics: Analytics
     private let completionHandler: () -> Void
+    private let dismissHandler: () -> Void
     private var hasCompleted = false
 
-    init(siteURL: String, analytics: Analytics = ServiceLocator.analytics, onCompletion: @escaping () -> Void) {
+    init(siteURL: String, analytics: Analytics = ServiceLocator.analytics, onCompletion: @escaping () -> Void, onDismiss: @escaping () -> Void) {
         self.siteURL = siteURL
         self.analytics = analytics
         self.completionHandler = onCompletion
+        self.dismissHandler = onDismiss
     }
 
     // MARK: - `PluginSetupWebViewModel` conformance
@@ -27,12 +29,22 @@ final class WooSetupWebViewModel: PluginSetupWebViewModel {
     }
 
     func handleRedirect(for url: URL?) {
-        guard let url = url, url.absoluteString.hasPrefix(Constants.completionURL) else {
+        guard let path = url?.absoluteString else {
             return
         }
-        analytics.track(event: .LoginWooCommerceSetup.setupCompleted(source: .web))
-        hasCompleted = true
-        completionHandler()
+        switch path {
+        case path where path.hasPrefix(Constants.completionURL):
+            analytics.track(event: .LoginWooCommerceSetup.setupCompleted(source: .web))
+            hasCompleted = true
+            completionHandler()
+        case path where path == Constants.pluginsURL + siteURL.trimHTTPScheme():
+            // When user taps the Back button on the web view, the plugins page is displayed.
+            // Dismiss the web view in this case.
+            handleDismissal()
+            dismissHandler()
+        default:
+            break
+        }
     }
 
     func decidePolicy(for navigationURL: URL) async -> WKNavigationActionPolicy {
@@ -48,5 +60,6 @@ private extension WooSetupWebViewModel {
     enum Constants {
         static let installWooCommerceURL = "https://wordpress.com/plugins/woocommerce/"
         static let completionURL = "https://wordpress.com/marketplace/thank-you/woocommerce/"
+        static let pluginsURL = "https://wordpress.com/plugins/"
     }
 }

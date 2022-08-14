@@ -1,6 +1,12 @@
 import SwiftUI
 
 final class NewSimplePaymentsLocationNoticeViewModel {
+    let title: String
+    let message: String
+    let confirmationButtonMessage: String
+
+    var icon: UIImage = .walletImage
+
     /// Redirects to `HubMenu`tabBar
     ///
     var navigateToMenuButtonWasTapped: () -> Void = {
@@ -9,15 +15,6 @@ final class NewSimplePaymentsLocationNoticeViewModel {
         }
         mainTabBarController.navigateTo(.hubMenu)
     }
-    /// Uses the "woo-payments-wallet" UIImage+Woo as icon
-    ///
-    var icon: UIImage {
-        guard let image = UIImage(named: "woo-payments-wallet") else { return UIImage() }
-        return image
-    }
-    let title: String
-    let message: String
-    let confirmationButtonMessage: String
 
     init() {
         title = Localization.title

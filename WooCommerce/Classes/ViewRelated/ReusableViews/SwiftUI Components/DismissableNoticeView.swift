@@ -45,7 +45,6 @@ struct DismissableNoticeView: View {
                 }
                 .frame(width: Layout.imageSize, height: Layout.imageSize, alignment: .trailing)
                 .cornerRadius(Layout.imageSize/2)
-                .padding(.trailing, Layout.verticalPadding)
             }
             .padding(.bottom, Layout.verticalPadding)
             .frame(maxWidth: .infinity)

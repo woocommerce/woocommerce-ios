@@ -57,11 +57,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v9.8-whats-new"
+msgctxt "v9.9-whats-new"
 msgid ""
-"You’ll notice a new banner to accept payments directly from the app with WooCommerce Payments. That’s not all! It’s possible to swipe an order to the left to mark it complete!\n"
-"\n"
-"We’ve also made several improvements to the login experience including the option to login with your wp-admin credentials. You can also install WooCommerce plugin directly from the app now!\n"
+"This release has a few improvements to your login experience, including the option to use your `wp-admin` site credentials and magic link option to login. Please continue to send us feedback – we are listening!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

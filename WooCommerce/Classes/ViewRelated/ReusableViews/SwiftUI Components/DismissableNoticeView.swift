@@ -21,25 +21,34 @@ struct DismissableNoticeView: View {
     var icon: UIImage
 
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack() {
             Spacer()
             Text(title)
-                .font(.headline)
-                .padding(.bottom, Layout.verticalPadding)
-            HStack(alignment: .center, spacing: 16.0) {
+                .font(.body).bold()
+                .padding(.top, Layout.verticalPadding*2)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            HStack {
                 Text(message)
-                    .font(.caption)
+                    .font(.subheadline)
                     .foregroundColor(.gray)
                     .multilineTextAlignment(.leading)
                     .fixedSize(horizontal: false, vertical: true)
+                    .frame(alignment: .leading)
                 Spacer()
-                Image(uiImage: icon)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: Layout.iconSize * scale, height: Layout.iconSize * scale)
-                Spacer()
+                ZStack {
+                    Color(UIColor(light: .listBackground,
+                                  dark: .secondaryButtonBackground))
+                    Image(uiImage: icon)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: Layout.iconSize * scale, height: Layout.iconSize * scale)
+                }
+                .frame(width: Layout.imageSize, height: Layout.imageSize, alignment: .trailing)
+                .cornerRadius(Layout.imageSize/2)
+                .padding(.trailing, Layout.verticalPadding)
             }
             .padding(.bottom, Layout.verticalPadding)
+            .frame(maxWidth: .infinity)
             Button(confirmationButtonMessage) {
                 if let completionHandler = buttonTapped {
                     completionHandler()
@@ -52,7 +61,17 @@ struct DismissableNoticeView: View {
         .padding(.leading, Layout.horizontalPadding)
         .padding(.trailing, Layout.horizontalPadding)
         .padding(.top, Layout.verticalPadding)
-        .padding(.bottom, Layout.verticalPadding)
+        .padding(.bottom, Layout.verticalPadding*4)
+    }
+}
+
+struct DismissableNoticeView_Previews: PreviewProvider {
+    static var previews: some View {
+        DismissableNoticeView(
+            title: "Dismissable notice title",
+            message: "Dismissable notice message",
+            confirmationButtonMessage: "Ok",
+            icon: .walletImage)
     }
 }
 
@@ -60,7 +79,8 @@ extension DismissableNoticeView {
     enum Layout {
         static let horizontalPadding: CGFloat = 16
         static let verticalPadding: CGFloat = 16
-        static let cornerRadius: CGFloat = 12
+        static let cornerRadius: CGFloat = 20
+        static let imageSize: CGFloat = 48
         static let iconSize: CGFloat = 32
     }
 }

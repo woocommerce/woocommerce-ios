@@ -51,12 +51,12 @@ final class NewSimplePaymentsLocationNoticeViewController: UIViewController {
 ///
 extension NewSimplePaymentsLocationNoticeViewController: DrawerPresentable {
     var collapsedHeight: DrawerHeight {
-        return .contentHeight(160)
+        return .contentHeight(Layout.verticalSpace)
     }
 }
 
 extension NewSimplePaymentsLocationNoticeViewController {
     enum Layout {
-        static let verticalSpace: CGFloat = 160
+        static let verticalSpace: CGFloat = 200
     }
 }

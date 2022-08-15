@@ -1,3 +1,9 @@
+AllCops:
+  Exclude:
+    - DerivedData/**/*
+    - Pods/**/*
+    - vendor/**/*
+
 Metrics/BlockLength:
   Exclude:
     - fastlane/Fastfile

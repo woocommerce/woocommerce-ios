@@ -9,6 +9,9 @@ protocol CardPresentPaymentsOnboardingPresenting {
     func refresh()
 }
 
+/// Checks for the current user status regarding Card Present Payments,
+/// and shows the onboarding if the user didn't finish the onboarding to use CPP
+/// 
 final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting {
 
     private let stores: StoresManager

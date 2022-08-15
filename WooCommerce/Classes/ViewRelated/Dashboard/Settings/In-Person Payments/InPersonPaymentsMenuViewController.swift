@@ -15,8 +15,6 @@ final class InPersonPaymentsMenuViewController: UIViewController {
     private let cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCase
     private var cancellables: Set<AnyCancellable> = []
 
-    private var cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting?
-
     /// Main TableView
     ///
     private lazy var tableView: UITableView = {

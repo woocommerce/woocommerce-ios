@@ -77,6 +77,7 @@ private extension InPersonPaymentsMenuViewController {
         case let .completed(newPluginState):
             self.pluginState = newPluginState
             self.dismissCardPresentPaymentsOnboardingNoticeIfPresent()
+            self.dismissOnboardingIfPresented()
         case let .selectPlugin(pluginSelectionWasCleared):
             // If it was cleared it means that we triggered it manually (e.g by tapping in this view on the plugin selection row)
             // No need to show the onboarding notice
@@ -108,22 +109,18 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     func showOnboarding() {
-        guard let navigationController = self.navigationController else {
-            return
-        }
-
         // Instead of using `CardPresentPaymentsOnboardingPresenter` we create the view directly because we already have the onboarding state in the use case.
         // That way we avoid triggering the onboarding check again that comes with the presenter.
         let onboardingViewModel = InPersonPaymentsViewModel(useCase: cardPresentPaymentsOnboardingUseCase)
-        onboardingViewModel.onOnboardingCompletion = { [weak self] plugin in
-            self?.refreshAfterNewOnboardingState(.completed(plugin: plugin))
-            if navigationController.visibleViewController is InPersonPaymentsViewController {
-                navigationController.popViewController(animated: true)
-            }
-        }
 
         let onboardingViewController = InPersonPaymentsViewController(viewModel: onboardingViewModel)
         show(onboardingViewController, sender: self)
+    }
+
+    func dismissOnboardingIfPresented() {
+        if navigationController?.visibleViewController is InPersonPaymentsViewController {
+            navigationController?.popViewController(animated: true)
+        }
     }
 }
 

@@ -7,7 +7,6 @@ final class InPersonPaymentsViewModel: ObservableObject {
     var userIsAdministrator: Bool
     var learnMoreURL: URL? = nil
     let gatewaySelectionAvailable: Bool
-    var onOnboardingCompletion: ((CardPresentPaymentsPluginState) -> ())?
     private let useCase: CardPresentPaymentsOnboardingUseCase
     let stores: StoresManager
 
@@ -27,9 +26,6 @@ final class InPersonPaymentsViewModel: ObservableObject {
             .debounce(for: .milliseconds(100), scheduler: DispatchQueue.main)
             .removeDuplicates()
             .handleEvents(receiveOutput: { [weak self] result in
-                if case let .completed(plugin) = result {
-                    self?.onOnboardingCompletion?(plugin)
-                }
                 self?.updateLearnMoreURL(state: result)
             })
             .handleEvents(receiveOutput: trackState(_:))

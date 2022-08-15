@@ -588,11 +588,6 @@ extension StorePickerViewController: UITableViewDataSource {
         guard let site = viewModel.site(at: indexPath) else {
             hideActionButton()
             let cell = tableView.dequeueReusableCell(EmptyStoresTableViewCell.self, for: indexPath)
-            cell.onJetpackSetupButtonTapped = { [weak self] in
-                guard let self = self else { return }
-
-                WebviewHelper.launch(WooConstants.URLs.emptyStoresJetpackSetup.asURL(), with: self)
-            }
             let isRemoveAppleIDAccessButtonVisible = appleIDCredentialChecker.hasAppleUserID()
             && featureFlagService.isFeatureFlagEnabled(.appleIDAccountDeletion)
             cell.updateRemoveAppleIDAccessButtonVisibility(isVisible: isRemoveAppleIDAccessButtonVisible)

@@ -1044,7 +1044,9 @@ lane :test_without_building do |options|
     e.include?(options[:name])
   end.first
 
-  UI.user_error!('Unable to find .xctestrun file') unless !xctestrun_path.nil? && File.exist?((xctestrun_path))
+  unless !xctestrun_path.nil? && File.exist?((xctestrun_path))
+    UI.user_error!("Unable to find .xctestrun file at #{xctestrun_path}")
+  end
 
   inject_buildkite_analytics_environment(xctestrun_path: xctestrun_path) if buildkite_ci?
 

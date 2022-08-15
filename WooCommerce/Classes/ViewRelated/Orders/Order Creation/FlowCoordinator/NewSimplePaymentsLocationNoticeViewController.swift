@@ -31,7 +31,7 @@ final class NewSimplePaymentsLocationNoticeViewController: UIViewController {
         super.viewWillLayoutSubviews()
     }
 
-    func setupNewSimplePaymentsNoticeView() {
+    private func setupNewSimplePaymentsNoticeView() {
         let hostingController = UIHostingController(rootView: simplePaymentsNoticeView)
         addChild(hostingController)
         view.addSubview(hostingController.view)

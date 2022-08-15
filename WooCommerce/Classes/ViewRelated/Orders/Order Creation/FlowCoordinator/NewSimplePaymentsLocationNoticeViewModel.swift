@@ -4,8 +4,7 @@ final class NewSimplePaymentsLocationNoticeViewModel {
     let title: String
     let message: String
     let confirmationButtonMessage: String
-
-    var icon: UIImage = .walletImage
+    let icon: UIImage = .walletImage
 
     /// Redirects to `HubMenu`tabBar
     ///

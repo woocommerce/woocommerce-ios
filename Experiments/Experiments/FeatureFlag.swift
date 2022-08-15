@@ -117,4 +117,8 @@ public enum FeatureFlag: Int {
     /// Whether to prefer magic link to password in the login flow
     ///
     case loginMagicLinkEmphasis
+
+    /// Whether to show the magic link as a secondary button instead of a table view cell on the password screen
+    ///
+    case loginMagicLinkEmphasisM2
 }

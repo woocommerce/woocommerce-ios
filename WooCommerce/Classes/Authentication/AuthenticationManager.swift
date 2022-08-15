@@ -44,6 +44,7 @@ class AuthenticationManager: Authentication {
     ///
     func initialize() {
         let isWPComMagicLinkPreferredToPassword = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasis)
+        let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasisM2)
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
                                                                 wpcomScheme: ApiCredentials.dotcomAuthScheme,
@@ -62,7 +63,8 @@ class AuthenticationManager: Authentication {
                                                                 continueWithSiteAddressFirst: true,
                                                                 enableSiteCredentialsLoginForSelfHostedSites: true,
                                                                 isWPComLoginRequiredForSiteCredentialsLogin: true,
-                                                                isWPComMagicLinkPreferredToPassword: isWPComMagicLinkPreferredToPassword)
+                                                                isWPComMagicLinkPreferredToPassword: isWPComMagicLinkPreferredToPassword,
+                                                                isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen: isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen)
 
         let systemGray3LightModeColor = UIColor(red: 199/255.0, green: 199/255.0, blue: 204/255.0, alpha: 1)
         let systemLabelLightModeColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)

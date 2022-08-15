@@ -47,10 +47,7 @@ final class InPersonPaymentsMenuViewController: UIViewController {
         configureSections()
         configureTableView()
         registerTableViewCells()
-
-        if featureFlagService.isFeatureFlagEnabled(.paymentsHubMenuSection) {
-            runCardPresentPaymentsOnboarding()
-        }
+        runCardPresentPaymentsOnboarding()
     }
 }
 
@@ -142,10 +139,6 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     var actionsSection: Section? {
-        guard featureFlagService.isFeatureFlagEnabled(.paymentsHubMenuSection) else {
-            return nil
-        }
-
         return Section(header: Localization.paymentActionsSectionTitle, rows: [.collectPayment])
     }
 
@@ -175,9 +168,7 @@ private extension InPersonPaymentsMenuViewController {
         tableView.dataSource = self
         tableView.delegate = self
 
-        if featureFlagService.isFeatureFlagEnabled(.paymentsHubMenuSection) {
-            setupBottomActivityIndicator()
-        }
+        setupBottomActivityIndicator()
     }
 
     func setupBottomActivityIndicator() {
@@ -303,10 +294,7 @@ extension InPersonPaymentsMenuViewController {
 
     func managePaymentGatewaysWasPressed() {
         ServiceLocator.analytics.track(.paymentsMenuPaymentProviderTapped)
-
-        if featureFlagService.isFeatureFlagEnabled(.paymentsHubMenuSection) {
-            navigateToInPersonPaymentsSelectPluginView()
-        }
+        navigateToInPersonPaymentsSelectPluginView()
     }
 
     func navigateToInPersonPaymentsSelectPluginView() {

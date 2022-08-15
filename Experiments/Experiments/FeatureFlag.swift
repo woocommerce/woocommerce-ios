@@ -102,10 +102,6 @@ public enum FeatureFlag: Int {
     ///
     case loginErrorNotifications
 
-    /// Payments Section in the Hub Menu
-    ///
-    case paymentsHubMenuSection
-
     /// Banner promoting cross-sells and upsells in product details
     ///
     case linkedProductsPromo

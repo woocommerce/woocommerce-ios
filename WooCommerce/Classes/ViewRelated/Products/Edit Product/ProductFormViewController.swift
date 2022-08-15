@@ -543,6 +543,42 @@ private extension ProductFormViewController {
         }
     }
 
+    /// Updates table viewmodel and datasource and attempts to animate cell deletion/insertion.
+    ///
+    func reloadLinkedPromoCellAnimated() {
+        let indexPathBeforeReload = findLinkedPromoCellIndexPath()
+        tableViewModel = DefaultProductFormTableViewModel(product: viewModel.productModel,
+                                                          actionsFactory: viewModel.actionsFactory,
+                                                          currency: currency)
+        let indexPathAfterReload = findLinkedPromoCellIndexPath()
+
+        reconfigureDataSource(tableViewModel: tableViewModel, statuses: productImageActionHandler.productImageStatuses) { [weak self] in
+            guard let self = self else { return }
+
+            switch (indexPathBeforeReload, indexPathAfterReload) {
+            case (let indexPathBeforeReload?, nil):
+                self.tableView.deleteRows(at: [indexPathBeforeReload], with: .left)
+            case (nil, let indexPathAfterReload?):
+                self.tableView.insertRows(at: [indexPathAfterReload], with: .automatic)
+            default:
+                self.tableView.reloadData()
+            }
+        }
+    }
+
+    func findLinkedPromoCellIndexPath() -> IndexPath? {
+        for (sectionIndex, section) in tableViewModel.sections.enumerated() {
+            if case .primaryFields(rows: let sectionRows) = section {
+                for (rowIndex, row) in sectionRows.enumerated() {
+                    if case .linkedProductsPromo = row {
+                        return IndexPath(row: rowIndex, section: sectionIndex)
+                    }
+                }
+            }
+        }
+        return nil
+    }
+
     func onProductUpdated(product: ProductModel) {
         updateMoreDetailsButtonVisibility()
         tableViewModel = DefaultProductFormTableViewModel(product: product,
@@ -589,19 +625,30 @@ private extension ProductFormViewController {
     }
 
     /// Recreates `tableViewDataSource` and reloads the `tableView` data.
+    /// - Parameters:
+    ///   - reloadClosure: custom tableView reload action, by default `reloadData()` will be triggered
     ///
-    func reconfigureDataSource(tableViewModel: ProductFormTableViewModel, statuses: [ProductImageStatus]) {
+    func reconfigureDataSource(tableViewModel: ProductFormTableViewModel, statuses: [ProductImageStatus], reloadClosure: (() -> Void)? = nil) {
         tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
                                                              productImageStatuses: statuses,
                                                              productUIImageLoader: productUIImageLoader)
         updateDataSourceActions()
         tableView.dataSource = tableViewDataSource
-        tableView.reloadData()
+
+        if let reloadClosure = reloadClosure {
+            reloadClosure()
+        } else {
+            tableView.reloadData()
+        }
     }
 
     func updateDataSourceActions() {
         tableViewDataSource.openLinkedProductsAction = { [weak self] in
             self?.editLinkedProducts()
+        }
+        tableViewDataSource.reloadLinkedPromoAction = { [weak self] in
+            guard let self = self else { return }
+            self.reloadLinkedPromoCellAnimated()
         }
         tableViewDataSource.configureActions(onNameChange: { [weak self] name in
             self?.onEditProductNameCompletion(newName: name ?? "")
@@ -726,6 +773,10 @@ private extension ProductFormViewController {
                 // Dismisses the in-progress UI, then presents the confirmation alert.
                 self?.navigationController?.dismiss(animated: true, completion: nil)
                 self?.presentProductConfirmationSaveAlert()
+
+                // Show linked products promo banner after product save
+                (self?.viewModel as? ProductFormViewModel)?.isLinkedProductsPromoEnabled = true
+                self?.reloadLinkedPromoCellAnimated()
             }
         }
     }

@@ -1,5 +1,3 @@
-Vi är glada att kunna meddela att det nu är möjligt att redigera en beställning direkt från appen. Du kan nu redigera eller ta bort produkter, avgifter, frakt samt ändra produktkvantitet.
+Du kommer att märka en ny banner för att ta emot betalningar direkt från appen med WooCommerce Payments. Det är inte allt! Det är möjligt att svepa en beställning åt vänster för att markera den som slutförd.
 
-Vissa tredjepartsutökningar visade inte beställningsmetadata logiskt i beställningsinformationen. Vi har gjort några ändringar så att dessa anpassade fält kan visas för en beställning. Vi har även gjort flertalet förbättringar av vårt betalnings- och inloggningsflöde, inklusive möjligheten att installera Jetpack direkt från appen.
-
-Fortsätt att skicka feedback till oss – vi lyssnar!
+Vi har också gjort flertalet förbättringar av inloggningsupplevelsen, inklusive möjligheten att logga in med dina autentiseringsuppgifter för WP-admin. Du kan också nu installera WooCommerce-tillägget direkt från appen.

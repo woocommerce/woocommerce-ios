@@ -1,3 +1,1 @@
-You’ll notice a new banner to accept payments directly from the app with WooCommerce Payments. That’s not all! It’s possible to swipe an order to the left to mark it complete!
-
-We’ve also made several improvements to the login experience including the option to login with your wp-admin credentials. You can also install WooCommerce plugin directly from the app now!
+This release has a few improvements to your login experience, including the option to use your `wp-admin` site credentials and magic link option to login. Please continue to send us feedback – we are listening!

@@ -1,5 +1,3 @@
-Nous sommes ravis d’annoncer qu’il est désormais possible de modifier une commande depuis l’application. Dès maintenant, vous pouvez modifier ou retirer des produits, des frais ou des livraisons, ainsi que modifier la quantité de produits.
+Vous remarquerez la présence d'une nouvelle bannière vous permettant d'accepter des paiements directement depuis l'application avec WooCommerce Payments. Ce n’est pas tout ! Il est possible de marquer une commande comme clôturée en la faisant glisser vers la gauche !
 
-Dans les détails de la commande, certaines extensions tierces n’affichaient pas logiquement les métadonnées de commandes. Nous avons apporté quelques modifications pour afficher ces champs personnalisés lors d’une commande. Nous avons également apporté quelques améliorations à notre flux de paiement et de connexion, notamment la possibilité d’installer Jetpack directement depuis l’application.
-
-Continuez à nous envoyer vos commentaires, votre avis nous intéresse !
+Nous avons également apporté plusieurs améliorations à l'expérience de connexion, notamment la possibilité de vous connecter avec vos identifiants de connexion wp-admin. Vous pouvez également installer l'extension WooCommerce directement depuis l'application !

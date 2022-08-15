@@ -1,5 +1,3 @@
-Siamo entusiasti di annunciare che ora è possibile modificare un ordine dall'app. Ora, puoi modificare o rimuovere prodotti, tariffe, spedizione e modificare le quantità dei prodotti.
+Noterai un nuovo banner per accettare pagamenti direttamente dall'app con WooCommerce Payments. Non è tutto! È possibile scorrere un ordine verso sinistra per contrassegnarlo come completato!
 
-Nei dettagli dell'ordine, alcune estensioni di terze parti non mostravano logicamente i metadati dell'ordine. Abbiamo apportato alcune modifiche per visualizzare questi campi personalizzati per un ordine. Abbiamo anche apportato diversi miglioramenti ai nostri pagamenti e al flusso di accesso, inclusa l'opzione di installare Jetpack direttamente dall'app.
-
-Continua a inviarci feedback: siamo lieti di ascoltarli.
+Abbiamo anche apportato diversi miglioramenti all'esperienza di accesso, inclusa l'opzione di accedere con le tue credenziali wp-admin. Ora, puoi anche installare il plug-in WooCommerce direttamente dall'app!

@@ -62,6 +62,15 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         }
     }
 
+    /// Returns `true` if the `linkedProductsPromo` banner should be displayed. `False` otherwise.
+    /// Assigning this value will recreate the `actionsFactory` property.
+    ///
+    var isLinkedProductsPromoEnabled: Bool = false {
+        didSet {
+            updateActionsFactory()
+        }
+    }
+
     /// The product model before any potential edits; reset after a remote update.
     private var originalProduct: EditableProductModel {
         didSet {
@@ -617,6 +626,7 @@ private extension ProductFormViewModel {
         actionsFactory = ProductFormActionsFactory(product: product,
                                                    formType: formType,
                                                    addOnsFeatureEnabled: isAddOnsFeatureEnabled,
+                                                   isLinkedProductsPromoEnabled: isLinkedProductsPromoEnabled,
                                                    variationsPrice: calculateVariationPriceState())
     }
 }

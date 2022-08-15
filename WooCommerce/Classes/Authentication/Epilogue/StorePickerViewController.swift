@@ -83,9 +83,17 @@ final class StorePickerViewController: UIViewController {
         didSet {
             secondaryActionButton.backgroundColor = .clear
             secondaryActionButton.titleFont = StyleManager.actionButtonTitleFont
-            secondaryActionButton.setTitle(NSLocalizedString("Try With Another Account",
-                                                             comment: "Button to trigger connection to another account in store picker"),
-                                           for: .normal)
+            secondaryActionButton.setTitle(Localization.tryAnotherAccount, for: .normal)
+        }
+    }
+
+    /// Enter site address Button.
+    ///
+    @IBOutlet private var enterSiteAddressButton: FancyAnimatedButton! {
+        didSet {
+            enterSiteAddressButton.backgroundColor = .clear
+            enterSiteAddressButton.titleFont = StyleManager.actionButtonTitleFont
+            enterSiteAddressButton.setTitle(Localization.enterSiteAddress, for: .normal)
         }
     }
 
@@ -351,7 +359,7 @@ private extension StorePickerViewController {
         case .empty:
             updateActionButtonAndTableState(animating: false, enabled: false)
         default:
-            break
+            hideEnterSiteAddressButton()
         }
 
         tableView.separatorStyle = viewModel.separatorStyle
@@ -499,6 +507,12 @@ private extension StorePickerViewController {
         actionButton.showActivityIndicator(false)
     }
 
+    /// Helper function that hides the "Enter a Site Address" button
+    /// upon finding at least one WC site or non-Woo site associated with the WP login.
+    func hideEnterSiteAddressButton() {
+        enterSiteAddressButton.isHidden = true
+    }
+
     /// Displays a generic error view as a modal with options to see troubleshooting tips and to contact support.
     ///
     func displayUnknownErrorModal() {
@@ -558,6 +572,15 @@ extension StorePickerViewController {
                 self?.dismiss()
             }
         }
+    }
+
+    /// Presents a screen to enter a store address to connect.
+    ///
+    @IBAction func enterStoreAddressWasPressed() {
+        guard let viewController = WordPressAuthenticator.signinForWPOrg() else {
+            return
+        }
+        navigationController?.show(viewController, sender: nil)
     }
 
     /// Proceeds with the Logout Flow.
@@ -697,6 +720,10 @@ private extension StorePickerViewController {
 private extension StorePickerViewController {
     enum Localization {
         static let continueButton = NSLocalizedString("Continue", comment: "Button on the Store Picker screen to select a store")
+        static let tryAnotherAccount = NSLocalizedString("Try With Another Account",
+                                                         comment: "Button to trigger connection to another account in store picker")
+        static let enterSiteAddress = NSLocalizedString("Enter Your Store Address",
+                                                        comment: "Button to input a site address in store picker when there are no stores found")
     }
 }
 

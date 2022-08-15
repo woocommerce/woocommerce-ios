@@ -41,6 +41,9 @@
             reference = "container:WooCommerceTests/UnitTests.xctestplan"
             default = "YES">
          </TestPlanReference>
+         <TestPlanReference
+            reference = "container:WooCommerceUITests/UITests.xctestplan">
+         </TestPlanReference>
       </TestPlans>
       <Testables>
          <TestableReference

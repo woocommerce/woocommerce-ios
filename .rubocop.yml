@@ -3,6 +3,7 @@ AllCops:
     - DerivedData/**/*
     - Pods/**/*
     - vendor/**/*
+  NewCops: enable
 
 Metrics/BlockLength:
   Exclude:

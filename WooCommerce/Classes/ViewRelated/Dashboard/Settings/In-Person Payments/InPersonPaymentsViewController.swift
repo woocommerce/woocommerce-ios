@@ -76,19 +76,8 @@ struct InPersonPaymentsView: View {
                 InPersonPaymentsStripeAccountReview()
             case .stripeAccountRejected:
                 InPersonPaymentsStripeRejected()
-            case .completed(let pluginState):
-                if viewModel.showMenuOnCompletion {
-                    InPersonPaymentsMenu(
-                        pluginState: pluginState,
-                        onPluginSelected: { plugin in
-                            viewModel.selectPlugin(plugin)
-                        },
-                        onPluginSelectionCleared: {
-                            viewModel.clearPluginSelection()
-                        })
-                } else {
-                    InPersonPaymentsCompleted()
-                }
+            case .completed:
+                InPersonPaymentsCompleted()
             case .noConnectionError:
                 InPersonPaymentsNoConnection(onRefresh: viewModel.refresh)
             default:

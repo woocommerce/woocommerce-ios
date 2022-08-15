@@ -9,8 +9,6 @@ final class InPersonPaymentsMenuViewController: UIViewController {
     private var pluginState: CardPresentPaymentsPluginState?
     private var sections = [Section]()
     private let configurationLoader: CardPresentConfigurationLoader
-    private let onPluginSelected: ((CardPresentPaymentsPlugin) -> Void)?
-    private let onPluginSelectionCleared: (() -> Void)?
     private let featureFlagService: FeatureFlagService
     private let cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCase
     private var cancellables: Set<AnyCancellable> = []
@@ -28,16 +26,9 @@ final class InPersonPaymentsMenuViewController: UIViewController {
 
     private var activityIndicator: UIActivityIndicatorView?
 
-    init(
-        pluginState: CardPresentPaymentsPluginState?,
-        onPluginSelected: ((CardPresentPaymentsPlugin) -> Void)?,
-        onPluginSelectionCleared: ( () -> Void)?,
-        stores: StoresManager = ServiceLocator.stores,
+    init(stores: StoresManager = ServiceLocator.stores,
         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService
     ) {
-        self.pluginState = pluginState
-        self.onPluginSelected = onPluginSelected
-        self.onPluginSelectionCleared = onPluginSelectionCleared
         self.stores = stores
         self.featureFlagService = featureFlagService
         self.cardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase()
@@ -126,7 +117,7 @@ private extension InPersonPaymentsMenuViewController {
 
         // Instead of using `CardPresentPaymentsOnboardingPresenter` we create the view directly because we already have the onboarding state in the use case.
         // That way we avoid triggering the onboarding check again that comes with the presenter.
-        let onboardingViewModel = InPersonPaymentsViewModel(useCase: cardPresentPaymentsOnboardingUseCase, showMenuOnCompletion: false)
+        let onboardingViewModel = InPersonPaymentsViewModel(useCase: cardPresentPaymentsOnboardingUseCase)
         onboardingViewModel.onOnboardingCompletion = { [weak self] plugin in
             self?.refreshAfterNewOnboardingState(.completed(plugin: plugin))
             if navigationController.visibleViewController is InPersonPaymentsViewController {
@@ -312,7 +303,6 @@ extension InPersonPaymentsMenuViewController {
 
     func managePaymentGatewaysWasPressed() {
         ServiceLocator.analytics.track(.paymentsMenuPaymentProviderTapped)
-        onPluginSelectionCleared?()
 
         if featureFlagService.isFeatureFlagEnabled(.paymentsHubMenuSection) {
             navigateToInPersonPaymentsSelectPluginView()
@@ -477,12 +467,8 @@ private extension InPersonPaymentsMenuViewController {
 /// SwiftUI wrapper for CardReaderSettingsPresentingViewController
 ///
 struct InPersonPaymentsMenu: UIViewControllerRepresentable {
-    let pluginState: CardPresentPaymentsPluginState?
-    let onPluginSelected: ((CardPresentPaymentsPlugin) -> Void)?
-    let onPluginSelectionCleared: (() -> Void)?
-
     func makeUIViewController(context: Context) -> some UIViewController {
-        InPersonPaymentsMenuViewController(pluginState: pluginState, onPluginSelected: onPluginSelected, onPluginSelectionCleared: onPluginSelectionCleared)
+        InPersonPaymentsMenuViewController()
     }
 
     func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {

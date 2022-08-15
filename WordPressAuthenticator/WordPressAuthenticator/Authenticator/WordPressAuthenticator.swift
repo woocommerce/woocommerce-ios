@@ -266,6 +266,14 @@ import WordPressKit
         return SiteAddressViewController.instantiate(from: .siteAddress)
     }
 
+    /// Returns a Site Address view controller and triggers the protocol method `troubleshootSite` after fetching the site info.
+    ///
+    @objc public class func siteAddressInputUIForTroubleshooting() -> UIViewController? {
+        return SiteAddressViewController.instantiate(from: .siteAddress) { coder in
+            SiteAddressViewController(needsTroubleshooting: true, coder: coder)
+        }
+    }
+
     // Helper used by WPAuthTokenIssueSolver
     @objc
     public class func signinForWPCom(dotcomEmailAddress: String?, dotcomUsername: String?, onDismissed: ((_ cancelled: Bool) -> Void)? = nil) -> UIViewController {

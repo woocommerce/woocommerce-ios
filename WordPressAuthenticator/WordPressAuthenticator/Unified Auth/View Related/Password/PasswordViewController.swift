@@ -79,7 +79,7 @@ class PasswordViewController: LoginViewController {
                 tracker.set(step: .passwordChallenge)
             }
         } else {
-            tracker.set(flow: .loginWithPassword)
+            tracker.set(flow: isMagicLinkShownAsSecondaryAction ? .loginWithPasswordWithMagicLinkEmphasis : .loginWithPassword)
 
             if isMovingToParent {
                 tracker.track(step: .start)

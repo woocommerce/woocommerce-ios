@@ -22,8 +22,8 @@ enum Storyboard: String {
     /// Returns a view controller from a Storyboard
     /// assuming the identifier is the same as the class name.
     ///
-    func instantiateViewController<T: NSObject>(ofClass classType: T.Type) -> T? {
+    func instantiateViewController<T: NSObject>(ofClass classType: T.Type, creator: ((NSCoder) -> UIViewController?)? = nil) -> T? {
         let identifier = classType.classNameWithoutNamespaces
-        return instance.instantiateViewController(withIdentifier: identifier) as? T
+        return instance.instantiateViewController(identifier: identifier, creator: creator) as? T
     }
 }

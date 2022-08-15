@@ -3182,7 +3182,6 @@
 		CCDC49CE23FFFFF4003166BA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CCDC49EC24000533003166BA /* TestCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestCredentials.swift; sourceTree = "<group>"; };
 		CCDC49F1240060F3003166BA /* UnitTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = UnitTests.xctestplan; path = WooCommerceTests/UnitTests.xctestplan; sourceTree = SOURCE_ROOT; };
-		CCDC49F224006130003166BA /* UITests-CI.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = "UITests-CI.xctestplan"; path = "WooCommerceUITests/UITests-CI.xctestplan"; sourceTree = SOURCE_ROOT; };
 		CCE4CD162667EBB100E09FD4 /* ShippingLabelPaymentMethodsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPaymentMethodsViewModelTests.swift; sourceTree = "<group>"; };
 		CCE4CD272669324300E09FD4 /* ShippingLabelPaymentMethodsTopBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPaymentMethodsTopBanner.swift; sourceTree = "<group>"; };
 		CCEC256927B581E800EF9FA3 /* ProductVariationFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationFormatter.swift; sourceTree = "<group>"; };
@@ -6965,7 +6964,6 @@
 			isa = PBXGroup;
 			children = (
 				3F271A9728A2684400E656AE /* UITests.xctestplan */,
-				CCDC49F224006130003166BA /* UITests-CI.xctestplan */,
 				800A5B9C275623E9009DE2CD /* Flows */,
 				CCDC49D9240000B7003166BA /* Tests */,
 				CCFC00B623E9BD5500157A78 /* Mocks */,

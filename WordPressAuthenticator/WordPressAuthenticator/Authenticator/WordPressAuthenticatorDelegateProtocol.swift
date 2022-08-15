@@ -90,6 +90,11 @@ public protocol WordPressAuthenticatorDelegate: AnyObject {
     ///
     func sync(credentials: AuthenticatorCredentials, onCompletion: @escaping () -> Void)
 
+    /// Signals to the Host App that a WordPress site is available and needs validated.
+    /// This method is only triggered when the authenticator method `siteAddressUIForTroubleshooting` is called.
+    ///
+    func troubleshootSite(_ siteInfo: WordPressComSiteInfo?, in navigationController: UINavigationController)
+
     /// Signals the Host App that a given Analytics Event has occurred.
     ///
     func track(event: WPAnalyticsStat)
@@ -101,4 +106,12 @@ public protocol WordPressAuthenticatorDelegate: AnyObject {
     /// Signals the Host App that a given Analytics Event (with an associated Error) has occurred.
     ///
     func track(event: WPAnalyticsStat, error: Error)
+}
+
+/// Extension with default implementation for optional delegate methods.
+///
+extension WordPressAuthenticatorDelegate {
+    func troubleshootSite(_ siteInfo: WordPressComSiteInfo?, in navigationController: UINavigationController) {
+        // No-op
+    }
 }

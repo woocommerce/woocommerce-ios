@@ -1046,15 +1046,7 @@ lane :test_without_building do |options|
 
   UI.user_error!('Unable to find .xctestrun file') unless !xctestrun_path.nil? && File.exist?((xctestrun_path))
 
-  # If the caller passed a `test_configuration` parameter, we should use it,
-  # otherwise we should run all the configurations in the given test plan,
-  # which is what setting the value to `nil` does.
-  #
-  # The UITests test plan has multiple configurations for iOS/iPhone vs.
-  # iPadOS/iPad and we selectively run one or the other in CI based on the
-  # destination Simulator.
-  configurations = options[:test_configuration].nil? ? nil :
-    [options[:test_configuration]]
+  inject_buildkite_analytics_environment(xctestrun_path: xctestrun_path) if buildkite_ci?
 
   run_tests(
     workspace: 'WooCommerce.xcworkspace',
@@ -1063,7 +1055,6 @@ lane :test_without_building do |options|
     deployment_target_version: options[:ios_version],
     test_without_building: true,
     xctestrun: xctestrun_path,
-    only_test_configurations: configurations,
     result_bundle: true,
     # settins for XML test report generation via `trainer`
     output_types: '',
@@ -1114,3 +1105,37 @@ def trigger_buildkite_release_build(branch:, beta:)
     pipeline_file: 'release-builds.yml'
   )
 end
+
+def inject_buildkite_analytics_environment(xctestrun_path:)
+  require 'plist'
+
+  xctestrun = Plist.parse_xml(xctestrun_path)
+  xctestrun['TestConfigurations'].each do |configuration|
+    configuration['TestTargets'].each do |target|
+      TEST_ANALYTICS_ENVIRONMENT.each do |key|
+        value = ENV.fetch(key)
+        next if value.nil?
+
+        target['EnvironmentVariables'][key] = value
+      end
+    end
+  end
+
+  File.write(xctestrun_path, Plist::Emit.dump(xctestrun))
+end
+
+def buildkite_ci?
+  ENV.fetch('BUILDKITE', false)
+end
+
+# https://buildkite.com/docs/test-analytics/ci-environments
+TEST_ANALYTICS_ENVIRONMENT = %w[
+  BUILDKITE_ANALYTICS_TOKEN
+  BUILDKITE_BUILD_ID
+  BUILDKITE_BUILD_NUMBER
+  BUILDKITE_JOB_ID
+  BUILDKITE_BRANCH
+  BUILDKITE_COMMIT
+  BUILDKITE_MESSAGE
+  BUILDKITE_BUILD_URL
+].freeze

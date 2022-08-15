@@ -2,7 +2,7 @@
   "configurations" : [
     {
       "id" : "7E8B43A4-950E-425F-A333-D1D696025D02",
-      "name" : "Default",
+      "name" : "UnitTests",
       "options" : {
 
       }

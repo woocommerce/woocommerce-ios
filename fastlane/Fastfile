@@ -561,7 +561,32 @@ platform :ios do
       scheme: TEST_SCHEME,
       derived_data_path: 'DerivedData',
       build_for_testing: true,
+
+      # Experimental setup
+      #
+      # Use one of these locally to verify the `xctestrun` that's generated in
+      # `DerivedData/Build/Products/`.
+      #
+      # The result, unfortunately will be one where it's possible to
+      # distinguish between the UnitTests and UITests plan, but not on the
+      # configuration used.  That is, if you run the (UITests, iPhone) followed
+      # by (UITests, iPad), you'll only have one `xctestrun` file.
+
+      # testplan: 'UnitTests',
+      # only_test_configurations: ['UnitTests'],
+      # device: 'iPhone 13',
+
+      # testplan: 'UITests',
+      # only_test_configurations: ['iPhone'],
+      # device: 'iPhone 13',
+
+      # testplan: 'UITests',
+      # only_test_configurations: ['iPad'],
+      # device: 'iPad Air (4th generation)',
+
+      # Original setup – Comment out if you enable one of the above
       device: options[:device],
+
       deployment_target_version: options[:ios_version]
     )
   end

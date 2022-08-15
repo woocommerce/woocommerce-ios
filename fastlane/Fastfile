@@ -1118,7 +1118,7 @@ def inject_buildkite_analytics_environment(xctestrun_path:)
         value = ENV.fetch(key)
         next if value.nil?
 
-        target['EnvironmentVariables'][key] = value
+        target['EnvironmentVariables'][key] = "$(#{key})"
       end
     end
   end

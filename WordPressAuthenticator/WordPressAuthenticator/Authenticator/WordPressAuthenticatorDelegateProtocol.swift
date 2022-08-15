@@ -110,7 +110,7 @@ public protocol WordPressAuthenticatorDelegate: AnyObject {
 
 /// Extension with default implementation for optional delegate methods.
 ///
-extension WordPressAuthenticatorDelegate {
+public extension WordPressAuthenticatorDelegate {
     func troubleshootSite(_ siteInfo: WordPressComSiteInfo?, in navigationController: UINavigationController?) {
         // No-op
     }

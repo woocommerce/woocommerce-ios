@@ -28,6 +28,20 @@ final class SiteAddressViewController: LoginViewController {
     /// should show an activity indicator.
     private var viewIsLoading: Bool = false
 
+    /// Whether the protocol method `troubleshootSite` should be triggered after site info is fetched.
+    ///
+    private let needsTroubleshooting: Bool
+
+    init?(needsTroubleshooting: Bool, coder: NSCoder) {
+        self.needsTroubleshooting = needsTroubleshooting
+        super.init(coder: coder)
+    }
+
+    required init?(coder: NSCoder) {
+        self.needsTroubleshooting = false
+        super.init(coder: coder)
+    }
+
     // MARK: - Actions
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
         tracker.track(click: .submit)
@@ -513,6 +527,11 @@ private extension SiteAddressViewController {
         //
         if let verifiedSiteAddress = siteInfo?.url {
             loginFields.siteAddress = verifiedSiteAddress
+        }
+
+        guard needsTroubleshooting == false else {
+            WordPressAuthenticator.shared.delegate?.troubleshootSite(siteInfo, in: navigationController)
+            return
         }
 
         guard siteInfo?.isWPCom == false else {

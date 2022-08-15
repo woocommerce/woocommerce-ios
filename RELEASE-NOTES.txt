@@ -2,7 +2,7 @@
 
 10.0
 -----
-
+- [*] Login: on the WP.com password screen, the magic link login option is moved from below "Reset your password" to below the primary Continue button for higher visibility. [https://github.com/woocommerce/woocommerce-ios/pull/7469]
 
 9.9
 -----

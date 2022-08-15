@@ -126,7 +126,7 @@ private extension InPersonPaymentsMenuViewController {
 
         // Instead of using `CardPresentPaymentsOnboardingPresenter` we create the view directly because we already have the onboarding state in the use case.
         // That way we avoid triggering the onboarding check again that comes with the presenter.
-        let onboardingViewModel = InPersonPaymentsViewModel(useCase: cardPresentPaymentsOnboardingUseCase, showMenuOnCompletion: false)
+        let onboardingViewModel = InPersonPaymentsViewModel(useCase: cardPresentPaymentsOnboardingUseCase)
         onboardingViewModel.onOnboardingCompletion = { [weak self] plugin in
             self?.refreshAfterNewOnboardingState(.completed(plugin: plugin))
             if navigationController.visibleViewController is InPersonPaymentsViewController {

@@ -6,7 +6,6 @@ final class InPersonPaymentsViewModel: ObservableObject {
     @Published var state: CardPresentPaymentOnboardingState
     var userIsAdministrator: Bool
     var learnMoreURL: URL? = nil
-    let showMenuOnCompletion: Bool
     let gatewaySelectionAvailable: Bool
     var onOnboardingCompletion: ((CardPresentPaymentsPluginState) -> ())?
     private let useCase: CardPresentPaymentsOnboardingUseCase
@@ -16,11 +15,9 @@ final class InPersonPaymentsViewModel: ObservableObject {
     ///
     init(stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         useCase: CardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase(),
-         showMenuOnCompletion: Bool = true) {
+         useCase: CardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase()) {
         self.stores = stores
         self.useCase = useCase
-        self.showMenuOnCompletion = showMenuOnCompletion
         gatewaySelectionAvailable = featureFlagService.isFeatureFlagEnabled(.inPersonPaymentGatewaySelection)
         state = useCase.state
         userIsAdministrator = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator)
@@ -48,7 +45,6 @@ final class InPersonPaymentsViewModel: ObservableObject {
         stores: StoresManager = ServiceLocator.stores,
         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
             self.stores = stores
-            self.showMenuOnCompletion = false
             gatewaySelectionAvailable = featureFlagService.isFeatureFlagEnabled(.inPersonPaymentGatewaySelection)
             state = fixedState
             useCase = CardPresentPaymentsOnboardingUseCase()

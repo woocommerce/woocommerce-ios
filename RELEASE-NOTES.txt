@@ -3,6 +3,7 @@
 10.0
 -----
 
+- [**] In-Person Payments and Simple Payments have been moved to a new Payments section [https://github.com/woocommerce/woocommerce-ios/pull/7473]
 
 9.9
 -----

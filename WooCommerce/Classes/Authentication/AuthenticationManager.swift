@@ -189,23 +189,16 @@ class AuthenticationManager: Authentication {
         /// Account mismatched case
         guard matcher.match(originalURL: siteURL) else {
             DDLogWarn("⚠️ Present account mismatch error for site: \(String(describing: siteURL))")
-            let viewModel = WrongAccountErrorViewModel(siteURL: siteURL, showsConnectedStores: matcher.hasConnectedStores)
-            let mismatchAccountUI = ULAccountMismatchViewController(viewModel: viewModel)
-            return mismatchAccountUI
+            return accountMismatchUI(for: siteURL, with: matcher)
         }
 
         /// No Woo found
         if let matchedSite = matcher.matchedSite(originalURL: siteURL),
            matchedSite.isWooCommerceActive == false {
-            let viewModel = NoWooErrorViewModel(
-                site: matchedSite,
-                showsConnectedStores: matcher.hasConnectedStores,
-                onSetupCompletion: { [weak self] siteID in
-                    guard let self = self else { return }
-                    self.startStorePicker(with: siteID, in: navigationController, onDismiss: onStorePickerDismiss)
-            })
-            let noWooUI = ULErrorViewController(viewModel: viewModel)
-            return noWooUI
+            return noWooUI(for: matchedSite,
+                           with: matcher,
+                           navigationController: navigationController,
+                           onStorePickerDismiss: onStorePickerDismiss)
         }
 
         // All good!
@@ -314,6 +307,34 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         DDLogWarn("⚠️ Present password controller for site: \(site.url)")
         let authenticationResult: WordPressAuthenticatorResult = .presentPasswordController(value: false)
         onCompletion(authenticationResult)
+    }
+
+    func troubleshootSite(_ siteInfo: WordPressComSiteInfo?, in navigationController: UINavigationController?) {
+        guard let site = siteInfo, let navigationController = navigationController else {
+            DDLogWarn("⚠️ Missing site info or navigation controller when troubleshooting site")
+            return
+        }
+
+        let matcher = ULAccountMatcher(storageManager: storageManager)
+        guard !site.isWPCom else {
+            guard site.hasValidJetpack else {
+                // TODO: non-atomic site, do something
+                return
+            }
+            let controller = accountMismatchUI(for: site.url, with: matcher)
+            navigationController.show(controller, sender: nil)
+            return
+        }
+
+        /// Jetpack is required. Present an error if we don't detect a valid installation.
+        guard site.hasValidJetpack == true else {
+            let jetpackUI = jetpackErrorUI(for: site.url, with: matcher, in: navigationController)
+            navigationController.show(jetpackUI, sender: nil)
+            return
+        }
+
+        let controller = accountMismatchUI(for: site.url, with: matcher)
+        navigationController.show(controller, sender: nil)
     }
 
     /// Presents the Login Epilogue, in the specified NavigationController.
@@ -538,6 +559,55 @@ private extension AuthenticationManager {
         } else {
             storePickerCoordinator?.start()
         }
+    }
+
+    func jetpackErrorUI(for siteURL: String, with matcher: ULAccountMatcher, in navigationController: UINavigationController) -> UIViewController {
+        let viewModel = JetpackErrorViewModel(siteURL: siteURL, onJetpackSetupCompletion: { authorizedEmailAddress in
+            guard let self = self else { return }
+
+            // Tries re-syncing to get an updated store list
+            ServiceLocator.stores.synchronizeEntities { [weak self] in
+                guard let self = self else { return }
+
+                if let matchedSite = matcher.matchedSite(originalURL: siteURL) {
+                    // checks if the site has woo
+                    if matchedSite.isWooCommerceActive == false {
+                        let noWooUI = self.noWooUI(for: matchedSite,
+                                                   with: matcher,
+                                                   navigationController: navigationController,
+                                                   onStorePickerDismiss: {})
+                        navigationController.show(noWooUI, sender: nil)
+                    } else {
+                        self.startStorePicker(with: matchedSite.siteID, in: navigationController, onDismiss: {})
+                    }
+                } else {
+                    // TODO: what now?
+                }
+            }
+        })
+        return ULErrorViewController(viewModel: viewModel)
+    }
+
+    func accountMismatchUI(for siteURL: String, with matcher: ULAccountMatcher) -> UIViewController {
+        let viewModel = WrongAccountErrorViewModel(siteURL: siteURL, showsConnectedStores: matcher.hasConnectedStores)
+        let mismatchAccountUI = ULAccountMismatchViewController(viewModel: viewModel)
+        return mismatchAccountUI
+    }
+
+    func noWooUI(for site: Site,
+                 with matcher: ULAccountMatcher,
+                 navigationController: UINavigationController,
+                 onStorePickerDismiss: @escaping () -> Void) -> UIViewController {
+
+        let viewModel = NoWooErrorViewModel(
+            site: site,
+            showsConnectedStores: matcher.hasConnectedStores,
+            onSetupCompletion: { [weak self] siteID in
+                guard let self = self else { return }
+                self.startStorePicker(with: siteID, in: navigationController, onDismiss: onStorePickerDismiss)
+        })
+        let noWooUI = ULErrorViewController(viewModel: viewModel)
+        return noWooUI
     }
 }
 

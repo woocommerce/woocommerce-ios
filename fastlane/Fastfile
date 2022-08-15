@@ -28,7 +28,7 @@ SCREENSHOT_DEVICES = [
 MAIN_BUNDLE_IDENTIFIERS = %w[com.automattic.woocommerce].freeze        # Registered in our main account, for development and AppStore
 ALPHA_BUNDLE_IDENTIFIERS = %w[com.automattic.alpha.woocommerce].freeze # Registered in our Enterprise account, for App Center / Installable Builds
 
-TEST_SCHEME = 'WooCommerce-BuildForTesting'
+TEST_SCHEME = 'WooCommerce'
 
 # List of `.strings` files manually maintained by developers (as opposed to being automatically extracted from the code)
 # which we will merge into the main `Localizable.strings` file imported by GlotPress, then extract back once we download the translations.

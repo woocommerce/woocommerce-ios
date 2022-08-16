@@ -28,6 +28,8 @@ SCREENSHOT_DEVICES = [
 MAIN_BUNDLE_IDENTIFIERS = %w[com.automattic.woocommerce].freeze        # Registered in our main account, for development and AppStore
 ALPHA_BUNDLE_IDENTIFIERS = %w[com.automattic.alpha.woocommerce].freeze # Registered in our Enterprise account, for App Center / Installable Builds
 
+TEST_SCHEME = 'WooCommerce'
+
 # List of `.strings` files manually maintained by developers (as opposed to being automatically extracted from the code)
 # which we will merge into the main `Localizable.strings` file imported by GlotPress, then extract back once we download the translations.
 #
@@ -556,7 +558,7 @@ platform :ios do
   lane :build_for_testing do |options|
     run_tests(
       workspace: 'WooCommerce.xcworkspace',
-      scheme: 'WooCommerce',
+      scheme: TEST_SCHEME,
       derived_data_path: 'DerivedData',
       build_for_testing: true,
       device: options[:device],
@@ -1046,7 +1048,7 @@ lane :test_without_building do |options|
 
   run_tests(
     workspace: 'WooCommerce.xcworkspace',
-    scheme: 'WooCommerce',
+    scheme: TEST_SCHEME,
     device: options[:device],
     deployment_target_version: options[:ios_version],
     test_without_building: true,

@@ -491,6 +491,7 @@ private extension StorePickerViewController {
     func updateUIForNoSitesFound(named siteName: String) {
         hideActionButton()
         displayFancyWCRequirementAlert(siteName: siteName)
+        enterSiteAddressButton.isHidden = false
     }
 
     /// Update the UI when the user has a valid login

@@ -293,4 +293,87 @@ final class AuthenticationManagerTests: XCTestCase {
         // Then
         XCTAssertNil(settings.errorLoginSiteAddress)
     }
+
+    func test_troubleshootSite_displays_error_screen_if_site_does_not_have_wordPress() {
+        // Given
+        let navigationController = UINavigationController()
+        let siteInfo = siteInfo(exists: true, hasWordPress: false)
+        let storage = MockStorageManager()
+        let manager = AuthenticationManager(storageManager: storage)
+
+        // When
+        manager.troubleshootSite(siteInfo, in: navigationController)
+
+        // Then
+        waitUntil {
+            navigationController.viewControllers.isNotEmpty
+        }
+        let topController = navigationController.topViewController
+        XCTAssertTrue(topController is ULErrorViewController)
+    }
+
+    func test_troubleshootSite_displays_account_mismatch_error_if_site_is_atomic() {
+        // Given
+        let navigationController = UINavigationController()
+        let siteInfo = siteInfo(exists: true, hasWordPress: true, isWordPressCom: true, hasJetpack: true)
+        let storage = MockStorageManager()
+        let manager = AuthenticationManager(storageManager: storage)
+
+        // When
+        manager.troubleshootSite(siteInfo, in: navigationController)
+
+        // Then
+        waitUntil {
+            navigationController.viewControllers.isNotEmpty
+        }
+        let topController = navigationController.topViewController
+        XCTAssertTrue(topController is ULAccountMismatchViewController)
+    }
+
+    func test_troubleshootSite_displays_error_screen_if_site_is_self_hosted_without_jetpack() {
+        // Given
+        let navigationController = UINavigationController()
+        let siteInfo = siteInfo(exists: true, hasWordPress: true, isWordPressCom: false, hasJetpack: false)
+        let storage = MockStorageManager()
+        let manager = AuthenticationManager(storageManager: storage)
+
+        // When
+        manager.troubleshootSite(siteInfo, in: navigationController)
+
+        // Then
+        waitUntil {
+            navigationController.viewControllers.isNotEmpty
+        }
+        let topController = navigationController.topViewController
+        XCTAssertTrue(topController is ULErrorViewController)
+    }
+
+    func test_troubleshootSite_displays_account_mismatch_screen_if_site_is_self_hosted_with_jetpack() {
+        // Given
+        let navigationController = UINavigationController()
+        let siteInfo = siteInfo(exists: true, hasWordPress: true, isWordPressCom: false, hasJetpack: true)
+        let storage = MockStorageManager()
+        let manager = AuthenticationManager(storageManager: storage)
+
+        // When
+        manager.troubleshootSite(siteInfo, in: navigationController)
+
+        // Then
+        waitUntil {
+            navigationController.viewControllers.isNotEmpty
+        }
+        let topController = navigationController.topViewController
+        XCTAssertTrue(topController is ULAccountMismatchViewController)
+    }
+}
+
+private extension AuthenticationManagerTests {
+    func siteInfo(exists: Bool = false, hasWordPress: Bool = false, isWordPressCom: Bool = false, hasJetpack: Bool = false) -> WordPressComSiteInfo {
+        WordPressComSiteInfo(remote: ["exists": exists,
+                                      "isWordPress": hasWordPress,
+                                      "hasJetpack": hasJetpack,
+                                      "isJetpackActive": hasJetpack,
+                                      "isJetpackConnected": hasJetpack,
+                                      "isWordPressDotCom": isWordPressCom])
+    }
 }

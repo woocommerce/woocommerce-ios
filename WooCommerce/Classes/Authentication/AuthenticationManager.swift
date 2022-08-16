@@ -566,6 +566,7 @@ private extension AuthenticationManager {
                         self.startStorePicker(with: matchedSite.siteID, in: navigationController, onDismiss: {})
                     }
                 } else {
+                    DDLogWarn("⚠️ Could not find \(siteURL) connected to the account")
                     // TODO: what now?
                 }
             }

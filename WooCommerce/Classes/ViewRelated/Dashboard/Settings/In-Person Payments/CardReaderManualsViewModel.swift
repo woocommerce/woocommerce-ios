@@ -1,5 +1,4 @@
 import Foundation
-import SwiftUI
 import Yosemite
 
 struct Manual: Identifiable, Equatable {
@@ -10,13 +9,10 @@ struct Manual: Identifiable, Equatable {
 }
 
 final class CardReaderManualsViewModel {
-    var configurationLoader: CardPresentConfigurationLoader
     let manuals: [Manual]
 
     init() {
-        // Initialize the View Model only with the supported readers for a specific Store
-        self.configurationLoader = CardPresentConfigurationLoader()
-        let supportedReaders = configurationLoader.configuration.supportedReaders
-        self.manuals = supportedReaders.map { $0.manual }
+        // Display all card readers at all times. Ref: pdfdoF-1aF-p2
+        self.manuals = CardReaderType.allSupportedReaders.map { $0.manual }
     }
 }

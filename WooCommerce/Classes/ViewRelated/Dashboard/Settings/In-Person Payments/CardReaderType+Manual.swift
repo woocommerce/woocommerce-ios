@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 
 extension CardReaderType {
+    static let allSupportedReaders: [CardReaderType] = [CardReaderType.chipper, CardReaderType.stripeM2, CardReaderType.wisepad3]
 
     var manual: Manual {
         switch self {

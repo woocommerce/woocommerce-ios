@@ -7,6 +7,7 @@ class CardReaderManualsViewModelTests: XCTestCase {
     private var storageManager: MockStorageManager!
     private var stores: MockStoresManager!
     private let sampleSiteID: Int64 = 1234
+    private let availableReaderTypes = [CardReaderType.chipper, CardReaderType.stripeM2, CardReaderType.wisepad3]
 
     override func setUpWithError() throws {
         try super.setUpWithError()
@@ -32,7 +33,7 @@ class CardReaderManualsViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel)
     }
 
-    func test_viewModel_when_US_store_then_available_card_reader_manuals() {
+    func test_viewModel_when_US_store_then_all_card_reader_manuals_are_available() {
         // Given
         let setting = SiteSetting.fake()
             .copy(
@@ -46,14 +47,13 @@ class CardReaderManualsViewModelTests: XCTestCase {
         let viewModel = CardReaderManualsViewModel()
 
         // When
-        let availableReaderTypes = [CardReaderType.chipper, CardReaderType.stripeM2]
         let expectedManuals = availableReaderTypes.map { $0.manual }
 
         // Then
         XCTAssertEqual(viewModel.manuals, expectedManuals)
     }
 
-    func test_viewModel_when_CA_store_then_available_card_reader_manuals() {
+    func test_viewModel_when_CA_store_then_all_card_reader_manuals_are_available() {
         // Given
         let setting = SiteSetting.fake()
             .copy(
@@ -67,14 +67,13 @@ class CardReaderManualsViewModelTests: XCTestCase {
         let viewModel = CardReaderManualsViewModel()
 
         // When:
-        let availableReaderTypes = [CardReaderType.wisepad3]
         let expectedManuals = availableReaderTypes.map { $0.manual }
 
         // Then
         XCTAssertEqual(viewModel.manuals, expectedManuals)
     }
 
-    func test_viewModel_when_IPP_not_available_country_then_available_card_reader_manuals_is_empty() {
+    func test_viewModel_when_IPP_not_available_country_then_all_card_reader_manuals_are_available() {
         // Given
         let setting = SiteSetting.fake()
                     .copy(
@@ -87,7 +86,6 @@ class CardReaderManualsViewModelTests: XCTestCase {
         let viewModel = CardReaderManualsViewModel.init()
 
         // When
-        let availableReaderTypes: [CardReaderType] = []
         let expectedManuals = availableReaderTypes.map { $0.manual }
 
         // Then

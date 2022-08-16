@@ -27,6 +27,9 @@ protocol ULErrorViewModel {
     /// Provides a title for a secondary action button
     var secondaryButtonTitle: String { get }
 
+    /// Indicates whether the secondary button is visible
+    var isSecondaryButtonHidden: Bool { get }
+
     /// Additional view to the bottom of the vertical stack view that contains the image, text, and auxiliary button.
     var auxiliaryView: UIView? { get }
 
@@ -52,6 +55,8 @@ extension ULErrorViewModel {
     var title: String? { nil }
 
     var isPrimaryButtonHidden: Bool { false }
+
+    var isSecondaryButtonHidden: Bool { false }
 
     var auxiliaryView: UIView? { nil }
 }

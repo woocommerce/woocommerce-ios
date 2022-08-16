@@ -17,10 +17,10 @@ final class NotWPAccountViewModel: ULErrorViewModel {
 
     let auxiliaryButtonTitle = AuthenticationConstants.whatIsWPComLinkTitle
 
-    let primaryButtonTitle = Localization.primaryButtonTitle
-    let isPrimaryButtonHidden: Bool
+    let primaryButtonTitle: String
 
-    let secondaryButtonTitle = Localization.secondaryButtonTitle
+    let secondaryButtonTitle = Localization.restartLogin
+    let isSecondaryButtonHidden: Bool
 
     private weak var viewController: UIViewController?
 
@@ -39,9 +39,11 @@ final class NotWPAccountViewModel: ULErrorViewModel {
         if let error = error as? SignInError,
            case let .invalidWPComEmail(source) = error,
            source == .wpComSiteAddress {
-            isPrimaryButtonHidden = true
+            isSecondaryButtonHidden = true
+            primaryButtonTitle = Localization.restartLogin
         } else {
-            isPrimaryButtonHidden = false
+            isSecondaryButtonHidden = false
+            primaryButtonTitle = Localization.loginWithSiteAddress
         }
     }
 
@@ -93,13 +95,13 @@ private extension NotWPAccountViewModel {
                                                      comment: "Button linking to webview that explains what Jetpack is"
                                                         + "Presented when logging in with a site address that does not have a valid Jetpack installation")
 
-        static let primaryButtonTitle = NSLocalizedString("Log in with your store address",
-                                                          comment: "Action button linking to instructions for enter another store."
-                                                          + "Presented when logging in with an email address that is not a WordPress.com account")
+        static let loginWithSiteAddress = NSLocalizedString("Log in with your store address",
+                                                            comment: "Action button linking to instructions for enter another store."
+                                                            + "Presented when logging in with an email address that is not a WordPress.com account")
 
-        static let secondaryButtonTitle = NSLocalizedString("Log in with another account",
-                                                            comment: "Action button that will restart the login flow."
-                                                            + "Presented when logging in with an email address that does not match a WordPress.com account")
+        static let restartLogin = NSLocalizedString("Log in with another account",
+                                                    comment: "Action button that will restart the login flow."
+                                                    + "Presented when logging in with an email address that does not match a WordPress.com account")
 
     }
 }

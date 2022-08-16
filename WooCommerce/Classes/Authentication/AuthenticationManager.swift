@@ -553,7 +553,7 @@ private extension AuthenticationManager {
             // Tries re-syncing to get an updated store list
             ServiceLocator.stores.synchronizeEntities { [weak self] in
                 guard let self = self else { return }
-
+                matcher.refreshStoredSites()
                 if let matchedSite = matcher.matchedSite(originalURL: siteURL) {
                     // checks if the site has woo
                     if matchedSite.isWooCommerceActive == false {
@@ -603,6 +603,8 @@ private extension AuthenticationManager {
         }
 
         let matcher = ULAccountMatcher(storageManager: storageManager)
+        matcher.refreshStoredSites()
+
         guard !site.isWPCom else {
             guard site.hasValidJetpack else {
                 // TODO: non-atomic site, do something

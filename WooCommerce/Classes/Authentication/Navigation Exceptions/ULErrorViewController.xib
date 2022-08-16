@@ -28,7 +28,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="P2D-aP-RUP">
-                    <rect key="frame" x="0.0" y="44" width="414" height="658"/>
+                    <rect key="frame" x="0.0" y="44" width="414" height="692"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="32" translatesAutoresizingMaskIntoConstraints="NO" id="jIt-xb-rrN">
                             <rect key="frame" x="34" y="0.0" width="346" height="508"/>
@@ -69,36 +69,24 @@
                     <viewLayoutGuide key="frameLayoutGuide" id="aGD-4D-8tI"/>
                 </scrollView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="10Z-y1-ZQ6" userLabel="Action Background View">
-                    <rect key="frame" x="0.0" y="702" width="414" height="160"/>
+                    <rect key="frame" x="0.0" y="736" width="414" height="126"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="mhI-fa-Yzw">
-                            <rect key="frame" x="20" y="20" width="374" height="120"/>
+                            <rect key="frame" x="20" y="20" width="374" height="86"/>
                             <subviews>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZHa-is-GJK" userLabel="secondary action button" customClass="NUXButton" customModule="WordPressAuthenticator">
-                                    <rect key="frame" x="0.0" y="0.0" width="374" height="50"/>
-                                    <constraints>
-                                        <constraint firstAttribute="height" constant="50" id="Gcd-Af-CS9"/>
-                                    </constraints>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZHa-is-GJK" userLabel="secondary action button">
+                                    <rect key="frame" x="0.0" y="0.0" width="374" height="33"/>
                                     <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                                     <state key="normal" title="Primary Action Button">
                                         <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </state>
-                                    <userDefinedRuntimeAttributes>
-                                        <userDefinedRuntimeAttribute type="boolean" keyPath="isPrimary" value="YES"/>
-                                    </userDefinedRuntimeAttributes>
                                 </button>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9Ap-Te-Fsi" userLabel="Action Button" customClass="NUXButton" customModule="WordPressAuthenticator">
-                                    <rect key="frame" x="0.0" y="70" width="374" height="50"/>
-                                    <constraints>
-                                        <constraint firstAttribute="height" constant="50" id="ju1-aE-m26"/>
-                                    </constraints>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9Ap-Te-Fsi" userLabel="Action Button">
+                                    <rect key="frame" x="0.0" y="53" width="374" height="33"/>
                                     <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                                     <state key="normal" title="Secondary Action Button">
                                         <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </state>
-                                    <userDefinedRuntimeAttributes>
-                                        <userDefinedRuntimeAttribute type="boolean" keyPath="isPrimary" value="NO"/>
-                                    </userDefinedRuntimeAttributes>
                                 </button>
                             </subviews>
                         </stackView>

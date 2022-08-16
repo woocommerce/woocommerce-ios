@@ -13,8 +13,8 @@ final class ULErrorViewController: UIViewController {
 
     /// Contains a vertical stack of the image, error message, and extra info button by default.
     @IBOutlet private weak var contentStackView: UIStackView!
-    @IBOutlet private weak var primaryButton: NUXButton!
-    @IBOutlet private weak var secondaryButton: NUXButton!
+    @IBOutlet private weak var primaryButton: UIButton!
+    @IBOutlet private weak var secondaryButton: UIButton!
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var errorMessage: UILabel!
     @IBOutlet private weak var extraInfoButton: UIButton!
@@ -110,7 +110,7 @@ private extension ULErrorViewController {
     }
 
     func configurePrimaryButton() {
-        primaryButton.isPrimary = true
+        primaryButton.applyPrimaryButtonStyle()
         primaryButton.isHidden = viewModel.isPrimaryButtonHidden
         primaryButton.setTitle(viewModel.primaryButtonTitle, for: .normal)
         primaryButton.on(.touchUpInside) { [weak self] _ in
@@ -119,6 +119,8 @@ private extension ULErrorViewController {
     }
 
     func configureSecondaryButton() {
+        secondaryButton.applySecondaryButtonStyle()
+        secondaryButton.isHidden = viewModel.isSecondaryButtonHidden
         secondaryButton.setTitle(viewModel.secondaryButtonTitle, for: .normal)
         secondaryButton.on(.touchUpInside) { [weak self] _ in
             self?.didTapSecondaryButton()

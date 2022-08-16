@@ -1048,6 +1048,8 @@ lane :test_without_building do |options|
     UI.user_error!("Unable to find .xctestrun file at #{xctestrun_path}")
   end
 
+  inject_buildkite_analytics_environment(xctestrun_path: xctestrun_path) if buildkite_ci?
+
   run_tests(
     workspace: 'WooCommerce.xcworkspace',
     scheme: TEST_SCHEME,

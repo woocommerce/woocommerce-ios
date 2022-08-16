@@ -71,7 +71,7 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// Closure to be invoked when a product variation is selected
     ///
-    private let onVariationSelected: ((ProductVariation) -> Void)?
+    private let onVariationSelected: ((ProductVariation, Product) -> Void)?
 
     /// Closure to be invoked when multiple selection is completed
     ///
@@ -146,7 +146,7 @@ final class ProductSelectorViewModel: ObservableObject {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          onProductSelected: ((Product) -> Void)? = nil,
-         onVariationSelected: ((ProductVariation) -> Void)? = nil) {
+         onVariationSelected: ((ProductVariation, Product) -> Void)? = nil) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores

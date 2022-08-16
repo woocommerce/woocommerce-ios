@@ -108,6 +108,10 @@ public struct WordPressAuthenticatorConfiguration {
     /// If disabled, password is shown by default with an option to send a magic link.
     let isWPComMagicLinkPreferredToPassword: Bool
 
+    /// If enabled, the alternative magic link action on the password screen is shown as a secondary call-to-action at the bottom.
+    /// If disabled, the alternative magic link action on the password screen is shown below the reset password action.
+    let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen: Bool
+
     /// Designated Initializer
     ///
     public init (wpcomClientId: String,
@@ -131,7 +135,8 @@ public struct WordPressAuthenticatorConfiguration {
                  continueWithSiteAddressFirst: Bool = false,
                  enableSiteCredentialsLoginForSelfHostedSites: Bool = false,
                  isWPComLoginRequiredForSiteCredentialsLogin: Bool = false,
-                 isWPComMagicLinkPreferredToPassword: Bool = false) {
+                 isWPComMagicLinkPreferredToPassword: Bool = false,
+                 isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen: Bool = false) {
 
         self.wpcomClientId = wpcomClientId
         self.wpcomSecret = wpcomSecret
@@ -155,5 +160,6 @@ public struct WordPressAuthenticatorConfiguration {
         self.enableSiteCredentialsLoginForSelfHostedSites = enableSiteCredentialsLoginForSelfHostedSites
         self.isWPComLoginRequiredForSiteCredentialsLogin = isWPComLoginRequiredForSiteCredentialsLogin
         self.isWPComMagicLinkPreferredToPassword = isWPComMagicLinkPreferredToPassword
+        self.isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen
     }
 }

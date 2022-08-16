@@ -39,30 +39,10 @@ final class PasswordCoordinator {
 }
 
 private extension PasswordCoordinator {
-    enum MagicLinkRequestError: Error {
-        case invalidEmail
-    }
-
     /// Makes the call to request a magic authentication link be emailed to the user.
     func requestMagicLink() async -> Result<Void, Error> {
-        await withCheckedContinuation { continuation in
-            loginFields.meta.emailMagicLinkSource = .login
-
-            let email = loginFields.username
-            guard email.isValidEmail() else {
-                return continuation.resume(returning: .failure(MagicLinkRequestError.invalidEmail))
-            }
-
-
-            let service = WordPressComAccountService()
-            service.requestAuthenticationLink(for: email,
-                                              jetpackLogin: loginFields.meta.jetpackLogin,
-                                              success: {
-                continuation.resume(returning: .success(()))
-            }, failure: { error in
-                continuation.resume(returning: .failure(error))
-            })
-        }
+        loginFields.meta.emailMagicLinkSource = .login
+        return await MagicLinkRequester().requestMagicLink(email: loginFields.username, jetpackLogin: loginFields.meta.jetpackLogin)
     }
 
     /// After a magic link is successfully sent, navigates the user to the requested screen.

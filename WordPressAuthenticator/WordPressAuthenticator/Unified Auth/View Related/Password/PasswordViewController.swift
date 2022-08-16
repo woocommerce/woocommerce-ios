@@ -9,12 +9,15 @@ class PasswordViewController: LoginViewController {
 
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
+    @IBOutlet private weak var secondaryButton: NUXButton!
 
     private weak var passwordField: UITextField?
     private var rows = [Row]()
     private var errorMessage: String?
     private var shouldChangeVoiceOverFocus: Bool = false
     private var loginLinkCell: TextLinkButtonTableViewCell?
+
+    private let isMagicLinkShownAsSecondaryAction: Bool = WordPressAuthenticator.shared.configuration.isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen
 
     /// Depending on where we're coming from, this screen needs to track a password challenge
     /// (if logging on with a Social account) or not (if logging in through WP.com).
@@ -51,6 +54,7 @@ class PasswordViewController: LoginViewController {
         defaultTableViewMargin = tableViewLeadingConstraint?.constant ?? 0
         setTableViewMargins(forWidth: view.frame.width)
 
+        configureLoginWithMagicLinkButton()
         localizePrimaryButton()
         registerTableViewCells()
         loadRows()
@@ -75,7 +79,7 @@ class PasswordViewController: LoginViewController {
                 tracker.set(step: .passwordChallenge)
             }
         } else {
-            tracker.set(flow: .loginWithPassword)
+            tracker.set(flow: isMagicLinkShownAsSecondaryAction ? .loginWithPasswordWithMagicLinkEmphasis : .loginWithPassword)
 
             if isMovingToParent {
                 tracker.track(step: .start)
@@ -174,7 +178,7 @@ class PasswordViewController: LoginViewController {
 
         // Is everything filled out?
         if !loginFields.validateFieldsPopulatedForSignin() {
-            let errorMsg = Constants.missingInfoError
+            let errorMsg = Localization.missingInfoError
             displayError(message: errorMsg, moveVoiceOverFocus: true)
 
             return
@@ -248,6 +252,68 @@ extension PasswordViewController: NUXKeyboardResponder {
 
 }
 
+// MARK: - Magic Link
+
+private extension PasswordViewController {
+    func configureLoginWithMagicLinkButton() {
+        if isMagicLinkShownAsSecondaryAction {
+            secondaryButton.setTitle(Localization.loginWithMagicLink, for: .normal)
+            secondaryButton.accessibilityIdentifier = AccessibilityIdentifier.loginWithMagicLink
+            secondaryButton.on(.touchUpInside) { [weak self] _ in
+                Task { @MainActor [weak self] in
+                    guard let self = self else { return }
+                    self.secondaryButton.isEnabled = false
+                    await self.loginWithMagicLink()
+                    self.secondaryButton.isEnabled = true
+                }
+            }
+        } else {
+            secondaryButton.isHidden = true
+        }
+    }
+
+    func loginWithMagicLink() async {
+        tracker.track(click: .requestMagicLink)
+        loginFields.meta.emailMagicLinkSource = .login
+
+        updateLoadingUI(isRequestingMagicLink: true)
+        let result = await MagicLinkRequester().requestMagicLink(email: loginFields.username, jetpackLogin: loginFields.meta.jetpackLogin)
+        switch result {
+        case .success:
+            didRequestAuthenticationLink()
+        case .failure(let error):
+            switch error {
+            case MagicLinkRequester.MagicLinkRequestError.invalidEmail:
+                DDLogError("Attempted to request authentication link, but the email address did not appear valid.")
+                let alert = buildInvalidEmailAlert()
+                present(alert, animated: true, completion: nil)
+            default:
+                tracker.track(failure: error.localizedDescription)
+                displayError(error as NSError, sourceTag: sourceTag)
+            }
+        }
+        updateLoadingUI(isRequestingMagicLink: false)
+    }
+
+    func updateLoadingUI(isRequestingMagicLink: Bool) {
+        if isRequestingMagicLink {
+            if isMagicLinkShownAsSecondaryAction {
+                submitButton?.isEnabled = false
+                secondaryButton.showActivityIndicator(true)
+            } else {
+                configureViewLoading(true)
+            }
+        } else {
+            if isMagicLinkShownAsSecondaryAction {
+                submitButton?.isEnabled = true
+                secondaryButton.showActivityIndicator(false)
+            } else {
+                configureViewLoading(false)
+            }
+        }
+    }
+}
+
 // MARK: - Table Management
 
 private extension PasswordViewController {
@@ -284,7 +350,10 @@ private extension PasswordViewController {
         }
 
         rows.append(.forgotPassword)
-        rows.append(.sendMagicLink)
+
+        if !isMagicLinkShownAsSecondaryAction {
+            rows.append(.sendMagicLink)
+        }
     }
 
     /// Configure cells.
@@ -394,7 +463,7 @@ private extension PasswordViewController {
         cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.getLoginLinkButtonTitle,
                              accessibilityTrait: .link,
                              showBorder: true)
-        cell.accessibilityIdentifier = "Get Login Link Button"
+        cell.accessibilityIdentifier = AccessibilityIdentifier.loginWithMagicLink
 
         // Save reference to the login link cell so it can be enabled/disabled.
         loginLinkCell = cell
@@ -406,8 +475,9 @@ private extension PasswordViewController {
 
             cell.enableButton(false)
 
-            self.tracker.track(click: .requestMagicLink)
-            self.requestAuthenticationLink()
+            Task { @MainActor [weak self] in
+                await self?.loginWithMagicLink()
+            }
         }
     }
 
@@ -441,40 +511,11 @@ private extension PasswordViewController {
             submitButton as Any
         ]
 
-        UIAccessibility.post(notification: .screenChanged, argument: passwordField)
-    }
-
-    /// Makes the call to request a magic authentication link be emailed to the user.
-    ///
-    func requestAuthenticationLink() {
-        loginFields.meta.emailMagicLinkSource = .login
-
-        let email = loginFields.username
-        guard email.isValidEmail() else {
-            DDLogError("Attempted to request authentication link, but the email address did not appear valid.")
-            let alert = buildInvalidEmailAlert()
-            present(alert, animated: true, completion: nil)
-            return
+        if isMagicLinkShownAsSecondaryAction {
+            view.accessibilityElements?.append(secondaryButton as Any)
         }
 
-        configureViewLoading(true)
-        let service = WordPressComAccountService()
-        service.requestAuthenticationLink(for: email,
-                                          jetpackLogin: loginFields.meta.jetpackLogin,
-                                          success: { [weak self] in
-                                            self?.didRequestAuthenticationLink()
-                                            self?.configureViewLoading(false)
-
-            }, failure: { [weak self] (error: Error) in
-                guard let self = self else {
-                    return
-                }
-
-                self.tracker.track(failure: error.localizedDescription)
-
-                self.displayError(error as NSError, sourceTag: self.sourceTag)
-                self.configureViewLoading(false)
-        })
+        UIAccessibility.post(notification: .screenChanged, argument: passwordField)
     }
 
     /// When a magic link successfully sends, navigate the user to the next step.
@@ -541,11 +582,19 @@ private extension PasswordViewController {
             }
         }
     }
+}
 
-    /// Constants
+private extension PasswordViewController {
+    /// Localization constants
     ///
-    struct Constants {
+    enum Localization {
         static let missingInfoError = NSLocalizedString("Please fill out all the fields",
                                                         comment: "A short prompt asking the user to properly fill out all login fields.")
+        static let loginWithMagicLink = NSLocalizedString("Or log in with magic link",
+                                                          comment: "The button title for a secondary call-to-action button on the password screen. When the user wants to try sending a magic link instead of entering a password.")
+    }
+
+    enum AccessibilityIdentifier {
+        static let loginWithMagicLink = "Get Login Link Button"
     }
 }

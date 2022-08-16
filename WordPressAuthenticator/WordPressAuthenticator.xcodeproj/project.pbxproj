@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		020BE74A23B0BD2E007FE54C /* WordPressAuthenticatorDisplayImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020BE74923B0BD2E007FE54C /* WordPressAuthenticatorDisplayImages.swift */; };
+		020DEF6428AA091100C85D51 /* MagicLinkRequester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020DEF6328AA091100C85D51 /* MagicLinkRequester.swift */; };
 		02A526CA28A3499C00FD1812 /* MagicLinkRequestedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A526C828A3499C00FD1812 /* MagicLinkRequestedViewController.swift */; };
 		02A526CB28A3499C00FD1812 /* MagicLinkRequestedViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02A526C928A3499C00FD1812 /* MagicLinkRequestedViewController.xib */; };
 		02A526CD28A3A23900FD1812 /* UIButton+Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A526CC28A3A23900FD1812 /* UIButton+Styles.swift */; };
@@ -213,6 +214,7 @@
 
 /* Begin PBXFileReference section */
 		020BE74923B0BD2E007FE54C /* WordPressAuthenticatorDisplayImages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressAuthenticatorDisplayImages.swift; sourceTree = "<group>"; };
+		020DEF6328AA091100C85D51 /* MagicLinkRequester.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicLinkRequester.swift; sourceTree = "<group>"; };
 		02A526C828A3499C00FD1812 /* MagicLinkRequestedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicLinkRequestedViewController.swift; sourceTree = "<group>"; };
 		02A526C928A3499C00FD1812 /* MagicLinkRequestedViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MagicLinkRequestedViewController.xib; sourceTree = "<group>"; };
 		02A526CC28A3A23900FD1812 /* UIButton+Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Styles.swift"; sourceTree = "<group>"; };
@@ -861,6 +863,7 @@
 				CE811D6824EDC14A00F4CCD6 /* LoginMagicLink.storyboard */,
 				02A526C828A3499C00FD1812 /* MagicLinkRequestedViewController.swift */,
 				02A526C928A3499C00FD1812 /* MagicLinkRequestedViewController.xib */,
+				020DEF6328AA091100C85D51 /* MagicLinkRequester.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -1272,6 +1275,7 @@
 				98C9195B2308E3DA00A90E12 /* AppleAuthenticator.swift in Sources */,
 				B56090F9208A533200399AE4 /* WordPressAuthenticator+Events.swift in Sources */,
 				CEDE0D93242011E000CB3345 /* NSObject+Helpers.swift in Sources */,
+				020DEF6428AA091100C85D51 /* MagicLinkRequester.swift in Sources */,
 				020BE74A23B0BD2E007FE54C /* WordPressAuthenticatorDisplayImages.swift in Sources */,
 				B560913A208A563800399AE4 /* LoginLinkRequestViewController.swift in Sources */,
 				B560910C208A54F800399AE4 /* WordPressComOAuthClientFacade.m in Sources */,

@@ -276,7 +276,7 @@ private extension PasswordViewController {
         tracker.track(click: .requestMagicLink)
         loginFields.meta.emailMagicLinkSource = .login
 
-        configureViewLoading(true)
+        updateLoadingUI(isRequestingMagicLink: true)
         let result = await MagicLinkRequester().requestMagicLink(email: loginFields.username, jetpackLogin: loginFields.meta.jetpackLogin)
         switch result {
         case .success:
@@ -292,7 +292,25 @@ private extension PasswordViewController {
                 displayError(error as NSError, sourceTag: sourceTag)
             }
         }
-        configureViewLoading(false)
+        updateLoadingUI(isRequestingMagicLink: false)
+    }
+
+    func updateLoadingUI(isRequestingMagicLink: Bool) {
+        if isRequestingMagicLink {
+            if isMagicLinkShownAsSecondaryAction {
+                submitButton?.isEnabled = false
+                secondaryButton.showActivityIndicator(true)
+            } else {
+                configureViewLoading(true)
+            }
+        } else {
+            if isMagicLinkShownAsSecondaryAction {
+                submitButton?.isEnabled = true
+                secondaryButton.showActivityIndicator(false)
+            } else {
+                configureViewLoading(false)
+            }
+        }
     }
 }
 

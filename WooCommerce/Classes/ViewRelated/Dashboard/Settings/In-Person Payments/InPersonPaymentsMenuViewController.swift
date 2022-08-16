@@ -276,7 +276,7 @@ extension InPersonPaymentsMenuViewController {
         guard cardPresentPaymentsOnboardingUseCase.state.isCompleted else {
             return
         }
-        
+
         ServiceLocator.analytics.track(.paymentsMenuManageCardReadersTapped)
         guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: CardReaderSettingsPresentingViewController.self) else {
             fatalError("Cannot instantiate `CardReaderSettingsPresentingViewController` from Dashboard storyboard")

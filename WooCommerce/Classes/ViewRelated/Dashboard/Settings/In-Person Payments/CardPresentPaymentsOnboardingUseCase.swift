@@ -302,6 +302,9 @@ private extension CardPresentPaymentsOnboardingUseCase {
         guard !isStripeAccountRejected(account: account) else {
             return .stripeAccountRejected(plugin: plugin)
         }
+        guard isCodSetUp() else {
+            return .codPaymentGatewayNotSetUp
+        }
         guard !isInUndefinedState(account: account) else {
             return .genericError
         }
@@ -405,6 +408,16 @@ private extension CardPresentPaymentsOnboardingUseCase {
             || account.wcpayStatus == .rejectedListed
             || account.wcpayStatus == .rejectedTermsOfService
             || account.wcpayStatus == .rejectedOther
+    }
+
+    func isCodSetUp() -> Bool {
+        guard let siteID = siteID,
+              let codGateway = storageManager.viewStorage.loadPaymentGateway(siteID: siteID, gatewayID: "cod")?.toReadOnly()
+        else {
+            return false
+        }
+
+        return codGateway.enabled
     }
 
     func isInUndefinedState(account: PaymentGatewayAccount) -> Bool {

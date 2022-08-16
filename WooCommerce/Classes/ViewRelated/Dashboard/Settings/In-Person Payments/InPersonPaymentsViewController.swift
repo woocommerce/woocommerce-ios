@@ -76,6 +76,8 @@ struct InPersonPaymentsView: View {
                 InPersonPaymentsStripeAccountReview()
             case .stripeAccountRejected:
                 InPersonPaymentsStripeRejected()
+            case .codPaymentGatewayNotSetUp:
+                InPersonPaymentsCodPaymentGatewayNotSetUp()
             case .completed(let pluginState):
                 if viewModel.showMenuOnCompletion {
                     InPersonPaymentsMenu(

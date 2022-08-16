@@ -358,8 +358,9 @@ private extension StorePickerViewController {
         switch viewModel.state {
         case .empty:
             updateActionButtonAndTableState(animating: false, enabled: false)
+            enterSiteAddressButton.isHidden = false
         default:
-            hideEnterSiteAddressButton()
+            enterSiteAddressButton.isHidden = true
         }
 
         tableView.separatorStyle = viewModel.separatorStyle
@@ -505,12 +506,6 @@ private extension StorePickerViewController {
     func hideActionButton() {
         actionButton.isHidden = true
         actionButton.showActivityIndicator(false)
-    }
-
-    /// Helper function that hides the "Enter a Site Address" button
-    /// upon finding at least one WC site or non-Woo site associated with the WP login.
-    func hideEnterSiteAddressButton() {
-        enterSiteAddressButton.isHidden = true
     }
 
     /// Displays a generic error view as a modal with options to see troubleshooting tips and to contact support.

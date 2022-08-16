@@ -309,6 +309,8 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         onCompletion(authenticationResult)
     }
 
+    /// Displays appropriate error based on the input `siteInfo`.
+    ///
     func troubleshootSite(_ siteInfo: WordPressComSiteInfo?, in navigationController: UINavigationController?) {
         guard let site = siteInfo, let navigationController = navigationController else {
             DDLogWarn("⚠️ Missing site info or navigation controller when troubleshooting site")

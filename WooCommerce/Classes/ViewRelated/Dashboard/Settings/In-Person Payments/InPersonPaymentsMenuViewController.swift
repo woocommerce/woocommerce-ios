@@ -216,7 +216,7 @@ private extension InPersonPaymentsMenuViewController {
         let cellShouldBeEnabled = cardPresentPaymentsOnboardingUseCase.state.isCompleted
         cell.imageView?.tintColor = .text
         cell.accessoryType = cellShouldBeEnabled ? .disclosureIndicator : .none
-        cell.selectionStyle = .default
+        cell.selectionStyle = cellShouldBeEnabled ? .default : .none
         cell.configure(image: .creditCardIcon, text: Localization.manageCardReader)
 
         updateEnabledState(in: cell, shouldBeEnabled: cellShouldBeEnabled)
@@ -273,6 +273,10 @@ extension InPersonPaymentsMenuViewController {
     }
 
     func manageCardReaderWasPressed() {
+        guard cardPresentPaymentsOnboardingUseCase.state.isCompleted else {
+            return
+        }
+        
         ServiceLocator.analytics.track(.paymentsMenuManageCardReadersTapped)
         guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: CardReaderSettingsPresentingViewController.self) else {
             fatalError("Cannot instantiate `CardReaderSettingsPresentingViewController` from Dashboard storyboard")

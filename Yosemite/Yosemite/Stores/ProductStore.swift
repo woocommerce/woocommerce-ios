@@ -141,8 +141,7 @@ private extension ProductStore {
                                  excludedProductIDs: excludedProductIDs) { [weak self] result in
             switch result {
             case .success(let products):
-                //let shouldDeleteExistingProducts = pageNumber == Default.firstPageNumber
-                let shouldDeleteExistingProducts = false
+                let shouldDeleteExistingProducts = pageNumber == Default.firstPageNumber
                 self?.upsertSearchResultsInBackground(siteID: siteID,
                                                       keyword: keyword,
                                                       readOnlyProducts: products,

@@ -92,7 +92,7 @@ DEPENDENCIES:
   - Sourcery (~> 1.0.3)
   - StripeTerminal (~> 2.7)
   - WordPress-Editor-iOS (~> 1.11.0)
-  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, commit `2f8395f1b4994d930e673f81cb36833840539bf2`)
+  - WordPressAuthenticator (~> 2.2.1-beta.1)
   - WordPressKit (~> 4.49.0)
   - WordPressShared (~> 1.15)
   - WordPressUI (~> 1.12.5)
@@ -102,6 +102,8 @@ DEPENDENCIES:
   - ZendeskSupportSDK (~> 5.0)
 
 SPEC REPOS:
+  https://github.com/wordpress-mobile/cocoapods-specs.git:
+    - WordPressAuthenticator
   trunk:
     - Alamofire
     - AppAuth
@@ -139,16 +141,6 @@ SPEC REPOS:
     - ZendeskSupportProvidersSDK
     - ZendeskSupportSDK
 
-EXTERNAL SOURCES:
-  WordPressAuthenticator:
-    :commit: 2f8395f1b4994d930e673f81cb36833840539bf2
-    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
-
-CHECKOUT OPTIONS:
-  WordPressAuthenticator:
-    :commit: 2f8395f1b4994d930e673f81cb36833840539bf2
-    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
-
 SPEC CHECKSUMS:
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
   AppAuth: 80317d99ac7ff2801a2f18ff86b48cd315ed465d
@@ -171,7 +163,7 @@ SPEC CHECKSUMS:
   UIDeviceIdentifier: af4e11e25a2ea670078e2bd677bb0e8144f9f063
   WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348
   WordPress-Editor-iOS: 304098424f1051cb271546c99f906aac296b1b81
-  WordPressAuthenticator: b8fe1d0de46f4cf431a211e296f3bbdf617f0811
+  WordPressAuthenticator: a1cfe16300440d628dc26b3215d1c6372c4ecd5e
   WordPressKit: 96deb6ba37ea5eaec4ddcaa53eca04d653246152
   WordPressShared: 5477f179c7fe03b5d574f91adda66f67d131827e
   WordPressUI: c5be816f6c7b3392224ac21de9e521e89fa108ac
@@ -187,6 +179,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2bdf8544f7cd0fd4c002546f5704b813845beb2a
   ZendeskSupportSDK: 3a8e508ab1d9dd22dc038df6c694466414e037ba
 
-PODFILE CHECKSUM: 3e46eb843172b738f405b0866d0d4c0ecfa86e4e
+PODFILE CHECKSUM: 203984094d25f40842032fe99d4d8f575ca164ea
 
 COCOAPODS: 1.11.2

@@ -45,7 +45,9 @@ final class JetpackSetupWebViewModel: PluginSetupWebViewModel {
         switch url {
         // When the web view is about to navigate to the redirect URL for mobile, we can assume that the setup has completed.
         case Constants.mobileRedirectURL:
-            handleSetupCompletion()
+            DispatchQueue.main.async { [weak self] in
+                self?.handleSetupCompletion()
+            }
             return .cancel
         default:
             if let match = JetpackSetupWebStep.matchingStep(for: url) {

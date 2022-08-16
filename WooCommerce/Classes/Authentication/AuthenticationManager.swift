@@ -596,6 +596,8 @@ private extension AuthenticationManager {
         return noWooUI
     }
 
+    /// Appropriate error to display for a site when entered from the empty store picker
+    ///
     func errorUI(for site: WordPressComSiteInfo, in navigationController: UINavigationController) -> UIViewController {
         guard site.isWP else {
             let viewModel = NotWPErrorViewModel()
@@ -606,10 +608,7 @@ private extension AuthenticationManager {
         matcher.refreshStoredSites()
 
         guard !site.isWPCom else {
-            guard site.hasValidJetpack else {
-                // TODO: non-atomic site, do something
-                return UIViewController()
-            }
+            // The site doesn't belong to the current account since it was not included in the site picker.
             return accountMismatchUI(for: site.url, with: matcher)
         }
 

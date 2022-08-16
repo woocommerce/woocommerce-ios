@@ -312,10 +312,10 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(topController is ULErrorViewController)
     }
 
-    func test_troubleshootSite_displays_account_mismatch_error_if_site_is_atomic() {
+    func test_troubleshootSite_displays_account_mismatch_error_if_site_is_wpcom() {
         // Given
         let navigationController = UINavigationController()
-        let siteInfo = siteInfo(exists: true, hasWordPress: true, isWordPressCom: true, hasJetpack: true)
+        let siteInfo = siteInfo(exists: true, hasWordPress: true, isWordPressCom: true)
         let storage = MockStorageManager()
         let manager = AuthenticationManager(storageManager: storage)
 

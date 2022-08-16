@@ -10,10 +10,10 @@ struct InPersonPaymentsDeactivateStripeView: View {
         ScrollableVStack {
             Spacer()
 
-            InPersonPaymentsOnboardingError.MainContent(
+            InPersonPaymentsOnboardingErrorMainContentView(
                 title: Localization.title,
                 message: showSetupPluginsButton ? Localization.buttonMessage : Localization.message,
-                image: InPersonPaymentsOnboardingError.ImageInfo(
+                image: InPersonPaymentsOnboardingErrorMainContentView.ImageInfo(
                     image: .paymentErrorImage,
                     height: Constants.height
                 ),

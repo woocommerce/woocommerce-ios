@@ -16,10 +16,10 @@ struct InPersonPaymentsPluginConflictShopManager: View {
         ScrollableVStack {
             Spacer()
 
-            InPersonPaymentsOnboardingError.MainContent(
+            InPersonPaymentsOnboardingErrorMainContentView(
                 title: Localization.title,
                 message: Localization.message,
-                image: InPersonPaymentsOnboardingError.ImageInfo(
+                image: InPersonPaymentsOnboardingErrorMainContentView.ImageInfo(
                     image: .paymentErrorImage,
                     height: 108.0
                 ),

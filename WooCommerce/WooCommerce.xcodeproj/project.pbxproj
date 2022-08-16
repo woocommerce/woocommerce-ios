@@ -431,6 +431,7 @@
 		02FE1B9F287F51F400EC03B3 /* LoginOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FE1B9E287F51F400EC03B3 /* LoginOnboardingViewController.swift */; };
 		02FE89C7231FAA4100E85EF8 /* MainTabBarControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FE89C6231FAA4100E85EF8 /* MainTabBarControllerTests.swift */; };
 		0313651128AB81B100EEE571 /* InPersonPaymentsCodPaymentGatewayNotSetUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0313651028AB81B100EEE571 /* InPersonPaymentsCodPaymentGatewayNotSetUp.swift */; };
+		0313651328ABCB2D00EEE571 /* InPersonPaymentsOnboardingErrorMainContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0313651228ABCB2D00EEE571 /* InPersonPaymentsOnboardingErrorMainContentView.swift */; };
 		031B10E3274FE2AE007390BA /* CardPresentModalConnectionFailedUpdateAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031B10E2274FE2AE007390BA /* CardPresentModalConnectionFailedUpdateAddress.swift */; };
 		035C6DEB273EA12D00F70406 /* SoftwareUpdateTypeProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035C6DEA273EA12D00F70406 /* SoftwareUpdateTypeProperty.swift */; };
 		035F2308275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035F2307275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift */; };
@@ -2264,6 +2265,7 @@
 		02FE1B9E287F51F400EC03B3 /* LoginOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginOnboardingViewController.swift; sourceTree = "<group>"; };
 		02FE89C6231FAA4100E85EF8 /* MainTabBarControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarControllerTests.swift; sourceTree = "<group>"; };
 		0313651028AB81B100EEE571 /* InPersonPaymentsCodPaymentGatewayNotSetUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCodPaymentGatewayNotSetUp.swift; sourceTree = "<group>"; };
+		0313651228ABCB2D00EEE571 /* InPersonPaymentsOnboardingErrorMainContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsOnboardingErrorMainContentView.swift; sourceTree = "<group>"; };
 		03180BE52763AA8F00B938A8 /* Woo-Release-macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Woo-Release-macOS.entitlements"; sourceTree = "<group>"; };
 		03180BE62763AA8F00B938A8 /* Woo-Alpha-macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Woo-Alpha-macOS.entitlements"; sourceTree = "<group>"; };
 		03180BE72763AA9000B938A8 /* Woo-Debug-macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Woo-Debug-macOS.entitlements"; sourceTree = "<group>"; };
@@ -8211,6 +8213,7 @@
 				D89FAF4D2795BDFF00D8DA66 /* InPersonPaymentsPluginConflictAdminView.swift */,
 				319A625E27ACAD4800BC96C3 /* InPersonPaymentsPluginConflictShopManagerView.swift */,
 				ABC35A4B736A0B2D8348DD08 /* InPersonPaymentsOnboardingError.swift */,
+				0313651228ABCB2D00EEE571 /* InPersonPaymentsOnboardingErrorMainContentView.swift */,
 				B979A9B9282D62A500EBB383 /* InPersonPaymentsDeactivateStripeView.swift */,
 				0313651028AB81B100EEE571 /* InPersonPaymentsCodPaymentGatewayNotSetUp.swift */,
 			);
@@ -9277,6 +9280,7 @@
 				0211259F2578DE310075AD2A /* ShippingLabelPrintingStepView.swift in Sources */,
 				B58B4AB22108F01700076FDD /* NoticeView.swift in Sources */,
 				74B5713621CD7604008F9B8E /* SharingHelper.swift in Sources */,
+				0313651328ABCB2D00EEE571 /* InPersonPaymentsOnboardingErrorMainContentView.swift in Sources */,
 				260C315E2523CC4000157BC2 /* RefundProductsTotalViewModel.swift in Sources */,
 				0286B27D23C7051F003D784B /* ProductImagesViewController.swift in Sources */,
 				4569317F2653E82B009ED69D /* ShippingLabelCarriers.swift in Sources */,

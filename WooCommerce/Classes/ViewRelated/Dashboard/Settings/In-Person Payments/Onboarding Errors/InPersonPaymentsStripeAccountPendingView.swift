@@ -7,7 +7,7 @@ struct InPersonPaymentsStripeAccountPending: View {
         InPersonPaymentsOnboardingError(
             title: Localization.title,
             message: message,
-            image: InPersonPaymentsOnboardingError.ImageInfo(
+            image: InPersonPaymentsOnboardingErrorMainContentView.ImageInfo(
                 image: .paymentErrorImage,
                 height: 180.0
             ),

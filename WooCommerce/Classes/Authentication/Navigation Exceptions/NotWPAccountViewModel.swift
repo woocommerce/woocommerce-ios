@@ -5,8 +5,9 @@ import WordPressUI
 
 
 /// Configuration and actions for an ULErrorViewController, modeling
-/// an error when user attempts to log in with an invalid WordPressAccount
-struct NotWPAccountViewModel: ULErrorViewModel {
+/// an error when user attempts to log in with an invalid WordPress.com account
+/// (e.g. when the email is not linked to a WordPress.com account).
+final class NotWPAccountViewModel: ULErrorViewModel {
     // MARK: - Data and configuration
     let image: UIImage = .loginNoWordPressError
 
@@ -14,11 +15,35 @@ struct NotWPAccountViewModel: ULErrorViewModel {
 
     let isAuxiliaryButtonHidden = false
 
-    let auxiliaryButtonTitle = Localization.needHelpFindingEmail
+    let auxiliaryButtonTitle = AuthenticationConstants.whatIsWPComLinkTitle
 
     let primaryButtonTitle = Localization.primaryButtonTitle
+    let isPrimaryButtonHidden: Bool
 
     let secondaryButtonTitle = Localization.secondaryButtonTitle
+
+    private weak var viewController: UIViewController?
+
+    private(set) lazy var auxiliaryView: UIView? = {
+        let button = UIButton(type: .custom)
+        button.applyLinkButtonStyle(enableMultipleLines: true)
+        button.titleLabel?.textAlignment = .center
+        button.setTitle(Localization.needHelpFindingEmail, for: .normal)
+        button.on(.touchUpInside) { [weak self] _ in
+            self?.needHelpFindingEmailButtonTapped()
+        }
+        return button
+    }()
+
+    init(error: Error) {
+        if let error = error as? SignInError,
+           case let .invalidWPComEmail(source) = error,
+           source == .wpComSiteAddress {
+            isPrimaryButtonHidden = true
+        } else {
+            isPrimaryButtonHidden = false
+        }
+    }
 
     // MARK: - Actions
     func didTapPrimaryButton(in viewController: UIViewController?) {
@@ -32,17 +57,30 @@ struct NotWPAccountViewModel: ULErrorViewModel {
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {
+        whatIsWPComButtonTapped()
+    }
+
+    func viewDidLoad(_ viewController: UIViewController?) {
+        self.viewController = viewController
+    }
+}
+
+private extension NotWPAccountViewModel {
+    func whatIsWPComButtonTapped() {
+        guard let viewController = viewController else {
+            return
+        }
+        ServiceLocator.analytics.track(.whatIsWPComOnInvalidEmailScreenTapped)
+        WebviewHelper.launch(WooConstants.URLs.whatIsWPComURL.asURL(), with: viewController)
+    }
+
+    func needHelpFindingEmailButtonTapped() {
         let fancyAlert = FancyAlertViewController.makeNeedHelpFindingEmailAlertController()
         fancyAlert.modalPresentationStyle = .custom
         fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
         viewController?.present(fancyAlert, animated: true)
     }
-
-    func viewDidLoad() {
-        // NO-OP
-    }
 }
-
 
 // MARK: - Private data structures
 private extension NotWPAccountViewModel {

@@ -1,4 +1,5 @@
 import XCTest
+import enum WordPressAuthenticator.SignInError
 @testable import WooCommerce
 
 final class NotWPAccountViewModelTests: XCTestCase {
@@ -45,7 +46,7 @@ final class NotWPAccountViewModelTests: XCTestCase {
         let auxiliaryButtonTitle = viewModel.auxiliaryButtonTitle
 
         // Then
-        XCTAssertEqual(auxiliaryButtonTitle, Expectations.needHelpFindingEmail)
+        XCTAssertEqual(auxiliaryButtonTitle, AuthenticationConstants.whatIsWPComLinkTitle)
     }
 
     func test_viewmodel_provides_expected_title_for_primary_button() {
@@ -58,6 +59,32 @@ final class NotWPAccountViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(primaryButtonTitle, Expectations.primaryButtonTitle)
     }
+
+    // MARK: - `isPrimaryButtonHidden`
+
+    func test_viewmodel_primary_button_is_hidden_for_invalidWPComEmail_from_site_address_error() {
+        // Given
+        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpComSiteAddress))
+
+        // When
+        let isPrimaryButtonHidden = viewModel.isPrimaryButtonHidden
+
+        // Then
+        XCTAssertTrue(isPrimaryButtonHidden)
+    }
+
+    func test_viewmodel_primary_button_is_not_hidden_for_invalidWPComEmail_from_wpCom_error() {
+        // Given
+        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom))
+
+        // When
+        let isPrimaryButtonHidden = viewModel.isPrimaryButtonHidden
+
+        // Then
+        XCTAssertFalse(isPrimaryButtonHidden)
+    }
+
+    // MARK: - `secondaryButtonTitle`
 
     func test_viewmodel_provides_expected_title_for_secondary_button() {
         // Given
@@ -79,10 +106,6 @@ private extension NotWPAccountViewModelTests {
                                                     comment: "Message explaining that an email is not associated with a WordPress.com account. "
                                                         + "Presented when logging in with an email address that is not a WordPress.com account")
 
-        static let needHelpFindingEmail = NSLocalizedString("Need help finding the connected email?",
-                                                     comment: "Button linking to webview that explains what Jetpack is"
-                                                        + "Presented when logging in with a site address that does not have a valid Jetpack installation")
-
         static let primaryButtonTitle = NSLocalizedString("Enter Your Store Address",
                                                           comment: "Action button linking to instructions for enter another store."
                                                           + "Presented when logging in with an email address that is not a WordPress.com account")
@@ -90,5 +113,11 @@ private extension NotWPAccountViewModelTests {
         static let secondaryButtonTitle = NSLocalizedString("Log In With Another Account",
                                                             comment: "Action button that will restart the login flow."
                                                             + "Presented when logging in with an email address that does not match a WordPress.com account")
+    }
+}
+
+private extension NotWPAccountViewModel {
+    convenience init() {
+        self.init(error: SignInError.invalidWPComEmail(source: .wpCom))
     }
 }

@@ -11,6 +11,8 @@ final class ULErrorViewController: UIViewController {
     /// and support for user actions
     private let viewModel: ULErrorViewModel
 
+    /// Contains a vertical stack of the image, error message, and extra info button by default.
+    @IBOutlet private weak var contentStackView: UIStackView!
     @IBOutlet private weak var primaryButton: NUXButton!
     @IBOutlet private weak var secondaryButton: NUXButton!
     @IBOutlet private weak var imageView: UIImageView!
@@ -45,6 +47,7 @@ final class ULErrorViewController: UIViewController {
         configureImageView()
         configureErrorMessage()
         configureExtraInfoButton()
+        configureAuxiliaryView()
 
         configurePrimaryButton()
         configureSecondaryButton()
@@ -53,7 +56,7 @@ final class ULErrorViewController: UIViewController {
 
         setUnifiedMargins(forWidth: view.frame.width)
 
-        viewModel.viewDidLoad()
+        viewModel.viewDidLoad(self)
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -97,6 +100,13 @@ private extension ULErrorViewController {
         extraInfoButton.on(.touchUpInside) { [weak self] _ in
             self?.didTapAuxiliaryButton()
         }
+    }
+
+    func configureAuxiliaryView() {
+        guard let auxiliaryView = viewModel.auxiliaryView else {
+            return
+        }
+        contentStackView.addArrangedSubview(auxiliaryView)
     }
 
     func configurePrimaryButton() {

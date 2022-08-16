@@ -113,4 +113,8 @@ public enum FeatureFlag: Int {
     /// Whether to prefer magic link to password in the login flow
     ///
     case loginMagicLinkEmphasis
+
+    /// Whether to include the Cash on Delivery enable step in In-Person Payment onboarding
+    ///
+    case promptToEnableCodInIppOnboarding
 }

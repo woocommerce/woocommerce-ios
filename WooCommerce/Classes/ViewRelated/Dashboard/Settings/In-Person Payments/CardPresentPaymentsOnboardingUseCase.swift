@@ -302,8 +302,10 @@ private extension CardPresentPaymentsOnboardingUseCase {
         guard !isStripeAccountRejected(account: account) else {
             return .stripeAccountRejected(plugin: plugin)
         }
-        guard isCodSetUp() else {
-            return .codPaymentGatewayNotSetUp
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.promptToEnableCodInIppOnboarding) {
+            guard isCodSetUp() else {
+                return .codPaymentGatewayNotSetUp
+            }
         }
         guard !isInUndefinedState(account: account) else {
             return .genericError

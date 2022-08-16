@@ -310,6 +310,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     }
 
     /// Displays appropriate error based on the input `siteInfo`.
+    /// Data flow following ZwYqDGHdenvYZoPHXZ1SOf-fi
     ///
     func troubleshootSite(_ siteInfo: WordPressComSiteInfo?, in navigationController: UINavigationController?) {
         guard let site = siteInfo, let navigationController = navigationController else {
@@ -317,26 +318,8 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             return
         }
 
-        let matcher = ULAccountMatcher(storageManager: storageManager)
-        guard !site.isWPCom else {
-            guard site.hasValidJetpack else {
-                // TODO: non-atomic site, do something
-                return
-            }
-            let controller = accountMismatchUI(for: site.url, with: matcher)
-            navigationController.show(controller, sender: nil)
-            return
-        }
-
-        /// Jetpack is required. Present an error if we don't detect a valid installation.
-        guard site.hasValidJetpack == true else {
-            let jetpackUI = jetpackErrorUI(for: site.url, with: matcher, in: navigationController)
-            navigationController.show(jetpackUI, sender: nil)
-            return
-        }
-
-        let controller = accountMismatchUI(for: site.url, with: matcher)
-        navigationController.show(controller, sender: nil)
+        let errorUI = errorUI(for: site, in: navigationController)
+        navigationController.show(errorUI, sender: nil)
     }
 
     /// Presents the Login Epilogue, in the specified NavigationController.
@@ -610,6 +593,29 @@ private extension AuthenticationManager {
         })
         let noWooUI = ULErrorViewController(viewModel: viewModel)
         return noWooUI
+    }
+
+    func errorUI(for site: WordPressComSiteInfo, in navigationController: UINavigationController) -> UIViewController {
+        guard site.isWP else {
+            let viewModel = NotWPErrorViewModel()
+            return ULErrorViewController(viewModel: viewModel)
+        }
+
+        let matcher = ULAccountMatcher(storageManager: storageManager)
+        guard !site.isWPCom else {
+            guard site.hasValidJetpack else {
+                // TODO: non-atomic site, do something
+                return UIViewController()
+            }
+            return accountMismatchUI(for: site.url, with: matcher)
+        }
+
+        /// Jetpack is required. Present an error if we don't detect a valid installation.
+        guard site.hasValidJetpack == true else {
+            return jetpackErrorUI(for: site.url, with: matcher, in: navigationController)
+        }
+
+        return accountMismatchUI(for: site.url, with: matcher)
     }
 }
 

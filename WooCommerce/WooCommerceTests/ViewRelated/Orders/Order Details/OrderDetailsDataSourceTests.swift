@@ -81,6 +81,10 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         dataSource.configureResultsControllers { }
 
+        // Temp tableview to test refunds rows configuration
+        let tableView = UITableView()
+        tableView.registerNib(for: TwoColumnHeadlineFootnoteTableViewCell.self)
+
         // When
         dataSource.reloadSections()
 
@@ -93,6 +97,10 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         }
 
         // Then
+        // Each `refund` row should be initialized without any issues
+        for refundIndexPath in refundsRowsIndexes {
+            let _ = dataSource.tableView(tableView, cellForRowAt: refundIndexPath)
+        }
         // Each `refund` row should have `Refund` object accessible for its IndexPath
         let expectedRefunds: [Refund] = try refundsRowsIndexes.map { try XCTUnwrap(dataSource.refund(at: $0)) }
         XCTAssertEqual(expectedRefunds.count, refundsRowsIndexes.count)

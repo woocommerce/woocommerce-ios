@@ -11,8 +11,10 @@ final class ULErrorViewController: UIViewController {
     /// and support for user actions
     private let viewModel: ULErrorViewModel
 
-    @IBOutlet private weak var primaryButton: NUXButton!
-    @IBOutlet private weak var secondaryButton: NUXButton!
+    /// Contains a vertical stack of the image, error message, and extra info button by default.
+    @IBOutlet private weak var contentStackView: UIStackView!
+    @IBOutlet private weak var primaryButton: UIButton!
+    @IBOutlet private weak var secondaryButton: UIButton!
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var errorMessage: UILabel!
     @IBOutlet private weak var extraInfoButton: UIButton!
@@ -45,6 +47,7 @@ final class ULErrorViewController: UIViewController {
         configureImageView()
         configureErrorMessage()
         configureExtraInfoButton()
+        configureAuxiliaryView()
 
         configurePrimaryButton()
         configureSecondaryButton()
@@ -53,7 +56,7 @@ final class ULErrorViewController: UIViewController {
 
         setUnifiedMargins(forWidth: view.frame.width)
 
-        viewModel.viewDidLoad()
+        viewModel.viewDidLoad(self)
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -99,8 +102,15 @@ private extension ULErrorViewController {
         }
     }
 
+    func configureAuxiliaryView() {
+        guard let auxiliaryView = viewModel.auxiliaryView else {
+            return
+        }
+        contentStackView.addArrangedSubview(auxiliaryView)
+    }
+
     func configurePrimaryButton() {
-        primaryButton.isPrimary = true
+        primaryButton.applyPrimaryButtonStyle()
         primaryButton.isHidden = viewModel.isPrimaryButtonHidden
         primaryButton.setTitle(viewModel.primaryButtonTitle, for: .normal)
         primaryButton.on(.touchUpInside) { [weak self] _ in
@@ -109,6 +119,8 @@ private extension ULErrorViewController {
     }
 
     func configureSecondaryButton() {
+        secondaryButton.applySecondaryButtonStyle()
+        secondaryButton.isHidden = viewModel.isSecondaryButtonHidden
         secondaryButton.setTitle(viewModel.secondaryButtonTitle, for: .normal)
         secondaryButton.on(.touchUpInside) { [weak self] _ in
             self?.didTapSecondaryButton()

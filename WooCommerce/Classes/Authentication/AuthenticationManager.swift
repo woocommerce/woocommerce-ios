@@ -552,7 +552,7 @@ extension AuthenticationManager {
 
         switch wooAuthError {
         case .emailDoesNotMatchWPAccount, .invalidEmailFromWPComLogin, .invalidEmailFromSiteAddressLogin:
-            return NotWPAccountViewModel()
+            return NotWPAccountViewModel(error: error)
         case .notWPSite,
              .notValidAddress:
             return NotWPErrorViewModel()

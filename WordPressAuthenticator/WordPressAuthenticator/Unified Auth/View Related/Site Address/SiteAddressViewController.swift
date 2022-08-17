@@ -675,7 +675,7 @@ private extension SiteAddressViewController {
             "Invalid URL. Please double-check and try again.",
             comment: "Error message shown when the input URL is invalid.")
         static let nonExistentSiteError = NSLocalizedString(
-            "The site at this address does not exist. Please double-check and try again.",
+            "Cannot access the site at this address. Please double-check and try again.",
             comment: "Error message shown when the input URL does not point to an existing site.")
     }
 }

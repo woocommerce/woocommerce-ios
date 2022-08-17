@@ -268,9 +268,9 @@ import WordPressKit
 
     /// Returns a Site Address view controller and triggers the protocol method `troubleshootSite` after fetching the site info.
     ///
-    @objc public class func siteAddressInputUIForTroubleshooting() -> UIViewController? {
+    @objc public class func siteDiscoveryUI() -> UIViewController? {
         return SiteAddressViewController.instantiate(from: .siteAddress) { coder in
-            SiteAddressViewController(needsTroubleshooting: true, coder: coder)
+            SiteAddressViewController(isSiteDiscovery: true, coder: coder)
         }
     }
 

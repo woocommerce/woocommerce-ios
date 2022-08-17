@@ -30,15 +30,15 @@ final class SiteAddressViewController: LoginViewController {
 
     /// Whether the protocol method `troubleshootSite` should be triggered after site info is fetched.
     ///
-    private let needsTroubleshooting: Bool
+    private let isSiteDiscovery: Bool
 
-    init?(needsTroubleshooting: Bool, coder: NSCoder) {
-        self.needsTroubleshooting = needsTroubleshooting
+    init?(isSiteDiscovery: Bool, coder: NSCoder) {
+        self.isSiteDiscovery = isSiteDiscovery
         super.init(coder: coder)
     }
 
     required init?(coder: NSCoder) {
-        self.needsTroubleshooting = false
+        self.isSiteDiscovery = false
         super.init(coder: coder)
     }
 
@@ -73,7 +73,11 @@ final class SiteAddressViewController: LoginViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        tracker.set(flow: .loginWithSiteAddress)
+        if isSiteDiscovery {
+            tracker.set(flow: .siteDiscovery)
+        } else {
+            tracker.set(flow: .loginWithSiteAddress)
+        }
 
         if isMovingToParent {
             tracker.track(step: .start)
@@ -529,7 +533,7 @@ private extension SiteAddressViewController {
             loginFields.siteAddress = verifiedSiteAddress
         }
 
-        guard needsTroubleshooting == false else {
+        guard isSiteDiscovery == false else {
             WordPressAuthenticator.shared.delegate?.troubleshootSite(siteInfo, in: navigationController)
             return
         }

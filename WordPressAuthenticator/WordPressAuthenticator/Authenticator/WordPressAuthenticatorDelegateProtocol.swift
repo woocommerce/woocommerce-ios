@@ -91,7 +91,7 @@ public protocol WordPressAuthenticatorDelegate: AnyObject {
     func sync(credentials: AuthenticatorCredentials, onCompletion: @escaping () -> Void)
 
     /// Signals to the Host App that a WordPress site is available and needs validated.
-    /// This method is only triggered when the authenticator method `siteAddressUIForTroubleshooting` is called.
+    /// This method is only triggered in the site discovery flow.
     ///
     func troubleshootSite(_ siteInfo: WordPressComSiteInfo?, in navigationController: UINavigationController?)
 

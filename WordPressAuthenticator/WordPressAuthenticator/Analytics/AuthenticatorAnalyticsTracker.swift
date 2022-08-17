@@ -74,6 +74,11 @@ public class AuthenticatorAnalyticsTracker {
         ///
         case loginWithPassword = "login_password"
 
+        /// This flow starts when the user decides to login with a password instead, with magic link logic emphasis
+        /// where the CTA is a secondary CTA instead of a table view row
+        ///
+        case loginWithPasswordWithMagicLinkEmphasis = "login_password_magic_link_emphasis"
+
         /// This flow starts when the user decides to log in with their site address
         ///
         case loginWithSiteAddress = "login_site_address"

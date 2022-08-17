@@ -35,7 +35,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         // Given
         let order = makeOrder()
 
-        insert(refund: makeRefund(orderID: order.orderID, siteID: order.siteID))
+        insert(refund: makeRefund(refundID: 1, orderID: order.orderID, siteID: order.siteID))
 
         let dataSource = OrderDetailsDataSource(
             order: order,
@@ -60,6 +60,50 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         ]
 
         XCTAssertEqual(actualTitles, expectedTitles)
+    }
+
+    func test_refunds_data_in_unpaid_order_is_acessible_by_indexes() throws {
+        // Given
+        let refundItems = [
+            OrderRefundCondensed(refundID: 1, reason: nil, total: "1"),
+            OrderRefundCondensed(refundID: 2, reason: nil, total: "1"),
+        ]
+        let order = makeOrder().copy(datePaid: .some(nil), refunds: refundItems)
+
+        insert(refund: makeRefund(refundID: 1, orderID: order.orderID, siteID: order.siteID))
+        insert(refund: makeRefund(refundID: 2, orderID: order.orderID, siteID: order.siteID))
+
+        let dataSource = OrderDetailsDataSource(
+            order: order,
+            storageManager: storageManager,
+            cardPresentPaymentsConfiguration: Mocks.configuration
+        )
+
+        dataSource.configureResultsControllers { }
+
+        // Temp tableview to test refunds rows configuration
+        let tableView = UITableView()
+        tableView.registerNib(for: TwoColumnHeadlineFootnoteTableViewCell.self)
+
+        // When
+        dataSource.reloadSections()
+
+        // Get IndexPaths for all `refund` rows
+        var refundsRowsIndexes: [IndexPath] = []
+        for (sectionIndex, section) in dataSource.sections.enumerated() {
+            for (rowIndex, row) in section.rows.enumerated() where row == .refund {
+                refundsRowsIndexes.append(IndexPath(row: rowIndex, section: sectionIndex))
+            }
+        }
+
+        // Then
+        // Each `refund` row should be initialized without any issues
+        for refundIndexPath in refundsRowsIndexes {
+            let _ = dataSource.tableView(tableView, cellForRowAt: refundIndexPath)
+        }
+        // Each `refund` row should have `Refund` object accessible for its IndexPath
+        let expectedRefunds: [Refund] = try refundsRowsIndexes.map { try XCTUnwrap(dataSource.refund(at: $0)) }
+        XCTAssertEqual(expectedRefunds.count, refundsRowsIndexes.count)
     }
 
     func test_reloadSections_when_there_is_no_paid_date_then_customer_paid_row_is_visible() throws {
@@ -538,7 +582,7 @@ private extension OrderDetailsDataSourceTests {
                   attributes: [])
     }
 
-    func makeRefund(orderID: Int64, siteID: Int64) -> Refund {
+    func makeRefund(refundID: Int64, orderID: Int64, siteID: Int64) -> Refund {
         let orderItemRefund = OrderItemRefund(itemID: 1,
                                               name: "OrderItemRefund",
                                               productID: 1,
@@ -553,7 +597,7 @@ private extension OrderDetailsDataSourceTests {
                                               taxes: [],
                                               total: "1",
                                               totalTax: "1")
-        return Refund(refundID: 1,
+        return Refund(refundID: refundID,
                       orderID: orderID,
                       siteID: siteID,
                       dateCreated: Date(),

@@ -491,6 +491,11 @@ private extension SiteAddressViewController {
                 // WordPressAuthenticator.track(.loginFailed, error: error)
                 self.configureViewLoading(false)
 
+                guard self.isSiteDiscovery == false else {
+                    WordPressAuthenticator.shared.delegate?.troubleshootSite(nil, in: self.navigationController)
+                    return
+                }
+
                 let err = self.originalErrorOrError(error: error as NSError)
 
                 /// Check if the host app wants to provide custom UI to handle the error.

@@ -13,6 +13,8 @@ final class InPersonPaymentsMenuViewController: UIViewController {
     private let cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCase
     private var cancellables: Set<AnyCancellable> = []
 
+    /// No Manuals to be shown in a country where IPP is not supported
+    /// 
     private var enableCardReaderManualsCell: Bool {
         !(cardPresentPaymentsOnboardingUseCase.state == .loading ||
         cardPresentPaymentsOnboardingUseCase.state.isCountryNotSupported)

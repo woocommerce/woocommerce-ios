@@ -318,6 +318,10 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             return
         }
 
+        ServiceLocator.analytics.track(event: .SitePicker.siteDiscovery(exists: site.exists,
+                                                                        hasWordPress: site.isWP,
+                                                                        isWPCom: site.isWPCom,
+                                                                        hasValidJetpack: site.hasValidJetpack))
         let errorUI = errorUI(for: site, in: navigationController)
         navigationController.show(errorUI, sender: nil)
     }

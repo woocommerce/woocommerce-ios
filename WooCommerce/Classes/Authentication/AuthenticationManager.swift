@@ -316,14 +316,17 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Data flow following ZwYqDGHdenvYZoPHXZ1SOf-fi
     ///
     func troubleshootSite(_ siteInfo: WordPressComSiteInfo?, in navigationController: UINavigationController?) {
+        ServiceLocator.analytics.track(event: .SitePicker.siteDiscovery(hasWordPress: siteInfo?.isWP ?? false,
+                                                                        isWPCom: siteInfo?.isWPCom ?? false,
+                                                                        hasValidJetpack: siteInfo?.hasValidJetpack ?? false))
+
         guard let site = siteInfo, let navigationController = navigationController else {
-            DDLogWarn("⚠️ Missing site info or navigation controller when troubleshooting site")
+            let viewModel = NotWPErrorViewModel()
+            let noWPUI = ULErrorViewController(viewModel: viewModel)
+            navigationController?.show(noWPUI, sender: nil)
             return
         }
 
-        ServiceLocator.analytics.track(event: .SitePicker.siteDiscovery(hasWordPress: site.isWP,
-                                                                        isWPCom: site.isWPCom,
-                                                                        hasValidJetpack: site.hasValidJetpack))
         let errorUI = errorUI(for: site, in: navigationController)
         navigationController.show(errorUI, sender: nil)
     }

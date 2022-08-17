@@ -443,21 +443,23 @@ private extension SiteAddressViewController {
         request.httpMethod = "HEAD"
         request.timeoutInterval = 1.0
         let task = URLSession.shared.dataTask(with: request) { [weak self] _, _, error in
-            guard let self = self else { return }
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
 
-            if let error = error {
-                if self.authenticationDelegate.shouldHandleError(error) {
-                    self.authenticationDelegate.handleError(error) { customUI in
-                        self.pushCustomUI(customUI)
+                if let error = error {
+                    if self.authenticationDelegate.shouldHandleError(error) {
+                        self.authenticationDelegate.handleError(error) { customUI in
+                            self.pushCustomUI(customUI)
+                        }
+                        return
                     }
-                    return
+
+                    return self.displayError(message: Localization.nonExistentSiteError, moveVoiceOverFocus: true)
                 }
 
-                return self.displayError(message: Localization.nonExistentSiteError, moveVoiceOverFocus: true)
+                // Proceeds to check for the site's WordPress
+                self.guessXMLRPCURL(for: self.loginFields.siteAddress)
             }
-
-            // Proceeds to check for the site's WordPress
-            self.guessXMLRPCURL(for: self.loginFields.siteAddress)
         }
         task.resume()
     }

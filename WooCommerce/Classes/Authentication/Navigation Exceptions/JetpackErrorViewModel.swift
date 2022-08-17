@@ -71,7 +71,7 @@ struct JetpackErrorViewModel: ULErrorViewModel {
         analytics.track(.loginWhatIsJetpackHelpScreenViewed)
     }
 
-    func viewDidLoad() {
+    func viewDidLoad(_ viewController: UIViewController?) {
         analytics.track(.loginJetpackRequiredScreenViewed)
     }
 }

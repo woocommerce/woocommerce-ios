@@ -153,7 +153,7 @@ final class NoWooErrorViewModelTests: XCTestCase {
                                             onSetupCompletion: { _ in })
 
         // When
-        viewModel.viewDidLoad()
+        viewModel.viewDidLoad(nil)
 
         // Then
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_woocommerce_error_shown" }))

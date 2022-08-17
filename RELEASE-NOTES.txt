@@ -2,7 +2,7 @@
 
 10.0
 -----
-
+- [*] Login: New button added to the empty site picker screen to enter a site address for troubleshooting. [https://github.com/woocommerce/woocommerce-ios/pull/7484]
 
 9.9
 -----

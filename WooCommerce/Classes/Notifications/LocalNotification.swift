@@ -75,7 +75,7 @@ private extension LocalNotification {
         static let errorLoggingInTitle = NSLocalizedString("Problems with logging in?",
                                                            comment: "Local notification title when the user encounters an error logging in " +
                                                            "with site address.")
-        static let passwordErrorTitle = NSLocalizedString("Can't remember your WordPress.com password?",
+        static let passwordErrorTitle = NSLocalizedString("Can't remember your password?",
                                                            comment: "Local notification title when the user encounters an error with WP.com password.")
         static let errorLoggingInBody = NSLocalizedString("Get some help!",
                                                           comment: "Local notification body when the user encounters an error logging in " +

@@ -442,7 +442,7 @@ private extension SiteAddressViewController {
         // Checks that the site exists
         var request = URLRequest(url: url)
         request.httpMethod = "HEAD"
-        request.timeoutInterval = 1.0
+        request.timeoutInterval = 10.0 // waits for 10 seconds
         let task = URLSession.shared.dataTask(with: request) { [weak self] _, _, error in
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }

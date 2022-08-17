@@ -20,6 +20,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
     ///
     private var preferredInPersonPaymentGatewayBySite = [Int64: String]()
 
+    private var skippedCodOnboardingStep = true
 
     override func setUpWithError() throws {
         try super.setUpWithError()
@@ -38,7 +39,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
             case .setSkippedCodOnboardingStep(_):
                 break
             case .getSkippedCodOnboardingStep(_, let completion):
-                completion(true)
+                completion(self.skippedCodOnboardingStep)
                 break
             default:
                 fatalError("Not available")
@@ -797,6 +798,54 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .stripeAccountRejected(plugin: .wcPay))
     }
 
+    func test_onboarding_returns_enable_COD_prompt_when_cod_disabled_and_not_skipped() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .complete)
+        setupCodPaymentGateway(enabled: false)
+        skippedCodOnboardingStep = false
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.state
+
+        // Then
+        assertEqual(.codPaymentGatewayNotSetUp, state)
+    }
+
+    func test_onboarding_returns_complete_when_cod_disabled_and_cod_step_was_skipped() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .complete)
+        setupCodPaymentGateway(enabled: false)
+        skippedCodOnboardingStep = true
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.state
+
+        // Then
+        assertEqual(.completed(plugin: .wcPayOnly), state)
+    }
+
+    func test_onboarding_returns_complete_when_cod_enabled() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .complete)
+        setupCodPaymentGateway(enabled: true)
+        skippedCodOnboardingStep = false
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.state
+
+        // Then
+        assertEqual(.completed(plugin: .wcPayOnly), state)
+    }
+
     func test_onboarding_returns_generic_error_when_account_status_unknown_for_wcpay_plugin() {
         // Given
         setupCountry(country: .us)
@@ -941,3 +990,25 @@ private protocol GatewayAccountProtocol {
 
 extension WCPayAccount: GatewayAccountProtocol {}
 extension StripeAccount: GatewayAccountProtocol {}
+
+// MARK: - Gateway helpers
+private extension CardPresentPaymentsOnboardingUseCaseTests {
+    @discardableResult
+    func setupCodPaymentGateway(
+        enabled: Bool = true,
+        title: String = "",
+        description: String = ""
+    ) -> PaymentGateway {
+        let paymentGateway = PaymentGateway
+            .fake()
+            .copy(
+                siteID: sampleSiteID,
+                gatewayID: "cod",
+                title: title,
+                description: description,
+                enabled: enabled
+            )
+        storageManager.insertSamplePaymentGateway(readOnlyGateway: paymentGateway)
+        return paymentGateway
+    }
+}

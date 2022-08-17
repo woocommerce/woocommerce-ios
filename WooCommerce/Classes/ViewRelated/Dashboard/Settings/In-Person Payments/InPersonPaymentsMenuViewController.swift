@@ -13,6 +13,15 @@ final class InPersonPaymentsMenuViewController: UIViewController {
     private let cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCase
     private var cancellables: Set<AnyCancellable> = []
 
+    private var enableCardReaderManualsCell: Bool {
+        !(cardPresentPaymentsOnboardingUseCase.state == .loading ||
+        cardPresentPaymentsOnboardingUseCase.state.isCountryNotSupported)
+    }
+
+    private var enableManageCardReaderCell: Bool {
+        cardPresentPaymentsOnboardingUseCase.state.isCompleted
+    }
+
     /// Main TableView
     ///
     private lazy var tableView: UITableView = {
@@ -213,13 +222,12 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     func configureManageCardReader(cell: LeftImageTableViewCell) {
-        let cellShouldBeEnabled = cardPresentPaymentsOnboardingUseCase.state.isCompleted
         cell.imageView?.tintColor = .text
-        cell.accessoryType = cellShouldBeEnabled ? .disclosureIndicator : .none
-        cell.selectionStyle = cellShouldBeEnabled ? .default : .none
+        cell.accessoryType = enableManageCardReaderCell ? .disclosureIndicator : .none
+        cell.selectionStyle = enableManageCardReaderCell ? .default : .none
         cell.configure(image: .creditCardIcon, text: Localization.manageCardReader)
 
-        updateEnabledState(in: cell, shouldBeEnabled: cellShouldBeEnabled)
+        updateEnabledState(in: cell, shouldBeEnabled: enableManageCardReaderCell)
     }
 
     func configureManagePaymentGateways(cell: LeftImageTitleSubtitleTableViewCell) {
@@ -233,11 +241,11 @@ private extension InPersonPaymentsMenuViewController {
 
     func configureCardReaderManuals(cell: LeftImageTableViewCell) {
         cell.imageView?.tintColor = .text
-        cell.accessoryType = .disclosureIndicator
-        cell.selectionStyle = .default
+        cell.accessoryType = enableCardReaderManualsCell ? .disclosureIndicator : .none
+        cell.selectionStyle = enableCardReaderManualsCell ? .default : .none
         cell.configure(image: .cardReaderManualIcon, text: Localization.cardReaderManuals)
 
-        updateEnabledState(in: cell)
+        updateEnabledState(in: cell, shouldBeEnabled: enableCardReaderManualsCell)
     }
 
     func configureCollectPayment(cell: LeftImageTableViewCell) {
@@ -273,7 +281,7 @@ extension InPersonPaymentsMenuViewController {
     }
 
     func manageCardReaderWasPressed() {
-        guard cardPresentPaymentsOnboardingUseCase.state.isCompleted else {
+        guard enableManageCardReaderCell else {
             return
         }
 
@@ -288,6 +296,10 @@ extension InPersonPaymentsMenuViewController {
     }
 
     func cardReaderManualsWasPressed() {
+        guard enableCardReaderManualsCell else {
+            return
+        }
+
         ServiceLocator.analytics.track(.paymentsMenuCardReadersManualsTapped)
         let view = UIHostingController(rootView: CardReaderManualsView())
         navigationController?.pushViewController(view, animated: true)

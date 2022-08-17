@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-08-11 14:13:02+0000 */
+/* Translation-Revision-Date: 2022-08-15 12:59:56+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -283,6 +283,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title when a payments account is successfully connected for Card Present Payments */
 "Account connected" = "Konto anslutet";
 
+/* Title for the section related to actions inside In-Person Payments settings */
+"Actions" = "Åtgärder";
+
 /* Title for the error screen when a Card Present Payments extension is installed but not activated */
 "Activate %1$@" = "Aktivera %1$@";
 
@@ -536,6 +539,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "Nästan klart! Skriv in verifieringskoden från din autentiserings-app.";
+
+/* Instruction text to explain to help users type their password instead of using magic link login option. */
+"Alternatively, you may enter the password for this account." = "Alternativt kan du ange lösenordet för detta konto.";
 
 /* String displayed before offering alternative login methods */
 "Alternatively:" = "Alternativt:";
@@ -965,6 +971,9 @@ which should be translated separately and considered part of this sentence. */
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "Kontrollera att angiven URL är giltig";
 
+/* The title text on the magic link requested screen. */
+"Check your email on this device!" = "Kontrollera din e-post på denna enhet!";
+
 /* Instruction text after a login Magic Link was requested. */
 "Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Kontrollera din e-post på den här enheten och tryck på länken i e-postmeddelandet som du får från WordPress.com.";
 
@@ -1040,7 +1049,8 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "Samla in information";
 
-/* Text on the button that starts collecting a card present payment. */
+/* Navigates to Collect a payment via the Simple Payment screen
+   Text on the button that starts collecting a card present payment. */
 "Collect Payment" = "Ta emot betalning";
 
 /* Alert title when starting the collect payment flow without a user name. */
@@ -1157,7 +1167,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Content Type row in Customs screen of Shipping Label flow */
 "Content Type" = "Innehållstyp";
 
-/* Continue button inside every cell inside Create Shipping Label form
+/* Button on the Store Picker screen to select a store
+   Continue button inside every cell inside Create Shipping Label form
    The button title text when there is a next step for logging in or signing up.
    Title of continue button
    Title of dismiss button presented when users attempt to log in without Jetpack installed or connected */
@@ -2691,6 +2702,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Local notification action to log in with WordPress.com. */
 "Login with WordPress.com" = "Logga in med WordPress.com";
 
+/* Button title. Takes the user to the Enter account password screen. */
+"Login with account password" = "Logga in med kontolösenord";
+
 /* Title of a button. */
 "Lost your password?" = "Glömt ditt lösenord?";
 
@@ -3202,6 +3216,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Restriction type Other for contents declared in the customs form for Shipping Label flow
    Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "Andra";
+
+/* Store Picker's Section Title: Displayed when there are sites without WooCommerce */
+"Other Sites" = "Andra webbplatser";
 
 /* Display label for the product's inventory stock status */
 "Out of stock" = "Slut i lager";
@@ -4176,6 +4193,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The button title text for sending a magic link. */
 "Send Link by Email" = "Skicka länk via e-post";
+
+/* Button title. Sends a email verification link (Magin link) for signing in. */
+"Send email verification link" = "Skicka länk för e-postverifiering";
 
 /* Service Package menu in Shipping Label Add New Package flow */
 "Service Package" = "Tjänstepaket";
@@ -5279,7 +5299,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Trying again may succeed, or try another means of payment" = "Det kan fungera att försöka igen, eller så kan du prova en annan betalningsmetod";
 
 /* Login onboarding survey option: trying to set up a store. */
-"Trying to set up a store" = "Försöker ställa in en butik";
+"Trying to set up a store" = "Försöker skapa en butik";
 
 /* Settings > Manage Card Reader > Connect > Hint to power on reader */
 "Turn card reader on and place it next to mobile device" = "Starta kortläsaren och placera den bredvid den mobila enheten";
@@ -5592,6 +5612,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the Use as Shipping Address switch in the Address form */
 "Use as Shipping Address" = "Använd som leveransadress";
 
+/* The button title text for logging in with WP.com password instead of magic link. */
+"Use password to sign in" = "Använd lösenord för att logga in";
+
 /* Title of user profiles as part of Jetpack benefits. */
 "User Profiles" = "Användarprofiler";
 
@@ -5766,6 +5789,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* message to ask a user to check their email for a WordPress.com email */
 "We just emailed a link to %@. Please check your mail app and tap the link to log in." = "Vi har just skickat en länk via e-post till %@. Kolla din e-post och tryck på länken för att logga in.";
+
+/* The subtitle text on the magic link requested screen followed by the email address. */
+"We just sent a magic link to" = "Vi har precis skickat en magisk länk till";
 
 /* Subtitle displayed in promotional screens shown during the login flow. */
 "We know it’s essential to your business." = "Vi vet att det är viktigt för ditt företag.";
@@ -6042,7 +6068,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 "unknown url" = "okänd URL";
 
 /* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need...
-   Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have WooCommerce.The error would read: to use this app for your site you'll need...
    Placeholder for site url, if the url is unknown.Presented when logging in with a store address that does not match the account entered. */
 "your site" = "din webbplats";
 

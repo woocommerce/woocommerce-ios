@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-08-10 18:54:03+0000 */
+/* Translation-Revision-Date: 2022-08-16 12:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -220,6 +220,9 @@ which should be translated separately and considered part of this sentence. */
 /* Please limit to 3 characters if possible. This is used if there are more than 99 items in a tab, like Orders. */
 "99+" = "99+";
 
+/* Instruction text to explain magic link login step. */
+"A WordPress.com account is connected to your store credentials. To continue, we will send a verification link to the email address above." = "Akun WordPress.com terhubung ke kredensial toko Anda. Untuk melanjutkan, kami akan mengirimkan tautan verifikasi ke alamat email di atas.";
+
 /* Placeholder of the Product Short Description row on Product main screen */
 "A brief excerpt about the product" = "Kutipan ringkas tentang produk";
 
@@ -282,6 +285,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title when a payments account is successfully connected for Card Present Payments */
 "Account connected" = "Akun terhubung";
+
+/* Title for the section related to actions inside In-Person Payments settings */
+"Actions" = "Tindakan";
 
 /* Title for the error screen when a Card Present Payments extension is installed but not activated */
 "Activate %1$@" = "Aktifkan %1$@";
@@ -536,6 +542,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "Hampir selesai! Masukkan kode verifikasi dari aplikasi pengautentikasi.";
+
+/* Instruction text to explain to help users type their password instead of using magic link login option. */
+"Alternatively, you may enter the password for this account." = "Atau, Anda bisa memasukkan kata sandi untuk akun ini.";
 
 /* String displayed before offering alternative login methods */
 "Alternatively:" = "Atau:";
@@ -965,6 +974,9 @@ which should be translated separately and considered part of this sentence. */
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "Pastikan URL yang dimasukkan sudah valid";
 
+/* The title text on the magic link requested screen. */
+"Check your email on this device!" = "Periksa email Anda di perangkat ini!";
+
 /* Instruction text after a login Magic Link was requested. */
 "Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Periksa email Anda di perangkat ini, dan ketuk tautan dalam email yang Anda terima dari WordPress.com";
 
@@ -1040,7 +1052,8 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "Kumpulkan informasi";
 
-/* Text on the button that starts collecting a card present payment. */
+/* Navigates to Collect a payment via the Simple Payment screen
+   Text on the button that starts collecting a card present payment. */
 "Collect Payment" = "Terima Pembayaran";
 
 /* Alert title when starting the collect payment flow without a user name. */
@@ -1157,7 +1170,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Content Type row in Customs screen of Shipping Label flow */
 "Content Type" = "Tipe Konten";
 
-/* Continue button inside every cell inside Create Shipping Label form
+/* Button on the Store Picker screen to select a store
+   Continue button inside every cell inside Create Shipping Label form
    The button title text when there is a next step for logging in or signing up.
    Title of continue button
    Title of dismiss button presented when users attempt to log in without Jetpack installed or connected */
@@ -1873,6 +1887,9 @@ which should be translated separately and considered part of this sentence. */
    Title of a button. */
 "Enter your password instead." = "Masukkan kata sandi saja.";
 
+/* Enter your store credentials for {site url}. Asks the user to enter .org site credentials for their store. */
+"Enter your store credentials for %@." = "Masukkan kredensial toko Anda untuk %@.";
+
 /* Envelope package type, used to create a custom package in the Shipping Label flow */
 "Envelope" = "Amplop";
 
@@ -2285,6 +2302,9 @@ which should be translated separately and considered part of this sentence. */
 /* Step 4 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "If you are still experiencing issues printing from your phone, you can save your label as PDF and **send it by email** to print it from another device." = "Jika masih mengalami masalah mencetak dari telepon, Anda dapat menyimpan label dalam format PDF dan **mengirimkannya melalui email** ke perangkat lain untuk dicetak.";
 
+/* The instructions text about not being able to find the magic link email. */
+"If you can’t find the email, please check your junk or spam email folder" = "Jika email tidak ada, harap periksa folder email sampah atau spam Anda.";
+
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Jika Anda melanjutkan dengan Apple dan belum memiliki akun WordPress.com, Anda akan membuat akun dan menyetujui _Ketentuan Layanan_ kami.";
 
@@ -2690,6 +2710,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Local notification action to log in with WordPress.com. */
 "Login with WordPress.com" = "Login dengan WordPress.com";
+
+/* Button title. Takes the user to the Enter account password screen. */
+"Login with account password" = "Login dengan kata sandi akun";
 
 /* Title of a button. */
 "Lost your password?" = "Lupa sandi Anda?";
@@ -3202,6 +3225,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Restriction type Other for contents declared in the customs form for Shipping Label flow
    Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "Lainnya";
+
+/* Store Picker's Section Title: Displayed when there are sites without WooCommerce */
+"Other Sites" = "Situs Lainnya";
 
 /* Display label for the product's inventory stock status */
 "Out of stock" = "Tidak ada stok";
@@ -4176,6 +4202,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The button title text for sending a magic link. */
 "Send Link by Email" = "Kirim Tautan Lewat Email";
+
+/* Button title. Sends a email verification link (Magin link) for signing in. */
+"Send email verification link" = "Kirim tautan verifikasi email";
 
 /* Service Package menu in Shipping Label Add New Package flow */
 "Service Package" = "Paket Layanan";
@@ -5592,6 +5621,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the Use as Shipping Address switch in the Address form */
 "Use as Shipping Address" = "Gunakan sebagai Alamat Pengiriman";
 
+/* The button title text for logging in with WP.com password instead of magic link. */
+"Use password to sign in" = "Gunakan kata sandi untuk login";
+
 /* Title of user profiles as part of Jetpack benefits. */
 "User Profiles" = "Profil Pengguna";
 
@@ -5766,6 +5798,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* message to ask a user to check their email for a WordPress.com email */
 "We just emailed a link to %@. Please check your mail app and tap the link to log in." = "Kami baru saja mengirim tautan ke email %@. Harap periksa aplikasi email Anda dan ketuk tautan untuk login.";
+
+/* The subtitle text on the magic link requested screen followed by the email address. */
+"We just sent a magic link to" = "Kami baru saja mengirimkan tautan ajaib ke ";
 
 /* Subtitle displayed in promotional screens shown during the login flow. */
 "We know it’s essential to your business." = "Kami tahu bahwa hal ini penting untuk kelangsungan bisnis Anda.";
@@ -6042,7 +6077,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 "unknown url" = "url tidak diketahui";
 
 /* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need...
-   Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have WooCommerce.The error would read: to use this app for your site you'll need...
    Placeholder for site url, if the url is unknown.Presented when logging in with a store address that does not match the account entered. */
 "your site" = "situs Anda";
 

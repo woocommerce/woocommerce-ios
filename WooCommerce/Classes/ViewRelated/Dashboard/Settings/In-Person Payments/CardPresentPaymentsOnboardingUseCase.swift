@@ -35,6 +35,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     let featureFlagService: FeatureFlagService
     private let cardPresentPluginsDataProvider: CardPresentPluginsDataProvider
     private var preferredPluginLocal: CardPresentPaymentsPlugin?
+    private var wasCodStepSkipped: Bool = false
 
     @Published var state: CardPresentPaymentOnboardingState = .loading
 
@@ -170,6 +171,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
             DDLogError("[CardPresentPaymentsOnboarding] Couldn't determine country for store")
             return .genericError
         }
+        checkIfCodStepSkipped()
 
         let configuration = configurationLoader.configuration
 
@@ -303,7 +305,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
             return .stripeAccountRejected(plugin: plugin)
         }
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.promptToEnableCodInIppOnboarding) {
-            guard isCodSetUp() else {
+            if shouldShowCodStep {
                 return .codPaymentGatewayNotSetUp
             }
         }
@@ -410,6 +412,22 @@ private extension CardPresentPaymentsOnboardingUseCase {
             || account.wcpayStatus == .rejectedListed
             || account.wcpayStatus == .rejectedTermsOfService
             || account.wcpayStatus == .rejectedOther
+    }
+
+    var shouldShowCodStep: Bool {
+        !isCodSetUp() && !wasCodStepSkipped
+    }
+
+    func checkIfCodStepSkipped() {
+        guard let siteID = siteID else {
+            return
+        }
+
+        let action = AppSettingsAction.getSkippedCodOnboardingStep(siteID: siteID) { [weak self] skipped in
+            self?.wasCodStepSkipped = skipped
+        }
+
+        stores.dispatch(action)
     }
 
     func isCodSetUp() -> Bool {

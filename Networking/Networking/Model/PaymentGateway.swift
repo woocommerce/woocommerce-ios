@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a Payment Gateway.
 ///
-public struct PaymentGateway: Equatable, GeneratedFakeable {
+public struct PaymentGateway: Equatable, GeneratedFakeable, GeneratedCopiable {
 
     /// Features for payment gateway.
     ///

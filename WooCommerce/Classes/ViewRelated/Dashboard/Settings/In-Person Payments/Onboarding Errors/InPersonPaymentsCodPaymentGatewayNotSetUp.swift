@@ -11,7 +11,7 @@ struct InPersonPaymentsCodPaymentGatewayNotSetUp: View {
                 title: Localization.title,
                 message: Localization.message,
                 image: InPersonPaymentsOnboardingErrorMainContentView.ImageInfo(
-                    image: .paymentErrorImage,
+                    image: .waitingForCustomersImage,
                     height: Constants.imageHeight
                 ),
                 supportLink: true
@@ -46,7 +46,7 @@ private enum Localization {
         "Pay in Person payment gateway.")
 
     static let message = NSLocalizedString(
-        "A \"Pay in Person\" option on your checkout lets you accept card or cash payments on collection or delivery",
+        "A \"Pay in Person\" option on your checkout lets you accept card or cash payments on collection or delivery.",
         comment: "The message explaining what will happen when the merchant enables the Pay in Person payment " +
         "gateway during card present payments onboarding.")
 
@@ -62,5 +62,5 @@ private enum Localization {
 }
 
 private enum Constants {
-    static let imageHeight: CGFloat = 180.0
+    static let imageHeight: CGFloat = 140.0
 }

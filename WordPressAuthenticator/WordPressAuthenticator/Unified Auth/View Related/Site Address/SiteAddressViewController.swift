@@ -435,6 +435,7 @@ private extension SiteAddressViewController {
         configureViewLoading(true)
 
         guard let url = URL(string: loginFields.siteAddress) else {
+            configureViewLoading(false)
             return displayError(message: Localization.invalidURL, moveVoiceOverFocus: true)
         }
 
@@ -447,6 +448,8 @@ private extension SiteAddressViewController {
                 guard let self = self else { return }
 
                 if let error = error {
+                    self.configureViewLoading(false)
+
                     if self.authenticationDelegate.shouldHandleError(error) {
                         self.authenticationDelegate.handleError(error) { customUI in
                             self.pushCustomUI(customUI)

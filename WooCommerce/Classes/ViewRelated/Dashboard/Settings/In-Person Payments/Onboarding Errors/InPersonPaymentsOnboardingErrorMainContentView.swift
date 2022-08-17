@@ -1,5 +1,4 @@
 import SwiftUI
-import Yosemite
 
 struct InPersonPaymentsOnboardingErrorMainContentView: View {
     let title: String

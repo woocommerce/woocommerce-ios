@@ -13,6 +13,6 @@ final class CardReaderManualsViewModel {
 
     init() {
         // Display all card readers at all times. Ref: pdfdoF-1aF-p2
-        self.manuals = CardReaderType.allSupportedReaders.map { $0.manual }
+        self.manuals = CardReaderType.allCases.compactMap { $0.manual }
     }
 }

@@ -81,6 +81,7 @@ public enum WooAnalyticsStat: String {
     case onePasswordSignup = "one_password_signup"
     case twoFactorCodeRequested = "two_factor_code_requested"
     case twoFactorSentSMS = "two_factor_sent_sms"
+    case whatIsWPComOnInvalidEmailScreenTapped = "what_is_wordpress_com_on_invalid_email_screen"
 
     // MARK: Dashboard View Events
     //
@@ -142,8 +143,6 @@ public enum WooAnalyticsStat: String {
     case settingsTapped = "main_menu_settings_tapped"
     case settingsSelectedStoreTapped = "settings_selected_site_tapped"
     case settingsContactSupportTapped = "main_menu_contact_support_tapped"
-    case settingsCardReadersTapped = "settings_card_readers_tapped"
-    case settingsCardPresentSelectedPaymentGatewayTapped = "settings_card_present_select_payment_gateway_tapped"
 
     case settingsBetaFeaturesButtonTapped = "settings_beta_features_button_tapped"
     case settingsBetaFeaturesProductsToggled = "settings_beta_features_products_toggled"
@@ -653,6 +652,14 @@ public enum WooAnalyticsStat: String {
     case loginWooCommerceSetupButtonTapped = "login_woocommerce_setup_button_tapped"
     case loginWooCommerceSetupDismissed = "login_woocommerce_setup_dismissed"
     case loginWooCommerceSetupCompleted = "login_woocommerce_setup_completed"
+
+    // MARK: Payments Menu
+    case paymentsMenuCollectPaymentTapped = "payments_hub_collect_payment_tapped"
+    case paymentsMenuOnboardingErrorTapped = "payments_hub_onboarding_error_tapped"
+    case paymentsMenuOrderCardReaderTapped = "payments_hub_order_card_reader_tapped"
+    case paymentsMenuCardReadersManualsTapped = "payments_hub_card_readers_manuals_tapped"
+    case paymentsMenuManageCardReadersTapped = "payments_hub_manage_card_readers_tapped"
+    case paymentsMenuPaymentProviderTapped = "settings_card_present_select_payment_gateway_tapped"
 }
 
 public extension WooAnalyticsStat {

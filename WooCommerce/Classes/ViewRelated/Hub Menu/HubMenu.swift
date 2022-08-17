@@ -54,7 +54,11 @@ struct HubMenu: View {
                                        badge: menu.badge,
                                        isDisabled: $shouldDisableItemTaps,
                                        onTapGesture: {
-                            ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: menu.trackingOption])
+                            ServiceLocator.analytics.track(.hubMenuOptionTapped,
+                                                           withProperties: [
+                                                            Constants.trackingOptionKey: menu.trackingOption,
+                                                            Constants.trackingBadgeVisibleKey: menu.badge.shouldBeRendered
+                                                           ])
                             switch type(of: menu).id {
                             case HubMenuViewModel.Payments.id:
                                 viewModel.paymentsScreenWasOpened()
@@ -88,7 +92,8 @@ struct HubMenu: View {
                          url: viewModel.storeURL,
                          onDismiss: enableMenuItemTaps)
             NavigationLink(destination:
-                            InPersonPaymentsView(viewModel: .init()),
+                            InPersonPaymentsMenu(pluginState: nil, onPluginSelected: nil, onPluginSelectionCleared: nil)
+                            .navigationTitle(InPersonPaymentsView.Localization.title),
                            isActive: $showingPayments) {
                 EmptyView()
             }.hidden()
@@ -208,7 +213,8 @@ struct HubMenu: View {
         static let padding: CGFloat = 16
         static let topBarSpacing: CGFloat = 2
         static let avatarSize: CGFloat = 40
-        static let option = "option"
+        static let trackingOptionKey = "option"
+        static let trackingBadgeVisibleKey = "badge_visible"
     }
 
     private enum Localization {

@@ -106,10 +106,6 @@ public enum FeatureFlag: Int {
     ///
     case paymentsHubMenuSection
 
-    /// Banner promoting cross-sells and upsells in product details
-    ///
-    case linkedProductsPromo
-
     /// Whether to show a survey at the end of the login onboarding screen after feature carousel
     ///
     case loginPrologueOnboardingSurvey
@@ -117,4 +113,8 @@ public enum FeatureFlag: Int {
     /// Whether to prefer magic link to password in the login flow
     ///
     case loginMagicLinkEmphasis
+
+    /// Whether to show the magic link as a secondary button instead of a table view cell on the password screen
+    ///
+    case loginMagicLinkEmphasisM2
 }

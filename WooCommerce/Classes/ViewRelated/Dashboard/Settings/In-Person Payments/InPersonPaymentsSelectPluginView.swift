@@ -116,3 +116,5 @@ struct InPersonPaymentsSelectPlugin_Previews: PreviewProvider {
             .preferredColorScheme(.dark)
     }
 }
+
+final class InPersonPaymentsSelectPluginViewController: UIHostingController<InPersonPaymentsSelectPluginView> {}

@@ -2,7 +2,7 @@ import SwiftUI
 
 struct InPersonPaymentsCodPaymentGatewayNotSetUp: View {
     var body: some View {
-        VStack {
+        ScrollableVStack {
             Spacer()
 
             InPersonPaymentsOnboardingErrorMainContentView(
@@ -10,7 +10,7 @@ struct InPersonPaymentsCodPaymentGatewayNotSetUp: View {
                 message: Localization.message,
                 image: InPersonPaymentsOnboardingErrorMainContentView.ImageInfo(
                     image: .paymentErrorImage,
-                    height: 180.0
+                    height: Constants.imageHeight
                 ),
                 supportLink: true
             )
@@ -26,7 +26,7 @@ struct InPersonPaymentsCodPaymentGatewayNotSetUp: View {
             Spacer()
 
             InPersonPaymentsLearnMore()
-        }.padding()
+        }
     }
 }
 
@@ -56,4 +56,8 @@ private enum Localization {
         "Enable Pay in Person",
         comment: "Title for the button to enable the Pay in Person payment gateway during card present " +
         "payments onboarding.")
+}
+
+private enum Constants {
+    static let imageHeight: CGFloat = 180.0
 }

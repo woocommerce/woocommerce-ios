@@ -71,7 +71,7 @@ struct InPersonPaymentsView: View {
             case .stripeAccountOverdueRequirement:
                 InPersonPaymentsStripeAccountOverdue()
             case .stripeAccountPendingRequirement(_, let deadline):
-                InPersonPaymentsStripeAccountPending(deadline: deadline)
+                InPersonPaymentsStripeAccountPending(deadline: deadline, onSkip: viewModel.skipPendingRequirements)
             case .stripeAccountUnderReview:
                 InPersonPaymentsStripeAccountReview()
             case .stripeAccountRejected:

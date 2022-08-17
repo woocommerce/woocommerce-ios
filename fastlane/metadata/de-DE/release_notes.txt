@@ -1,3 +1,0 @@
-Diese Version enthält ein neues Banner, um Zahlungen mit WooCommerce Payments direkt in der App zu empfangen. Und es gibt noch mehr! Du kannst jetzt bei einer Bestellung nach links wischen, um sie als abgeschlossen zu markieren!
-
-Darüber hinaus haben wir mehrere Verbesserungen beim Anmeldeprozess vorgenommen: Du hast ab sofort z. B. die Möglichkeit, dich mit deinen wp-admin-Anmeldedaten anzumelden. Und du kannst das WooCommerce-Plugin nun direkt über die App installieren!

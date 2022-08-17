@@ -32,6 +32,7 @@ struct LocalNotification {
     enum Action: String {
         case contactSupport
         case loginWithWPCom
+        case resetPassword
 
         /// The title of the action in a local notification.
         var title: String {
@@ -40,6 +41,8 @@ struct LocalNotification {
                 return NSLocalizedString("Contact support", comment: "Local notification action to contact support.")
             case .loginWithWPCom:
                 return NSLocalizedString("Login with WordPress.com", comment: "Local notification action to log in with WordPress.com.")
+            case .resetPassword:
+                return NSLocalizedString("Reset password", comment: "Local notification action to reset password.")
             }
         }
     }
@@ -59,10 +62,10 @@ extension LocalNotification {
                       scenario: scenario,
                       actions: .init(category: .loginError, actions: [.contactSupport]))
         case .invalidPasswordFromWPComLogin, .invalidPasswordFromSiteAddressLogin:
-            self.init(title: Localization.errorLoggingInTitle,
+            self.init(title: Localization.passwordErrorTitle,
                       body: Localization.errorLoggingInBody,
                       scenario: scenario,
-                      actions: .init(category: .loginError, actions: [.contactSupport]))
+                      actions: .init(category: .loginError, actions: [.resetPassword, .contactSupport]))
         }
     }
 }
@@ -72,6 +75,8 @@ private extension LocalNotification {
         static let errorLoggingInTitle = NSLocalizedString("Problems with logging in?",
                                                            comment: "Local notification title when the user encounters an error logging in " +
                                                            "with site address.")
+        static let passwordErrorTitle = NSLocalizedString("Can't remember your password?",
+                                                           comment: "Local notification title when the user encounters an error with WP.com password.")
         static let errorLoggingInBody = NSLocalizedString("Get some help!",
                                                           comment: "Local notification body when the user encounters an error logging in " +
                                                           "with site address.")

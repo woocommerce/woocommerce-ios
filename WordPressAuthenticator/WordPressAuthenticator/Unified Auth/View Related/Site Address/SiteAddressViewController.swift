@@ -434,8 +434,37 @@ private extension SiteAddressViewController {
 
         configureViewLoading(true)
 
+        guard let url = URL(string: loginFields.siteAddress) else {
+            return displayError(message: Localization.invalidURL, moveVoiceOverFocus: true)
+        }
+
+        // Checks that the site exists
+        var request = URLRequest(url: url)
+        request.httpMethod = "HEAD"
+        request.timeoutInterval = 1.0
+        let task = URLSession.shared.dataTask(with: request) { [weak self] _, _, error in
+            guard let self = self else { return }
+
+            if let error = error {
+                if self.authenticationDelegate.shouldHandleError(error) {
+                    self.authenticationDelegate.handleError(error) { customUI in
+                        self.pushCustomUI(customUI)
+                    }
+                    return
+                }
+
+                return self.displayError(message: Localization.nonExistentSiteError, moveVoiceOverFocus: true)
+            }
+
+            // Proceeds to check for the site's WordPress
+            self.guessXMLRPCURL(for: self.loginFields.siteAddress)
+        }
+        task.resume()
+    }
+
+    func guessXMLRPCURL(for siteAddress: String) {
         let facade = WordPressXMLRPCAPIFacade()
-        facade.guessXMLRPCURL(forSite: loginFields.siteAddress, success: { [weak self] (url) in
+        facade.guessXMLRPCURL(forSite: siteAddress, success: { [weak self] (url) in
             // Success! We now know that we have a valid XML-RPC endpoint.
             // At this point, we do NOT know if this is a WP.com site or a self-hosted site.
             if let url = url {
@@ -632,5 +661,16 @@ private extension SiteAddressViewController {
         let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
         alertController.addDefaultActionWithTitle(acceptActionTitle)
         present(alertController, animated: true)
+    }
+}
+
+private extension SiteAddressViewController {
+    enum Localization {
+        static let invalidURL = NSLocalizedString(
+            "Invalid URL. Please double-check and try again.",
+            comment: "Error message shown when the input URL is invalid.")
+        static let nonExistentSiteError = NSLocalizedString(
+            "The site at this address does not exist. Please double-check and try again.",
+            comment: "Error message shown when the input URL does not point to an existing site.")
     }
 }

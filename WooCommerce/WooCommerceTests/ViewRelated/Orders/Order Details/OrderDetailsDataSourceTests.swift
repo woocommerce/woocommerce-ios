@@ -62,6 +62,40 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertEqual(actualTitles, expectedTitles)
     }
 
+    func test_refunds_data_in_unpaid_order_is_acessible_by_indexes() throws {
+        // Given
+        let refundItems = [
+            OrderRefundCondensed(refundID: 1, reason: nil, total: "1"),
+        ]
+        let order = makeOrder().copy(datePaid: .some(nil), refunds: refundItems)
+
+        insert(refund: makeRefund(orderID: order.orderID, siteID: order.siteID))
+
+        let dataSource = OrderDetailsDataSource(
+            order: order,
+            storageManager: storageManager,
+            cardPresentPaymentsConfiguration: Mocks.configuration
+        )
+
+        dataSource.configureResultsControllers { }
+
+        // When
+        dataSource.reloadSections()
+
+        // Get IndexPaths for all `refund` rows
+        var refundsRowsIndexes: [IndexPath] = []
+        for (sectionIndex, section) in dataSource.sections.enumerated() {
+            for (rowIndex, row) in section.rows.enumerated() where row == .refund {
+                refundsRowsIndexes.append(IndexPath(row: rowIndex, section: sectionIndex))
+            }
+        }
+
+        // Then
+        // Each `refund` row should have `Refund` object accessible for its IndexPath
+        let expectedRefunds: [Refund] = try refundsRowsIndexes.map { try XCTUnwrap(dataSource.refund(at: $0)) }
+        XCTAssertEqual(expectedRefunds.count, refundsRowsIndexes.count)
+    }
+
     func test_reloadSections_when_there_is_no_paid_date_then_customer_paid_row_is_visible() throws {
         // Given
         let order = Order.fake()

@@ -1421,5 +1421,10 @@ extension WooAnalyticsEvent {
                                                                                Key.isWPCom.rawValue: isWPCom,
                                                                                Key.hasValidJetpack.rawValue: hasValidJetpack])
         }
+
+        /// Tracks when the user taps the New To WooCommerce button
+        static func newToWooTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .sitePickerNewToWooTapped, properties: [:])
+        }
     }
 }

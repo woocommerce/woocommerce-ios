@@ -12,6 +12,7 @@
             <connections>
                 <outlet property="actionButton" destination="0KD-hY-YaS" id="mJR-Pi-S0z"/>
                 <outlet property="enterSiteAddressButton" destination="mXN-0a-h6C" id="AR4-GV-obp"/>
+                <outlet property="newToWooButton" destination="X1y-bd-PXx" id="Rhc-sE-XIZ"/>
                 <outlet property="secondaryActionButton" destination="Slo-h4-7qY" id="YFU-eL-sGS"/>
                 <outlet property="tableView" destination="oVs-XS-592" id="tgt-K5-nCu"/>
                 <outlet property="view" destination="jLk-oK-hVZ" id="6Kv-ov-h6s"/>
@@ -23,7 +24,7 @@
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" contentInsetAdjustmentBehavior="never" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="oVs-XS-592" userLabel="Sites Table View">
-                    <rect key="frame" x="0.0" y="44" width="414" height="588"/>
+                    <rect key="frame" x="0.0" y="44" width="414" height="533.66666666666663"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <connections>
                         <outlet property="dataSource" destination="-1" id="m9y-Av-zfJ"/>
@@ -31,13 +32,21 @@
                     </connections>
                 </tableView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="H5J-Qa-DXp">
-                    <rect key="frame" x="0.0" y="632" width="414" height="264"/>
+                    <rect key="frame" x="0.0" y="577.66666666666663" width="414" height="318.33333333333337"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="0a6-Ee-KF8">
-                            <rect key="frame" x="20" y="20" width="374" height="190"/>
+                            <rect key="frame" x="20" y="20.000000000000014" width="374" height="244.33333333333337"/>
                             <subviews>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="X1y-bd-PXx">
+                                    <rect key="frame" x="0.0" y="0.0" width="374" height="34.333333333333336"/>
+                                    <state key="normal" title="Button"/>
+                                    <buttonConfiguration key="configuration" style="plain" title="New To Woo?"/>
+                                    <connections>
+                                        <action selector="newToWooWasPressed" destination="-1" eventType="touchUpInside" id="Aga-hj-WbH"/>
+                                    </connections>
+                                </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mXN-0a-h6C" userLabel="Action Button" customClass="FancyAnimatedButton" customModule="WooCommerce" customModuleProvider="target">
-                                    <rect key="frame" x="0.0" y="0.0" width="374" height="50"/>
+                                    <rect key="frame" x="0.0" y="54.333333333333371" width="374" height="50"/>
                                     <color key="backgroundColor" red="0.58823529409999997" green="0.34509803919999998" blue="0.54117647059999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="50" id="vyG-JP-b9F"/>
@@ -52,7 +61,7 @@
                                     </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0KD-hY-YaS" userLabel="Action Button" customClass="FancyAnimatedButton" customModule="WooCommerce" customModuleProvider="target">
-                                    <rect key="frame" x="0.0" y="70" width="374" height="50"/>
+                                    <rect key="frame" x="0.0" y="124.33333333333337" width="374" height="50"/>
                                     <color key="backgroundColor" red="0.58823529409999997" green="0.34509803919999998" blue="0.54117647059999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="50" id="Bue-lt-N74"/>
@@ -67,7 +76,7 @@
                                     </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Slo-h4-7qY" userLabel="secondary action button" customClass="FancyAnimatedButton" customModule="WooCommerce" customModuleProvider="target">
-                                    <rect key="frame" x="0.0" y="140" width="374" height="50"/>
+                                    <rect key="frame" x="0.0" y="194.33333333333337" width="374" height="50"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="50" id="HG6-bp-QRu"/>
                                     </constraints>

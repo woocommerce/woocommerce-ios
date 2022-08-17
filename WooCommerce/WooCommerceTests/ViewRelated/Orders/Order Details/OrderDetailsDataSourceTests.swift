@@ -35,7 +35,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         // Given
         let order = makeOrder()
 
-        insert(refund: makeRefund(orderID: order.orderID, siteID: order.siteID))
+        insert(refund: makeRefund(refundID: 1, orderID: order.orderID, siteID: order.siteID))
 
         let dataSource = OrderDetailsDataSource(
             order: order,
@@ -66,10 +66,12 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         // Given
         let refundItems = [
             OrderRefundCondensed(refundID: 1, reason: nil, total: "1"),
+            OrderRefundCondensed(refundID: 2, reason: nil, total: "1"),
         ]
         let order = makeOrder().copy(datePaid: .some(nil), refunds: refundItems)
 
-        insert(refund: makeRefund(orderID: order.orderID, siteID: order.siteID))
+        insert(refund: makeRefund(refundID: 1, orderID: order.orderID, siteID: order.siteID))
+        insert(refund: makeRefund(refundID: 2, orderID: order.orderID, siteID: order.siteID))
 
         let dataSource = OrderDetailsDataSource(
             order: order,
@@ -572,7 +574,7 @@ private extension OrderDetailsDataSourceTests {
                   attributes: [])
     }
 
-    func makeRefund(orderID: Int64, siteID: Int64) -> Refund {
+    func makeRefund(refundID: Int64, orderID: Int64, siteID: Int64) -> Refund {
         let orderItemRefund = OrderItemRefund(itemID: 1,
                                               name: "OrderItemRefund",
                                               productID: 1,
@@ -587,7 +589,7 @@ private extension OrderDetailsDataSourceTests {
                                               taxes: [],
                                               total: "1",
                                               totalTax: "1")
-        return Refund(refundID: 1,
+        return Refund(refundID: refundID,
                       orderID: orderID,
                       siteID: siteID,
                       dateCreated: Date(),

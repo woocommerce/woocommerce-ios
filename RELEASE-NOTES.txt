@@ -4,6 +4,8 @@
 -----
 
 - [**] In-Person Payments and Simple Payments have been moved to a new Payments section [https://github.com/woocommerce/woocommerce-ios/pull/7473]
+- [*] Login: on the WP.com password screen, the magic link login option is moved from below "Reset your password" to below the primary Continue button for higher visibility. [https://github.com/woocommerce/woocommerce-ios/pull/7469]
+- [*] Login: some minor enhancements are made to the error screen after entering an invalid WP.com email - a new "What is WordPress.com?" link, hiding the "Log in with store address" button when it's from the store address login flow, and some copy changes. [https://github.com/woocommerce/woocommerce-ios/pull/7485]
 
 9.9
 -----

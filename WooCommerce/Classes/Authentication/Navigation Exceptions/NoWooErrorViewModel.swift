@@ -89,7 +89,7 @@ final class NoWooErrorViewModel: ULErrorViewModel {
         storePickerCoordinator?.start()
     }
 
-    func viewDidLoad() {
+    func viewDidLoad(_ viewController: UIViewController?) {
         analytics.track(.loginWooCommerceErrorShown)
     }
 }

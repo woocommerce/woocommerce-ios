@@ -53,6 +53,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .loginMagicLinkEmphasis:
             return true
+        case .loginMagicLinkEmphasisM2:
+            return true
         default:
             return true
         }

@@ -27,8 +27,15 @@ protocol ULErrorViewModel {
     /// Provides a title for a secondary action button
     var secondaryButtonTitle: String { get }
 
+    /// Indicates whether the secondary button is visible
+    var isSecondaryButtonHidden: Bool { get }
+
+    /// Additional view to the bottom of the vertical stack view that contains the image, text, and auxiliary button.
+    var auxiliaryView: UIView? { get }
+
     /// Executed by the view controller when its view was loaded.
-    func viewDidLoad()
+    /// - Parameter viewController: the view controller that loads the view.
+    func viewDidLoad(_ viewController: UIViewController?)
 
     /// Executes action associated to a tap in the view controller primary button
     /// - Parameter viewController: usually the view controller sending the tap
@@ -48,4 +55,8 @@ extension ULErrorViewModel {
     var title: String? { nil }
 
     var isPrimaryButtonHidden: Bool { false }
+
+    var isSecondaryButtonHidden: Bool { false }
+
+    var auxiliaryView: UIView? { nil }
 }

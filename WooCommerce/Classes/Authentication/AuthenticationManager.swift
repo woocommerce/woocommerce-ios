@@ -64,7 +64,8 @@ class AuthenticationManager: Authentication {
                                                                 enableSiteCredentialsLoginForSelfHostedSites: true,
                                                                 isWPComLoginRequiredForSiteCredentialsLogin: true,
                                                                 isWPComMagicLinkPreferredToPassword: isWPComMagicLinkPreferredToPassword,
-                                                                isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen: isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen)
+                                                                isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen:
+                                                                    isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen)
 
         let systemGray3LightModeColor = UIColor(red: 199/255.0, green: 199/255.0, blue: 204/255.0, alpha: 1)
         let systemLabelLightModeColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)

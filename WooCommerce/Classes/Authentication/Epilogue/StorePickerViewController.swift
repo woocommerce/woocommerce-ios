@@ -573,7 +573,7 @@ extension StorePickerViewController {
     /// Presents a screen to enter a store address to connect.
     ///
     @IBAction func enterStoreAddressWasPressed() {
-        guard let viewController = WordPressAuthenticator.siteAddressInputUIForTroubleshooting() else {
+        guard let viewController = WordPressAuthenticator.siteDiscoveryUI() else {
             return
         }
         navigationController?.show(viewController, sender: nil)

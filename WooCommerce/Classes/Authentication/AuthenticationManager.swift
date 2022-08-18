@@ -519,6 +519,8 @@ private extension AuthenticationManager {
         return false
     }
 
+    /// Presents an error if the user tries to log in to a site without Jetpack.
+    ///
     func presentJetpackError(for siteURL: String,
                              with credentials: AuthenticatorCredentials,
                              in navigationController: UINavigationController,
@@ -555,6 +557,9 @@ private extension AuthenticationManager {
         }
     }
 
+    /// The error screen to be displayed when the user enters a site
+    /// without Jetpack in the site discovery flow
+    ///
     func jetpackErrorUI(for siteURL: String, with matcher: ULAccountMatcher, in navigationController: UINavigationController) -> UIViewController {
         let viewModel = JetpackErrorViewModel(siteURL: siteURL, onJetpackSetupCompletion: { [weak self] authorizedEmailAddress in
             guard let self = self else { return }
@@ -583,12 +588,17 @@ private extension AuthenticationManager {
         return ULErrorViewController(viewModel: viewModel)
     }
 
+    /// The error screen to be displayed when the user tries to enter a site
+    /// whose Jetpack is not associated with their account.
+    ///
     func accountMismatchUI(for siteURL: String, with matcher: ULAccountMatcher) -> UIViewController {
         let viewModel = WrongAccountErrorViewModel(siteURL: siteURL, showsConnectedStores: matcher.hasConnectedStores)
         let mismatchAccountUI = ULAccountMismatchViewController(viewModel: viewModel)
         return mismatchAccountUI
     }
 
+    /// The error screen to be displayed when the user tries to enter a site without WooCommerce.
+    ///
     func noWooUI(for site: Site,
                  with matcher: ULAccountMatcher,
                  navigationController: UINavigationController,
@@ -605,7 +615,7 @@ private extension AuthenticationManager {
         return noWooUI
     }
 
-    /// Appropriate error to display for a site when entered from the empty store picker
+    /// Appropriate error to display for a site when entered from the site discovery flow.
     ///
     func errorUI(for site: WordPressComSiteInfo, in navigationController: UINavigationController) -> UIViewController {
         guard site.isWP else {

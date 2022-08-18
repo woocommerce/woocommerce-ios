@@ -533,22 +533,31 @@ extension OrderDetailsViewModel {
     }
 
     func syncShippingLabels(onCompletion: ((Error?) -> ())? = nil) {
-        let action = ShippingLabelAction.synchronizeShippingLabels(siteID: order.siteID, orderID: order.orderID) { result in
-            switch result {
-            case .success:
-                ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .success))
+        // If the plugin is not active, there is no point on continuing with a request that will fail.
+        isPluginActive(SitePlugin.SupportedPlugin.WCShip) { [weak self] isActive in
+            guard let self = self, isActive else {
                 onCompletion?(nil)
-            case .failure(let error):
-                ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .failed(error: error)))
-                if error as? DotcomError == .noRestRoute {
-                    DDLogError("⚠️ Endpoint for synchronizing shipping labels is unreachable. WC Shipping plugin may be missing.")
-                } else {
-                    DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
-                }
-                onCompletion?(error)
+                return
             }
+
+            let action = ShippingLabelAction.synchronizeShippingLabels(siteID: self.order.siteID, orderID: self.order.orderID) { result in
+                switch result {
+                case .success:
+                    ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .success))
+                    onCompletion?(nil)
+                case .failure(let error):
+                    ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .failed(error: error)))
+                    if error as? DotcomError == .noRestRoute {
+                        DDLogError("⚠️ Endpoint for synchronizing shipping labels is unreachable. WC Shipping plugin may be missing.")
+                    } else {
+                        DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
+                    }
+                    onCompletion?(error)
+                }
+            }
+            self.stores.dispatch(action)
+
         }
-        stores.dispatch(action)
     }
 
     func syncSavedReceipts(onCompletion: ((Error?) -> ())? = nil) {
@@ -617,6 +626,31 @@ extension OrderDetailsViewModel {
         }
 
         stores.dispatch(deleteTrackingAction)
+    }
+
+    /// Helper function that returns `true` in its callback if the provided plugin name is active on the order's store.
+    /// Additionally it logs to tracks if the plugin store is accessed without it being in sync.
+    ///
+    private func isPluginActive(_ plugin: String, completion: @escaping (Bool) -> (Void)) {
+        guard arePluginsSynced() else {
+            DDLogError("⚠️ SystemPlugins acceded without being in sync.")
+            return completion(false)
+        }
+
+        let action = SystemStatusAction.fetchSystemPlugin(siteID: order.siteID, systemPluginName: plugin) { plugin in
+            completion(plugin?.active == true)
+        }
+        stores.dispatch(action)
+    }
+
+    /// Function that checks for any existing system plugin in the order's store.
+    /// If there is none, we assume plugins are not synced because at least the`WooCommerce` plugin should be present.
+    ///
+    private func arePluginsSynced() -> Bool {
+        let predicate = NSPredicate(format: "siteID == %lld", order.siteID)
+        let resultsController = ResultsController<StorageSystemPlugin>(storageManager: ServiceLocator.storageManager, matching: predicate, sortedBy: [])
+        try? resultsController.performFetch()
+        return !resultsController.isEmpty
     }
 }
 

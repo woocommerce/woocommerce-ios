@@ -58,6 +58,12 @@ final class InPersonPaymentsViewModel: ObservableObject {
         useCase.refresh()
     }
 
+    /// Skips the Pending Requirements step when the user taps `Skip`
+    ///
+    func skipPendingRequirements() {
+        useCase.skipPendingRequirements()
+    }
+
     /// Selects the plugin to use as a payment gateway when there are multiple available
     ///
     func selectPlugin(_ plugin: CardPresentPaymentsPlugin) {

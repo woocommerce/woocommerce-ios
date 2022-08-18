@@ -1398,3 +1398,34 @@ extension WooAnalyticsEvent {
         }
     }
 }
+
+// MARK: - Site picker
+//
+extension WooAnalyticsEvent {
+    enum SitePicker {
+
+        enum Key: String {
+            case hasWordPress = "has_wordpress"
+            case isWPCom = "is_wpcom"
+            case hasValidJetpack = "has_valid_jetpack"
+        }
+
+        /// Tracks when the user taps the Enter Your Store Address button
+        static func enterStoreAddressTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .sitePickerEnterStoreAddressTapped, properties: [:])
+        }
+
+        /// Tracks when the result for site discovery is returned
+        static func siteDiscovery(hasWordPress: Bool, isWPCom: Bool, hasValidJetpack: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .sitePickerSiteDiscovery, properties: [Key.hasWordPress.rawValue: hasWordPress,
+                                                                               Key.isWPCom.rawValue: isWPCom,
+                                                                               Key.hasValidJetpack.rawValue: hasValidJetpack])
+        }
+
+        /// Tracks when the user taps the New To WooCommerce button
+        ///
+        static func newToWooTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .sitePickerNewToWooTapped, properties: [:])
+        }
+    }
+}

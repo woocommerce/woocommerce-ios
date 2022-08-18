@@ -566,20 +566,19 @@ private extension AuthenticationManager {
             ServiceLocator.stores.synchronizeEntities { [weak self] in
                 guard let self = self else { return }
                 matcher.refreshStoredSites()
-                if let matchedSite = matcher.matchedSite(originalURL: siteURL) {
-                    // checks if the site has woo
-                    if matchedSite.isWooCommerceActive == false {
-                        let noWooUI = self.noWooUI(for: matchedSite,
-                                                   with: matcher,
-                                                   navigationController: navigationController,
-                                                   onStorePickerDismiss: {})
-                        navigationController.show(noWooUI, sender: nil)
-                    } else {
-                        self.startStorePicker(with: matchedSite.siteID, in: navigationController, onDismiss: {})
-                    }
-                } else {
+                guard let matchedSite = matcher.matchedSite(originalURL: siteURL) else {
                     DDLogWarn("⚠️ Could not find \(siteURL) connected to the account")
-                    // TODO: what now?
+                    return
+                }
+                // checks if the site has woo
+                if matchedSite.isWooCommerceActive == false {
+                    let noWooUI = self.noWooUI(for: matchedSite,
+                                               with: matcher,
+                                               navigationController: navigationController,
+                                               onStorePickerDismiss: {})
+                    navigationController.show(noWooUI, sender: nil)
+                } else {
+                    self.startStorePicker(with: matchedSite.siteID, in: navigationController, onDismiss: {})
                 }
             }
         })

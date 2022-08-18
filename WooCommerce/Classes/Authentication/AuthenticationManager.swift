@@ -600,7 +600,6 @@ private extension AuthenticationManager {
                  with matcher: ULAccountMatcher,
                  navigationController: UINavigationController,
                  onStorePickerDismiss: @escaping () -> Void) -> UIViewController {
-
         let viewModel = NoWooErrorViewModel(
             site: site,
             showsConnectedStores: matcher.hasConnectedStores,

@@ -1,3 +1,1 @@
-Anda akan melihat banner baru untuk menerima pembayaran langsung dari aplikasi menggunakan WooCommerce Payments. Tunggu! Itu belum semua. Anda dapat menggeser pesanan ke kiri untuk menandainya selesai!
-
-Kami juga melakukan beberapa peningkatan pengalaman login, termasuk pilihan untuk login dengan kredensial wp-admin Anda. Sekarang, Anda juga dapat menginstal plugin WooCommerce langsung dari aplikasi!
+Rilis ini berisi sejumlah peningkatan untuk pengalaman login Anda, termasuk pilihan untuk menggunakan kredensial situs `wp-admin`, dan pilihan tautan ajaib untuk login. Mohon terus berikan feedback – kami siap mendengarkan!

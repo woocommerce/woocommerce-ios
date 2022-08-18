@@ -1,3 +1,0 @@
-Er is een nieuwe banner om betalingen rechtstreeks vanuit de app aan te nemen met WooCommerce Payments. En er is meer! Je kunt een bestelling naar links vegen om deze af te ronden!
-
-Ook is de login-ervaring verbeterd; je hebt nu onder andere de mogelijkheid om in te loggen met je wp-admin-inloggegevens. Je kunt de WooCommerce-plugin nu ook rechtstreeks vanuit de app installeren!

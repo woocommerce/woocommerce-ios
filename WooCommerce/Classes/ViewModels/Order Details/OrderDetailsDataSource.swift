@@ -67,12 +67,6 @@ final class OrderDetailsDataSource: NSObject {
             !isEligibleForPayment
     }
 
-    /// Whether the row for amount paid should be visible.
-    ///
-    private var shouldShowCustomerPaidRow: Bool {
-        order.datePaid != nil
-    }
-
     /// Whether the option to re-create shipping labels should be visible.
     ///
     var shouldAllowRecreatingShippingLabels: Bool {
@@ -603,7 +597,7 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureRefund(cell: TwoColumnHeadlineFootnoteTableViewCell, at indexPath: IndexPath) {
-        let index = indexPath.row - Constants.paymentCell - Constants.paidByCustomerCell(isDisplayed: shouldShowCustomerPaidRow)
+        let index = indexPath.row - Constants.paymentCell - Constants.paidByCustomerCell
         let condensedRefund = condensedRefunds[index]
         let refund = lookUpRefund(by: condensedRefund.refundID)
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order, refund: refund)
@@ -1254,7 +1248,7 @@ extension OrderDetailsDataSource {
     }
 
     func refund(at indexPath: IndexPath) -> Refund? {
-        let index = indexPath.row - Constants.paymentCell - Constants.paidByCustomerCell(isDisplayed: shouldShowCustomerPaidRow)
+        let index = indexPath.row - Constants.paymentCell - Constants.paidByCustomerCell
         let condensedRefund = condensedRefunds[index]
         let refund = refunds.first { $0.refundID == condensedRefund.refundID }
 
@@ -1658,12 +1652,7 @@ extension OrderDetailsDataSource {
     enum Constants {
         static let addOrderCell = 1
         static let paymentCell = 1
-
-        /// Input value required because cell is displayed conditionally
-        ///
-        static func paidByCustomerCell(isDisplayed: Bool) -> Int {
-            isDisplayed ? 1 : 0
-        }
+        static let paidByCustomerCell = 1
     }
 }
 

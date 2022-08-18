@@ -57,16 +57,18 @@ public class LoginFields: NSObject {
         return loginFields
     }
 
-    init(username: String = "",
-         password: String = "",
-         siteAddress: String = "",
-         multifactorCode: String = "",
-         nonceInfo: SocialLogin2FANonceInfo? = nil,
-         nonceUserID: Int = 0,
-         restrictToWPCom: Bool = false,
-         emailAddress: String = "",
-         meta: LoginFieldsMeta = LoginFieldsMeta(),
-         storedCredentials: SafariStoredCredentials? = nil) {
+    /// Using a convenience initializer for its Objective-C usage in unit tests.
+    convenience init(username: String,
+                     password: String,
+                     siteAddress: String,
+                     multifactorCode: String,
+                     nonceInfo: SocialLogin2FANonceInfo?,
+                     nonceUserID: Int,
+                     restrictToWPCom: Bool,
+                     emailAddress: String,
+                     meta: LoginFieldsMeta,
+                     storedCredentials: SafariStoredCredentials?) {
+        self.init()
         self.username = username
         self.password = password
         self.siteAddress = siteAddress

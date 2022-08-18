@@ -265,12 +265,18 @@ extension OrderDetailsViewModel {
     }
 
     func syncTrackingsEnablingAddButtonIfReachable(onReloadSections: (() -> ())? = nil, onCompletion: (() -> Void)? = nil) {
-        syncTracking { [weak self] error in
-            if error == nil {
-                self?.trackingIsReachable = true
+        // If the plugin is not active, there is no point on continuing with a request that will fail.
+        isPluginActive(SitePlugin.SupportedPlugin.WCTracking) { [weak self] isActive in
+            guard let self = self, isActive else {
+                onCompletion?()
+                return
             }
-            onReloadSections?()
-            onCompletion?()
+
+            self.trackingIsReachable = true
+            self.syncTracking { error in
+                onReloadSections?()
+                onCompletion?()
+            }
         }
     }
 }

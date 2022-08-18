@@ -76,6 +76,8 @@ struct InPersonPaymentsView: View {
                 InPersonPaymentsStripeAccountReview()
             case .stripeAccountRejected:
                 InPersonPaymentsStripeRejected()
+            case .codPaymentGatewayNotSetUp:
+                InPersonPaymentsCodPaymentGatewayNotSetUp(viewModel: viewModel.codStepViewModel)
             case .completed:
                 InPersonPaymentsCompleted()
             case .noConnectionError:

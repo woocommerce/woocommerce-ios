@@ -117,4 +117,8 @@ public enum FeatureFlag: Int {
     /// Whether to show the magic link as a secondary button instead of a table view cell on the password screen
     ///
     case loginMagicLinkEmphasisM2
+
+    /// Whether to include the Cash on Delivery enable step in In-Person Payment onboarding
+    ///
+    case promptToEnableCodInIppOnboarding
 }

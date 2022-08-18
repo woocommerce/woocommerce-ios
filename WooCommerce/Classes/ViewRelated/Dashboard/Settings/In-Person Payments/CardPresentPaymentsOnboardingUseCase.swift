@@ -35,6 +35,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     let featureFlagService: FeatureFlagService
     private let cardPresentPluginsDataProvider: CardPresentPluginsDataProvider
     private var preferredPluginLocal: CardPresentPaymentsPlugin?
+    private var wasCodStepSkipped: Bool = false
 
     @Published var state: CardPresentPaymentOnboardingState = .loading
 
@@ -170,6 +171,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
             DDLogError("[CardPresentPaymentsOnboarding] Couldn't determine country for store")
             return .genericError
         }
+        checkIfCodStepSkipped()
 
         let configuration = configurationLoader.configuration
 
@@ -302,6 +304,11 @@ private extension CardPresentPaymentsOnboardingUseCase {
         guard !isStripeAccountRejected(account: account) else {
             return .stripeAccountRejected(plugin: plugin)
         }
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.promptToEnableCodInIppOnboarding) {
+            if shouldShowCodStep {
+                return .codPaymentGatewayNotSetUp
+            }
+        }
         guard !isInUndefinedState(account: account) else {
             return .genericError
         }
@@ -405,6 +412,32 @@ private extension CardPresentPaymentsOnboardingUseCase {
             || account.wcpayStatus == .rejectedListed
             || account.wcpayStatus == .rejectedTermsOfService
             || account.wcpayStatus == .rejectedOther
+    }
+
+    var shouldShowCodStep: Bool {
+        !isCodSetUp() && !wasCodStepSkipped
+    }
+
+    func checkIfCodStepSkipped() {
+        guard let siteID = siteID else {
+            return
+        }
+
+        let action = AppSettingsAction.getSkippedCodOnboardingStep(siteID: siteID) { [weak self] skipped in
+            self?.wasCodStepSkipped = skipped
+        }
+
+        stores.dispatch(action)
+    }
+
+    func isCodSetUp() -> Bool {
+        guard let siteID = siteID,
+              let codGateway = storageManager.viewStorage.loadPaymentGateway(siteID: siteID, gatewayID: "cod")?.toReadOnly()
+        else {
+            return false
+        }
+
+        return codGateway.enabled
     }
 
     func isInUndefinedState(account: PaymentGatewayAccount) -> Bool {

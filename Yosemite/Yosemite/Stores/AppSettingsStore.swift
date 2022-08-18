@@ -182,6 +182,10 @@ public class AppSettingsStore: Store {
             setFeatureAnnouncementDismissed(campaign: campaign, remindLater: remindLater, onCompletion: completion)
         case .getFeatureAnnouncementVisibility(campaign: let campaign, onCompletion: let completion):
             getFeatureAnnouncementVisibility(campaign: campaign, onCompletion: completion)
+        case .setSkippedCodOnboardingStep(siteID: let siteID):
+            setSkippedCodOnboardingStep(siteID: siteID)
+        case .getSkippedCodOnboardingStep(siteID: let siteID, onCompletion: let completion):
+            getSkippedCodOnboardingStep(siteID: siteID, onCompletion: completion)
         }
     }
 }
@@ -718,7 +722,6 @@ private extension AppSettingsStore {
     func getPreferredInPersonPaymentGateway(siteID: Int64, onCompletion: (String?) -> Void) {
         let storeSettings = getStoreSettings(for: siteID)
         onCompletion(storeSettings.preferredInPersonPaymentGateway)
-
     }
 
     /// Forgets the preferred payment gateway for In-Person Payments
@@ -727,6 +730,21 @@ private extension AppSettingsStore {
         let storeSettings = getStoreSettings(for: siteID)
         let newSettings = storeSettings.copy(preferredInPersonPaymentGateway: .some(nil))
         setStoreSettings(settings: newSettings, for: siteID, onCompletion: nil)
+    }
+
+    /// Marks the Enable Cash on Delivery In-Person Payments Onboarding step as skipped
+    ///
+    func setSkippedCodOnboardingStep(siteID: Int64) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let newSettings = storeSettings.copy(skippedCodOnboardingStep: true)
+        setStoreSettings(settings: newSettings, for: siteID)
+    }
+
+    /// Gets whether the Enable Cash on Delivery In-Person Payments Onboarding step has been skipped
+    ///
+    func getSkippedCodOnboardingStep(siteID: Int64, onCompletion: (Bool) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        onCompletion(storeSettings.skippedCodOnboardingStep)
     }
 
 }

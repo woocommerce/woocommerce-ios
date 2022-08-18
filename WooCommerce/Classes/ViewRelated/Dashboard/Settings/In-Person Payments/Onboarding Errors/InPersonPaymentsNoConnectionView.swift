@@ -7,7 +7,7 @@ struct InPersonPaymentsNoConnection: View {
         InPersonPaymentsOnboardingError(
             title: Localization.title,
             message: Localization.message,
-            image: InPersonPaymentsOnboardingError.ImageInfo(
+            image: InPersonPaymentsOnboardingErrorMainContentView.ImageInfo(
                 image: .errorStateImage,
                 height: 108.0
             ),

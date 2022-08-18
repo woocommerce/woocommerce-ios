@@ -9,7 +9,7 @@ struct InPersonPaymentsPluginNotSupportedVersion: View {
         InPersonPaymentsOnboardingError(
             title: String(format: Localization.title, plugin.pluginName),
             message: String(format: Localization.message, plugin.pluginName),
-            image: InPersonPaymentsOnboardingError.ImageInfo(
+            image: InPersonPaymentsOnboardingErrorMainContentView.ImageInfo(
                 image: plugin.image,
                 height: 108.0
             ),

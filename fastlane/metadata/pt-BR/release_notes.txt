@@ -1,3 +1,0 @@
-Você verá um novo banner para aceitar pagamentos diretamente no aplicativo com o WooCommerce Payments. E isso não é tudo! É possível deslizar um pedido para a esquerda para marcá-lo como concluído.
-
-Fizemos também várias melhorias na experiência de login, incluindo a opção de entrar com suas credenciais wp-admin. Agora você também pode instalar o plugin WooCommerce diretamente pelo aplicativo.

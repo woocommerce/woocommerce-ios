@@ -49,14 +49,14 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .loginErrorNotifications:
             return true
-        case .paymentsHubMenuSection:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .loginPrologueOnboardingSurvey:
             return true
         case .loginMagicLinkEmphasis:
             return true
         case .loginMagicLinkEmphasisM2:
             return true
+        case .promptToEnableCodInIppOnboarding:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

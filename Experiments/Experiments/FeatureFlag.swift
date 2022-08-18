@@ -102,10 +102,6 @@ public enum FeatureFlag: Int {
     ///
     case loginErrorNotifications
 
-    /// Payments Section in the Hub Menu
-    ///
-    case paymentsHubMenuSection
-
     /// Whether to show a survey at the end of the login onboarding screen after feature carousel
     ///
     case loginPrologueOnboardingSurvey
@@ -117,4 +113,8 @@ public enum FeatureFlag: Int {
     /// Whether to show the magic link as a secondary button instead of a table view cell on the password screen
     ///
     case loginMagicLinkEmphasisM2
+
+    /// Whether to include the Cash on Delivery enable step in In-Person Payment onboarding
+    ///
+    case promptToEnableCodInIppOnboarding
 }

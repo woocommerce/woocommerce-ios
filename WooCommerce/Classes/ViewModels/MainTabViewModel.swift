@@ -94,10 +94,8 @@ final class MainTabViewModel {
         listenToReviewsBadgeReloadRequired()
         retrieveShouldShowReviewsBadgeOnHubMenuTabValue()
 
-        if featureFlagService.isFeatureFlagEnabled(.paymentsHubMenuSection) {
-            listenToNewFeatureBadgeReloadRequired()
-            retrieveShouldShowNewFeatureBadgeOnHubMenuTabValue()
-        }
+        listenToNewFeatureBadgeReloadRequired()
+        retrieveShouldShowNewFeatureBadgeOnHubMenuTabValue()
     }
 }
 

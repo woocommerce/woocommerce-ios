@@ -7,7 +7,7 @@ struct InPersonPaymentsCountryNotSupportedStripe: View {
         InPersonPaymentsOnboardingError(
             title: title,
             message: Localization.message,
-            image: InPersonPaymentsOnboardingError.ImageInfo(
+            image: InPersonPaymentsOnboardingErrorMainContentView.ImageInfo(
                 image: .paymentErrorImage,
                 height: 180.0
             ),

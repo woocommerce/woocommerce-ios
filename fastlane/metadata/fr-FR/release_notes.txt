@@ -1,3 +1,0 @@
-Vous remarquerez la présence d'une nouvelle bannière vous permettant d'accepter des paiements directement depuis l'application avec WooCommerce Payments. Ce n’est pas tout ! Il est possible de marquer une commande comme clôturée en la faisant glisser vers la gauche !
-
-Nous avons également apporté plusieurs améliorations à l'expérience de connexion, notamment la possibilité de vous connecter avec vos identifiants de connexion wp-admin. Vous pouvez également installer l'extension WooCommerce directement depuis l'application !

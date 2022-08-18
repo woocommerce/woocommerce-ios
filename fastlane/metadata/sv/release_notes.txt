@@ -1,3 +1,0 @@
-Du kommer att märka en ny banner för att ta emot betalningar direkt från appen med WooCommerce Payments. Det är inte allt! Det är möjligt att svepa en beställning åt vänster för att markera den som slutförd.
-
-Vi har också gjort flertalet förbättringar av inloggningsupplevelsen, inklusive möjligheten att logga in med dina autentiseringsuppgifter för WP-admin. Du kan också nu installera WooCommerce-tillägget direkt från appen.

@@ -1,3 +1,1 @@
-Noterai un nuovo banner per accettare pagamenti direttamente dall'app con WooCommerce Payments. Non è tutto! È possibile scorrere un ordine verso sinistra per contrassegnarlo come completato!
-
-Abbiamo anche apportato diversi miglioramenti all'esperienza di accesso, inclusa l'opzione di accedere con le tue credenziali wp-admin. Ora, puoi anche installare il plug-in WooCommerce direttamente dall'app!
+Questa versione apporta alcuni miglioramenti alla tua esperienza di accesso, inclusa l'opzione per usare le credenziali del tuo sito `wp-admin` e l'opzione con link per l'accesso. Continua a inviarci feedback: siamo lieti di ascoltarli.

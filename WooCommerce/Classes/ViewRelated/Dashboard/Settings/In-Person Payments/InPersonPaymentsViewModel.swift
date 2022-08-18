@@ -6,21 +6,21 @@ final class InPersonPaymentsViewModel: ObservableObject {
     @Published var state: CardPresentPaymentOnboardingState
     var userIsAdministrator: Bool
     var learnMoreURL: URL? = nil
-    let showMenuOnCompletion: Bool
     let gatewaySelectionAvailable: Bool
-    var onOnboardingCompletion: ((CardPresentPaymentsPluginState) -> ())?
     private let useCase: CardPresentPaymentsOnboardingUseCase
     let stores: StoresManager
+
+    lazy var codStepViewModel: InPersonPaymentsCodPaymentGatewayNotSetUpViewModel = {
+        InPersonPaymentsCodPaymentGatewayNotSetUpViewModel(completion: refresh)
+    }()
 
     /// Initializes the view model for a specific site
     ///
     init(stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         useCase: CardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase(),
-         showMenuOnCompletion: Bool = true) {
+         useCase: CardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase()) {
         self.stores = stores
         self.useCase = useCase
-        self.showMenuOnCompletion = showMenuOnCompletion
         gatewaySelectionAvailable = featureFlagService.isFeatureFlagEnabled(.inPersonPaymentGatewaySelection)
         state = useCase.state
         userIsAdministrator = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator)
@@ -30,9 +30,6 @@ final class InPersonPaymentsViewModel: ObservableObject {
             .debounce(for: .milliseconds(100), scheduler: DispatchQueue.main)
             .removeDuplicates()
             .handleEvents(receiveOutput: { [weak self] result in
-                if case let .completed(plugin) = result {
-                    self?.onOnboardingCompletion?(plugin)
-                }
                 self?.updateLearnMoreURL(state: result)
             })
             .handleEvents(receiveOutput: trackState(_:))
@@ -48,7 +45,6 @@ final class InPersonPaymentsViewModel: ObservableObject {
         stores: StoresManager = ServiceLocator.stores,
         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
             self.stores = stores
-            self.showMenuOnCompletion = false
             gatewaySelectionAvailable = featureFlagService.isFeatureFlagEnabled(.inPersonPaymentGatewaySelection)
             state = fixedState
             useCase = CardPresentPaymentsOnboardingUseCase()
@@ -60,6 +56,12 @@ final class InPersonPaymentsViewModel: ObservableObject {
     ///
     func refresh() {
         useCase.refresh()
+    }
+
+    /// Skips the Pending Requirements step when the user taps `Skip`
+    ///
+    func skipPendingRequirements() {
+        useCase.skipPendingRequirements()
     }
 
     /// Selects the plugin to use as a payment gateway when there are multiple available

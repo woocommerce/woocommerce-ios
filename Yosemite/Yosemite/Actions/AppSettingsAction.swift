@@ -187,6 +187,14 @@ public enum AppSettingsAction: Action {
     ///
     case resetGeneralStoreSettings
 
+    /// Marks the Enable Cash on Delivery In-Person Payments Onboarding step as skipped
+    ///
+    case setSkippedCodOnboardingStep(siteID: Int64)
+
+    /// Gets whether the Enable Cash on Delivery In-Person Payments Onboarding step has been skipped
+    ///
+    case getSkippedCodOnboardingStep(siteID: Int64, onCompletion: (Bool) -> Void)
+
     // MARK: - Feature Announcement Card Visibility
 
     case setFeatureAnnouncementDismissed(campaign: FeatureAnnouncementCampaign, remindLater: Bool, onCompletion: ((Result<Bool, Error>) -> ())?)

@@ -1,3 +1,1 @@
-WooCommerce Payments ile doğrudan uygulamadan ödemeleri kabul etmeye yönelik yeni bir reklam bandı göreceksiniz. Hepsi bu değil. Bir siparişi sola kaydırarak Tamamlandı olarak işaretlemek mümkündür!
-
-Ayrıca, wp-admin kimlik bilgilerinizle oturum açma seçeneği de dahil olmak üzere oturum açma deneyiminde birkaç iyileştirme yapılmıştır. WooCommerce eklentisini şimdi doğrudan uygulamadan da yükleyebilirsiniz!
+Bu sürümde, "wp-admin" site kimlik bilgilerinizi kullanma seçeneği ve oturum açmak için sihirli bağlantı seçeneği de dahil olmak üzere, oturum açma deneyiminizde bazı iyileştirmeler yapılmıştır. Lütfen bize geri bildirim göndermeye devam edin, sizi dinliyoruz.

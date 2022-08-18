@@ -67,6 +67,11 @@ public enum CardPresentPaymentOnboardingState: Equatable {
     ///
     case stripeAccountRejected(plugin: CardPresentPaymentsPlugin)
 
+    /// The Cash on Delivery payment gateway is missing or disabled
+    /// Enabling Cash on Delivery is not essential for Card Present Payments, but allows web store customers to place orders and pay by card in person.
+    ///
+    case codPaymentGatewayNotSetUp
+
     /// Generic error - for example, one of the requests failed.
     ///
     case genericError
@@ -109,6 +114,8 @@ extension CardPresentPaymentOnboardingState {
             return "account_overdue_requirements"
         case .stripeAccountRejected:
             return "account_rejected"
+        case .codPaymentGatewayNotSetUp:
+            return "cod_not_set_up"
         case .genericError:
             return "generic_error"
         case .noConnectionError:
@@ -126,6 +133,14 @@ extension CardPresentPaymentOnboardingState {
 
     public var isSelectPlugin: Bool {
         if case .selectPlugin = self {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    public var isCountryNotSupported: Bool {
+        if case .countryNotSupported(_) = self {
             return true
         } else {
             return false

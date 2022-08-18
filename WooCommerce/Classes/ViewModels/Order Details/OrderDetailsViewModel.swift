@@ -581,16 +581,24 @@ extension OrderDetailsViewModel {
     }
 
     func checkShippingLabelCreationEligibility(onCompletion: (() -> Void)? = nil) {
-        let action = ShippingLabelAction.checkCreationEligibility(siteID: order.siteID,
-                                                                  orderID: order.orderID) { [weak self] isEligible in
-            self?.dataSource.isEligibleForShippingLabelCreation = isEligible
-            if isEligible, let orderStatus = self?.orderStatus?.status.rawValue {
-                ServiceLocator.analytics.track(.shippingLabelOrderIsEligible,
-                                               withProperties: ["order_status": orderStatus])
+        // If the plugin is not active, there is no point on continuing with a request that will fail.
+        isPluginActive(SitePlugin.SupportedPlugin.WCShip) { [weak self] isActive in
+            guard let self = self, isActive else {
+                onCompletion?()
+                return
             }
-            onCompletion?()
+
+            let action = ShippingLabelAction.checkCreationEligibility(siteID: self.order.siteID,
+                                                                      orderID: self.order.orderID) { [weak self] isEligible in
+                self?.dataSource.isEligibleForShippingLabelCreation = isEligible
+                if isEligible, let orderStatus = self?.orderStatus?.status.rawValue {
+                    ServiceLocator.analytics.track(.shippingLabelOrderIsEligible,
+                                                   withProperties: ["order_status": orderStatus])
+                }
+                onCompletion?()
+            }
+            self.stores.dispatch(action)
         }
-        stores.dispatch(action)
     }
 
     func checkOrderAddOnFeatureSwitchState(onCompletion: (() -> Void)? = nil) {

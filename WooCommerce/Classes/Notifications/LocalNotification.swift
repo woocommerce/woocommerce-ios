@@ -19,7 +19,7 @@ struct LocalNotification {
         case loginSiteAddressError = "site_address_error"
         case invalidEmailFromSiteAddressLogin = "site_address_email_error"
         case invalidEmailFromWPComLogin = "wpcom_email_error"
-        case invalidPasswordFromSiteAddressLogin = "site_address_wpcom_password_error"
+        case invalidPasswordFromSiteAddressWPComLogin = "site_address_wpcom_password_error"
         case invalidPasswordFromWPComLogin = "wpcom_password_error"
     }
 
@@ -61,7 +61,7 @@ extension LocalNotification {
                       body: Localization.errorLoggingInBody,
                       scenario: scenario,
                       actions: .init(category: .loginError, actions: [.contactSupport]))
-        case .invalidPasswordFromWPComLogin, .invalidPasswordFromSiteAddressLogin:
+        case .invalidPasswordFromWPComLogin, .invalidPasswordFromSiteAddressWPComLogin:
             self.init(title: Localization.passwordErrorTitle,
                       body: Localization.errorLoggingInBody,
                       scenario: scenario,

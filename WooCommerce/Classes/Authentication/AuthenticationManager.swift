@@ -480,8 +480,8 @@ private extension AuthenticationManager {
             notification = LocalNotification(scenario: .invalidEmailFromSiteAddressLogin)
         case .invalidEmailFromWPComLogin:
             notification = LocalNotification(scenario: .invalidEmailFromWPComLogin)
-        case .invalidPasswordFromSiteAddressLogin:
-            notification = LocalNotification(scenario: .invalidPasswordFromSiteAddressLogin)
+        case .invalidPasswordFromSiteAddressWPComLogin:
+            notification = LocalNotification(scenario: .invalidPasswordFromSiteAddressWPComLogin)
         case .invalidPasswordFromWPComLogin:
             notification = LocalNotification(scenario: .invalidPasswordFromWPComLogin)
         default:
@@ -558,7 +558,7 @@ extension AuthenticationManager {
             return NotWPErrorViewModel()
         case .noSecureConnection:
             return NoSecureConnectionErrorViewModel()
-        case .unknown, .invalidPasswordFromWPComLogin, .invalidPasswordFromSiteAddressLogin:
+        case .unknown, .invalidPasswordFromWPComLogin, .invalidPasswordFromSiteAddressWPComLogin:
             return nil
         }
     }
@@ -572,7 +572,7 @@ private extension AuthenticationManager {
         case emailDoesNotMatchWPAccount
         case invalidEmailFromSiteAddressLogin
         case invalidEmailFromWPComLogin
-        case invalidPasswordFromSiteAddressLogin
+        case invalidPasswordFromSiteAddressWPComLogin
         case invalidPasswordFromWPComLogin
         case notWPSite
         case notValidAddress
@@ -594,7 +594,7 @@ private extension AuthenticationManager {
                     case .wpCom:
                         return .invalidPasswordFromWPComLogin
                     case .wpComSiteAddress:
-                        return .invalidPasswordFromSiteAddressLogin
+                        return .invalidPasswordFromSiteAddressWPComLogin
                     }
                 }
             }

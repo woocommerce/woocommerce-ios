@@ -752,7 +752,7 @@ private extension GetStartedViewController {
             return
         }
 
-        vc.loginFields = loginFields
+        vc.loginFields = loginFields.copy()
         vc.dismissBlock = dismissBlock
         vc.errorToPresent = errorToPresent
 

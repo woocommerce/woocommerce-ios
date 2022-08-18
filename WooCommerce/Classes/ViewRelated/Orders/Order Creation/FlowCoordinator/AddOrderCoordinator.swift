@@ -65,11 +65,7 @@ private extension AddOrderCoordinator {
     func presentOrderCreationFlow(bottomSheetOrderType: BottomSheetOrderType) {
         switch bottomSheetOrderType {
         case .simple:
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.paymentsHubMenuSection) {
-                presentBottomAnnouncement()
-            } else {
-                presentSimplePaymentsAmountController()
-            }
+            presentBottomAnnouncement()
         case .full:
             presentNewOrderController()
             return

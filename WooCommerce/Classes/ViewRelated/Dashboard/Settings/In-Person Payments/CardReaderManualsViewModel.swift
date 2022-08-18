@@ -1,5 +1,4 @@
 import Foundation
-import SwiftUI
 import Yosemite
 
 struct Manual: Identifiable, Equatable {
@@ -14,9 +13,9 @@ final class CardReaderManualsViewModel {
     let manuals: [Manual]
 
     init() {
-        // Initialize the View Model only with the supported readers for a specific Store
+        // Initialize the ViewModel only with the supported readers for the specific store's country
         self.configurationLoader = CardPresentConfigurationLoader()
         let supportedReaders = configurationLoader.configuration.supportedReaders
-        self.manuals = supportedReaders.map { $0.manual }
+        self.manuals = supportedReaders.compactMap { $0.manual }
     }
 }

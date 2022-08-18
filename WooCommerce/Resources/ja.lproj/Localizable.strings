@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-08-10 18:54:03+0000 */
+/* Translation-Revision-Date: 2022-08-17 09:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -220,6 +220,9 @@ which should be translated separately and considered part of this sentence. */
 /* Please limit to 3 characters if possible. This is used if there are more than 99 items in a tab, like Orders. */
 "99+" = "99+";
 
+/* Instruction text to explain magic link login step. */
+"A WordPress.com account is connected to your store credentials. To continue, we will send a verification link to the email address above." = "WordPress.com アカウントはストアのログイン情報に連携されています。 続行する場合は、上のメールアドレスに認証リンクが届きます。";
+
 /* Placeholder of the Product Short Description row on Product main screen */
 "A brief excerpt about the product" = "商品に関する簡単な抜粋";
 
@@ -282,6 +285,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title when a payments account is successfully connected for Card Present Payments */
 "Account connected" = "アカウントが連携されました";
+
+/* Title for the section related to actions inside In-Person Payments settings */
+"Actions" = "操作";
 
 /* Title for the error screen when a Card Present Payments extension is installed but not activated */
 "Activate %1$@" = "%1$@ を有効にする";
@@ -536,6 +542,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "もう少しで完了です。認証アプリから認証コードを入力してください。";
+
+/* Instruction text to explain to help users type their password instead of using magic link login option. */
+"Alternatively, you may enter the password for this account." = "または、このアカウントのパスワードを入力することもできます。";
 
 /* String displayed before offering alternative login methods */
 "Alternatively:" = "もしくは、";
@@ -965,6 +974,9 @@ which should be translated separately and considered part of this sentence. */
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "入力した URL が正しいかどうかを確認してください";
 
+/* The title text on the magic link requested screen. */
+"Check your email on this device!" = "この端末でメールアドレスを確認してください。";
+
 /* Instruction text after a login Magic Link was requested. */
 "Check your email on this device, and tap the link in the email you receive from WordPress.com." = "このデバイスでメールをチェックして、WordPress.com から届いたメールにあるリンクをタップしてください。";
 
@@ -1040,7 +1052,8 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "情報を収集";
 
-/* Text on the button that starts collecting a card present payment. */
+/* Navigates to Collect a payment via the Simple Payment screen
+   Text on the button that starts collecting a card present payment. */
 "Collect Payment" = "支払いを受け取る";
 
 /* Alert title when starting the collect payment flow without a user name. */
@@ -1157,7 +1170,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Content Type row in Customs screen of Shipping Label flow */
 "Content Type" = "中身の種類";
 
-/* Continue button inside every cell inside Create Shipping Label form
+/* Button on the Store Picker screen to select a store
+   Continue button inside every cell inside Create Shipping Label form
    The button title text when there is a next step for logging in or signing up.
    Title of continue button
    Title of dismiss button presented when users attempt to log in without Jetpack installed or connected */
@@ -1873,6 +1887,9 @@ which should be translated separately and considered part of this sentence. */
    Title of a button. */
 "Enter your password instead." = "代わりにパスワードを入力してください。";
 
+/* Enter your store credentials for {site url}. Asks the user to enter .org site credentials for their store. */
+"Enter your store credentials for %@." = "%@ のストアのログイン情報を入力してください。";
+
 /* Envelope package type, used to create a custom package in the Shipping Label flow */
 "Envelope" = "封筒";
 
@@ -2285,6 +2302,9 @@ which should be translated separately and considered part of this sentence. */
 /* Step 4 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "If you are still experiencing issues printing from your phone, you can save your label as PDF and **send it by email** to print it from another device." = "スマートフォンからの印刷で引き続き問題が発生している場合は、ラベルを PDF として保存し、別の端末に **メールで送信** して印刷できます。";
 
+/* The instructions text about not being able to find the magic link email. */
+"If you can’t find the email, please check your junk or spam email folder" = "メールが見つからない場合は、迷惑メールやスパムのフォルダーを確認してください";
+
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Apple を引き続き使用し、WordPress.com アカウントをまだお持ちでない場合は、アカウントを作成して WordPress.com の _利用規約_ に同意します。";
 
@@ -2690,6 +2710,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Local notification action to log in with WordPress.com. */
 "Login with WordPress.com" = "WordPress.com にログイン";
+
+/* Button title. Takes the user to the Enter account password screen. */
+"Login with account password" = "アカウントパスワードでログイン";
 
 /* Title of a button. */
 "Lost your password?" = "パスワードをお忘れですか ?";
@@ -3202,6 +3225,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Restriction type Other for contents declared in the customs form for Shipping Label flow
    Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "その他";
+
+/* Store Picker's Section Title: Displayed when there are sites without WooCommerce */
+"Other Sites" = "他のサイト";
 
 /* Display label for the product's inventory stock status */
 "Out of stock" = "在庫なし";
@@ -4176,6 +4202,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The button title text for sending a magic link. */
 "Send Link by Email" = "リンクをメールで送信";
+
+/* Button title. Sends a email verification link (Magin link) for signing in. */
+"Send email verification link" = "メール認証リンクを送信";
 
 /* Service Package menu in Shipping Label Add New Package flow */
 "Service Package" = "サービスパッケージ";
@@ -5592,6 +5621,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the Use as Shipping Address switch in the Address form */
 "Use as Shipping Address" = "配送先住所として使用";
 
+/* The button title text for logging in with WP.com password instead of magic link. */
+"Use password to sign in" = "パスワードを使用してログイン";
+
 /* Title of user profiles as part of Jetpack benefits. */
 "User Profiles" = "ユーザープロフィール";
 
@@ -5766,6 +5798,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* message to ask a user to check their email for a WordPress.com email */
 "We just emailed a link to %@. Please check your mail app and tap the link to log in." = "メールアドレス「%@」宛てにリンクを送信しました。お使いのメールソフトをチェックして、ログインリンクをタップしてください。";
+
+/* The subtitle text on the magic link requested screen followed by the email address. */
+"We just sent a magic link to" = "マジックリンクを次のアドレスに送信しました: ";
 
 /* Subtitle displayed in promotional screens shown during the login flow. */
 "We know it’s essential to your business." = "ビジネスに欠かせないものであることはわかっています。";
@@ -6042,7 +6077,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 "unknown url" = "不明な URL";
 
 /* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need...
-   Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have WooCommerce.The error would read: to use this app for your site you'll need...
    Placeholder for site url, if the url is unknown.Presented when logging in with a store address that does not match the account entered. */
 "your site" = "あなたのサイト";
 

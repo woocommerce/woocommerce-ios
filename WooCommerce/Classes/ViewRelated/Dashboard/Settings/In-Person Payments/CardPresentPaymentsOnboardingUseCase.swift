@@ -36,6 +36,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     private let cardPresentPluginsDataProvider: CardPresentPluginsDataProvider
     private var preferredPluginLocal: CardPresentPaymentsPlugin?
     private var wasCodStepSkipped: Bool = false
+    private var pendingRequirementsStepSkipped: Bool = false
 
     @Published var state: CardPresentPaymentOnboardingState = .loading
 
@@ -62,6 +63,11 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
             state = .loading
         }
         refreshOnboardingState()
+    }
+
+    func skipPendingRequirements() {
+        pendingRequirementsStepSkipped = true
+        refresh()
     }
 
     func forceRefresh() {
@@ -298,7 +304,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
         guard !isStripeAccountOverdueRequirements(account: account) else {
             return .stripeAccountOverdueRequirement(plugin: plugin)
         }
-        guard !isStripeAccountPendingRequirements(account: account) else {
+        guard !shouldShowPendingRequirements(account: account) else {
             return .stripeAccountPendingRequirement(plugin: plugin, deadline: account.currentDeadline)
         }
         guard !isStripeAccountRejected(account: account) else {
@@ -317,6 +323,8 @@ private extension CardPresentPaymentsOnboardingUseCase {
         let setAccount = CardPresentPaymentAction.use(paymentGatewayAccount: account)
         stores.dispatch(setAccount)
 
+        // Also reset the skipped pending requirements step, so that it can be shown again in the next flow
+        pendingRequirementsStepSkipped = false
         return .completed(plugin: CardPresentPaymentsPluginState(plugin: plugin))
     }
 
@@ -401,6 +409,10 @@ private extension CardPresentPaymentsOnboardingUseCase {
         account.wcpayStatus == .restricted
             && account.hasPendingRequirements
             || account.wcpayStatus == .restrictedSoon
+    }
+
+    func shouldShowPendingRequirements(account: PaymentGatewayAccount) -> Bool {
+        isStripeAccountPendingRequirements(account: account) && !pendingRequirementsStepSkipped
     }
 
     func isStripeAccountOverdueRequirements(account: PaymentGatewayAccount) -> Bool {

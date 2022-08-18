@@ -102,10 +102,6 @@ public enum FeatureFlag: Int {
     ///
     case loginErrorNotifications
 
-    /// Payments Section in the Hub Menu
-    ///
-    case paymentsHubMenuSection
-
     /// Whether to show a survey at the end of the login onboarding screen after feature carousel
     ///
     case loginPrologueOnboardingSurvey

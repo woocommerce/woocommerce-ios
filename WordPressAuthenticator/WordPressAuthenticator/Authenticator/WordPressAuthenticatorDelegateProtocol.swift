@@ -93,6 +93,10 @@ public protocol WordPressAuthenticatorDelegate: AnyObject {
     /// Signals to the Host App that a WordPress site is available and needs validated.
     /// This method is only triggered in the site discovery flow.
     ///
+    /// - Parameters:
+    ///     - siteInfo: The fetched site information - can be nil the site doesn't exist or have WordPress
+    ///     - navigationController: the current navigation stack of the site discovery flow.
+    ///
     func troubleshootSite(_ siteInfo: WordPressComSiteInfo?, in navigationController: UINavigationController?)
 
     /// Signals the Host App that a given Analytics Event has occurred.

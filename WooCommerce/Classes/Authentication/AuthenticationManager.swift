@@ -321,8 +321,6 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                                                                         hasValidJetpack: siteInfo?.hasValidJetpack ?? false))
 
         guard let site = siteInfo, let navigationController = navigationController else {
-            let viewModel = NotWPErrorViewModel()
-            let noWPUI = ULErrorViewController(viewModel: viewModel)
             navigationController?.show(noWPUI, sender: nil)
             return
         }
@@ -615,12 +613,18 @@ private extension AuthenticationManager {
         return noWooUI
     }
 
+    /// The error screen to be displayed when the user tries to enter a site without WordPress.
+    ///
+    var noWPUI: UIViewController {
+        let viewModel = NotWPErrorViewModel()
+        return ULErrorViewController(viewModel: viewModel)
+    }
+
     /// Appropriate error to display for a site when entered from the site discovery flow.
     ///
     func errorUI(for site: WordPressComSiteInfo, in navigationController: UINavigationController) -> UIViewController {
         guard site.isWP else {
-            let viewModel = NotWPErrorViewModel()
-            return ULErrorViewController(viewModel: viewModel)
+            return noWPUI
         }
 
         let matcher = ULAccountMatcher(storageManager: storageManager)

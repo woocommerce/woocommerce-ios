@@ -1410,9 +1410,9 @@ extension WooAnalyticsEvent {
             case hasValidJetpack = "has_valid_jetpack"
         }
 
-        /// Tracks when the user taps the Enter Your Site Address button
-        static func enterSiteAddressTapped() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .sitePickerEnterSiteAddressTapped, properties: [:])
+        /// Tracks when the user taps the Enter Your Store Address button
+        static func enterStoreAddressTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .sitePickerEnterStoreAddressTapped, properties: [:])
         }
 
         /// Tracks when the result for site discovery is returned
@@ -1423,6 +1423,7 @@ extension WooAnalyticsEvent {
         }
 
         /// Tracks when the user taps the New To WooCommerce button
+        ///
         static func newToWooTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .sitePickerNewToWooTapped, properties: [:])
         }

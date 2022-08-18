@@ -584,8 +584,8 @@ extension StorePickerViewController {
 
     /// Presents a screen to enter a store address to connect.
     ///
-    @IBAction func enterStoreAddressWasPressed() {
-        ServiceLocator.analytics.track(event: .SitePicker.enterSiteAddressTapped())
+    @IBAction private func enterStoreAddressWasPressed() {
+        ServiceLocator.analytics.track(event: .SitePicker.enterStoreAddressTapped())
         guard let viewController = WordPressAuthenticator.siteDiscoveryUI() else {
             return
         }
@@ -594,7 +594,7 @@ extension StorePickerViewController {
 
     /// Displays a web view with introduction to WooCommerce
     ///
-    @IBAction func newToWooWasPressed() {
+    @IBAction private func newToWooWasPressed() {
         ServiceLocator.analytics.track(event: .SitePicker.newToWooTapped())
         guard let url = URL(string: StorePickerConstants.newToWooCommerceURL) else {
             return assertionFailure("Cannot generate URL.")

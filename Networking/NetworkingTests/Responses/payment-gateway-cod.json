@@ -1,0 +1,14 @@
+{
+    "data": {
+        "id": "cod",
+        "title": "Cash on delivery",
+        "description": "Pay with cash upon delivery.",
+        "order": "",
+        "enabled": true,
+        "method_title": "Cash on delivery",
+        "method_description": "Have your customers pay with cash (or by other means) upon delivery.",
+        "method_supports": [
+            "products"
+        ]
+    }
+}

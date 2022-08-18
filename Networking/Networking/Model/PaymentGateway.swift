@@ -48,7 +48,7 @@ public struct PaymentGateway: Equatable, GeneratedFakeable, GeneratedCopiable {
 }
 
 // MARK: Gateway Decodable
-extension PaymentGateway: Decodable {
+extension PaymentGateway: Codable {
 
     public enum DecodingError: Error {
         case missingSiteID
@@ -85,7 +85,7 @@ extension PaymentGateway: Decodable {
 }
 
 // MARK: Features Decodable
-extension PaymentGateway.Feature: RawRepresentable, Decodable {
+extension PaymentGateway.Feature: RawRepresentable, Codable {
 
     /// Enum containing the 'Known' Feature Keys
     ///

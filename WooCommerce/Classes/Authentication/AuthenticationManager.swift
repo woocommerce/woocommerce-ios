@@ -282,10 +282,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
         /// WordPress must be present.
         guard let site = siteInfo, site.isWP else {
-            let viewModel = NotWPErrorViewModel()
-            let notWPErrorUI = ULErrorViewController(viewModel: viewModel)
-
-            let authenticationResult: WordPressAuthenticatorResult = .injectViewController(value: notWPErrorUI)
+            let authenticationResult: WordPressAuthenticatorResult = .injectViewController(value: noWPUI)
 
             onCompletion(authenticationResult)
 

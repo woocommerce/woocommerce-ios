@@ -138,6 +138,5 @@ extension CardPresentPaymentOnboardingState {
         } else {
             return false
         }
-
     }
 }

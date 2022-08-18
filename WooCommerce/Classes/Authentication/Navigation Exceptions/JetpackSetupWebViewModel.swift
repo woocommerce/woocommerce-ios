@@ -45,7 +45,7 @@ final class JetpackSetupWebViewModel: PluginSetupWebViewModel {
         switch url {
         // When the web view is about to navigate to the redirect URL for mobile, we can assume that the setup has completed.
         case Constants.mobileRedirectURL:
-            DispatchQueue.main.async { [weak self] in
+            await MainActor.run { [weak self] in
                 self?.handleSetupCompletion()
             }
             return .cancel

@@ -288,20 +288,20 @@ public extension OrdersRemote {
     }
 
     enum ParameterValues {
-        // Same as singleOrderFieldValues except we exclude the line_items and shipping fields
+        // Same as singleOrderFieldValues except we exclude the shipping field
         static let listFieldValues: String = commonOrderFieldValues.joined(separator: ",")
         static let singleOrderFieldValues: String = (commonOrderFieldValues + singleOrderExtraFieldValues).joined(separator: ",")
         private static let commonOrderFieldValues = [
             "id", "parent_id", "number", "status", "currency", "customer_id", "customer_note", "date_created_gmt", "date_modified_gmt", "date_paid_gmt",
             "discount_total", "discount_tax", "shipping_total", "shipping_tax", "total", "total_tax", "payment_method", "payment_method_title",
-            "payment_url", "billing", "coupon_lines", "shipping_lines", "refunds", "fee_lines", "order_key", "tax_lines", "meta_data", "is_editable",
-            "needs_payment", "needs_processing"
+            "payment_url", "line_items", "billing", "coupon_lines", "shipping_lines", "refunds", "fee_lines", "order_key", "tax_lines", "meta_data",
+            "is_editable", "needs_payment", "needs_processing"
         ]
         // Use with caution. Any fields in here will be overwritten with empty values by
         // `Order+ReadOnlyConvertible.swift: Order.update(with:)` when the list of orders is fetched.
         // See p91TBi-7yL-p2 for discussion.
         private static let singleOrderExtraFieldValues = [
-            "line_items", "shipping"
+            "shipping"
         ]
     }
 

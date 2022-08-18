@@ -9,10 +9,13 @@ struct Manual: Identifiable, Equatable {
 }
 
 final class CardReaderManualsViewModel {
+    var configurationLoader: CardPresentConfigurationLoader
     let manuals: [Manual]
 
     init() {
-        // Display all card readers at all times. Ref: pdfdoF-1aF-p2
-        self.manuals = CardReaderType.allCases.compactMap { $0.manual }
+        // Initialize the ViewModel only with the supported readers for the specific store's country
+        self.configurationLoader = CardPresentConfigurationLoader()
+        let supportedReaders = configurationLoader.configuration.supportedReaders
+        self.manuals = supportedReaders.compactMap { $0.manual }
     }
 }

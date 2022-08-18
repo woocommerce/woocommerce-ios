@@ -1,7 +1,10 @@
 import Combine
+import Experiments
 import UIKit
+import WordPressAuthenticator
 import Yosemite
 import class AutomatticTracks.CrashLogging
+import protocol Storage.StorageManagerType
 
 /// Coordinates app navigation based on authentication state: tab bar UI is shown when the app is logged in, and authentication UI is shown
 /// when the app is logged out.
@@ -11,17 +14,28 @@ final class AppCoordinator {
 
     private let window: UIWindow
     private let stores: StoresManager
+    private let storageManager: StorageManagerType
     private let authenticationManager: Authentication
     private let roleEligibilityUseCase: RoleEligibilityUseCaseProtocol
+    private let analytics: Analytics
+    private let loggedOutAppSettings: LoggedOutAppSettingsProtocol
+    private let pushNotesManager: PushNotesManager
+    private let featureFlagService: FeatureFlagService
 
     private var storePickerCoordinator: StorePickerCoordinator?
-    private var cancellable: AnyCancellable?
+    private var authStatesSubscription: AnyCancellable?
+    private var localNotificationResponsesSubscription: AnyCancellable?
     private var isLoggedIn: Bool = false
 
     init(window: UIWindow,
          stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
          authenticationManager: Authentication = ServiceLocator.authenticationManager,
-         roleEligibilityUseCase: RoleEligibilityUseCaseProtocol = RoleEligibilityUseCase()) {
+         roleEligibilityUseCase: RoleEligibilityUseCaseProtocol = RoleEligibilityUseCase(),
+         analytics: Analytics = ServiceLocator.analytics,
+         loggedOutAppSettings: LoggedOutAppSettingsProtocol = LoggedOutAppSettings(userDefaults: .standard),
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.window = window
         self.tabBarController = {
             let storyboard = UIStoryboard(name: "Main", bundle: nil) // Main is the name of storyboard
@@ -31,12 +45,19 @@ final class AppCoordinator {
             return tabBarController
         }()
         self.stores = stores
+        self.storageManager = storageManager
         self.authenticationManager = authenticationManager
         self.roleEligibilityUseCase = roleEligibilityUseCase
+        self.analytics = analytics
+        self.loggedOutAppSettings = loggedOutAppSettings
+        self.pushNotesManager = pushNotesManager
+        self.featureFlagService = featureFlagService
+
+        authenticationManager.setLoggedOutAppSettings(loggedOutAppSettings)
     }
 
     func start() {
-        cancellable = Publishers.CombineLatest(stores.isLoggedInPublisher, stores.needsDefaultStorePublisher)
+        authStatesSubscription = Publishers.CombineLatest(stores.isLoggedInPublisher, stores.needsDefaultStorePublisher)
             .sink {  [weak self] isLoggedIn, needsDefaultStore in
                 guard let self = self else { return }
 
@@ -45,7 +66,7 @@ final class AppCoordinator {
                 case (false, true), (false, false):
                     self.displayAuthenticator()
                 case (true, true):
-                    self.displayStorePicker()
+                    self.displayLoggedInStateWithoutDefaultStore()
                 case (true, false):
                     self.validateRoleEligibility {
                         self.displayLoggedInUI()
@@ -54,6 +75,10 @@ final class AppCoordinator {
                 }
                 self.isLoggedIn = isLoggedIn
             }
+
+        localNotificationResponsesSubscription = pushNotesManager.localNotificationUserResponses.sink { [weak self] response in
+            self?.handleLocalNotificationResponse(response)
+        }
     }
 }
 
@@ -101,8 +126,44 @@ private extension AppCoordinator {
         setWindowRootViewControllerAndAnimateIfNeeded(authenticationUI) { [weak self] _ in
             guard let self = self else { return }
             self.tabBarController.removeViewControllers()
+
+            self.presentLoginOnboarding()
         }
         ServiceLocator.analytics.track(.openedLogin)
+    }
+
+    /// Presents onboarding on top of the authentication UI under certain criteria.
+    func presentLoginOnboarding() {
+        // Since we cannot control the user defaults in the simulator where UI tests are run on,
+        // login onboarding is not shown in UI tests for now.
+        // If we want to add UI tests for the login onboarding, we can add another launch argument
+        // so that we can show/hide the onboarding screen consistently.
+        let isUITesting: Bool = CommandLine.arguments.contains("-ui_testing")
+        guard isUITesting == false else {
+            return
+        }
+
+        guard featureFlagService.isFeatureFlagEnabled(.loginPrologueOnboarding),
+        loggedOutAppSettings.hasFinishedOnboarding == false else {
+            return
+        }
+        let onboardingViewController = LoginOnboardingViewController { [weak self] action in
+            guard let self = self else { return }
+            self.loggedOutAppSettings.setHasFinishedOnboarding(true)
+            self.window.rootViewController?.dismiss(animated: true)
+
+            switch action {
+            case .next:
+                self.analytics.track(event: .LoginOnboarding.loginOnboardingNextButtonTapped(isFinalPage: true))
+            case .skip:
+                self.analytics.track(event: .LoginOnboarding.loginOnboardingSkipButtonTapped())
+            }
+        }
+        onboardingViewController.modalPresentationStyle = .fullScreen
+        onboardingViewController.modalTransitionStyle = .crossDissolve
+        window.rootViewController?.present(onboardingViewController, animated: false)
+
+        analytics.track(event: .LoginOnboarding.loginOnboardingShown())
     }
 
     /// Displays logged in tab bar UI.
@@ -111,18 +172,38 @@ private extension AppCoordinator {
         setWindowRootViewControllerAndAnimateIfNeeded(tabBarController)
     }
 
-    /// If the app is authenticated but there is no default store ID on launch: Let's display the Store Picker.
+    /// If the app is authenticated but there is no default store ID on launch,
+    /// check for errors and display store picker if none exists.
     ///
-    func displayStorePicker() {
+    func displayLoggedInStateWithoutDefaultStore() {
         // Store picker is only displayed by `AppCoordinator` on launch, when the window's root is uninitialized.
         // In other cases when the app is authenticated but there is no default store ID, the store picker is shown by authentication UI.
         guard window.rootViewController == nil else {
             return
         }
 
-        DDLogInfo("💬 Authenticated user does not have a Woo store selected — launching store picker.")
+        let matcher = ULAccountMatcher(storageManager: storageManager)
+        matcher.refreshStoredSites()
+
+        // Show error for the current site URL if exists.
+        if let siteURL = loggedOutAppSettings.errorLoginSiteAddress {
+            if let authenticationUI = authenticationManager.authenticationUI() as? UINavigationController,
+               let errorController = authenticationManager.errorViewController(for: siteURL,
+                                                                               with: matcher,
+                                                                               navigationController: authenticationUI,
+                                                                               onStorePickerDismiss: {}) {
+                window.rootViewController = authenticationUI
+                // don't let user navigate back to the login screen unless they tap log out.
+                errorController.navigationItem.hidesBackButton = true
+                authenticationUI.show(errorController, sender: nil)
+                return
+            }
+        }
+
+        // All good, show store picker
         let navigationController = WooNavigationController()
         setWindowRootViewControllerAndAnimateIfNeeded(navigationController)
+        DDLogInfo("💬 Authenticated user does not have a Woo store selected — launching store picker.")
         storePickerCoordinator = StorePickerCoordinator(navigationController, config: .standard)
         storePickerCoordinator?.start()
         storePickerCoordinator?.onDismiss = { [weak self] in
@@ -187,15 +268,69 @@ private extension AppCoordinator {
         }
         stores.dispatch(action)
     }
+
+    func handleLocalNotificationResponse(_ response: UNNotificationResponse) {
+        switch response.actionIdentifier {
+        case LocalNotification.Action.contactSupport.rawValue:
+            guard let viewController = window.rootViewController else {
+                return
+            }
+            ZendeskProvider.shared.showNewRequestIfPossible(from: viewController, with: nil)
+            analytics.track(.loginLocalNotificationTapped, withProperties: [
+                "action": "contact_support",
+                "type": response.notification.request.identifier
+            ])
+        case LocalNotification.Action.loginWithWPCom.rawValue:
+            guard let loginNavigationController = window.rootViewController as? LoginNavigationController,
+                  let viewController = loginNavigationController.topViewController else {
+                return
+            }
+            let command = NavigateToEnterAccount()
+            command.execute(from: viewController)
+            analytics.track(.loginLocalNotificationTapped, withProperties: [
+                "action": "login_with_wpcom",
+                "type": response.notification.request.identifier
+            ])
+        case UNNotificationDefaultActionIdentifier:
+            // Triggered when the user taps on the notification itself instead of one of the actions.
+            let requestIdentifier = response.notification.request.identifier
+            guard LocalNotification.Scenario.allCases.map({ $0.rawValue }).contains(requestIdentifier) else {
+                break
+            }
+            analytics.track(.loginLocalNotificationTapped, withProperties: [
+                "action": "default",
+                "type": requestIdentifier
+            ])
+        case UNNotificationDismissActionIdentifier:
+            // Triggered when the user taps on the notification's "Clear" action.
+            switch response.notification.request.identifier {
+            case LocalNotification.Scenario.loginSiteAddressError.rawValue:
+                analytics.track(.loginLocalNotificationDismissed, withProperties: [
+                    "type": response.notification.request.identifier
+                ])
+            default:
+                break
+            }
+        default:
+            break
+        }
+    }
 }
 
 private extension AppCoordinator {
+    /// Sets the app window's root view controller, with animation only if the root view controller is previously non-nil.
+    /// - Parameters:
+    ///   - rootViewController: view controller to be set as the window's root view controller.
+    ///   - onCompletion: called after the root view controller is set after animation if needed.
+    ///                   The boolean value indicates whether or not the animations actually finished before the completion handler was called.
     func setWindowRootViewControllerAndAnimateIfNeeded(_ rootViewController: UIViewController, onCompletion: @escaping (Bool) -> Void = { _ in }) {
         // Animates window transition only if the root view controller is non-nil originally.
         let shouldAnimate = window.rootViewController != nil
         window.rootViewController = rootViewController
         if shouldAnimate {
             UIView.transition(with: window, duration: Constants.animationDuration, options: .transitionCrossDissolve, animations: {}, completion: onCompletion)
+        } else {
+            onCompletion(false)
         }
     }
 }

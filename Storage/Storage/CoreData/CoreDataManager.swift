@@ -1,5 +1,6 @@
 import Foundation
 import CoreData
+import WooFoundation
 
 
 /// CoreDataManager: Manages the entire CoreData Stack. Conforms to the StorageManager API.
@@ -177,7 +178,7 @@ public final class CoreDataManager: StorageManagerType {
                 viewContext.saveIfNeeded()
             }
         } catch {
-            fatalError("☠️ [CoreDataManager] Cannot delete stored objects! \(error)")
+            logErrorAndExit("☠️ [CoreDataManager] Cannot delete stored objects! \(error)")
         }
     }
 
@@ -234,7 +235,7 @@ extension CoreDataManager {
     ///
     var storeURL: URL {
         guard let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
-            fatalError("Okay: Missing Documents Folder?")
+            logErrorAndExit("Okay: Missing Documents Folder?")
         }
 
         return url.appendingPathComponent(name + ".sqlite")

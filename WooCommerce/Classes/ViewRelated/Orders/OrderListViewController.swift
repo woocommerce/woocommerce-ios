@@ -5,6 +5,7 @@ import Yosemite
 import WordPressUI
 import SafariServices
 import StoreKit
+import SwiftUI
 
 // Used for protocol conformance of IndicatorInfoProvider only.
 import XLPagerTabStrip
@@ -99,7 +100,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
     /// Current top banner that is displayed.
     ///
-    private var topBannerView: TopBannerView?
+    private var topBannerView: UIView?
 
     /// Callback closure when an order is selected
     ///
@@ -114,6 +115,11 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     private var selectedOrderID: Int64?
 
     private lazy var isSplitViewInOrdersTabEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
+
+    /// Tracks if the swipe actions have been glanced to the user.
+    ///
+    private var swipeActionsGlanced = false
+
 
     // MARK: - View Lifecycle
 
@@ -181,6 +187,8 @@ final class OrderListViewController: UIViewController, GhostableViewController {
             // Reload table view to update selected state on the list when changing rotation
             tableView.reloadData()
         }
+
+        updateUpsellCardReaderTopBannerVisibility(with: newCollection)
     }
 
     /// Returns a function that creates cells for `dataSource`.
@@ -242,6 +250,11 @@ private extension OrderListViewController {
                 switch topBannerType {
                 case .none:
                     self.hideTopBannerView()
+                case .upsellCardReaders:
+                    // The banner is too large to be shown when the vertical size class is compact
+                    if self.traitCollection.verticalSizeClass == .regular {
+                        self.showUpsellCardReadersBanner()
+                    }
                 case .error:
                     self.setErrorTopBanner()
                 case .orderCreation:
@@ -294,6 +307,33 @@ extension OrderListViewController {
         viewModel.syncOrderStatuses()
         syncingCoordinator.resynchronize(reason: SyncReason.pullToRefresh.rawValue) {
             sender.endRefreshing()
+        }
+    }
+
+    private func markOrderAsCompleted(resultID: FetchResultSnapshotObjectID) {
+        guard let orderDetailsViewModel = viewModel.detailsViewModel(withID: resultID) else {
+            return DDLogError("⛔️ ViewModel for resultID: \(resultID) not found")
+        }
+        /// Actions that performs the mark completed request remotely.
+        let fulfillmentProcess = orderDetailsViewModel.markCompleted(flow: .list)
+
+        /// Messages configuration
+        let noticeConfiguration = OrderFulfillmentNoticePresenter.NoticeConfiguration(
+            successTitle: Localization.markCompletedNoticeTitle(orderID: orderDetailsViewModel.order.orderID),
+            errorTitle: Localization.markCompletedErrorNoticeTitle(orderID: orderDetailsViewModel.order.orderID))
+
+        /// Fires fulfillment action, observes its result and enqueue the appropriate notices.
+        let presenter = OrderFulfillmentNoticePresenter(noticeConfiguration: noticeConfiguration)
+        presenter.present(process: fulfillmentProcess)
+    }
+
+    /// Slightly reveal swipe actions of the first visible cell that contains at least one swipe action.
+    /// This action is performed only once, using `swipeActionsGlanced` as a control variable.
+    ///
+    private func glanceTrailingActionsIfNeeded() {
+        if !swipeActionsGlanced {
+            swipeActionsGlanced = true
+            tableView.glanceTrailingSwipeActions()
         }
     }
 }
@@ -364,6 +404,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
     ///
     private func hideTopBannerView() {
         topBannerView?.removeFromSuperview()
+        topBannerView = nil
         if tableView.tableHeaderView != nil {
             // Setting tableHeaderView = nil when having a previous value keeps an extra header space (See p5T066-3c3#comment-12307)
             // This solution avoids it by adding an almost zero height header (Originally from https://stackoverflow.com/a/18938763/428353)
@@ -372,8 +413,35 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
 
         tableView.updateHeaderHeight()
     }
-}
 
+    private func showUpsellCardReadersBanner() {
+        let view = FeatureAnnouncementCardView(viewModel: viewModel.upsellCardReadersAnnouncementViewModel,
+                                               dismiss: { [weak self] in
+            self?.viewModel.dismissUpsellCardReadersBanner()
+        }, callToAction: {
+            let configuration = CardPresentConfigurationLoader().configuration
+            WebviewHelper.launch(configuration.purchaseCardReaderUrl(), with: self)
+        })
+            .background(Color(.listForeground))
+
+        guard let hostingView = UIHostingController(rootView: view).view else {
+            return
+        }
+
+        hostingView.translatesAutoresizingMaskIntoConstraints = false
+        topBannerView = hostingView
+
+        showTopBannerView()
+    }
+
+    func updateUpsellCardReaderTopBannerVisibility(with newCollection: UITraitCollection) {
+        guard viewModel.topBanner == .upsellCardReaders else {
+            return
+        }
+
+        newCollection.verticalSizeClass == .regular ? showUpsellCardReadersBanner() : hideTopBannerView()
+    }
+}
 
 // MARK: - Spinner Helpers
 //
@@ -541,12 +609,13 @@ private extension OrderListViewController {
     /// Creates EmptyStateViewController.Config when there are no orders available
     ///
     func noOrdersAvailableConfig() -> EmptyStateViewController.Config {
-        .simple(
-            message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
-            image: .waitingForCustomersImage,
-            onPullToRefresh: { [weak self] refreshControl in
-                self?.pullToRefresh(sender: refreshControl)
-            })
+        .withLink(message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
+                  image: .emptyOrdersImage,
+                  details: Localization.allOrdersEmptyStateDetail,
+                  linkTitle: Localization.learnMore,
+                  linkURL: WooConstants.URLs.blog.asURL()) { [weak self] refreshControl in
+            self?.pullToRefresh(sender: refreshControl)
+        }
     }
 
     /// Creates EmptyStateViewController.Config for no orders matching the filter empty view
@@ -591,8 +660,7 @@ extension OrderListViewController: UITableViewDelegate {
 
         selectedIndexPath = indexPath
         let order = orderDetailsViewModel.order
-        ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": order.orderID,
-                                                                    "status": order.status.rawValue])
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order))
         selectedOrderID = order.orderID
 
         if isSplitViewInOrdersTabEnabled {
@@ -635,6 +703,26 @@ extension OrderListViewController: UITableViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         delegate?.orderListScrollViewDidScroll(scrollView)
     }
+
+    /// Provide an implementation to show cell swipe actions. Return `nil` to provide no action.
+    ///
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        /// Fetch the order view model and make sure the order is not marked as completed before proceeding.
+        ///
+        guard let objectID = dataSource.itemIdentifier(for: indexPath),
+              let cellViewModel = viewModel.cellViewModel(withID: objectID),
+              cellViewModel.status != .completed else {
+                  return nil
+              }
+        let markAsCompletedAction = UIContextualAction(style: .normal, title: Localization.markCompleted, handler: { [weak self] _, _, completionHandler in
+            self?.markOrderAsCompleted(resultID: objectID)
+            completionHandler(true) // Tells the table that the action was performed and forces it to go back to its original state (un-swiped)
+        })
+        markAsCompletedAction.backgroundColor = .brand
+        markAsCompletedAction.image = .checkmarkImage
+
+        return UISwipeActionsConfiguration(actions: [markAsCompletedAction])
+    }
 }
 
 // MARK: - Finite State Machine Management
@@ -650,7 +738,7 @@ private extension OrderListViewController {
         case .syncing:
             ensureFooterSpinnerIsStarted()
         case .results:
-            break
+            glanceTrailingActionsIfNeeded()
         }
     }
 
@@ -736,10 +824,31 @@ private extension OrderListViewController {
     enum Localization {
         static let allOrdersEmptyStateMessage = NSLocalizedString("Waiting for your first order",
                                                                   comment: "The message shown in the Orders → All Orders tab if the list is empty.")
+        static let allOrdersEmptyStateDetail = NSLocalizedString("Explore how you can increase your store sales",
+                                                                 comment: "The detailed message shown in the Orders → All Orders tab if the list is empty.")
+        static let learnMore = NSLocalizedString("Learn more", comment: "Title of button shown in the Orders → All Orders tab if the list is empty.")
         static let filteredOrdersEmptyStateMessage = NSLocalizedString("We're sorry, we couldn't find any order that match %@",
                    comment: "Message for empty Orders filtered results. The %@ is a placeholder for the filters entered by the user.")
         static let clearButton = NSLocalizedString("Clear Filters",
                                  comment: "Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List")
+
+        static let markCompleted = NSLocalizedString("Mark Completed", comment: "Title for the swipe order action to mark it as completed")
+
+        static func markCompletedNoticeTitle(orderID: Int64) -> String {
+            let format = NSLocalizedString(
+                "Order #%1$d marked as completed",
+                comment: "Notice title when an order is marked as completed via a swipe action. Parameter: Order Number"
+            )
+            return String.localizedStringWithFormat(format, orderID)
+        }
+
+        static func markCompletedErrorNoticeTitle(orderID: Int64) -> String {
+            let format = NSLocalizedString(
+                "Error updating Order #%1$d",
+                comment: "Notice title when marking an order as completed via a swipe action fails. Parameter: Order Number"
+            )
+            return String.localizedStringWithFormat(format, orderID)
+        }
     }
 
     enum Settings {

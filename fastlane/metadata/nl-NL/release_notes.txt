@@ -1,1 +1,3 @@
-Wist je dat we met een nieuwe functie voor het beheren van coupons bezig zijn? Ga naar het tabblad Menu, tik op het instellingenpictogram en scrol naar experimentele functies. We hebben in deze versie een probleem verholpen dat zich voordeed tijdens het bewerken van de velden 'Individueel gebruik' en 'Items in de uitverkoop uitsluiten'. Probeer het uit en laat weten wat je ervan denkt!
+Er is een nieuwe banner om betalingen rechtstreeks vanuit de app aan te nemen met WooCommerce Payments. En er is meer! Je kunt een bestelling naar links vegen om deze af te ronden!
+
+Ook is de login-ervaring verbeterd; je hebt nu onder andere de mogelijkheid om in te loggen met je wp-admin-inloggegevens. Je kunt de WooCommerce-plugin nu ook rechtstreeks vanuit de app installeren!

@@ -63,15 +63,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupKeyboardStateProvider()
         handleLaunchArguments()
         appleIDCredentialChecker.observeLoggedInStateForAppleIDObservations()
+        setupUserNotificationCenter()
 
         // Components that require prior Auth
         setupZendesk()
 
         // Yosemite Initialization
         synchronizeEntitiesIfPossible()
-
-        // Upgrade check...
-        checkForUpgrades()
 
         // Since we are using Injection for refreshing the content of the app in debug mode,
         // we are going to enable Inject.animation that will be used when
@@ -84,6 +82,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
         startABTesting()
+
+        // Upgrade check...
+        // This has to be called after A/B testing setup in `startABTesting` if any of the Tracks events
+        // in `checkForUpgrades` is used as an exposure event for an experiment.
+        // For example, `application_installed` could be the exposure event for logged-out experiments.
+        checkForUpgrades()
 
         // Setup the Interface!
         setupMainWindow()
@@ -116,10 +120,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         ServiceLocator.pushNotesManager.registrationDidFail(with: error)
     }
 
-    func application(_ application: UIApplication,
-                     didReceiveRemoteNotification userInfo: [AnyHashable: Any],
-                     fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        ServiceLocator.pushNotesManager.handleNotification(userInfo, onBadgeUpdateCompletion: {}, completionHandler: completionHandler)
+    /// Called when the app receives a remote notification in the background.
+    /// For local/remote notification tap events, please refer to `UNUserNotificationCenterDelegate.userNotificationCenter(_:didReceive:)`.
+    /// When receiving a local/remote notification in the foreground, please refer to
+    /// `UNUserNotificationCenterDelegate.userNotificationCenter(_:willPresent:)`.
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) async -> UIBackgroundFetchResult {
+        await ServiceLocator.pushNotesManager.handleRemoteNotificationInTheBackground(userInfo: userInfo)
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
@@ -138,7 +144,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             )
 
             // show this notification seconds from now
-            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1.5, repeats: false)
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 3, repeats: false)
 
             // choose a random identifier
             let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
@@ -288,6 +294,9 @@ private extension AppDelegate {
     ///
     func setupPushNotificationsManagerIfPossible() {
         guard ServiceLocator.stores.isAuthenticated, ServiceLocator.stores.needsDefaultStore == false else {
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginErrorNotifications) {
+                ServiceLocator.pushNotesManager.ensureAuthorizationIsRequested(includesProvisionalAuth: true, onCompletion: nil)
+            }
             return
         }
 
@@ -296,8 +305,15 @@ private extension AppDelegate {
         #else
             let pushNotesManager = ServiceLocator.pushNotesManager
             pushNotesManager.registerForRemoteNotifications()
-            pushNotesManager.ensureAuthorizationIsRequested(onCompletion: nil)
+            pushNotesManager.ensureAuthorizationIsRequested(includesProvisionalAuth: false, onCompletion: nil)
         #endif
+    }
+
+    func setupUserNotificationCenter() {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginErrorNotifications) else {
+            return
+        }
+        UNUserNotificationCenter.current().delegate = self
     }
 
     /// Set up app review prompt
@@ -355,9 +371,6 @@ private extension AppDelegate {
     /// Starts the AB testing platform
     ///
     func startABTesting() {
-        guard ServiceLocator.stores.isAuthenticated else {
-            return
-        }
         ABTest.start()
     }
 }
@@ -401,5 +414,17 @@ extension AppDelegate {
     func authenticatorWasDismissed() {
         setupPushNotificationsManagerIfPossible()
         RequirementsChecker.checkMinimumWooVersionForDefaultStore()
+    }
+}
+
+// MARK: - UNUserNotificationCenterDelegate
+
+extension AppDelegate: UNUserNotificationCenterDelegate {
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
+        await ServiceLocator.pushNotesManager.handleUserResponseToNotification(response)
+    }
+
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
+        await ServiceLocator.pushNotesManager.handleNotificationInTheForeground(notification)
     }
 }

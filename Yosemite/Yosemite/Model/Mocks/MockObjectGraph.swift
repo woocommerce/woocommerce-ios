@@ -320,6 +320,7 @@ extension MockObjectGraph {
         status: OrderStatusEnum,
         daysOld: Int = 0,
         total: Decimal,
+        needsPayment: Bool = false,
         items: [OrderItem] = []
     ) -> Order {
 
@@ -330,7 +331,7 @@ extension MockObjectGraph {
             customerID: 1,
             orderKey: "",
             isEditable: false,
-            needsPayment: false,
+            needsPayment: needsPayment,
             needsProcessing: false,
             number: "\(number)",
             status: status,

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-07-04 09:54:07+0000 */
+/* Translation-Revision-Date: 2022-08-10 18:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: it */
@@ -244,9 +244,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the Action sheet option when the user wants to change the Product type to variable product */
 "A product with variations like color or size" = "Un prodotto con varianti come colore o misura";
 
-/* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"A refund will not be issued to the customer. You will need to manually issue the refund through %1$@." = "Non verrà emesso alcun rimborso al cliente. Dovrai emettere manualmente il rimborso tramite %1$@.";
-
 /* Message explaining that the site may have an invalid SSL certificate. */
 "A secure connection to the site could not be made. Please make sure that your site has a valid SSL certificate." = "Non è stato possibile stabilire una connessione sicura al sito. Assicurati che il sito abbia un certificato SSL valido.";
 
@@ -273,6 +270,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "Info sull'app";
+
+/* Title for the feature announcement banner intended to upsell card readers */
+"Accept payments easily" = "Accetta pagamenti facilmente";
+
+/* Subtitle of one of the elements in the CTA View for installing WCShip extension */
+"Access discounted shipping rates. Currently available with DHL and USPS, with more to come soon!" = "Accedi a tariffe di spedizione scontate. Attualmente disponibile con DHL e USPS, con altri in arrivo!";
 
 /* Reads as 'Account Type'. Part of the mandatory data in receipts */
 "Account Type" = "Tipo di account";
@@ -325,6 +328,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Downloadable file screen navigation title */
 "Add Downloadable File" = "Aggiungi file scaricabile";
+
+/* Button in the CTA View for installing WCShip extension */
+"Add Extension To Store" = "Aggiungi estensione al negozio";
 
 /* Title for the Fee screen during order creation
    Title text of the button that adds a fee when creating a new order */
@@ -584,6 +590,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message when it looks like a duplicate transaction is being attempted. */
 "An identical transaction was submitted recently. If you wish to continue, try another means of payment" = "Una transazione identica è stata sottoposta di recente Se desideri continuare, prova un altro mezzo di pagamento";
 
+/* Title of the notice about an image upload failure in the background. */
+"An image failed to upload" = "Un'immagine non è stata caricata";
+
 /* Message when an incorrect PIN has been entered too many times. */
 "An incorrect PIN has been entered too many times. Try another means of payment" = "È stato inserito un PIN errato troppe volte Prova altri metodi di pagamento";
 
@@ -706,7 +715,10 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the Automattic website */
 "Automattic family" = "Famiglia Automattic";
 
-/* Awaiting payment via (payment method title) */
+/* The title on the payment row of the Order Details screen when the payment is still pending */
+"Awaiting payment" = "In attesa di pagamento";
+
+/* The title on the payment row of the Order Details screenwhen the payment for a specific payment method is still pending.Reads like: Awaiting payment via Stripe. */
 "Awaiting payment via %@" = "In attesa di pagamento tramite %@";
 
 /* Details section title in the Edit Address Form */
@@ -761,6 +773,9 @@ which should be translated separately and considered part of this sentence. */
 /* The details text on the placeholder overlay when there are no coupons on the coupon list screen. */
 "Boost your business by sending customers special offers and discounts." = "Fai crescere la tua attività inviando ai clienti offerte speciali e sconti.";
 
+/* Title for the Linked Products announcement banner */
+"Boost your sales with linked products" = "Aumenta le tue vendite con i prodotti collegati";
+
 /* Box package type, used to create a custom package in the Shipping Label flow */
 "Box" = "Confezione";
 
@@ -773,6 +788,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Placeholder of the text field for editing the button text for an external/affiliate product */
 "Buy Product" = "Acquista prodotto";
+
+/* Title of one of the elements in the CTA View for installing WCShip extension */
+"Buy postage when you need it" = "Acquista la spedizione quando ne hai bisogno";
 
 /* Legal disclaimer for logging in. The underscores _..._ denote underline. */
 "By continuing, you agree to our _Terms of Service_." = "Continuando, accetti i nostri _Termini di servizio_.";
@@ -852,6 +870,7 @@ which should be translated separately and considered part of this sentence. */
    The title for a button that dismisses the crash debug menu
    The title of the button to cancel issuing a refund.
    Title for canceling the edit attribute action sheet.
+   Title for the button to cancel the payment methods screen
    Title for the button to cancel the simple payments screen */
 "Cancel" = "Annulla";
 
@@ -878,12 +897,21 @@ which should be translated separately and considered part of this sentence. */
    Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "Impossibile caricare l'immagine";
 
+/* Error message displayed when failed to check for WooCommerce in a site. */
+"Cannot verify your site's WooCommerce installation." = "Impossibile verificare l'installazione di WooCommerce del tuo sito.";
+
 /* Detailed message shown in the Reviews tab if the list is empty
    Detailed message shown on the Product Reviews screen if the list is empty */
 "Capture high-quality product reviews for your store." = "Acquisisci recensioni del prodotto di elevata qualità per il tuo negozio.";
 
-/* Card method title on the select payment method screen for simple payments */
+/* Card method title on the select payment method screen */
 "Card" = "Carta";
+
+/* Navigates to Card Reader Manuals screen */
+"Card Reader Manuals" = "Manuali del lettore di schede";
+
+/* Navigation title at the top of the Card reader manuals screen */
+"Card reader manuals" = "Manuali del lettore di schede";
 
 /* Title for the section related to card readers inside In-Person Payments settings */
 "Card readers" = "Lettori di schede";
@@ -900,7 +928,7 @@ which should be translated separately and considered part of this sentence. */
 /* Add Custom shipping carrier. Title of cell presenting the carrier name */
 "Carrier name" = "Nome del corriere";
 
-/* Cash method title on the select payment method screen for simple payments */
+/* Cash method title on the select payment method screen */
 "Cash" = "Contanti";
 
 /* Catalog Visibility label in Product Settings
@@ -931,6 +959,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the row that has a switch when creating a simple payment */
 "Charge Taxes" = "Modifica aliquote";
 
+/* Login onboarding survey option: check my analytics. */
+"Check my analytics" = "Controlla le mie analisi";
+
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "Verifica che l'URL inserito sia valido";
 
@@ -942,9 +973,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Alert title for check your email during logIn/signUp. */
 "Check your email!" = "Controlla l'e-mail.";
-
-/* Navigates to Chipper Card Reader manual */
-"Chipper 2X card reader manual" = "Manuale del lettore di schede Chipper 2X";
 
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "Scegli dimensione carta";
@@ -964,7 +992,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the screen to select the preferred provider for In-Person Payments */
 "Choose your Payment Provider" = "Scegli il tuo fornitore dei pagamenti";
 
-/* Heading text on the select payment method screen for simple payments */
+/* Heading text on the select payment method screen */
 "Choose your payment method" = "Scegli il tuo metodo di pagamento";
 
 /* Text field city in Edit Address Form
@@ -1113,7 +1141,8 @@ which should be translated separately and considered part of this sentence. */
 /* Contact WooComerce Payments Support title */
 "Contact WooCommerce Payments Support" = "Contatta il supporto di WooCommerce Payments";
 
-/* Action button to contact support on enable analytics screen */
+/* Action button to contact support on enable analytics screen
+   Local notification action to contact support. */
 "Contact support" = "Contatta il supporto";
 
 /* Title of a button to contact support in the error screen for In-Person payments */
@@ -1284,6 +1313,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "Crea un nuovo pacchetto";
 
+/* Login onboarding survey option: create or update my products. */
+"Create or update my products" = "Crea o aggiorna i miei prodotti";
+
 /* Action sheet option when the user wants to create full manual order */
 "Create order" = "Crea ordine";
 
@@ -1331,6 +1363,9 @@ which should be translated separately and considered part of this sentence. */
    Placeholder name of a custom shipment tracking carrier
    Title of button to add a custom tracking carrier if filtering the list yields no results. */
 "Custom Carrier" = "Corriere personalizzato";
+
+/* Title for the order custom fields list */
+"Custom Fields" = "Campi personalizzati";
 
 /* Custom line index in Customs Form of Shipping Label flow */
 "Custom Line %1$d" = "%1$d riga personalizzata";
@@ -1468,6 +1503,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Discounted Orders label on Coupon Details screen */
 "Discounted Orders" = "Ordini scontati";
 
+/* Title of one of the elements in the CTA View for installing WCShip extension */
+"Discounted rates" = "Tariffe scontate";
+
 /* Accessibility label for button to dismiss a bottom sheet
    Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog.
    Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog.
@@ -1513,6 +1551,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Non hai un account? _Registrati_";
+
+/* Alert button text on a feature announcement which prevents the banner being shown again */
+"Don't show again" = "Non mostrare più";
 
 /* Action title to select products to add to a grouped product from search results
    Button to dismiss the Order Editing screen
@@ -1620,10 +1661,10 @@ which should be translated separately and considered part of this sentence. */
 "Easily identify your products with unique codes" = "Identifica facilmente i tuoi prodotti con codici univoci";
 
 /* Button to edit a customer on the New Order screen
+   Button to edit an order on Order Details screen
    Button to edit an order status on the New Order screen
    Button to edit the customer note on the New Order screen
-   Title text of the button that edits a note when creating a simple payment
-   Title to edit an order */
+   Title text of the button that edits a note when creating a simple payment */
 "Edit" = "Modifica";
 
 /* Action to edit the address in Shipping Label Suggested screen */
@@ -1853,6 +1894,15 @@ which should be translated separately and considered part of this sentence. */
 /* Notice displayed when the label purchase fails */
 "Error purchasing the label" = "Errore durante l'acquisto dell'etichetta";
 
+/* Title of the notice about an error saving images uploaded in the background to a product. */
+"Error saving product images" = "Errore durante il salvataggio delle immagini prodotto";
+
+/* Title of the notice about an error saving an image uploaded in the background to a product variation. */
+"Error saving variation image" = "Errore durante il salvataggio dell'immagine di variazione";
+
+/* Notice title when marking an order as completed via a swipe action fails. Parameter: Order Number */
+"Error updating Order #%1$d" = "Errore durante l'aggiornamento dell'ordine #%1$d";
+
 /* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store.
    The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
 "Everyone loves a deal" = "Tutti amano un'offerta";
@@ -1907,6 +1957,9 @@ which should be translated separately and considered part of this sentence. */
 /* Formatted content for coupon expiry date, reads like: Expires August 4, 2022 */
 "Expires %1$@" = "Scade il giorno %1$@";
 
+/* The detailed message shown in the Orders → All Orders tab if the list is empty. */
+"Explore how you can increase your store sales" = "Scopri come puoi aumentare le vendite del tuo negozio";
+
 /* Action sheet option when the user wants to change the Product type to external product */
 "External product" = "Prodotto esterno";
 
@@ -1948,8 +2001,14 @@ which should be translated separately and considered part of this sentence. */
    Line description for 'Fees' cart total on the receipt. Only shown when non-zero. */
 "Fees" = "Tariffe";
 
+/* Info message shown when the order contains multiple fees and shipping lines */
+"Fees & Shipping details are incomplete.\nTo edit all the details, view the order in your WooCommerce store admin." = "Le tariffe e i dettagli di spedizione non sono completi.\nPer modificare tutti i dettagli, visualizza l'ordine nell'amministrazione del tuo negozio WooCommerce.";
+
 /* Title on the refund screen that lists the fees total cost */
 "Fees Refund" = "Rimborso delle commissioni";
+
+/* Info message shown when the order contains multiple fee lines */
+"Fees are incomplete.\nTo edit all fees, view the order in your WooCommerce store admin." = "Le tariffe non sono complete.\nPer modificare tutte le tariffe, visualizza l'ordine nell'amministrazione del tuo negozio WooCommerce.";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
@@ -2025,6 +2084,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding file from device. */
 "From device" = "Dal dispositivo";
 
+/* Title of the CTA view for installing WCShip extension */
+"Fulfill your orders with WooCommerce Shipping" = "Completa i tuoi ordini con WooCommerce Shipping";
+
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "Ottieni informazioni su come i prodotti vengono tracciati nel negozio";
 
@@ -2053,6 +2115,12 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of push notifications as part of Jetpack benefits. */
 "Get push notifications for new orders, reviews, etc. delivered to your device." = "Ricevi notifiche push per nuovi ordini, recensioni, ecc. inviate al tuo dispositivo.";
 
+/* Message for the feature announcement banner intended to upsell card readers */
+"Get ready to accept payments with a card reader." = "Preparati ad accettare pagamenti con un lettore di carte.";
+
+/* Local notification body when the user encounters an error logging in with site address. */
+"Get some help!" = "Ricevi aiuto!";
+
 /* Title of the Jetpack benefits banner. */
 "Get the full experience with Jetpack" = "Vivi l'esperienza completa con Jetpack";
 
@@ -2078,6 +2146,9 @@ which should be translated separately and considered part of this sentence. */
    Title of the button to give feedback about the Orders features
    Title on the navigation bar for the products feedback survey */
 "Give feedback" = "Lascia un feedback";
+
+/* Message for the Linked Products announcement banner */
+"Give your customers helpful and relevant product recommendations by adding upsells and cross-sells." = "Offri ai tuoi clienti consigli utili e pertinenti sui prodotti sommando upsell e cross-sell.";
 
 /* Option to select the Gmail app when logging in with magic links */
 "Gmail" = "Gmail";
@@ -2227,10 +2298,11 @@ which should be translated separately and considered part of this sentence. */
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "Nell'amministrazione del sito puoi trovare l'e-mail che hai usato per collegarti a WordPress.com dalla bacheca di Jetpack in Connessioni > Connessione account";
 
-/* Message included in emailed receipts. Reads as: In-Person Payment for Order @{number} for @{store name} Parameters: %1$@ - order number, %2$@ - store name */
-"In-Person Payment for Order #%1$@ for %2$@" = "Pagamento di persona per l'Ordine #%1$@ per %2$@";
+/* Message included in emailed receipts. Reads as: In-Person Payment for Order @{number} for @{store name} blog_id @{blog ID} Parameters: %1$@ - order number, %2$@ - store name, %3$@ - blog ID number */
+"In-Person Payment for Order #%1$@ for %2$@ blog_id %3$@" = "Pagamento di persona per l'Ordine #%1$@ per %2$@ blog_id %3$@";
 
 /* Navigates to In-Person Payments screen
+   Title for a dismissal alert on the upsell card reader feature announcement banner
    Title for the In-Person Payments settings screen */
 "In-Person Payments" = "Pagamenti di persona";
 
@@ -2313,7 +2385,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the app's Instagram profile */
 "Instagram" = "Instagram";
 
-/* Navigates to Install Jetpack screen.
+/* Action button for installing Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation
+   Navigates to Install Jetpack screen.
    Title of install action in the Jetpack benefits view.
    Title of the Install Jetpack intro view
    Title of the Install Jetpack view */
@@ -2321,6 +2394,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action button to install Jetpack on WP-Admin instead of on app */
 "Install Jetpack in WP-Admin" = "Installa Jetpack in WP-Admin";
+
+/* Action button for installing WooCommerce.Presented when logging in with a site address that does not have WooCommerce */
+"Install WooCommerce" = "Installa WooCommerce";
 
 /* Title for the error screen when WooCommerce Payments is not installed */
 "Install WooCommerce Payments" = "Installa WooCommerce Payments";
@@ -2393,6 +2469,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message explaining that the site entered and the acount logged into do not match. Reads like 'It looks like awebsite.com is connected to a different account */
 "It looks like %@ is connected to a different account." = "Sembra che %@ sia connesso a un account diverso.";
 
+/* Message explaining that the site entered doesn't have WooCommerce installed or activated. Reads like 'It looks like awebsite.com is not a WooCommerce site. */
+"It looks like %@ is not a WooCommerce site." = "Sembra che %@ non sia un sito WooCommerce.";
+
 /* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
 "It looks like this email isn't associated with a WordPress.com account." = "Sembra che questa e-mail non sia associata a un account WordPress.com.";
 
@@ -2423,11 +2502,17 @@ which should be translated separately and considered part of this sentence. */
 /* Description for Top Performers right column header */
 "Items Sold" = "Elementi venduti";
 
+/* Title of the Jetpack Setup screen */
+"Jetpack Setup" = "Configurazione di Jetpack";
+
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack è un plugin WordPress gratuito che collega il tuo negozio con gli strumenti necessari per assicurarti la migliore esperienza mobile, incluse le notifiche push e le statistiche";
 
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "Partecipa da qualsiasi luogo";
+
+/* Login onboarding survey option: just exploring. */
+"Just exploring" = "Sto solo dando un'occhiata";
 
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "Continua a modificare";
@@ -2469,6 +2554,7 @@ which should be translated separately and considered part of this sentence. */
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
    Button title in the shipping label creation info screen
    Settings > Privacy Settings. A text link to the cookie policy.
+   Title of button shown in the Orders → All Orders tab if the list is empty.
    Title of button shown in the Reviews tab if the list is empty
    Title of button shown on the Product Reviews screen if the list is empty */
 "Learn more" = "Per saperne di più";
@@ -2500,6 +2586,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "Lettera (8,5 x 11 mm)";
+
+/* Caption displayed in the prologue screen shown after onboarding during the login flow. */
+"Let’s get started!" = "Iniziamo!";
 
 /* Title for the limit usage to X items row in coupon usage restrictions screen. */
 "Limit Usage to X Items" = "Limite di utilizzo a X elementi";
@@ -2564,6 +2653,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Action button that will restart the login flow.Presented when logging in with a site address that appears to be invalid.
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
+   Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
    Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Log In With Another Account" = "Accedi con un altro account";
 
@@ -2598,6 +2688,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Instructions on the WordPress.com username / password log in form. */
 "Log in with your WordPress.com username and password." = "Accedi con il nome utente e la password WordPress.com.";
 
+/* Local notification action to log in with WordPress.com. */
+"Login with WordPress.com" = "Accedi con WordPress.com";
+
 /* Title of a button. */
 "Lost your password?" = "Password persa?";
 
@@ -2627,23 +2720,29 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to open browser to manage plugins */
 "Manage Plugins" = "Gestisci i plugin";
 
+/* Caption displayed in promotional screens shown during the login flow. */
+"Manage and edit orders on the go" = "Gestisci e modifica gli ordini in movimento";
+
 /* Navigates to Card Reader management screen */
 "Manage card reader" = "Gestisci lettore di carte";
+
+/* Login onboarding survey option: manage my orders. */
+"Manage my orders" = "Gestisci i miei ordini";
 
 /* Title of the cell in Product Inventory Settings > Manage stock */
 "Manage stock" = "Gestisci magazzino";
 
-/* Caption displayed in promotional screens shown during the login flow. */
-"Manage your store orders on the go " = "Gestisci gli ordini del negozio in movimento";
-
 /* Section name for manual offsets in time zone selector */
 "Manual Offsets" = "Offset manuale";
 
-/* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Rimborso manuale tramite %1$@";
+/* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. */
+"Manual Refund" = "Rimborso manuale";
 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "Dominio mappato";
+
+/* Title for the swipe order action to mark it as completed */
+"Mark Completed" = "Contrassegna come completato";
 
 /* Action button on Review Order screen
    Fulfill Order Action Button */
@@ -2658,10 +2757,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Option to mark all reviews as read from the action sheet in Reviews screen. */
 "Mark all reviews as read" = "Contrassegna tutte le recensioni come lette";
 
-/* Alert button when selecting the cash payment method for simple payments */
+/* Alert button when selecting the cash payment method */
 "Mark as Paid" = "Contrassegna come Pagato";
 
-/* Alert title when selecting the cash payment method for simple payments */
+/* Alert title when selecting the cash payment method */
 "Mark as Paid?" = "Contrassegnare come Pagato?";
 
 /* Create Shipping Label form -> Mark order as complete label */
@@ -2794,6 +2893,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for table view section of network active plugins */
 "Network Active Plugins" = "Plugin di rete attivi";
 
+/* Title of the badge shown when advertising a new feature */
+"New" = "Nuovo";
+
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "New Attribute Name" = "Nuovo nome attributo";
 
@@ -2806,9 +2908,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The title of the top banner on the Products tab. */
 "New features available!" = "Nuove funzionalità disponibili.";
 
+/* Message for the mocked order notification needed for the AppStore listing screenshot. 'Your WooCommerce Store' is the name of the mocked store. */
+"New order for $13.98 on Your WooCommerce Store" = "Nuovo ordine pari a $ 13,98 nel tuo negozio WooCommerce";
+
+/* Title of button in the login prologue screen for users who are new to WooCommerce. */
+"New to WooCommerce?" = "Prima volta in WooCommerce?";
+
 /* Action navigate to the variation creation screen
    Next nav bar button title in Add Product Attribute Options screen
    Next nav bar button title in Add Product Attribute screen
+   The button title on the login onboarding screen to continue to the next step.
    Title for the button to confirm the amount in the simple payments screen
    Title of a button.
    Title of a button. The text should be capitalized.
@@ -2856,6 +2965,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The text on the placeholder overlay when no products match the filter on the Products tab */
 "No matching products found" = "Nessun prodotto corrispondente trovato";
 
+/* Subtitle of one of the elements in the CTA View for installing WCShip extension */
+"No need to wonder where that stampbook went" = "Non dovrai metterti alla ricerca di un francobollo";
+
 /* Message on the detail view of the Orders tab before any order is selected */
 "No order selected" = "Nessun ordine selezionato";
 
@@ -2897,6 +3009,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
 "No tax classes yet" = "Ancora nessuna classe di tasse";
 
+/* Message for a dismissal alert on the upsell card reader feature announcement banner */
+"No worries! You can always get started with In-Person Payments in Settings" = "Non preoccuparti. Puoi sempre iniziare con i Pagamenti di persona nelle Impostazioni";
+
 /* Coupon expiry date placeholder in the view for adding or editing a coupon
    Display label for the order fee's tax status setting option
    Display label for the product's tax status setting option
@@ -2906,6 +3021,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "None" = "Nessuna";
 
 /* Action title to dismiss enabling Analytics for a store
+   Button in the CTA View for installing WCShip extension for dismissing the view
    Title of dismiss action in the Jetpack benefits view. */
 "Not now" = "Non ora";
 
@@ -3036,6 +3152,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Order number title. Parameters: %1$@ - order number */
 "Order #%1$@" = "Ordine n. %1$@";
 
+/* Notice title when an order is marked as completed via a swipe action. Parameter: Order Number */
+"Order #%1$d marked as completed" = "Ordine #%1$d contrassegnato come completato.";
+
 /* Order notes section title */
 "Order Notes" = "Note ordine";
 
@@ -3049,6 +3168,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Order Total label for payment view
    Title text of the row that shows the total to charge when creating a simple payment */
 "Order Total" = "Totale ordine";
+
+/* Accessibility label for button triggering more actions menu sheet. */
+"Order actions" = "Azioni dell'ordine";
 
 /* Navigates to Card Reader ordering screen */
 "Order card reader" = "Ordina lettore di carte";
@@ -3189,6 +3311,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message when payment is declined for a non specific reason. */
 "Payment was declined for an unspecified reason. Try another means of payment" = "Il pagamento è stato rifiutato per una ragione non specificata Prova altri metodi di pagamento";
 
+/* Title of the hub menu payments button */
+"Payments" = "Pagamenti";
+
 /* Display label for pending order status.
    Display label for the review's pending status */
 "Pending" = "In sospeso";
@@ -3204,6 +3329,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Name of percentage discount type */
 "Percentage Discount" = "Sconto in percentuale";
+
+/* Subtitle of the Amount field when a percentage higher than 100 is set in the Coupon Edit or Creation screen for a percentage discount coupon. */
+"Percentages cannot be greater than 100%" = "Le percentuali non possono superare il 100%";
 
 /* Title of the Performance section on Coupons Details screen */
 "Performance" = "Prestazioni";
@@ -3226,6 +3354,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "Scegli un negozio da collegare";
+
+/* Subtitle of one of the elements in the CTA View for installing WCShip extension */
+"Pick up an order, then just pay, print, package, and post." = "Ricevi un ordine, quindi paga, stampa, imballa e spedisci.";
 
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "Posizionamento del prodotto nel cestino...";
@@ -3415,6 +3546,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title of shipping label printing instructions screen */
 "Print from your mobile device" = "Stampa dal tuo dispositivo mobile";
 
+/* Title of one of the elements in the CTA View for installing WCShip extension */
+"Print from your phone" = "Stampa dal telefono";
+
 /* Body of the banner in the Order Detail for suggesting to install WCShip extension. */
 "Print labels from your phone, with WooCommerce Shipping." = "Stampa etichette dal tuo telefono con WooCommerce Shipping.";
 
@@ -3445,6 +3579,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Display label for the product's private status */
 "Privately published" = "Pubblicato privatamente";
+
+/* Local notification title when the user encounters an error logging in with site address. */
+"Problems with logging in?" = "Problemi con l'accesso?";
 
 /* Display label for processing order status. */
 "Processing" = "In elaborazione";
@@ -3541,6 +3678,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the in-progress UI while updating the Product remotely */
 "Publishing your product..." = "Pubblicazione del tuo prodotto...";
+
+/* Title for the button on the feature announcement banner intended to upsell card readers */
+"Purchase Card Reader" = "Lettore carte di acquisto";
 
 /* Title of shipping label purchase date in Refund Shipping Label screen */
 "Purchase Date" = "Data di acquisto";
@@ -3692,6 +3832,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "Prezzo standard: %@";
+
+/* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time */
+"Remind me later" = "Ricordamelo in seguito";
 
 /* Confirm button on the alert when the user taps to delete a Product image
    Confirmation button on the alert when the user is deleting a variation
@@ -3886,6 +4029,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button when the user does not want to print the receipt. Presented to users after a payment has been successfully collected */
 "Save receipt and continue" = "Salva la ricevuta e continua";
 
+/* Title of the CTA view for installing WCShip extension */
+"Save time and money" = "Risparmia tempo e denaro";
+
 /* Message text in the shipping label creation info screen */
 "Save time and money by fulfilling with WooCommerce Shipping" = "Risparmia tempo e denaro con WooCommerce Shipping";
 
@@ -3943,11 +4089,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for the product's catalog visibility */
 "Search results only" = "Soltanto risultati della ricerca";
 
-/* Action button linking to a list of connected stores.Presented when logging in with a store address that does not match the account entered */
+/* Action button linking to a list of connected stores. Presented when logging in with a store address that does not have WooCommerce.
+   Action button linking to a list of connected stores.Presented when logging in with a store address that does not match the account entered */
 "See Connected Stores" = "Visualizza i negozi collegati";
-
-/* Action button linking to instructions for installing Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
-"See Instructions" = "Visualizza istruzioni";
 
 /* Text on the button to see a saved receipt */
 "See Receipt" = "Visualizza ricevuta";
@@ -4064,8 +4208,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button to share coupon from the Coupon Creation Success screen. */
 "Share Coupon" = "Condividi codice promozionale";
 
-/* Payment Link method title on the select payment method screen for simple payments
-   Title to share an order payment link. */
+/* Payment Link method title on the select payment method screen */
 "Share Payment Link" = "Condividi il link di pagamento";
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
@@ -4140,6 +4283,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title of the Product shipping class selector screen */
 "Shipping classes" = "Classi di spedizione";
 
+/* Info message shown when the order contains multiple shipping lines */
+"Shipping details are incomplete.\nTo edit all shipping details, view the order in your WooCommerce store admin." = "I dettagli di spedizione non sono completi.\nPer modificare tutti i dettagli di spedizione, visualizza l'ordine nell'amministrazione del tuo negozio WooCommerce.";
+
 /* Header of the order summary section in the shipping label creation form */
 "Shipping label order summary" = "Riepilogo ordine etichetta di spedizione";
 
@@ -4188,6 +4334,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show the billing details for this order." = "Mostra i dettagli di fatturazione per questo ordine.";
 
+/* VoiceOver accessibility hint, informing the user that the button can be used to view the order custom fields information. */
+"Show the custom fields for this order." = "Mostra i campi personalizzati per questo ordine.";
+
 /* VoiceOver accessibility hint, informing the user that the button can be used to view the items inside the shipping label package */
 "Show the items included inside this shipping label package." = "Mostra gli articoli inclusi in questo pacco di etichette di spedizione.";
 
@@ -4202,6 +4351,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* View title during the sign up process. */
 "Sign Up" = "Registrati";
+
+/* Button title. Takes the user the Enter site credentials screen. */
+"Sign in with site credentials" = "Accedi con le credenziali del sito";
+
+/* Button title. Takes the user to the site credentials entry screen. */
+"Sign in with store credentials" = "Accedi con le credenziali del negozio";
 
 /* When social login fails, this button offers to let them signup for a new WordPress.com account */
 "Sign up" = "Registrati";
@@ -4238,6 +4393,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "L'indirizzo del sito deve contenere almeno 4 caratteri.";
+
+/* The button title on the login onboarding screen to skip to the prologue screen. */
+"Skip" = "Salta";
 
 /* Placeholder in the Product Slug row on Edit Product Slug screen.
    Product Slug navigation title
@@ -4392,9 +4550,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "Barrato";
 
-/* Navigates to Stripe M2 Card Reader manual */
-"Stripe M2 card reader manual" = "Manuale del lettore di schede Stripe M2";
-
 /* Display label for subscription product type. */
 "Subscription" = "Abbonamento";
 
@@ -4424,6 +4579,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "Cambia negozio";
+
+/* Login onboarding survey option: switch between multiple Stores. */
+"Switch between multiple Stores" = "Passa a un negozio all'altro";
 
 /* Switch store option in the hub menu */
 "Switch store" = "Cambia negozio";
@@ -4470,7 +4628,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the simple payments screen */
 "Take Payment" = "Ricevi il pagamento";
 
-/* Navigation bar title for the Simple Payments Methods screens. %1$@ is a placeholder for the total amount to collect
+/* Navigation bar title for the Payment Methods screens. %1$@ is a placeholder for the total amount to collect
    Text of the button that creates a simple payment order. %1$@ is a placeholder for the total amount to collect */
 "Take Payment (%1$@)" = "Accetta il pagamento (%1$@)";
 
@@ -4712,6 +4870,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Il certificato per questo server non è valido. Continuando, corri il rischio di connetterti ad un server che finge di essere  “%@”, il che potrebbe compromettere la sicurezza di informazioni riservate che ti appartengono.\n\nVuoi accettare comunque il certificato?";
 
+/* Error message in the Add Edit Coupon screen when the coupon amount is higher than 100% for a percentage discount */
+"The coupon amount cannot be greater than 100 for percentage discounts" = "L'importo del coupon non può essere superiore a 100 per gli sconti percentuali";
+
 /* Error message in the Add Edit Coupon screen when the coupon code is empty. */
 "The coupon code couldn't be empty" = "Il codice promozionale non può essere vuoto.";
 
@@ -4729,6 +4890,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when the payment can not be processed (i.e. order amount is below the minimum amount allowed.) */
 "The payment can not be processed by the payment processor." = "Il pagamento non può essere elaborato dal processore di pagamento.";
+
+/* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. */
+"The payment method does not support automatic refunds. Complete the refund by transferring the money to the customer manually." = "Il metodo di pagamento non supporta i rimborsi automatici. Completa il rimborso trasferendo manualmente il denaro al cliente.";
 
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
 "The phone number is not valid or you can't call the customer from this device." = "Il numero di telefono non è valido o non puoi chiamare il cliente da questo dispositivo.";
@@ -4865,7 +5029,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Notice text after failing to update the order successfully */
 "There was an error updating the order" = "Si è verificato un errore durante l'aggiornamento dell'ordine";
 
-/* Text when there is an error while marking the order as paid for simple payments. */
+/* Text when there is an error while marking the order as paid for during payment. */
 "There was an error while marking the order as paid." = "Si è verificato un errore durante il contrassegno dell'ordine come Pagato.";
 
 /* Text when there is an unknown error while trying to collect payments */
@@ -4951,8 +5115,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message displayed when unable to close user account due to having active subscriptions. */
 "This user account cannot be closed while it has active subscriptions." = "Questo account utente ha abbonamenti attivi e non può essere chiuso.";
 
-/* Alert info when selecting the cash payment method for simple payments */
+/* Alert info when selecting the cash payment method during payments */
 "This will mark your order as complete if you received (total) outside of WooCommerce" = "Questo contrassegnerà il tuo ordine come Completato se hai ricevuto (totale) al di fuori di WooCommerce";
+
+/* Title of the badge shown when promoting an existing feature */
+"Tip" = "Suggerimento";
 
 /* Add Product Category. Placeholder of cell presenting the title of the category.
    Placeholder in the Product Title row on Product form screen. */
@@ -5099,6 +5266,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
 "Try another means of payment" = "Prova altri metodi di pagamento";
 
+/* Title for the button on the Linked Products announcement banner */
+"Try it now" = "Prova ora";
+
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Prova con un'altra e-mail";
 
@@ -5107,6 +5277,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message when a card is declined due to a potentially temporary problem. */
 "Trying again may succeed, or try another means of payment" = "Riprovare potrebbe avere esito positivo oppure provare con un altro mezzo di pagamento";
+
+/* Login onboarding survey option: trying to set up a store. */
+"Trying to set up a store" = "Tentativo di configurazione di un negozio";
 
 /* Settings > Manage Card Reader > Connect > Hint to power on reader */
 "Turn card reader on and place it next to mobile device" = "Accendi il lettore di carte e posizionalo accanto al dispositivo mobile";
@@ -5463,10 +5636,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Step 1 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network." = "Verifica che la stampante e il dispositivo siano connessi alla **stessa rete Wi-Fi**.\n\nControlla la documentazione della stampante per informazioni su come connetterla alla rete Wi-Fi.";
 
+/* Message displayed when checking whether a site has successfully installed WooCommerce */
+"Verifying installation..." = "Verifica dell'installazione...";
+
 /* Displays the connected reader software version */
 "Version: %1$@" = "Versione: %1$@";
 
-/* Action title in an in-app notification to view more details. */
+/* Action title in an in-app notification to view more details.
+   Title of the action to view product details from a notice about an image upload failure in the background. */
 "View" = "Visualizza";
 
 /* Cell title on the beta features screen to enable the order add-ons feature
@@ -5480,6 +5657,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for the 'View Billing Information' button
    Button on bottom of Customer's information to show the billing details */
 "View Billing Information" = "Visualizza informazioni di fatturazione";
+
+/* Accessibility label for the 'View Custom Fields' button
+   Custom Fields section title */
+"View Custom Fields" = "Visualizza campi personalizzati";
 
 /* Button title View product in store in Edit Product More Options Action Sheet */
 "View Product in Store" = "Visualizza il prodotto in negozio";
@@ -5574,6 +5755,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country */
 "We don’t support In-Person Payments with Stripe in your country" = "Non supportiamo i pagamenti di persona con Stripe nel tuo Paese";
 
+/* Subtitle displayed in promotional screens shown during the login flow. */
+"We enable you to process them effortlessly." = "Ti consentiamo di elaborarli senza sforzo.";
+
 /* Message displayed in the error prompt when loading total discounted amount in Coupon Details screen fails */
 "We encountered a problem loading analytics" = "Abbiamo riscontrato un problema durante il caricamento dell'analisi";
 
@@ -5582,6 +5766,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* message to ask a user to check their email for a WordPress.com email */
 "We just emailed a link to %@. Please check your mail app and tap the link to log in." = "Abbiamo appena inviato un link tramite e-mail a %@. Controlla la tua app di posta e tocca il link per accedere.";
+
+/* Subtitle displayed in promotional screens shown during the login flow. */
+"We know it’s essential to your business." = "Sappiamo che è essenziale per la tua attività.";
 
 /* Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect. */
 "We use other tracking tools, including some from third parties. Read about these and how to control them." = "Utilizziamo altri strumenti di tracciamento, inclusi alcuni di terze parti. Leggi le informazioni sugli strumenti e come utilizzarli.";
@@ -5648,6 +5835,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Content of the feedback banner on the coupon list screen */
 "We’ve been working on making it possible to view and edit coupons from your device!" = "Abbiamo lavorato per rendere possibile la visualizzazione e la modifica dei coupon dal tuo dispositivo!";
 
+/* Login onboarding survey title. */
+"What brings you to the WooCommerce app today?" = "Cosa ti porta oggi nell'app WooCommerce?";
+
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "Quale e-mail uso per accedere?";
 
@@ -5657,6 +5847,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Shipping Labels: info title about WooCommerce Services discount */
 "What is WooCommerce Services discount?" = "Cos'è lo sconto di WooCommerce Services?";
+
+/* Button in the CTA View about what is the WCShip extension */
+"What is WooCommerce Shipping?" = "Cos'è WooCommerce Shipping?";
+
+/* Navigates to page with details about What is WordPress.com. */
+"What is WordPress.com?" = "_Cos'è WordPress.com?_";
 
 /* Navigates to screen containing the latest WooCommerce Features */
 "What's New in WooCommerce" = "Novità in WooCommerce";
@@ -5680,9 +5876,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the cell in Product Shipping Settings > Width */
 "Width" = "Larghezza";
 
-/* Navigates to WisePad 3 Card Reader manual */
-"WisePad 3 card reader manual" = "Manuale del lettore di schede WisePad 3";
-
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";
 
@@ -5697,6 +5890,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation title of the webview which used by the merchant to update their store address */
 "WooCommerce Settings" = "Impostazioni WooCommerce";
+
+/* Title for the WooCommerce Setup screen in the login flow */
+"WooCommerce Setup" = "Configurazione di WooCommerce";
 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce Shipping";
@@ -5732,8 +5928,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "Puoi modificare i componenti aggiuntivi dei prodotti nella bacheca web.";
 
-/* The info of the top banner on the Products tab. */
-"You can now create and manage product variations!" = "Ora puoi creare e gestire le varianti del prodotto.";
+/* Subtitle displayed in promotional screens shown during the login flow. */
+"You can manage quickly and easily." = "Gestione rapida e facile.";
 
 /* The info of the shipping labels top banner in order details */
 "You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "Ora puoi creare etichette di spedizione per tutti gli ordini fisici direttamente dal tuo dispositivo con il plugin WooCommerce Shipping gratuito. Tocca \"Crea etichetta di spedizione\" per provare la funzionalità beta.";
@@ -5756,6 +5952,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The description on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
 "You currently have Coupons disabled for this store. Enable coupons to get started." = "Attualmente hai codici promozionali disattivati per questo negozio. Attiva i codici promozionali per iniziare.";
+
+/* Title for the mocked order notification needed for the AppStore listing screenshot */
+"You have a new order! 🎉" = "Hai un nuovo ordine. 🎉";
 
 /* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
 "You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "C'è almeno un requisito scaduto sul tuo account. Completalo per riprendere a utilizzare Pagamenti di persona.";
@@ -5843,6 +6042,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "unknown url" = "url sconosciuto";
 
 /* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need...
+   Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have WooCommerce.The error would read: to use this app for your site you'll need...
    Placeholder for site url, if the url is unknown.Presented when logging in with a store address that does not match the account entered. */
 "your site" = "il tuo sito";
 

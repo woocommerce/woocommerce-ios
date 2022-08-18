@@ -178,6 +178,10 @@ public class AppSettingsStore: Store {
             setCouponManagementFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadCouponManagementFeatureSwitchState(let onCompletion):
             loadCouponManagementFeatureSwitchState(onCompletion: onCompletion)
+        case .setFeatureAnnouncementDismissed(campaign: let campaign, remindLater: let remindLater, onCompletion: let completion):
+            setFeatureAnnouncementDismissed(campaign: campaign, remindLater: remindLater, onCompletion: completion)
+        case .getFeatureAnnouncementVisibility(campaign: let campaign, onCompletion: let completion):
+            getFeatureAnnouncementVisibility(campaign: campaign, onCompletion: completion)
         }
     }
 }
@@ -723,6 +727,42 @@ private extension AppSettingsStore {
         let storeSettings = getStoreSettings(for: siteID)
         let newSettings = storeSettings.copy(preferredInPersonPaymentGateway: .some(nil))
         setStoreSettings(settings: newSettings, for: siteID, onCompletion: nil)
+    }
+
+}
+
+
+// MARK: - Feature Announcement Card Visibility
+
+extension AppSettingsStore {
+
+    func setFeatureAnnouncementDismissed(campaign: FeatureAnnouncementCampaign, remindLater: Bool, onCompletion: ((Result<Bool, Error>) -> ())?) {
+        do {
+            let remindAfter = remindLater ? Date().addingDays(14) : nil
+            let newSettings = FeatureAnnouncementCampaignSettings(dismissedDate: Date(), remindAfter: remindAfter)
+
+            let settings = generalAppSettings.settings
+            let settingsToSave = settings.replacing(featureAnnouncementSettings: newSettings, for: campaign)
+            try generalAppSettings.saveSettings(settingsToSave)
+
+            onCompletion?(.success(true))
+        } catch {
+            onCompletion?(.failure(error))
+        }
+    }
+
+    func getFeatureAnnouncementVisibility(campaign: FeatureAnnouncementCampaign, onCompletion: (Result<Bool, Error>) -> ()) {
+        guard let campaignSettings = generalAppSettings.value(for: \.featureAnnouncementCampaignSettings)[campaign] else {
+            return onCompletion(.success(true))
+        }
+
+        if let remindAfter = campaignSettings.remindAfter {
+            let remindAfterHasPassed = remindAfter < Date()
+            onCompletion(.success(remindAfterHasPassed))
+        } else {
+            let neverDismissed = campaignSettings.dismissedDate == nil
+            onCompletion(.success(neverDismissed))
+        }
     }
 
 }

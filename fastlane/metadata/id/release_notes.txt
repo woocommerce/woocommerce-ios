@@ -1,1 +1,3 @@
-Kabar terkini: kami sedang mengerjakan fitur baru untuk pengelolaan kupon. Arahkan kursor ke tab Menu, ketuk ikon pengaturan, dan gulir ke fitur eksperimental. Di rilis ini, kami membenahi masalah dalam pengeditan kolom "Penggunaan Individual" dan "Kecualikan Barang Obral". Cobalah dan bagikan masukan Anda! 
+Anda akan melihat banner baru untuk menerima pembayaran langsung dari aplikasi menggunakan WooCommerce Payments. Tunggu! Itu belum semua. Anda dapat menggeser pesanan ke kiri untuk menandainya selesai!
+
+Kami juga melakukan beberapa peningkatan pengalaman login, termasuk pilihan untuk login dengan kredensial wp-admin Anda. Sekarang, Anda juga dapat menginstal plugin WooCommerce langsung dari aplikasi!

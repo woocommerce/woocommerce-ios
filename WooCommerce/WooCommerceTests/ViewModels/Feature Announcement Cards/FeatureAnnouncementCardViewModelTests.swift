@@ -1,5 +1,6 @@
 import XCTest
 @testable import WooCommerce
+import Yosemite
 
 private typealias FeatureCardEvent = WooAnalyticsEvent.FeatureCard
 
@@ -20,7 +21,13 @@ final class FeatureAnnouncementCardViewModelTests: XCTestCase {
             title: "Buy a reader",
             message: "With a card reader, you can accept card payments",
             buttonTitle: "Buy now",
-            image: .paymentsFeatureBannerImage)
+            image: .paymentsFeatureBannerImage,
+            showDismissConfirmation: true,
+            dismissAlertTitle: "Dismiss alert",
+            dismissAlertMessage: "Press here to dismiss alert",
+            showDividers: false,
+            badgeType: .new
+        )
 
         sut = FeatureAnnouncementCardViewModel(
             analytics: analytics,
@@ -37,7 +44,7 @@ final class FeatureAnnouncementCardViewModelTests: XCTestCase {
 
         // Then
         let expectedSource = FeatureCardEvent.Source.paymentMethods
-        let expectedCampaign = FeatureCardEvent.Campaign.upsellCardReaders
+        let expectedCampaign = FeatureAnnouncementCampaign.upsellCardReaders
         let expectedEvent = WooAnalyticsEvent.FeatureCard.shown(source: expectedSource, campaign: expectedCampaign)
 
         XCTAssert(analyticsProvider.receivedEvents.contains(where: { $0 == expectedEvent.statName.rawValue
@@ -46,21 +53,24 @@ final class FeatureAnnouncementCardViewModelTests: XCTestCase {
         verifyUpsellCardProperties(expectedSource: expectedSource, expectedCampaign: expectedCampaign)
     }
 
-    func test_dismissTapped_logs_dismissed_analytics_event() {
+    func test_dontShowAgainTapped_logs_dismissed_analytics_event() {
         // Given
 
         // When
-        sut.dismissedTapped()
+        sut.dontShowAgainTapped()
 
         // Then
-        let expectedSource = FeatureCardEvent.Source.paymentMethods
-        let expectedCampaign = FeatureCardEvent.Campaign.upsellCardReaders
-        let expectedEvent = WooAnalyticsEvent.FeatureCard.dismissed(source: expectedSource, campaign: expectedCampaign)
+        assertLogsDismissedAnalyticsEvent()
+    }
 
-        XCTAssert(analyticsProvider.receivedEvents.contains(where: { $0 == expectedEvent.statName.rawValue
-        }))
+    func test_remindLaterTapped_logs_dismissed_analytics_event() {
+        // Given
 
-        verifyUpsellCardProperties(expectedSource: expectedSource, expectedCampaign: expectedCampaign)
+        // When
+        sut.remindLaterTapped()
+
+        // Then
+        assertLogsDismissedAnalyticsEvent()
     }
 
     func test_ctaTapped_logs_analytics_event() {
@@ -71,8 +81,19 @@ final class FeatureAnnouncementCardViewModelTests: XCTestCase {
 
         // Then
         let expectedSource = FeatureCardEvent.Source.paymentMethods
-        let expectedCampaign = FeatureCardEvent.Campaign.upsellCardReaders
+        let expectedCampaign = FeatureAnnouncementCampaign.upsellCardReaders
         let expectedEvent = WooAnalyticsEvent.FeatureCard.ctaTapped(source: expectedSource, campaign: expectedCampaign)
+
+        XCTAssert(analyticsProvider.receivedEvents.contains(where: { $0 == expectedEvent.statName.rawValue
+        }))
+
+        verifyUpsellCardProperties(expectedSource: expectedSource, expectedCampaign: expectedCampaign)
+    }
+
+    private func assertLogsDismissedAnalyticsEvent() {
+        let expectedSource = FeatureCardEvent.Source.paymentMethods
+        let expectedCampaign = FeatureAnnouncementCampaign.upsellCardReaders
+        let expectedEvent = WooAnalyticsEvent.FeatureCard.dismissed(source: expectedSource, campaign: expectedCampaign, remindLater: true)
 
         XCTAssert(analyticsProvider.receivedEvents.contains(where: { $0 == expectedEvent.statName.rawValue
         }))
@@ -82,7 +103,7 @@ final class FeatureAnnouncementCardViewModelTests: XCTestCase {
 
     private func verifyUpsellCardProperties(
         expectedSource: FeatureCardEvent.Source,
-        expectedCampaign: FeatureCardEvent.Campaign) {
+        expectedCampaign: FeatureAnnouncementCampaign) {
         guard let actualProperties = analyticsProvider.receivedProperties.first(where: { $0.keys.contains("source")
         }) else {
             return XCTFail("Expected properties were not logged")

@@ -55,7 +55,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(storesManager.receivedActions.count, 0)
 
         // When
-        _ = viewModel.markCompleted()
+        _ = viewModel.markCompleted(flow: .editing)
 
         // Then
         XCTAssertEqual(storesManager.receivedActions.count, 1)
@@ -102,8 +102,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         let viewModel = OrderDetailsViewModel(order: order)
 
         // Then
-        let actionButtonIDs = viewModel.moreActionsButtons.map { $0.id }
-        XCTAssertFalse(actionButtonIDs.contains(.editOrder))
+        XCTAssertFalse(viewModel.editButtonIsEnabled)
     }
 
     func test_paymentMethodsViewModel_title_contains_formatted_order_amount() {

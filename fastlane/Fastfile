@@ -17,7 +17,7 @@ FASTLANE_DIR = __dir__
 DERIVED_DATA_DIR = File.join(FASTLANE_DIR, 'DerivedData')
 SCREENSHOTS_DIR =  File.join(FASTLANE_DIR, 'screenshots')
 IOS_LOCALES = %w[ar de-DE en-US es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant].freeze
-SIMULATOR_VERSION = '14.3' # For screenshots
+SIMULATOR_VERSION = '15.5' # For screenshots
 SCREENSHOT_DEVICES = [
   'iPhone 11 Pro Max',
   'iPhone 8 Plus',
@@ -27,6 +27,8 @@ SCREENSHOT_DEVICES = [
 
 MAIN_BUNDLE_IDENTIFIERS = %w[com.automattic.woocommerce].freeze        # Registered in our main account, for development and AppStore
 ALPHA_BUNDLE_IDENTIFIERS = %w[com.automattic.alpha.woocommerce].freeze # Registered in our Enterprise account, for App Center / Installable Builds
+
+TEST_SCHEME = 'WooCommerce'
 
 # List of `.strings` files manually maintained by developers (as opposed to being automatically extracted from the code)
 # which we will merge into the main `Localizable.strings` file imported by GlotPress, then extract back once we download the translations.
@@ -332,7 +334,7 @@ platform :ios do
     version = ios_get_app_version
     removebranchprotection(repository: GHHELPER_REPO, branch: "release/#{version}")
     setfrozentag(repository: GHHELPER_REPO, milestone: version, freeze: false)
-    create_new_milestone(repository: GHHELPER_REPO)
+    create_new_milestone(repository:GHHELPER_REPO, need_appstore_submission: true, milestone_duration:7, number_of_days_from_code_freeze_to_release: 10)
     close_milestone(repository: GHHELPER_REPO, milestone: version)
 
     # Start the build
@@ -556,7 +558,7 @@ platform :ios do
   lane :build_for_testing do |options|
     run_tests(
       workspace: 'WooCommerce.xcworkspace',
-      scheme: 'WooCommerce',
+      scheme: TEST_SCHEME,
       derived_data_path: 'DerivedData',
       build_for_testing: true,
       device: options[:device],
@@ -616,7 +618,7 @@ platform :ios do
     sh('bundle exec pod install --verbose')
 
     # Ensure we're using the right version of Xcode
-    xcversion(version: '~> 12.0')
+    xcversion(version: '~> 13.4')
 
     scan(
       workspace: 'WooCommerce.xcworkspace',
@@ -629,7 +631,7 @@ platform :ios do
   desc 'Take Screenshots'
   lane :take_screenshots do |options|
     # Ensure we're using the right version of Xcode
-    xcversion(version: '~> 12.0')
+    xcversion(version: '~> 13.4')
 
     # By default, clear previous screenshots
     languages = IOS_LOCALES
@@ -1042,11 +1044,15 @@ lane :test_without_building do |options|
     e.include?(options[:name])
   end.first
 
-  UI.user_error!('Unable to find .xctestrun file') unless !xctestrun_path.nil? && File.exist?((xctestrun_path))
+  unless !xctestrun_path.nil? && File.exist?((xctestrun_path))
+    UI.user_error!("Unable to find .xctestrun file at #{xctestrun_path}")
+  end
+
+  inject_buildkite_analytics_environment(xctestrun_path: xctestrun_path) if buildkite_ci?
 
   run_tests(
     workspace: 'WooCommerce.xcworkspace',
-    scheme: 'WooCommerce',
+    scheme: TEST_SCHEME,
     device: options[:device],
     deployment_target_version: options[:ios_version],
     test_without_building: true,
@@ -1101,3 +1107,37 @@ def trigger_buildkite_release_build(branch:, beta:)
     pipeline_file: 'release-builds.yml'
   )
 end
+
+def inject_buildkite_analytics_environment(xctestrun_path:)
+  require 'plist'
+
+  xctestrun = Plist.parse_xml(xctestrun_path)
+  xctestrun['TestConfigurations'].each do |configuration|
+    configuration['TestTargets'].each do |target|
+      TEST_ANALYTICS_ENVIRONMENT.each do |key|
+        value = ENV.fetch(key)
+        next if value.nil?
+
+        target['EnvironmentVariables'][key] = value
+      end
+    end
+  end
+
+  File.write(xctestrun_path, Plist::Emit.dump(xctestrun))
+end
+
+def buildkite_ci?
+  ENV.fetch('BUILDKITE', false)
+end
+
+# https://buildkite.com/docs/test-analytics/ci-environments
+TEST_ANALYTICS_ENVIRONMENT = %w[
+  BUILDKITE_ANALYTICS_TOKEN
+  BUILDKITE_BUILD_ID
+  BUILDKITE_BUILD_NUMBER
+  BUILDKITE_JOB_ID
+  BUILDKITE_BRANCH
+  BUILDKITE_COMMIT
+  BUILDKITE_MESSAGE
+  BUILDKITE_BUILD_URL
+].freeze

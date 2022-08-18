@@ -2,6 +2,9 @@ Metrics/BlockLength:
   Exclude:
     - fastlane/Fastfile
 
+Metrics/MethodLength:
+  Max: 20
+
 Style/AsciiComments:
   Exclude:
     - fastlane/Fastfile

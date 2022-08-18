@@ -1,24 +1,49 @@
 import UIKit
 import SwiftUI
 import Yosemite
+import Experiments
+import Combine
 
-final class InPersonPaymentsMenuViewController: UITableViewController {
-    private let pluginState: CardPresentPaymentsPluginState
+final class InPersonPaymentsMenuViewController: UIViewController {
+    private let stores: StoresManager
+    private var pluginState: CardPresentPaymentsPluginState?
     private var sections = [Section]()
     private let configurationLoader: CardPresentConfigurationLoader
-    private let onPluginSelected: (CardPresentPaymentsPlugin) -> Void
-    private let onPluginSelectionCleared: () -> Void
+    private let onPluginSelected: ((CardPresentPaymentsPlugin) -> Void)?
+    private let onPluginSelectionCleared: (() -> Void)?
+    private let featureFlagService: FeatureFlagService
+    private let cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCase
+    private var cancellables: Set<AnyCancellable> = []
+
+    /// Main TableView
+    ///
+    private lazy var tableView: UITableView = {
+        let tableView = UITableView(frame: .zero, style: .grouped)
+        return tableView
+    }()
+
+    private lazy var permanentNoticePresenter: PermanentNoticePresenter = {
+        PermanentNoticePresenter()
+    }()
+
+    private var activityIndicator: UIActivityIndicatorView?
 
     init(
-        pluginState: CardPresentPaymentsPluginState,
-        onPluginSelected: @escaping (CardPresentPaymentsPlugin) -> Void,
-        onPluginSelectionCleared: @escaping () -> Void
+        pluginState: CardPresentPaymentsPluginState?,
+        onPluginSelected: ((CardPresentPaymentsPlugin) -> Void)?,
+        onPluginSelectionCleared: ( () -> Void)?,
+        stores: StoresManager = ServiceLocator.stores,
+        featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService
     ) {
         self.pluginState = pluginState
         self.onPluginSelected = onPluginSelected
         self.onPluginSelectionCleared = onPluginSelectionCleared
+        self.stores = stores
+        self.featureFlagService = featureFlagService
+        self.cardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase()
         configurationLoader = CardPresentConfigurationLoader()
-        super.init(style: .grouped)
+
+        super.init(nibName: nil, bundle: nil)
     }
 
     required init?(coder: NSCoder) {
@@ -31,6 +56,86 @@ final class InPersonPaymentsMenuViewController: UITableViewController {
         configureSections()
         configureTableView()
         registerTableViewCells()
+
+        if featureFlagService.isFeatureFlagEnabled(.paymentsHubMenuSection) {
+            runCardPresentPaymentsOnboarding()
+        }
+    }
+}
+
+// MARK: - Card Present Payments Readiness
+
+private extension InPersonPaymentsMenuViewController {
+    func runCardPresentPaymentsOnboarding() {
+        cardPresentPaymentsOnboardingUseCase.refresh()
+
+        cardPresentPaymentsOnboardingUseCase.$state
+            .debounce(for: .milliseconds(100), scheduler: DispatchQueue.main)
+            .removeDuplicates()
+            .sink(receiveValue: { [weak self] state in
+                self?.refreshAfterNewOnboardingState(state)
+        }).store(in: &cancellables)
+    }
+
+    func refreshAfterNewOnboardingState(_ state: CardPresentPaymentOnboardingState) {
+        self.pluginState = nil
+
+        guard state != .loading else {
+            self.activityIndicator?.startAnimating()
+            return
+        }
+
+        switch state {
+        case let .completed(newPluginState):
+            self.pluginState = newPluginState
+            self.dismissCardPresentPaymentsOnboardingNoticeIfPresent()
+        case let .selectPlugin(pluginSelectionWasCleared):
+            // If it was cleared it means that we triggered it manually (e.g by tapping in this view on the plugin selection row)
+            // No need to show the onboarding notice
+            if !pluginSelectionWasCleared {
+                self.showCardPresentPaymentsOnboardingNotice()
+            }
+        default:
+            self.showCardPresentPaymentsOnboardingNotice()
+        }
+
+        self.activityIndicator?.stopAnimating()
+        self.configureSections()
+        self.tableView.reloadData()
+    }
+
+    func showCardPresentPaymentsOnboardingNotice() {
+        let permanentNotice = PermanentNotice(message: Localization.inPersonPaymentsSetupNotFinishedNotice,
+                                              callToActionTitle: Localization.inPersonPaymentsSetupNotFinishedNoticeButtonTitle,
+                                              callToActionHandler: { [weak self] in
+            ServiceLocator.analytics.track(.paymentsMenuOnboardingErrorTapped)
+            self?.showOnboarding()
+        })
+
+        permanentNoticePresenter.presentNotice(notice: permanentNotice, from: self)
+    }
+
+    func dismissCardPresentPaymentsOnboardingNoticeIfPresent() {
+        permanentNoticePresenter.dismiss()
+    }
+
+    func showOnboarding() {
+        guard let navigationController = self.navigationController else {
+            return
+        }
+
+        // Instead of using `CardPresentPaymentsOnboardingPresenter` we create the view directly because we already have the onboarding state in the use case.
+        // That way we avoid triggering the onboarding check again that comes with the presenter.
+        let onboardingViewModel = InPersonPaymentsViewModel(useCase: cardPresentPaymentsOnboardingUseCase, showMenuOnCompletion: false)
+        onboardingViewModel.onOnboardingCompletion = { [weak self] plugin in
+            self?.refreshAfterNewOnboardingState(.completed(plugin: plugin))
+            if navigationController.visibleViewController is InPersonPaymentsViewController {
+                navigationController.popViewController(animated: true)
+            }
+        }
+
+        let onboardingViewController = InPersonPaymentsViewController(viewModel: onboardingViewModel)
+        show(onboardingViewController, sender: self)
     }
 }
 
@@ -39,55 +144,61 @@ final class InPersonPaymentsMenuViewController: UITableViewController {
 private extension InPersonPaymentsMenuViewController {
     func configureSections() {
         sections = [
+            actionsSection,
             cardReadersSection,
             paymentOptionsSection
         ].compactMap { $0 }
     }
 
+    var actionsSection: Section? {
+        guard featureFlagService.isFeatureFlagEnabled(.paymentsHubMenuSection) else {
+            return nil
+        }
+
+        return Section(header: Localization.paymentActionsSectionTitle, rows: [.collectPayment])
+    }
+
     var cardReadersSection: Section? {
-        let rows: [Row]
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.consolidatedCardReaderManuals) {
-            rows = [
+        let rows: [Row] = [
                 .orderCardReader,
                 .manageCardReader,
                 .cardReaderManuals
             ]
-        } else {
-            rows = [
-                .orderCardReader,
-                .manageCardReader
-            ] + readerManualRows()
-        }
         return Section(header: Localization.cardReaderSectionTitle, rows: rows)
     }
 
     var paymentOptionsSection: Section? {
-        guard pluginState.available.containsMoreThanOne else {
+        guard pluginState?.available.containsMoreThanOne ?? false else {
             return nil
         }
         return Section(header: Localization.paymentOptionsSectionTitle, rows: [.managePaymentGateways])
     }
 
-    func readerManualRows() -> [Row] {
-        configurationLoader.configuration.supportedReaders.map { readerType in
-            switch readerType {
-            case .chipper:
-                return .bbposChipper2XBTManual
-            case .stripeM2:
-                return .stripeM2Manual
-            case .wisepad3:
-                return .wisepad3Manual
-            case .other:
-                preconditionFailure("Unknown card reader type was present in the supported readers list. This should not be possible")
-            }
-        }
-    }
-
     func configureTableView() {
+        view.addSubview(tableView)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        view.pinSubviewToAllEdges(tableView)
+
         tableView.rowHeight = UITableView.automaticDimension
 
         tableView.dataSource = self
         tableView.delegate = self
+
+        if featureFlagService.isFeatureFlagEnabled(.paymentsHubMenuSection) {
+            setupBottomActivityIndicator()
+        }
+    }
+
+    func setupBottomActivityIndicator() {
+        let containerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: Layout.tableViewFooterHeight))
+        let newActivityIndicator = UIActivityIndicatorView(style: .medium)
+
+        newActivityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(newActivityIndicator)
+        containerView.pinSubviewAtCenter(newActivityIndicator)
+
+        activityIndicator = newActivityIndicator
+        tableView.tableFooterView = containerView
     }
 
     func registerTableViewCells() {
@@ -108,12 +219,8 @@ private extension InPersonPaymentsMenuViewController {
             configureManagePaymentGateways(cell: cell)
         case let cell as LeftImageTableViewCell where row == .cardReaderManuals:
             configureCardReaderManuals(cell: cell)
-        case let cell as LeftImageTableViewCell where row == .bbposChipper2XBTManual:
-            configureChipper2XManual(cell: cell)
-        case let cell as LeftImageTableViewCell where row == .stripeM2Manual:
-            configureStripeM2Manual(cell: cell)
-        case let cell as LeftImageTableViewCell where row == .wisepad3Manual:
-            configureWisepad3Manual(cell: cell)
+        case let cell as LeftImageTableViewCell where row == .collectPayment:
+            configureCollectPayment(cell: cell)
         default:
             fatalError()
         }
@@ -127,17 +234,22 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     func configureManageCardReader(cell: LeftImageTableViewCell) {
+        let cellShouldBeEnabled = cardPresentPaymentsOnboardingUseCase.state.isCompleted
         cell.imageView?.tintColor = .text
-        cell.accessoryType = .disclosureIndicator
+        cell.accessoryType = cellShouldBeEnabled ? .disclosureIndicator : .none
         cell.selectionStyle = .default
         cell.configure(image: .creditCardIcon, text: Localization.manageCardReader)
+
+        updateEnabledState(in: cell, shouldBeEnabled: cellShouldBeEnabled)
     }
 
     func configureManagePaymentGateways(cell: LeftImageTitleSubtitleTableViewCell) {
         cell.imageView?.tintColor = .text
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.configure(image: .rectangleOnRectangleAngled, text: Localization.managePaymentGateways, subtitle: pluginState.preferred.pluginName)
+        cell.configure(image: .rectangleOnRectangleAngled, text: Localization.managePaymentGateways, subtitle: pluginState?.preferred.pluginName ?? "")
+
+        updateEnabledState(in: cell)
     }
 
     func configureCardReaderManuals(cell: LeftImageTableViewCell) {
@@ -145,27 +257,23 @@ private extension InPersonPaymentsMenuViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.configure(image: .cardReaderManualIcon, text: Localization.cardReaderManuals)
+
+        updateEnabledState(in: cell)
     }
 
-    func configureChipper2XManual(cell: LeftImageTableViewCell) {
+    func configureCollectPayment(cell: LeftImageTableViewCell) {
         cell.imageView?.tintColor = .text
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.configure(image: .cardReaderManualIcon, text: Localization.chipperCardReaderManual)
+        cell.configure(image: .moneyIcon, text: Localization.collectPayment)
+
+        updateEnabledState(in: cell)
     }
 
-    func configureStripeM2Manual(cell: LeftImageTableViewCell) {
-        cell.imageView?.tintColor = .text
-        cell.accessoryType = .disclosureIndicator
-        cell.selectionStyle = .default
-        cell.configure(image: .cardReaderManualIcon, text: Localization.stripeM2CardReaderManual)
-    }
-
-    func configureWisepad3Manual(cell: LeftImageTableViewCell) {
-        cell.imageView?.tintColor = .text
-        cell.accessoryType = .disclosureIndicator
-        cell.selectionStyle = .default
-        cell.configure(image: .cardReaderManualIcon, text: Localization.wisepad3CardReaderManual)
+    func updateEnabledState(in cell: UITableViewCell, shouldBeEnabled: Bool = true) {
+        let alpha = shouldBeEnabled ? 1 : 0.3
+        cell.imageView?.alpha = alpha
+        cell.textLabel?.alpha = alpha
     }
 }
 
@@ -181,11 +289,12 @@ private extension InPersonPaymentsMenuViewController {
 //
 extension InPersonPaymentsMenuViewController {
     func orderCardReaderWasPressed() {
+        ServiceLocator.analytics.track(.paymentsMenuOrderCardReaderTapped)
         WebviewHelper.launch(configurationLoader.configuration.purchaseCardReaderUrl(), with: self)
     }
 
     func manageCardReaderWasPressed() {
-        ServiceLocator.analytics.track(.settingsCardReadersTapped)
+        ServiceLocator.analytics.track(.paymentsMenuManageCardReadersTapped)
         guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: CardReaderSettingsPresentingViewController.self) else {
             fatalError("Cannot instantiate `CardReaderSettingsPresentingViewController` from Dashboard storyboard")
         }
@@ -196,43 +305,57 @@ extension InPersonPaymentsMenuViewController {
     }
 
     func cardReaderManualsWasPressed() {
+        ServiceLocator.analytics.track(.paymentsMenuCardReadersManualsTapped)
         let view = UIHostingController(rootView: CardReaderManualsView())
         navigationController?.pushViewController(view, animated: true)
     }
 
     func managePaymentGatewaysWasPressed() {
-        ServiceLocator.analytics.track(.settingsCardPresentSelectedPaymentGatewayTapped)
-        onPluginSelectionCleared()
+        ServiceLocator.analytics.track(.paymentsMenuPaymentProviderTapped)
+        onPluginSelectionCleared?()
+
+        if featureFlagService.isFeatureFlagEnabled(.paymentsHubMenuSection) {
+            navigateToInPersonPaymentsSelectPluginView()
+        }
     }
 
-    func bbposChipper2XBTManualWasPressed() {
-        WebviewHelper.launch(Constants.bbposChipper2XBTManualURL, with: self)
+    func navigateToInPersonPaymentsSelectPluginView() {
+        let view = InPersonPaymentsSelectPluginView(selectedPlugin: nil) { [weak self] plugin in
+            self?.cardPresentPaymentsOnboardingUseCase.clearPluginSelection()
+            self?.cardPresentPaymentsOnboardingUseCase.selectPlugin(plugin)
+            self?.navigationController?.popViewController(animated: true)
+        }
+
+        navigationController?.pushViewController(InPersonPaymentsSelectPluginViewController(rootView: view), animated: true)
     }
 
-    func stripeM2ManualWasPressed() {
-        WebviewHelper.launch(Constants.stripeM2ManualURL, with: self)
-    }
+    func collectPaymentWasPressed() {
+        ServiceLocator.analytics.track(.paymentsMenuCollectPaymentTapped)
 
-    func wisepad3ManualWasPressed() {
-        WebviewHelper.launch(Constants.wisepad3ManualURL, with: self)
+        guard let siteID = stores.sessionManager.defaultStoreID,
+              let navigationController = navigationController else {
+            return
+        }
+
+        SimplePaymentsAmountFlowOpener.openSimplePaymentsAmountFlow(from: navigationController, siteID: siteID)
     }
 }
 
 // MARK: - UITableViewDataSource
-extension InPersonPaymentsMenuViewController {
-    override func numberOfSections(in tableView: UITableView) -> Int {
+extension InPersonPaymentsMenuViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
         sections.count
     }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         sections[section].rows.count
     }
 
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         sections[section].header
     }
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let row = rowAtIndexPath(indexPath)
         let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
         configure(cell, for: row, at: indexPath)
@@ -243,8 +366,8 @@ extension InPersonPaymentsMenuViewController {
 
 // MARK: - UITableViewDelegate
 //
-extension InPersonPaymentsMenuViewController {
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+extension InPersonPaymentsMenuViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
         // listed in the order they are displayed
@@ -257,12 +380,8 @@ extension InPersonPaymentsMenuViewController {
             cardReaderManualsWasPressed()
         case .managePaymentGateways:
             managePaymentGatewaysWasPressed()
-        case .bbposChipper2XBTManual:
-            bbposChipper2XBTManualWasPressed()
-        case .stripeM2Manual:
-            stripeM2ManualWasPressed()
-        case .wisepad3Manual:
-            wisepad3ManualWasPressed()
+        case .collectPayment:
+            collectPaymentWasPressed()
         }
     }
 }
@@ -278,6 +397,10 @@ private extension InPersonPaymentsMenuViewController {
         static let paymentOptionsSectionTitle = NSLocalizedString(
             "Payment options",
             comment: "Title for the section related to payments inside In-Person Payments settings")
+
+        static let paymentActionsSectionTitle = NSLocalizedString(
+            "Actions",
+            comment: "Title for the section related to actions inside In-Person Payments settings")
 
         static let orderCardReader = NSLocalizedString(
             "Order card reader",
@@ -299,19 +422,19 @@ private extension InPersonPaymentsMenuViewController {
             comment: "Navigates to Card Reader Manuals screen"
         )
 
-        static let chipperCardReaderManual = NSLocalizedString(
-            "Chipper 2X card reader manual",
-            comment: "Navigates to Chipper Card Reader manual"
+        static let collectPayment = NSLocalizedString(
+            "Collect Payment",
+            comment: "Navigates to Collect a payment via the Simple Payment screen"
         )
 
-        static let stripeM2CardReaderManual = NSLocalizedString(
-            "Stripe M2 card reader manual",
-            comment: "Navigates to Stripe M2 Card Reader manual"
+        static let inPersonPaymentsSetupNotFinishedNotice = NSLocalizedString(
+            "In-Person Payments Setup in incomplete.",
+            comment: "Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled."
         )
 
-        static let wisepad3CardReaderManual = NSLocalizedString(
-            "WisePad 3 card reader manual",
-            comment: "Navigates to WisePad 3 Card Reader manual"
+        static let inPersonPaymentsSetupNotFinishedNoticeButtonTitle = NSLocalizedString(
+            "Continue Setup",
+            comment: "Call to Action to finish the setup of In-Person Payments in the Menu"
         )
     }
 }
@@ -326,9 +449,7 @@ private enum Row: CaseIterable {
     case manageCardReader
     case cardReaderManuals
     case managePaymentGateways
-    case bbposChipper2XBTManual
-    case stripeM2Manual
-    case wisepad3Manual
+    case collectPayment
 
     var type: UITableViewCell.Type {
         switch self {
@@ -344,10 +465,10 @@ private enum Row: CaseIterable {
     }
 }
 
-private enum Constants {
-    static let bbposChipper2XBTManualURL = URL(string: "https://stripe.com/files/docs/terminal/c2xbt_product_sheet.pdf")!
-    static let stripeM2ManualURL = URL(string: "https://stripe.com/files/docs/terminal/m2_product_sheet.pdf")!
-    static let wisepad3ManualURL = URL(string: "https://stripe.com/files/docs/terminal/wp3_product_sheet.pdf")!
+private extension InPersonPaymentsMenuViewController {
+    enum Layout {
+        static let tableViewFooterHeight = CGFloat(200)
+    }
 }
 
 // MARK: - SwiftUI compatibility
@@ -356,9 +477,9 @@ private enum Constants {
 /// SwiftUI wrapper for CardReaderSettingsPresentingViewController
 ///
 struct InPersonPaymentsMenu: UIViewControllerRepresentable {
-    let pluginState: CardPresentPaymentsPluginState
-    let onPluginSelected: (CardPresentPaymentsPlugin) -> Void
-    let onPluginSelectionCleared: () -> Void
+    let pluginState: CardPresentPaymentsPluginState?
+    let onPluginSelected: ((CardPresentPaymentsPlugin) -> Void)?
+    let onPluginSelectionCleared: (() -> Void)?
 
     func makeUIViewController(context: Context) -> some UIViewController {
         InPersonPaymentsMenuViewController(pluginState: pluginState, onPluginSelected: onPluginSelected, onPluginSelectionCleared: onPluginSelectionCleared)

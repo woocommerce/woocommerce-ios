@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -17,7 +17,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <stackView opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LL0-HO-TaM">
-                        <rect key="frame" x="15" y="0.0" width="360" height="72"/>
+                        <rect key="frame" x="16" y="0.0" width="359" height="72"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bER-Qc-gQZ" userLabel="Checkmark  ContainerView">
                                 <rect key="frame" x="0.0" y="0.0" width="35" height="72"/>
@@ -37,17 +37,35 @@
                                     <constraint firstAttribute="width" constant="35" id="e12-mq-s5b"/>
                                 </constraints>
                             </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oWJ-s5-osb" userLabel="Checkmark  ContainerView">
+                                <rect key="frame" x="35" y="0.0" width="35" height="72"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="QSk-eJ-nTE" userLabel="Checkmark ImageView">
+                                        <rect key="frame" x="0.0" y="24" width="24" height="24"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="24" id="aO3-Fc-NUu"/>
+                                            <constraint firstAttribute="width" constant="24" id="lha-by-kO4"/>
+                                        </constraints>
+                                    </imageView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="QSk-eJ-nTE" firstAttribute="centerY" secondItem="oWJ-s5-osb" secondAttribute="centerY" id="2Ze-Bw-TEN"/>
+                                    <constraint firstAttribute="width" constant="35" id="BjA-nh-XRW"/>
+                                    <constraint firstItem="QSk-eJ-nTE" firstAttribute="leading" secondItem="oWJ-s5-osb" secondAttribute="leading" id="cfU-6N-v11"/>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" priority="750" constant="55" id="g3e-7W-XWc"/>
+                                </constraints>
+                            </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rmH-TD-Oll" userLabel="TextContainerView">
-                                <rect key="frame" x="35" y="0.0" width="325" height="72"/>
+                                <rect key="frame" x="70" y="0.0" width="289" height="72"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="750" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ejj-Pj-vZz">
-                                        <rect key="frame" x="0.0" y="10" width="325" height="20.5"/>
+                                        <rect key="frame" x="0.0" y="10" width="289" height="17"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="URL" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CjK-ri-inj">
-                                        <rect key="frame" x="0.0" y="30.5" width="325" height="31.5"/>
+                                        <rect key="frame" x="0.0" y="27" width="289" height="35"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -77,6 +95,8 @@
                 <outlet property="checkmarkContainerView" destination="bER-Qc-gQZ" id="cqd-em-0OH"/>
                 <outlet property="checkmarkImageView" destination="eHN-Ud-mEG" id="7bk-gd-EGI"/>
                 <outlet property="nameLabel" destination="ejj-Pj-vZz" id="x64-S0-SqW"/>
+                <outlet property="noticeContainerView" destination="oWJ-s5-osb" id="4rt-2g-oq2"/>
+                <outlet property="noticeImageView" destination="QSk-eJ-nTE" id="BjB-l6-hPn"/>
                 <outlet property="urlLabel" destination="CjK-ri-inj" id="yxp-cr-eOp"/>
             </connections>
             <point key="canvasLocation" x="-153.5" y="-188"/>

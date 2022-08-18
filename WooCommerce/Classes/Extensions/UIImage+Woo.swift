@@ -457,6 +457,10 @@ extension UIImage {
         return UIImage(named: "woo-payments-card")!
     }
 
+    static var walletImage: UIImage {
+        return UIImage(named: "woo-payments-wallet")!
+    }
+
     /// Searching for Card Reader, Card Reader with radio waves
     ///
     static var cardReaderScanning: UIImage {
@@ -553,6 +557,13 @@ extension UIImage {
         return UIImage(named: "credit-card-give")!
             .withRenderingMode(.alwaysTemplate)
             .imageFlippedForRightToLeftLayoutDirection()
+    }
+
+    /// Cash give icon
+    ///
+    static var moneyIcon: UIImage {
+        return UIImage(named: "icon-money")!
+            .withRenderingMode(.alwaysTemplate)
     }
 
     /// Files Download Icon
@@ -974,6 +985,12 @@ extension UIImage {
         }
 
         return im2.imageWithTintColor(tintColor)
+    }
+
+    /// Woo logo that is displayed on the login prologue.
+    ///
+    static var wooLogoPrologueImage: UIImage {
+        UIImage(named: "prologue-logo")!
     }
 
     /// Waiting for Customers Image

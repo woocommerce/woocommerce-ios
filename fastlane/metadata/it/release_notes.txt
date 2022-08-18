@@ -1,1 +1,3 @@
-Sapevi che stiamo lavorando a una nuova funzionalità per la gestione dei codici promozionali? Vai alla scheda Menu, tocca l'icona delle impostazioni e scorri verso le funzionalità sperimentali. In questa versione, abbiamo risolto un problema relativo alla modifica dei campi "Utilizzo individuale" ed "Escludi elementi in offerta". Provala e condividi la tua opinione!
+Noterai un nuovo banner per accettare pagamenti direttamente dall'app con WooCommerce Payments. Non è tutto! È possibile scorrere un ordine verso sinistra per contrassegnarlo come completato!
+
+Abbiamo anche apportato diversi miglioramenti all'esperienza di accesso, inclusa l'opzione di accedere con le tue credenziali wp-admin. Ora, puoi anche installare il plug-in WooCommerce direttamente dall'app!

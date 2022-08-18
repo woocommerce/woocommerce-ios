@@ -7,9 +7,22 @@ public enum ABTest: String, CaseIterable {
     /// `An enum with no cases cannot declare a raw type`
     case null
 
+    /// A/A test for ExPlat integration.
+    /// Experiment ref: pbxNRc-1QS-p2
+    ///
+    case aaTest202208 = "woocommerceios_explat_aa_test_202208"
+
+    /// A/A test to make sure there is no bias in the logged out state.
+    /// Experiment ref: pbxNRc-1S0-p2
+    case aaTestLoggedOut202208 = "woocommerceios_explat_aa_test_logged_out_202208"
+
+    /// A/B test for promoting linked products in Product Details.
+    /// Experiment ref: pbxNRc-1Pp-p2
+    case linkedProductsPromo = "woocommerceios_product_details_linked_products_banner"
+
     /// Returns a variation for the given experiment
-    var variation: Variation {
-        return ExPlat.shared?.experiment(self.rawValue) ?? .control
+    public var variation: Variation {
+        ExPlat.shared?.experiment(rawValue) ?? .control
     }
 }
 

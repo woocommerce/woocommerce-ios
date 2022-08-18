@@ -1,13 +1,23 @@
 import UIKit
 import Yosemite
 import Combine
+import SwiftUI
+import WordPressUI
 
+/// Manages the different navigation flows that start from the Orders main tab
+///
 final class AddOrderCoordinator: Coordinator {
     var navigationController: UINavigationController
 
     private let siteID: Int64
     private let sourceBarButtonItem: UIBarButtonItem?
     private let sourceView: UIView?
+
+    /// Keeps a reference to NewSimplePaymentsLocationNoticeViewController in order to use it as child of WordPressUI's BottomSheetViewController component
+    ///
+    private lazy var newSimplePaymentsNoticeViewController: NewSimplePaymentsLocationNoticeViewController = {
+        NewSimplePaymentsLocationNoticeViewController()
+    }()
 
     /// Assign this closure to be notified when a new order is created
     ///
@@ -55,7 +65,11 @@ private extension AddOrderCoordinator {
     func presentOrderCreationFlow(bottomSheetOrderType: BottomSheetOrderType) {
         switch bottomSheetOrderType {
         case .simple:
-            presentSimplePaymentsAmountController()
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.paymentsHubMenuSection) {
+                presentBottomAnnouncement()
+            } else {
+                presentSimplePaymentsAmountController()
+            }
         case .full:
             presentNewOrderController()
             return
@@ -65,14 +79,14 @@ private extension AddOrderCoordinator {
     /// Presents `SimplePaymentsAmountHostingController`.
     ///
     func presentSimplePaymentsAmountController() {
-        let presentNoticeSubject = PassthroughSubject<SimplePaymentsNotice, Never>()
-        let viewModel = SimplePaymentsAmountViewModel(siteID: siteID, presentNoticeSubject: presentNoticeSubject)
+        SimplePaymentsAmountFlowOpener.openSimplePaymentsAmountFlow(from: navigationController, siteID: siteID)
+    }
 
-        let viewController = SimplePaymentsAmountHostingController(viewModel: viewModel, presentNoticePublisher: presentNoticeSubject.eraseToAnyPublisher())
-        let simplePaymentsNC = WooNavigationController(rootViewController: viewController)
-        navigationController.present(simplePaymentsNC, animated: true)
-
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowStarted())
+    /// Presents `BottomAnnouncementView`UIHostingController  modally.
+    ///
+    func presentBottomAnnouncement() {
+        let bottomSheet = BottomSheetViewController(childViewController: newSimplePaymentsNoticeViewController)
+        bottomSheet.show(from: navigationController, sourceView: sourceView, sourceBarButtonItem: sourceBarButtonItem, arrowDirections: .any)
     }
 
     /// Presents `OrderFormHostingController`.

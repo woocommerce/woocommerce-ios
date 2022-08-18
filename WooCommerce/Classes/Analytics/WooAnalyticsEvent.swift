@@ -314,6 +314,17 @@ extension WooAnalyticsEvent {
     }
 }
 
+// MARK: - Product Detail
+//
+extension WooAnalyticsEvent {
+    /// Namespace
+    enum ProductDetail {
+        static func loaded(hasLinkedProducts: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productDetailLoaded, properties: ["has_linked_products": hasLinkedProducts])
+        }
+    }
+}
+
 // MARK: - Product Detail Add-ons
 //
 extension WooAnalyticsEvent {
@@ -341,6 +352,7 @@ extension WooAnalyticsEvent {
         enum Flow: String {
             case creation
             case editing
+            case list
         }
 
         private enum Keys {
@@ -356,14 +368,39 @@ extension WooAnalyticsEvent {
             static let to = "to"
             static let from = "from"
             static let orderID = "id"
+            static let hasMultipleShippingLines = "has_multiple_shipping_lines"
+            static let hasMultipleFeeLines = "has_multiple_fee_lines"
+        }
+
+        static func orderOpen(order: Order) -> WooAnalyticsEvent {
+            let customFieldsSize = order.customFields.map { $0.value.utf8.count }.reduce(0, +) // Total byte size of custom field values
+            return WooAnalyticsEvent(statName: .orderOpen, properties: ["id": order.orderID,
+                                                                        "status": order.status.rawValue,
+                                                                        "custom_fields_count": Int64(order.customFields.count),
+                                                                        "custom_fields_size": Int64(customFieldsSize)])
         }
 
         static func orderAddNew() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderAddNew, properties: [:])
         }
 
+        static func orderEditButtonTapped(hasMultipleShippingLines: Bool, hasMultipleFeeLines: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderEditButtonTapped, properties: [
+                Keys.hasMultipleShippingLines: hasMultipleShippingLines,
+                Keys.hasMultipleFeeLines: hasMultipleFeeLines
+            ])
+        }
+
         static func orderProductAdd(flow: Flow) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderProductAdd, properties: [Keys.flow: flow.rawValue])
+        }
+
+        static func orderProductQuantityChange(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderProductQuantityChange, properties: [Keys.flow: flow.rawValue])
+        }
+
+        static func orderProductRemove(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderProductRemove, properties: [Keys.flow: flow.rawValue])
         }
 
         static func orderCustomerAdd(flow: Flow, hasDifferentShippingDetails: Bool) -> WooAnalyticsEvent {
@@ -377,12 +414,23 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderFeeAdd, properties: [Keys.flow: flow.rawValue])
         }
 
+        static func orderFeeRemove(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderFeeRemove, properties: [Keys.flow: flow.rawValue])
+        }
+
         static func orderShippingMethodAdd(flow: Flow) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderShippingMethodAdd, properties: [Keys.flow: flow.rawValue])
         }
 
-        static func orderCustomerNoteAdd(flow: Flow) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .orderNoteAdd, properties: [Keys.flow: flow.rawValue])
+        static func orderShippingMethodRemove(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderShippingMethodRemove, properties: [Keys.flow: flow.rawValue])
+        }
+
+        static func orderCustomerNoteAdd(flow: Flow, orderID: Int64, orderStatus: OrderStatusEnum) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderNoteAdd, properties: [Keys.flow: flow.rawValue,
+                                                                    "parent_id": orderID,
+                                                                    "status": orderStatus.rawValue,
+                                                                    "type": "customer"])
         }
 
         static func orderStatusChange(flow: Flow, orderID: Int64?, from oldStatus: OrderStatusEnum, to newStatus: OrderStatusEnum) -> WooAnalyticsEvent {
@@ -420,8 +468,9 @@ extension WooAnalyticsEvent {
             ])
         }
 
-        static func orderSyncFailed(errorContext: String, errorDescription: String) -> WooAnalyticsEvent {
+        static func orderSyncFailed(flow: Flow, errorContext: String, errorDescription: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderSyncFailed, properties: [
+                Keys.flow: flow.rawValue,
                 Keys.errorContext: errorContext,
                 Keys.errorDescription: errorDescription
             ])
@@ -499,40 +548,44 @@ extension WooAnalyticsEvent {
         enum Source: String {
             fileprivate static let key = "source"
 
-            case paymentMethods = "payment_methods"
             case orderList = "order_list"
+            case paymentMethods = "payment_methods"
+            case productDetail = "product_detail"
             case settings
         }
 
-        /// Campaigns run using the Feature Card
+        /// Keys for the Feature Card properties
         ///
-        enum Campaign: String {
-            fileprivate static let key = "campaign"
-
-            case upsellCardReaders = "upsell_card_readers"
+        private enum Keys {
+            static let campaign = "campaign"
+            static let source = "source"
+            static let remindLater = "remind_later"
         }
 
-        static func shown(source: Source, campaign: Campaign) -> WooAnalyticsEvent {
+        static func shown(source: Source, campaign: FeatureAnnouncementCampaign) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .featureCardShown,
                               properties: [
-                                Source.key: source.rawValue,
-                                Campaign.key: campaign.rawValue
+                                Keys.source: source.rawValue,
+                                Keys.campaign: campaign.rawValue
                               ])
         }
 
-        static func dismissed(source: Source, campaign: Campaign) -> WooAnalyticsEvent {
+        static func dismissed(source: Source,
+                              campaign: FeatureAnnouncementCampaign,
+                              remindLater: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .featureCardDismissed,
                               properties: [
-                                Source.key: source.rawValue,
-                                Campaign.key: campaign.rawValue
+                                Keys.source: source.rawValue,
+                                Keys.campaign: campaign.rawValue,
+                                Keys.remindLater: remindLater
                               ])
         }
 
-        static func ctaTapped(source: Source, campaign: Campaign) -> WooAnalyticsEvent {
+        static func ctaTapped(source: Source, campaign: FeatureAnnouncementCampaign) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .featureCardCtaTapped,
                               properties: [
-                                Source.key: source.rawValue,
-                                Campaign.key: campaign.rawValue
+                                Keys.source: source.rawValue,
+                                Keys.campaign: campaign.rawValue
                               ])
         }
     }
@@ -1243,6 +1296,105 @@ private extension PaymentMethod {
             return "card_interac"
         case .unknown:
             return "unknown"
+        }
+    }
+}
+
+// MARK: - Login Jetpack Setup
+//
+extension WooAnalyticsEvent {
+    enum LoginJetpackSetup {
+        /// The source that user sets up Jetpack: on the web or natively on the app.
+        enum Source: String {
+            case web
+            case native
+        }
+
+        enum Step: String {
+            case automaticInstall = "automatic_install"
+            case wpcomLogin = "wpcom_login"
+            case authorize
+            case siteLogin = "site_login"
+            case pluginDetail = "plugin_detail"
+            case pluginInstallation = "plugin_installation"
+            case pluginActivation = "plugin_activation"
+            case pluginSetup = "plugin_setup"
+        }
+
+        enum Key: String {
+            case source
+            case step
+        }
+
+        /// Tracks when the user dismisses Jetpack Setup flow.
+        static func setupDismissed(source: Source) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginJetpackSetupDismissed, properties: [Key.source.rawValue: source.rawValue])
+        }
+
+        /// Tracks when the user completes Jetpack Setup flow.
+        static func setupCompleted(source: Source) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginJetpackSetupCompleted, properties: [Key.source.rawValue: source.rawValue])
+        }
+
+        /// Tracks when the user reaches a new step in the setup flow
+        static func setupFlow(source: Source, step: Step) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginJetpackSetupFlow, properties: [Key.source.rawValue: source.rawValue,
+                                                                             Key.step.rawValue: step.rawValue])
+        }
+    }
+}
+
+// MARK: - Login WooCommerce Setup
+//
+extension WooAnalyticsEvent {
+    enum LoginWooCommerceSetup {
+        /// The source that user sets up WooCommerce: on the web or natively on the app.
+        enum Source: String {
+            case web
+            case native
+        }
+
+        enum Key: String {
+            case source
+        }
+
+        /// Tracks when the user dismisses the WooCommerce Setup flow.
+        static func setupDismissed(source: Source) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginWooCommerceSetupDismissed, properties: [Key.source.rawValue: source.rawValue])
+        }
+
+        /// Tracks when the user completes the WooCommerce Setup flow.
+        static func setupCompleted(source: Source) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginWooCommerceSetupCompleted, properties: [Key.source.rawValue: source.rawValue])
+        }
+    }
+}
+
+
+// MARK: - Waiting Time measurement
+//
+extension WooAnalyticsEvent {
+    enum WaitingTime {
+        /// Possible Waiting time scenarios
+        enum Scenario {
+            case orderDetails
+            case dashboardTopPerformers
+            case dashboardMainStats
+        }
+
+        private enum Keys {
+            static let waitingTime = "waiting_time"
+        }
+
+        static func waitingFinished(scenario: Scenario, elapsedTime: TimeInterval) -> WooAnalyticsEvent {
+            switch scenario {
+            case .orderDetails:
+                return WooAnalyticsEvent(statName: .orderDetailWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
+            case .dashboardTopPerformers:
+                return WooAnalyticsEvent(statName: .dashboardTopPerformersWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
+            case .dashboardMainStats:
+                return WooAnalyticsEvent(statName: .dashboardMainStatsWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
+            }
         }
     }
 }

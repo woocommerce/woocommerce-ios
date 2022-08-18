@@ -1,5 +1,6 @@
 import Fakes
 import XCTest
+import WooFoundation
 @testable import Yosemite
 @testable import Networking
 @testable import Storage
@@ -839,7 +840,7 @@ final class AccountStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(result.failure as? NSError, error)
+        XCTAssertEqual(result.failure as NSError?, error)
     }
 }
 

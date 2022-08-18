@@ -1,1 +1,3 @@
-Did you know we’re working on a new feature for managing coupons? Head to the Menu tab, tap the settings icon, and scroll to experimental features. In this release, we’ve fixed an issue when editing “Individual Use” and “Exclude Sale Items” fields. Do try it out and share your feedback!
+You’ll notice a new banner to accept payments directly from the app with WooCommerce Payments. That’s not all! It’s possible to swipe an order to the left to mark it complete!
+
+We’ve also made several improvements to the login experience including the option to login with your wp-admin credentials. You can also install WooCommerce plugin directly from the app now!

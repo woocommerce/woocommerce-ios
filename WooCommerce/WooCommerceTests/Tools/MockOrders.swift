@@ -15,7 +15,8 @@ final class MockOrders {
                    shippingLines: [ShippingLine] = sampleShippingLines(),
                    refunds: [OrderRefundCondensed] = [],
                    fees: [OrderFeeLine] = [],
-                   taxes: [OrderTaxLine] = []) -> Order {
+                   taxes: [OrderTaxLine] = [],
+                   customFields: [OrderMetaData] = []) -> Order {
         return Order.fake().copy(siteID: siteID,
                                  orderID: orderID,
                                  customerID: 11,
@@ -41,7 +42,8 @@ final class MockOrders {
                                  shippingLines: shippingLines,
                                  refunds: refunds,
                                  fees: fees,
-                                 taxes: taxes)
+                                 taxes: taxes,
+                                 customFields: customFields)
     }
 
     func sampleOrder() -> Order {
@@ -50,6 +52,13 @@ final class MockOrders {
 
     func orderWithFees() -> Order {
         makeOrder(fees: sampleFeeLines())
+    }
+
+    func orderPaidWithNoPaymentMethod() -> Order {
+        return Order.fake().copy(
+            datePaid: DateFormatter.dateFromString(with: "2018-04-03T23:05:14"),
+            paymentMethodID: "",
+            paymentMethodTitle: "")
     }
 
     func orderWithAPIRefunds() -> Order {

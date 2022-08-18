@@ -93,4 +93,28 @@ public enum FeatureFlag: Int {
     /// Showing a "New to WooCommerce" link in the login prologue screen
     ///
     case newToWooCommerceLinkInLoginPrologue
+
+    /// Onboarding experiment on the login prologue screen
+    ///
+    case loginPrologueOnboarding
+
+    /// Local notifications scheduled 24 hours after certain login errors
+    ///
+    case loginErrorNotifications
+
+    /// Payments Section in the Hub Menu
+    ///
+    case paymentsHubMenuSection
+
+    /// Whether to show a survey at the end of the login onboarding screen after feature carousel
+    ///
+    case loginPrologueOnboardingSurvey
+
+    /// Whether to prefer magic link to password in the login flow
+    ///
+    case loginMagicLinkEmphasis
+
+    /// Whether to show the magic link as a secondary button instead of a table view cell on the password screen
+    ///
+    case loginMagicLinkEmphasisM2
 }

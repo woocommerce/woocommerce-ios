@@ -19,7 +19,7 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
 
     // Timezone of the website
     //
-    var siteTimezone: TimeZone = TimeZone.siteTimezone
+    private let siteTimezone: TimeZone = TimeZone.siteTimezone
 
     init(product: ProductFormDataModel,
          actionsFactory: ProductFormActionsFactoryProtocol,
@@ -49,6 +49,8 @@ private extension DefaultProductFormTableViewModel {
             switch action {
             case .images(let editable):
                 return .images(isEditable: editable, allowsMultiple: product.allowsMultipleImages(), isVariation: product is EditableProductVariationModel)
+            case .linkedProductsPromo(let viewModel):
+                return .linkedProductsPromo(viewModel: viewModel)
             case .name(let editable):
                 return .name(name: product.name, isEditable: editable, productStatus: product.status)
             case .variationName:

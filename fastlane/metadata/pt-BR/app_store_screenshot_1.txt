@@ -1,2 +1,2 @@
-Monitore vendas e produtos
-de alto desempenho
+Monitore as vendas e
+os produtos mais vendidos

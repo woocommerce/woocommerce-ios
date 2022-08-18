@@ -32,10 +32,10 @@ public final class CustomerNoteScreen: ScreenObject {
     }
 
     /// Confirms entered note and closes Customer Note screen.
-    /// - Returns: New Order screen object.
+    /// - Returns: Unified Order screen object.
     @discardableResult
-    public func confirmNote() throws -> NewOrderScreen {
+    public func confirmNote() throws -> UnifiedOrderScreen {
         doneButton.tap()
-        return try NewOrderScreen()
+        return try UnifiedOrderScreen()
     }
 }

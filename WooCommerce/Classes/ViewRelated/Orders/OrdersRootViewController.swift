@@ -386,7 +386,7 @@ private extension OrdersRootViewController {
             show(orderViewController, sender: self)
         }
 
-        ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": order.orderID, "status": order.status.rawValue])
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order))
     }
 }
 

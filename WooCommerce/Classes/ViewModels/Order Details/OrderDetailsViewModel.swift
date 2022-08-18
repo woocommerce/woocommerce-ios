@@ -6,6 +6,7 @@ import MessageUI
 import Combine
 import Experiments
 import WooFoundation
+import SwiftUI
 import enum Networking.DotcomError
 
 final class OrderDetailsViewModel {
@@ -145,10 +146,10 @@ final class OrderDetailsViewModel {
 
     private var receipt: CardPresentReceiptParameters? = nil
 
-    /// Returns available action buttons given the internal state.
+    /// Returns edit action availability given the internal state.
     ///
-    var moreActionsButtons: [MoreActionButton] {
-        MoreActionButton.availableButtons(order: order, syncState: syncState)
+    var editButtonIsEnabled: Bool {
+        syncState == .synced
     }
 
     var paymentMethodsViewModel: PaymentMethodsViewModel {
@@ -181,10 +182,6 @@ extension OrderDetailsViewModel {
     ///
     func syncEverything(onReloadSections: (() -> ())? = nil, onCompletion: (() -> ())? = nil) {
         let group = DispatchGroup()
-
-        /// Update state to syncing
-        ///
-        syncState = .syncing
 
         group.enter()
         syncOrder { [weak self] _ in
@@ -389,6 +386,13 @@ extension OrderDetailsViewModel {
             let isUnifiedEditingEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing)
             let billingInformationViewController = BillingInformationViewController(order: order, editingEnabled: !isUnifiedEditingEnabled)
             viewController.navigationController?.pushViewController(billingInformationViewController, animated: true)
+        case .customFields:
+            ServiceLocator.analytics.track(.orderViewCustomFieldsTapped)
+            let customFields = order.customFields.map {
+                OrderCustomFieldsViewModel(metadata: $0)
+            }
+            let customFieldsView = UIHostingController(rootView: OrderCustomFieldsDetails(customFields: customFields))
+            viewController.present(customFieldsView, animated: true)
         case .seeReceipt:
             let countryCode = configurationLoader.configuration.countryCode
             ServiceLocator.analytics.track(event: .InPersonPayments.receiptViewTapped(countryCode: countryCode))
@@ -430,8 +434,8 @@ extension OrderDetailsViewModel {
 
 extension OrderDetailsViewModel {
     /// Dispatches a network call in order to update `self.order`'s `status` to `.completed`.
-    func markCompleted() -> OrderFulfillmentUseCase.FulfillmentProcess {
-        OrderFulfillmentUseCase(order: order, stores: stores).fulfill()
+    func markCompleted(flow: WooAnalyticsEvent.Orders.Flow) -> OrderFulfillmentUseCase.FulfillmentProcess {
+        OrderFulfillmentUseCase(order: order, stores: stores, flow: flow).fulfill()
     }
 
     func syncOrder(onCompletion: ((Order?, Error?) -> ())? = nil) {
@@ -622,46 +626,6 @@ private extension OrderDetailsViewModel {
     ///
     enum SyncState {
         case notSynced
-        case syncing
         case synced
-    }
-}
-
-// MARK: More Action Buttons Definition
-extension OrderDetailsViewModel {
-
-    /// Defines an action button that resides inside the more action menu.
-    ///
-    struct MoreActionButton {
-
-        /// Defines all possible more action button types.
-        ///
-        enum ButtonType: CaseIterable {
-            case editOrder
-        }
-
-        /// ID of the button.
-        ///
-        let id: ButtonType
-
-        /// Title of the button.
-        ///
-        let title: String
-
-        fileprivate static func availableButtons(order: Order, syncState: SyncState) -> [MoreActionButton] {
-            ButtonType.allCases.compactMap { buttonType in
-                switch buttonType {
-                case .editOrder:
-                    guard syncState == .synced, ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing) else {
-                        return nil
-                    }
-                    return .init(id: buttonType, title: Localization.editOrder)
-                }
-            }
-        }
-
-        enum Localization {
-            static let editOrder = NSLocalizedString("Edit", comment: "Title to edit an order")
-        }
     }
 }

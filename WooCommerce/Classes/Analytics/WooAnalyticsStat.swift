@@ -38,6 +38,9 @@ public enum WooAnalyticsStat: String {
     case loginEmailFormViewed = "login_email_form_viewed"
     case loginJetpackRequiredScreenViewed = "login_jetpack_required_screen_viewed"
     case loginJetpackRequiredViewInstructionsButtonTapped = "login_jetpack_required_view_instructions_button_tapped"
+    case loginLocalNotificationTapped = "login_local_notification_tapped"
+    case loginLocalNotificationDismissed = "login_local_notification_dismissed"
+    case loginLocalNotificationScheduled = "login_local_notification_scheduled"
     case loginWhatIsJetpackHelpScreenViewed = "login_what_is_jetpack_help_screen_viewed"
     case loginWhatIsJetpackHelpScreenOkButtonTapped = "login_what_is_jetpack_help_screen_ok_button_tapped"
     case loginWhatIsJetpackHelpScreenLearnMoreButtonTapped = "login_what_is_jetpack_help_screen_learn_more_button_tapped"
@@ -48,6 +51,11 @@ public enum WooAnalyticsStat: String {
     case loginMagicLinkOpened = "login_magic_link_opened"
     case loginMagicLinkRequested = "login_magic_link_requested"
     case loginMagicLinkSucceeded = "login_magic_link_succeeded"
+    case loginOnboardingShown = "login_onboarding_shown"
+    case loginOnboardingNextButtonTapped = "login_onboarding_next_button_tapped"
+    case loginOnboardingSkipButtonTapped = "login_onboarding_skip_button_tapped"
+    case loginOnboardingSurveyShown = "login_onboarding_survey_shown"
+    case loginOnboardingSurveySubmitted = "login_onboarding_survey_submitted"
     case loginPasswordFormViewed = "login_password_form_viewed"
     case loginURLFormViewed = "login_url_form_viewed"
     case loginURLHelpScreenViewed = "login_url_help_screen_viewed"
@@ -73,6 +81,7 @@ public enum WooAnalyticsStat: String {
     case onePasswordSignup = "one_password_signup"
     case twoFactorCodeRequested = "two_factor_code_requested"
     case twoFactorSentSMS = "two_factor_sent_sms"
+    case whatIsWPComOnInvalidEmailScreenTapped = "what_is_wordpress_com_on_invalid_email_screen"
 
     // MARK: Dashboard View Events
     //
@@ -89,6 +98,8 @@ public enum WooAnalyticsStat: String {
     case dashboardTopPerformersDate = "dashboard_top_performers_date"
     case dashboardTopPerformersLoaded = "dashboard_top_performers_loaded"
     case dashboardUnfulfilledOrdersLoaded = "dashboard_unfulfilled_orders_loaded"
+    case dashboardMainStatsWaitingTimeLoaded = "dashboard_main_stats_waiting_time_loaded"
+    case dashboardTopPerformersWaitingTimeLoaded = "dashboard_top_performers_waiting_time_loaded"
 
     // MARK: Dashboard Stats v3/v4 Events
     //
@@ -103,6 +114,7 @@ public enum WooAnalyticsStat: String {
     case sitePickerContinueTapped = "site_picker_continue_tapped"
     case sitePickerStoresShown = "site_picker_stores_shown"
     case sitePickerHelpButtonTapped = "site_picker_help_button_tapped"
+    case sitePickerNonWooSiteTapped = "site_picker_non_woo_site_tapped"
 
     // MARK: Help & Support Events
     //
@@ -129,8 +141,6 @@ public enum WooAnalyticsStat: String {
     case settingsTapped = "main_menu_settings_tapped"
     case settingsSelectedStoreTapped = "settings_selected_site_tapped"
     case settingsContactSupportTapped = "main_menu_contact_support_tapped"
-    case settingsCardReadersTapped = "settings_card_readers_tapped"
-    case settingsCardPresentSelectedPaymentGatewayTapped = "settings_card_present_select_payment_gateway_tapped"
 
     case settingsBetaFeaturesButtonTapped = "settings_beta_features_button_tapped"
     case settingsBetaFeaturesProductsToggled = "settings_beta_features_products_toggled"
@@ -223,10 +233,13 @@ public enum WooAnalyticsStat: String {
     case orderCreationFailed = "order_creation_failed"
     case orderContactAction = "order_contact_action"
     case orderCustomerAdd = "order_customer_add"
+    case orderEditButtonTapped = "order_edit_button_tapped"
     case ordersListFilter = "orders_list_filter"
     case ordersListSearch = "orders_list_search"
     case ordersListLoaded = "orders_list_loaded"
     case orderProductAdd = "order_product_add"
+    case orderProductQuantityChange = "order_product_quantity_change"
+    case orderProductRemove = "order_product_remove"
     case orderStatusChange = "order_status_change"
     case orderStatusChangeSuccess = "order_status_change_success"
     case orderStatusChangeFailed = "order_status_change_failed"
@@ -240,9 +253,13 @@ public enum WooAnalyticsStat: String {
     case orderTrackingDeleteSuccess = "order_tracking_delete_success"
     case orderTrackingProvidersLoaded = "order_tracking_providers_loaded"
     case orderFeeAdd = "order_fee_add"
+    case orderFeeRemove = "order_fee_remove"
     case orderShippingMethodAdd = "order_shipping_method_add"
+    case orderShippingMethodRemove = "order_shipping_method_remove"
     case orderSyncFailed = "order_sync_failed"
     case collectPaymentTapped = "payments_flow_order_collect_payment_tapped"
+    case orderViewCustomFieldsTapped = "order_view_custom_fields_tapped"
+    case orderDetailWaitingTimeLoaded = "order_detail_waiting_time_loaded"
 
     // MARK: Order List Sorting/Filtering
     //
@@ -377,6 +394,7 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Edit Product Events
     //
+    case productDetailLoaded = "product_detail_loaded"
     case productDetailUpdateButtonTapped = "product_detail_update_button_tapped"
     case productDetailUpdateSuccess = "product_detail_update_success"
     case productDetailUpdateError = "product_detail_update_error"
@@ -620,6 +638,26 @@ public enum WooAnalyticsStat: String {
     case closeAccountTapped = "close_account_tapped"
     case closeAccountSuccess = "close_account_success"
     case closeAccountFailed = "close_account_failed"
+
+    // MARK: Login Jetpack setup
+    case loginJetpackSetupButtonTapped = "login_jetpack_setup_button_tapped"
+    case loginJetpackSetupDismissed = "login_jetpack_setup_dismissed"
+    case loginJetpackSetupCompleted = "login_jetpack_setup_completed"
+    case loginJetpackSetupFlow = "login_jetpack_setup_flow"
+
+    // MARK: Login WooCommerce setup
+    case loginWooCommerceErrorShown = "login_woocommerce_error_shown"
+    case loginWooCommerceSetupButtonTapped = "login_woocommerce_setup_button_tapped"
+    case loginWooCommerceSetupDismissed = "login_woocommerce_setup_dismissed"
+    case loginWooCommerceSetupCompleted = "login_woocommerce_setup_completed"
+
+    // MARK: Payments Menu
+    case paymentsMenuCollectPaymentTapped = "payments_hub_collect_payment_tapped"
+    case paymentsMenuOnboardingErrorTapped = "payments_hub_onboarding_error_tapped"
+    case paymentsMenuOrderCardReaderTapped = "payments_hub_order_card_reader_tapped"
+    case paymentsMenuCardReadersManualsTapped = "payments_hub_card_readers_manuals_tapped"
+    case paymentsMenuManageCardReadersTapped = "payments_hub_manage_card_readers_tapped"
+    case paymentsMenuPaymentProviderTapped = "settings_card_present_select_payment_gateway_tapped"
 }
 
 public extension WooAnalyticsStat {

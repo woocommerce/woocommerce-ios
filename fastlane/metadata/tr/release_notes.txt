@@ -1,1 +1,3 @@
-Kuponları yönetme ile ilgili yeni bir özellik üzerinde çalıştığımızı biliyor muydunuz? Menü sekmesine gidin, ayarlar simgesine dokunup deneysel özelliklere gidin. Bu sürümde, "Bireysel Kullanım" ve "İndirimli Öğeleri Hariç Tut" alanlarını düzenlerken oluşan bir sorunu düzelttik. Deneyin ve geri bildiriminizi paylaşın!
+WooCommerce Payments ile doğrudan uygulamadan ödemeleri kabul etmeye yönelik yeni bir reklam bandı göreceksiniz. Hepsi bu değil. Bir siparişi sola kaydırarak Tamamlandı olarak işaretlemek mümkündür!
+
+Ayrıca, wp-admin kimlik bilgilerinizle oturum açma seçeneği de dahil olmak üzere oturum açma deneyiminde birkaç iyileştirme yapılmıştır. WooCommerce eklentisini şimdi doğrudan uygulamadan da yükleyebilirsiniz!

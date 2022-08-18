@@ -7,6 +7,7 @@ import MessageUI
 import Combine
 import SwiftUI
 import WooFoundation
+import Experiments
 
 // MARK: - OrderDetailsViewController: Displays the details for a given Order.
 //
@@ -80,7 +81,9 @@ final class OrderDetailsViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        let waitingTracker = WaitingTimeTracker(trackScenario: .orderDetails)
         syncEverything { [weak self] in
+            waitingTracker.end()
 
             self?.topLoaderView.isHidden = true
 
@@ -133,14 +136,14 @@ private extension OrderDetailsViewController {
         let titleFormat = NSLocalizedString("Order #%1$@", comment: "Order number title. Parameters: %1$@ - order number")
         title = String.localizedStringWithFormat(titleFormat, viewModel.order.number)
 
-        // Actions menu
-        if viewModel.moreActionsButtons.isNotEmpty {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(image: .moreImage,
-                                                                style: .plain,
-                                                                target: self,
-                                                                action: #selector(presentActionMenuSheet(_:)))
-        } else {
-            navigationItem.rightBarButtonItem = nil
+        let editButton = UIBarButtonItem(title: Localization.NavBar.editOrder,
+                                         style: .plain,
+                                         target: self,
+                                         action: #selector(editOrder))
+        editButton.accessibilityIdentifier = "order-details-edit-button"
+        editButton.isEnabled = viewModel.editButtonIsEnabled
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing) {
+            navigationItem.rightBarButtonItem = editButton
         }
     }
 
@@ -301,46 +304,24 @@ private extension OrderDetailsViewController {
     @objc func pullToRefresh() {
         ServiceLocator.analytics.track(.orderDetailPulledToRefresh)
         refreshControl.beginRefreshing()
-
         syncEverything { [weak self] in
             NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
             self?.refreshControl.endRefreshing()
         }
     }
 
-    /// Actions Menu Sheet.
-    ///
-    @objc func presentActionMenuSheet(_ sender: UIBarButtonItem) {
-        let sheetTitle = "#" + viewModel.order.number
-
-        // Configure share sheet
-        let actionSheet = UIAlertController(title: nil, message: sheetTitle, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = .text
-        actionSheet.addCancelActionWithTitle(Localization.ActionsMenu.cancelAction)
-
-        // Create action buttons
-        for button in viewModel.moreActionsButtons {
-            actionSheet.addDefaultActionWithTitle(button.title) { [weak self] _ in
-                switch button.id {
-                case .editOrder:
-                    self?.editOrder()
-                }
-            }
-        }
-
-        // Handle sheet presentation
-        let popoverController = actionSheet.popoverPresentationController
-        popoverController?.barButtonItem = sender
-        present(actionSheet, animated: true)
-    }
-
     /// Presents the order edit form
     ///
-    private func editOrder() {
+    @objc private func editOrder() {
         let viewModel = EditableOrderViewModel(siteID: viewModel.order.siteID, flow: .editing(initialOrder: viewModel.order))
         let viewController = OrderFormHostingController(viewModel: viewModel)
         let navController = UINavigationController(rootViewController: viewController)
         present(navController, animated: true)
+
+        let hasMultipleShippingLines = self.viewModel.order.shippingLines.count > 1
+        let hasMultipleFeeLines = self.viewModel.order.fees.count > 1
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderEditButtonTapped(hasMultipleShippingLines: hasMultipleShippingLines,
+                                                                                             hasMultipleFeeLines: hasMultipleFeeLines))
     }
 }
 
@@ -441,7 +422,7 @@ private extension OrderDetailsViewController {
         let reviewOrderViewModel = ReviewOrderViewModel(order: viewModel.order, products: viewModel.products, showAddOns: viewModel.dataSource.showAddOns)
         let controller = ReviewOrderViewController(viewModel: reviewOrderViewModel) { [weak self] in
             guard let self = self else { return }
-            let fulfillmentProcess = self.viewModel.markCompleted()
+            let fulfillmentProcess = self.viewModel.markCompleted(flow: .editing)
             let presenter = OrderFulfillmentNoticePresenter()
             presenter.present(process: fulfillmentProcess)
         }
@@ -449,7 +430,7 @@ private extension OrderDetailsViewController {
     }
 
     func markOrderCompleteFromShippingLabels() {
-        let fulfillmentProcess = self.viewModel.markCompleted()
+        let fulfillmentProcess = self.viewModel.markCompleted(flow: .editing)
 
         var cancellables = Set<AnyCancellable>()
         var cancellable: AnyCancellable = AnyCancellable { }
@@ -813,6 +794,10 @@ private extension OrderDetailsViewController {
                                                                       comment: "Text of the loading banner in Order Detail when loaded for the first time")
         }
 
+        enum NavBar {
+            static let editOrder = NSLocalizedString("Edit", comment: "Button to edit an order on Order Details screen")
+        }
+
         enum ProductsMoreMenu {
             static let cancelAction = NSLocalizedString("Cancel", comment: "Cancel the more menu action sheet on Products section")
             static let createShippingLabelAction = NSLocalizedString("Create Shipping Label",
@@ -840,6 +825,7 @@ private extension OrderDetailsViewController {
         }
 
         enum ActionsMenu {
+            static let accessibilityLabel = NSLocalizedString("Order actions", comment: "Accessibility label for button triggering more actions menu sheet.")
             static let cancelAction = NSLocalizedString("Cancel", comment: "Cancel the main more actions menu sheet.")
         }
     }

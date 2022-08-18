@@ -42,10 +42,15 @@ protocol SettingsViewModelActionsHandler {
     /// Reloads settings if the site is no longer Jetpack CP.
     ///
     func onJetpackInstallDismiss()
+
+    /// Reloads settings. This can be used to show or hide content depending on their visibility logic.
+    ///
+    func reloadSettings()
 }
 
 protocol SettingsViewModelInput: AnyObject {
     var presenter: SettingsViewPresenter? { get set }
+    var upsellCardReadersAnnouncementViewModel: FeatureAnnouncementCardViewModel { get }
 }
 
 final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActionsHandler, SettingsViewModelInput {
@@ -98,6 +103,12 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     private let storageManager: StorageManagerType
     private let featureFlagService: FeatureFlagService
     private let appleIDCredentialChecker: AppleIDCredentialCheckerProtocol
+    private let upsellCardReadersCampaign = UpsellCardReadersCampaign(source: .settings)
+
+    var upsellCardReadersAnnouncementViewModel: FeatureAnnouncementCardViewModel {
+        .init(analytics: ServiceLocator.analytics,
+              configuration: upsellCardReadersCampaign.configuration)
+    }
 
     init(stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -156,16 +167,16 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
         }
         reloadSettings()
     }
-}
 
-private extension SettingsViewModel {
     /// Reload the sections and refresh the view (presenter)
     ///
     func reloadSettings() {
         configureSections()
         presenter?.refreshViewContent()
     }
+}
 
+private extension SettingsViewModel {
     func loadWhatsNewOnWooCommerce() {
         stores.dispatch(AnnouncementsAction.loadSavedAnnouncement(onCompletion: { [weak self] result in
             guard let self = self else { return }
@@ -212,11 +223,24 @@ private extension SettingsViewModel {
         }()
 
         // Store settings
-        let storeSettingsSection: Section = {
-            var rows: [Row] = [.inPersonPayments]
+        let storeSettingsSection: Section? = {
+            var rows: [Row] = []
+
+            if !featureFlagService.isFeatureFlagEnabled(.paymentsHubMenuSection) {
+                if upsellCardReadersAnnouncementViewModel.shouldBeVisible {
+                    rows.append(.upsellCardReadersFeatureAnnouncement)
+                }
+
+                rows.append(.inPersonPayments)
+            }
+
             if stores.sessionManager.defaultSite?.isJetpackCPConnected == true,
                 featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport) {
                 rows.append(.installJetpack)
+            }
+
+            guard rows.isNotEmpty else {
+                return nil
             }
 
             return Section(title: Localization.storeSettingsTitle,

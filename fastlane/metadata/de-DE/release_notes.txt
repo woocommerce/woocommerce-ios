@@ -1,1 +1,3 @@
-Wusstest du schon, dass wir an einer neuen Funktion zum Verwalten von Gutscheinen arbeiten? Gehe zum Tab „Menü“, tippe auf das Einstellungs-Icon und scrolle zu den experimentellen Funktionen. In dieser Version haben wir ein Problem bei der Bearbeitung der Felder „Individual Use“ (Einzeln anwendbar) und „Produkte, die im Angebot sind, ausschließen“ behoben. Probiere es aus und teile dein Feedback!
+Diese Version enthält ein neues Banner, um Zahlungen mit WooCommerce Payments direkt in der App zu empfangen. Und es gibt noch mehr! Du kannst jetzt bei einer Bestellung nach links wischen, um sie als abgeschlossen zu markieren!
+
+Darüber hinaus haben wir mehrere Verbesserungen beim Anmeldeprozess vorgenommen: Du hast ab sofort z. B. die Möglichkeit, dich mit deinen wp-admin-Anmeldedaten anzumelden. Und du kannst das WooCommerce-Plugin nun direkt über die App installieren!

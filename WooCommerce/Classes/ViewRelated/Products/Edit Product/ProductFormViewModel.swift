@@ -62,6 +62,15 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         }
     }
 
+    /// Returns `true` if the `linkedProductsPromo` banner should be displayed. `False` otherwise.
+    /// Assigning this value will recreate the `actionsFactory` property.
+    ///
+    var isLinkedProductsPromoEnabled: Bool = false {
+        didSet {
+            updateActionsFactory()
+        }
+    }
+
     /// The product model before any potential edits; reset after a remote update.
     private var originalProduct: EditableProductModel {
         didSet {
@@ -161,13 +170,16 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     private let isBackgroundImageUploadEnabled: Bool
 
+    private let analytics: Analytics
+
     init(product: EditableProductModel,
          formType: ProductFormType,
          productImageActionHandler: ProductImageActionHandler,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          productImagesUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
-         isBackgroundImageUploadEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload)) {
+         isBackgroundImageUploadEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload),
+         analytics: Analytics = ServiceLocator.analytics) {
         self.formType = formType
         self.productImageActionHandler = productImageActionHandler
         self.originalProduct = product
@@ -177,6 +189,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.storageManager = storageManager
         self.productImagesUploader = productImagesUploader
         self.isBackgroundImageUploadEnabled = isBackgroundImageUploadEnabled
+        self.analytics = analytics
 
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
             guard let self = self else { return }
@@ -522,6 +535,15 @@ extension ProductFormViewModel {
     }
 }
 
+// MARK: Tracking
+//
+extension ProductFormViewModel {
+    func trackProductFormLoaded() {
+        let hasLinkedProducts = product.upsellIDs.isNotEmpty || product.crossSellIDs.isNotEmpty
+        analytics.track(event: WooAnalyticsEvent.ProductDetail.loaded(hasLinkedProducts: hasLinkedProducts))
+    }
+}
+
 // MARK: Miscellaneous
 
 private extension ProductFormViewModel {
@@ -604,6 +626,7 @@ private extension ProductFormViewModel {
         actionsFactory = ProductFormActionsFactory(product: product,
                                                    formType: formType,
                                                    addOnsFeatureEnabled: isAddOnsFeatureEnabled,
+                                                   isLinkedProductsPromoEnabled: isLinkedProductsPromoEnabled,
                                                    variationsPrice: calculateVariationPriceState())
     }
 }

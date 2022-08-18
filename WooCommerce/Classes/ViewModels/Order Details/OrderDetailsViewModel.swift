@@ -643,11 +643,12 @@ extension OrderDetailsViewModel {
     }
 
     /// Helper function that returns `true` in its callback if the provided plugin name is active on the order's store.
-    /// Additionally it logs to tracks if the plugin store is accessed without it being in sync.
+    /// Additionally it logs to tracks if the plugin store is accessed without it being in sync so we can handle that edge-case if it happens recurrently.
     ///
     private func isPluginActive(_ plugin: String, completion: @escaping (Bool) -> (Void)) {
         guard arePluginsSynced() else {
             DDLogError("⚠️ SystemPlugins acceded without being in sync.")
+            ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.pluginsNotSyncedYet())
             return completion(false)
         }
 

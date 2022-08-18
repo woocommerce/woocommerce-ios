@@ -556,7 +556,7 @@ private extension AuthenticationManager {
     }
 
     func jetpackErrorUI(for siteURL: String, with matcher: ULAccountMatcher, in navigationController: UINavigationController) -> UIViewController {
-        let viewModel = JetpackErrorViewModel(siteURL: siteURL, onJetpackSetupCompletion: { authorizedEmailAddress in
+        let viewModel = JetpackErrorViewModel(siteURL: siteURL, onJetpackSetupCompletion: { [weak self] authorizedEmailAddress in
             guard let self = self else { return }
 
             // Tries re-syncing to get an updated store list

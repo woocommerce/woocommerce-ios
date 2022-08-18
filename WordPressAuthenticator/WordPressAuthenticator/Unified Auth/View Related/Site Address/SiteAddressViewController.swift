@@ -28,6 +28,20 @@ final class SiteAddressViewController: LoginViewController {
     /// should show an activity indicator.
     private var viewIsLoading: Bool = false
 
+    /// Whether the protocol method `troubleshootSite` should be triggered after site info is fetched.
+    ///
+    private let isSiteDiscovery: Bool
+
+    init?(isSiteDiscovery: Bool, coder: NSCoder) {
+        self.isSiteDiscovery = isSiteDiscovery
+        super.init(coder: coder)
+    }
+
+    required init?(coder: NSCoder) {
+        self.isSiteDiscovery = false
+        super.init(coder: coder)
+    }
+
     // MARK: - Actions
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
         tracker.track(click: .submit)
@@ -59,7 +73,11 @@ final class SiteAddressViewController: LoginViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        tracker.set(flow: .loginWithSiteAddress)
+        if isSiteDiscovery {
+            tracker.set(flow: .siteDiscovery)
+        } else {
+            tracker.set(flow: .loginWithSiteAddress)
+        }
 
         if isMovingToParent {
             tracker.track(step: .start)
@@ -416,8 +434,42 @@ private extension SiteAddressViewController {
 
         configureViewLoading(true)
 
+        guard let url = URL(string: loginFields.siteAddress) else {
+            configureViewLoading(false)
+            return displayError(message: Localization.invalidURL, moveVoiceOverFocus: true)
+        }
+
+        // Checks that the site exists
+        var request = URLRequest(url: url)
+        request.httpMethod = "HEAD"
+        request.timeoutInterval = 10.0 // waits for 10 seconds
+        let task = URLSession.shared.dataTask(with: request) { [weak self] _, _, error in
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+
+                if let error = error {
+                    self.configureViewLoading(false)
+
+                    if self.authenticationDelegate.shouldHandleError(error) {
+                        self.authenticationDelegate.handleError(error) { customUI in
+                            self.pushCustomUI(customUI)
+                        }
+                        return
+                    }
+
+                    return self.displayError(message: Localization.nonExistentSiteError, moveVoiceOverFocus: true)
+                }
+
+                // Proceeds to check for the site's WordPress
+                self.guessXMLRPCURL(for: self.loginFields.siteAddress)
+            }
+        }
+        task.resume()
+    }
+
+    func guessXMLRPCURL(for siteAddress: String) {
         let facade = WordPressXMLRPCAPIFacade()
-        facade.guessXMLRPCURL(forSite: loginFields.siteAddress, success: { [weak self] (url) in
+        facade.guessXMLRPCURL(forSite: siteAddress, success: { [weak self] (url) in
             // Success! We now know that we have a valid XML-RPC endpoint.
             // At this point, we do NOT know if this is a WP.com site or a self-hosted site.
             if let url = url {
@@ -438,6 +490,11 @@ private extension SiteAddressViewController {
                 // WordPressAuthenticator.track(.loginFailedToGuessXMLRPC, error: error)
                 // WordPressAuthenticator.track(.loginFailed, error: error)
                 self.configureViewLoading(false)
+
+                guard self.isSiteDiscovery == false else {
+                    WordPressAuthenticator.shared.delegate?.troubleshootSite(nil, in: self.navigationController)
+                    return
+                }
 
                 let err = self.originalErrorOrError(error: error as NSError)
 
@@ -513,6 +570,11 @@ private extension SiteAddressViewController {
         //
         if let verifiedSiteAddress = siteInfo?.url {
             loginFields.siteAddress = verifiedSiteAddress
+        }
+
+        guard isSiteDiscovery == false else {
+            WordPressAuthenticator.shared.delegate?.troubleshootSite(siteInfo, in: navigationController)
+            return
         }
 
         guard siteInfo?.isWPCom == false else {
@@ -609,5 +671,16 @@ private extension SiteAddressViewController {
         let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
         alertController.addDefaultActionWithTitle(acceptActionTitle)
         present(alertController, animated: true)
+    }
+}
+
+private extension SiteAddressViewController {
+    enum Localization {
+        static let invalidURL = NSLocalizedString(
+            "Invalid URL. Please double-check and try again.",
+            comment: "Error message shown when the input URL is invalid.")
+        static let nonExistentSiteError = NSLocalizedString(
+            "Cannot access the site at this address. Please double-check and try again.",
+            comment: "Error message shown when the input URL does not point to an existing site.")
     }
 }

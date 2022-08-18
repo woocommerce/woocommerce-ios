@@ -83,6 +83,10 @@ public class AuthenticatorAnalyticsTracker {
         ///
         case loginWithSiteAddress = "login_site_address"
 
+        /// This flow starts when the user wants to troubleshoot their site by inputting its address 
+        ///
+        case siteDiscovery = "site_discovery"
+
         /// This flow represents the signup (when the user inputs an email that’s not registered with a .com account)
         ///
         case signup

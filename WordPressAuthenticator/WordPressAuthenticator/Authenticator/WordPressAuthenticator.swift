@@ -454,7 +454,7 @@ import WordPressKit
     ///
     /// - Parameter loginFields: A LoginFields instance.
     ///
-    class func openForgotPasswordURL(_ loginFields: LoginFields) {
+    public class func openForgotPasswordURL(_ loginFields: LoginFields) {
         let baseURL = loginFields.meta.userIsDotCom ? "https://wordpress.com" : WordPressAuthenticator.baseSiteURL(string: loginFields.siteAddress)
         let forgotPasswordURL = URL(string: baseURL + "/wp-login.php?action=lostpassword&redirect_to=wordpress%3A%2F%2F")!
         UIApplication.shared.open(forgotPasswordURL)

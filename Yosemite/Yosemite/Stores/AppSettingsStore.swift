@@ -182,10 +182,10 @@ public class AppSettingsStore: Store {
             setFeatureAnnouncementDismissed(campaign: campaign, remindLater: remindLater, onCompletion: completion)
         case .getFeatureAnnouncementVisibility(campaign: let campaign, onCompletion: let completion):
             getFeatureAnnouncementVisibility(campaign: campaign, onCompletion: completion)
-        case .setSkippedCodOnboardingStep(siteID: let siteID):
-            setSkippedCodOnboardingStep(siteID: siteID)
-        case .getSkippedCodOnboardingStep(siteID: let siteID, onCompletion: let completion):
-            getSkippedCodOnboardingStep(siteID: siteID, onCompletion: completion)
+        case .setSkippedCashOnDeliveryOnboardingStep(siteID: let siteID):
+            setSkippedCashOnDeliveryOnboardingStep(siteID: siteID)
+        case .getSkippedCashOnDeliveryOnboardingStep(siteID: let siteID, onCompletion: let completion):
+            getSkippedCashOnDeliveryOnboardingStep(siteID: siteID, onCompletion: completion)
         }
     }
 }
@@ -734,17 +734,17 @@ private extension AppSettingsStore {
 
     /// Marks the Enable Cash on Delivery In-Person Payments Onboarding step as skipped
     ///
-    func setSkippedCodOnboardingStep(siteID: Int64) {
+    func setSkippedCashOnDeliveryOnboardingStep(siteID: Int64) {
         let storeSettings = getStoreSettings(for: siteID)
-        let newSettings = storeSettings.copy(skippedCodOnboardingStep: true)
+        let newSettings = storeSettings.copy(skippedCashOnDeliveryOnboardingStep: true)
         setStoreSettings(settings: newSettings, for: siteID)
     }
 
     /// Gets whether the Enable Cash on Delivery In-Person Payments Onboarding step has been skipped
     ///
-    func getSkippedCodOnboardingStep(siteID: Int64, onCompletion: (Bool) -> Void) {
+    func getSkippedCashOnDeliveryOnboardingStep(siteID: Int64, onCompletion: (Bool) -> Void) {
         let storeSettings = getStoreSettings(for: siteID)
-        onCompletion(storeSettings.skippedCodOnboardingStep)
+        onCompletion(storeSettings.skippedCashOnDeliveryOnboardingStep)
     }
 
 }

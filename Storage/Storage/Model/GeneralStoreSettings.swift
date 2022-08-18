@@ -35,18 +35,18 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
 
     /// Stores whether the Enable Cash on Delivery In-Person Payments Onboarding step has been skipped for this store
     ///
-    public let skippedCodOnboardingStep: Bool
+    public let skippedCashOnDeliveryOnboardingStep: Bool
 
     public init(isTelemetryAvailable: Bool = false,
                 telemetryLastReportedTime: Date? = nil,
                 areSimplePaymentTaxesEnabled: Bool = false,
                 preferredInPersonPaymentGateway: String? = nil,
-                skippedCodOnboardingStep: Bool = false) {
+                skippedCashOnDeliveryOnboardingStep: Bool = false) {
         self.isTelemetryAvailable = isTelemetryAvailable
         self.telemetryLastReportedTime = telemetryLastReportedTime
         self.areSimplePaymentTaxesEnabled = areSimplePaymentTaxesEnabled
         self.preferredInPersonPaymentGateway = preferredInPersonPaymentGateway
-        self.skippedCodOnboardingStep = skippedCodOnboardingStep
+        self.skippedCashOnDeliveryOnboardingStep = skippedCashOnDeliveryOnboardingStep
     }
 }
 
@@ -61,7 +61,7 @@ extension GeneralStoreSettings {
         self.telemetryLastReportedTime = try container.decodeIfPresent(Date.self, forKey: .telemetryLastReportedTime)
         self.areSimplePaymentTaxesEnabled = try container.decodeIfPresent(Bool.self, forKey: .areSimplePaymentTaxesEnabled) ?? false
         self.preferredInPersonPaymentGateway = try container.decodeIfPresent(String.self, forKey: .preferredInPersonPaymentGateway)
-        self.skippedCodOnboardingStep = try container.decodeIfPresent(Bool.self, forKey: .skippedCodOnboardingStep) ?? false
+        self.skippedCashOnDeliveryOnboardingStep = try container.decodeIfPresent(Bool.self, forKey: .skippedCashOnDeliveryOnboardingStep) ?? false
 
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }

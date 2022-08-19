@@ -447,7 +447,7 @@ private extension SiteAddressViewController {
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
 
-                if let error = error {
+                if let error = error, (error as NSError).code != NSURLErrorAppTransportSecurityRequiresSecureConnection {
                     self.configureViewLoading(false)
 
                     if self.authenticationDelegate.shouldHandleError(error) {

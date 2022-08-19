@@ -35,7 +35,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     let featureFlagService: FeatureFlagService
     private let cardPresentPluginsDataProvider: CardPresentPluginsDataProvider
     private var preferredPluginLocal: CardPresentPaymentsPlugin?
-    private var wasCodStepSkipped: Bool = false
+    private var wasCashOnDeliveryStepSkipped: Bool = false
     private var pendingRequirementsStepSkipped: Bool = false
 
     @Published var state: CardPresentPaymentOnboardingState = .loading
@@ -177,7 +177,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
             DDLogError("[CardPresentPaymentsOnboarding] Couldn't determine country for store")
             return .genericError
         }
-        checkIfCodStepSkipped()
+        checkIfCashOnDeliveryStepSkipped()
 
         let configuration = configurationLoader.configuration
 
@@ -311,7 +311,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
             return .stripeAccountRejected(plugin: plugin)
         }
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.promptToEnableCodInIppOnboarding) {
-            if shouldShowCodStep {
+            if shouldShowCashOnDeliveryStep {
                 return .codPaymentGatewayNotSetUp
             }
         }
@@ -426,23 +426,23 @@ private extension CardPresentPaymentsOnboardingUseCase {
             || account.wcpayStatus == .rejectedOther
     }
 
-    var shouldShowCodStep: Bool {
-        !isCodSetUp() && !wasCodStepSkipped
+    var shouldShowCashOnDeliveryStep: Bool {
+        !isCashOnDeliverySetUp() && !wasCashOnDeliveryStepSkipped
     }
 
-    func checkIfCodStepSkipped() {
+    func checkIfCashOnDeliveryStepSkipped() {
         guard let siteID = siteID else {
             return
         }
 
-        let action = AppSettingsAction.getSkippedCodOnboardingStep(siteID: siteID) { [weak self] skipped in
-            self?.wasCodStepSkipped = skipped
+        let action = AppSettingsAction.getSkippedCashOnDeliveryOnboardingStep(siteID: siteID) { [weak self] skipped in
+            self?.wasCashOnDeliveryStepSkipped = skipped
         }
 
         stores.dispatch(action)
     }
 
-    func isCodSetUp() -> Bool {
+    func isCashOnDeliverySetUp() -> Bool {
         guard let siteID = siteID,
               let codGateway = storageManager.viewStorage.loadPaymentGateway(siteID: siteID, gatewayID: "cod")?.toReadOnly()
         else {

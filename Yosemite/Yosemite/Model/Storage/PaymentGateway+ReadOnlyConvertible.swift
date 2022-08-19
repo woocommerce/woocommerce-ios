@@ -24,6 +24,7 @@ extension Storage.PaymentGateway: ReadOnlyConvertible {
                        title: title,
                        description: gatewayDescription,
                        enabled: enabled,
-                       features: features.compactMap { PaymentGateway.Feature(rawValue: $0) })
+                       features: features.compactMap { PaymentGateway.Feature(rawValue: $0) },
+        instructions: "")
     }
 }

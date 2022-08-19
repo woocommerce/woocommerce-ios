@@ -31,26 +31,30 @@ private extension PaymentGatewayListMapperTests {
                                                         "Please use your Order ID as the payment reference. " +
                                                         "Your order will not be shipped until the funds have cleared in our account.",
                                                     enabled: false,
-                                                    features: [.products])
+                                                    features: [.products],
+                                                    instructions: "")
 
     static let checkGateway = PaymentGateway(siteID: sampleSiteID,
                                              gatewayID: "cheque",
                                              title: "Check payments",
                                              description: "Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode.",
                                              enabled: false,
-                                             features: [.products])
+                                             features: [.products],
+                                             instructions: "")
 
     static let cashGateway = PaymentGateway(siteID: sampleSiteID,
                                             gatewayID: "cod",
                                             title: "Cash on delivery",
                                             description: "Pay with cash upon delivery.",
                                             enabled: true,
-                                            features: [.products])
+                                            features: [.products],
+                                            instructions: "Pay with cash upon delivery.")
 
     static let paypalGateway = PaymentGateway(siteID: sampleSiteID,
                                               gatewayID: "paypal",
                                               title: "PayPal",
                                               description: "Pay via PayPal; you can pay with your credit card if you don't have a PayPal account.",
                                               enabled: false,
-                                              features: [.products, .refunds])
+                                              features: [.products, .refunds],
+                                              instructions: "")
 }

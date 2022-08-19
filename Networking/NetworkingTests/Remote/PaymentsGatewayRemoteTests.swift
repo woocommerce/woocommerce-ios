@@ -88,13 +88,14 @@ final class PaymentsGatewayRemoteTests: XCTestCase {
 
 // MARK: - Helper methods
 
-extension PaymentsGatewayRemoteTests {
+private extension PaymentsGatewayRemoteTests {
     func samplePaymentGateway() -> PaymentGateway {
         PaymentGateway.fake().copy(siteID: sampleSiteID,
                                    gatewayID: "cod",
                                    title: "Cash on delivery",
                                    description: "Pay with cash upon delivery.",
                                    enabled: true,
-                                   features: [.products])
+                                   features: [.products],
+                                   instructions: "Pay with cash upon delivery.")
     }
 }

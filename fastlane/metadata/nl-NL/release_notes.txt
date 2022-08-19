@@ -1,0 +1,1 @@
+Deze versie bevat een paar verbeteringen van je loginervaring, waaronder de optie om je 'wp-admin'-inloggegevens van je site te gebruiken en een magische link te gebruiken om in te loggen. Blijf ons feedback sturen – wij luisteren!

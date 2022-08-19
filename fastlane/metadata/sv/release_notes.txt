@@ -1,0 +1,1 @@
+This release has a few improvements to your login experience, including the option to use your `wp-admin` site credentials and magic link option to login. Fortsätt att skicka feedback till oss – vi lyssnar!

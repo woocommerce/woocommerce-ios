@@ -33,20 +33,7 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// Selected filter for the product list
     ///
-    var filters: FilterProductListViewModel.Filters = FilterProductListViewModel.Filters() {
-        didSet {
-            let contentIsNotSyncedYet = syncingCoordinator.highestPageBeingSynced ?? 0 == 0
-            if filters != oldValue || contentIsNotSyncedYet {
-                updateFilterButtonTitle()
-                productsResultsController.updatePredicate(siteID: siteID,
-                                                          stockStatus: filters.stockStatus,
-                                                          productStatus: filters.productStatus,
-                                                          productType: filters.productType)
-                updateProductsResultsController()
-                syncingCoordinator.resynchronize {}
-            }
-        }
-    }
+    @Published var filters = FilterProductListViewModel.Filters()
 
     /// Title of the filter button, should be updated with number of active filters.
     ///
@@ -110,9 +97,9 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// Predicate for the results controller.
     ///
-    private lazy var resultsPredicate: NSPredicate? = {
+    private var resultsPredicate: NSPredicate? {
         productsResultsController.predicate
-    }()
+    }
 
     /// Current search term entered by the user.
     /// Each update will trigger a remote product search and sync.
@@ -407,6 +394,22 @@ private extension ProductSelectorViewModel {
         }
     }
 
+    func updatePredicate(searchTerm: String, filters: FilterProductListViewModel.Filters) {
+        productsResultsController.updatePredicate(siteID: siteID,
+                                                  stockStatus: filters.stockStatus,
+                                                  productStatus: filters.productStatus,
+                                                  productType: filters.productType)
+        if searchTerm.isNotEmpty {
+            // When the search query changes, also includes the original results predicate in addition to the search keyword.
+            let searchResultsPredicate = NSPredicate(format: "ANY searchResults.keyword = %@", searchTerm)
+            let subpredicates = [resultsPredicate, searchResultsPredicate].compactMap { $0 }
+            productsResultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: subpredicates)
+        } else {
+            // Resets the results to the full product list when there is no search query.
+            productsResultsController.predicate = resultsPredicate
+        }
+    }
+
     /// Setup: Syncing Coordinator
     ///
     func configureSyncingCoordinator() {
@@ -428,28 +431,22 @@ private extension ProductSelectorViewModel {
     /// Updates the product results predicate & triggers a new sync when search term changes
     ///
     func configureProductSearch() {
-        $searchTerm
+        let searchTermPublisher = $searchTerm
             .dropFirst() // Drop initial value
             .removeDuplicates()
             .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
-            .sink { [weak self] newSearchTerm in
+        
+        searchTermPublisher.combineLatest($filters.removeDuplicates())
+            .sink { [weak self] searchTerm, filters in
                 guard let self = self else { return }
-
-                if newSearchTerm.isNotEmpty {
-                    // When the search query changes, also includes the original results predicate in addition to the search keyword.
-                    let searchResultsPredicate = NSPredicate(format: "ANY searchResults.keyword = %@", newSearchTerm)
-                    let subpredicates = [self.resultsPredicate, searchResultsPredicate].compactMap { $0 }
-                    self.productsResultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: subpredicates)
-                } else {
-                    // Resets the results to the full product list when there is no search query.
-                    self.productsResultsController.predicate = self.resultsPredicate
-                }
-
+                self.updateFilterButtonTitle(with: filters)
+                self.updatePredicate(searchTerm: searchTerm, filters: filters)
+                self.updateProductsResultsController()
                 self.syncingCoordinator.resynchronize()
             }.store(in: &subscriptions)
     }
 
-    func updateFilterButtonTitle() {
+    func updateFilterButtonTitle(with filters: FilterProductListViewModel.Filters) {
         let activeFiltersCount = filters.numberOfActiveFilters
         if activeFiltersCount == 0 {
             filterButtonTitle = Localization.filterButtonWithoutActiveFilters

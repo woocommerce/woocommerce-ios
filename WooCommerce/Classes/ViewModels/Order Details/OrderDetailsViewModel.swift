@@ -8,10 +8,12 @@ import Experiments
 import WooFoundation
 import SwiftUI
 import enum Networking.DotcomError
+import protocol Storage.StorageManagerType
 
 final class OrderDetailsViewModel {
 
     private let stores: StoresManager
+    private let storageManager: StorageManagerType
     private let currencyFormatter: CurrencyFormatter
 
     private(set) var order: Order
@@ -26,9 +28,11 @@ final class OrderDetailsViewModel {
 
     init(order: Order,
          stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
         self.order = order
         self.stores = stores
+        self.storageManager = storageManager
         self.currencyFormatter = currencyFormatter
     }
 
@@ -663,7 +667,7 @@ extension OrderDetailsViewModel {
     ///
     private func arePluginsSynced() -> Bool {
         let predicate = NSPredicate(format: "siteID == %lld", order.siteID)
-        let resultsController = ResultsController<StorageSystemPlugin>(storageManager: ServiceLocator.storageManager, matching: predicate, sortedBy: [])
+        let resultsController = ResultsController<StorageSystemPlugin>(storageManager: storageManager, matching: predicate, sortedBy: [])
         try? resultsController.performFetch()
         return !resultsController.isEmpty
     }

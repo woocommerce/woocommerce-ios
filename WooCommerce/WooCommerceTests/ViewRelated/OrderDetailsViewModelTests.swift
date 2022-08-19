@@ -9,13 +9,15 @@ final class OrderDetailsViewModelTests: XCTestCase {
     private var viewModel: OrderDetailsViewModel!
 
     private var storesManager: MockStoresManager!
+    private var storageManager: MockStorageManager!
 
     override func setUp() {
         storesManager = MockStoresManager(sessionManager: SessionManager.makeForTesting())
+        storageManager = MockStorageManager()
 
         order = MockOrders().sampleOrder()
 
-        viewModel = OrderDetailsViewModel(order: order, stores: storesManager)
+        viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
 
         let analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider())
         ServiceLocator.setAnalytics(analytics)
@@ -73,16 +75,35 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
     func test_checkShippingLabelCreationEligibility_dispatches_correctly() throws {
         // Given
+
+        // Make sure the are plugins synced
+        let plugin = SystemPlugin.fake().copy(siteID: order.siteID, name: SitePlugin.SupportedPlugin.WCShip, active: true)
+        storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: plugin)
+
         storesManager.reset()
         XCTAssertEqual(storesManager.receivedActions.count, 0)
 
         // When
-        viewModel.checkShippingLabelCreationEligibility()
+        waitForExpectation { exp in
+
+            // Return the active WCShip plugin.
+            storesManager.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+                switch action {
+                case .fetchSystemPlugin(_, _, let onCompletion):
+                    onCompletion(plugin)
+                    exp.fulfill()
+                default:
+                    break
+                }
+            }
+
+            viewModel.checkShippingLabelCreationEligibility()
+        }
 
         // Then
-        XCTAssertEqual(storesManager.receivedActions.count, 1)
+        XCTAssertEqual(storesManager.receivedActions.count, 2)
 
-        let action = try XCTUnwrap(storesManager.receivedActions.first as? ShippingLabelAction)
+        let action = try XCTUnwrap(storesManager.receivedActions.last as? ShippingLabelAction)
         guard case let ShippingLabelAction.checkCreationEligibility(siteID: siteID,
                                                                     orderID: orderID,
                                                                     onCompletion: _) = action else {

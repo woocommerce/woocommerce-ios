@@ -1,0 +1,1 @@
+Esta versão tem algumas melhorias em sua experiência de login, incluindo a opção de usar suas credenciais do painel do site e a opção de link mágico para fazer login. Continue compartilhando seu feedback conosco. Estamos ouvindo.

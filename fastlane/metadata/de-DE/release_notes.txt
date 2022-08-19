@@ -1,0 +1,1 @@
+Bei dieser Version gibt es einige Verbesserungen bei deinem Anmeldeprozess, einschließlich der Möglichkeit, deine „wp-admin“-Website-Anmeldedaten und die Option des magischen Links zur Anmeldung zu verwenden. Sende uns bitte weiter Feedback – wir freuen uns darauf!

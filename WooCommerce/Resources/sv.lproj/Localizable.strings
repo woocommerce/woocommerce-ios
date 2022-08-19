@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-08-15 12:59:56+0000 */
+/* Translation-Revision-Date: 2022-08-18 21:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -219,6 +219,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Please limit to 3 characters if possible. This is used if there are more than 99 items in a tab, like Orders. */
 "99+" = "99+";
+
+/* Instruction text to explain magic link login step. */
+"A WordPress.com account is connected to your store credentials. To continue, we will send a verification link to the email address above." = "Ett WordPress.com-konto är kopplat till dina butiksautentiseringsuppgifter. Vi kommer att skicka en verifieringslänk till e-postadressen ovan. Klicka på den för att fortsätta.";
 
 /* Placeholder of the Product Short Description row on Product main screen */
 "A brief excerpt about the product" = "Ett kort utdrag om produkten";
@@ -1884,6 +1887,9 @@ which should be translated separately and considered part of this sentence. */
    Title of a button. */
 "Enter your password instead." = "Skriv in ditt lösenord istället.";
 
+/* Enter your store credentials for {site url}. Asks the user to enter .org site credentials for their store. */
+"Enter your store credentials for %@." = "Ange dina butiksautentiseringsuppgifter för %@.";
+
 /* Envelope package type, used to create a custom package in the Shipping Label flow */
 "Envelope" = "Kuvert";
 
@@ -2295,6 +2301,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Step 4 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "If you are still experiencing issues printing from your phone, you can save your label as PDF and **send it by email** to print it from another device." = "Om du fortfarande har problem med att skriva ut från din enhet kan du spara din etikett som en PDF-fil och **skicka den via e-post** för att skriva ut den från en annan enhet.";
+
+/* The instructions text about not being able to find the magic link email. */
+"If you can’t find the email, please check your junk or spam email folder" = "Om du inte hittar e-postmeddelandet, kolla i din skräppostmapp";
 
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Om du går vidare med alternativet Apple eller Google och inte redan har ett konto hos WordPress.com innebär detta att du registrerar ett konto och att du samtycker till våra _användarvillkor_.";

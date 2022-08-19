@@ -1,0 +1,1 @@
+Esta versión tiene algunas mejoras en la experiencia de inicio de sesión, como la opción de usar tus credenciales del sitio wp-admin y la opción de enlace mágico para iniciar sesión. Sigue enviando tus comentarios: ¡te escuchamos!

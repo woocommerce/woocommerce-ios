@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-08-15 11:10:11+0000 */
+/* Translation-Revision-Date: 2022-08-17 18:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -220,6 +220,9 @@ which should be translated separately and considered part of this sentence. */
 /* Please limit to 3 characters if possible. This is used if there are more than 99 items in a tab, like Orders. */
 "99+" = "99+";
 
+/* Instruction text to explain magic link login step. */
+"A WordPress.com account is connected to your store credentials. To continue, we will send a verification link to the email address above." = "워드프레스닷컴 계정이 스토어 자격 증명에 연결되어 있습니다. 계속하시겠다면 위의 이메일 주소에 대한 확인 링크를 보내드리겠습니다.";
+
 /* Placeholder of the Product Short Description row on Product main screen */
 "A brief excerpt about the product" = "간단한 제품 요약문";
 
@@ -282,6 +285,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title when a payments account is successfully connected for Card Present Payments */
 "Account connected" = "계정 연결됨";
+
+/* Title for the section related to actions inside In-Person Payments settings */
+"Actions" = "조치";
 
 /* Title for the error screen when a Card Present Payments extension is installed but not activated */
 "Activate %1$@" = "%1$@ 활성화";
@@ -536,6 +542,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "마지막 부분입니다! 인증 앱의 확인 코드를 입력하세요.";
+
+/* Instruction text to explain to help users type their password instead of using magic link login option. */
+"Alternatively, you may enter the password for this account." = "또는 이 계정에 대한 비밀번호를 입력하셔도 됩니다.";
 
 /* String displayed before offering alternative login methods */
 "Alternatively:" = "또는:";
@@ -964,6 +973,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "입력한 URL이 올바른지 확인합니다.";
+
+/* The title text on the magic link requested screen. */
+"Check your email on this device!" = "이 기기에서 이메일을 확인하세요!";
 
 /* Instruction text after a login Magic Link was requested. */
 "Check your email on this device, and tap the link in the email you receive from WordPress.com." = "이 기기에서 이메일을 확인하고 워드프레스닷컴에서 받은 이메일의 링크를 누르세요.";
@@ -1875,6 +1887,9 @@ which should be translated separately and considered part of this sentence. */
    Title of a button. */
 "Enter your password instead." = "비밀번호를 입력하세요.";
 
+/* Enter your store credentials for {site url}. Asks the user to enter .org site credentials for their store. */
+"Enter your store credentials for %@." = "%@에 대한 스토어 자격 증명을 입력하세요.";
+
 /* Envelope package type, used to create a custom package in the Shipping Label flow */
 "Envelope" = "봉투";
 
@@ -2287,6 +2302,9 @@ which should be translated separately and considered part of this sentence. */
 /* Step 4 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "If you are still experiencing issues printing from your phone, you can save your label as PDF and **send it by email** to print it from another device." = "휴대폰에서 인쇄 중 문제가 계속 발생하는 경우 레이블을 PDF로 저장하고 **이메일로 보내** 다른 기기에서 인쇄할 수 있습니다.";
 
+/* The instructions text about not being able to find the magic link email. */
+"If you can’t find the email, please check your junk or spam email folder" = "이메일을 찾을 수 없으면 정크 또는 스팸 이메일 폴더를 확인해 보세요.";
+
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Apple에서 계속하는데 아직 워드프레스닷컴 계정이 없는 경우, 계정을 만들면 _서비스 약관_에 동의하는 것입니다.";
 
@@ -2692,6 +2710,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Local notification action to log in with WordPress.com. */
 "Login with WordPress.com" = "워드프레스닷컴으로 로그인";
+
+/* Button title. Takes the user to the Enter account password screen. */
+"Login with account password" = "계정 비밀번호로 로그인";
 
 /* Title of a button. */
 "Lost your password?" = "비밀번호 분실?";
@@ -4182,6 +4203,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The button title text for sending a magic link. */
 "Send Link by Email" = "이메일로 링크 보내기";
 
+/* Button title. Sends a email verification link (Magin link) for signing in. */
+"Send email verification link" = "이메일 확인 링크 보내기";
+
 /* Service Package menu in Shipping Label Add New Package flow */
 "Service Package" = "서비스 패키지";
 
@@ -5597,6 +5621,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the Use as Shipping Address switch in the Address form */
 "Use as Shipping Address" = "배송 주소로 사용";
 
+/* The button title text for logging in with WP.com password instead of magic link. */
+"Use password to sign in" = "로그인 비밀번호 사용";
+
 /* Title of user profiles as part of Jetpack benefits. */
 "User Profiles" = "사용자 프로필";
 
@@ -5771,6 +5798,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* message to ask a user to check their email for a WordPress.com email */
 "We just emailed a link to %@. Please check your mail app and tap the link to log in." = "%@에 대한 링크를 이메일로 전송했습니다. 메일 앱을 확인하고 링크를 탭하여 로그인하세요.";
+
+/* The subtitle text on the magic link requested screen followed by the email address. */
+"We just sent a magic link to" = "방금 다음으로 매직 링크를 보내드렸습니다.";
 
 /* Subtitle displayed in promotional screens shown during the login flow. */
 "We know it’s essential to your business." = "비즈니스에 꼭 필요합니다.";

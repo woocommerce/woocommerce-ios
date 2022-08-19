@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-08-15 11:10:11+0000 */
+/* Translation-Revision-Date: 2022-08-18 11:54:04+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -220,6 +220,9 @@ which should be translated separately and considered part of this sentence. */
 /* Please limit to 3 characters if possible. This is used if there are more than 99 items in a tab, like Orders. */
 "99+" = "99+";
 
+/* Instruction text to explain magic link login step. */
+"A WordPress.com account is connected to your store credentials. To continue, we will send a verification link to the email address above." = "Учётная запись WordPress.com подключена к вашим учётным данным магазина. Чтобы продолжить, перейдите по ссылке для подтверждения, которую мы отправили на указанный адрес электронной почты.";
+
 /* Placeholder of the Product Short Description row on Product main screen */
 "A brief excerpt about the product" = "Короткое описание продукта";
 
@@ -282,6 +285,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title when a payments account is successfully connected for Card Present Payments */
 "Account connected" = "Учётная запись подключена";
+
+/* Title for the section related to actions inside In-Person Payments settings */
+"Actions" = "Действия";
 
 /* Title for the error screen when a Card Present Payments extension is installed but not activated */
 "Activate %1$@" = "Активировать %1$@";
@@ -536,6 +542,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "Почти готово! Введите проверочный код из приложения Authenticator.";
+
+/* Instruction text to explain to help users type their password instead of using magic link login option. */
+"Alternatively, you may enter the password for this account." = "В качестве альтернативы можно ввести пароль для этой учётной записи.";
 
 /* String displayed before offering alternative login methods */
 "Alternatively:" = "Альтернативно:";
@@ -964,6 +973,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "Убедитесь, что введен допустимый URL-адрес";
+
+/* The title text on the magic link requested screen. */
+"Check your email on this device!" = "Проверьте электронную почту с этого устройства!";
 
 /* Instruction text after a login Magic Link was requested. */
 "Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Проверьте электронную почту на этом устройстве и перейдите по ссылке в письме от WordPress.com.";
@@ -1875,6 +1887,9 @@ which should be translated separately and considered part of this sentence. */
    Title of a button. */
 "Enter your password instead." = "Введите пароль.";
 
+/* Enter your store credentials for {site url}. Asks the user to enter .org site credentials for their store. */
+"Enter your store credentials for %@." = "Введите учётные данные магазина для %@.";
+
 /* Envelope package type, used to create a custom package in the Shipping Label flow */
 "Envelope" = "Конверт";
 
@@ -2287,6 +2302,9 @@ which should be translated separately and considered part of this sentence. */
 /* Step 4 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "If you are still experiencing issues printing from your phone, you can save your label as PDF and **send it by email** to print it from another device." = "Если вам по-прежнему не удаётся выполнить печать со своего телефона, вы можете **сохранить этикетку в формате PDF** и отправить её по эл. почте, чтобы распечатать с другого устройства.";
 
+/* The instructions text about not being able to find the magic link email. */
+"If you can’t find the email, please check your junk or spam email folder" = "Если не удаётся найти письмо, проверьте папку спама или нежелательной почты.";
+
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Если вы продолжите работу с учётной записью Apple, не имея учётной записи WordPress.com, для вас будет создана учётная запись и будет считаться, что вы принимаете наши _Правила и условия_.";
 
@@ -2692,6 +2710,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Local notification action to log in with WordPress.com. */
 "Login with WordPress.com" = "Войти на WordPress.com";
+
+/* Button title. Takes the user to the Enter account password screen. */
+"Login with account password" = "Войти с помощью пароля";
 
 /* Title of a button. */
 "Lost your password?" = "Забыли пароль?";
@@ -4182,6 +4203,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The button title text for sending a magic link. */
 "Send Link by Email" = "Отправить ссылку по электронной почте";
 
+/* Button title. Sends a email verification link (Magin link) for signing in. */
+"Send email verification link" = "Отправить ссылку для подтверждения";
+
 /* Service Package menu in Shipping Label Add New Package flow */
 "Service Package" = "Обработка посылки";
 
@@ -5597,6 +5621,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the Use as Shipping Address switch in the Address form */
 "Use as Shipping Address" = "Это адрес доставки";
 
+/* The button title text for logging in with WP.com password instead of magic link. */
+"Use password to sign in" = "Войти с паролем";
+
 /* Title of user profiles as part of Jetpack benefits. */
 "User Profiles" = "Профили пользователей";
 
@@ -5771,6 +5798,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* message to ask a user to check their email for a WordPress.com email */
 "We just emailed a link to %@. Please check your mail app and tap the link to log in." = "Ссылка отправлена на эл. адрес %@. Проверьте почту и перейдите по ссылке, чтобы войти в учетную запись.";
+
+/* The subtitle text on the magic link requested screen followed by the email address. */
+"We just sent a magic link to" = "Только что мы отправили специальную ссылку на";
 
 /* Subtitle displayed in promotional screens shown during the login flow. */
 "We know it’s essential to your business." = "Знаем, что это важно для бизнеса.";

@@ -596,6 +596,15 @@ platform :ios do
       )
     end
 
+    # We're about to use `add_development_certificates_to_provisioning_profiles` and `add_all_devices_to_provisioning_profiles`.
+    # These actions use Developer Portal APIs that don't yet support authentication via API key (-.-').
+    # Let's preemptively ask for and set the email here to avoid being asked twice for it if not set.
+    asc_user_email_key = 'FASTLANE_USER'
+    unless ENV.key?(asc_user_email_key)
+      UI.important("#{asc_user_email_key} value not found in the environment.")
+      ENV[asc_user_email_key] = UI.input('Please provide your Apple Developer Program account email (this will not be saved): ')
+    end
+
     # Add all development certificates to the provisioning profiles (just in case – this is an easy step to miss)
     add_development_certificates_to_provisioning_profiles(
       team_id: get_required_env('EXT_EXPORT_TEAM_ID'),

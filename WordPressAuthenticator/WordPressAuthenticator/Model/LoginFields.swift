@@ -99,7 +99,7 @@ extension LoginFields {
 
 /// A helper class for storing safari saved password information.
 ///
-struct SafariStoredCredentials {
+class SafariStoredCredentials {
     var storedUserameHash = 0
     var storedPasswordHash = 0
 }

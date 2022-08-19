@@ -341,7 +341,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         }
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginErrorNotifications) {
-            ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: [.loginSiteAddressError])
+            ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: LocalNotification.Scenario.allCases)
         }
 
         let matcher = ULAccountMatcher(storageManager: storageManager)

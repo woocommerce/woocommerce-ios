@@ -40,12 +40,10 @@ final class OrdersRemoteTests: XCTestCase {
     ///
     func test_order_fields_parameter_values_do_not_contain_whitespace() throws {
         // When
-        let orderListFieldsValue = OrdersRemote.ParameterValues.listFieldValues
-        let orderFieldsValue = OrdersRemote.ParameterValues.singleOrderFieldValues
+        let fieldValues = OrdersRemote.ParameterValues.fieldValues
 
         // Then
-        XCTAssertFalse(orderListFieldsValue.contains(" "))
-        XCTAssertFalse(orderFieldsValue.contains(" "))
+        XCTAssertFalse(fieldValues.contains(" "))
     }
 
     // MARK: - Load All Orders Tests

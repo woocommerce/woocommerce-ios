@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-08-15 11:10:11+0000 */
+/* Translation-Revision-Date: 2022-08-19 09:54:03+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -220,6 +220,9 @@ which should be translated separately and considered part of this sentence. */
 /* Please limit to 3 characters if possible. This is used if there are more than 99 items in a tab, like Orders. */
 "99+" = "99+";
 
+/* Instruction text to explain magic link login step. */
+"A WordPress.com account is connected to your store credentials. To continue, we will send a verification link to the email address above." = "يرتبط حساب ووردبريس.كوم ببيانات اعتماد متجرك. للمواصلة، سنرسل رابط تحقُّق إلى عنوان البريد الإلكتروني الوارد أعلاه.";
+
 /* Placeholder of the Product Short Description row on Product main screen */
 "A brief excerpt about the product" = "مقتطف موجز عن المنتج";
 
@@ -282,6 +285,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title when a payments account is successfully connected for Card Present Payments */
 "Account connected" = "الحساب المتصل";
+
+/* Title for the section related to actions inside In-Person Payments settings */
+"Actions" = "الإجراءات";
 
 /* Title for the error screen when a Card Present Payments extension is installed but not activated */
 "Activate %1$@" = "تفعيل %1$@";
@@ -536,6 +542,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "تقريبًا هناك! يرجى إدخال رمز التحقق من تطبيق الموثق الخاص بك.";
+
+/* Instruction text to explain to help users type their password instead of using magic link login option. */
+"Alternatively, you may enter the password for this account." = "بدلاً من ذلك، قد تقوم بإدخال كلمة مرور هذا الحساب.";
 
 /* String displayed before offering alternative login methods */
 "Alternatively:" = "بدلاً من ذلك:";
@@ -964,6 +973,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "تحقق من أن عنوان URL الذي تم إدخاله صحيح";
+
+/* The title text on the magic link requested screen. */
+"Check your email on this device!" = "تحقَّق من بريدك الإلكتروني على هذا الجهاز!";
 
 /* Instruction text after a login Magic Link was requested. */
 "Check your email on this device, and tap the link in the email you receive from WordPress.com." = "تحقَّق من بريدك الإلكتروني على هذا الجهاز، وانقر على الرابط الموجود في الرسالة التي تم تلقيها عبر البريد الإلكتروني من ووردبريس.كوم.";
@@ -1875,6 +1887,9 @@ which should be translated separately and considered part of this sentence. */
    Title of a button. */
 "Enter your password instead." = "بدلاً من ذلك، أدخل كلمة المرور.";
 
+/* Enter your store credentials for {site url}. Asks the user to enter .org site credentials for their store. */
+"Enter your store credentials for %@." = "قم بإدخال بيانات اعتماد متجرك الخاصة بـ %@.";
+
 /* Envelope package type, used to create a custom package in the Shipping Label flow */
 "Envelope" = "ظرف";
 
@@ -2287,6 +2302,9 @@ which should be translated separately and considered part of this sentence. */
 /* Step 4 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "If you are still experiencing issues printing from your phone, you can save your label as PDF and **send it by email** to print it from another device." = "إذا كنت لا تزال تواجه مشكلات في الطباعة من جهازك، فيمكنك حفظ ملصقك بصيغة PDF **وإرساله عبر البريد الإلكتروني** لطباعته من جهاز آخر.";
 
+/* The instructions text about not being able to find the magic link email. */
+"If you can’t find the email, please check your junk or spam email folder" = "إذا تعذر عليك العثور على البريد الإلكتروني، فيرجى التحقُّق من مجلد البريد الإلكتروني غير الهام والبريد الإلكتروني المزعج";
+
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "إذا قمت بالمتابعة باستخدام Apple وليس لديك حساب على ووردبريس.كوم بالفعل، فأنت تقوم بإنشاء حساب وتوافق على _شروط الخدمة_ الخاصة بنا.";
 
@@ -2692,6 +2710,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Local notification action to log in with WordPress.com. */
 "Login with WordPress.com" = "تسجيل الدخول باستخدام ووردبريس.كوم";
+
+/* Button title. Takes the user to the Enter account password screen. */
+"Login with account password" = "تسجيل الدخول باستخدام كلمة مرور الحساب";
 
 /* Title of a button. */
 "Lost your password?" = "هل فقدت كلمة مرورك؟";
@@ -4182,6 +4203,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The button title text for sending a magic link. */
 "Send Link by Email" = "إرسال الرابط في رسالة عبر البريد الإلكتروني";
 
+/* Button title. Sends a email verification link (Magin link) for signing in. */
+"Send email verification link" = "إرسال رابط التحقُّق عبر البريد الإلكتروني";
+
 /* Service Package menu in Shipping Label Add New Package flow */
 "Service Package" = "حزمة الخدمة";
 
@@ -5597,6 +5621,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the Use as Shipping Address switch in the Address form */
 "Use as Shipping Address" = "استخدام عنوان الشحن";
 
+/* The button title text for logging in with WP.com password instead of magic link. */
+"Use password to sign in" = "استخدام كلمة المرور لتسجيل الدخول";
+
 /* Title of user profiles as part of Jetpack benefits. */
 "User Profiles" = "ملفات المستخدم الشخصية";
 
@@ -5771,6 +5798,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* message to ask a user to check their email for a WordPress.com email */
 "We just emailed a link to %@. Please check your mail app and tap the link to log in." = "أرسلنا للتو رسالة عبر البريد الإلكتروني إلى %@ تتضمن رابطًا. يرجى التحقق من تطبيق البريد الخاص بك والنقر على الرابط لتسجيل الدخول.";
+
+/* The subtitle text on the magic link requested screen followed by the email address. */
+"We just sent a magic link to" = "أرسلنا رابطًا سحريًا للتو إلى";
 
 /* Subtitle displayed in promotional screens shown during the login flow. */
 "We know it’s essential to your business." = "نعلم أنه ضروري لعملك التجاري.";

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-08-15 11:10:11+0000 */
+/* Translation-Revision-Date: 2022-08-18 13:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -220,6 +220,9 @@ which should be translated separately and considered part of this sentence. */
 /* Please limit to 3 characters if possible. This is used if there are more than 99 items in a tab, like Orders. */
 "99+" = "99+";
 
+/* Instruction text to explain magic link login step. */
+"A WordPress.com account is connected to your store credentials. To continue, we will send a verification link to the email address above." = "Een WordPress.com-account is gekoppeld aan je winkel-inloggegevens. Om door te gaan sturen wij je een verificatielink naar het bovenstaande e-mailadres.";
+
 /* Placeholder of the Product Short Description row on Product main screen */
 "A brief excerpt about the product" = "Een korte samenvatting van het product";
 
@@ -282,6 +285,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title when a payments account is successfully connected for Card Present Payments */
 "Account connected" = "Verbonden account";
+
+/* Title for the section related to actions inside In-Person Payments settings */
+"Actions" = "Acties";
 
 /* Title for the error screen when a Card Present Payments extension is installed but not activated */
 "Activate %1$@" = "Activeer %1$@";
@@ -536,6 +542,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "Bijna klaar. Voer de verificatiecode in van je authenticatie-app.";
+
+/* Instruction text to explain to help users type their password instead of using magic link login option. */
+"Alternatively, you may enter the password for this account." = "Je kunt ook het wachtwoord voor dit account invoeren.";
 
 /* String displayed before offering alternative login methods */
 "Alternatively:" = "Anders:";
@@ -964,6 +973,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "Controleer of de ingevoerde URL geldig is";
+
+/* The title text on the magic link requested screen. */
+"Check your email on this device!" = "Controleer je e-mail op dit apparaat!";
 
 /* Instruction text after a login Magic Link was requested. */
 "Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Controleer je e-mail op dit apparaat en tik op de link in de e-mail die je van WordPress.com ontvangt.";
@@ -1875,6 +1887,9 @@ which should be translated separately and considered part of this sentence. */
    Title of a button. */
 "Enter your password instead." = "Voer je wachtwoord in.";
 
+/* Enter your store credentials for {site url}. Asks the user to enter .org site credentials for their store. */
+"Enter your store credentials for %@." = "Voer je winkel-inloggegevens voor %@ in.";
+
 /* Envelope package type, used to create a custom package in the Shipping Label flow */
 "Envelope" = "Envelop";
 
@@ -2287,6 +2302,9 @@ which should be translated separately and considered part of this sentence. */
 /* Step 4 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "If you are still experiencing issues printing from your phone, you can save your label as PDF and **send it by email** to print it from another device." = "Als je nog steeds problemen ondervindt bij het afdrukken vanaf je telefoon, kan je het label opslaan als pdf en het **per e-mail verzenden** om het vanaf een ander apparaat af te drukken.";
 
+/* The instructions text about not being able to find the magic link email. */
+"If you can’t find the email, please check your junk or spam email folder" = "Als je de e-mail niet kunt vinden, controleer dan de spamfolder of de prullenbak van je inbox";
+
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Als je doorgaat met Apple en nog geen WordPress.com-account hebt, maak je een account aan en ga je akkoord met onze _Servicevoorwaarden_.";
 
@@ -2692,6 +2710,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Local notification action to log in with WordPress.com. */
 "Login with WordPress.com" = "Inloggen met WordPress.com";
+
+/* Button title. Takes the user to the Enter account password screen. */
+"Login with account password" = "Log in met het wachtwoord van je account";
 
 /* Title of a button. */
 "Lost your password?" = "Wachtwoord vergeten?";
@@ -4182,6 +4203,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The button title text for sending a magic link. */
 "Send Link by Email" = "Link per e-mail verzenden";
 
+/* Button title. Sends a email verification link (Magin link) for signing in. */
+"Send email verification link" = "Link voor e-mailverificatie verzenden";
+
 /* Service Package menu in Shipping Label Add New Package flow */
 "Service Package" = "Servicepakket";
 
@@ -5597,6 +5621,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the Use as Shipping Address switch in the Address form */
 "Use as Shipping Address" = "Gebruiken als verzendadres";
 
+/* The button title text for logging in with WP.com password instead of magic link. */
+"Use password to sign in" = "Gebruik je wachtwoord om je aan te melden";
+
 /* Title of user profiles as part of Jetpack benefits. */
 "User Profiles" = "Gebruikersprofielen";
 
@@ -5771,6 +5798,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* message to ask a user to check their email for a WordPress.com email */
 "We just emailed a link to %@. Please check your mail app and tap the link to log in." = "We hebben zojuist een link gestuurd naar %@. Controleer je mail-app en tik op de link om in te loggen.";
+
+/* The subtitle text on the magic link requested screen followed by the email address. */
+"We just sent a magic link to" = "We hebben zojuist een magische link verstuurd naar";
 
 /* Subtitle displayed in promotional screens shown during the login flow. */
 "We know it’s essential to your business." = "We weten dat dit essentieel is voor je bedrijf.";

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-08-15 11:10:11+0000 */
+/* Translation-Revision-Date: 2022-08-18 15:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -220,6 +220,9 @@ which should be translated separately and considered part of this sentence. */
 /* Please limit to 3 characters if possible. This is used if there are more than 99 items in a tab, like Orders. */
 "99+" = "‎99+‎";
 
+/* Instruction text to explain magic link login step. */
+"A WordPress.com account is connected to your store credentials. To continue, we will send a verification link to the email address above." = "חשבון WordPress.com מחובר לפרטי הכניסה שלך לחנות. כדי להמשיך, נשלח לך קישור לאימות אל כתובת האימייל שמצוינת למעלה.";
+
 /* Placeholder of the Product Short Description row on Product main screen */
 "A brief excerpt about the product" = "תיאור קצר אודות המוצר";
 
@@ -282,6 +285,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title when a payments account is successfully connected for Card Present Payments */
 "Account connected" = "מחובר לחשבון";
+
+/* Title for the section related to actions inside In-Person Payments settings */
+"Actions" = "פעולות";
 
 /* Title for the error screen when a Card Present Payments extension is installed but not activated */
 "Activate %1$@" = "להפעיל את %1$@";
@@ -536,6 +542,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "כמעט סיימת! יש להזין את קוד האימות מאפליקציית האימות.";
+
+/* Instruction text to explain to help users type their password instead of using magic link login option. */
+"Alternatively, you may enter the password for this account." = "לחלופין, ניתן להזין את הסיסמה של החשבון.";
 
 /* String displayed before offering alternative login methods */
 "Alternatively:" = "לחלופין:";
@@ -964,6 +973,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "יש לוודא שכתובת ה-URL של האתר שהוזנה תקפה";
+
+/* The title text on the magic link requested screen. */
+"Check your email on this device!" = "יש לבדוק את תיבת האימייל במכשיר זה!";
 
 /* Instruction text after a login Magic Link was requested. */
 "Check your email on this device, and tap the link in the email you receive from WordPress.com." = "עליך לבדוק את האימייל ממכשיר זה ולהקיש על הקישור בהודעה שקיבלת מ-WordPress.com.";
@@ -1875,6 +1887,9 @@ which should be translated separately and considered part of this sentence. */
    Title of a button. */
 "Enter your password instead." = "במקום זאת יש להזין סיסמה.";
 
+/* Enter your store credentials for {site url}. Asks the user to enter .org site credentials for their store. */
+"Enter your store credentials for %@." = "יש להזין את פרטי הכניסה לחנות עבור %@.";
+
 /* Envelope package type, used to create a custom package in the Shipping Label flow */
 "Envelope" = "מעטפה";
 
@@ -2287,6 +2302,9 @@ which should be translated separately and considered part of this sentence. */
 /* Step 4 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "If you are still experiencing issues printing from your phone, you can save your label as PDF and **send it by email** to print it from another device." = "אם עדיין יש בעיות בהדפסה מהטלפון שלך, אפשר לשמור את התווית שלך כקובץ PDF **ולשלוח אותה באימייל** כדי להדפיס אותה ממכשיר אחר.";
 
+/* The instructions text about not being able to find the magic link email. */
+"If you can’t find the email, please check your junk or spam email folder" = "אם לא הצלחת למצוא את הודעת האימייל, כדאי לחפש בתיבה של דואר הזבל או הספאם";
+
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "אם בחרת להמשיך עם Apple ועדיין אין לך חשבון ב-WordPress.com, חשבון ייווצר עבורך ויש הסכמה מצידך _לתנאי השירות_ שלנו.";
 
@@ -2692,6 +2710,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Local notification action to log in with WordPress.com. */
 "Login with WordPress.com" = "להתחבר באמצעות WordPress.com";
+
+/* Button title. Takes the user to the Enter account password screen. */
+"Login with account password" = "להתחבר עם הסיסמה של החשבון";
 
 /* Title of a button. */
 "Lost your password?" = "שחזור סיסמה";
@@ -4182,6 +4203,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The button title text for sending a magic link. */
 "Send Link by Email" = "לשלוח את הקישור באימייל";
 
+/* Button title. Sends a email verification link (Magin link) for signing in. */
+"Send email verification link" = "לשלוח קישור לאימות באימייל";
+
 /* Service Package menu in Shipping Label Add New Package flow */
 "Service Package" = "חבילת שירותים";
 
@@ -5597,6 +5621,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the Use as Shipping Address switch in the Address form */
 "Use as Shipping Address" = "להשתמש בתור כתובת משלוח";
 
+/* The button title text for logging in with WP.com password instead of magic link. */
+"Use password to sign in" = "להשתמש בסיסמה כדי להתחבר";
+
 /* Title of user profiles as part of Jetpack benefits. */
 "User Profiles" = "פרופילי משתמשים";
 
@@ -5771,6 +5798,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* message to ask a user to check their email for a WordPress.com email */
 "We just emailed a link to %@. Please check your mail app and tap the link to log in." = "שלחנו לך כעת הודעת אימייל עם קישור אל %@. יש לבדוק את האפליקציה של האימייל שלך ולהקיש על הקישור כדי להתחבר.";
+
+/* The subtitle text on the magic link requested screen followed by the email address. */
+"We just sent a magic link to" = "שלחנו כעת קישור ישיר אל";
 
 /* Subtitle displayed in promotional screens shown during the login flow. */
 "We know it’s essential to your business." = "אנחנו יודעים שהאפשרות הזאת חיונית לעסק שלך.";

@@ -369,9 +369,12 @@ private extension StorePickerViewController {
             updateActionButtonAndTableState(animating: false, enabled: false)
             enterSiteAddressButton.isHidden = false
             newToWooButton.isHidden = false
-        default:
+        case .available(let sites):
             enterSiteAddressButton.isHidden = true
             newToWooButton.isHidden = true
+            if sites.allSatisfy({ $0.isWooCommerceActive == false }) {
+                updateActionButtonAndTableState(animating: false, enabled: false)
+            }
         }
 
         tableView.separatorStyle = viewModel.separatorStyle

@@ -440,6 +440,14 @@ private extension SiteAddressViewController {
         }
 
         // Checks that the site exists
+        checkSiteExistence(url: url) { [weak self] in
+            guard let self = self else { return }
+            // Proceeds to check for the site's WordPress
+            self.guessXMLRPCURL(for: self.loginFields.siteAddress)
+        }
+    }
+
+    func checkSiteExistence(url: URL, onCompletion: @escaping () -> Void) {
         var request = URLRequest(url: url)
         request.httpMethod = "HEAD"
         request.timeoutInterval = 10.0 // waits for 10 seconds
@@ -460,8 +468,7 @@ private extension SiteAddressViewController {
                     return self.displayError(message: Localization.nonExistentSiteError, moveVoiceOverFocus: true)
                 }
 
-                // Proceeds to check for the site's WordPress
-                self.guessXMLRPCURL(for: self.loginFields.siteAddress)
+                onCompletion()
             }
         }
         task.resume()

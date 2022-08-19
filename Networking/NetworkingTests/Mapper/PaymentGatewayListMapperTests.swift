@@ -17,7 +17,7 @@ final class PaymentGatewayListMapperTests: XCTestCase {
         let gateways = try PaymentGatewayListMapper(siteID: Self.sampleSiteID).map(response: jsonData)
 
         // Then
-        XCTAssertEqual(gateways, expectedGateways)
+        assertEqual(expectedGateways, gateways)
     }
 }
 
@@ -32,7 +32,7 @@ private extension PaymentGatewayListMapperTests {
                                                         "Your order will not be shipped until the funds have cleared in our account.",
                                                     enabled: false,
                                                     features: [.products],
-                                                    instructions: "")
+                                                    instructions: nil)
 
     static let checkGateway = PaymentGateway(siteID: sampleSiteID,
                                              gatewayID: "cheque",
@@ -40,7 +40,7 @@ private extension PaymentGatewayListMapperTests {
                                              description: "Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode.",
                                              enabled: false,
                                              features: [.products],
-                                             instructions: "")
+                                             instructions: nil)
 
     static let cashGateway = PaymentGateway(siteID: sampleSiteID,
                                             gatewayID: "cod",
@@ -56,5 +56,5 @@ private extension PaymentGatewayListMapperTests {
                                               description: "Pay via PayPal; you can pay with your credit card if you don't have a PayPal account.",
                                               enabled: false,
                                               features: [.products, .refunds],
-                                              instructions: "")
+                                              instructions: nil)
 }

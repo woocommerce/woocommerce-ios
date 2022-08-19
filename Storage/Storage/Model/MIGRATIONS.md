@@ -3,6 +3,10 @@
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
 ## Model 71 (Release 9.6.0.0)
+- @joshheald 2022-08-19
+    - Added `instructions` attribute to `PaymentGateway` entity.
+
+## Model 71 (Release 9.6.0.0)
 - @rachelmcr 2022-07-07
     - Added `OrderMetaData` entity.
     - Added `customFields` to-many relationship from `Order` to `OrderMetaData`.

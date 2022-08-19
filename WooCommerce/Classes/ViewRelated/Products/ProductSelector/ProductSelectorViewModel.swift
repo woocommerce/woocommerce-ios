@@ -435,7 +435,7 @@ private extension ProductSelectorViewModel {
             .dropFirst() // Drop initial value
             .removeDuplicates()
             .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
-        
+
         searchTermPublisher.combineLatest($filters.removeDuplicates())
             .sink { [weak self] searchTerm, filters in
                 guard let self = self else { return }

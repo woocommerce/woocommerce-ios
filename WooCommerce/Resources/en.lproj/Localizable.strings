@@ -37,6 +37,9 @@
 which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with your mobile device and ordering card readers" = "%1$@ about accepting payments with your mobile device and ordering card readers";
 
+/* A label prompting users to learn more about card readers. %1$@ is a placeholder that is always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
+"%1$@ about adding Pay in Person to your checkout" = "%1$@ about adding Pay in Person to your checkout";
+
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "%1$@ card ending %2$@";
 
@@ -222,6 +225,9 @@ which should be translated separately and considered part of this sentence. */
 /* Comment Attachment Label */
 "[COMMENT]" = "[COMMENT]";
 
+/* The message explaining what will happen when the merchant enables the Pay in Person payment gateway during card present payments onboarding. */
+"A \"Pay in Person\" option on your checkout lets you accept card or cash payments on collection or delivery." = "A \"Pay in Person\" option on your checkout lets you accept card or cash payments on collection or delivery.";
+
 /* Placeholder of the Product Short Description row on Product main screen */
 "A brief excerpt about the product" = "A brief excerpt about the product";
 
@@ -397,6 +403,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header of existing attribute options section in Add Attribute Options screen */
 "ADD OPTIONS" = "ADD OPTIONS";
+
+/* Title for the card present payments onboarding step encouraging the merchant to enable the Pay in Person payment gateway. */
+"Add Pay in Person to your checkout" = "Add Pay in Person to your checkout";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "Add Photo";
@@ -827,6 +836,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "Can Not Request Link";
 
+/* Local notification title when the user encounters an error with WP.com password. */
+"Can't remember your password?" = "Can't remember your password?";
+
 /* Action title to cancel selecting products to add to a grouped product from search results
    Add Product Category. Cancel button title in navbar.
    Alert button title - dismisses alert, which cancels marking all as read attempt.
@@ -884,6 +896,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for cancelled order status. */
 "Cancelled" = "Cancelled";
+
+/* Error message shown when the input URL does not point to an existing site. */
+"Cannot access the site at this address. Please double-check and try again." = "Cannot access the site at this address. Please double-check and try again.";
 
 /* Title of the alert when there is an error creating a new product category */
 "Cannot Add Category" = "Cannot Add Category";
@@ -1101,9 +1116,6 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Prompt user to connect their first reader */
 "Connect your card reader" = "Connect your card reader";
 
-/* Link on the store picker when there are no stores available. Opens a webview about Jetpack setup. */
-"Connect your store with Jetpack" = "Connect your store with Jetpack";
-
 /* Title shown when a user logs in with Google but no matching WordPress.com account is found */
 "Connected But…" = "Connected But…";
 
@@ -1178,6 +1190,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "Continue reading";
+
+/* Call to Action to finish the setup of In-Person Payments in the Menu */
+"Continue Setup" = "Continue Setup";
 
 /* Button title. Tapping begins log in using Apple. */
 "Continue with Apple" = "Continue with Apple";
@@ -1765,6 +1780,9 @@ which should be translated separately and considered part of this sentence. */
 /* The action button on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
 "Enable Coupons" = "Enable Coupons";
 
+/* Title for the button to enable the Pay in Person payment gateway during card present payments onboarding. */
+"Enable Pay in Person" = "Enable Pay in Person";
+
 /* Enable Reviews label in Product Settings */
 "Enable Reviews" = "Enable Reviews";
 
@@ -1885,8 +1903,8 @@ which should be translated separately and considered part of this sentence. */
    Title of a button.  */
 "Enter your password instead." = "Enter your password instead.";
 
-/* Action button linking to instructions for enter another store.Presented when logging in with an email address that is not a WordPress.com account
-   Button title. Takes the user to the login by store address flow. */
+/* Button title. Takes the user to the login by store address flow.
+   Button to input a site address in store picker when there are no stores found */
 "Enter Your Store Address" = "Enter Your Store Address";
 
 /* Enter your store credentials for {site url}. Asks the user to enter .org site credentials for their store. */
@@ -2179,6 +2197,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Google sign up failed.";
 
+/* Confirmation text of the button on the bottom announcement modalwhen a merchant taps on Simple Payment */
+"Got it!" = "Got it!";
+
 /* Display label for grouped product type. */
 "Grouped" = "Grouped";
 
@@ -2287,9 +2308,6 @@ which should be translated separately and considered part of this sentence. */
 /* Header text when reprinting a shipping label */
 "If there was a printing error when you purchased the label, you can print it again." = "If there was a printing error when you purchased the label, you can print it again.";
 
-/* Displayed during the Login flow, whenever the user has no woo stores associated. */
-"If you already have a store, you’ll need to install the free Jetpack plugin and connect it to your WordPress.com account." = "If you already have a store, you’ll need to install the free Jetpack plugin and connect it to your WordPress.com account.";
-
 /* Info text when reprinting a shipping label */
 "If you already used the label in a package, printing and using it again is a violation of our terms of service" = "If you already used the label in a package, printing and using it again is a violation of our terms of service";
 
@@ -2333,6 +2351,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when the merchant's payment account has been rejected. */
 "In-Person Payments isn't available for this store" = "In-Person Payments isn't available for this store";
+
+/* Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled. */
+"In-Person Payments Setup is incomplete." = "In-Person Payments Setup is incomplete.";
 
 /* Message prompting a shop manager to ask an administrator to deactivate one of two plugins */
 "In-Person Payments will only work with one of following plugins activated. Please contact a site administrator to deactivate one of these plugins to continue:" = "In-Person Payments will only work with one of following plugins activated. Please contact a site administrator to deactivate one of these plugins to continue:";
@@ -2460,6 +2481,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message to show to user when he tries to add a self-hosted site that isn't a valid URL. */
 "Invalid URL, please check if you wrote a valid site address." = "Invalid URL, please check if you wrote a valid site address.";
 
+/* Error message shown when the input URL is invalid. */
+"Invalid URL. Please double-check and try again." = "Invalid URL. Please double-check and try again.";
+
 /* No comment provided by engineer. */
 "Invalid username" = "Invalid username";
 
@@ -2485,9 +2509,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message explaining that the site entered doesn't have WooCommerce installed or activated. Reads like 'It looks like awebsite.com is not a WooCommerce site. */
 "It looks like %@ is not a WooCommerce site." = "It looks like %@ is not a WooCommerce site.";
-
-/* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
-"It looks like this email isn't associated with a WordPress.com account." = "It looks like this email isn't associated with a WordPress.com account.";
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username/password isn't associated with this site." = "It looks like this username/password isn't associated with this site.";
@@ -2696,11 +2717,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Instruction text on the login's email address screen. */
 "Log in to your WordPress.com account with your email address." = "Log in to your WordPress.com account with your email address.";
 
+/* Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
+"Log in with another account" = "Log in with another account";
+
 /* Action button that will restart the login flow.Presented when logging in with a site address that appears to be invalid.
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
-   Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
-   Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
+   Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce */
 "Log In With Another Account" = "Log In With Another Account";
+
+/* Action button linking to instructions for enter another store.Presented when logging in with an email address that is not a WordPress.com account */
+"Log in with your store address" = "Log in with your store address";
 
 /* Sign in instructions on the 'log in using email' screen.
    Sign in instructions on the 'log in using WordPress.com account' screen. */
@@ -2900,7 +2926,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Need a shipping label?" = "Need a shipping label?";
 
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation */
-"Need help finding the connected email?" = "Need help finding the connected email?";
+"Need help finding the required email?" = "Need help finding the required email?";
 
 /* A button title. */
 "Need help finding your site address?" = "Need help finding your site address?";
@@ -2946,7 +2972,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message for the mocked order notification needed for the AppStore listing screenshot. 'Your WooCommerce Store' is the name of the mocked store. */
 "New order for $13.98 on Your WooCommerce Store" = "New order for $13.98 on Your WooCommerce Store";
 
-/* Title of button in the login prologue screen for users who are new to WooCommerce. */
+/* Title of button in the login prologue screen for users who are new to WooCommerce.
+   Title of button on the site picker screen for users who are new to WooCommerce. */
 "New to WooCommerce?" = "New to WooCommerce?";
 
 /* Action navigate to the variation creation screen
@@ -3075,6 +3102,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info text for the generate first variation screen */
 "Now that you’ve added attributes, you can create your first variation!" = "Now that you’ve added attributes, you can create your first variation!";
 
+/* Message of the bottom announcement modal when a merchant taps on Simple Payment */
+"Now you can quickly access In-Person Payments and other features with ease." = "Now you can quickly access In-Person Payments and other features with ease.";
+
 /* Spoken label to indicate switch control is turned off. */
 "Off" = "Off";
 
@@ -3179,6 +3209,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label for button to log in using site address. Underscores _..._ denote underline. */
 "Or log in by _entering your site address_." = "Or log in by _entering your site address_.";
+
+/* The button title for a secondary call-to-action button on the password screen. When the user wants to try sending a magic link instead of entering a password. */
+"Or log in with magic link" = "Or log in with magic link";
 
 /* Header of attributes section in Add Attribute screen */
 "Or tap to select existing attribute" = "Or tap to select existing attribute";
@@ -3351,6 +3384,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the hub menu payments button */
 "Payments" = "Payments";
+
+/* Title of the bottom announcement modal when a merchant taps on Simple Payment */
+"Payments from the Menu tab" = "Payments from the Menu tab";
 
 /* Display label for pending order status.
    Display label for the review's pending status */
@@ -3948,6 +3984,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Reset Activity Log";
 
+/* Local notification action to reset password. */
+"Reset password" = "Reset password";
+
 /* The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "Reset your password";
 
@@ -4426,8 +4465,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Describes a site redirect domain */
 "Site Redirect" = "Site Redirect";
 
-/* The button title on the login onboarding screen to skip to the prologue screen. */
+/* The button title on the login onboarding screen to skip to the prologue screen.
+   Title for the button to skip the onboarding step informing the merchant of pending account requirements */
 "Skip" = "Skip";
+
+/* Title for the button to skip the onboarding step encoraging the merchant to enable thePay in Person payment gateway */
+"Skip for now" = "Skip for now";
 
 /* Edit Product SKU navigation title
    Title of the cell in Product Inventory Settings > SKU
@@ -5039,13 +5082,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "The variation couldn't be generated.";
 
-/* Error message when the Stripe account is restricted because there are pending requirements */
-"There are pending requirements for your account. Please complete those requirements by" = "There are pending requirements for your account. Please complete those requirements by";
-
-/* Error message when In-Person Payments is not supported because there are pending requirements in the merchant's payment account.%1$d will contain the localized deadline (e.g. August 11, 2021) */
+/* Error message when because there are pending requirements in the merchant's In-Person Payments account. %1$d will contain the localized deadline (e.g. August 11, 2021) */
 "There are pending requirements for your account. Please complete those requirements by %1$@ to keep accepting In-Person Payments." = "There are pending requirements for your account. Please complete those requirements by %1$@ to keep accepting In-Person Payments.";
 
-/* Error message when In-Person Payments is not supportedThere are pending requirements in the merchant's payment account (without a known deadline) */
+/* Error message when there are pending requirements in the merchant's payment account (without a known deadline) */
 "There are pending requirements for your account. Please complete those requirements to keep accepting In-Person Payments." = "There are pending requirements for your account. Please complete those requirements to keep accepting In-Person Payments.";
 
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
@@ -5103,6 +5143,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "This email address is not registered on WordPress.com.";
+
+/* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
+"This email isn't used with a WordPress.com account." = "This email isn't used with a WordPress.com account.";
 
 /* Error for missing package details on the Add New Custom Package screen in Shipping Label flow */
 "This field is required" = "This field is required";
@@ -5790,6 +5833,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
 "We couldn't connect your reader" = "We couldn't connect your reader";
 
+/* Displayed during the Login flow, whenever the user has no woo stores associated. */
+"We couldn't find a WooCommerce store connected to your account." = "We couldn't find a WooCommerce store connected to your account.";
+
 /* The title of the Error Loading Data banner */
 "We couldn't load your data" = "We couldn't load your data";
 
@@ -6039,7 +6085,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message displayed when a coupon was successfully created */
 "Your new coupon was created!" = "Your new coupon was created!";
 
-/* Title for the error screen when the merchant's In-Person Payments account is restricted because there are pending requirements */
+/* Title for the error screen when the merchant's In-Person Payments account has pending requirements which will result in their account being restricted if not resolved by a deadline */
 "Your payments account has pending requirements" = "Your payments account has pending requirements";
 
 /* Label that displays when an optional software update is happening */

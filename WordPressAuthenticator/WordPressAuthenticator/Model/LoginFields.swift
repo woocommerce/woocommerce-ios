@@ -56,6 +56,45 @@ public class LoginFields: NSObject {
 
         return loginFields
     }
+
+    /// Using a convenience initializer for its Objective-C usage in unit tests.
+    convenience init(username: String,
+                     password: String,
+                     siteAddress: String,
+                     multifactorCode: String,
+                     nonceInfo: SocialLogin2FANonceInfo?,
+                     nonceUserID: Int,
+                     restrictToWPCom: Bool,
+                     emailAddress: String,
+                     meta: LoginFieldsMeta,
+                     storedCredentials: SafariStoredCredentials?) {
+        self.init()
+        self.username = username
+        self.password = password
+        self.siteAddress = siteAddress
+        self.multifactorCode = multifactorCode
+        self.nonceInfo = nonceInfo
+        self.nonceUserID = nonceUserID
+        self.restrictToWPCom = restrictToWPCom
+        self.emailAddress = emailAddress
+        self.meta = meta
+        self.storedCredentials = storedCredentials
+    }
+}
+
+extension LoginFields {
+    func copy() -> LoginFields {
+        .init(username: username,
+              password: password,
+              siteAddress: siteAddress,
+              multifactorCode: multifactorCode,
+              nonceInfo: nonceInfo,
+              nonceUserID: nonceUserID,
+              restrictToWPCom: restrictToWPCom,
+              emailAddress: emailAddress,
+              meta: meta.copy(),
+              storedCredentials: storedCredentials)
+    }
 }
 
 /// A helper class for storing safari saved password information.
@@ -116,4 +155,44 @@ public class LoginFieldsMeta: NSObject {
     var googleUser: GIDGoogleUser?
 
     var appleUser: AppleUser?
+
+    init(emailMagicLinkSource: EmailMagicLinkSource? = nil,
+         jetpackLogin: Bool = false,
+         userIsDotCom: Bool = true,
+         passwordless: Bool = false,
+         xmlrpcURL: NSURL? = nil,
+         siteInfo: WordPressComSiteInfo? = nil,
+         requiredMultifactor: Bool = false,
+         socialService: SocialServiceName? = nil,
+         socialServiceIDToken: String? = nil,
+         googleUser: GIDGoogleUser? = nil,
+         appleUser: AppleUser? = nil) {
+        self.emailMagicLinkSource = emailMagicLinkSource
+        self.jetpackLogin = jetpackLogin
+        self.userIsDotCom = userIsDotCom
+        self.passwordless = passwordless
+        self.xmlrpcURL = xmlrpcURL
+        self.siteInfo = siteInfo
+        self.requiredMultifactor = requiredMultifactor
+        self.socialService = socialService
+        self.socialServiceIDToken = socialServiceIDToken
+        self.googleUser = googleUser
+        self.appleUser = appleUser
+    }
+}
+
+extension LoginFieldsMeta {
+    func copy() -> LoginFieldsMeta {
+        .init(emailMagicLinkSource: emailMagicLinkSource,
+              jetpackLogin: jetpackLogin,
+              userIsDotCom: userIsDotCom,
+              passwordless: passwordless,
+              xmlrpcURL: xmlrpcURL,
+              siteInfo: siteInfo,
+              requiredMultifactor: requiredMultifactor,
+              socialService: socialService,
+              socialServiceIDToken: socialServiceIDToken,
+              googleUser: googleUser,
+              appleUser: appleUser)
+    }
 }

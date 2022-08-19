@@ -132,7 +132,9 @@
         [self.delegate displayRemoteError:error];
     };
 
-    [self.delegate displayLoginMessage:NSLocalizedString(@"Authenticating", nil)];
+    if ([self.delegate respondsToSelector:@selector(displayLoginMessage:)]) {
+        [self.delegate displayLoginMessage:NSLocalizedString(@"Authenticating", nil)];
+    }
 
     NSString *siteUrl = [NSURL IDNEncodedURL: loginFields.siteAddress];
     [self.wordpressXMLRPCAPIFacade guessXMLRPCURLForSite:siteUrl success:guessXMLRPCURLSuccess failure:guessXMLRPCURLFailure];

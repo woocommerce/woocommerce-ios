@@ -138,4 +138,12 @@ extension CardPresentPaymentOnboardingState {
             return false
         }
     }
+
+    public var isCountryNotSupported: Bool {
+        if case .countryNotSupported(_) = self {
+            return true
+        } else {
+            return false
+        }
+    }
 }

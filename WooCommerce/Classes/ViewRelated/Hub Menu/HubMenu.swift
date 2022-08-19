@@ -92,7 +92,7 @@ struct HubMenu: View {
                          url: viewModel.storeURL,
                          onDismiss: enableMenuItemTaps)
             NavigationLink(destination:
-                            InPersonPaymentsMenu(pluginState: nil, onPluginSelected: nil, onPluginSelectionCleared: nil)
+                            InPersonPaymentsMenu()
                             .navigationTitle(InPersonPaymentsView.Localization.title),
                            isActive: $showingPayments) {
                 EmptyView()

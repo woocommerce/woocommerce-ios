@@ -31,34 +31,6 @@ final class HubMenuViewModelTests: XCTestCase {
         }))
     }
 
-    func test_menuElements_do_not_include_payments_when_feature_flag_is_off() {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isPaymentsHubMenuSectionEnabled: false)
-
-        // When
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService)
-        viewModel.setupMenuElements()
-
-        // Then
-        XCTAssertNil(viewModel.menuElements.firstIndex(where: { item in
-            item.id == HubMenuViewModel.Payments.id
-        }))
-    }
-
-    func test_menuElements_do_include_payments_when_feature_flag_is_on() {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isPaymentsHubMenuSectionEnabled: true)
-
-        // When
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService)
-        viewModel.setupMenuElements()
-
-        // Then
-        XCTAssertNotNil(viewModel.menuElements.firstIndex(where: { item in
-            item.id == HubMenuViewModel.Payments.id
-        }))
-    }
-
     func test_menuElements_include_inbox_and_coupons_when_store_has_eligible_wc_version() {
         // Given the store is eligible for inbox with only WC plugin and coupons feature is enabled in app settings
         let featureFlagService = MockFeatureFlagService(isInboxOn: true)

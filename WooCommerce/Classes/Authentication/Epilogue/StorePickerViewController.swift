@@ -83,9 +83,26 @@ final class StorePickerViewController: UIViewController {
         didSet {
             secondaryActionButton.backgroundColor = .clear
             secondaryActionButton.titleFont = StyleManager.actionButtonTitleFont
-            secondaryActionButton.setTitle(NSLocalizedString("Try With Another Account",
-                                                             comment: "Button to trigger connection to another account in store picker"),
-                                           for: .normal)
+            secondaryActionButton.setTitle(Localization.tryAnotherAccount, for: .normal)
+        }
+    }
+
+    /// Enter site address Button.
+    ///
+    @IBOutlet private var enterSiteAddressButton: FancyAnimatedButton! {
+        didSet {
+            enterSiteAddressButton.backgroundColor = .clear
+            enterSiteAddressButton.titleFont = StyleManager.actionButtonTitleFont
+            enterSiteAddressButton.setTitle(Localization.enterSiteAddress, for: .normal)
+        }
+    }
+
+    /// New To Woo button
+    ///
+    @IBOutlet var newToWooButton: UIButton! {
+        didSet {
+            newToWooButton.applyLinkButtonStyle()
+            newToWooButton.setTitle(Localization.newToWooCommerce, for: .normal)
         }
     }
 
@@ -350,8 +367,14 @@ private extension StorePickerViewController {
         switch viewModel.state {
         case .empty:
             updateActionButtonAndTableState(animating: false, enabled: false)
-        default:
-            break
+            enterSiteAddressButton.isHidden = false
+            newToWooButton.isHidden = false
+        case .available(let sites):
+            enterSiteAddressButton.isHidden = true
+            newToWooButton.isHidden = true
+            if sites.allSatisfy({ $0.isWooCommerceActive == false }) {
+                updateActionButtonAndTableState(animating: false, enabled: false)
+            }
         }
 
         tableView.separatorStyle = viewModel.separatorStyle
@@ -482,6 +505,8 @@ private extension StorePickerViewController {
     func updateUIForNoSitesFound(named siteName: String) {
         hideActionButton()
         displayFancyWCRequirementAlert(siteName: siteName)
+        enterSiteAddressButton.isHidden = false
+        newToWooButton.isHidden = false
     }
 
     /// Update the UI when the user has a valid login
@@ -560,6 +585,27 @@ extension StorePickerViewController {
         }
     }
 
+    /// Presents a screen to enter a store address to connect.
+    ///
+    @IBAction private func enterStoreAddressWasPressed() {
+        ServiceLocator.analytics.track(event: .SitePicker.enterStoreAddressTapped())
+        guard let viewController = WordPressAuthenticator.siteDiscoveryUI() else {
+            return
+        }
+        navigationController?.show(viewController, sender: nil)
+    }
+
+    /// Displays a web view with introduction to WooCommerce
+    ///
+    @IBAction private func newToWooWasPressed() {
+        ServiceLocator.analytics.track(event: .SitePicker.newToWooTapped())
+        guard let url = URL(string: StorePickerConstants.newToWooCommerceURL) else {
+            return assertionFailure("Cannot generate URL.")
+        }
+
+        WebviewHelper.launch(url, with: self)
+    }
+
     /// Proceeds with the Logout Flow.
     ///
     @IBAction func secondaryActionWasPressed() {
@@ -588,11 +634,6 @@ extension StorePickerViewController: UITableViewDataSource {
         guard let site = viewModel.site(at: indexPath) else {
             hideActionButton()
             let cell = tableView.dequeueReusableCell(EmptyStoresTableViewCell.self, for: indexPath)
-            cell.onJetpackSetupButtonTapped = { [weak self] in
-                guard let self = self else { return }
-
-                WebviewHelper.launch(WooConstants.URLs.emptyStoresJetpackSetup.asURL(), with: self)
-            }
             let isRemoveAppleIDAccessButtonVisible = appleIDCredentialChecker.hasAppleUserID()
             && featureFlagService.isFeatureFlagEnabled(.appleIDAccountDeletion)
             cell.updateRemoveAppleIDAccessButtonVisibility(isVisible: isRemoveAppleIDAccessButtonVisible)
@@ -702,6 +743,12 @@ private extension StorePickerViewController {
 private extension StorePickerViewController {
     enum Localization {
         static let continueButton = NSLocalizedString("Continue", comment: "Button on the Store Picker screen to select a store")
+        static let tryAnotherAccount = NSLocalizedString("Try With Another Account",
+                                                         comment: "Button to trigger connection to another account in store picker")
+        static let enterSiteAddress = NSLocalizedString("Enter Your Store Address",
+                                                        comment: "Button to input a site address in store picker when there are no stores found")
+        static let newToWooCommerce = NSLocalizedString("New to WooCommerce?",
+                                                        comment: "Title of button on the site picker screen for users who are new to WooCommerce.")
     }
 }
 
@@ -709,6 +756,7 @@ private extension StorePickerViewController {
 //
 private enum StorePickerConstants {
     static let estimatedRowHeight = CGFloat(50)
+    static let newToWooCommerceURL = "https://woocommerce.com/document/woocommerce-features"
 }
 
 

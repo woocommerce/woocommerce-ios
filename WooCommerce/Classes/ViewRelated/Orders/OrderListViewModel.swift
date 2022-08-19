@@ -240,18 +240,6 @@ final class OrderListViewModel {
         )
     }
 
-    /// Fetch all `OrderStatus` from the API
-    ///
-    func syncOrderStatuses() {
-        let action = OrderStatusAction.retrieveOrderStatuses(siteID: siteID) { result in
-            if case let .failure(error) = result {
-                DDLogError("⛔️ Order List — Error synchronizing order statuses: \(error)")
-            }
-        }
-
-        stores.dispatch(action)
-    }
-
     func updateFilters(filters: FilterOrderListViewModel.Filters?) {
         self.filters = filters
     }

@@ -192,23 +192,16 @@ class AuthenticationManager: Authentication {
         /// Account mismatched case
         guard matcher.match(originalURL: siteURL) else {
             DDLogWarn("⚠️ Present account mismatch error for site: \(String(describing: siteURL))")
-            let viewModel = WrongAccountErrorViewModel(siteURL: siteURL, showsConnectedStores: matcher.hasConnectedStores)
-            let mismatchAccountUI = ULAccountMismatchViewController(viewModel: viewModel)
-            return mismatchAccountUI
+            return accountMismatchUI(for: siteURL, with: matcher)
         }
 
         /// No Woo found
         if let matchedSite = matcher.matchedSite(originalURL: siteURL),
            matchedSite.isWooCommerceActive == false {
-            let viewModel = NoWooErrorViewModel(
-                site: matchedSite,
-                showsConnectedStores: matcher.hasConnectedStores,
-                onSetupCompletion: { [weak self] siteID in
-                    guard let self = self else { return }
-                    self.startStorePicker(with: siteID, in: navigationController, onDismiss: onStorePickerDismiss)
-            })
-            let noWooUI = ULErrorViewController(viewModel: viewModel)
-            return noWooUI
+            return noWooUI(for: matchedSite,
+                           with: matcher,
+                           navigationController: navigationController,
+                           onStorePickerDismiss: onStorePickerDismiss)
         }
 
         // All good!
@@ -289,10 +282,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
         /// WordPress must be present.
         guard let site = siteInfo, site.isWP else {
-            let viewModel = NotWPErrorViewModel()
-            let notWPErrorUI = ULErrorViewController(viewModel: viewModel)
-
-            let authenticationResult: WordPressAuthenticatorResult = .injectViewController(value: notWPErrorUI)
+            let authenticationResult: WordPressAuthenticatorResult = .injectViewController(value: noWPUI)
 
             onCompletion(authenticationResult)
 
@@ -317,6 +307,23 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         DDLogWarn("⚠️ Present password controller for site: \(site.url)")
         let authenticationResult: WordPressAuthenticatorResult = .presentPasswordController(value: false)
         onCompletion(authenticationResult)
+    }
+
+    /// Displays appropriate error based on the input `siteInfo`.
+    /// Data flow following ZwYqDGHdenvYZoPHXZ1SOf-fi
+    ///
+    func troubleshootSite(_ siteInfo: WordPressComSiteInfo?, in navigationController: UINavigationController?) {
+        ServiceLocator.analytics.track(event: .SitePicker.siteDiscovery(hasWordPress: siteInfo?.isWP ?? false,
+                                                                        isWPCom: siteInfo?.isWPCom ?? false,
+                                                                        hasValidJetpack: siteInfo?.hasValidJetpack ?? false))
+
+        guard let site = siteInfo, let navigationController = navigationController else {
+            navigationController?.show(noWPUI, sender: nil)
+            return
+        }
+
+        let errorUI = errorUI(for: site, in: navigationController)
+        navigationController.show(errorUI, sender: nil)
     }
 
     /// Presents the Login Epilogue, in the specified NavigationController.
@@ -480,8 +487,8 @@ private extension AuthenticationManager {
             notification = LocalNotification(scenario: .invalidEmailFromSiteAddressLogin)
         case .invalidEmailFromWPComLogin:
             notification = LocalNotification(scenario: .invalidEmailFromWPComLogin)
-        case .invalidPasswordFromSiteAddressLogin:
-            notification = LocalNotification(scenario: .invalidPasswordFromSiteAddressLogin)
+        case .invalidPasswordFromSiteAddressWPComLogin:
+            notification = LocalNotification(scenario: .invalidPasswordFromSiteAddressWPComLogin)
         case .invalidPasswordFromWPComLogin:
             notification = LocalNotification(scenario: .invalidPasswordFromWPComLogin)
         default:
@@ -507,6 +514,8 @@ private extension AuthenticationManager {
         return false
     }
 
+    /// Presents an error if the user tries to log in to a site without Jetpack.
+    ///
     func presentJetpackError(for siteURL: String,
                              with credentials: AuthenticatorCredentials,
                              in navigationController: UINavigationController,
@@ -542,6 +551,92 @@ private extension AuthenticationManager {
             storePickerCoordinator?.start()
         }
     }
+
+    /// The error screen to be displayed when the user enters a site
+    /// without Jetpack in the site discovery flow
+    ///
+    func jetpackErrorUI(for siteURL: String, with matcher: ULAccountMatcher, in navigationController: UINavigationController) -> UIViewController {
+        let viewModel = JetpackErrorViewModel(siteURL: siteURL, onJetpackSetupCompletion: { [weak self] authorizedEmailAddress in
+            guard let self = self else { return }
+
+            // Tries re-syncing to get an updated store list
+            ServiceLocator.stores.synchronizeEntities { [weak self] in
+                guard let self = self else { return }
+                matcher.refreshStoredSites()
+                guard let matchedSite = matcher.matchedSite(originalURL: siteURL) else {
+                    DDLogWarn("⚠️ Could not find \(siteURL) connected to the account")
+                    return
+                }
+                // checks if the site has woo
+                if matchedSite.isWooCommerceActive == false {
+                    let noWooUI = self.noWooUI(for: matchedSite,
+                                               with: matcher,
+                                               navigationController: navigationController,
+                                               onStorePickerDismiss: {})
+                    navigationController.show(noWooUI, sender: nil)
+                } else {
+                    self.startStorePicker(with: matchedSite.siteID, in: navigationController, onDismiss: {})
+                }
+            }
+        })
+        return ULErrorViewController(viewModel: viewModel)
+    }
+
+    /// The error screen to be displayed when the user tries to enter a site
+    /// whose Jetpack is not associated with their account.
+    ///
+    func accountMismatchUI(for siteURL: String, with matcher: ULAccountMatcher) -> UIViewController {
+        let viewModel = WrongAccountErrorViewModel(siteURL: siteURL, showsConnectedStores: matcher.hasConnectedStores)
+        let mismatchAccountUI = ULAccountMismatchViewController(viewModel: viewModel)
+        return mismatchAccountUI
+    }
+
+    /// The error screen to be displayed when the user tries to enter a site without WooCommerce.
+    ///
+    func noWooUI(for site: Site,
+                 with matcher: ULAccountMatcher,
+                 navigationController: UINavigationController,
+                 onStorePickerDismiss: @escaping () -> Void) -> UIViewController {
+        let viewModel = NoWooErrorViewModel(
+            site: site,
+            showsConnectedStores: matcher.hasConnectedStores,
+            onSetupCompletion: { [weak self] siteID in
+                guard let self = self else { return }
+                self.startStorePicker(with: siteID, in: navigationController, onDismiss: onStorePickerDismiss)
+        })
+        let noWooUI = ULErrorViewController(viewModel: viewModel)
+        return noWooUI
+    }
+
+    /// The error screen to be displayed when the user tries to enter a site without WordPress.
+    ///
+    var noWPUI: UIViewController {
+        let viewModel = NotWPErrorViewModel()
+        return ULErrorViewController(viewModel: viewModel)
+    }
+
+    /// Appropriate error to display for a site when entered from the site discovery flow.
+    ///
+    func errorUI(for site: WordPressComSiteInfo, in navigationController: UINavigationController) -> UIViewController {
+        guard site.isWP else {
+            return noWPUI
+        }
+
+        let matcher = ULAccountMatcher(storageManager: storageManager)
+        matcher.refreshStoredSites()
+
+        guard !site.isWPCom else {
+            // The site doesn't belong to the current account since it was not included in the site picker.
+            return accountMismatchUI(for: site.url, with: matcher)
+        }
+
+        /// Jetpack is required. Present an error if we don't detect a valid installation.
+        guard site.hasValidJetpack == true else {
+            return jetpackErrorUI(for: site.url, with: matcher, in: navigationController)
+        }
+
+        return accountMismatchUI(for: site.url, with: matcher)
+    }
 }
 
 // MARK: - ViewModel Factory
@@ -558,7 +653,7 @@ extension AuthenticationManager {
             return NotWPErrorViewModel()
         case .noSecureConnection:
             return NoSecureConnectionErrorViewModel()
-        case .unknown, .invalidPasswordFromWPComLogin, .invalidPasswordFromSiteAddressLogin:
+        case .unknown, .invalidPasswordFromWPComLogin, .invalidPasswordFromSiteAddressWPComLogin:
             return nil
         }
     }
@@ -572,7 +667,7 @@ private extension AuthenticationManager {
         case emailDoesNotMatchWPAccount
         case invalidEmailFromSiteAddressLogin
         case invalidEmailFromWPComLogin
-        case invalidPasswordFromSiteAddressLogin
+        case invalidPasswordFromSiteAddressWPComLogin
         case invalidPasswordFromWPComLogin
         case notWPSite
         case notValidAddress
@@ -594,7 +689,7 @@ private extension AuthenticationManager {
                     case .wpCom:
                         return .invalidPasswordFromWPComLogin
                     case .wpComSiteAddress:
-                        return .invalidPasswordFromSiteAddressLogin
+                        return .invalidPasswordFromSiteAddressWPComLogin
                     }
                 }
             }

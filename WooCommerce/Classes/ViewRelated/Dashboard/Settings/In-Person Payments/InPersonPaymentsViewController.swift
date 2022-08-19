@@ -71,26 +71,15 @@ struct InPersonPaymentsView: View {
             case .stripeAccountOverdueRequirement:
                 InPersonPaymentsStripeAccountOverdue()
             case .stripeAccountPendingRequirement(_, let deadline):
-                InPersonPaymentsStripeAccountPending(deadline: deadline)
+                InPersonPaymentsStripeAccountPending(deadline: deadline, onSkip: viewModel.skipPendingRequirements)
             case .stripeAccountUnderReview:
                 InPersonPaymentsStripeAccountReview()
             case .stripeAccountRejected:
                 InPersonPaymentsStripeRejected()
             case .codPaymentGatewayNotSetUp:
                 InPersonPaymentsCodPaymentGatewayNotSetUp(viewModel: viewModel.codStepViewModel)
-            case .completed(let pluginState):
-                if viewModel.showMenuOnCompletion {
-                    InPersonPaymentsMenu(
-                        pluginState: pluginState,
-                        onPluginSelected: { plugin in
-                            viewModel.selectPlugin(plugin)
-                        },
-                        onPluginSelectionCleared: {
-                            viewModel.clearPluginSelection()
-                        })
-                } else {
-                    InPersonPaymentsCompleted()
-                }
+            case .completed:
+                InPersonPaymentsCompleted()
             case .noConnectionError:
                 InPersonPaymentsNoConnection(onRefresh: viewModel.refresh)
             default:

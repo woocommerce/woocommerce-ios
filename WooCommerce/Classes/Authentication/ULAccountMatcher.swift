@@ -43,8 +43,8 @@ final class ULAccountMatcher {
         }
 
         return sites
-            .map { $0.url }
-            .contains(originalURL)
+            .map { $0.url.trimHTTPScheme() }
+            .contains(originalURL.trimHTTPScheme())
     }
 
     /// Returns a locally stored site that matches the given site URL.
@@ -59,7 +59,7 @@ final class ULAccountMatcher {
             return nil
         }
 
-        return sites.first { $0.url == originalURL }
+        return sites.first { $0.url.contains(originalURL.trimHTTPScheme()) }
     }
 
     /// Refreshes locally stored sites that were synced previously.

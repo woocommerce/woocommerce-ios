@@ -291,6 +291,17 @@ private extension AppCoordinator {
                 "action": "login_with_wpcom",
                 "type": response.notification.request.identifier
             ])
+        case LocalNotification.Action.resetPassword.rawValue:
+            let loginFields: LoginFields = {
+                let fields = LoginFields()
+                fields.meta.userIsDotCom = true
+                return fields
+            }()
+            WordPressAuthenticator.openForgotPasswordURL(loginFields)
+            analytics.track(.loginLocalNotificationTapped, withProperties: [
+                "action": "reset_password",
+                "type": response.notification.request.identifier
+            ])
         case UNNotificationDefaultActionIdentifier:
             // Triggered when the user taps on the notification itself instead of one of the actions.
             let requestIdentifier = response.notification.request.identifier

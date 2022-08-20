@@ -57,9 +57,11 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v9.9-whats-new"
+msgctxt "v10.0-whats-new"
 msgid ""
-"This release has a few improvements to your login experience, including the option to use your `wp-admin` site credentials and magic link option to login. Please continue to send us feedback – we are listening!\n"
+"We made it much easier to find everything about accepting payments in the app. Head on to the Payments section from the Menu! We also fixed an issue where you might be unnecessarily blocked from taking payments.\n"
+"We also made various enhancements to our login flows to help you get started quickly with the app.\n"
+"Lastly, we’ve made some tweaks to performance. But we’re not done. Look forward to more improvements in the future. Please keep sending your feedback!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

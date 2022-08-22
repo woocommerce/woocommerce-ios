@@ -14,7 +14,6 @@ extension PaymentGateway {
     @NSManaged public var features: [String]
     @NSManaged public var enabled: Bool
     @NSManaged public var instructions: String?
-
 }
 
 extension PaymentGateway: Identifiable {

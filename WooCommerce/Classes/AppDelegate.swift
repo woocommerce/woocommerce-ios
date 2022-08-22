@@ -49,6 +49,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ///
     private lazy var appleIDCredentialChecker = AppleIDCredentialChecker()
 
+    private let universalLinkRouter = ServiceLocator.universalLinkRouter
+
     // MARK: - AppDelegate Methods
 
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
@@ -174,6 +176,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         DDLogVerbose("👀 Application terminating...")
         NotificationCenter.default.post(name: .applicationTerminating, object: nil)
+    }
+
+    func application(_ application: UIApplication,
+                     continue userActivity: NSUserActivity,
+                     restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+        if userActivity.activityType == NSUserActivityTypeBrowsingWeb {
+            handleWebActivity(userActivity)
+        }
+
+        return true
     }
 }
 
@@ -426,5 +438,17 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
         await ServiceLocator.pushNotesManager.handleNotificationInTheForeground(notification)
+    }
+}
+
+// MARK: - Universal Links
+
+extension AppDelegate {
+    func handleWebActivity(_ activity: NSUserActivity) {
+        guard let linkURL = activity.webpageURL else {
+            return
+        }
+
+        universalLinkRouter.handle(url: linkURL)
     }
 }

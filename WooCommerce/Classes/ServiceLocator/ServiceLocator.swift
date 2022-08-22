@@ -219,6 +219,10 @@ final class ServiceLocator {
     static var generalAppSettings: GeneralAppSettingsStorage {
         _generalAppSettings
     }
+
+    static var universalLinkRouter: UniversalLinkRouter {
+        UniversalLinkRouter(routes: UniversalLinkRouter.defaultRoutes)
+    }
 }
 
 

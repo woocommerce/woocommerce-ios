@@ -13,7 +13,9 @@ struct UniversalLinkRouter: LinkRouter {
         matcher = RouteMatcher(routes: routes)
     }
 
-    static let defaultRoutes: [Route] = []
+    static let defaultRoutes: [Route] = [
+        OrderDetailsRoute()
+    ]
 
     func handle(url: URL) {
         guard let matchedRoute = matcher.firstRouteMatching(url) else {

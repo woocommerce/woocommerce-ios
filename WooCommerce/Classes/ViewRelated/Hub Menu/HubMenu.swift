@@ -10,7 +10,7 @@ struct HubMenu: View {
 
     @ObservedObject private var viewModel: HubMenuViewModel
 
-    @State private var showingPayments = false
+    @State var showingPayments = false
     @State private var showingWooCommerceAdmin = false
     @State private var showingViewStore = false
     @State private var showingInbox = false

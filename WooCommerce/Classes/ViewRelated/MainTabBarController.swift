@@ -393,6 +393,17 @@ extension MainTabBarController {
 
         dashBoard.presentSettings()
     }
+
+    static func presentPayments() {
+        switchToHubMenuTab()
+
+        guard let hubMenu: HubMenuViewController = childViewController() else {
+            return
+        }
+
+        hubMenu.show(InPersonPaymentsMenuViewController(), sender: hubMenu)
+        //hubMenu.showPayments()
+    }
 }
 
 // MARK: - Site ID observation for updating tab view controllers

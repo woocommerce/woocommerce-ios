@@ -59,6 +59,10 @@ final class InPersonPaymentsMenuViewController: UIViewController {
         configureTableView()
         registerTableViewCells()
         runCardPresentPaymentsOnboarding()
+
+        navigationController?.setNavigationBarHidden(false, animated: true)
+        navigationItem.title = "In-Person Payments"
+        //navigationItem.rightBarButtonItems = navigationItem.rightBarButtonItems
     }
 }
 
@@ -470,10 +474,23 @@ private extension InPersonPaymentsMenuViewController {
 /// SwiftUI wrapper for CardReaderSettingsPresentingViewController
 ///
 struct InPersonPaymentsMenu: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> some UIViewController {
-        InPersonPaymentsMenuViewController()
+    typealias UIViewControllerType = InPersonPaymentsMenuViewController
+
+    class Coordinator {
+        var parentObserver: NSKeyValueObservation?
+    }
+
+    func makeUIViewController(context: Context) -> InPersonPaymentsMenuViewController {
+        let viewController = InPersonPaymentsMenuViewController()
+        context.coordinator.parentObserver = viewController.observe(\.parent, changeHandler: { vc, _ in
+            vc.parent?.navigationItem.title = vc.title
+            vc.parent?.navigationItem.rightBarButtonItems = vc.navigationItem.rightBarButtonItems
+        })
+        return viewController
     }
 
     func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
     }
+
+    func makeCoordinator() -> Self.Coordinator { Coordinator() }
 }

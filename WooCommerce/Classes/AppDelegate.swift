@@ -100,6 +100,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
+    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+        guard let mainTabBarController = AppDelegate.shared.tabBarController else {
+            return true
+        }
+        MainTabBarController.presentPayments()
+
+        return true
+    }
+
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
         guard let rootViewController = window?.rootViewController else {
             fatalError()

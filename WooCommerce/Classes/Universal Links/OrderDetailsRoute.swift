@@ -1,7 +1,7 @@
 import Foundation
 
 struct OrderDetailsRoute: Route {
-    let path = "orders/details"
+    let path = "/orders/details"
     let action: NavigationAction = OrderDetailsNavigationAction()
 }
 

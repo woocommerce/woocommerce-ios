@@ -52,7 +52,7 @@ private extension PaymentGatewayMapperTests {
         return try PaymentGatewayMapper(siteID: dummySiteID).map(response: response)
     }
 
-    /// Returns the PaymentGatewayMapper output from `paymentGateway.json`
+    /// Returns the PaymentGatewayMapper output from `payment-gateway-cod.json`
     ///
     func mapRetrievePaymentGatewayResponse() throws -> PaymentGateway {
         return try mapPaymentGateway(from: "payment-gateway-cod")

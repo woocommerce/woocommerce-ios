@@ -19,7 +19,7 @@ final class CardPresentModalScanningForReader: CardPresentPaymentsModalViewModel
 
     let secondaryButtonTitle: String? = Localization.cancel
 
-    let auxiliaryButtonTitle: String? = "Learn more about In-Person Payments"
+    let auxiliaryButtonTitle: String? = Localization.learnMoreText
 
     let bottomTitle: String? = Localization.instruction
 
@@ -43,10 +43,19 @@ final class CardPresentModalScanningForReader: CardPresentPaymentsModalViewModel
         viewController?.dismiss(animated: true, completion: nil)
     }
 
-    func didTapAuxiliaryButton(in viewController: UIViewController?) {}
+    func didTapAuxiliaryButton(in viewController: UIViewController?) {
+        guard let viewController = viewController else {
+            return
+        }
+        WebviewHelper.launch(Constants.learnMoreURL.asURL(), with: viewController)
+    }
 }
 
 private extension CardPresentModalScanningForReader {
+    enum Constants {
+        static let learnMoreURL = WooConstants.URLs.inPersonPaymentsLearnMoreWCPay
+    }
+
     enum Localization {
         static let title = NSLocalizedString(
             "Scanning for reader",
@@ -61,6 +70,11 @@ private extension CardPresentModalScanningForReader {
         static let cancel = NSLocalizedString(
             "Cancel",
             comment: "Label for a cancel button"
+        )
+
+        static let learnMoreText = NSLocalizedString(
+            "Learn more about In-Person Payments",
+            comment: "..."
         )
     }
 }

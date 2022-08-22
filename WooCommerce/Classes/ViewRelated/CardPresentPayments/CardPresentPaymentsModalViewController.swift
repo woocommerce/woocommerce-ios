@@ -52,6 +52,10 @@ final class CardPresentPaymentsModalViewController: UIViewController {
         styleContent()
         populateContent()
     }
+    /// Debugging. Remove before submitting PR for review
+    override func viewDidAppear(_ animated: Bool) {
+        print("Debugging breakpoint")
+    }
 
     func setViewModel(_ newViewModel: CardPresentPaymentsModalViewModel) {
         self.viewModel = newViewModel
@@ -158,9 +162,13 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func styleAuxiliaryButton() {
-        auxiliaryButton.applyLinkButtonStyle()
-        auxiliaryButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        if viewModel.actionsMode == .newCase {
+            auxiliaryButton.titleLabel?.lineBreakMode = .byWordWrapping
+        } else {
+            auxiliaryButton.applyLinkButtonStyle()
+        }
         auxiliaryButton.titleLabel?.minimumScaleFactor = 0.5
+        auxiliaryButton.titleLabel?.adjustsFontSizeToFitWidth = true
     }
 
     func initializeContent() {
@@ -338,12 +346,12 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func shouldShowBottomActionButton() -> Bool {
-        [.secondaryOnlyAction, .twoAction, .twoActionAndAuxiliary]
+        [.secondaryOnlyAction, .twoAction, .twoActionAndAuxiliary, .newCase]
             .contains(viewModel.actionsMode)
     }
 
     func shouldShowAuxiliaryButton() -> Bool {
-        viewModel.actionsMode == .twoActionAndAuxiliary
+        [.twoActionAndAuxiliary, .newCase].contains(viewModel.actionsMode)
     }
 }
 

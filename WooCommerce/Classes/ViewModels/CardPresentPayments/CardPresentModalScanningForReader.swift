@@ -7,7 +7,7 @@ final class CardPresentModalScanningForReader: CardPresentPaymentsModalViewModel
     private let cancelAction: () -> Void
 
     let textMode: PaymentsModalTextMode = .reducedBottomInfo
-    let actionsMode: PaymentsModalActionsMode = .secondaryOnlyAction
+    let actionsMode: PaymentsModalActionsMode = .newCase
 
     let topTitle: String = Localization.title
 
@@ -19,7 +19,7 @@ final class CardPresentModalScanningForReader: CardPresentPaymentsModalViewModel
 
     let secondaryButtonTitle: String? = Localization.cancel
 
-    let auxiliaryButtonTitle: String? = nil
+    let auxiliaryButtonTitle: String? = "Learn more about In-Person Payments"
 
     let bottomTitle: String? = Localization.instruction
 

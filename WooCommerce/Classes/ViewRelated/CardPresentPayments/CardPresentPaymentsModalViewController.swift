@@ -164,6 +164,8 @@ private extension CardPresentPaymentsModalViewController {
     func styleAuxiliaryButton() {
         if viewModel.actionsMode == .newCase {
             auxiliaryButton.titleLabel?.lineBreakMode = .byWordWrapping
+            auxiliaryButton.titleLabel?.font = UIFont.footnote
+            auxiliaryButton.setImage(.infoOutlineImage, for: .normal)
         } else {
             auxiliaryButton.applyLinkButtonStyle()
         }

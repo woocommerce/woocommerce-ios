@@ -13,6 +13,19 @@ public struct PaymentGateway: Equatable, GeneratedFakeable, GeneratedCopiable {
         case custom(raw: String)
     }
 
+    /// Setting for a payment gateway
+    ///
+    public struct Setting: Equatable, GeneratedCopiable, GeneratedFakeable {
+        public let settingID: String
+        public let value: String
+
+        public init(settingID: String,
+                    value: String) {
+            self.settingID = settingID
+            self.value = value
+        }
+    }
+
     /// Site identifier.
     ///
     public let siteID: Int64
@@ -37,17 +50,28 @@ public struct PaymentGateway: Equatable, GeneratedFakeable, GeneratedCopiable {
     ///
     public let features: [Feature]
 
-    public init(siteID: Int64, gatewayID: String, title: String, description: String, enabled: Bool, features: [Feature]) {
+    /// Instructions shown to the customer after purchase.
+    ///
+    public let instructions: String?
+
+    public init(siteID: Int64,
+                gatewayID: String,
+                title: String,
+                description: String,
+                enabled: Bool,
+                features: [Feature],
+                instructions: String?) {
         self.siteID = siteID
         self.gatewayID = gatewayID
         self.title = title
         self.description = description
         self.enabled = enabled
         self.features = features
+        self.instructions = instructions
     }
 }
 
-// MARK: Gateway Decodable
+// MARK: Gateway Codable
 extension PaymentGateway: Codable {
 
     public enum DecodingError: Error {
@@ -60,7 +84,8 @@ extension PaymentGateway: Codable {
         case description
         case enabled
         case features = "method_supports"
-
+        case instructions
+        case settings
     }
 
     public init(from decoder: Decoder) throws {
@@ -75,16 +100,37 @@ extension PaymentGateway: Codable {
         let enabled = try container.decode(Bool.self, forKey: .enabled)
         let features = try container.decode([Feature].self, forKey: .features)
 
+        // Settings can have different types for `value`, this implementation only handles `String`
+        let settings = try? container.decodeIfPresent([String: Setting].self, forKey: .settings)
+        let instructions = settings?[Setting.Keys.instructions]?.value
+
         self.init(siteID: siteID,
                   gatewayID: gatewayID,
                   title: title,
                   description: description,
                   enabled: enabled,
-                  features: features)
+                  features: features,
+                  instructions: instructions)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(gatewayID, forKey: .gatewayID)
+        try container.encode(title, forKey: .title)
+        try container.encode(description, forKey: .description)
+        try container.encode(enabled, forKey: .enabled)
+        try container.encode(features, forKey: .features)
+
+        guard let instructions = instructions else {
+            return
+        }
+        let settings = [Setting.Keys.instructions: instructions]
+        try container.encode(settings, forKey: .settings)
     }
 }
 
-// MARK: Features Decodable
+// MARK: - Features Decodable
 extension PaymentGateway.Feature: RawRepresentable, Codable {
 
     /// Enum containing the 'Known' Feature Keys
@@ -114,5 +160,22 @@ extension PaymentGateway.Feature: RawRepresentable, Codable {
         case .custom(let raw):
             return raw
         }
+    }
+}
+
+// MARK: - Settings Codable
+extension PaymentGateway.Setting: Codable {
+    /// The known keys, which match `settingID`
+    ///
+    fileprivate enum Keys {
+        static let title = "title"
+        static let instructions = "instructions"
+        static let enableForMethods = "enable_for_methods"
+        static let enableForVirtual = "enable_for_virtual"
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case settingID = "id"
+        case value
     }
 }

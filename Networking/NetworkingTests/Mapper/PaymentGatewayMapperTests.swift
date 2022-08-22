@@ -31,7 +31,8 @@ final class PaymentGatewayMapperTests: XCTestCase {
                                                     title: "Cash on delivery",
                                                     description: "Pay with cash upon delivery.",
                                                     enabled: true,
-                                                    features: [.products])
+                                                    features: [.products],
+                                                    instructions: "Pay with cash upon delivery.")
 
         XCTAssertEqual(paymentGateway, expectedPaymentGateway)
     }

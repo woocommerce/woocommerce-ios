@@ -7,5 +7,5 @@ protocol Route {
 }
 
 protocol NavigationAction {
-    func perform(_ parameters: [String: String], source: UIViewController?)
+    func perform(with parameters: [String: String])
 }

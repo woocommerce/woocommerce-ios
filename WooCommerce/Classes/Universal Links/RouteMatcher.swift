@@ -1,10 +1,11 @@
 import Foundation
 
 struct MatchedRoute {
-    private let route: Route
-    private let parameters: [String: String]
+    let route: Route
+    let parameters: [String: String]
 
     func performAction() {
+        route.action.perform(with: parameters)
     }
 }
 
@@ -17,6 +18,30 @@ class RouteMatcher {
     }
 
     func firstRouteMatching(_ url: URL) -> MatchedRoute? {
-        return nil
+        guard let components = URLComponents(string: url.absoluteString),
+              let firstRoute = routes.first(where: { $0.path == components.path }) else {
+            return nil
+        }
+
+        guard let queryItems = components.queryItems else {
+            return MatchedRoute(route: firstRoute, parameters: [:])
+        }
+
+        return MatchedRoute(route: firstRoute, parameters: parameters(from: queryItems))
+    }
+}
+
+private extension RouteMatcher {
+    func parameters(from queryItems: [URLQueryItem]) -> [String: String] {
+        var parameters: [String: String] = [:]
+        for queryItem in queryItems {
+            guard let value = queryItem.value else {
+                continue
+            }
+
+            parameters[queryItem.name] = value
+        }
+
+        return parameters
     }
 }

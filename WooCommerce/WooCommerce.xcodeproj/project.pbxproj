@@ -1275,6 +1275,7 @@
 		B958A7C728B3D44A00823EEF /* UniversalLinkRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A7C628B3D44A00823EEF /* UniversalLinkRouter.swift */; };
 		B958A7C928B3D47B00823EEF /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A7C828B3D47B00823EEF /* Route.swift */; };
 		B958A7CB28B3D4A100823EEF /* RouteMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A7CA28B3D4A100823EEF /* RouteMatcher.swift */; };
+		B958A7CD28B3DD9100823EEF /* OrderDetailsRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A7CC28B3DD9100823EEF /* OrderDetailsRoute.swift */; };
 		B96B536B2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B96B536A2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift */; };
 		B979A9BA282D62A500EBB383 /* InPersonPaymentsDeactivateStripeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B979A9B9282D62A500EBB383 /* InPersonPaymentsDeactivateStripeView.swift */; };
 		B9B0391628A6824200DC1C83 /* PermanentNoticePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B0391528A6824200DC1C83 /* PermanentNoticePresenter.swift */; };
@@ -3119,6 +3120,7 @@
 		B958A7C628B3D44A00823EEF /* UniversalLinkRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniversalLinkRouter.swift; sourceTree = "<group>"; };
 		B958A7C828B3D47B00823EEF /* Route.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Route.swift; sourceTree = "<group>"; };
 		B958A7CA28B3D4A100823EEF /* RouteMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteMatcher.swift; sourceTree = "<group>"; };
+		B958A7CC28B3DD9100823EEF /* OrderDetailsRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsRoute.swift; sourceTree = "<group>"; };
 		B96B536A2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPluginsDataProviderTests.swift; sourceTree = "<group>"; };
 		B979A9B9282D62A500EBB383 /* InPersonPaymentsDeactivateStripeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsDeactivateStripeView.swift; sourceTree = "<group>"; };
 		B9B0391528A6824200DC1C83 /* PermanentNoticePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermanentNoticePresenter.swift; sourceTree = "<group>"; };
@@ -6887,6 +6889,7 @@
 				B958A7C628B3D44A00823EEF /* UniversalLinkRouter.swift */,
 				B958A7C828B3D47B00823EEF /* Route.swift */,
 				B958A7CA28B3D4A100823EEF /* RouteMatcher.swift */,
+				B958A7CC28B3DD9100823EEF /* OrderDetailsRoute.swift */,
 			);
 			path = "Universal Links";
 			sourceTree = "<group>";
@@ -9567,6 +9570,7 @@
 				7441E1D221503F77004E6ECE /* IntrinsicTableView.swift in Sources */,
 				B517EA1D218B41F200730EC4 /* String+Woo.swift in Sources */,
 				26B3D8A0252235C50054C319 /* RefundShippingDetailsViewModel.swift in Sources */,
+				B958A7CD28B3DD9100823EEF /* OrderDetailsRoute.swift in Sources */,
 				45DB7040261209B10064A6CF /* ItemToFulfillRow.swift in Sources */,
 				02564A8C246CE38E00D6DB2A /* SwappableSubviewContainerView.swift in Sources */,
 				023453F22579DA1A00A6BB20 /* ShippingLabelPrintingInstructionsViewController.swift in Sources */,

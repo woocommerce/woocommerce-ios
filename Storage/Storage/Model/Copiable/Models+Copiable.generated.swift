@@ -61,20 +61,20 @@ extension GeneralStoreSettings {
         telemetryLastReportedTime: NullableCopiableProp<Date> = .copy,
         areSimplePaymentTaxesEnabled: CopiableProp<Bool> = .copy,
         preferredInPersonPaymentGateway: NullableCopiableProp<String> = .copy,
-        skippedCodOnboardingStep: CopiableProp<Bool> = .copy
+        skippedCashOnDeliveryOnboardingStep: CopiableProp<Bool> = .copy
     ) -> GeneralStoreSettings {
         let isTelemetryAvailable = isTelemetryAvailable ?? self.isTelemetryAvailable
         let telemetryLastReportedTime = telemetryLastReportedTime ?? self.telemetryLastReportedTime
         let areSimplePaymentTaxesEnabled = areSimplePaymentTaxesEnabled ?? self.areSimplePaymentTaxesEnabled
         let preferredInPersonPaymentGateway = preferredInPersonPaymentGateway ?? self.preferredInPersonPaymentGateway
-        let skippedCodOnboardingStep = skippedCodOnboardingStep ?? self.skippedCodOnboardingStep
+        let skippedCashOnDeliveryOnboardingStep = skippedCashOnDeliveryOnboardingStep ?? self.skippedCashOnDeliveryOnboardingStep
 
         return GeneralStoreSettings(
             isTelemetryAvailable: isTelemetryAvailable,
             telemetryLastReportedTime: telemetryLastReportedTime,
             areSimplePaymentTaxesEnabled: areSimplePaymentTaxesEnabled,
             preferredInPersonPaymentGateway: preferredInPersonPaymentGateway,
-            skippedCodOnboardingStep: skippedCodOnboardingStep
+            skippedCashOnDeliveryOnboardingStep: skippedCashOnDeliveryOnboardingStep
         )
     }
 }

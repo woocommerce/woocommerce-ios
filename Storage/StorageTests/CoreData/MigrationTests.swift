@@ -1242,6 +1242,36 @@ final class MigrationTests: XCTestCase {
         // The OrderMetaData.order inverse relationship should be updated.
         XCTAssertEqual(customField.value(forKey: "order") as? NSManagedObject, migratedOrder)
     }
+
+    func test_migrating_from_71_to_72_adds_instructions_attribute_to_PaymentGateway() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 71")
+        let sourceContext = sourceContainer.viewContext
+
+        let paymentGateway = insertPaymentGateway(to: sourceContext)
+        try sourceContext.save()
+
+        // `instructions` should not be present before migration
+        XCTAssertNil(paymentGateway.entity.relationshipsByName["instructions"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 72")
+        let targetContext = targetContainer.viewContext
+
+        // Confidence check
+        XCTAssertEqual(try targetContext.count(entityName: "PaymentGateway"), 1)
+
+        let migratedPaymentGateway = try XCTUnwrap(targetContext.first(entityName: "PaymentGateway"))
+
+        // The instructions should be nil after migration: it's an optional field.
+        XCTAssertNil(migratedPaymentGateway.value(forKey: "instructions"))
+
+        // Set a test instructions
+        migratedPaymentGateway.setValue("payment gateway instructions", forKey: "instructions")
+
+        // Check instructions are correctly set.
+        assertEqual("payment gateway instructions", migratedPaymentGateway.value(forKey: "instructions") as? String)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -1632,6 +1662,18 @@ private extension MigrationTests {
             "requiresWPVersion": "",
             "requiresPHPVersion": "",
             "textDomain": ""
+        ])
+    }
+
+    @discardableResult
+    func insertPaymentGateway(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "PaymentGateway", properties: [
+            "siteID": 1372,
+            "gatewayID": "woocommerce-payments",
+            "title": "WooCommerce Payments",
+            "gatewayDescription": "WooCommerce Payments - easy payments by Woo",
+            "enabled": true,
+            "features": []
         ])
     }
 

@@ -4,6 +4,18 @@ struct InPersonPaymentsLearnMore: View {
     static let learnMoreURL = URL(string: "woocommerce://in-person-payments/learn-more")!
     @Environment(\.customOpenURL) var customOpenURL
 
+    let url: URL
+    let linkText: String
+    let formatText: String
+
+    init(url: URL = learnMoreURL,
+         linkText: String = Localization.learnMoreLink,
+         formatText: String = Localization.learnMoreText) {
+        self.url = url
+        self.linkText = linkText
+        self.formatText = formatText
+    }
+
     private let cardPresentConfiguration = CardPresentConfigurationLoader().configuration
 
     var body: some View {
@@ -18,7 +30,7 @@ struct InPersonPaymentsLearnMore: View {
             .onTapGesture {
                 ServiceLocator.analytics.track(event: WooAnalyticsEvent.InPersonPayments
                                                 .cardPresentOnboardingLearnMoreTapped(countryCode: cardPresentConfiguration.countryCode))
-                customOpenURL?(InPersonPaymentsLearnMore.learnMoreURL)
+                customOpenURL?(url)
             }
     }
 
@@ -28,13 +40,13 @@ struct InPersonPaymentsLearnMore: View {
 
     private var learnMoreAttributedString: NSAttributedString {
         let result = NSMutableAttributedString(
-            string: .localizedStringWithFormat(Localization.learnMoreText, Localization.learnMoreLink),
+            string: .localizedStringWithFormat(formatText, linkText),
             attributes: [.foregroundColor: UIColor.textSubtle]
         )
         result.replaceFirstOccurrence(
-            of: Localization.learnMoreLink,
+            of: linkText,
             with: NSAttributedString(
-                string: Localization.learnMoreLink,
+                string: linkText,
                 attributes: [.foregroundColor: UIColor.textLink]
             ))
 

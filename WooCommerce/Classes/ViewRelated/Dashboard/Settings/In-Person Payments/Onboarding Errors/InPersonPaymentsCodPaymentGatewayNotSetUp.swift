@@ -11,7 +11,7 @@ struct InPersonPaymentsCodPaymentGatewayNotSetUp: View {
                 title: Localization.title,
                 message: Localization.message,
                 image: InPersonPaymentsOnboardingErrorMainContentView.ImageInfo(
-                    image: .paymentErrorImage,
+                    image: .waitingForCustomersImage,
                     height: Constants.imageHeight
                 ),
                 supportLink: true
@@ -27,7 +27,8 @@ struct InPersonPaymentsCodPaymentGatewayNotSetUp: View {
 
             Spacer()
 
-            InPersonPaymentsLearnMore()
+            InPersonPaymentsLearnMore(url: Constants.cashOnDeliveryLearnMoreUrl,
+                                      formatText: Localization.cashOnDeliveryLearnMore)
         }
     }
 }
@@ -46,7 +47,7 @@ private enum Localization {
         "Pay in Person payment gateway.")
 
     static let message = NSLocalizedString(
-        "A \"Pay in Person\" option on your checkout lets you accept card or cash payments on collection or delivery",
+        "A \"Pay in Person\" option on your checkout lets you accept card or cash payments on collection or delivery.",
         comment: "The message explaining what will happen when the merchant enables the Pay in Person payment " +
         "gateway during card present payments onboarding.")
 
@@ -59,8 +60,16 @@ private enum Localization {
         "Enable Pay in Person",
         comment: "Title for the button to enable the Pay in Person payment gateway during card present " +
         "payments onboarding.")
+
+    static let cashOnDeliveryLearnMore = NSLocalizedString(
+        "%1$@ about adding Pay in Person to your checkout",
+        comment: "A label prompting users to learn more about card readers. %1$@ is a placeholder that is " +
+        "always replaced with \"Learn more\" string, which should be translated separately and considered " +
+        "part of this sentence.")
 }
 
 private enum Constants {
-    static let imageHeight: CGFloat = 180.0
+    static let imageHeight: CGFloat = 140.0
+    static let cashOnDeliveryLearnMoreUrl = URL(
+        string: "https://woocommerce.com/document/stripe/accept-in-person-payments-with-stripe/#section-8")!
 }

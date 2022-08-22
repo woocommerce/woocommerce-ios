@@ -482,6 +482,12 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentTapped,
                               properties: [:])
         }
+
+        /// Tracked when accessing the system plugin list without it being in sync.
+        ///
+        static func pluginsNotSyncedYet() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pluginsNotSyncedYet, properties: [:])
+        }
     }
 }
 

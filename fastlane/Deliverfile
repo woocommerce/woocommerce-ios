@@ -15,7 +15,7 @@ app_identifier 'com.automattic.woocommerce'
 screenshots_path './fastlane/promo_screenshots/'
 
 # Make sure to update these keys for a new version
-app_version "9.9"
+app_version "10.0"
 
 team_id '299112'
 

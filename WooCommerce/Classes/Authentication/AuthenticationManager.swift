@@ -341,7 +341,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         }
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginErrorNotifications) {
-            ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: [.loginSiteAddressError])
+            ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: LocalNotification.Scenario.allCases)
         }
 
         let matcher = ULAccountMatcher(storageManager: storageManager)
@@ -496,7 +496,7 @@ private extension AuthenticationManager {
         }
 
         if let notification = notification {
-            ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: [notification.scenario])
+            ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: LocalNotification.Scenario.allCases)
             ServiceLocator.pushNotesManager.requestLocalNotification(notification,
                                                                      // 24 hours from now.
                                                                      trigger: UNTimeIntervalNotificationTrigger(timeInterval: 86400, repeats: false))

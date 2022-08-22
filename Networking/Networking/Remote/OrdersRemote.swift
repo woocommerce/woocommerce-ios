@@ -32,7 +32,7 @@ public class OrdersRemote: Remote {
                 ParameterKeys.page: String(pageNumber),
                 ParameterKeys.perPage: String(pageSize),
                 ParameterKeys.statusKey: statusesString ?? Defaults.statusAny,
-                ParameterKeys.fields: ParameterValues.listFieldValues,
+                ParameterKeys.fields: ParameterValues.fieldValues,
             ]
 
             if let after = after {
@@ -61,7 +61,7 @@ public class OrdersRemote: Remote {
     ///
     public func loadOrder(for siteID: Int64, orderID: Int64, completion: @escaping (Order?, Error?) -> Void) {
         let parameters = [
-            ParameterKeys.fields: ParameterValues.singleOrderFieldValues
+            ParameterKeys.fields: ParameterValues.fieldValues
         ]
 
         let path = "\(Constants.ordersPath)/\(orderID)"
@@ -105,7 +105,7 @@ public class OrdersRemote: Remote {
             ParameterKeys.page: String(pageNumber),
             ParameterKeys.perPage: String(pageSize),
             ParameterKeys.statusKey: Defaults.statusAny,
-            ParameterKeys.fields: ParameterValues.listFieldValues
+            ParameterKeys.fields: ParameterValues.fieldValues
         ]
 
         let path = Constants.ordersPath
@@ -288,20 +288,12 @@ public extension OrdersRemote {
     }
 
     enum ParameterValues {
-        // Same as singleOrderFieldValues except we exclude the shipping field
-        static let listFieldValues: String = commonOrderFieldValues.joined(separator: ",")
-        static let singleOrderFieldValues: String = (commonOrderFieldValues + singleOrderExtraFieldValues).joined(separator: ",")
+        static let fieldValues: String = commonOrderFieldValues.joined(separator: ",")
         private static let commonOrderFieldValues = [
             "id", "parent_id", "number", "status", "currency", "customer_id", "customer_note", "date_created_gmt", "date_modified_gmt", "date_paid_gmt",
             "discount_total", "discount_tax", "shipping_total", "shipping_tax", "total", "total_tax", "payment_method", "payment_method_title",
-            "payment_url", "line_items", "billing", "coupon_lines", "shipping_lines", "refunds", "fee_lines", "order_key", "tax_lines", "meta_data",
+            "payment_url", "line_items", "shipping", "billing", "coupon_lines", "shipping_lines", "refunds", "fee_lines", "order_key", "tax_lines", "meta_data",
             "is_editable", "needs_payment", "needs_processing"
-        ]
-        // Use with caution. Any fields in here will be overwritten with empty values by
-        // `Order+ReadOnlyConvertible.swift: Order.update(with:)` when the list of orders is fetched.
-        // See p91TBi-7yL-p2 for discussion.
-        private static let singleOrderExtraFieldValues = [
-            "shipping"
         ]
     }
 

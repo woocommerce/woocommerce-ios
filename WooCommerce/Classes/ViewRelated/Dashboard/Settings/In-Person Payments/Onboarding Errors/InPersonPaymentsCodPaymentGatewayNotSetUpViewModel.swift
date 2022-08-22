@@ -3,7 +3,7 @@ import Yosemite
 
 struct InPersonPaymentsCodPaymentGatewayNotSetUpViewModel {
     let completion: () -> ()
-    let stores: StoresManager = ServiceLocator.stores
+    private let stores: StoresManager = ServiceLocator.stores
 
     private var siteID: Int64? {
         stores.sessionManager.defaultStoreID
@@ -14,9 +14,8 @@ struct InPersonPaymentsCodPaymentGatewayNotSetUpViewModel {
             return completion()
         }
 
-        let action = AppSettingsAction.setSkippedCodOnboardingStep(siteID: siteID)
+        let action = AppSettingsAction.setSkippedCashOnDeliveryOnboardingStep(siteID: siteID)
         stores.dispatch(action)
         completion()
     }
-
 }

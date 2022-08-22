@@ -579,7 +579,18 @@ extension PaymentGateway {
             title: .fake(),
             description: .fake(),
             enabled: .fake(),
-            features: .fake()
+            features: .fake(),
+            instructions: .fake()
+        )
+    }
+}
+extension PaymentGateway.Setting {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> PaymentGateway.Setting {
+        .init(
+            settingID: .fake(),
+            value: .fake()
         )
     }
 }

@@ -4,7 +4,7 @@ import Foundation
 ///
 struct PaymentGatewayListMapper: Mapper {
 
-    /// Site Identifier associated to the shipment trackings that will be parsed.
+    /// Site Identifier associated to the payment gateways that will be parsed.
     /// We're injecting this field via `JSONDecoder.userInfo` because the remote endpoints don't
     /// return the siteID for the payment gateway endpoint
     ///

@@ -665,7 +665,8 @@ extension PaymentGateway {
         title: CopiableProp<String> = .copy,
         description: CopiableProp<String> = .copy,
         enabled: CopiableProp<Bool> = .copy,
-        features: CopiableProp<[PaymentGateway.Feature]> = .copy
+        features: CopiableProp<[PaymentGateway.Feature]> = .copy,
+        instructions: NullableCopiableProp<String> = .copy
     ) -> PaymentGateway {
         let siteID = siteID ?? self.siteID
         let gatewayID = gatewayID ?? self.gatewayID
@@ -673,6 +674,7 @@ extension PaymentGateway {
         let description = description ?? self.description
         let enabled = enabled ?? self.enabled
         let features = features ?? self.features
+        let instructions = instructions ?? self.instructions
 
         return PaymentGateway(
             siteID: siteID,
@@ -680,7 +682,23 @@ extension PaymentGateway {
             title: title,
             description: description,
             enabled: enabled,
-            features: features
+            features: features,
+            instructions: instructions
+        )
+    }
+}
+
+extension PaymentGateway.Setting {
+    public func copy(
+        settingID: CopiableProp<String> = .copy,
+        value: CopiableProp<String> = .copy
+    ) -> PaymentGateway.Setting {
+        let settingID = settingID ?? self.settingID
+        let value = value ?? self.value
+
+        return PaymentGateway.Setting(
+            settingID: settingID,
+            value: value
         )
     }
 }

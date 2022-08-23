@@ -11,6 +11,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         storageManager.viewStorage
     }
     private let stores = MockStoresManager(sessionManager: .testingInstance)
+    private let searchDebounceTime: UInt64 = 600_000_000 // 500 milliseconds with buffer
 
     override func setUp() {
         super.setUp()
@@ -472,13 +473,15 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(selectedItems, [simpleProduct.productID, 12])
     }
 
-    func test_filter_button_title_shows_correct_number_of_active_filters() {
+    func test_filter_button_title_shows_correct_number_of_active_filters() async throws {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID)
+        let defaultTitle = NSLocalizedString("Filter", comment: "")
         // confidence check
-        XCTAssertEqual(viewModel.filterButtonTitle, NSLocalizedString("Filter", comment: ""))
+        XCTAssertEqual(viewModel.filterButtonTitle, defaultTitle)
 
         // When
+        viewModel.searchTerm = ""
         viewModel.filters = FilterProductListViewModel.Filters(
             stockStatus: ProductStockStatus.outOfStock,
             productStatus: ProductStatus.draft,
@@ -486,12 +489,13 @@ final class ProductSelectorViewModelTests: XCTestCase {
             productCategory: nil,
             numberOfActiveFilters: 3
         )
+        try await Task.sleep(nanoseconds: searchDebounceTime)
 
         // Then
         XCTAssertEqual(viewModel.filterButtonTitle, String.localizedStringWithFormat(NSLocalizedString("Filter (%ld)", comment: ""), 3))
     }
 
-    func test_productRows_are_updated_correctly_when_filters_are_applied() {
+    func test_productRows_are_updated_correctly_when_filters_are_applied() async throws {
         // Given
         let simpleProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, productTypeKey: ProductType.simple.rawValue, purchasable: true)
         let variableProduct = Product.fake().copy(siteID: sampleSiteID, productID: 10, productTypeKey: ProductType.variable.rawValue, purchasable: true)
@@ -507,6 +511,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
             productCategory: nil,
             numberOfActiveFilters: 1
         )
+        viewModel.searchTerm = ""
+        try await Task.sleep(nanoseconds: searchDebounceTime)
 
         // Then
         XCTAssertEqual(viewModel.productRows.count, 1)
@@ -552,7 +558,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(variableProductRow?.selectedState, .notSelected)
     }
 
-    func test_synchronizeProducts_are_triggered_with_correct_filters() {
+    func test_synchronizeProducts_are_triggered_with_correct_filters() async throws {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, stores: stores)
         var filteredStockStatus: ProductStockStatus?
@@ -581,6 +587,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // When
         viewModel.filters = filters
+        viewModel.searchTerm = ""
+        try await Task.sleep(nanoseconds: searchDebounceTime)
 
         // Then
         assertEqual(filteredStockStatus, filters.stockStatus)
@@ -589,7 +597,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         assertEqual(filteredProductCategory, filters.productCategory)
     }
 
-    func test_searchProducts_are_triggered_with_correct_filters() {
+    func test_searchProducts_are_triggered_with_correct_filters() async throws {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, stores: stores)
         var filteredStockStatus: ProductStockStatus?
@@ -617,14 +625,59 @@ final class ProductSelectorViewModelTests: XCTestCase {
         }
 
         // When
-        viewModel.searchTerm = "hiii"
         viewModel.filters = filters
+        viewModel.searchTerm = "hiii"
+        try await Task.sleep(nanoseconds: searchDebounceTime)
 
         // Then
         assertEqual(filteredStockStatus, filters.stockStatus)
         assertEqual(filteredProductType, filters.productType)
         assertEqual(filteredProductStatus, filters.productStatus)
         assertEqual(filteredProductCategory, filters.productCategory)
+    }
+
+    func test_search_term_and_filters_are_combined_to_get_correct_results() {
+        // Given
+        let bolognese = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "Bolognese spaghetti", productTypeKey: ProductType.simple.rawValue)
+        let carbonara = Product.fake().copy(siteID: sampleSiteID, productID: 23, name: "Carbonara spaghetti", productTypeKey: ProductType.simple.rawValue)
+        let pizza = Product.fake().copy(siteID: sampleSiteID, productID: 11, name: "Pizza", productTypeKey: ProductType.variable.rawValue)
+        insert(pizza)
+        insert(bolognese, withSearchTerm: "spa")
+        insert(carbonara, withSearchTerm: "spa")
+
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        XCTAssertEqual(viewModel.productRows.count, 3) // Confidence check
+
+        // When
+        viewModel.searchTerm = "spa"
+        waitUntil {
+            viewModel.productRows.count != 3
+        }
+
+        // Then
+        XCTAssertEqual(viewModel.productRows.count, 2) // 2 spaghetti
+
+        // When
+        let updatedFilters = FilterProductListViewModel.Filters(
+            stockStatus: nil,
+            productStatus: nil,
+            productType: ProductType.variable,
+            productCategory: nil,
+            numberOfActiveFilters: 1
+        )
+        viewModel.filters = updatedFilters
+
+        // Then
+        XCTAssertEqual(viewModel.productRows.count, 0) // no product matches the filter and search term
+
+        // When
+        viewModel.searchTerm = ""
+        waitUntil {
+            viewModel.productRows.isNotEmpty
+        }
+
+        // Then
+        XCTAssertEqual(viewModel.productRows.count, 1) // only 1 variable product "Pizza"
     }
 }
 

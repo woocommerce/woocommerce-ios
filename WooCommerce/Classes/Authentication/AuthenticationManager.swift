@@ -380,10 +380,14 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     ///
     func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag) {
         let identifier = HelpAndSupportViewController.classNameWithoutNamespaces
-        guard let supportViewController = UIStoryboard.dashboard.instantiateViewController(withIdentifier: identifier) as? HelpAndSupportViewController else {
-            return
-        }
+        let supportViewController = UIStoryboard.dashboard.instantiateViewController(identifier: identifier,
+                                                                                     creator: { coder -> HelpAndSupportViewController? in
+            guard let customURL = sourceTag.customHelpCenterURL else {
+                return nil
+            }
 
+            return HelpAndSupportViewController(customHelpCenterURL: customURL, coder: coder)
+        })
         supportViewController.displaysDismissAction = true
 
         let navController = WooNavigationController(rootViewController: supportViewController)

@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct InPersonPaymentsCodPaymentGatewayNotSetUp: View {
-    let viewModel: InPersonPaymentsCodPaymentGatewayNotSetUpViewModel
+    @ObservedObject var viewModel: InPersonPaymentsCodPaymentGatewayNotSetUpViewModel
 
     var body: some View {
         ScrollableVStack {
@@ -22,8 +22,8 @@ struct InPersonPaymentsCodPaymentGatewayNotSetUp: View {
             Button(Localization.skipButton, action: viewModel.skipTapped)
                 .buttonStyle(SecondaryButtonStyle())
 
-            Button(Localization.enableButton, action: {})
-                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: false))
+            Button(Localization.enableButton, action: viewModel.enableTapped)
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.awaitingResponse))
 
             Spacer()
 

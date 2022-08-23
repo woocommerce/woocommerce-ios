@@ -1,7 +1,6 @@
 import UIKit
 import Yosemite
 
-
 // MARK: - HelpAndSupportViewController
 //
 class HelpAndSupportViewController: UIViewController {

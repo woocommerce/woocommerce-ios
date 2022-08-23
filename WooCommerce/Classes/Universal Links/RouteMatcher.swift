@@ -1,14 +1,20 @@
 import Foundation
 
+/// This struct enriches a route with the parameters that came along with the URL,
+/// making it possible to perform the route action
+/// 
 struct MatchedRoute {
     let route: Route
     let parameters: [String: String]
 
     func performAction() {
-        route.action.perform(with: parameters)
+        route.perform(with: parameters)
     }
 }
 
+/// RouterMatcher finds URL routes with paths that match the path of a specified URL,
+/// and extracts parameters from the URL.
+///
 class RouteMatcher {
     let routes: [Route]
 

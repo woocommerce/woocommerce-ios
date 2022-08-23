@@ -1,14 +1,15 @@
 import Foundation
 import UIKit
 
-protocol LinkRouter {
-    init(routes: [Route])
-    func handle(url: URL)
-}
-
-struct UniversalLinkRouter: LinkRouter {
+/// Keeps a list of possible URL routes that are exposed
+/// via universal links, and handles incoming links to trigger the appropriate route.
+///
+struct UniversalLinkRouter {
     private let matcher: RouteMatcher
 
+    /// The order of the passed Route array matters, as given two routes that handle a path only the first
+    /// will be called to perform its action
+    ///
     init(routes: [Route]) {
         matcher = RouteMatcher(routes: routes)
     }

@@ -43,6 +43,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     var statePublisher: Published<CardPresentPaymentOnboardingState>.Publisher {
         $state
     }
+    private var cancellables: [AnyCancellable] = []
 
     init(
         storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -103,11 +104,19 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         assert(state.isSelectPlugin)
 
         preferredPluginLocal = selectedPlugin
+        deferredSaveSelectedPluginWhenOnboardingComplete(selectedPlugin: selectedPlugin)
+
         updateState()
-        if case .completed(let pluginState) = state,
-           pluginState.preferred == selectedPlugin {
-            savePreferredPlugin(selectedPlugin)
+    }
+
+    private func deferredSaveSelectedPluginWhenOnboardingComplete(selectedPlugin: CardPresentPaymentsPlugin) {
+        $state.share().sink { [weak self] newState in
+            if case .completed(let pluginState) = newState,
+               pluginState.preferred == selectedPlugin {
+                self?.savePreferredPlugin(selectedPlugin)
+            }
         }
+        .store(in: &cancellables)
     }
 
     func clearPluginSelection() {

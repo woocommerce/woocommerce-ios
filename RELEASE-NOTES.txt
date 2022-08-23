@@ -2,7 +2,7 @@
 
 10.1
 -----
-
+- [*] Help center: Added custom help center web page with FAQs for "Enter Store Address" screen. [https://github.com/woocommerce/woocommerce-ios/pull/7553]
 
 10.0
 -----

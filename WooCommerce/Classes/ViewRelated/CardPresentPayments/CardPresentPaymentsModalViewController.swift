@@ -162,10 +162,7 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func styleAuxiliaryButton() {
-        if viewModel.actionsMode == .newCase {
-            auxiliaryButton.titleLabel?.lineBreakMode = .byWordWrapping
-            auxiliaryButton.titleLabel?.font = UIFont.footnote
-        } else {
+        if viewModel.actionsMode != .secondaryActionAndAuxiliary {
             auxiliaryButton.applyLinkButtonStyle()
         }
         auxiliaryButton.titleLabel?.minimumScaleFactor = 0.5
@@ -290,10 +287,14 @@ private extension CardPresentPaymentsModalViewController {
             auxiliaryButton.isHidden = true
             return
         }
-        auxiliaryButton.setImage(.infoOutlineImage, for: .normal)
-        auxiliaryButton.setAttributedTitle(viewModel.auxiliaryAttributedButtonTitle, for: .normal)
+
         auxiliaryButton.isHidden = false
         auxiliaryButton.accessibilityIdentifier = Accessibility.auxiliaryButton
+
+        if viewModel.actionsMode == .secondaryActionAndAuxiliary {
+            auxiliaryButton.setImage(.infoOutlineImage, for: .normal)
+            auxiliaryButton.setAttributedTitle(viewModel.auxiliaryAttributedButtonTitle, for: .normal)
+        }
     }
 
     func configureSpacer() {
@@ -347,12 +348,12 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func shouldShowBottomActionButton() -> Bool {
-        [.secondaryOnlyAction, .twoAction, .twoActionAndAuxiliary, .newCase]
+        [.secondaryOnlyAction, .twoAction, .twoActionAndAuxiliary, .secondaryActionAndAuxiliary]
             .contains(viewModel.actionsMode)
     }
 
     func shouldShowAuxiliaryButton() -> Bool {
-        [.twoActionAndAuxiliary, .newCase].contains(viewModel.actionsMode)
+        [.twoActionAndAuxiliary, .secondaryActionAndAuxiliary].contains(viewModel.actionsMode)
     }
 }
 

@@ -7,7 +7,7 @@ final class CardPresentModalScanningForReader: CardPresentPaymentsModalViewModel
     private let cancelAction: () -> Void
 
     let textMode: PaymentsModalTextMode = .reducedBottomInfo
-    let actionsMode: PaymentsModalActionsMode = .newCase
+    let actionsMode: PaymentsModalActionsMode = .secondaryActionAndAuxiliary
 
     let topTitle: String = Localization.title
 
@@ -27,8 +27,11 @@ final class CardPresentModalScanningForReader: CardPresentPaymentsModalViewModel
         let learnMoreTextString = NSAttributedString(string: Localization.learnMoreText)
         let url = WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL()
         // AttributtedString attributes
-        let learnMoreLinkAttribute = [NSAttributedString.Key.link: url]
-        let attributedString = NSMutableAttributedString(string: learnMoreLinkString, attributes: learnMoreLinkAttribute)
+        let attributes: [NSAttributedString.Key: Any] = [
+            NSAttributedString.Key.link: url,
+            NSAttributedString.Key.attachment: UIColor.accent
+        ]
+        let attributedString = NSMutableAttributedString(string: learnMoreLinkString, attributes: attributes)
         // AttributtedString output
         attributedString.append(learnMoreTextString)
         return attributedString

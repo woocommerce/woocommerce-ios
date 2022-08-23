@@ -86,14 +86,15 @@ enum PaymentsModalActionsMode {
     /// One secondary action button
     case secondaryOnlyAction
 
+    /// One secondary action button and an auxiliary button
+    case secondaryActionAndAuxiliary
+
     /// Two action buttons
     case twoAction
 
     /// Two action buttons and an auxiliary button
     case twoActionAndAuxiliary
 
-    /// New case
-    case newCase
 }
 
 extension CardPresentPaymentsModalViewModel {

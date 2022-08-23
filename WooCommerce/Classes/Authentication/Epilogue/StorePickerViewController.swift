@@ -694,7 +694,7 @@ extension StorePickerViewController: UITableViewDelegate {
             } else {
                 showNoWooError(for: site)
             }
-            
+
             return tableView.deselectRow(at: indexPath, animated: true)
         }
 

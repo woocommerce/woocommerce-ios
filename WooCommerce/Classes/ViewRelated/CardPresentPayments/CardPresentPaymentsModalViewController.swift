@@ -165,7 +165,6 @@ private extension CardPresentPaymentsModalViewController {
         if viewModel.actionsMode == .newCase {
             auxiliaryButton.titleLabel?.lineBreakMode = .byWordWrapping
             auxiliaryButton.titleLabel?.font = UIFont.footnote
-            auxiliaryButton.setImage(.infoOutlineImage, for: .normal)
         } else {
             auxiliaryButton.applyLinkButtonStyle()
         }
@@ -291,8 +290,8 @@ private extension CardPresentPaymentsModalViewController {
             auxiliaryButton.isHidden = true
             return
         }
-
-        auxiliaryButton.setTitleWithoutAnimation(viewModel.auxiliaryButtonTitle, for: .normal)
+        auxiliaryButton.setImage(.infoOutlineImage, for: .normal)
+        auxiliaryButton.setAttributedTitle(viewModel.auxiliaryAttributedButtonTitle, for: .normal)
         auxiliaryButton.isHidden = false
         auxiliaryButton.accessibilityIdentifier = Accessibility.auxiliaryButton
     }

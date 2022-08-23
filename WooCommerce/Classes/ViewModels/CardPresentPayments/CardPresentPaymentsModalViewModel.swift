@@ -27,6 +27,9 @@ protocol CardPresentPaymentsModalViewModel {
     /// Provides a title for an auxiliary button
     var auxiliaryButtonTitle: String? { get }
 
+    /// Provides a title as a NSAttributedString for an auxiliary button
+    var auxiliaryAttributedButtonTitle: NSAttributedString? { get }
+
     /// The title in the bottom section of the modal. Right below the image
     var bottomTitle: String? { get }
 
@@ -91,4 +94,12 @@ enum PaymentsModalActionsMode {
 
     /// New case
     case newCase
+}
+
+extension CardPresentPaymentsModalViewModel {
+    /// Default implementation for NSAttributedString auxiliary button title.
+    /// If is not set directly by each Modal's ViewModel, it will default to nil
+    var auxiliaryAttributedButtonTitle: NSAttributedString? {
+        get { return nil }
+    }
 }

@@ -19,7 +19,20 @@ final class CardPresentModalScanningForReader: CardPresentPaymentsModalViewModel
 
     let secondaryButtonTitle: String? = Localization.cancel
 
-    let auxiliaryButtonTitle: String? = Localization.learnMoreText
+    let auxiliaryButtonTitle: String? = nil
+
+    var auxiliaryAttributedButtonTitle: NSAttributedString? {
+        // AttributtedString components
+        let learnMoreLinkString = Localization.learnMoreLink
+        let learnMoreTextString = NSAttributedString(string: Localization.learnMoreText)
+        let url = WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL()
+        // AttributtedString attributes
+        let learnMoreLinkAttribute = [NSAttributedString.Key.link: url]
+        let attributedString = NSMutableAttributedString(string: learnMoreLinkString, attributes: learnMoreLinkAttribute)
+        // AttributtedString output
+        attributedString.append(learnMoreTextString)
+        return attributedString
+    }
 
     let bottomTitle: String? = Localization.instruction
 
@@ -72,9 +85,20 @@ private extension CardPresentModalScanningForReader {
             comment: "Label for a cancel button"
         )
 
+        static let learnMoreLink = NSLocalizedString(
+            "Learn more",
+            comment: """
+                     A label prompting users to learn more about In-Person Payments.
+                     This is the link to the website, and forms part of a longer sentence which it should be considered a part of.
+                     """
+        )
+
         static let learnMoreText = NSLocalizedString(
-            "Learn more about In-Person Payments",
-            comment: "..."
+            " about In\u{2011}Person Payments",
+            comment: """
+                     A label prompting users to learn more about In-Person Payments"
+                     \u{2011} is a special character that acts as nonbreaking hyphen for "-" in the "In-Person" string.
+                     """
         )
     }
 }

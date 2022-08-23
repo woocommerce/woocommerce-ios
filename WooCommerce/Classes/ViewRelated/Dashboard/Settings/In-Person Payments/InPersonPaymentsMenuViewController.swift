@@ -279,7 +279,17 @@ private extension InPersonPaymentsMenuViewController {
 extension InPersonPaymentsMenuViewController {
     func orderCardReaderWasPressed() {
         ServiceLocator.analytics.track(.paymentsMenuOrderCardReaderTapped)
-        WebviewHelper.launch(configurationLoader.configuration.purchaseCardReaderUrl(), with: self)
+        let nav = NavigationView {
+            AuthenticatedWebView(isPresented: .constant(true),
+                                 url: configurationLoader.configuration.purchaseCardReaderUrl(),
+                                 urlToTriggerExit: nil,
+                                 exitTrigger: nil)
+                                 .navigationTitle("AuthenticatedWebView")
+                                 .navigationBarTitleDisplayMode(.inline)
+        }
+        .wooNavigationBarStyle()
+        let hostingController = UIHostingController(rootView: nav)
+        self.present(hostingController, animated: true, completion: nil)
     }
 
     func manageCardReaderWasPressed() {

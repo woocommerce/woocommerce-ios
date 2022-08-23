@@ -310,6 +310,19 @@ private extension HelpAndSupportViewController {
     func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
         return sections[indexPath.section].rows[indexPath.row]
     }
+
+    /// Opens custom help center URL in a web view
+    ///
+    func launchCustomHelpCenterWebPage() {
+        guard let customHelpCenterURL = customHelpCenterURL else {
+            return
+        }
+
+        WebviewHelper.launch(customHelpCenterURL, with: self)
+
+        ServiceLocator.analytics.track(.supportHelpCenterViewed,
+                                       withProperties: ["help_content_url": customHelpCenterURL.absoluteString])
+    }
 }
 
 // MARK: - Actions
@@ -319,6 +332,11 @@ private extension HelpAndSupportViewController {
     /// Help Center action
     ///
     func helpCenterWasPressed() {
+        guard customHelpCenterURL == nil else {
+            launchCustomHelpCenterWebPage()
+            return
+        }
+
         ZendeskProvider.shared.showHelpCenter(from: self)
     }
 

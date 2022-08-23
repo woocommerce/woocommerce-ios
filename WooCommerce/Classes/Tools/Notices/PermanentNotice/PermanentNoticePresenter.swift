@@ -17,8 +17,13 @@ final class PermanentNoticePresenter {
     private var hostingController: UIHostingController<PermanentNoticeView>?
 
     /// Presents the given notice into the passed view controller with an animation
+    /// This will ignore any calls to present if a notice is already displayed
     ///
     func presentNotice(notice: PermanentNotice, from viewController: UIViewController) {
+        guard hostingController == nil else {
+            return
+        }
+
         let permanentNoticeView = PermanentNoticeView(notice: notice)
         let newHostingController = ConstraintsUpdatingHostingController(rootView: permanentNoticeView)
 
@@ -76,12 +81,14 @@ private extension PermanentNoticePresenter {
 
         UIView.animate(withDuration: Animations.appearanceDuration,
                        delay: 0,
-                       options: .transitionFlipFromLeft, animations: {
+                       options: .transitionFlipFromLeft,
+                       animations: {
             hostingController.view.alpha = 0
-            }) { _ in
-                hostingController.willMove(toParent: nil)
-                hostingController.view.removeFromSuperview()
-            }
+        }) { [weak self] _ in
+            hostingController.willMove(toParent: nil)
+            hostingController.view.removeFromSuperview()
+            self?.hostingController = nil
+        }
     }
 }
 

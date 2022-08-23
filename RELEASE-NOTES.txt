@@ -3,6 +3,7 @@
 10.1
 -----
 - [*] In-Person Payments: The onboarding notice on the In-Person Payments menu is correctly dismissed after multiple prompts are shown. [https://github.com/woocommerce/woocommerce-ios/pull/7543]
+- [*] In-Person Payments: The plugin selection is saved correctly after multiple onboarding prompts. [https://github.com/woocommerce/woocommerce-ios/pull/7544]
 
 10.0
 -----

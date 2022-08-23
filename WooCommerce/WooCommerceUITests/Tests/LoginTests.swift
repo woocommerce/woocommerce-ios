@@ -12,45 +12,39 @@ final class LoginTests: XCTestCase {
         app.launch()
     }
 
-    // Login with Store Address and log out.
-    func skipped_test_site_address_login_logout() throws {
-        try skipTillSettingsFixed()
-
-        let prologue = try PrologueScreen().selectSiteAddress()
+    func test_site_address_login_logout() throws {
+        try PrologueScreen()
+            .selectSiteAddress()
             .proceedWith(siteUrl: TestCredentials.siteUrl)
             .proceedWith(email: TestCredentials.emailAddress)
             .proceedWith(password: TestCredentials.password)
-            .verifyEpilogueDisplays(displayName: TestCredentials.displayName, siteUrl: TestCredentials.siteUrl)
-            .continueWithSelectedSite()
 
-        // Log out
+        // Log out and verify
         try TabNavComponent()
             .goToMenuScreen()
+            .verifySelectedStoreDisplays(storeTitle: TestCredentials.storeName, storeURL: TestCredentials.siteUrl)
             .openSettingsPane()
-            .verifySelectedStoreDisplays(storeName: TestCredentials.storeName, siteUrl: TestCredentials.siteUrl)
             .logOut()
-
-        XCTAssert(prologue.isLoaded)
+            .verifyPrologueScreenLoaded()
     }
 
-    // Login with WordPress.com account and log out
-    func skipped_test_WordPress_login_logout() throws {
-        try skipTillSettingsFixed()
+    func test_WordPress_login_logout() throws {
 
-        let prologue = try PrologueScreen().selectContinueWithWordPress()
+        try PrologueScreen().selectContinueWithWordPress()
             .proceedWith(email: TestCredentials.emailAddress)
             .proceedWith(password: TestCredentials.password)
+
+        try LoginEpilogueScreen()
             .verifyEpilogueDisplays(displayName: TestCredentials.displayName, siteUrl: TestCredentials.siteUrl)
             .continueWithSelectedSite()
 
-        // Log out
+        // Log out and verify
         try TabNavComponent()
             .goToMenuScreen()
+            .verifySelectedStoreDisplays(storeTitle: TestCredentials.storeName, storeURL: TestCredentials.siteUrl)
             .openSettingsPane()
-            .verifySelectedStoreDisplays(storeName: TestCredentials.storeName, siteUrl: TestCredentials.siteUrl)
             .logOut()
-
-        XCTAssert(prologue.isLoaded)
+            .verifyPrologueScreenLoaded()
     }
 
     func test_WordPress_unsuccessfull_login() throws {
@@ -58,14 +52,5 @@ final class LoginTests: XCTestCase {
             .proceedWith(email: TestCredentials.emailAddress)
             .tryProceed(password: "invalidPswd")
             .verifyLoginError()
-    }
-
-    func skipTillSettingsFixed(file: StaticString = #file, line: UInt = #line) throws {
-        try XCTSkipIf(true,
-            """
-            Skipping test because settings icon was moved from My Store to Hub Menu,
-            the icon no longer have an accessibilityIdentifier,
-            so test will fail during logout.
-            """, file: file, line: line)
     }
 }

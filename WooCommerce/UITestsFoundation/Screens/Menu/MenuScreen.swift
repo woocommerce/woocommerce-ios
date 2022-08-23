@@ -14,6 +14,14 @@ public final class MenuScreen: ScreenObject {
         $0.buttons["menu-view-store"]
     }
 
+    private let selectedStoreTitleGetter: (XCUIApplication) -> XCUIElement = {
+        $0.staticTexts["store-title"]
+    }
+
+    private let selectedStoreUrlGetter: (XCUIApplication) -> XCUIElement = {
+        $0.staticTexts["store-url"]
+    }
+
     /// Button to open the Reviews section
     ///
     private var reviewsButton: XCUIElement { reviewsButtonGetter(app) }
@@ -38,5 +46,17 @@ public final class MenuScreen: ScreenObject {
     public func openSettingsPane() throws -> SettingsScreen {
         app.buttons["dashboard-settings-button"].tap()
         return try SettingsScreen()
+    }
+
+    @discardableResult
+    public func verifySelectedStoreDisplays(storeTitle expectedStoreTitle: String, storeURL expectedStoreUrl: String) -> MenuScreen {
+        let actualStoreTitle = selectedStoreTitleGetter(app).label
+        let actualStoreUrl = selectedStoreUrlGetter(app).label
+
+        XCTAssertEqual(expectedStoreTitle, actualStoreTitle,
+                       "Expected display name '\(expectedStoreTitle)' but '\(actualStoreTitle)' was displayed instead.")
+        XCTAssertEqual(expectedStoreUrl, actualStoreUrl,
+                       "Expected site URL \(expectedStoreUrl) but \(actualStoreUrl) was displayed instead.")
+        return self
     }
 }

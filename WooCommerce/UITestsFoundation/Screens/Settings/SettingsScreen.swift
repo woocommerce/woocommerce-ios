@@ -2,15 +2,6 @@ import ScreenObject
 import XCTest
 
 public final class SettingsScreen: ScreenObject {
-
-    private let selectedStoreNameGetter: (XCUIApplication) -> XCUIElement = {
-        $0.cells.staticTexts["headline-label"]
-    }
-
-    private let selectedSiteUrlGetter: (XCUIApplication) -> XCUIElement = {
-        $0.cells.staticTexts["body-label"]
-    }
-
     private let betaFeaturesGetter: (XCUIApplication) -> XCUIElement = {
         $0.cells["settings-beta-features-button"]
     }
@@ -58,21 +49,5 @@ public final class SettingsScreen: ScreenObject {
     public func goToExperimentalFeatures() throws -> BetaFeaturesScreen {
         betaFeaturesGetter(app).tap()
         return try BetaFeaturesScreen()
-    }
-}
-
-/// Assertions
-extension SettingsScreen {
-
-    public func verifySelectedStoreDisplays(storeName expectedStoreName: String, siteUrl expectedSiteUrl: String) -> SettingsScreen {
-        let actualStoreName = selectedStoreNameGetter(app).label
-        let expectedSiteUrl = expectedSiteUrl.replacingOccurrences(of: "http://", with: "")
-        let actualSiteUrl = selectedSiteUrlGetter(app).label
-
-        XCTAssertEqual(expectedStoreName, actualStoreName,
-                       "Expected display name '\(expectedStoreName)' but '\(actualStoreName)' was displayed instead.")
-        XCTAssertEqual(expectedSiteUrl, actualSiteUrl,
-                       "Expected site URL \(expectedSiteUrl) but \(actualSiteUrl) was displayed instead.")
-        return self
     }
 }

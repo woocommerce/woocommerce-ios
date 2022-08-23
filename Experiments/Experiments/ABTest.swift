@@ -20,6 +20,10 @@ public enum ABTest: String, CaseIterable {
     /// Experiment ref: pbxNRc-1Pp-p2
     case linkedProductsPromo = "woocommerceios_product_details_linked_products_banner"
 
+    /// A/B test for the login button order on the prologues screen.
+    /// Experiment ref: TOTO
+    case loginPrologueButtonOrder = "woocommerceios_login_prologue_button_order"
+
     /// Returns a variation for the given experiment
     public var variation: Variation {
         ExPlat.shared?.experiment(rawValue) ?? .control

@@ -45,16 +45,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         appCoordinator?.tabBarController
     }
 
-    /// Checks on whether the Apple ID credential is valid when the app is logged in and becomes active.
-    ///
-    private lazy var appleIDCredentialChecker = AppleIDCredentialChecker()
-
     // MARK: - AppDelegate Methods
 
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         // Setup Components
         setupAnalytics()
-        setupAuthenticationManager()
         setupCocoaLumberjack()
         setupLogLevel(.verbose)
         setupPushNotificationsManagerIfPossible()
@@ -62,7 +57,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupWormholy()
         setupKeyboardStateProvider()
         handleLaunchArguments()
-        appleIDCredentialChecker.observeLoggedInStateForAppleIDObservations()
         setupUserNotificationCenter()
 
         // Components that require prior Auth
@@ -253,12 +247,6 @@ private extension AppDelegate {
     ///
     func setupAnalytics() {
         ServiceLocator.analytics.initialize()
-    }
-
-    /// Sets up the WordPress Authenticator.
-    ///
-    func setupAuthenticationManager() {
-        ServiceLocator.authenticationManager.initialize()
     }
 
     /// Sets up CocoaLumberjack logging.

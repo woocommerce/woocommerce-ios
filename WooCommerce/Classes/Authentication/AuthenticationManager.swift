@@ -4,6 +4,7 @@ import WordPressAuthenticator
 import WordPressKit
 import Yosemite
 import class Networking.UserAgent
+import enum Experiments.ABTest
 import struct Networking.Settings
 import protocol Storage.StorageManagerType
 
@@ -45,6 +46,7 @@ class AuthenticationManager: Authentication {
     func initialize() {
         let isWPComMagicLinkPreferredToPassword = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasis)
         let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasisM2)
+        let continueWithSiteAddressFirst = ABTest.loginPrologueButtonOrder.variation == .control
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
                                                                 wpcomScheme: ApiCredentials.dotcomAuthScheme,
@@ -60,7 +62,7 @@ class AuthenticationManager: Authentication {
                                                                 enableSignInWithApple: true,
                                                                 enableSignupWithGoogle: false,
                                                                 enableUnifiedAuth: true,
-                                                                continueWithSiteAddressFirst: true,
+                                                                continueWithSiteAddressFirst: continueWithSiteAddressFirst,
                                                                 enableSiteCredentialsLoginForSelfHostedSites: true,
                                                                 isWPComLoginRequiredForSiteCredentialsLogin: true,
                                                                 isWPComMagicLinkPreferredToPassword: isWPComMagicLinkPreferredToPassword,

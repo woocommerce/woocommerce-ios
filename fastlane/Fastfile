@@ -599,11 +599,13 @@ platform :ios do
     # We're about to use `add_development_certificates_to_provisioning_profiles` and `add_all_devices_to_provisioning_profiles`.
     # These actions use Developer Portal APIs that don't yet support authentication via API key (-.-').
     # Let's preemptively ask for and set the email here to avoid being asked twice for it if not set.
-    asc_user_email_key = 'FASTLANE_USER'
-    unless ENV.key?(asc_user_email_key)
-      UI.important("#{asc_user_email_key} value not found in the environment.")
-      ENV[asc_user_email_key] = UI.input('Please provide your Apple Developer Program account email (this will not be saved): ')
-    end
+
+    require 'credentials_manager'
+
+    # If Fastlane cannot instantiate a user, it will ask the caller for the email.
+    # Once we have it, we can set it as `FASTLANE_USER` in the environment (which has lifecycle limited to this call) so that the next commands will already have access to it.
+    # Note that if the user is already available to `AccountManager`, setting it in the environment is redundant, but Fastlane doesn't provide a way to check it so we have to do it anyway.
+    ENV['FASTLANE_USER'] = CredentialsManager::AccountManager.new.user
 
     # Add all development certificates to the provisioning profiles (just in case – this is an easy step to miss)
     add_development_certificates_to_provisioning_profiles(

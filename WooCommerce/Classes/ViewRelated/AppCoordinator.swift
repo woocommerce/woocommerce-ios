@@ -149,7 +149,7 @@ private extension AppCoordinator {
             guard let self = self else { return }
             self.tabBarController.removeViewControllers()
         }
-        ServiceLocator.analytics.track(.openedLogin)
+        ServiceLocator.analytics.track(.openedLogin, withProperties: ["prologue_experiment_variant": ABTest.loginPrologueButtonOrder.variation.analyticsValue])
     }
 
     /// Determines whether the login onboarding should be shown.

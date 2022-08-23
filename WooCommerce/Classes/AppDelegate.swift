@@ -70,19 +70,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // ever new source code is injected into our application.
         Inject.animation = .interactiveSpring()
 
+        Task { @MainActor in
+            await startABTesting()
+
+            // Upgrade check...
+            // This has to be called after A/B testing setup in `startABTesting` if any of the Tracks events
+            // in `checkForUpgrades` is used as an exposure event for an experiment.
+            // For example, `application_installed` could be the exposure event for logged-out experiments.
+            checkForUpgrades()
+        }
+
         return true
     }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-
-        startABTesting()
-
-        // Upgrade check...
-        // This has to be called after A/B testing setup in `startABTesting` if any of the Tracks events
-        // in `checkForUpgrades` is used as an exposure event for an experiment.
-        // For example, `application_installed` could be the exposure event for logged-out experiments.
-        checkForUpgrades()
-
         // Setup the Interface!
         setupMainWindow()
         setupComponentsAppearance()
@@ -373,7 +374,9 @@ private extension AppDelegate {
         let versionOfLastRun = UserDefaults.standard[.versionOfLastRun] as? String
         if versionOfLastRun == nil {
             // First run after a fresh install
-            ServiceLocator.analytics.track(.applicationInstalled)
+            ServiceLocator.analytics.track(.applicationInstalled,
+                                           withProperties: ["after_abtest_setup": true,
+                                                            "prologue_experiment_variant": ABTest.loginPrologueButtonOrder.variation.analyticsValue])
         } else if versionOfLastRun != currentVersion {
             // App was upgraded
             ServiceLocator.analytics.track(.applicationUpgraded, withProperties: ["previous_version": versionOfLastRun ?? String()])

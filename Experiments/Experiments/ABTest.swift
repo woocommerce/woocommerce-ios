@@ -48,3 +48,15 @@ public extension ABTest {
         } as Void
     }
 }
+
+public extension Variation {
+    /// Used in an analytics event property value.
+    var analyticsValue: String {
+        switch self {
+        case .control:
+            return "control"
+        case .treatment(let string):
+            return string.map { "treatment: \($0)" } ?? "treatment"
+        }
+    }
+}

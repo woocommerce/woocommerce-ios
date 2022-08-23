@@ -1,7 +1,8 @@
 import WordPressAuthenticator
 
 extension WordPressSupportSourceTag {
-    /// Returns the custom help content web page's URL if the screen.
+    /// Returns the custom help content web page's URL of the screen with this (`self`) `sourceTag`.
+    ///
     /// Returns `nil` if the screen with the current `sourceTag` doesn't have custom help content available.
     ///
     /// The `sourceTag` is set for login related screens in WordPressAuthenticator library.

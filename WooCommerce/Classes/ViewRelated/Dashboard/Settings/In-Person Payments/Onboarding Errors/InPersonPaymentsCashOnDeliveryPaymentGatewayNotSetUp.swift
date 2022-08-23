@@ -1,7 +1,7 @@
 import SwiftUI
 
-struct InPersonPaymentsCodPaymentGatewayNotSetUp: View {
-    @ObservedObject var viewModel: InPersonPaymentsCodPaymentGatewayNotSetUpViewModel
+struct InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUp: View {
+    @ObservedObject var viewModel: InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel
 
     var body: some View {
         ScrollableVStack {
@@ -35,8 +35,8 @@ struct InPersonPaymentsCodPaymentGatewayNotSetUp: View {
 
 struct InPersonPaymentsCodPaymentGatewayNotSetUp_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = InPersonPaymentsCodPaymentGatewayNotSetUpViewModel(completion: {})
-        return InPersonPaymentsCodPaymentGatewayNotSetUp(viewModel: viewModel)
+        let viewModel = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(completion: {})
+        return InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUp(viewModel: viewModel)
     }
 }
 

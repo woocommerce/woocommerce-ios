@@ -1,9 +1,10 @@
 import Foundation
 import Yosemite
 
-class InPersonPaymentsCodPaymentGatewayNotSetUpViewModel: ObservableObject {
+class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel: ObservableObject {
     let completion: () -> ()
-    private let stores: StoresManager = ServiceLocator.stores
+    private let stores: StoresManager
+    private let noticePresenter: NoticePresenter
 
     @Published var awaitingResponse = false
 
@@ -11,7 +12,11 @@ class InPersonPaymentsCodPaymentGatewayNotSetUpViewModel: ObservableObject {
         stores.sessionManager.defaultStoreID
     }
 
-    init(completion: @escaping () -> ()) {
+    init(stores: StoresManager = ServiceLocator.stores,
+         noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
+         completion: @escaping () -> ()) {
+        self.stores = stores
+        self.noticePresenter = noticePresenter
         self.completion = completion
     }
 
@@ -40,7 +45,7 @@ class InPersonPaymentsCodPaymentGatewayNotSetUpViewModel: ObservableObject {
                 self.displayEnableCashOnDeliveryFailureNotice()
                 return
             }
-            
+
             self.completion()
         }
         stores.dispatch(action)
@@ -63,7 +68,7 @@ class InPersonPaymentsCodPaymentGatewayNotSetUpViewModel: ObservableObject {
                             actionTitle: Localization.cashOnDeliveryFailureNoticeRetryTitle,
                             actionHandler: enableTapped)
 
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
+        noticePresenter.enqueue(notice: notice)
     }
 }
 

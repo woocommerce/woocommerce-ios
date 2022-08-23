@@ -21,7 +21,7 @@ public enum ABTest: String, CaseIterable {
     case linkedProductsPromo = "woocommerceios_product_details_linked_products_banner"
 
     /// A/B test for the login button order on the prologues screen.
-    /// Experiment ref: TOTO
+    /// Experiment ref: pbxNRc-1VA-p2
     case loginPrologueButtonOrder = "woocommerceios_login_prologue_button_order"
 
     /// Returns a variation for the given experiment

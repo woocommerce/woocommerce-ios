@@ -171,7 +171,7 @@ private extension AppCoordinator {
     }
 
     /// Presents onboarding on top of the authentication UI under certain criteria.
-    /// - Returns: a future that is invoked when the onboarding is dismissed.
+    /// - Parameter onDismiss: invoked when the onboarding is dismissed.
     func presentLoginOnboarding(onDismiss: @escaping () -> Void) {
         let onboardingViewController = LoginOnboardingViewController { [weak self] action in
             guard let self = self else { return }

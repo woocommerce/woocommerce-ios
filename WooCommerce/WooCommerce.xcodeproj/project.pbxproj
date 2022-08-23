@@ -1276,6 +1276,10 @@
 		B958A7C928B3D47B00823EEF /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A7C828B3D47B00823EEF /* Route.swift */; };
 		B958A7CB28B3D4A100823EEF /* RouteMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A7CA28B3D4A100823EEF /* RouteMatcher.swift */; };
 		B958A7CD28B3DD9100823EEF /* OrderDetailsRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A7CC28B3DD9100823EEF /* OrderDetailsRoute.swift */; };
+		B958A7D128B5281800823EEF /* UniversalLinkRouterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A7D028B5281800823EEF /* UniversalLinkRouterTests.swift */; };
+		B958A7D328B52A2300823EEF /* MockRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A7D228B52A2300823EEF /* MockRoute.swift */; };
+		B958A7D628B5310100823EEF /* URLOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A7D428B5302500823EEF /* URLOpener.swift */; };
+		B958A7D828B5316A00823EEF /* MockURLOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A7D728B5316A00823EEF /* MockURLOpener.swift */; };
 		B96B536B2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B96B536A2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift */; };
 		B979A9BA282D62A500EBB383 /* InPersonPaymentsDeactivateStripeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B979A9B9282D62A500EBB383 /* InPersonPaymentsDeactivateStripeView.swift */; };
 		B9B0391628A6824200DC1C83 /* PermanentNoticePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B0391528A6824200DC1C83 /* PermanentNoticePresenter.swift */; };
@@ -3121,6 +3125,10 @@
 		B958A7C828B3D47B00823EEF /* Route.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Route.swift; sourceTree = "<group>"; };
 		B958A7CA28B3D4A100823EEF /* RouteMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteMatcher.swift; sourceTree = "<group>"; };
 		B958A7CC28B3DD9100823EEF /* OrderDetailsRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsRoute.swift; sourceTree = "<group>"; };
+		B958A7D028B5281800823EEF /* UniversalLinkRouterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniversalLinkRouterTests.swift; sourceTree = "<group>"; };
+		B958A7D228B52A2300823EEF /* MockRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRoute.swift; sourceTree = "<group>"; };
+		B958A7D428B5302500823EEF /* URLOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLOpener.swift; sourceTree = "<group>"; };
+		B958A7D728B5316A00823EEF /* MockURLOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLOpener.swift; sourceTree = "<group>"; };
 		B96B536A2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPluginsDataProviderTests.swift; sourceTree = "<group>"; };
 		B979A9B9282D62A500EBB383 /* InPersonPaymentsDeactivateStripeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsDeactivateStripeView.swift; sourceTree = "<group>"; };
 		B9B0391528A6824200DC1C83 /* PermanentNoticePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermanentNoticePresenter.swift; sourceTree = "<group>"; };
@@ -6039,6 +6047,8 @@
 				0247F50D286E6CCD009C177E /* MockProductImageActionHandler.swift */,
 				0248042C2887C92A00991319 /* MockLoggedOutAppSettings.swift */,
 				02829BA9288FA8B300951E1E /* MockUserNotification.swift */,
+				B958A7D228B52A2300823EEF /* MockRoute.swift */,
+				B958A7D728B5316A00823EEF /* MockURLOpener.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -6471,6 +6481,7 @@
 				31579027273EE2B1008CA3AF /* VersionHelpers.swift */,
 				174CA86D27DBFD2D00126524 /* ShareAppTextItemActivitySource.swift */,
 				B9C4AB2427FDE4B6007008B8 /* CardPresentPluginsDataProvider.swift */,
+				B958A7D428B5302500823EEF /* URLOpener.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -6514,6 +6525,7 @@
 		B56DB3E02049BFAA00D4AA8E /* WooCommerceTests */ = {
 			isa = PBXGroup;
 			children = (
+				B958A7CF28B527FB00823EEF /* Universal Links */,
 				D8F01DD125DEDC0100CE70BE /* Stripe Integration Tests */,
 				5791FB4024EC833200117FD6 /* ViewModels */,
 				57C2F6E324C27B0C00131012 /* Authentication */,
@@ -6900,6 +6912,14 @@
 				B958A7C828B3D47B00823EEF /* Route.swift */,
 			);
 			path = Routes;
+			sourceTree = "<group>";
+		};
+		B958A7CF28B527FB00823EEF /* Universal Links */ = {
+			isa = PBXGroup;
+			children = (
+				B958A7D028B5281800823EEF /* UniversalLinkRouterTests.swift */,
+			);
+			path = "Universal Links";
 			sourceTree = "<group>";
 		};
 		B9B0391B28A690DA00DC1C83 /* PermanentNotice */ = {
@@ -9777,6 +9797,7 @@
 				02396251239948470096F34C /* UIImage+TintColor.swift in Sources */,
 				DEE6437826D8DAD900888A75 /* InProgressView.swift in Sources */,
 				0290E275238E4F8100B5C466 /* PaginatedListSelectorViewController.swift in Sources */,
+				B958A7D628B5310100823EEF /* URLOpener.swift in Sources */,
 				020DD48F232392C9005822B1 /* UIViewController+AppReview.swift in Sources */,
 				2687165524D21BC80042F6AE /* SurveySubmittedViewController.swift in Sources */,
 				CE263DE8206ACE3E0015A693 /* MainTabBarController.swift in Sources */,
@@ -10138,6 +10159,7 @@
 				02CE43092769953D0006EAEF /* MockCaptureDevicePermissionChecker.swift in Sources */,
 				7E6A01A32726C5D3001668D5 /* MockProductCategoryStoresManager.swift in Sources */,
 				45F5A3C323DF31D2007D40E5 /* ShippingInputFormatterTests.swift in Sources */,
+				B958A7D328B52A2300823EEF /* MockRoute.swift in Sources */,
 				02153211242376B5003F2BBD /* ProductPriceSettingsViewModelTests.swift in Sources */,
 				45C8B25D231529410002FA77 /* CustomerInfoTableViewCellTests.swift in Sources */,
 				023EC2E624DAB1270021DA91 /* EditableProductVariationModelTests.swift in Sources */,
@@ -10215,6 +10237,7 @@
 				0375799D2822F9040083F2E1 /* MockCardPresentPaymentsOnboardingPresenter.swift in Sources */,
 				455800CC24C6F83F00A8D117 /* ProductSettingsSectionsTests.swift in Sources */,
 				D85B833F2230F268002168F3 /* SummaryTableViewCellTests.swift in Sources */,
+				B958A7D828B5316A00823EEF /* MockURLOpener.swift in Sources */,
 				02645D8227BA20A30065DC68 /* InboxViewModelTests.swift in Sources */,
 				57ABE36824EB048A00A64F49 /* MockSwitchStoreUseCase.swift in Sources */,
 				311F827626CD8AB100DF5BAD /* MockCardReaderSettingsAlerts.swift in Sources */,
@@ -10459,6 +10482,7 @@
 				571FDDAE24C768DC00D486A5 /* MockZendeskManager.swift in Sources */,
 				45FBDF3C238D4EA800127F77 /* ExtendedAddProductImageCollectionViewCellTests.swift in Sources */,
 				02279590237A5DC900787C63 /* AztecUnorderedListFormatBarCommandTests.swift in Sources */,
+				B958A7D128B5281800823EEF /* UniversalLinkRouterTests.swift in Sources */,
 				B5F571AB21BEECB60010D1B8 /* NoteWooTests.swift in Sources */,
 				D802546B2655180A001B2CC1 /* CardPresentModalReaderIsReadyTests.swift in Sources */,
 				45DB706C26161F970064A6CF /* DecimalWooTests.swift in Sources */,

@@ -6,12 +6,15 @@ import UIKit
 ///
 struct UniversalLinkRouter {
     private let matcher: RouteMatcher
+    private let bouncingURLOpener: URLOpener
 
     /// The order of the passed Route array matters, as given two routes that handle a path only the first
-    /// will be called to perform its action
+    /// will be called to perform its action. If no route matches the path it uses the `bouncingURLOpener` to
+    /// open it e.g to be opened in web when the app cannot handle the link
     ///
-    init(routes: [Route]) {
+    init(routes: [Route], bouncingURLOpener: URLOpener = ApplicationURLOpener()) {
         matcher = RouteMatcher(routes: routes)
+        self.bouncingURLOpener = bouncingURLOpener
     }
 
     static let defaultRoutes: [Route] = [
@@ -20,8 +23,7 @@ struct UniversalLinkRouter {
 
     func handle(url: URL) {
         guard let matchedRoute = matcher.firstRouteMatching(url) else {
-            UIApplication.shared.open(url, options: [:], completionHandler: nil)
-            return
+            return bouncingURLOpener.open(url)
         }
 
         matchedRoute.performAction()

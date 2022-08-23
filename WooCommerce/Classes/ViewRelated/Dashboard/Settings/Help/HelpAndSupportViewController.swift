@@ -3,7 +3,7 @@ import Yosemite
 
 // MARK: - HelpAndSupportViewController
 //
-class HelpAndSupportViewController: UIViewController {
+final class HelpAndSupportViewController: UIViewController {
 
     /// Main TableView
     ///

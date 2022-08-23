@@ -57,6 +57,20 @@ class HelpAndSupportViewController: UIViewController {
     ///
     var displaysDismissAction = false
 
+    /// Custom help center web page's URL
+    /// If non-nil this web page is launched instead of ZenDesk
+    ///
+    private let customHelpCenterURL: URL?
+
+    init?(customHelpCenterURL: URL, coder: NSCoder) {
+        self.customHelpCenterURL = customHelpCenterURL
+        super.init(coder: coder)
+    }
+
+    required init?(coder: NSCoder) {
+        self.customHelpCenterURL = nil
+        super.init(coder: coder)
+    }
 
     // MARK: - Overridden Methods
     //

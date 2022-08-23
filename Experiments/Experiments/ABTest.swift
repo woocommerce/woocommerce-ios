@@ -29,14 +29,18 @@ public enum ABTest: String, CaseIterable {
 public extension ABTest {
     /// Start the AB Testing platform if any experiment exists
     ///
-    static func start() {
-        guard ABTest.allCases.count > 1 else {
-            return
-        }
+    static func start() async {
+        await withCheckedContinuation { continuation in
+            guard ABTest.allCases.count > 1 else {
+                return continuation.resume(returning: ())
+            }
 
-        let experimentNames = ABTest.allCases.filter { $0 != .null }.map { $0.rawValue }
-        ExPlat.shared?.register(experiments: experimentNames)
+            let experimentNames = ABTest.allCases.filter { $0 != .null }.map { $0.rawValue }
+            ExPlat.shared?.register(experiments: experimentNames)
 
-        ExPlat.shared?.refresh()
+            ExPlat.shared?.refresh {
+                continuation.resume(returning: ())
+            }
+        } as Void
     }
 }

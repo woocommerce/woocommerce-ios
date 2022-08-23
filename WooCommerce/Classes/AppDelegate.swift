@@ -370,8 +370,8 @@ private extension AppDelegate {
 
     /// Starts the AB testing platform
     ///
-    func startABTesting() {
-        ABTest.start()
+    func startABTesting() async {
+        await ABTest.start()
     }
 }
 

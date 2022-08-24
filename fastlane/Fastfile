@@ -935,7 +935,7 @@ platform :ios do
     match(
       type: 'appstore',
       team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
-      readonly: false,
+      readonly: true,
       app_identifier: MAIN_BUNDLE_IDENTIFIERS,
       template_name: 'Apple Pay Pass Suppression'
     )

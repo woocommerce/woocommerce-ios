@@ -6,7 +6,6 @@ final class LoginTests: XCTestCase {
     override func setUp() {
         continueAfterFailure = false
 
-        // UI tests must launch the application that they test.
         let app = XCUIApplication()
         app.launchArguments = ["logout-at-launch", "disable-animations", "mocked-wpcom-api", "-ui_testing"]
         app.launch()
@@ -19,7 +18,6 @@ final class LoginTests: XCTestCase {
             .proceedWith(email: TestCredentials.emailAddress)
             .proceedWith(password: TestCredentials.password)
 
-        // Log out and verify
         try TabNavComponent()
             .goToMenuScreen()
             .verifySelectedStoreDisplays(storeTitle: TestCredentials.storeName, storeURL: TestCredentials.siteUrl)
@@ -38,7 +36,6 @@ final class LoginTests: XCTestCase {
             .verifyEpilogueDisplays(displayName: TestCredentials.displayName, siteUrl: TestCredentials.siteUrl)
             .continueWithSelectedSite()
 
-        // Log out and verify
         try TabNavComponent()
             .goToMenuScreen()
             .verifySelectedStoreDisplays(storeTitle: TestCredentials.storeName, storeURL: TestCredentials.siteUrl)

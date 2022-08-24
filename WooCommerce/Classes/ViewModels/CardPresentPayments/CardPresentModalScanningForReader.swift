@@ -56,6 +56,7 @@ final class CardPresentModalScanningForReader: CardPresentPaymentsModalViewModel
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {
+        ServiceLocator.analytics.track(.cardPresentOnboardingLearnMoreTapped)
         guard let viewController = viewController else {
             return
         }

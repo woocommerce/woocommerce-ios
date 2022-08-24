@@ -62,6 +62,7 @@ final class InPersonPaymentsViewModel: ObservableObject {
     /// Skips the Pending Requirements step when the user taps `Skip`
     ///
     func skipPendingRequirements() {
+        trackSkipped(state: useCase.state, remindLater: true)
         useCase.skipPendingRequirements()
     }
 
@@ -104,6 +105,10 @@ final class InPersonPaymentsViewModel: ObservableObject {
 }
 
 private extension InPersonPaymentsViewModel {
+    var countryCode: String {
+        useCase.configurationLoader.configuration.countryCode
+    }
+
     func trackState(_ state: CardPresentPaymentOnboardingState) {
         // When we remove this feature flag, we can switch reason to let and remove the state.isSelectPlugin block
         guard var reason = state.reasonForAnalytics else {
@@ -115,6 +120,18 @@ private extension InPersonPaymentsViewModel {
         ServiceLocator.analytics
             .track(event: .InPersonPayments
                     .cardPresentOnboardingNotCompleted(reason: reason,
-                                                       countryCode: useCase.configurationLoader.configuration.countryCode))
+                                                       countryCode: countryCode))
+    }
+
+    func trackSkipped(state: CardPresentPaymentOnboardingState, remindLater: Bool) {
+        guard let reason = state.reasonForAnalytics else {
+            return
+        }
+
+        ServiceLocator.analytics.track(
+            event: .InPersonPayments.cardPresentOnboardingStepSkipped(
+                reason: reason,
+                remindLater: remindLater,
+                countryCode: countryCode))
     }
 }

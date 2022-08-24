@@ -49,14 +49,12 @@ public final class MenuScreen: ScreenObject {
     }
 
     @discardableResult
-    public func verifySelectedStoreDisplays(storeTitle expectedStoreTitle: String, storeURL expectedStoreUrl: String) -> MenuScreen {
+    public func verifySelectedStoreDisplays(storeTitle expectedStoreTitle: String, storeURL expectedStoreUrl: String) -> Self {
         let actualStoreTitle = selectedStoreTitleGetter(app).label
         let actualStoreUrl = selectedStoreUrlGetter(app).label
 
-        XCTAssertEqual(expectedStoreTitle, actualStoreTitle,
-                       "Expected display name '\(expectedStoreTitle)' but '\(actualStoreTitle)' was displayed instead.")
-        XCTAssertEqual(expectedStoreUrl, actualStoreUrl,
-                       "Expected site URL \(expectedStoreUrl) but \(actualStoreUrl) was displayed instead.")
+        XCTAssertEqual(expectedStoreTitle, actualStoreTitle)
+        XCTAssertEqual(expectedStoreUrl, actualStoreUrl)
         return self
     }
 }

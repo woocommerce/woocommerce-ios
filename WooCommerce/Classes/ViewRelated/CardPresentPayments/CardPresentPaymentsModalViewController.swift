@@ -52,10 +52,6 @@ final class CardPresentPaymentsModalViewController: UIViewController {
         styleContent()
         populateContent()
     }
-    /// Debugging. Remove before submitting PR for review
-    override func viewDidAppear(_ animated: Bool) {
-        print("Debugging breakpoint")
-    }
 
     func setViewModel(_ newViewModel: CardPresentPaymentsModalViewModel) {
         self.viewModel = newViewModel

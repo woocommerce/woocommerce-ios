@@ -49,7 +49,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ///
     private lazy var appleIDCredentialChecker = AppleIDCredentialChecker()
 
-    private let universalLinkRouter = ServiceLocator.universalLinkRouter
+    private let universalLinkRouter = UniversalLinkRouter.defaultUniversalLinkRouter()
 
     // MARK: - AppDelegate Methods
 

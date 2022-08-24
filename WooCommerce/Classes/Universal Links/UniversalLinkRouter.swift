@@ -17,7 +17,14 @@ struct UniversalLinkRouter {
         self.bouncingURLOpener = bouncingURLOpener
     }
 
-    static let defaultRoutes: [Route] = [
+    static func defaultUniversalLinkRouter() -> UniversalLinkRouter {
+        UniversalLinkRouter(routes: UniversalLinkRouter.defaultRoutes)
+    }
+
+    /// Add your route here if you want it to be considered when matching for an incoming universal link.
+    /// As we only perform one action to avoid conflicts, order matters (only the first matched route will be called to perform its action)
+    ///
+    private static let defaultRoutes: [Route] = [
         OrderDetailsRoute()
     ]
 

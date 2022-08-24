@@ -1,7 +1,7 @@
 import Foundation
 import Yosemite
 
-class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel: ObservableObject {
+final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel: ObservableObject {
     let completion: () -> ()
     private let stores: StoresManager
     private let noticePresenter: NoticePresenter

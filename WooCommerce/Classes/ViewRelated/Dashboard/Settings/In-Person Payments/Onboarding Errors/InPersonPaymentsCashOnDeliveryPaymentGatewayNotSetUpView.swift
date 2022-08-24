@@ -27,7 +27,7 @@ struct InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView: View {
 
             Spacer()
 
-            InPersonPaymentsLearnMore(url: Constants.cashOnDeliveryLearnMoreUrl,
+            InPersonPaymentsLearnMore(url: WooConstants.URLs.cashOnDeliveryLearnMoreUrl.asURL(),
                                       formatText: Localization.cashOnDeliveryLearnMore)
         }
     }
@@ -70,6 +70,4 @@ private enum Localization {
 
 private enum Constants {
     static let imageHeight: CGFloat = 140.0
-    static let cashOnDeliveryLearnMoreUrl = URL(
-        string: "https://woocommerce.com/document/stripe/accept-in-person-payments-with-stripe/#section-8")!
 }

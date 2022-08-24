@@ -25,8 +25,11 @@ SCREENSHOT_DEVICES = [
   'iPad Pro (12.9-inch) (3rd generation)'
 ].freeze
 
-MAIN_BUNDLE_IDENTIFIERS = %w[com.automattic.woocommerce].freeze        # Registered in our main account, for development and AppStore
-ALPHA_BUNDLE_IDENTIFIERS = %w[com.automattic.alpha.woocommerce].freeze # Registered in our Enterprise account, for App Center / Installable Builds
+APP_STORE_VERSION_BUNDLE_IDENTIFIER = 'com.automattic.woocommerce'
+# Registered in our main account, for development and App Store
+MAIN_BUNDLE_IDENTIFIERS = [APP_STORE_VERSION_BUNDLE_IDENTIFIER].freeze
+# Registered in our Enterprise account, for App Center / Installable Builds
+ALPHA_BUNDLE_IDENTIFIERS = %w[com.automattic.alpha.woocommerce].freeze
 
 TEST_SCHEME = 'WooCommerce'
 

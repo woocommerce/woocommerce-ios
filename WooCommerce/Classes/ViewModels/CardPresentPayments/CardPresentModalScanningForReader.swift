@@ -22,19 +22,15 @@ final class CardPresentModalScanningForReader: CardPresentPaymentsModalViewModel
     let auxiliaryButtonTitle: String? = nil
 
     var auxiliaryAttributedButtonTitle: NSAttributedString? {
-        // AttributtedString components
-        let learnMoreLinkString = Localization.learnMoreLink
-        let learnMoreTextString = NSAttributedString(string: Localization.learnMoreText)
-        let url = WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL()
-        // AttributtedString attributes
-        let attributes: [NSAttributedString.Key: Any] = [
-            NSAttributedString.Key.link: url,
-            NSAttributedString.Key.attachment: UIColor.accent
+        let moreLinkAttributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: UIColor.accent,
+            .underlineStyle: NSUnderlineStyle.single.rawValue
         ]
-        let attributedString = NSMutableAttributedString(string: learnMoreLinkString, attributes: attributes)
-        // AttributtedString output
-        attributedString.append(learnMoreTextString)
-        return attributedString
+        let moreTextAttributes: [NSAttributedString.Key: Any] = [.foregroundColor: UIColor.text]
+        let linkAttributedString = NSMutableAttributedString(string: Localization.learnMoreLink, attributes: moreLinkAttributes)
+        let moreAttributedString = NSMutableAttributedString(string: Localization.learnMoreText, attributes: moreTextAttributes)
+        linkAttributedString.append(moreAttributedString)
+        return linkAttributedString
     }
 
     let bottomTitle: String? = Localization.instruction

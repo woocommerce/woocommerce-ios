@@ -115,7 +115,7 @@ extension CardPresentPaymentOnboardingState {
         case .stripeAccountRejected:
             return "account_rejected"
         case .codPaymentGatewayNotSetUp:
-            return "cod_not_set_up"
+            return "cash_on_delivery_disabled"
         case .genericError:
             return "generic_error"
         case .noConnectionError:

@@ -5,6 +5,8 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel: Obser
     let completion: () -> Void
     private let stores: StoresManager
     private let noticePresenter: NoticePresenter
+    private let analytics: Analytics
+    private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
     @Published var awaitingResponse = false
 
@@ -14,13 +16,19 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel: Obser
 
     init(stores: StoresManager = ServiceLocator.stores,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
+         analytics: Analytics = ServiceLocator.analytics,
+         configuration: CardPresentPaymentsConfiguration,
          completion: @escaping () -> Void) {
         self.stores = stores
         self.noticePresenter = noticePresenter
+        self.analytics = analytics
+        self.cardPresentPaymentsConfiguration = configuration
         self.completion = completion
     }
 
     func skipTapped() {
+        trackSkipTapped()
+
         guard let siteID = siteID else {
             return completion()
         }
@@ -69,6 +77,22 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel: Obser
                             actionHandler: enableTapped)
 
         noticePresenter.enqueue(notice: notice)
+    }
+}
+
+// MARK: - Analytics
+private extension InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel {
+    private typealias Event = WooAnalyticsEvent.InPersonPayments
+
+    private var reason: String {
+        CardPresentPaymentOnboardingState.codPaymentGatewayNotSetUp.reasonForAnalytics ?? ""
+    }
+
+    private func trackSkipTapped() {
+        let event = Event.cardPresentOnboardingStepSkipped(reason: reason,
+                                                           remindLater: false,
+                                                           countryCode: cardPresentPaymentsConfiguration.countryCode)
+        analytics.track(event: event)
     }
 }
 

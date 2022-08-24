@@ -11,7 +11,8 @@ final class InPersonPaymentsViewModel: ObservableObject {
     let stores: StoresManager
 
     lazy var codStepViewModel: InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel = {
-        InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(completion: refresh)
+        InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(configuration: useCase.configurationLoader.configuration,
+                                                                      completion: refresh)
     }()
 
     /// Initializes the view model for a specific site

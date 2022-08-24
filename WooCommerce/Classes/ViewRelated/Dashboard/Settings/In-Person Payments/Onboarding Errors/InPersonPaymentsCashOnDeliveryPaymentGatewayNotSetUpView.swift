@@ -1,4 +1,5 @@
 import SwiftUI
+import Yosemite
 
 struct InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView: View {
     @ObservedObject var viewModel: InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel
@@ -35,7 +36,8 @@ struct InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView: View {
 
 struct InPersonPaymentsCodPaymentGatewayNotSetUp_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(completion: {})
+        let viewModel = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(configuration: CardPresentPaymentsConfiguration(country: "US"),
+                                                                                      completion: {})
         return InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView(viewModel: viewModel)
     }
 }

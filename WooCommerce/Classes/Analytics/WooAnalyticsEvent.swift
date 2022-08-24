@@ -745,6 +745,8 @@ extension WooAnalyticsEvent {
             static let batteryLevel = "battery_level"
             static let cardReaderModel = "card_reader_model"
             static let countryCode = "country"
+            static let reason = "reason"
+            static let remindLater = "remind_later"
             static let gatewayID = "plugin_slug"
             static let errorDescription = "error_description"
             static let paymentMethodType = "payment_method_type"
@@ -1150,7 +1152,23 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardPresentOnboardingNotCompleted,
                               properties: [
                                 Keys.countryCode: countryCode,
-                                "reason": reason
+                                Keys.reason: reason
+                              ])
+        }
+
+        /// Tracked when a In-Person Payments onboarding step is skipped by the user.
+        ///
+        /// - Parameters:
+        ///   - reason: the reason why the onboarding step was shown (effectively the name of the step.)
+        ///   - remindLater: whether the user will see this onboarding step again
+        ///   - countryCode: the country code of the store.
+        ///
+        static func cardPresentOnboardingStepSkipped(reason: String, remindLater: Bool, countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardPresentOnboardingStepSkipped,
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                Keys.reason: reason,
+                                Keys.remindLater: remindLater
                               ])
         }
 

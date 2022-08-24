@@ -57,7 +57,7 @@ final class HelpAndSupportViewController: UIViewController {
     var displaysDismissAction = false
 
     /// Custom help center web page's URL
-    /// If non-nil this web page is launched instead of ZenDesk
+    /// If non-nil this web page is launched instead of Zendesk
     ///
     private let customHelpCenterURL: URL?
 

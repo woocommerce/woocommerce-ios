@@ -65,6 +65,8 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel: Obser
     }
 
     func enableTapped() {
+        trackEnableTapped()
+
         guard let siteID = siteID else {
             return completion()
         }
@@ -108,16 +110,22 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel: Obser
 
 // MARK: - Analytics
 private extension InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel {
-    private typealias Event = WooAnalyticsEvent.InPersonPayments
+    typealias Event = WooAnalyticsEvent.InPersonPayments
 
-    private var reason: String {
+    var reason: String {
         CardPresentPaymentOnboardingState.codPaymentGatewayNotSetUp.reasonForAnalytics ?? ""
     }
 
-    private func trackSkipTapped() {
+    func trackSkipTapped() {
         let event = Event.cardPresentOnboardingStepSkipped(reason: reason,
                                                            remindLater: false,
                                                            countryCode: cardPresentPaymentsConfiguration.countryCode)
+        analytics.track(event: event)
+    }
+
+    func trackEnableTapped() {
+        let event = Event.cardPresentOnboardingCtaTapped(reason: reason,
+                                                         countryCode: cardPresentPaymentsConfiguration.countryCode)
         analytics.track(event: event)
     }
 }

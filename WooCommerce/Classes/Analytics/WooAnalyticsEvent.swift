@@ -1172,6 +1172,20 @@ extension WooAnalyticsEvent {
                               ])
         }
 
+        /// Tracked when a In-Person Payments onboarding step's CTA is tapped by the user.
+        ///
+        /// - Parameters:
+        ///   - reason: the reason why the onboarding step was shown (effectively the name of the step.)
+        ///   - countryCode: the country code of the store.
+        ///
+        static func cardPresentOnboardingCtaTapped(reason: String, countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardPresentOnboardingCtaTapped,
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                Keys.reason: reason
+                              ])
+        }
+
         /// Tracked when the user taps on the "See Receipt" button to view a receipt.
         /// - Parameter countryCode: the country code of the store.
         ///

@@ -134,10 +134,26 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests: 
         assertEqual(false, eventProperties[AnalyticProperties.remindLaterKey] as? Bool)
         assertEqual("US", eventProperties[AnalyticProperties.countryCodeKey] as? String)
     }
+
+    func test_enable_tapped_logs_cta_tapped_event() throws {
+        // Given
+        assertEmpty(analyticsProvider.receivedEvents)
+
+        // When
+        sut.enableTapped()
+
+        // Then
+        assertNotEmpty(analyticsProvider.receivedEvents)
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == AnalyticEvents.ctaTappedEvent }))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        assertEqual(AnalyticProperties.cashOnDeliveryDisabledReason, eventProperties[AnalyticProperties.reasonKey] as? String)
+        assertEqual("US", eventProperties[AnalyticProperties.countryCodeKey] as? String)
+    }
 }
 
 private enum AnalyticEvents {
     static let skippedEvent = "card_present_onboarding_step_skipped"
+    static let ctaTappedEvent = "card_present_onboarding_cta_tapped"
 }
 
 private enum AnalyticProperties {

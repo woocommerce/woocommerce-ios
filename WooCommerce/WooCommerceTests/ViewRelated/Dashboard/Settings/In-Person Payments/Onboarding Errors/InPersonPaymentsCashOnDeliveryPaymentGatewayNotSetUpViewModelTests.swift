@@ -15,6 +15,8 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests: 
 
     private var configuration: CardPresentPaymentsConfiguration!
 
+    private var dependencies: InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel.Dependencies!
+
     private var sut: InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel!
 
     override func setUp() {
@@ -24,9 +26,12 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests: 
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         configuration = CardPresentPaymentsConfiguration.init(country: "US")
-        sut = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(stores: stores,
-                                                                            noticePresenter: noticePresenter,
-                                                                            analytics: analytics,
+        dependencies = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel.Dependencies(
+            stores: stores,
+            noticePresenter: noticePresenter,
+            analytics: analytics
+        )
+        sut = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(dependencies: dependencies,
                                                                             configuration: configuration,
                                                                             completion: {})
     }
@@ -34,8 +39,7 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests: 
     func test_skip_always_calls_completion() {
         // Given
         let completionCalled: Bool = waitFor { promise in
-            let sut = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(stores: self.stores,
-                                                                                    noticePresenter: self.noticePresenter,
+            let sut = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(dependencies: self.dependencies,
                                                                                     configuration: self.configuration,
                                                                                     completion: {
                 promise(true)
@@ -81,8 +85,7 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests: 
         }
 
         let completionCalled: Bool = waitFor { promise in
-            let sut = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(stores: self.stores,
-                                                                                    noticePresenter: self.noticePresenter,
+            let sut = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(dependencies: self.dependencies,
                                                                                     configuration: self.configuration,
                                                                                     completion: {
                 promise(true)

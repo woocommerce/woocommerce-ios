@@ -2,30 +2,56 @@ import Foundation
 import Yosemite
 
 final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel: ObservableObject {
+    // MARK: - Dependencies
+    struct Dependencies {
+        let stores: StoresManager
+        let noticePresenter: NoticePresenter
+        let analytics: Analytics
+
+        init(stores: StoresManager = ServiceLocator.stores,
+             noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
+             analytics: Analytics = ServiceLocator.analytics) {
+            self.stores = stores
+            self.noticePresenter = noticePresenter
+            self.analytics = analytics
+        }
+    }
+
+    private let dependencies: Dependencies
+
+    private var stores: StoresManager {
+        dependencies.stores
+    }
+
+    private var noticePresenter: NoticePresenter {
+        dependencies.noticePresenter
+    }
+
+    private var analytics: Analytics {
+        dependencies.analytics
+    }
+
+    // MARK: - Output properties
     let completion: () -> Void
-    private let stores: StoresManager
-    private let noticePresenter: NoticePresenter
-    private let analytics: Analytics
-    private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
     @Published var awaitingResponse = false
+
+    // MARK: - Configuration properties
+    private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
     private var siteID: Int64? {
         stores.sessionManager.defaultStoreID
     }
 
-    init(stores: StoresManager = ServiceLocator.stores,
-         noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
-         analytics: Analytics = ServiceLocator.analytics,
+    init(dependencies: Dependencies = Dependencies(),
          configuration: CardPresentPaymentsConfiguration,
          completion: @escaping () -> Void) {
-        self.stores = stores
-        self.noticePresenter = noticePresenter
-        self.analytics = analytics
+        self.dependencies = dependencies
         self.cardPresentPaymentsConfiguration = configuration
         self.completion = completion
     }
 
+    // MARK: - Actions
     func skipTapped() {
         trackSkipTapped()
 

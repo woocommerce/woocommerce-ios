@@ -21,4 +21,10 @@ public final class PrologueScreen: ScreenObject {
 
         return LoginSiteAddressScreen()
     }
+
+    @discardableResult
+    public func verifyPrologueScreenLoaded() throws -> Self {
+        XCTAssertTrue(isLoaded)
+        return self
+    }
 }

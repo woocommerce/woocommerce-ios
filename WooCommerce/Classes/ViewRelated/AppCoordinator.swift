@@ -73,6 +73,7 @@ final class AppCoordinator {
                     self.displayLoggedInStateWithoutDefaultStore()
                 case (true, false):
                     self.validateRoleEligibility {
+                        self.configureAuthenticator()
                         self.displayLoggedInUI()
                         self.synchronizeAndShowWhatsNew()
                     }
@@ -142,14 +143,20 @@ private extension AppCoordinator {
 
     /// Configures the WPAuthenticator and sets the authenticator UI as the window's root view.
     func configureAndDisplayAuthenticator() {
-        authenticationManager.initialize()
-        appleIDCredentialChecker.observeLoggedInStateForAppleIDObservations()
+        configureAuthenticator()
+
         let authenticationUI = authenticationManager.authenticationUI()
         setWindowRootViewControllerAndAnimateIfNeeded(authenticationUI) { [weak self] _ in
             guard let self = self else { return }
             self.tabBarController.removeViewControllers()
         }
         ServiceLocator.analytics.track(.openedLogin, withProperties: ["prologue_experiment_variant": ABTest.loginPrologueButtonOrder.variation.analyticsValue])
+    }
+
+    /// Configures the WPAuthenticator for usage in both logged-in and logged-out states.
+    func configureAuthenticator() {
+        authenticationManager.initialize()
+        appleIDCredentialChecker.observeLoggedInStateForAppleIDObservations()
     }
 
     /// Determines whether the login onboarding should be shown.
@@ -208,6 +215,8 @@ private extension AppCoordinator {
         guard window.rootViewController == nil else {
             return
         }
+
+        configureAuthenticator()
 
         let matcher = ULAccountMatcher(storageManager: storageManager)
         matcher.refreshStoredSites()

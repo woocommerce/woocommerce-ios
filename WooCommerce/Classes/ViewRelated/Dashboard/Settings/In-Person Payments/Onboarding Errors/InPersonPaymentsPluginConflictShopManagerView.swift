@@ -2,6 +2,7 @@ import SwiftUI
 import Yosemite
 
 struct InPersonPaymentsPluginConflictShopManager: View {
+    let analyticReason: String?
     let onRefresh: () -> Void
     @State private var presentedSetupURL: URL? = nil
     @Environment(\.verticalSizeClass) var verticalSizeClass
@@ -32,7 +33,7 @@ struct InPersonPaymentsPluginConflictShopManager: View {
 
             Spacer()
 
-            InPersonPaymentsLearnMore()
+            InPersonPaymentsLearnMore(analyticReason: analyticReason)
         }
         .safariSheet(url: $presentedSetupURL, onDismiss: onRefresh)
     }
@@ -66,6 +67,6 @@ private enum Constants {
 
 struct InPersonPaymentsPluginConfictShopManager_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsPluginConflictShopManager(onRefresh: {})
+        InPersonPaymentsPluginConflictShopManager(analyticReason: nil, onRefresh: {})
     }
 }

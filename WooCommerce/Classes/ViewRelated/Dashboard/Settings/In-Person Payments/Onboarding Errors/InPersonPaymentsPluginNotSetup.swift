@@ -3,6 +3,7 @@ import Yosemite
 
 struct InPersonPaymentsPluginNotSetup: View {
     let plugin: CardPresentPaymentsPlugin
+    let analyticReason: String?
     let onRefresh: () -> Void
     @State private var presentedSetupURL: URL? = nil
 
@@ -33,7 +34,7 @@ struct InPersonPaymentsPluginNotSetup: View {
             .buttonStyle(PrimaryButtonStyle())
             .padding(.bottom, 24.0)
 
-            InPersonPaymentsLearnMore()
+            InPersonPaymentsLearnMore(analyticReason: analyticReason)
         }
         .safariSheet(url: $presentedSetupURL, onDismiss: onRefresh)
     }
@@ -65,6 +66,6 @@ private enum Localization {
 }
 struct InPersonPaymentsPluginNotSetup_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsPluginNotSetup(plugin: .wcPay, onRefresh: {})
+        InPersonPaymentsPluginNotSetup(plugin: .wcPay, analyticReason: nil, onRefresh: {})
     }
 }

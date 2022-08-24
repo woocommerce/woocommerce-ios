@@ -2,6 +2,7 @@ import SwiftUI
 import Yosemite
 
 struct InPersonPaymentsDeactivateStripeView: View {
+    let analyticReason: String?
     let onRefresh: () -> Void
     let showSetupPluginsButton: Bool
     @State private var presentedSetupURL: URL? = nil
@@ -37,7 +38,7 @@ struct InPersonPaymentsDeactivateStripeView: View {
                 .padding(.bottom, Constants.padding)
             }
 
-            InPersonPaymentsLearnMore()
+            InPersonPaymentsLearnMore(analyticReason: analyticReason)
         }
         .safariSheet(url: $presentedSetupURL, onDismiss: onRefresh)
     }
@@ -81,6 +82,6 @@ private enum Constants {
 
 struct InPersonPaymentsDeactivateStripeAdmin_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsPluginConflictAdmin(onRefresh: {})
+        InPersonPaymentsPluginConflictAdmin(analyticReason: nil, onRefresh: {})
     }
 }

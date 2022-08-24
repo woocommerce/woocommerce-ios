@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct InPersonPaymentsPluginNotInstalled: View {
+    let analyticReason: String?
     let onRefresh: () -> Void
 
     var body: some View {
@@ -13,6 +14,7 @@ struct InPersonPaymentsPluginNotInstalled: View {
             ),
             supportLink: false,
             learnMore: true,
+            analyticReason: analyticReason,
             button: InPersonPaymentsOnboardingError.ButtonInfo(
                 text: Localization.primaryButton,
                 action: onRefresh
@@ -40,6 +42,6 @@ private enum Localization {
 
 struct InPersonPaymentsPluginNotInstalled_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsPluginNotInstalled(onRefresh: {})
+        InPersonPaymentsPluginNotInstalled(analyticReason: nil, onRefresh: {})
     }
 }

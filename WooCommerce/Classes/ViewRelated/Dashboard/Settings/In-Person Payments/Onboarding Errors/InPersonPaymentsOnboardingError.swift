@@ -7,6 +7,7 @@ struct InPersonPaymentsOnboardingError: View {
     let image: InPersonPaymentsOnboardingErrorMainContentView.ImageInfo
     let supportLink: Bool
     let learnMore: Bool
+    let analyticReason: String?
     var button: ButtonInfo? = nil
 
     struct ButtonInfo {
@@ -33,7 +34,7 @@ struct InPersonPaymentsOnboardingError: View {
                     .padding(.bottom, 24.0)
             }
             if learnMore {
-                InPersonPaymentsLearnMore()
+                InPersonPaymentsLearnMore(analyticReason: analyticReason)
             }
         }.padding()
     }

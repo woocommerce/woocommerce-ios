@@ -13,7 +13,7 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests: 
     private var sut: InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel!
 
     override func setUp() {
-        stores = MockStoresManager(sessionManager: .testingInstance)
+        stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.sessionManager.setStoreId(12345)
         noticePresenter = MockNoticePresenter()
         sut = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(stores: stores, noticePresenter: noticePresenter, completion: {})

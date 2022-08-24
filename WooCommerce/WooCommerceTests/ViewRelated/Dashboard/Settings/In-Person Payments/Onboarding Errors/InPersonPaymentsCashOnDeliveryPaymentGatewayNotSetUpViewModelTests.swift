@@ -6,7 +6,6 @@ import Yosemite
 import Networking
 
 final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests: XCTestCase {
-
     private var stores: MockStoresManager!
 
     private var noticePresenter: MockNoticePresenter!
@@ -101,5 +100,4 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests: 
         let expectedTitle = "Failed to enable Pay in Person. Please try again later."
         assertEqual(expectedTitle, notice.title)
     }
-
 }

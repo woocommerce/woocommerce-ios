@@ -89,7 +89,7 @@ GLOTPRESS_TO_ASC_METADATA_LOCALE_CODES = {
   'sv' => 'sv',
   'tr' => 'tr',
   'zh-cn' => 'zh-Hans',
-  'zh-tw' => 'zh-Hant',
+  'zh-tw' => 'zh-Hant'
 }.freeze
 
 ASC_KEY_PATH = File.join(SECRETS_DIR, 'app_store_connect_fastlane_api_key.json')
@@ -334,7 +334,7 @@ platform :ios do
     version = ios_get_app_version
     removebranchprotection(repository: GHHELPER_REPO, branch: "release/#{version}")
     setfrozentag(repository: GHHELPER_REPO, milestone: version, freeze: false)
-    create_new_milestone(repository:GHHELPER_REPO, need_appstore_submission: true, milestone_duration:7, number_of_days_from_code_freeze_to_release: 10)
+    create_new_milestone(repository: GHHELPER_REPO, need_appstore_submission: true, milestone_duration: 7, number_of_days_from_code_freeze_to_release: 10)
     close_milestone(repository: GHHELPER_REPO, milestone: version)
 
     # Start the build
@@ -782,11 +782,11 @@ platform :ios do
     # FIXME: Replace this with a call to the future replacement of `gp_downloadmetadata` once it's implemented in the release-toolkit (see paaHJt-31O-p2).
     locales_map = GLOTPRESS_TO_ASC_METADATA_LOCALE_CODES
     target_files = {
-      "v#{ios_get_app_version}-whats-new": { desc: "release_notes.txt", max_size: 4000 },
-      app_store_name: { desc: "name.txt", max_size: 30 },
-      app_store_subtitle: { desc: "subtitle.txt", max_size: 30 },
-      app_store_desc: { desc: "description.txt", max_size: 4000 },
-      app_store_keywords: { desc: "keywords.txt", max_size: 100 },
+      "v#{ios_get_app_version}-whats-new": { desc: 'release_notes.txt', max_size: 4000 },
+      app_store_name: { desc: 'name.txt', max_size: 30 },
+      app_store_subtitle: { desc: 'subtitle.txt', max_size: 30 },
+      app_store_desc: { desc: 'description.txt', max_size: 4000 },
+      app_store_keywords: { desc: 'keywords.txt', max_size: 100 }
     }
 
     gp_downloadmetadata(
@@ -800,14 +800,17 @@ platform :ios do
     # Ensure that none of the `.txt` files in `en-US` would accidentally override our originals in `default`
     target_files.values.map { |h| h[:desc] }.each do |file|
       en_file_path = File.join(metadata_directory, 'en-US', file)
-      UI.user_error!("File `#{en_file_path}` would override the same one in `#{metadata_directory}/default`, but `default/` is the source of truth. " \
-                     + "Delete the `#{en_file_path}` file, ensure the `default/` one has the expected original copy, and try again.") if File.exist?(en_file_path)
+      if File.exist?(en_file_path)
+        UI.user_error!("File `#{en_file_path}` would override the same one in `#{metadata_directory}/default`, but `default/` is the source of truth. " \
+                       + "Delete the `#{en_file_path}` file, ensure the `default/` one has the expected original copy, and try again.")
+      end
     end
 
     # Ensure even empty locale folders have an empty `.gitkeep` file (in case we don't have any translation at all ready for some locales)
-    locales_map.values.each do |locale|
+    locales_map.each_value do |locale|
       gitkeep = File.join(metadata_directory, locale, '.gitkeep')
       next if File.exist?(gitkeep)
+
       FileUtils.mkdir_p(File.dirname(gitkeep))
       FileUtils.touch(gitkeep)
       files_to_commit.append(gitkeep)
@@ -955,11 +958,11 @@ platform :ios do
         'Pods/WordPress*/',
         'Storage/Storage/',
         'Networking/Networking/',
-        'Hardware/Hardware/',
+        'Hardware/Hardware/'
       ],
       exclude: [
         '*Vendor*',
-        'WooCommerce/WooCommerceTests/**', # Some unit tests include localized strings, but we don't want to crowd GlotPress with them
+        'WooCommerce/WooCommerceTests/**' # Some unit tests include localized strings, but we don't want to crowd GlotPress with them
       ],
       output_dir: en_lproj_path
     )

@@ -430,7 +430,7 @@
 		02F843DA273646A30017FE12 /* JetpackBenefitsBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F843D9273646A30017FE12 /* JetpackBenefitsBanner.swift */; };
 		02FE1B9F287F51F400EC03B3 /* LoginOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FE1B9E287F51F400EC03B3 /* LoginOnboardingViewController.swift */; };
 		02FE89C7231FAA4100E85EF8 /* MainTabBarControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FE89C6231FAA4100E85EF8 /* MainTabBarControllerTests.swift */; };
-		0313651128AB81B100EEE571 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0313651028AB81B100EEE571 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUp.swift */; };
+		0313651128AB81B100EEE571 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0313651028AB81B100EEE571 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView.swift */; };
 		0313651328ABCB2D00EEE571 /* InPersonPaymentsOnboardingErrorMainContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0313651228ABCB2D00EEE571 /* InPersonPaymentsOnboardingErrorMainContentView.swift */; };
 		0313651728ACE9F400EEE571 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0313651628ACE9F400EEE571 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel.swift */; };
 		031B10E3274FE2AE007390BA /* CardPresentModalConnectionFailedUpdateAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031B10E2274FE2AE007390BA /* CardPresentModalConnectionFailedUpdateAddress.swift */; };
@@ -2266,7 +2266,7 @@
 		02F843D9273646A30017FE12 /* JetpackBenefitsBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackBenefitsBanner.swift; sourceTree = "<group>"; };
 		02FE1B9E287F51F400EC03B3 /* LoginOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginOnboardingViewController.swift; sourceTree = "<group>"; };
 		02FE89C6231FAA4100E85EF8 /* MainTabBarControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarControllerTests.swift; sourceTree = "<group>"; };
-		0313651028AB81B100EEE571 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUp.swift; sourceTree = "<group>"; };
+		0313651028AB81B100EEE571 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView.swift; sourceTree = "<group>"; };
 		0313651228ABCB2D00EEE571 /* InPersonPaymentsOnboardingErrorMainContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsOnboardingErrorMainContentView.swift; sourceTree = "<group>"; };
 		0313651628ACE9F400EEE571 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel.swift; sourceTree = "<group>"; };
 		03180BE52763AA8F00B938A8 /* Woo-Release-macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Woo-Release-macOS.entitlements"; sourceTree = "<group>"; };
@@ -8235,7 +8235,7 @@
 				ABC35A4B736A0B2D8348DD08 /* InPersonPaymentsOnboardingError.swift */,
 				0313651228ABCB2D00EEE571 /* InPersonPaymentsOnboardingErrorMainContentView.swift */,
 				B979A9B9282D62A500EBB383 /* InPersonPaymentsDeactivateStripeView.swift */,
-				0313651028AB81B100EEE571 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUp.swift */,
+				0313651028AB81B100EEE571 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView.swift */,
 				0313651628ACE9F400EEE571 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel.swift */,
 			);
 			path = "Onboarding Errors";
@@ -9528,7 +9528,7 @@
 				DE61978B28991F0E005E4362 /* WKWebView+Authenticated.swift in Sources */,
 				D8810086257DCCF0008DE6F2 /* WordPressComSiteInfo+Woo.swift in Sources */,
 				311237EE2714DA240033C44E /* CardPresentModalDisplayMessage.swift in Sources */,
-				0313651128AB81B100EEE571 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUp.swift in Sources */,
+				0313651128AB81B100EEE571 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView.swift in Sources */,
 				45E3C8F325E7D30300102E84 /* ShippingLabelAddress+Woo.swift in Sources */,
 				57A25C7C25ACFAEC00A54A62 /* OrderFulfillmentNoticePresenter.swift in Sources */,
 				B9E4364C287587D300883CFA /* FeatureAnnouncementCardView.swift in Sources */,

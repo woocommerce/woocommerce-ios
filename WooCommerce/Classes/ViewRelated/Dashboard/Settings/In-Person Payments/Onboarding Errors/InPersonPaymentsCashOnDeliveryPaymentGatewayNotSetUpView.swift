@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUp: View {
+struct InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView: View {
     @ObservedObject var viewModel: InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel
 
     var body: some View {
@@ -36,7 +36,7 @@ struct InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUp: View {
 struct InPersonPaymentsCodPaymentGatewayNotSetUp_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(completion: {})
-        return InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUp(viewModel: viewModel)
+        return InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView(viewModel: viewModel)
     }
 }
 

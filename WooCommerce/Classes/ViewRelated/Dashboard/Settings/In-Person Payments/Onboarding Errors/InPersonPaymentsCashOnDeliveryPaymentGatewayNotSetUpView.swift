@@ -29,7 +29,8 @@ struct InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView: View {
             Spacer()
 
             InPersonPaymentsLearnMore(url: WooConstants.URLs.cashOnDeliveryLearnMoreUrl.asURL(),
-                                      formatText: Localization.cashOnDeliveryLearnMore)
+                                      formatText: Localization.cashOnDeliveryLearnMore,
+                                      analyticReason: viewModel.analyticReason)
         }
     }
 }

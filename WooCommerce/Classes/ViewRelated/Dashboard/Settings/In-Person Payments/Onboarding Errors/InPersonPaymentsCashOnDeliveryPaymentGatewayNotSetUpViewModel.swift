@@ -36,6 +36,8 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel: Obser
 
     @Published var awaitingResponse = false
 
+    let analyticReason: String = CardPresentPaymentOnboardingState.codPaymentGatewayNotSetUp.reasonForAnalytics ?? ""
+
     // MARK: - Configuration properties
     private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
@@ -114,19 +116,15 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel: Obser
 private extension InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel {
     typealias Event = WooAnalyticsEvent.InPersonPayments
 
-    var reason: String {
-        CardPresentPaymentOnboardingState.codPaymentGatewayNotSetUp.reasonForAnalytics ?? ""
-    }
-
     func trackSkipTapped() {
-        let event = Event.cardPresentOnboardingStepSkipped(reason: reason,
+        let event = Event.cardPresentOnboardingStepSkipped(reason: analyticReason,
                                                            remindLater: false,
                                                            countryCode: cardPresentPaymentsConfiguration.countryCode)
         analytics.track(event: event)
     }
 
     func trackEnableTapped() {
-        let event = Event.cardPresentOnboardingCtaTapped(reason: reason,
+        let event = Event.cardPresentOnboardingCtaTapped(reason: analyticReason,
                                                          countryCode: cardPresentPaymentsConfiguration.countryCode)
         analytics.track(event: event)
     }

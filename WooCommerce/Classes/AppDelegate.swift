@@ -443,7 +443,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 
 // MARK: - Universal Links
 
-extension AppDelegate {
+private extension AppDelegate {
     func handleWebActivity(_ activity: NSUserActivity) {
         guard let linkURL = activity.webpageURL else {
             return

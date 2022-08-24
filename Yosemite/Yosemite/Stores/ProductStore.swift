@@ -141,11 +141,9 @@ private extension ProductStore {
                                  excludedProductIDs: excludedProductIDs) { [weak self] result in
             switch result {
             case .success(let products):
-                let shouldDeleteExistingProducts = pageNumber == Default.firstPageNumber
                 self?.upsertSearchResultsInBackground(siteID: siteID,
                                                       keyword: keyword,
-                                                      readOnlyProducts: products,
-                                                      shouldDeleteExistingProducts: shouldDeleteExistingProducts) {
+                                                      readOnlyProducts: products) {
                     onCompletion(.success(()))
                 }
             case .failure(let error):
@@ -673,13 +671,9 @@ private extension ProductStore {
     private func upsertSearchResultsInBackground(siteID: Int64,
                                                  keyword: String,
                                                  readOnlyProducts: [Networking.Product],
-                                                 shouldDeleteExistingProducts: Bool = false,
                                                  onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform { [weak self] in
-            if shouldDeleteExistingProducts {
-                derivedStorage.deleteProducts(siteID: siteID)
-            }
             self?.upsertStoredProducts(readOnlyProducts: readOnlyProducts, in: derivedStorage)
             self?.upsertStoredResults(siteID: siteID, keyword: keyword, readOnlyProducts: readOnlyProducts, in: derivedStorage)
         }

@@ -1186,6 +1186,32 @@ extension WooAnalyticsEvent {
                               ])
         }
 
+        /// Tracked when the Cash on Delivery Payment Gateway is successfully enabled, e.g. from the IPP onboarding flow.
+        ///
+        /// - Parameters:
+        ///   - countryCode: the country code of the store.
+        ///
+        static func enableCashOnDeliverySuccess(countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .enableCashOnDeliverySuccess,
+                              properties: [
+                                Keys.countryCode: countryCode
+                              ])
+        }
+
+        /// Tracked when the Cash on Delivery Payment Gateway enabling fails, e.g. from the IPP onboarding flow.
+        ///
+        /// - Parameters:
+        ///   - countryCode: the country code of the store.
+        ///
+        static func enableCashOnDeliveryFailed(countryCode: String,
+                                               error: Error?) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .enableCashOnDeliveryFailed,
+                              properties: [
+                                Keys.countryCode: countryCode
+                              ],
+                              error: error)
+        }
+
         /// Tracked when the user taps on the "See Receipt" button to view a receipt.
         /// - Parameter countryCode: the country code of the store.
         ///

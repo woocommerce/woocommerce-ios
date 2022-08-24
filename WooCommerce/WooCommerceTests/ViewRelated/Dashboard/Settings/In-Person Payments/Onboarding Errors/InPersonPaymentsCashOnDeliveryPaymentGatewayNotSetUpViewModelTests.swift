@@ -149,11 +149,64 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests: 
         assertEqual(AnalyticProperties.cashOnDeliveryDisabledReason, eventProperties[AnalyticProperties.reasonKey] as? String)
         assertEqual("US", eventProperties[AnalyticProperties.countryCodeKey] as? String)
     }
+
+    func test_enable_success_logs_enable_success_event() throws {
+        // Given
+        assertEmpty(analyticsProvider.receivedEvents)
+        stores.whenReceivingAction(ofType: PaymentGatewayAction.self) { action in
+            switch action {
+            case let .updatePaymentGateway(paymentGateway, onCompletion):
+                onCompletion(.success(paymentGateway))
+            default:
+                break
+            }
+        }
+
+        let _: Void = waitFor { promise in
+            let sut = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(dependencies: self.dependencies,
+                                                                                    configuration: self.configuration,
+                                                                                    completion: {
+                promise(())
+            })
+            // When
+            sut.enableTapped()
+        }
+
+        // Then
+        assertNotEmpty(analyticsProvider.receivedEvents)
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == AnalyticEvents.enableCashOnDeliverySuccess }))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        assertEqual("US", eventProperties[AnalyticProperties.countryCodeKey] as? String)
+    }
+
+    func test_enable_failure_logs_enable_failure_event() throws {
+        // Given
+        stores.whenReceivingAction(ofType: PaymentGatewayAction.self) { action in
+            switch action {
+            case let .updatePaymentGateway(_, onCompletion):
+                onCompletion(.failure(DotcomError.noRestRoute))
+            default:
+                break
+            }
+        }
+
+        // When
+        sut.enableTapped()
+
+        // Then
+        assertNotEmpty(analyticsProvider.receivedEvents)
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == AnalyticEvents.enableCashOnDeliveryFailed }))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        assertEqual("US", eventProperties[AnalyticProperties.countryCodeKey] as? String)
+        assertEqual("Dotcom Invalid REST Route", eventProperties[AnalyticProperties.errorDescriptionKey] as? String)
+    }
 }
 
 private enum AnalyticEvents {
     static let skippedEvent = "card_present_onboarding_step_skipped"
     static let ctaTappedEvent = "card_present_onboarding_cta_tapped"
+    static let enableCashOnDeliverySuccess = "enable_cash_on_delivery_success"
+    static let enableCashOnDeliveryFailed = "enable_cash_on_delivery_failed"
 }
 
 private enum AnalyticProperties {
@@ -161,4 +214,5 @@ private enum AnalyticProperties {
     static let cashOnDeliveryDisabledReason = "cash_on_delivery_disabled"
     static let remindLaterKey = "remind_later"
     static let countryCodeKey = "country"
+    static let errorDescriptionKey = "error_description"
 }

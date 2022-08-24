@@ -79,9 +79,11 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel: Obser
                 DDLogError("💰 Could not update Payment Gateway: \(String(describing: result.failure))")
                 self.awaitingResponse = false
                 self.displayEnableCashOnDeliveryFailureNotice()
+                self.trackEnableCashOnDeliveryFailed(error: result.failure)
                 return
             }
 
+            self.trackEnableCashOnDeliverySuccess()
             self.completion()
         }
         stores.dispatch(action)
@@ -126,6 +128,17 @@ private extension InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel 
     func trackEnableTapped() {
         let event = Event.cardPresentOnboardingCtaTapped(reason: reason,
                                                          countryCode: cardPresentPaymentsConfiguration.countryCode)
+        analytics.track(event: event)
+    }
+
+    func trackEnableCashOnDeliverySuccess() {
+        let event = Event.enableCashOnDeliverySuccess(countryCode: cardPresentPaymentsConfiguration.countryCode)
+        analytics.track(event: event)
+    }
+
+    func trackEnableCashOnDeliveryFailed(error: Error?) {
+        let event = Event.enableCashOnDeliveryFailed(countryCode: cardPresentPaymentsConfiguration.countryCode,
+                                                     error: error)
         analytics.track(event: event)
     }
 }

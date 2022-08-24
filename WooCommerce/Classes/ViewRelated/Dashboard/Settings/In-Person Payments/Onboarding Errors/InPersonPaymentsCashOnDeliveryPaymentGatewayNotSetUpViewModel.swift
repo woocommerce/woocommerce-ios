@@ -2,7 +2,7 @@ import Foundation
 import Yosemite
 
 final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel: ObservableObject {
-    let completion: () -> ()
+    let completion: () -> Void
     private let stores: StoresManager
     private let noticePresenter: NoticePresenter
 
@@ -14,7 +14,7 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel: Obser
 
     init(stores: StoresManager = ServiceLocator.stores,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
-         completion: @escaping () -> ()) {
+         completion: @escaping () -> Void) {
         self.stores = stores
         self.noticePresenter = noticePresenter
         self.completion = completion

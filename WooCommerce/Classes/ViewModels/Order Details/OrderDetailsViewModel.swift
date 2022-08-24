@@ -672,6 +672,13 @@ extension OrderDetailsViewModel {
     }
 }
 
+// MARK: Order Address validation
+private extension OrderDetailsViewModel {
+    func checkOrderAddressWithShippingLabelValidation() {
+
+    }
+}
+
 // MARK: Definitions
 private extension OrderDetailsViewModel {
     /// Defines the possible sync states of the view model data.

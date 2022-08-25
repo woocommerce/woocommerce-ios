@@ -10,21 +10,38 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests: 
 
     private var noticePresenter: MockNoticePresenter!
 
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: Analytics!
+
+    private var configuration: CardPresentPaymentsConfiguration!
+
+    private var dependencies: InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel.Dependencies!
+
     private var sut: InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel!
 
     override func setUp() {
         stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.sessionManager.setStoreId(12345)
         noticePresenter = MockNoticePresenter()
-        sut = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(stores: stores, noticePresenter: noticePresenter, completion: {})
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        configuration = CardPresentPaymentsConfiguration.init(country: "US")
+        dependencies = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel.Dependencies(
+            stores: stores,
+            noticePresenter: noticePresenter,
+            analytics: analytics
+        )
+        sut = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(dependencies: dependencies,
+                                                                            configuration: configuration,
+                                                                            completion: {})
     }
 
     func test_skip_always_calls_completion() {
         // Given
         let completionCalled: Bool = waitFor { promise in
-            let sut = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(stores: self.stores,
-                                                                         noticePresenter: self.noticePresenter,
-                                                                         completion: {
+            let sut = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(dependencies: self.dependencies,
+                                                                                    configuration: self.configuration,
+                                                                                    completion: {
                 promise(true)
             })
 
@@ -68,9 +85,9 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests: 
         }
 
         let completionCalled: Bool = waitFor { promise in
-            let sut = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(stores: self.stores,
-                                                                          noticePresenter: self.noticePresenter,
-                                                                          completion: {
+            let sut = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(dependencies: self.dependencies,
+                                                                                    configuration: self.configuration,
+                                                                                    completion: {
                 promise(true)
             })
             // When
@@ -100,4 +117,102 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests: 
         let expectedTitle = "Failed to enable Pay in Person. Please try again later."
         assertEqual(expectedTitle, notice.title)
     }
+
+    // MARK: - Analytics tests
+    func test_skip_tapped_logs_onboarding_step_skipped_event() throws {
+        // Given
+        assertEmpty(analyticsProvider.receivedEvents)
+
+        // When
+        sut.skipTapped()
+
+        // Then
+        assertNotEmpty(analyticsProvider.receivedEvents)
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == AnalyticEvents.skippedEvent }))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        assertEqual(AnalyticProperties.cashOnDeliveryDisabledReason, eventProperties[AnalyticProperties.reasonKey] as? String)
+        assertEqual(false, eventProperties[AnalyticProperties.remindLaterKey] as? Bool)
+        assertEqual("US", eventProperties[AnalyticProperties.countryCodeKey] as? String)
+    }
+
+    func test_enable_tapped_logs_cta_tapped_event() throws {
+        // Given
+        assertEmpty(analyticsProvider.receivedEvents)
+
+        // When
+        sut.enableTapped()
+
+        // Then
+        assertNotEmpty(analyticsProvider.receivedEvents)
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == AnalyticEvents.ctaTappedEvent }))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        assertEqual(AnalyticProperties.cashOnDeliveryDisabledReason, eventProperties[AnalyticProperties.reasonKey] as? String)
+        assertEqual("US", eventProperties[AnalyticProperties.countryCodeKey] as? String)
+    }
+
+    func test_enable_success_logs_enable_success_event() throws {
+        // Given
+        assertEmpty(analyticsProvider.receivedEvents)
+        stores.whenReceivingAction(ofType: PaymentGatewayAction.self) { action in
+            switch action {
+            case let .updatePaymentGateway(paymentGateway, onCompletion):
+                onCompletion(.success(paymentGateway))
+            default:
+                break
+            }
+        }
+
+        let _: Void = waitFor { promise in
+            let sut = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(dependencies: self.dependencies,
+                                                                                    configuration: self.configuration,
+                                                                                    completion: {
+                promise(())
+            })
+            // When
+            sut.enableTapped()
+        }
+
+        // Then
+        assertNotEmpty(analyticsProvider.receivedEvents)
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == AnalyticEvents.enableCashOnDeliverySuccess }))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        assertEqual("US", eventProperties[AnalyticProperties.countryCodeKey] as? String)
+    }
+
+    func test_enable_failure_logs_enable_failure_event() throws {
+        // Given
+        stores.whenReceivingAction(ofType: PaymentGatewayAction.self) { action in
+            switch action {
+            case let .updatePaymentGateway(_, onCompletion):
+                onCompletion(.failure(DotcomError.noRestRoute))
+            default:
+                break
+            }
+        }
+
+        // When
+        sut.enableTapped()
+
+        // Then
+        assertNotEmpty(analyticsProvider.receivedEvents)
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == AnalyticEvents.enableCashOnDeliveryFailed }))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        assertEqual("US", eventProperties[AnalyticProperties.countryCodeKey] as? String)
+        assertEqual("Dotcom Invalid REST Route", eventProperties[AnalyticProperties.errorDescriptionKey] as? String)
+    }
+}
+
+private enum AnalyticEvents {
+    static let skippedEvent = "card_present_onboarding_step_skipped"
+    static let ctaTappedEvent = "card_present_onboarding_cta_tapped"
+    static let enableCashOnDeliverySuccess = "enable_cash_on_delivery_success"
+    static let enableCashOnDeliveryFailed = "enable_cash_on_delivery_failed"
+}
+
+private enum AnalyticProperties {
+    static let reasonKey = "reason"
+    static let cashOnDeliveryDisabledReason = "cash_on_delivery_disabled"
+    static let remindLaterKey = "remind_later"
+    static let countryCodeKey = "country"
+    static let errorDescriptionKey = "error_description"
 }

@@ -2,25 +2,61 @@ import Foundation
 import Yosemite
 
 final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel: ObservableObject {
+    // MARK: - Dependencies
+    struct Dependencies {
+        let stores: StoresManager
+        let noticePresenter: NoticePresenter
+        let analytics: Analytics
+
+        init(stores: StoresManager = ServiceLocator.stores,
+             noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
+             analytics: Analytics = ServiceLocator.analytics) {
+            self.stores = stores
+            self.noticePresenter = noticePresenter
+            self.analytics = analytics
+        }
+    }
+
+    private let dependencies: Dependencies
+
+    private var stores: StoresManager {
+        dependencies.stores
+    }
+
+    private var noticePresenter: NoticePresenter {
+        dependencies.noticePresenter
+    }
+
+    private var analytics: Analytics {
+        dependencies.analytics
+    }
+
+    // MARK: - Output properties
     let completion: () -> Void
-    private let stores: StoresManager
-    private let noticePresenter: NoticePresenter
 
     @Published var awaitingResponse = false
+
+    let analyticReason: String = CardPresentPaymentOnboardingState.codPaymentGatewayNotSetUp.reasonForAnalytics ?? ""
+
+    // MARK: - Configuration properties
+    private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
     private var siteID: Int64? {
         stores.sessionManager.defaultStoreID
     }
 
-    init(stores: StoresManager = ServiceLocator.stores,
-         noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
+    init(dependencies: Dependencies = Dependencies(),
+         configuration: CardPresentPaymentsConfiguration,
          completion: @escaping () -> Void) {
-        self.stores = stores
-        self.noticePresenter = noticePresenter
+        self.dependencies = dependencies
+        self.cardPresentPaymentsConfiguration = configuration
         self.completion = completion
     }
 
+    // MARK: - Actions
     func skipTapped() {
+        trackSkipTapped()
+
         guard let siteID = siteID else {
             return completion()
         }
@@ -31,6 +67,8 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel: Obser
     }
 
     func enableTapped() {
+        trackEnableTapped()
+
         guard let siteID = siteID else {
             return completion()
         }
@@ -43,9 +81,11 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel: Obser
                 DDLogError("💰 Could not update Payment Gateway: \(String(describing: result.failure))")
                 self.awaitingResponse = false
                 self.displayEnableCashOnDeliveryFailureNotice()
+                self.trackEnableCashOnDeliveryFailed(error: result.failure)
                 return
             }
 
+            self.trackEnableCashOnDeliverySuccess()
             self.completion()
         }
         stores.dispatch(action)
@@ -69,6 +109,35 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel: Obser
                             actionHandler: enableTapped)
 
         noticePresenter.enqueue(notice: notice)
+    }
+}
+
+// MARK: - Analytics
+private extension InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel {
+    typealias Event = WooAnalyticsEvent.InPersonPayments
+
+    func trackSkipTapped() {
+        let event = Event.cardPresentOnboardingStepSkipped(reason: analyticReason,
+                                                           remindLater: false,
+                                                           countryCode: cardPresentPaymentsConfiguration.countryCode)
+        analytics.track(event: event)
+    }
+
+    func trackEnableTapped() {
+        let event = Event.cardPresentOnboardingCtaTapped(reason: analyticReason,
+                                                         countryCode: cardPresentPaymentsConfiguration.countryCode)
+        analytics.track(event: event)
+    }
+
+    func trackEnableCashOnDeliverySuccess() {
+        let event = Event.enableCashOnDeliverySuccess(countryCode: cardPresentPaymentsConfiguration.countryCode)
+        analytics.track(event: event)
+    }
+
+    func trackEnableCashOnDeliveryFailed(error: Error?) {
+        let event = Event.enableCashOnDeliveryFailed(countryCode: cardPresentPaymentsConfiguration.countryCode,
+                                                     error: error)
+        analytics.track(event: event)
     }
 }
 

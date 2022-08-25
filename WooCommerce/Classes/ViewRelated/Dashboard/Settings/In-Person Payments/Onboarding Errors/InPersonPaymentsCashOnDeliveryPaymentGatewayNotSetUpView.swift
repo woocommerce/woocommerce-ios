@@ -1,4 +1,5 @@
 import SwiftUI
+import Yosemite
 
 struct InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView: View {
     @ObservedObject var viewModel: InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel
@@ -28,14 +29,16 @@ struct InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView: View {
             Spacer()
 
             InPersonPaymentsLearnMore(url: WooConstants.URLs.cashOnDeliveryLearnMoreUrl.asURL(),
-                                      formatText: Localization.cashOnDeliveryLearnMore)
+                                      formatText: Localization.cashOnDeliveryLearnMore,
+                                      analyticReason: viewModel.analyticReason)
         }
     }
 }
 
 struct InPersonPaymentsCodPaymentGatewayNotSetUp_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(completion: {})
+        let viewModel = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(configuration: CardPresentPaymentsConfiguration(country: "US"),
+                                                                                      completion: {})
         return InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView(viewModel: viewModel)
     }
 }

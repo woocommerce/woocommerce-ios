@@ -726,7 +726,7 @@ platform :ios do
       runtime = SimCtl.runtime(name: "iOS #{SIMULATOR_VERSION}")
       devicetype = SimCtl.devicetype(name: device)
 
-      device = SimCtl.create_device device, devicetype, runtime
+      SimCtl.create_device(device, devicetype, runtime)
     end
   end
 

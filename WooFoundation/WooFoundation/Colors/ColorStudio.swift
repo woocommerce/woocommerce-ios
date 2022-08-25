@@ -1,5 +1,5 @@
 /// Generates the names of the named colors in the ColorPalette.xcasset
-enum ColorStudioName: String, CustomStringConvertible {
+public enum ColorStudioName: String, CustomStringConvertible {
     // MARK: - Base colors
     case blue
     case celadon
@@ -13,7 +13,7 @@ enum ColorStudioName: String, CustomStringConvertible {
     case yellow
     case wooCommercePurple
 
-    var description: String {
+    public var description: String {
         // can't use .capitalized because it lowercases the C and P in "wooCommercePurple"
         return rawValue.prefix(1).uppercased() + rawValue.dropFirst()
     }
@@ -23,7 +23,7 @@ enum ColorStudioName: String, CustomStringConvertible {
 ///
 /// Note: There are a finite number of acceptable values. Not just any Int works.
 ///       Also, enum cases cannot begin with a number, thus the `shade` prefix.
-enum ColorStudioShade: Int, CustomStringConvertible {
+public enum ColorStudioShade: Int, CustomStringConvertible {
     case shade0 = 0
     case shade5 = 5
     case shade10 = 10
@@ -37,7 +37,7 @@ enum ColorStudioShade: Int, CustomStringConvertible {
     case shade90 = 90
     case shade100 = 100
 
-    var description: String {
+    public var description: String {
         return "\(rawValue)"
     }
 }
@@ -48,7 +48,7 @@ extension ColorStudioShade: CaseIterable { }
 
 
 /// A specific color and shade from Color Studio
-struct ColorStudio {
+public struct ColorStudio {
     let name: ColorStudioName
     let shade: ColorStudioShade
 
@@ -63,17 +63,17 @@ struct ColorStudio {
     }
 
     // MARK: - Muriel's semantic colors
-    static let pink = ColorStudio(name: .pink)
-    static let wooCommercePurple = ColorStudio(name: .wooCommercePurple)
-    static let brand = ColorStudio(name: .wooCommercePurple, shade: .shade60)
-    static let red = ColorStudio(name: .red)
-    static let gray = ColorStudio(name: .gray)
-    static let blue = ColorStudio(name: .blue)
-    static let jetpackGreen = ColorStudio(name: .jetpackGreen)
-    static let green = ColorStudio(name: .green)
-    static let yellow = ColorStudio(name: .yellow)
-    static let orange = ColorStudio(name: .orange)
-    static let celadon = ColorStudio(name: .celadon)
+    public static let pink = ColorStudio(name: .pink)
+    public static let wooCommercePurple = ColorStudio(name: .wooCommercePurple)
+    public static let brand = ColorStudio(name: .wooCommercePurple, shade: .shade60)
+    public static let red = ColorStudio(name: .red)
+    public static let gray = ColorStudio(name: .gray)
+    public static let blue = ColorStudio(name: .blue)
+    public static let jetpackGreen = ColorStudio(name: .jetpackGreen)
+    public static let green = ColorStudio(name: .green)
+    public static let yellow = ColorStudio(name: .yellow)
+    public static let orange = ColorStudio(name: .orange)
+    public static let celadon = ColorStudio(name: .celadon)
 
     /// The full name of the color, with required shade value
     func assetName() -> String {

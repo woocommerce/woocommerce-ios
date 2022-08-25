@@ -328,7 +328,6 @@
 		02ACD25A2852E11700EC928E /* RemoveAppleIDAccessCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02ACD2592852E11700EC928E /* RemoveAppleIDAccessCoordinator.swift */; };
 		02ADC7CC239762E0008D4BED /* PaginatedListSelectorViewProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02ADC7CB239762E0008D4BED /* PaginatedListSelectorViewProperties.swift */; };
 		02ADC7CE23978EAA008D4BED /* PaginatedProductShippingClassListSelectorDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02ADC7CD23978EAA008D4BED /* PaginatedProductShippingClassListSelectorDataSourceTests.swift */; };
-		02ADC7D02398C8EB008D4BED /* UIColor+SystemColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02ADC7CF2398C8EB008D4BED /* UIColor+SystemColors.swift */; };
 		02B1AFEC24BC5AE5005DB1E3 /* LinkedProductListSelectorDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B1AFEB24BC5AE5005DB1E3 /* LinkedProductListSelectorDataSource.swift */; };
 		02B1AFEE24BC5BA9005DB1E3 /* LinkedProductListSelectorDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B1AFED24BC5BA9005DB1E3 /* LinkedProductListSelectorDataSourceTests.swift */; };
 		02B2828E27C35061004A332A /* RefreshableInfiniteScrollList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B2828D27C35061004A332A /* RefreshableInfiniteScrollList.swift */; };
@@ -1582,8 +1581,6 @@
 		D88FDB4525DD223B00CB0DBD /* Hardware.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D88FDB4425DD223B00CB0DBD /* Hardware.framework */; };
 		D88FDB4625DD223B00CB0DBD /* Hardware.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D88FDB4425DD223B00CB0DBD /* Hardware.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D8915DBF23729CFB00F63762 /* ColorPalette.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D8915DBE23729CFB00F63762 /* ColorPalette.xcassets */; };
-		D8915DC12372C8AC00F63762 /* ColorStudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8915DC02372C8AC00F63762 /* ColorStudio.swift */; };
-		D8915DC32372C9EF00F63762 /* UIColor+ColorStudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8915DC22372C9EF00F63762 /* UIColor+ColorStudio.swift */; };
 		D89C004725B467C7000E4683 /* ULAccountMismatchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89C004625B467C7000E4683 /* ULAccountMismatchViewModel.swift */; };
 		D89C009425B4E9E2000E4683 /* ULAccountMismatchViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89C009325B4E9E2000E4683 /* ULAccountMismatchViewControllerTests.swift */; };
 		D89C009A25B4EEA4000E4683 /* WrongAccountErrorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89C009925B4EEA4000E4683 /* WrongAccountErrorViewModelTests.swift */; };
@@ -1609,7 +1606,6 @@
 		D8C2A28F231BD00500F503E9 /* ReviewsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C2A28E231BD00500F503E9 /* ReviewsViewModel.swift */; };
 		D8C2A291231BD0FD00F503E9 /* ReviewsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C2A290231BD0FD00F503E9 /* ReviewsDataSource.swift */; };
 		D8CD0605258B384E00B52D63 /* oauth2_token-error.json in Resources */ = {isa = PBXBuildFile; fileRef = D8CD0604258B384E00B52D63 /* oauth2_token-error.json */; };
-		D8CD710F237A49DB007148B9 /* UIColor+SemanticColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8CD710E237A49DB007148B9 /* UIColor+SemanticColors.swift */; };
 		D8D15F83230A17A000D48B3F /* ServiceLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D15F82230A17A000D48B3F /* ServiceLocator.swift */; };
 		D8D15F85230A18AB00D48B3F /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D15F84230A18AB00D48B3F /* Analytics.swift */; };
 		D8EE9692264D328A0033B2F9 /* ReceiptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8EE9690264D328A0033B2F9 /* ReceiptViewController.swift */; };
@@ -9337,7 +9333,6 @@
 				CE2A9FD023C4F2C8002BEC1C /* RefundedProductsViewController.swift in Sources */,
 				0262DA5823A23AC80029AF30 /* ProductShippingSettingsViewController.swift in Sources */,
 				451C77732404534000413F73 /* ProductSettingsSections.swift in Sources */,
-				D8915DC32372C9EF00F63762 /* UIColor+ColorStudio.swift in Sources */,
 				021739A02773F5F60084CD89 /* StoreStatsChartCircleMarker.swift in Sources */,
 				024DF31623742BB6006658FE /* AztecStrikethroughFormatBarCommand.swift in Sources */,
 				02817B39242B34560050AD8B /* ToolbarView.swift in Sources */,
@@ -9548,7 +9543,6 @@
 				B57C5C9221B80E3C00FF82B2 /* APNSDevice+Woo.swift in Sources */,
 				174CA86C27D90E8900126524 /* WooAboutScreenConfiguration.swift in Sources */,
 				02A652FF246A908D00755A01 /* BottomSheetListSelectorPresenter.swift in Sources */,
-				D8CD710F237A49DB007148B9 /* UIColor+SemanticColors.swift in Sources */,
 				D82BB3AA26454F3300A82741 /* CardPresentModalProcessing.swift in Sources */,
 				0225C42C2477D0D500C5B4F0 /* ProductFormViewModel.swift in Sources */,
 				020F41E523163C0100776C4D /* TopBannerViewModel.swift in Sources */,
@@ -9885,7 +9879,6 @@
 				DE69C54A27BB715D000BB888 /* CouponRestrictionsViewModel.swift in Sources */,
 				CE1EC8EC20B8A3FF009762BF /* LeftImageTableViewCell.swift in Sources */,
 				DE8C946E264699B600C94823 /* PluginListViewModel.swift in Sources */,
-				02ADC7D02398C8EB008D4BED /* UIColor+SystemColors.swift in Sources */,
 				021125992578D9C20075AD2A /* ShippingLabelPrintingInstructionsView.swift in Sources */,
 				68E952CC287536010095A23D /* SafariView.swift in Sources */,
 				D449C51C26DE6B5000D75B02 /* IconListItem.swift in Sources */,
@@ -10012,7 +10005,6 @@
 				09885C8727C6947A00910A62 /* ProductPriceSettingsValidator.swift in Sources */,
 				A6557218258B7510008AE7CA /* OrderListCellViewModel.swift in Sources */,
 				B9C4AB2527FDE4B6007008B8 /* CardPresentPluginsDataProvider.swift in Sources */,
-				D8915DC12372C8AC00F63762 /* ColorStudio.swift in Sources */,
 				F997174523DC068500592D8E /* XLPagerStrip+AccessibilityIdentifier.swift in Sources */,
 				D8C2A28B231931D100F503E9 /* ReviewViewModel.swift in Sources */,
 				B541B223218A29A6008FE7C1 /* NSParagraphStyle+Woo.swift in Sources */,

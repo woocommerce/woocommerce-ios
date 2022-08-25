@@ -158,7 +158,7 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func styleAuxiliaryButton() {
-        if viewModel.actionsMode != .secondaryActionAndAuxiliary {
+        if viewModel.actionsMode != .secondaryActionAndAttributedAuxiliaryButton {
             auxiliaryButton.applyLinkButtonStyle()
         }
         auxiliaryButton.titleLabel?.minimumScaleFactor = 0.5
@@ -279,18 +279,29 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func configureAuxiliaryButton() {
+        clearAuxiliaryButton()
+
         guard shouldShowAuxiliaryButton() else {
             auxiliaryButton.isHidden = true
             return
         }
 
         auxiliaryButton.isHidden = false
+        auxiliaryButton.setTitle(viewModel.auxiliaryButtonTitle, for: .normal)
         auxiliaryButton.accessibilityIdentifier = Accessibility.auxiliaryButton
 
-        if viewModel.actionsMode == .secondaryActionAndAuxiliary {
+        if viewModel.actionsMode == .secondaryActionAndAttributedAuxiliaryButton {
             auxiliaryButton.setImage(.infoOutlineImage, for: .normal)
             auxiliaryButton.setAttributedTitle(viewModel.auxiliaryAttributedButtonTitle, for: .normal)
+            auxiliaryButton.distributeTitleAndImage(spacing: 12.0)
         }
+    }
+
+    func clearAuxiliaryButton() {
+        auxiliaryButton.setImage(nil, for: .normal)
+        auxiliaryButton.setAttributedTitle(nil, for: .normal)
+        auxiliaryButton.setTitle(nil, for: .normal)
+        auxiliaryButton.accessibilityIdentifier = nil
     }
 
     func configureSpacer() {
@@ -344,12 +355,12 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func shouldShowBottomActionButton() -> Bool {
-        [.secondaryOnlyAction, .twoAction, .twoActionAndAuxiliary, .secondaryActionAndAuxiliary]
+        [.secondaryOnlyAction, .twoAction, .twoActionAndAuxiliary, .secondaryActionAndAttributedAuxiliaryButton]
             .contains(viewModel.actionsMode)
     }
 
     func shouldShowAuxiliaryButton() -> Bool {
-        [.twoActionAndAuxiliary, .secondaryActionAndAuxiliary].contains(viewModel.actionsMode)
+        [.twoActionAndAuxiliary, .secondaryActionAndAttributedAuxiliaryButton].contains(viewModel.actionsMode)
     }
 }
 

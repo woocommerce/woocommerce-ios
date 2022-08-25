@@ -86,8 +86,8 @@ enum PaymentsModalActionsMode {
     /// One secondary action button
     case secondaryOnlyAction
 
-    /// One secondary action button and an auxiliary button
-    case secondaryActionAndAuxiliary
+    /// One secondary action button and an auxiliary button that uses NSAttributedString
+    case secondaryActionAndAttributedAuxiliaryButton
 
     /// Two action buttons
     case twoAction

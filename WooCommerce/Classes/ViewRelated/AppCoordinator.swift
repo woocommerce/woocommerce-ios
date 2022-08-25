@@ -68,7 +68,7 @@ final class AppCoordinator {
                 // More details about the UI states: https://github.com/woocommerce/woocommerce-ios/pull/3498
                 switch (isLoggedIn, needsDefaultStore) {
                 case (false, true), (false, false):
-                    self.displayAuthenticator()
+                    self.displayAuthenticatorWithOnboardingIfNeeded()
                 case (true, true):
                     self.displayLoggedInStateWithoutDefaultStore()
                 case (true, false):
@@ -126,7 +126,7 @@ private extension AppCoordinator {
 
     /// Displays the WordPress.com Authentication UI.
     ///
-    func displayAuthenticator() {
+    func displayAuthenticatorWithOnboardingIfNeeded() {
         if canPresentLoginOnboarding() {
             // Sets a placeholder view controller as the window's root view as it is required
             // at the end of app launch.
@@ -245,7 +245,7 @@ private extension AppCoordinator {
         storePickerCoordinator?.onDismiss = { [weak self] in
             guard let self = self else { return }
             if self.isLoggedIn == false {
-                self.displayAuthenticator()
+                self.displayAuthenticatorWithOnboardingIfNeeded()
             }
         }
     }

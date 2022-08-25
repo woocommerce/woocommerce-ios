@@ -15,6 +15,8 @@ struct CustomHelpCenterContent {
 }
 
 extension CustomHelpCenterContent {
+    /// Used for tracking analytics events
+    ///
     enum Key: String {
         case step = "source_step"
         case flow = "source_flow"

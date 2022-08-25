@@ -100,7 +100,7 @@ def get_required_env(key)
   unless ENV.key?(key)
     UI.user_error!("Environment variable '#{key}' is not set. Have you setup #{USER_ENV_FILE_PATH} correctly?")
   end
-  ENV[key]
+  ENV.fetch(key)
 end
 
 before_all do |lane|
@@ -502,7 +502,7 @@ platform :ios do
       export_method: 'enterprise',
       clean: true,
       output_directory: 'build',
-      export_team_id: ENV['INT_EXPORT_TEAM_ID'],
+      export_team_id: ENV.fetch('INT_EXPORT_TEAM_ID'),
       export_options: { method: 'enterprise', iCloudContainerEnvironment: 'Production' }
     )
 
@@ -540,7 +540,7 @@ platform :ios do
 
     comment_on_pr(
       project: 'woocommerce/woocommerce-ios',
-      pr_number: Integer(ENV['BUILDKITE_PULL_REQUEST']),
+      pr_number: Integer(ENV.fetch('BUILDKITE_PULL_REQUEST')),
       reuse_identifier: 'installable-build-link',
       body: comment_body
     )
@@ -1080,14 +1080,17 @@ lane :test_without_building do |options|
   trainer(path: lane_context[SharedValues::SCAN_GENERATED_XCRESULT_PATH], fail_build: true)
 end
 
+lane :xxx do
+  puts generate_installable_build_number
+end
 # -----------------------------------------------------------------------------------
 # Generates Installable Build Version Numbers in a Buildkite-specific way
 # -----------------------------------------------------------------------------------
 def generate_installable_build_number
-  if ENV['BUILDKITE']
-    commit = ENV['BUILDKITE_COMMIT'][0, 7]
-    branch = ENV['BUILDKITE_BRANCH']
-    pr_num = ENV['BUILDKITE_PULL_REQUEST']
+  if ENV.key?('BUILDKITE')
+    commit = ENV.fetch('BUILDKITE_COMMIT')[0, 7]
+    branch = ENV.fetch('BUILDKITE_BRANCH')
+    pr_num = ENV.fetch('BUILDKITE_PULL_REQUEST')
 
     pr_num == 'false' ? "#{branch}-#{commit}" : "pr#{pr_num}-#{commit}"
   else

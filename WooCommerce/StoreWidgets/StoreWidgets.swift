@@ -42,6 +42,14 @@ struct StoreWidgetsEntryView: View {
 }
 
 @main
+struct StoreWidgetsBundle: WidgetBundle {
+    var body: some Widget {
+        StoreWidgets()
+        StoreInfoWidget()
+    }
+}
+
+
 struct StoreWidgets: Widget {
     let kind: String = "StoreWidgets"
 
@@ -54,9 +62,113 @@ struct StoreWidgets: Widget {
     }
 }
 
+
+struct StoreInfoEntry: TimelineEntry {
+    var date: Date
+    var range: String
+    var name: String
+    var revenue: String
+    var visitors: String
+    var orders: String
+    var conversion: String
+}
+
+struct StoreInfoProvider: TimelineProvider {
+    func placeholder(in context: Context) -> StoreInfoEntry {
+        StoreInfoEntry(date: .now,
+                       range: "Today",
+                       name: "Ernest Shop",
+                       revenue: "$132.234",
+                       visitors: "67",
+                       orders: "23",
+                       conversion: "37%")
+    }
+
+    func getSnapshot(in context: Context, completion: @escaping (StoreInfoEntry) -> Void) {
+        completion(StoreInfoEntry(date: .now,
+                                  range: "Today",
+                                  name: "Ernest Shop",
+                                  revenue: "$132.234",
+                                  visitors: "67",
+                                  orders: "23",
+                                  conversion: "37%"))
+    }
+
+    func getTimeline(in context: Context, completion: @escaping (Timeline<StoreInfoEntry>) -> Void) {
+        print("Get Timeline called")
+    }
+}
+
+struct StoreInfoView: View {
+    let entry: StoreInfoEntry
+
+    var body: some View {
+        VStack(spacing: 8) {
+            HStack {
+                Text(entry.name)
+                Spacer()
+                Text(entry.range)
+            }
+
+            HStack() {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Revenue")
+                    Text(entry.revenue)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Visitors")
+                    Text(entry.visitors)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            }
+
+            HStack {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Orders")
+                    Text(entry.orders)
+
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Conversion")
+                    Text(entry.conversion)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            }
+        }
+        .padding(.horizontal, 16)
+    }
+}
+
+struct StoreInfoWidget: Widget {
+    var body: some WidgetConfiguration {
+        StaticConfiguration(kind: "StoreInfoWidget", provider: StoreInfoProvider()) { entry in
+            StoreInfoView(entry: entry)
+        }
+        .configurationDisplayName("Store Info")
+        .supportedFamilies([.systemMedium])
+    }
+}
+
 struct StoreWidgets_Previews: PreviewProvider {
     static var previews: some View {
         StoreWidgetsEntryView(entry: SimpleEntry(date: Date(), configuration: ConfigurationIntent()))
             .previewContext(WidgetPreviewContext(family: .systemSmall))
+
+        StoreInfoView(
+            entry: StoreInfoEntry(date: .now,
+                                  range: "Today",
+                                  name: "Ernest Shop",
+                                  revenue: "$132.234",
+                                  visitors: "67",
+                                  orders: "23",
+                                  conversion: "37%")
+        )
+        .previewContext(WidgetPreviewContext(family: .systemMedium))
     }
 }

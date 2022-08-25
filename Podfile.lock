@@ -92,7 +92,7 @@ DEPENDENCIES:
   - Sourcery (~> 1.0.3)
   - StripeTerminal (~> 2.7)
   - WordPress-Editor-iOS (~> 1.11.0)
-  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, branch `wcios/pass-flow-and-step-via-delegate`)
+  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, commit `bce1cffedfa49ae30acb3995c0c4e75cac2aa21c`)
   - WordPressKit (~> 4.49.0)
   - WordPressShared (~> 1.15)
   - WordPressUI (~> 1.12.5)
@@ -141,12 +141,12 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   WordPressAuthenticator:
-    :branch: wcios/pass-flow-and-step-via-delegate
+    :commit: bce1cffedfa49ae30acb3995c0c4e75cac2aa21c
     :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
 
 CHECKOUT OPTIONS:
   WordPressAuthenticator:
-    :commit: 26c17366cf3b0649dc8ff3844a159017e568a8c7
+    :commit: bce1cffedfa49ae30acb3995c0c4e75cac2aa21c
     :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
 
 SPEC CHECKSUMS:
@@ -187,6 +187,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2bdf8544f7cd0fd4c002546f5704b813845beb2a
   ZendeskSupportSDK: 3a8e508ab1d9dd22dc038df6c694466414e037ba
 
-PODFILE CHECKSUM: 85df40c14dbef7f2a853eddf3149a800960d2d32
+PODFILE CHECKSUM: ec2baf493675445a530714627de276ee17e01a49
 
 COCOAPODS: 1.11.2

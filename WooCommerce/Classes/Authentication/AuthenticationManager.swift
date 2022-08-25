@@ -394,7 +394,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                         sourceTag: WordPressSupportSourceTag,
                         lastStep: AuthenticatorAnalyticsTracker.Step,
                         lastFlow: AuthenticatorAnalyticsTracker.Flow) {
-        guard let customHelpCenterContent = CustomHelpCenterContent(step: lastStep, flow: lastFlow)else {
+        guard let customHelpCenterContent = CustomHelpCenterContent(step: lastStep, flow: lastFlow) else {
             presentSupport(from: sourceViewController)
             return
         }

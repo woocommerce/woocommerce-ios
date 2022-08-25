@@ -376,20 +376,23 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         }
     }
 
+    func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag) {
+    }
+
     /// Presents the Support Interface from a given ViewController, with a specified SourceTag.
     ///
-    func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag) {
+    func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag, lastStep: String, lastFlow: String) {
         let identifier = HelpAndSupportViewController.classNameWithoutNamespaces
         let supportViewController = UIStoryboard.dashboard.instantiateViewController(identifier: identifier,
                                                                                      creator: { coder -> HelpAndSupportViewController? in
-            guard let customURL = sourceTag.customHelpCenterURL else {
+            guard let customHelpCenterContent = CustomHelpCenterContent(step: lastStep, flow: lastFlow) else {
                 /// Returning nil as we don't need to customise the HelpAndSupportViewController
                 /// In this case `instantiateViewController` method will use the default `HelpAndSupportViewController` created from storyboard.
                 ///
                 return nil
             }
 
-            return HelpAndSupportViewController(customHelpCenterURL: customURL, coder: coder)
+            return HelpAndSupportViewController(customHelpCenterContent: customHelpCenterContent, coder: coder)
         })
         supportViewController.displaysDismissAction = true
 

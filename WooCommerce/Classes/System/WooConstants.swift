@@ -77,6 +77,10 @@ extension WooConstants {
         ///
         case helpCenter = "https://docs.woocommerce.com/document/woocommerce-ios/"
 
+        /// Help Center for "Enter your Store Address" screen
+        ///
+        case helpCenterForEnterStoreAddress = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#enter-store-address"
+
         /// URL used for Learn More button in Orders empty state.
         ///
         case blog = "https://woocommerce.com/blog/"

@@ -19,6 +19,7 @@ Style/AsciiComments:
 Layout/LineLength:
   Exclude:
     - fastlane/Fastfile
+    - Podfile
 
 Naming/FileName:
   Exclude:

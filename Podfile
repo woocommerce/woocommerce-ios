@@ -327,6 +327,7 @@ post_install do |installer|
 
   # Flag Alpha builds for Tracks
   # ============================
+  # rubocop:disable Style/CombinableLoops
   installer.pods_project.targets.each do |target|
     next unless target.name == 'Automattic-Tracks-iOS'
 
@@ -336,4 +337,5 @@ post_install do |installer|
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', 'ALPHA=1']
     end
   end
+  # rubocop:enable Style/CombinableLoops
 end

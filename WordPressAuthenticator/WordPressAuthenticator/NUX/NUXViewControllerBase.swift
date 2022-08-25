@@ -320,6 +320,6 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
         }
 
         let state = AuthenticatorAnalyticsTracker.shared.state
-        WordPressAuthenticator.shared.delegate?.presentSupport(from: navigationController, sourceTag: source, lastStep: state.lastStep.rawValue, lastFlow: state.lastFlow.rawValue)
+        WordPressAuthenticator.shared.delegate?.presentSupport(from: navigationController, sourceTag: source, lastStep: state.lastStep, lastFlow: state.lastFlow)
     }
 }

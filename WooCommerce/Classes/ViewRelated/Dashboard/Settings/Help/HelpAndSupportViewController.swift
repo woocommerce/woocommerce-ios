@@ -56,18 +56,18 @@ final class HelpAndSupportViewController: UIViewController {
     ///
     var displaysDismissAction = false
 
-    /// Custom help center web page's URL
+    /// Custom help center web page related properties
     /// If non-nil this web page is launched instead of Zendesk
     ///
-    private let customHelpCenterURL: URL?
+    private let customHelpCenterContent: CustomHelpCenterContent?
 
-    init?(customHelpCenterURL: URL, coder: NSCoder) {
-        self.customHelpCenterURL = customHelpCenterURL
+    init?(customHelpCenterContent: CustomHelpCenterContent, coder: NSCoder) {
+        self.customHelpCenterContent = customHelpCenterContent
         super.init(coder: coder)
     }
 
     required init?(coder: NSCoder) {
-        self.customHelpCenterURL = nil
+        self.customHelpCenterContent = nil
         super.init(coder: coder)
     }
 
@@ -312,11 +312,11 @@ private extension HelpAndSupportViewController {
 
     /// Opens custom help center URL in a web view
     ///
-    func launchCustomHelpCenterWebPage(url: URL) {
-        WebviewHelper.launch(url, with: self)
+    func launchCustomHelpCenterWebPage(_ customHelpCenterContent: CustomHelpCenterContent) {
+        WebviewHelper.launch(customHelpCenterContent.helpCenterContentURL, with: self)
 
         ServiceLocator.analytics.track(.supportHelpCenterViewed,
-                                       withProperties: ["help_content_url": url.absoluteString])
+                                       withProperties: customHelpCenterContent.trackingProperties)
     }
 }
 
@@ -327,8 +327,8 @@ private extension HelpAndSupportViewController {
     /// Help Center action
     ///
     func helpCenterWasPressed() {
-        if let customHelpCenterURL = customHelpCenterURL {
-            launchCustomHelpCenterWebPage(url: customHelpCenterURL)
+        if let customHelpCenterContent = customHelpCenterContent {
+            launchCustomHelpCenterWebPage(customHelpCenterContent)
         } else {
             ZendeskProvider.shared.showHelpCenter(from: self)
         }

@@ -390,7 +390,10 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     ///     - lastStep: Last `Step` tracked in `AuthenticatorAnalyticsTracker`
     ///     - lastFlow: Last `Flow` tracked in `AuthenticatorAnalyticsTracker`
     ///
-    func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag, lastStep: String, lastFlow: String) {
+    func presentSupport(from sourceViewController: UIViewController,
+                        sourceTag: WordPressSupportSourceTag,
+                        lastStep: AuthenticatorAnalyticsTracker.Step,
+                        lastFlow: AuthenticatorAnalyticsTracker.Flow) {
         guard let customHelpCenterContent = CustomHelpCenterContent(step: lastStep, flow: lastFlow)else {
             presentSupport(from: sourceViewController)
             return

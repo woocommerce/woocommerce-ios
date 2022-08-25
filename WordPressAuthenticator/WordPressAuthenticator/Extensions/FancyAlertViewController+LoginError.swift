@@ -121,7 +121,8 @@ extension FancyAlertViewController {
                     return
                 }
 
-                authDelegate.presentSupport(from: sourceViewController, sourceTag: sourceTag)
+                let state = AuthenticatorAnalyticsTracker.shared.state
+                authDelegate.presentSupport(from: sourceViewController, sourceTag: sourceTag, lastStep: state.lastStep.rawValue, lastFlow: state.lastFlow.rawValue)
             }
         }
 

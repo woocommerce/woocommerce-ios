@@ -15,8 +15,9 @@ struct InPersonPaymentsNoConnection: View {
             supportLink: false,
             learnMore: false,
             analyticReason: analyticReason,
-            button: InPersonPaymentsOnboardingError.ButtonInfo(
+            buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(
                 text: Localization.primaryButton,
+                analyticReason: analyticReason,
                 action: onRefresh
             )
         )

@@ -15,8 +15,9 @@ struct InPersonPaymentsPluginNotInstalled: View {
             supportLink: false,
             learnMore: true,
             analyticReason: analyticReason,
-            button: InPersonPaymentsOnboardingError.ButtonInfo(
+            buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(
                 text: Localization.primaryButton,
+                analyticReason: analyticReason,
                 action: onRefresh
             )
         )

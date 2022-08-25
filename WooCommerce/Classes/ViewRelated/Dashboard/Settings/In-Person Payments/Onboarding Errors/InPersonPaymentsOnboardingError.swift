@@ -8,12 +8,7 @@ struct InPersonPaymentsOnboardingError: View {
     let supportLink: Bool
     let learnMore: Bool
     let analyticReason: String?
-    var button: ButtonInfo? = nil
-
-    struct ButtonInfo {
-        let text: String
-        let action: () -> Void
-    }
+    var buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel? = nil
 
     var body: some View {
         VStack {
@@ -28,8 +23,8 @@ struct InPersonPaymentsOnboardingError: View {
 
             Spacer()
 
-            if button != nil {
-                Button(button!.text, action: button!.action)
+            if let buttonViewModel = buttonViewModel {
+                Button(buttonViewModel.text, action: buttonViewModel.action)
                     .buttonStyle(PrimaryButtonStyle())
                     .padding(.bottom, 24.0)
             }

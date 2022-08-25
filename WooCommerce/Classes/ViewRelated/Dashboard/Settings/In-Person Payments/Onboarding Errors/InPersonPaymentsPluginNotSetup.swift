@@ -4,6 +4,7 @@ import Yosemite
 struct InPersonPaymentsPluginNotSetup: View {
     let plugin: CardPresentPaymentsPlugin
     let analyticReason: String?
+    private let cardPresentConfiguration = CardPresentConfigurationLoader().configuration
     let onRefresh: () -> Void
     @State private var presentedSetupURL: URL? = nil
 
@@ -25,6 +26,10 @@ struct InPersonPaymentsPluginNotSetup: View {
 
             Button {
                 presentedSetupURL = setupURL
+                ServiceLocator.analytics.track(
+                    event: WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingCtaTapped(
+                        reason: analyticReason ?? "",
+                        countryCode: cardPresentConfiguration.countryCode))
             } label: {
                 HStack {
                     Text(Localization.primaryButton)

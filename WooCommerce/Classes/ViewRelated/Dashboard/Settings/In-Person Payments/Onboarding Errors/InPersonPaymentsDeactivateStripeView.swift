@@ -5,6 +5,7 @@ struct InPersonPaymentsDeactivateStripeView: View {
     let analyticReason: String?
     let onRefresh: () -> Void
     let showSetupPluginsButton: Bool
+    private let cardPresentConfiguration = CardPresentConfigurationLoader().configuration
     @State private var presentedSetupURL: URL? = nil
 
     var body: some View {
@@ -28,6 +29,10 @@ struct InPersonPaymentsDeactivateStripeView: View {
             if showSetupPluginsButton {
                 Button {
                     presentedSetupURL = setupURL
+                    ServiceLocator.analytics.track(
+                        event: WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingCtaTapped(
+                            reason: analyticReason ?? "",
+                            countryCode: cardPresentConfiguration.countryCode))
                 } label: {
                     HStack {
                         Text(Localization.primaryButton)

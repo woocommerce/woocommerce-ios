@@ -21,6 +21,10 @@ enum WooConstants {
     ///
     static let keychainAppleIDKey = "AppleID"
 
+    /// Keychain Access's Key for anonymous ID
+    ///
+    static let anonymousIDKey = "anonymousID"
+
     /// Push Notifications ApplicationID
     ///
 #if DEBUG

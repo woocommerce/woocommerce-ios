@@ -119,14 +119,16 @@ final class SessionManager: SessionManagerProtocol {
     /// Anonymous UserID.
     ///
     var anonymousUserID: String? {
-        get {
-            if let anonID = defaults[.defaultAnonymousID] as? String, !anonID.isEmpty {
-                return anonID
-            } else {
-                let newValue = UUID().uuidString
-                defaults[.defaultAnonymousID] = newValue
-                return newValue
-            }
+        if let anonID = defaults[.defaultAnonymousID] as? String, !anonID.isEmpty {
+            return anonID
+        } else if let keychainAnonID = keychain.anonymousID, !keychainAnonID.isEmpty {
+            defaults[.defaultAnonymousID] = keychainAnonID
+            return keychainAnonID
+        } else {
+            let newValue = UUID().uuidString
+            defaults[.defaultAnonymousID] = newValue
+            keychain.anonymousID = newValue
+            return newValue
         }
     }
 

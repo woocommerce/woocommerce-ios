@@ -5,7 +5,9 @@ source 'https://rubygems.org'
 gem 'cocoapods', '~> 1.10'
 gem 'cocoapods-catalyst-support', '~> 0.1'
 gem 'dotenv'
-gem 'fastlane', '~> 2'
+# Local setup for debugging
+# gem 'fastlane', '~> 2'
+gem 'fastlane', path: "#{Dir.home}/Developer/oss/fastlane"
 gem 'rake', '~> 12.3'
 gem 'rubocop', '~> 1.25'
 gem 'rubocop-rake', '~> 0.6'

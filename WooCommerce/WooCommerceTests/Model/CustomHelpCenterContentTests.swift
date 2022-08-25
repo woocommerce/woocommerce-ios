@@ -36,4 +36,11 @@ final class CustomHelpCenterContentTests: XCTestCase {
         XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.flow.rawValue], flow.rawValue)
         XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.url.rawValue], helpContentURL.absoluteString)
     }
+
+    func test_init_using_invalid_step_and_flow_returns_nil() {
+        let step: AuthenticatorAnalyticsTracker.Step = .magicLinkRequested
+        let flow: AuthenticatorAnalyticsTracker.Flow = .prologue
+
+        XCTAssertNil(CustomHelpCenterContent(step: step, flow: flow))
+    }
 }

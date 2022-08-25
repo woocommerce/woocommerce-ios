@@ -921,7 +921,7 @@ platform :ios do
   # bundle exec fastlane update_certs_and_profiles
   #####################################################################################
   lane :update_certs_and_profiles do
-    alpha_code_signing
+    # alpha_code_signing
     appstore_code_signing
   end
 

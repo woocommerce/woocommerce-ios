@@ -60,9 +60,15 @@ public protocol WordPressAuthenticatorDelegate: AnyObject {
     ///
     func presentSignupEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, service: SocialService?)
 
-    /// Presents the Support Interface from a given ViewController, with a specified SourceTag.
+    /// Presents the Support Interface from a given ViewController.
     ///
-    func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag)
+    /// - Parameters:
+    ///     - from: ViewController from which to present the support interface from
+    ///     - sourceTag: Support source tag of the view controller.
+    ///     - lastStep: Last `Step` tracked in `AuthenticatorAnalyticsTracker`
+    ///     - lastFlow: Last `Flow` tracked in `AuthenticatorAnalyticsTracker`
+    ///
+    func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag, lastStep: AuthenticatorAnalyticsTracker.Step, lastFlow: AuthenticatorAnalyticsTracker.Flow)
 
     /// Indicates if the Login Epilogue should be displayed.
     ///

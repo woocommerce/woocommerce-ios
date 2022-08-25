@@ -29,7 +29,7 @@ final class CustomHelpCenterContentTests: XCTestCase {
         let sut = try XCTUnwrap(CustomHelpCenterContent(step: step, flow: flow))
 
         // Then
-        XCTAssertEqual(sut.helpCenterContentURL, helpContentURL)
+        XCTAssertEqual(sut.url, helpContentURL)
 
         // Test the `trackingProperties` dictionary values
         XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.step.rawValue], step.rawValue)

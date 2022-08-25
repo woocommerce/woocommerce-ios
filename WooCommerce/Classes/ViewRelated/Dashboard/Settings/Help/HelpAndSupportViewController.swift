@@ -313,7 +313,7 @@ private extension HelpAndSupportViewController {
     /// Opens custom help center URL in a web view
     ///
     func launchCustomHelpCenterWebPage(_ customHelpCenterContent: CustomHelpCenterContent) {
-        WebviewHelper.launch(customHelpCenterContent.helpCenterContentURL, with: self)
+        WebviewHelper.launch(customHelpCenterContent.url, with: self)
 
         ServiceLocator.analytics.track(.supportHelpCenterViewed,
                                        withProperties: customHelpCenterContent.trackingProperties)

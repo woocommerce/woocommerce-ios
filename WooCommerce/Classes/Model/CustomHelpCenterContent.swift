@@ -7,7 +7,7 @@ import WordPressAuthenticator
 struct CustomHelpCenterContent {
     /// Custom help center web page's URL
     ///
-    let helpCenterContentURL: URL
+    let url: URL
 
     /// Provides a dictionary for analytics tracking
     ///
@@ -26,7 +26,7 @@ extension CustomHelpCenterContent {
     init?(step: AuthenticatorAnalyticsTracker.Step, flow: AuthenticatorAnalyticsTracker.Flow) {
         switch step {
         case .start where flow == .loginWithSiteAddress:
-            helpCenterContentURL = WooConstants.URLs.helpCenterForEnterStoreAddress.asURL()
+            url = WooConstants.URLs.helpCenterForEnterStoreAddress.asURL()
         default:
             return nil
         }
@@ -34,7 +34,7 @@ extension CustomHelpCenterContent {
         trackingProperties = [
             Key.step.rawValue: step.rawValue,
             Key.flow.rawValue: flow.rawValue,
-            Key.url.rawValue: helpCenterContentURL.absoluteString
+            Key.url.rawValue: url.absoluteString
         ]
     }
 }

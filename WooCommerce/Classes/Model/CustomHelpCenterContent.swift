@@ -1,4 +1,5 @@
 import Foundation
+import WordPressAuthenticator
 
 /// For holding the custom help center content URL
 /// and analytics tracking values
@@ -14,20 +15,26 @@ struct CustomHelpCenterContent {
 }
 
 extension CustomHelpCenterContent {
+    enum Key: String {
+        case step = "source_step"
+        case flow = "source_flow"
+        case url = "help_content_url"
+    }
+
     /// Initializes a `CustomHelpCenterContent` instance using `Step` and `Flow` from `AuthenticatorAnalyticsTracker`
     ///
-    init?(step: String, flow: String) {
+    init?(step: AuthenticatorAnalyticsTracker.Step, flow: AuthenticatorAnalyticsTracker.Flow) {
         switch step {
-        case "start" where flow == "login_site_address":
+        case .start where flow == .loginWithSiteAddress:
             helpCenterContentURL = WooConstants.URLs.helpCenterForEnterStoreAddress.asURL()
         default:
             return nil
         }
 
         trackingProperties = [
-            "source_step": step,
-            "source_flow": flow,
-            "help_content_url": helpCenterContentURL.absoluteString
+            Key.step.rawValue: step.rawValue,
+            Key.flow.rawValue: flow.rawValue,
+            Key.url.rawValue: helpCenterContentURL.absoluteString
         ]
     }
 }

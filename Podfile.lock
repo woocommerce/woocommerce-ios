@@ -83,7 +83,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.8)
-  - Automattic-Tracks-iOS (from `https://github.com/Automattic/Automattic-Tracks-iOS.git`, branch `wcios/7435-pass-anonid-to-explat-logged-in-config`)
+  - Automattic-Tracks-iOS (from `https://github.com/Automattic/Automattic-Tracks-iOS.git`, commit `82cb6f0c1106f8a9b972380881b6fcb063166efb`)
   - CocoaLumberjack (~> 3.7.4)
   - CocoaLumberjack/Swift (~> 3.7.4)
   - Gridicons (~> 1.2.0)
@@ -142,12 +142,12 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   Automattic-Tracks-iOS:
-    :branch: wcios/7435-pass-anonid-to-explat-logged-in-config
+    :commit: 82cb6f0c1106f8a9b972380881b6fcb063166efb
     :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
 
 CHECKOUT OPTIONS:
   Automattic-Tracks-iOS:
-    :commit: 823e7181888aac4923de9a33060bf55ebbdc4be5
+    :commit: 82cb6f0c1106f8a9b972380881b6fcb063166efb
     :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
 
 SPEC CHECKSUMS:
@@ -188,6 +188,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2bdf8544f7cd0fd4c002546f5704b813845beb2a
   ZendeskSupportSDK: 3a8e508ab1d9dd22dc038df6c694466414e037ba
 
-PODFILE CHECKSUM: 5f32dafab47ce006ed5f8dd05c5e59925b64e6b2
+PODFILE CHECKSUM: c9959644e01ef4bab37d0f022f8503f84d16cc73
 
 COCOAPODS: 1.11.2

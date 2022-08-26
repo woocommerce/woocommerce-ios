@@ -452,9 +452,9 @@ private extension GetStartedViewController {
         }
 
         if isMovingToParent {
-            tracker.track(step: .start)
+            tracker.track(step: .enterEmailAddress)
         } else {
-            tracker.set(step: .start)
+            tracker.set(step: .enterEmailAddress)
         }
     }
 }

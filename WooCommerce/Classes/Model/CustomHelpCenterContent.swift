@@ -27,9 +27,9 @@ extension CustomHelpCenterContent {
     ///
     init?(step: AuthenticatorAnalyticsTracker.Step, flow: AuthenticatorAnalyticsTracker.Flow) {
         switch step {
-        case .start where flow == .loginWithSiteAddress:
+        case .start where flow == .loginWithSiteAddress: // Enter Store Address screen
             url = WooConstants.URLs.helpCenterForEnterStoreAddress.asURL()
-        case .enterEmailAddress where flow == .loginWithSiteAddress:
+        case .enterEmailAddress where flow == .loginWithSiteAddress: // Enter WordPress.com email screen
             url = WooConstants.URLs.helpCenterForEnterWPCOMEmail.asURL()
         default:
             return nil

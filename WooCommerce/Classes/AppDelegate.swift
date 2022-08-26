@@ -45,10 +45,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         appCoordinator?.tabBarController
     }
 
-    /// Checks on whether the Apple ID credential is valid when the app is logged in and becomes active.
-    ///
-    private lazy var appleIDCredentialChecker = AppleIDCredentialChecker()
-
     private let universalLinkRouter = UniversalLinkRouter.defaultUniversalLinkRouter()
 
     // MARK: - AppDelegate Methods
@@ -56,7 +52,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         // Setup Components
         setupAnalytics()
-        setupAuthenticationManager()
         setupCocoaLumberjack()
         setupLogLevel(.verbose)
         setupPushNotificationsManagerIfPossible()
@@ -64,7 +59,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupWormholy()
         setupKeyboardStateProvider()
         handleLaunchArguments()
-        appleIDCredentialChecker.observeLoggedInStateForAppleIDObservations()
         setupUserNotificationCenter()
 
         // Components that require prior Auth
@@ -78,19 +72,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // ever new source code is injected into our application.
         Inject.animation = .interactiveSpring()
 
+        Task { @MainActor in
+            await startABTesting()
+
+            // Upgrade check...
+            // This has to be called after A/B testing setup in `startABTesting` if any of the Tracks events
+            // in `checkForUpgrades` is used as an exposure event for an experiment.
+            // For example, `application_installed` could be the exposure event for logged-out experiments.
+            checkForUpgrades()
+        }
+
         return true
     }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-
-        startABTesting()
-
-        // Upgrade check...
-        // This has to be called after A/B testing setup in `startABTesting` if any of the Tracks events
-        // in `checkForUpgrades` is used as an exposure event for an experiment.
-        // For example, `application_installed` could be the exposure event for logged-out experiments.
-        checkForUpgrades()
-
         // Setup the Interface!
         setupMainWindow()
         setupComponentsAppearance()
@@ -267,12 +262,6 @@ private extension AppDelegate {
         ServiceLocator.analytics.initialize()
     }
 
-    /// Sets up the WordPress Authenticator.
-    ///
-    func setupAuthenticationManager() {
-        ServiceLocator.authenticationManager.initialize()
-    }
-
     /// Sets up CocoaLumberjack logging.
     ///
     func setupCocoaLumberjack() {
@@ -382,8 +371,8 @@ private extension AppDelegate {
 
     /// Starts the AB testing platform
     ///
-    func startABTesting() {
-        ABTest.start()
+    func startABTesting() async {
+        await ABTest.start()
     }
 }
 
@@ -397,7 +386,9 @@ private extension AppDelegate {
         let versionOfLastRun = UserDefaults.standard[.versionOfLastRun] as? String
         if versionOfLastRun == nil {
             // First run after a fresh install
-            ServiceLocator.analytics.track(.applicationInstalled)
+            ServiceLocator.analytics.track(.applicationInstalled,
+                                           withProperties: ["after_abtest_setup": true,
+                                                            "prologue_experiment_variant": ABTest.loginPrologueButtonOrder.variation.analyticsValue])
         } else if versionOfLastRun != currentVersion {
             // App was upgraded
             ServiceLocator.analytics.track(.applicationUpgraded, withProperties: ["previous_version": versionOfLastRun ?? String()])

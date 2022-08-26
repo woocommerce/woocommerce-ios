@@ -84,7 +84,7 @@ extension WooConstants {
         /// Help Center for "Enter WordPress.com email" screen
         ///
         // swiftlint:disable:next line_length
-        case helpCenterForEnterWPCOMEmail = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#enter-wordpress-com-email-address-login-using-store-address-flow"
+        case helpCenterForWPCOMEmailFromSiteAddressFlow = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#enter-wordpress-com-email-address-login-using-store-address-flow"
 
         /// Help Center for "Enter Store Credentials" screen
         ///

@@ -50,13 +50,13 @@ final class CustomHelpCenterContentTests: XCTestCase {
         XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.url.rawValue], helpContentURL.absoluteString)
     }
 
-    // MARK: Enter WordPress.com email screen
+    // MARK: Enter WordPress.com email screen from store address flow
     //
     func test_init_using_step_and_flow_returns_valid_instance_for_enter_WPCOM_email_address_screen() throws {
         // Given
         let step: AuthenticatorAnalyticsTracker.Step = .enterEmailAddress
         let flow: AuthenticatorAnalyticsTracker.Flow = .loginWithSiteAddress
-        let helpContentURL = WooConstants.URLs.helpCenterForEnterWPCOMEmail.asURL()
+        let helpContentURL = WooConstants.URLs.helpCenterForWPCOMEmailFromSiteAddressFlow.asURL()
 
         // When
         let sut = try XCTUnwrap(CustomHelpCenterContent(step: step, flow: flow))

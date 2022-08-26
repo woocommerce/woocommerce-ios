@@ -287,7 +287,7 @@ private extension CardPresentPaymentsModalViewController {
         }
 
         auxiliaryButton.isHidden = false
-        auxiliaryButton.setTitle(viewModel.auxiliaryButtonTitle, for: .normal)
+        auxiliaryButton.setTitleWithoutAnimation(viewModel.auxiliaryButtonTitle, for: .normal)
         auxiliaryButton.accessibilityIdentifier = Accessibility.auxiliaryButton
 
         if viewModel.actionsMode == .secondaryActionAndAttributedAuxiliaryButton {

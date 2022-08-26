@@ -1,6 +1,6 @@
 import UIKit
 
-extension UIColor {
+public extension UIColor {
     /// Get a UIColor from the Color Studio color palette
     ///
     /// - Parameters:
@@ -26,7 +26,7 @@ extension UIColor {
 }
 
 
-extension UIColor {
+public extension UIColor {
     // A way to create dynamic colors that's compatible with iOS 11 & 12
     convenience init(light: UIColor, dark: UIColor) {
         self.init { traitCollection in
@@ -49,7 +49,7 @@ extension UIColor {
     }
 }
 
-extension UIColor {
+public extension UIColor {
     func color(for trait: UITraitCollection?) -> UIColor {
         if let trait = trait {
             return resolvedColor(with: trait)

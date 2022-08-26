@@ -112,6 +112,10 @@ public class AuthenticatorAnalyticsTracker {
         /// This represents the user opening their mail. It’s not strictly speaking an in-app screen but for the user it is part of the flow.
         case emailOpened = "email_opened"
 
+        /// Represents the screen or step in which WPCOM account email is entered by the user
+        ///
+        case enterEmailAddress = "enter_email_address"
+
         /// The screen with a username and password visible
         ///
         case usernamePassword = "username_password"

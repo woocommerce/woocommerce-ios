@@ -10,7 +10,20 @@ class AddressValidator {
     func validate(address: Address,
                   onlyLocally: Bool,
                   completion: @escaping (Result<Void, AddressValidationError>) -> Void) {
+        return validate(address: convertAddress(address: address), onlyLocally: onlyLocally, completion: completion)
+    }
 
+    private func convertAddress(address: Address) -> ShippingLabelAddress {
+        ShippingLabelAddress(name: address.firstName,
+                                    company: address.company,
+                                    address1: address.address1,
+                                    address2: address.address2,
+                                    city: address.city,
+                                    state: address.state,
+                                    postcode: address.postcode,
+                                    country: address.country,
+                                    phone: address.phone,
+                                    email: address.email)
     }
 
     enum ValidationType {

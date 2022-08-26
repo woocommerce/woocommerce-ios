@@ -49,6 +49,17 @@ class AddressValidator {
             onCompletion(.success(()))
             return
         }
+
+        let addressToBeVerified = ShippingLabelAddressVerification(address: address, type: .destination)
+        let action = ShippingLabelAction.validateAddress(siteID: siteID, address: addressToBeVerified) { [weak self] (result) in
+            switch result {
+            case .success:
+                self?.onCompletion(.success(()))
+            case .failure(let error):
+                self?.onCompletion(.failure(.remote(error)))
+            }
+        }
+        stores.dispatch(action)
     }
 
     private func validateAddressLocally() -> [LocalValidationError] {

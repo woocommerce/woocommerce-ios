@@ -4,6 +4,8 @@ import XCTest
 
 final class CustomHelpCenterContentTests: XCTestCase {
 
+    // MARK: CustomHelpCenterContent.Key
+    //
     func test_step_key_has_correct_rawValue() {
         let sut = CustomHelpCenterContent.Key.step
         XCTAssertEqual(sut.rawValue, "source_step")
@@ -19,6 +21,17 @@ final class CustomHelpCenterContentTests: XCTestCase {
         XCTAssertEqual(sut.rawValue, "help_content_url")
     }
 
+    // MARK: Invalid `Step` and `Flow`
+    //
+    func test_init_using_invalid_step_and_flow_returns_nil() {
+        let step: AuthenticatorAnalyticsTracker.Step = .magicLinkRequested
+        let flow: AuthenticatorAnalyticsTracker.Flow = .prologue
+
+        XCTAssertNil(CustomHelpCenterContent(step: step, flow: flow))
+    }
+
+    // MARK: Enter Store Address screen
+    //
     func test_init_using_step_and_flow_returns_valid_instance_for_enter_store_address_screen() throws {
         // Given
         let step: AuthenticatorAnalyticsTracker.Step = .start
@@ -37,13 +50,8 @@ final class CustomHelpCenterContentTests: XCTestCase {
         XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.url.rawValue], helpContentURL.absoluteString)
     }
 
-    func test_init_using_invalid_step_and_flow_returns_nil() {
-        let step: AuthenticatorAnalyticsTracker.Step = .magicLinkRequested
-        let flow: AuthenticatorAnalyticsTracker.Flow = .prologue
-
-        XCTAssertNil(CustomHelpCenterContent(step: step, flow: flow))
-    }
-
+    // MARK: Enter WordPress.com email screen
+    //
     func test_init_using_step_and_flow_returns_valid_instance_for_enter_WPCOM_email_address_screen() throws {
         // Given
         let step: AuthenticatorAnalyticsTracker.Step = .enterEmailAddress

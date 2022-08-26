@@ -37,7 +37,8 @@ target 'WooCommerce' do
   #
 
   # pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => ''
-  pod 'Automattic-Tracks-iOS', '~> 0.11.1'
+  pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :commit => '22051360690b400d317b0b5590e566ef27ab4c3c'
+  # pod 'Automattic-Tracks-iOS', '~> 0.11.1'
 
   pod 'Gridicons', '~> 1.2.0'
 
@@ -227,7 +228,8 @@ end
 # ==================
 #
 def experiments_pods
-  pod 'Automattic-Tracks-iOS', '~> 0.11.1'
+  # pod 'Automattic-Tracks-iOS', '~> 0.11.1'
+  pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :commit => '22051360690b400d317b0b5590e566ef27ab4c3c'
   pod 'CocoaLumberjack', '~> 3.7.4'
   pod 'CocoaLumberjack/Swift', '~> 3.7.4'
 end

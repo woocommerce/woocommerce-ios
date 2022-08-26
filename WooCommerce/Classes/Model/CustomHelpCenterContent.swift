@@ -31,6 +31,8 @@ extension CustomHelpCenterContent {
             url = WooConstants.URLs.helpCenterForEnterStoreAddress.asURL()
         case .enterEmailAddress where flow == .loginWithSiteAddress: // Enter WordPress.com email screen
             url = WooConstants.URLs.helpCenterForEnterWPCOMEmail.asURL()
+        case .usernamePassword: // Enter Store credentials screen (wp-admin creds)
+            url = WooConstants.URLs.helpCenterForEnterStoreCredentials.asURL()
         default:
             return nil
         }

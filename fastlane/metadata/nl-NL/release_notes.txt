@@ -1,1 +1,3 @@
-Deze versie bevat een paar verbeteringen van je loginervaring, waaronder de optie om je 'wp-admin'-inloggegevens van je site te gebruiken en een magische link te gebruiken om in te loggen. Blijf ons feedback sturen – wij luisteren!
+We made it much easier to find everything about accepting payments in the app. Head on to the Payments section from the Menu! We also fixed an issue where you might be unnecessarily blocked from taking payments.
+We also made various enhancements to our login flows to help you get started quickly with the app.
+Lastly, we’ve made some tweaks to performance. But we’re not done. Look forward to more improvements in the future. Please keep sending your feedback!

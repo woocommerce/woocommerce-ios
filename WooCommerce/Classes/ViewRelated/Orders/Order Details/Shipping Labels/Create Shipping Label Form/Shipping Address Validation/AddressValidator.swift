@@ -7,6 +7,9 @@ class AddressValidator {
     let nameRequired: Bool
     let phoneNumberRequired: Bool
     let stateOfCountryRequired: Bool
+
+    private let stores: StoresManager
+
     let onCompletion: (Result<Void, AddressValidationError>) -> Void
 
     init(siteID: Int64,
@@ -15,12 +18,14 @@ class AddressValidator {
          nameRequired: Bool = false,
          phoneNumberRequired: Bool = false,
          stateOfCountryRequired: Bool = false,
+         stores: StoresManager,
          onCompletion: @escaping (Result<Void, AddressValidationError>) -> Void) {
         self.siteID = siteID
         self.onlyLocally = onlyLocally
         self.nameRequired = nameRequired
         self.phoneNumberRequired = phoneNumberRequired
         self.stateOfCountryRequired = stateOfCountryRequired
+        self.stores = stores
         self.onCompletion = onCompletion
         self.address = ShippingLabelAddress(company: address.company ?? "",
                                             name: address.firstName,

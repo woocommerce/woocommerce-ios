@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-08-26 09:54:03+0000 */
+/* Translation-Revision-Date: 2022-08-26 17:13:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -39,7 +39,7 @@ which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with your mobile device and ordering card readers" = "%1$@ over het aannemen van betalingen met je mobiele apparaat en het bestellen van kaartlezers";
 
 /* A label prompting users to learn more about card readers. %1$@ is a placeholder that is always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
-"%1$@ about adding Pay in Person to your checkout" = "% $1@ over fysieke betalingen toevoegen aan je online kassa";
+"%1$@ about adding Pay in Person to your checkout" = "%1$@ over fysieke betalingen toevoegen aan je online kassa";
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "%1$@ eindigt op %2$@";

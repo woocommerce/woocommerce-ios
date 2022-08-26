@@ -1,6 +1,7 @@
 import Yosemite
 
 class AddressValidator {
+    let siteID: Int64
     let address: ShippingLabelAddress?
     let onlyLocally: Bool
     let nameRequired: Bool
@@ -8,26 +9,14 @@ class AddressValidator {
     let stateOfCountryRequired: Bool
     let onCompletion: (Result<Void, AddressValidationError>) -> Void
 
-    init(address: ShippingLabelAddress?,
+    init(siteID: Int64,
+         address: Address,
          onlyLocally: Bool,
          nameRequired: Bool = false,
          phoneNumberRequired: Bool = false,
          stateOfCountryRequired: Bool = false,
          onCompletion: @escaping (Result<Void, AddressValidationError>) -> Void) {
-        self.address = address
-        self.onlyLocally = onlyLocally
-        self.nameRequired = nameRequired
-        self.phoneNumberRequired = phoneNumberRequired
-        self.stateOfCountryRequired = stateOfCountryRequired
-        self.onCompletion = onCompletion
-    }
-
-    init(address: Address,
-         onlyLocally: Bool,
-         nameRequired: Bool = false,
-         phoneNumberRequired: Bool = false,
-         stateOfCountryRequired: Bool = false,
-         onCompletion: @escaping (Result<Void, AddressValidationError>) -> Void) {
+        self.siteID = siteID
         self.onlyLocally = onlyLocally
         self.nameRequired = nameRequired
         self.phoneNumberRequired = phoneNumberRequired
@@ -42,19 +31,17 @@ class AddressValidator {
                                             address2: address.address2 ?? "",
                                             city: address.city,
                                             postcode: address.postcode)
+        validate()
     }
 
-    private func validate(address: ShippingLabelAddress,
-                  onlyLocally: Bool,
-                  nameRequired: Bool = false,
-                  completion: @escaping (Result<Void, AddressValidationError>) -> Void) {
+    private func validate() {
         if validateAddressLocally().isNotEmpty {
-            completion(.failure(.local))
+            onCompletion(.failure(.local))
             return
         }
 
         if onlyLocally {
-            completion(.success(()))
+            onCompletion(.success(()))
             return
         }
     }

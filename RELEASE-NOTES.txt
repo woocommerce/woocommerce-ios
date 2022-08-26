@@ -5,7 +5,7 @@
 - [*] In-Person Payments: The onboarding notice on the In-Person Payments menu is correctly dismissed after multiple prompts are shown. [https://github.com/woocommerce/woocommerce-ios/pull/7543]
 - [*] Help center: Added custom help center web page with FAQs for "Enter Store Address" and "Enter WordPress.com email" screens. [https://github.com/woocommerce/woocommerce-ios/pull/7553, https://github.com/woocommerce/woocommerce-ios/pull/7573]
 - [*] In-Person Payments: The plugin selection is saved correctly after multiple onboarding prompts. [https://github.com/woocommerce/woocommerce-ios/pull/7544]
-- [*] In-Person Payments: A new prompt to enable `Pay in Person` for your store's checkout, to accept In-Person Payments for website orders [https://github.com/woocommerce/woocommerce-ios/issues/7474]
+- [**] In-Person Payments: A new prompt to enable `Pay in Person` for your store's checkout, to accept In-Person Payments for website orders [https://github.com/woocommerce/woocommerce-ios/issues/7474]
 
 10.0
 -----

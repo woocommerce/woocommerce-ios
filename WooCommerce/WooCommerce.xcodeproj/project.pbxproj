@@ -501,7 +501,6 @@
 		261AA30C2753119E009530FE /* PaymentMethodsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261AA30B2753119E009530FE /* PaymentMethodsViewModel.swift */; };
 		261AA30E275506DE009530FE /* PaymentMethodsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261AA30D275506DE009530FE /* PaymentMethodsViewModelTests.swift */; };
 		26281776278F0B0100C836D3 /* View+NoticesModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26281775278F0B0100C836D3 /* View+NoticesModifier.swift */; };
-		262A09812628A8F40033AD20 /* WooStyleModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262A09802628A8F40033AD20 /* WooStyleModifiers.swift */; };
 		262A098B2628C51D0033AD20 /* OrderAddOnListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262A098A2628C51D0033AD20 /* OrderAddOnListViewModel.swift */; };
 		262A0999262908A60033AD20 /* OrderAddOnListI1Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262A0998262908A60033AD20 /* OrderAddOnListI1Tests.swift */; };
 		262A09A5262F65690033AD20 /* OrderAddOnTopBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262A09A4262F65690033AD20 /* OrderAddOnTopBanner.swift */; };
@@ -2347,7 +2346,6 @@
 		261AA30B2753119E009530FE /* PaymentMethodsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentMethodsViewModel.swift; sourceTree = "<group>"; };
 		261AA30D275506DE009530FE /* PaymentMethodsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentMethodsViewModelTests.swift; sourceTree = "<group>"; };
 		26281775278F0B0100C836D3 /* View+NoticesModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+NoticesModifier.swift"; sourceTree = "<group>"; };
-		262A09802628A8F40033AD20 /* WooStyleModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooStyleModifiers.swift; sourceTree = "<group>"; };
 		262A098A2628C51D0033AD20 /* OrderAddOnListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderAddOnListViewModel.swift; sourceTree = "<group>"; };
 		262A0998262908A60033AD20 /* OrderAddOnListI1Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderAddOnListI1Tests.swift; sourceTree = "<group>"; };
 		262A09A4262F65690033AD20 /* OrderAddOnTopBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderAddOnTopBanner.swift; sourceTree = "<group>"; };
@@ -4881,7 +4879,6 @@
 		262A097F2628A8BF0033AD20 /* View Modifiers */ = {
 			isa = PBXGroup;
 			children = (
-				262A09802628A8F40033AD20 /* WooStyleModifiers.swift */,
 				2664210226F40FB1001FC5B4 /* View+ScrollModifiers.swift */,
 				26E0AE12263359F900A5EB3B /* View+Conditionals.swift */,
 				DE4B3B5526A68DD000EEF2D8 /* View+InsetPaddings.swift */,
@@ -9778,7 +9775,6 @@
 				02ECD1DF24FF48D000735BE5 /* PaginationTracker.swift in Sources */,
 				02645D8627BA2DB40065DC68 /* InboxNoteRow.swift in Sources */,
 				020886572499E643001D784E /* ProductExternalLinkViewController.swift in Sources */,
-				262A09812628A8F40033AD20 /* WooStyleModifiers.swift in Sources */,
 				DEC2962526C122DF005A056B /* ShippingLabelCustomsFormInputViewModel.swift in Sources */,
 				02F4F50F237AFC1E00E13A9C /* ImageAndTitleAndTextTableViewCell.swift in Sources */,
 				021E2A1C23AA0DD100B1DE07 /* ProductBackordersSettingListSelectorCommand.swift in Sources */,

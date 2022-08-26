@@ -29,6 +29,8 @@ extension CustomHelpCenterContent {
         switch step {
         case .start where flow == .loginWithSiteAddress:
             url = WooConstants.URLs.helpCenterForEnterStoreAddress.asURL()
+        case .enterEmailAddress where flow == .loginWithSiteAddress:
+            url = WooConstants.URLs.helpCenterForEnterWPCOMEmail.asURL()
         default:
             return nil
         }

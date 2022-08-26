@@ -81,6 +81,11 @@ extension WooConstants {
         ///
         case helpCenterForEnterStoreAddress = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#enter-store-address"
 
+        /// Help Center for "Enter WordPress.com email" screen
+        ///
+        // swiftlint:disable:next line_length
+        case helpCenterForEnterWPCOMEmail = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#enter-wordpress-com-email-address-login-using-store-address-flow"
+
         /// URL used for Learn More button in Orders empty state.
         ///
         case blog = "https://woocommerce.com/blog/"

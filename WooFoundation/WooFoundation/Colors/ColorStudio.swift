@@ -52,12 +52,12 @@ public struct ColorStudio {
     let name: ColorStudioName
     let shade: ColorStudioShade
 
-    init(name: ColorStudioName, shade: ColorStudioShade = .shade50) {
+    public init(name: ColorStudioName, shade: ColorStudioShade = .shade50) {
         self.name = name
         self.shade = shade
     }
 
-    init(from identifier: ColorStudio, shade: ColorStudioShade) {
+    public init(from identifier: ColorStudio, shade: ColorStudioShade) {
         self.name = identifier.name
         self.shade = shade
     }
@@ -76,7 +76,7 @@ public struct ColorStudio {
     public static let celadon = ColorStudio(name: .celadon)
 
     /// The full name of the color, with required shade value
-    func assetName() -> String {
+    public func assetName() -> String {
         return "\(name)\(shade)"
     }
 }

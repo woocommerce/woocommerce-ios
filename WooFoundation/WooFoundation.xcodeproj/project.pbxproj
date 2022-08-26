@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		265C99D828B93F04005E6117 /* ColorPalette.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 265C99D728B93F04005E6117 /* ColorPalette.xcassets */; };
+		265C99DD28B941D5005E6117 /* UIColor+Muriel-Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265C99DC28B941D5005E6117 /* UIColor+Muriel-Tests.swift */; };
+		265C99DF28B94271005E6117 /* MurielColorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265C99DE28B94271005E6117 /* MurielColorTests.swift */; };
 		26AF1F5328B8362800937BA9 /* UIColor+SemanticColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AF1F4F28B8362800937BA9 /* UIColor+SemanticColors.swift */; };
 		26AF1F5428B8362800937BA9 /* ColorStudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AF1F5028B8362800937BA9 /* ColorStudio.swift */; };
 		26AF1F5528B8362800937BA9 /* UIColor+ColorStudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AF1F5128B8362800937BA9 /* UIColor+ColorStudio.swift */; };
@@ -40,6 +43,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		265C99D728B93F04005E6117 /* ColorPalette.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = ColorPalette.xcassets; sourceTree = "<group>"; };
+		265C99DC28B941D5005E6117 /* UIColor+Muriel-Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Muriel-Tests.swift"; sourceTree = "<group>"; };
+		265C99DE28B94271005E6117 /* MurielColorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MurielColorTests.swift; sourceTree = "<group>"; };
 		26AF1F4F28B8362800937BA9 /* UIColor+SemanticColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+SemanticColors.swift"; sourceTree = "<group>"; };
 		26AF1F5028B8362800937BA9 /* ColorStudio.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorStudio.swift; sourceTree = "<group>"; };
 		26AF1F5128B8362800937BA9 /* UIColor+ColorStudio.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+ColorStudio.swift"; sourceTree = "<group>"; };
@@ -93,6 +99,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		265C99DB28B941D5005E6117 /* Colors */ = {
+			isa = PBXGroup;
+			children = (
+				265C99DE28B94271005E6117 /* MurielColorTests.swift */,
+				265C99DC28B941D5005E6117 /* UIColor+Muriel-Tests.swift */,
+			);
+			name = Colors;
+			path = WooFoundationTests/Colors;
+			sourceTree = SOURCE_ROOT;
+		};
 		26AF1F4E28B8362800937BA9 /* Colors */ = {
 			isa = PBXGroup;
 			children = (
@@ -100,6 +116,7 @@
 				26AF1F5028B8362800937BA9 /* ColorStudio.swift */,
 				26AF1F5128B8362800937BA9 /* UIColor+ColorStudio.swift */,
 				26AF1F5228B8362800937BA9 /* UIColor+SystemColors.swift */,
+				265C99D728B93F04005E6117 /* ColorPalette.xcassets */,
 			);
 			path = Colors;
 			sourceTree = "<group>";
@@ -124,6 +141,7 @@
 		686BE913288EE2BC00967C86 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				265C99DB28B941D5005E6117 /* Colors */,
 				686BE914288EE2CA00967C86 /* TypedPredicateTests.swift */,
 			);
 			path = Utilities;
@@ -337,6 +355,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				265C99D828B93F04005E6117 /* ColorPalette.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -442,6 +461,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				686BE915288EE2CA00967C86 /* TypedPredicateTests.swift in Sources */,
+				265C99DF28B94271005E6117 /* MurielColorTests.swift in Sources */,
+				265C99DD28B941D5005E6117 /* UIColor+Muriel-Tests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

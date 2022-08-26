@@ -1,6 +1,11 @@
 import UIKit
 
+/// Disposable Class to find this `Bundle` at runtime
+///
+internal class WooFoundationBundleClass {}
+
 public extension UIColor {
+
     /// Get a UIColor from the Color Studio color palette
     ///
     /// - Parameters:
@@ -8,7 +13,7 @@ public extension UIColor {
     /// - Returns: UIColor. Red in cases of error
     class func withColorStudio(_ colorStudio: ColorStudio) -> UIColor {
         let assetName = colorStudio.assetName()
-        let color = UIColor(named: assetName)
+        let color = UIColor(named: assetName, in: Bundle(for: WooFoundationBundleClass.self), compatibleWith: nil)
 
         guard let unwrappedColor = color else {
             return .red

@@ -1521,8 +1521,6 @@
 		D82DFB4C225F303200EFE2CB /* EmptyListMessageWithActionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82DFB4B225F303200EFE2CB /* EmptyListMessageWithActionTests.swift */; };
 		D831E2DC230E0558000037D0 /* Authentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = D831E2DB230E0558000037D0 /* Authentication.swift */; };
 		D831E2E0230E0BA7000037D0 /* Logs.swift in Sources */ = {isa = PBXBuildFile; fileRef = D831E2DF230E0BA7000037D0 /* Logs.swift */; };
-		D83A6A782379097A00419D48 /* MurielColorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83A6A772379097A00419D48 /* MurielColorTests.swift */; };
-		D83A6A7A23792B2400419D48 /* UIColor+Muriel-Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83A6A7923792B2400419D48 /* UIColor+Muriel-Tests.swift */; };
 		D83C129F22250BF0004CA04C /* OrderTrackingTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D83C129D22250BEF004CA04C /* OrderTrackingTableViewCell.xib */; };
 		D83C12A022250BF0004CA04C /* OrderTrackingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83C129E22250BEF004CA04C /* OrderTrackingTableViewCell.swift */; };
 		D83F5930225B269C00626E75 /* DatePickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83F592E225B269C00626E75 /* DatePickerTableViewCell.swift */; };
@@ -1586,7 +1584,6 @@
 		D88D5A3D230B5E85007B6E01 /* ServiceLocatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88D5A3C230B5E85007B6E01 /* ServiceLocatorTests.swift */; };
 		D88FDB4525DD223B00CB0DBD /* Hardware.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D88FDB4425DD223B00CB0DBD /* Hardware.framework */; };
 		D88FDB4625DD223B00CB0DBD /* Hardware.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D88FDB4425DD223B00CB0DBD /* Hardware.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		D8915DBF23729CFB00F63762 /* ColorPalette.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D8915DBE23729CFB00F63762 /* ColorPalette.xcassets */; };
 		D89C004725B467C7000E4683 /* ULAccountMismatchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89C004625B467C7000E4683 /* ULAccountMismatchViewModel.swift */; };
 		D89C009425B4E9E2000E4683 /* ULAccountMismatchViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89C009325B4E9E2000E4683 /* ULAccountMismatchViewControllerTests.swift */; };
 		D89C009A25B4EEA4000E4683 /* WrongAccountErrorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89C009925B4EEA4000E4683 /* WrongAccountErrorViewModelTests.swift */; };
@@ -3402,8 +3399,6 @@
 		D82DFB4B225F303200EFE2CB /* EmptyListMessageWithActionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EmptyListMessageWithActionTests.swift; path = WooCommerceTests/ViewRelated/EmptyListMessageWithActionTests.swift; sourceTree = SOURCE_ROOT; };
 		D831E2DB230E0558000037D0 /* Authentication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authentication.swift; sourceTree = "<group>"; };
 		D831E2DF230E0BA7000037D0 /* Logs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logs.swift; sourceTree = "<group>"; };
-		D83A6A772379097A00419D48 /* MurielColorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MurielColorTests.swift; path = WooCommerceTests/ViewRelated/MurielColorTests.swift; sourceTree = SOURCE_ROOT; };
-		D83A6A7923792B2400419D48 /* UIColor+Muriel-Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UIColor+Muriel-Tests.swift"; path = "WooCommerceTests/ViewRelated/UIColor+Muriel-Tests.swift"; sourceTree = SOURCE_ROOT; };
 		D83C129D22250BEF004CA04C /* OrderTrackingTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OrderTrackingTableViewCell.xib; sourceTree = "<group>"; };
 		D83C129E22250BEF004CA04C /* OrderTrackingTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderTrackingTableViewCell.swift; sourceTree = "<group>"; };
 		D83F592E225B269C00626E75 /* DatePickerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerTableViewCell.swift; sourceTree = "<group>"; };
@@ -3465,7 +3460,6 @@
 		D88CA757237D1C27005D2F44 /* Ghost+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Ghost+Woo.swift"; sourceTree = "<group>"; };
 		D88D5A3C230B5E85007B6E01 /* ServiceLocatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocatorTests.swift; sourceTree = "<group>"; };
 		D88FDB4425DD223B00CB0DBD /* Hardware.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Hardware.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D8915DBE23729CFB00F63762 /* ColorPalette.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = ColorPalette.xcassets; sourceTree = "<group>"; };
 		D89C004625B467C7000E4683 /* ULAccountMismatchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ULAccountMismatchViewModel.swift; sourceTree = "<group>"; };
 		D89C009325B4E9E2000E4683 /* ULAccountMismatchViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ULAccountMismatchViewControllerTests.swift; sourceTree = "<group>"; };
 		D89C009925B4EEA4000E4683 /* WrongAccountErrorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrongAccountErrorViewModelTests.swift; sourceTree = "<group>"; };
@@ -6425,7 +6419,6 @@
 				D8AB131D225DC25F002BB5D1 /* MockOrders.swift */,
 				2667BFDA252E659A008099D4 /* MockOrderItem.swift */,
 				262A2C2A2537A3330086C1BE /* MockRefunds.swift */,
-				D83A6A772379097A00419D48 /* MurielColorTests.swift */,
 				D8736B5022EB69E300A14A29 /* OrderDetailsViewModelTests.swift */,
 				D8C11A5F22E2479800D4A88D /* OrderPaymentDetailsViewModelTests.swift */,
 				45B9C64423A945C0007FC4C5 /* PriceInputFormatterTests.swift */,
@@ -6438,7 +6431,6 @@
 				4569D3C825DC065B00CDC3E2 /* SiteAddressTests.swift */,
 				B517EA19218B2D2600730EC4 /* StringFormatterTests.swift */,
 				B56BBD15214820A70053A32D /* SyncCoordinatorTests.swift */,
-				D83A6A7923792B2400419D48 /* UIColor+Muriel-Tests.swift */,
 				CE50345621B1F26C007573C6 /* ZendeskManagerTests.swift */,
 				0277AEA4256CAA4200F45C4A /* MockShippingLabel.swift */,
 				DE26B5282775C76B00A2EA0A /* MockSyncingCoordinator.swift */,
@@ -6698,7 +6690,6 @@
 				03180BE52763AA8F00B938A8 /* Woo-Release-macOS.entitlements */,
 				24C579D124F476300076E1B4 /* Woo-Alpha.entitlements */,
 				03180BE62763AA8F00B938A8 /* Woo-Alpha-macOS.entitlements */,
-				D8915DBE23729CFB00F63762 /* ColorPalette.xcassets */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -8897,7 +8888,6 @@
 				CEE006062077D1280079161F /* SummaryTableViewCell.xib in Resources */,
 				CE8CCD44239AC06E009DBD22 /* RefundDetailsViewController.xib in Resources */,
 				4567389E2745497C00743054 /* OrderStatusFilterViewController.xib in Resources */,
-				D8915DBF23729CFB00F63762 /* ColorPalette.xcassets in Resources */,
 				CE24BCD0212DE8A6001CD12E /* HeadlineLabelTableViewCell.xib in Resources */,
 				B559EBB020A0BF8F00836CD4 /* LICENSE in Resources */,
 				CCCC29DD25E5757C0046B96F /* RenameAttributesViewController.xib in Resources */,
@@ -10324,7 +10314,6 @@
 				0225C42824768A4C00C5B4F0 /* FilterProductListViewModelTests.swift in Sources */,
 				D85136C9231E12B600DD0539 /* ReviewViewModelTests.swift in Sources */,
 				57C5FF7C25091DE50074EC26 /* OrderListSyncActionUseCaseTests.swift in Sources */,
-				D83A6A782379097A00419D48 /* MurielColorTests.swift in Sources */,
 				020BE77723B4A9D9007FE54C /* AztecLinkFormatBarCommandTests.swift in Sources */,
 				020BE77323B4A567007FE54C /* AztecInsertMoreFormatBarCommandTests.swift in Sources */,
 				B57C5C9E21B80E8300FF82B2 /* SessionManager+Internal.swift in Sources */,
@@ -10608,7 +10597,6 @@
 				AEA622B727468790002A9B57 /* AddOrderCoordinatorTests.swift in Sources */,
 				D802549126552FE1001B2CC1 /* CardPresentModalScanningForReaderTests.swift in Sources */,
 				A655725D258B91AE008AE7CA /* OrderListCellViewModelTests.swift in Sources */,
-				D83A6A7A23792B2400419D48 /* UIColor+Muriel-Tests.swift in Sources */,
 				022C658C2863BBAC00EC35A9 /* ProductFormViewController+ProductImageUploaderTests.swift in Sources */,
 				093B265927DF15100026F92D /* BulkUpdatePriceViewControllerTests.swift in Sources */,
 				2614EB1C24EB611200968D4B /* TopBannerViewTests.swift in Sources */,

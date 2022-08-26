@@ -1,4 +1,5 @@
 import XCTest
+import WooFoundation
 @testable import WooCommerce
 
 final class UIColor_Muriel_Tests: XCTestCase {

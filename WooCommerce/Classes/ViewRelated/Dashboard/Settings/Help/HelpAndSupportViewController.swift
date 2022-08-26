@@ -1,14 +1,13 @@
 import UIKit
 import Yosemite
 
-
 // MARK: - HelpAndSupportViewController
 //
-class HelpAndSupportViewController: UIViewController {
+final class HelpAndSupportViewController: UIViewController {
 
     /// Main TableView
     ///
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet private weak var tableView: UITableView!
 
     /// Table Sections to be rendered
     ///
@@ -57,6 +56,20 @@ class HelpAndSupportViewController: UIViewController {
     ///
     var displaysDismissAction = false
 
+    /// Custom help center web page related properties
+    /// If non-nil this web page is launched instead of Zendesk
+    ///
+    private let customHelpCenterContent: CustomHelpCenterContent?
+
+    init?(customHelpCenterContent: CustomHelpCenterContent, coder: NSCoder) {
+        self.customHelpCenterContent = customHelpCenterContent
+        super.init(coder: coder)
+    }
+
+    required init?(coder: NSCoder) {
+        self.customHelpCenterContent = nil
+        super.init(coder: coder)
+    }
 
     // MARK: - Overridden Methods
     //
@@ -296,6 +309,15 @@ private extension HelpAndSupportViewController {
     func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
         return sections[indexPath.section].rows[indexPath.row]
     }
+
+    /// Opens custom help center URL in a web view
+    ///
+    func launchCustomHelpCenterWebPage(_ customHelpCenterContent: CustomHelpCenterContent) {
+        WebviewHelper.launch(customHelpCenterContent.url, with: self)
+
+        ServiceLocator.analytics.track(.supportHelpCenterViewed,
+                                       withProperties: customHelpCenterContent.trackingProperties)
+    }
 }
 
 // MARK: - Actions
@@ -305,7 +327,11 @@ private extension HelpAndSupportViewController {
     /// Help Center action
     ///
     func helpCenterWasPressed() {
-        ZendeskProvider.shared.showHelpCenter(from: self)
+        if let customHelpCenterContent = customHelpCenterContent {
+            launchCustomHelpCenterWebPage(customHelpCenterContent)
+        } else {
+            ZendeskProvider.shared.showHelpCenter(from: self)
+        }
     }
 
     /// Contact Support action

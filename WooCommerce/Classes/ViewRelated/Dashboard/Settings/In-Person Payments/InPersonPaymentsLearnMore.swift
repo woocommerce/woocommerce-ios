@@ -7,13 +7,16 @@ struct InPersonPaymentsLearnMore: View {
     let url: URL
     let linkText: String
     let formatText: String
+    let analyticReason: String?
 
     init(url: URL = learnMoreURL,
          linkText: String = Localization.learnMoreLink,
-         formatText: String = Localization.learnMoreText) {
+         formatText: String = Localization.learnMoreText,
+         analyticReason: String? = nil) {
         self.url = url
         self.linkText = linkText
         self.formatText = formatText
+        self.analyticReason = analyticReason
     }
 
     private let cardPresentConfiguration = CardPresentConfigurationLoader().configuration
@@ -28,8 +31,10 @@ struct InPersonPaymentsLearnMore: View {
         }
             .padding(.vertical, Constants.verticalPadding)
             .onTapGesture {
-                ServiceLocator.analytics.track(event: WooAnalyticsEvent.InPersonPayments
-                                                .cardPresentOnboardingLearnMoreTapped(countryCode: cardPresentConfiguration.countryCode))
+                ServiceLocator.analytics.track(
+                    event: WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingLearnMoreTapped(
+                        reason: analyticReason ?? "",
+                        countryCode: cardPresentConfiguration.countryCode))
                 customOpenURL?(url)
             }
     }

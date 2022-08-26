@@ -184,6 +184,12 @@ public enum WooAnalyticsStat: String {
     // MARK: Card-Present Payments Onboarding
     case cardPresentOnboardingLearnMoreTapped = "card_present_onboarding_learn_more_tapped"
     case cardPresentOnboardingNotCompleted = "card_present_onboarding_not_completed"
+    case cardPresentOnboardingStepSkipped = "card_present_onboarding_step_skipped"
+    case cardPresentOnboardingCtaTapped = "card_present_onboarding_cta_tapped"
+
+    // MARK: Cash on Delivery Enable events
+    case enableCashOnDeliverySuccess = "enable_cash_on_delivery_success"
+    case enableCashOnDeliveryFailed = "enable_cash_on_delivery_failed"
 
     // MARK: Payment Gateways selection
     case cardPresentPaymentGatewaySelected = "card_present_payment_gateway_selected"

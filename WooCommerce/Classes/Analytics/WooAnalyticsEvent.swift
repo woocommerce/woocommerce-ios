@@ -745,6 +745,8 @@ extension WooAnalyticsEvent {
             static let batteryLevel = "battery_level"
             static let cardReaderModel = "card_reader_model"
             static let countryCode = "country"
+            static let reason = "reason"
+            static let remindLater = "remind_later"
             static let gatewayID = "plugin_slug"
             static let errorDescription = "error_description"
             static let paymentMethodType = "payment_method_type"
@@ -1135,9 +1137,12 @@ extension WooAnalyticsEvent {
         ///
         /// - Parameter countryCode: the country code of the store.
         ///
-        static func cardPresentOnboardingLearnMoreTapped(countryCode: String) -> WooAnalyticsEvent {
+        static func cardPresentOnboardingLearnMoreTapped(reason: String, countryCode: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardPresentOnboardingLearnMoreTapped,
-                              properties: [Keys.countryCode: countryCode])
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                Keys.reason: reason
+                              ])
         }
 
         /// Tracked when the In-Person Payments onboarding cannot be completed for some reason.
@@ -1150,8 +1155,64 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardPresentOnboardingNotCompleted,
                               properties: [
                                 Keys.countryCode: countryCode,
-                                "reason": reason
+                                Keys.reason: reason
                               ])
+        }
+
+        /// Tracked when a In-Person Payments onboarding step is skipped by the user.
+        ///
+        /// - Parameters:
+        ///   - reason: the reason why the onboarding step was shown (effectively the name of the step.)
+        ///   - remindLater: whether the user will see this onboarding step again
+        ///   - countryCode: the country code of the store.
+        ///
+        static func cardPresentOnboardingStepSkipped(reason: String, remindLater: Bool, countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardPresentOnboardingStepSkipped,
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                Keys.reason: reason,
+                                Keys.remindLater: remindLater
+                              ])
+        }
+
+        /// Tracked when a In-Person Payments onboarding step's CTA is tapped by the user.
+        ///
+        /// - Parameters:
+        ///   - reason: the reason why the onboarding step was shown (effectively the name of the step.)
+        ///   - countryCode: the country code of the store.
+        ///
+        static func cardPresentOnboardingCtaTapped(reason: String, countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardPresentOnboardingCtaTapped,
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                Keys.reason: reason
+                              ])
+        }
+
+        /// Tracked when the Cash on Delivery Payment Gateway is successfully enabled, e.g. from the IPP onboarding flow.
+        ///
+        /// - Parameters:
+        ///   - countryCode: the country code of the store.
+        ///
+        static func enableCashOnDeliverySuccess(countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .enableCashOnDeliverySuccess,
+                              properties: [
+                                Keys.countryCode: countryCode
+                              ])
+        }
+
+        /// Tracked when the Cash on Delivery Payment Gateway enabling fails, e.g. from the IPP onboarding flow.
+        ///
+        /// - Parameters:
+        ///   - countryCode: the country code of the store.
+        ///
+        static func enableCashOnDeliveryFailed(countryCode: String,
+                                               error: Error?) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .enableCashOnDeliveryFailed,
+                              properties: [
+                                Keys.countryCode: countryCode
+                              ],
+                              error: error)
         }
 
         /// Tracked when the user taps on the "See Receipt" button to view a receipt.

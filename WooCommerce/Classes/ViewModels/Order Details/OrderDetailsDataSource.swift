@@ -458,22 +458,12 @@ private extension OrderDetailsDataSource {
         cell.selectionStyle = .none
         if customerNote.isNotEmpty {
             cell.body = customerNote.quoted
-            cell.onEditTapped = { [weak self] in
-                self?.onCellAction?(.editCustomerNote, nil)
-            }
         } else {
             cell.body = nil
-            cell.onAddTapped = { [weak self] in
-                self?.onCellAction?(.editCustomerNote, nil)
-            }
         }
 
-        // TODO: Before releasing the feature, please the delete closures assignation above.
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing) {
-            cell.onEditTapped = nil
-            cell.onAddTapped = nil
-        }
-
+        cell.onEditTapped = nil
+        cell.onAddTapped = nil
         cell.addButtonTitle = NSLocalizedString("Add Customer Note", comment: "Title for the button to add the Customer Provided Note in Order Details")
         cell.editButtonAccessibilityLabel = NSLocalizedString(
             "Update Note",
@@ -900,22 +890,12 @@ private extension OrderDetailsDataSource {
 
         if let formattedPostalAddress = shippingAddress?.formattedPostalAddress {
             cell.address = formattedPostalAddress
-            cell.onEditTapped = { [weak self] in
-                self?.onCellAction?(.editShippingAddress, nil)
-            }
         } else {
             cell.address = nil
-            cell.onAddTapped = { [weak self] in
-                self?.onCellAction?(.editShippingAddress, nil)
-            }
         }
 
-        // TODO: Before releasing the feature, please the delete closures assignation above.
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing) {
-            cell.onEditTapped = nil
-            cell.onAddTapped = nil
-        }
-
+        cell.onEditTapped = nil
+        cell.onAddTapped = nil
         cell.addButtonTitle = NSLocalizedString("Add Shipping Address", comment: "Title for the button to add the Shipping Address in Order Details")
         cell.editButtonAccessibilityLabel = NSLocalizedString(
             "Update Address",
@@ -1114,34 +1094,14 @@ extension OrderDetailsDataSource {
         let customerInformation: Section? = {
             var rows: [Row] = []
 
-            let isUnifiedEditingEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing)
-
             /// Customer Note
-            if isUnifiedEditingEnabled {
-                if order.customerNote?.isNotEmpty == true {
-                    /// When inside `.unifiedOrderEditing` only show the note if there is content for it.
-                    rows.append(.customerNote)
-                }
-            } else {
-                /// Always visible to allow editing.
+            if order.customerNote?.isNotEmpty == true {
                 rows.append(.customerNote)
             }
 
-            let orderContainsOnlyVirtualProducts = self.products.filter { (product) -> Bool in
-                return items.first(where: { $0.productID == product.productID}) != nil
-            }.allSatisfy { $0.virtual == true }
-
             /// Shipping Address
-            if isUnifiedEditingEnabled {
-                /// When inside `.unifiedOrderEditing` only show the billing address if there is content for it.
-                if order.shippingAddress?.isEmpty == false {
-                    rows.append(.shippingAddress)
-                }
-            } else {
-                /// Almost always visible to allow editing.
-                if order.shippingAddress != nil && orderContainsOnlyVirtualProducts == false {
-                    rows.append(.shippingAddress)
-                }
+            if order.shippingAddress?.isEmpty == false {
+                rows.append(.shippingAddress)
             }
 
             /// Shipping Lines
@@ -1150,13 +1110,7 @@ extension OrderDetailsDataSource {
             }
 
             /// Billing Address
-            if isUnifiedEditingEnabled {
-                /// When inside `.unifiedOrderEditing` only show the billing address if there is content for it.
-                if order.billingAddress?.isEmpty == false {
-                    rows.append(.billingDetail)
-                }
-            } else {
-                /// Always visible to allow editing.
+            if order.billingAddress?.isEmpty == false {
                 rows.append(.billingDetail)
             }
 
@@ -1645,8 +1599,6 @@ extension OrderDetailsDataSource {
         case createShippingLabel
         case shippingLabelTrackingMenu(shippingLabel: ShippingLabel, sourceView: UIView)
         case viewAddOns(addOns: [OrderItemAttribute])
-        case editCustomerNote
-        case editShippingAddress
     }
 
     enum Constants {

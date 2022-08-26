@@ -37,8 +37,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .inPersonPaymentGatewaySelection:
             return true
-        case .unifiedOrderEditing:
-            return true
         case .backgroundProductImageUpload:
             return true
         case .appleIDAccountDeletion:

@@ -21,10 +21,8 @@ public final class PasswordScreen: BaseScreen {
         super.init(element: passwordTextField)
     }
 
-    public func proceedWith(password: String) -> LoginEpilogueScreen {
+    public func proceedWith(password: String) {
         _ = tryProceed(password: password)
-
-        return LoginEpilogueScreen()
     }
 
     public func tryProceed(password: String) -> PasswordScreen {

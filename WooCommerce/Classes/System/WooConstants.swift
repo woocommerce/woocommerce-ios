@@ -21,6 +21,10 @@ enum WooConstants {
     ///
     static let keychainAppleIDKey = "AppleID"
 
+    /// Keychain Access's Key for anonymous ID
+    ///
+    static let anonymousIDKey = "anonymousID"
+
     /// Push Notifications ApplicationID
     ///
 #if DEBUG
@@ -154,6 +158,9 @@ extension WooConstants {
 #else
         case couponManagementFeedback = "https://automattic.survey.fm/woo-app-coupon-management-production"
 #endif
+        /// URL for the Enable Cash on Delivery (or Pay in Person) onboarding step's learn more link.
+        /// 
+        case cashOnDeliveryLearnMoreUrl = "https://woocommerce.com/document/stripe/accept-in-person-payments-with-stripe/#section-8"
 
         /// Returns the URL version of the receiver
         ///

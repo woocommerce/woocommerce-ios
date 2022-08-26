@@ -22,15 +22,24 @@ final class CardPresentModalScanningForReader: CardPresentPaymentsModalViewModel
     let auxiliaryButtonTitle: String? = nil
 
     var auxiliaryAttributedButtonTitle: NSAttributedString? {
-        let moreLinkAttributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: UIColor.accent,
-            .underlineStyle: NSUnderlineStyle.single.rawValue
-        ]
-        let moreTextAttributes: [NSAttributedString.Key: Any] = [.foregroundColor: UIColor.text]
-        let linkAttributedString = NSMutableAttributedString(string: Localization.learnMoreLink, attributes: moreLinkAttributes)
-        let moreAttributedString = NSMutableAttributedString(string: Localization.learnMoreText, attributes: moreTextAttributes)
-        linkAttributedString.append(moreAttributedString)
-        return linkAttributedString
+        let result = NSMutableAttributedString(
+            string: .localizedStringWithFormat(
+                Localization.learnMoreText,
+                Localization.learnMoreLink
+            ),
+            attributes: [.foregroundColor: UIColor.text]
+        )
+        result.replaceFirstOccurrence(
+            of: Localization.learnMoreLink,
+            with: NSAttributedString(
+                string: Localization.learnMoreLink,
+                attributes: [
+                    .foregroundColor: UIColor.accent,
+                    .underlineStyle: NSUnderlineStyle.single.rawValue
+                ]
+            ))
+        result.addAttribute(.font, value: UIFont.footnote, range: NSRange(location: 0, length: result.length))
+        return result
     }
 
     let bottomTitle: String? = Localization.instruction
@@ -94,10 +103,12 @@ private extension CardPresentModalScanningForReader {
         )
 
         static let learnMoreText = NSLocalizedString(
-            " about In\u{2011}Person Payments",
+            "%1$@ about In\u{2011}Person Payments",
             comment: """
-                     A label prompting users to learn more about In-Person Payments"
+                     A label prompting users to learn more about In-Person Payments.
                      \u{2011} is a special character that acts as nonbreaking hyphen for "-" in the "In-Person" string.
+                     %1$@ is a placeholder that always replaced with \"Learn more\" string,
+                     which should be translated separately and considered part of this sentence.
                      """
         )
     }

@@ -30,7 +30,7 @@ extension CustomHelpCenterContent {
         case .start where flow == .loginWithSiteAddress: // Enter Store Address screen
             url = WooConstants.URLs.helpCenterForEnterStoreAddress.asURL()
         case .enterEmailAddress where flow == .loginWithSiteAddress: // Enter WordPress.com email screen
-            url = WooConstants.URLs.helpCenterForEnterWPCOMEmail.asURL()
+            url = WooConstants.URLs.helpCenterForWPCOMEmailFromSiteAddressFlow.asURL()
         default:
             return nil
         }

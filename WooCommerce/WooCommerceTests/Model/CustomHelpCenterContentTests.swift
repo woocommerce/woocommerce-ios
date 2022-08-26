@@ -56,7 +56,7 @@ final class CustomHelpCenterContentTests: XCTestCase {
         // Given
         let step: AuthenticatorAnalyticsTracker.Step = .enterEmailAddress
         let flow: AuthenticatorAnalyticsTracker.Flow = .loginWithSiteAddress
-        let helpContentURL = WooConstants.URLs.helpCenterForEnterWPCOMEmail.asURL()
+        let helpContentURL = WooConstants.URLs.helpCenterForWPCOMEmailFromSiteAddressFlow.asURL()
 
         // When
         let sut = try XCTUnwrap(CustomHelpCenterContent(step: step, flow: flow))

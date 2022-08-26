@@ -1,10 +1,54 @@
 import Yosemite
 
 class AddressValidator {
-    func validate(address: ShippingLabelAddress,
+    let address: ShippingLabelAddress?
+    let onlyLocally: Bool
+    let nameRequired: Bool
+    let phoneNumberRequired: Bool
+    let stateOfCountryRequired: Bool
+    let onCompletion: (Result<Void, AddressValidationError>) -> Void
+
+    init(address: ShippingLabelAddress?,
+         onlyLocally: Bool,
+         nameRequired: Bool = false,
+         phoneNumberRequired: Bool = false,
+         stateOfCountryRequired: Bool = false,
+         onCompletion: @escaping (Result<Void, AddressValidationError>) -> Void) {
+        self.address = address
+        self.onlyLocally = onlyLocally
+        self.nameRequired = nameRequired
+        self.phoneNumberRequired = phoneNumberRequired
+        self.stateOfCountryRequired = stateOfCountryRequired
+        self.onCompletion = onCompletion
+    }
+
+    init(address: Address,
+         onlyLocally: Bool,
+         nameRequired: Bool = false,
+         phoneNumberRequired: Bool = false,
+         stateOfCountryRequired: Bool = false,
+         onCompletion: @escaping (Result<Void, AddressValidationError>) -> Void) {
+        self.onlyLocally = onlyLocally
+        self.nameRequired = nameRequired
+        self.phoneNumberRequired = phoneNumberRequired
+        self.stateOfCountryRequired = stateOfCountryRequired
+        self.onCompletion = onCompletion
+        self.address = ShippingLabelAddress(company: address.company ?? "",
+                                            name: address.firstName,
+                                            phone: address.phone ?? "",
+                                            country: address.country,
+                                            state: address.state,
+                                            address1: address.address1 ,
+                                            address2: address.address2 ?? "",
+                                            city: address.city,
+                                            postcode: address.postcode)
+    }
+
+    private func validate(address: ShippingLabelAddress,
                   onlyLocally: Bool,
+                  nameRequired: Bool = false,
                   completion: @escaping (Result<Void, AddressValidationError>) -> Void) {
-        if validateAddressLocally(address: address).isNotEmpty {
+        if validateAddressLocally().isNotEmpty {
             completion(.failure(.local))
             return
         }
@@ -15,13 +59,7 @@ class AddressValidator {
         }
     }
 
-    func validate(address: Address,
-                  onlyLocally: Bool,
-                  completion: @escaping (Result<Void, AddressValidationError>) -> Void) {
-        return validate(address: convertAddress(address: address), onlyLocally: onlyLocally, completion: completion)
-    }
-
-    private func validateAddressLocally(address: ShippingLabelAddress) -> [LocalValidationError] {
+    private func validateAddressLocally() -> [LocalValidationError] {
         var errors: [LocalValidationError] = []
 
         if let addressToBeValidated = address {
@@ -47,19 +85,6 @@ class AddressValidator {
         }
 
         return errors
-    }
-
-    private func convertAddress(address: Address) -> ShippingLabelAddress {
-        ShippingLabelAddress(name: address.firstName,
-                                    company: address.company,
-                                    address1: address.address1,
-                                    address2: address.address2,
-                                    city: address.city,
-                                    state: address.state,
-                                    postcode: address.postcode,
-                                    country: address.country,
-                                    phone: address.phone,
-                                    email: address.email)
     }
 
     enum ValidationType {

@@ -27,6 +27,10 @@ final class AppCoordinator {
     private var localNotificationResponsesSubscription: AnyCancellable?
     private var isLoggedIn: Bool = false
 
+    /// Checks on whether the Apple ID credential is valid when the app is logged in and becomes active.
+    ///
+    private lazy var appleIDCredentialChecker = AppleIDCredentialChecker()
+
     init(window: UIWindow,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -64,11 +68,12 @@ final class AppCoordinator {
                 // More details about the UI states: https://github.com/woocommerce/woocommerce-ios/pull/3498
                 switch (isLoggedIn, needsDefaultStore) {
                 case (false, true), (false, false):
-                    self.displayAuthenticator()
+                    self.displayAuthenticatorWithOnboardingIfNeeded()
                 case (true, true):
                     self.displayLoggedInStateWithoutDefaultStore()
                 case (true, false):
                     self.validateRoleEligibility {
+                        self.configureAuthenticator()
                         self.displayLoggedInUI()
                         self.synchronizeAndShowWhatsNew()
                     }
@@ -121,34 +126,63 @@ private extension AppCoordinator {
 
     /// Displays the WordPress.com Authentication UI.
     ///
-    func displayAuthenticator() {
+    func displayAuthenticatorWithOnboardingIfNeeded() {
+        if canPresentLoginOnboarding() {
+            // Sets a placeholder view controller as the window's root view as it is required
+            // at the end of app launch.
+            setWindowRootViewControllerAndAnimateIfNeeded(.init())
+            presentLoginOnboarding { [weak self] in
+                guard let self = self else { return }
+                // Only displays the authenticator when dismissing onboarding to allow time for A/B test setup.
+                self.configureAndDisplayAuthenticator()
+            }
+        } else {
+            configureAndDisplayAuthenticator()
+        }
+    }
+
+    /// Configures the WPAuthenticator and sets the authenticator UI as the window's root view.
+    func configureAndDisplayAuthenticator() {
+        configureAuthenticator()
+
         let authenticationUI = authenticationManager.authenticationUI()
         setWindowRootViewControllerAndAnimateIfNeeded(authenticationUI) { [weak self] _ in
             guard let self = self else { return }
             self.tabBarController.removeViewControllers()
-
-            self.presentLoginOnboarding()
         }
-        ServiceLocator.analytics.track(.openedLogin)
+        ServiceLocator.analytics.track(.openedLogin, withProperties: ["prologue_experiment_variant": ABTest.loginPrologueButtonOrder.variation.analyticsValue])
     }
 
-    /// Presents onboarding on top of the authentication UI under certain criteria.
-    func presentLoginOnboarding() {
+    /// Configures the WPAuthenticator for usage in both logged-in and logged-out states.
+    func configureAuthenticator() {
+        authenticationManager.initialize()
+        appleIDCredentialChecker.observeLoggedInStateForAppleIDObservations()
+    }
+
+    /// Determines whether the login onboarding should be shown.
+    func canPresentLoginOnboarding() -> Bool {
         // Since we cannot control the user defaults in the simulator where UI tests are run on,
         // login onboarding is not shown in UI tests for now.
         // If we want to add UI tests for the login onboarding, we can add another launch argument
         // so that we can show/hide the onboarding screen consistently.
         let isUITesting: Bool = CommandLine.arguments.contains("-ui_testing")
         guard isUITesting == false else {
-            return
+            return false
         }
 
         guard featureFlagService.isFeatureFlagEnabled(.loginPrologueOnboarding),
-        loggedOutAppSettings.hasFinishedOnboarding == false else {
-            return
+              loggedOutAppSettings.hasFinishedOnboarding == false else {
+            return false
         }
+        return true
+    }
+
+    /// Presents onboarding on top of the authentication UI under certain criteria.
+    /// - Parameter onDismiss: invoked when the onboarding is dismissed.
+    func presentLoginOnboarding(onDismiss: @escaping () -> Void) {
         let onboardingViewController = LoginOnboardingViewController { [weak self] action in
             guard let self = self else { return }
+            onDismiss()
             self.loggedOutAppSettings.setHasFinishedOnboarding(true)
             self.window.rootViewController?.dismiss(animated: true)
 
@@ -182,6 +216,8 @@ private extension AppCoordinator {
             return
         }
 
+        configureAuthenticator()
+
         let matcher = ULAccountMatcher(storageManager: storageManager)
         matcher.refreshStoredSites()
 
@@ -209,7 +245,7 @@ private extension AppCoordinator {
         storePickerCoordinator?.onDismiss = { [weak self] in
             guard let self = self else { return }
             if self.isLoggedIn == false {
-                self.displayAuthenticator()
+                self.displayAuthenticatorWithOnboardingIfNeeded()
             }
         }
     }

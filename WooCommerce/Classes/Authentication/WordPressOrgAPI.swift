@@ -26,7 +26,7 @@ final class WordPressOrgAPI {
     }
 
     convenience init?(credentials: WordPressOrgCredentials) {
-        guard let baseURL = try? (credentials.siteURL + "/wp-json").asURL(),
+        guard let baseURL = try? (credentials.siteURL + "/wp-json/").asURL(),
               let authenticator = credentials.makeCookieNonceAuthenticator() else {
             return nil
         }

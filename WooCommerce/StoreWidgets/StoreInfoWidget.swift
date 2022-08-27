@@ -10,7 +10,11 @@ struct StoreInfoWidget: Widget {
             StoreInfoView(entry: entry)
         }
         .configurationDisplayName("Store Info")
+#if RELEASE // TODO: Update this to use proper feature flags
+        .supportedFamilies([])
+#else
         .supportedFamilies([.systemMedium])
+#endif
     }
 }
 

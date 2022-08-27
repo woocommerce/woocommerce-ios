@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+10.2
+-----
+
+
 10.1
 -----
 - [*] In-Person Payments: The onboarding notice on the In-Person Payments menu is correctly dismissed after multiple prompts are shown. [https://github.com/woocommerce/woocommerce-ios/pull/7543]

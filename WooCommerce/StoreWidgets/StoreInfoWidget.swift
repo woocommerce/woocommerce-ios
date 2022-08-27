@@ -26,8 +26,7 @@ struct StoreInfoView: View {
             // Background
             Color(.brand)
 
-            VStack(spacing: 8) {
-
+            VStack(spacing: Layout.sectionSpacing) {
                 // Store Name
                 HStack {
                     Text(entry.name)
@@ -44,8 +43,8 @@ struct StoreInfoView: View {
 
                 // Revenue & Visitors
                 HStack() {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Revenue")
+                    VStack(alignment: .leading, spacing: Layout.cardSpacing) {
+                        Text(Localization.revenue)
                             .bold()
                             .font(.caption)
                             .foregroundColor(Color(.lightText))
@@ -56,8 +55,8 @@ struct StoreInfoView: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
 
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Visitors")
+                    VStack(alignment: .leading, spacing: Layout.cardSpacing) {
+                        Text(Localization.visitors)
                             .bold()
                             .font(.caption)
                             .foregroundColor(Color(.lightText))
@@ -67,13 +66,12 @@ struct StoreInfoView: View {
                             .font(.title2)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
-
                 }
 
                 // Orders & Conversion
                 HStack {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Orders")
+                    VStack(alignment: .leading, spacing: Layout.cardSpacing) {
+                        Text(Localization.orders)
                             .bold()
                             .font(.caption)
                             .foregroundColor(Color(.lightText))
@@ -84,8 +82,8 @@ struct StoreInfoView: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
 
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Conversion")
+                    VStack(alignment: .leading, spacing: Layout.cardSpacing) {
+                        Text(Localization.conversion)
                             .bold()
                             .font(.caption)
                             .foregroundColor(Color(.lightText))
@@ -98,8 +96,24 @@ struct StoreInfoView: View {
 
                 }
             }
-            .padding(.horizontal, 16)
+            .padding(.horizontal)
         }
+    }
+}
+
+/// Constants definition
+///
+private extension StoreInfoView {
+    enum Localization {
+        static let revenue = NSLocalizedString("Revenue", comment: "Revenue title label for the store info widget")
+        static let visitors = NSLocalizedString("Visitors", comment: "Visitors title label for the store info widget")
+        static let orders = NSLocalizedString("Orders", comment: "Orders title label for the store info widget")
+        static let conversion = NSLocalizedString("Conversion", comment: "Conversion title label for the store info widget")
+    }
+
+    enum Layout {
+        static let sectionSpacing = 8.0
+        static let cardSpacing = 2.0
     }
 }
 

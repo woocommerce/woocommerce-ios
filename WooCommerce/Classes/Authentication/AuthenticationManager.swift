@@ -188,13 +188,18 @@ class AuthenticationManager: Authentication {
     /// and returns an error view controller if not.
     func errorViewController(for siteURL: String,
                              with matcher: ULAccountMatcher,
+                             credentials: AuthenticatorCredentials? = nil,
                              navigationController: UINavigationController,
                              onStorePickerDismiss: @escaping () -> Void) -> UIViewController? {
 
         /// Account mismatched case
         guard matcher.match(originalURL: siteURL) else {
+            if let credentials = credentials?.wporg {
+                DDLogWarn("⚠️ Present Jetpack connection error for site: \(String(describing: siteURL))")
+                return jetpackConnectionUI(for: siteURL, with: credentials)
+            }
             DDLogWarn("⚠️ Present account mismatch error for site: \(String(describing: siteURL))")
-            return accountMismatchUI(for: siteURL, with: matcher)
+            return accountMismatchUI(for: siteURL, with: matcher, credentials: credentials)
         }
 
         /// No Woo found
@@ -349,7 +354,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         let matcher = ULAccountMatcher(storageManager: storageManager)
         matcher.refreshStoredSites()
 
-        if let vc = errorViewController(for: siteURL, with: matcher, navigationController: navigationController, onStorePickerDismiss: onDismiss) {
+        if let vc = errorViewController(for: siteURL, with: matcher, credentials: credentials, navigationController: navigationController, onStorePickerDismiss: onDismiss) {
             loggedOutAppSettings?.setErrorLoginSiteAddress(siteURL)
             navigationController.show(vc, sender: nil)
         } else {
@@ -594,10 +599,18 @@ private extension AuthenticationManager {
         return ULErrorViewController(viewModel: viewModel)
     }
 
+    /// The error screen to be displayed when the user tries to enter as site
+    /// whose Jetpack is not connected to their WP.com account.
+    ///
+    func jetpackConnectionUI(for siteURL: String, with credentials: WordPressOrgCredentials) -> UIViewController {
+        let viewModel = JetpackConnectionErrorViewModel(siteURL: siteURL, credentials: credentials)
+        return ULErrorViewController(viewModel: viewModel)
+    }
+
     /// The error screen to be displayed when the user tries to enter a site
     /// whose Jetpack is not associated with their account.
     ///
-    func accountMismatchUI(for siteURL: String, with matcher: ULAccountMatcher) -> UIViewController {
+    func accountMismatchUI(for siteURL: String, with matcher: ULAccountMatcher, credentials: AuthenticatorCredentials? = nil) -> UIViewController {
         let viewModel = WrongAccountErrorViewModel(siteURL: siteURL, showsConnectedStores: matcher.hasConnectedStores)
         let mismatchAccountUI = ULAccountMismatchViewController(viewModel: viewModel)
         return mismatchAccountUI

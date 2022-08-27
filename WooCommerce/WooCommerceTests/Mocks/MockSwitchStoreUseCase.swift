@@ -13,7 +13,7 @@ final class MockSwitchStoreUseCase: SwitchStoreUseCaseProtocol {
     private(set) var destinationStoreIDs = [Int64]()
 }
 
-/// MARK: - SwitchStoreUseCaseProtocol
+// MARK: - SwitchStoreUseCaseProtocol
 extension MockSwitchStoreUseCase {
 
     func switchStore(with storeID: Int64, onCompletion: @escaping (Bool) -> Void) {

@@ -83,7 +83,7 @@ final class OrderTrackingTableViewCell: UITableViewCell {
 }
 
 
-/// MARK: - Actions
+// MARK: - Actions
 private extension OrderTrackingTableViewCell {
     @objc func iconTapped() {
         onEllipsisTouchUp?()
@@ -91,8 +91,8 @@ private extension OrderTrackingTableViewCell {
 }
 
 
-/// MARK: - Accessibility
-///
+// MARK: - Accessibility
+//
 private extension OrderTrackingTableViewCell {
     func configureTopLineForVoiceOver() {
         topLine.accessibilityLabel = String.localizedStringWithFormat(
@@ -126,8 +126,8 @@ private extension OrderTrackingTableViewCell {
     }
 }
 
-/// MARK: - Expose private outlets for tests
-///
+// MARK: - Expose private outlets for tests
+//
 extension OrderTrackingTableViewCell {
     func getTopLabel() -> UILabel {
         return topLine

@@ -1,8 +1,8 @@
 import Networking
 import Storage
 
-/// MARK: AvailabilityStore
-///
+// MARK: AvailabilityStore
+//
 final public class AvailabilityStore: Store {
     private let orderStatsRemote: OrderStatsRemoteV4
 

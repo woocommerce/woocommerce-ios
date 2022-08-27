@@ -164,8 +164,8 @@ private extension SummaryTableViewCell {
 }
 
 
-/// MARK: - VoiceOver
-///
+// MARK: - VoiceOver
+//
 private extension SummaryTableViewCell {
     func configureIconForVoiceOver() {
         updateStatusButton.accessibilityLabel = NSLocalizedString("Update Order Status",
@@ -176,7 +176,7 @@ private extension SummaryTableViewCell {
     }
 }
 
-/// MARK: - Localization
+// MARK: - Localization
 
 private extension SummaryTableViewCellViewModel {
     enum Localization {

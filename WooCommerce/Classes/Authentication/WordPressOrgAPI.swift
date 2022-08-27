@@ -26,16 +26,11 @@ final class WordPressOrgAPI {
     }
 
     convenience init?(credentials: WordPressOrgCredentials) {
-        guard let url = URL(string: credentials.siteURL),
-              let loginURL = URL(string: credentials.siteURL + Strings.wporgLoginPath),
-              let adminURL = URL(string: credentials.siteURL + Strings.adminPath) else {
+        guard let baseURL = try? (credentials.siteURL + "/wp-json").asURL(),
+              let authenticator = credentials.makeCookieNonceAuthenticator() else {
             return nil
         }
-        let authenticator = CookieNonceAuthenticator(username: credentials.username,
-                                                     password: credentials.password,
-                                                     loginURL: loginURL,
-                                                     adminURL: adminURL)
-        self.init(apiBase: url, authenticator: authenticator, userAgent: UserAgent.defaultUserAgent)
+        self.init(apiBase: baseURL, authenticator: authenticator, userAgent: UserAgent.defaultUserAgent)
     }
 
     func request(method: HTTPMethod,
@@ -55,6 +50,7 @@ final class WordPressOrgAPI {
                 case .success(let responseObject):
                     continuation.resume(returning: responseObject)
                 case .failure(let error):
+                    DDLogWarn("⚠️ Error requesting \(url): \(error.localizedDescription)")
                     continuation.resume(throwing: error)
                 }
 
@@ -86,12 +82,5 @@ final class WordPressOrgAPI {
         sessionManager.adapter = authenticator
         sessionManager.retrier = authenticator
         return sessionManager
-    }
-}
-
-private extension WordPressOrgAPI {
-    enum Strings {
-        static let wporgLoginPath = "/wp-login.php"
-        static let adminPath = "/wp-admin"
     }
 }

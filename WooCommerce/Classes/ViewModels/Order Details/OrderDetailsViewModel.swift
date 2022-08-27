@@ -544,6 +544,8 @@ extension OrderDetailsViewModel {
     func syncShippingLabels(onCompletion: ((Error?) -> ())? = nil) {
         // If the plugin is not active, there is no point on continuing with a request that will fail.
         isPluginActive(SitePlugin.SupportedPlugin.WCShip) { [weak self] isActive in
+            self?.startAddressValidation(shippingLabelPluginIsActive: isActive)
+
             guard let self = self, isActive else {
                 onCompletion?(nil)
                 return
@@ -567,6 +569,15 @@ extension OrderDetailsViewModel {
             self.stores.dispatch(action)
 
         }
+    }
+
+    func startAddressValidation(shippingLabelPluginIsActive: Bool) {
+        AddressValidator(siteID: order.siteID,
+                address: order.shippingAddress,
+                onlyLocally: !shippingLabelPluginIsActive,
+                stores: stores) { error in
+
+                }
     }
 
     func syncSavedReceipts(onCompletion: ((Error?) -> ())? = nil) {

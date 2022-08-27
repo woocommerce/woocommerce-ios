@@ -190,6 +190,7 @@ private extension AppCoordinator {
             if let authenticationUI = authenticationManager.authenticationUI() as? UINavigationController,
                let errorController = authenticationManager.errorViewController(for: siteURL,
                                                                                with: matcher,
+                                                                               credentials: nil,
                                                                                navigationController: authenticationUI,
                                                                                onStorePickerDismiss: {}) {
                 window.rootViewController = authenticationUI

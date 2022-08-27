@@ -575,12 +575,17 @@ extension OrderDetailsViewModel {
     }
 
     func startAddressValidation(shippingLabelPluginIsActive: Bool) {
-        AddressValidator(siteID: order.siteID,
-                address: order.shippingAddress,
-                onlyLocally: !shippingLabelPluginIsActive,
-                stores: stores) { error in
+        guard let orderShippingAddress = order.shippingAddress else {
+            return
+        }
 
-                }
+        AddressValidator(siteID: order.siteID,
+                         address: orderShippingAddress,
+                         onlyLocally: !shippingLabelPluginIsActive,
+                         stores: stores) { error in
+            error.isFailure
+            //TODO: trigger metrics
+        }
     }
 
     func syncSavedReceipts(onCompletion: ((Error?) -> ())? = nil) {

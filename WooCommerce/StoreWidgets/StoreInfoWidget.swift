@@ -30,40 +30,32 @@ struct StoreInfoView: View {
                 // Store Name
                 HStack {
                     Text(entry.name)
-                        .bold()
-                        .font(.footnote)
-                        .foregroundColor(Color(.textInverted))
+                        .storeNameStyle()
 
                     Spacer()
 
                     Text(entry.range)
-                        .font(.caption)
-                        .foregroundColor(Color(.lightText))
+                        .statRangeStyle()
                 }
 
                 // Revenue & Visitors
                 HStack() {
                     VStack(alignment: .leading, spacing: Layout.cardSpacing) {
                         Text(Localization.revenue)
-                            .bold()
-                            .font(.caption)
-                            .foregroundColor(Color(.lightText))
+                            .statTitleStyle()
 
                         Text(entry.revenue)
-                            .foregroundColor(Color(.textInverted))
-                            .font(.title2)
+                            .statValueStyle()
+
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
 
                     VStack(alignment: .leading, spacing: Layout.cardSpacing) {
                         Text(Localization.visitors)
-                            .bold()
-                            .font(.caption)
-                            .foregroundColor(Color(.lightText))
+                            .statTitleStyle()
 
                         Text(entry.visitors)
-                            .foregroundColor(Color(.textInverted))
-                            .font(.title2)
+                            .statValueStyle()
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
@@ -72,25 +64,19 @@ struct StoreInfoView: View {
                 HStack {
                     VStack(alignment: .leading, spacing: Layout.cardSpacing) {
                         Text(Localization.orders)
-                            .bold()
-                            .font(.caption)
-                            .foregroundColor(Color(.lightText))
+                            .statTitleStyle()
 
                         Text(entry.orders)
-                            .foregroundColor(Color(.textInverted))
-                            .font(.title2)
+                            .statValueStyle()
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
 
                     VStack(alignment: .leading, spacing: Layout.cardSpacing) {
                         Text(Localization.conversion)
-                            .bold()
-                            .font(.caption)
-                            .foregroundColor(Color(.lightText))
+                            .statTitleStyle()
 
                         Text(entry.conversion)
-                            .foregroundColor(Color(.textInverted))
-                            .font(.title2)
+                            .statValueStyle()
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
 

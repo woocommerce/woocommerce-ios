@@ -524,6 +524,7 @@
 		265BCA0E2430E771004E53EE /* ProductCategoryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 265BCA0D2430E771004E53EE /* ProductCategoryTableViewCell.xib */; };
 		265C99E228B9BCD0005E6117 /* StoreInfoWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265C99E028B9BA43005E6117 /* StoreInfoWidget.swift */; };
 		265C99E428B9C834005E6117 /* StoreInfoProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265C99E328B9C834005E6117 /* StoreInfoProvider.swift */; };
+		265C99E628B9CB8E005E6117 /* StoreInfoViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265C99E528B9CB8E005E6117 /* StoreInfoViewModifiers.swift */; };
 		265D909D2446688C00D66F0F /* ProductCategoryViewModelBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267CFE1824435A5500AF3A13 /* ProductCategoryViewModelBuilderTests.swift */; };
 		2662D90626E1571900E25611 /* ListSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2662D90526E1571900E25611 /* ListSelector.swift */; };
 		2662D90826E15D6E00E25611 /* CountrySelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2662D90726E15D6E00E25611 /* CountrySelectorCommand.swift */; };
@@ -2389,6 +2390,7 @@
 		265BCA0D2430E771004E53EE /* ProductCategoryTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductCategoryTableViewCell.xib; sourceTree = "<group>"; };
 		265C99E028B9BA43005E6117 /* StoreInfoWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreInfoWidget.swift; sourceTree = "<group>"; };
 		265C99E328B9C834005E6117 /* StoreInfoProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreInfoProvider.swift; sourceTree = "<group>"; };
+		265C99E528B9CB8E005E6117 /* StoreInfoViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreInfoViewModifiers.swift; sourceTree = "<group>"; };
 		2662D90526E1571900E25611 /* ListSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListSelector.swift; sourceTree = "<group>"; };
 		2662D90726E15D6E00E25611 /* CountrySelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountrySelectorCommand.swift; sourceTree = "<group>"; };
 		2662D90926E16B3600E25611 /* FilterListSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterListSelector.swift; sourceTree = "<group>"; };
@@ -5273,6 +5275,7 @@
 				3F1FA84528B60125009E246C /* StoreWidgets.swift */,
 				265C99E028B9BA43005E6117 /* StoreInfoWidget.swift */,
 				265C99E328B9C834005E6117 /* StoreInfoProvider.swift */,
+				265C99E528B9CB8E005E6117 /* StoreInfoViewModifiers.swift */,
 				3F1FA84728B60125009E246C /* StoreWidgets.intentdefinition */,
 				3F1FA84828B60126009E246C /* Assets.xcassets */,
 				3F1FA84A28B60126009E246C /* Info.plist */,
@@ -9184,6 +9187,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				265C99E628B9CB8E005E6117 /* StoreInfoViewModifiers.swift in Sources */,
 				3F1FA84B28B60126009E246C /* StoreWidgets.intentdefinition in Sources */,
 				265C99E228B9BCD0005E6117 /* StoreInfoWidget.swift in Sources */,
 				265C99E428B9C834005E6117 /* StoreInfoProvider.swift in Sources */,

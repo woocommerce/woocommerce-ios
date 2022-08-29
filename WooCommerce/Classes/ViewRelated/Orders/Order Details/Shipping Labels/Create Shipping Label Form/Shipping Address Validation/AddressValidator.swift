@@ -11,7 +11,7 @@ class AddressValidator {
 
     func validate(address: Address, onlyLocally: Bool, onCompletion: @escaping (Result<Void, AddressValidationError>) -> Void) {
         let convertedAddress = ShippingLabelAddress(company: address.company ?? "",
-                                                    name: address.firstName,
+                                                    name: address.fullName,
                                                     phone: address.phone ?? "",
                                                     country: address.country,
                                                     state: address.state,

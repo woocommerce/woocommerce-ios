@@ -229,6 +229,8 @@ extension ReviewsDataSource: ReviewsInteractionDelegate {
         let reviewedProduct = product(id: review.productID)
         let note = notification(id: review.reviewID)
 
+        ServiceLocator.analytics.track(.reviewOpen)
+
         let detailsViewController = ReviewDetailsViewController(productReview: review,
                                                                 product: reviewedProduct,
                                                                 notification: note)

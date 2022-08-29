@@ -6,12 +6,16 @@ import SwiftUI
 ///
 
 // MARK: Woo Styles
-struct BodyStyle: ViewModifier {
+public struct BodyStyle: ViewModifier {
     /// Whether the View being modified is enabled
     ///
     var isEnabled: Bool
 
-    func body(content: Content) -> some View {
+    public init(isEnabled: Bool) {
+        self.isEnabled = isEnabled
+    }
+
+    public func body(content: Content) -> some View {
         content
             .font(.body)
             .foregroundColor(isEnabled ? Color(.text) : Color(.textTertiary))
@@ -19,40 +23,46 @@ struct BodyStyle: ViewModifier {
 }
 
 
-struct LargeTitleStyle: ViewModifier {
-    func body(content: Content) -> some View {
+public struct LargeTitleStyle: ViewModifier {
+    public func body(content: Content) -> some View {
         content
             .font(.largeTitle)
             .foregroundColor(Color(.text))
     }
 }
 
-struct TitleStyle: ViewModifier {
-    func body(content: Content) -> some View {
+public struct TitleStyle: ViewModifier {
+    public func body(content: Content) -> some View {
         content
             .font(.title)
             .foregroundColor(Color(.text))
     }
 }
 
-struct SecondaryTitleStyle: ViewModifier {
-    func body(content: Content) -> some View {
+public struct SecondaryTitleStyle: ViewModifier {
+    public func body(content: Content) -> some View {
         content
             .font(.title2.weight(.bold))
             .foregroundColor(Color(.text))
     }
 }
 
-struct SecondaryBodyStyle: ViewModifier {
-    func body(content: Content) -> some View {
+public struct SecondaryBodyStyle: ViewModifier {
+
+    public init() {}
+
+    public func body(content: Content) -> some View {
         content
             .font(.body)
             .foregroundColor(Color(.textSubtle))
     }
 }
 
-struct HeadlineStyle: ViewModifier {
-    func body(content: Content) -> some View {
+public struct HeadlineStyle: ViewModifier {
+
+    public init() {}
+
+    public func body(content: Content) -> some View {
         content
             .font(.headline)
             .foregroundColor(Color(.text))
@@ -67,7 +77,7 @@ struct SubheadlineStyle: ViewModifier {
     }
 }
 
-struct FootnoteStyle: ViewModifier {
+public struct FootnoteStyle: ViewModifier {
     /// Whether the View being modified is enabled
     ///
     var isEnabled: Bool
@@ -76,7 +86,7 @@ struct FootnoteStyle: ViewModifier {
     ///
     var isError: Bool
 
-    func body(content: Content) -> some View {
+    public func body(content: Content) -> some View {
         content
             .font(.footnote)
             .foregroundColor(textColor)
@@ -94,39 +104,43 @@ struct FootnoteStyle: ViewModifier {
     }
 }
 
-struct ErrorStyle: ViewModifier {
-    func body(content: Content) -> some View {
+public struct ErrorStyle: ViewModifier {
+    public func body(content: Content) -> some View {
         content
             .font(.body)
             .foregroundColor(Color(.error))
     }
 }
 
-struct WooNavigationBarStyle: ViewModifier {
-    func body(content: Content) -> some View {
+public struct WooNavigationBarStyle: ViewModifier {
+    public func body(content: Content) -> some View {
         content
             .accentColor(Color(.accent)) // The color of bar button items in the navigation bar
     }
 }
 
-struct LinkStyle: ViewModifier {
+public struct LinkStyle: ViewModifier {
     /// Environment `enabled` state.
     ///
     @Environment(\.isEnabled) var isEnabled
 
-    func body(content: Content) -> some View {
+    public init() {}
+
+    public func body(content: Content) -> some View {
         content
             .font(.body)
             .foregroundColor(isEnabled ? Color(.accent) : Color(.textTertiary))
     }
 }
 
-struct HeadlineLinkStyle: ViewModifier {
+public struct HeadlineLinkStyle: ViewModifier {
     /// Environment `enabled` state.
     ///
     @Environment(\.isEnabled) var isEnabled
 
-    func body(content: Content) -> some View {
+    public init() {}
+
+    public func body(content: Content) -> some View {
         content
             .font(.headline)
             .foregroundColor(isEnabled ? Color(.accent) : Color(.textTertiary))
@@ -134,7 +148,7 @@ struct HeadlineLinkStyle: ViewModifier {
 }
 
 // MARK: View extensions
-extension View {
+public extension View {
     /// - Parameters:
     ///     - isEnabled: Whether the view is enabled (to apply specific styles for disabled view)
     func bodyStyle(_ isEnabled: Bool = true) -> some View {

@@ -1,1 +1,3 @@
-Rilis ini berisi sejumlah peningkatan untuk pengalaman login Anda, termasuk pilihan untuk menggunakan kredensial situs `wp-admin`, dan pilihan tautan ajaib untuk login. Mohon terus berikan feedback – kami siap mendengarkan!
+Kami mempermudah Anda menemukan segala hal seputar penerimaan pembayaran di aplikasi. Buka bagian Pembayaran dari Menu! Kami juga memperbaiki kesalahan pemblokiran terhadap pengambilan pembayaran Anda.
+Kami juga melakukan berbagai penyempurnaan dalam alur login agar Anda dapat memulai aplikasi dengan lebih cepat.
+Terakhir, kami mengutak-atik performa supaya lebih baik. Namun, kami belum selesai. Nantikan perbaikan lainnya di masa mendatang. Terus kirimkan feedback Anda kepada kami!

@@ -2,7 +2,7 @@
 
 10.2
 -----
-- [*] Help center: Added help center web page with FAQs for "Enter Store Credentials" screen. [https://github.com/woocommerce/woocommerce-ios/pull/7588]
+- [*] Help center: Added help center web page with FAQs for "Enter Store Credentials" and "Enter WordPress.com email "screens. [https://github.com/woocommerce/woocommerce-ios/pull/7588, https://github.com/woocommerce/woocommerce-ios/pull/7590]
 
 
 10.1

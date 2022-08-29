@@ -63,7 +63,9 @@ class AddressValidator {
         if addressToBeValidated.country.isEmpty {
             errors.append(.country)
         }
-        //TODO: validate phone number
+        if addressToBeValidated.phone.isEmpty {
+            errors.append(.missingPhoneNumber)
+        }
 
         return errors
     }

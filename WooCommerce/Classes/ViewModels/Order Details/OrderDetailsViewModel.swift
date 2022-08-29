@@ -15,6 +15,7 @@ final class OrderDetailsViewModel {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let currencyFormatter: CurrencyFormatter
+    private let addressValidator: AddressValidator
 
     private(set) var order: Order
 
@@ -34,6 +35,7 @@ final class OrderDetailsViewModel {
         self.stores = stores
         self.storageManager = storageManager
         self.currencyFormatter = currencyFormatter
+        addressValidator = AddressValidator(siteID: order.siteID, stores: stores)
     }
 
     func update(order newOrder: Order) {
@@ -578,13 +580,8 @@ extension OrderDetailsViewModel {
         guard let orderShippingAddress = order.shippingAddress else {
             return
         }
+        addressValidator.validate(address: orderShippingAddress, onlyLocally: !shippingLabelPluginIsActive) { result in
 
-        AddressValidator(siteID: order.siteID,
-                         address: orderShippingAddress,
-                         onlyLocally: !shippingLabelPluginIsActive,
-                         stores: stores) { error in
-            error.isFailure
-            //TODO: trigger metrics
         }
     }
 

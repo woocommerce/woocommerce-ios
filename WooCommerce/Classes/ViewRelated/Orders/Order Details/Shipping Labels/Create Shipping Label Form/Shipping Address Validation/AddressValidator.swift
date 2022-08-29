@@ -79,7 +79,6 @@ class AddressValidator {
         case postcode = "Postcode is empty"
         case state = "State is empty"
         case country = "Country is empty"
-        case invalidPhoneNumber = "The phone number is invalid"
     }
 
     enum AddressValidationError: Error {

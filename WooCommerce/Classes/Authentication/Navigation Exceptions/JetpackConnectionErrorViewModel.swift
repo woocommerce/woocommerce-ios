@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Yosemite
 import WordPressAuthenticator
@@ -6,6 +7,7 @@ final class JetpackConnectionErrorViewModel: ULErrorViewModel {
     private let siteURL: String
     private var jetpackConnectionURL: URL?
     private let stores: StoresManager
+    private let isPrimaryButtonLoadingSubject = CurrentValueSubject<Bool, Never>(false)
 
     init(siteURL: String, credentials: WordPressOrgCredentials, stores: StoresManager = ServiceLocator.stores) {
         self.siteURL = siteURL
@@ -34,6 +36,10 @@ final class JetpackConnectionErrorViewModel: ULErrorViewModel {
     let auxiliaryButtonTitle = ""
     
     let primaryButtonTitle = Localization.primaryButtonTitle
+
+    var isPrimaryButtonLoading: AnyPublisher<Bool, Never> {
+        isPrimaryButtonLoadingSubject.eraseToAnyPublisher()
+    }
     
     let secondaryButtonTitle = Localization.secondaryButtonTitle
     
@@ -65,6 +71,7 @@ private extension JetpackConnectionErrorViewModel {
     }
 
     func fetchJetpackConnectionURL(with credentials: WordPressOrgCredentials) {
+        isPrimaryButtonLoadingSubject.send(true)
         guard let authenticator = credentials.makeCookieNonceAuthenticator() else {
             return
         }
@@ -72,6 +79,7 @@ private extension JetpackConnectionErrorViewModel {
                                                                        authenticator: authenticator,
                                                                        completion: { [weak self] result in
             guard let self = self else { return }
+            self.isPrimaryButtonLoadingSubject.send(false)
             switch result {
             case .success(let url):
                 self.jetpackConnectionURL = url

@@ -36,7 +36,7 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel: Obser
 
     @Published var awaitingResponse = false
 
-    let analyticReason: String = CardPresentPaymentOnboardingState.codPaymentGatewayNotSetUp.reasonForAnalytics
+    let analyticReason: String
 
     // MARK: - Configuration properties
     private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
@@ -45,11 +45,17 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel: Obser
         stores.sessionManager.defaultStoreID
     }
 
+    let learnMoreURL: URL
+
     init(dependencies: Dependencies = Dependencies(),
-         configuration: CardPresentPaymentsConfiguration,
+         configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
+         plugin: CardPresentPaymentsPlugin,
+         analyticReason: String,
          completion: @escaping () -> Void) {
         self.dependencies = dependencies
         self.cardPresentPaymentsConfiguration = configuration
+        self.learnMoreURL = plugin.cashOnDeliveryLearnMoreURL
+        self.analyticReason = analyticReason
         self.completion = completion
     }
 
@@ -168,4 +174,15 @@ private enum Localization {
 
 private enum Constants {
     static let cashOnDeliveryGatewayID = "cod"
+}
+
+private extension CardPresentPaymentsPlugin {
+    var cashOnDeliveryLearnMoreURL: URL {
+        switch self {
+        case .wcPay:
+            return WooConstants.URLs.wcPayCashOnDeliveryLearnMoreUrl.asURL()
+        case .stripe:
+            return WooConstants.URLs.stripeCashOnDeliveryLearnMoreUrl.asURL()
+        }
+    }
 }

@@ -1,4 +1,5 @@
 import SwiftUI
+import Yosemite
 
 final class InPersonPaymentsViewController: UIHostingController<InPersonPaymentsView> {
     private let onWillDisappear: (() -> ())?
@@ -71,8 +72,12 @@ struct InPersonPaymentsView: View {
                 InPersonPaymentsStripeAccountReview(analyticReason: viewModel.state.reasonForAnalytics)
             case .stripeAccountRejected:
                 InPersonPaymentsStripeRejected(analyticReason: viewModel.state.reasonForAnalytics)
-            case .codPaymentGatewayNotSetUp:
-                InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView(viewModel: viewModel.codStepViewModel)
+            case .codPaymentGatewayNotSetUp(let plugin):
+                InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView(
+                    viewModel: InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(
+                        plugin: plugin,
+                        analyticReason: viewModel.state.reasonForAnalytics,
+                        completion: viewModel.refresh))
             case .completed:
                 InPersonPaymentsCompleted()
             case .noConnectionError:

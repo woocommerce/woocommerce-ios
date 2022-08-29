@@ -64,7 +64,7 @@ public enum CardPresentPaymentOnboardingState: Equatable {
     /// The Cash on Delivery payment gateway is missing or disabled
     /// Enabling Cash on Delivery is not essential for Card Present Payments, but allows web store customers to place orders and pay by card in person.
     ///
-    case codPaymentGatewayNotSetUp
+    case codPaymentGatewayNotSetUp(plugin: CardPresentPaymentsPlugin)
 
     /// Generic error - for example, one of the requests failed.
     ///

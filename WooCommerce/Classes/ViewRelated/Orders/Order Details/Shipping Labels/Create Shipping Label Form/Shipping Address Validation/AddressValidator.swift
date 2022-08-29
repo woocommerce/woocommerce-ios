@@ -50,7 +50,7 @@ class AddressValidator {
     private func validateAddressLocally(addressToBeValidated: ShippingLabelAddress) -> [LocalValidationError] {
         var errors: [LocalValidationError] = []
 
-        if addressToBeValidated.name.isEmpty {
+        if addressToBeValidated.name.isEmpty && addressToBeValidated.company.isEmpty {
             errors.append(.name)
         }
         if addressToBeValidated.address1.isEmpty {

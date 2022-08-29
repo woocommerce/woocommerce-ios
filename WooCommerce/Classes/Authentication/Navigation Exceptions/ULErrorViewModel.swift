@@ -1,4 +1,5 @@
 import UIKit
+import Combine
 
 /// Abstracts different configurations and logic related to user interaction
 /// for error view controllers presented as part of the Unified Login flow
@@ -23,6 +24,9 @@ protocol ULErrorViewModel {
 
     /// Indicates whether the primary button is visible
     var isPrimaryButtonHidden: Bool { get }
+
+    /// Indicates whether the primary button is showing the loading indicator
+    var isPrimaryButtonLoading: AnyPublisher<Bool, Never> { get }
 
     /// Provides a title for a secondary action button
     var secondaryButtonTitle: String { get }
@@ -55,6 +59,8 @@ extension ULErrorViewModel {
     var title: String? { nil }
 
     var isPrimaryButtonHidden: Bool { false }
+
+    var isPrimaryButtonLoading: AnyPublisher<Bool, Never> { Just(false).eraseToAnyPublisher() }
 
     var isSecondaryButtonHidden: Bool { false }
 

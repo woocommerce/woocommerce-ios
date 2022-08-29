@@ -2,45 +2,25 @@ import Yosemite
 
 class AddressValidator {
     let siteID: Int64
-    let address: ShippingLabelAddress?
-    let onlyLocally: Bool
-    let nameRequired: Bool
-    let phoneNumberRequired: Bool
-    let stateOfCountryRequired: Bool
-
     private let stores: StoresManager
 
-    let onCompletion: (Result<Void, AddressValidationError>) -> Void
-
-    init(siteID: Int64,
-         address: Address,
-         onlyLocally: Bool,
-         nameRequired: Bool = false,
-         phoneNumberRequired: Bool = false,
-         stateOfCountryRequired: Bool = false,
-         stores: StoresManager,
-         onCompletion: @escaping (Result<Void, AddressValidationError>) -> Void) {
+    init(siteID: Int64, stores: StoresManager) {
         self.siteID = siteID
-        self.onlyLocally = onlyLocally
-        self.nameRequired = nameRequired
-        self.phoneNumberRequired = phoneNumberRequired
-        self.stateOfCountryRequired = stateOfCountryRequired
         self.stores = stores
-        self.onCompletion = onCompletion
-        self.address = ShippingLabelAddress(company: address.company ?? "",
-                                            name: address.firstName,
-                                            phone: address.phone ?? "",
-                                            country: address.country,
-                                            state: address.state,
-                                            address1: address.address1 ,
-                                            address2: address.address2 ?? "",
-                                            city: address.city,
-                                            postcode: address.postcode)
-        validate()
     }
 
-    private func validate() {
-        if validateAddressLocally().isNotEmpty {
+    func validate(address: Address, onlyLocally: Bool, onCompletion: @escaping (Result<Void, AddressValidationError>) -> Void) {
+        let convertedAddress = ShippingLabelAddress(company: address.company ?? "",
+                                                    name: address.firstName,
+                                                    phone: address.phone ?? "",
+                                                    country: address.country,
+                                                    state: address.state,
+                                                    address1: address.address1 ,
+                                                    address2: address.address2 ?? "",
+                                                    city: address.city,
+                                                    postcode: address.postcode)
+
+        if validateAddressLocally(addressToBeValidated: convertedAddress).isNotEmpty {
             onCompletion(.failure(.local))
             return
         }
@@ -50,42 +30,40 @@ class AddressValidator {
             return
         }
 
-        let addressToBeVerified = ShippingLabelAddressVerification(address: address, type: .destination)
-        let action = ShippingLabelAction.validateAddress(siteID: siteID, address: addressToBeVerified) { [weak self] (result) in
+        let addressToBeVerified = ShippingLabelAddressVerification(address: convertedAddress, type: .destination)
+        let action = ShippingLabelAction.validateAddress(siteID: siteID, address: addressToBeVerified) { (result) in
             switch result {
             case .success:
-                self?.onCompletion(.success(()))
+                onCompletion(.success(()))
             case .failure(let error):
-                self?.onCompletion(.failure(.remote(error)))
+                onCompletion(.failure(.remote(error)))
             }
         }
         stores.dispatch(action)
     }
 
-    private func validateAddressLocally() -> [LocalValidationError] {
+    private func validateAddressLocally(addressToBeValidated: ShippingLabelAddress) -> [LocalValidationError] {
         var errors: [LocalValidationError] = []
 
-        if let addressToBeValidated = address {
-            if addressToBeValidated.name.isEmpty && nameRequired {
-                errors.append(.name)
-            }
-            if addressToBeValidated.address1.isEmpty {
-                errors.append(.address)
-            }
-            if addressToBeValidated.city.isEmpty {
-                errors.append(.city)
-            }
-            if addressToBeValidated.postcode.isEmpty {
-                errors.append(.postcode)
-            }
-            if addressToBeValidated.state.isEmpty && stateOfCountryRequired {
-                errors.append(.state)
-            }
-            if addressToBeValidated.country.isEmpty {
-                errors.append(.country)
-            }
-            //TODO: validate phone number
+        if addressToBeValidated.name.isEmpty {
+            errors.append(.name)
         }
+        if addressToBeValidated.address1.isEmpty {
+            errors.append(.address)
+        }
+        if addressToBeValidated.city.isEmpty {
+            errors.append(.city)
+        }
+        if addressToBeValidated.postcode.isEmpty {
+            errors.append(.postcode)
+        }
+        if addressToBeValidated.state.isEmpty {
+            errors.append(.state)
+        }
+        if addressToBeValidated.country.isEmpty {
+            errors.append(.country)
+        }
+        //TODO: validate phone number
 
         return errors
     }

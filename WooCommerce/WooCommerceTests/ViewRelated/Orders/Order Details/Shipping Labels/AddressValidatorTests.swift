@@ -7,19 +7,35 @@ import Yosemite
 class AddressValidatorTests: XCTestCase {
     private var storesManager: MockStoresManager!
 
+    private let validAddress = Address(firstName: "First name",
+                                       lastName: "Last name",
+                                       company: "Company name",
+                                       address1: "Address one",
+                                       address2: "Address two",
+                                       city: "A city",
+                                       state: "A State",
+                                       postcode: "123456",
+                                       country: "A Country",
+                                       phone: "123456",
+                                       email: "email@email.com"
+    )
+
     override func setUp() {
         super.setUp()
         storesManager = MockStoresManager(sessionManager: SessionManager.testingInstance)
         ServiceLocator.setStores(storesManager)
     }
 
-    func testExample() {
+    func testWhenAddressIsEmptyThenCompleteWithLocalFailure() {
+        // Given
         var onCompletionWasCalled = false
-
         let addressValidator = AddressValidator(siteID: 123, stores: storesManager)
 
+        // When
         addressValidator.validate(address: Address.empty, onlyLocally: true, onCompletion: { result in
             onCompletionWasCalled = true
+
+            // Then
             guard let failure = result.failure else {
                 XCTFail("A failure result was expected for an empty address")
                 return
@@ -32,6 +48,30 @@ class AddressValidatorTests: XCTestCase {
             default:
                 XCTFail("A local failure was expected")
             }
+        })
+
+        XCTAssertTrue(onCompletionWasCalled)
+    }
+
+    func testWhenAddressIsValidAndValidationIsLocalOnlyThenCompleteWithSuccess() {
+        // Given
+        var onCompletionWasCalled = false
+        storesManager.whenReceivingAction(ofType: ShippingLabelAction.self, thenCall: { action in
+            if case let ShippingLabelAction.validateAddress(_, _, onCompletion) = action {
+                onCompletion(.failure(ShippingLabelAddressValidationError(
+                    addressError: "Shouldn't call remote validation",
+                    generalError: "Shouldn't call remote validation"
+                )))
+            }
+        })
+        let addressValidator = AddressValidator(siteID: 123, stores: storesManager)
+
+        // When
+        addressValidator.validate(address: validAddress, onlyLocally: true, onCompletion: { result in
+            onCompletionWasCalled = true
+
+            // Then
+            XCTAssertTrue(result.isSuccess)
         })
 
         XCTAssertTrue(onCompletionWasCalled)

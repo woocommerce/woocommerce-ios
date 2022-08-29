@@ -8,10 +8,15 @@ final class JetpackConnectionErrorViewModel: ULErrorViewModel {
     private var jetpackConnectionURL: URL?
     private let stores: StoresManager
     private let isPrimaryButtonLoadingSubject = CurrentValueSubject<Bool, Never>(false)
+    private let jetpackSetupCompletionHandler: (String?) -> Void
 
-    init(siteURL: String, credentials: WordPressOrgCredentials, stores: StoresManager = ServiceLocator.stores) {
+    init(siteURL: String,
+         credentials: WordPressOrgCredentials,
+         stores: StoresManager = ServiceLocator.stores,
+         onJetpackSetupCompletion: @escaping (String?) -> Void) {
         self.siteURL = siteURL
         self.stores = stores
+        self.jetpackSetupCompletionHandler = onJetpackSetupCompletion
         fetchJetpackConnectionURL(with: credentials)
     }
 
@@ -67,7 +72,9 @@ private extension JetpackConnectionErrorViewModel {
               let viewController = viewController else {
             return
         }
-        WebviewHelper.launch(url, with: viewController)
+        let viewModel = JetpackConnectionWebViewModel(initialURL: url, siteURL: siteURL, completion: jetpackSetupCompletionHandler)
+        let pluginViewController = PluginSetupWebViewController(viewModel: viewModel)
+        viewController.navigationController?.show(pluginViewController, sender: nil)
     }
 
     func fetchJetpackConnectionURL(with credentials: WordPressOrgCredentials) {

@@ -83,7 +83,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.8)
-  - Automattic-Tracks-iOS (from `../Automattic-Tracks-iOS`)
+  - Automattic-Tracks-iOS (~> 0.12.0-beta.1)
   - CocoaLumberjack (~> 3.7.4)
   - CocoaLumberjack/Swift (~> 3.7.4)
   - Gridicons (~> 1.2.0)
@@ -107,6 +107,7 @@ SPEC REPOS:
   trunk:
     - Alamofire
     - AppAuth
+    - Automattic-Tracks-iOS
     - CocoaLumberjack
     - FormatterKit
     - GoogleSignIn
@@ -139,10 +140,6 @@ SPEC REPOS:
     - ZendeskSDKConfigurationsSDK
     - ZendeskSupportProvidersSDK
     - ZendeskSupportSDK
-
-EXTERNAL SOURCES:
-  Automattic-Tracks-iOS:
-    :path: "../Automattic-Tracks-iOS"
 
 SPEC CHECKSUMS:
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
@@ -182,6 +179,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2bdf8544f7cd0fd4c002546f5704b813845beb2a
   ZendeskSupportSDK: 3a8e508ab1d9dd22dc038df6c694466414e037ba
 
-PODFILE CHECKSUM: ccadd5fbe24150d8997f36e5c0737cbe92b276d9
+PODFILE CHECKSUM: e8394e38023e50481a5683373d9efd4e827ba1db
 
 COCOAPODS: 1.11.2

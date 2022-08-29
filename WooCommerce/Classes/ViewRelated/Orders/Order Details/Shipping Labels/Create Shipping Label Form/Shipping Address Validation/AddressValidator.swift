@@ -69,12 +69,6 @@ class AddressValidator {
         return errors
     }
 
-    enum ValidationType {
-        case none
-        case local
-        case remote
-    }
-
     enum LocalValidationError: String {
         case name = "Customer name and company are empty"
         case address = "Address is empty"

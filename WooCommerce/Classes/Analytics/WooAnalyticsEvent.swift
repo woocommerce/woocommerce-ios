@@ -491,6 +491,8 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pluginsNotSyncedYet, properties: [:])
         }
 
+        /// Tracked when the Order details view detects a malformed shipping address data.
+        ///
         static func addressValidationFailed(error: AddressValidator.AddressValidationError, orderID: Int64) -> WooAnalyticsEvent {
             switch error {
             case .local(let errorMessage):

@@ -580,8 +580,15 @@ extension OrderDetailsViewModel {
         guard let orderShippingAddress = order.shippingAddress else {
             return
         }
-        addressValidator.validate(address: orderShippingAddress, onlyLocally: !shippingLabelPluginIsActive) { result in
 
+        let orderID = order.orderID
+
+        addressValidator.validate(address: orderShippingAddress, onlyLocally: !shippingLabelPluginIsActive) { result in
+            guard let error = result.failure else {
+                return
+            }
+
+            ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.addressValidationFailed(error: error, orderID: orderID))
         }
     }
 

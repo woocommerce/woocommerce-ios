@@ -100,4 +100,42 @@ class AddressValidatorTests: XCTestCase {
         XCTAssertTrue(onCompletionWasCalled)
         XCTAssertTrue(remoteValidationWasCalled)
     }
+
+    func testWhenAddressIsRemoteInvalidThenCompleteWithRemoteFailure() {
+        // Given
+        var onCompletionWasCalled = false
+        var remoteValidationWasCalled = false
+        storesManager.whenReceivingAction(ofType: ShippingLabelAction.self, thenCall: { action in
+            if case let ShippingLabelAction.validateAddress(_, _, onCompletion) = action {
+                remoteValidationWasCalled = true
+                onCompletion(.failure(ShippingLabelAddressValidationError(
+                    addressError: "Arbitrary remote validation error",
+                    generalError: "Arbitrary remote validation error"
+                )))
+            }
+        })
+        let addressValidator = AddressValidator(siteID: 123, stores: storesManager)
+
+        // When
+        addressValidator.validate(address: validAddress, onlyLocally: false, onCompletion: { result in
+            onCompletionWasCalled = true
+
+            // Then
+            guard let failure = result.failure else {
+                XCTFail("A failure result was expected for an empty address")
+                return
+            }
+
+            switch failure {
+            case .remote(let error):
+                XCTAssertTrue(error.addressError!.isNotEmpty)
+                break
+            default:
+                XCTFail("A remote failure was expected")
+            }
+        })
+
+        XCTAssertTrue(onCompletionWasCalled)
+        XCTAssertTrue(remoteValidationWasCalled)
+    }
 }

@@ -24,17 +24,13 @@ final class JetpackConnectionWebViewModel: PluginSetupWebViewModel {
     }
     
     func handleRedirect(for url: URL?) {
-        guard let path = url?.absoluteString else {
-            return
-        }
-        print("🧭🧭 \(path)")
+        // No-op
     }
     
     func decidePolicy(for navigationURL: URL) async -> WKNavigationActionPolicy {
         let url = navigationURL.absoluteString
-        print("🧭 \(url)")
         switch url {
-        // When the web view is about to navigate to the redirect URL for mobile, we can assume that the setup has completed.
+        // When the web view is about to navigate to the site address, we can assume that the setup has completed.
         case let url where url.hasPrefix(siteURL):
             await MainActor.run { [weak self] in
                 self?.handleSetupCompletion()

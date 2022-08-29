@@ -194,7 +194,7 @@ class AuthenticationManager: Authentication {
         guard matcher.match(originalURL: siteURL) else {
             if let credentials = credentials?.wporg {
                 DDLogWarn("⚠️ Present Jetpack connection error for site: \(String(describing: siteURL))")
-                return jetpackConnectionUI(for: siteURL, with: credentials)
+                return jetpackConnectionUI(for: siteURL, with: credentials, in: navigationController)
             }
             DDLogWarn("⚠️ Present account mismatch error for site: \(String(describing: siteURL))")
             return accountMismatchUI(for: siteURL, with: matcher, credentials: credentials)
@@ -352,7 +352,11 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         let matcher = ULAccountMatcher(storageManager: storageManager)
         matcher.refreshStoredSites()
 
-        if let vc = errorViewController(for: siteURL, with: matcher, credentials: credentials, navigationController: navigationController, onStorePickerDismiss: onDismiss) {
+        if let vc = errorViewController(for: siteURL,
+                                        with: matcher,
+                                        credentials: credentials,
+                                        navigationController: navigationController,
+                                        onStorePickerDismiss: onDismiss) {
             loggedOutAppSettings?.setErrorLoginSiteAddress(siteURL)
             navigationController.show(vc, sender: nil)
         } else {
@@ -590,8 +594,15 @@ private extension AuthenticationManager {
     /// The error screen to be displayed when the user tries to enter as site
     /// whose Jetpack is not connected to their WP.com account.
     ///
-    func jetpackConnectionUI(for siteURL: String, with credentials: WordPressOrgCredentials) -> UIViewController {
-        let viewModel = JetpackConnectionErrorViewModel(siteURL: siteURL, credentials: credentials)
+    func jetpackConnectionUI(for siteURL: String, with credentials: WordPressOrgCredentials, in navigationController: UINavigationController) -> UIViewController {
+        let viewModel = JetpackConnectionErrorViewModel(siteURL: siteURL, credentials: credentials, onJetpackSetupCompletion: { email in
+            return WordPressAuthenticator.showLoginForJustWPCom(
+                from: navigationController,
+                jetpackLogin: true,
+                connectedEmail: email,
+                siteURL: siteURL
+            )
+        })
         return ULErrorViewController(viewModel: viewModel)
     }
 

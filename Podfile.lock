@@ -83,7 +83,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.8)
-  - Automattic-Tracks-iOS (from `https://github.com/Automattic/Automattic-Tracks-iOS.git`, commit `c361ace2db259581804dd0e2401b6c7f7637f1c0`)
+  - Automattic-Tracks-iOS (from `../Automattic-Tracks-iOS`)
   - CocoaLumberjack (~> 3.7.4)
   - CocoaLumberjack/Swift (~> 3.7.4)
   - Gridicons (~> 1.2.0)
@@ -142,13 +142,7 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   Automattic-Tracks-iOS:
-    :commit: c361ace2db259581804dd0e2401b6c7f7637f1c0
-    :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
-
-CHECKOUT OPTIONS:
-  Automattic-Tracks-iOS:
-    :commit: c361ace2db259581804dd0e2401b6c7f7637f1c0
-    :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
+    :path: "../Automattic-Tracks-iOS"
 
 SPEC CHECKSUMS:
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
@@ -188,6 +182,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2bdf8544f7cd0fd4c002546f5704b813845beb2a
   ZendeskSupportSDK: 3a8e508ab1d9dd22dc038df6c694466414e037ba
 
-PODFILE CHECKSUM: 6d5c4a6ce4491a6c613f8009826e94a9d85ba0d2
+PODFILE CHECKSUM: ccadd5fbe24150d8997f36e5c0737cbe92b276d9
 
 COCOAPODS: 1.11.2

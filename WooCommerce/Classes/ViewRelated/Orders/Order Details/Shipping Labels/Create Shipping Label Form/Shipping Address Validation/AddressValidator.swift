@@ -38,7 +38,10 @@ class AddressValidator {
             case .success:
                 onCompletion(.success(()))
             case .failure(let error):
-                onCompletion(.failure(.remote(error)))
+                guard let shippingLabelError = error as? ShippingLabelAddressValidationError else {
+                    return
+                }
+                onCompletion(.failure(.remote(shippingLabelError)))
             }
         }
         stores.dispatch(action)

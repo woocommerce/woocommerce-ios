@@ -22,7 +22,7 @@ class AddressValidator {
 
         let localErrors = validateAddressLocally(addressToBeValidated: convertedAddress)
         if localErrors.isNotEmpty {
-            let localErrorMessage = localErrors.map { $0.rawValue }.joined(separator: ",")
+            let localErrorMessage = localErrors.map { $0.rawValue }.joined(separator: ", ")
             onCompletion(.failure(.local(localErrorMessage)))
             return
         }

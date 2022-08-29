@@ -76,4 +76,28 @@ class AddressValidatorTests: XCTestCase {
 
         XCTAssertTrue(onCompletionWasCalled)
     }
+
+    func testWhenAddressIsValidThenCompleteWithSuccessWithLocalAndRemoteValidation() {
+        // Given
+        var onCompletionWasCalled = false
+        var remoteValidationWasCalled = false
+        storesManager.whenReceivingAction(ofType: ShippingLabelAction.self, thenCall: { action in
+            if case let ShippingLabelAction.validateAddress(_, addressToBeValidated, onCompletion) = action {
+                remoteValidationWasCalled = true
+                onCompletion(.success(ShippingLabelAddressValidationSuccess(address: addressToBeValidated.address!, isTrivialNormalization: true)))
+            }
+        })
+        let addressValidator = AddressValidator(siteID: 123, stores: storesManager)
+
+        // When
+        addressValidator.validate(address: validAddress, onlyLocally: false, onCompletion: { result in
+            onCompletionWasCalled = true
+
+            // Then
+            XCTAssertTrue(result.isSuccess)
+        })
+
+        XCTAssertTrue(onCompletionWasCalled)
+        XCTAssertTrue(remoteValidationWasCalled)
+    }
 }

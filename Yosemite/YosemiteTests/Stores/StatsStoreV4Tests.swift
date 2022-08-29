@@ -5,7 +5,6 @@ import XCTest
 
 /// StatsStoreV4Tests Unit Tests
 ///
-@MainActor
 final class StatsStoreV4Tests: XCTestCase {
 
     /// Mock Dispatcher!
@@ -290,7 +289,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
         // When
         let quantity = 6
-        waitFor { promise in
+        let _: Void = waitFor { promise in
             let action = StatsActionV4.retrieveTopEarnerStats(siteID: self.sampleSiteID,
                                                               timeRange: .thisYear,
                                                               earliestDateToInclude: DateFormatter.dateFromString(with: "2020-01-01T00:00:00"),

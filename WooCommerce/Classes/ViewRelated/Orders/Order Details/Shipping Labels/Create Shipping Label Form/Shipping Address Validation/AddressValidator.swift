@@ -1,5 +1,8 @@
 import Yosemite
 
+/// Reusable implementation of the Address validation introduced by the
+/// `ShippingLabelAddressFormViewModel`, but striped of the specifics to serve the form UI
+/// 
 class AddressValidator {
     let siteID: Int64
     private let stores: StoresManager

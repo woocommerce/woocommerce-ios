@@ -26,6 +26,11 @@ class AddressValidatorTests: XCTestCase {
         ServiceLocator.setStores(storesManager)
     }
 
+    override func tearDown() {
+        storesManager = nil
+        super.tearDown()
+    }
+
     func testWhenAddressIsEmptyThenCompleteWithLocalFailure() {
         // Given
         var onCompletionWasCalled = false

@@ -20,8 +20,10 @@ class AddressValidator {
                                                     city: address.city,
                                                     postcode: address.postcode)
 
-        if validateAddressLocally(addressToBeValidated: convertedAddress).isNotEmpty {
-            onCompletion(.failure(.local))
+        let localErrors = validateAddressLocally(addressToBeValidated: convertedAddress)
+        if localErrors.isNotEmpty {
+            let localErrorMessage = localErrors.map { $0.rawValue }.joined(separator: ",")
+            onCompletion(.failure(.local(localErrorMessage)))
             return
         }
 
@@ -63,9 +65,6 @@ class AddressValidator {
         if addressToBeValidated.country.isEmpty {
             errors.append(.country)
         }
-        if addressToBeValidated.phone.isEmpty {
-            errors.append(.missingPhoneNumber)
-        }
 
         return errors
     }
@@ -76,19 +75,18 @@ class AddressValidator {
         case remote
     }
 
-    enum LocalValidationError {
-        case name
-        case address
-        case city
-        case postcode
-        case state
-        case country
-        case missingPhoneNumber
-        case invalidPhoneNumber
+    enum LocalValidationError: String {
+        case name = "Customer name and company are empty"
+        case address = "Address is empty"
+        case city = "City is empty"
+        case postcode = "Postcode is empty"
+        case state = "State is empty"
+        case country = "Country is empty"
+        case invalidPhoneNumber = "The phone number is invalid"
     }
 
     enum AddressValidationError: Error {
-        case local
+        case local(String)
         case remote(Error)
     }
 }

@@ -81,6 +81,6 @@ class AddressValidator {
 
     enum AddressValidationError: Error {
         case local(String)
-        case remote(Error)
+        case remote(ShippingLabelAddressValidationError)
     }
 }

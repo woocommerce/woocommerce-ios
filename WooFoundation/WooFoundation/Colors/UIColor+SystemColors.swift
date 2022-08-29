@@ -1,7 +1,7 @@
 import UIKit
 
 /// Represents each iOS system color.
-enum SystemColor {
+public enum SystemColor {
     case label
     case secondaryLabel
     case tertiaryLabel
@@ -81,7 +81,7 @@ private extension SystemColor {
     }
 }
 
-extension UIColor {
+public extension UIColor {
 
     /// Get a system color.
     ///

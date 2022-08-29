@@ -1,4 +1,5 @@
 import SwiftUI
+import WooFoundation
 
 /// Renders a row with a label on the left side, a value on the right side and a disclosure indicator if selectable
 ///

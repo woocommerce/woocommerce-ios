@@ -1,1 +1,3 @@
-This release has a few improvements to your login experience, including the option to use your `wp-admin` site credentials and magic link option to login. Fortsätt att skicka feedback till oss – vi lyssnar!
+Vi har gjort det mycket enklare att hitta allt om att ta emot betalningar i appen. Det är bara att gå till sektionen Betalningar från menyn. Vi har också åtgärdat ett problem som gjorde att man felaktigt kunde bli blockerad från att ta emot betalningar.
+Vi har dessutom gjort diverse förbättringar av våra inloggningsflöden, så att det ska gå snabbare att komma igång med appen.
+Slutligen har vi även gjort några förbättringar av prestandan. Men vi är inte klara. Det kommer fler förbättringar framöver. Fortsätt att skicka feedback.

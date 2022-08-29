@@ -225,10 +225,6 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func bothPluginsInstalledAndActiveOnboardingState(wcPay: SystemPlugin, stripe: SystemPlugin) -> CardPresentPaymentOnboardingState {
-        guard featureFlagService.isFeatureFlagEnabled(.inPersonPaymentGatewaySelection) else {
-            return legacyBothPluginsInstalledAndActiveOnboardingState(wcPay: wcPay, stripe: stripe)
-        }
-
         if preferredPluginLocal == nil {
             preferredPluginLocal = storedPreferredPlugin
         }
@@ -243,14 +239,6 @@ private extension CardPresentPaymentsOnboardingUseCase {
 
         let state = onboardingStateForPlugin(preferredPlugin, wcPay: wcPay, stripe: stripe)
         return augmentStateWithAvailablePlugins(state: state, available: [.wcPay, .stripe])
-    }
-
-    func legacyBothPluginsInstalledAndActiveOnboardingState(wcPay: SystemPlugin, stripe: SystemPlugin) -> CardPresentPaymentOnboardingState {
-        if !isStripeSupportedInCountry {
-            return .pluginShouldBeDeactivated(plugin: .stripe)
-        }
-
-        return .selectPlugin(pluginSelectionWasCleared: false)
     }
 
     func onboardingStateForPlugin(_ plugin: CardPresentPaymentsPlugin, wcPay: SystemPlugin, stripe: SystemPlugin) -> CardPresentPaymentOnboardingState {

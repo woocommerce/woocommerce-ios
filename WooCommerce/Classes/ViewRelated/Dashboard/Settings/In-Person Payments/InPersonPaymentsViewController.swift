@@ -40,22 +40,11 @@ struct InPersonPaymentsView: View {
             case .loading:
                 InPersonPaymentsLoading()
             case let .selectPlugin(pluginSelectionWasCleared):
-                if viewModel.gatewaySelectionAvailable {
-                    // Preselect WCPay only if there was no selection done before
-                    InPersonPaymentsSelectPluginView(selectedPlugin: pluginSelectionWasCleared == true ? nil : .wcPay) { plugin in
-                        viewModel.selectPlugin(plugin)
-                        ServiceLocator.analytics.track(.cardPresentPaymentGatewaySelected, withProperties: ["payment_gateway": plugin.pluginName])
-                    }
-                } else if viewModel.userIsAdministrator {
-                    InPersonPaymentsPluginConflictAdmin(analyticReason: viewModel.state.reasonForAnalytics, onRefresh: viewModel.refresh)
-                } else {
-                    InPersonPaymentsPluginConflictShopManager(analyticReason: viewModel.state.reasonForAnalytics, onRefresh: viewModel.refresh)
+                // Preselect WCPay only if there was no selection done before
+                InPersonPaymentsSelectPluginView(selectedPlugin: pluginSelectionWasCleared == true ? nil : .wcPay) { plugin in
+                    viewModel.selectPlugin(plugin)
+                    ServiceLocator.analytics.track(.cardPresentPaymentGatewaySelected, withProperties: ["payment_gateway": plugin.pluginName])
                 }
-            case let .pluginShouldBeDeactivated(plugin) where plugin == .stripe:
-                InPersonPaymentsDeactivateStripeView(
-                    analyticReason: viewModel.state.reasonForAnalytics,
-                    onRefresh: viewModel.refresh,
-                    showSetupPluginsButton: viewModel.userIsAdministrator)
             case .countryNotSupported(let countryCode):
                 InPersonPaymentsCountryNotSupported(countryCode: countryCode, analyticReason: viewModel.state.reasonForAnalytics)
             case .countryNotSupportedStripe(_, let countryCode):

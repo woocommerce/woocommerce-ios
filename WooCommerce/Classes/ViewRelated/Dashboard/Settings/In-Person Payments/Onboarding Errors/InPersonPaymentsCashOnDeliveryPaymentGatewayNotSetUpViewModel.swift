@@ -36,7 +36,7 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel: Obser
 
     @Published var awaitingResponse = false
 
-    let analyticReason: String = CardPresentPaymentOnboardingState.codPaymentGatewayNotSetUp.reasonForAnalytics ?? ""
+    let analyticReason: String = CardPresentPaymentOnboardingState.codPaymentGatewayNotSetUp.reasonForAnalytics
 
     // MARK: - Configuration properties
     private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration

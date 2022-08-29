@@ -76,12 +76,12 @@ public enum CardPresentPaymentOnboardingState: Equatable {
 }
 
 extension CardPresentPaymentOnboardingState {
-    public var reasonForAnalytics: String? {
+    public var reasonForAnalytics: String {
         switch self {
         case .loading:
-            return nil
+            return "loading"
         case .completed:
-            return nil
+            return "completed"
         case .selectPlugin:
             return "multiple_payment_providers_conflict"
         case .countryNotSupported(countryCode: _):
@@ -112,6 +112,15 @@ extension CardPresentPaymentOnboardingState {
             return "generic_error"
         case .noConnectionError:
             return "no_connection_error"
+        }
+    }
+
+    public var shouldTrackOnboardingStepEvents: Bool {
+        switch self {
+        case .completed(_), .loading:
+            return false
+        default:
+            return true
         }
     }
 

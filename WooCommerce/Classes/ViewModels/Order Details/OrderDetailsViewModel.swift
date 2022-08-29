@@ -577,7 +577,7 @@ extension OrderDetailsViewModel {
     }
 
     func startAddressValidation(shippingLabelPluginIsActive: Bool) {
-        guard let orderShippingAddress = order.shippingAddress else {
+        guard let orderShippingAddress = order.shippingAddress, orderShippingAddress != Address.empty else {
             return
         }
 

@@ -1,28 +1,39 @@
 import XCTest
+import Yosemite
+@testable import WooCommerce
 
+/// AddressValidator Unit Tests
+///
 class AddressValidatorTests: XCTestCase {
+    private var storesManager: MockStoresManager!
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    override func setUp() {
+        super.setUp()
+        storesManager = MockStoresManager(sessionManager: SessionManager.testingInstance)
+        ServiceLocator.setStores(storesManager)
     }
 
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
+    func testExample() {
+        var onCompletionWasCalled = false
 
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-    }
+        let addressValidator = AddressValidator(siteID: 123, stores: storesManager)
 
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
+        addressValidator.validate(address: Address.empty, onlyLocally: true, onCompletion: { result in
+            onCompletionWasCalled = true
+            guard let failure = result.failure else {
+                XCTFail("A failure result was expected for an empty address")
+                return
+            }
 
+            switch failure {
+            case .local(let errorMessage):
+                XCTAssertTrue(errorMessage.isNotEmpty)
+                break
+            default:
+                XCTFail("A local failure was expected")
+            }
+        })
+
+        XCTAssertTrue(onCompletionWasCalled)
+    }
 }

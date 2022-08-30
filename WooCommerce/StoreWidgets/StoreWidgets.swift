@@ -33,7 +33,7 @@ struct SimpleEntry: TimelineEntry {
     let configuration: ConfigurationIntent
 }
 
-struct StoreWidgetsEntryView : View {
+struct StoreWidgetsEntryView: View {
     var entry: Provider.Entry
 
     var body: some View {

@@ -19,7 +19,13 @@ struct OrderDetailsRoute: Route {
             return
         }
 
-        switchStoreUseCase.switchStore(with: storeId, onCompletion: {_ in})
+        switchStoreUseCase.switchStore(with: storeId, onCompletion: { siteChanged in
+            if siteChanged {
+                let presenter = SwitchStoreNoticePresenter(siteID: storeId)
+                presenter.presentStoreSwitchedNoticeWhenSiteIsAvailable(configuration: .switchingStores)
+                MainTabBarController.switchToOrdersTab()
+            }
+        })
     }
 }
 

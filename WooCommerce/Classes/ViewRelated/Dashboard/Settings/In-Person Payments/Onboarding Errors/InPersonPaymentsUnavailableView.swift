@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct InPersonPaymentsUnavailable: View {
-    let analyticReason: String?
+    let analyticReason: String
 
     var body: some View {
         InPersonPaymentsOnboardingError(
@@ -32,6 +32,6 @@ private enum Localization {
 
 struct InPersonPaymentsUnavailable_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsUnavailable(analyticReason: nil)
+        InPersonPaymentsUnavailable(analyticReason: "")
     }
 }

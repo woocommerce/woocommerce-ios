@@ -7,7 +7,7 @@ final class CardPresentModalScanningForReader: CardPresentPaymentsModalViewModel
     private let cancelAction: () -> Void
 
     let textMode: PaymentsModalTextMode = .reducedBottomInfo
-    let actionsMode: PaymentsModalActionsMode = .secondaryActionAndAttributedAuxiliaryButton
+    let actionsMode: PaymentsModalActionsMode = .secondaryActionAndAuxiliaryButton
 
     let topTitle: String = Localization.title
 
@@ -20,6 +20,8 @@ final class CardPresentModalScanningForReader: CardPresentPaymentsModalViewModel
     let secondaryButtonTitle: String? = Localization.cancel
 
     let auxiliaryButtonTitle: String? = nil
+
+    let auxiliaryButtonimage: UIImage? = .infoOutlineImage
 
     var auxiliaryAttributedButtonTitle: NSAttributedString? {
         let result = NSMutableAttributedString(

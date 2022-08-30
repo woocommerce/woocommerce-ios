@@ -158,7 +158,7 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func styleAuxiliaryButton() {
-        if viewModel.actionsMode != .secondaryActionAndAttributedAuxiliaryButton {
+        if viewModel.actionsMode != .secondaryActionAndAuxiliaryButton {
             auxiliaryButton.applyLinkButtonStyle()
         }
         auxiliaryButton.titleLabel?.minimumScaleFactor = 0.5
@@ -279,7 +279,6 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func configureAuxiliaryButton() {
-        clearAuxiliaryButton()
 
         guard shouldShowAuxiliaryButton() else {
             auxiliaryButton.isHidden = true
@@ -287,21 +286,17 @@ private extension CardPresentPaymentsModalViewController {
         }
 
         auxiliaryButton.isHidden = false
-        auxiliaryButton.setTitleWithoutAnimation(viewModel.auxiliaryButtonTitle, for: .normal)
         auxiliaryButton.accessibilityIdentifier = Accessibility.auxiliaryButton
-
-        if viewModel.actionsMode == .secondaryActionAndAttributedAuxiliaryButton {
-            auxiliaryButton.setImage(.infoOutlineImage, for: .normal)
+        // Prevents UI flicker when loading different content
+        UIView.performWithoutAnimation {
+            auxiliaryButton.setTitle(viewModel.auxiliaryButtonTitle, for: .normal)
             auxiliaryButton.setAttributedTitle(viewModel.auxiliaryAttributedButtonTitle, for: .normal)
-            auxiliaryButton.distributeTitleAndImage(spacing: 12.0)
+            auxiliaryButton.setImage(viewModel.auxiliaryButtonimage, for: .normal)
+            if viewModel.auxiliaryButtonimage != nil {
+                auxiliaryButton.distributeTitleAndImage(spacing: 8.0)
+            }
+            view.layoutIfNeeded()
         }
-    }
-
-    func clearAuxiliaryButton() {
-        auxiliaryButton.setImage(nil, for: .normal)
-        auxiliaryButton.setAttributedTitle(nil, for: .normal)
-        auxiliaryButton.setTitle(nil, for: .normal)
-        auxiliaryButton.accessibilityIdentifier = nil
     }
 
     func configureSpacer() {
@@ -355,12 +350,12 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func shouldShowBottomActionButton() -> Bool {
-        [.secondaryOnlyAction, .twoAction, .twoActionAndAuxiliary, .secondaryActionAndAttributedAuxiliaryButton]
+        [.secondaryOnlyAction, .twoAction, .twoActionAndAuxiliary, .secondaryActionAndAuxiliaryButton]
             .contains(viewModel.actionsMode)
     }
 
     func shouldShowAuxiliaryButton() -> Bool {
-        [.twoActionAndAuxiliary, .secondaryActionAndAttributedAuxiliaryButton].contains(viewModel.actionsMode)
+        [.twoActionAndAuxiliary, .secondaryActionAndAuxiliaryButton].contains(viewModel.actionsMode)
     }
 }
 

@@ -6,7 +6,7 @@ import WordPressKit
 public struct JetpackConnectionRemote {
     private let api: WordPressOrgAPI
 
-    init(api: WordPressOrgAPI) {
+    public init(api: WordPressOrgAPI) {
         self.api = api
     }
 

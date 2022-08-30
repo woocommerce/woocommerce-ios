@@ -12,7 +12,7 @@ enum WordPressOrgAPIError: Int, Error {
 
 /// Class to handle WP.org REST API requests.
 ///
-final class WordPressOrgAPI {
+public final class WordPressOrgAPI {
     private let apiBase: URL
     private let authenticator: Authenticator?
     private let userAgent: String?
@@ -23,9 +23,9 @@ final class WordPressOrgAPI {
         self.userAgent = userAgent
     }
 
-    func request(method: HTTPMethod,
-                 path: String,
-                 parameters: [String: AnyObject]?) async throws -> Data? {
+    public func request(method: HTTPMethod,
+                        path: String,
+                        parameters: [String: AnyObject]?) async throws -> Data? {
         return try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self = self else { return }
             let relativePath = path.removingPrefix("/")

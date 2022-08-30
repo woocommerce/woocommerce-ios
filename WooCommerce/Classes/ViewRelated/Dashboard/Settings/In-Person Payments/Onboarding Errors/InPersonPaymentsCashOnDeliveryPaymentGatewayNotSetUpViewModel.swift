@@ -119,28 +119,33 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel: Obser
 }
 
 // MARK: - Analytics
-private extension InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel {
-    typealias Event = WooAnalyticsEvent.InPersonPayments
+extension InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel {
+    private typealias Event = WooAnalyticsEvent.InPersonPayments
 
-    func trackSkipTapped() {
+    var learnMoreEvent: WooAnalyticsEvent {
+        Event.cardPresentOnboardingLearnMoreTapped(reason: analyticReason,
+                                                   countryCode: cardPresentPaymentsConfiguration.countryCode)
+    }
+
+    private func trackSkipTapped() {
         let event = Event.cardPresentOnboardingStepSkipped(reason: analyticReason,
                                                            remindLater: false,
                                                            countryCode: cardPresentPaymentsConfiguration.countryCode)
         analytics.track(event: event)
     }
 
-    func trackEnableTapped() {
+    private func trackEnableTapped() {
         let event = Event.cardPresentOnboardingCtaTapped(reason: analyticReason,
                                                          countryCode: cardPresentPaymentsConfiguration.countryCode)
         analytics.track(event: event)
     }
 
-    func trackEnableCashOnDeliverySuccess() {
+    private func trackEnableCashOnDeliverySuccess() {
         let event = Event.enableCashOnDeliverySuccess(countryCode: cardPresentPaymentsConfiguration.countryCode)
         analytics.track(event: event)
     }
 
-    func trackEnableCashOnDeliveryFailed(error: Error?) {
+    private func trackEnableCashOnDeliveryFailed(error: Error?) {
         let event = Event.enableCashOnDeliveryFailed(countryCode: cardPresentPaymentsConfiguration.countryCode,
                                                      error: error)
         analytics.track(event: event)

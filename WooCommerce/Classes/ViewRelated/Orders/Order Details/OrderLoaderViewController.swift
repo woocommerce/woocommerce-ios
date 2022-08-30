@@ -14,7 +14,7 @@ class OrderLoaderViewController: UIViewController {
 
     /// Source push notification `Note`
     ///
-    private let note: Note
+    private let note: Note?
 
     /// Target OrderID
     ///
@@ -50,7 +50,7 @@ class OrderLoaderViewController: UIViewController {
 
     // MARK: - Initializers
 
-    init(note: Note, orderID: Int64, siteID: Int64) {
+    init(note: Note?, orderID: Int64, siteID: Int64) {
         self.note = note
         self.orderID = orderID
         self.siteID = siteID
@@ -264,7 +264,9 @@ private extension OrderLoaderViewController {
             startSpinner()
         case .success(let order):
             presentOrderDetails(for: order)
-            markNotificationAsReadIfNeeded(note: note)
+            if let note = note {
+                markNotificationAsReadIfNeeded(note: note)
+            }
         case .failure:
             displayFailureOverlay()
         }

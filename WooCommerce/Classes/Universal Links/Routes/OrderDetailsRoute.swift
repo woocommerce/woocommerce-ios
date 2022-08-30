@@ -6,26 +6,15 @@ import Yosemite
 struct OrderDetailsRoute: Route {
     let path = "/orders/details"
 
-    private let switchStoreUseCase: SwitchStoreUseCaseProtocol
-
-    init(switchStoreUseCase: SwitchStoreUseCaseProtocol = SwitchStoreUseCase(stores: ServiceLocator.stores)) {
-        self.switchStoreUseCase = switchStoreUseCase
-    }
-
     func perform(with parameters: [String: String]) {
         guard let storeIdString = parameters[ParametersKeys.blogId],
               let storeId = Int64(storeIdString),
-              let orderId = parameters[ParametersKeys.orderId] else {
+              let orderIdString = parameters[ParametersKeys.orderId],
+              let orderId = Int64(orderIdString) else {
             return
         }
 
-        switchStoreUseCase.switchStore(with: storeId, onCompletion: { siteChanged in
-            if siteChanged {
-                let presenter = SwitchStoreNoticePresenter(siteID: storeId)
-                presenter.presentStoreSwitchedNoticeWhenSiteIsAvailable(configuration: .switchingStores)
-                MainTabBarController.switchToOrdersTab()
-            }
-        })
+        MainTabBarController.presentOrderDetails(with: orderId, siteID: storeId)
     }
 }
 

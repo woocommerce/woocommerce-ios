@@ -6,7 +6,7 @@ PODS:
   - AppAuth/Core (1.5.0)
   - AppAuth/ExternalUserAgent (1.5.0):
     - AppAuth/Core
-  - Automattic-Tracks-iOS (0.12.0-beta.1):
+  - Automattic-Tracks-iOS (0.12.0-beta.2):
     - Sentry (~> 6)
     - Sodium (>= 0.9.1)
     - UIDeviceIdentifier (~> 2.0)
@@ -83,7 +83,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.8)
-  - Automattic-Tracks-iOS (from `https://github.com/Automattic/Automattic-Tracks-iOS.git`, commit `82cb6f0c1106f8a9b972380881b6fcb063166efb`)
+  - Automattic-Tracks-iOS (from `https://github.com/Automattic/Automattic-Tracks-iOS.git`, commit `7e11e93d6205f51c09aad5d59f4e0679a796a2ef`)
   - CocoaLumberjack (~> 3.7.4)
   - CocoaLumberjack/Swift (~> 3.7.4)
   - Gridicons (~> 1.2.0)
@@ -142,18 +142,18 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   Automattic-Tracks-iOS:
-    :commit: 82cb6f0c1106f8a9b972380881b6fcb063166efb
+    :commit: 7e11e93d6205f51c09aad5d59f4e0679a796a2ef
     :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
 
 CHECKOUT OPTIONS:
   Automattic-Tracks-iOS:
-    :commit: 82cb6f0c1106f8a9b972380881b6fcb063166efb
+    :commit: 7e11e93d6205f51c09aad5d59f4e0679a796a2ef
     :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
 
 SPEC CHECKSUMS:
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
   AppAuth: 80317d99ac7ff2801a2f18ff86b48cd315ed465d
-  Automattic-Tracks-iOS: b6f9873770a57e54941c5a3ca8296cbc8dd1015b
+  Automattic-Tracks-iOS: f31213fbf0391968ffcff75e8c1bdad398589261
   CocoaLumberjack: 543c79c114dadc3b1aba95641d8738b06b05b646
   FormatterKit: 184db51bf120b633693a73624a4cede89ec51a41
   GoogleSignIn: fd381840dbe7c1137aa6dc30849a5c3e070c034a
@@ -188,6 +188,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2bdf8544f7cd0fd4c002546f5704b813845beb2a
   ZendeskSupportSDK: 3a8e508ab1d9dd22dc038df6c694466414e037ba
 
-PODFILE CHECKSUM: 9d37ff37e147daf1898744ef8bca59adf37ba7c0
+PODFILE CHECKSUM: daf44a19392cd6f0a09acde548b0ebd47182549b
 
 COCOAPODS: 1.11.2

@@ -109,7 +109,7 @@ public class AlamofireNetwork: Network {
 
 /// MARK: - Alamofire.DataResponse: Private Methods
 ///
-private extension Alamofire.DataResponse {
+extension Alamofire.DataResponse {
 
     /// Returns the Networking Layer Error (if any):
     ///
@@ -137,7 +137,7 @@ private extension Alamofire.DataResponse {
 
 // MARK: - Swift.Result Conversion
 
-private extension Alamofire.Result {
+extension Alamofire.Result {
     /// Convert this `Alamofire.Result` to a `Swift.Result`.
     ///
     func toSwiftResult() -> Swift.Result<Value, Error> {

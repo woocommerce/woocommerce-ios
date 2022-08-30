@@ -133,7 +133,7 @@ class AddressValidatorTests: XCTestCase {
 
             switch failure {
             case .remote(let error):
-                XCTAssertTrue(error.addressError!.isNotEmpty)
+                XCTAssertTrue(error!.addressError!.isNotEmpty)
                 break
             default:
                 XCTFail("A remote failure was expected")

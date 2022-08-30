@@ -943,8 +943,8 @@ platform :ios do
     match(
       type: 'enterprise',
       team_id: get_required_env('INT_EXPORT_TEAM_ID'),
-      readonly: true,
-      app_identifier: ALPHA_BUNDLE_IDENTIFIERS
+      app_identifier: ALPHA_BUNDLE_IDENTIFIERS,
+      readonly: true
     )
   end
 
@@ -952,9 +952,15 @@ platform :ios do
     match(
       type: 'appstore',
       team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
-      readonly: true,
       app_identifier: MAIN_BUNDLE_IDENTIFIERS,
-      template_name: 'Apple Pay Pass Suppression'
+      # For a time, we used to have this parameter specifying a entitlements.
+      # In August 2022, `match` started being unable to generate new
+      # provisioning profiles and the only solution I found was to remove it.
+      #
+      # Leaving it here for future referece as something to try if `match`
+      # gives us trouble again.
+      # template_name: 'Apple Pay Pass Suppression'
+      readonly: true
     )
   end
 

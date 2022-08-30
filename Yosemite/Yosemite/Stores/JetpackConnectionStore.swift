@@ -30,18 +30,8 @@ public final class JetpackConnectionStore: DeauthenticatedStore {
 
 private extension JetpackConnectionStore {
     func fetchJetpackConnectionURL(siteURL: String, with authenticator: Authenticator, completion: @escaping (Result<URL?, Error>) -> Void) {
-        let remote = JetpackConnectionRemote(siteURL: siteURL, authenticator: authenticator)
-        Task {
-            do {
-                let url = try await remote?.fetchJetpackConnectionURL()
-                await MainActor.run {
-                    completion(.success(url))
-                }
-            } catch let error {
-                await MainActor.run {
-                    completion(.failure(error))
-                }
-            }
-        }
+        let network = WordPressOrgNetwork(authenticator: authenticator, userAgent: UserAgent.defaultUserAgent)
+        let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
+        remote.fetchJetpackConnectionURL(completion: completion)
     }
 }

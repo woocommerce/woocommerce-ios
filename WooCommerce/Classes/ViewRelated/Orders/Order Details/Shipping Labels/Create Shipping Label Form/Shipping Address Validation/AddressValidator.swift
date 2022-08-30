@@ -36,7 +36,7 @@ class AddressValidator {
         }
 
         let addressToBeVerified = ShippingLabelAddressVerification(address: convertedAddress, type: .destination)
-        let action = ShippingLabelAction.validateAddress(siteID: siteID, address: addressToBeVerified) { (result) in
+        let action = ShippingLabelAction.validateAddress(siteID: siteID, address: addressToBeVerified) { result in
             switch result {
             case .success:
                 onCompletion(.success(()))

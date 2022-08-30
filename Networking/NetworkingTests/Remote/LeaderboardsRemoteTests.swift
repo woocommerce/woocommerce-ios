@@ -39,7 +39,7 @@ final class LeaderboardsRemoteV4Tests: XCTestCase {
         let topProducts = leaderboards[3]
         XCTAssertFalse(topProducts.rows.isEmpty)
 
-        // Each prodcut should have non-empty values
+        // Each product should have non-empty values
         let expectedValues = [(quantity: 4, total: 20000.0), (quantity: 1, total: 15.99)]
         zip(topProducts.rows, expectedValues).forEach { product, expectedValue in
             XCTAssertFalse(product.subject.display.isEmpty)
@@ -77,7 +77,7 @@ final class LeaderboardsRemoteV4Tests: XCTestCase {
         let topProducts = leaderboards[3]
         XCTAssertFalse(topProducts.rows.isEmpty)
 
-        // Each prodcut should have non-empty values
+        // Each product should have non-empty values
         let expectedValues = [(quantity: 4, total: 20000.0), (quantity: 1, total: 15.99)]
         zip(topProducts.rows, expectedValues).forEach { product, expectedValue in
             XCTAssertFalse(product.subject.display.isEmpty)
@@ -89,7 +89,7 @@ final class LeaderboardsRemoteV4Tests: XCTestCase {
         }
     }
 
-    func testLeaderboardsProperlyRelaysNetwokingErrors() {
+    func testLeaderboardsProperlyRelaysNetworkingErrors() {
         // Given
         let remote = LeaderboardsRemote(network: network)
 

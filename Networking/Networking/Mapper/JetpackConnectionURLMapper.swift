@@ -12,6 +12,7 @@ struct JetpackConnectionURLMapper: Mapper {
         }
         // The API returns an escaped string with double quotes, so we need to clean it up.
         let urlString = escapedString
+            .trimmingCharacters(in: .whitespacesAndNewlines)
             .replacingOccurrences(of: "\"", with: "")
             .replacingOccurrences(of: "\\", with: "")
         return try urlString.asURL()

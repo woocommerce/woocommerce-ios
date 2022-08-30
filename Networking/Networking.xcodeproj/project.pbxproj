@@ -629,6 +629,7 @@
 		DE34051728BDEB6D00CF0D97 /* JetpackConnectionRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE34051628BDEB6D00CF0D97 /* JetpackConnectionRemote.swift */; };
 		DE34051928BDEE6A00CF0D97 /* JetpackConnectionURLMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE34051828BDEE6A00CF0D97 /* JetpackConnectionURLMapper.swift */; };
 		DE34051B28BDF12C00CF0D97 /* jetpack-connection-url.json in Resources */ = {isa = PBXBuildFile; fileRef = DE34051A28BDF12C00CF0D97 /* jetpack-connection-url.json */; };
+		DE34051D28BDF1C900CF0D97 /* JetpackConnectionURLMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE34051C28BDF1C900CF0D97 /* JetpackConnectionURLMapperTests.swift */; };
 		DE5CA111288A3E080077BEF9 /* product-malformed-variations-and-image-alt.json in Resources */ = {isa = PBXBuildFile; fileRef = DE5CA110288A3E080077BEF9 /* product-malformed-variations-and-image-alt.json */; };
 		DE6F308727966FEF004E1C9A /* CouponReportListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6F308627966FEF004E1C9A /* CouponReportListMapperTests.swift */; };
 		DE74F29A27E08F5A0002FE59 /* SiteSettingMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE74F29927E08F5A0002FE59 /* SiteSettingMapper.swift */; };
@@ -1315,6 +1316,7 @@
 		DE34051628BDEB6D00CF0D97 /* JetpackConnectionRemote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JetpackConnectionRemote.swift; sourceTree = "<group>"; };
 		DE34051828BDEE6A00CF0D97 /* JetpackConnectionURLMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackConnectionURLMapper.swift; sourceTree = "<group>"; };
 		DE34051A28BDF12C00CF0D97 /* jetpack-connection-url.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "jetpack-connection-url.json"; sourceTree = "<group>"; };
+		DE34051C28BDF1C900CF0D97 /* JetpackConnectionURLMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackConnectionURLMapperTests.swift; sourceTree = "<group>"; };
 		DE5CA110288A3E080077BEF9 /* product-malformed-variations-and-image-alt.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-malformed-variations-and-image-alt.json"; sourceTree = "<group>"; };
 		DE6F308627966FEF004E1C9A /* CouponReportListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponReportListMapperTests.swift; sourceTree = "<group>"; };
 		DE74F29927E08F5A0002FE59 /* SiteSettingMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteSettingMapper.swift; sourceTree = "<group>"; };
@@ -2275,6 +2277,7 @@
 				CC0786C8267BB32800BA9AC1 /* ShippingLabelStatusMapperTests.swift */,
 				02C254D22563992900A04423 /* OrderShippingLabelListMapperTests.swift */,
 				FE28F6E926842E49004465C7 /* UserMapperTests.swift */,
+				DE34051C28BDF1C900CF0D97 /* JetpackConnectionURLMapperTests.swift */,
 				0359EA1E27AAE4680048DE2D /* WCPayChargeMapperTests.swift */,
 			);
 			path = Mapper;
@@ -3071,6 +3074,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				45551F142523E7FF007EF104 /* UserAgentTests.swift in Sources */,
+				DE34051D28BDF1C900CF0D97 /* JetpackConnectionURLMapperTests.swift in Sources */,
 				451A9836260B9DF90059D135 /* ShippingLabelPackagesMapperTests.swift in Sources */,
 				02BDB83723EA9C4D00BCC63E /* String+HTMLTests.swift in Sources */,
 				74CF5E8421402C04000CED0A /* TopEarnerStatsRemoteTests.swift in Sources */,

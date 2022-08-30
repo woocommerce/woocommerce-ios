@@ -1,1 +1,3 @@
-Esta versión tiene algunas mejoras en la experiencia de inicio de sesión, como la opción de usar tus credenciales del sitio wp-admin y la opción de enlace mágico para iniciar sesión. Sigue enviando tus comentarios: ¡te escuchamos!
+Hemos facilitado el proceso de encontrar todo lo relacionado con la aceptación de pagos en la aplicación. Ve a la sección Pagos desde el menú. También hemos solucionado un problema por el que se podía bloquear innecesariamente la recepción de pagos.
+Además, hemos hecho varias mejoras en los flujos de acceso para que puedas empezar rápidamente en la aplicación.
+Por último, hemos hecho algunos ajustes de rendimiento. Pero hay más. Habrá más mejoras próximamente. Sigue enviándonos tus comentarios.

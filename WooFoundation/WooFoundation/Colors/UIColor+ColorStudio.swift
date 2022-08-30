@@ -1,6 +1,11 @@
 import UIKit
 
-extension UIColor {
+/// Disposable Class to find this `Bundle` at runtime
+///
+internal class WooFoundationBundleClass {}
+
+public extension UIColor {
+
     /// Get a UIColor from the Color Studio color palette
     ///
     /// - Parameters:
@@ -8,7 +13,7 @@ extension UIColor {
     /// - Returns: UIColor. Red in cases of error
     class func withColorStudio(_ colorStudio: ColorStudio) -> UIColor {
         let assetName = colorStudio.assetName()
-        let color = UIColor(named: assetName)
+        let color = UIColor(named: assetName, in: Bundle(for: WooFoundationBundleClass.self), compatibleWith: nil)
 
         guard let unwrappedColor = color else {
             return .red
@@ -26,7 +31,7 @@ extension UIColor {
 }
 
 
-extension UIColor {
+public extension UIColor {
     // A way to create dynamic colors that's compatible with iOS 11 & 12
     convenience init(light: UIColor, dark: UIColor) {
         self.init { traitCollection in
@@ -49,7 +54,7 @@ extension UIColor {
     }
 }
 
-extension UIColor {
+public extension UIColor {
     func color(for trait: UITraitCollection?) -> UIColor {
         if let trait = trait {
             return resolvedColor(with: trait)

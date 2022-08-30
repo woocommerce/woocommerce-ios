@@ -36,7 +36,7 @@ target 'WooCommerce' do
   # ====================
   #
 
-  # pod 'Automattic-Tracks-iOS', '~> 0.11.1'
+  # pod 'Automattic-Tracks-iOS', '~> 0.12.0-beta.1'
   # pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => ''
   pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :commit => '82cb6f0c1106f8a9b972380881b6fcb063166efb'
   # pod 'Automattic-Tracks-iOS', :path => '../Automattic-Tracks-iOS'
@@ -44,7 +44,7 @@ target 'WooCommerce' do
   pod 'Gridicons', '~> 1.2.0'
 
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
-  pod 'WordPressAuthenticator', '~> 2.4.0-beta.1'
+  pod 'WordPressAuthenticator', '~> 2.4.0'
   # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :commit => ''
   # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => ''
   # pod 'WordPressAuthenticator', :path => '../WordPressAuthenticator-iOS'
@@ -229,7 +229,7 @@ end
 # ==================
 #
 def experiments_pods
-  # pod 'Automattic-Tracks-iOS', '~> 0.11.1'
+  # pod 'Automattic-Tracks-iOS', '~> 0.12.0-beta.1'
   # pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => ''
   pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :commit => '82cb6f0c1106f8a9b972380881b6fcb063166efb'
   # pod 'Automattic-Tracks-iOS', :path => '../Automattic-Tracks-iOS'

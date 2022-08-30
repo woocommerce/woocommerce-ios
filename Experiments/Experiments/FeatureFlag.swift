@@ -70,10 +70,6 @@ public enum FeatureFlag: Int {
     ///
     case shippingLabelsOnboardingM1
 
-    /// Enable selection of payment gateway to use for In-Person Payments when there is more than one available
-    ///
-    case inPersonPaymentGatewaySelection
-
     /// Enable image upload after leaving the product form
     ///
     case backgroundProductImageUpload

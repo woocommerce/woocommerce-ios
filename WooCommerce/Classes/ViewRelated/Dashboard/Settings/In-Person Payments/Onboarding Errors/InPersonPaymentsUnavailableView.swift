@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct InPersonPaymentsUnavailable: View {
+    let analyticReason: String?
+
     var body: some View {
         InPersonPaymentsOnboardingError(
             title: Localization.unavailable,
@@ -10,7 +12,8 @@ struct InPersonPaymentsUnavailable: View {
                 height: 180.0
             ),
             supportLink: false,
-            learnMore: true
+            learnMore: true,
+            analyticReason: analyticReason
         )
     }
 }
@@ -29,6 +32,6 @@ private enum Localization {
 
 struct InPersonPaymentsUnavailable_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsUnavailable()
+        InPersonPaymentsUnavailable(analyticReason: nil)
     }
 }

@@ -90,6 +90,7 @@ final class ReviewsCoordinator: Coordinator {
                         return
                     }
 
+                    ServiceLocator.analytics.track(.reviewOpen)
                     self.willPresentReviewDetailsFromPushNotification()
                     self.pushReviewDetailsViewController(using: parcel)
 

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-08-17 13:54:03+0000 */
+/* Translation-Revision-Date: 2022-08-24 12:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -37,6 +37,9 @@
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
 which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with your mobile device and ordering card readers" = "Mobil cihazınızla ödeme kabul etme ve kart okuyucu sipariş etme hakkında %1$@";
+
+/* A label prompting users to learn more about card readers. %1$@ is a placeholder that is always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
+"%1$@ about adding Pay in Person to your checkout" = "Ödeme sayfanıza Şahsen Ödeme yöntemini ekleme hakkında %1$@";
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "%2$@ ile biten %1$@ kartı";
@@ -220,6 +223,9 @@ which should be translated separately and considered part of this sentence. */
 /* Please limit to 3 characters if possible. This is used if there are more than 99 items in a tab, like Orders. */
 "99+" = "99+";
 
+/* The message explaining what will happen when the merchant enables the Pay in Person payment gateway during card present payments onboarding. */
+"A \"Pay in Person\" option on your checkout lets you accept card or cash payments on collection or delivery." = "Ödeme sayfanızdaki \"Şahsen Öde\" seçeneği, tahsilat veya teslimatta kart veya nakit ödemeleri kabul etmenizi sağlar.";
+
 /* Instruction text to explain magic link login step. */
 "A WordPress.com account is connected to your store credentials. To continue, we will send a verification link to the email address above." = "Bir WordPress.com hesabı mağaza kimlik bilgilerinize bağlandı. Devam etmek için yukarıdaki e-posta adresine bir doğrulama bağlantısı göndereceğiz.";
 
@@ -354,6 +360,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the button that adds a note when creating a simple payment
    Title text of the button that adds customer note data when creating a new order */
 "Add Note" = "Not Ekle";
+
+/* Title for the card present payments onboarding step encouraging the merchant to enable the Pay in Person payment gateway. */
+"Add Pay in Person to your checkout" = "Ödeme sayfanıza Şahsen Ödeme yöntemini ekleyin";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "Fotoğraf Ekle";
@@ -828,6 +837,9 @@ which should be translated separately and considered part of this sentence. */
 /* The plural total limit where the same coupon can be applied for everyone, reads like: Can be used 10 times */
 "Can be used %1$d times" = "%1$d kez kullanılabilir";
 
+/* Local notification title when the user encounters an error with WP.com password. */
+"Can't remember your password?" = "Şifrenizi hatırlamıyor musunuz?";
+
 /* Action title to cancel selecting products to add to a grouped product from search results
    Add Product Category. Cancel button title in navbar.
    Alert button title - dismisses alert, which cancels marking all as read attempt.
@@ -891,6 +903,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert when there is an error adding new product tags. */
 "Cannot Add Tags" = "Etiketler Eklenemiyor";
+
+/* Error message shown when the input URL does not point to an existing site. */
+"Cannot access the site at this address. Please double-check and try again." = "Bu adresten siteye erişilemiyor. Lütfen tekrar kontrol edip yeniden deneyin.";
 
 /* The title of the alert when there is a generic error adding the package */
 "Cannot add package" = "Paket eklenemiyor";
@@ -1102,9 +1117,6 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Prompt user to connect their first reader */
 "Connect your card reader" = "Kart okuyucunuzu bağlayın";
 
-/* Link on the store picker when there are no stores available. Opens a webview about Jetpack setup. */
-"Connect your store with Jetpack" = "Mağazanızı Jetpack ile bağlayın";
-
 /* Title shown when a user logs in with Google but no matching WordPress.com account is found */
 "Connected But…" = "Bağlandı ancak...";
 
@@ -1176,6 +1188,9 @@ which should be translated separately and considered part of this sentence. */
    Title of continue button
    Title of dismiss button presented when users attempt to log in without Jetpack installed or connected */
 "Continue" = "Devam et";
+
+/* Call to Action to finish the setup of In-Person Payments in the Menu */
+"Continue Setup" = "Kuruluma Devam Et";
 
 /* Button title. Takes the user to the login with WordPress.com flow. */
 "Continue With WordPress.com" = "WordPress.com ile devam et";
@@ -1760,6 +1775,9 @@ which should be translated separately and considered part of this sentence. */
 /* The action button on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
 "Enable Coupons" = "Kuponları etkinleştir";
 
+/* Title for the button to enable the Pay in Person payment gateway during card present payments onboarding. */
+"Enable Pay in Person" = "Şahsen Ödemeyi Etkinleştir";
+
 /* Enable Reviews label in Product Settings */
 "Enable Reviews" = "Yorumları Etkinleştir";
 
@@ -1827,8 +1845,8 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "URL gir";
 
-/* Action button linking to instructions for enter another store.Presented when logging in with an email address that is not a WordPress.com account
-   Button title. Takes the user to the login by store address flow. */
+/* Button title. Takes the user to the login by store address flow.
+   Button to input a site address in store picker when there are no stores found */
 "Enter Your Store Address" = "Mağaza adresinizi girin";
 
 /* Text field coupon code placeholder in the view for adding or editing a coupon. */
@@ -2173,6 +2191,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Google oturum açma başarısız oldu.";
 
+/* Confirmation text of the button on the bottom announcement modalwhen a merchant taps on Simple Payment */
+"Got it!" = "Anladım!";
+
 /* Display label for grouped product type. */
 "Grouped" = "Gruplanmış";
 
@@ -2293,9 +2314,6 @@ which should be translated separately and considered part of this sentence. */
 /* Header text when reprinting a shipping label */
 "If there was a printing error when you purchased the label, you can print it again." = "Etiketi satın aldığınızda bir yazdırma hatası olduysa tekrar yazdırabilirsiniz.";
 
-/* Displayed during the Login flow, whenever the user has no woo stores associated. */
-"If you already have a store, you’ll need to install the free Jetpack plugin and connect it to your WordPress.com account." = "Zaten bir mağazanız varsa ücretsiz Jetpack eklentisini yüklemeniz ve WordPress.com hesabınıza bağlamanız gerekir.";
-
 /* Info text when reprinting a shipping label */
 "If you already used the label in a package, printing and using it again is a violation of our terms of service" = "Etiketi bir pakette zaten kullandıysanız onu tekrar yazdırıp kullanmak hizmet şartlarımızın ihlali anlamına gelir.";
 
@@ -2325,6 +2343,9 @@ which should be translated separately and considered part of this sentence. */
    Title for a dismissal alert on the upsell card reader feature announcement banner
    Title for the In-Person Payments settings screen */
 "In-Person Payments" = "Şahsen Ödemeler";
+
+/* Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled. */
+"In-Person Payments Setup is incomplete." = "Şahsen Ödemeler Kurulumu tamamlanmadı.";
 
 /* Title for the error screen when there is more than one plugin active and the Stripe plugin should be deactivated */
 "In-Person Payments are processed through WooCommerce Payments." = "Şahsen Ödemeler, WooCommerce Payments aracılığıyla işlenir.";
@@ -2463,6 +2484,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message to show to user when he tries to add a self-hosted site that isn't a valid URL. */
 "Invalid URL, please check if you wrote a valid site address." = "Geçersiz adres, lütfen geçerli bir site adresi girip girmediğinizi kontrol edin.";
 
+/* Error message shown when the input URL is invalid. */
+"Invalid URL. Please double-check and try again." = "Geçersiz URL. Lütfen tekrar kontrol edip yeniden deneyin.";
+
 /* Error message generated when announcement service is unable to return a valid endpoint. */
 "Invalid endpoint" = "Geçersiz uç nokta";
 
@@ -2491,9 +2515,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message explaining that the site entered doesn't have WooCommerce installed or activated. Reads like 'It looks like awebsite.com is not a WooCommerce site. */
 "It looks like %@ is not a WooCommerce site." = "Görünüşe göre %@ bir WooCommerce sitesi değil.";
-
-/* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
-"It looks like this email isn't associated with a WordPress.com account." = "Görünüşe göre bu e-posta bir WordPress.com hesabıyla ilişkili değil.";
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "Bu kullanıcı adı\/parola bu siteyle ilişkili değil gibi görünüyor.";
@@ -2673,8 +2694,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Action button that will restart the login flow.Presented when logging in with a site address that appears to be invalid.
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
-   Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
-   Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
+   Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce */
 "Log In With Another Account" = "Başka Bir Hesapla Oturum Açın";
 
 /* Action button triggering a Log Out.Presented when logging in with a store address that does not match the account entered
@@ -2698,6 +2718,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Instruction text on the login's email address screen. */
 "Log in to your WordPress.com account with your email address." = "E-posta adresinizle WordPress.com hesabınızda oturum açın.";
 
+/* Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
+"Log in with another account" = "Başka Bir Hesapla Oturum Açın";
+
 /* Sign in instructions on the 'log in using email' screen.
    Sign in instructions on the 'log in using WordPress.com account' screen. */
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "WooCommerce mağazalarınızı yönetmek için WordPress.com hesabınızın e-posta adresi ile oturum açın.";
@@ -2707,6 +2730,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Instructions on the WordPress.com username / password log in form. */
 "Log in with your WordPress.com username and password." = "WordPress.com kullanıcı adı ve şifreniz ile oturum açın.";
+
+/* Action button linking to instructions for enter another store.Presented when logging in with an email address that is not a WordPress.com account */
+"Log in with your store address" = "Mağaza adresinizle oturum açın";
 
 /* Local notification action to log in with WordPress.com. */
 "Login with WordPress.com" = "WordPress.com ile oturum açın";
@@ -2888,7 +2914,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Need a shipping label?" = "Bir gönderim etiketine mi ihtiyacınız var?";
 
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation */
-"Need help finding the connected email?" = "Bağlandığınız e-postayı bulmak için yardıma mı ihtiyacınız var?";
+"Need help finding the required email?" = "Gerekli e-postayı bulmak için yardıma mı ihtiyacınız var?";
 
 /* A button title. */
 "Need help finding your site address?" = "Sitenizin adresini bulmak için yardıma mı ihtiyacınız var?";
@@ -2934,7 +2960,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message for the mocked order notification needed for the AppStore listing screenshot. 'Your WooCommerce Store' is the name of the mocked store. */
 "New order for $13.98 on Your WooCommerce Store" = "WooCommerce Mağazanızda 13.98 ABD doları tutarında yeni sipariş";
 
-/* Title of button in the login prologue screen for users who are new to WooCommerce. */
+/* Title of button in the login prologue screen for users who are new to WooCommerce.
+   Title of button on the site picker screen for users who are new to WooCommerce. */
 "New to WooCommerce?" = "WooCommerce'te yeni misiniz?";
 
 /* Action navigate to the variation creation screen
@@ -3063,6 +3090,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info text for the generate first variation screen */
 "Now that you’ve added attributes, you can create your first variation!" = "Nitelikleri eklediğinize göre ilk varyasyonunuzu oluşturabilirsiniz.";
 
+/* Message of the bottom announcement modal when a merchant taps on Simple Payment */
+"Now you can quickly access In-Person Payments and other features with ease." = "Artık Şahsen Ödemelere ve diğer özelliklere kolayca hızlı bir şekilde erişebilirsiniz.";
+
 /* Alert dismissal title
    Button title. An acknowledgement of the message displayed in a prompt.
    Dismiss button on the alert when there is an error creating a new product category
@@ -3167,6 +3197,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label for button to log in using site address. Underscores _..._ denote underline. */
 "Or log in by _entering your site address_." = "Veya _site adresinizi girerek_ oturum açın.";
+
+/* The button title for a secondary call-to-action button on the password screen. When the user wants to try sending a magic link instead of entering a password. */
+"Or log in with magic link" = "Veya sihirli bağlantı ile oturum açın";
 
 /* Header of attributes section in Add Attribute screen */
 "Or tap to select existing attribute" = "Veya mevcut özelliği seçmek için dokunun";
@@ -3339,6 +3372,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the hub menu payments button */
 "Payments" = "Ödemeler";
+
+/* Title of the bottom announcement modal when a merchant taps on Simple Payment */
+"Payments from the Menu tab" = "Menü sekmesinden ödemeler";
 
 /* Display label for pending order status.
    Display label for the review's pending status */
@@ -3927,6 +3963,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Etkinlik Günlüğü’nü Sıfırla";
 
+/* Local notification action to reset password. */
+"Reset password" = "Şifreyi sıfırla";
+
 /* The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "Parolanızı sıfırlayın";
 
@@ -4423,8 +4462,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "Site adresiniz en az dört karakter olmalı.";
 
-/* The button title on the login onboarding screen to skip to the prologue screen. */
+/* The button title on the login onboarding screen to skip to the prologue screen.
+   Title for the button to skip the onboarding step informing the merchant of pending account requirements */
 "Skip" = "Atla";
+
+/* Title for the button to skip the onboarding step encoraging the merchant to enable thePay in Person payment gateway */
+"Skip for now" = "Şimdilik atla";
 
 /* Placeholder in the Product Slug row on Edit Product Slug screen.
    Product Slug navigation title
@@ -5018,13 +5061,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "Varyasyon oluşturulamadı.";
 
-/* Error message when the Stripe account is restricted because there are pending requirements */
-"There are pending requirements for your account. Please complete those requirements by" = "Hesabınız için bekleyen gereksinimler var. Lütfen şu tarihe kadar gereksinimleri karşılayın:";
-
-/* Error message when In-Person Payments is not supported because there are pending requirements in the merchant's payment account.%1$d will contain the localized deadline (e.g. August 11, 2021) */
+/* Error message when because there are pending requirements in the merchant's In-Person Payments account. %1$d will contain the localized deadline (e.g. August 11, 2021) */
 "There are pending requirements for your account. Please complete those requirements by %1$@ to keep accepting In-Person Payments." = "Hesabınız için bekleyen gereksinimler var. Şahsen Ödemeleri kabul etmeye devam etmek için lütfen %1$@ tarihine kadar bu gereksinimleri karşılayın.";
 
-/* Error message when In-Person Payments is not supportedThere are pending requirements in the merchant's payment account (without a known deadline) */
+/* Error message when there are pending requirements in the merchant's payment account (without a known deadline) */
 "There are pending requirements for your account. Please complete those requirements to keep accepting In-Person Payments." = "Hesabınız için bekleyen gereksinimler var. Şahsen Ödemeleri kabul etmeye devam etmek için lütfen bu gereksinimleri karşılayın.";
 
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
@@ -5097,6 +5137,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "Bu e-posta adresi WordPress.com üzerinde kayıtlı değil.";
+
+/* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
+"This email isn't used with a WordPress.com account." = "Bu e-posta bir WordPress.com hesabıyla kullanılmıyor.";
 
 /* Error for missing package details on the Add New Custom Package screen in Shipping Label flow */
 "This field is required" = "Bu alan zorunludur";
@@ -5766,6 +5809,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
 "We couldn't connect your reader" = "Okuyucunuza bağlanılamadı";
 
+/* Displayed during the Login flow, whenever the user has no woo stores associated. */
+"We couldn't find a WooCommerce store connected to your account." = "Hesabınıza bağlı bir WooCommerce mağazası bulamadık.";
+
 /* The title of the Error Loading Data banner */
 "We couldn't load your data" = "Verileriniz yüklenemedi";
 
@@ -6012,7 +6058,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message displayed when a coupon was successfully created */
 "Your new coupon was created!" = "Yeni kuponunuz oluşturuldu!";
 
-/* Title for the error screen when the merchant's In-Person Payments account is restricted because there are pending requirements */
+/* Title for the error screen when the merchant's In-Person Payments account has pending requirements which will result in their account being restricted if not resolved by a deadline */
 "Your payments account has pending requirements" = "Ödeme hesabınızda bekleyen gereksinimler var";
 
 /* Label that displays when an optional software update is happening */

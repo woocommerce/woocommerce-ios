@@ -81,6 +81,24 @@ extension WooConstants {
         ///
         case helpCenterForEnterStoreAddress = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#enter-store-address"
 
+        /// Help Center for "Enter WordPress.com email" screen
+        ///
+        /// - Used for providing help in the "Enter WordPress.com email screen" when user tries to login using WordPress.com email address
+        ///
+        // swiftlint:disable:next line_length
+        case helpCenterForWPCOMEmailScreen = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#login-with-wordpress-com"
+
+        /// Help Center for "Enter WordPress.com email" screen
+        ///
+        /// - Used for providing help in the "Ente WordPress.comr email screen" when user tries to login using the store address
+        ///
+        // swiftlint:disable:next line_length
+        case helpCenterForWPCOMEmailFromSiteAddressFlow = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#enter-wordpress-com-email-address-login-using-store-address-flow"
+
+        /// Help Center for "Enter Store Credentials" screen
+        ///
+        case helpCenterForEnterStoreCredentials = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#enter-store-credentials"
+
         /// URL used for Learn More button in Orders empty state.
         ///
         case blog = "https://woocommerce.com/blog/"

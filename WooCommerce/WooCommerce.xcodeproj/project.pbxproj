@@ -328,7 +328,6 @@
 		02ACD25A2852E11700EC928E /* RemoveAppleIDAccessCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02ACD2592852E11700EC928E /* RemoveAppleIDAccessCoordinator.swift */; };
 		02ADC7CC239762E0008D4BED /* PaginatedListSelectorViewProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02ADC7CB239762E0008D4BED /* PaginatedListSelectorViewProperties.swift */; };
 		02ADC7CE23978EAA008D4BED /* PaginatedProductShippingClassListSelectorDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02ADC7CD23978EAA008D4BED /* PaginatedProductShippingClassListSelectorDataSourceTests.swift */; };
-		02ADC7D02398C8EB008D4BED /* UIColor+SystemColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02ADC7CF2398C8EB008D4BED /* UIColor+SystemColors.swift */; };
 		02B1AFEC24BC5AE5005DB1E3 /* LinkedProductListSelectorDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B1AFEB24BC5AE5005DB1E3 /* LinkedProductListSelectorDataSource.swift */; };
 		02B1AFEE24BC5BA9005DB1E3 /* LinkedProductListSelectorDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B1AFED24BC5BA9005DB1E3 /* LinkedProductListSelectorDataSourceTests.swift */; };
 		02B2828E27C35061004A332A /* RefreshableInfiniteScrollList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B2828D27C35061004A332A /* RefreshableInfiniteScrollList.swift */; };
@@ -450,6 +449,7 @@
 		039D948D27610C6F0044EF38 /* UIView+SafeAreaConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039D948C27610C6F0044EF38 /* UIView+SafeAreaConstraints.swift */; };
 		039D948F276113490044EF38 /* UIView+SuperviewConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039D948E276113490044EF38 /* UIView+SuperviewConstraints.swift */; };
 		03A6C18428B52B1500AADF23 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A6C18328B52B1500AADF23 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests.swift */; };
+		03A6C18628B8CC7F00AADF23 /* InPersonPaymentsOnboardingErrorButtonViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A6C18528B8CC7F00AADF23 /* InPersonPaymentsOnboardingErrorButtonViewModel.swift */; };
 		03AA165E2719B7EF005CCB7B /* ReceiptActionCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AA165D2719B7EF005CCB7B /* ReceiptActionCoordinator.swift */; };
 		03AA16602719B83D005CCB7B /* ReceiptActionCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AA165F2719B83D005CCB7B /* ReceiptActionCoordinatorTests.swift */; };
 		03AFDE02282C0B82003B67CD /* InPersonPaymentsCompletedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AFDE01282C0B82003B67CD /* InPersonPaymentsCompletedView.swift */; };
@@ -502,7 +502,6 @@
 		261AA30C2753119E009530FE /* PaymentMethodsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261AA30B2753119E009530FE /* PaymentMethodsViewModel.swift */; };
 		261AA30E275506DE009530FE /* PaymentMethodsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261AA30D275506DE009530FE /* PaymentMethodsViewModelTests.swift */; };
 		26281776278F0B0100C836D3 /* View+NoticesModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26281775278F0B0100C836D3 /* View+NoticesModifier.swift */; };
-		262A09812628A8F40033AD20 /* WooStyleModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262A09802628A8F40033AD20 /* WooStyleModifiers.swift */; };
 		262A098B2628C51D0033AD20 /* OrderAddOnListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262A098A2628C51D0033AD20 /* OrderAddOnListViewModel.swift */; };
 		262A0999262908A60033AD20 /* OrderAddOnListI1Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262A0998262908A60033AD20 /* OrderAddOnListI1Tests.swift */; };
 		262A09A5262F65690033AD20 /* OrderAddOnTopBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262A09A4262F65690033AD20 /* OrderAddOnTopBanner.swift */; };
@@ -639,7 +638,6 @@
 		3190D61B26D6D82900EF364D /* CardPresentRetryableError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3190D61A26D6D82900EF364D /* CardPresentRetryableError.swift */; };
 		3190D61D26D6E97B00EF364D /* CardPresentModalRetryableErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3190D61C26D6E97B00EF364D /* CardPresentModalRetryableErrorTests.swift */; };
 		3198A1E82694DC7200597213 /* MockKnownReadersProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3198A1E72694DC7200597213 /* MockKnownReadersProvider.swift */; };
-		319A625F27ACAD4800BC96C3 /* InPersonPaymentsPluginConflictShopManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 319A625E27ACAD4800BC96C3 /* InPersonPaymentsPluginConflictShopManagerView.swift */; };
 		319A626127ACAE3400BC96C3 /* InPersonPaymentsPluginChoicesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 319A626027ACAE3400BC96C3 /* InPersonPaymentsPluginChoicesView.swift */; };
 		31AD0B1126E9575F000B6391 /* CardPresentModalConnectingFailed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31AD0B1026E9575F000B6391 /* CardPresentModalConnectingFailed.swift */; };
 		31AD0B1326E95998000B6391 /* CardPresentModalConnectingFailedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31AD0B1226E95998000B6391 /* CardPresentModalConnectingFailedTests.swift */; };
@@ -1282,7 +1280,6 @@
 		B958A7D628B5310100823EEF /* URLOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A7D428B5302500823EEF /* URLOpener.swift */; };
 		B958A7D828B5316A00823EEF /* MockURLOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A7D728B5316A00823EEF /* MockURLOpener.swift */; };
 		B96B536B2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B96B536A2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift */; };
-		B979A9BA282D62A500EBB383 /* InPersonPaymentsDeactivateStripeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B979A9B9282D62A500EBB383 /* InPersonPaymentsDeactivateStripeView.swift */; };
 		B9B0391628A6824200DC1C83 /* PermanentNoticePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B0391528A6824200DC1C83 /* PermanentNoticePresenter.swift */; };
 		B9B0391828A6838400DC1C83 /* PermanentNoticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B0391728A6838400DC1C83 /* PermanentNoticeView.swift */; };
 		B9B0391A28A68ADE00DC1C83 /* ConstraintsUpdatingHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B0391928A68ADE00DC1C83 /* ConstraintsUpdatingHostingController.swift */; };
@@ -1516,8 +1513,6 @@
 		D82DFB4C225F303200EFE2CB /* EmptyListMessageWithActionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82DFB4B225F303200EFE2CB /* EmptyListMessageWithActionTests.swift */; };
 		D831E2DC230E0558000037D0 /* Authentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = D831E2DB230E0558000037D0 /* Authentication.swift */; };
 		D831E2E0230E0BA7000037D0 /* Logs.swift in Sources */ = {isa = PBXBuildFile; fileRef = D831E2DF230E0BA7000037D0 /* Logs.swift */; };
-		D83A6A782379097A00419D48 /* MurielColorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83A6A772379097A00419D48 /* MurielColorTests.swift */; };
-		D83A6A7A23792B2400419D48 /* UIColor+Muriel-Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83A6A7923792B2400419D48 /* UIColor+Muriel-Tests.swift */; };
 		D83C129F22250BF0004CA04C /* OrderTrackingTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D83C129D22250BEF004CA04C /* OrderTrackingTableViewCell.xib */; };
 		D83C12A022250BF0004CA04C /* OrderTrackingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83C129E22250BEF004CA04C /* OrderTrackingTableViewCell.swift */; };
 		D83F5930225B269C00626E75 /* DatePickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83F592E225B269C00626E75 /* DatePickerTableViewCell.swift */; };
@@ -1581,9 +1576,6 @@
 		D88D5A3D230B5E85007B6E01 /* ServiceLocatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88D5A3C230B5E85007B6E01 /* ServiceLocatorTests.swift */; };
 		D88FDB4525DD223B00CB0DBD /* Hardware.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D88FDB4425DD223B00CB0DBD /* Hardware.framework */; };
 		D88FDB4625DD223B00CB0DBD /* Hardware.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D88FDB4425DD223B00CB0DBD /* Hardware.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		D8915DBF23729CFB00F63762 /* ColorPalette.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D8915DBE23729CFB00F63762 /* ColorPalette.xcassets */; };
-		D8915DC12372C8AC00F63762 /* ColorStudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8915DC02372C8AC00F63762 /* ColorStudio.swift */; };
-		D8915DC32372C9EF00F63762 /* UIColor+ColorStudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8915DC22372C9EF00F63762 /* UIColor+ColorStudio.swift */; };
 		D89C004725B467C7000E4683 /* ULAccountMismatchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89C004625B467C7000E4683 /* ULAccountMismatchViewModel.swift */; };
 		D89C009425B4E9E2000E4683 /* ULAccountMismatchViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89C009325B4E9E2000E4683 /* ULAccountMismatchViewControllerTests.swift */; };
 		D89C009A25B4EEA4000E4683 /* WrongAccountErrorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89C009925B4EEA4000E4683 /* WrongAccountErrorViewModelTests.swift */; };
@@ -1591,7 +1583,6 @@
 		D89CFF3A25B43BBB000E4683 /* WrongAccountErrorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89CFF3925B43BBB000E4683 /* WrongAccountErrorViewModel.swift */; };
 		D89CFFDD25B44468000E4683 /* ULAccountMismatchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89CFFDB25B44468000E4683 /* ULAccountMismatchViewController.swift */; };
 		D89CFFDE25B44468000E4683 /* ULAccountMismatchViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D89CFFDC25B44468000E4683 /* ULAccountMismatchViewController.xib */; };
-		D89FAF4E2795BDFF00D8DA66 /* InPersonPaymentsPluginConflictAdminView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89FAF4D2795BDFF00D8DA66 /* InPersonPaymentsPluginConflictAdminView.swift */; };
 		D8A8C4F32268288F001C72BF /* AddManualCustomTrackingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A8C4F22268288F001C72BF /* AddManualCustomTrackingViewModelTests.swift */; };
 		D8AB131E225DC25F002BB5D1 /* MockOrders.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB131D225DC25F002BB5D1 /* MockOrders.swift */; };
 		D8B4D5EE26C2C26C00F34E94 /* InPersonPaymentsStripeAcountReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B4D5ED26C2C26C00F34E94 /* InPersonPaymentsStripeAcountReviewView.swift */; };
@@ -1609,7 +1600,6 @@
 		D8C2A28F231BD00500F503E9 /* ReviewsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C2A28E231BD00500F503E9 /* ReviewsViewModel.swift */; };
 		D8C2A291231BD0FD00F503E9 /* ReviewsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C2A290231BD0FD00F503E9 /* ReviewsDataSource.swift */; };
 		D8CD0605258B384E00B52D63 /* oauth2_token-error.json in Resources */ = {isa = PBXBuildFile; fileRef = D8CD0604258B384E00B52D63 /* oauth2_token-error.json */; };
-		D8CD710F237A49DB007148B9 /* UIColor+SemanticColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8CD710E237A49DB007148B9 /* UIColor+SemanticColors.swift */; };
 		D8D15F83230A17A000D48B3F /* ServiceLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D15F82230A17A000D48B3F /* ServiceLocator.swift */; };
 		D8D15F85230A18AB00D48B3F /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D15F84230A18AB00D48B3F /* Analytics.swift */; };
 		D8EE9692264D328A0033B2F9 /* ReceiptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8EE9690264D328A0033B2F9 /* ReceiptViewController.swift */; };
@@ -2176,7 +2166,6 @@
 		02ACD2592852E11700EC928E /* RemoveAppleIDAccessCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoveAppleIDAccessCoordinator.swift; sourceTree = "<group>"; };
 		02ADC7CB239762E0008D4BED /* PaginatedListSelectorViewProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedListSelectorViewProperties.swift; sourceTree = "<group>"; };
 		02ADC7CD23978EAA008D4BED /* PaginatedProductShippingClassListSelectorDataSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedProductShippingClassListSelectorDataSourceTests.swift; sourceTree = "<group>"; };
-		02ADC7CF2398C8EB008D4BED /* UIColor+SystemColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+SystemColors.swift"; sourceTree = "<group>"; };
 		02B1AFEB24BC5AE5005DB1E3 /* LinkedProductListSelectorDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkedProductListSelectorDataSource.swift; sourceTree = "<group>"; };
 		02B1AFED24BC5BA9005DB1E3 /* LinkedProductListSelectorDataSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkedProductListSelectorDataSourceTests.swift; sourceTree = "<group>"; };
 		02B2828D27C35061004A332A /* RefreshableInfiniteScrollList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshableInfiniteScrollList.swift; sourceTree = "<group>"; };
@@ -2301,6 +2290,7 @@
 		039D948C27610C6F0044EF38 /* UIView+SafeAreaConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SafeAreaConstraints.swift"; sourceTree = "<group>"; };
 		039D948E276113490044EF38 /* UIView+SuperviewConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SuperviewConstraints.swift"; sourceTree = "<group>"; };
 		03A6C18328B52B1500AADF23 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests.swift; sourceTree = "<group>"; };
+		03A6C18528B8CC7F00AADF23 /* InPersonPaymentsOnboardingErrorButtonViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsOnboardingErrorButtonViewModel.swift; sourceTree = "<group>"; };
 		03AA165D2719B7EF005CCB7B /* ReceiptActionCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptActionCoordinator.swift; sourceTree = "<group>"; };
 		03AA165F2719B83D005CCB7B /* ReceiptActionCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptActionCoordinatorTests.swift; sourceTree = "<group>"; };
 		03AFDE01282C0B82003B67CD /* InPersonPaymentsCompletedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCompletedView.swift; sourceTree = "<group>"; };
@@ -2352,7 +2342,6 @@
 		261AA30B2753119E009530FE /* PaymentMethodsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentMethodsViewModel.swift; sourceTree = "<group>"; };
 		261AA30D275506DE009530FE /* PaymentMethodsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentMethodsViewModelTests.swift; sourceTree = "<group>"; };
 		26281775278F0B0100C836D3 /* View+NoticesModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+NoticesModifier.swift"; sourceTree = "<group>"; };
-		262A09802628A8F40033AD20 /* WooStyleModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooStyleModifiers.swift; sourceTree = "<group>"; };
 		262A098A2628C51D0033AD20 /* OrderAddOnListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderAddOnListViewModel.swift; sourceTree = "<group>"; };
 		262A0998262908A60033AD20 /* OrderAddOnListI1Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderAddOnListI1Tests.swift; sourceTree = "<group>"; };
 		262A09A4262F65690033AD20 /* OrderAddOnTopBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderAddOnTopBanner.swift; sourceTree = "<group>"; };
@@ -2486,7 +2475,6 @@
 		3190D61A26D6D82900EF364D /* CardPresentRetryableError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentRetryableError.swift; sourceTree = "<group>"; };
 		3190D61C26D6E97B00EF364D /* CardPresentModalRetryableErrorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalRetryableErrorTests.swift; sourceTree = "<group>"; };
 		3198A1E72694DC7200597213 /* MockKnownReadersProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockKnownReadersProvider.swift; sourceTree = "<group>"; };
-		319A625E27ACAD4800BC96C3 /* InPersonPaymentsPluginConflictShopManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsPluginConflictShopManagerView.swift; sourceTree = "<group>"; };
 		319A626027ACAE3400BC96C3 /* InPersonPaymentsPluginChoicesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsPluginChoicesView.swift; sourceTree = "<group>"; };
 		31AD0B1026E9575F000B6391 /* CardPresentModalConnectingFailed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalConnectingFailed.swift; sourceTree = "<group>"; };
 		31AD0B1226E95998000B6391 /* CardPresentModalConnectingFailedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalConnectingFailedTests.swift; sourceTree = "<group>"; };
@@ -3136,7 +3124,6 @@
 		B958A7D428B5302500823EEF /* URLOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLOpener.swift; sourceTree = "<group>"; };
 		B958A7D728B5316A00823EEF /* MockURLOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLOpener.swift; sourceTree = "<group>"; };
 		B96B536A2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPluginsDataProviderTests.swift; sourceTree = "<group>"; };
-		B979A9B9282D62A500EBB383 /* InPersonPaymentsDeactivateStripeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsDeactivateStripeView.swift; sourceTree = "<group>"; };
 		B9B0391528A6824200DC1C83 /* PermanentNoticePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermanentNoticePresenter.swift; sourceTree = "<group>"; };
 		B9B0391728A6838400DC1C83 /* PermanentNoticeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PermanentNoticeView.swift; sourceTree = "<group>"; };
 		B9B0391928A68ADE00DC1C83 /* ConstraintsUpdatingHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstraintsUpdatingHostingController.swift; sourceTree = "<group>"; };
@@ -3378,8 +3365,6 @@
 		D82DFB4B225F303200EFE2CB /* EmptyListMessageWithActionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EmptyListMessageWithActionTests.swift; path = WooCommerceTests/ViewRelated/EmptyListMessageWithActionTests.swift; sourceTree = SOURCE_ROOT; };
 		D831E2DB230E0558000037D0 /* Authentication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authentication.swift; sourceTree = "<group>"; };
 		D831E2DF230E0BA7000037D0 /* Logs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logs.swift; sourceTree = "<group>"; };
-		D83A6A772379097A00419D48 /* MurielColorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MurielColorTests.swift; path = WooCommerceTests/ViewRelated/MurielColorTests.swift; sourceTree = SOURCE_ROOT; };
-		D83A6A7923792B2400419D48 /* UIColor+Muriel-Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UIColor+Muriel-Tests.swift"; path = "WooCommerceTests/ViewRelated/UIColor+Muriel-Tests.swift"; sourceTree = SOURCE_ROOT; };
 		D83C129D22250BEF004CA04C /* OrderTrackingTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OrderTrackingTableViewCell.xib; sourceTree = "<group>"; };
 		D83C129E22250BEF004CA04C /* OrderTrackingTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderTrackingTableViewCell.swift; sourceTree = "<group>"; };
 		D83F592E225B269C00626E75 /* DatePickerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerTableViewCell.swift; sourceTree = "<group>"; };
@@ -3441,9 +3426,6 @@
 		D88CA757237D1C27005D2F44 /* Ghost+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Ghost+Woo.swift"; sourceTree = "<group>"; };
 		D88D5A3C230B5E85007B6E01 /* ServiceLocatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocatorTests.swift; sourceTree = "<group>"; };
 		D88FDB4425DD223B00CB0DBD /* Hardware.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Hardware.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D8915DBE23729CFB00F63762 /* ColorPalette.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = ColorPalette.xcassets; sourceTree = "<group>"; };
-		D8915DC02372C8AC00F63762 /* ColorStudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorStudio.swift; sourceTree = "<group>"; };
-		D8915DC22372C9EF00F63762 /* UIColor+ColorStudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+ColorStudio.swift"; sourceTree = "<group>"; };
 		D89C004625B467C7000E4683 /* ULAccountMismatchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ULAccountMismatchViewModel.swift; sourceTree = "<group>"; };
 		D89C009325B4E9E2000E4683 /* ULAccountMismatchViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ULAccountMismatchViewControllerTests.swift; sourceTree = "<group>"; };
 		D89C009925B4EEA4000E4683 /* WrongAccountErrorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrongAccountErrorViewModelTests.swift; sourceTree = "<group>"; };
@@ -3451,7 +3433,6 @@
 		D89CFF3925B43BBB000E4683 /* WrongAccountErrorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrongAccountErrorViewModel.swift; sourceTree = "<group>"; };
 		D89CFFDB25B44468000E4683 /* ULAccountMismatchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ULAccountMismatchViewController.swift; sourceTree = "<group>"; };
 		D89CFFDC25B44468000E4683 /* ULAccountMismatchViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ULAccountMismatchViewController.xib; sourceTree = "<group>"; };
-		D89FAF4D2795BDFF00D8DA66 /* InPersonPaymentsPluginConflictAdminView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsPluginConflictAdminView.swift; sourceTree = "<group>"; };
 		D8A8C4F22268288F001C72BF /* AddManualCustomTrackingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AddManualCustomTrackingViewModelTests.swift; path = WooCommerceTests/Model/AddManualCustomTrackingViewModelTests.swift; sourceTree = SOURCE_ROOT; };
 		D8AB131D225DC25F002BB5D1 /* MockOrders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockOrders.swift; sourceTree = "<group>"; };
 		D8B4D5ED26C2C26C00F34E94 /* InPersonPaymentsStripeAcountReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsStripeAcountReviewView.swift; sourceTree = "<group>"; };
@@ -3469,7 +3450,6 @@
 		D8C2A28E231BD00500F503E9 /* ReviewsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewsViewModel.swift; sourceTree = "<group>"; };
 		D8C2A290231BD0FD00F503E9 /* ReviewsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewsDataSource.swift; sourceTree = "<group>"; };
 		D8CD0604258B384E00B52D63 /* oauth2_token-error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "oauth2_token-error.json"; sourceTree = "<group>"; };
-		D8CD710E237A49DB007148B9 /* UIColor+SemanticColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+SemanticColors.swift"; sourceTree = "<group>"; };
 		D8D15F82230A17A000D48B3F /* ServiceLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocator.swift; sourceTree = "<group>"; };
 		D8D15F84230A18AB00D48B3F /* Analytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
 		D8EE9690264D328A0033B2F9 /* ReceiptViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptViewController.swift; sourceTree = "<group>"; };
@@ -4889,7 +4869,6 @@
 		262A097F2628A8BF0033AD20 /* View Modifiers */ = {
 			isa = PBXGroup;
 			children = (
-				262A09802628A8F40033AD20 /* WooStyleModifiers.swift */,
 				2664210226F40FB1001FC5B4 /* View+ScrollModifiers.swift */,
 				26E0AE12263359F900A5EB3B /* View+Conditionals.swift */,
 				DE4B3B5526A68DD000EEF2D8 /* View+InsetPaddings.swift */,
@@ -6384,7 +6363,6 @@
 				D8AB131D225DC25F002BB5D1 /* MockOrders.swift */,
 				2667BFDA252E659A008099D4 /* MockOrderItem.swift */,
 				262A2C2A2537A3330086C1BE /* MockRefunds.swift */,
-				D83A6A772379097A00419D48 /* MurielColorTests.swift */,
 				D8736B5022EB69E300A14A29 /* OrderDetailsViewModelTests.swift */,
 				D8C11A5F22E2479800D4A88D /* OrderPaymentDetailsViewModelTests.swift */,
 				45B9C64423A945C0007FC4C5 /* PriceInputFormatterTests.swift */,
@@ -6397,7 +6375,6 @@
 				4569D3C825DC065B00CDC3E2 /* SiteAddressTests.swift */,
 				B517EA19218B2D2600730EC4 /* StringFormatterTests.swift */,
 				B56BBD15214820A70053A32D /* SyncCoordinatorTests.swift */,
-				D83A6A7923792B2400419D48 /* UIColor+Muriel-Tests.swift */,
 				CE50345621B1F26C007573C6 /* ZendeskManagerTests.swift */,
 				0277AEA4256CAA4200F45C4A /* MockShippingLabel.swift */,
 				DE26B5282775C76B00A2EA0A /* MockSyncingCoordinator.swift */,
@@ -6655,7 +6632,6 @@
 				03180BE52763AA8F00B938A8 /* Woo-Release-macOS.entitlements */,
 				24C579D124F476300076E1B4 /* Woo-Alpha.entitlements */,
 				03180BE62763AA8F00B938A8 /* Woo-Alpha-macOS.entitlements */,
-				D8915DBE23729CFB00F63762 /* ColorPalette.xcassets */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -7325,10 +7301,6 @@
 			children = (
 				CE1CCB3F2056F21C000EE3AC /* Style.swift */,
 				CE1F512A206985DF00C6C810 /* PaddedLabel.swift */,
-				D8915DC02372C8AC00F63762 /* ColorStudio.swift */,
-				D8915DC22372C9EF00F63762 /* UIColor+ColorStudio.swift */,
-				D8CD710E237A49DB007148B9 /* UIColor+SemanticColors.swift */,
-				02ADC7CF2398C8EB008D4BED /* UIColor+SystemColors.swift */,
 			);
 			path = Styles;
 			sourceTree = "<group>";
@@ -8290,11 +8262,9 @@
 				E15F163026C5117300D3059B /* InPersonPaymentsNoConnectionView.swift */,
 				310D1B472734919E001D55B4 /* InPersonPaymentsLiveSiteInTestModeView.swift */,
 				ABC35055F8AC8C8EB649F421 /* InPersonPaymentsUnavailableView.swift */,
-				D89FAF4D2795BDFF00D8DA66 /* InPersonPaymentsPluginConflictAdminView.swift */,
-				319A625E27ACAD4800BC96C3 /* InPersonPaymentsPluginConflictShopManagerView.swift */,
 				ABC35A4B736A0B2D8348DD08 /* InPersonPaymentsOnboardingError.swift */,
+				03A6C18528B8CC7F00AADF23 /* InPersonPaymentsOnboardingErrorButtonViewModel.swift */,
 				0313651228ABCB2D00EEE571 /* InPersonPaymentsOnboardingErrorMainContentView.swift */,
-				B979A9B9282D62A500EBB383 /* InPersonPaymentsDeactivateStripeView.swift */,
 				0313651028AB81B100EEE571 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView.swift */,
 				0313651628ACE9F400EEE571 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel.swift */,
 			);
@@ -8827,7 +8797,6 @@
 				CEE006062077D1280079161F /* SummaryTableViewCell.xib in Resources */,
 				CE8CCD44239AC06E009DBD22 /* RefundDetailsViewController.xib in Resources */,
 				4567389E2745497C00743054 /* OrderStatusFilterViewController.xib in Resources */,
-				D8915DBF23729CFB00F63762 /* ColorPalette.xcassets in Resources */,
 				CE24BCD0212DE8A6001CD12E /* HeadlineLabelTableViewCell.xib in Resources */,
 				B559EBB020A0BF8F00836CD4 /* LICENSE in Resources */,
 				CCCC29DD25E5757C0046B96F /* RenameAttributesViewController.xib in Resources */,
@@ -9185,7 +9154,6 @@
 				CE21B3E020FFC59700A259D5 /* ProductDetailsTableViewCell.swift in Sources */,
 				B509FED121C041DF000076A9 /* Locale+Woo.swift in Sources */,
 				B5DB01B52114AB2D00A4F797 /* WooCrashLoggingStack.swift in Sources */,
-				319A625F27ACAD4800BC96C3 /* InPersonPaymentsPluginConflictShopManagerView.swift in Sources */,
 				26ED9660274328BC00FA00A1 /* SimplePaymentsSummaryViewModel.swift in Sources */,
 				024DF31E23743045006658FE /* TextList+AztecFormatting.swift in Sources */,
 				0260F40123224E8100EDA10A /* ProductsViewController.swift in Sources */,
@@ -9225,7 +9193,6 @@
 				02913E9723A774E600707A0C /* DecimalInputFormatter.swift in Sources */,
 				456AB0E7283E610500019CFF /* WCShipInstallTableViewCell.swift in Sources */,
 				02FE1B9F287F51F400EC03B3 /* LoginOnboardingViewController.swift in Sources */,
-				D89FAF4E2795BDFF00D8DA66 /* InPersonPaymentsPluginConflictAdminView.swift in Sources */,
 				E15F163126C5117300D3059B /* InPersonPaymentsNoConnectionView.swift in Sources */,
 				456CB50D2444BFAC00992A05 /* ProductPurchaseNoteViewController.swift in Sources */,
 				6827140F28A3988300E6E3F6 /* DismissableNoticeView.swift in Sources */,
@@ -9337,7 +9304,6 @@
 				CE2A9FD023C4F2C8002BEC1C /* RefundedProductsViewController.swift in Sources */,
 				0262DA5823A23AC80029AF30 /* ProductShippingSettingsViewController.swift in Sources */,
 				451C77732404534000413F73 /* ProductSettingsSections.swift in Sources */,
-				D8915DC32372C9EF00F63762 /* UIColor+ColorStudio.swift in Sources */,
 				021739A02773F5F60084CD89 /* StoreStatsChartCircleMarker.swift in Sources */,
 				024DF31623742BB6006658FE /* AztecStrikethroughFormatBarCommand.swift in Sources */,
 				02817B39242B34560050AD8B /* ToolbarView.swift in Sources */,
@@ -9447,6 +9413,7 @@
 				02B8650F24A9E2D800265779 /* Product+SwiftUIPreviewHelpers.swift in Sources */,
 				454B28BE23BF63C600CD2091 /* DateIntervalFormatter+Helpers.swift in Sources */,
 				AE6DBE3B2732CAAD00957E7A /* AdaptiveStack.swift in Sources */,
+				03A6C18628B8CC7F00AADF23 /* InPersonPaymentsOnboardingErrorButtonViewModel.swift in Sources */,
 				024DF3052372ADCD006658FE /* KeyboardScrollable.swift in Sources */,
 				BAE4F8432734325C00871344 /* SettingsViewModel.swift in Sources */,
 				0212276324498CDC0042161F /* ProductFormBottomSheetAction.swift in Sources */,
@@ -9548,7 +9515,6 @@
 				B57C5C9221B80E3C00FF82B2 /* APNSDevice+Woo.swift in Sources */,
 				174CA86C27D90E8900126524 /* WooAboutScreenConfiguration.swift in Sources */,
 				02A652FF246A908D00755A01 /* BottomSheetListSelectorPresenter.swift in Sources */,
-				D8CD710F237A49DB007148B9 /* UIColor+SemanticColors.swift in Sources */,
 				D82BB3AA26454F3300A82741 /* CardPresentModalProcessing.swift in Sources */,
 				0225C42C2477D0D500C5B4F0 /* ProductFormViewModel.swift in Sources */,
 				020F41E523163C0100776C4D /* TopBannerViewModel.swift in Sources */,
@@ -9792,7 +9758,6 @@
 				02ECD1DF24FF48D000735BE5 /* PaginationTracker.swift in Sources */,
 				02645D8627BA2DB40065DC68 /* InboxNoteRow.swift in Sources */,
 				020886572499E643001D784E /* ProductExternalLinkViewController.swift in Sources */,
-				262A09812628A8F40033AD20 /* WooStyleModifiers.swift in Sources */,
 				DEC2962526C122DF005A056B /* ShippingLabelCustomsFormInputViewModel.swift in Sources */,
 				02F4F50F237AFC1E00E13A9C /* ImageAndTitleAndTextTableViewCell.swift in Sources */,
 				021E2A1C23AA0DD100B1DE07 /* ProductBackordersSettingListSelectorCommand.swift in Sources */,
@@ -9885,7 +9850,6 @@
 				DE69C54A27BB715D000BB888 /* CouponRestrictionsViewModel.swift in Sources */,
 				CE1EC8EC20B8A3FF009762BF /* LeftImageTableViewCell.swift in Sources */,
 				DE8C946E264699B600C94823 /* PluginListViewModel.swift in Sources */,
-				02ADC7D02398C8EB008D4BED /* UIColor+SystemColors.swift in Sources */,
 				021125992578D9C20075AD2A /* ShippingLabelPrintingInstructionsView.swift in Sources */,
 				68E952CC287536010095A23D /* SafariView.swift in Sources */,
 				D449C51C26DE6B5000D75B02 /* IconListItem.swift in Sources */,
@@ -10012,7 +9976,6 @@
 				09885C8727C6947A00910A62 /* ProductPriceSettingsValidator.swift in Sources */,
 				A6557218258B7510008AE7CA /* OrderListCellViewModel.swift in Sources */,
 				B9C4AB2527FDE4B6007008B8 /* CardPresentPluginsDataProvider.swift in Sources */,
-				D8915DC12372C8AC00F63762 /* ColorStudio.swift in Sources */,
 				F997174523DC068500592D8E /* XLPagerStrip+AccessibilityIdentifier.swift in Sources */,
 				D8C2A28B231931D100F503E9 /* ReviewViewModel.swift in Sources */,
 				B541B223218A29A6008FE7C1 /* NSParagraphStyle+Woo.swift in Sources */,
@@ -10150,7 +10113,6 @@
 				D8815B0126385E3F00EDAD62 /* CardPresentModalTapCard.swift in Sources */,
 				773077EE251E943700178696 /* ProductDownloadFileViewController.swift in Sources */,
 				45D1CF4523BAC2A500945A36 /* ProductTaxClassListSelectorDataSource.swift in Sources */,
-				B979A9BA282D62A500EBB383 /* InPersonPaymentsDeactivateStripeView.swift in Sources */,
 				319A626127ACAE3400BC96C3 /* InPersonPaymentsPluginChoicesView.swift in Sources */,
 				6856D31F941A33BAE66F394D /* KeyboardFrameAdjustmentProvider.swift in Sources */,
 				CCFC50592743E021001E505F /* EditableOrderViewModel.swift in Sources */,
@@ -10249,7 +10211,6 @@
 				0225C42824768A4C00C5B4F0 /* FilterProductListViewModelTests.swift in Sources */,
 				D85136C9231E12B600DD0539 /* ReviewViewModelTests.swift in Sources */,
 				57C5FF7C25091DE50074EC26 /* OrderListSyncActionUseCaseTests.swift in Sources */,
-				D83A6A782379097A00419D48 /* MurielColorTests.swift in Sources */,
 				020BE77723B4A9D9007FE54C /* AztecLinkFormatBarCommandTests.swift in Sources */,
 				020BE77323B4A567007FE54C /* AztecInsertMoreFormatBarCommandTests.swift in Sources */,
 				B57C5C9E21B80E8300FF82B2 /* SessionManager+Internal.swift in Sources */,
@@ -10533,7 +10494,6 @@
 				AEA622B727468790002A9B57 /* AddOrderCoordinatorTests.swift in Sources */,
 				D802549126552FE1001B2CC1 /* CardPresentModalScanningForReaderTests.swift in Sources */,
 				A655725D258B91AE008AE7CA /* OrderListCellViewModelTests.swift in Sources */,
-				D83A6A7A23792B2400419D48 /* UIColor+Muriel-Tests.swift in Sources */,
 				022C658C2863BBAC00EC35A9 /* ProductFormViewController+ProductImageUploaderTests.swift in Sources */,
 				093B265927DF15100026F92D /* BulkUpdatePriceViewControllerTests.swift in Sources */,
 				2614EB1C24EB611200968D4B /* TopBannerViewTests.swift in Sources */,

@@ -41,10 +41,7 @@ class AddressValidator {
             case .success:
                 onCompletion(.success(()))
             case .failure(let error):
-                guard let shippingLabelError = error as? ShippingLabelAddressValidationError else {
-                    return
-                }
-                onCompletion(.failure(.remote(shippingLabelError)))
+                onCompletion(.failure(.remote(error as? ShippingLabelAddressValidationError)))
             }
         }
         stores.dispatch(action)
@@ -86,6 +83,6 @@ class AddressValidator {
 
     enum AddressValidationError: Error {
         case local(String)
-        case remote(ShippingLabelAddressValidationError)
+        case remote(ShippingLabelAddressValidationError?)
     }
 }

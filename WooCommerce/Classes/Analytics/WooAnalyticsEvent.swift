@@ -503,7 +503,7 @@ extension WooAnalyticsEvent {
                 ])
             case .remote(let error):
                 return WooAnalyticsEvent(statName: .orderAddressValidationError, properties: [
-                    Keys.errorMessage: "\(String(describing: error.addressError))",
+                    Keys.errorMessage: "\(String(describing: error?.addressError ?? "Unknown"))",
                     Keys.validationScenario: "remote",
                     Keys.orderID: orderID
                 ])

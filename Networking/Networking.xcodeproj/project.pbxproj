@@ -628,6 +628,7 @@
 		DE34051528BDEB1900CF0D97 /* WordPressOrgNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE34051428BDEB1900CF0D97 /* WordPressOrgNetwork.swift */; };
 		DE34051728BDEB6D00CF0D97 /* JetpackConnectionRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE34051628BDEB6D00CF0D97 /* JetpackConnectionRemote.swift */; };
 		DE34051928BDEE6A00CF0D97 /* JetpackConnectionURLMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE34051828BDEE6A00CF0D97 /* JetpackConnectionURLMapper.swift */; };
+		DE34051B28BDF12C00CF0D97 /* jetpack-connection-url.json in Resources */ = {isa = PBXBuildFile; fileRef = DE34051A28BDF12C00CF0D97 /* jetpack-connection-url.json */; };
 		DE5CA111288A3E080077BEF9 /* product-malformed-variations-and-image-alt.json in Resources */ = {isa = PBXBuildFile; fileRef = DE5CA110288A3E080077BEF9 /* product-malformed-variations-and-image-alt.json */; };
 		DE6F308727966FEF004E1C9A /* CouponReportListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6F308627966FEF004E1C9A /* CouponReportListMapperTests.swift */; };
 		DE74F29A27E08F5A0002FE59 /* SiteSettingMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE74F29927E08F5A0002FE59 /* SiteSettingMapper.swift */; };
@@ -1313,6 +1314,7 @@
 		DE34051428BDEB1900CF0D97 /* WordPressOrgNetwork.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordPressOrgNetwork.swift; sourceTree = "<group>"; };
 		DE34051628BDEB6D00CF0D97 /* JetpackConnectionRemote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JetpackConnectionRemote.swift; sourceTree = "<group>"; };
 		DE34051828BDEE6A00CF0D97 /* JetpackConnectionURLMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackConnectionURLMapper.swift; sourceTree = "<group>"; };
+		DE34051A28BDF12C00CF0D97 /* jetpack-connection-url.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "jetpack-connection-url.json"; sourceTree = "<group>"; };
 		DE5CA110288A3E080077BEF9 /* product-malformed-variations-and-image-alt.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-malformed-variations-and-image-alt.json"; sourceTree = "<group>"; };
 		DE6F308627966FEF004E1C9A /* CouponReportListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponReportListMapperTests.swift; sourceTree = "<group>"; };
 		DE74F29927E08F5A0002FE59 /* SiteSettingMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteSettingMapper.swift; sourceTree = "<group>"; };
@@ -1838,6 +1840,7 @@
 		B559EBA820A0B5B100836CD4 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
+				DE34051A28BDF12C00CF0D97 /* jetpack-connection-url.json */,
 				EE8A86F0286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json */,
 				D865CE6D278CC19A002C8520 /* stripe-location-error.json */,
 				D865CE6C278CC19A002C8520 /* stripe-location.json */,
@@ -2478,6 +2481,7 @@
 				3158A4A32729F42500C3CFA8 /* wcpay-account-dev-test.json in Resources */,
 				31104E142630DDA700587C1E /* wcpay-account-wrong-json.json in Resources */,
 				3158FE7C26129E2100E566B9 /* wcpay-account-restricted-pending.json in Resources */,
+				DE34051B28BDF12C00CF0D97 /* jetpack-connection-url.json in Resources */,
 				D823D91422377EE600C90817 /* shipment_tracking_providers.json in Resources */,
 				4599FC5C24A6276F0056157A /* product-tags-all.json in Resources */,
 				03DCB77E262738E300C8953D /* coupon.json in Resources */,

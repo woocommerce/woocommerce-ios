@@ -6,7 +6,7 @@ import WordPressKit
 /// Class to handle WP.org REST API requests.
 ///
 public final class WordPressOrgNetwork: Network {
-    
+
     private let authenticator: Authenticator?
     private let userAgent: String?
 

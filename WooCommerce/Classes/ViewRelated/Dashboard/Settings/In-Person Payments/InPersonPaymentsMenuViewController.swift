@@ -12,6 +12,14 @@ final class InPersonPaymentsMenuViewController: UIViewController {
     private let featureFlagService: FeatureFlagService
     private let cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCase
     private var cancellables: Set<AnyCancellable> = []
+    private lazy var learnMoreViewModel: LearnMoreViewModel = {
+        LearnMoreViewModel(url: WooConstants.URLs.wcPayCashOnDeliveryLearnMoreUrl.asURL(),
+                           linkText: Localization.toggleEnableCashOnDeliveryLearnMoreLink,
+                           formatText: Localization.toggleEnableCashOnDeliveryLearnMoreFormat,
+                           tappedAnalyticEvent: WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingLearnMoreTapped(
+                            reason: "reason",
+                            countryCode: configurationLoader.configuration.countryCode))
+    }()
 
     /// No Manuals to be shown in a country where IPP is not supported
     /// 
@@ -147,7 +155,7 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     var actionsSection: Section? {
-        return Section(header: Localization.paymentActionsSectionTitle, rows: [.collectPayment])
+        return Section(header: Localization.paymentActionsSectionTitle, rows: [.collectPayment, .toggleEnableCashOnDelivery])
     }
 
     var cardReadersSection: Section? {
@@ -211,6 +219,8 @@ private extension InPersonPaymentsMenuViewController {
             configureCardReaderManuals(cell: cell)
         case let cell as LeftImageTableViewCell where row == .collectPayment:
             configureCollectPayment(cell: cell)
+        case let cell as LeftImageTitleSubtitleToggleTableViewCell where row == .toggleEnableCashOnDelivery:
+            configureToggleEnableCashOnDelivery(cell: cell)
         default:
             fatalError()
         }
@@ -257,6 +267,13 @@ private extension InPersonPaymentsMenuViewController {
         cell.configure(image: .moneyIcon, text: Localization.collectPayment)
 
         updateEnabledState(in: cell)
+    }
+
+    func configureToggleEnableCashOnDelivery(cell: LeftImageTitleSubtitleToggleTableViewCell) {
+        cell.leftImageView?.tintColor = .text
+        cell.accessoryType = .none
+        cell.selectionStyle = .none
+        cell.configure(image: .creditCardIcon, text: Localization.toggleEnableCashOnDelivery, subtitle: learnMoreViewModel.learnMoreAttributedString)
     }
 
     func updateEnabledState(in cell: UITableViewCell, shouldBeEnabled: Bool = true) {
@@ -375,6 +392,17 @@ extension InPersonPaymentsMenuViewController: UITableViewDelegate {
             managePaymentGatewaysWasPressed()
         case .collectPayment:
             collectPaymentWasPressed()
+        case .toggleEnableCashOnDelivery:
+            break
+        }
+    }
+
+    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        switch rowAtIndexPath(indexPath) {
+        case .toggleEnableCashOnDelivery:
+            return nil
+        default:
+            return indexPath
         }
     }
 }
@@ -410,6 +438,22 @@ private extension InPersonPaymentsMenuViewController {
             comment: "Navigates to Payment Gateway management screen"
         )
 
+        static let toggleEnableCashOnDelivery = NSLocalizedString(
+            "Enable Pay in Person",
+            comment: "Title for a switch on the In-Person Payments menu to enable Cash on Delivery"
+        )
+
+        static let toggleEnableCashOnDeliveryLearnMoreFormat = NSLocalizedString(
+            "Pay in Person lets you accept card or cash payments on collection or delivery. %1$@",
+            comment: "A label prompting users to learn more about adding Pay in Person to their checkout. " +
+            "%1$@ is a placeholder that always replaced with \"Learn more\" string, " +
+            "which should be translated separately and considered part of this sentence.")
+
+        static let toggleEnableCashOnDeliveryLearnMoreLink = NSLocalizedString(
+            "Learn more",
+            comment: "The \"Learn more\" string replaces the placeholder in a label prompting users to learn " +
+            "more about adding Pay in Person to their checkout. ")
+
         static let cardReaderManuals = NSLocalizedString(
             "Card Reader Manuals",
             comment: "Navigates to Card Reader Manuals screen"
@@ -443,11 +487,14 @@ private enum Row: CaseIterable {
     case cardReaderManuals
     case managePaymentGateways
     case collectPayment
+    case toggleEnableCashOnDelivery
 
     var type: UITableViewCell.Type {
         switch self {
         case .managePaymentGateways:
             return LeftImageTitleSubtitleTableViewCell.self
+        case .toggleEnableCashOnDelivery:
+            return LeftImageTitleSubtitleToggleTableViewCell.self
         default:
             return LeftImageTableViewCell.self
         }

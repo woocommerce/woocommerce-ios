@@ -39,6 +39,7 @@ final class OrdersTests: XCTestCase {
             .addCustomerNote(order.customer_note)
             .createOrder()
             .verifySingleOrderScreenLoaded()
+            .goBackToOrdersScreen()
     }
 
     func test_edit_existing_order() throws {

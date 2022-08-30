@@ -21,6 +21,10 @@ enum WooConstants {
     ///
     static let keychainAppleIDKey = "AppleID"
 
+    /// Keychain Access's Key for anonymous ID
+    ///
+    static let anonymousIDKey = "anonymousID"
+
     /// Push Notifications ApplicationID
     ///
 #if DEBUG
@@ -72,6 +76,15 @@ extension WooConstants {
         /// Help Center URL
         ///
         case helpCenter = "https://docs.woocommerce.com/document/woocommerce-ios/"
+
+        /// Help Center for "Enter your Store Address" screen
+        ///
+        case helpCenterForEnterStoreAddress = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#enter-store-address"
+
+        /// Help Center for "Enter WordPress.com email" screen
+        ///
+        // swiftlint:disable:next line_length
+        case helpCenterForWPCOMEmailFromSiteAddressFlow = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#enter-wordpress-com-email-address-login-using-store-address-flow"
 
         /// URL used for Learn More button in Orders empty state.
         ///
@@ -154,6 +167,9 @@ extension WooConstants {
 #else
         case couponManagementFeedback = "https://automattic.survey.fm/woo-app-coupon-management-production"
 #endif
+        /// URL for the Enable Cash on Delivery (or Pay in Person) onboarding step's learn more link.
+        /// 
+        case cashOnDeliveryLearnMoreUrl = "https://woocommerce.com/document/stripe/accept-in-person-payments-with-stripe/#section-8"
 
         /// Returns the URL version of the receiver
         ///

@@ -548,7 +548,9 @@ private extension StorePickerViewController {
         guard ServiceLocator.stores.isAuthenticated else {
             return
         }
-        ABTest.start()
+        Task { @MainActor in
+            await ABTest.start()
+        }
     }
 }
 
@@ -686,10 +688,16 @@ extension StorePickerViewController: UITableViewDelegate {
         }
 
         guard site.isWooCommerceActive else {
-            ServiceLocator.analytics.track(.sitePickerNonWooSiteTapped, withProperties: ["is_non_atomic": !site.isJetpackConnected])
-            tableView.deselectRow(at: indexPath, animated: true)
-            showNoWooError(for: site)
-            return
+            let isNonAtomicSite = !site.isJetpackConnected
+            ServiceLocator.analytics.track(.sitePickerNonWooSiteTapped, withProperties: ["is_non_atomic": isNonAtomicSite])
+
+            if isNonAtomicSite {
+                showNonAtomicSiteError(for: site)
+            } else {
+                showNoWooError(for: site)
+            }
+
+            return tableView.deselectRow(at: indexPath, animated: true)
         }
 
         reloadSelectedStoreRows() {
@@ -720,6 +728,13 @@ private extension StorePickerViewController {
             }
             self.stores.dispatch(action)
         }
+    }
+
+    func showNonAtomicSiteError(for site: Site) {
+        let viewModel = NonAtomicSiteViewModel(site: site, stores: stores)
+        let errorController = ULErrorViewController(viewModel: viewModel)
+        navigationController?.show(errorController, sender: nil)
+        navigationController?.setNavigationBarHidden(false, animated: true)
     }
 
     func showNoWooError(for site: Site) {

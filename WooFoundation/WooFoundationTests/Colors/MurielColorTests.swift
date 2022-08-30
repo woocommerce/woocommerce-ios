@@ -1,5 +1,5 @@
 import XCTest
-@testable import WooCommerce
+@testable import WooFoundation
 
 final class MurielColorTests: XCTestCase {
     func testPinkColorMatchesAssetName() {

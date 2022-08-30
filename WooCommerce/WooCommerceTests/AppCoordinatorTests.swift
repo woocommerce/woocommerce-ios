@@ -222,7 +222,7 @@ final class AppCoordinatorTests: XCTestCase {
         appCoordinator.start()
 
         // Then
-        assertThat(window.rootViewController, isAnInstanceOf: LoginNavigationController.self)
+        assertThat(window.rootViewController, isAnInstanceOf: UIViewController.self)
         assertThat(window.rootViewController?.presentedViewController, isAnInstanceOf: LoginOnboardingViewController.self)
     }
 

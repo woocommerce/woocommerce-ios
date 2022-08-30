@@ -95,6 +95,7 @@ final class HubMenuCoordinator: Coordinator {
                     }
 
                     Task { @MainActor in
+                        ServiceLocator.analytics.track(.reviewOpen)
                         await self.willPresentReviewDetailsFromPushNotification()
                         self.pushReviewDetailsViewController(using: parcel)
 

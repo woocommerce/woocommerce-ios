@@ -160,15 +160,18 @@ struct HubMenu: View {
                     Text(storeTitle)
                         .headlineStyle()
                         .lineLimit(1)
+                        .accessibilityIdentifier("store-title")
                     if let storeURL = storeURL {
                         Text(storeURL)
                             .subheadlineStyle()
                             .lineLimit(1)
+                            .accessibilityIdentifier("store-url")
                     }
                     Button(Localization.switchStore) {
                         switchStoreHandler?()
                     }
                     .linkStyle()
+                    .accessibilityIdentifier("switch-store-button")
                 }
                 Spacer()
                 VStack {

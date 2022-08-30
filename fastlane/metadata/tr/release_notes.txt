@@ -1,1 +1,3 @@
-Bu sürümde, "wp-admin" site kimlik bilgilerinizi kullanma seçeneği ve oturum açmak için sihirli bağlantı seçeneği de dahil olmak üzere, oturum açma deneyiminizde bazı iyileştirmeler yapılmıştır. Lütfen bize geri bildirim göndermeye devam edin, sizi dinliyoruz.
+Uygulama içinden ödeme kabul etmeyle ilgili her şeyi çok daha kolay hale getirdik. Menüden Ödemeler bölümüne gidin! Ayrıca ödeme almanızı gereksiz yere engellenebilecek bir sorunu da düzelttik.
+Bunun yanında, uygulamayı kullanmaya hızlı şekilde başlamanıza yardımcı olmak için oturum açma akışlarımızda çeşitli geliştirmeler yaptık.
+Son olarak, performansta bazı ince ayarlar yaptık. Ama işimiz daha bitmedi. Gelecekte daha fazla iyileştirme yapmayı umuyoruz. Lütfen geri bildirimlerinizi göndermeye devam edin!

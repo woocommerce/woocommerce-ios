@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct InPersonPaymentsPluginConflictAdmin: View {
+    let analyticReason: String?
+    private let cardPresentConfiguration = CardPresentConfigurationLoader().configuration
     let onRefresh: () -> Void
     @State private var presentedSetupURL: URL? = nil
     @Environment(\.verticalSizeClass) var verticalSizeClass
@@ -33,6 +35,10 @@ struct InPersonPaymentsPluginConflictAdmin: View {
 
             Button {
                 presentedSetupURL = setupURL
+                ServiceLocator.analytics.track(
+                    event: WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingCtaTapped(
+                        reason: analyticReason ?? "",
+                        countryCode: cardPresentConfiguration.countryCode))
             } label: {
                 HStack {
                     Text(Localization.primaryButton)
@@ -42,7 +48,7 @@ struct InPersonPaymentsPluginConflictAdmin: View {
             .buttonStyle(PrimaryButtonStyle())
             .padding(.bottom, Constants.padding)
 
-            InPersonPaymentsLearnMore()
+            InPersonPaymentsLearnMore(analyticReason: analyticReason)
         }
         .safariSheet(url: $presentedSetupURL, onDismiss: onRefresh)
     }
@@ -80,6 +86,6 @@ private enum Constants {
 
 struct InPersonPaymentsPluginConfictAdmin_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsPluginConflictAdmin(onRefresh: {})
+        InPersonPaymentsPluginConflictAdmin(analyticReason: nil, onRefresh: {})
     }
 }

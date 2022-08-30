@@ -27,13 +27,6 @@ class MockNetwork: Network {
     ///
     var requestsForResponseData = [URLRequestConvertible]()
 
-
-    /// Public Initializer
-    ///
-    required init(credentials: Credentials) { }
-
-    /// Dummy convenience initializer. Remember: Real Network wrappers will always need credentials!
-    ///
     /// Note: If the useResponseQueue param is `true`, any responses added via `simulateResponse` will stored in a FIFO queue
     /// and used once for a matching request (then removed from the queue). Subsequent requests will use the next response in the queue, and so on.
     ///
@@ -42,9 +35,7 @@ class MockNetwork: Network {
     ///
     /// - Parameter useResponseQueue: Use the response queue. Default is `false`.
     ///
-    convenience init(useResponseQueue: Bool = false) {
-        let dummy = Credentials(username: "", authToken: "", siteAddress: "")
-        self.init(credentials: dummy)
+    init(useResponseQueue: Bool = false) {
         self.useResponseQueue = useResponseQueue
     }
 

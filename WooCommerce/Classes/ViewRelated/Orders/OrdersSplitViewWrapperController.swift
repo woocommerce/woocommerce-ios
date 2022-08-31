@@ -42,7 +42,7 @@ final class OrdersSplitViewWrapperController: UIViewController {
     }
 
     func presentDetails(for orderID: Int64, siteID: Int64, note: Note? = nil) {
-        let loaderViewController = OrderLoaderViewController(note: note, orderID: orderID, siteID: Int64(siteID))
+        let loaderViewController = OrderLoaderViewController(orderID: orderID, siteID: Int64(siteID), note: note)
         let loaderNavigationController = WooNavigationController(rootViewController: loaderViewController)
 
         ordersSplitViewController.showDetailViewController(loaderNavigationController, sender: nil)

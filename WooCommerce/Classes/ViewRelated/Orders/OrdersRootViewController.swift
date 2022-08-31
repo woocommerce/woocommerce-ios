@@ -136,7 +136,7 @@ final class OrdersRootViewController: UIViewController {
     }
 
     func presentDetails(for orderID: Int64, siteID: Int64, note: Note? = nil) {
-        let loaderViewController = OrderLoaderViewController(note: note, orderID: Int64(orderID), siteID: Int64(siteID))
+        let loaderViewController = OrderLoaderViewController(orderID: Int64(orderID), siteID: Int64(siteID), note: note)
         navigationController?.pushViewController(loaderViewController, animated: true)
     }
 

@@ -1650,6 +1650,7 @@
 		DE4FB7732812AE96003D20D6 /* FilterListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4FB7722812AE96003D20D6 /* FilterListView.swift */; };
 		DE50294928BEF4CF00551736 /* WordPressOrgCredentials+Authenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50294828BEF4CF00551736 /* WordPressOrgCredentials+Authenticator.swift */; };
 		DE50294B28BEF6B100551736 /* JetpackConnectionErrorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50294A28BEF6B100551736 /* JetpackConnectionErrorViewModel.swift */; };
+		DE50294D28BEF8F100551736 /* JetpackConnectionWebViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50294C28BEF8F100551736 /* JetpackConnectionWebViewModel.swift */; };
 		DE525499268C8B32007A5829 /* UIRefreshControl+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE525498268C8B32007A5829 /* UIRefreshControl+Woo.swift */; };
 		DE61978B28991F0E005E4362 /* WKWebView+Authenticated.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE61978A28991F0E005E4362 /* WKWebView+Authenticated.swift */; };
 		DE61978D289A5326005E4362 /* WooSetupWebViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE61978C289A5326005E4362 /* WooSetupWebViewModelTests.swift */; };
@@ -3506,6 +3507,7 @@
 		DE4FB7722812AE96003D20D6 /* FilterListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterListView.swift; sourceTree = "<group>"; };
 		DE50294828BEF4CF00551736 /* WordPressOrgCredentials+Authenticator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "WordPressOrgCredentials+Authenticator.swift"; path = "Classes/Authentication/WordPressOrgCredentials+Authenticator.swift"; sourceTree = SOURCE_ROOT; };
 		DE50294A28BEF6B100551736 /* JetpackConnectionErrorViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JetpackConnectionErrorViewModel.swift; sourceTree = "<group>"; };
+		DE50294C28BEF8F100551736 /* JetpackConnectionWebViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JetpackConnectionWebViewModel.swift; sourceTree = "<group>"; };
 		DE525498268C8B32007A5829 /* UIRefreshControl+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIRefreshControl+Woo.swift"; sourceTree = "<group>"; };
 		DE61978A28991F0E005E4362 /* WKWebView+Authenticated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WKWebView+Authenticated.swift"; sourceTree = "<group>"; };
 		DE61978C289A5326005E4362 /* WooSetupWebViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooSetupWebViewModelTests.swift; sourceTree = "<group>"; };
@@ -8020,6 +8022,7 @@
 				DEFB3010289904E300A620B3 /* WooSetupWebViewModel.swift */,
 				DE3404E728B4B96800CF0D97 /* NonAtomicSiteViewModel.swift */,
 				DE50294A28BEF6B100551736 /* JetpackConnectionErrorViewModel.swift */,
+				DE50294C28BEF8F100551736 /* JetpackConnectionWebViewModel.swift */,
 			);
 			path = "Navigation Exceptions";
 			sourceTree = "<group>";
@@ -9149,6 +9152,7 @@
 				26E1BECE251CD9F80096D0A1 /* RefundItemViewModel.swift in Sources */,
 				6827141128A5410D00E6E3F6 /* NewSimplePaymentsLocationNoticeViewModel.swift in Sources */,
 				DE7B479027A153C20018742E /* CouponSearchUICommand.swift in Sources */,
+				DE50294D28BEF8F100551736 /* JetpackConnectionWebViewModel.swift in Sources */,
 				02645D8827BA2E820065DC68 /* NSAttributedString+Attributes.swift in Sources */,
 				024DF3092372CA00006658FE /* EditorViewProperties.swift in Sources */,
 				45F8C43B2680BC3500F1A6EC /* ShippingLabelDiscountInfoViewController.swift in Sources */,

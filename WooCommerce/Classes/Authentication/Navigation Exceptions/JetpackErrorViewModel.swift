@@ -10,15 +10,15 @@ struct JetpackErrorViewModel: ULErrorViewModel {
     private let siteURL: String
     private let analytics: Analytics
     private let jetpackSetupCompletionHandler: (String?) -> Void
-    private let authenticationManager: Authentication
+    private let authentication: Authentication
 
     init(siteURL: String?,
          analytics: Analytics = ServiceLocator.analytics,
-         authenticationManager: Authentication = ServiceLocator.authenticationManager,
+         authentication: Authentication = ServiceLocator.authenticationManager,
          onJetpackSetupCompletion: @escaping (String?) -> Void) {
         self.siteURL = siteURL ?? Localization.yourSite
         self.analytics = analytics
-        self.authenticationManager = authenticationManager
+        self.authentication = authentication
         self.jetpackSetupCompletionHandler = onJetpackSetupCompletion
     }
 
@@ -85,7 +85,7 @@ struct JetpackErrorViewModel: ULErrorViewModel {
         guard let viewController = viewController else {
             return
         }
-        authenticationManager.presentSupport(from: viewController, screen: .jetpackRequired)
+        authentication.presentSupport(from: viewController, screen: .jetpackRequired)
     }
 
     func viewDidLoad(_ viewController: UIViewController?) {

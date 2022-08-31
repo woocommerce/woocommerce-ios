@@ -6,11 +6,31 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
 
     @Published var cashOnDeliveryEnabledState: Bool = false
 
-    var siteID: Int64? {
+    private var siteID: Int64? {
         stores.sessionManager.defaultStoreID
     }
 
-    private lazy var paymentGatewaysFetchedResultsController: ResultsController<StoragePaymentGateway>? = {
+    private let paymentGatewaysFetchedResultsController: ResultsController<StoragePaymentGateway>?
+
+    init(stores: StoresManager = ServiceLocator.stores) {
+        self.stores = stores
+        paymentGatewaysFetchedResultsController = Self.createPaymentGatewaysResultsController(siteID: stores.sessionManager.defaultStoreID)
+        observePaymentGateways()
+    }
+
+    // MARK: - PaymentGateway observation
+    private func observePaymentGateways() {
+        paymentGatewaysFetchedResultsController?.onDidChangeContent = updateCashOnDeliveryEnabledState
+        paymentGatewaysFetchedResultsController?.onDidResetContent = updateCashOnDeliveryEnabledState
+        do {
+            try paymentGatewaysFetchedResultsController?.performFetch()
+            updateCashOnDeliveryEnabledState()
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
+        }
+    }
+
+    private static func createPaymentGatewaysResultsController(siteID: Int64?) -> ResultsController<StoragePaymentGateway>? {
         guard let siteID = siteID else {
             return nil
         }
@@ -20,25 +40,6 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         return ResultsController<StoragePaymentGateway>(storageManager: ServiceLocator.storageManager,
                                                         matching: predicate,
                                                         sortedBy: [])
-    }()
-
-    init(stores: StoresManager = ServiceLocator.stores) {
-        self.stores = stores
-        observePaymentGateways()
-    }
-
-    private func observePaymentGateways() {
-        guard let paymentGatewaysFetchedResultsController = paymentGatewaysFetchedResultsController else {
-            return
-        }
-        paymentGatewaysFetchedResultsController.onDidChangeContent = updateCashOnDeliveryEnabledState
-        paymentGatewaysFetchedResultsController.onDidResetContent = updateCashOnDeliveryEnabledState
-        do {
-            try paymentGatewaysFetchedResultsController.performFetch()
-            updateCashOnDeliveryEnabledState()
-        } catch {
-            ServiceLocator.crashLogging.logError(error)
-        }
     }
 
     private func updateCashOnDeliveryEnabledState() {

@@ -44,6 +44,11 @@ class LeftImageTitleSubtitleToggleTableViewCell: UITableViewCell {
         }
     }
 
+    private var switchAction: ((Bool) -> Void)? = nil
+
+    @IBAction func switchValueChanged(_ sender: UISwitch) {
+        switchAction?(sender.isOn)
+    }
     // MARK: - Overridden Methods
 
     override func awakeFromNib() {
@@ -63,23 +68,25 @@ class LeftImageTitleSubtitleToggleTableViewCell: UITableViewCell {
 // MARK: - Public Methods
 //
 extension LeftImageTitleSubtitleToggleTableViewCell {
-    func configure(image: UIImage, text: String, subtitle: String, switchState: Bool) {
-        configure(image: image, text: text, subtitle: subtitle, attributedSubtitle: nil, switchState: switchState)
+    func configure(image: UIImage, text: String, subtitle: String, switchState: Bool, switchAction: @escaping (Bool) -> Void) {
+        configure(image: image, text: text, subtitle: subtitle, attributedSubtitle: nil, switchState: switchState, switchAction: switchAction)
     }
 
-    func configure(image: UIImage, text: String, subtitle: NSAttributedString, switchState: Bool) {
-        configure(image: image, text: text, subtitle: nil, attributedSubtitle: subtitle, switchState: switchState)
+    func configure(image: UIImage, text: String, subtitle: NSAttributedString, switchState: Bool, switchAction: @escaping (Bool) -> Void) {
+        configure(image: image, text: text, subtitle: nil, attributedSubtitle: subtitle, switchState: switchState, switchAction: switchAction)
     }
 
     private func configure(image: UIImage,
                            text: String,
                            subtitle: String?,
                            attributedSubtitle: NSAttributedString?,
-                           switchState: Bool) {
+                           switchState: Bool,
+                           switchAction: @escaping (Bool) -> Void) {
         leftImageView?.image = image
         titleLabel?.text = text
         subtitleLabel?.text = subtitle
         subtitleLabel.attributedText = attributedSubtitle
         toggleSwitch.isOn = switchState
+        self.switchAction = switchAction
     }
 }

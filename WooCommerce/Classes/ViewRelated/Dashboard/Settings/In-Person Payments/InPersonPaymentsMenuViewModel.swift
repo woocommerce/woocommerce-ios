@@ -4,8 +4,10 @@ import Yosemite
 class InPersonPaymentsMenuViewModel: ObservableObject {
     let stores: StoresManager
 
+    // MARK: - Output properties
     @Published var cashOnDeliveryEnabledState: Bool = false
 
+    // MARK: - Configuration properties
     private var siteID: Int64? {
         stores.sessionManager.defaultStoreID
     }
@@ -43,7 +45,17 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     }
 
     private func updateCashOnDeliveryEnabledState() {
-        let codGateway = paymentGatewaysFetchedResultsController?.fetchedObjects.first(where: { $0.gatewayID == "cod" })
-        cashOnDeliveryEnabledState = codGateway?.enabled ?? false
+        cashOnDeliveryEnabledState = cashOnDeliveryGateway?.enabled ?? false
+    }
+
+    private var cashOnDeliveryGateway: PaymentGateway? {
+        paymentGatewaysFetchedResultsController?.fetchedObjects.first(where: {
+            $0.gatewayID == PaymentGateway.Constants.cashOnDeliveryGatewayID
+        })
+    }
+
+    // MARK: - Toggle Cash on Delivery Payment Gateway
+
+    func updateCashOnDeliverySetting(enabled: Bool) {
     }
 }

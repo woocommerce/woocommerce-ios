@@ -279,7 +279,8 @@ private extension InPersonPaymentsMenuViewController {
         cell.configure(image: .creditCardIcon,
                        text: Localization.toggleEnableCashOnDelivery,
                        subtitle: learnMoreViewModel.learnMoreAttributedString,
-                       switchState: inPersonPaymentsMenuViewModel.cashOnDeliveryEnabledState)
+                       switchState: inPersonPaymentsMenuViewModel.cashOnDeliveryEnabledState,
+                       switchAction: inPersonPaymentsMenuViewModel.updateCashOnDeliverySetting(enabled:))
     }
 
     func updateEnabledState(in cell: UITableViewCell, shouldBeEnabled: Bool = true) {

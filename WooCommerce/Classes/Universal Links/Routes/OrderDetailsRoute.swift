@@ -11,7 +11,7 @@ struct OrderDetailsRoute: Route {
               let storeId = Int64(storeIdString),
               let orderIdString = parameters[ParametersKeys.orderId],
               let orderId = Int64(orderIdString) else {
-            return
+            return DDLogError("Error: we receive an universal link for order details but parameters couldn't be parsed.")
         }
 
         MainTabBarController.navigateToOrderDetails(with: orderId, siteID: storeId)

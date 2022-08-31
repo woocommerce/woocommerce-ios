@@ -9,8 +9,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .jetpackConnectionPackageSupport:
             return true
-        case .hubMenu:
-            return true
         case .systemStatusReport:
             return true
         case .couponView:

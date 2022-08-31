@@ -195,20 +195,6 @@ private extension SettingsViewModel {
     }
 
     func configureSections() {
-        // Selected Store
-        let selectedStoreSection: Section? = {
-            if featureFlagService.isFeatureFlagEnabled(.hubMenu) {
-                return nil
-            }
-            else {
-                let storeRows: [Row] = sites.count > 1 ?
-                [.selectedStore, .switchStore] : [.selectedStore]
-                return Section(title: Localization.selectedStoreTitle,
-                               rows: storeRows,
-                               footerHeight: UITableView.automaticDimension)
-            }
-        }()
-
         // Plugins
         let pluginsSection: Section? = {
             // Show the plugins section only if the user has an `admin` role for the default store site.
@@ -301,7 +287,6 @@ private extension SettingsViewModel {
                                     footerHeight: CGFloat.leastNonzeroMagnitude)
 
         sections = [
-            selectedStoreSection,
             pluginsSection,
             storeSettingsSection,
             helpAndFeedbackSection,

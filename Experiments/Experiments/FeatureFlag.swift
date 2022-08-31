@@ -18,10 +18,6 @@ public enum FeatureFlag: Int {
     ///
     case jetpackConnectionPackageSupport
 
-    /// Display the new tab "Menu" in the tab bar.
-    ///
-    case hubMenu
-
     /// Displays the System Status Report on Settings/Help screen
     ///
     case systemStatusReport

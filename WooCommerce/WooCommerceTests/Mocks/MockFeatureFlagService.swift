@@ -36,8 +36,6 @@ struct MockFeatureFlagService: FeatureFlagService {
         switch featureFlag {
         case .jetpackConnectionPackageSupport:
             return isJetpackConnectionPackageSupportOn
-        case .hubMenu:
-            return isHubMenuOn
         case .inbox:
             return isInboxOn
         case .splitViewInOrdersTab:

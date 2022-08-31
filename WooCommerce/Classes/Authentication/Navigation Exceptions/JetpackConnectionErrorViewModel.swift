@@ -1,12 +1,15 @@
 import Foundation
+import Yosemite
 import WordPressAuthenticator
 
 final class JetpackConnectionErrorViewModel: ULErrorViewModel {
     private let siteURL: String
     private var jetpackConnectionURL: URL?
+    private let stores: StoresManager
 
-    init(siteURL: String, credentials: WordPressOrgCredentials) {
+    init(siteURL: String, credentials: WordPressOrgCredentials, stores: StoresManager = ServiceLocator.stores) {
         self.siteURL = siteURL
+        self.stores = stores
         fetchJetpackConnectionURL(with: credentials)
     }
 
@@ -62,24 +65,21 @@ private extension JetpackConnectionErrorViewModel {
     }
 
     func fetchJetpackConnectionURL(with credentials: WordPressOrgCredentials) {
-        guard let api = WordPressOrgAPI(credentials: credentials) else {
+        guard let authenticator = credentials.makeCookieNonceAuthenticator() else {
             return
         }
-
-        Task { [weak self] in
+        let action = JetpackConnectionAction.fetchJetpackConnectionURL(siteURL: credentials.siteURL,
+                                                                       authenticator: authenticator,
+                                                                       completion: { [weak self] result in
             guard let self = self else { return }
-            let data = try? await api.request(method: .get, path: Constants.jetpackConnectionFetchPath, parameters: nil)
-            await MainActor.run { [weak self] in
-                guard let self = self else { return }
-                if let data = data, let escapedString = String(data: data, encoding: .utf8) {
-                    let urlString = escapedString
-                        .replacingOccurrences(of: "\"", with: "")
-                        .replacingOccurrences(of: "\\", with: "")
-                    self.jetpackConnectionURL = URL(string: urlString)
-                }
+            switch result {
+            case .success(let url):
+                self.jetpackConnectionURL = url
+            case .failure(let error):
+                DDLogWarn("⚠️ Error fetching Jetpack connection URL: \(error)")
             }
-        }
-
+        })
+        stores.dispatch(action)
     }
 }
 
@@ -87,9 +87,7 @@ private extension JetpackConnectionErrorViewModel {
     enum Localization {
         static let noJetpackEmail = NSLocalizedString(
             "It looks like your account is not connected to %@'s Jetpack",
-                                                    
             comment: "Message explaining that the entered site credentials belong to an account that is not connected to the site's Jetpack. "
-                                                        
             + "Reads like 'It looks like your account is not connected to awebsite.com's Jetpack")
 
         static let primaryButtonTitle = NSLocalizedString(
@@ -102,9 +100,5 @@ private extension JetpackConnectionErrorViewModel {
             comment: "Action button that will restart the login flow." +
             "Presented when logging in with store credentials of an account not connected to the site's Jetpack"
         )
-    }
-
-    enum Constants {
-        static let jetpackConnectionFetchPath = "/jetpack/v4/connection/url"
     }
 }

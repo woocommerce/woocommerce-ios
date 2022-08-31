@@ -86,5 +86,52 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     // MARK: - Toggle Cash on Delivery Payment Gateway
 
     func updateCashOnDeliverySetting(enabled: Bool) {
+        switch enabled {
+        case true:
+            enableCashOnDeliveryGateway()
+        case false:
+            disableCashOnDeliveryGateway()
+        }
     }
+
+    private func enableCashOnDeliveryGateway() {
+        guard let siteID = siteID else {
+            return
+        }
+
+        let action = PaymentGatewayAction.updatePaymentGateway(PaymentGateway.defaultPayInPersonGateway(siteID: siteID)) { [weak self] result in
+            guard let self = self else { return }
+            guard result.isSuccess else {
+                DDLogError("💰 Could not update Payment Gateway: \(String(describing: result.failure))")
+                // Resetting the toggle to the most recent stored value, or false because we failed to make it true.
+                self.cashOnDeliveryEnabledState = self.cashOnDeliveryGateway?.enabled ?? false
+                self.displayEnableCashOnDeliveryFailureNotice()
+                return
+            }
+
+        }
+        stores.dispatch(action)
+    }
+
+    private func displayEnableCashOnDeliveryFailureNotice() {
+        let notice = Notice(title: Localization.enableCashOnDeliveryFailureNoticeTitle,
+                            message: nil,
+                            feedbackType: .error,
+                            actionTitle: Localization.cashOnDeliveryFailureNoticeRetryTitle,
+                            actionHandler: enableCashOnDeliveryGateway)
+
+        noticePresenter.enqueue(notice: notice)
+    }
+
+    private func disableCashOnDeliveryGateway() {
+}
+
+private enum Localization {
+    static let enableCashOnDeliveryFailureNoticeTitle = NSLocalizedString(
+        "Failed to enable Pay in Person. Please try again later.",
+        comment: "Error displayed when the attempt to enable a Pay in Person checkout payment option fails")
+
+    static let cashOnDeliveryFailureNoticeRetryTitle = NSLocalizedString(
+        "Retry",
+        comment: "Retry Action on error displayed when the attempt to toggle a Pay in Person checkout payment option fails")
 }

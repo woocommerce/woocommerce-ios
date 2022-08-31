@@ -43,7 +43,8 @@ private extension AvailabilityStore {
                               unit: .yearly,
                               earliestDateToInclude: Date(),
                               latestDateToInclude: Date(),
-                              quantity: 1) { result in
+                              quantity: 1,
+                                        forceRefresh: false) { result in
             switch result {
             case .failure(let error) where error as? DotcomError == .noRestRoute:
                 onCompletion(false)

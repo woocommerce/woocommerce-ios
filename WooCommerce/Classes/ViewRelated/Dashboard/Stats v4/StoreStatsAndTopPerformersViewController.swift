@@ -160,6 +160,8 @@ private extension StoreStatsAndTopPerformersViewController {
                 return
             }
 
+            let forceRefresh = forced || vc.lastFullSyncTimestamp == nil
+
             // local var to catch sync error for period
             var periodSyncError: Error? = nil
 
@@ -181,7 +183,8 @@ private extension StoreStatsAndTopPerformersViewController {
             self.dashboardViewModel.syncStats(for: siteID,
                                               siteTimezone: timezoneForSync,
                                               timeRange: vc.timeRange,
-                                              latestDateToInclude: latestDateToInclude) { [weak self] result in
+                                              latestDateToInclude: latestDateToInclude,
+                                              forceRefresh: forceRefresh) { [weak self] result in
                 switch result {
                 case .success:
                     self?.trackStatsLoaded(for: vc.timeRange)
@@ -215,7 +218,8 @@ private extension StoreStatsAndTopPerformersViewController {
             self.dashboardViewModel.syncTopEarnersStats(for: siteID,
                                                         siteTimezone: timezoneForSync,
                                                         timeRange: vc.timeRange,
-                                                        latestDateToInclude: latestDateToInclude) { result in
+                                                        latestDateToInclude: latestDateToInclude,
+                                                        forceRefresh: forceRefresh) { result in
                 if case let .failure(error) = result {
                     DDLogError("⛔️ Error synchronizing top earners stats: \(error)")
                     periodSyncError = error

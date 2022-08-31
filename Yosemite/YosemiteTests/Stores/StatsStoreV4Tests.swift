@@ -53,7 +53,8 @@ final class StatsStoreV4Tests: XCTestCase {
                                                      timeRange: .thisYear,
                                                      earliestDateToInclude: DateFormatter.dateFromString(with: "2018-06-23T17:06:55"),
                                                      latestDateToInclude: DateFormatter.dateFromString(with: "2018-06-23T17:06:55"),
-                                                     quantity: 2) { result in
+                                                     quantity: 2,
+                                                     forceRefresh: false) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -80,7 +81,8 @@ final class StatsStoreV4Tests: XCTestCase {
                                                      timeRange: .thisYear,
                                                      earliestDateToInclude: DateFormatter.dateFromString(with: "2018-06-23T17:06:55"),
                                                      latestDateToInclude: DateFormatter.dateFromString(with: "2018-06-23T17:06:55"),
-                                                     quantity: 2) { result in
+                                                     quantity: 2,
+                                                     forceRefresh: false) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -102,7 +104,8 @@ final class StatsStoreV4Tests: XCTestCase {
                                                      timeRange: .thisYear,
                                                      earliestDateToInclude: DateFormatter.dateFromString(with: "2018-06-23T17:06:55"),
                                                      latestDateToInclude: DateFormatter.dateFromString(with: "2018-06-23T17:06:55"),
-                                                     quantity: 2) { result in
+                                                     quantity: 2,
+                                                     forceRefresh: false) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -266,7 +269,8 @@ final class StatsStoreV4Tests: XCTestCase {
                                                               timeRange: .thisYear,
                                                               earliestDateToInclude: DateFormatter.dateFromString(with: "2020-01-01T00:00:00"),
                                                               latestDateToInclude: DateFormatter.dateFromString(with: "2020-07-22T12:00:00"),
-                                                              quantity: 3) { result in
+                                                              quantity: 3,
+                                                              forceRefresh: false) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -294,7 +298,8 @@ final class StatsStoreV4Tests: XCTestCase {
                                                               timeRange: .thisYear,
                                                               earliestDateToInclude: DateFormatter.dateFromString(with: "2020-01-01T00:00:00"),
                                                               latestDateToInclude: DateFormatter.dateFromString(with: "2020-07-22T12:00:00"),
-                                                              quantity: quantity) { _ in
+                                                              quantity: quantity,
+                                                              forceRefresh: false) { _ in
                 promise(())
             }
             store.onAction(action)
@@ -320,7 +325,8 @@ final class StatsStoreV4Tests: XCTestCase {
                                                               timeRange: .thisYear,
                                                               earliestDateToInclude: DateFormatter.dateFromString(with: "2020-01-01T00:00:00"),
                                                               latestDateToInclude: DateFormatter.dateFromString(with: "2020-07-22T12:00:00"),
-                                                              quantity: 3) { result in
+                                                              quantity: 3,
+                                                              forceRefresh: false) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -349,7 +355,8 @@ final class StatsStoreV4Tests: XCTestCase {
                                                               timeRange: .thisYear,
                                                               earliestDateToInclude: DateFormatter.dateFromString(with: "2020-01-01T00:00:00"),
                                                               latestDateToInclude: DateFormatter.dateFromString(with: "2020-07-22T12:00:00"),
-                                                              quantity: 3) { result in
+                                                              quantity: 3,
+                                                              forceRefresh: false) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -377,7 +384,8 @@ final class StatsStoreV4Tests: XCTestCase {
                                                               timeRange: .thisMonth,
                                                               earliestDateToInclude: Date(),
                                                               latestDateToInclude: Date(),
-                                                              quantity: 3) { result in
+                                                              quantity: 3,
+                                                              forceRefresh: false) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -399,7 +407,8 @@ final class StatsStoreV4Tests: XCTestCase {
                                                               timeRange: .thisMonth,
                                                               earliestDateToInclude: Date(),
                                                               latestDateToInclude: Date(),
-                                                              quantity: 3) { result in
+                                                              quantity: 3,
+                                                              forceRefresh: false) { result in
                 promise(result)
             }
             store.onAction(action)

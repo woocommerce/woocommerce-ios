@@ -14,7 +14,7 @@ struct OrderDetailsRoute: Route {
             return
         }
 
-        MainTabBarController.presentOrderDetails(with: orderId, siteID: storeId)
+        MainTabBarController.navigateToOrderDetails(with: orderId, siteID: storeId)
     }
 }
 

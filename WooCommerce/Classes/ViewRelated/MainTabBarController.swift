@@ -402,16 +402,23 @@ extension MainTabBarController {
         dashBoard.presentSettings()
     }
 
-    static func presentOrderDetails(with orderID: Int64, siteID: Int64) {
+    static func navigateToOrderDetails(with orderID: Int64, siteID: Int64) {
         switchToStore(with: siteID, onCompletion: {
             switchToOrdersTab {
-                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
-                    (childViewController() as? OrdersSplitViewWrapperController)?.presentDetails(for: orderID, siteID: siteID)
-                } else {
-                    (childViewController() as? OrdersRootViewController)?.presentDetails(for: orderID, siteID: siteID)
+                // We give some time to the orders tab transition to finish, otherwise it might prevent the second navigation from happening
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    presentDetails(for: orderID, siteID: siteID)
                 }
             }
         })
+    }
+
+    private static func presentDetails(for orderID: Int64, siteID: Int64) {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+            (childViewController() as? OrdersSplitViewWrapperController)?.presentDetails(for: orderID, siteID: siteID)
+        } else {
+            (childViewController() as? OrdersRootViewController)?.presentDetails(for: orderID, siteID: siteID)
+        }
     }
 }
 

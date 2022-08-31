@@ -14,7 +14,7 @@ public enum ABTest: String, CaseIterable {
 
     /// A/A test to make sure there is no bias in the logged out state.
     /// Experiment ref: pbxNRc-1S0-p2
-    case aaTestLoggedOut202208 = "woocommerceios_explat_aa_test_logged_out_202208"
+    case aaTestLoggedOut202209 = "woocommerceios_explat_aa_test_logged_out_202209"
 
     /// A/B test for promoting linked products in Product Details.
     /// Experiment ref: pbxNRc-1Pp-p2

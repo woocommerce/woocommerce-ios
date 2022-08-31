@@ -14,15 +14,9 @@ struct CustomHelpCenterContent {
     let trackingProperties: [String: String]
 }
 
+// MARK: Initializer for WordPressAuthenticator screens
+//
 extension CustomHelpCenterContent {
-    /// Used for tracking analytics events
-    ///
-    enum Key: String {
-        case step = "source_step"
-        case flow = "source_flow"
-        case url = "help_content_url"
-    }
-
     /// Initializes a `CustomHelpCenterContent` instance using `Step` and `Flow` from `AuthenticatorAnalyticsTracker`
     ///
     init?(step: AuthenticatorAnalyticsTracker.Step, flow: AuthenticatorAnalyticsTracker.Flow) {
@@ -45,4 +39,40 @@ extension CustomHelpCenterContent {
             Key.url.rawValue: url.absoluteString
         ]
     }
+}
+
+// MARK: Initializer for WCiOS screens
+//
+extension CustomHelpCenterContent {
+    /// Screens related to login/authentication
+    ///  These screens are from WCiOS codebase and they don't exist in WordPressAuthenticator library
+    ///
+    enum Screen {
+        /// Jetpack required error screen presented using `JetpackErrorViewModel`
+        ///
+        case jetpackRequired
+    }
+
+    init(screen: Screen, flow: AuthenticatorAnalyticsTracker.Flow) {
+        let step: String
+        switch screen {
+        case .jetpackRequired:
+            step = "jetpack_not_connected" // Matching Android `Step` value
+            url = WooConstants.URLs.helpCenterForJetpackRequiredError.asURL()
+        }
+
+        trackingProperties = [
+            Key.step.rawValue: step,
+            Key.flow.rawValue: flow.rawValue,
+            Key.url.rawValue: url.absoluteString
+        ]
+    }
+}
+
+/// Used for tracking analytics events
+///
+private enum Key: String {
+    case step = "source_step"
+    case flow = "source_flow"
+    case url = "help_content_url"
 }

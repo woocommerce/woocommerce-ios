@@ -68,13 +68,13 @@ final class JetpackConnectionErrorViewModel: ULErrorViewModel {
 // MARK: - Private helpers
 private extension JetpackConnectionErrorViewModel {
     func showJetpackConnectionWebView(from viewController: UIViewController?) {
-        guard let url = jetpackConnectionURL,
-              let viewController = viewController else {
+        guard let url = jetpackConnectionURL else {
+            DDLogWarn("⚠️ No Jetpack connection URL found")
             return
         }
         let viewModel = JetpackConnectionWebViewModel(initialURL: url, siteURL: siteURL, completion: jetpackSetupCompletionHandler)
         let pluginViewController = PluginSetupWebViewController(viewModel: viewModel)
-        viewController.navigationController?.show(pluginViewController, sender: nil)
+        viewController?.navigationController?.show(pluginViewController, sender: nil)
     }
 
     func fetchJetpackConnectionURL(with credentials: WordPressOrgCredentials) {

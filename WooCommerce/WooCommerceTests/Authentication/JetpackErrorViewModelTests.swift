@@ -116,6 +116,18 @@ final class JetpackErrorViewModelTests: XCTestCase {
         let firstEvent = try XCTUnwrap(analyticsProvider.receivedEvents.first)
         XCTAssertEqual(firstEvent, "login_what_is_jetpack_help_screen_viewed")
     }
+
+    func test_viewModel_invokes_present_support_when_the_help_button_is_tapped() throws {
+        // Given
+        let mockAuthentication = MockAuthentication()
+        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url, authentication: mockAuthentication) { _ in }
+
+        // When
+        viewModel.didTapRightBarButtonItem(in: UIViewController())
+
+        // Then
+        XCTAssertTrue(mockAuthentication.presentSupportFromScreenInvoked)
+    }
 }
 
 

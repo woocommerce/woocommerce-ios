@@ -25,7 +25,8 @@ struct UniversalLinkRouter {
     /// As we only perform one action to avoid conflicts, order matters (only the first matched route will be called to perform its action)
     ///
     private static let defaultRoutes: [Route] = [
-        OrderDetailsRoute()
+        OrderDetailsRoute(),
+        PaymentsRoute()
     ]
 
     func handle(url: URL) {

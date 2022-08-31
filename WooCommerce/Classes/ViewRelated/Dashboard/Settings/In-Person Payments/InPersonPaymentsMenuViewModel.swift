@@ -2,7 +2,35 @@ import Foundation
 import Yosemite
 
 class InPersonPaymentsMenuViewModel: ObservableObject {
-    let stores: StoresManager
+
+    // MARK: - Dependencies
+    struct Dependencies {
+        let stores: StoresManager
+        let noticePresenter: NoticePresenter
+        let analytics: Analytics
+
+        init(stores: StoresManager = ServiceLocator.stores,
+             noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
+             analytics: Analytics = ServiceLocator.analytics) {
+            self.stores = stores
+            self.noticePresenter = noticePresenter
+            self.analytics = analytics
+        }
+    }
+
+    private let dependencies: Dependencies
+
+    private var stores: StoresManager {
+        dependencies.stores
+    }
+
+    private var noticePresenter: NoticePresenter {
+        dependencies.noticePresenter
+    }
+
+    private var analytics: Analytics {
+        dependencies.analytics
+    }
 
     // MARK: - Output properties
     @Published var cashOnDeliveryEnabledState: Bool = false
@@ -14,9 +42,10 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
 
     private let paymentGatewaysFetchedResultsController: ResultsController<StoragePaymentGateway>?
 
-    init(stores: StoresManager = ServiceLocator.stores) {
-        self.stores = stores
-        paymentGatewaysFetchedResultsController = Self.createPaymentGatewaysResultsController(siteID: stores.sessionManager.defaultStoreID)
+    init(dependencies: Dependencies = Dependencies()) {
+        self.dependencies = dependencies
+        paymentGatewaysFetchedResultsController = Self.createPaymentGatewaysResultsController(
+            siteID: dependencies.stores.sessionManager.defaultStoreID)
         observePaymentGateways()
     }
 

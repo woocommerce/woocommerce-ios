@@ -101,6 +101,8 @@ private extension JetpackErrorViewModel {
                                                     + "Presented when logging in with a site address that does not have a valid Jetpack installation."
                                                 + "The error would read: to use this app for your site you'll need...")
 
+        static let helpBarButtonItemTitle = NSLocalizedString("Help",
+                                                       comment: "Help button on Jetpack required error screen.")
     }
 
     enum Strings {

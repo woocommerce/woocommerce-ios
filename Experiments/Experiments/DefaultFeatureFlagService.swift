@@ -51,6 +51,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .promptToEnableCodInIppOnboarding:
             return true
+        case .storeWidgets:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

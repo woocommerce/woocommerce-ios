@@ -56,4 +56,16 @@ final class StringWooTests: XCTestCase {
         // Then
         XCTAssertTrue(pathWithScheme.hasValidSchemeForBrowser)
     }
+
+    func test_getQueryParameter_returns_correct_value() {
+        // Given
+        let expectedEmail = "test@mail.com"
+        let url = "https://jetpack.wordpress.com/jetpack.authorize?user_email=\(expectedEmail)"
+
+        // When
+        let email = url.getQueryStringParameter(param: "user_email")
+
+        // Then
+        assertEqual(email, expectedEmail)
+    }
 }

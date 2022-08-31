@@ -64,14 +64,14 @@ public extension UIColor {
 
     /// Blue. Blue-50 (< iOS 13 and Light Mode) and Blue-30 (Dark Mode)
     ///
-    static var blue: UIColor {
+    static var wooBlue: UIColor {
         return UIColor(light: .withColorStudio(.blue, shade: .shade50),
                        dark: .withColorStudio(.blue, shade: .shade30))
     }
 
     /// Orange. Orange-50 (< iOS 13 and Light Mode) and Orange-30 (Dark Mode)
     ///
-    static var orange: UIColor {
+    static var wooOrange: UIColor {
         return UIColor(light: .withColorStudio(.orange, shade: .shade50),
                        dark: .withColorStudio(.orange, shade: .shade30))
     }

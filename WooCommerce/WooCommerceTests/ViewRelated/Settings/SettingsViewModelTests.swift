@@ -50,7 +50,7 @@ final class SettingsViewModelTests: XCTestCase {
 
     func test_selectedStoreSection_is_hidden_if_hub_menu_feature_flag_is_on() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isHubMenuOn: true)
+        let featureFlagService = MockFeatureFlagService()
         let viewModel = SettingsViewModel(stores: stores,
                                           storageManager: storageManager,
                                           featureFlagService: featureFlagService,
@@ -65,7 +65,7 @@ final class SettingsViewModelTests: XCTestCase {
 
     func test_selectedStoreSection_is_shown_if_hub_menu_feature_flag_is_off() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isHubMenuOn: false)
+        let featureFlagService = MockFeatureFlagService()
         let viewModel = SettingsViewModel(stores: stores,
                                           storageManager: storageManager,
                                           featureFlagService: featureFlagService,

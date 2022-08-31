@@ -378,6 +378,18 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         }
     }
 
+    /// Presents the Support Interface
+    ///
+    /// - Parameters:
+    ///     - from: UIViewController instance from which to provide the support interface
+    ///     - screen: A case from `CustomHelpCenterContent.Screen` enum. This represents authentication related screens from WCiOS.
+    ///
+    func presentSupport(from sourceViewController: UIViewController, screen: CustomHelpCenterContent.Screen) {
+        let customHelpCenterContent = CustomHelpCenterContent(screen: screen,
+                                                              flow: AuthenticatorAnalyticsTracker.shared.state.lastFlow)
+        presentSupport(from: sourceViewController, customHelpCenterContent: customHelpCenterContent)
+    }
+
     /// Presents the Support Interface from a given ViewController, with a specified SourceTag.
     ///
     func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag) {

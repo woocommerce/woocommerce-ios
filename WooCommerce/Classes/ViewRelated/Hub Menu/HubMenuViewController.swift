@@ -27,6 +27,10 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
     func pushReviewDetailsViewController(using parcel: ProductReviewFromNoteParcel) {
         viewModel.showReviewDetails(using: parcel)
     }
+
+    func showPaymentsMenu() {
+        show(InPersonPaymentsMenuViewController(), sender: self)
+    }
 }
 
 private extension HubMenuViewController {

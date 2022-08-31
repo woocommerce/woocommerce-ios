@@ -420,6 +420,16 @@ extension MainTabBarController {
             (childViewController() as? OrdersRootViewController)?.presentDetails(for: orderID, siteID: siteID)
         }
     }
+
+    static func presentPayments() {
+        switchToHubMenuTab()
+
+        guard let hubMenuViewController: HubMenuViewController = childViewController() else {
+            return
+        }
+
+        hubMenuViewController.showPaymentsMenu()
+    }
 }
 
 // MARK: - Site ID observation for updating tab view controllers

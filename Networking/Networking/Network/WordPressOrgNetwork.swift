@@ -66,6 +66,7 @@ public final class WordPressOrgNetwork: Network {
     ///
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
         sessionManager.request(request)
+            .validate()
             .responseData { response in
                 completion(response.value, response.networkingError)
             }
@@ -81,9 +82,11 @@ public final class WordPressOrgNetwork: Network {
     ///     - completion: Closure to be executed upon completion.
     ///
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Swift.Result<Data, Error>) -> Void) {
-        sessionManager.request(request).responseData { response in
-            completion(response.result.toSwiftResult())
-        }
+        sessionManager.request(request)
+            .validate()
+            .responseData { response in
+                completion(response.result.toSwiftResult())
+            }
     }
 
     /// Executes the specified Network Request. Upon completion, the payload or error will be emitted to the publisher.
@@ -97,7 +100,7 @@ public final class WordPressOrgNetwork: Network {
     public func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
         return Future() { [weak self] promise in
             guard let self = self else { return }
-            self.sessionManager.request(request).responseData { response in
+            self.sessionManager.request(request).validate().responseData { response in
                 let result = response.result.toSwiftResult()
                 promise(Swift.Result.success(result))
             }

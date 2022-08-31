@@ -265,3 +265,12 @@ extension DefaultStoresManager {
         return DefaultStoresManager(sessionManager: SessionManager.testingInstance)
     }
 }
+
+final class MockAuthenticationManager: AuthenticationManager {
+    private(set) var authenticationUIInvoked: Bool = false
+
+    override func authenticationUI() -> UIViewController {
+        authenticationUIInvoked = true
+        return UIViewController()
+    }
+}

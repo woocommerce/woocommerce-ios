@@ -3,7 +3,7 @@ import Yosemite
 
 struct InPersonPaymentsPluginNotSetup: View {
     let plugin: CardPresentPaymentsPlugin
-    let analyticReason: String?
+    let analyticReason: String
     private let cardPresentConfiguration = CardPresentConfigurationLoader().configuration
     let onRefresh: () -> Void
     @State private var presentedSetupURL: URL? = nil
@@ -28,7 +28,7 @@ struct InPersonPaymentsPluginNotSetup: View {
                 presentedSetupURL = setupURL
                 ServiceLocator.analytics.track(
                     event: WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingCtaTapped(
-                        reason: analyticReason ?? "",
+                        reason: analyticReason,
                         countryCode: cardPresentConfiguration.countryCode))
             } label: {
                 HStack {
@@ -71,6 +71,6 @@ private enum Localization {
 }
 struct InPersonPaymentsPluginNotSetup_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsPluginNotSetup(plugin: .wcPay, analyticReason: nil, onRefresh: {})
+        InPersonPaymentsPluginNotSetup(plugin: .wcPay, analyticReason: "", onRefresh: {})
     }
 }

@@ -780,7 +780,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        assertEqual(.codPaymentGatewayNotSetUp, state)
+        assertEqual(.codPaymentGatewayNotSetUp(plugin: .wcPay), state)
     }
 
     func test_onboarding_returns_complete_when_cod_disabled_and_cod_step_was_skipped() {

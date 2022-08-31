@@ -191,6 +191,24 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(rootController is ULErrorViewController)
     }
 
+    func test_errorViewController_returns_jetpack_connection_error_if_no_site_matches_the_given_self_hosted_site() {
+        // Given
+        let manager = AuthenticationManager()
+        let testSite = "http://test.com"
+        let navigationController = UINavigationController()
+        let storage = MockStorageManager()
+        let matcher = ULAccountMatcher(storageManager: storage)
+        let wporgCredentials = WordPressOrgCredentials(username: "test", password: "pwd", xmlrpc: "http://test.com/xmlrpc.php", options: [:])
+        let credentials = AuthenticatorCredentials(wpcom: nil, wporg: wporgCredentials)
+
+        // When
+        let controller = manager.errorViewController(for: testSite, with: matcher, credentials: credentials, navigationController: navigationController) {}
+
+        // Then
+        XCTAssertNotNil(controller)
+        XCTAssertTrue(controller is ULErrorViewController)
+    }
+
     func test_errorViewController_returns_account_mismatch_if_no_site_matches_the_given_url() {
         // Given
         let manager = AuthenticationManager()

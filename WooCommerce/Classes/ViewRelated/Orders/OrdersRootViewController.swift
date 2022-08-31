@@ -212,11 +212,7 @@ private extension OrdersRootViewController {
 
     func configureFiltersBar() {
         // Display the filtered orders bar
-        // if the feature flag is enabled
-        let isOrderListFiltersEnabled = featureFlagService.isFeatureFlagEnabled(.orderListFilters)
-        if isOrderListFiltersEnabled {
-            stackView.addArrangedSubview(filtersBar)
-        }
+        stackView.addArrangedSubview(filtersBar)
         filtersBar.onAction = { [weak self] in
             self?.filterButtonTapped()
         }

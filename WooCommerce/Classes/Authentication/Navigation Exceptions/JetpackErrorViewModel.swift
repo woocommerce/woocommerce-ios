@@ -41,6 +41,11 @@ struct JetpackErrorViewModel: ULErrorViewModel {
 
     let secondaryButtonTitle = Localization.secondaryButtonTitle
 
+    // Configures `Help` button title
+    var rightBarButtonItemTitle: String? {
+        Localization.helpBarButtonItemTitle
+    }
+
     // MARK: - Actions
     func didTapPrimaryButton(in viewController: UIViewController?) {
         showJetpackSetupScreen(in: viewController)
@@ -71,11 +76,17 @@ struct JetpackErrorViewModel: ULErrorViewModel {
         analytics.track(.loginWhatIsJetpackHelpScreenViewed)
     }
 
+    func didTapRightBarButtonItem(in viewController: UIViewController?) {
+        guard let viewController = viewController else {
+            return
+        }
+        ServiceLocator.authenticationManager.presentSupport(from: viewController, screen: .jetpackRequired)
+    }
+
     func viewDidLoad(_ viewController: UIViewController?) {
         analytics.track(.loginJetpackRequiredScreenViewed)
     }
 }
-
 
 // MARK: - Private data structures
 private extension JetpackErrorViewModel {

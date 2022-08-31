@@ -124,12 +124,44 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     }
 
     private func disableCashOnDeliveryGateway() {
+        guard let cashOnDeliveryGateway = cashOnDeliveryGateway else {
+            return
+        }
+
+        let disabledPaymentGateway = cashOnDeliveryGateway.copy(enabled: false)
+        let action = PaymentGatewayAction.updatePaymentGateway(disabledPaymentGateway) { [weak self] result in
+            guard let self = self else { return }
+            guard result.isSuccess else {
+                DDLogError("💰 Could not update Payment Gateway: \(String(describing: result.failure))")
+                // Resetting the toggle to the most recent stored value, or true because we failed to make it false.
+                self.cashOnDeliveryEnabledState = self.cashOnDeliveryGateway?.enabled ?? true
+                self.displayDisableCashOnDeliveryFailureNotice()
+                return
+            }
+
+        }
+        stores.dispatch(action)
+    }
+
+    private func displayDisableCashOnDeliveryFailureNotice() {
+        let notice = Notice(title: Localization.disableCashOnDeliveryFailureNoticeTitle,
+                            message: nil,
+                            feedbackType: .error,
+                            actionTitle: Localization.cashOnDeliveryFailureNoticeRetryTitle,
+                            actionHandler: disableCashOnDeliveryGateway)
+
+        noticePresenter.enqueue(notice: notice)
+    }
 }
 
 private enum Localization {
     static let enableCashOnDeliveryFailureNoticeTitle = NSLocalizedString(
         "Failed to enable Pay in Person. Please try again later.",
         comment: "Error displayed when the attempt to enable a Pay in Person checkout payment option fails")
+
+    static let disableCashOnDeliveryFailureNoticeTitle = NSLocalizedString(
+        "Failed to disable Pay in Person. Please try again later.",
+        comment: "Error displayed when the attempt to disable a Pay in Person checkout payment option fails")
 
     static let cashOnDeliveryFailureNoticeRetryTitle = NSLocalizedString(
         "Retry",

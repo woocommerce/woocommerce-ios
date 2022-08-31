@@ -5,6 +5,24 @@ import WordPressAuthenticator
 /// Extension to create cookie nonce authenticator from WP.org credentials.
 ///
 extension WordPressOrgCredentials {
+    /// Returns a cookie nonce authenticator based on the current credentials
+    ///
+    func makeCookieNonceAuthenticator() -> CookieNonceAuthenticator? {
+        guard let loginURL = URL(string: loginURL),
+              let adminURL = URL(string: adminURL) else {
+            return nil
+        }
+        return CookieNonceAuthenticator(username: username,
+                                        password: password,
+                                        loginURL: loginURL,
+                                        adminURL: adminURL,
+                                        version: version)
+    }
+}
+
+// MARK: - Private helpers
+//
+private extension WordPressOrgCredentials {
     var loginURL: String {
         let value = optionValue(for: Strings.loginURLKey) as? String
         return value ?? siteURL + Strings.loginPath
@@ -28,24 +46,6 @@ extension WordPressOrgCredentials {
         return ""
     }
 
-    /// Returns a cookie nonce authenticator based on the current credentials
-    ///
-    func makeCookieNonceAuthenticator() -> CookieNonceAuthenticator? {
-        guard let loginURL = URL(string: loginURL),
-              let adminURL = URL(string: adminURL) else {
-            return nil
-        }
-        return CookieNonceAuthenticator(username: username,
-                                        password: password,
-                                        loginURL: loginURL,
-                                        adminURL: adminURL,
-                                        version: version)
-    }
-}
-
-// MARK: - Private helpers
-//
-private extension WordPressOrgCredentials {
     /// Returns value for an option given a key.
     ///
     func optionValue(for key: String) -> Any? {

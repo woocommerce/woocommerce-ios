@@ -20,6 +20,7 @@ final class InPersonPaymentsMenuViewController: UIViewController {
                             reason: "reason",
                             countryCode: configurationLoader.configuration.countryCode))
     }()
+    private let inPersonPaymentsMenuViewModel: InPersonPaymentsMenuViewModel
 
     /// No Manuals to be shown in a country where IPP is not supported
     /// 
@@ -52,6 +53,7 @@ final class InPersonPaymentsMenuViewController: UIViewController {
         self.featureFlagService = featureFlagService
         self.cardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase()
         configurationLoader = CardPresentConfigurationLoader()
+        self.inPersonPaymentsMenuViewModel = InPersonPaymentsMenuViewModel()
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -66,6 +68,7 @@ final class InPersonPaymentsMenuViewController: UIViewController {
         configureSections()
         configureTableView()
         registerTableViewCells()
+        configureTableReload()
         runCardPresentPaymentsOnboarding()
     }
 }
@@ -273,13 +276,22 @@ private extension InPersonPaymentsMenuViewController {
         cell.leftImageView?.tintColor = .text
         cell.accessoryType = .none
         cell.selectionStyle = .none
-        cell.configure(image: .creditCardIcon, text: Localization.toggleEnableCashOnDelivery, subtitle: learnMoreViewModel.learnMoreAttributedString)
+        cell.configure(image: .creditCardIcon,
+                       text: Localization.toggleEnableCashOnDelivery,
+                       subtitle: learnMoreViewModel.learnMoreAttributedString,
+                       switchState: inPersonPaymentsMenuViewModel.cashOnDeliveryEnabledState)
     }
 
     func updateEnabledState(in cell: UITableViewCell, shouldBeEnabled: Bool = true) {
         let alpha = shouldBeEnabled ? 1 : 0.3
         cell.imageView?.alpha = alpha
         cell.textLabel?.alpha = alpha
+    }
+
+    func configureTableReload() {
+        inPersonPaymentsMenuViewModel.$cashOnDeliveryEnabledState.sink { [weak self] _ in
+            self?.tableView.reloadData()
+        }.store(in: &cancellables)
     }
 }
 

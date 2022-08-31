@@ -63,18 +63,23 @@ class LeftImageTitleSubtitleToggleTableViewCell: UITableViewCell {
 // MARK: - Public Methods
 //
 extension LeftImageTitleSubtitleToggleTableViewCell {
-    func configure(image: UIImage, text: String, subtitle: String) {
-        configure(image: image, text: text, subtitle: subtitle, attributedSubtitle: nil)
+    func configure(image: UIImage, text: String, subtitle: String, switchState: Bool) {
+        configure(image: image, text: text, subtitle: subtitle, attributedSubtitle: nil, switchState: switchState)
     }
 
-    func configure(image: UIImage, text: String, subtitle: NSAttributedString) {
-        configure(image: image, text: text, subtitle: nil, attributedSubtitle: subtitle)
+    func configure(image: UIImage, text: String, subtitle: NSAttributedString, switchState: Bool) {
+        configure(image: image, text: text, subtitle: nil, attributedSubtitle: subtitle, switchState: switchState)
     }
 
-    private func configure(image: UIImage, text: String, subtitle: String?, attributedSubtitle: NSAttributedString?) {
+    private func configure(image: UIImage,
+                           text: String,
+                           subtitle: String?,
+                           attributedSubtitle: NSAttributedString?,
+                           switchState: Bool) {
         leftImageView?.image = image
         titleLabel?.text = text
         subtitleLabel?.text = subtitle
         subtitleLabel.attributedText = attributedSubtitle
+        toggleSwitch.isOn = switchState
     }
 }

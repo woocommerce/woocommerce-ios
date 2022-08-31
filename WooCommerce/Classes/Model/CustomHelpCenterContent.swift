@@ -12,6 +12,14 @@ struct CustomHelpCenterContent {
     /// Provides a dictionary for analytics tracking
     ///
     let trackingProperties: [String: String]
+
+    /// Used for tracking analytics events
+    ///
+    enum Key: String {
+        case step = "source_step"
+        case flow = "source_flow"
+        case url = "help_content_url"
+    }
 }
 
 // MARK: Initializer for WordPressAuthenticator screens
@@ -67,12 +75,4 @@ extension CustomHelpCenterContent {
             Key.url.rawValue: url.absoluteString
         ]
     }
-}
-
-/// Used for tracking analytics events
-///
-private enum Key: String {
-    case step = "source_step"
-    case flow = "source_flow"
-    case url = "help_content_url"
 }

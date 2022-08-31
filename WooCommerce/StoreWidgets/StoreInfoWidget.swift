@@ -1,20 +1,20 @@
 import WidgetKit
 import SwiftUI
 import WooFoundation
+import Experiments
 
 /// Main StoreInfo Widget type.
 ///
 struct StoreInfoWidget: Widget {
+
+    let enableWidgets = DefaultFeatureFlagService().isFeatureFlagEnabled(.storeWidgets)
+
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: "StoreInfoWidget", provider: StoreInfoProvider()) { entry in
             StoreInfoView(entry: entry)
         }
         .configurationDisplayName("Store Info")
-#if RELEASE // TODO: Update this to use proper feature flags
-        .supportedFamilies([])
-#else
-        .supportedFamilies([.systemMedium])
-#endif
+        .supportedFamilies(enableWidgets ? [.systemMedium] : [])
     }
 }
 

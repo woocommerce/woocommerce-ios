@@ -23,7 +23,7 @@ final class JetpackConnectionErrorViewModel: ULErrorViewModel {
     // MARK: - Data and configuration
 
     let image: UIImage = .productErrorImage
-    
+
     var text: NSAttributedString {
         let font: UIFont = .body
         let boldFont: UIFont = font.bold
@@ -35,31 +35,31 @@ final class JetpackConnectionErrorViewModel: ULErrorViewModel {
 
         return attributedString
     }
-    
+
     let isAuxiliaryButtonHidden = true
-    
+
     let auxiliaryButtonTitle = ""
-    
+
     let primaryButtonTitle = Localization.primaryButtonTitle
 
     var isPrimaryButtonLoading: AnyPublisher<Bool, Never> {
         isPrimaryButtonLoadingSubject.eraseToAnyPublisher()
     }
-    
+
     let secondaryButtonTitle = Localization.secondaryButtonTitle
-    
+
     func viewDidLoad(_ viewController: UIViewController?) {
         // no-op
     }
-    
+
     func didTapPrimaryButton(in viewController: UIViewController?) {
         showJetpackConnectionWebView(from: viewController)
     }
-    
+
     func didTapSecondaryButton(in viewController: UIViewController?) {
         viewController?.navigationController?.popToRootViewController(animated: true)
     }
-    
+
     func didTapAuxiliaryButton(in viewController: UIViewController?) {
         // no-op
     }
@@ -78,10 +78,11 @@ private extension JetpackConnectionErrorViewModel {
     }
 
     func fetchJetpackConnectionURL(with credentials: WordPressOrgCredentials) {
-        isPrimaryButtonLoadingSubject.send(true)
         guard let authenticator = credentials.makeCookieNonceAuthenticator() else {
             return
         }
+
+        isPrimaryButtonLoadingSubject.send(true)
         let action = JetpackConnectionAction.fetchJetpackConnectionURL(siteURL: credentials.siteURL,
                                                                        authenticator: authenticator,
                                                                        completion: { [weak self] result in

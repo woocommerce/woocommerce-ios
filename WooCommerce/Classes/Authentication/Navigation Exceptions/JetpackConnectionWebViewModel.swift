@@ -5,7 +5,7 @@ import WebKit
 ///
 final class JetpackConnectionWebViewModel: PluginSetupWebViewModel {
     let title = Localization.title
-    
+
     let initialURL: URL?
     let siteURL: String
     let completionHandler: (String?) -> Void
@@ -18,15 +18,15 @@ final class JetpackConnectionWebViewModel: PluginSetupWebViewModel {
         self.siteURL = siteURL
         self.completionHandler = completion
     }
-    
+
     func handleDismissal() {
         // TODO: tracks?
     }
-    
+
     func handleRedirect(for url: URL?) {
         // No-op
     }
-    
+
     func decidePolicy(for navigationURL: URL) async -> WKNavigationActionPolicy {
         let url = navigationURL.absoluteString
         switch url {
@@ -47,7 +47,6 @@ final class JetpackConnectionWebViewModel: PluginSetupWebViewModel {
     private func handleSetupCompletion() {
         // TODO: tracks?
         completionHandler(authorizedEmailAddress)
-        
     }
 }
 

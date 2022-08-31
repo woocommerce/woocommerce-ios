@@ -606,7 +606,9 @@ private extension AuthenticationManager {
     /// The error screen to be displayed when the user tries to enter as site
     /// whose Jetpack is not connected to their WP.com account.
     ///
-    func jetpackConnectionUI(for siteURL: String, with credentials: WordPressOrgCredentials, in navigationController: UINavigationController) -> UIViewController {
+    func jetpackConnectionUI(for siteURL: String,
+                             with credentials: WordPressOrgCredentials,
+                             in navigationController: UINavigationController) -> UIViewController {
         let viewModel = JetpackConnectionErrorViewModel(siteURL: siteURL, credentials: credentials, onJetpackSetupCompletion: { email in
             return WordPressAuthenticator.showLoginForJustWPCom(
                 from: navigationController,

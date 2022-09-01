@@ -99,6 +99,10 @@ extension WooConstants {
         ///
         case helpCenterForEnterStoreCredentials = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#enter-store-credentials"
 
+        /// Help Center for "Jetpack required error" screen
+        ///
+        case helpCenterForJetpackRequiredError = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#jetpack-required"
+
         /// URL used for Learn More button in Orders empty state.
         ///
         case blog = "https://woocommerce.com/blog/"

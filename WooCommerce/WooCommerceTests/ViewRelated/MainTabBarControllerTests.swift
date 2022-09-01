@@ -323,15 +323,14 @@ final class MainTabBarControllerTests: XCTestCase {
         let notice = try XCTUnwrap(noticePresenter.queuedNotices.first)
         notice.actionHandler?()
 
-//        let productsNavigationController = try XCTUnwrap(tabBarController
-//            .tabNavigationController(tab: .products)
-//        waitUntil {
-//            productsNavigationController.presentedViewController != nil
-//        }
+        let productsNavigationController = try XCTUnwrap(tabBarController.tabNavigationController(tab: .products))
+        waitUntil {
+            productsNavigationController.presentedViewController != nil
+        }
 
         // Then
-        //let productNavigationController = try XCTUnwrap(productsNavigationController.presentedViewController as? UINavigationController)
-        //assertThat(productNavigationController.topViewController, isAnInstanceOf: ProductLoaderViewController.self)
+        let productNavigationController = try XCTUnwrap(productsNavigationController.presentedViewController as? UINavigationController)
+        assertThat(productNavigationController.topViewController, isAnInstanceOf: ProductLoaderViewController.self)
     }
 
     func test_when_receiving_product_image_upload_error_with_feature_flag_off_a_notice_is_not_enqueued() throws {
@@ -397,11 +396,10 @@ final class MainTabBarControllerTests: XCTestCase {
         let notice = try XCTUnwrap(noticePresenter.queuedNotices.first)
         notice.actionHandler?()
 
-//        let productsNavigationController = try XCTUnwrap(tabBarController
-//            .tabNavigationController(tab: .products)
-//        waitUntil {
-//            productsNavigationController.presentedViewController != nil
-//        }
+        let productsNavigationController = try XCTUnwrap(tabBarController.tabNavigationController(tab: .products))
+        waitUntil {
+            productsNavigationController.presentedViewController != nil
+        }
 
         // Then
         assertEqual([
@@ -442,10 +440,11 @@ final class MainTabBarControllerTests: XCTestCase {
         let notice = try XCTUnwrap(noticePresenter.queuedNotices.first)
         notice.actionHandler?()
 
-//        let productsNavigationController = try XCTUnwrap(tabBarController.tabNavigationController(tab: .products)
-//        waitUntil {
-//            productsNavigationController.presentedViewController != nil
-//        }
+        let productsNavigationController = try XCTUnwrap(tabBarController
+                    .tabNavigationController(tab: .products))
+        waitUntil {
+            productsNavigationController.presentedViewController != nil
+        }
 
         // Then
         assertEqual([

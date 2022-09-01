@@ -8,6 +8,8 @@ import Networking
 final class InPersonPaymentsMenuViewModelTests: XCTestCase {
     private var stores: MockStoresManager!
 
+    private var storageManager: MockStorageManager!
+
     private var noticePresenter: MockNoticePresenter!
 
     private var analyticsProvider: MockAnalyticsProvider!
@@ -19,15 +21,22 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
 
     private var sut: InPersonPaymentsMenuViewModel!
 
+    private let sampleStoreID: Int64 = 12345
+
     override func setUp() {
         stores = MockStoresManager(sessionManager: .makeForTesting())
-        stores.sessionManager.setStoreId(12345)
+        stores.sessionManager.setStoreId(sampleStoreID)
+        storageManager = MockStorageManager()
+        storageManager.insertSamplePaymentGateway(readOnlyGateway: PaymentGateway.fake().copy(siteID: sampleStoreID,
+                                                                                              gatewayID: "cod"))
         noticePresenter = MockNoticePresenter()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         configuration = CardPresentPaymentsConfiguration.init(country: "US")
+
         dependencies = InPersonPaymentsMenuViewModel.Dependencies(
             stores: stores,
+            storageManager: storageManager,
             noticePresenter: noticePresenter,
             analytics: analytics
         )
@@ -81,11 +90,59 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
         assertEqual("Dotcom Invalid REST Route", eventProperties[AnalyticProperties.errorDescriptionKey] as? String)
         assertEqual("payments_hub", eventProperties[AnalyticProperties.sourceKey] as? String)
     }
+
+    func test_updateCashOnDeliverySetting_disabled_success_logs_disable_success_event() throws {
+        // Given
+        assertEmpty(analyticsProvider.receivedEvents)
+        stores.whenReceivingAction(ofType: PaymentGatewayAction.self) { action in
+            switch action {
+            case let .updatePaymentGateway(paymentGateway, onCompletion):
+                onCompletion(.success(paymentGateway))
+            default:
+                break
+            }
+        }
+
+        // When
+        sut.updateCashOnDeliverySetting(enabled: false)
+
+        // Then
+        assertNotEmpty(analyticsProvider.receivedEvents)
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == AnalyticEvents.disableCashOnDeliverySuccess }))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        assertEqual("US", eventProperties[AnalyticProperties.countryCodeKey] as? String)
+        assertEqual("payments_hub", eventProperties[AnalyticProperties.sourceKey] as? String)
+    }
+
+    func test_updateCashOnDeliverySetting_disabled_failure_logs_disable_failure_event() throws {
+        // Given
+        stores.whenReceivingAction(ofType: PaymentGatewayAction.self) { action in
+            switch action {
+            case let .updatePaymentGateway(_, onCompletion):
+                onCompletion(.failure(DotcomError.noRestRoute))
+            default:
+                break
+            }
+        }
+
+        // When
+        sut.updateCashOnDeliverySetting(enabled: false)
+
+        // Then
+        assertNotEmpty(analyticsProvider.receivedEvents)
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == AnalyticEvents.disableCashOnDeliveryFailed }))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        assertEqual("US", eventProperties[AnalyticProperties.countryCodeKey] as? String)
+        assertEqual("Dotcom Invalid REST Route", eventProperties[AnalyticProperties.errorDescriptionKey] as? String)
+        assertEqual("payments_hub", eventProperties[AnalyticProperties.sourceKey] as? String)
+    }
 }
 
 private enum AnalyticEvents {
     static let enableCashOnDeliverySuccess = "enable_cash_on_delivery_success"
     static let enableCashOnDeliveryFailed = "enable_cash_on_delivery_failed"
+    static let disableCashOnDeliverySuccess = "disable_cash_on_delivery_success"
+    static let disableCashOnDeliveryFailed = "disable_cash_on_delivery_failed"
 }
 
 private enum AnalyticProperties {

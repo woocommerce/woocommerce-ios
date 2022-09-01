@@ -1226,6 +1226,37 @@ extension WooAnalyticsEvent {
                               error: error)
         }
 
+        /// Tracked when the Cash on Delivery Payment Gateway is successfully disabled, e.g. from the toggle on the Payments hub menu.
+        ///
+        /// - Parameters:
+        ///   - countryCode: the country code of the store.
+        ///   - source: the screen which the disable attempt was made on
+        ///
+        static func disableCashOnDeliverySuccess(countryCode: String, source: CashOnDeliverySource) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .disableCashOnDeliverySuccess,
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                Keys.source: source.rawValue
+                              ])
+        }
+
+        /// Tracked when the Cash on Delivery Payment Gateway disabling fails,  e.g. from the toggle on the Payments hub menu.
+        ///
+        /// - Parameters:
+        ///   - countryCode: the country code of the store.
+        ///   - source: the screen which the disable attempt was made on
+        ///
+        static func disableCashOnDeliveryFailed(countryCode: String,
+                                               error: Error?,
+                                               source: CashOnDeliverySource) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .disableCashOnDeliveryFailed,
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                Keys.source: source.rawValue
+                              ],
+                              error: error)
+        }
+
         /// Tracked when the user taps on the "See Receipt" button to view a receipt.
         /// - Parameter countryCode: the country code of the store.
         ///

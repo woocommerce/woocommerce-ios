@@ -1,18 +1,22 @@
 import Foundation
 import Yosemite
+import protocol Storage.StorageManagerType
 
 class InPersonPaymentsMenuViewModel: ObservableObject {
 
     // MARK: - Dependencies
     struct Dependencies {
         let stores: StoresManager
+        let storageManager: StorageManagerType
         let noticePresenter: NoticePresenter
         let analytics: Analytics
 
         init(stores: StoresManager = ServiceLocator.stores,
+             storageManager: StorageManagerType = ServiceLocator.storageManager,
              noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
              analytics: Analytics = ServiceLocator.analytics) {
             self.stores = stores
+            self.storageManager = storageManager
             self.noticePresenter = noticePresenter
             self.analytics = analytics
         }
@@ -22,6 +26,10 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
 
     private var stores: StoresManager {
         dependencies.stores
+    }
+
+    private var storageManager: StorageManagerType {
+        dependencies.storageManager
     }
 
     private var noticePresenter: NoticePresenter {
@@ -51,7 +59,8 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         self.dependencies = dependencies
         self.cardPresentPaymentsConfiguration = configuration
         paymentGatewaysFetchedResultsController = Self.createPaymentGatewaysResultsController(
-            siteID: dependencies.stores.sessionManager.defaultStoreID)
+            siteID: dependencies.stores.sessionManager.defaultStoreID,
+            storageManager: dependencies.storageManager)
         observePaymentGateways()
     }
 
@@ -67,14 +76,15 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         }
     }
 
-    private static func createPaymentGatewaysResultsController(siteID: Int64?) -> ResultsController<StoragePaymentGateway>? {
+    private static func createPaymentGatewaysResultsController(siteID: Int64?,
+                                                               storageManager: StorageManagerType) -> ResultsController<StoragePaymentGateway>? {
         guard let siteID = siteID else {
             return nil
         }
 
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
 
-        return ResultsController<StoragePaymentGateway>(storageManager: ServiceLocator.storageManager,
+        return ResultsController<StoragePaymentGateway>(storageManager: storageManager,
                                                         matching: predicate,
                                                         sortedBy: [])
     }
@@ -144,9 +154,11 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
                 // Resetting the toggle to the most recent stored value, or true because we failed to make it false.
                 self.cashOnDeliveryEnabledState = self.cashOnDeliveryGateway?.enabled ?? true
                 self.displayDisableCashOnDeliveryFailureNotice()
+                self.trackDisableCashOnDeliveryFailed(error: result.failure)
                 return
             }
 
+            self.trackDisableCashOnDeliverySuccess()
         }
         stores.dispatch(action)
     }
@@ -186,6 +198,19 @@ extension InPersonPaymentsMenuViewModel {
         let event = Event.enableCashOnDeliveryFailed(countryCode: cardPresentPaymentsConfiguration.countryCode,
                                                      error: error,
                                                      source: .paymentsHub)
+        analytics.track(event: event)
+    }
+
+    private func trackDisableCashOnDeliverySuccess() {
+        let event = Event.disableCashOnDeliverySuccess(countryCode: cardPresentPaymentsConfiguration.countryCode,
+                                                       source: .paymentsHub)
+        analytics.track(event: event)
+    }
+
+    private func trackDisableCashOnDeliveryFailed(error: Error?) {
+        let event = Event.disableCashOnDeliveryFailed(countryCode: cardPresentPaymentsConfiguration.countryCode,
+                                                      error: error,
+                                                      source: .paymentsHub)
         analytics.track(event: event)
     }
 }

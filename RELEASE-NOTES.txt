@@ -4,6 +4,7 @@
 -----
 - [*] Help center: Added help center web page with FAQs for "Enter Store Credentials" and "Enter WordPress.com email "screens. [https://github.com/woocommerce/woocommerce-ios/pull/7588, https://github.com/woocommerce/woocommerce-ios/pull/7590]
 - [*] In-Person Payments: Fixed the Learn More link from the `Enable Pay in Person` onboarding screen for WCPay [https://github.com/woocommerce/woocommerce-ios/pull/7598]
+- [**] In-Person Payments: Added a switch for the Pay in Person payment method on the Payments menu. This allows you to accept In-Person Payments for website orders [https://github.com/woocommerce/woocommerce-ios/pull/7613]
 
 10.1
 -----

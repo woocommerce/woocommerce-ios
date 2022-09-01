@@ -38,14 +38,7 @@ ALPHA_VERSION_BUNDLE_IDENTIFIER = 'com.automattic.alpha.woocommerce'
 # Registered in our Enterprise account, for App Center / Installable Builds
 ALPHA_BUNDLE_IDENTIFIERS = [
   ALPHA_VERSION_BUNDLE_IDENTIFIER,
-  # This is part of the project but currently disabled because of issues
-  # accessing the Enterprise account and creating the app id.
-  #
-  # Such a setup is no good long term but we're obviously working to sort it
-  # out. In the short term, not including this bundle id might work, or it
-  # might break the build later on when code sign happens but can't find the
-  # provisioning profile. We'll soon find out...
-  # "#{ALPHA_VERSION_BUNDLE_IDENTIFIER}.storewidgets"
+  "#{ALPHA_VERSION_BUNDLE_IDENTIFIER}.storewidgets"
 ].freeze
 
 TEST_SCHEME = 'WooCommerce'

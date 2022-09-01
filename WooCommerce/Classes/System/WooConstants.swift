@@ -184,9 +184,14 @@ extension WooConstants {
 #else
         case couponManagementFeedback = "https://automattic.survey.fm/woo-app-coupon-management-production"
 #endif
-        /// URL for the Enable Cash on Delivery (or Pay in Person) onboarding step's learn more link.
+        /// URL for the Enable Cash on Delivery (or Pay in Person) onboarding step's learn more link using the Stripe plugin
         /// 
-        case cashOnDeliveryLearnMoreUrl = "https://woocommerce.com/document/stripe/accept-in-person-payments-with-stripe/#section-8"
+        case stripeCashOnDeliveryLearnMoreUrl = "https://woocommerce.com/document/stripe/accept-in-person-payments-with-stripe/#section-8"
+
+        /// URL for the Enable Cash on Delivery (or Pay in Person) onboarding step's learn more link using the WCPay plugin
+        ///
+        case wcPayCashOnDeliveryLearnMoreUrl =
+                "https://woocommerce.com/document/payments/getting-started-with-in-person-payments-with-woocommerce-payments/#add-cod-payment-method"
 
         /// Returns the URL version of the receiver
         ///

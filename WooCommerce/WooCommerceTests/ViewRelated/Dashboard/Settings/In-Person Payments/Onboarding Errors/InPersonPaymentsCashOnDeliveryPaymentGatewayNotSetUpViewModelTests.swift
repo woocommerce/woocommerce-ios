@@ -31,19 +31,25 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests: 
             noticePresenter: noticePresenter,
             analytics: analytics
         )
-        sut = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(dependencies: dependencies,
-                                                                            configuration: configuration,
-                                                                            completion: {})
+        sut = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(
+            dependencies: dependencies,
+            configuration: configuration,
+            plugin: .wcPay,
+            analyticReason: AnalyticProperties.cashOnDeliveryDisabledReason,
+            completion: {})
     }
 
     func test_skip_always_calls_completion() {
         // Given
         let completionCalled: Bool = waitFor { promise in
-            let sut = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(dependencies: self.dependencies,
-                                                                                    configuration: self.configuration,
-                                                                                    completion: {
-                promise(true)
-            })
+            let sut = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(
+                dependencies: self.dependencies,
+                configuration: self.configuration,
+                plugin: .wcPay,
+                analyticReason: AnalyticProperties.cashOnDeliveryDisabledReason,
+                completion: {
+                    promise(true)
+                })
 
             // When
             sut.skipTapped()
@@ -85,11 +91,14 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests: 
         }
 
         let completionCalled: Bool = waitFor { promise in
-            let sut = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(dependencies: self.dependencies,
-                                                                                    configuration: self.configuration,
-                                                                                    completion: {
-                promise(true)
-            })
+            let sut = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(
+                dependencies: self.dependencies,
+                configuration: self.configuration,
+                plugin: .wcPay,
+                analyticReason: AnalyticProperties.cashOnDeliveryDisabledReason,
+                completion: {
+                    promise(true)
+                })
             // When
             sut.enableTapped()
         }
@@ -163,9 +172,12 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests: 
         }
 
         let _: Void = waitFor { promise in
-            let sut = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(dependencies: self.dependencies,
-                                                                                    configuration: self.configuration,
-                                                                                    completion: {
+            let sut = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(
+                dependencies: self.dependencies,
+                configuration: self.configuration,
+                plugin: .wcPay,
+                analyticReason: AnalyticProperties.cashOnDeliveryDisabledReason,
+                completion: {
                 promise(())
             })
             // When

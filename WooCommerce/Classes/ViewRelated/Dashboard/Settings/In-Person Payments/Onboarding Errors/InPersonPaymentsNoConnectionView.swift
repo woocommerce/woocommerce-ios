@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct InPersonPaymentsNoConnection: View {
-    let analyticReason: String?
+    let analyticReason: String
     let onRefresh: () -> Void
 
     var body: some View {
@@ -43,6 +43,6 @@ private enum Localization {
 
 struct InPersonPaymentsNoConnection_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsNoConnection(analyticReason: nil, onRefresh: {})
+        InPersonPaymentsNoConnection(analyticReason: "", onRefresh: {})
     }
 }

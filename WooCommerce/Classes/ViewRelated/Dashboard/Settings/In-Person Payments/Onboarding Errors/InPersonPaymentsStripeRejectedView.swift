@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct InPersonPaymentsStripeRejected: View {
-    let analyticReason: String?
+    let analyticReason: String
     var body: some View {
         InPersonPaymentsOnboardingError(
             title: Localization.title,
@@ -31,6 +31,6 @@ private enum Localization {
 
 struct InPersonPaymentsStripeRejected_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsStripeRejected(analyticReason: nil)
+        InPersonPaymentsStripeRejected(analyticReason: "")
     }
 }

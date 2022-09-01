@@ -28,7 +28,7 @@ struct InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView: View {
 
             Spacer()
 
-            InPersonPaymentsLearnMore(url: WooConstants.URLs.cashOnDeliveryLearnMoreUrl.asURL(),
+            InPersonPaymentsLearnMore(url: viewModel.learnMoreURL,
                                       formatText: Localization.cashOnDeliveryLearnMore,
                                       analyticReason: viewModel.analyticReason)
         }
@@ -37,8 +37,11 @@ struct InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView: View {
 
 struct InPersonPaymentsCodPaymentGatewayNotSetUp_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(configuration: CardPresentPaymentsConfiguration(country: "US"),
-                                                                                      completion: {})
+        let viewModel = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(
+            configuration: CardPresentPaymentsConfiguration(country: "US"),
+            plugin: .wcPay,
+            analyticReason: "",
+            completion: {})
         return InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView(viewModel: viewModel)
     }
 }

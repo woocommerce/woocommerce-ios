@@ -751,6 +751,7 @@ extension WooAnalyticsEvent {
             static let errorDescription = "error_description"
             static let paymentMethodType = "payment_method_type"
             static let softwareUpdateType = "software_update_type"
+            static let source = "source"
         }
 
         static let unknownGatewayID = "unknown"
@@ -1189,15 +1190,21 @@ extension WooAnalyticsEvent {
                               ])
         }
 
+        enum CashOnDeliverySource: String {
+            case onboarding
+            case paymentsHub = "payments_hub"
+        }
+
         /// Tracked when the Cash on Delivery Payment Gateway is successfully enabled, e.g. from the IPP onboarding flow.
         ///
         /// - Parameters:
         ///   - countryCode: the country code of the store.
         ///
-        static func enableCashOnDeliverySuccess(countryCode: String) -> WooAnalyticsEvent {
+        static func enableCashOnDeliverySuccess(countryCode: String, source: CashOnDeliverySource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .enableCashOnDeliverySuccess,
                               properties: [
-                                Keys.countryCode: countryCode
+                                Keys.countryCode: countryCode,
+                                Keys.source: source.rawValue
                               ])
         }
 
@@ -1207,10 +1214,12 @@ extension WooAnalyticsEvent {
         ///   - countryCode: the country code of the store.
         ///
         static func enableCashOnDeliveryFailed(countryCode: String,
-                                               error: Error?) -> WooAnalyticsEvent {
+                                               error: Error?,
+                                               source: CashOnDeliverySource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .enableCashOnDeliveryFailed,
                               properties: [
-                                Keys.countryCode: countryCode
+                                Keys.countryCode: countryCode,
+                                Keys.source: source.rawValue
                               ],
                               error: error)
         }

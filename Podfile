@@ -36,8 +36,10 @@ target 'WooCommerce' do
   # ====================
   #
 
+  pod 'Automattic-Tracks-iOS', '~> 0.12.0-beta.2'
   # pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => ''
-  pod 'Automattic-Tracks-iOS', '~> 0.12.0-beta.1'
+  # pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :commit => ''
+  # pod 'Automattic-Tracks-iOS', :path => '../Automattic-Tracks-iOS'
 
   pod 'Gridicons', '~> 1.2.0'
 
@@ -227,7 +229,10 @@ end
 # ==================
 #
 def experiments_pods
-  pod 'Automattic-Tracks-iOS', '~> 0.12.0-beta.1'
+  pod 'Automattic-Tracks-iOS', '~> 0.12.0-beta.2'
+  # pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => ''
+  # pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :commit => '7e11e93d6205f51c09aad5d59f4e0679a796a2ef'
+  # pod 'Automattic-Tracks-iOS', :path => '../Automattic-Tracks-iOS'
   pod 'CocoaLumberjack', '~> 3.7.4'
   pod 'CocoaLumberjack/Swift', '~> 3.7.4'
 end
@@ -327,6 +332,7 @@ post_install do |installer|
 
   # Flag Alpha builds for Tracks
   # ============================
+  # rubocop:disable Style/CombinableLoops
   installer.pods_project.targets.each do |target|
     next unless target.name == 'Automattic-Tracks-iOS'
 
@@ -336,4 +342,5 @@ post_install do |installer|
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', 'ALPHA=1']
     end
   end
+  # rubocop:enable Style/CombinableLoops
 end

@@ -3,7 +3,7 @@ import Yosemite
 
 struct InPersonPaymentsLiveSiteInTestMode: View {
     let plugin: CardPresentPaymentsPlugin
-    let analyticReason: String?
+    let analyticReason: String
     let onRefresh: () -> Void
 
     var body: some View {
@@ -46,6 +46,6 @@ private enum Localization {
 
 struct InPersonPaymentsLiveSiteInTestMode_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsLiveSiteInTestMode(plugin: .wcPay, analyticReason: nil, onRefresh: {})
+        InPersonPaymentsLiveSiteInTestMode(plugin: .wcPay, analyticReason: "", onRefresh: {})
     }
 }

@@ -14,10 +14,6 @@ public enum FeatureFlag: Int {
     ///
     case reviews
 
-    /// Display the bar for displaying the filters in the Order List
-    ///
-    case orderListFilters
-
     /// Allows sites with plugins that include Jetpack Connection Package and without Jetpack-the-plugin to connect to the app
     ///
     case jetpackConnectionPackageSupport
@@ -69,10 +65,6 @@ public enum FeatureFlag: Int {
     /// Enable Shipping Labels Onboarding M1 (display the banner in Order Detail screen for installing the WCShip plugin)
     ///
     case shippingLabelsOnboardingM1
-
-    /// Enable selection of payment gateway to use for In-Person Payments when there is more than one available
-    ///
-    case inPersonPaymentGatewaySelection
 
     /// Enable image upload after leaving the product form
     ///

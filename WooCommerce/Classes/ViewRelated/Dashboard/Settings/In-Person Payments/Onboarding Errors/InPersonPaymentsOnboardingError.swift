@@ -7,7 +7,7 @@ struct InPersonPaymentsOnboardingError: View {
     let image: InPersonPaymentsOnboardingErrorMainContentView.ImageInfo
     let supportLink: Bool
     let learnMore: Bool
-    let analyticReason: String?
+    let analyticReason: String
     var buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel? = nil
 
     var body: some View {

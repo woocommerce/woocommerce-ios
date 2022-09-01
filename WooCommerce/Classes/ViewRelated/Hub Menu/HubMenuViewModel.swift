@@ -208,7 +208,7 @@ extension HubMenuViewModel {
 
         let title: String = Localization.woocommerceAdmin
         let icon: UIImage = .wordPressLogoImage
-        let iconColor: UIColor = .blue
+        let iconColor: UIColor = .wooBlue
         let badge: HubMenuBadgeType = .number(number: 0)
         let accessibilityIdentifier: String = "menu-woocommerce-admin"
         let trackingOption: String = "admin_menu"

@@ -2,7 +2,7 @@ import SwiftUI
 
 struct InPersonPaymentsCountryNotSupported: View {
     let countryCode: String
-    let analyticReason: String?
+    let analyticReason: String
 
     var body: some View {
         InPersonPaymentsOnboardingError(
@@ -47,8 +47,8 @@ private enum Localization {
 struct InPersonPaymentsCountryNotSupported_Previews: PreviewProvider {
     static var previews: some View {
         // Valid country code
-        InPersonPaymentsCountryNotSupported(countryCode: "ES", analyticReason: nil)
+        InPersonPaymentsCountryNotSupported(countryCode: "ES", analyticReason: "")
         // Invalid country code
-        InPersonPaymentsCountryNotSupported(countryCode: "OO", analyticReason: nil)
+        InPersonPaymentsCountryNotSupported(countryCode: "OO", analyticReason: "")
     }
 }

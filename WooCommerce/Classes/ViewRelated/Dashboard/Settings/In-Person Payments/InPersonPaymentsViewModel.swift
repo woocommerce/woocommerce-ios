@@ -6,14 +6,8 @@ final class InPersonPaymentsViewModel: ObservableObject {
     @Published var state: CardPresentPaymentOnboardingState
     var userIsAdministrator: Bool
     var learnMoreURL: URL? = nil
-    let gatewaySelectionAvailable: Bool
     private let useCase: CardPresentPaymentsOnboardingUseCase
     let stores: StoresManager
-
-    lazy var codStepViewModel: InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel = {
-        InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(configuration: useCase.configurationLoader.configuration,
-                                                                      completion: refresh)
-    }()
 
     /// Initializes the view model for a specific site
     ///
@@ -22,7 +16,6 @@ final class InPersonPaymentsViewModel: ObservableObject {
          useCase: CardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase()) {
         self.stores = stores
         self.useCase = useCase
-        gatewaySelectionAvailable = featureFlagService.isFeatureFlagEnabled(.inPersonPaymentGatewaySelection)
         state = useCase.state
         userIsAdministrator = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator)
 
@@ -43,10 +36,8 @@ final class InPersonPaymentsViewModel: ObservableObject {
     init(
         fixedState: CardPresentPaymentOnboardingState,
         fixedUserIsAdministrator: Bool = false,
-        stores: StoresManager = ServiceLocator.stores,
-        featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+        stores: StoresManager = ServiceLocator.stores) {
             self.stores = stores
-            gatewaySelectionAvailable = featureFlagService.isFeatureFlagEnabled(.inPersonPaymentGatewaySelection)
             state = fixedState
             useCase = CardPresentPaymentsOnboardingUseCase()
             userIsAdministrator = fixedUserIsAdministrator
@@ -110,27 +101,23 @@ private extension InPersonPaymentsViewModel {
     }
 
     func trackState(_ state: CardPresentPaymentOnboardingState) {
-        // When we remove this feature flag, we can switch reason to let and remove the state.isSelectPlugin block
-        guard var reason = state.reasonForAnalytics else {
+        guard state.shouldTrackOnboardingStepEvents else {
             return
-        }
-        if state.isSelectPlugin && !gatewaySelectionAvailable {
-            reason = "multiple_plugins_installed"
         }
         ServiceLocator.analytics
             .track(event: .InPersonPayments
-                    .cardPresentOnboardingNotCompleted(reason: reason,
-                                                       countryCode: countryCode))
+                .cardPresentOnboardingNotCompleted(reason: state.reasonForAnalytics,
+                                                   countryCode: countryCode))
     }
 
     func trackSkipped(state: CardPresentPaymentOnboardingState, remindLater: Bool) {
-        guard let reason = state.reasonForAnalytics else {
+        guard state.shouldTrackOnboardingStepEvents else {
             return
         }
 
         ServiceLocator.analytics.track(
             event: .InPersonPayments.cardPresentOnboardingStepSkipped(
-                reason: reason,
+                reason: state.reasonForAnalytics,
                 remindLater: remindLater,
                 countryCode: countryCode))
     }

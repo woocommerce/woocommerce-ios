@@ -22,7 +22,7 @@ public enum ABTest: String, CaseIterable {
 
     /// A/B test for the login button order on the prologues screen.
     /// Experiment ref: pbxNRc-1VA-p2
-    case loginPrologueButtonOrder = "woocommerceios_login_prologue_button_order"
+    case loginPrologueButtonOrder = "woocommerceios_login_prologue_button_order_202209"
 
     /// Returns a variation for the given experiment
     public var variation: Variation {

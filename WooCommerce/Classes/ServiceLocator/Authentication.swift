@@ -9,7 +9,7 @@ protocol Authentication {
     /// Presents the Support Interface
     ///
     /// - Parameters:
-    ///     - from: UIViewController instance from which to provide the support interface
+    ///     - from: UIViewController instance from which to present the support interface
     ///     - screen: A case from `CustomHelpCenterContent.Screen` enum. This represents authentication related screens from WCiOS.
     ///
     func presentSupport(from sourceViewController: UIViewController, screen: CustomHelpCenterContent.Screen)

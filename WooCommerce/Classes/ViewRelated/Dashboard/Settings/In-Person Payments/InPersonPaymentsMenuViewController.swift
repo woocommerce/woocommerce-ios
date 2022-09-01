@@ -59,6 +59,9 @@ final class InPersonPaymentsMenuViewController: UIViewController {
         configureTableView()
         registerTableViewCells()
         runCardPresentPaymentsOnboarding()
+
+        navigationController?.setNavigationBarHidden(false, animated: true)
+        navigationItem.title = "In-Person Payments"
     }
 }
 

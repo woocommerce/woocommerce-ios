@@ -469,7 +469,7 @@ private extension InPersonPaymentsMenuViewController {
         )
 
         static let toggleEnableCashOnDelivery = NSLocalizedString(
-            "Enable Pay in Person",
+            "Pay in Person",
             comment: "Title for a switch on the In-Person Payments menu to enable Cash on Delivery"
         )
 

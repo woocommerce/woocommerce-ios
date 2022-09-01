@@ -182,6 +182,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
 
     func learnMoreTapped(from viewController: UIViewController) {
         WebviewHelper.launch(learnMoreURL, with: viewController)
+        analytics.track(.paymentsHubCashOnDeliveryToggleLearnMoreTapped)
     }
 }
 

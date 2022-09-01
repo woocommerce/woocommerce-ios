@@ -164,6 +164,17 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
         assertEqual("Dotcom Invalid REST Route", eventProperties[AnalyticProperties.errorDescriptionKey] as? String)
         assertEqual("payments_hub", eventProperties[AnalyticProperties.sourceKey] as? String)
     }
+
+    func test_learnMoreTapped_tracks_paymentsHubCashOnDeliveryToggleLearnMoreTapped_event() throws {
+        // Given
+
+        // When
+        sut.learnMoreTapped(from: UIViewController())
+
+        // Then
+        let event = try XCTUnwrap(analyticsProvider.receivedEvents.first(where: { $0 == AnalyticEvents.paymentsHubCashOnDeliveryToggleLearnMoreTapped } ))
+        XCTAssertNotNil(event)
+    }
 }
 
 private enum AnalyticEvents {
@@ -172,6 +183,7 @@ private enum AnalyticEvents {
     static let disableCashOnDeliverySuccess = "disable_cash_on_delivery_success"
     static let disableCashOnDeliveryFailed = "disable_cash_on_delivery_failed"
     static let paymentsHubCashOnDeliveryToggled = "payments_hub_cash_on_delivery_toggled"
+    static let paymentsHubCashOnDeliveryToggleLearnMoreTapped = "payments_hub_cash_on_delivery_toggle_learn_more_tapped"
 }
 
 private enum AnalyticProperties {

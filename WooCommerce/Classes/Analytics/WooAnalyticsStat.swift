@@ -193,6 +193,7 @@ public enum WooAnalyticsStat: String {
     case disableCashOnDeliverySuccess = "disable_cash_on_delivery_success"
     case disableCashOnDeliveryFailed = "disable_cash_on_delivery_failed"
     case paymentsHubCashOnDeliveryToggled = "payments_hub_cash_on_delivery_toggled"
+    case paymentsHubCashOnDeliveryToggleLearnMoreTapped = "payments_hub_cash_on_delivery_toggle_learn_more_tapped"
 
     // MARK: Payment Gateways selection
     case cardPresentPaymentGatewaySelected = "card_present_payment_gateway_selected"

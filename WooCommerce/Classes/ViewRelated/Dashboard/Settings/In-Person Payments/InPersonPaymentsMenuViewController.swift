@@ -110,6 +110,8 @@ private extension InPersonPaymentsMenuViewController {
             showCardPresentPaymentsOnboardingNotice()
         }
 
+        updateViewModelSelectedPlugin(state: state)
+
         activityIndicator?.stopAnimating()
         configureSections()
         tableView.reloadData()
@@ -128,6 +130,17 @@ private extension InPersonPaymentsMenuViewController {
 
     func dismissCardPresentPaymentsOnboardingNoticeIfPresent() {
         permanentNoticePresenter.dismiss()
+    }
+
+    func updateViewModelSelectedPlugin(state: CardPresentPaymentOnboardingState) {
+        switch state {
+        case let .completed(pluginState):
+            inPersonPaymentsMenuViewModel.selectedPlugin = pluginState.preferred
+        case let .codPaymentGatewayNotSetUp(plugin):
+            inPersonPaymentsMenuViewModel.selectedPlugin = plugin
+        default:
+            inPersonPaymentsMenuViewModel.selectedPlugin = nil
+        }
     }
 
     func showOnboarding() {
@@ -280,7 +293,11 @@ private extension InPersonPaymentsMenuViewController {
                        text: Localization.toggleEnableCashOnDelivery,
                        subtitle: learnMoreViewModel.learnMoreAttributedString,
                        switchState: inPersonPaymentsMenuViewModel.cashOnDeliveryEnabledState,
-                       switchAction: inPersonPaymentsMenuViewModel.updateCashOnDeliverySetting(enabled:))
+                       switchAction: inPersonPaymentsMenuViewModel.updateCashOnDeliverySetting(enabled:),
+                       subtitleTapAction: { [weak self] in
+            guard let self = self else { return }
+            self.inPersonPaymentsMenuViewModel.learnMoreTapped(from: self)
+        })
     }
 
     func updateEnabledState(in cell: UITableViewCell, shouldBeEnabled: Bool = true) {

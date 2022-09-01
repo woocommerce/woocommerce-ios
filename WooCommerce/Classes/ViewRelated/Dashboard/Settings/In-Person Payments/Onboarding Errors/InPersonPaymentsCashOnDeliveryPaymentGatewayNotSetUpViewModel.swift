@@ -151,14 +151,3 @@ private enum Localization {
         "Retry",
         comment: "Retry Action on error displayed when the attempt to enable a Pay in Person checkout payment option fails")
 }
-
-private extension CardPresentPaymentsPlugin {
-    var cashOnDeliveryLearnMoreURL: URL {
-        switch self {
-        case .wcPay:
-            return WooConstants.URLs.wcPayCashOnDeliveryLearnMore.asURL()
-        case .stripe:
-            return WooConstants.URLs.stripeCashOnDeliveryLearnMore.asURL()
-        }
-    }
-}

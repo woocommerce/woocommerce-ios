@@ -42,6 +42,8 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
 
     private let paymentGatewaysFetchedResultsController: ResultsController<StoragePaymentGateway>?
 
+    var selectedPlugin: CardPresentPaymentsPlugin?
+
     init(dependencies: Dependencies = Dependencies()) {
         self.dependencies = dependencies
         paymentGatewaysFetchedResultsController = Self.createPaymentGatewaysResultsController(
@@ -151,6 +153,16 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
                             actionHandler: disableCashOnDeliveryGateway)
 
         noticePresenter.enqueue(notice: notice)
+    }
+
+    // MARK: - Learn More
+
+    private var learnMoreURL: URL {
+        (selectedPlugin ?? .wcPay).cashOnDeliveryLearnMoreURL
+    }
+
+    func learnMoreTapped(from viewController: UIViewController) {
+        WebviewHelper.launch(learnMoreURL, with: viewController)
     }
 }
 

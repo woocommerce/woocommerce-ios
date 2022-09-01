@@ -1199,6 +1199,7 @@ extension WooAnalyticsEvent {
         ///
         /// - Parameters:
         ///   - countryCode: the country code of the store.
+        ///   - source: the screen which the enable attempt was made on     
         ///
         static func enableCashOnDeliverySuccess(countryCode: String, source: CashOnDeliverySource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .enableCashOnDeliverySuccess,
@@ -1212,6 +1213,7 @@ extension WooAnalyticsEvent {
         ///
         /// - Parameters:
         ///   - countryCode: the country code of the store.
+        ///   - source: the screen which the enable attempt was made on
         ///
         static func enableCashOnDeliveryFailed(countryCode: String,
                                                error: Error?,

@@ -40,12 +40,16 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         stores.sessionManager.defaultStoreID
     }
 
+    private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
+
     private let paymentGatewaysFetchedResultsController: ResultsController<StoragePaymentGateway>?
 
     var selectedPlugin: CardPresentPaymentsPlugin?
 
-    init(dependencies: Dependencies = Dependencies()) {
+    init(dependencies: Dependencies = Dependencies(),
+         configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration) {
         self.dependencies = dependencies
+        self.cardPresentPaymentsConfiguration = configuration
         paymentGatewaysFetchedResultsController = Self.createPaymentGatewaysResultsController(
             siteID: dependencies.stores.sessionManager.defaultStoreID)
         observePaymentGateways()
@@ -108,9 +112,11 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
                 // Resetting the toggle to the most recent stored value, or false because we failed to make it true.
                 self.cashOnDeliveryEnabledState = self.cashOnDeliveryGateway?.enabled ?? false
                 self.displayEnableCashOnDeliveryFailureNotice()
+                self.trackEnableCashOnDeliveryFailed(error: result.failure)
                 return
             }
 
+            self.trackEnableCashOnDeliverySuccess()
         }
         stores.dispatch(action)
     }
@@ -163,6 +169,24 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
 
     func learnMoreTapped(from viewController: UIViewController) {
         WebviewHelper.launch(learnMoreURL, with: viewController)
+    }
+}
+
+// MARK: - Analytics
+extension InPersonPaymentsMenuViewModel {
+    private typealias Event = WooAnalyticsEvent.InPersonPayments
+
+    private func trackEnableCashOnDeliverySuccess() {
+        let event = Event.enableCashOnDeliverySuccess(countryCode: cardPresentPaymentsConfiguration.countryCode,
+                                                      source: .paymentsHub)
+        analytics.track(event: event)
+    }
+
+    private func trackEnableCashOnDeliveryFailed(error: Error?) {
+        let event = Event.enableCashOnDeliveryFailed(countryCode: cardPresentPaymentsConfiguration.countryCode,
+                                                     error: error,
+                                                     source: .paymentsHub)
+        analytics.track(event: event)
     }
 }
 

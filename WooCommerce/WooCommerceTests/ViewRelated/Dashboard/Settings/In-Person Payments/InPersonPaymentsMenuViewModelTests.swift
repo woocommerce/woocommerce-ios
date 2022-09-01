@@ -45,6 +45,34 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
     }
 
     // MARK: - Analytics tests
+    func test_updateCashOnDeliverySetting_enabled_tracks_paymentsHubCashOnDeliveryToggled_event() throws {
+        // Given
+
+        // When
+        sut.updateCashOnDeliverySetting(enabled: true)
+
+        // Then
+        assertNotEmpty(analyticsProvider.receivedEvents)
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == AnalyticEvents.paymentsHubCashOnDeliveryToggled }))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        assertEqual("US", eventProperties[AnalyticProperties.countryCodeKey] as? String)
+        assertEqual(true, eventProperties[AnalyticProperties.enabledKey] as? Bool)
+    }
+
+    func test_updateCashOnDeliverySetting_disabled_tracks_paymentsHubCashOnDeliveryToggled_event() throws {
+        // Given
+
+        // When
+        sut.updateCashOnDeliverySetting(enabled: false)
+
+        // Then
+        assertNotEmpty(analyticsProvider.receivedEvents)
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == AnalyticEvents.paymentsHubCashOnDeliveryToggled }))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        assertEqual("US", eventProperties[AnalyticProperties.countryCodeKey] as? String)
+        assertEqual(false, eventProperties[AnalyticProperties.enabledKey] as? Bool)
+    }
+
     func test_updateCashOnDeliverySetting_enabled_success_logs_enable_success_event() throws {
         // Given
         assertEmpty(analyticsProvider.receivedEvents)
@@ -143,10 +171,12 @@ private enum AnalyticEvents {
     static let enableCashOnDeliveryFailed = "enable_cash_on_delivery_failed"
     static let disableCashOnDeliverySuccess = "disable_cash_on_delivery_success"
     static let disableCashOnDeliveryFailed = "disable_cash_on_delivery_failed"
+    static let paymentsHubCashOnDeliveryToggled = "payments_hub_cash_on_delivery_toggled"
 }
 
 private enum AnalyticProperties {
     static let countryCodeKey = "country"
     static let errorDescriptionKey = "error_description"
     static let sourceKey = "source"
+    static let enabledKey = "enabled"
 }

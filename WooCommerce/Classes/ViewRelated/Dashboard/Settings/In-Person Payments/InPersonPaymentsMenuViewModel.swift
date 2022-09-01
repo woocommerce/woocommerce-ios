@@ -102,6 +102,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     // MARK: - Toggle Cash on Delivery Payment Gateway
 
     func updateCashOnDeliverySetting(enabled: Bool) {
+        trackCashOnDeliveryToggled(enabled: enabled)
         switch enabled {
         case true:
             enableCashOnDeliveryGateway()
@@ -187,6 +188,12 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
 // MARK: - Analytics
 extension InPersonPaymentsMenuViewModel {
     private typealias Event = WooAnalyticsEvent.InPersonPayments
+
+    private func trackCashOnDeliveryToggled(enabled: Bool) {
+        let event = Event.paymentsHubCashOnDeliveryToggled(enabled: enabled,
+                                                           countryCode: cardPresentPaymentsConfiguration.countryCode)
+        analytics.track(event: event)
+    }
 
     private func trackEnableCashOnDeliverySuccess() {
         let event = Event.enableCashOnDeliverySuccess(countryCode: cardPresentPaymentsConfiguration.countryCode,

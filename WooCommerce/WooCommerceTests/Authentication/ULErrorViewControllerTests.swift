@@ -182,10 +182,13 @@ private final class ErrorViewModel: ULErrorViewModel {
 
     let secondaryButtonTitle: String = "Secondary"
 
+    var rightBarButtonItemTitle: String?
+
     var primaryButtonTapped: Bool = false
     var secondaryButtonTapped: Bool = false
     var auxiliaryButtonTapped: Bool = false
     var viewDidLoadTriggered = false
+    var rightBarButtonItemTapped = false
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
         primaryButtonTapped = true
@@ -197,6 +200,10 @@ private final class ErrorViewModel: ULErrorViewModel {
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {
         auxiliaryButtonTapped = true
+    }
+
+    func didTapRightBarButtonItem(in viewController: UIViewController?) {
+        rightBarButtonItemTapped = true
     }
 
     func viewDidLoad(_ viewController: UIViewController?) {

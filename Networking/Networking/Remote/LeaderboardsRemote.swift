@@ -78,10 +78,10 @@ private extension LeaderboardsRemote {
     }
 
     enum ParameterKeys {
-        static let interval: String = "interval"
-        static let after: String    = "after"
-        static let before: String   = "before"
-        static let quantity: String = "per_page"
-        static let forceRefresh: String = "force_cache_refresh"
+        static let interval = "interval"
+        static let after = "after"
+        static let before = "before"
+        static let quantity = "per_page"
+        static let forceRefresh = "force_cache_refresh"
     }
 }

@@ -6,15 +6,19 @@ import Yosemite
 struct OrderDetailsRoute: Route {
     let path = "/orders/details"
 
-    func perform(with parameters: [String: String]) {
+    func perform(with parameters: [String: String]) -> Bool {
         guard let storeIdString = parameters[ParametersKeys.blogId],
               let storeId = Int64(storeIdString),
               let orderIdString = parameters[ParametersKeys.orderId],
               let orderId = Int64(orderIdString) else {
-            return DDLogError("Error: we receive an universal link for order details but parameters couldn't be parsed.")
+            DDLogError("Error: we receive an universal link for order details but parameters couldn't be parsed.")
+
+            return false
         }
 
         MainTabBarController.navigateToOrderDetails(with: orderId, siteID: storeId)
+        
+        return true
     }
 }
 

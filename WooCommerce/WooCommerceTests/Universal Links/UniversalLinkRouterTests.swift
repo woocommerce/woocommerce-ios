@@ -17,6 +17,8 @@ final class UniversalLinkRouterTests: XCTestCase {
         var retrievedParameters: [String: String]?
         let route = MockRoute(path: path, performAction: { parameters in
             retrievedParameters = parameters
+
+            return true
         })
         let sut = UniversalLinkRouter(routes: [route])
 
@@ -43,11 +45,15 @@ final class UniversalLinkRouterTests: XCTestCase {
         var routeOneWasCalled = false
         let routeOne = MockRoute(path: path, performAction: { _ in
             routeOneWasCalled = true
+
+            return true
         })
 
         var routeTwoWasCalled = false
         let routeTwo = MockRoute(path: path, performAction: { _ in
             routeTwoWasCalled = true
+
+            return true
         })
 
 
@@ -73,6 +79,8 @@ final class UniversalLinkRouterTests: XCTestCase {
         var routeOneWasCalled = false
         let routeOne = MockRoute(path: "a/different/path", performAction: { _ in
             routeOneWasCalled = true
+
+            return true
         })
 
         var bouncingURL = url
@@ -87,5 +95,39 @@ final class UniversalLinkRouterTests: XCTestCase {
         // Then
         XCTAssertEqual(bouncingURL, url)
         XCTAssertFalse(routeOneWasCalled)
+    }
+
+    func test_handle_when_there_the_route_cannot_perform_the_action_then_bounces_url() {
+        // Given
+        let path = "/test/path"
+        let queryItem = URLQueryItem(name: "name", value: "value")
+        var components = URLComponents()
+            components.scheme = "https"
+            components.host = "woocommerce.com"
+            components.path = path
+            components.queryItems = [
+                queryItem
+            ]
+
+        let route = MockRoute(path: path, performAction: { _ in
+            return false
+        })
+
+        guard let url = components.url else {
+            XCTFail()
+            return
+        }
+
+        var bouncingURL: URL?
+        let urlOpener = MockURLOpener(open: { url in
+            bouncingURL = url
+        })
+        let sut = UniversalLinkRouter(routes: [route], bouncingURLOpener: urlOpener)
+
+        // When
+        sut.handle(url: url)
+
+        // Then
+        XCTAssertEqual(bouncingURL, url)
     }
 }

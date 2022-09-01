@@ -109,6 +109,22 @@ final class ULErrorViewControllerTests: XCTestCase {
         XCTAssertEqual(rightBarButtonItem.title, title)
     }
 
+    func test_viewcontroller_hits_viewmodel_when_right_bar_button_item_is_tapped() throws {
+        // Given
+        let viewModel = ErrorViewModel()
+        viewModel.rightBarButtonItemTitle = "Button"
+        let viewController = ULErrorViewController(viewModel: viewModel)
+
+        // When
+        _ = try XCTUnwrap(viewController.view)
+        let rightBarButtonItem = try XCTUnwrap(viewController.navigationItem.rightBarButtonItem)
+
+        _ = rightBarButtonItem.target?.perform(rightBarButtonItem.action)
+
+        // Then
+        XCTAssertTrue(viewModel.rightBarButtonItemTapped)
+    }
+
     func test_viewcontroller_hits_viewmodel_when_auxbutton_is_tapped() throws {
         // Given
         let viewModel = ErrorViewModel()

@@ -11,8 +11,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .hubMenu:
             return true
-        case .systemStatusReport:
-            return true
         case .couponView:
             return true
         case .productSKUInputScanner:

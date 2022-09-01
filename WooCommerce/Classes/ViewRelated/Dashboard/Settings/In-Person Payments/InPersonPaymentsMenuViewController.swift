@@ -88,7 +88,7 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     func refreshAfterNewOnboardingState(_ state: CardPresentPaymentOnboardingState) {
-        self.pluginState = nil
+        pluginState = nil
 
         guard state != .loading else {
             self.activityIndicator?.startAnimating()
@@ -97,22 +97,22 @@ private extension InPersonPaymentsMenuViewController {
 
         switch state {
         case let .completed(newPluginState):
-            self.pluginState = newPluginState
-            self.dismissCardPresentPaymentsOnboardingNoticeIfPresent()
-            self.dismissOnboardingIfPresented()
+            pluginState = newPluginState
+            dismissCardPresentPaymentsOnboardingNoticeIfPresent()
+            dismissOnboardingIfPresented()
         case let .selectPlugin(pluginSelectionWasCleared):
             // If it was cleared it means that we triggered it manually (e.g by tapping in this view on the plugin selection row)
             // No need to show the onboarding notice
             if !pluginSelectionWasCleared {
-                self.showCardPresentPaymentsOnboardingNotice()
+                showCardPresentPaymentsOnboardingNotice()
             }
         default:
-            self.showCardPresentPaymentsOnboardingNotice()
+            showCardPresentPaymentsOnboardingNotice()
         }
 
-        self.activityIndicator?.stopAnimating()
-        self.configureSections()
-        self.tableView.reloadData()
+        activityIndicator?.stopAnimating()
+        configureSections()
+        tableView.reloadData()
     }
 
     func showCardPresentPaymentsOnboardingNotice() {

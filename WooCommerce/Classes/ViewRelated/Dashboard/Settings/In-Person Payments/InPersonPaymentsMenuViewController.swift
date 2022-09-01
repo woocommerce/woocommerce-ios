@@ -474,7 +474,7 @@ private extension InPersonPaymentsMenuViewController {
         )
 
         static let toggleEnableCashOnDeliveryLearnMoreFormat = NSLocalizedString(
-            "Pay in Person lets you accept card or cash payments on collection or delivery. %1$@",
+            "The Pay in Person checkout option lets you accept payments for website orders, on collection or delivery. %1$@",
             comment: "A label prompting users to learn more about adding Pay in Person to their checkout. " +
             "%1$@ is a placeholder that always replaced with \"Learn more\" string, " +
             "which should be translated separately and considered part of this sentence.")

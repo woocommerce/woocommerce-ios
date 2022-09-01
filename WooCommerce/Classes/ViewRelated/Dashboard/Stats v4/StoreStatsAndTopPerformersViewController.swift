@@ -160,6 +160,9 @@ private extension StoreStatsAndTopPerformersViewController {
                 return
             }
 
+            // We want to make sure the latest data are fetched (force-refreshing the cache on the server side) when:
+            // - The `forced` parameter is `true` (e.g. when the user pulls to refresh)
+            // - The stats for the time range tab are being synced for the first time (`lastFullSyncTimestamp` is `nil`)
             let forceRefresh = forced || vc.lastFullSyncTimestamp == nil
 
             // local var to catch sync error for period

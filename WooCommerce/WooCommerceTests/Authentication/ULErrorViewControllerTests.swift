@@ -94,6 +94,21 @@ final class ULErrorViewControllerTests: XCTestCase {
         XCTAssertNil(viewController.navigationItem.rightBarButtonItem)
     }
 
+    func test_viewcontroller_shows_right_bar_button_item_when_rightBarButtonItemTitle_provided_by_viewmodel() throws {
+        // Given
+        let title = "Title"
+        let viewModel = ErrorViewModel()
+        viewModel.rightBarButtonItemTitle = title
+        let viewController = ULErrorViewController(viewModel: viewModel)
+
+        // When
+        _ = try XCTUnwrap(viewController.view)
+        let rightBarButtonItem = try XCTUnwrap(viewController.navigationItem.rightBarButtonItem)
+
+        // Then
+        XCTAssertEqual(rightBarButtonItem.title, title)
+    }
+
     func test_viewcontroller_hits_viewmodel_when_auxbutton_is_tapped() throws {
         // Given
         let viewModel = ErrorViewModel()

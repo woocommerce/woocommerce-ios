@@ -45,16 +45,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         appCoordinator?.tabBarController
     }
 
-    /// Checks on whether the Apple ID credential is valid when the app is logged in and becomes active.
-    ///
-    private lazy var appleIDCredentialChecker = AppleIDCredentialChecker()
+    private let universalLinkRouter = UniversalLinkRouter.defaultUniversalLinkRouter()
 
     // MARK: - AppDelegate Methods
 
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         // Setup Components
         setupAnalytics()
-        setupAuthenticationManager()
         setupCocoaLumberjack()
         setupLogLevel(.verbose)
         setupPushNotificationsManagerIfPossible()
@@ -62,7 +59,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupWormholy()
         setupKeyboardStateProvider()
         handleLaunchArguments()
-        appleIDCredentialChecker.observeLoggedInStateForAppleIDObservations()
         setupUserNotificationCenter()
 
         // Components that require prior Auth
@@ -71,21 +67,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Yosemite Initialization
         synchronizeEntitiesIfPossible()
 
-        // Upgrade check...
-        checkForUpgrades()
-
         // Since we are using Injection for refreshing the content of the app in debug mode,
         // we are going to enable Inject.animation that will be used when
         // ever new source code is injected into our application.
         Inject.animation = .interactiveSpring()
 
+        Task { @MainActor in
+            await startABTesting()
+
+            // Upgrade check...
+            // This has to be called after A/B testing setup in `startABTesting` if any of the Tracks events
+            // in `checkForUpgrades` is used as an exposure event for an experiment.
+            // For example, `application_installed` could be the exposure event for logged-out experiments.
+            checkForUpgrades()
+        }
+
         return true
     }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-
-        startABTesting()
-
         // Setup the Interface!
         setupMainWindow()
         setupComponentsAppearance()
@@ -172,6 +172,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         DDLogVerbose("👀 Application terminating...")
         NotificationCenter.default.post(name: .applicationTerminating, object: nil)
     }
+
+    func application(_ application: UIApplication,
+                     continue userActivity: NSUserActivity,
+                     restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+        if userActivity.activityType == NSUserActivityTypeBrowsingWeb {
+            handleWebActivity(userActivity)
+        }
+
+        return true
+    }
 }
 
 
@@ -250,12 +260,6 @@ private extension AppDelegate {
     ///
     func setupAnalytics() {
         ServiceLocator.analytics.initialize()
-    }
-
-    /// Sets up the WordPress Authenticator.
-    ///
-    func setupAuthenticationManager() {
-        ServiceLocator.authenticationManager.initialize()
     }
 
     /// Sets up CocoaLumberjack logging.
@@ -367,11 +371,8 @@ private extension AppDelegate {
 
     /// Starts the AB testing platform
     ///
-    func startABTesting() {
-        guard ServiceLocator.stores.isAuthenticated else {
-            return
-        }
-        ABTest.start()
+    func startABTesting() async {
+        await ABTest.start()
     }
 }
 
@@ -385,7 +386,9 @@ private extension AppDelegate {
         let versionOfLastRun = UserDefaults.standard[.versionOfLastRun] as? String
         if versionOfLastRun == nil {
             // First run after a fresh install
-            ServiceLocator.analytics.track(.applicationInstalled)
+            ServiceLocator.analytics.track(.applicationInstalled,
+                                           withProperties: ["after_abtest_setup": true,
+                                                            "prologue_experiment_variant": ABTest.loginPrologueButtonOrder.variation.analyticsValue])
         } else if versionOfLastRun != currentVersion {
             // App was upgraded
             ServiceLocator.analytics.track(.applicationUpgraded, withProperties: ["previous_version": versionOfLastRun ?? String()])
@@ -426,5 +429,17 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
         await ServiceLocator.pushNotesManager.handleNotificationInTheForeground(notification)
+    }
+}
+
+// MARK: - Universal Links
+
+private extension AppDelegate {
+    func handleWebActivity(_ activity: NSUserActivity) {
+        guard let linkURL = activity.webpageURL else {
+            return
+        }
+
+        universalLinkRouter.handle(url: linkURL)
     }
 }

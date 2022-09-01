@@ -27,6 +27,9 @@ protocol ULAccountMismatchViewModel {
     /// Provides a title for a primary action button
     var primaryButtonTitle: String { get }
 
+    /// Provides the visibility of the primary button
+    var isPrimaryButtonHidden: Bool { get }
+
     /// Provides the title for the logout button
     var logOutButtonTitle: String { get }
 

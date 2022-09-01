@@ -2,8 +2,7 @@ import Foundation
 import Yosemite
 
 extension CardReaderType {
-
-    var manual: Manual {
+    var manual: Manual? {
         switch self {
         case .chipper:
             return Manual(
@@ -27,7 +26,7 @@ extension CardReaderType {
                 urlString: "https://stripe.com/files/docs/terminal/wp3_product_sheet.pdf"
             )
         case .other:
-            return Manual(id: 5, image: .cardReaderManualIcon, name: "", urlString: "")
+            return nil
         }
     }
 }

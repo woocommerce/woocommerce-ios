@@ -24,6 +24,11 @@ final class OrderListViewModel {
     private let pushNotificationsManager: PushNotesManager
     private let notificationCenter: NotificationCenter
 
+    /// Used to show the upsell card readers banner and discern its visibility
+    /// 
+    private let upsellCardReadersCampaign = UpsellCardReadersCampaign(source: .orderList)
+    let upsellCardReadersAnnouncementViewModel: FeatureAnnouncementCardViewModel
+
     /// Used for cancelling the observer for Remote Notifications when `self` is deallocated.
     ///
     private var foregroundNotificationsSubscription: AnyCancellable?
@@ -90,22 +95,23 @@ final class OrderListViewModel {
     ///
     @Published var hideOrdersBanners: Bool = true
 
-    private let loadOrdersBanner: Bool
-
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          notificationCenter: NotificationCenter = .default,
-         filters: FilterOrderListViewModel.Filters?,
-         loadOrdersBanner: Bool = true) {
+         filters: FilterOrderListViewModel.Filters?) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
         self.pushNotificationsManager = pushNotificationsManager
         self.notificationCenter = notificationCenter
         self.filters = filters
-        self.loadOrdersBanner = loadOrdersBanner
+        self.upsellCardReadersAnnouncementViewModel =
+            .init(analytics: ServiceLocator.analytics,
+                  configuration: upsellCardReadersCampaign.configuration,
+                  stores: stores)
+
     }
 
     deinit {
@@ -128,10 +134,11 @@ final class OrderListViewModel {
 
         observeForegroundRemoteNotifications()
         bindTopBannerState()
+        loadOrdersBannerVisibility()
+    }
 
-        if loadOrdersBanner {
-            loadOrdersBannerVisibility()
-        }
+    func dismissUpsellCardReadersBanner() {
+        bindTopBannerState()
     }
 
     func dismissOrdersBanner() {
@@ -233,18 +240,6 @@ final class OrderListViewModel {
         )
     }
 
-    /// Fetch all `OrderStatus` from the API
-    ///
-    func syncOrderStatuses() {
-        let action = OrderStatusAction.retrieveOrderStatuses(siteID: siteID) { result in
-            if case let .failure(error) = result {
-                DDLogError("⛔️ Order List — Error synchronizing order statuses: \(error)")
-            }
-        }
-
-        stores.dispatch(action)
-    }
-
     func updateFilters(filters: FilterOrderListViewModel.Filters?) {
         self.filters = filters
     }
@@ -298,14 +293,18 @@ extension OrderListViewModel {
     ///
     private func bindTopBannerState() {
         let errorState = $hasErrorLoadingData.removeDuplicates()
-        Publishers.CombineLatest(errorState, $hideOrdersBanners)
-            .map { hasError, hasDismissedBanners -> TopBanner in
+        Publishers.CombineLatest3(errorState, $hideOrdersBanners, upsellCardReadersAnnouncementViewModel.$shouldBeVisible)
+            .map { hasError, hasDismissedOrdersBanners, upsellCardReadersBannerShouldBeVisible  -> TopBanner in
 
                 guard !hasError else {
                     return .error
                 }
 
-                guard !hasDismissedBanners else {
+                guard !upsellCardReadersBannerShouldBeVisible else {
+                    return .upsellCardReaders
+                }
+
+                guard !hasDismissedOrdersBanners else {
                     return .none
                 }
 
@@ -351,6 +350,7 @@ extension OrderListViewModel {
     ///
     enum TopBanner {
         case error
+        case upsellCardReaders
         case orderCreation
         case none
     }

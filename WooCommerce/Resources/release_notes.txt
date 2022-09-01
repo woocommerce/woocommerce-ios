@@ -1,5 +1,2 @@
-We’re thrilled to announce that it’s now possible to edit an order from the app. Right now, you can edit or remove products, fees, shipping and change product quantity. 
-
-In order details, some third-party extensions were not logically showing order metadata. We’ve made some changes to display these custom fields for an order. We’ve also made several improvements to our payments and login flow, including the option to install Jetpack directly from the app. 
-
+This release has several fixes that makes it easier for you to take payments from the app. We’ve also added a new Help Center FAQ page that makes it easier for you to login to the app.
 Please continue to send us feedback – we are listening!

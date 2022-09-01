@@ -19,6 +19,7 @@ final class DashboardViewModel {
                    timeRange: StatsTimeRangeV4,
                    latestDateToInclude: Date,
                    onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
+        let waitingTracker = WaitingTimeTracker(trackScenario: .dashboardMainStats)
         let earliestDateToInclude = timeRange.earliestDate(latestDate: latestDateToInclude, siteTimezone: siteTimezone)
         let action = StatsActionV4.retrieveStats(siteID: siteID,
                                                  timeRange: timeRange,
@@ -29,6 +30,7 @@ final class DashboardViewModel {
             guard let self = self else { return }
             switch result {
             case .success:
+                waitingTracker.end()
                 self.statsVersion = .v4
             case .failure(let error):
                 DDLogError("⛔️ Dashboard (Order Stats) — Error synchronizing order stats v4: \(error)")
@@ -68,6 +70,7 @@ final class DashboardViewModel {
                              timeRange: StatsTimeRangeV4,
                              latestDateToInclude: Date,
                              onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
+        let waitingTracker = WaitingTimeTracker(trackScenario: .dashboardTopPerformers)
         let earliestDateToInclude = timeRange.earliestDate(latestDate: latestDateToInclude, siteTimezone: siteTimezone)
         let action = StatsActionV4.retrieveTopEarnerStats(siteID: siteID,
                                                           timeRange: timeRange,
@@ -77,6 +80,7 @@ final class DashboardViewModel {
                                                           onCompletion: { result in
             switch result {
             case .success:
+                waitingTracker.end()
                 ServiceLocator.analytics.track(event:
                         .Dashboard.dashboardTopPerformersLoaded(timeRange: timeRange))
             case .failure(let error):

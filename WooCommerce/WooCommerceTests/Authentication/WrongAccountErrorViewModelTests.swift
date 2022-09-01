@@ -5,7 +5,7 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
 
     func test_viewmodel_provides_expected_image() {
         // Given
-        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url)
+        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url, showsConnectedStores: false)
 
         // When
         let image = viewModel.image
@@ -16,7 +16,7 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
 
     func test_viewmodel_provides_expected_title_for_auxiliary_button() {
         // Given
-        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url)
+        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url, showsConnectedStores: false)
 
         // When
         let auxiliaryButtonTitle = viewModel.auxiliaryButtonTitle
@@ -27,7 +27,7 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
 
     func test_viewmodel_provides_expected_title_for_primary_button() {
         // Given
-        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url)
+        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url, showsConnectedStores: false)
 
         // When
         let primaryButtonTitle = viewModel.primaryButtonTitle
@@ -38,13 +38,24 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
 
     func test_viewmodel_provides_expected_title_for_log_out_button() {
         // Given
-        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url)
+        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url, showsConnectedStores: false)
 
         // When
         let logoutButtonTitle = viewModel.logOutButtonTitle
 
         // Then
         XCTAssertEqual(logoutButtonTitle, Expectations.logOutButtonTitle)
+    }
+
+    func test_viewmodel_provides_expected_visibility_state_for_primary_button() {
+        // Given
+        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url, showsConnectedStores: false)
+
+        // When
+        let visibility = viewModel.isPrimaryButtonHidden
+
+        // Then
+        XCTAssertTrue(visibility)
     }
 }
 

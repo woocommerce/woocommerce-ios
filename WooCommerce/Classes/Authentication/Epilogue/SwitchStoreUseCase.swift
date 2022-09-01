@@ -43,8 +43,6 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
         logOutOfCurrentStore {
             self.finalizeStoreSelection(storeID)
 
-            // Reload orders badge
-            NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
             onCompletion(true)
         }
     }

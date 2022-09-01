@@ -11,7 +11,7 @@ public final class LoginEpilogueScreen: BaseScreen {
     private let displayNameField: XCUIElement
     private let siteUrlField: XCUIElement
 
-    init() {
+    public init() {
         let app = XCUIApplication()
         displayNameField = app.staticTexts[ElementStringIDs.displayNameField]
         siteUrlField = app.staticTexts[ElementStringIDs.siteUrlField]
@@ -20,6 +20,7 @@ public final class LoginEpilogueScreen: BaseScreen {
         super.init(element: continueButton)
     }
 
+    @discardableResult
     public func continueWithSelectedSite() throws -> MyStoreScreen {
         continueButton.tap()
         return try MyStoreScreen()

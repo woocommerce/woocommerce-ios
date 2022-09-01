@@ -147,27 +147,96 @@ public extension StatsStoreV4 {
                                 latestDateToInclude: Date,
                                 quantity: Int,
                                 onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
-        let earliestDate = dateFormatter.string(from: earliestDateToInclude)
-        let latestDate = dateFormatter.string(from: latestDateToInclude)
-        leaderboardsRemote.loadLeaderboards(for: siteID,
-                                unit: timeRange.leaderboardsGranularity,
-                                earliestDateToInclude: earliestDate,
-                                latestDateToInclude: latestDate,
-                                quantity: quantity) { [weak self] result in
-            guard let self = self else { return }
-
+        Task { @MainActor in
+            let result = await loadTopEarnerStats(siteID: siteID,
+                                                  timeRange: timeRange,
+                                                  earliestDateToInclude: earliestDateToInclude,
+                                                  latestDateToInclude: latestDateToInclude,
+                                                  quantity: quantity)
             switch result {
-            case .success(let leaderboards):
-                self.convertAndStoreLeaderboardsIntoTopEarners(siteID: siteID,
-                                                               granularity: timeRange.topEarnerStatsGranularity,
-                                                               date: latestDateToInclude,
-                                                               leaderboards: leaderboards,
-                                                               quantity: quantity,
-                                                               onCompletion: onCompletion)
-
+            case .success:
+                onCompletion(result)
             case .failure(let error):
-                onCompletion(.failure(error))
+                if let error = error as? DotcomError, error == .noRestRoute {
+                    let resultFromDeprecatedAPI = await loadTopEarnerStatsWithDeprecatedAPI(siteID: siteID,
+                                                                                            timeRange: timeRange,
+                                                                                            earliestDateToInclude: earliestDateToInclude,
+                                                                                            latestDateToInclude: latestDateToInclude,
+                                                                                            quantity: quantity)
+                    onCompletion(resultFromDeprecatedAPI)
+                } else {
+                    onCompletion(result)
+                }
+            }
+        }
+    }
+
+    @MainActor
+    func loadTopEarnerStats(siteID: Int64,
+                            timeRange: StatsTimeRangeV4,
+                            earliestDateToInclude: Date,
+                            latestDateToInclude: Date,
+                            quantity: Int) async -> Result<Void, Error> {
+        await withCheckedContinuation { continuation in
+            let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
+            let earliestDate = dateFormatter.string(from: earliestDateToInclude)
+            let latestDate = dateFormatter.string(from: latestDateToInclude)
+            leaderboardsRemote.loadLeaderboards(for: siteID,
+                                                unit: timeRange.leaderboardsGranularity,
+                                                earliestDateToInclude: earliestDate,
+                                                latestDateToInclude: latestDate,
+                                                quantity: quantity) { [weak self] result in
+                guard let self = self else {
+                    return
+                }
+
+                switch result {
+                case .success(let leaderboards):
+                    self.convertAndStoreLeaderboardsIntoTopEarners(siteID: siteID,
+                                                                   granularity: timeRange.topEarnerStatsGranularity,
+                                                                   date: latestDateToInclude,
+                                                                   leaderboards: leaderboards,
+                                                                   quantity: quantity) { result in
+                        continuation.resume(returning: result)
+                    }
+                case .failure(let error):
+                    continuation.resume(returning: .failure(error))
+                }
+            }
+        }
+    }
+
+    @MainActor
+    func loadTopEarnerStatsWithDeprecatedAPI(siteID: Int64,
+                                             timeRange: StatsTimeRangeV4,
+                                             earliestDateToInclude: Date,
+                                             latestDateToInclude: Date,
+                                             quantity: Int) async -> Result<Void, Error> {
+        await withCheckedContinuation { continuation in
+            let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
+            let earliestDate = dateFormatter.string(from: earliestDateToInclude)
+            let latestDate = dateFormatter.string(from: latestDateToInclude)
+            leaderboardsRemote.loadLeaderboardsDeprecated(for: siteID,
+                                                          unit: timeRange.leaderboardsGranularity,
+                                                          earliestDateToInclude: earliestDate,
+                                                          latestDateToInclude: latestDate,
+                                                          quantity: quantity) { [weak self] result in
+                guard let self = self else {
+                    return
+                }
+
+                switch result {
+                case .success(let leaderboards):
+                    self.convertAndStoreLeaderboardsIntoTopEarners(siteID: siteID,
+                                                                   granularity: timeRange.topEarnerStatsGranularity,
+                                                                   date: latestDateToInclude,
+                                                                   leaderboards: leaderboards,
+                                                                   quantity: quantity) { result in
+                        continuation.resume(returning: result)
+                    }
+                case .failure(let error):
+                    continuation.resume(returning: .failure(error))
+                }
             }
         }
     }

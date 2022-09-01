@@ -1,6 +1,16 @@
+AllCops:
+  Exclude:
+    - DerivedData/**/*
+    - Pods/**/*
+    - vendor/**/*
+  NewCops: enable
+
 Metrics/BlockLength:
   Exclude:
     - fastlane/Fastfile
+
+Metrics/MethodLength:
+  Max: 20
 
 Style/AsciiComments:
   Exclude:
@@ -9,6 +19,7 @@ Style/AsciiComments:
 Layout/LineLength:
   Exclude:
     - fastlane/Fastfile
+    - Podfile
 
 Naming/FileName:
   Exclude:

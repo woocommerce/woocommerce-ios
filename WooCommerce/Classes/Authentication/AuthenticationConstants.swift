@@ -44,6 +44,13 @@ struct AuthenticationConstants {
         comment: "Sign in instructions for logging in with a username and password."
     )
 
+    /// Sign in using Apple screen's instructions.
+    ///
+    static let applePasswordInstructions = NSLocalizedString(
+        "To proceed with this account, please first log in with your WordPress.com password. This will only be asked once.",
+        comment: "Sign in instructions asking user to enter WordPress.com password to proceed with sign in using Apple process"
+    )
+
     /// Title of "Continue With WordPress.com" button in Login Prologue
     //
     static let continueWithWPButtonTitle = NSLocalizedString(
@@ -63,6 +70,13 @@ struct AuthenticationConstants {
     static let signInWithSiteCredsButtonTitle = NSLocalizedString(
         "Sign in with store credentials",
         comment: "Button title. Takes the user to the site credentials entry screen."
+    )
+
+    /// Instruction in Enter Site Credentials screen.
+    //
+    static let siteCredentialInstructions = NSLocalizedString(
+        "Enter your store credentials for %@.",
+        comment: "Enter your store credentials for {site url}. Asks the user to enter .org site credentials for their store."
     )
 
     /// Title of views in Unified Login

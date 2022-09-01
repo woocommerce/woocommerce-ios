@@ -8,7 +8,7 @@ import Experiments
 ///
 final class LoginPrologueViewController: UIViewController {
     private let isNewToWooCommerceButtonShown: Bool
-    private let isOnboardingFeatureEnabled: Bool
+    private let isOnboardingFeatureShown: Bool
     private let analytics: Analytics
 
     /// Background View, to be placed surrounding the bottom area.
@@ -36,9 +36,10 @@ final class LoginPrologueViewController: UIViewController {
     // MARK: - Overridden Methods
 
     init(analytics: Analytics = ServiceLocator.analytics,
+         loggedOutAppSettings: LoggedOutAppSettingsProtocol = LoggedOutAppSettings(userDefaults: .standard),
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         isNewToWooCommerceButtonShown = featureFlagService.isFeatureFlagEnabled(.newToWooCommerceLinkInLoginPrologue)
-        isOnboardingFeatureEnabled = featureFlagService.isFeatureFlagEnabled(.loginPrologueOnboarding)
+        isOnboardingFeatureShown = featureFlagService.isFeatureFlagEnabled(.loginPrologueOnboarding) && loggedOutAppSettings.hasFinishedOnboarding == false
         self.analytics = analytics
         super.init(nibName: nil, bundle: nil)
     }
@@ -90,8 +91,8 @@ private extension LoginPrologueViewController {
     /// This is contained in a child view so that this view's background doesn't scroll.
     ///
     func setupCarousel(isNewToWooCommerceButtonShown: Bool) {
-        let pageTypes: [LoginProloguePageType] = isOnboardingFeatureEnabled ? [.getStarted] : [.stats, .orderManagement, .products, .reviews]
-        let carousel = LoginProloguePageViewController(pageTypes: pageTypes, showsSubtitle: isOnboardingFeatureEnabled)
+        let pageTypes: [LoginProloguePageType] = isOnboardingFeatureShown ? [.getStarted] : [.stats, .orderManagement, .products, .reviews]
+        let carousel = LoginProloguePageViewController(pageTypes: pageTypes, showsSubtitle: isOnboardingFeatureShown)
         carousel.view.translatesAutoresizingMaskIntoConstraints = false
 
         addChild(carousel)

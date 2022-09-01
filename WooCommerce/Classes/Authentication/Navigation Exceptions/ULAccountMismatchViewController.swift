@@ -131,6 +131,7 @@ private extension ULAccountMismatchViewController {
 
     func configurePrimaryButton() {
         primaryButton.isPrimary = true
+        primaryButton.isHidden = viewModel.isPrimaryButtonHidden
         primaryButton.setTitle(viewModel.primaryButtonTitle, for: .normal)
         primaryButton.on(.touchUpInside) { [weak self] _ in
             self?.didTapPrimaryButton()

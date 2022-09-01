@@ -81,7 +81,9 @@ final class OrderDetailsViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        let waitingTracker = WaitingTimeTracker(trackScenario: .orderDetails)
         syncEverything { [weak self] in
+            waitingTracker.end()
 
             self?.topLoaderView.isHidden = true
 
@@ -140,9 +142,7 @@ private extension OrderDetailsViewController {
                                          action: #selector(editOrder))
         editButton.accessibilityIdentifier = "order-details-edit-button"
         editButton.isEnabled = viewModel.editButtonIsEnabled
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing) {
-            navigationItem.rightBarButtonItem = editButton
-        }
+        navigationItem.rightBarButtonItem = editButton
     }
 
     /// Setup: EntityListener
@@ -302,7 +302,6 @@ private extension OrderDetailsViewController {
     @objc func pullToRefresh() {
         ServiceLocator.analytics.track(.orderDetailPulledToRefresh)
         refreshControl.beginRefreshing()
-
         syncEverything { [weak self] in
             NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
             self?.refreshControl.endRefreshing()
@@ -387,10 +386,6 @@ private extension OrderDetailsViewController {
             shippingLabelTrackingMoreMenuTapped(shippingLabel: shippingLabel, sourceView: sourceView)
         case let .viewAddOns(addOns):
             itemAddOnsButtonTapped(addOns: addOns)
-        case .editCustomerNote:
-			editCustomerNoteTapped()
-        case .editShippingAddress:
-            editShippingAddressTapped()
         }
     }
 
@@ -421,7 +416,7 @@ private extension OrderDetailsViewController {
         let reviewOrderViewModel = ReviewOrderViewModel(order: viewModel.order, products: viewModel.products, showAddOns: viewModel.dataSource.showAddOns)
         let controller = ReviewOrderViewController(viewModel: reviewOrderViewModel) { [weak self] in
             guard let self = self else { return }
-            let fulfillmentProcess = self.viewModel.markCompleted()
+            let fulfillmentProcess = self.viewModel.markCompleted(flow: .editing)
             let presenter = OrderFulfillmentNoticePresenter()
             presenter.present(process: fulfillmentProcess)
         }
@@ -429,7 +424,7 @@ private extension OrderDetailsViewController {
     }
 
     func markOrderCompleteFromShippingLabels() {
-        let fulfillmentProcess = self.viewModel.markCompleted()
+        let fulfillmentProcess = self.viewModel.markCompleted(flow: .editing)
 
         var cancellables = Set<AnyCancellable>()
         var cancellable: AnyCancellable = AnyCancellable { }
@@ -545,20 +540,6 @@ private extension OrderDetailsViewController {
         popoverController?.sourceView = sourceView
 
         present(actionSheet, animated: true)
-    }
-
-    func editCustomerNoteTapped() {
-        let editNoteViewController = EditCustomerNoteHostingController(viewModel: viewModel.editNoteViewModel)
-        present(editNoteViewController, animated: true)
-
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowStarted(subject: .customerNote))
-    }
-
-    func editShippingAddressTapped() {
-        let viewModel = EditOrderAddressFormViewModel(order: viewModel.order, type: .shipping)
-        let editAddressViewController = EditOrderAddressHostingController(viewModel: viewModel)
-        let navigationController = WooNavigationController(rootViewController: editAddressViewController)
-        present(navigationController, animated: true, completion: nil)
     }
 
     @objc private func collectPaymentTapped() {

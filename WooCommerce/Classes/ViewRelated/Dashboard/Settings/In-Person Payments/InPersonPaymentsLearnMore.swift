@@ -4,6 +4,21 @@ struct InPersonPaymentsLearnMore: View {
     static let learnMoreURL = URL(string: "woocommerce://in-person-payments/learn-more")!
     @Environment(\.customOpenURL) var customOpenURL
 
+    let url: URL
+    let linkText: String
+    let formatText: String
+    let analyticReason: String?
+
+    init(url: URL = learnMoreURL,
+         linkText: String = Localization.learnMoreLink,
+         formatText: String = Localization.learnMoreText,
+         analyticReason: String? = nil) {
+        self.url = url
+        self.linkText = linkText
+        self.formatText = formatText
+        self.analyticReason = analyticReason
+    }
+
     private let cardPresentConfiguration = CardPresentConfigurationLoader().configuration
 
     var body: some View {
@@ -16,9 +31,11 @@ struct InPersonPaymentsLearnMore: View {
         }
             .padding(.vertical, Constants.verticalPadding)
             .onTapGesture {
-                ServiceLocator.analytics.track(event: WooAnalyticsEvent.InPersonPayments
-                                                .cardPresentOnboardingLearnMoreTapped(countryCode: cardPresentConfiguration.countryCode))
-                customOpenURL?(InPersonPaymentsLearnMore.learnMoreURL)
+                ServiceLocator.analytics.track(
+                    event: WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingLearnMoreTapped(
+                        reason: analyticReason ?? "",
+                        countryCode: cardPresentConfiguration.countryCode))
+                customOpenURL?(url)
             }
     }
 
@@ -28,13 +45,13 @@ struct InPersonPaymentsLearnMore: View {
 
     private var learnMoreAttributedString: NSAttributedString {
         let result = NSMutableAttributedString(
-            string: .localizedStringWithFormat(Localization.learnMoreText, Localization.learnMoreLink),
+            string: .localizedStringWithFormat(formatText, linkText),
             attributes: [.foregroundColor: UIColor.textSubtle]
         )
         result.replaceFirstOccurrence(
-            of: Localization.learnMoreLink,
+            of: linkText,
             with: NSAttributedString(
-                string: Localization.learnMoreLink,
+                string: linkText,
                 attributes: [.foregroundColor: UIColor.textLink]
             ))
 

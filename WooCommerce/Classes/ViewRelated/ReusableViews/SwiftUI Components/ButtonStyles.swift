@@ -18,6 +18,16 @@ struct SecondaryButtonStyle: ButtonStyle {
     }
 }
 
+/// A selectable button with border style similar to secondary button style with differences on the colors and a selected state.
+struct SelectableSecondaryButtonStyle: ButtonStyle {
+    /// Whether the button is selected.
+    let isSelected: Bool
+    let labelFont: Font = .headline
+    func makeBody(configuration: Configuration) -> some View {
+        SelectableSecondaryButton(isSelected: isSelected, configuration: configuration, labelFont: labelFont)
+    }
+}
+
 struct LinkButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         LinkButton(configuration: configuration)
@@ -185,6 +195,59 @@ private struct SecondaryButton: View {
     }
 }
 
+private struct SelectableSecondaryButton: View {
+    @Environment(\.isEnabled) var isEnabled
+
+    let isSelected: Bool
+    let configuration: ButtonStyleConfiguration
+    let labelFont: Font
+
+    var body: some View {
+        BaseButton(configuration: configuration)
+            .foregroundColor(Color(.selectableSecondaryButtonTitle))
+            .font(labelFont)
+            .background(
+                RoundedRectangle(cornerRadius: Style.defaultCornerRadius)
+                    .fill(Color(backgroundColor))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: Style.defaultCornerRadius)
+                    .strokeBorder(
+                        Color(borderColor),
+                        lineWidth: Style.defaultBorderWidth
+                    )
+            )
+    }
+
+    var foregroundColor: UIColor {
+        isEnabled ? .secondaryButtonTitle : .buttonDisabledTitle
+    }
+
+    var backgroundColor: UIColor {
+        if isEnabled {
+            if configuration.isPressed || isSelected {
+                return .selectableSecondaryButtonSelectedBackground
+            } else {
+                return .selectableSecondaryButtonBackground
+            }
+        } else {
+            return .buttonDisabledBackground
+        }
+    }
+
+    var borderColor: UIColor {
+        if isEnabled {
+            if configuration.isPressed || isSelected {
+                return .selectableSecondaryButtonSelectedBorder
+            } else {
+                return .selectableSecondaryButtonBorder
+            }
+        } else {
+            return .buttonDisabledBorder
+        }
+    }
+}
+
 private struct LinkButton: View {
     @Environment(\.isEnabled) var isEnabled
 
@@ -256,6 +319,12 @@ struct PrimaryButton_Previews: PreviewProvider {
                 .buttonStyle(SecondaryButtonStyle())
                 .disabled(true)
 
+            Button("Selectable secondary button (selected)") {}
+                .buttonStyle(SelectableSecondaryButtonStyle(isSelected: true))
+
+            Button("Selectable secondary button") {}
+                .buttonStyle(SelectableSecondaryButtonStyle(isSelected: false))
+
             Button("Link button") {}
                 .buttonStyle(LinkButtonStyle())
 
@@ -270,6 +339,45 @@ struct PrimaryButton_Previews: PreviewProvider {
             .buttonStyle(PlusButtonStyle())
             .disabled(true)
         }
+        .preferredColorScheme(.light)
+        .padding()
+
+        VStack(spacing: 20) {
+            Button("Primary button") {}
+                .buttonStyle(PrimaryButtonStyle())
+
+            Button("Primary button (disabled)") {}
+                .buttonStyle(PrimaryButtonStyle())
+                .disabled(true)
+
+            Button("Secondary button") {}
+                .buttonStyle(SecondaryButtonStyle())
+
+            Button("Secondary button (disabled)") {}
+                .buttonStyle(SecondaryButtonStyle())
+                .disabled(true)
+
+            Button("Selectable secondary button (selected)") {}
+                .buttonStyle(SelectableSecondaryButtonStyle(isSelected: true))
+
+            Button("Selectable secondary button") {}
+                .buttonStyle(SelectableSecondaryButtonStyle(isSelected: false))
+
+            Button("Link button") {}
+                .buttonStyle(LinkButtonStyle())
+
+            Button("Link button (Disabled)") {}
+                .buttonStyle(LinkButtonStyle())
+                .disabled(true)
+
+            Button("Plus button") {}
+                .buttonStyle(PlusButtonStyle())
+
+            Button("Plus button (disabled)") {}
+                .buttonStyle(PlusButtonStyle())
+                .disabled(true)
+        }
+        .preferredColorScheme(.dark)
         .padding()
     }
 }

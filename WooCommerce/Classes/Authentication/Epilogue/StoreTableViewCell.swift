@@ -16,6 +16,14 @@ class StoreTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var checkmarkImageView: UIImageView!
 
+    /// Container view: notice
+    ///
+    @IBOutlet private var noticeContainerView: UIView!
+
+    /// Image view: notice
+    /// 
+    @IBOutlet private var noticeImageView: UIImageView!
+
     /// Label: Name
     ///
     @IBOutlet private var nameLabel: UILabel!
@@ -23,7 +31,6 @@ class StoreTableViewCell: UITableViewCell {
     /// Label: URL
     ///
     @IBOutlet private var urlLabel: UILabel!
-
 
     /// Store's Name
     ///
@@ -68,6 +75,13 @@ class StoreTableViewCell: UITableViewCell {
         }
     }
 
+    /// When enabled, the Notice ImageView will be displayed.
+    ///
+    var displaysNotice: Bool = false {
+        didSet {
+            refreshNoticeVisibility()
+        }
+    }
 
     // MARK: - Overridden Methods
 
@@ -76,6 +90,7 @@ class StoreTableViewCell: UITableViewCell {
         configureBackground()
         configureNameLabel()
         configureUrlLabel()
+        configureNoticeImageView()
     }
 
     /// Displays (or hides) the Checkmark ContainerView, based on the `allowsCheckmark` property.
@@ -88,6 +103,12 @@ class StoreTableViewCell: UITableViewCell {
     ///
     private func refreshCheckmarkImage() {
         checkmarkImageView.image = displaysCheckmark ? .checkmarkStyledImage : nil
+    }
+
+    /// Displays (or hides) the Notice ContainerView, based on the `allowsNotice` property.
+    ///
+    private func refreshNoticeVisibility() {
+        noticeContainerView.isHidden = !displaysNotice
     }
 }
 
@@ -105,5 +126,10 @@ private extension StoreTableViewCell {
     func configureUrlLabel() {
         urlLabel.textColor = .textSubtle
         urlLabel.accessibilityIdentifier = "url-label"
+    }
+
+    func configureNoticeImageView() {
+        noticeImageView.image = .noticeImage
+        noticeImageView.tintColor = .warning
     }
 }

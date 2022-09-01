@@ -5,5 +5,6 @@ import Yosemite
 extension SitePlugin {
     enum SupportedPlugin {
         public static let WCShip = "WooCommerce Shipping &amp; Tax"
+        public static let WCTracking = "WooCommerce Shipment Tracking"
     }
 }

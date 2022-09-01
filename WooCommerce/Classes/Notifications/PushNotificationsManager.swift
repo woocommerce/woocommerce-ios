@@ -335,6 +335,9 @@ extension PushNotificationsManager {
                                                 trigger: trigger)
             do {
                 try await center.add(request)
+                ServiceLocator.analytics.track(.loginLocalNotificationScheduled, withProperties: [
+                    "type": notification.scenario.rawValue
+                ])
             } catch {
                 DDLogError("⛔️ Unable to request a local notification: \(error)")
             }

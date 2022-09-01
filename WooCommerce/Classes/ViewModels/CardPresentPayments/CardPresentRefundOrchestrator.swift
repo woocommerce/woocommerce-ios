@@ -1,5 +1,6 @@
 import Yosemite
 import PassKit
+import WooFoundation
 
 /// Orchestrates the sequence of actions required to refund in-person that is required for certain payment methods:
 /// 1. Check if there is a card reader connected

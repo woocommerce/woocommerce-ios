@@ -182,6 +182,10 @@ public class AppSettingsStore: Store {
             setFeatureAnnouncementDismissed(campaign: campaign, remindLater: remindLater, onCompletion: completion)
         case .getFeatureAnnouncementVisibility(campaign: let campaign, onCompletion: let completion):
             getFeatureAnnouncementVisibility(campaign: campaign, onCompletion: completion)
+        case .setSkippedCashOnDeliveryOnboardingStep(siteID: let siteID):
+            setSkippedCashOnDeliveryOnboardingStep(siteID: siteID)
+        case .getSkippedCashOnDeliveryOnboardingStep(siteID: let siteID, onCompletion: let completion):
+            getSkippedCashOnDeliveryOnboardingStep(siteID: siteID, onCompletion: completion)
         }
     }
 }
@@ -718,7 +722,6 @@ private extension AppSettingsStore {
     func getPreferredInPersonPaymentGateway(siteID: Int64, onCompletion: (String?) -> Void) {
         let storeSettings = getStoreSettings(for: siteID)
         onCompletion(storeSettings.preferredInPersonPaymentGateway)
-
     }
 
     /// Forgets the preferred payment gateway for In-Person Payments
@@ -727,6 +730,21 @@ private extension AppSettingsStore {
         let storeSettings = getStoreSettings(for: siteID)
         let newSettings = storeSettings.copy(preferredInPersonPaymentGateway: .some(nil))
         setStoreSettings(settings: newSettings, for: siteID, onCompletion: nil)
+    }
+
+    /// Marks the Enable Cash on Delivery In-Person Payments Onboarding step as skipped
+    ///
+    func setSkippedCashOnDeliveryOnboardingStep(siteID: Int64) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let newSettings = storeSettings.copy(skippedCashOnDeliveryOnboardingStep: true)
+        setStoreSettings(settings: newSettings, for: siteID)
+    }
+
+    /// Gets whether the Enable Cash on Delivery In-Person Payments Onboarding step has been skipped
+    ///
+    func getSkippedCashOnDeliveryOnboardingStep(siteID: Int64, onCompletion: (Bool) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        onCompletion(storeSettings.skippedCashOnDeliveryOnboardingStep)
     }
 
 }

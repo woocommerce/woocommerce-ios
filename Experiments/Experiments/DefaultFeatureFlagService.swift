@@ -7,8 +7,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         switch featureFlag {
         case .barcodeScanner:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .orderListFilters:
-            return true
         case .jetpackConnectionPackageSupport:
             return true
         case .hubMenu:
@@ -35,10 +33,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .shippingLabelsOnboardingM1:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .inPersonPaymentGatewaySelection:
-            return true
-        case .unifiedOrderEditing:
-            return true
         case .backgroundProductImageUpload:
             return true
         case .appleIDAccountDeletion:
@@ -48,7 +42,15 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .loginPrologueOnboarding:
             return true
         case .loginErrorNotifications:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
+        case .loginPrologueOnboardingSurvey:
+            return true
+        case .loginMagicLinkEmphasis:
+            return true
+        case .loginMagicLinkEmphasisM2:
+            return true
+        case .promptToEnableCodInIppOnboarding:
+            return true
         default:
             return true
         }

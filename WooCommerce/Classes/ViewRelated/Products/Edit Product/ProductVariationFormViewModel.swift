@@ -392,3 +392,11 @@ extension ProductVariationFormViewModel {
         // no-op
     }
 }
+
+// MARK: Tracking
+//
+extension ProductVariationFormViewModel {
+    func trackProductFormLoaded() {
+        // no-op
+    }
+}

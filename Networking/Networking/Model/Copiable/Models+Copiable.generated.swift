@@ -658,6 +658,51 @@ extension OrderTaxLine {
     }
 }
 
+extension PaymentGateway {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        gatewayID: CopiableProp<String> = .copy,
+        title: CopiableProp<String> = .copy,
+        description: CopiableProp<String> = .copy,
+        enabled: CopiableProp<Bool> = .copy,
+        features: CopiableProp<[PaymentGateway.Feature]> = .copy,
+        instructions: NullableCopiableProp<String> = .copy
+    ) -> PaymentGateway {
+        let siteID = siteID ?? self.siteID
+        let gatewayID = gatewayID ?? self.gatewayID
+        let title = title ?? self.title
+        let description = description ?? self.description
+        let enabled = enabled ?? self.enabled
+        let features = features ?? self.features
+        let instructions = instructions ?? self.instructions
+
+        return PaymentGateway(
+            siteID: siteID,
+            gatewayID: gatewayID,
+            title: title,
+            description: description,
+            enabled: enabled,
+            features: features,
+            instructions: instructions
+        )
+    }
+}
+
+extension PaymentGateway.Setting {
+    public func copy(
+        settingID: CopiableProp<String> = .copy,
+        value: CopiableProp<String> = .copy
+    ) -> PaymentGateway.Setting {
+        let settingID = settingID ?? self.settingID
+        let value = value ?? self.value
+
+        return PaymentGateway.Setting(
+            settingID: settingID,
+            value: value
+        )
+    }
+}
+
 extension PaymentGatewayAccount {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,

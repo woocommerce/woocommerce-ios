@@ -1,20 +1,23 @@
 import SwiftUI
 
 struct InPersonPaymentsNoConnection: View {
+    let analyticReason: String
     let onRefresh: () -> Void
 
     var body: some View {
         InPersonPaymentsOnboardingError(
             title: Localization.title,
             message: Localization.message,
-            image: InPersonPaymentsOnboardingError.ImageInfo(
+            image: InPersonPaymentsOnboardingErrorMainContentView.ImageInfo(
                 image: .errorStateImage,
                 height: 108.0
             ),
             supportLink: false,
             learnMore: false,
-            button: InPersonPaymentsOnboardingError.ButtonInfo(
+            analyticReason: analyticReason,
+            buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(
                 text: Localization.primaryButton,
+                analyticReason: analyticReason,
                 action: onRefresh
             )
         )
@@ -40,6 +43,6 @@ private enum Localization {
 
 struct InPersonPaymentsNoConnection_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsNoConnection(onRefresh: {})
+        InPersonPaymentsNoConnection(analyticReason: "", onRefresh: {})
     }
 }

@@ -9,6 +9,8 @@ struct UpsellCardReadersCampaign {
             return Localization.cardButtonTitle
         case .settings:
             return nil
+        default:
+            return nil
         }
     }
 
@@ -19,8 +21,11 @@ struct UpsellCardReadersCampaign {
               message: Localization.cardMessage,
               buttonTitle: buttonTitle,
               image: .paymentsFeatureBannerImage,
+              showDismissConfirmation: true,
               dismissAlertTitle: Localization.dismissTitle,
-              dismissAlertMessage: Localization.dismissMessage)
+              dismissAlertMessage: Localization.dismissMessage,
+              showDividers: false,
+              badgeType: .new)
     }
 }
 

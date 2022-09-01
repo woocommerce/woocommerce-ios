@@ -16,6 +16,12 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        viewModel.viewDidAppear()
+    }
+
     /// Present the specific Review Details View from a push notification
     ///
     func pushReviewDetailsViewController(using parcel: ProductReviewFromNoteParcel) {

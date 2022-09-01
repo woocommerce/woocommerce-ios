@@ -1,9 +1,39 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+10.2
+-----
+- [*] Help center: Added help center web page with FAQs for "Enter Store Credentials" and "Enter WordPress.com email "screens. [https://github.com/woocommerce/woocommerce-ios/pull/7588, https://github.com/woocommerce/woocommerce-ios/pull/7590]
+- [*] In-Person Payments: Fixed the Learn More link from the `Enable Pay in Person` onboarding screen for WCPay [https://github.com/woocommerce/woocommerce-ios/pull/7598]
+
+10.1
+-----
+- [*] In-Person Payments: The onboarding notice on the In-Person Payments menu is correctly dismissed after multiple prompts are shown. [https://github.com/woocommerce/woocommerce-ios/pull/7543]
+- [*] Help center: Added custom help center web page with FAQs for "Enter Store Address" and "Enter WordPress.com email" screens. [https://github.com/woocommerce/woocommerce-ios/pull/7553, https://github.com/woocommerce/woocommerce-ios/pull/7573]
+- [*] In-Person Payments: The plugin selection is saved correctly after multiple onboarding prompts. [https://github.com/woocommerce/woocommerce-ios/pull/7544]
+- [**] In-Person Payments: A new prompt to enable `Pay in Person` for your store's checkout, to accept In-Person Payments for website orders [https://github.com/woocommerce/woocommerce-ios/issues/7474]
+
+10.0
+-----
+- [**] In-Person Payments and Simple Payments have been moved to a new Payments section [https://github.com/woocommerce/woocommerce-ios/pull/7473]
+- [*] Login: on the WP.com password screen, the magic link login option is moved from below "Reset your password" to below the primary Continue button for higher visibility. [https://github.com/woocommerce/woocommerce-ios/pull/7469]
+- [*] Login: some minor enhancements are made to the error screen after entering an invalid WP.com email - a new "What is WordPress.com?" link, hiding the "Log in with store address" button when it's from the store address login flow, and some copy changes. [https://github.com/woocommerce/woocommerce-ios/pull/7485]
+- [**] In-Person Payments: Accounts with pending requirements are no longer blocked from taking payments - we have added a skip button to the relevant screen. [https://github.com/woocommerce/woocommerce-ios/pull/7504]
+- [*] Login: New button added to the empty site picker screen to enter a site address for troubleshooting. [https://github.com/woocommerce/woocommerce-ios/pull/7484]
+
+9.9
+-----
+- [*] [Sign in with store credentials]: New screen added with instructions to verify Jetpack connected email. [https://github.com/woocommerce/woocommerce-ios/pull/7424]
+- [*] [Sign in with store credentials]: Stop clearing username/password after an invalid attempt to enable users to fix typos. [https://github.com/woocommerce/woocommerce-ios/pull/7444]
+- [*] Login: after entering WP.com email, a magic link is automatically sent when it is enabled (magic links are disabled for A8C emails and WP.com accounts with recently changed password) and a new screen is shown with an option to log in with password. [https://github.com/woocommerce/woocommerce-ios/pull/7449]
+
 9.8
 -----
 - [***] Login: Introduce a way to sign in using store credentials.  [https://github.com/woocommerce/woocommerce-ios/pull/7320]
+- [**] Login: You can now install WooCommerce to your self-hosted sites from the login flow. [https://github.com/woocommerce/woocommerce-ios/pull/7401]
+- [**] Orders: Now you can quickly mark an order as completed by swiping it to the left! [https://github.com/woocommerce/woocommerce-ios/pull/7385]
 - [*] In-Person Payments: The purchase card reader information card appears also in the Orders list screen. [https://github.com/woocommerce/woocommerce-ios/pull/7326]
+- [*] Login: in release 9.7, when the app is in logged out state, an onboarding screen is shown before the prologue screen if the user hasn't finished or skipped it. In release 9.8, a survey is added to the end of the onboarding screen. [https://github.com/woocommerce/woocommerce-ios/pull/7416]
+- [*] Login: a local notification is scheduled after the user encounters an error from logging in with an invalid site address or WP.com email/password. Please see testing scenarios in the PR, with regression testing on order/review remote notifications. [https://github.com/woocommerce/woocommerce-ios/pull/7323, https://github.com/woocommerce/woocommerce-ios/pull/7372, https://github.com/woocommerce/woocommerce-ios/pull/7422]
 
 9.7
 -----

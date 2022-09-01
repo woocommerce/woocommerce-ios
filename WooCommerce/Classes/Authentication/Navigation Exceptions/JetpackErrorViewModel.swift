@@ -9,9 +9,9 @@ import WordPressUI
 struct JetpackErrorViewModel: ULErrorViewModel {
     private let siteURL: String
     private let analytics: Analytics
-    private let jetpackSetupCompletionHandler: () -> Void
+    private let jetpackSetupCompletionHandler: (String?) -> Void
 
-    init(siteURL: String?, analytics: Analytics = ServiceLocator.analytics, onJetpackSetupCompletion: @escaping () -> Void) {
+    init(siteURL: String?, analytics: Analytics = ServiceLocator.analytics, onJetpackSetupCompletion: @escaping (String?) -> Void) {
         self.siteURL = siteURL ?? Localization.yourSite
         self.analytics = analytics
         self.jetpackSetupCompletionHandler = onJetpackSetupCompletion
@@ -52,7 +52,8 @@ struct JetpackErrorViewModel: ULErrorViewModel {
             return
         }
 
-        let connectionController = JetpackSetupWebViewController(siteURL: siteURL, analytics: analytics, onCompletion: jetpackSetupCompletionHandler)
+        let viewModel = JetpackSetupWebViewModel(siteURL: siteURL, analytics: analytics, onCompletion: jetpackSetupCompletionHandler)
+        let connectionController = PluginSetupWebViewController(viewModel: viewModel)
         viewController.navigationController?.show(connectionController, sender: nil)
     }
 
@@ -70,7 +71,7 @@ struct JetpackErrorViewModel: ULErrorViewModel {
         analytics.track(.loginWhatIsJetpackHelpScreenViewed)
     }
 
-    func viewDidLoad() {
+    func viewDidLoad(_ viewController: UIViewController?) {
         analytics.track(.loginJetpackRequiredScreenViewed)
     }
 }

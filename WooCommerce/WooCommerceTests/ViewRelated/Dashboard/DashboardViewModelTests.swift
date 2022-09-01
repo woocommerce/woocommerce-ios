@@ -16,7 +16,7 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
-            if case let .retrieveStats(_, _, _, _, _, completion) = action {
+            if case let .retrieveStats(_, _, _, _, _, _, completion) = action {
                 completion(.failure(DotcomError.noRestRoute))
             }
         }
@@ -24,7 +24,7 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.statsVersion, .v4)
 
         // When
-        viewModel.syncStats(for: 122, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init())
+        viewModel.syncStats(for: 122, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init(), forceRefresh: false)
 
         // Then
         XCTAssertEqual(viewModel.statsVersion, .v3)
@@ -34,11 +34,11 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
-            if case let .retrieveStats(_, _, _, _, _, completion) = action {
+            if case let .retrieveStats(_, _, _, _, _, _, completion) = action {
                 completion(.failure(DotcomError.empty))
             } else if case let .retrieveSiteVisitStats(_, _, _, _, completion) = action {
                 completion(.failure(DotcomError.noRestRoute))
-            } else if case let .retrieveTopEarnerStats(_, _, _, _, _, completion) = action {
+            } else if case let .retrieveTopEarnerStats(_, _, _, _, _, _, completion) = action {
                 completion(.failure(DotcomError.noRestRoute))
             }
         }
@@ -46,9 +46,9 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.statsVersion, .v4)
 
         // When
-        viewModel.syncStats(for: 122, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init())
+        viewModel.syncStats(for: 122, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init(), forceRefresh: false)
         viewModel.syncSiteVisitStats(for: 122, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init())
-        viewModel.syncTopEarnersStats(for: 122, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init())
+        viewModel.syncTopEarnersStats(for: 122, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init(), forceRefresh: false)
 
         // Then
         XCTAssertEqual(viewModel.statsVersion, .v4)
@@ -60,17 +60,17 @@ final class DashboardViewModelTests: XCTestCase {
         // `DotcomError.noRestRoute` error indicates the stats are unavailable.
         var storeStatsResult: Result<Void, Error> = .failure(DotcomError.noRestRoute)
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
-            if case let .retrieveStats(_, _, _, _, _, completion) = action {
+            if case let .retrieveStats(_, _, _, _, _, _, completion) = action {
                 completion(storeStatsResult)
             }
         }
         let viewModel = DashboardViewModel(stores: stores)
-        viewModel.syncStats(for: 122, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init())
+        viewModel.syncStats(for: 122, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init(), forceRefresh: false)
         XCTAssertEqual(viewModel.statsVersion, .v3)
 
         // When
         storeStatsResult = .success(())
-        viewModel.syncStats(for: 122, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init())
+        viewModel.syncStats(for: 122, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init(), forceRefresh: false)
 
         // Then
         XCTAssertEqual(viewModel.statsVersion, .v4)

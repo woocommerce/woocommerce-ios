@@ -29,10 +29,9 @@ struct UniversalLinkRouter {
     ]
 
     func handle(url: URL) {
-        guard let matchedRoute = matcher.firstRouteMatching(url) else {
+        guard let matchedRoute = matcher.firstRouteMatching(url),
+              matchedRoute.performAction() else {
             return bouncingURLOpener.open(url)
         }
-
-        matchedRoute.performAction()
     }
 }

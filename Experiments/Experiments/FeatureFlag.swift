@@ -18,10 +18,6 @@ public enum FeatureFlag: Int {
     ///
     case jetpackConnectionPackageSupport
 
-    /// Displays the System Status Report on Settings/Help screen
-    ///
-    case systemStatusReport
-
     /// Displays the option to view coupons
     ///
     case couponView

@@ -150,7 +150,7 @@ struct CardReaderSettingsSearchingView: View {
             InPersonPaymentsLearnMore()
                 .customOpenURL(action: { url in
                     switch url {
-                    case InPersonPaymentsLearnMore.learnMoreURL:
+                    case LearnMoreViewModel.learnMoreURL:
                         if let url = learnMoreUrl {
                             showURL?(url)
                         }

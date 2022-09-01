@@ -18,7 +18,6 @@ public class MockStoresManager: StoresManager {
     /// All of our action handlers
     private let appSettingsActionHandler: MockAppSettingsActionHandler
     private let announcementsActionHandler: MockAnnouncementsActionHandler
-    private let availabilityActionHandler: MockAvailabilityActionHandler
     private let notificationActionHandler: MockNotificationActionHandler
     private let notificationCountActionHandler: MockNotificationCountActionHandler
     private let orderActionHandler: MockOrderActionHandler
@@ -48,7 +47,6 @@ public class MockStoresManager: StoresManager {
         appSettingsActionHandler = MockAppSettingsActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         announcementsActionHandler = MockAnnouncementsActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         statsV4ActionHandler = MockStatsActionV4Handler(objectGraph: objectGraph, storageManager: storageManager)
-        availabilityActionHandler = MockAvailabilityActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         settingActionHandler = MockSettingActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         orderStatusActionHandler = MockOrderStatusActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         orderNoteActionHandler = MockOrderNoteActionHandler(objectGraph: objectGraph, storageManager: storageManager)
@@ -107,8 +105,6 @@ public class MockStoresManager: StoresManager {
             appSettingsActionHandler.handle(action: action)
         case let action as StatsActionV4:
             statsV4ActionHandler.handle(action: action)
-        case let action as AvailabilityAction:
-            availabilityActionHandler.handle(action: action)
         case let action as SettingAction:
             settingActionHandler.handle(action: action)
         case let action as OrderStatusAction:

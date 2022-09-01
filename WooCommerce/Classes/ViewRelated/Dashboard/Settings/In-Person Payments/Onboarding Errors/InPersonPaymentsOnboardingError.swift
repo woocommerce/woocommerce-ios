@@ -7,7 +7,7 @@ struct InPersonPaymentsOnboardingError: View {
     let image: InPersonPaymentsOnboardingErrorMainContentView.ImageInfo
     let supportLink: Bool
     let learnMore: Bool
-    let analyticReason: String?
+    let analyticReason: String
     var buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel? = nil
 
     var body: some View {
@@ -29,7 +29,7 @@ struct InPersonPaymentsOnboardingError: View {
                     .padding(.bottom, 24.0)
             }
             if learnMore {
-                InPersonPaymentsLearnMore(analyticReason: analyticReason)
+                InPersonPaymentsLearnMore(viewModel: LearnMoreViewModel(tappedAnalyticEvent: learnMoreAnalyticEvent))
             }
         }.padding()
     }
@@ -43,5 +43,12 @@ extension CardPresentPaymentsPlugin {
         case .stripe:
             return .stripePlugin
         }
+    }
+}
+
+private extension InPersonPaymentsOnboardingError {
+    var learnMoreAnalyticEvent: WooAnalyticsEvent? {
+        WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingLearnMoreTapped(reason: analyticReason,
+                                                                                countryCode: CardPresentConfigurationLoader().configuration.countryCode)
     }
 }

@@ -9,11 +9,6 @@ final class InPersonPaymentsViewModel: ObservableObject {
     private let useCase: CardPresentPaymentsOnboardingUseCase
     let stores: StoresManager
 
-    lazy var codStepViewModel: InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel = {
-        InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(configuration: useCase.configurationLoader.configuration,
-                                                                      completion: refresh)
-    }()
-
     /// Initializes the view model for a specific site
     ///
     init(stores: StoresManager = ServiceLocator.stores,
@@ -106,23 +101,23 @@ private extension InPersonPaymentsViewModel {
     }
 
     func trackState(_ state: CardPresentPaymentOnboardingState) {
-        guard let reason = state.reasonForAnalytics else {
+        guard state.shouldTrackOnboardingStepEvents else {
             return
         }
         ServiceLocator.analytics
             .track(event: .InPersonPayments
-                    .cardPresentOnboardingNotCompleted(reason: reason,
-                                                       countryCode: countryCode))
+                .cardPresentOnboardingNotCompleted(reason: state.reasonForAnalytics,
+                                                   countryCode: countryCode))
     }
 
     func trackSkipped(state: CardPresentPaymentOnboardingState, remindLater: Bool) {
-        guard let reason = state.reasonForAnalytics else {
+        guard state.shouldTrackOnboardingStepEvents else {
             return
         }
 
         ServiceLocator.analytics.track(
             event: .InPersonPayments.cardPresentOnboardingStepSkipped(
-                reason: reason,
+                reason: state.reasonForAnalytics,
                 remindLater: remindLater,
                 countryCode: countryCode))
     }

@@ -309,7 +309,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
         }
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.promptToEnableCodInIppOnboarding) {
             if shouldShowCashOnDeliveryStep {
-                return .codPaymentGatewayNotSetUp
+                return .codPaymentGatewayNotSetUp(plugin: plugin)
             }
         }
         guard !isInUndefinedState(account: account) else {

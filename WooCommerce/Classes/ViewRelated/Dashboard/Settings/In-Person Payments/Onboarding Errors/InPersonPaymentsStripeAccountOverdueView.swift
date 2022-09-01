@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct InPersonPaymentsStripeAccountOverdue: View {
-    let analyticReason: String?
+    let analyticReason: String
 
     var body: some View {
         InPersonPaymentsOnboardingError(
@@ -33,6 +33,6 @@ private enum Localization {
 
 struct InPersonPaymentsStripeAccountOverdue_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsStripeAccountOverdue(analyticReason: nil)
+        InPersonPaymentsStripeAccountOverdue(analyticReason: "")
     }
 }

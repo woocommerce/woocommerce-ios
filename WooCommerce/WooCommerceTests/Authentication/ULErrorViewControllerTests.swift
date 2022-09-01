@@ -81,6 +81,19 @@ final class ULErrorViewControllerTests: XCTestCase {
         XCTAssertEqual(auxiliaryButtonHidden, viewModel.isAuxiliaryButtonHidden)
     }
 
+    func test_viewcontroller_does_not_have_right_bar_button_item_when_rightBarButtonItemTitle_is_nil_in_viewmodel() throws {
+        // Given
+        let viewModel = ErrorViewModel()
+        viewModel.rightBarButtonItemTitle = nil
+        let viewController = ULErrorViewController(viewModel: viewModel)
+
+        // When
+        _ = try XCTUnwrap(viewController.view)
+
+        // Then
+        XCTAssertNil(viewController.navigationItem.rightBarButtonItem)
+    }
+
     func test_viewcontroller_hits_viewmodel_when_auxbutton_is_tapped() throws {
         // Given
         let viewModel = ErrorViewModel()

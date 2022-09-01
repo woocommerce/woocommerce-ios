@@ -458,6 +458,8 @@
 		03AFDE02282C0B82003B67CD /* InPersonPaymentsCompletedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AFDE01282C0B82003B67CD /* InPersonPaymentsCompletedView.swift */; };
 		03CF78D127C3DBC000523706 /* WCPayCardBrand+IconsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CF78D027C3DBC000523706 /* WCPayCardBrand+IconsTests.swift */; };
 		03EF24FA28BF5D21006A033E /* InPersonPaymentsMenuViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EF24F928BF5D21006A033E /* InPersonPaymentsMenuViewModel.swift */; };
+		03EF24FC28BF996F006A033E /* InPersonPaymentsCashOnDeliveryPaymentGatewayHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EF24FB28BF996F006A033E /* InPersonPaymentsCashOnDeliveryPaymentGatewayHelpers.swift */; };
+		03EF24FE28C0B356006A033E /* CardPresentPaymentsPlugin+CashOnDelivery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EF24FD28C0B356006A033E /* CardPresentPaymentsPlugin+CashOnDelivery.swift */; };
 		03FBDA9D263AD49200ACE257 /* CouponListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FBDA9C263AD49100ACE257 /* CouponListViewController.swift */; };
 		03FBDAA3263AED2F00ACE257 /* CouponListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 03FBDAA2263AED2F00ACE257 /* CouponListViewController.xib */; };
 		03FBDAF2263EE47C00ACE257 /* CouponListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FBDAF1263EE47C00ACE257 /* CouponListViewModel.swift */; };
@@ -2303,6 +2305,8 @@
 		03AFDE01282C0B82003B67CD /* InPersonPaymentsCompletedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCompletedView.swift; sourceTree = "<group>"; };
 		03CF78D027C3DBC000523706 /* WCPayCardBrand+IconsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayCardBrand+IconsTests.swift"; sourceTree = "<group>"; };
 		03EF24F928BF5D21006A033E /* InPersonPaymentsMenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsMenuViewModel.swift; sourceTree = "<group>"; };
+		03EF24FB28BF996F006A033E /* InPersonPaymentsCashOnDeliveryPaymentGatewayHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCashOnDeliveryPaymentGatewayHelpers.swift; sourceTree = "<group>"; };
+		03EF24FD28C0B356006A033E /* CardPresentPaymentsPlugin+CashOnDelivery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CardPresentPaymentsPlugin+CashOnDelivery.swift"; sourceTree = "<group>"; };
 		03FBDA9C263AD49100ACE257 /* CouponListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponListViewController.swift; sourceTree = "<group>"; };
 		03FBDAA2263AED2F00ACE257 /* CouponListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CouponListViewController.xib; sourceTree = "<group>"; };
 		03FBDAF1263EE47C00ACE257 /* CouponListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponListViewModel.swift; sourceTree = "<group>"; };
@@ -8312,6 +8316,8 @@
 				68E952CB287536010095A23D /* SafariView.swift */,
 				68E952CF287587BF0095A23D /* CardReaderManualRowView.swift */,
 				68E952D12875A44B0095A23D /* CardReaderType+Manual.swift */,
+				03EF24FB28BF996F006A033E /* InPersonPaymentsCashOnDeliveryPaymentGatewayHelpers.swift */,
+				03EF24FD28C0B356006A033E /* CardPresentPaymentsPlugin+CashOnDelivery.swift */,
 			);
 			path = "In-Person Payments";
 			sourceTree = "<group>";
@@ -9151,6 +9157,7 @@
 				4592A54B24BF58DD00BC3DE0 /* ProductTagsViewController.swift in Sources */,
 				D817585E22BB5E8700289CFE /* OrderEmailComposer.swift in Sources */,
 				D8815ADF26383EE700EDAD62 /* CardPresentPaymentsModalViewController.swift in Sources */,
+				03EF24FC28BF996F006A033E /* InPersonPaymentsCashOnDeliveryPaymentGatewayHelpers.swift in Sources */,
 				57896D6625362B0C000E8C4D /* TitleAndEditableValueTableViewCellViewModel.swift in Sources */,
 				0205021E27C8B6C600FB1C6B /* InboxEligibilityUseCase.swift in Sources */,
 				26E1BECE251CD9F80096D0A1 /* RefundItemViewModel.swift in Sources */,
@@ -10038,6 +10045,7 @@
 				FE28F7182684EE6A004465C7 /* RoleErrorViewModel.swift in Sources */,
 				02C0CD2C23B5BC9600F880B1 /* DefaultImageService.swift in Sources */,
 				CE0F17CF22A8105800964A63 /* ReadMoreTableViewCell.swift in Sources */,
+				03EF24FE28C0B356006A033E /* CardPresentPaymentsPlugin+CashOnDelivery.swift in Sources */,
 				DEC2961F26BD1605005A056B /* ShippingLabelCustomsFormListViewModel.swift in Sources */,
 				D843D5D722485B19001BFA55 /* ShippingProvidersViewModel.swift in Sources */,
 				4572641927F1EB27004E1F95 /* AddEditCouponViewModel.swift in Sources */,

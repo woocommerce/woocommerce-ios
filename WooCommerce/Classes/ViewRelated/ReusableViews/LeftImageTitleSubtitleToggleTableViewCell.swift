@@ -44,6 +44,16 @@ class LeftImageTitleSubtitleToggleTableViewCell: UITableViewCell {
         }
     }
 
+    private var switchAction: ((Bool) -> Void)? = nil
+    private var subtitleTapAction: (() -> Void)? = nil
+
+    @IBAction func switchValueChanged(_ sender: UISwitch) {
+        switchAction?(sender.isOn)
+    }
+
+    @objc private func subtitleTapped(_ sender: Any) {
+        subtitleTapAction?()
+    }
     // MARK: - Overridden Methods
 
     override func awakeFromNib() {
@@ -53,6 +63,7 @@ class LeftImageTitleSubtitleToggleTableViewCell: UITableViewCell {
         titleLabel?.applyBodyStyle()
         subtitleLabel?.applyFootnoteStyle()
         toggleSwitch?.onTintColor = .primary
+        subtitleLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(subtitleTapped)))
     }
 
     private func configureBackground() {
@@ -63,23 +74,48 @@ class LeftImageTitleSubtitleToggleTableViewCell: UITableViewCell {
 // MARK: - Public Methods
 //
 extension LeftImageTitleSubtitleToggleTableViewCell {
-    func configure(image: UIImage, text: String, subtitle: String, switchState: Bool) {
-        configure(image: image, text: text, subtitle: subtitle, attributedSubtitle: nil, switchState: switchState)
+    func configure(image: UIImage,
+                   text: String,
+                   subtitle: String,
+                   switchState: Bool,
+                   switchAction: @escaping (Bool) -> Void) {
+        configure(image: image,
+                  text: text,
+                  subtitle: subtitle,
+                  attributedSubtitle: nil,
+                  switchState: switchState,
+                  switchAction: switchAction,
+                  subtitleTapAction: nil)
     }
 
-    func configure(image: UIImage, text: String, subtitle: NSAttributedString, switchState: Bool) {
-        configure(image: image, text: text, subtitle: nil, attributedSubtitle: subtitle, switchState: switchState)
+    func configure(image: UIImage,
+                   text: String,
+                   subtitle: NSAttributedString,
+                   switchState: Bool,
+                   switchAction: @escaping (Bool) -> Void,
+                   subtitleTapAction: (() -> Void)? = nil) {
+        configure(image: image,
+                  text: text,
+                  subtitle: nil,
+                  attributedSubtitle: subtitle,
+                  switchState: switchState,
+                  switchAction: switchAction,
+                  subtitleTapAction: subtitleTapAction)
     }
 
     private func configure(image: UIImage,
                            text: String,
                            subtitle: String?,
                            attributedSubtitle: NSAttributedString?,
-                           switchState: Bool) {
+                           switchState: Bool,
+                           switchAction: @escaping (Bool) -> Void,
+                           subtitleTapAction: (() -> Void)? = nil) {
         leftImageView?.image = image
         titleLabel?.text = text
         subtitleLabel?.text = subtitle
         subtitleLabel.attributedText = attributedSubtitle
         toggleSwitch.isOn = switchState
+        self.switchAction = switchAction
+        self.subtitleTapAction = subtitleTapAction
     }
 }

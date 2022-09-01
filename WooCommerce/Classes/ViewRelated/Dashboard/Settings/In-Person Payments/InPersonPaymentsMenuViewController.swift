@@ -13,7 +13,7 @@ final class InPersonPaymentsMenuViewController: UIViewController {
     private let cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCase
     private var cancellables: Set<AnyCancellable> = []
     private lazy var learnMoreViewModel: LearnMoreViewModel = {
-        LearnMoreViewModel(url: WooConstants.URLs.wcPayCashOnDeliveryLearnMoreUrl.asURL(),
+        LearnMoreViewModel(url: WooConstants.URLs.wcPayCashOnDeliveryLearnMore.asURL(),
                            linkText: Localization.toggleEnableCashOnDeliveryLearnMoreLink,
                            formatText: Localization.toggleEnableCashOnDeliveryLearnMoreFormat,
                            tappedAnalyticEvent: WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingLearnMoreTapped(
@@ -88,7 +88,7 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     func refreshAfterNewOnboardingState(_ state: CardPresentPaymentOnboardingState) {
-        self.pluginState = nil
+        pluginState = nil
 
         guard state != .loading else {
             self.activityIndicator?.startAnimating()
@@ -97,22 +97,24 @@ private extension InPersonPaymentsMenuViewController {
 
         switch state {
         case let .completed(newPluginState):
-            self.pluginState = newPluginState
-            self.dismissCardPresentPaymentsOnboardingNoticeIfPresent()
-            self.dismissOnboardingIfPresented()
+            pluginState = newPluginState
+            dismissCardPresentPaymentsOnboardingNoticeIfPresent()
+            dismissOnboardingIfPresented()
         case let .selectPlugin(pluginSelectionWasCleared):
             // If it was cleared it means that we triggered it manually (e.g by tapping in this view on the plugin selection row)
             // No need to show the onboarding notice
             if !pluginSelectionWasCleared {
-                self.showCardPresentPaymentsOnboardingNotice()
+                showCardPresentPaymentsOnboardingNotice()
             }
         default:
-            self.showCardPresentPaymentsOnboardingNotice()
+            showCardPresentPaymentsOnboardingNotice()
         }
 
-        self.activityIndicator?.stopAnimating()
-        self.configureSections()
-        self.tableView.reloadData()
+        updateViewModelSelectedPlugin(state: state)
+
+        activityIndicator?.stopAnimating()
+        configureSections()
+        tableView.reloadData()
     }
 
     func showCardPresentPaymentsOnboardingNotice() {
@@ -128,6 +130,17 @@ private extension InPersonPaymentsMenuViewController {
 
     func dismissCardPresentPaymentsOnboardingNoticeIfPresent() {
         permanentNoticePresenter.dismiss()
+    }
+
+    func updateViewModelSelectedPlugin(state: CardPresentPaymentOnboardingState) {
+        switch state {
+        case let .completed(pluginState):
+            inPersonPaymentsMenuViewModel.selectedPlugin = pluginState.preferred
+        case let .codPaymentGatewayNotSetUp(plugin):
+            inPersonPaymentsMenuViewModel.selectedPlugin = plugin
+        default:
+            inPersonPaymentsMenuViewModel.selectedPlugin = nil
+        }
     }
 
     func showOnboarding() {
@@ -280,7 +293,11 @@ private extension InPersonPaymentsMenuViewController {
                        text: Localization.toggleEnableCashOnDelivery,
                        subtitle: learnMoreViewModel.learnMoreAttributedString,
                        switchState: inPersonPaymentsMenuViewModel.cashOnDeliveryEnabledState,
-                       switchAction: inPersonPaymentsMenuViewModel.updateCashOnDeliverySetting(enabled:))
+                       switchAction: inPersonPaymentsMenuViewModel.updateCashOnDeliverySetting(enabled:),
+                       subtitleTapAction: { [weak self] in
+            guard let self = self else { return }
+            self.inPersonPaymentsMenuViewModel.learnMoreTapped(from: self)
+        })
     }
 
     func updateEnabledState(in cell: UITableViewCell, shouldBeEnabled: Bool = true) {

@@ -156,9 +156,9 @@ private extension CardPresentPaymentsPlugin {
     var cashOnDeliveryLearnMoreURL: URL {
         switch self {
         case .wcPay:
-            return WooConstants.URLs.wcPayCashOnDeliveryLearnMoreUrl.asURL()
+            return WooConstants.URLs.wcPayCashOnDeliveryLearnMore.asURL()
         case .stripe:
-            return WooConstants.URLs.stripeCashOnDeliveryLearnMoreUrl.asURL()
+            return WooConstants.URLs.stripeCashOnDeliveryLearnMore.asURL()
         }
     }
 }

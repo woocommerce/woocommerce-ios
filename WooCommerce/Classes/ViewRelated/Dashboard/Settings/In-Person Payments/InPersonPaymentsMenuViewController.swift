@@ -13,7 +13,7 @@ final class InPersonPaymentsMenuViewController: UIViewController {
     private let cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCase
     private var cancellables: Set<AnyCancellable> = []
     private lazy var learnMoreViewModel: LearnMoreViewModel = {
-        LearnMoreViewModel(url: WooConstants.URLs.wcPayCashOnDeliveryLearnMoreUrl.asURL(),
+        LearnMoreViewModel(url: WooConstants.URLs.wcPayCashOnDeliveryLearnMore.asURL(),
                            linkText: Localization.toggleEnableCashOnDeliveryLearnMoreLink,
                            formatText: Localization.toggleEnableCashOnDeliveryLearnMoreFormat,
                            tappedAnalyticEvent: WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingLearnMoreTapped(

@@ -73,7 +73,7 @@ private extension NotWPAccountViewModel {
             return
         }
         ServiceLocator.analytics.track(.whatIsWPComOnInvalidEmailScreenTapped)
-        WebviewHelper.launch(WooConstants.URLs.whatIsWPComURL.asURL(), with: viewController)
+        WebviewHelper.launch(WooConstants.URLs.whatIsWPCom.asURL(), with: viewController)
     }
 
     func needHelpFindingEmailButtonTapped() {

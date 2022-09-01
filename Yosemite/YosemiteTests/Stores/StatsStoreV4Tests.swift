@@ -310,6 +310,54 @@ final class StatsStoreV4Tests: XCTestCase {
         XCTAssertEqual(network.queryParameters?.contains(expectedQuantityParam), true)
     }
 
+    /// Verifies that `StatsActionV4.retrieveTopEarnerStats` makes a network request with the given `force_cache_refresh` parameter.
+    ///
+    func test_retrieveTopEarnerStats_makes_network_request_with_given_force_cache_rerefresh_parameter() {
+        // Given
+        let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let _: Void = waitFor { promise in
+            let action = StatsActionV4.retrieveTopEarnerStats(siteID: self.sampleSiteID,
+                                                              timeRange: .thisYear,
+                                                              earliestDateToInclude: DateFormatter.dateFromString(with: "2020-01-01T00:00:00"),
+                                                              latestDateToInclude: DateFormatter.dateFromString(with: "2020-07-22T12:00:00"),
+                                                              quantity: 1,
+                                                              forceRefresh: true) { _ in
+                promise(())
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let expectedParam = "force_cache_refresh=1"
+        XCTAssertEqual(network.queryParameters?.contains(expectedParam), true)
+    }
+
+    /// Verifies that `StatsActionV4.retrieveStats` makes a network request with the given `force_cache_refresh` parameter.
+    ///
+    func test_retrieveStats_makes_network_request_with_given_force_cache_rerefresh_parameter() {
+        // Given
+        let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let _: Void = waitFor { promise in
+            let action = StatsActionV4.retrieveStats(siteID: self.sampleSiteID,
+                                                     timeRange: .thisMonth,
+                                                     earliestDateToInclude: .init(),
+                                                     latestDateToInclude: .init(),
+                                                     quantity: 1,
+                                                     forceRefresh: false) { _ in
+                promise(())
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let expectedParam = "force_cache_refresh=0"
+        XCTAssertEqual(network.queryParameters?.contains(expectedParam), true)
+    }
+
     /// Verifies that `StatsActionV4.retrieveTopEarnerStats` effectively persists any updated TopEarnerStatsItems.
     ///
     func test_retrieveTopEarnerStats_effectively_persists_updated_items() {

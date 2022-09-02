@@ -2,7 +2,7 @@ import Foundation
 import Yosemite
 import protocol Storage.StorageManagerType
 
-final class InPersonPaymentsMenuViewModel: ObservableObject {
+final class InPersonPaymentsCashOnDeliveryToggleRowViewModel: ObservableObject {
 
     // MARK: - Dependencies
     struct Dependencies {
@@ -187,7 +187,7 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
 }
 
 // MARK: - Analytics
-private extension InPersonPaymentsMenuViewModel {
+private extension InPersonPaymentsCashOnDeliveryToggleRowViewModel {
     typealias Event = WooAnalyticsEvent.InPersonPayments
 
     func trackCashOnDeliveryToggled(enabled: Bool) {

@@ -347,14 +347,11 @@ extension MainTabBarController {
                 return
             }
             let siteID = Int64(note.meta.identifier(forKey: .site) ?? Int.min)
-            SwitchStoreUseCase(stores: ServiceLocator.stores).switchStore(with: siteID) { siteChanged in
+
+            switchToStore(with: siteID, onCompletion: {
                 presentNotificationDetails(for: note)
 
-                if siteChanged {
-                    let presenter = SwitchStoreNoticePresenter(siteID: siteID)
-                    presenter.presentStoreSwitchedNoticeWhenSiteIsAvailable(configuration: .switchingStores)
-                }
-            }
+            })
         }
         ServiceLocator.stores.dispatch(action)
     }
@@ -382,6 +379,17 @@ extension MainTabBarController {
                                                                               "already_read": note.read ])
     }
 
+    private static func switchToStore(with siteID: Int64, onCompletion: @escaping () -> Void) {
+        SwitchStoreUseCase(stores: ServiceLocator.stores).switchStore(with: siteID) { siteChanged in
+            if siteChanged {
+                let presenter = SwitchStoreNoticePresenter(siteID: siteID)
+                presenter.presentStoreSwitchedNoticeWhenSiteIsAvailable(configuration: .switchingStores)
+            }
+
+            onCompletion()
+        }
+    }
+
     /// Switches to the My Store Tab, and presents the Settings .
     ///
     static func presentSettings() {
@@ -392,6 +400,25 @@ extension MainTabBarController {
         }
 
         dashBoard.presentSettings()
+    }
+
+    static func navigateToOrderDetails(with orderID: Int64, siteID: Int64) {
+        switchToStore(with: siteID, onCompletion: {
+            switchToOrdersTab {
+                // We give some time to the orders tab transition to finish, otherwise it might prevent the second navigation from happening
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    presentDetails(for: orderID, siteID: siteID)
+                }
+            }
+        })
+    }
+
+    private static func presentDetails(for orderID: Int64, siteID: Int64) {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+            (childViewController() as? OrdersSplitViewWrapperController)?.presentDetails(for: orderID, siteID: siteID)
+        } else {
+            (childViewController() as? OrdersRootViewController)?.presentDetails(for: orderID, siteID: siteID)
+        }
     }
 }
 

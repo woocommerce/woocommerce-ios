@@ -109,4 +109,24 @@ final class CustomHelpCenterContentTests: XCTestCase {
         XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.flow.rawValue], flow.rawValue)
         XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.url.rawValue], helpContentURL.absoluteString)
     }
+
+    // MARK: Jetpack required error screen
+    //
+    func test_init_screen_returns_valid_instance_for_jetpack_required_error_screen() throws {
+        // Given
+        let step = "jetpack_not_connected"
+        let flow: AuthenticatorAnalyticsTracker.Flow = .loginWithPasswordWithMagicLinkEmphasis
+        let helpContentURL = WooConstants.URLs.helpCenterForJetpackRequiredError.asURL()
+
+        // When
+        let sut = CustomHelpCenterContent(screen: .jetpackRequired, flow: flow)
+
+        // Then
+        XCTAssertEqual(sut.url, helpContentURL)
+
+        // Test the `trackingProperties` dictionary values
+        XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.step.rawValue], step)
+        XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.flow.rawValue], flow.rawValue)
+        XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.url.rawValue], helpContentURL.absoluteString)
+    }
 }

@@ -36,3 +36,6 @@ echo "--- 🧪 Testing"
 xcrun simctl list >> /dev/null
 rake mocks &
 bundle exec fastlane test_without_building name:"$TEST_NAME" device:"$DEVICE" ios_version:"$IOS_VERSION"
+
+echo "--- 📦 Zipping test results"
+cd fastlane/test_output/ && zip -rq WooCommerce.xcresult.zip WooCommerce.xcresult && cd -

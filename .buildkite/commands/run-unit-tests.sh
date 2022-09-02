@@ -17,3 +17,6 @@ install_gems
 
 echo "--- 🧪 Testing"
 bundle exec fastlane test_without_building name:UnitTests
+
+echo "--- 📦 Zipping test results"
+cd fastlane/test_output/ && zip -rq WooCommerce.xcresult.zip WooCommerce.xcresult && cd -

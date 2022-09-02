@@ -24,7 +24,8 @@ final class LeaderboardsRemoteV4Tests: XCTestCase {
                                     unit: .yearly,
                                     earliestDateToInclude: "2020-01-01T00:00:00",
                                     latestDateToInclude: "2020-12-31T23:59:59",
-                                    quantity: 3) { result in
+                                    quantity: 3,
+                                    forceRefresh: false) { result in
                 promise(result)
             }
         }
@@ -62,7 +63,8 @@ final class LeaderboardsRemoteV4Tests: XCTestCase {
                                               unit: .yearly,
                                               earliestDateToInclude: "2020-01-01T00:00:00",
                                               latestDateToInclude: "2020-12-31T23:59:59",
-                                              quantity: 3) { result in
+                                              quantity: 3,
+                                              forceRefresh: false) { result in
                 promise(result)
             }
         }
@@ -100,7 +102,8 @@ final class LeaderboardsRemoteV4Tests: XCTestCase {
                                     unit: .yearly,
                                     earliestDateToInclude: "2020-01-01T00:00:00",
                                     latestDateToInclude: "2020-12-31T23:59:59",
-                                    quantity: 3) { result in
+                                    quantity: 3,
+                                    forceRefresh: false) { result in
                                         remoteResult = result
                                         exp.fulfill()
             }

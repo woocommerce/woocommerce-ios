@@ -28,9 +28,11 @@ struct InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView: View {
 
             Spacer()
 
-            InPersonPaymentsLearnMore(url: viewModel.learnMoreURL,
-                                      formatText: Localization.cashOnDeliveryLearnMore,
-                                      analyticReason: viewModel.analyticReason)
+            InPersonPaymentsLearnMore(
+                viewModel: LearnMoreViewModel(
+                    url: viewModel.learnMoreURL,
+                    formatText: Localization.cashOnDeliveryLearnMore,
+                    tappedAnalyticEvent: viewModel.learnMoreEvent))
         }
     }
 }

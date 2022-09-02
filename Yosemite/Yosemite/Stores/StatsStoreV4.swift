@@ -41,12 +41,14 @@ public final class StatsStoreV4: Store {
                             let earliestDateToInclude,
                             let latestDateToInclude,
                             let quantity,
+                            let forceRefresh,
                             let onCompletion):
             retrieveStats(siteID: siteID,
                           timeRange: timeRange,
                           earliestDateToInclude: earliestDateToInclude,
                           latestDateToInclude: latestDateToInclude,
                           quantity: quantity,
+                          forceRefresh: forceRefresh,
                           onCompletion: onCompletion)
         case .retrieveSiteVisitStats(let siteID,
                                      let siteTimezone,
@@ -63,12 +65,14 @@ public final class StatsStoreV4: Store {
                                      let earliestDateToInclude,
                                      let latestDateToInclude,
                                      let quantity,
+                                     let forceRefresh,
                                      let onCompletion):
             retrieveTopEarnerStats(siteID: siteID,
                                    timeRange: timeRange,
                                    earliestDateToInclude: earliestDateToInclude,
                                    latestDateToInclude: latestDateToInclude,
                                    quantity: quantity,
+                                   forceRefresh: forceRefresh,
                                    onCompletion: onCompletion)
         }
     }
@@ -77,7 +81,7 @@ public final class StatsStoreV4: Store {
 
 // MARK: - Services!
 //
-public extension StatsStoreV4 {
+private extension StatsStoreV4 {
     /// Deletes all of the Stats data.
     ///
     func resetStoredStats(onCompletion: () -> Void) {
@@ -98,12 +102,14 @@ public extension StatsStoreV4 {
                        earliestDateToInclude: Date,
                        latestDateToInclude: Date,
                        quantity: Int,
+                       forceRefresh: Bool,
                        onCompletion: @escaping (Result<Void, Error>) -> Void) {
         orderStatsRemote.loadOrderStats(for: siteID,
-                              unit: timeRange.intervalGranularity,
-                              earliestDateToInclude: earliestDateToInclude,
-                              latestDateToInclude: latestDateToInclude,
-                              quantity: quantity) { [weak self] result in
+                                        unit: timeRange.intervalGranularity,
+                                        earliestDateToInclude: earliestDateToInclude,
+                                        latestDateToInclude: latestDateToInclude,
+                                        quantity: quantity,
+                                        forceRefresh: forceRefresh) { [weak self] result in
             switch result {
             case .success(let orderStatsV4):
                 self?.upsertStoredOrderStats(readOnlyStats: orderStatsV4, timeRange: timeRange)
@@ -146,13 +152,15 @@ public extension StatsStoreV4 {
                                 earliestDateToInclude: Date,
                                 latestDateToInclude: Date,
                                 quantity: Int,
+                                forceRefresh: Bool,
                                 onCompletion: @escaping (Result<Void, Error>) -> Void) {
         Task { @MainActor in
             let result = await loadTopEarnerStats(siteID: siteID,
                                                   timeRange: timeRange,
                                                   earliestDateToInclude: earliestDateToInclude,
                                                   latestDateToInclude: latestDateToInclude,
-                                                  quantity: quantity)
+                                                  quantity: quantity,
+                                                  forceRefresh: forceRefresh)
             switch result {
             case .success:
                 onCompletion(result)
@@ -162,7 +170,8 @@ public extension StatsStoreV4 {
                                                                                             timeRange: timeRange,
                                                                                             earliestDateToInclude: earliestDateToInclude,
                                                                                             latestDateToInclude: latestDateToInclude,
-                                                                                            quantity: quantity)
+                                                                                            quantity: quantity,
+                                                                                            forceRefresh: forceRefresh)
                     onCompletion(resultFromDeprecatedAPI)
                 } else {
                     onCompletion(result)
@@ -176,7 +185,8 @@ public extension StatsStoreV4 {
                             timeRange: StatsTimeRangeV4,
                             earliestDateToInclude: Date,
                             latestDateToInclude: Date,
-                            quantity: Int) async -> Result<Void, Error> {
+                            quantity: Int,
+                            forceRefresh: Bool) async -> Result<Void, Error> {
         await withCheckedContinuation { continuation in
             let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
             let earliestDate = dateFormatter.string(from: earliestDateToInclude)
@@ -185,7 +195,8 @@ public extension StatsStoreV4 {
                                                 unit: timeRange.leaderboardsGranularity,
                                                 earliestDateToInclude: earliestDate,
                                                 latestDateToInclude: latestDate,
-                                                quantity: quantity) { [weak self] result in
+                                                quantity: quantity,
+                                                forceRefresh: forceRefresh) { [weak self] result in
                 guard let self = self else {
                     return
                 }
@@ -211,7 +222,8 @@ public extension StatsStoreV4 {
                                              timeRange: StatsTimeRangeV4,
                                              earliestDateToInclude: Date,
                                              latestDateToInclude: Date,
-                                             quantity: Int) async -> Result<Void, Error> {
+                                             quantity: Int,
+                                             forceRefresh: Bool) async -> Result<Void, Error> {
         await withCheckedContinuation { continuation in
             let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
             let earliestDate = dateFormatter.string(from: earliestDateToInclude)
@@ -220,7 +232,8 @@ public extension StatsStoreV4 {
                                                           unit: timeRange.leaderboardsGranularity,
                                                           earliestDateToInclude: earliestDate,
                                                           latestDateToInclude: latestDate,
-                                                          quantity: quantity) { [weak self] result in
+                                                          quantity: quantity,
+                                                          forceRefresh: forceRefresh) { [weak self] result in
                 guard let self = self else {
                     return
                 }

@@ -16,6 +16,7 @@ public enum StatsActionV4: Action {
         earliestDateToInclude: Date,
         latestDateToInclude: Date,
         quantity: Int,
+        forceRefresh: Bool,
         onCompletion: (Result<Void, Error>) -> Void)
 
     /// Synchronizes `SiteVisitStats` for the provided siteID, time range, and date.
@@ -33,5 +34,6 @@ public enum StatsActionV4: Action {
                                 earliestDateToInclude: Date,
                                 latestDateToInclude: Date,
                                 quantity: Int,
+                                forceRefresh: Bool,
                                 onCompletion: (Result<Void, Error>) -> Void)
 }

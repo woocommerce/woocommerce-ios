@@ -7,7 +7,7 @@ struct MatchedRoute {
     let route: Route
     let parameters: [String: String]
 
-    func performAction() {
+    func performAction() -> Bool {
         route.perform(with: parameters)
     }
 }

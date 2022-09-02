@@ -90,7 +90,7 @@ struct InPersonPaymentsView: View {
             switch url {
             case InPersonPaymentsSupportLink.supportURL:
                 showSupport?()
-            case InPersonPaymentsLearnMore.learnMoreURL:
+            case LearnMoreViewModel.learnMoreURL:
                 if let url = viewModel.learnMoreURL {
                     showURL?(url)
                 }

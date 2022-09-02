@@ -529,6 +529,9 @@
 		26578C4126277AFF00A15097 /* OrderAddOnsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26578C4026277AFF00A15097 /* OrderAddOnsListViewController.swift */; };
 		265BCA0C2430E741004E53EE /* ProductCategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265BCA0B2430E741004E53EE /* ProductCategoryTableViewCell.swift */; };
 		265BCA0E2430E771004E53EE /* ProductCategoryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 265BCA0D2430E771004E53EE /* ProductCategoryTableViewCell.xib */; };
+		265C99E228B9BCD0005E6117 /* StoreInfoWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265C99E028B9BA43005E6117 /* StoreInfoWidget.swift */; };
+		265C99E428B9C834005E6117 /* StoreInfoProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265C99E328B9C834005E6117 /* StoreInfoProvider.swift */; };
+		265C99E628B9CB8E005E6117 /* StoreInfoViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265C99E528B9CB8E005E6117 /* StoreInfoViewModifiers.swift */; };
 		265D909D2446688C00D66F0F /* ProductCategoryViewModelBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267CFE1824435A5500AF3A13 /* ProductCategoryViewModelBuilderTests.swift */; };
 		2662D90626E1571900E25611 /* ListSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2662D90526E1571900E25611 /* ListSelector.swift */; };
 		2662D90826E15D6E00E25611 /* CountrySelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2662D90726E15D6E00E25611 /* CountrySelectorCommand.swift */; };
@@ -590,6 +593,8 @@
 		26CCBE0B2523B3650073F94D /* RefundProductsTotalTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CCBE0A2523B3650073F94D /* RefundProductsTotalTableViewCell.swift */; };
 		26CCBE0D2523C2560073F94D /* RefundProductsTotalTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26CCBE0C2523C2560073F94D /* RefundProductsTotalTableViewCell.xib */; };
 		26CFDB2727357E8000AB940B /* SimplePaymentsSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CFDB2627357E8000AB940B /* SimplePaymentsSummary.swift */; };
+		26D9E54428C107F80098DF26 /* WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26D9E54328C107F80098DF26 /* WooFoundation.framework */; };
+		26D9E54528C107F80098DF26 /* WooFoundation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 26D9E54328C107F80098DF26 /* WooFoundation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		26DB7E3528636D2200506173 /* NonEditableOrderBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26DB7E3428636D2200506173 /* NonEditableOrderBanner.swift */; };
 		26E0ADF12631D94D00A5EB3B /* TopBannerWrapperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E0ADF02631D94D00A5EB3B /* TopBannerWrapperView.swift */; };
 		26E0AE13263359F900A5EB3B /* View+Conditionals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E0AE12263359F900A5EB3B /* View+Conditionals.swift */; };
@@ -1864,6 +1869,17 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		26D9E54628C107F80098DF26 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				26D9E54528C107F80098DF26 /* WooFoundation.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3F1FA85028B60126009E246C /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2401,6 +2417,9 @@
 		26578C4026277AFF00A15097 /* OrderAddOnsListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderAddOnsListViewController.swift; sourceTree = "<group>"; };
 		265BCA0B2430E741004E53EE /* ProductCategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryTableViewCell.swift; sourceTree = "<group>"; };
 		265BCA0D2430E771004E53EE /* ProductCategoryTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductCategoryTableViewCell.xib; sourceTree = "<group>"; };
+		265C99E028B9BA43005E6117 /* StoreInfoWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreInfoWidget.swift; sourceTree = "<group>"; };
+		265C99E328B9C834005E6117 /* StoreInfoProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreInfoProvider.swift; sourceTree = "<group>"; };
+		265C99E528B9CB8E005E6117 /* StoreInfoViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreInfoViewModifiers.swift; sourceTree = "<group>"; };
 		2662D90526E1571900E25611 /* ListSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListSelector.swift; sourceTree = "<group>"; };
 		2662D90726E15D6E00E25611 /* CountrySelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountrySelectorCommand.swift; sourceTree = "<group>"; };
 		2662D90926E16B3600E25611 /* FilterListSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterListSelector.swift; sourceTree = "<group>"; };
@@ -2462,6 +2481,7 @@
 		26CCBE0A2523B3650073F94D /* RefundProductsTotalTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundProductsTotalTableViewCell.swift; sourceTree = "<group>"; };
 		26CCBE0C2523C2560073F94D /* RefundProductsTotalTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RefundProductsTotalTableViewCell.xib; sourceTree = "<group>"; };
 		26CFDB2627357E8000AB940B /* SimplePaymentsSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplePaymentsSummary.swift; sourceTree = "<group>"; };
+		26D9E54328C107F80098DF26 /* WooFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = WooFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		26DB7E3428636D2200506173 /* NonEditableOrderBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NonEditableOrderBanner.swift; sourceTree = "<group>"; };
 		26E0ADF02631D94D00A5EB3B /* TopBannerWrapperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBannerWrapperView.swift; sourceTree = "<group>"; };
 		26E0AE12263359F900A5EB3B /* View+Conditionals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Conditionals.swift"; sourceTree = "<group>"; };
@@ -3718,6 +3738,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3F1FA84328B60125009E246C /* SwiftUI.framework in Frameworks */,
+				26D9E54428C107F80098DF26 /* WooFoundation.framework in Frameworks */,
 				3F1FA84228B60125009E246C /* WidgetKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5286,6 +5307,9 @@
 			isa = PBXGroup;
 			children = (
 				3F1FA84528B60125009E246C /* StoreWidgets.swift */,
+				265C99E028B9BA43005E6117 /* StoreInfoWidget.swift */,
+				265C99E328B9C834005E6117 /* StoreInfoProvider.swift */,
+				265C99E528B9CB8E005E6117 /* StoreInfoViewModifiers.swift */,
 				3F1FA84728B60125009E246C /* StoreWidgets.intentdefinition */,
 				3F1FA84828B60126009E246C /* Assets.xcassets */,
 				3F1FA84A28B60126009E246C /* Info.plist */,
@@ -6314,6 +6338,7 @@
 		88A44ABE866401E6DB03AC60 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				26D9E54328C107F80098DF26 /* WooFoundation.framework */,
 				B9151B3E2840EB330036180F /* WooFoundation.framework */,
 				80E6FC6E276325F60086CD67 /* Clibsodium.xcframework */,
 				02AB82EB27069D5D008D7334 /* Experiments.framework */,
@@ -8541,6 +8566,7 @@
 				3F1FA83C28B60125009E246C /* Sources */,
 				3F1FA83D28B60125009E246C /* Frameworks */,
 				3F1FA83E28B60125009E246C /* Resources */,
+				26D9E54628C107F80098DF26 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -9206,7 +9232,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				265C99E628B9CB8E005E6117 /* StoreInfoViewModifiers.swift in Sources */,
 				3F1FA84B28B60126009E246C /* StoreWidgets.intentdefinition in Sources */,
+				265C99E228B9BCD0005E6117 /* StoreInfoWidget.swift in Sources */,
+				265C99E428B9C834005E6117 /* StoreInfoProvider.swift in Sources */,
 				3F1FA84628B60125009E246C /* StoreWidgets.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

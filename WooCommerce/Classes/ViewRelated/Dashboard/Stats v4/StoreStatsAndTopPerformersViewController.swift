@@ -34,6 +34,7 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
     private var isSyncing = false
     private let usageTracksEventEmitter = StoreStatsUsageTracksEventEmitter()
     private let dashboardViewModel: DashboardViewModel
+    private let timeRanges: [StatsTimeRangeV4] = [.today, .thisWeek, .thisMonth, .thisYear]
 
     // MARK: - View Lifecycle
 
@@ -50,6 +51,19 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
     override func viewDidLoad() {
         configurePeriodViewControllers()
         configureTabStrip()
+
+        Task { @MainActor in
+            let selectedTimeRange = await loadLastTimeRange() ?? .today
+            guard let selectedTabIndex = timeRanges.firstIndex(of: selectedTimeRange),
+                  selectedTabIndex != currentIndex else {
+                return
+            }
+            // There is currently no straightforward way to set a different default tab using `XLPagerTabStrip` without forking.
+            // This is a workaround following https://github.com/xmartlabs/XLPagerTabStrip/issues/537#issuecomment-534903598
+            moveToViewController(at: selectedTabIndex, animated: false)
+            reloadPagerTabStripView()
+        }
+
         // 👆 must be called before super.viewDidLoad()
 
         super.viewDidLoad()
@@ -86,6 +100,7 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
               timeRangeTabIndex != currentIndex else {
             return
         }
+        saveLastTimeRange(periodViewController.timeRange)
         syncStats(forced: false, viewControllerToSync: periodViewController)
     }
 }
@@ -317,38 +332,34 @@ private extension StoreStatsAndTopPerformersViewController {
 
     func configurePeriodViewControllers() {
         let currentDate = Date()
-        let dayVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
-                                                                   timeRange: .today,
-                                                                   currentDate: currentDate,
-                                                                   canDisplayInAppFeedbackCard: true,
-                                                                   usageTracksEventEmitter: usageTracksEventEmitter)
-        let weekVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
-                                                                    timeRange: .thisWeek,
-                                                                    currentDate: currentDate,
-                                                                    canDisplayInAppFeedbackCard: false,
-                                                                    usageTracksEventEmitter: usageTracksEventEmitter)
-        let monthVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
-                                                                     timeRange: .thisMonth,
-                                                                     currentDate: currentDate,
-                                                                     canDisplayInAppFeedbackCard: false,
-                                                                     usageTracksEventEmitter: usageTracksEventEmitter)
-        let yearVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
-                                                                    timeRange: .thisYear,
-                                                                    currentDate: currentDate,
-                                                                    canDisplayInAppFeedbackCard: false,
-                                                                    usageTracksEventEmitter: usageTracksEventEmitter)
-
-        periodVCs.append(dayVC)
-        periodVCs.append(weekVC)
-        periodVCs.append(monthVC)
-        periodVCs.append(yearVC)
-
+        let periodViewControllers = timeRanges.map {
+            StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
+                                                           timeRange: $0,
+                                                           currentDate: currentDate,
+                                                           canDisplayInAppFeedbackCard: $0 == .today,
+                                                           usageTracksEventEmitter: usageTracksEventEmitter)
+        }
+        periodVCs = periodViewControllers
         periodVCs.forEach { (vc) in
             vc.scrollDelegate = scrollDelegate
             vc.onPullToRefresh = { [weak self] in
                 await self?.onPullToRefresh()
             }
         }
+    }
+
+    func loadLastTimeRange() async -> StatsTimeRangeV4? {
+        await withCheckedContinuation { continuation in
+            let action = AppSettingsAction.loadLastSelectedStatsTimeRange(siteID: siteID) { timeRange in
+                continuation.resume(returning: timeRange)
+            }
+            ServiceLocator.stores.dispatch(action)
+        }
+    }
+
+    func saveLastTimeRange(_ timeRange: StatsTimeRangeV4) {
+        let action = AppSettingsAction.setLastSelectedStatsTimeRange(siteID: siteID, timeRange: timeRange) {}
+        ServiceLocator.stores.dispatch(action)
     }
 
     func configureTabStrip() {

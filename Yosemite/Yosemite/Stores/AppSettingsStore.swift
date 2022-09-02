@@ -790,7 +790,7 @@ extension AppSettingsStore {
 }
 
 private extension AppSettingsStore {
-    func setLastSelectedStatsTimeRange(siteID: Int64, timeRange: StatsTimeRangeV4, onCompletion: () -> Void) {
+    func setLastSelectedStatsTimeRange(siteID: Int64, timeRange: StatsTimeRangeV4, onCompletion: @escaping () -> Void) {
         let storeSettings = getStoreSettings(for: siteID)
         let updatedSettings = storeSettings.copy(lastSelectedStatsTimeRange: timeRange.rawValue)
         setStoreSettings(settings: updatedSettings, for: siteID) { _ in

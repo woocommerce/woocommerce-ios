@@ -32,7 +32,10 @@ struct UniversalLinkRouter {
     func handle(url: URL) {
         guard let matchedRoute = matcher.firstRouteMatching(url),
               matchedRoute.performAction() else {
+            ServiceLocator.analytics.track(.universalLinkFailed, withProperties: ["url": url])
             return bouncingURLOpener.open(url)
         }
+
+        ServiceLocator.analytics.track(.universalLinkOpened, withProperties: ["path": matchedRoute.route.path])
     }
 }

@@ -45,7 +45,7 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                 areSimplePaymentTaxesEnabled: Bool = false,
                 preferredInPersonPaymentGateway: String? = nil,
                 skippedCashOnDeliveryOnboardingStep: Bool = false,
-                lastSelectedStatsTimeRange: String) {
+                lastSelectedStatsTimeRange: String = "") {
         self.isTelemetryAvailable = isTelemetryAvailable
         self.telemetryLastReportedTime = telemetryLastReportedTime
         self.areSimplePaymentTaxesEnabled = areSimplePaymentTaxesEnabled

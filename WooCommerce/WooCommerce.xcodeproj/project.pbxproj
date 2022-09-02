@@ -595,6 +595,8 @@
 		26CFDB2727357E8000AB940B /* SimplePaymentsSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CFDB2627357E8000AB940B /* SimplePaymentsSummary.swift */; };
 		26D9E54428C107F80098DF26 /* WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26D9E54328C107F80098DF26 /* WooFoundation.framework */; };
 		26D9E54528C107F80098DF26 /* WooFoundation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 26D9E54328C107F80098DF26 /* WooFoundation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		26D9E54828C10A3B0098DF26 /* Experiments.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26D9E54728C10A3B0098DF26 /* Experiments.framework */; };
+		26D9E54928C10A3C0098DF26 /* Experiments.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 26D9E54728C10A3B0098DF26 /* Experiments.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		26DB7E3528636D2200506173 /* NonEditableOrderBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26DB7E3428636D2200506173 /* NonEditableOrderBanner.swift */; };
 		26E0ADF12631D94D00A5EB3B /* TopBannerWrapperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E0ADF02631D94D00A5EB3B /* TopBannerWrapperView.swift */; };
 		26E0AE13263359F900A5EB3B /* View+Conditionals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E0AE12263359F900A5EB3B /* View+Conditionals.swift */; };
@@ -1098,6 +1100,7 @@
 		80C362732779A7EF005CEAD3 /* products_reviews_all.json in Resources */ = {isa = PBXBuildFile; fileRef = 80C362722779A7EF005CEAD3 /* products_reviews_all.json */; };
 		80E6FC6D276312D50086CD67 /* products.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00C923E9BD5500157A78 /* products.json */; };
 		80E6FC79276C3FD60086CD67 /* MockDataReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80E6FC742763579D0086CD67 /* MockDataReader.swift */; };
+		8194A48313C34FE1782D51BC /* Pods_StoreWidgetsExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2886DE5218EEA78ABAF0BE67 /* Pods_StoreWidgetsExtension.framework */; };
 		86DBBB0BDEA3488E2BEBB314 /* Pods_WooCommerce.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */; };
 		8CD41D4A21F8A7E300CF3C2B /* RELEASE-NOTES.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8CD41D4921F8A7E300CF3C2B /* RELEASE-NOTES.txt */; };
 		933A27372222354600C2143A /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A27362222354600C2143A /* Logging.swift */; };
@@ -1876,6 +1879,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				26D9E54528C107F80098DF26 /* WooFoundation.framework in Embed Frameworks */,
+				26D9E54928C10A3C0098DF26 /* Experiments.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2482,6 +2486,7 @@
 		26CCBE0C2523C2560073F94D /* RefundProductsTotalTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RefundProductsTotalTableViewCell.xib; sourceTree = "<group>"; };
 		26CFDB2627357E8000AB940B /* SimplePaymentsSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplePaymentsSummary.swift; sourceTree = "<group>"; };
 		26D9E54328C107F80098DF26 /* WooFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = WooFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		26D9E54728C10A3B0098DF26 /* Experiments.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Experiments.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		26DB7E3428636D2200506173 /* NonEditableOrderBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NonEditableOrderBanner.swift; sourceTree = "<group>"; };
 		26E0ADF02631D94D00A5EB3B /* TopBannerWrapperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBannerWrapperView.swift; sourceTree = "<group>"; };
 		26E0AE12263359F900A5EB3B /* View+Conditionals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Conditionals.swift"; sourceTree = "<group>"; };
@@ -2504,6 +2509,7 @@
 		26FE09E324DCFE5200B9BDF5 /* InAppFeedbackCardViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppFeedbackCardViewControllerTests.swift; sourceTree = "<group>"; };
 		26FF455E24BE49EE00B3B2F4 /* DeprecatedStatsDashboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeprecatedStatsDashboardViewController.swift; sourceTree = "<group>"; };
 		2719B6FD1E6FE78A76B6AC74 /* Pods-WooCommerceTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerceTests.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		2886DE5218EEA78ABAF0BE67 /* Pods_StoreWidgetsExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_StoreWidgetsExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		310D1B472734919E001D55B4 /* InPersonPaymentsLiveSiteInTestModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsLiveSiteInTestModeView.swift; sourceTree = "<group>"; };
 		311237ED2714DA240033C44E /* CardPresentModalDisplayMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalDisplayMessage.swift; sourceTree = "<group>"; };
 		311D21E7264AEDB900102316 /* CardPresentModalScanningForReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalScanningForReader.swift; sourceTree = "<group>"; };
@@ -2911,6 +2917,7 @@
 		77E53EBE2510C153003D385F /* ProductDownloadListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDownloadListViewModel.swift; sourceTree = "<group>"; };
 		77E53EC42510C193003D385F /* ProductDownloadListViewController+Droppable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductDownloadListViewController+Droppable.swift"; sourceTree = "<group>"; };
 		77E53EC72510FE07003D385F /* ProductDownloadsEditableData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDownloadsEditableData.swift; sourceTree = "<group>"; };
+		7D4CEC625891A6F236907541 /* Pods-StoreWidgetsExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StoreWidgetsExtension.release.xcconfig"; path = "../Pods/Target Support Files/Pods-StoreWidgetsExtension/Pods-StoreWidgetsExtension.release.xcconfig"; sourceTree = "<group>"; };
 		7E6A01962725B811001668D5 /* FilterProductCategoryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductCategoryListViewController.swift; sourceTree = "<group>"; };
 		7E6A019E2725CD76001668D5 /* FilterProductCategoryListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductCategoryListViewModel.swift; sourceTree = "<group>"; };
 		7E6A01A02725DEDE001668D5 /* FilterProductCategoryListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductCategoryListViewModelTests.swift; sourceTree = "<group>"; };
@@ -3220,6 +3227,7 @@
 		C044961228058FE8003B3081 /* AddProductScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductScreen.swift; sourceTree = "<group>"; };
 		C0A37CB7282957EB00E0826D /* orders_3337_add_customer_details.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = orders_3337_add_customer_details.json; sourceTree = "<group>"; };
 		C0CE1F83282AB1590019138E /* countries.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = countries.json; sourceTree = "<group>"; };
+		CB4839361AA061340BE98DA9 /* Pods-StoreWidgetsExtension.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StoreWidgetsExtension.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-StoreWidgetsExtension/Pods-StoreWidgetsExtension.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		CC0324A2263AD9F40056C6B7 /* MockShippingLabelAccountSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockShippingLabelAccountSettings.swift; sourceTree = "<group>"; };
 		CC078530266E706300BA9AC1 /* ErrorTopBannerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorTopBannerFactory.swift; sourceTree = "<group>"; };
 		CC07860426736B6500BA9AC1 /* ErrorTopBannerFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorTopBannerFactoryTests.swift; sourceTree = "<group>"; };
@@ -3533,6 +3541,7 @@
 		D8F3A97E258865BD0085859B /* PasswordScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordScreen.swift; sourceTree = "<group>"; };
 		D8F82AC422AF903700B67E4B /* IconsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = IconsTests.swift; path = WooCommerceTests/Extensions/IconsTests.swift; sourceTree = SOURCE_ROOT; };
 		D8FBFF1622D4CC2F006E3336 /* docs */ = {isa = PBXFileReference; lastKnownFileType = folder; name = docs; path = ../docs; sourceTree = "<group>"; };
+		DA1AE99A10B90748C7676E95 /* Pods-StoreWidgetsExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StoreWidgetsExtension.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-StoreWidgetsExtension/Pods-StoreWidgetsExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		DE001322279A793A00EB0350 /* CouponWooTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponWooTests.swift; sourceTree = "<group>"; };
 		DE0A2EA9281BA083007A8015 /* ProductCategoryList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryList.swift; sourceTree = "<group>"; };
 		DE0A2EAC281BA1FA007A8015 /* ProductCategorySelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategorySelector.swift; sourceTree = "<group>"; };
@@ -3740,6 +3749,8 @@
 				3F1FA84328B60125009E246C /* SwiftUI.framework in Frameworks */,
 				26D9E54428C107F80098DF26 /* WooFoundation.framework in Frameworks */,
 				3F1FA84228B60125009E246C /* WidgetKit.framework in Frameworks */,
+				8194A48313C34FE1782D51BC /* Pods_StoreWidgetsExtension.framework in Frameworks */,
+				26D9E54828C10A3B0098DF26 /* Experiments.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6338,6 +6349,7 @@
 		88A44ABE866401E6DB03AC60 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				26D9E54728C10A3B0098DF26 /* Experiments.framework */,
 				26D9E54328C107F80098DF26 /* WooFoundation.framework */,
 				B9151B3E2840EB330036180F /* WooFoundation.framework */,
 				80E6FC6E276325F60086CD67 /* Clibsodium.xcframework */,
@@ -6354,6 +6366,7 @@
 				BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */,
 				6DC4526F9A7357761197EBF0 /* Pods_WooCommerceTests.framework */,
 				3F1FA84128B60125009E246C /* WidgetKit.framework */,
+				2886DE5218EEA78ABAF0BE67 /* Pods_StoreWidgetsExtension.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -8442,6 +8455,9 @@
 				8A659E65308A3D9DD79A95F9 /* Pods-WooCommerceTests.release.xcconfig */,
 				25D00C97936D2C6589F8ECE9 /* Pods-WooCommerce.release-alpha.xcconfig */,
 				2719B6FD1E6FE78A76B6AC74 /* Pods-WooCommerceTests.release-alpha.xcconfig */,
+				DA1AE99A10B90748C7676E95 /* Pods-StoreWidgetsExtension.debug.xcconfig */,
+				7D4CEC625891A6F236907541 /* Pods-StoreWidgetsExtension.release.xcconfig */,
+				CB4839361AA061340BE98DA9 /* Pods-StoreWidgetsExtension.release-alpha.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -8563,6 +8579,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3F1FA85428B60126009E246C /* Build configuration list for PBXNativeTarget "StoreWidgetsExtension" */;
 			buildPhases = (
+				5F0CE4E06C2CFA36FC2FD62B /* [CP] Check Pods Manifest.lock */,
 				3F1FA83C28B60125009E246C /* Sources */,
 				3F1FA83D28B60125009E246C /* Frameworks */,
 				3F1FA83E28B60125009E246C /* Resources */,
@@ -9151,6 +9168,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
 			shellScript = "$SRCROOT/../Scripts/build-phases/swiftlint.sh\n";
+		};
+		5F0CE4E06C2CFA36FC2FD62B /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-StoreWidgetsExtension-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
 		};
 		91990E72B3E1D58AC13D7628 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10967,6 +11006,7 @@
 		};
 		3F1FA85128B60126009E246C /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DA1AE99A10B90748C7676E95 /* Pods-StoreWidgetsExtension.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
@@ -10999,6 +11039,7 @@
 		};
 		3F1FA85228B60126009E246C /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7D4CEC625891A6F236907541 /* Pods-StoreWidgetsExtension.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
@@ -11032,6 +11073,7 @@
 		};
 		3F1FA85328B60126009E246C /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CB4839361AA061340BE98DA9 /* Pods-StoreWidgetsExtension.release-alpha.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;

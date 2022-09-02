@@ -65,6 +65,7 @@ final class InPersonPaymentsMenuViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        setupNavigationBar()
         configureSections()
         configureTableView()
         registerTableViewCells()
@@ -162,6 +163,11 @@ private extension InPersonPaymentsMenuViewController {
 // MARK: - View configuration
 //
 private extension InPersonPaymentsMenuViewController {
+    func setupNavigationBar() {
+        navigationController?.setNavigationBarHidden(false, animated: true)
+        navigationItem.title = InPersonPaymentsView.Localization.title
+    }
+
     func configureSections() {
         sections = [
             actionsSection,

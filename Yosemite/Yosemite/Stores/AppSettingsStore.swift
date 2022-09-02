@@ -186,8 +186,8 @@ public class AppSettingsStore: Store {
             setSkippedCashOnDeliveryOnboardingStep(siteID: siteID)
         case .getSkippedCashOnDeliveryOnboardingStep(siteID: let siteID, onCompletion: let completion):
             getSkippedCashOnDeliveryOnboardingStep(siteID: siteID, onCompletion: completion)
-        case .setLastSelectedStatsTimeRange(let siteID, let timeRange, let onCompletion):
-            setLastSelectedStatsTimeRange(siteID: siteID, timeRange: timeRange, onCompletion: onCompletion)
+        case .setLastSelectedStatsTimeRange(let siteID, let timeRange):
+            setLastSelectedStatsTimeRange(siteID: siteID, timeRange: timeRange)
         case .loadLastSelectedStatsTimeRange(let siteID, let onCompletion):
             loadLastSelectedStatsTimeRange(siteID: siteID, onCompletion: onCompletion)
         }
@@ -790,12 +790,10 @@ extension AppSettingsStore {
 }
 
 private extension AppSettingsStore {
-    func setLastSelectedStatsTimeRange(siteID: Int64, timeRange: StatsTimeRangeV4, onCompletion: @escaping () -> Void) {
+    func setLastSelectedStatsTimeRange(siteID: Int64, timeRange: StatsTimeRangeV4) {
         let storeSettings = getStoreSettings(for: siteID)
         let updatedSettings = storeSettings.copy(lastSelectedStatsTimeRange: timeRange.rawValue)
-        setStoreSettings(settings: updatedSettings, for: siteID) { _ in
-            onCompletion()
-        }
+        setStoreSettings(settings: updatedSettings, for: siteID)
     }
 
     func loadLastSelectedStatsTimeRange(siteID: Int64, onCompletion: (StatsTimeRangeV4?) -> Void) {

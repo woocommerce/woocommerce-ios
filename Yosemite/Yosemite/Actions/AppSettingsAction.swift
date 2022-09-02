@@ -203,7 +203,7 @@ public enum AppSettingsAction: Action {
 
     // MARK: - Stats Time Range Tab
 
-    case setLastSelectedStatsTimeRange(siteID: Int64, timeRange: StatsTimeRangeV4, onCompletion: () -> Void)
+    case setLastSelectedStatsTimeRange(siteID: Int64, timeRange: StatsTimeRangeV4)
 
     case loadLastSelectedStatsTimeRange(siteID: Int64, onCompletion: (StatsTimeRangeV4?) -> Void)
 }

@@ -370,7 +370,7 @@ private extension StoreStatsAndTopPerformersViewController {
     }
 
     func saveLastTimeRange(_ timeRange: StatsTimeRangeV4) {
-        let action = AppSettingsAction.setLastSelectedStatsTimeRange(siteID: siteID, timeRange: timeRange) {}
+        let action = AppSettingsAction.setLastSelectedStatsTimeRange(siteID: siteID, timeRange: timeRange)
         ServiceLocator.stores.dispatch(action)
     }
 

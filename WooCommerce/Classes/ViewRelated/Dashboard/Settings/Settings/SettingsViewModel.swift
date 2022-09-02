@@ -356,12 +356,6 @@ private extension SettingsViewModel {
 //
 private extension SettingsViewModel {
     enum Localization {
-        static let selectedStoreTitle = NSLocalizedString(
-            "Selected Store",
-            comment: "My Store > Settings > Selected Store information section. " +
-                "This is the heading listed above the information row that displays the store website and their username."
-        ).uppercased()
-
         static let pluginsTitle = NSLocalizedString(
             "Plugins",
             comment: "My Store > Settings > Plugins section title"

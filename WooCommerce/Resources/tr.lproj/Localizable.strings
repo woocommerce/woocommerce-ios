@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-08-24 12:54:03+0000 */
+/* Translation-Revision-Date: 2022-09-02 09:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -2007,6 +2007,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message on the Coupon Details screen when deleting coupon fails */
 "Failed to delete coupon. Please try again." = "Kupon silinemedi. Lütfen tekrar deneyin.";
 
+/* Error displayed when the attempt to enable a Pay in Person checkout payment option fails */
+"Failed to enable Pay in Person. Please try again later." = "Şahsen Ödeme etkinleştirilemedi Lütfen daha sonra tekrar deneyin.";
+
 /* Error message on the Issue Refund screen when fetching the charge details failed */
 "Failed to fetch your charge details. Please try again." = "Ödeme ayrıntılarınız getirilemedi. Lütfen tekrar deneyin.";
 
@@ -2525,6 +2528,9 @@ which should be translated separately and considered part of this sentence. */
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "Yanış bir parola girmişsiniz gibi görünüyor. Yeniden denemek ister misiniz?";
 
+/* An error message displayed when the user tries to log in to the app with a simple WP.com site. Reads like: It seems that your site google.com is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce. */
+"It seems that your site %@ is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce." = "Görünüşe göre %@ siteniz, eklenti yüklenemeyen basit bir Wordpress.com sitesi. WooCommerce kullanabilmek için lütfen paketinizi yükseltin.";
+
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "İtalik";
 
@@ -2694,7 +2700,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Action button that will restart the login flow.Presented when logging in with a site address that appears to be invalid.
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
-   Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce */
+   Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
+   Action button that will restart the login flow.Presented when the user tries to log in to the app with a simple WP.com site. */
 "Log In With Another Account" = "Başka Bir Hesapla Oturum Açın";
 
 /* Action button triggering a Log Out.Presented when logging in with a store address that does not match the account entered
@@ -3328,6 +3335,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Paste without Formatting Menu Item */
 "Paste without Formatting" = "Biçimlendirmeden Yapıştır";
+
+/* Customer-facing description showing more details about the Pay in Person option which is added to the store checkout when the merchant enables Pay in Person
+   Customer-facing instructions shown on Order Thank-you pages and confirmation emails, showing more details about the Pay in Person option added to the store checkout when the merchant enables Pay in Person */
+"Pay by card or another accepted payment method" = "Kartla veya kabul edilen başka bir ödeme yöntemiyle ödeyin";
+
+/* Customer-facing title for the payment option added to the store checkout when the merchant enables Pay in Person */
+"Pay in Person" = "Şahsen Ödeyin";
 
 /* Payment section title
    Title text of the row that shows the payment headline when creating a simple payment
@@ -3993,6 +4007,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button to retry when there was a network error checking In-Person Payments requirements
    Retry Action
    Retry action for an error notice
+   Retry Action on error displayed when the attempt to enable a Pay in Person checkout payment option fails
    Retry Action on the notice when loading product categories fails
    Retry the last action */
 "Retry" = "Tekrar";

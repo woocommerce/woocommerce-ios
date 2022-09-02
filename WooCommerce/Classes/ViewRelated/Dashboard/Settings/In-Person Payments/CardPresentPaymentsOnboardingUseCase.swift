@@ -35,12 +35,15 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     let featureFlagService: FeatureFlagService
     private let cardPresentPluginsDataProvider: CardPresentPluginsDataProvider
     private var preferredPluginLocal: CardPresentPaymentsPlugin?
+    private var wasCashOnDeliveryStepSkipped: Bool = false
+    private var pendingRequirementsStepSkipped: Bool = false
 
     @Published var state: CardPresentPaymentOnboardingState = .loading
 
     var statePublisher: Published<CardPresentPaymentOnboardingState>.Publisher {
         $state
     }
+    private var cancellables: [AnyCancellable] = []
 
     init(
         storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -61,6 +64,11 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
             state = .loading
         }
         refreshOnboardingState()
+    }
+
+    func skipPendingRequirements() {
+        pendingRequirementsStepSkipped = true
+        refresh()
     }
 
     func forceRefresh() {
@@ -93,13 +101,22 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     }
 
     func selectPlugin(_ selectedPlugin: CardPresentPaymentsPlugin) {
-        assert(state == .selectPlugin)
+        assert(state.isSelectPlugin)
+
         preferredPluginLocal = selectedPlugin
+        deferredSaveSelectedPluginWhenOnboardingComplete(selectedPlugin: selectedPlugin)
+
         updateState()
-        if case .completed(let pluginState) = state,
-           pluginState.preferred == selectedPlugin {
-            savePreferredPlugin(selectedPlugin)
+    }
+
+    private func deferredSaveSelectedPluginWhenOnboardingComplete(selectedPlugin: CardPresentPaymentsPlugin) {
+        $state.share().sink { [weak self] newState in
+            if case .completed(let pluginState) = newState,
+               pluginState.preferred == selectedPlugin {
+                self?.savePreferredPlugin(selectedPlugin)
+            }
         }
+        .store(in: &cancellables)
     }
 
     func clearPluginSelection() {
@@ -109,7 +126,13 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         preferredPluginLocal = nil
         let action = AppSettingsAction.forgetPreferredInPersonPaymentGateway(siteID: siteID)
         stores.dispatch(action)
-        updateState()
+
+        var newState = checkOnboardingState()
+        if case .selectPlugin = newState {
+            newState = .selectPlugin(pluginSelectionWasCleared: true)
+        }
+
+        state = newState
     }
 }
 
@@ -163,6 +186,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
             DDLogError("[CardPresentPaymentsOnboarding] Couldn't determine country for store")
             return .genericError
         }
+        checkIfCashOnDeliveryStepSkipped()
 
         let configuration = configurationLoader.configuration
 
@@ -201,10 +225,6 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func bothPluginsInstalledAndActiveOnboardingState(wcPay: SystemPlugin, stripe: SystemPlugin) -> CardPresentPaymentOnboardingState {
-        guard featureFlagService.isFeatureFlagEnabled(.inPersonPaymentGatewaySelection) else {
-            return legacyBothPluginsInstalledAndActiveOnboardingState(wcPay: wcPay, stripe: stripe)
-        }
-
         if preferredPluginLocal == nil {
             preferredPluginLocal = storedPreferredPlugin
         }
@@ -214,19 +234,11 @@ private extension CardPresentPaymentsOnboardingUseCase {
         }
 
         guard let preferredPlugin = preferredPluginLocal else {
-            return .selectPlugin
+            return .selectPlugin(pluginSelectionWasCleared: false)
         }
 
         let state = onboardingStateForPlugin(preferredPlugin, wcPay: wcPay, stripe: stripe)
         return augmentStateWithAvailablePlugins(state: state, available: [.wcPay, .stripe])
-    }
-
-    func legacyBothPluginsInstalledAndActiveOnboardingState(wcPay: SystemPlugin, stripe: SystemPlugin) -> CardPresentPaymentOnboardingState {
-        if !isStripeSupportedInCountry {
-            return .pluginShouldBeDeactivated(plugin: .stripe)
-        }
-
-        return .selectPlugin
     }
 
     func onboardingStateForPlugin(_ plugin: CardPresentPaymentsPlugin, wcPay: SystemPlugin, stripe: SystemPlugin) -> CardPresentPaymentOnboardingState {
@@ -289,20 +301,27 @@ private extension CardPresentPaymentsOnboardingUseCase {
         guard !isStripeAccountOverdueRequirements(account: account) else {
             return .stripeAccountOverdueRequirement(plugin: plugin)
         }
-        guard !isStripeAccountPendingRequirements(account: account) else {
+        guard !shouldShowPendingRequirements(account: account) else {
             return .stripeAccountPendingRequirement(plugin: plugin, deadline: account.currentDeadline)
         }
         guard !isStripeAccountRejected(account: account) else {
             return .stripeAccountRejected(plugin: plugin)
         }
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.promptToEnableCodInIppOnboarding) {
+            if shouldShowCashOnDeliveryStep {
+                return .codPaymentGatewayNotSetUp(plugin: plugin)
+            }
+        }
         guard !isInUndefinedState(account: account) else {
             return .genericError
         }
 
-        // If we've gotten this far, tell the Card Present Payment Store which backend to use
+        // If we've gotten this far, tell the Card Present Payment Store which account to use
         let setAccount = CardPresentPaymentAction.use(paymentGatewayAccount: account)
         stores.dispatch(setAccount)
 
+        // Also reset the skipped pending requirements step, so that it can be shown again in the next flow
+        pendingRequirementsStepSkipped = false
         return .completed(plugin: CardPresentPaymentsPluginState(plugin: plugin))
     }
 
@@ -389,6 +408,10 @@ private extension CardPresentPaymentsOnboardingUseCase {
             || account.wcpayStatus == .restrictedSoon
     }
 
+    func shouldShowPendingRequirements(account: PaymentGatewayAccount) -> Bool {
+        isStripeAccountPendingRequirements(account: account) && !pendingRequirementsStepSkipped
+    }
+
     func isStripeAccountOverdueRequirements(account: PaymentGatewayAccount) -> Bool {
         account.wcpayStatus == .restricted && account.hasOverdueRequirements
     }
@@ -398,6 +421,32 @@ private extension CardPresentPaymentsOnboardingUseCase {
             || account.wcpayStatus == .rejectedListed
             || account.wcpayStatus == .rejectedTermsOfService
             || account.wcpayStatus == .rejectedOther
+    }
+
+    var shouldShowCashOnDeliveryStep: Bool {
+        !isCashOnDeliverySetUp() && !wasCashOnDeliveryStepSkipped
+    }
+
+    func checkIfCashOnDeliveryStepSkipped() {
+        guard let siteID = siteID else {
+            return
+        }
+
+        let action = AppSettingsAction.getSkippedCashOnDeliveryOnboardingStep(siteID: siteID) { [weak self] skipped in
+            self?.wasCashOnDeliveryStepSkipped = skipped
+        }
+
+        stores.dispatch(action)
+    }
+
+    func isCashOnDeliverySetUp() -> Bool {
+        guard let siteID = siteID,
+              let codGateway = storageManager.viewStorage.loadPaymentGateway(siteID: siteID, gatewayID: "cod")?.toReadOnly()
+        else {
+            return false
+        }
+
+        return codGateway.enabled
     }
 
     func isInUndefinedState(account: PaymentGatewayAccount) -> Bool {

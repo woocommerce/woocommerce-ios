@@ -340,6 +340,6 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
 
 extension ProductImageActionHandler {
     convenience init(siteID: Int64, product: ProductFormDataModel) {
-        self.init(siteID: siteID, productID: product.productID, imageStatuses: product.imageStatuses)
+        self.init(siteID: siteID, productID: .product(id: product.productID), imageStatuses: product.imageStatuses)
     }
 }

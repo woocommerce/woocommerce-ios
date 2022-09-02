@@ -1,3 +1,15 @@
+/// Mapper: Media
+///
+struct MediaMapper: Mapper {
+    /// (Attempts) to convert data into a Media.
+    ///
+    func map(response: Data) throws -> Media {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.iso8601)
+        return try decoder.decode(Media.self, from: response)
+    }
+}
+
 /// Mapper: Media List
 ///
 struct MediaListMapper: Mapper {

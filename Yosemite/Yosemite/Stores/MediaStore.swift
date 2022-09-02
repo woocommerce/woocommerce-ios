@@ -55,6 +55,11 @@ public final class MediaStore: Store {
             retrieveMediaLibrary(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .uploadMedia(let siteID, let productID, let mediaAsset, let onCompletion):
             uploadMedia(siteID: siteID, productID: productID, mediaAsset: mediaAsset, onCompletion: onCompletion)
+        case .updateProductID(let siteID,
+                            let productID,
+                             let mediaID,
+                             let onCompletion):
+            updateProductID(siteID: siteID, productID: productID, mediaID: mediaID, onCompletion: onCompletion)
         }
     }
 }
@@ -149,6 +154,20 @@ private extension MediaStore {
                     onCompletion(.failure(error))
                 }
             }
+        }
+    }
+
+    func updateProductID(siteID: Int64,
+                         productID: Int64,
+                         mediaID: Int64,
+                         onCompletion: @escaping (Result<Media, Error>) -> Void) {
+        let storage = storageManager.viewStorage
+        if let site = storage.loadSite(siteID: siteID)?.toReadOnly(), site.isJetpackCPConnected {
+            remote.updateProductIDToWordPressSite(siteID: siteID, productID: productID, mediaID: mediaID) { result in
+                onCompletion(result.map { $0.toMedia() })
+            }
+        } else {
+            remote.updateProductID(siteID: siteID, productID: productID, mediaID: mediaID, completion: onCompletion)
         }
     }
 }

@@ -59,6 +59,7 @@ extension Order {
     @NSManaged public var total: String?
     @NSManaged public var totalTax: String?
     @NSManaged public var coupons: Set<OrderCoupon>?
+    @NSManaged public var customFields: Set<OrderMetaData>?
     @NSManaged public var items: NSOrderedSet?
     @NSManaged public var notes: Set<OrderNote>?
     @NSManaged public var searchResults: Set<OrderSearchResults>?
@@ -103,6 +104,23 @@ extension Order {
 
 }
 
+// MARK: Generated accessors for customFields
+extension Order {
+
+    @objc(addCustomFieldsObject:)
+    @NSManaged public func addToCustomFields(_ value: OrderMetaData)
+
+    @objc(removeCustomFieldsObject:)
+    @NSManaged public func removeFromCustomFields(_ value: OrderMetaData)
+
+    @objc(addCustomFields:)
+    @NSManaged public func addToCustomFields(_ values: NSSet)
+
+    @objc(removeCustomFields:)
+    @NSManaged public func removeFromCustomFields(_ values: NSSet)
+
+}
+
 // MARK: Generated accessors for items
 extension Order {
 
@@ -137,6 +155,7 @@ extension Order {
     @NSManaged public func removeFromItems(_ values: NSOrderedSet)
 
 }
+
 // MARK: Generated accessors for notes
 extension Order {
 

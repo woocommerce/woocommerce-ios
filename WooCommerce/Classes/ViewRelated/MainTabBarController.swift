@@ -107,19 +107,34 @@ final class MainTabBarController: UITabBarController {
 
     private var cancellableSiteID: AnyCancellable?
     private let featureFlagService: FeatureFlagService
+    private let noticePresenter: NoticePresenter
+    private let productImageUploader: ProductImageUploaderProtocol
     private let stores: StoresManager = ServiceLocator.stores
+    private let analytics: Analytics
+
+    private var productImageUploadErrorsSubscription: AnyCancellable?
 
     private lazy var isHubMenuFeatureFlagOn = featureFlagService.isFeatureFlagEnabled(.hubMenu)
 
     private lazy var isOrdersSplitViewFeatureFlagOn = featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
 
-    init?(coder: NSCoder, featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+    init?(coder: NSCoder,
+          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
+          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
+          analytics: Analytics = ServiceLocator.analytics) {
         self.featureFlagService = featureFlagService
+        self.noticePresenter = noticePresenter
+        self.productImageUploader = productImageUploader
+        self.analytics = analytics
         super.init(coder: coder)
     }
 
     required init?(coder: NSCoder) {
         self.featureFlagService = ServiceLocator.featureFlagService
+        self.noticePresenter = ServiceLocator.noticePresenter
+        self.productImageUploader = ServiceLocator.productImageUploader
+        self.analytics = ServiceLocator.analytics
         super.init(coder: coder)
     }
 
@@ -135,8 +150,10 @@ final class MainTabBarController: UITabBarController {
 
         configureTabViewControllers()
         observeSiteIDForViewControllers()
+        observeProductImageUploadStatusUpdates()
 
-        loadHubMenuTabNotificationCountAndUpdateBadge()
+        startListeningToHubMenuTabBadgeUpdates()
+        viewModel.loadHubMenuTabBadge()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -146,7 +163,7 @@ final class MainTabBarController: UITabBarController {
         /// We hook up KVO in this spot... because at the point in which `viewDidLoad` fires, we haven't really fully
         /// loaded the childViewControllers, and the tabBar isn't fully initialized.
         ///
-        startListeningToHubMenuTabBadgeUpdates()
+
         startListeningToOrdersBadge()
     }
 
@@ -330,14 +347,11 @@ extension MainTabBarController {
                 return
             }
             let siteID = Int64(note.meta.identifier(forKey: .site) ?? Int.min)
-            SwitchStoreUseCase(stores: ServiceLocator.stores).switchStore(with: siteID) { siteChanged in
+
+            switchToStore(with: siteID, onCompletion: {
                 presentNotificationDetails(for: note)
 
-                if siteChanged {
-                    let presenter = SwitchStoreNoticePresenter(siteID: siteID)
-                    presenter.presentStoreSwitchedNoticeWhenSiteIsAvailable(configuration: .switchingStores)
-                }
-            }
+            })
         }
         ServiceLocator.stores.dispatch(action)
     }
@@ -365,6 +379,17 @@ extension MainTabBarController {
                                                                               "already_read": note.read ])
     }
 
+    private static func switchToStore(with siteID: Int64, onCompletion: @escaping () -> Void) {
+        SwitchStoreUseCase(stores: ServiceLocator.stores).switchStore(with: siteID) { siteChanged in
+            if siteChanged {
+                let presenter = SwitchStoreNoticePresenter(siteID: siteID)
+                presenter.presentStoreSwitchedNoticeWhenSiteIsAvailable(configuration: .switchingStores)
+            }
+
+            onCompletion()
+        }
+    }
+
     /// Switches to the My Store Tab, and presents the Settings .
     ///
     static func presentSettings() {
@@ -375,6 +400,35 @@ extension MainTabBarController {
         }
 
         dashBoard.presentSettings()
+    }
+
+    static func navigateToOrderDetails(with orderID: Int64, siteID: Int64) {
+        switchToStore(with: siteID, onCompletion: {
+            switchToOrdersTab {
+                // We give some time to the orders tab transition to finish, otherwise it might prevent the second navigation from happening
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    presentDetails(for: orderID, siteID: siteID)
+                }
+            }
+        })
+    }
+
+    private static func presentDetails(for orderID: Int64, siteID: Int64) {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+            (childViewController() as? OrdersSplitViewWrapperController)?.presentDetails(for: orderID, siteID: siteID)
+        } else {
+            (childViewController() as? OrdersRootViewController)?.presentDetails(for: orderID, siteID: siteID)
+        }
+    }
+
+    static func presentPayments() {
+        switchToHubMenuTab()
+
+        guard let hubMenuViewController: HubMenuViewController = childViewController() else {
+            return
+        }
+
+        hubMenuViewController.showPaymentsMenu()
     }
 }
 
@@ -497,36 +551,21 @@ private extension MainTabBarController {
     /// Setup: KVO Hooks.
     ///
     func startListeningToHubMenuTabBadgeUpdates() {
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(loadHubMenuTabNotificationCountAndUpdateBadge),
-                                               name: .reviewsBadgeReloadRequired,
-                                               object: nil)
+        viewModel.onMenuBadgeShouldBeDisplayed = { [weak self] type in
+            self?.updateMenuTabBadge(with: .show(type: type))
+        }
+
+        viewModel.onMenuBadgeShouldBeHidden = { [weak self] in
+            self?.updateMenuTabBadge(with: .hide)
+        }
     }
 
-    @objc func loadHubMenuTabNotificationCountAndUpdateBadge() {
-        guard let siteID = stores.sessionManager.defaultStoreID else {
-            return
-        }
+    func updateMenuTabBadge(with action: NotificationBadgeActionType) {
+        let tab = self.isHubMenuFeatureFlagOn ? WooTab.hubMenu : WooTab.reviews
+        let tabIndex = tab.visibleIndex(self.isHubMenuFeatureFlagOn)
+        let input = NotificationsBadgeInput(action: action, tab: tab, tabBar: self.tabBar, tabIndex: tabIndex)
 
-        let action = NotificationCountAction.load(siteID: siteID, type: .kind(.comment)) { [weak self] count in
-            self?.updateHubMenuTabBadge(count: count)
-        }
-        stores.dispatch(action)
-    }
-
-    /// Displays or Hides the Dot on the Hub Menu tab, depending on the notification count
-    ///
-    func updateHubMenuTabBadge(count: Int) {
-        if isHubMenuFeatureFlagOn {
-            let tab = WooTab.hubMenu
-            let tabIndex = tab.visibleIndex(isHubMenuFeatureFlagOn)
-            notificationsBadge.badgeCountWasUpdated(newValue: count, tab: tab, in: tabBar, tabIndex: tabIndex)
-        }
-        else {
-            let tab = WooTab.reviews
-            let tabIndex = tab.visibleIndex(isHubMenuFeatureFlagOn)
-            notificationsBadge.badgeCountWasUpdated(newValue: count, tab: tab, in: tabBar, tabIndex: tabIndex)
-        }
+        self.notificationsBadge.updateBadge(with: input)
     }
 }
 
@@ -534,7 +573,7 @@ private extension MainTabBarController {
 
 private extension MainTabBarController {
     func startListeningToOrdersBadge() {
-        viewModel.onBadgeReload = { [weak self] countReadableString in
+        viewModel.onOrdersBadgeReload = { [weak self] countReadableString in
             guard let self = self else {
                 return
             }
@@ -551,5 +590,131 @@ private extension MainTabBarController {
         }
 
         viewModel.startObservingOrdersCount()
+    }
+}
+
+// MARK: - Background Product Image Upload Status Updates
+
+private extension MainTabBarController {
+    func observeProductImageUploadStatusUpdates() {
+        guard featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) else {
+            return
+        }
+        productImageUploadErrorsSubscription = productImageUploader.errors.sink { [weak self] error in
+            guard let self = self else { return }
+            switch error.error {
+            case .failedSavingProductAfterImageUpload:
+                self.handleErrorSavingProductAfterImageUpload(error)
+            case .failedUploadingImage:
+                self.handleErrorUploadingImage(error)
+            }
+        }
+    }
+
+    func handleErrorSavingProductAfterImageUpload(_ error: ProductImageUploadErrorInfo) {
+        let noticeTitle: String = {
+            switch error.productOrVariationID {
+            case .product:
+                return Localization.productImagesSavingFailureNoticeTitle
+            case .variation:
+                return Localization.variationImageSavingFailureNoticeTitle
+            }
+        }()
+        let notice = Notice(title: noticeTitle,
+                            subtitle: nil,
+                            message: nil,
+                            feedbackType: .error,
+                            notificationInfo: nil,
+                            actionTitle: Localization.imageUploadFailureNoticeActionTitle,
+                            actionHandler: { [weak self] in
+            guard let self = self else { return }
+            Task { @MainActor [weak self] in
+                guard let self = self else { return }
+                await self.showProductDetails(for: error)
+                self.analytics.track(event: .ImageUpload
+                    .failureSavingProductAfterImageUploadNoticeTapped(productOrVariation: error.productOrVariationEventProperty))
+            }
+        })
+        let canNoticeBeDisplayed = noticePresenter.enqueue(notice: notice)
+        if canNoticeBeDisplayed {
+            analytics.track(event: .ImageUpload
+                .failureSavingProductAfterImageUploadNoticeShown(productOrVariation: error.productOrVariationEventProperty))
+        }
+    }
+
+    func handleErrorUploadingImage(_ error: ProductImageUploadErrorInfo) {
+        let notice = Notice(title: Localization.imageUploadFailureNoticeTitle,
+                            subtitle: nil,
+                            message: nil,
+                            feedbackType: .error,
+                            notificationInfo: nil,
+                            actionTitle: Localization.imageUploadFailureNoticeActionTitle,
+                            actionHandler: { [weak self] in
+            guard let self = self else { return }
+            Task { @MainActor [weak self] in
+                guard let self = self else { return }
+                await self.showProductDetails(for: error)
+                self.analytics.track(event: .ImageUpload
+                    .failureUploadingImageNoticeTapped(productOrVariation: error.productOrVariationEventProperty))
+            }
+        })
+        let canNoticeBeDisplayed = noticePresenter.enqueue(notice: notice)
+        if canNoticeBeDisplayed {
+            analytics.track(event: .ImageUpload
+                .failureUploadingImageNoticeShown(productOrVariation: error.productOrVariationEventProperty))
+        }
+    }
+
+    func showProductDetails(for error: ProductImageUploadErrorInfo) async {
+        // Switches to the correct store first if needed.
+        let switchStoreUseCase = SwitchStoreUseCase(stores: stores)
+        let siteChanged = await switchStoreUseCase.switchStore(with: error.siteID)
+        if siteChanged {
+            let presenter = SwitchStoreNoticePresenter(siteID: error.siteID,
+                                                       noticePresenter: self.noticePresenter)
+            presenter.presentStoreSwitchedNoticeWhenSiteIsAvailable(configuration: .switchingStores)
+        }
+
+        let model: ProductLoaderViewController.Model = {
+            switch error.productOrVariationID {
+            case .product(let id):
+                return .product(productID: id)
+            case .variation(let productID, let variationID):
+                return .productVariation(productID: productID, variationID: variationID)
+            }
+        }()
+        let productViewController = ProductLoaderViewController(model: model,
+                                                                siteID: error.siteID,
+                                                                forceReadOnly: false)
+        let productNavController = WooNavigationController(rootViewController: productViewController)
+        productsNavigationController.present(productNavController, animated: true)
+    }
+}
+
+extension MainTabBarController {
+    enum Localization {
+        static let imageUploadFailureNoticeTitle =
+        NSLocalizedString("An image failed to upload",
+                          comment: "Title of the notice about an image upload failure in the background.")
+        static let productImagesSavingFailureNoticeTitle =
+        NSLocalizedString("Error saving product images",
+                          comment: "Title of the notice about an error saving images uploaded in the background to a product.")
+        static let variationImageSavingFailureNoticeTitle =
+        NSLocalizedString("Error saving variation image",
+                          comment: "Title of the notice about an error saving an image uploaded in the background to a product variation.")
+        static let imageUploadFailureNoticeActionTitle =
+        NSLocalizedString("View",
+                          comment: "Title of the action to view product details from a notice about an image upload failure in the background.")
+    }
+}
+
+private extension ProductImageUploadErrorInfo {
+    var productOrVariationEventProperty: WooAnalyticsEvent.ImageUpload.ProductOrVariation {
+        switch productOrVariationID {
+        case .product:
+            return .product
+        case .variation:
+            return .variation
+        }
     }
 }

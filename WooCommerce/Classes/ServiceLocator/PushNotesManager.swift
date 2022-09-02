@@ -20,6 +20,10 @@ protocol PushNotesManager {
     ///
     var inactiveNotifications: AnyPublisher<PushNotification, Never> { get }
 
+    /// An observable that emits values when a local notification response is received.
+    ///
+    var localNotificationUserResponses: AnyPublisher<UNNotificationResponse, Never> { get }
+
     /// Resets the Badge Count.
     ///
     func resetBadgeCount(type: Note.Kind)
@@ -32,7 +36,7 @@ protocol PushNotesManager {
     ///
     func reloadBadgeCount()
 
-    /// Registers the Application for Remote Notifgications.
+    /// Registers the Application for Remote Notifications.
     ///
     func registerForRemoteNotifications()
 
@@ -42,9 +46,10 @@ protocol PushNotesManager {
 
     /// Requests Authorization to receive Push Notifications, *only* when the current Status is not determined.
     ///
+    /// - Parameter includesProvisionalAuth: A boolean that indicates whether to request provisional authorization in order to send trial notifications.
     /// - Parameter onCompletion: Closure to be executed on completion. Receives a Boolean indicating if we've got Push Permission.
     ///
-    func ensureAuthorizationIsRequested(onCompletion: ((Bool) -> Void)?)
+    func ensureAuthorizationIsRequested(includesProvisionalAuth: Bool, onCompletion: ((Bool) -> Void)?)
 
     /// Handles Push Notifications Registration Errors. This method unregisters the current device from the WordPress.com
     /// Push Service.
@@ -61,9 +66,28 @@ protocol PushNotesManager {
     ///
     func registerDeviceToken(with tokenData: Data, defaultStoreID: Int64)
 
-    /// Handles a Remote Push Notification Payload. On completion the `completionHandler` will be executed.
+    /// Handles a remote push notification payload when the app is in the background.
+    /// - Parameter userInfo: Push notification payload.
+    /// - Returns: The result of background sync of notifications.
+    func handleRemoteNotificationInTheBackground(userInfo: [AnyHashable: Any]) async -> UIBackgroundFetchResult
+
+    /// Handles user's response to a local or remote notification.
+    /// - Parameter response: The user's response to a notification.
+    func handleUserResponseToNotification(_ response: UNNotificationResponse) async
+
+    /// Handles a local or remote notification when the app is in the foreground.
     ///
-    func handleNotification(_ userInfo: [AnyHashable: Any],
-                            onBadgeUpdateCompletion: @escaping () -> Void,
-                            completionHandler: @escaping (UIBackgroundFetchResult) -> Void)
+    /// - Parameter notification: The local or remote notification received in the app.
+    /// - Returns: How the notification is displayed in the foreground.
+    func handleNotificationInTheForeground(_ notification: UNNotification) async -> UNNotificationPresentationOptions
+
+    /// Requests a local notification to be scheduled under a given trigger.
+    /// - Parameters:
+    ///   - notification: the notification content.
+    ///   - trigger: if nil, the local notification is delivered immediately.
+    func requestLocalNotification(_ notification: LocalNotification, trigger: UNNotificationTrigger?)
+
+    /// Cancels a local notification that was previously scheduled.
+    /// - Parameter scenarios: the scenarios of the notification to be cancelled.
+    func cancelLocalNotification(scenarios: [LocalNotification.Scenario])
 }

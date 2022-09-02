@@ -31,6 +31,7 @@ final class StateSelectorCommand: ObservableListSelectorCommand {
 
     func handleSelectedChange(selected: StateOfACountry, viewController: ViewController) {
         self.selected = selected
+        viewController.navigationController?.popViewController(animated: true)
     }
 
     func isSelected(model: StateOfACountry) -> Bool {

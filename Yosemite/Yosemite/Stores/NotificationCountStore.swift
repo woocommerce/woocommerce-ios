@@ -1,5 +1,6 @@
 import Storage
 import Networking
+import WooFoundation
 
 // MARK: - NotificationCountStore
 //

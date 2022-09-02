@@ -311,7 +311,8 @@ extension Order {
         coupons: CopiableProp<[OrderCouponLine]> = .copy,
         refunds: CopiableProp<[OrderRefundCondensed]> = .copy,
         fees: CopiableProp<[OrderFeeLine]> = .copy,
-        taxes: CopiableProp<[OrderTaxLine]> = .copy
+        taxes: CopiableProp<[OrderTaxLine]> = .copy,
+        customFields: CopiableProp<[OrderMetaData]> = .copy
     ) -> Order {
         let siteID = siteID ?? self.siteID
         let orderID = orderID ?? self.orderID
@@ -346,6 +347,7 @@ extension Order {
         let refunds = refunds ?? self.refunds
         let fees = fees ?? self.fees
         let taxes = taxes ?? self.taxes
+        let customFields = customFields ?? self.customFields
 
         return Order(
             siteID: siteID,
@@ -380,7 +382,8 @@ extension Order {
             coupons: coupons,
             refunds: refunds,
             fees: fees,
-            taxes: taxes
+            taxes: taxes,
+            customFields: customFields
         )
     }
 }
@@ -493,6 +496,7 @@ extension OrderItemRefund {
         name: CopiableProp<String> = .copy,
         productID: CopiableProp<Int64> = .copy,
         variationID: CopiableProp<Int64> = .copy,
+        refundedItemID: NullableCopiableProp<String> = .copy,
         quantity: CopiableProp<Decimal> = .copy,
         price: CopiableProp<NSDecimalNumber> = .copy,
         sku: NullableCopiableProp<String> = .copy,
@@ -507,6 +511,7 @@ extension OrderItemRefund {
         let name = name ?? self.name
         let productID = productID ?? self.productID
         let variationID = variationID ?? self.variationID
+        let refundedItemID = refundedItemID ?? self.refundedItemID
         let quantity = quantity ?? self.quantity
         let price = price ?? self.price
         let sku = sku ?? self.sku
@@ -522,6 +527,7 @@ extension OrderItemRefund {
             name: name,
             productID: productID,
             variationID: variationID,
+            refundedItemID: refundedItemID,
             quantity: quantity,
             price: price,
             sku: sku,
@@ -648,6 +654,51 @@ extension OrderTaxLine {
             totalShippingTax: totalShippingTax,
             ratePercent: ratePercent,
             attributes: attributes
+        )
+    }
+}
+
+extension PaymentGateway {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        gatewayID: CopiableProp<String> = .copy,
+        title: CopiableProp<String> = .copy,
+        description: CopiableProp<String> = .copy,
+        enabled: CopiableProp<Bool> = .copy,
+        features: CopiableProp<[PaymentGateway.Feature]> = .copy,
+        instructions: NullableCopiableProp<String> = .copy
+    ) -> PaymentGateway {
+        let siteID = siteID ?? self.siteID
+        let gatewayID = gatewayID ?? self.gatewayID
+        let title = title ?? self.title
+        let description = description ?? self.description
+        let enabled = enabled ?? self.enabled
+        let features = features ?? self.features
+        let instructions = instructions ?? self.instructions
+
+        return PaymentGateway(
+            siteID: siteID,
+            gatewayID: gatewayID,
+            title: title,
+            description: description,
+            enabled: enabled,
+            features: features,
+            instructions: instructions
+        )
+    }
+}
+
+extension PaymentGateway.Setting {
+    public func copy(
+        settingID: CopiableProp<String> = .copy,
+        value: CopiableProp<String> = .copy
+    ) -> PaymentGateway.Setting {
+        let settingID = settingID ?? self.settingID
+        let value = value ?? self.value
+
+        return PaymentGateway.Setting(
+            settingID: settingID,
+            value: value
         )
     }
 }

@@ -239,7 +239,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
                 self.navigateToPaymentMethods = true
             case .failure(let error):
                 self.presentNoticeSubject.send(.error(Localization.updateError))
-                self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowFailed(source: .summary))
+                self.analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowFailed(flow: .simplePayment, source: .summary))
                 DDLogError("⛔️ Error updating simple payments order: \(error)")
             }
         }
@@ -248,14 +248,15 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
 
     /// Creates a view model for the `SimplePaymentsMethods` screen.
     ///
-    func createMethodsViewModel() -> SimplePaymentsMethodsViewModel {
-        SimplePaymentsMethodsViewModel(siteID: siteID,
-                                       orderID: orderID,
-                                       paymentLink: paymentLink,
-                                       formattedTotal: total,
-                                       dependencies: .init(
-                                        presentNoticeSubject: presentNoticeSubject,
-                                        stores: stores))
+    func createMethodsViewModel() -> PaymentMethodsViewModel {
+        PaymentMethodsViewModel(siteID: siteID,
+                                orderID: orderID,
+                                paymentLink: paymentLink,
+                                formattedTotal: total,
+                                flow: .simplePayment,
+                                dependencies: .init(
+                                    presentNoticeSubject: presentNoticeSubject,
+                                    stores: stores))
     }
 }
 

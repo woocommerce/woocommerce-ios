@@ -63,14 +63,22 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
 
     // MARK: Initializers
 
-    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+    init(siteID: Int64,
+         flow: EditableOrderViewModel.Flow,
+         stores: StoresManager = ServiceLocator.stores,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.siteID = siteID
         self.stores = stores
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
 
-        updateBaseSyncOrderStatus()
-        bindInputs()
-        bindOrderSync()
+        if case let .editing(initialOrder) = flow {
+            order = initialOrder
+        } else {
+            updateBaseSyncOrderStatus()
+        }
+
+        bindInputs(flow: flow)
+        bindOrderSync(flow: flow)
     }
 
     // MARK: Methods
@@ -110,12 +118,18 @@ private extension RemoteOrderSynchronizer {
 
     /// Updates the underlying order as inputs are received, and triggers a remote sync for significant inputs.
     ///
-    func bindInputs() {
+    func bindInputs(flow: EditableOrderViewModel.Flow) {
         setStatus.withLatestFrom(orderPublisher)
             .map { newStatus, order in
                 order.copy(status: newStatus)
             }
-            .assign(to: &$order)
+            .sink { [weak self] order in
+                self?.order = order
+                if case .editing = flow {
+                    self?.orderSyncTrigger.send(order)
+                }
+            }
+            .store(in: &subscriptions)
 
         setProduct.withLatestFrom(orderPublisher)
             .map { [weak self] productInput, order -> Order in
@@ -168,10 +182,16 @@ private extension RemoteOrderSynchronizer {
             .store(in: &subscriptions)
 
         setNote.withLatestFrom(orderPublisher)
-            .map { notes, order in
-                order.copy(customerNote: notes)
+            .map { note, order in
+                order.copy(customerNote: note)
             }
-            .assign(to: &$order)
+            .sink { [weak self] order in
+                self?.order = order
+                if case .editing = flow {
+                    self?.orderSyncTrigger.send(order)
+                }
+            }
+            .store(in: &subscriptions)
 
         retryTrigger.withLatestFrom(orderPublisher)
             .sink { [weak self] _, order in
@@ -182,7 +202,7 @@ private extension RemoteOrderSynchronizer {
 
     /// Creates or updates the order when a significant order input occurs.
     ///
-    func bindOrderSync() {
+    func bindOrderSync(flow: EditableOrderViewModel.Flow) {
         let syncTrigger: AnyPublisher<Order, Never> = orderSyncTrigger
             .compactMap { [weak self] order in
                 guard let self = self else { return nil }
@@ -196,8 +216,10 @@ private extension RemoteOrderSynchronizer {
             .share()
             .eraseToAnyPublisher()
 
-        bindOrderCreation(trigger: syncTrigger)
-        bindOrderUpdate(trigger: syncTrigger)
+        if flow == .creation {
+            bindOrderCreation(trigger: syncTrigger)
+        }
+        bindOrderUpdate(trigger: syncTrigger, flow: flow)
     }
 
     /// Binds the provided `trigger` and creates an order when needed(order does not exists remotely).
@@ -228,7 +250,7 @@ private extension RemoteOrderSynchronizer {
 
     /// Binds the provided `trigger` and updates an order when needed(order already exists remotely).
     ///
-    func bindOrderUpdate(trigger: AnyPublisher<Order, Never>) {
+    func bindOrderUpdate(trigger: AnyPublisher<Order, Never>, flow: EditableOrderViewModel.Flow) {
         // Updates a "draft" order after it has already been created.
         trigger
             .filter { // Only continue if the order has been created.
@@ -241,7 +263,8 @@ private extension RemoteOrderSynchronizer {
             .map { [weak self] order -> AnyPublisher<Order, Never> in // Allow multiple requests, once per update request.
                 guard let self = self else { return Empty().eraseToAnyPublisher() }
 
-                return self.updateOrderRemotely(order, type: .sync)
+                let syncType: OperationType = flow == .creation ? .sync : .commit
+                return self.updateOrderRemotely(order, type: syncType)
                     .catch { [weak self] error -> AnyPublisher<Order, Never> in // When an error occurs, update state & finish.
                         self?.state = .error(error)
                         return Empty().eraseToAnyPublisher()

@@ -75,11 +75,11 @@ final class CouponRestrictionsViewModel: ObservableObject {
         }
     }()
 
-    lazy var allowedEmailsViewModel = {
+    var allowedEmailsViewModel: CouponAllowedEmailsViewModel {
         CouponAllowedEmailsViewModel(allowedEmails: allowedEmails) { [weak self] updatedEmails in
             self?.allowedEmails = updatedEmails
         }
-    }()
+    }
 
     private let siteID: Int64
     private let stores: StoresManager

@@ -1,5 +1,6 @@
 import Foundation
 import Codegen
+import WooFoundation
 
 /// Represents a custom package in Shipping Labels.
 ///

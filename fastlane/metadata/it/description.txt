@@ -1,22 +1,22 @@
-Gestisci la tua attività mentre sei in movimento con l'app mobile di WooCommerce. Crea prodotti, elabora gli ordini e controlla le statistiche principali in tempo reale.
+Gestisci la tua attività mentre sei in movimento con l'app per dispositivi mobili WooCommerce. Aggiungi i prodotti, crea ordini, ricevi pagamenti rapidi e tieni d'occhio le nuove offerte e le statistiche chiave in tempo reale.
 
-AGGIUNGI PRODOTTI
-Crea, raggruppa e pubblica i prodotti direttamente dal tuo iPhone o iPad. Cogli la tua creatività sul momento: trasforma le tue idee in prodotti in pochi secondi o salvale come bozze per un secondo momento.
+Aggiungi e modifica i prodotti con un tocco
+Inizia a lavorare in pochi secondi. Crea, raggruppa e pubblica i prodotti direttamente dal tuo iPhone o dal tuo iPad. Conquista la tua creatività nel momento in cui ti coglie: trasforma subito le tue idee in prodotti o salvale come bozze per un secondo momento.
 
-RICEVI NOTIFICHE
-Non perdere mai un ordine o una recensione. Tieni a bada la tua FOMO abilitando gli avvisi in tempo reale e stai in allerta per sentire il suono della cassa che si chiude ogni volta che incassi una nuova vendita.
+Crea ordini in movimento
+Una volta che hai creato alcuni prodotti, è semplice. Scegli gli elementi dal tuo catalogo, aggiungi la spedizione e, quindi, inserisci i dati del cliente per creare rapidamente un ordine che si sincronizzi con l'inventario.
 
-VISUALIZZA E MODIFICA ORDINI
-Scorri i riepiloghi o cerca per specifiche del cliente o dell'ordine. Tocca i dettagli per visualizzare i dettagli di fatturazione, per iniziare la compilazione e per modificare lo stato dell'ordine. Aggiungi note all'ordine o invia e-mail direttamente ai clienti per il follow-up.
+Ricevi i pagamenti di persona
+Ricevi pagamenti fisici usando WooCommerce In-Person Payments e un lettore di carte (disponibile negli Stati Uniti e in Canada). Inizia un nuovo ordine o trovane uno esistente che abbia il pagamento in sospeso e ricevi il pagamento usando il lettore di carte o un portafoglio digitale, come Apple Pay.
 
-TIENI TRACCIA DELLE TUE STATISTICHE
-Visualizza in un solo colpo d'occhio quali prodotti stanno vendendo di più. Tieni sotto controllo il fatturato generale, il conteggio degli ordini e i dati dei visitatori per settimana, mese e anno. Conoscenza = forza!
+Ricevi notifiche di ogni vendita
+Ora che vendi attivamente, non perdere mai un ordine o una recensione. Tieniti aggiornato attivando gli avvisi in tempo reale e ascolta il "din din" proveniente da ogni nuova vendita, che dà assuefazione.
 
-PASSA DA UN NEGOZIO ALL'ALTRO
-Se hai più di uno store online, passa con facilità da un'attività all'altra in pochi secondi.
+Tieni traccia delle vendite e dei prodotti di successo
+Visualizza in un solo colpo d'occhio quali prodotti stanno vendendo di più. Tieni sotto controllo il fatturato generale, il conteggio degli ordini e i dati dei visitatori per settimana, mese e anno. Conoscenza = forza.
 
-WooCommerce è la piattaforma open-source di eCommerce più personalizzabile al mondo. Indipendentemente dal fatto che tu stia avviando un'attività, portando un negozio reale online o progettando siti per clienti, utilizza WooCommerce per avere un negozio che unisce in modo potente contenuto e affari.
+WooCommerce è la piattaforma open-source di eCommerce più personalizzabile al mondo. Sia che tu stia avviando un'attività, vendendo in un negozio online e avendo anche punti vendita reali o sviluppando siti per i clienti, utilizza WooCommerce per avere un negozio che unisce in modo potente contenuto e affari.
 
-Requisiti: WooCommerce v3.5 o versione superiore, e il plugin di Jetpack.
+Requisiti: WooCommerce v3.5+.
 
 Consulta la nota sulla privacy per utenti in California su https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

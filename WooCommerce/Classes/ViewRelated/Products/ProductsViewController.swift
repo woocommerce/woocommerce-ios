@@ -431,32 +431,18 @@ private extension ProductsViewController {
 // MARK: - Updates
 //
 private extension ProductsViewController {
-    /// Fetches products feedback visibility from AppSettingsStore and update products top banner accordingly.
-    /// If there is an error loading products data, an error banner replaces the products top banner.
+
+    /// Displays an error banner if there is an error loading products data.
     ///
     func showTopBannerViewIfNeeded() {
-        guard !hasErrorLoadingData else {
+        if hasErrorLoadingData {
             requestAndShowErrorTopBannerView()
-            return
         }
-
-        let action = AppSettingsAction.loadFeedbackVisibility(type: .productsVariations) { [weak self] result in
-            switch result {
-            case .success(let visible):
-                if visible {
-                    self?.requestAndShowNewTopBannerView(for: .variations)
-                } else {
-                    self?.hideTopBannerView()
-                }
-            case.failure(let error):
-                self?.hideTopBannerView()
-                ServiceLocator.crashLogging.logError(error)
-            }
-        }
-        ServiceLocator.stores.dispatch(action)
     }
 
     /// Request a new product banner from `ProductsTopBannerFactory` and wire actionButtons actions
+    /// To show a top banner, we can dispatch a loadFeedbackVisibility action from AppSettingsStore and update the top banner accordingly
+    /// Ref: https://github.com/woocommerce/woocommerce-ios/issues/6682
     ///
     func requestAndShowNewTopBannerView(for bannerType: ProductsTopBannerFactory.BannerType) {
         let isExpanded = topBannerView?.isExpanded ?? false
@@ -467,7 +453,7 @@ private extension ProductsViewController {
         }, onGiveFeedbackButtonPressed: { [weak self] in
             self?.presentProductsFeedback()
         }, onDismissButtonPressed: { [weak self] in
-            self?.dismissProductsBanner()
+            self?.hideTopBannerView()
         }, onCompletion: { [weak self] topBannerView in
             self?.topBannerContainerView.updateSubview(topBannerView)
             self?.topBannerView = topBannerView
@@ -700,25 +686,11 @@ private extension ProductsViewController {
         filters = FilterProductListViewModel.Filters()
     }
 
-    /// Presents products survey
+    /// Presents productsFeedback survey.
     ///
     func presentProductsFeedback() {
-        // Present survey
-        let navigationController = SurveyCoordinatingController(survey: .productsVariationsFeedback)
+        let navigationController = SurveyCoordinatingController(survey: .productsFeedback)
         present(navigationController, animated: true, completion: nil)
-    }
-
-    /// Mark feedback request as dismissed and update banner visibility
-    ///
-    func dismissProductsBanner() {
-        let action = AppSettingsAction.updateFeedbackStatus(type: .productsVariations,
-                                                            status: .dismissed) { [weak self] result in
-            if let error = result.failure {
-                ServiceLocator.crashLogging.logError(error)
-            }
-            self?.hideTopBannerView()
-        }
-        ServiceLocator.stores.dispatch(action)
     }
 }
 

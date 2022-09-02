@@ -15,8 +15,7 @@ final class StatsTests: XCTestCase {
         try LoginFlow.logInWithWPcom()
     }
 
-    func testStatsScreenLoad() throws {
-        try skipTillImplemented()
+    func skipped_test_load_stats_screen() throws {
         try TabNavComponent().goToMyStoreScreen()
     }
 

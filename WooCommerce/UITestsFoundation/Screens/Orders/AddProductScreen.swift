@@ -15,10 +15,10 @@ public final class AddProductScreen: ScreenObject {
     }
 
     /// Selects a product from the list.
-    /// - Returns: New Order screen object.
+    /// - Returns: Unified Order screen object.
     @discardableResult
-    public func selectProduct(byName name: String) throws -> NewOrderScreen {
+    public func selectProduct(byName name: String) throws -> UnifiedOrderScreen {
         app.buttons.staticTexts[name].tap()
-        return try NewOrderScreen()
+        return try UnifiedOrderScreen()
     }
 }

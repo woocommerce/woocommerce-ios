@@ -102,12 +102,6 @@ final class OrdersRootViewController: UIViewController {
         }
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        ServiceLocator.pushNotesManager.resetBadgeCount(type: .storeOrder)
-    }
-
     override var shouldShowOfflineBanner: Bool {
         if featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
             return false
@@ -132,11 +126,17 @@ final class OrdersRootViewController: UIViewController {
     /// Presents the Details for the Notification with the specified Identifier.
     ///
     func presentDetails(for note: Note) {
-        guard let orderID = note.meta.identifier(forKey: .order), let siteID = note.meta.identifier(forKey: .site) else {
+        guard let orderID = note.meta.identifier(forKey: .order),
+              let siteID = note.meta.identifier(forKey: .site) else {
             DDLogError("## Notification with [\(note.noteID)] lacks its OrderID!")
             return
         }
-        let loaderViewController = OrderLoaderViewController(note: note, orderID: Int64(orderID), siteID: Int64(siteID))
+
+        presentDetails(for: Int64(orderID), siteID: Int64(siteID), note: note)
+    }
+
+    func presentDetails(for orderID: Int64, siteID: Int64, note: Note? = nil) {
+        let loaderViewController = OrderLoaderViewController(orderID: Int64(orderID), siteID: Int64(siteID), note: note)
         navigationController?.pushViewController(loaderViewController, animated: true)
     }
 
@@ -165,7 +165,18 @@ final class OrdersRootViewController: UIViewController {
 
     /// This is to update the order detail in split view
     ///
-    private func handleSwitchingDetails(viewModel: OrderDetailsViewModel) {
+    private func handleSwitchingDetails(viewModel: OrderDetailsViewModel?) {
+        guard let viewModel = viewModel else {
+            let emptyStateViewController = EmptyStateViewController(style: .basic)
+            let config = EmptyStateViewController.Config.simple(
+                message: .init(string: Localization.emptyOrderDetails),
+                image: .emptySearchResultsImage
+            )
+            emptyStateViewController.configure(config)
+            splitViewController?.showDetailViewController(UINavigationController(rootViewController: emptyStateViewController), sender: nil)
+            return
+        }
+
         let orderDetailsViewController = OrderDetailsViewController(viewModel: viewModel)
         let orderDetailsNavigationController = WooNavigationController(rootViewController: orderDetailsViewController)
 
@@ -207,11 +218,7 @@ private extension OrdersRootViewController {
 
     func configureFiltersBar() {
         // Display the filtered orders bar
-        // if the feature flag is enabled
-        let isOrderListFiltersEnabled = featureFlagService.isFeatureFlagEnabled(.orderListFilters)
-        if isOrderListFiltersEnabled {
-            stackView.addArrangedSubview(filtersBar)
-        }
+        stackView.addArrangedSubview(filtersBar)
         filtersBar.onAction = { [weak self] in
             self?.filterButtonTapped()
         }
@@ -361,6 +368,10 @@ private extension OrdersRootViewController {
     ///
     private func navigateToOrderDetail(_ order: Order) {
         let viewModel = OrderDetailsViewModel(order: order)
+        guard !featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
+            return handleSwitchingDetails(viewModel: viewModel)
+        }
+
         let orderViewController = OrderDetailsViewController(viewModel: viewModel)
 
         // Cleanup navigation (remove new order flow views) before navigating to order details
@@ -371,7 +382,7 @@ private extension OrdersRootViewController {
             show(orderViewController, sender: self)
         }
 
-        ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": order.orderID, "status": order.status.rawValue])
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order))
     }
 }
 
@@ -386,5 +397,7 @@ private extension OrdersRootViewController {
         )
         static let accessibilityLabelAddSimplePayment = NSLocalizedString("Add simple payments order",
                                                                           comment: "Navigates to a screen to create a simple payments order")
+        static let emptyOrderDetails = NSLocalizedString("No order selected",
+                                                         comment: "Message on the detail view of the Orders tab before any order is selected")
     }
 }

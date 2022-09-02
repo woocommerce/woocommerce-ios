@@ -499,6 +499,10 @@ final class IconsTests: XCTestCase {
         XCTAssertEqual(size, image!.size)
     }
 
+    func test_wooLogoPrologueImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.wooLogoPrologueImage)
+    }
+
     func testWaitingForCustomersImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.waitingForCustomersImage)
     }
@@ -647,5 +651,21 @@ final class IconsTests: XCTestCase {
 
     func test_rectangle_on_rectangle_angled_is_not_nil() {
         XCTAssertNotNil(UIImage.rectangleOnRectangleAngled)
+    }
+
+    func test_circular_rate_discount_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.circularRateDiscountIcon)
+    }
+
+    func test_circular_document_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.circularDocumentIcon)
+    }
+
+    func test_circular_time_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.circularTimeIcon)
+    }
+
+    func test_lock_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.lockImage)
     }
 }

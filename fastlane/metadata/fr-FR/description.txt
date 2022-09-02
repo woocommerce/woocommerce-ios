@@ -1,22 +1,22 @@
-Gérez votre entreprise où que vous soyez grâce à l’application mobile WooCommerce. Créez des produits, traitez les commandes et suivez les statistiques clés en temps réel.
+Gérez votre entreprise où que vous soyez avec l’application mobile WooCommerce. Ajoutez des produits, créez des commandes, autorisez les paiements rapides et gardez un œil sur les nouvelles ventes et les statistiques clés en temps réel.
 
-AJOUTEZ DES PRODUITS
-Créez, regroupez et publiez des produits directement à partir de votre iPhone ou iPad. Saisissez un instantané de votre créativité : transformez vos idées en produits en quelques secondes, ou enregistrez-les sous forme de brouillons et revenez-y plus tard.
+Ajoutez et modifiez des produits d'un simple clic
+Lancez-vous en quelques secondes ! Créez, regroupez et publiez des produits directement à partir de votre iPhone ou iPad. Exploitez votre créativité lorsqu’elle vous vient : transformez immédiatement vos idées en produits ou enregistrez-les sous forme de brouillons et revenez-y plus tard.
 
-RECEVEZ DES NOTIFICATIONS
-Ne passez jamais à côté d’une commande ou d’un avis laissé par un acheteur. Pour ne pas être victime du syndrome FOMO, activez les alertes en temps réel. Et ne manquez pas ce son « gling-gling » addictif qui retentit chaque fois qu'une vente est conclue !
+Créez des commandes à la volée
+C’est un jeu d’enfant dès que vous avez créé quelques produits. Choisissez des articles dans votre catalogue, ajoutez les frais d’expédition, puis remplissez les coordonnées du client pour créer rapidement une commande qui se synchronise avec votre inventaire.
 
-VISUALISEZ ET MODIFIEZ LES COMMANDES
-Faites défiler les résumés ou effectuez une recherche par client ou par commande spécifique. Appuyez sur les détails pour voir la facturation par article, commencer l’exécution et modifier le statut d’une commande. Ajoutez des notes à la commande ou envoyez directement un e-mail aux clients pour en assurer le suivi.
+Acceptez les paiements en personne
+Recueillez les paiements physiques à l’aide de WooCommerce In-Person Payments et d’un lecteur de carte (option disponible aux États-Unis et au Canada). Créez une commande, ou trouvez une commande existante en attente de paiement, et encaissez le paiement à l’aide d’un lecteur de carte ou d’un portefeuille numérique, tel qu’Apple Pay.
 
-SUIVEZ VOS STATISTIQUES
-Affichez les produits les plus vendus en un clin d’œil. Surveillez facilement les revenus globaux, le nombre de commandes et les données sur les visiteurs par semaine, mois et année. Savoir est synonyme de pouvoir !
+Recevez des notifications lors de chaque vente
+Maintenant que vous vendez activement, ne manquez jamais une commande ou un avis.  Restez au courant en activant les alertes en temps réel et ne manquez pas ce « gling-gling » addictif qui retentit lors de chaque nouvelle vente ! 
 
-PASSEZ D’UNE BOUTIQUE À L’AUTRE
-Si vous en avez plusieurs, passez d’une entreprise à l’autre en quelques secondes.
+Suivez les ventes et les produits les plus vendus
+Affichez en un clin d’œil les produits les plus vendus. Surveillez facilement les revenus globaux, le nombre de commandes et les données sur les visiteurs par semaine, mois et année. Savoir = pouvoir !
 
 WooCommerce est la plateforme de commerce électronique Open-Source la plus personnalisable au monde. Que vous lanciez une activité, basculiez un magasin physique en ligne ou développiez des sites pour vos clients, WooCommerce permet d’obtenir une boutique qui allie puissamment contenu et commerce.
 
-Conditions requises : WooCommerce v3.5+, l'extension Jetpack.
+Conditions requises : WooCommerce v3.5+.
 
 Consultez l’avis de confidentialité pour les utilisateurs californiens à l’adresse https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

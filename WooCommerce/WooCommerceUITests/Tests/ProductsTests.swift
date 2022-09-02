@@ -12,7 +12,7 @@ final class ProductsTests: XCTestCase {
         try LoginFlow.logInWithWPcom()
     }
 
-    func testProductsScreenLoad() throws {
+    func test_load_products_screen() throws {
         let products = try GetMocks.readProductsData()
 
         try TabNavComponent().goToProductsScreen()

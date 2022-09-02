@@ -1,16 +1,19 @@
 import SwiftUI
 
 struct InPersonPaymentsStripeAccountReview: View {
+    let analyticReason: String
+
     var body: some View {
         InPersonPaymentsOnboardingError(
             title: Localization.title,
             message: Localization.message,
-            image: InPersonPaymentsOnboardingError.ImageInfo(
+            image: InPersonPaymentsOnboardingErrorMainContentView.ImageInfo(
                 image: .paymentErrorImage,
                 height: 180.0
             ),
             supportLink: true,
-            learnMore: true
+            learnMore: true,
+            analyticReason: analyticReason
         )
     }
 }
@@ -29,6 +32,6 @@ private enum Localization {
 
 struct InPersonPaymentsStripeAccountReview_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsStripeAccountReview()
+        InPersonPaymentsStripeAccountReview(analyticReason: "")
     }
 }

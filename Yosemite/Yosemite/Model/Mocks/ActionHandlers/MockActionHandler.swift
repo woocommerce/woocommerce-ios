@@ -40,7 +40,7 @@ extension MockActionHandler {
 
         var error: Error?
 
-        let storage = storageManager.writerDerivedStorage
+        let storage = storageManager.viewStorage
 
         storage.perform {
             let objects: [NSManagedObject] = mocks.map {

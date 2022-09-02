@@ -19,6 +19,9 @@ final class MockProductVariationsRemote {
     /// The results to return based on the given arguments in `updateProductVariation`
     private var productVariationUpdateResults = [ResultKey: Result<ProductVariation, Error>]()
 
+    /// The results to return based on the given arguments in `updateProductVariationImage`
+    private var productVariationImageUpdateResults = [ResultKey: Result<ProductVariation, Error>]()
+
     /// The results to return based on the given arguments in `updateProductVariations`
     private var productVariationsUpdateResults = [ResultKey: Result<[ProductVariation], Error>]()
 
@@ -44,6 +47,13 @@ final class MockProductVariationsRemote {
     func whenUpdatingProductVariation(siteID: Int64, productID: Int64, productVariationID: Int64, thenReturn result: Result<ProductVariation, Error>) {
         let key = ResultKey(siteID: siteID, productID: productID, productVariationIDs: [productVariationID])
         productVariationUpdateResults[key] = result
+    }
+
+    /// Set the value passed to the `completion` block if `updateProductVariationImage()` is called.
+    ///
+    func whenUpdatingProductVariationImage(siteID: Int64, productID: Int64, productVariationID: Int64, thenReturn result: Result<ProductVariation, Error>) {
+        let key = ResultKey(siteID: siteID, productID: productID, productVariationIDs: [productVariationID])
+        productVariationImageUpdateResults[key] = result
     }
 
     /// Set the value passed to the `completion` block if `updateProductVariations()` is called.
@@ -127,6 +137,27 @@ extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
                                 productID: productVariation.productID,
                                 productVariationIDs: [productVariation.productVariationID])
             if let result = self.productVariationUpdateResults[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
+    func updateProductVariationImage(siteID: Int64,
+                                     productID: Int64,
+                                     variationID: Int64,
+                                     image: ProductImage,
+                                     completion: @escaping (Result<ProductVariation, Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else {
+                return
+            }
+
+            let key = ResultKey(siteID: siteID,
+                                productID: productID,
+                                productVariationIDs: [variationID])
+            if let result = self.productVariationImageUpdateResults[key] {
                 completion(result)
             } else {
                 XCTFail("\(String(describing: self)) Could not find Result for \(key)")

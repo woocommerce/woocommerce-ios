@@ -3,6 +3,8 @@ import Yosemite
 
 struct InPersonPaymentsPluginNotSetup: View {
     let plugin: CardPresentPaymentsPlugin
+    let analyticReason: String
+    private let cardPresentConfiguration = CardPresentConfigurationLoader().configuration
     let onRefresh: () -> Void
     @State private var presentedSetupURL: URL? = nil
 
@@ -10,10 +12,10 @@ struct InPersonPaymentsPluginNotSetup: View {
         ScrollableVStack {
             Spacer()
 
-            InPersonPaymentsOnboardingError.MainContent(
+            InPersonPaymentsOnboardingErrorMainContentView(
                 title: String(format: Localization.title, plugin.pluginName),
                 message: String(format: Localization.message, plugin.pluginName),
-                image: InPersonPaymentsOnboardingError.ImageInfo(
+                image: InPersonPaymentsOnboardingErrorMainContentView.ImageInfo(
                     image: plugin.image,
                     height: 108.0
                 ),
@@ -24,6 +26,10 @@ struct InPersonPaymentsPluginNotSetup: View {
 
             Button {
                 presentedSetupURL = setupURL
+                ServiceLocator.analytics.track(
+                    event: WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingCtaTapped(
+                        reason: analyticReason,
+                        countryCode: cardPresentConfiguration.countryCode))
             } label: {
                 HStack {
                     Text(Localization.primaryButton)
@@ -33,7 +39,7 @@ struct InPersonPaymentsPluginNotSetup: View {
             .buttonStyle(PrimaryButtonStyle())
             .padding(.bottom, 24.0)
 
-            InPersonPaymentsLearnMore()
+            InPersonPaymentsLearnMore(viewModel: LearnMoreViewModel(tappedAnalyticEvent: learnMoreAnalyticEvent))
         }
         .safariSheet(url: $presentedSetupURL, onDismiss: onRefresh)
     }
@@ -63,8 +69,16 @@ private enum Localization {
         comment: "Button to set up an in-person payments plugin after activating it"
     )
 }
+
 struct InPersonPaymentsPluginNotSetup_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsPluginNotSetup(plugin: .wcPay, onRefresh: {})
+        InPersonPaymentsPluginNotSetup(plugin: .wcPay, analyticReason: "", onRefresh: {})
+    }
+}
+
+private extension InPersonPaymentsPluginNotSetup {
+    var learnMoreAnalyticEvent: WooAnalyticsEvent? {
+        WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingLearnMoreTapped(reason: analyticReason,
+                                                                                countryCode: cardPresentConfiguration.countryCode)
     }
 }

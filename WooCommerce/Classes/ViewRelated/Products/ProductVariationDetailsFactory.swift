@@ -39,10 +39,11 @@ private extension ProductVariationDetailsFactory {
         let productVariationModel = EditableProductVariationModel(productVariation: productVariation,
                                                                   allAttributes: parentProduct.attributes,
                                                                   parentProductSKU: parentProduct.sku)
-        let productImageActionHandler = productImageUploader.actionHandler(siteID: productVariation.siteID,
-                                                                           productID: productVariationModel.productID,
-                                                                           isLocalID: !productVariationModel.existsRemotely,
-                                                                           originalStatuses: productVariationModel.imageStatuses)
+        let productImageActionHandler = productImageUploader
+            .actionHandler(key: .init(siteID: productVariation.siteID,
+                                      productOrVariationID: .variation(productID: productVariation.productID, variationID: productVariation.productVariationID),
+                                      isLocalID: !productVariationModel.existsRemotely),
+                           originalStatuses: productVariationModel.imageStatuses)
         let formType: ProductFormType = isEditProductsEnabled ? .edit: .readonly
         let viewModel = ProductVariationFormViewModel(productVariation: productVariationModel,
                                                       allAttributes: parentProduct.attributes,

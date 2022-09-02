@@ -36,15 +36,15 @@ public final class CustomerDetailsScreen: ScreenObject {
     }
 
     /// Updates the order with minimal customer details.
-    /// - Returns: New Order screen object.
+    /// - Returns: Unified Order screen object.
     @discardableResult
-    public func enterCustomerDetails(name: String) throws -> NewOrderScreen {
+    public func enterCustomerDetails(name: String) throws -> UnifiedOrderScreen {
         billingFirstNameField.tap()
         billingFirstNameField.typeText(name)
         addressToggle.tap()
         shippingFirstNameField.tap()
         shippingFirstNameField.typeText(name)
         doneButton.tap()
-        return try NewOrderScreen()
+        return try UnifiedOrderScreen()
     }
 }

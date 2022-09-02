@@ -17,6 +17,14 @@ struct AuthenticationConstants {
         "Log in with your WordPress.com account email address to manage your WooCommerce stores.",
         comment: "Sign in instructions on the 'log in using WordPress.com account' screen."
     )
+
+    /// What is WordPress.com? link (Continue with WordPress.com)
+    ///
+    static let whatIsWPComLinkTitle = NSLocalizedString(
+        "What is WordPress.com?",
+        comment: "Navigates to page with details about What is WordPress.com."
+    )
+
     /// Login with Jetpack instructions.
     ///
     static let jetpackInstructions = NSLocalizedString(
@@ -36,6 +44,13 @@ struct AuthenticationConstants {
         comment: "Sign in instructions for logging in with a username and password."
     )
 
+    /// Sign in using Apple screen's instructions.
+    ///
+    static let applePasswordInstructions = NSLocalizedString(
+        "To proceed with this account, please first log in with your WordPress.com password. This will only be asked once.",
+        comment: "Sign in instructions asking user to enter WordPress.com password to proceed with sign in using Apple process"
+    )
+
     /// Title of "Continue With WordPress.com" button in Login Prologue
     //
     static let continueWithWPButtonTitle = NSLocalizedString(
@@ -48,6 +63,20 @@ struct AuthenticationConstants {
     static let enterYourSiteAddressButtonTitle = NSLocalizedString(
         "Enter Your Store Address",
         comment: "Button title. Takes the user to the login by store address flow."
+    )
+
+    /// Title of "Sign in with store credentials" button
+    //
+    static let signInWithSiteCredsButtonTitle = NSLocalizedString(
+        "Sign in with store credentials",
+        comment: "Button title. Takes the user to the site credentials entry screen."
+    )
+
+    /// Instruction in Enter Site Credentials screen.
+    //
+    static let siteCredentialInstructions = NSLocalizedString(
+        "Enter your store credentials for %@.",
+        comment: "Enter your store credentials for {site url}. Asks the user to enter .org site credentials for their store."
     )
 
     /// Title of views in Unified Login

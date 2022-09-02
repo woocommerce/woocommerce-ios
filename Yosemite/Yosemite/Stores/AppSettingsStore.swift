@@ -178,6 +178,14 @@ public class AppSettingsStore: Store {
             setCouponManagementFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadCouponManagementFeatureSwitchState(let onCompletion):
             loadCouponManagementFeatureSwitchState(onCompletion: onCompletion)
+        case .setFeatureAnnouncementDismissed(campaign: let campaign, remindLater: let remindLater, onCompletion: let completion):
+            setFeatureAnnouncementDismissed(campaign: campaign, remindLater: remindLater, onCompletion: completion)
+        case .getFeatureAnnouncementVisibility(campaign: let campaign, onCompletion: let completion):
+            getFeatureAnnouncementVisibility(campaign: campaign, onCompletion: completion)
+        case .setSkippedCashOnDeliveryOnboardingStep(siteID: let siteID):
+            setSkippedCashOnDeliveryOnboardingStep(siteID: siteID)
+        case .getSkippedCashOnDeliveryOnboardingStep(siteID: let siteID, onCompletion: let completion):
+            getSkippedCashOnDeliveryOnboardingStep(siteID: siteID, onCompletion: completion)
         }
     }
 }
@@ -415,7 +423,7 @@ private extension AppSettingsStore {
                               onCompletion: onCompletion)
             return
         }
-        upsertTrackingProvider(siteID: siteID,
+        saveTrackingProvider(siteID: siteID,
                                providerName: providerName,
                                preselectedData: settings,
                                toFileURL: fileURL,
@@ -476,7 +484,7 @@ private extension AppSettingsStore {
         onCompletion(customProvider, nil)
     }
 
-    func upsertTrackingProvider(siteID: Int64,
+    func saveTrackingProvider(siteID: Int64,
                                 providerName: String,
                                 providerURL: String? = nil,
                                 preselectedData: [PreselectedProvider],
@@ -485,15 +493,7 @@ private extension AppSettingsStore {
         let newPreselectedProvider = PreselectedProvider(siteID: siteID,
                                                          providerName: providerName,
                                                          providerURL: providerURL)
-
-        var dataToSave = preselectedData
-
-        if preselectedData.contains(newPreselectedProvider),
-           let index = preselectedData.firstIndex(of: newPreselectedProvider) {
-            dataToSave[index] = newPreselectedProvider
-        } else {
-            dataToSave.append(newPreselectedProvider)
-        }
+        let dataToSave = [newPreselectedProvider]
 
         do {
             try fileStorage.write(dataToSave, to: toFileURL)
@@ -722,7 +722,6 @@ private extension AppSettingsStore {
     func getPreferredInPersonPaymentGateway(siteID: Int64, onCompletion: (String?) -> Void) {
         let storeSettings = getStoreSettings(for: siteID)
         onCompletion(storeSettings.preferredInPersonPaymentGateway)
-
     }
 
     /// Forgets the preferred payment gateway for In-Person Payments
@@ -731,6 +730,57 @@ private extension AppSettingsStore {
         let storeSettings = getStoreSettings(for: siteID)
         let newSettings = storeSettings.copy(preferredInPersonPaymentGateway: .some(nil))
         setStoreSettings(settings: newSettings, for: siteID, onCompletion: nil)
+    }
+
+    /// Marks the Enable Cash on Delivery In-Person Payments Onboarding step as skipped
+    ///
+    func setSkippedCashOnDeliveryOnboardingStep(siteID: Int64) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let newSettings = storeSettings.copy(skippedCashOnDeliveryOnboardingStep: true)
+        setStoreSettings(settings: newSettings, for: siteID)
+    }
+
+    /// Gets whether the Enable Cash on Delivery In-Person Payments Onboarding step has been skipped
+    ///
+    func getSkippedCashOnDeliveryOnboardingStep(siteID: Int64, onCompletion: (Bool) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        onCompletion(storeSettings.skippedCashOnDeliveryOnboardingStep)
+    }
+
+}
+
+
+// MARK: - Feature Announcement Card Visibility
+
+extension AppSettingsStore {
+
+    func setFeatureAnnouncementDismissed(campaign: FeatureAnnouncementCampaign, remindLater: Bool, onCompletion: ((Result<Bool, Error>) -> ())?) {
+        do {
+            let remindAfter = remindLater ? Date().addingDays(14) : nil
+            let newSettings = FeatureAnnouncementCampaignSettings(dismissedDate: Date(), remindAfter: remindAfter)
+
+            let settings = generalAppSettings.settings
+            let settingsToSave = settings.replacing(featureAnnouncementSettings: newSettings, for: campaign)
+            try generalAppSettings.saveSettings(settingsToSave)
+
+            onCompletion?(.success(true))
+        } catch {
+            onCompletion?(.failure(error))
+        }
+    }
+
+    func getFeatureAnnouncementVisibility(campaign: FeatureAnnouncementCampaign, onCompletion: (Result<Bool, Error>) -> ()) {
+        guard let campaignSettings = generalAppSettings.value(for: \.featureAnnouncementCampaignSettings)[campaign] else {
+            return onCompletion(.success(true))
+        }
+
+        if let remindAfter = campaignSettings.remindAfter {
+            let remindAfterHasPassed = remindAfter < Date()
+            onCompletion(.success(remindAfterHasPassed))
+        } else {
+            let neverDismissed = campaignSettings.dismissedDate == nil
+            onCompletion(.success(neverDismissed))
+        }
     }
 
 }

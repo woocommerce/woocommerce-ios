@@ -158,9 +158,11 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func styleAuxiliaryButton() {
-        auxiliaryButton.applyLinkButtonStyle()
-        auxiliaryButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        if viewModel.actionsMode != .secondaryActionAndAuxiliaryButton {
+            auxiliaryButton.applyLinkButtonStyle()
+        }
         auxiliaryButton.titleLabel?.minimumScaleFactor = 0.5
+        auxiliaryButton.titleLabel?.adjustsFontSizeToFitWidth = true
     }
 
     func initializeContent() {
@@ -194,6 +196,7 @@ private extension CardPresentPaymentsModalViewController {
 
     func configureTopTitle() {
         topTitleLabel.text = viewModel.topTitle
+        topTitleLabel.accessibilityIdentifier = Accessibility.topTitleLabel
     }
 
     func configureTopSubtitle() {
@@ -261,6 +264,7 @@ private extension CardPresentPaymentsModalViewController {
 
         primaryButton.isHidden = false
         primaryButton.setTitle(viewModel.primaryButtonTitle, for: .normal)
+        primaryButton.accessibilityIdentifier = Accessibility.primaryButton
     }
 
     func configureSecondaryButton() {
@@ -271,16 +275,28 @@ private extension CardPresentPaymentsModalViewController {
 
         secondaryButton.isHidden = false
         secondaryButton.setTitle(viewModel.secondaryButtonTitle, for: .normal)
+        secondaryButton.accessibilityIdentifier = Accessibility.secondaryButton
     }
 
     func configureAuxiliaryButton() {
+
         guard shouldShowAuxiliaryButton() else {
             auxiliaryButton.isHidden = true
             return
         }
 
-        auxiliaryButton.setTitleWithoutAnimation(viewModel.auxiliaryButtonTitle, for: .normal)
         auxiliaryButton.isHidden = false
+        auxiliaryButton.accessibilityIdentifier = Accessibility.auxiliaryButton
+        // Prevents UI flicker when loading different content
+        UIView.performWithoutAnimation {
+            auxiliaryButton.setTitle(viewModel.auxiliaryButtonTitle, for: .normal)
+            auxiliaryButton.setAttributedTitle(viewModel.auxiliaryAttributedButtonTitle, for: .normal)
+            auxiliaryButton.setImage(viewModel.auxiliaryButtonimage, for: .normal)
+            if viewModel.auxiliaryButtonimage != nil {
+                auxiliaryButton.distributeTitleAndImage(spacing: 8.0)
+            }
+            view.layoutIfNeeded()
+        }
     }
 
     func configureSpacer() {
@@ -334,12 +350,12 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func shouldShowBottomActionButton() -> Bool {
-        [.secondaryOnlyAction, .twoAction, .twoActionAndAuxiliary]
+        [.secondaryOnlyAction, .twoAction, .twoActionAndAuxiliary, .secondaryActionAndAuxiliaryButton]
             .contains(viewModel.actionsMode)
     }
 
     func shouldShowAuxiliaryButton() -> Bool {
-        viewModel.actionsMode == .twoActionAndAuxiliary
+        [.twoActionAndAuxiliary, .secondaryActionAndAuxiliaryButton].contains(viewModel.actionsMode)
     }
 }
 
@@ -404,5 +420,14 @@ extension CardPresentPaymentsModalViewController {
 
     func getSecondaryActionButton() -> UIButton {
         return secondaryButton
+    }
+}
+
+private extension CardPresentPaymentsModalViewController {
+    enum Accessibility {
+        static let topTitleLabel = "card-present-payments-modal-title-label"
+        static let primaryButton = "card-present-payments-modal-primary-button"
+        static let secondaryButton = "card-present-payments-modal-secondary-button"
+        static let auxiliaryButton = "card-present-payments-modal-auxiliary-button"
     }
 }

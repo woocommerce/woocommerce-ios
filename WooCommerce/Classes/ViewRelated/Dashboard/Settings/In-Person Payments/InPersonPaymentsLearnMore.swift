@@ -1,8 +1,13 @@
 import SwiftUI
 
 struct InPersonPaymentsLearnMore: View {
-    static let learnMoreURL = URL(string: "woocommerce://in-person-payments/learn-more")!
     @Environment(\.customOpenURL) var customOpenURL
+
+    private let viewModel: LearnMoreViewModel
+
+    init(viewModel: LearnMoreViewModel = LearnMoreViewModel()) {
+        self.viewModel = viewModel
+    }
 
     private let cardPresentConfiguration = CardPresentConfigurationLoader().configuration
 
@@ -12,35 +17,17 @@ struct InPersonPaymentsLearnMore: View {
                 .resizable()
                 .foregroundColor(Color(.neutral(.shade60)))
                 .frame(width: iconSize, height: iconSize)
-            AttributedText(learnMoreAttributedString)
+            AttributedText(viewModel.learnMoreAttributedString)
         }
             .padding(.vertical, Constants.verticalPadding)
             .onTapGesture {
-                ServiceLocator.analytics.track(event: WooAnalyticsEvent.InPersonPayments
-                                                .cardPresentOnboardingLearnMoreTapped(countryCode: cardPresentConfiguration.countryCode))
-                customOpenURL?(InPersonPaymentsLearnMore.learnMoreURL)
+                viewModel.learnMoreTapped()
+                customOpenURL?(viewModel.url)
             }
     }
 
     var iconSize: CGFloat {
         UIFontMetrics(forTextStyle: .subheadline).scaledValue(for: 20)
-    }
-
-    private var learnMoreAttributedString: NSAttributedString {
-        let result = NSMutableAttributedString(
-            string: .localizedStringWithFormat(Localization.learnMoreText, Localization.learnMoreLink),
-            attributes: [.foregroundColor: UIColor.textSubtle]
-        )
-        result.replaceFirstOccurrence(
-            of: Localization.learnMoreLink,
-            with: NSAttributedString(
-                string: Localization.learnMoreLink,
-                attributes: [.foregroundColor: UIColor.textLink]
-            ))
-
-        // https://github.com/gonzalezreal/AttributedText/issues/11
-        result.addAttribute(.font, value: UIFont.footnote, range: NSRange(location: 0, length: result.length))
-        return result
     }
 }
 
@@ -57,14 +44,6 @@ private enum Localization {
     static let acceptCash = NSLocalizedString(
         "You can still accept in-person cash payments by enabling the “Cash on Delivery” payment method on your store.",
         comment: "Generic error message when In-Person Payments is unavailable"
-    )
-
-    static let learnMoreLink = NSLocalizedString(
-        "Learn more",
-        comment: """
-                 A label prompting users to learn more about card readers.
-                 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
-                 """
     )
 
     static let learnMoreText = NSLocalizedString(

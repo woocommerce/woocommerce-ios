@@ -23,6 +23,16 @@ public final class ProductsScreen: ScreenObject {
     }
 
     @discardableResult
+    public func selectAddProduct() -> Self {
+        guard app.buttons["product-add-button"].waitForExistence(timeout: 3) else {
+            return self
+        }
+
+        app.buttons["product-add-button"].tap()
+        return self
+    }
+
+    @discardableResult
     public func collapseTopBannerIfNeeded() -> Self {
 
         /// Without the info label, we don't need to collapse the top banner

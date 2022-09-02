@@ -11,7 +11,8 @@ final class MockNoticePresenter: NoticePresenter {
 
     private(set) var queuedNotices = [Notice]()
 
-    func enqueue(notice: Notice) {
+    func enqueue(notice: Notice) -> Bool {
         queuedNotices.append(notice)
+        return true
     }
 }

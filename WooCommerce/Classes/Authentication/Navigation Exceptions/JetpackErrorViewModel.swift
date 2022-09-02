@@ -9,10 +9,17 @@ import WordPressUI
 struct JetpackErrorViewModel: ULErrorViewModel {
     private let siteURL: String
     private let analytics: Analytics
+    private let jetpackSetupCompletionHandler: (String?) -> Void
+    private let authentication: Authentication
 
-    init(siteURL: String?, analytics: Analytics = ServiceLocator.analytics) {
+    init(siteURL: String?,
+         analytics: Analytics = ServiceLocator.analytics,
+         authentication: Authentication = ServiceLocator.authenticationManager,
+         onJetpackSetupCompletion: @escaping (String?) -> Void) {
         self.siteURL = siteURL ?? Localization.yourSite
         self.analytics = analytics
+        self.authentication = authentication
+        self.jetpackSetupCompletionHandler = onJetpackSetupCompletion
     }
 
     // MARK: - Data and configuration
@@ -39,19 +46,25 @@ struct JetpackErrorViewModel: ULErrorViewModel {
 
     let secondaryButtonTitle = Localization.secondaryButtonTitle
 
-    // MARK: - Actions
-    func didTapPrimaryButton(in viewController: UIViewController?) {
-        showInstructionsScreen(in: viewController)
-        analytics.track(.loginJetpackRequiredViewInstructionsButtonTapped)
+    // Configures `Help` button title
+    var rightBarButtonItemTitle: String? {
+        Localization.helpBarButtonItemTitle
     }
 
-    private func showInstructionsScreen(in viewController: UIViewController?) {
-        guard let url = URL(string: Strings.instructionsURLString),
-              let viewController = viewController else {
+    // MARK: - Actions
+    func didTapPrimaryButton(in viewController: UIViewController?) {
+        showJetpackSetupScreen(in: viewController)
+        analytics.track(.loginJetpackSetupButtonTapped)
+    }
+
+    private func showJetpackSetupScreen(in viewController: UIViewController?) {
+        guard let viewController = viewController else {
             return
         }
 
-        WebviewHelper.launch(url, with: viewController)
+        let viewModel = JetpackSetupWebViewModel(siteURL: siteURL, analytics: analytics, onCompletion: jetpackSetupCompletionHandler)
+        let connectionController = PluginSetupWebViewController(viewModel: viewModel)
+        viewController.navigationController?.show(connectionController, sender: nil)
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
@@ -68,11 +81,17 @@ struct JetpackErrorViewModel: ULErrorViewModel {
         analytics.track(.loginWhatIsJetpackHelpScreenViewed)
     }
 
-    func viewDidLoad() {
+    func didTapRightBarButtonItem(in viewController: UIViewController?) {
+        guard let viewController = viewController else {
+            return
+        }
+        authentication.presentSupport(from: viewController, screen: .jetpackRequired)
+    }
+
+    func viewDidLoad(_ viewController: UIViewController?) {
         analytics.track(.loginJetpackRequiredScreenViewed)
     }
 }
-
 
 // MARK: - Private data structures
 private extension JetpackErrorViewModel {
@@ -85,8 +104,8 @@ private extension JetpackErrorViewModel {
                                                      comment: "Button linking to webview that explains what Jetpack is"
                                                         + "Presented when logging in with a site address that does not have a valid Jetpack installation")
 
-        static let primaryButtonTitle = NSLocalizedString("See Instructions",
-                                                          comment: "Action button linking to instructions for installing Jetpack."
+        static let primaryButtonTitle = NSLocalizedString("Install Jetpack",
+                                                          comment: "Action button for installing Jetpack."
                                                           + "Presented when logging in with a site address that does not have a valid Jetpack installation")
 
         static let secondaryButtonTitle = NSLocalizedString("Log In With Another Account",
@@ -98,6 +117,8 @@ private extension JetpackErrorViewModel {
                                                     + "Presented when logging in with a site address that does not have a valid Jetpack installation."
                                                 + "The error would read: to use this app for your site you'll need...")
 
+        static let helpBarButtonItemTitle = NSLocalizedString("Help",
+                                                       comment: "Help button on Jetpack required error screen.")
     }
 
     enum Strings {

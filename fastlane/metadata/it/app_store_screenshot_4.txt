@@ -1,2 +1,2 @@
-Visualizza i prodotti e
-controlla l'inventario
+Aggiungi e modifica i prodotti
+con un tocco

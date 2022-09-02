@@ -1,2 +1,2 @@
-Visualize e gerencie
-pedidos onde estiver
+Crie pedidos
+na hora

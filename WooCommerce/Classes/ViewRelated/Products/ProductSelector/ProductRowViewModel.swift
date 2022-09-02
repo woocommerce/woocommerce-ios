@@ -126,6 +126,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         quantity < minimumQuantity
     }
 
+    /// Closure to run when the quantity is changed.
+    ///
+    var quantityUpdatedCallback: (Decimal) -> Void
+
     /// Closure to run when the quantity is decremented below the minimum quantity.
     ///
     var removeProductIntent: () -> Void
@@ -153,6 +157,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          variationDisplayMode: VariationDisplayMode? = nil,
          selectedState: ProductRow.SelectedState = .notSelected,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+         quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
          removeProductIntent: @escaping (() -> Void) = {}) {
         self.id = id ?? Int64(UUID().uuidString.hashValue)
         self.selectedState = selectedState
@@ -169,6 +174,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.currencyFormatter = currencyFormatter
         self.numberOfVariations = numberOfVariations
         self.variationDisplayMode = variationDisplayMode
+        self.quantityUpdatedCallback = quantityUpdatedCallback
         self.removeProductIntent = removeProductIntent
     }
 
@@ -180,6 +186,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      canChangeQuantity: Bool,
                      selectedState: ProductRow.SelectedState = .notSelected,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+                     quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
                      removeProductIntent: @escaping (() -> Void) = {}) {
         // Don't show any price for variable products; price will be shown for each product variation.
         let price: String?
@@ -203,6 +210,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   numberOfVariations: product.variations.count,
                   selectedState: selectedState,
                   currencyFormatter: currencyFormatter,
+                  quantityUpdatedCallback: quantityUpdatedCallback,
                   removeProductIntent: removeProductIntent)
     }
 
@@ -216,6 +224,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      displayMode: VariationDisplayMode,
                      selectedState: ProductRow.SelectedState = .notSelected,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+                     quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
                      removeProductIntent: @escaping (() -> Void) = {}) {
         let imageURL: URL?
         if let encodedImageURLString = productVariation.image?.src.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
@@ -238,6 +247,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   variationDisplayMode: displayMode,
                   selectedState: selectedState,
                   currencyFormatter: currencyFormatter,
+                  quantityUpdatedCallback: quantityUpdatedCallback,
                   removeProductIntent: removeProductIntent)
     }
 
@@ -277,6 +287,8 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     func incrementQuantity() {
         quantity += 1
+
+        quantityUpdatedCallback(quantity)
     }
 
     /// Decrement the product quantity.
@@ -286,6 +298,8 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             return removeProductIntent()
         }
         quantity -= 1
+
+        quantityUpdatedCallback(quantity)
     }
 }
 

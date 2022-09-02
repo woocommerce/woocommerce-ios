@@ -28,7 +28,7 @@ final class RemoveAppleIDAccessCoordinatorTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_alert_is_presented_when_starting_coordinator() throws {
+    @MainActor func test_alert_is_presented_when_starting_coordinator() throws {
         // Given
         let coordinator = RemoveAppleIDAccessCoordinator(sourceViewController: sourceViewController) {
             return .success(())

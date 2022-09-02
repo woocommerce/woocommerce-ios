@@ -366,8 +366,9 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         viewModel.createSimplePaymentsOrder()
 
         // Then
-        assertEqual(analytics.receivedEvents, [WooAnalyticsStat.simplePaymentsFlowFailed.rawValue])
+        assertEqual(analytics.receivedEvents, [WooAnalyticsStat.paymentsFlowFailed.rawValue])
         assertEqual(analytics.receivedProperties.first?["source"] as? String, "amount")
+        assertEqual(analytics.receivedProperties.first?["flow"] as? String, "simple_payment")
     }
 
     func test_view_model_disable_cancel_button_while_creating_payment_order() {

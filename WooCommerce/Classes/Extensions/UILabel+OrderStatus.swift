@@ -27,7 +27,7 @@ extension UILabel {
     ///
     private func applyBackground(for statusEnum: OrderStatusEnum) {
         switch statusEnum {
-        case .autoDraft, .pending, .completed, .cancelled, .refunded, .custom:
+        case .autoDraft, .pending, .cancelled, .refunded, .custom:
             backgroundColor = .gray(.shade5)
         case .onHold:
             backgroundColor = .withColorStudio(.orange, shade: .shade5)
@@ -35,6 +35,8 @@ extension UILabel {
             backgroundColor = .withColorStudio(.green, shade: .shade5)
         case .failed:
             backgroundColor = .withColorStudio(.red, shade: .shade5)
+        case .completed:
+            backgroundColor = .withColorStudio(.blue, shade: .shade5)
         }
 
         textColor = .black

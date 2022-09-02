@@ -28,6 +28,14 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         viewModel.password
     }
 
+    private var productOrVariationID: ProductOrVariationID {
+        if let viewModel = viewModel as? ProductVariationFormViewModel {
+            return .variation(productID: viewModel.productModel.productID, variationID: viewModel.productModel.productVariation.productVariationID)
+        } else {
+            return .product(id: viewModel.productModel.productID)
+        }
+    }
+
     private var tableViewModel: ProductFormTableViewModel
     private var tableViewDataSource: ProductFormTableViewDataSource {
         didSet {
@@ -37,6 +45,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     private let productImageActionHandler: ProductImageActionHandler
     private let productUIImageLoader: ProductUIImageLoader
+    private let productImageUploader: ProductImageUploaderProtocol
 
     private let currency: String
 
@@ -59,7 +68,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
          eventLogger: ProductFormEventLoggerProtocol,
          productImageActionHandler: ProductImageActionHandler,
          currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
-         presentationStyle: ProductFormPresentationStyle) {
+         presentationStyle: ProductFormPresentationStyle,
+         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
         self.viewModel = viewModel
         self.eventLogger = eventLogger
         self.currency = currency
@@ -67,6 +77,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         self.productImageActionHandler = productImageActionHandler
         self.productUIImageLoader = DefaultProductUIImageLoader(productImageActionHandler: productImageActionHandler,
                                                                 phAssetImageLoaderProvider: { PHImageManager.default() })
+        self.productImageUploader = productImageUploader
         self.tableViewModel = DefaultProductFormTableViewModel(product: viewModel.productModel,
                                                                actionsFactory: viewModel.actionsFactory,
                                                                currency: currency)
@@ -74,14 +85,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                                                                   productImageStatuses: productImageActionHandler.productImageStatuses,
                                                                   productUIImageLoader: productUIImageLoader)
         super.init(nibName: "ProductFormViewController", bundle: nil)
-        tableViewDataSource.configureActions(onNameChange: { [weak self] name in
-            self?.onEditProductNameCompletion(newName: name ?? "")
-        }, onStatusChange: { [weak self] isVisible in
-            self?.onEditStatusCompletion(isEnabled: isVisible)
-        }, onAddImage: { [weak self] in
-            self?.eventLogger.logImageTapped()
-            self?.showProductImages()
-        })
+        updateDataSourceActions()
     }
 
     required init?(coder: NSCoder) {
@@ -127,12 +131,24 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
             self.viewModel.updateImages(productImageStatuses.images)
         }
+
+        productImageUploader.stopEmittingErrors(key: .init(siteID: viewModel.productModel.siteID,
+                                                           productOrVariationID: productOrVariationID,
+                                                           isLocalID: !viewModel.productModel.existsRemotely))
+
+        viewModel.trackProductFormLoaded()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
         view.endEditing(true)
+
+        if isBeingDismissedInAnyWay {
+            productImageUploader.startEmittingErrors(key: .init(siteID: viewModel.productModel.siteID,
+                                                                productOrVariationID: productOrVariationID,
+                                                                isLocalID: !viewModel.productModel.existsRemotely))
+        }
     }
 
     override var shouldShowOfflineBanner: Bool {
@@ -459,7 +475,7 @@ private extension ProductFormViewController {
     func configurePresentationStyle() {
         switch presentationStyle {
         case .contained(let containerViewController):
-            containerViewController.addCloseNavigationBarButton(target: self, action: #selector(closeNavigationBarButtonTapped))
+            containerViewController()?.addCloseNavigationBarButton(target: self, action: #selector(closeNavigationBarButtonTapped))
         case .navigationStack:
             break
         }
@@ -527,6 +543,42 @@ private extension ProductFormViewController {
         }
     }
 
+    /// Updates table viewmodel and datasource and attempts to animate cell deletion/insertion.
+    ///
+    func reloadLinkedPromoCellAnimated() {
+        let indexPathBeforeReload = findLinkedPromoCellIndexPath()
+        tableViewModel = DefaultProductFormTableViewModel(product: viewModel.productModel,
+                                                          actionsFactory: viewModel.actionsFactory,
+                                                          currency: currency)
+        let indexPathAfterReload = findLinkedPromoCellIndexPath()
+
+        reconfigureDataSource(tableViewModel: tableViewModel, statuses: productImageActionHandler.productImageStatuses) { [weak self] in
+            guard let self = self else { return }
+
+            switch (indexPathBeforeReload, indexPathAfterReload) {
+            case (let indexPathBeforeReload?, nil):
+                self.tableView.deleteRows(at: [indexPathBeforeReload], with: .left)
+            case (nil, let indexPathAfterReload?):
+                self.tableView.insertRows(at: [indexPathAfterReload], with: .automatic)
+            default:
+                self.tableView.reloadData()
+            }
+        }
+    }
+
+    func findLinkedPromoCellIndexPath() -> IndexPath? {
+        for (sectionIndex, section) in tableViewModel.sections.enumerated() {
+            if case .primaryFields(rows: let sectionRows) = section {
+                for (rowIndex, row) in sectionRows.enumerated() {
+                    if case .linkedProductsPromo = row {
+                        return IndexPath(row: rowIndex, section: sectionIndex)
+                    }
+                }
+            }
+        }
+        return nil
+    }
+
     func onProductUpdated(product: ProductModel) {
         updateMoreDetailsButtonVisibility()
         tableViewModel = DefaultProductFormTableViewModel(product: product,
@@ -573,11 +625,31 @@ private extension ProductFormViewController {
     }
 
     /// Recreates `tableViewDataSource` and reloads the `tableView` data.
+    /// - Parameters:
+    ///   - reloadClosure: custom tableView reload action, by default `reloadData()` will be triggered
     ///
-    func reconfigureDataSource(tableViewModel: ProductFormTableViewModel, statuses: [ProductImageStatus]) {
+    func reconfigureDataSource(tableViewModel: ProductFormTableViewModel, statuses: [ProductImageStatus], reloadClosure: (() -> Void)? = nil) {
         tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
                                                              productImageStatuses: statuses,
                                                              productUIImageLoader: productUIImageLoader)
+        updateDataSourceActions()
+        tableView.dataSource = tableViewDataSource
+
+        if let reloadClosure = reloadClosure {
+            reloadClosure()
+        } else {
+            tableView.reloadData()
+        }
+    }
+
+    func updateDataSourceActions() {
+        tableViewDataSource.openLinkedProductsAction = { [weak self] in
+            self?.editLinkedProducts()
+        }
+        tableViewDataSource.reloadLinkedPromoAction = { [weak self] in
+            guard let self = self else { return }
+            self.reloadLinkedPromoCellAnimated()
+        }
         tableViewDataSource.configureActions(onNameChange: { [weak self] name in
             self?.onEditProductNameCompletion(newName: name ?? "")
         }, onStatusChange: { [weak self] isEnabled in
@@ -586,8 +658,6 @@ private extension ProductFormViewController {
             self?.eventLogger.logImageTapped()
             self?.showProductImages()
         })
-        tableView.dataSource = tableViewDataSource
-        tableView.reloadData()
     }
 }
 
@@ -703,6 +773,10 @@ private extension ProductFormViewController {
                 // Dismisses the in-progress UI, then presents the confirmation alert.
                 self?.navigationController?.dismiss(animated: true, completion: nil)
                 self?.presentProductConfirmationSaveAlert()
+
+                // Show linked products promo banner after product save
+                (self?.viewModel as? ProductFormViewModel)?.isLinkedProductsPromoEnabled = true
+                self?.reloadLinkedPromoCellAnimated()
             }
         }
     }
@@ -864,7 +938,7 @@ private extension ProductFormViewController {
         navigationItem.rightBarButtonItems = rightBarButtonItems
         switch presentationStyle {
         case .contained(let containerViewController):
-            containerViewController.navigationItem.rightBarButtonItems = rightBarButtonItems
+            containerViewController()?.navigationItem.rightBarButtonItems = rightBarButtonItems
         default:
             break
         }

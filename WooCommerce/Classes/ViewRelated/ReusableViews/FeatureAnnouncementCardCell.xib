@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="221" id="KGk-i7-Jjw" customClass="FeatureAnnouncementCardCell" customModule="WooCommerce" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="390" height="221"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="390" height="221"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ulE-9o-UTY">
+                        <rect key="frame" x="0.0" y="0.0" width="390" height="0.5"/>
+                        <color key="backgroundColor" systemColor="separatorColor"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="0.5" id="9Hh-Ux-eSb"/>
+                        </constraints>
+                    </view>
+                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="HR9-jh-hEc">
+                        <rect key="frame" x="16" y="16" width="235" height="171.5"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Eu5-1R-3h7">
+                                <rect key="frame" x="0.0" y="0.0" width="38.5" height="22.5"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="New" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="t3Q-3N-SsN">
+                                        <rect key="frame" x="6" y="4" width="26.5" height="14.5"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstItem="t3Q-3N-SsN" firstAttribute="leading" secondItem="Eu5-1R-3h7" secondAttribute="leading" constant="6" id="13N-70-fSt"/>
+                                    <constraint firstItem="t3Q-3N-SsN" firstAttribute="top" secondItem="Eu5-1R-3h7" secondAttribute="top" constant="4" id="3ok-X5-U4k"/>
+                                    <constraint firstAttribute="bottom" secondItem="t3Q-3N-SsN" secondAttribute="bottom" constant="4" id="jlk-3V-Clh"/>
+                                    <constraint firstAttribute="trailing" secondItem="t3Q-3N-SsN" secondAttribute="trailing" constant="6" id="tgf-7d-irP"/>
+                                </constraints>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Boost your sales with linked products" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="w3l-EY-CyJ">
+                                <rect key="frame" x="0.0" y="30.5" width="147.5" height="36"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Give your customers helpful and relevant product recommendations by adding upsells and cross-sells." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6Ux-cL-nyA">
+                                <rect key="frame" x="0.0" y="74.5" width="230" height="55"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vGB-QT-J6h">
+                                <rect key="frame" x="0.0" y="137.5" width="78" height="34"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="Try it now">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                            </button>
+                        </subviews>
+                    </stackView>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" image="woo-payments-feature-banner" translatesAutoresizingMaskIntoConstraints="NO" id="9lH-Bi-7To">
+                        <rect key="frame" x="236" y="92" width="154" height="129"/>
+                    </imageView>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZjR-Td-MEZ">
+                        <rect key="frame" x="356.5" y="16" width="17.5" height="22"/>
+                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                        <state key="normal" image="xmark" catalog="system"/>
+                    </button>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WQp-fI-809">
+                        <rect key="frame" x="0.0" y="220.5" width="390" height="0.5"/>
+                        <color key="backgroundColor" systemColor="separatorColor"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="0.5" id="dRn-eU-uYv"/>
+                        </constraints>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="WQp-fI-809" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="29e-r8-4GC"/>
+                    <constraint firstItem="9lH-Bi-7To" firstAttribute="top" relation="greaterThanOrEqual" secondItem="ZjR-Td-MEZ" secondAttribute="bottom" constant="8" id="53d-3z-QqG"/>
+                    <constraint firstAttribute="trailing" secondItem="ZjR-Td-MEZ" secondAttribute="trailing" constant="16" id="83D-vP-QId"/>
+                    <constraint firstItem="ZjR-Td-MEZ" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="8RM-3B-Dzc"/>
+                    <constraint firstAttribute="trailing" secondItem="9lH-Bi-7To" secondAttribute="trailing" id="Kll-Tg-8yO"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="HR9-jh-hEc" secondAttribute="trailing" constant="16" id="L3X-dA-GnM"/>
+                    <constraint firstItem="ulE-9o-UTY" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="NDc-Ql-mPE"/>
+                    <constraint firstItem="ulE-9o-UTY" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="R3O-ub-dMk"/>
+                    <constraint firstItem="9lH-Bi-7To" firstAttribute="leading" secondItem="HR9-jh-hEc" secondAttribute="trailing" constant="-15" id="RuY-4c-dUc"/>
+                    <constraint firstAttribute="trailing" secondItem="ulE-9o-UTY" secondAttribute="trailing" id="SkP-e6-OX8"/>
+                    <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="HR9-jh-hEc" secondAttribute="bottom" constant="16" id="V1j-ut-fIP"/>
+                    <constraint firstAttribute="trailing" secondItem="WQp-fI-809" secondAttribute="trailing" id="VTS-x1-85c"/>
+                    <constraint firstItem="HR9-jh-hEc" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="aFK-8W-xr8"/>
+                    <constraint firstItem="HR9-jh-hEc" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="cig-px-lya"/>
+                    <constraint firstAttribute="bottom" secondItem="WQp-fI-809" secondAttribute="bottom" id="jJo-TA-9nh"/>
+                    <constraint firstAttribute="bottom" secondItem="9lH-Bi-7To" secondAttribute="bottom" id="zWg-SE-CIA"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="badgeBg" destination="Eu5-1R-3h7" id="yGC-3R-X2M"/>
+                <outlet property="badgeLabel" destination="t3Q-3N-SsN" id="mFO-rH-axw"/>
+                <outlet property="bottomSeparator" destination="WQp-fI-809" id="sRL-Zh-Jmt"/>
+                <outlet property="closeButton" destination="ZjR-Td-MEZ" id="Z0M-wT-GOq"/>
+                <outlet property="contentImageView" destination="9lH-Bi-7To" id="XMG-ts-Sb8"/>
+                <outlet property="ctaButton" destination="vGB-QT-J6h" id="R4C-gW-ckT"/>
+                <outlet property="messageLabel" destination="6Ux-cL-nyA" id="9Yh-LT-vfo"/>
+                <outlet property="titleLabel" destination="w3l-EY-CyJ" id="VRQ-mp-cOq"/>
+                <outlet property="topSeparator" destination="ulE-9o-UTY" id="Bhr-Es-rg0"/>
+            </connections>
+            <point key="canvasLocation" x="137.68115942028987" y="197.20982142857142"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="woo-payments-feature-banner" width="154" height="129"/>
+        <image name="xmark" catalog="system" width="128" height="113"/>
+        <systemColor name="separatorColor">
+            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.28999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

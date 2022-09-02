@@ -3,6 +3,7 @@ import Yosemite
 import protocol Storage.StorageManagerType
 import class AutomatticTracks.CrashLogging
 import UIKit
+import Experiments
 
 enum CouponListState {
     case initialized // ViewModel ready to receive actions
@@ -60,18 +61,24 @@ final class CouponListViewModel {
     ///
     private let storageManager: StorageManagerType
 
+    /// Marks if the Coupon Creation feature is enabled or not
+    let isCreationEnabled: Bool
+
     // MARK: - Initialization and setup
     //
     init(siteID: Int64,
          syncingCoordinator: SyncingCoordinatorProtocol = SyncingCoordinator(),
          storesManager: StoresManager = ServiceLocator.stores,
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         featureFlags: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
         self.syncingCoordinator = syncingCoordinator
         self.storesManager = storesManager
         self.storageManager = storageManager
         self.resultsController = Self.createResultsController(siteID: siteID,
                                                               storageManager: storageManager)
+
+        isCreationEnabled = featureFlags.isFeatureFlagEnabled(.couponCreation)
         configureSyncingCoordinator()
         configureResultsController()
         configureFeedbackBannerVisibility()
@@ -79,14 +86,20 @@ final class CouponListViewModel {
 
     func buildCouponViewModels() {
         couponViewModels = resultsController.fetchedObjects.map { coupon in
-            CellViewModel(title: coupon.code,
+            CellViewModel(id: "\(coupon.couponID)",
+                          title: coupon.code,
                           subtitle: coupon.summary(), // to be updated after UI is finalized
                           accessibilityLabel: coupon.description.isEmpty ? coupon.description : coupon.code,
                           status: coupon.expiryStatus().localizedName,
                           statusBackgroundColor: coupon.expiryStatus().statusBackgroundColor)
         }
-    }
 
+        if couponViewModels.isNotEmpty {
+            state = .coupons
+        } else {
+            state = .empty
+        }
+    }
 
     // MARK: - ViewController actions
     //

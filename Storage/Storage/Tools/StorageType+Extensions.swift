@@ -1,4 +1,5 @@
 import Foundation
+import WooFoundation
 
 
 // MARK: - StorageType DataModel Specific Extensions
@@ -109,6 +110,13 @@ public extension StorageType {
     func loadOrderTaxLine(siteID: Int64, taxID: Int64) -> OrderTaxLine? {
         let predicate = \OrderTaxLine.order.siteID == siteID && \OrderTaxLine.taxID == taxID
         return firstObject(ofType: OrderTaxLine.self, matching: predicate)
+    }
+
+    /// Retrieves the Stored Order Metadata.
+    ///
+    func loadOrderMetaData(siteID: Int64, metadataID: Int64) -> OrderMetaData? {
+        let predicate = \OrderMetaData.order?.siteID == siteID && \OrderMetaData.metadataID == metadataID
+        return firstObject(ofType: OrderMetaData.self, matching: predicate)
     }
 
     // MARK: - Stats

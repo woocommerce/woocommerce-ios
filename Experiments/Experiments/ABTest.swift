@@ -7,23 +7,56 @@ public enum ABTest: String, CaseIterable {
     /// `An enum with no cases cannot declare a raw type`
     case null
 
+    /// A/A test for ExPlat integration in the logged in state.
+    /// Experiment ref: pbxNRc-1QS-p2
+    ///
+    case aaTest202209 = "woocommerceios_explat_aa_test_logged_in_202209"
+
+    /// A/A test to make sure there is no bias in the logged out state.
+    /// Experiment ref: pbxNRc-1S0-p2
+    case aaTestLoggedOut202209 = "woocommerceios_explat_aa_test_logged_out_202209"
+
+    /// A/B test for promoting linked products in Product Details.
+    /// Experiment ref: pbxNRc-1Pp-p2
+    case linkedProductsPromo = "woocommerceios_product_details_linked_products_banner"
+
+    /// A/B test for the login button order on the prologues screen.
+    /// Experiment ref: pbxNRc-1VA-p2
+    case loginPrologueButtonOrder = "woocommerceios_login_prologue_button_order_202209"
+
     /// Returns a variation for the given experiment
-    var variation: Variation {
-        return ExPlat.shared?.experiment(self.rawValue) ?? .control
+    public var variation: Variation {
+        ExPlat.shared?.experiment(rawValue) ?? .control
     }
 }
 
 public extension ABTest {
     /// Start the AB Testing platform if any experiment exists
     ///
-    static func start() {
-        guard ABTest.allCases.count > 1 else {
-            return
+    static func start() async {
+        await withCheckedContinuation { continuation in
+            guard ABTest.allCases.count > 1 else {
+                return continuation.resume(returning: ())
+            }
+
+            let experimentNames = ABTest.allCases.filter { $0 != .null }.map { $0.rawValue }
+            ExPlat.shared?.register(experiments: experimentNames)
+
+            ExPlat.shared?.refresh {
+                continuation.resume(returning: ())
+            }
+        } as Void
+    }
+}
+
+public extension Variation {
+    /// Used in an analytics event property value.
+    var analyticsValue: String {
+        switch self {
+        case .control:
+            return "control"
+        case .treatment(let string):
+            return string.map { "treatment: \($0)" } ?? "treatment"
         }
-
-        let experimentNames = ABTest.allCases.filter { $0 != .null }.map { $0.rawValue }
-        ExPlat.shared?.register(experiments: experimentNames)
-
-        ExPlat.shared?.refresh()
     }
 }

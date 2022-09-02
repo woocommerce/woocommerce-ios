@@ -4,13 +4,12 @@ import UIKit
 ///
 final class LoginProloguePageViewController: UIPageViewController {
 
-    private let pages: [UIViewController] = {
-        LoginProloguePageType.allCases.map { LoginProloguePageTypeViewController(pageType: $0) }
-    }()
+    private let pages: [UIViewController]
 
     private let pageControl = UIPageControl()
 
-    init() {
+    init(pageTypes: [LoginProloguePageType] = LoginProloguePageType.allCases, showsSubtitle: Bool = false) {
+        self.pages = pageTypes.map { LoginProloguePageTypeViewController(pageType: $0, showsSubtitle: showsSubtitle) }
         super.init(transitionStyle: .scroll, navigationOrientation: .horizontal)
     }
 
@@ -27,12 +26,35 @@ final class LoginProloguePageViewController: UIPageViewController {
             setViewControllers([firstPage], direction: .forward, animated: false)
         }
 
-        addPageControl()
+        configureUIBasedOnPageCount()
+    }
+
+    /// Shows the next page of content if it is not on the last page.
+    /// - Returns: Whether it can go to the next page, if it has not reached the last page.
+    func goToNextPageIfPossible() -> Bool {
+        let currentPage = pageControl.currentPage
+        guard currentPage < pages.count - 1 else {
+            return false
+        }
+        pageControl.currentPage = currentPage + 1
+        handlePageControlValueChanged(sender: pageControl)
+        return true
+    }
+}
+
+private extension LoginProloguePageViewController {
+    func configureUIBasedOnPageCount() {
+        if pages.count > 1 {
+            addPageControl()
+        } else {
+            // Sets data source to `nil` to disable scrolling.
+            dataSource = nil
+        }
     }
 
     // MARK: Page Control Setup
     //
-    private func addPageControl() {
+    func addPageControl() {
         pageControl.currentPageIndicatorTintColor = .gray(.shade5)
         pageControl.pageIndicatorTintColor = .wooCommercePurple(.shade50)
         pageControl.transform = CGAffineTransform(scaleX: Constants.pageControlScale, y: Constants.pageControlScale)

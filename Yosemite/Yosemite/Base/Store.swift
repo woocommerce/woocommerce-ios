@@ -1,6 +1,7 @@
 import Foundation
 import Storage
 import Networking
+import WooFoundation
 
 
 // MARK: - Store: Holds the data associated to a specific domain of the application.

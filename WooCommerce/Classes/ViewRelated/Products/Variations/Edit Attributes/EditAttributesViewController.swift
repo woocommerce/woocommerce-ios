@@ -127,7 +127,8 @@ extension EditAttributesViewController {
             progressViewController.dismiss(animated: true)
 
             guard let (product, variation) = try? result.get() else {
-                return noticePresenter.enqueue(notice: .init(title: Localization.generateVariationError, feedbackType: .error))
+                noticePresenter.enqueue(notice: .init(title: Localization.generateVariationError, feedbackType: .error))
+                return
             }
 
             onVariationCreation?(product, variation)

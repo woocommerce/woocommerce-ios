@@ -7,13 +7,9 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         switch featureFlag {
         case .barcodeScanner:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .orderListFilters:
-            return true
         case .jetpackConnectionPackageSupport:
             return true
         case .hubMenu:
-            return true
-        case .systemStatusReport:
             return true
         case .couponView:
             return true
@@ -30,19 +26,29 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .couponEditing:
             return true
         case .couponCreation:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .updateOrderOptimistically:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .shippingLabelsOnboardingM1:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .inPersonPaymentGatewaySelection:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .unifiedOrderEditing:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .backgroundProductImageUpload:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .appleIDAccountDeletion:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
+        case .newToWooCommerceLinkInLoginPrologue:
+            return true
+        case .loginPrologueOnboarding:
+            return true
+        case .loginErrorNotifications:
+            return true
+        case .loginPrologueOnboardingSurvey:
+            return true
+        case .loginMagicLinkEmphasis:
+            return true
+        case .loginMagicLinkEmphasisM2:
+            return true
+        case .promptToEnableCodInIppOnboarding:
+            return true
         default:
             return true
         }

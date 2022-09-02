@@ -2,20 +2,11 @@
     "request": {
         "method": "POST",
         "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
-        "bodyPatterns": [ {
-                "matches": ".*path=/wc/v3/orders%26_method%3Dpost.*",
-                "equalToJson": {
-                    "line_items": [{
-                        "quantity": 1,
-                        "id": 0,
-                        "product_id": 2129
-                    }],
-                    "customer_note": "",
-                    "status": "auto-draft",
-                    "fee_lines": [],
-                    "shipping_lines": []
-                }
-        } ]
+        "bodyPatterns": [
+            { "matches": ".*path=/wc/v3/orders%26_method%3Dpost.*" },
+            { "contains": "%22status%22%3A%22auto-draft%22" },
+            { "contains": "%22product_id%22%3A2129" }
+        ]
     },
     "response": {
         "status": 200,

@@ -2,15 +2,43 @@ import Combine
 import Photos
 import Yosemite
 
+/// Interface of `ProductImageActionHandler` to allow mocking in unit tests.
+protocol ProductImageActionHandlerProtocol {
+    typealias AllStatuses = (productImageStatuses: [ProductImageStatus], error: Error?)
+    typealias OnAllStatusesUpdate = (AllStatuses) -> Void
+    typealias OnAssetUpload = (PHAsset, Result<ProductImage, Error>) -> Void
+
+    var productImageStatuses: [ProductImageStatus] { get }
+
+    @discardableResult
+    func addUpdateObserver<T: AnyObject>(_ observer: T,
+                                         onUpdate: @escaping OnAllStatusesUpdate) -> AnyCancellable
+
+    func addAssetUploadObserver<T: AnyObject>(_ observer: T,
+                                              onAssetUpload: @escaping OnAssetUpload) -> AnyCancellable
+
+    func addSiteMediaLibraryImagesToProduct(mediaItems: [Media])
+
+    func uploadMediaAssetToSiteMediaLibrary(asset: PHAsset)
+
+    func updateProductID(_ remoteProductID: ProductOrVariationID)
+
+    func deleteProductImage(_ productImage: ProductImage)
+
+    func resetProductImages(to product: ProductFormDataModel)
+
+    func updateProductImageStatusesAfterReordering(_ productImageStatuses: [ProductImageStatus])
+}
+
 /// Encapsulates the implementation of Product images actions from the UI.
 ///
-final class ProductImageActionHandler {
+final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
     typealias AllStatuses = (productImageStatuses: [ProductImageStatus], error: Error?)
     typealias OnAllStatusesUpdate = (AllStatuses) -> Void
     typealias OnAssetUpload = (PHAsset, Result<ProductImage, Error>) -> Void
 
     private let siteID: Int64
-    private let productID: Int64
+    private var productOrVariationID: ProductOrVariationID
 
     /// The queue where internal states like `allStatuses` and `observations` are updated on to maintain thread safety.
     private let queue: DispatchQueue
@@ -45,9 +73,13 @@ final class ProductImageActionHandler {
     ///   - imageStatuses: the current image statuses of the product.
     ///   - queue: the queue where the update callbacks are called on. Default to be the main queue.
     ///   - stores: stores that dispatch image upload action.
-    init(siteID: Int64, productID: Int64, imageStatuses: [ProductImageStatus], queue: DispatchQueue = .main, stores: StoresManager = ServiceLocator.stores) {
+    init(siteID: Int64,
+         productID: ProductOrVariationID,
+         imageStatuses: [ProductImageStatus],
+         queue: DispatchQueue = .main,
+         stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
-        self.productID = productID
+        self.productOrVariationID = productID
         self.queue = queue
         self.stores = stores
         self.allStatuses = (productImageStatuses: imageStatuses, error: nil)
@@ -180,9 +212,17 @@ final class ProductImageActionHandler {
     private func uploadMediaAssetToSiteMediaLibrary(asset: PHAsset, onCompletion: @escaping (Result<Media, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
-            let action = MediaAction.uploadMedia(siteID: self.siteID, productID: self.productID, mediaAsset: asset, onCompletion: onCompletion)
+            let action = MediaAction.uploadMedia(siteID: self.siteID, productID: self.productOrVariationID.id, mediaAsset: asset, onCompletion: onCompletion)
             self.stores.dispatch(action)
         }
+    }
+
+    /// Updates the `productID` with the provided `remoteProductID`
+    ///
+    /// Used for updating the product ID during create product flow. i.e. To replace the local product ID with the remote product ID.
+    ///
+    func updateProductID(_ remoteProductID: ProductOrVariationID) {
+        self.productOrVariationID = remoteProductID
     }
 
     func deleteProductImage(_ productImage: ProductImage) {

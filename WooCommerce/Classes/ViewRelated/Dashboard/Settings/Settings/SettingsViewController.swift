@@ -4,6 +4,7 @@ import Gridicons
 import SafariServices
 import AutomatticAbout
 import Yosemite
+import SwiftUI
 
 protocol SettingsViewPresenter: AnyObject {
     func refreshViewContent()
@@ -58,6 +59,12 @@ final class SettingsViewController: UIViewController {
         viewModel.onViewDidLoad()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        viewModel.reloadSettings()
+    }
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.updateFooterHeight()
@@ -107,7 +114,7 @@ private extension SettingsViewController {
 
     func registerTableViewCells() {
         for row in Row.allCases {
-            tableView.registerNib(for: row.type)
+            row.registerWithNib ? tableView.registerNib(for: row.type) : tableView.register(row.type)
         }
     }
 
@@ -121,6 +128,8 @@ private extension SettingsViewController {
             configureSwitchStore(cell: cell)
         case let cell as BasicTableViewCell where row == .plugins:
             configurePlugins(cell: cell)
+        case let cell as HostingTableViewCell<FeatureAnnouncementCardView> where row == .upsellCardReadersFeatureAnnouncement:
+            configureUpsellCardReadersFeatureAnnouncement(cell: cell)
         case let cell as BasicTableViewCell where row == .inPersonPayments:
             configureInPersonPayments(cell: cell)
         case let cell as BasicTableViewCell where row == .installJetpack:
@@ -170,6 +179,15 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = Localization.helpAndSupport
+    }
+
+    func configureUpsellCardReadersFeatureAnnouncement(cell: HostingTableViewCell<FeatureAnnouncementCardView>) {
+        let view = FeatureAnnouncementCardView(viewModel: viewModel.upsellCardReadersAnnouncementViewModel,
+                                               dismiss: { [weak self] in
+            self?.viewModel.reloadSettings()
+        })
+        cell.host(view, parent: self)
+        cell.selectionStyle = .none
     }
 
     func configureInPersonPayments(cell: BasicTableViewCell) {
@@ -231,7 +249,7 @@ private extension SettingsViewController {
         cell.selectionStyle = .default
         cell.textLabel?.textAlignment = .center
         cell.textLabel?.textColor = .error
-        cell.textLabel?.text = Localization.removeAppleIDAccess
+        cell.textLabel?.text = Localization.closeAccount
     }
 
     func configureLogout(cell: BasicTableViewCell) {
@@ -258,14 +276,14 @@ private extension SettingsViewController {
 //
 private extension SettingsViewController {
     func removeAppleIDAccessWasPressed() {
+        ServiceLocator.analytics.track(event: .closeAccountTapped(source: .settings))
         removeAppleIDAccessCoordinator.start()
     }
 
     func removeAppleIDAccess() async -> Result<Void, Error> {
         await withCheckedContinuation { [weak self] continuation in
             guard let self = self else { return }
-            let action = AccountAction.removeAppleIDAccess(dotcomAppID: ApiCredentials.dotcomAppId,
-                                                           dotcomSecret: ApiCredentials.dotcomSecret) { result in
+            let action = AccountAction.closeAccount { result in
                 continuation.resume(returning: result)
             }
             self.stores.dispatch(action)
@@ -587,6 +605,7 @@ extension SettingsViewController {
         case plugins
 
         // Store settings
+        case upsellCardReadersFeatureAnnouncement
         case inPersonPayments
         case installJetpack
 
@@ -612,6 +631,14 @@ extension SettingsViewController {
         // Logout
         case logout
 
+        fileprivate var registerWithNib: Bool {
+            switch self {
+            case .upsellCardReadersFeatureAnnouncement:
+                return false
+            default:
+                return true
+            }
+        }
 
         fileprivate var type: UITableViewCell.Type {
             switch self {
@@ -623,6 +650,8 @@ extension SettingsViewController {
                 return BasicTableViewCell.self
             case .support:
                 return BasicTableViewCell.self
+            case .upsellCardReadersFeatureAnnouncement:
+                return HostingTableViewCell<FeatureAnnouncementCardView>.self
             case .inPersonPayments:
                 return BasicTableViewCell.self
             case .installJetpack:
@@ -730,9 +759,9 @@ private extension SettingsViewController {
             comment: "Navigates to screen containing the latest WooCommerce Features"
         )
 
-        static let removeAppleIDAccess = NSLocalizedString(
-            "Remove Apple ID Access",
-            comment: "Remove Apple ID Access button title to revoke Apple ID token"
+        static let closeAccount = NSLocalizedString(
+            "Close Account",
+            comment: "Close Account button title to close the user's WordPress.com account"
         )
 
         static let logout = NSLocalizedString(

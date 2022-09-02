@@ -1,3 +1,4 @@
+import WooFoundation
 import XCTest
 import Yosemite
 
@@ -8,13 +9,15 @@ final class OrderDetailsViewModelTests: XCTestCase {
     private var viewModel: OrderDetailsViewModel!
 
     private var storesManager: MockStoresManager!
+    private var storageManager: MockStorageManager!
 
     override func setUp() {
         storesManager = MockStoresManager(sessionManager: SessionManager.makeForTesting())
+        storageManager = MockStorageManager()
 
         order = MockOrders().sampleOrder()
 
-        viewModel = OrderDetailsViewModel(order: order, stores: storesManager)
+        viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
 
         let analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider())
         ServiceLocator.setAnalytics(analytics)
@@ -54,7 +57,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(storesManager.receivedActions.count, 0)
 
         // When
-        _ = viewModel.markCompleted()
+        _ = viewModel.markCompleted(flow: .editing)
 
         // Then
         XCTAssertEqual(storesManager.receivedActions.count, 1)
@@ -72,16 +75,35 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
     func test_checkShippingLabelCreationEligibility_dispatches_correctly() throws {
         // Given
+
+        // Make sure the are plugins synced
+        let plugin = SystemPlugin.fake().copy(siteID: order.siteID, name: SitePlugin.SupportedPlugin.WCShip, active: true)
+        storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: plugin)
+
         storesManager.reset()
         XCTAssertEqual(storesManager.receivedActions.count, 0)
 
         // When
-        viewModel.checkShippingLabelCreationEligibility()
+        waitForExpectation { exp in
+
+            // Return the active WCShip plugin.
+            storesManager.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+                switch action {
+                case .fetchSystemPlugin(_, _, let onCompletion):
+                    onCompletion(plugin)
+                    exp.fulfill()
+                default:
+                    break
+                }
+            }
+
+            viewModel.checkShippingLabelCreationEligibility()
+        }
 
         // Then
-        XCTAssertEqual(storesManager.receivedActions.count, 1)
+        XCTAssertEqual(storesManager.receivedActions.count, 2)
 
-        let action = try XCTUnwrap(storesManager.receivedActions.first as? ShippingLabelAction)
+        let action = try XCTUnwrap(storesManager.receivedActions.last as? ShippingLabelAction)
         guard case let ShippingLabelAction.checkCreationEligibility(siteID: siteID,
                                                                     orderID: orderID,
                                                                     onCompletion: _) = action else {
@@ -93,31 +115,6 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(orderID, order.orderID)
     }
 
-    func test_there_should_not_be_share_link_action_if_order_is_not_pending_payment() {
-        // Given
-        let order = Order.fake().copy(needsPayment: false, status: .processing, total: "10.0", paymentURL: nil)
-
-        // When
-        let viewModel = OrderDetailsViewModel(order: order)
-
-        // Then
-        let actionButtonIDs = viewModel.moreActionsButtons.map { $0.id }
-        XCTAssertFalse(actionButtonIDs.contains(.sharePaymentLink))
-    }
-
-    func test_there_should_be_share_link_action_if_order_is_pending_payment() {
-        // Given
-        let paymentURL = URL(string: "http://www.automattic.com")
-        let order = Order.fake().copy(needsPayment: true, status: .pending, total: "10.0", paymentURL: paymentURL)
-
-        // When
-        let viewModel = OrderDetailsViewModel(order: order)
-
-        // Then
-        let actionButtonIDs = viewModel.moreActionsButtons.map { $0.id }
-        XCTAssertTrue(actionButtonIDs.contains(.sharePaymentLink))
-    }
-
     func test_there_should_not_be_edit_order_action_if_order_is_not_synced() {
         // Given
         let order = Order.fake().copy(total: "10.0")
@@ -126,7 +123,18 @@ final class OrderDetailsViewModelTests: XCTestCase {
         let viewModel = OrderDetailsViewModel(order: order)
 
         // Then
-        let actionButtonIDs = viewModel.moreActionsButtons.map { $0.id }
-        XCTAssertFalse(actionButtonIDs.contains(.editOrder))
+        XCTAssertFalse(viewModel.editButtonIsEnabled)
+    }
+
+    func test_paymentMethodsViewModel_title_contains_formatted_order_amount() {
+        // Given
+        let order = Order.fake().copy(currency: "EUR", total: "10.0")
+
+        // When
+        let currencyFormatter = CurrencyFormatter(currencySettings: .init())
+        let title = OrderDetailsViewModel(order: order, currencyFormatter: currencyFormatter).paymentMethodsViewModel.title
+
+        // Then
+        XCTAssertTrue(title.contains("\u{20AC}10.0"))
     }
 }

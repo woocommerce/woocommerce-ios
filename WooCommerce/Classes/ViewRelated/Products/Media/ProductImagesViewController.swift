@@ -172,10 +172,6 @@ private extension ProductImagesViewController {
 
             self.productImageStatuses = productImageStatuses
 
-            if let error = error {
-                self.displayErrorAlert(error: error)
-            }
-
             self.updateHelperViews()
             self.updateAddButtonTitle(numberOfImages: productImageStatuses.count)
 

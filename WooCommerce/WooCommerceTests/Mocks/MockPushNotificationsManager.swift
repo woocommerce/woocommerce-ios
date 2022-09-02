@@ -24,6 +24,12 @@ final class MockPushNotificationsManager: PushNotesManager {
 
     private let inactiveNotificationsSubject = PassthroughSubject<PushNotification, Never>()
 
+    var localNotificationUserResponses: AnyPublisher<UNNotificationResponse, Never> {
+        localNotificationResponsesSubject.eraseToAnyPublisher()
+    }
+
+    private let localNotificationResponsesSubject = PassthroughSubject<UNNotificationResponse, Never>()
+
     func resetBadgeCount(type: Note.Kind) {
 
     }
@@ -44,7 +50,7 @@ final class MockPushNotificationsManager: PushNotesManager {
 
     }
 
-    func ensureAuthorizationIsRequested(onCompletion: ((Bool) -> ())?) {
+    func ensureAuthorizationIsRequested(includesProvisionalAuth: Bool, onCompletion: ((Bool) -> ())?) {
 
     }
 
@@ -56,10 +62,22 @@ final class MockPushNotificationsManager: PushNotesManager {
 
     }
 
-    func handleNotification(_ userInfo: [AnyHashable: Any],
-                            onBadgeUpdateCompletion: @escaping () -> Void,
-                            completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+    func handleRemoteNotificationInTheBackground(userInfo: [AnyHashable: Any]) async -> UIBackgroundFetchResult {
+        .noData
+    }
 
+    func handleUserResponseToNotification(_ response: UNNotificationResponse) async {
+
+    }
+
+    func handleNotificationInTheForeground(_ notification: UNNotification) async -> UNNotificationPresentationOptions {
+        .init(rawValue: 0)
+    }
+
+    func requestLocalNotification(_ notification: LocalNotification, trigger: UNNotificationTrigger?) {
+    }
+
+    func cancelLocalNotification(scenarios: [LocalNotification.Scenario]) {
     }
 }
 
@@ -83,5 +101,12 @@ extension MockPushNotificationsManager {
     ///
     func sendInactiveNotification(_ notification: PushNotification) {
         inactiveNotificationsSubject.send(notification)
+    }
+
+    /// Send a `UNNotificationResponse` that will be emitted by the `localNotificationResponses`
+    /// observable.
+    ///
+    func sendLocalNotificationResponse(_ response: UNNotificationResponse) {
+        localNotificationResponsesSubject.send(response)
     }
 }

@@ -81,11 +81,11 @@ public final class OrdersScreen: ScreenObject {
     }
 
     /// Starts the order creation flow by navigating from the Orders screen to the New Order screen.
-    /// - Returns: New Order screen object.
+    /// - Returns: Unified Order screen object.
     @discardableResult
-    public func startOrderCreation() throws -> NewOrderScreen {
+    public func startOrderCreation() throws -> UnifiedOrderScreen {
         createButton.tap()
         newOrderButton.tap()
-        return try NewOrderScreen()
+        return try UnifiedOrderScreen()
     }
 }

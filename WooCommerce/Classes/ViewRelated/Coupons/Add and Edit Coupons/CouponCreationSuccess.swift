@@ -36,7 +36,7 @@ struct CouponCreationSuccess: View {
             VStack(alignment: .center, spacing: Constants.contentPadding) {
                 Button(Localization.shareCoupon) {
                     showingShareSheet = true
-                    // TODO: add analytics
+                    ServiceLocator.analytics.track(.couponCreationSuccessShareTapped)
                 }
                 .buttonStyle(PrimaryButtonStyle())
                 .shareSheet(isPresented: $showingShareSheet) {
@@ -53,6 +53,9 @@ struct CouponCreationSuccess: View {
         }
         .onAppear {
             animateEntry()
+        }
+        .onDisappear {
+            onDismiss()
         }
     }
 

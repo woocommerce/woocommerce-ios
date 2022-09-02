@@ -16,4 +16,9 @@ struct ProcessConfiguration {
     static var shouldDisableAnimations: Bool {
         ProcessInfo.processInfo.arguments.contains("disable-animations")
     }
+
+    /// Returns `true` when wishing to simulate push notifications.
+    static var shouldSimulatePushNotification: Bool {
+        ProcessInfo.processInfo.arguments.contains("-mocks-push-notification")
+    }
 }

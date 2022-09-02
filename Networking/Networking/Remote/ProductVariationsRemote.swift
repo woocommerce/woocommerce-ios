@@ -17,6 +17,11 @@ public protocol ProductVariationsRemoteProtocol {
                                 newVariation: CreateProductVariation,
                                 completion: @escaping (Result<ProductVariation, Error>) -> Void)
     func updateProductVariation(productVariation: ProductVariation, completion: @escaping (Result<ProductVariation, Error>) -> Void)
+    func updateProductVariationImage(siteID: Int64,
+                                     productID: Int64,
+                                     variationID: Int64,
+                                     image: ProductImage,
+                                     completion: @escaping (Result<ProductVariation, Error>) -> Void)
     func updateProductVariations(siteID: Int64,
                                  productID: Int64,
                                  productVariations: [ProductVariation],
@@ -118,6 +123,31 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
         }
     }
 
+    /// Updates the image of a specific `ProductVariation`.
+    ///
+    /// - Parameters:
+    ///   - siteID: Site which will hosts the ProductVariation.
+    ///   - productID: Identifier of the Product.
+    ///   - variationID: Identifier of the ProductVariation.
+    ///   - image: Image to be set to the ProductVariation.
+    ///   - completion: Closure to be executed upon completion.
+    public func updateProductVariationImage(siteID: Int64,
+                                            productID: Int64,
+                                            variationID: Int64,
+                                            image: ProductImage,
+                                            completion: @escaping (Result<ProductVariation, Error>) -> Void) {
+        do {
+            let parameters = try ([ParameterKey.image: image]).toDictionary()
+            let path = "\(Path.products)/\(productID)/variations/\(variationID)"
+            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+            let mapper = ProductVariationMapper(siteID: siteID, productID: productID)
+
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
+    }
+
     /// Updates the provided `ProductVariations`.
     ///
     /// - Parameters:
@@ -178,5 +208,6 @@ public extension ProductVariationsRemote {
         static let page: String       = "page"
         static let perPage: String    = "per_page"
         static let contextKey: String = "context"
+        static let image: String = "image"
     }
 }

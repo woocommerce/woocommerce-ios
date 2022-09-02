@@ -53,7 +53,7 @@ class GetMocks {
     }
 
     static func readOrdersData() throws -> [OrderData] {
-        let originalData = try JSONDecoder().decode(OrderMock.self, from: self.getMockData(test: OrdersTests.self, filename: "orders_any"))
+        let originalData = try JSONDecoder().decode(OrdersMock.self, from: self.getMockData(test: OrdersTests.self, filename: "orders_any"))
         var updatedData = originalData.response.jsonBody.data
 
         for index in 0..<updatedData.count {
@@ -66,5 +66,10 @@ class GetMocks {
         }
 
         return updatedData
-}
+    }
+
+    static func readNewOrderData() throws -> OrderData {
+        let originalData = try JSONDecoder().decode(OrderMock.self, from: self.getMockData(test: OrdersTests.self, filename: "orders_3337"))
+        return try XCTUnwrap(originalData.response.jsonBody.data)
+    }
 }

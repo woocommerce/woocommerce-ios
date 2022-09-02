@@ -65,8 +65,8 @@ extension WooAnalyticsEvent {
     public enum FeedbackContext: String {
         /// Shown in Stats but is for asking general feedback.
         case general
-        /// Shown in products banner for Variations release.
-        case productsVariations = "products_variations"
+        /// Shown in products banner for general feedback.
+        case productsGeneral  = "products_general"
         /// Shown in shipping labels banner for Milestone 3 features.
         case shippingLabelsRelease3 = "shipping_labels_m3"
         /// Shown in beta feature banner for order add-ons.
@@ -314,6 +314,17 @@ extension WooAnalyticsEvent {
     }
 }
 
+// MARK: - Product Detail
+//
+extension WooAnalyticsEvent {
+    /// Namespace
+    enum ProductDetail {
+        static func loaded(hasLinkedProducts: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productDetailLoaded, properties: ["has_linked_products": hasLinkedProducts])
+        }
+    }
+}
+
 // MARK: - Product Detail Add-ons
 //
 extension WooAnalyticsEvent {
@@ -341,6 +352,7 @@ extension WooAnalyticsEvent {
         enum Flow: String {
             case creation
             case editing
+            case list
         }
 
         private enum Keys {
@@ -356,14 +368,41 @@ extension WooAnalyticsEvent {
             static let to = "to"
             static let from = "from"
             static let orderID = "id"
+            static let hasMultipleShippingLines = "has_multiple_shipping_lines"
+            static let hasMultipleFeeLines = "has_multiple_fee_lines"
+            static let errorMessage = "error_message"
+            static let validationScenario = "validation_scenario"
+        }
+
+        static func orderOpen(order: Order) -> WooAnalyticsEvent {
+            let customFieldsSize = order.customFields.map { $0.value.utf8.count }.reduce(0, +) // Total byte size of custom field values
+            return WooAnalyticsEvent(statName: .orderOpen, properties: ["id": order.orderID,
+                                                                        "status": order.status.rawValue,
+                                                                        "custom_fields_count": Int64(order.customFields.count),
+                                                                        "custom_fields_size": Int64(customFieldsSize)])
         }
 
         static func orderAddNew() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderAddNew, properties: [:])
         }
 
+        static func orderEditButtonTapped(hasMultipleShippingLines: Bool, hasMultipleFeeLines: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderEditButtonTapped, properties: [
+                Keys.hasMultipleShippingLines: hasMultipleShippingLines,
+                Keys.hasMultipleFeeLines: hasMultipleFeeLines
+            ])
+        }
+
         static func orderProductAdd(flow: Flow) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderProductAdd, properties: [Keys.flow: flow.rawValue])
+        }
+
+        static func orderProductQuantityChange(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderProductQuantityChange, properties: [Keys.flow: flow.rawValue])
+        }
+
+        static func orderProductRemove(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderProductRemove, properties: [Keys.flow: flow.rawValue])
         }
 
         static func orderCustomerAdd(flow: Flow, hasDifferentShippingDetails: Bool) -> WooAnalyticsEvent {
@@ -377,12 +416,23 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderFeeAdd, properties: [Keys.flow: flow.rawValue])
         }
 
+        static func orderFeeRemove(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderFeeRemove, properties: [Keys.flow: flow.rawValue])
+        }
+
         static func orderShippingMethodAdd(flow: Flow) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderShippingMethodAdd, properties: [Keys.flow: flow.rawValue])
         }
 
-        static func orderCustomerNoteAdd(flow: Flow) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .orderNoteAdd, properties: [Keys.flow: flow.rawValue])
+        static func orderShippingMethodRemove(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderShippingMethodRemove, properties: [Keys.flow: flow.rawValue])
+        }
+
+        static func orderCustomerNoteAdd(flow: Flow, orderID: Int64, orderStatus: OrderStatusEnum) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderNoteAdd, properties: [Keys.flow: flow.rawValue,
+                                                                    "parent_id": orderID,
+                                                                    "status": orderStatus.rawValue,
+                                                                    "type": "customer"])
         }
 
         static func orderStatusChange(flow: Flow, orderID: Int64?, from oldStatus: OrderStatusEnum, to newStatus: OrderStatusEnum) -> WooAnalyticsEvent {
@@ -420,11 +470,44 @@ extension WooAnalyticsEvent {
             ])
         }
 
-        static func orderSyncFailed(errorContext: String, errorDescription: String) -> WooAnalyticsEvent {
+        static func orderSyncFailed(flow: Flow, errorContext: String, errorDescription: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderSyncFailed, properties: [
+                Keys.flow: flow.rawValue,
                 Keys.errorContext: errorContext,
                 Keys.errorDescription: errorDescription
             ])
+        }
+
+        /// Tracked when the user taps to collect a payment
+        ///
+        static func collectPaymentTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .collectPaymentTapped,
+                              properties: [:])
+        }
+
+        /// Tracked when accessing the system plugin list without it being in sync.
+        ///
+        static func pluginsNotSyncedYet() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pluginsNotSyncedYet, properties: [:])
+        }
+
+        /// Tracked when the Order details view detects a malformed shipping address data.
+        ///
+        static func addressValidationFailed(error: AddressValidator.AddressValidationError, orderID: Int64) -> WooAnalyticsEvent {
+            switch error {
+            case .local(let errorMessage):
+                return WooAnalyticsEvent(statName: .orderAddressValidationError, properties: [
+                    Keys.errorMessage: errorMessage,
+                    Keys.validationScenario: "local",
+                    Keys.orderID: orderID
+                ])
+            case .remote(let error):
+                return WooAnalyticsEvent(statName: .orderAddressValidationError, properties: [
+                    Keys.errorMessage: "\(String(describing: error?.addressError ?? "Unknown"))",
+                    Keys.validationScenario: "remote",
+                    Keys.orderID: orderID
+                ])
+            }
         }
     }
 }
@@ -483,6 +566,58 @@ extension WooAnalyticsEvent {
     }
 }
 
+// MARK: - Feature Announcement Card
+
+extension WooAnalyticsEvent {
+    enum FeatureCard {
+        /// Possible sources for the Feature Card
+        ///
+        enum Source: String {
+            fileprivate static let key = "source"
+
+            case orderList = "order_list"
+            case paymentMethods = "payment_methods"
+            case productDetail = "product_detail"
+            case settings
+        }
+
+        /// Keys for the Feature Card properties
+        ///
+        private enum Keys {
+            static let campaign = "campaign"
+            static let source = "source"
+            static let remindLater = "remind_later"
+        }
+
+        static func shown(source: Source, campaign: FeatureAnnouncementCampaign) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .featureCardShown,
+                              properties: [
+                                Keys.source: source.rawValue,
+                                Keys.campaign: campaign.rawValue
+                              ])
+        }
+
+        static func dismissed(source: Source,
+                              campaign: FeatureAnnouncementCampaign,
+                              remindLater: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .featureCardDismissed,
+                              properties: [
+                                Keys.source: source.rawValue,
+                                Keys.campaign: campaign.rawValue,
+                                Keys.remindLater: remindLater
+                              ])
+        }
+
+        static func ctaTapped(source: Source, campaign: FeatureAnnouncementCampaign) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .featureCardCtaTapped,
+                              properties: [
+                                Keys.source: source.rawValue,
+                                Keys.campaign: campaign.rawValue
+                              ])
+        }
+    }
+}
+
 // MARK: - Simple Payments
 //
 extension WooAnalyticsEvent {
@@ -517,18 +652,6 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .simplePaymentsFlowStarted, properties: [:])
         }
 
-        static func simplePaymentsFlowCompleted(amount: String, method: PaymentMethod) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .simplePaymentsFlowCompleted, properties: [Keys.amount: amount, Keys.paymentMethod: method.rawValue])
-        }
-
-        static func simplePaymentsFlowCanceled() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .simplePaymentsFlowCanceled, properties: [:])
-        }
-
-        static func simplePaymentsFlowFailed(source: Source) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .simplePaymentsFlowFailed, properties: [Keys.source: source.rawValue])
-        }
-
         static func simplePaymentsFlowNoteAdded() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .simplePaymentsFlowNoteAdded, properties: [:])
         }
@@ -536,9 +659,66 @@ extension WooAnalyticsEvent {
         static func simplePaymentsFlowTaxesToggled(isOn: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .simplePaymentsFlowTaxesToggled, properties: [Keys.state: isOn ? "on" : "off"])
         }
+    }
+}
 
-        static func simplePaymentsFlowCollect(method: PaymentMethod) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .simplePaymentsFlowCollect, properties: [Keys.paymentMethod: method.rawValue])
+
+// MARK: - Payments Flow Methods
+//
+extension WooAnalyticsEvent {
+    // Namespace
+    enum PaymentsFlow {
+        /// Possible Payment Methods
+        ///
+        enum PaymentMethod: String {
+            case card
+            case cash
+            case paymentLink = "payment_link"
+        }
+
+        /// Possible view sources
+        ///
+        enum Source: String {
+            case amount
+            case summary
+            case paymentMethod = "payment_method"
+        }
+
+        /// Possible flows
+        ///
+        enum Flow: String {
+            case simplePayment = "simple_payment"
+            case orderPayment = "order_payment"
+        }
+
+        /// Common event keys
+        ///
+        private enum Keys {
+            static let state = "state"
+            static let amount = "amount"
+            static let paymentMethod = "payment_method"
+            static let source = "source"
+            static let flow = "flow"
+        }
+
+        static func paymentsFlowCompleted(flow: Flow, amount: String, method: PaymentMethod) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .paymentsFlowCompleted, properties: [Keys.flow: flow.rawValue,
+                                                                             Keys.amount: amount,
+                                                                             Keys.paymentMethod: method.rawValue])
+        }
+
+        static func paymentsFlowCanceled(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .paymentsFlowCanceled, properties: [Keys.flow: flow.rawValue])
+        }
+
+        static func paymentsFlowFailed(flow: Flow, source: Source) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .paymentsFlowFailed, properties: [Keys.flow: flow.rawValue,
+                                                                          Keys.source: source.rawValue])
+        }
+
+        static func paymentsFlowCollect(flow: Flow, method: PaymentMethod) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .paymentsFlowCollect, properties: [Keys.flow: flow.rawValue,
+                                                                           Keys.paymentMethod: method.rawValue])
         }
     }
 }
@@ -586,10 +766,14 @@ extension WooAnalyticsEvent {
             static let batteryLevel = "battery_level"
             static let cardReaderModel = "card_reader_model"
             static let countryCode = "country"
+            static let reason = "reason"
+            static let remindLater = "remind_later"
             static let gatewayID = "plugin_slug"
             static let errorDescription = "error_description"
             static let paymentMethodType = "payment_method_type"
             static let softwareUpdateType = "software_update_type"
+            static let source = "source"
+            static let enabled = "enabled"
         }
 
         static let unknownGatewayID = "unknown"
@@ -813,22 +997,6 @@ extension WooAnalyticsEvent {
             )
         }
 
-        /// Tracked when the user taps to collect a payment
-        ///
-        /// - Parameters:
-        ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
-        ///   - countryCode: the country code of the store.
-        ///   - cardReaderModel: the model type of the card reader.
-        ///
-        static func collectPaymentTapped(forGatewayID: String?, countryCode: String, cardReaderModel: String) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .collectPaymentTapped,
-                              properties: [
-                                Keys.cardReaderModel: cardReaderModel,
-                                Keys.countryCode: countryCode,
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
-                              ])
-        }
-
         /// Tracked when the payment collection fails
         ///
         /// - Parameters:
@@ -992,9 +1160,12 @@ extension WooAnalyticsEvent {
         ///
         /// - Parameter countryCode: the country code of the store.
         ///
-        static func cardPresentOnboardingLearnMoreTapped(countryCode: String) -> WooAnalyticsEvent {
+        static func cardPresentOnboardingLearnMoreTapped(reason: String, countryCode: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardPresentOnboardingLearnMoreTapped,
-                              properties: [Keys.countryCode: countryCode])
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                Keys.reason: reason
+                              ])
         }
 
         /// Tracked when the In-Person Payments onboarding cannot be completed for some reason.
@@ -1007,7 +1178,118 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardPresentOnboardingNotCompleted,
                               properties: [
                                 Keys.countryCode: countryCode,
-                                "reason": reason
+                                Keys.reason: reason
+                              ])
+        }
+
+        /// Tracked when a In-Person Payments onboarding step is skipped by the user.
+        ///
+        /// - Parameters:
+        ///   - reason: the reason why the onboarding step was shown (effectively the name of the step.)
+        ///   - remindLater: whether the user will see this onboarding step again
+        ///   - countryCode: the country code of the store.
+        ///
+        static func cardPresentOnboardingStepSkipped(reason: String, remindLater: Bool, countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardPresentOnboardingStepSkipped,
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                Keys.reason: reason,
+                                Keys.remindLater: remindLater
+                              ])
+        }
+
+        /// Tracked when a In-Person Payments onboarding step's CTA is tapped by the user.
+        ///
+        /// - Parameters:
+        ///   - reason: the reason why the onboarding step was shown (effectively the name of the step.)
+        ///   - countryCode: the country code of the store.
+        ///
+        static func cardPresentOnboardingCtaTapped(reason: String, countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardPresentOnboardingCtaTapped,
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                Keys.reason: reason
+                              ])
+        }
+
+        enum CashOnDeliverySource: String {
+            case onboarding
+            case paymentsHub = "payments_hub"
+        }
+
+        /// Tracked when the Cash on Delivery Payment Gateway is successfully enabled, e.g. from the IPP onboarding flow.
+        ///
+        /// - Parameters:
+        ///   - countryCode: the country code of the store.
+        ///   - source: the screen which the enable attempt was made on     
+        ///
+        static func enableCashOnDeliverySuccess(countryCode: String, source: CashOnDeliverySource) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .enableCashOnDeliverySuccess,
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                Keys.source: source.rawValue
+                              ])
+        }
+
+        /// Tracked when the Cash on Delivery Payment Gateway enabling fails, e.g. from the IPP onboarding flow.
+        ///
+        /// - Parameters:
+        ///   - countryCode: the country code of the store.
+        ///   - source: the screen which the enable attempt was made on
+        ///
+        static func enableCashOnDeliveryFailed(countryCode: String,
+                                               error: Error?,
+                                               source: CashOnDeliverySource) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .enableCashOnDeliveryFailed,
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                Keys.source: source.rawValue
+                              ],
+                              error: error)
+        }
+
+        /// Tracked when the Cash on Delivery Payment Gateway is successfully disabled, e.g. from the toggle on the Payments hub menu.
+        ///
+        /// - Parameters:
+        ///   - countryCode: the country code of the store.
+        ///   - source: the screen which the disable attempt was made on
+        ///
+        static func disableCashOnDeliverySuccess(countryCode: String, source: CashOnDeliverySource) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .disableCashOnDeliverySuccess,
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                Keys.source: source.rawValue
+                              ])
+        }
+
+        /// Tracked when the Cash on Delivery Payment Gateway disabling fails, e.g. from the toggle on the Payments hub menu.
+        ///
+        /// - Parameters:
+        ///   - countryCode: the country code of the store.
+        ///   - source: the screen which the disable attempt was made on
+        ///
+        static func disableCashOnDeliveryFailed(countryCode: String,
+                                               error: Error?,
+                                               source: CashOnDeliverySource) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .disableCashOnDeliveryFailed,
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                Keys.source: source.rawValue
+                              ],
+                              error: error)
+        }
+
+        /// Tracked when the Cash on Delivery Payment Gateway toggle is changed from the toggle on the Payments hub menu.
+        ///
+        /// - Parameters:
+        ///   - enabled: the reason why the onboarding step was shown (effectively the name of the step.)
+        ///   - countryCode: the country code of the store.
+        ///
+        static func paymentsHubCashOnDeliveryToggled(enabled: Bool, countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .paymentsHubCashOnDeliveryToggled,
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                Keys.enabled: enabled
                               ])
         }
 
@@ -1125,6 +1407,31 @@ extension WooAnalyticsEvent {
     }
 }
 
+// MARK: - Close Account
+//
+extension WooAnalyticsEvent {
+    /// The source that presents the Jetpack install screen.
+    enum CloseAccountSource: String {
+        case settings
+        case emptyStores = "empty_stores"
+    }
+
+    /// Tracked when the user taps to close their WordPress.com account.
+    static func closeAccountTapped(source: CloseAccountSource) -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .closeAccountTapped, properties: ["source": source.rawValue])
+    }
+
+    /// Tracked when the WordPress.com account closure succeeds.
+    static func closeAccountSuccess() -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .closeAccountSuccess, properties: [:])
+    }
+
+    /// Tracked when the WordPress.com account closure fails.
+    static func closeAccountFailed(error: Error) -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .closeAccountFailed, properties: [:], error: error)
+    }
+}
+
 private extension PaymentMethod {
     var analyticsValue: String {
         switch self {
@@ -1134,6 +1441,136 @@ private extension PaymentMethod {
             return "card_interac"
         case .unknown:
             return "unknown"
+        }
+    }
+}
+
+// MARK: - Login Jetpack Setup
+//
+extension WooAnalyticsEvent {
+    enum LoginJetpackSetup {
+        /// The source that user sets up Jetpack: on the web or natively on the app.
+        enum Source: String {
+            case web
+            case native
+        }
+
+        enum Step: String {
+            case automaticInstall = "automatic_install"
+            case wpcomLogin = "wpcom_login"
+            case authorize
+            case siteLogin = "site_login"
+            case pluginDetail = "plugin_detail"
+            case pluginInstallation = "plugin_installation"
+            case pluginActivation = "plugin_activation"
+            case pluginSetup = "plugin_setup"
+        }
+
+        enum Key: String {
+            case source
+            case step
+        }
+
+        /// Tracks when the user dismisses Jetpack Setup flow.
+        static func setupDismissed(source: Source) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginJetpackSetupDismissed, properties: [Key.source.rawValue: source.rawValue])
+        }
+
+        /// Tracks when the user completes Jetpack Setup flow.
+        static func setupCompleted(source: Source) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginJetpackSetupCompleted, properties: [Key.source.rawValue: source.rawValue])
+        }
+
+        /// Tracks when the user reaches a new step in the setup flow
+        static func setupFlow(source: Source, step: Step) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginJetpackSetupFlow, properties: [Key.source.rawValue: source.rawValue,
+                                                                             Key.step.rawValue: step.rawValue])
+        }
+    }
+}
+
+// MARK: - Login WooCommerce Setup
+//
+extension WooAnalyticsEvent {
+    enum LoginWooCommerceSetup {
+        /// The source that user sets up WooCommerce: on the web or natively on the app.
+        enum Source: String {
+            case web
+            case native
+        }
+
+        enum Key: String {
+            case source
+        }
+
+        /// Tracks when the user dismisses the WooCommerce Setup flow.
+        static func setupDismissed(source: Source) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginWooCommerceSetupDismissed, properties: [Key.source.rawValue: source.rawValue])
+        }
+
+        /// Tracks when the user completes the WooCommerce Setup flow.
+        static func setupCompleted(source: Source) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginWooCommerceSetupCompleted, properties: [Key.source.rawValue: source.rawValue])
+        }
+    }
+}
+
+
+// MARK: - Waiting Time measurement
+//
+extension WooAnalyticsEvent {
+    enum WaitingTime {
+        /// Possible Waiting time scenarios
+        enum Scenario {
+            case orderDetails
+            case dashboardTopPerformers
+            case dashboardMainStats
+        }
+
+        private enum Keys {
+            static let waitingTime = "waiting_time"
+        }
+
+        static func waitingFinished(scenario: Scenario, elapsedTime: TimeInterval) -> WooAnalyticsEvent {
+            switch scenario {
+            case .orderDetails:
+                return WooAnalyticsEvent(statName: .orderDetailWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
+            case .dashboardTopPerformers:
+                return WooAnalyticsEvent(statName: .dashboardTopPerformersWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
+            case .dashboardMainStats:
+                return WooAnalyticsEvent(statName: .dashboardMainStatsWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
+            }
+        }
+    }
+}
+
+// MARK: - Site picker
+//
+extension WooAnalyticsEvent {
+    enum SitePicker {
+
+        enum Key: String {
+            case hasWordPress = "has_wordpress"
+            case isWPCom = "is_wpcom"
+            case hasValidJetpack = "has_valid_jetpack"
+        }
+
+        /// Tracks when the user taps the Enter Your Store Address button
+        static func enterStoreAddressTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .sitePickerEnterStoreAddressTapped, properties: [:])
+        }
+
+        /// Tracks when the result for site discovery is returned
+        static func siteDiscovery(hasWordPress: Bool, isWPCom: Bool, hasValidJetpack: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .sitePickerSiteDiscovery, properties: [Key.hasWordPress.rawValue: hasWordPress,
+                                                                               Key.isWPCom.rawValue: isWPCom,
+                                                                               Key.hasValidJetpack.rawValue: hasValidJetpack])
+        }
+
+        /// Tracks when the user taps the New To WooCommerce button
+        ///
+        static func newToWooTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .sitePickerNewToWooTapped, properties: [:])
         }
     }
 }

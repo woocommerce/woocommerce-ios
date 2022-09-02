@@ -31,7 +31,7 @@ final class MockUserNotificationsCenterAdapter: UserNotificationsCenterAdapter {
 
     /// "Simulates" a UNUserNotificationCenter Status Request OP
     ///
-    func requestAuthorization(queue: DispatchQueue, completion: @escaping (Bool) -> Void) {
+    func requestAuthorization(queue: DispatchQueue, includesProvisionalAuth: Bool, completion: @escaping (Bool) -> Void) {
         requestAuthorizationWasCalled = true
         completion(requestAuthorizationIsSuccessful)
     }

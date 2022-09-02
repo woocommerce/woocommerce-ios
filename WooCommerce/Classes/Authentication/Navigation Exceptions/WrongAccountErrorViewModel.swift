@@ -6,15 +6,20 @@ import Yosemite
 
 /// Configuration and actions for an ULErrorViewController, modelling
 /// an error when Jetpack is not installed or is not connected
-struct WrongAccountErrorViewModel: ULAccountMismatchViewModel {
+final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
     private let siteURL: String
+    private let showsConnectedStores: Bool
     private let defaultAccount: Account?
     private let storesManager: StoresManager
 
+    private var storePickerCoordinator: StorePickerCoordinator?
+
     init(siteURL: String?,
+         showsConnectedStores: Bool,
          sessionManager: SessionManagerProtocol =  ServiceLocator.stores.sessionManager,
          storesManager: StoresManager = ServiceLocator.stores) {
         self.siteURL = siteURL ?? Localization.yourSite
+        self.showsConnectedStores = showsConnectedStores
         self.defaultAccount = sessionManager.defaultAccount
         self.storesManager = storesManager
     }
@@ -75,16 +80,16 @@ struct WrongAccountErrorViewModel: ULAccountMismatchViewModel {
 
     let primaryButtonTitle = Localization.primaryButtonTitle
 
+    var isPrimaryButtonHidden: Bool { !showsConnectedStores }
+
     // MARK: - Actions
     func didTapPrimaryButton(in viewController: UIViewController?) {
         guard let navigationController = viewController?.navigationController else {
             return
         }
 
-        let storePicker = StorePickerViewController()
-        storePicker.configuration = .listStores
-
-        navigationController.pushViewController(storePicker, animated: true)
+        storePickerCoordinator = StorePickerCoordinator(navigationController, config: .listStores)
+        storePickerCoordinator?.start()
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {

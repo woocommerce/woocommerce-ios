@@ -16,6 +16,9 @@
         "enabled" : false
       }
     ],
+    "environmentVariableEntries" : [
+
+    ],
     "language" : "en",
     "region" : "US",
     "targetForVariableExpansion" : {
@@ -65,6 +68,13 @@
         "containerPath" : "container:..\/Hardware\/Hardware.xcodeproj",
         "identifier" : "D88FDB0725DD216B00CB0DBD",
         "name" : "HardwareTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:..\/WooFoundation\/WooFoundation.xcodeproj",
+        "identifier" : "B9C9C63D283E703C001B879F",
+        "name" : "WooFoundationTests"
       }
     }
   ],

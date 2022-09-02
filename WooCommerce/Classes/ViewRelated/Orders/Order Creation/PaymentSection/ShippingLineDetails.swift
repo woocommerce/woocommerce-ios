@@ -37,6 +37,7 @@ struct ShippingLineDetails: View {
                                         .onTapGesture {
                                             focusAmountInput = true
                                         }
+                                        .accessibilityIdentifier("add-shipping-amount-field")
                                 }
                             }
                             .frame(minHeight: Layout.amountRowHeight)
@@ -50,6 +51,7 @@ struct ShippingLineDetails: View {
                                                  text: $viewModel.methodTitle,
                                                  symbol: nil,
                                                  keyboardType: .default)
+                                .accessibilityIdentifier("add-shipping-name-field")
                         }
                         .padding(.horizontal, insets: safeAreaInsets)
                         .addingTopAndBottomDividers()
@@ -90,6 +92,7 @@ struct ShippingLineDetails: View {
                         presentation.wrappedValue.dismiss()
                     }
                     .disabled(viewModel.shouldDisableDoneButton)
+                    .accessibilityIdentifier("add-shipping-done-button")
                 }
             }
         }

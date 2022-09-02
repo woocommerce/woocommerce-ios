@@ -5,7 +5,7 @@ import SwiftUI
 struct OrderCustomerSection: View {
 
     /// Parent view model to access all data
-    @ObservedObject var viewModel: NewOrderViewModel
+    @ObservedObject var viewModel: EditableOrderViewModel
 
     /// View model for the address form.
     ///
@@ -33,7 +33,7 @@ struct OrderCustomerSection: View {
 private struct OrderCustomerSectionContent: View {
 
     /// View model to drive the view content
-    var viewModel: NewOrderViewModel.CustomerDataViewModel
+    var viewModel: EditableOrderViewModel.CustomerDataViewModel
 
     @Binding var showAddressForm: Bool
 
@@ -138,8 +138,8 @@ private extension OrderCustomerSectionContent {
 @available(iOS 15.0, *)
 struct OrderCustomerSection_Previews: PreviewProvider {
     static var previews: some View {
-        let emptyViewModel = NewOrderViewModel.CustomerDataViewModel(billingAddress: nil, shippingAddress: nil)
-        let addressViewModel = NewOrderViewModel.CustomerDataViewModel(fullName: "Johnny Appleseed",
+        let emptyViewModel = EditableOrderViewModel.CustomerDataViewModel(billingAddress: nil, shippingAddress: nil)
+        let addressViewModel = EditableOrderViewModel.CustomerDataViewModel(fullName: "Johnny Appleseed",
                                                                        billingAddressFormatted: nil,
                                                                        shippingAddressFormatted: """
                                                                             Johnny Appleseed

@@ -1,22 +1,22 @@
-Hantera ditt företag i farten med WooCommerce-mobilappen. Skapa produkter, behandla beställningar och få viktig statistik i realtid.
+Hantera ditt företag i farten med WooCommerce-mobilappen. Lägg till produkter, skapa beställningar, ta betalning snabbt och håll ett öga på nya försäljningar och viktig statistik i realtid.
 
-LÄGG TILL PRODUKTER
-Skapa, gruppera och publicera produkter direkt från din iPhone eller iPad. Fånga kreativiteten i ögonblicket – förvandla dina idéer till produkter på några sekunder, eller spara dem som utkast för senare användning.
+Lägg till och redigera produkter med en beröring
+Kom igång på sekunder! Skapa, gruppera och publicera produkter direkt från din iPhone eller iPad. Fånga kreativiteten i ögonblicket – förvandla dina idéer till produkter på några sekunder, eller spara dem som utkast för senare användning.
 
-FÅ NOTISER
-Missa aldrig en beställning eller en recension. Håll rädslan för att missa något stången genom att aktivera notiser i realtid – du kommer att höra det där beroendeframkallande "ka-ching"-ljudet vid varje ny försäljning!
+Skapa beställningar när du är på språng
+När du väl har skapat några produkter är det enkelt. Välj artiklar från din katalog, lägg till leverans och fyll i kunduppgifter för att snabbt skapa en beställning som synkroniseras mot ditt lager.
 
-VISA OCH ÄNDRA BESTÄLLNINGAR
-Bläddra bland sammanfattningarna, eller sök baserat på kund- eller beställningsdetaljer. Tryck på detaljerna för att se specificerad fakturering, börja behandla beställningen eller ändra beställningens status. Lägg till anteckningar i beställningen eller skicka ett uppföljningsmeddelande direkt till kunden.
+Ta emot fysiska betalningar
+Ta emot fysiska betalningar med WooCommerce In-Person Payments och en kortläsare (tillgängligt i USA och Kanada). Starta en ny beställning – eller hitta en befintlig som väntar på betalning – och ta betalt med kortläsren eller en digital plånbok som Apple Pay.
 
-SPÅRA DIN STATISTIK
-Se en överblick av vilka produkter som presterar bäst. Håll koll på dina totala intäkter, antalet beställningar och besökardata per vecka, månad och år. Kunskap = makt!
+Bli meddelad om varje försäljning
+Nu när du säljer aktivt behöver du aldrig missa en beställning eller recension. Håll dig uppdaterad genom att aktivera notiser i realtid – du kommer höra det där beroendeframkallande "ka-ching"-ljudet vid varje ny försäljning!
 
-VÄXLA MELLAN BUTIKER
-Om du har mer än en butik kan du växla sömlöst mellan dem på några sekunder.
+Spåra försäljningar och bästsäljande produkter
+Se en överblick av vilka produkter som presterar bäst. Håll koll på dina totala intäkter, antalet beställningar och besökardata per vecka, månad och år. Kunskap = makt.
 
 WooCommerce är världens mest anpassningsbara e-handelsplattform med öppen källkod. Oavsett om du startar en verksamhet, tar din befintliga butik online eller om du utvecklar webbplatser åt kunder, använd WooCommerce så får du en butik som har en överlägsen kombination av innehåll och handel.
 
-Förhandskrav: WooCommerce v3.5+, Jetpack-tillägget.
+Förhandskrav: WooCommerce v3.5+.
 
 Visa sekretessmeddelandet för användare i Kalifornien på https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

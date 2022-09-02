@@ -46,6 +46,8 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
     public let fees: [OrderFeeLine]
     public let taxes: [OrderTaxLine]
 
+    public let customFields: [OrderMetaData]
+
     /// Order struct initializer.
     ///
     public init(siteID: Int64,
@@ -73,14 +75,15 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                 paymentMethodTitle: String,
                 paymentURL: URL?,
                 chargeID: String?,
-                items: [OrderItem]?,
+                items: [OrderItem],
                 billingAddress: Address?,
                 shippingAddress: Address?,
                 shippingLines: [ShippingLine],
                 coupons: [OrderCouponLine],
                 refunds: [OrderRefundCondensed],
                 fees: [OrderFeeLine],
-                taxes: [OrderTaxLine]) {
+                taxes: [OrderTaxLine],
+                customFields: [OrderMetaData]) {
 
         self.siteID = siteID
         self.orderID = orderID
@@ -111,7 +114,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         self.paymentURL = paymentURL
         self.chargeID = chargeID
 
-        self.items = items ?? []
+        self.items = items
         self.billingAddress = billingAddress
         self.shippingAddress = shippingAddress
         self.shippingLines = shippingLines
@@ -119,6 +122,8 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         self.refunds = refunds
         self.fees = fees
         self.taxes = taxes
+
+        self.customFields = customFields
     }
 
 
@@ -161,7 +166,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         var chargeID: String? = nil
         chargeID = allOrderMetaData?.first(where: { $0.key == "_charge_id" })?.value
 
-        let items = try? container.decodeIfPresent([OrderItem].self, forKey: .items) ?? []
+        let items = try container.decode([OrderItem].self, forKey: .items)
 
         var shippingAddress = try? container.decode(Address.self, forKey: .shippingAddress)
         // In WooCommerce <5.6.0, the shipping phone number can be stored in the order metadata
@@ -193,6 +198,9 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         // TODO: Update with local fallback when required.
         // https://github.com/woocommerce/woocommerce/blob/3611d4643791bad87a0d3e6e73e031bb80447417/plugins/woocommerce/includes/class-wc-order.php#L1537-L1561
         let needsProcessing = try container.decodeIfPresent(Bool.self, forKey: .needsProcessing) ?? false
+
+        // Filter out metadata if the key is prefixed with an underscore (internal meta keys) or the value is empty
+        let customFields = allOrderMetaData?.filter({ !$0.key.hasPrefix("_") && !$0.value.isEmpty }) ?? []
 
         self.init(siteID: siteID,
                   orderID: orderID,
@@ -226,7 +234,8 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                   coupons: coupons,
                   refunds: refunds,
                   fees: fees,
-                  taxes: taxes)
+                  taxes: taxes,
+                  customFields: customFields)
     }
 
     public static var empty: Order {
@@ -262,7 +271,8 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                   coupons: [],
                   refunds: [],
                   fees: [],
-                  taxes: [])
+                  taxes: [],
+                  customFields: [])
     }
 }
 

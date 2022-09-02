@@ -114,6 +114,7 @@ private extension StoreStatsAndTopPerformersViewController {
 
     func syncStats(forced: Bool, viewControllerToSync: StoreStatsAndTopPerformersPeriodViewController, onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
         guard !isSyncing else {
+            onCompletion?(.success(()))
             return
         }
 
@@ -149,13 +150,20 @@ private extension StoreStatsAndTopPerformersViewController {
 
         [viewControllerToSync].forEach { [weak self] vc in
             guard let self = self else {
+                onCompletion?(.success(()))
                 return
             }
 
             if !forced, let lastFullSyncTimestamp = vc.lastFullSyncTimestamp, Date().timeIntervalSince(lastFullSyncTimestamp) < vc.minimalIntervalBetweenSync {
                 // data refresh is not required
+                onCompletion?(.success(()))
                 return
             }
+
+            // We want to make sure the latest data are fetched (force-refreshing the cache on the server side) when:
+            // - The `forced` parameter is `true` (e.g. when the user pulls to refresh)
+            // - The stats for the time range tab are being synced for the first time (`lastFullSyncTimestamp` is `nil`)
+            let forceRefresh = forced || vc.lastFullSyncTimestamp == nil
 
             // local var to catch sync error for period
             var periodSyncError: Error? = nil
@@ -178,7 +186,8 @@ private extension StoreStatsAndTopPerformersViewController {
             self.dashboardViewModel.syncStats(for: siteID,
                                               siteTimezone: timezoneForSync,
                                               timeRange: vc.timeRange,
-                                              latestDateToInclude: latestDateToInclude) { [weak self] result in
+                                              latestDateToInclude: latestDateToInclude,
+                                              forceRefresh: forceRefresh) { [weak self] result in
                 switch result {
                 case .success:
                     self?.trackStatsLoaded(for: vc.timeRange)
@@ -212,7 +221,8 @@ private extension StoreStatsAndTopPerformersViewController {
             self.dashboardViewModel.syncTopEarnersStats(for: siteID,
                                                         siteTimezone: timezoneForSync,
                                                         timeRange: vc.timeRange,
-                                                        latestDateToInclude: latestDateToInclude) { result in
+                                                        latestDateToInclude: latestDateToInclude,
+                                                        forceRefresh: forceRefresh) { result in
                 if case let .failure(error) = result {
                     DDLogError("⛔️ Error synchronizing top earners stats: \(error)")
                     periodSyncError = error

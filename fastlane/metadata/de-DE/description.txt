@@ -1,22 +1,22 @@
-Verwalte dein Business von unterwegs aus – mit der WooCommerce Mobile App. Erstelle Produkte, verarbeite Bestellungen und behalte wichtige Statistiken im Überblick – alles in Echtzeit.
+Verwalte dein Geschäft von unterwegs aus – mit der WooCommerce Mobile App. Füge Produkte hinzu, erstelle Bestellungen, empfange schnelle Zahlungen und behalte deine neuen Verkäufe und wichtigsten Statistiken in Echtzeit im Blick.
 
-FÜGE PRODUKTE HINZU
-Erstelle, gruppiere und veröffentliche Produkte direkt über dein iPhone oder iPad. Lasse deiner Kreativität freien Lauf – wandle deine Ideen innerhalb weniger Sekunden in Produkte um oder speichere sie als Entwürfe für später.
+Füge Produkte hinzu und bearbeite sie mit nur einer Berührung
+Schon in wenigen Sekunden bist du startklar! Erstelle, gruppiere und veröffentliche Produkte direkt über dein iPhone oder iPad. Halte deine Geistesblitze sofort fest – wandle deine Ideen augenblicklich in Produkte um oder speichere sie als Entwürfe für später.
 
-ERHALTE BENACHRICHTIGUNGEN
-Verpasse keine Bestellungen oder Bewertungen. Aktiviere Echtzeitbenachrichtigungen und bleibe stets über alle Geschehnisse auf dem Laufenden. So kannst du dich ganz entspannt auf's Geldverdienen konzentrieren!
+Erstelle Bestellungen im Handumdrehen
+Sobald du einige Produkte erstellt hast, ist es ein Kinderspiel. Wähle Elemente aus deinem Katalog, füge den Versand hinzu und fülle die Kundendetails aus, um schnell eine Bestellung zu erstellen, die sich mit deinem Bestand synchronisiert.
 
-ZEIGE BESTELLUNGEN AN UND BEARBEITE SIE
-Scrolle durch die Zusammenfassungen oder Suche nach Kunden oder Bestellspezifika. Nutze die Detailansicht, um dir Einzelabrechnungen anzusehen, die Auftragsabwicklung zu starten oder den Bestellstatus zu ändern. Füge der Bestellung Notizen hinzu oder sende Kunden eine Follow-up-E-Mail.
+Nimm Zahlungen persönlich entgegen
+Empfange physische Zahlungen mithilfe von WooCommerce In-Person Payments und einem Kartenlesegerät (verfügbar in den USA und Kanada). Beginne mit einer neuen Bestellung oder suche nach einer bestehenden mit ausstehender Zahlung. Empfange die Zahlung dann mithilfe des Kartenlesegeräts oder einer digitalen Wallet, wie z. B. Apple Pay.
 
-VERFOLGE DEINE STATISTIKEN NACH
-Erfahre auf einen Blick, welche Produkte besonders erfolgreich sind. Kontrolliere deine Gesamteinnahmen, die Anzahl der Bestellungen und die Besucherdaten pro Woche, Monat und Jahr. Wissen = Macht!
+Erhalte Benachrichtigungen zu jedem Verkauf
+Jetzt wo du aktiv Verkäufe tätigst, verpasse nie wieder eine Bestellung oder Bewertung. Aktiviere Echtzeitbenachrichtigungen und bleibe so stets auf dem Laufenden. So kannst du dich ganz entspannt auf's Geldverdienen konzentrieren!
 
-WECHSLE ZWISCHEN DEN STORES
-Wenn du mehr als ein Business hast, kannst du binnen weniger Sekunden nahtlos zwischen deinen Stores umschalten.
+Verfolge Verkäufe und Bestseller-Produkte nach
+Erfahre auf einen Blick, welche Produkte besonders erfolgreich sind. Kontrolliere deine Gesamteinnahmen, die Anzahl der Bestellungen und die Besucherdaten pro Woche, Monat und Jahr. Wissen = Macht.
 
-WooCommerce ist die weltweit anpassbarste Open-Source E-Commerce-Plattform. Ganz gleich, ob du ein Business eröffnest, einen Onlineauftritt für ein bereits bestehendes Geschäft aufbaust oder Websites für Kunden designst: Mit WooCommerce bietet dein Store eine attraktive Mischung aus Inhalten und Commerce.
+WooCommerce ist die weltweit anpassbarste Open-Source E-Commerce-Plattform. Ganz gleich, ob du ein Geschäft eröffnest, einen Onlineauftritt für ein bereits bestehendes Geschäft aufbaust oder Websites für Kunden designst: Mit WooCommerce bietet dein Shop eine attraktive Mischung aus Inhalten und Commerce.
 
-Anforderungen: WooCommerce Version 3.5 und höher; Jetpack-Plugin.
+Anforderungen: WooCommerce Version 3.5 und höher.
 
 Den Datenschutzhinweis für Benutzer in Kalifornien findest du unter https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

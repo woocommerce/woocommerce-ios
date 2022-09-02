@@ -57,7 +57,7 @@
 	],
 	"entries": [
 		// iPhone 11 Pro Max
-		// Track sales data and high performing products
+		// Track sales and bestselling products
 		{
 			"device": "iPhone 11 Pro Max",
 			"filename": "iPhone 11 Pro Max-01.png",
@@ -65,41 +65,41 @@
 			"screenshot": "iPhone 11 Pro Max-1-dark-order-dashboard.png",
 			"text": "metadata/{locale}/app_store_screenshot_1.txt"
 		},
-		// View and manage orders on the go
+		// Create orders on the fly
 		{
 			"device": "iPhone 11 Pro Max",
 			"filename": "iPhone 11 Pro Max-02.png",
 			"background": "#C9356E",
-			"screenshot": "iPhone 11 Pro Max-2-light-order-list.png",
+			"screenshot": "iPhone 11 Pro Max-2-light-order-creation.png",
 			"text": "metadata/{locale}/app_store_screenshot_2.txt"
 		},
-		// Review order details and payments
+		// Take payments in person
 		{
 			"device": "iPhone 11 Pro Max",
 			"filename": "iPhone 11 Pro Max-03.png",
 			"background": "#674399",
-			"screenshot": "iPhone 11 Pro Max-3-dark-order-detail.png",
+			"screenshot": "iPhone 11 Pro Max-3-dark-order-payment.png",
 			"text": "metadata/{locale}/app_store_screenshot_3.txt"
 		},
-		// View products and check inventory
+		// Add and edit products with a touch
 		{
 			"device": "iPhone 11 Pro Max",
 			"filename": "iPhone 11 Pro Max-04.png",
 			"background": "#C9356E",
-			"screenshot": "iPhone 11 Pro Max-5-light-product-list.png",
+			"screenshot": "iPhone 11 Pro Max-4-light-product-add.png",
 			"text": "metadata/{locale}/app_store_screenshot_4.txt"
 		},
-		// Get notified about new reviews
+		// Get notified of every sale
 		{
 			"device": "iPhone 11 Pro Max",
 			"filename": "iPhone 11 Pro Max-05.png",
 			"background": "#674399",
-			"screenshot": "iPhone 11 Pro Max-7-dark-review-list.png",
+			"screenshot": "iPhone 11 Pro Max-5-dark-order-notification.png",
 			"text": "metadata/{locale}/app_store_screenshot_5.txt"
 		},
 
 		// iPhone 8 Plus
-		// Track sales data and high performing products
+		// Track sales and bestselling products
 		{
 			"device": "iPhone 8 Plus",
 			"filename": "iPhone 8 Plus-01.png",
@@ -107,42 +107,42 @@
 			"screenshot": "iPhone 8 Plus-1-dark-order-dashboard.png",
 			"text": "metadata/{locale}/app_store_screenshot_1.txt"
 		},
-		// View and manage orders on the go
+		// Create orders on the fly
 		{
 			"device": "iPhone 8 Plus",
 			"filename": "iPhone 8 Plus-02.png",
 			"background": "#C9356E",
-			"screenshot": "iPhone 8 Plus-2-light-order-list.png",
+			"screenshot": "iPhone 8 Plus-2-light-order-creation.png",
 			"text": "metadata/{locale}/app_store_screenshot_2.txt"
 		},
-		// Review order details and payments
+		// Take payments in person
 		{
 			"device": "iPhone 8 Plus",
 			"filename": "iPhone 8 Plus-03.png",
 			"background": "#674399",
-			"screenshot": "iPhone 8 Plus-3-dark-order-detail.png",
+			"screenshot": "iPhone 8 Plus-3-dark-order-payment.png",
 			"text": "metadata/{locale}/app_store_screenshot_3.txt"
 		},
-		// View products and check inventory
+		// Add and edit products with a touch
 		{
 			"device": "iPhone 8 Plus",
 			"filename": "iPhone 8 Plus-04.png",
 			"background": "#C9356E",
-			"screenshot": "iPhone 8 Plus-5-light-product-list.png",
+			"screenshot": "iPhone 8 Plus-4-light-product-add.png",
 			"text": "metadata/{locale}/app_store_screenshot_4.txt"
 		},
-		// Get notified about new reviews
+		// Get notified of every sale
 		{
 			"device": "iPhone 8 Plus",
 			"filename": "iPhone 8 Plus-05.png",
 			"background": "#674399",
-			"screenshot": "iPhone 8 Plus-7-dark-review-list.png",
+			"screenshot": "iPhone 8 Plus-5-dark-order-notification.png",
 			"text": "metadata/{locale}/app_store_screenshot_5.txt"
 		},
 
 
 		/// iPad Pro 12.9 (2nd Generation)
-		// Track sales data and high performing products
+		// Track sales and bestselling products
 		{
 			"device": "iPad Pro 12.9 (2nd Generation)",
 			"filename": "iPad Pro (12.9-inch) (2nd generation)-01.png",
@@ -150,41 +150,41 @@
 			"screenshot": "iPad Pro (12.9-inch) (2nd generation)-1-dark-order-dashboard.png",
 			"text": "metadata/{locale}/app_store_screenshot_1.txt"
 		},
-		// View and manage orders on the go
+		// Create orders on the fly
 		{
 			"device": "iPad Pro 12.9 (2nd Generation)",
 			"filename": "iPad Pro (12.9-inch) (2nd generation)-02.png",
 			"background": "#C9356E",
-			"screenshot": "iPad Pro (12.9-inch) (2nd generation)-2-light-order-list.png",
+			"screenshot": "iPad Pro (12.9-inch) (2nd generation)-2-light-order-creation.png",
 			"text": "metadata/{locale}/app_store_screenshot_2.txt"
 		},
-		// Review order details and payments
+		// Take payments in person
 		{
 			"device": "iPad Pro 12.9 (2nd Generation)",
 			"filename": "iPad Pro (12.9-inch) (2nd generation)-03.png",
 			"background": "#674399",
-			"screenshot": "iPad Pro (12.9-inch) (2nd generation)-3-dark-order-detail.png",
+			"screenshot": "iPad Pro (12.9-inch) (2nd generation)-3-dark-order-payment.png",
 			"text": "metadata/{locale}/app_store_screenshot_3.txt"
 		},
-		// View products and check inventory
+		// Add and edit products with a touch
 		{
 			"device": "iPad Pro 12.9 (2nd Generation)",
 			"filename": "iPad Pro (12.9-inch) (2nd generation)-04.png",
 			"background": "#C9356E",
-			"screenshot": "iPad Pro (12.9-inch) (2nd generation)-5-light-product-list.png",
+			"screenshot": "iPad Pro (12.9-inch) (2nd generation)-4-light-product-add.png",
 			"text": "metadata/{locale}/app_store_screenshot_4.txt"
 		},
-		// Get notified about new reviews
+		// Get notified of every sale
 		{
 			"device": "iPad Pro 12.9 (2nd Generation)",
 			"filename": "iPad Pro (12.9-inch) (2nd generation)-05.png",
 			"background": "#674399",
-			"screenshot": "iPad Pro (12.9-inch) (2nd generation)-7-dark-review-list.png",
+			"screenshot": "iPad Pro (12.9-inch) (2nd generation)-5-dark-order-notification.png",
 			"text": "metadata/{locale}/app_store_screenshot_5.txt"
 		},
 
 		/// iPad Pro 12.9 (3rd Generation)
-		// Track sales data and high performing products
+		// Track sales and bestselling products
 		{
 			"device": "iPad Pro 12.9 (3rd Generation)",
 			"filename": "iPad Pro (12.9-inch) (3rd generation)-01.png",
@@ -192,36 +192,36 @@
 			"screenshot": "iPad Pro (12.9-inch) (3rd generation)-1-dark-order-dashboard.png",
 			"text": "metadata/{locale}/app_store_screenshot_1.txt"
 		},
-		// View and manage orders on the go
+		// Create orders on the fly
 		{
 			"device": "iPad Pro 12.9 (3rd Generation)",
 			"filename": "iPad Pro (12.9-inch) (3rd generation)-02.png",
 			"background": "#C9356E",
-			"screenshot": "iPad Pro (12.9-inch) (3rd generation)-2-light-order-list.png",
+			"screenshot": "iPad Pro (12.9-inch) (3rd generation)-2-light-order-creation.png",
 			"text": "metadata/{locale}/app_store_screenshot_2.txt"
 		},
-		// Review order details and payments
+		// Take payments in person
 		{
 			"device": "iPad Pro 12.9 (3rd Generation)",
 			"filename": "iPad Pro (12.9-inch) (3rd generation)-03.png",
 			"background": "#674399",
-			"screenshot": "iPad Pro (12.9-inch) (3rd generation)-3-dark-order-detail.png",
+			"screenshot": "iPad Pro (12.9-inch) (3rd generation)-3-dark-order-payment.png",
 			"text": "metadata/{locale}/app_store_screenshot_3.txt"
 		},
-		// View products and check inventory
+		// Add and edit products with a touch
 		{
 			"device": "iPad Pro 12.9 (3rd Generation)",
 			"filename": "iPad Pro (12.9-inch) (3rd generation)-04.png",
 			"background": "#C9356E",
-			"screenshot": "iPad Pro (12.9-inch) (3rd generation)-5-light-product-list.png",
+			"screenshot": "iPad Pro (12.9-inch) (3rd generation)-4-light-product-add.png",
 			"text": "metadata/{locale}/app_store_screenshot_4.txt"
 		},
-		// Get notified about new reviews
+		// Get notified of every sale
 		{
 			"device": "iPad Pro 12.9 (3rd Generation)",
 			"filename": "iPad Pro (12.9-inch) (3rd generation)-05.png",
 			"background": "#674399",
-			"screenshot": "iPad Pro (12.9-inch) (3rd generation)-7-dark-review-list.png",
+			"screenshot": "iPad Pro (12.9-inch) (3rd generation)-5-dark-order-notification.png",
 			"text": "metadata/{locale}/app_store_screenshot_5.txt"
 		}
 	]

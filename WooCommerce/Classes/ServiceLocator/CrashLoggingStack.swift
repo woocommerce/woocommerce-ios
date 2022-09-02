@@ -1,7 +1,7 @@
 import Foundation
-import Storage
+import WooFoundation
 
-protocol CrashLoggingStack: Storage.CrashLogger {
+protocol CrashLoggingStack: CrashLogger {
     /// Forces the application to crash
     func crash()
 

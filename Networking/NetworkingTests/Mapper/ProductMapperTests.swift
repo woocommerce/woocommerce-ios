@@ -272,6 +272,23 @@ final class ProductMapperTests: XCTestCase {
         XCTAssertEqual(firstOption.label, "Peperoni")
         XCTAssertEqual(firstOption.price, "3")
     }
+
+    func test_product_image_alt_is_nil_when_malformed() throws {
+        // Given
+        let product = try XCTUnwrap(mapLoadProductWithMalformedImageAltAndVariations())
+
+        // Then
+        XCTAssertFalse(product.images.isEmpty)
+        XCTAssertNil(product.images.first?.alt)
+    }
+
+    func test_product_variation_list_is_empty_when_malformed() throws {
+        // Given
+        let product = try XCTUnwrap(mapLoadProductWithMalformedImageAltAndVariations())
+
+        // Then
+        XCTAssertTrue(product.variations.isEmpty)
+    }
 }
 
 
@@ -305,5 +322,11 @@ private extension ProductMapperTests {
     ///
     func mapLoadProductOnSaleWithEmptySalePriceResponse() -> Product? {
         return mapProduct(from: "product-on-sale-with-empty-sale-price")
+    }
+
+    /// Returns the ProductMapper output upon receiving `product` with malformed image `alt` and `variations`
+    ///
+    func mapLoadProductWithMalformedImageAltAndVariations() -> Product? {
+        return mapProduct(from: "product-malformed-variations-and-image-alt")
     }
 }

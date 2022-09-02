@@ -74,10 +74,11 @@ private extension AddProductCoordinator {
 
         let currencyCode = ServiceLocator.currencySettings.currencyCode
         let currency = ServiceLocator.currencySettings.symbol(from: currencyCode)
-        let productImageActionHandler = productImageUploader.actionHandler(siteID: product.siteID,
-                                                                           productID: model.productID,
-                                                                           isLocalID: true,
-                                                                           originalStatuses: model.imageStatuses)
+        let productImageActionHandler = productImageUploader
+            .actionHandler(key: .init(siteID: product.siteID,
+                                      productOrVariationID: .product(id: model.productID),
+                                      isLocalID: true),
+                           originalStatuses: model.imageStatuses)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .add,
                                              productImageActionHandler: productImageActionHandler)

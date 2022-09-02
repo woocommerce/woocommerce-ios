@@ -7,7 +7,7 @@ import StoreKit
 protocol SKStoreReviewControllerProtocol {
     /// Displays the in app app store review alert.
     ///
-    static func requestReview()
+    static func requestReview(in windowScene: UIWindowScene)
 }
 
 extension SKStoreReviewController: SKStoreReviewControllerProtocol { }
@@ -91,8 +91,9 @@ private extension InAppFeedbackCardViewController {
             guard let self = self else {
                 return
             }
-
-            self.storeReviewControllerType.requestReview()
+            if let windowScene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive}) as? UIWindowScene {
+                self.storeReviewControllerType.requestReview(in: windowScene)
+            }
             self.onFeedbackGiven?()
             self.analytics.track(event: .appFeedbackPrompt(action: .liked))
         }

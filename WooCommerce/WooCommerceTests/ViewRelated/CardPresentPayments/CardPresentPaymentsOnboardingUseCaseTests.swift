@@ -20,6 +20,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
     ///
     private var preferredInPersonPaymentGatewayBySite = [Int64: String]()
 
+    private var skippedCodOnboardingStep = true
 
     override func setUpWithError() throws {
         try super.setUpWithError()
@@ -33,6 +34,13 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
                 self.preferredInPersonPaymentGatewayBySite[siteID] = gateway
             case .getPreferredInPersonPaymentGateway(let siteID, let onCompletion):
                 onCompletion(self.preferredInPersonPaymentGatewayBySite[siteID])
+            case .forgetPreferredInPersonPaymentGateway(_):
+                break
+            case .setSkippedCashOnDeliveryOnboardingStep(_):
+                break
+            case .getSkippedCashOnDeliveryOnboardingStep(_, let completion):
+                completion(self.skippedCodOnboardingStep)
+                break
             default:
                 fatalError("Not available")
             }
@@ -96,21 +104,6 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // Then
         XCTAssertEqual(state, .countryNotSupportedStripe(plugin: .stripe, countryCode: "CA"))
-    }
-
-    func test_onboarding_returns_deactivate_stripe_when_stripe_and_wcPay_plugins_are_installed_in_Canada_with_inPersonPaymentGatewaySelection_false() {
-        // Given
-        setupCountry(country: .ca)
-        setupStripePlugin(status: .active, version: .minimumSupportedVersion)
-        setupWCPayPlugin(status: .active, version: .minimumSupportedVersionCanada)
-
-        // When
-        let featureFlagService = MockFeatureFlagService(inPersonPaymentGatewaySelection: false)
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores, featureFlagService: featureFlagService)
-        let state = useCase.state
-
-        // Then
-        XCTAssertEqual(state, .pluginShouldBeDeactivated(plugin: .stripe))
     }
 
     func test_onboarding_returns_setup_not_completed_stripe_when_stripe_and_wcPay_plugins_are_installed_in_Canada() {
@@ -233,23 +226,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .selectPlugin)
-    }
-
-    func test_onboarding_returns_select_plugin_when_both_stripe_and_wcpay_plugins_are_active_ignoring_preference_if_inPersonPaymentGatewaySelection_false() {
-        // Given
-        setupCountry(country: .us)
-        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
-        setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
-        setupPreferredPaymentGateway(.stripe)
-
-        // When
-        let featureFlagService = MockFeatureFlagService(inPersonPaymentGatewaySelection: false)
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores, featureFlagService: featureFlagService)
-        let state = useCase.state
-
-        // Then
-        XCTAssertEqual(state, .selectPlugin)
+        XCTAssertEqual(state, .selectPlugin(pluginSelectionWasCleared: false))
     }
 
     func test_onboarding_uses_selected_plugin_wcpay_when_both_stripe_and_wcpay_plugins_are_active() {
@@ -260,7 +237,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
-        XCTAssertEqual(useCase.state, .selectPlugin)
+        XCTAssertEqual(useCase.state, .selectPlugin(pluginSelectionWasCleared: false))
         useCase.selectPlugin(.wcPay)
         let state = useCase.state
 
@@ -276,13 +253,30 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
-        XCTAssertEqual(useCase.state, .selectPlugin)
+        XCTAssertEqual(useCase.state, .selectPlugin(pluginSelectionWasCleared: false))
         useCase.selectPlugin(.stripe)
         let state = useCase.state
 
         // Then
         XCTAssertEqual(state, .pluginSetupNotCompleted(plugin: .stripe))
     }
+
+    func test_onboarding_when_clearing_plugin_selection_then_sets_right_state() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        XCTAssertEqual(useCase.state, .selectPlugin(pluginSelectionWasCleared: false))
+        useCase.selectPlugin(.stripe)
+        useCase.clearPluginSelection()
+
+        // Then
+        XCTAssertEqual(useCase.state, .selectPlugin(pluginSelectionWasCleared: true))
+    }
+
     func test_onboarding_uses_preferred_plugin_wcpay_when_both_stripe_and_wcpay_plugins_are_active_and_preferred_plugin_is_not_complete() {
         // Given
         setupCountry(country: .us)
@@ -773,6 +767,54 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .stripeAccountRejected(plugin: .wcPay))
     }
 
+    func test_onboarding_returns_enable_COD_prompt_when_cod_disabled_and_not_skipped() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .complete)
+        setupCodPaymentGateway(enabled: false)
+        skippedCodOnboardingStep = false
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.state
+
+        // Then
+        assertEqual(.codPaymentGatewayNotSetUp(plugin: .wcPay), state)
+    }
+
+    func test_onboarding_returns_complete_when_cod_disabled_and_cod_step_was_skipped() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .complete)
+        setupCodPaymentGateway(enabled: false)
+        skippedCodOnboardingStep = true
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.state
+
+        // Then
+        assertEqual(.completed(plugin: .wcPayOnly), state)
+    }
+
+    func test_onboarding_returns_complete_when_cod_enabled() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .complete)
+        setupCodPaymentGateway(enabled: true)
+        skippedCodOnboardingStep = false
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.state
+
+        // Then
+        assertEqual(.completed(plugin: .wcPayOnly), state)
+    }
+
     func test_onboarding_returns_generic_error_when_account_status_unknown_for_wcpay_plugin() {
         // Given
         setupCountry(country: .us)
@@ -917,3 +959,25 @@ private protocol GatewayAccountProtocol {
 
 extension WCPayAccount: GatewayAccountProtocol {}
 extension StripeAccount: GatewayAccountProtocol {}
+
+// MARK: - Gateway helpers
+private extension CardPresentPaymentsOnboardingUseCaseTests {
+    @discardableResult
+    func setupCodPaymentGateway(
+        enabled: Bool = true,
+        title: String = "",
+        description: String = ""
+    ) -> PaymentGateway {
+        let paymentGateway = PaymentGateway
+            .fake()
+            .copy(
+                siteID: sampleSiteID,
+                gatewayID: "cod",
+                title: title,
+                description: description,
+                enabled: enabled
+            )
+        storageManager.insertSamplePaymentGateway(readOnlyGateway: paymentGateway)
+        return paymentGateway
+    }
+}

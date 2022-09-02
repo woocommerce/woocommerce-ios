@@ -99,6 +99,7 @@ struct FeeLineDetails: View {
                         presentation.wrappedValue.dismiss()
                     }
                     .disabled(viewModel.shouldDisableDoneButton)
+                    .accessibilityIdentifier("add-fee-done-button")
                 }
             }
         }
@@ -120,6 +121,7 @@ struct FeeLineDetails: View {
                     .onTapGesture {
                         focusFixedAmountInput = true
                     }
+                    .accessibilityIdentifier("add-fee-fixed-amount-field")
             }
         }
         .frame(minHeight: Layout.rowHeight)

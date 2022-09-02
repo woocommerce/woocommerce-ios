@@ -1,14 +1,17 @@
-/* A message that tells the user why the app is requesting access to the device’s camera. */
-NSCameraUsageDescription = "To take photos or videos to add to your Products, scan barcode for Product SKU, or support tickets.";
-
-/* A message that tells the user why the app is requesting access to the user’s photo library. */
-NSPhotoLibraryUsageDescription = "To save photos from camera for Product images, or to add photos or videos to your Products or support tickets.";
-
-/* A message that tells the user why the app is requesting access to the user’s location information while the app is running in the foreground. */
-NSLocationWhenInUseUsageDescription = "Location access is required in order to accept payments.";
-
-/* A message that tells the user why the app is requesting the ability to connect to Bluetooth peripherals. */
-NSBluetoothPeripheralUsageDescription = "Bluetooth access is required in order to connect to supported card readers.";
-
-/* A message that tells the user why the app needs access to Bluetooth. */
-NSBluetoothAlwaysUsageDescription = "This app uses Bluetooth to connect to supported card readers.";
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--Warning: Auto-generated file, do not edit.-->
+<plist version="1.0">
+  <dict>
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>このアプリでは Bluetooth を使用してサポートされているカードリーダーに接続します。</string>
+    <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>サポートされているカードリーダーに接続するには、Bluetooth アクセスが必要です。</string>
+    <key>NSCameraUsageDescription</key>
+    <string>商品に追加する写真や動画を撮影するには、商品 SKU のバーコードまたはサポートチケットをスキャンします。</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>支払いを受け取るには位置情報へのアクセスが必要です。</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>商品画像用にカメラの写真を保存したり、商品やサポートチケットに写真や動画を追加したりするためです。</string>
+  </dict>
+</plist>

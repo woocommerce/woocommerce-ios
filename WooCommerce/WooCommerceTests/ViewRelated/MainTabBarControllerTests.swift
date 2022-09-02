@@ -68,7 +68,7 @@ final class MainTabBarControllerTests: XCTestCase {
                    isAnInstanceOf: HubMenuViewController.self)
     }
 
-    func test_tab_view_controllers_returns_expected_values_with_hub_menu_enabled() {
+    func test_tab_view_controllers_returns_expected_values() {
         // Arrange
         // Sets mock `FeatureFlagService` before `MainTabBarController` is initialized so that the feature flags are set correctly.
         let featureFlagService = MockFeatureFlagService()

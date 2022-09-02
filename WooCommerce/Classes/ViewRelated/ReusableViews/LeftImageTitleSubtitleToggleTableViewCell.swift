@@ -4,8 +4,6 @@ import UIKit
 /// Represents a regular UITableView Cell with subtitle: [Image | Text + Subtitle |  Disclosure]
 ///
 class LeftImageTitleSubtitleToggleTableViewCell: UITableViewCell {
-
-
     @IBOutlet weak var leftImageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var subtitleLabel: UILabel!
@@ -15,10 +13,10 @@ class LeftImageTitleSubtitleToggleTableViewCell: UITableViewCell {
     ///
     var leftImage: UIImage? {
         get {
-            return leftImageView?.image
+            return leftImageView.image
         }
         set {
-            leftImageView?.image = newValue
+            leftImageView.image = newValue
         }
     }
 
@@ -26,10 +24,10 @@ class LeftImageTitleSubtitleToggleTableViewCell: UITableViewCell {
     ///
     var labelText: String? {
         get {
-            return titleLabel?.text
+            return titleLabel.text
         }
         set {
-            titleLabel?.text = newValue
+            titleLabel.text = newValue
         }
     }
 
@@ -37,10 +35,10 @@ class LeftImageTitleSubtitleToggleTableViewCell: UITableViewCell {
     ///
     var subtitleLabelText: String? {
         get {
-            return subtitleLabel?.text
+            return subtitleLabel.text
         }
         set {
-            subtitleLabel?.text = newValue
+            subtitleLabel.text = newValue
         }
     }
 
@@ -59,10 +57,10 @@ class LeftImageTitleSubtitleToggleTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         configureBackground()
-        leftImageView?.tintColor = .primary
-        titleLabel?.applyBodyStyle()
-        subtitleLabel?.applyFootnoteStyle()
-        toggleSwitch?.onTintColor = .primary
+        leftImageView.tintColor = .primary
+        titleLabel.applyBodyStyle()
+        subtitleLabel.applyFootnoteStyle()
+        toggleSwitch.onTintColor = .primary
         subtitleLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(subtitleTapped)))
     }
 
@@ -110,9 +108,9 @@ extension LeftImageTitleSubtitleToggleTableViewCell {
                            switchState: Bool,
                            switchAction: @escaping (Bool) -> Void,
                            subtitleTapAction: (() -> Void)? = nil) {
-        leftImageView?.image = image
-        titleLabel?.text = text
-        subtitleLabel?.text = subtitle
+        leftImageView.image = image
+        titleLabel.text = text
+        subtitleLabel.text = subtitle
         subtitleLabel.attributedText = attributedSubtitle
         toggleSwitch.isOn = switchState
         self.switchAction = switchAction

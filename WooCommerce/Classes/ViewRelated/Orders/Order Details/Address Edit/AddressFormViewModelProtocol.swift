@@ -337,9 +337,9 @@ open class AddressFormViewModel: ObservableObject {
     /// Creates a view model to be used when selecting a country for primary fields
     ///
     func createCountryViewModel() -> CountrySelectorViewModel {
-        let selectedCountryBinding = Binding(
-            get: { self.fields.selectedCountry },
-            set: { self.fields.selectedCountry = $0 }
+        let selectedCountryBinding: Binding<CommonProtocol?> = Binding<CommonProtocol?>(
+            get: { self.fields.selectedCountry as? CommonProtocol },
+            set: { self.fields.selectedCountry = $0 as? Country}
         )
         return CountrySelectorViewModel(countries: allCountries, selected: selectedCountryBinding)
     }
@@ -347,7 +347,7 @@ open class AddressFormViewModel: ObservableObject {
     /// Creates a view model to be used when selecting a state for primary fields
     ///
     func createStateViewModel() -> StateSelectorViewModel {
-        let selectedStateBinding = Binding(
+        let selectedStateBinding: Binding<CommonProtocol> = Binding(
             get: { self.fields.selectedState },
             set: { self.fields.selectedState = $0 }
         )

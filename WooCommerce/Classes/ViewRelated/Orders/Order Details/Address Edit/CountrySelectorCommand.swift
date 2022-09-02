@@ -1,44 +1,53 @@
 import Foundation
 import Yosemite
+import SwiftUI
 
+protocol CommonProtocol {
+    //var navigationBarTitle: String? { get }
+    var name: String { get }
+    var code: String { get }
+}
+
+extension Country: CommonProtocol {}
 /// Command to be used to select a country when editing addresses.
 ///
 final class CountrySelectorCommand: ObservableListSelectorCommand {
-    typealias Model = Country
-    typealias Cell = BasicTableViewCell
+    //typealias Model = CommonProtocol
+    //typealias Cell = BasicTableViewCell
 
     /// Original array of countries.
     ///
-    private let countries: [Country]
+    private let countries: [CommonProtocol]
 
     /// Data to display
     ///
-    @Published private(set) var data: [Country]
+    @Published private(set) var data: [CommonProtocol]
 
     /// Current selected country
     ///
-    @Binding private(set) var selected: Country?
+    @Binding private(set) var selected: CommonProtocol?
 
     /// Navigation bar title
     ///
-    let navigationBarTitle: String? = ""
+    var navigationBarTitle: String? = ""
 
-    init(countries: [Country], selected: Binding<Country?>) {
+    init(countries: [CommonProtocol], selected: Binding<CommonProtocol?>) {
         self.countries = countries
         self.data = countries
         self._selected = selected
     }
 
-    func handleSelectedChange(selected: Country, viewController: ViewController) {
+    func handleSelectedChange(selected: CommonProtocol, viewController: ViewController) {
         self.selected = selected
         viewController.navigationController?.popViewController(animated: true)
     }
 
-    func isSelected(model: Country) -> Bool {
+    func isSelected(model: CommonProtocol) -> Bool {
         model.code == selected?.code // I'm only comparing country codes because states can be unsorted
+        //model == selected
     }
 
-    func configureCell(cell: BasicTableViewCell, model: Country) {
+    func configureCell(cell: BasicTableViewCell, model: CommonProtocol) {
         cell.textLabel?.text = model.name
     }
 

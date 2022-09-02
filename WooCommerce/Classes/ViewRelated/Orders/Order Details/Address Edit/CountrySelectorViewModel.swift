@@ -26,7 +26,7 @@ final class CountrySelectorViewModel: FilterListSelectorViewModelable, Observabl
     ///
     let filterPlaceholder = Localization.placeholder
 
-    init(countries: [Country], selected: Binding<Country?>) {
+    init(countries: [Country], selected: Binding<CommonProtocol?>) {
         self.command = CountrySelectorCommand(countries: countries, selected: selected)
     }
 }

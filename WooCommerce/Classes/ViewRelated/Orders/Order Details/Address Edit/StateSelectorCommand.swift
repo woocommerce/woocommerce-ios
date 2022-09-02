@@ -4,8 +4,8 @@ import Yosemite
 /// Command to be used to select a state when editing addresses.
 ///
 final class StateSelectorCommand: ObservableListSelectorCommand {
-    typealias Model = StateOfACountry
-    typealias Cell = BasicTableViewCell
+    //typealias Model = StateOfACountry
+    //typealias Cell = BasicTableViewCell
 
     /// Original array of states.
     ///
@@ -21,7 +21,7 @@ final class StateSelectorCommand: ObservableListSelectorCommand {
 
     /// Navigation bar title
     ///
-    let navigationBarTitle: String? = ""
+    var navigationBarTitle: String? = ""
 
     init(states: [StateOfACountry], selected: Binding<StateOfACountry?>) {
         self.states = states

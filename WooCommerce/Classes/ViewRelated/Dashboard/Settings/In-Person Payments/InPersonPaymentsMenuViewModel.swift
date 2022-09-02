@@ -2,7 +2,7 @@ import Foundation
 import Yosemite
 import protocol Storage.StorageManagerType
 
-class InPersonPaymentsMenuViewModel: ObservableObject {
+final class InPersonPaymentsMenuViewModel: ObservableObject {
 
     // MARK: - Dependencies
     struct Dependencies {
@@ -187,35 +187,35 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
 }
 
 // MARK: - Analytics
-extension InPersonPaymentsMenuViewModel {
-    private typealias Event = WooAnalyticsEvent.InPersonPayments
+private extension InPersonPaymentsMenuViewModel {
+    typealias Event = WooAnalyticsEvent.InPersonPayments
 
-    private func trackCashOnDeliveryToggled(enabled: Bool) {
+    func trackCashOnDeliveryToggled(enabled: Bool) {
         let event = Event.paymentsHubCashOnDeliveryToggled(enabled: enabled,
                                                            countryCode: cardPresentPaymentsConfiguration.countryCode)
         analytics.track(event: event)
     }
 
-    private func trackEnableCashOnDeliverySuccess() {
+    func trackEnableCashOnDeliverySuccess() {
         let event = Event.enableCashOnDeliverySuccess(countryCode: cardPresentPaymentsConfiguration.countryCode,
                                                       source: .paymentsHub)
         analytics.track(event: event)
     }
 
-    private func trackEnableCashOnDeliveryFailed(error: Error?) {
+    func trackEnableCashOnDeliveryFailed(error: Error?) {
         let event = Event.enableCashOnDeliveryFailed(countryCode: cardPresentPaymentsConfiguration.countryCode,
                                                      error: error,
                                                      source: .paymentsHub)
         analytics.track(event: event)
     }
 
-    private func trackDisableCashOnDeliverySuccess() {
+    func trackDisableCashOnDeliverySuccess() {
         let event = Event.disableCashOnDeliverySuccess(countryCode: cardPresentPaymentsConfiguration.countryCode,
                                                        source: .paymentsHub)
         analytics.track(event: event)
     }
 
-    private func trackDisableCashOnDeliveryFailed(error: Error?) {
+    func trackDisableCashOnDeliveryFailed(error: Error?) {
         let event = Event.disableCashOnDeliveryFailed(countryCode: cardPresentPaymentsConfiguration.countryCode,
                                                       error: error,
                                                       source: .paymentsHub)

@@ -289,7 +289,7 @@ private extension StorePickerViewController {
     }
 
     func presentHelp() {
-        ServiceLocator.authenticationManager.presentSupport(from: self, sourceTag: .generalLogin)
+        ServiceLocator.authenticationManager.presentSupport(from: self, screen: .storePicker)
     }
 }
 

@@ -1,3 +1,4 @@
+import Combine
 import UIKit
 import XLPagerTabStrip
 import Yosemite
@@ -36,6 +37,11 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
     private let dashboardViewModel: DashboardViewModel
     private let timeRanges: [StatsTimeRangeV4] = [.today, .thisWeek, .thisMonth, .thisYear]
 
+    /// Because loading the last selected time range tab is async, we need to make sure any call to the public `reloadData` is after the selected time range
+    /// is ready to avoid making unnecessary API requests for the non-selected tab.
+    @Published private var isSelectedTimeRangeReady: Bool = false
+    private var reloadDataAfterSelectedTimeRangeSubscriptions: Set<AnyCancellable> = []
+
     // MARK: - View Lifecycle
 
     init(siteID: Int64, dashboardViewModel: DashboardViewModel) {
@@ -56,12 +62,14 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
             let selectedTimeRange = await loadLastTimeRange() ?? .today
             guard let selectedTabIndex = timeRanges.firstIndex(of: selectedTimeRange),
                   selectedTabIndex != currentIndex else {
+                isSelectedTimeRangeReady = true
                 return
             }
             // There is currently no straightforward way to set a different default tab using `XLPagerTabStrip` without forking.
             // This is a workaround following https://github.com/xmartlabs/XLPagerTabStrip/issues/537#issuecomment-534903598
             moveToViewController(at: selectedTabIndex, animated: false)
             reloadPagerTabStripView()
+            isSelectedTimeRangeReady = true
         }
 
         // 👆 must be called before super.viewDidLoad()
@@ -109,9 +117,13 @@ extension StoreStatsAndTopPerformersViewController: DashboardUI {
     @MainActor
     func reloadData(forced: Bool) async {
         await withCheckedContinuation { continuation in
-            syncAllStats(forced: forced) { _ in
-                continuation.resume(returning: ())
-            }
+            $isSelectedTimeRangeReady.filter { $0 == true }.first()
+                .sink { [weak self] _ in
+                    self?.syncAllStats(forced: forced) { _ in
+                        continuation.resume(returning: ())
+                    }
+                }
+                .store(in: &reloadDataAfterSelectedTimeRangeSubscriptions)
         }
     }
 

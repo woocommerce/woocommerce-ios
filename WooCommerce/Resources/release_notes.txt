@@ -1,2 +1,4 @@
-This release has several fixes that makes it easier for you to take payments from the app. We’ve also added a new Help Center FAQ page that makes it easier for you to login to the app.
-Please continue to send us feedback – we are listening!
+- [*] Help center: Added help center web page with FAQs for "Enter Store Credentials", "Enter WordPress.com email " and "Jetpack required Error" screens. [https://github.com/woocommerce/woocommerce-ios/pull/7588, https://github.com/woocommerce/woocommerce-ios/pull/7590, https://github.com/woocommerce/woocommerce-ios/pull/7621]
+- [*] In-Person Payments: Fixed the Learn More link from the `Enable Pay in Person` onboarding screen for WCPay [https://github.com/woocommerce/woocommerce-ios/pull/7598]
+- [**] In-Person Payments: Added a switch for the Pay in Person payment method on the Payments menu. This allows you to accept In-Person Payments for website orders [https://github.com/woocommerce/woocommerce-ios/pull/7613]
+

@@ -594,9 +594,7 @@
 		26CCBE0D2523C2560073F94D /* RefundProductsTotalTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26CCBE0C2523C2560073F94D /* RefundProductsTotalTableViewCell.xib */; };
 		26CFDB2727357E8000AB940B /* SimplePaymentsSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CFDB2627357E8000AB940B /* SimplePaymentsSummary.swift */; };
 		26D9E54428C107F80098DF26 /* WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26D9E54328C107F80098DF26 /* WooFoundation.framework */; };
-		26D9E54528C107F80098DF26 /* WooFoundation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 26D9E54328C107F80098DF26 /* WooFoundation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		26D9E54828C10A3B0098DF26 /* Experiments.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26D9E54728C10A3B0098DF26 /* Experiments.framework */; };
-		26D9E54928C10A3C0098DF26 /* Experiments.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 26D9E54728C10A3B0098DF26 /* Experiments.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		26DB7E3528636D2200506173 /* NonEditableOrderBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26DB7E3428636D2200506173 /* NonEditableOrderBanner.swift */; };
 		26E0ADF12631D94D00A5EB3B /* TopBannerWrapperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E0ADF02631D94D00A5EB3B /* TopBannerWrapperView.swift */; };
 		26E0AE13263359F900A5EB3B /* View+Conditionals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E0AE12263359F900A5EB3B /* View+Conditionals.swift */; };
@@ -1878,8 +1876,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				26D9E54528C107F80098DF26 /* WooFoundation.framework in Embed Frameworks */,
-				26D9E54928C10A3C0098DF26 /* Experiments.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;

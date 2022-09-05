@@ -13,9 +13,6 @@ public struct JetpackConnectedUser: Decodable, GeneratedFakeable, GeneratedCopia
     /// WP.org username in the site.
     public let username: String
 
-    /// ID of the user in the site.
-    public let id: Int64
-
     /// The connected WP.com user if exists
     public let wpcomUser: WordPressComUser?
 
@@ -23,8 +20,7 @@ public struct JetpackConnectedUser: Decodable, GeneratedFakeable, GeneratedCopia
     public let gravatar: String?
 
     /// Member-wise initializer
-    public init(id: Int64, isConnected: Bool, isMaster: Bool, username: String, wpcomUser: WordPressComUser?, gravatar: String?) {
-        self.id = id
+    public init(isConnected: Bool, isMaster: Bool, username: String, wpcomUser: WordPressComUser?, gravatar: String?) {
         self.isConnected = isConnected
         self.isMaster = isMaster
         self.username = username
@@ -38,7 +34,6 @@ public struct JetpackConnectedUser: Decodable, GeneratedFakeable, GeneratedCopia
         isConnected = try container.decode(Bool.self, forKey: .isConnected)
         isMaster = try container.decode(Bool.self, forKey: .isMaster)
         username = try container.decode(String.self, forKey: .username)
-        id = try container.decode(Int64.self, forKey: .id)
         wpcomUser = try? container.decode(WordPressComUser.self, forKey: .wpcomUser)
         gravatar = try? container.decode(String.self, forKey: .gravatar)
     }
@@ -52,7 +47,6 @@ private extension JetpackConnectedUser {
         case isConnected
         case isMaster
         case username
-        case id
         case wpcomUser
         case gravatar
     }

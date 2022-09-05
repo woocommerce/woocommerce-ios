@@ -13,7 +13,7 @@
             "jetpack_connect": "",
             "avatar": "http://2.gravatar.com/avatar/5e1a8fhjd"
         },
-        "gravatar": "<img alt='' src='http://2.gravatar.com/avatar/5e1a8fhjd' srcset='http://2.gravatar.com/avatar/5e1a8fhjd;d=mm&amp;r=g 2x' class='avatar avatar-40 photo' height='40' width='40' />",
+        "gravatar": "<img alt='' src='http://2.gravatar.com/avatar/5e1a8fhjd'/>",
         "permissions": {
             "admin_page": true,
             "connect": true,

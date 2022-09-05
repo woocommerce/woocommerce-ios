@@ -107,7 +107,7 @@ public class AlamofireNetwork: Network {
 }
 
 
-/// MARK: - Alamofire.DataResponse: Private Methods
+/// MARK: - Alamofire.DataResponse: Helper Methods
 ///
 extension Alamofire.DataResponse {
 

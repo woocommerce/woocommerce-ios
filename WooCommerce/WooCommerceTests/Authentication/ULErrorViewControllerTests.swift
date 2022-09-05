@@ -81,6 +81,50 @@ final class ULErrorViewControllerTests: XCTestCase {
         XCTAssertEqual(auxiliaryButtonHidden, viewModel.isAuxiliaryButtonHidden)
     }
 
+    func test_viewcontroller_does_not_have_right_bar_button_item_when_rightBarButtonItemTitle_is_nil_in_viewmodel() throws {
+        // Given
+        let viewModel = ErrorViewModel()
+        viewModel.rightBarButtonItemTitle = nil
+        let viewController = ULErrorViewController(viewModel: viewModel)
+
+        // When
+        _ = try XCTUnwrap(viewController.view)
+
+        // Then
+        XCTAssertNil(viewController.navigationItem.rightBarButtonItem)
+    }
+
+    func test_viewcontroller_shows_right_bar_button_item_when_rightBarButtonItemTitle_provided_by_viewmodel() throws {
+        // Given
+        let title = "Title"
+        let viewModel = ErrorViewModel()
+        viewModel.rightBarButtonItemTitle = title
+        let viewController = ULErrorViewController(viewModel: viewModel)
+
+        // When
+        _ = try XCTUnwrap(viewController.view)
+        let rightBarButtonItem = try XCTUnwrap(viewController.navigationItem.rightBarButtonItem)
+
+        // Then
+        XCTAssertEqual(rightBarButtonItem.title, title)
+    }
+
+    func test_viewcontroller_hits_viewmodel_when_right_bar_button_item_is_tapped() throws {
+        // Given
+        let viewModel = ErrorViewModel()
+        viewModel.rightBarButtonItemTitle = "Button"
+        let viewController = ULErrorViewController(viewModel: viewModel)
+
+        // When
+        _ = try XCTUnwrap(viewController.view)
+        let rightBarButtonItem = try XCTUnwrap(viewController.navigationItem.rightBarButtonItem)
+
+        _ = rightBarButtonItem.target?.perform(rightBarButtonItem.action)
+
+        // Then
+        XCTAssertTrue(viewModel.rightBarButtonItemTapped)
+    }
+
     func test_viewcontroller_hits_viewmodel_when_auxbutton_is_tapped() throws {
         // Given
         let viewModel = ErrorViewModel()
@@ -182,10 +226,13 @@ private final class ErrorViewModel: ULErrorViewModel {
 
     let secondaryButtonTitle: String = "Secondary"
 
+    var rightBarButtonItemTitle: String?
+
     var primaryButtonTapped: Bool = false
     var secondaryButtonTapped: Bool = false
     var auxiliaryButtonTapped: Bool = false
     var viewDidLoadTriggered = false
+    var rightBarButtonItemTapped = false
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
         primaryButtonTapped = true
@@ -197,6 +244,10 @@ private final class ErrorViewModel: ULErrorViewModel {
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {
         auxiliaryButtonTapped = true
+    }
+
+    func didTapRightBarButtonItem(in viewController: UIViewController?) {
+        rightBarButtonItemTapped = true
     }
 
     func viewDidLoad(_ viewController: UIViewController?) {

@@ -1,7 +1,8 @@
 import SwiftUI
+import Yosemite
 
-struct InPersonPaymentsCodPaymentGatewayNotSetUp: View {
-    let viewModel: InPersonPaymentsCodPaymentGatewayNotSetUpViewModel
+struct InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView: View {
+    @ObservedObject var viewModel: InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel
 
     var body: some View {
         ScrollableVStack {
@@ -22,21 +23,28 @@ struct InPersonPaymentsCodPaymentGatewayNotSetUp: View {
             Button(Localization.skipButton, action: viewModel.skipTapped)
                 .buttonStyle(SecondaryButtonStyle())
 
-            Button(Localization.enableButton, action: {})
-                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: false))
+            Button(Localization.enableButton, action: viewModel.enableTapped)
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.awaitingResponse))
 
             Spacer()
 
-            InPersonPaymentsLearnMore(url: Constants.cashOnDeliveryLearnMoreUrl,
-                                      formatText: Localization.cashOnDeliveryLearnMore)
+            InPersonPaymentsLearnMore(
+                viewModel: LearnMoreViewModel(
+                    url: viewModel.learnMoreURL,
+                    formatText: Localization.cashOnDeliveryLearnMore,
+                    tappedAnalyticEvent: viewModel.learnMoreEvent))
         }
     }
 }
 
 struct InPersonPaymentsCodPaymentGatewayNotSetUp_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = InPersonPaymentsCodPaymentGatewayNotSetUpViewModel(completion: {})
-        return InPersonPaymentsCodPaymentGatewayNotSetUp(viewModel: viewModel)
+        let viewModel = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(
+            configuration: CardPresentPaymentsConfiguration(country: "US"),
+            plugin: .wcPay,
+            analyticReason: "",
+            completion: {})
+        return InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView(viewModel: viewModel)
     }
 }
 
@@ -70,6 +78,4 @@ private enum Localization {
 
 private enum Constants {
     static let imageHeight: CGFloat = 140.0
-    static let cashOnDeliveryLearnMoreUrl = URL(
-        string: "https://woocommerce.com/document/stripe/accept-in-person-payments-with-stripe/#section-8")!
 }

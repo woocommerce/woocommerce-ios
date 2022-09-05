@@ -1,1 +1,2 @@
-Questa versione apporta alcuni miglioramenti alla tua esperienza di accesso, inclusa l'opzione per usare le credenziali del tuo sito `wp-admin` e l'opzione con link per l'accesso. Continua a inviarci feedback: siamo lieti di ascoltarli.
+Questa versione presenta diverse correzioni che semplificano la ricezione di pagamenti dall'app. Abbiamo aggiunto anche una nuova pagina delle domande frequenti al Centro assistenza che facilita l'accesso all'app.
+Continua a inviarci feedback: siamo lieti di ascoltarli.

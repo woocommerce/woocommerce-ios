@@ -1,1 +1,2 @@
-Esta versão tem algumas melhorias em sua experiência de login, incluindo a opção de usar suas credenciais do painel do site e a opção de link mágico para fazer login. Continue compartilhando seu feedback conosco. Estamos ouvindo.
+Esta versão tem várias correções que facilitam o recebimento de pagamentos com o aplicativo. Também adicionamos uma nova página de perguntas frequentes na Central de Ajuda que ajudará você a fazer login no aplicativo.
+Continue compartilhando seu feedback conosco. Estamos ouvindo.

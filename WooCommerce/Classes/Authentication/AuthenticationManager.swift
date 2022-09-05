@@ -4,6 +4,7 @@ import WordPressAuthenticator
 import WordPressKit
 import Yosemite
 import class Networking.UserAgent
+import enum Experiments.ABTest
 import struct Networking.Settings
 import protocol Storage.StorageManagerType
 
@@ -45,12 +46,13 @@ class AuthenticationManager: Authentication {
     func initialize() {
         let isWPComMagicLinkPreferredToPassword = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasis)
         let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasisM2)
+        let continueWithSiteAddressFirst = ABTest.loginPrologueButtonOrder.variation == .control
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
                                                                 wpcomScheme: ApiCredentials.dotcomAuthScheme,
                                                                 wpcomTermsOfServiceURL: WooConstants.URLs.termsOfService.rawValue,
                                                                 wpcomAPIBaseURL: Settings.wordpressApiBaseURL,
-                                                                whatIsWPComURL: WooConstants.URLs.whatIsWPComURL.rawValue,
+                                                                whatIsWPComURL: WooConstants.URLs.whatIsWPCom.rawValue,
                                                                 googleLoginClientId: ApiCredentials.googleClientId,
                                                                 googleLoginServerClientId: ApiCredentials.googleServerId,
                                                                 googleLoginScheme: ApiCredentials.googleAuthScheme,
@@ -60,7 +62,7 @@ class AuthenticationManager: Authentication {
                                                                 enableSignInWithApple: true,
                                                                 enableSignupWithGoogle: false,
                                                                 enableUnifiedAuth: true,
-                                                                continueWithSiteAddressFirst: true,
+                                                                continueWithSiteAddressFirst: continueWithSiteAddressFirst,
                                                                 enableSiteCredentialsLoginForSelfHostedSites: true,
                                                                 isWPComLoginRequiredForSiteCredentialsLogin: true,
                                                                 isWPComMagicLinkPreferredToPassword: isWPComMagicLinkPreferredToPassword,
@@ -104,6 +106,7 @@ class AuthenticationManager: Authentication {
                                                                   siteLoginInstructions: AuthenticationConstants.siteInstructions,
                                                                   siteCredentialInstructions: AuthenticationConstants.siteCredentialInstructions,
                                                                   usernamePasswordInstructions: AuthenticationConstants.usernamePasswordInstructions,
+                                                                  applePasswordInstructions: AuthenticationConstants.applePasswordInstructions,
                                                                   continueWithWPButtonTitle: AuthenticationConstants.continueWithWPButtonTitle,
                                                                   enterYourSiteAddressButtonTitle: AuthenticationConstants.enterYourSiteAddressButtonTitle,
                                                                   signInWithSiteCredentialsButtonTitle: AuthenticationConstants.signInWithSiteCredsButtonTitle,
@@ -376,20 +379,42 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         }
     }
 
+    /// Presents the Support Interface
+    ///
+    /// - Parameters:
+    ///     - from: UIViewController instance from which to present the support interface
+    ///     - screen: A case from `CustomHelpCenterContent.Screen` enum. This represents authentication related screens from WCiOS.
+    ///
+    func presentSupport(from sourceViewController: UIViewController, screen: CustomHelpCenterContent.Screen) {
+        let customHelpCenterContent = CustomHelpCenterContent(screen: screen,
+                                                              flow: AuthenticatorAnalyticsTracker.shared.state.lastFlow)
+        presentSupport(from: sourceViewController, customHelpCenterContent: customHelpCenterContent)
+    }
+
     /// Presents the Support Interface from a given ViewController, with a specified SourceTag.
     ///
     func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag) {
-        let identifier = HelpAndSupportViewController.classNameWithoutNamespaces
-        guard let supportViewController = UIStoryboard.dashboard.instantiateViewController(withIdentifier: identifier) as? HelpAndSupportViewController else {
+        presentSupport(from: sourceViewController)
+    }
+
+    /// Presents the Support Interface from a given ViewController.
+    ///
+    /// - Parameters:
+    ///     - from: ViewController from which to present the support interface from
+    ///     - sourceTag: Support source tag of the view controller.
+    ///     - lastStep: Last `Step` tracked in `AuthenticatorAnalyticsTracker`
+    ///     - lastFlow: Last `Flow` tracked in `AuthenticatorAnalyticsTracker`
+    ///
+    func presentSupport(from sourceViewController: UIViewController,
+                        sourceTag: WordPressSupportSourceTag,
+                        lastStep: AuthenticatorAnalyticsTracker.Step,
+                        lastFlow: AuthenticatorAnalyticsTracker.Flow) {
+        guard let customHelpCenterContent = CustomHelpCenterContent(step: lastStep, flow: lastFlow) else {
+            presentSupport(from: sourceViewController)
             return
         }
 
-        supportViewController.displaysDismissAction = true
-
-        let navController = WooNavigationController(rootViewController: supportViewController)
-        navController.modalPresentationStyle = .formSheet
-
-        sourceViewController.present(navController, animated: true, completion: nil)
+        presentSupport(from: sourceViewController, customHelpCenterContent: customHelpCenterContent)
     }
 
     /// Presents the Support new request, from a given ViewController, with a specified SourceTag.
@@ -723,5 +748,31 @@ private extension AuthenticationManager {
     func isSupportedError(_ error: Error) -> Bool {
         let wooAuthError = AuthenticationError.make(with: error)
         return wooAuthError != .unknown
+    }
+}
+
+// MARK: - Help and support helpers
+private extension AuthenticationManager {
+
+    func presentSupport(from sourceViewController: UIViewController,
+                        customHelpCenterContent: CustomHelpCenterContent? = nil) {
+        let identifier = HelpAndSupportViewController.classNameWithoutNamespaces
+        let supportViewController = UIStoryboard.dashboard.instantiateViewController(identifier: identifier,
+                                                                                     creator: { coder -> HelpAndSupportViewController? in
+            guard let customHelpCenterContent = customHelpCenterContent else {
+                /// Returning nil as we don't need to customise the HelpAndSupportViewController
+                /// In this case `instantiateViewController` method will use the default `HelpAndSupportViewController` created from storyboard.
+                ///
+                return nil
+            }
+
+            return HelpAndSupportViewController(customHelpCenterContent: customHelpCenterContent, coder: coder)
+        })
+        supportViewController.displaysDismissAction = true
+
+        let navController = WooNavigationController(rootViewController: supportViewController)
+        navController.modalPresentationStyle = .formSheet
+
+        sourceViewController.present(navController, animated: true, completion: nil)
     }
 }

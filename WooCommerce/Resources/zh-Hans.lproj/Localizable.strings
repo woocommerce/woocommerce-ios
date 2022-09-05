@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-08-18 11:54:04+0000 */
+/* Translation-Revision-Date: 2022-08-30 09:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -37,6 +37,9 @@
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
 which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with your mobile device and ordering card readers" = "%1$@如何使用移动设备接受付款和订购读卡器";
+
+/* A label prompting users to learn more about card readers. %1$@ is a placeholder that is always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
+"%1$@ about adding Pay in Person to your checkout" = "%1$@如何将现场付款添加到您的结账方式";
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "尾号为 %2$@ 的 %1$@ 银行卡";
@@ -220,6 +223,9 @@ which should be translated separately and considered part of this sentence. */
 /* Please limit to 3 characters if possible. This is used if there are more than 99 items in a tab, like Orders. */
 "99+" = "99+";
 
+/* The message explaining what will happen when the merchant enables the Pay in Person payment gateway during card present payments onboarding. */
+"A \"Pay in Person\" option on your checkout lets you accept card or cash payments on collection or delivery." = "通过在结账时使用“现场付款”选项，您可在到货或配送时接受银行卡或现金付款。";
+
 /* Instruction text to explain magic link login step. */
 "A WordPress.com account is connected to your store credentials. To continue, we will send a verification link to the email address above." = "WordPress.com 账户已关联您的商店凭据。 要继续，我们将向上述电子邮件地址发送一个验证链接。";
 
@@ -354,6 +360,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the button that adds a note when creating a simple payment
    Title text of the button that adds customer note data when creating a new order */
 "Add Note" = "添加备注";
+
+/* Title for the card present payments onboarding step encouraging the merchant to enable the Pay in Person payment gateway. */
+"Add Pay in Person to your checkout" = "将现场付款添加到您的结账方式";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "添加照片";
@@ -828,6 +837,9 @@ which should be translated separately and considered part of this sentence. */
 /* The plural total limit where the same coupon can be applied for everyone, reads like: Can be used 10 times */
 "Can be used %1$d times" = "可使用 %1$d 次";
 
+/* Local notification title when the user encounters an error with WP.com password. */
+"Can't remember your password?" = "忘记密码？";
+
 /* Action title to cancel selecting products to add to a grouped product from search results
    Add Product Category. Cancel button title in navbar.
    Alert button title - dismisses alert, which cancels marking all as read attempt.
@@ -891,6 +903,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert when there is an error adding new product tags. */
 "Cannot Add Tags" = "无法添加标签";
+
+/* Error message shown when the input URL does not point to an existing site. */
+"Cannot access the site at this address. Please double-check and try again." = "无法访问此地址的站点。 请仔细检查，然后重试。";
 
 /* The title of the alert when there is a generic error adding the package */
 "Cannot add package" = "无法添加包裹";
@@ -1102,9 +1117,6 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Prompt user to connect their first reader */
 "Connect your card reader" = "连接您的读卡器";
 
-/* Link on the store picker when there are no stores available. Opens a webview about Jetpack setup. */
-"Connect your store with Jetpack" = "将您的商店与 Jetpack 连接";
-
 /* Title shown when a user logs in with Google but no matching WordPress.com account is found */
 "Connected But…" = "已连接，但是…";
 
@@ -1176,6 +1188,9 @@ which should be translated separately and considered part of this sentence. */
    Title of continue button
    Title of dismiss button presented when users attempt to log in without Jetpack installed or connected */
 "Continue" = "继续";
+
+/* Call to Action to finish the setup of In-Person Payments in the Menu */
+"Continue Setup" = "继续设置";
 
 /* Button title. Takes the user to the login with WordPress.com flow. */
 "Continue With WordPress.com" = "继续使用 WordPress.com";
@@ -1760,6 +1775,9 @@ which should be translated separately and considered part of this sentence. */
 /* The action button on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
 "Enable Coupons" = "启用优惠券";
 
+/* Title for the button to enable the Pay in Person payment gateway during card present payments onboarding. */
+"Enable Pay in Person" = "启用现场付款";
+
 /* Enable Reviews label in Product Settings */
 "Enable Reviews" = "启用评论";
 
@@ -1827,8 +1845,8 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "输入 URL";
 
-/* Action button linking to instructions for enter another store.Presented when logging in with an email address that is not a WordPress.com account
-   Button title. Takes the user to the login by store address flow. */
+/* Button title. Takes the user to the login by store address flow.
+   Button to input a site address in store picker when there are no stores found */
 "Enter Your Store Address" = "输入您的商店地址";
 
 /* Text field coupon code placeholder in the view for adding or editing a coupon. */
@@ -1988,6 +2006,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message on the Coupon Details screen when deleting coupon fails */
 "Failed to delete coupon. Please try again." = "优惠券删除失败。 请重试。";
+
+/* Error displayed when the attempt to enable a Pay in Person checkout payment option fails */
+"Failed to enable Pay in Person. Please try again later." = "无法启用现场付款功能。 请稍后重试。";
 
 /* Error message on the Issue Refund screen when fetching the charge details failed */
 "Failed to fetch your charge details. Please try again." = "获取扣费详细信息失败。 请重试。";
@@ -2173,6 +2194,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Google 注册失败。";
 
+/* Confirmation text of the button on the bottom announcement modalwhen a merchant taps on Simple Payment */
+"Got it!" = "知道了！";
+
 /* Display label for grouped product type. */
 "Grouped" = "已分组";
 
@@ -2293,9 +2317,6 @@ which should be translated separately and considered part of this sentence. */
 /* Header text when reprinting a shipping label */
 "If there was a printing error when you purchased the label, you can print it again." = "如果您已经购买了标签，但遇到打印错误，则可以再次打印。";
 
-/* Displayed during the Login flow, whenever the user has no woo stores associated. */
-"If you already have a store, you’ll need to install the free Jetpack plugin and connect it to your WordPress.com account." = "如果您已有商店，则需要安装免费的 Jetpack 插件并将其连接到您的 WordPress.com 帐户。";
-
 /* Info text when reprinting a shipping label */
 "If you already used the label in a package, printing and using it again is a violation of our terms of service" = "如果您已在包装中使用过该标签，再次打印和使用此标签会违反我们的服务条款";
 
@@ -2325,6 +2346,9 @@ which should be translated separately and considered part of this sentence. */
    Title for a dismissal alert on the upsell card reader feature announcement banner
    Title for the In-Person Payments settings screen */
 "In-Person Payments" = "现场付款";
+
+/* Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled. */
+"In-Person Payments Setup is incomplete." = "现场付款设置未完成。";
 
 /* Title for the error screen when there is more than one plugin active and the Stripe plugin should be deactivated */
 "In-Person Payments are processed through WooCommerce Payments." = "通过 WooCommerce Payments 处理现场付款。";
@@ -2463,6 +2487,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message to show to user when he tries to add a self-hosted site that isn't a valid URL. */
 "Invalid URL, please check if you wrote a valid site address." = "URL 无效，请检查您输入的网址是否有效。";
 
+/* Error message shown when the input URL is invalid. */
+"Invalid URL. Please double-check and try again." = "URL 无效。 请仔细检查，然后重试。";
+
 /* Error message generated when announcement service is unable to return a valid endpoint. */
 "Invalid endpoint" = "端点无效";
 
@@ -2492,9 +2519,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message explaining that the site entered doesn't have WooCommerce installed or activated. Reads like 'It looks like awebsite.com is not a WooCommerce site. */
 "It looks like %@ is not a WooCommerce site." = "%@ 似乎不是 WooCommerce 站点。";
 
-/* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
-"It looks like this email isn't associated with a WordPress.com account." = "该电子邮件似乎未与 WordPress.com 帐户关联。";
-
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "此用户名\/密码可能与该站点无关。";
 
@@ -2503,6 +2527,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "您可能输入了错误的密码。是否想重试？";
+
+/* An error message displayed when the user tries to log in to the app with a simple WP.com site. Reads like: It seems that your site google.com is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce. */
+"It seems that your site %@ is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce." = "您的站点 %@ 似乎是简单的 WordPress.com 站点，无法安装插件。 请升级您的套餐来使用 WooCommerce。";
 
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "斜体";
@@ -2674,7 +2701,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button that will restart the login flow.Presented when logging in with a site address that appears to be invalid.
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
    Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
-   Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
+   Action button that will restart the login flow.Presented when the user tries to log in to the app with a simple WP.com site. */
 "Log In With Another Account" = "使用其他帐户登录";
 
 /* Action button triggering a Log Out.Presented when logging in with a store address that does not match the account entered
@@ -2698,6 +2725,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Instruction text on the login's email address screen. */
 "Log in to your WordPress.com account with your email address." = "使用您的电子邮件地址登录 WordPress.com 帐户。";
 
+/* Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
+"Log in with another account" = "使用其他帐户登录";
+
 /* Sign in instructions on the 'log in using email' screen.
    Sign in instructions on the 'log in using WordPress.com account' screen. */
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "使用您的 WordPress.com 帐户电子邮件地址登录，管理您的 WooCommerce 商店。";
@@ -2707,6 +2737,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Instructions on the WordPress.com username / password log in form. */
 "Log in with your WordPress.com username and password." = "使用您的 WordPress.com 用户名和密码登录。";
+
+/* Action button linking to instructions for enter another store.Presented when logging in with an email address that is not a WordPress.com account */
+"Log in with your store address" = "使用商店地址登录";
 
 /* Local notification action to log in with WordPress.com. */
 "Login with WordPress.com" = "使用 WordPress.com 登录";
@@ -2888,7 +2921,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Need a shipping label?" = "是否需要货运标签？";
 
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation */
-"Need help finding the connected email?" = "需要有关查找已关联电子邮件方面的帮助？";
+"Need help finding the required email?" = "需要查找所需电子邮件方面的帮助？";
 
 /* A button title. */
 "Need help finding your site address?" = "查找站点地址时需要帮助？";
@@ -2934,7 +2967,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message for the mocked order notification needed for the AppStore listing screenshot. 'Your WooCommerce Store' is the name of the mocked store. */
 "New order for $13.98 on Your WooCommerce Store" = "您的 WooCommerce 商店有 13.98 美元的新订单";
 
-/* Title of button in the login prologue screen for users who are new to WooCommerce. */
+/* Title of button in the login prologue screen for users who are new to WooCommerce.
+   Title of button on the site picker screen for users who are new to WooCommerce. */
 "New to WooCommerce?" = "首次使用 WooCommerce？";
 
 /* Action navigate to the variation creation screen
@@ -3063,6 +3097,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info text for the generate first variation screen */
 "Now that you’ve added attributes, you can create your first variation!" = "添加属性后，即可创建您的第一个变体了。";
 
+/* Message of the bottom announcement modal when a merchant taps on Simple Payment */
+"Now you can quickly access In-Person Payments and other features with ease." = "现在您可轻松快速地使用“现场付款”和其他功能。";
+
 /* Alert dismissal title
    Button title. An acknowledgement of the message displayed in a prompt.
    Dismiss button on the alert when there is an error creating a new product category
@@ -3167,6 +3204,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label for button to log in using site address. Underscores _..._ denote underline. */
 "Or log in by _entering your site address_." = "或通过 _输入您的站点地址_ 登录。";
+
+/* The button title for a secondary call-to-action button on the password screen. When the user wants to try sending a magic link instead of entering a password. */
+"Or log in with magic link" = "或者通过神奇链接登录";
 
 /* Header of attributes section in Add Attribute screen */
 "Or tap to select existing attribute" = "或轻按以选择现有属性";
@@ -3296,6 +3336,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Paste without Formatting Menu Item */
 "Paste without Formatting" = "不带格式粘贴";
 
+/* Customer-facing description showing more details about the Pay in Person option which is added to the store checkout when the merchant enables Pay in Person
+   Customer-facing instructions shown on Order Thank-you pages and confirmation emails, showing more details about the Pay in Person option added to the store checkout when the merchant enables Pay in Person */
+"Pay by card or another accepted payment method" = "银行卡付款或其他可接受的付款方式";
+
+/* Customer-facing title for the payment option added to the store checkout when the merchant enables Pay in Person */
+"Pay in Person" = "现场付款";
+
 /* Payment section title
    Title text of the row that shows the payment headline when creating a simple payment
    Title text of the section that shows Payment details when creating a new order */
@@ -3339,6 +3386,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the hub menu payments button */
 "Payments" = "付款";
+
+/* Title of the bottom announcement modal when a merchant taps on Simple Payment */
+"Payments from the Menu tab" = "“菜单”选项卡中的“付款”";
 
 /* Display label for pending order status.
    Display label for the review's pending status */
@@ -3927,6 +3977,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "重置活动日志";
 
+/* Local notification action to reset password. */
+"Reset password" = "重置密码";
+
 /* The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "重置密码";
 
@@ -3954,6 +4007,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button to retry when there was a network error checking In-Person Payments requirements
    Retry Action
    Retry action for an error notice
+   Retry Action on error displayed when the attempt to enable a Pay in Person checkout payment option fails
    Retry Action on the notice when loading product categories fails
    Retry the last action */
 "Retry" = "重试";
@@ -4423,8 +4477,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "站点地址至少要包含 4 个字符。";
 
-/* The button title on the login onboarding screen to skip to the prologue screen. */
+/* The button title on the login onboarding screen to skip to the prologue screen.
+   Title for the button to skip the onboarding step informing the merchant of pending account requirements */
 "Skip" = "跳过";
+
+/* Title for the button to skip the onboarding step encoraging the merchant to enable thePay in Person payment gateway */
+"Skip for now" = "暂时跳过";
 
 /* Placeholder in the Product Slug row on Edit Product Slug screen.
    Product Slug navigation title
@@ -5018,13 +5076,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "无法生成变量。";
 
-/* Error message when the Stripe account is restricted because there are pending requirements */
-"There are pending requirements for your account. Please complete those requirements by" = "您的账户中存在待处理的要求。 请在以下时间之前完成这些要求";
-
-/* Error message when In-Person Payments is not supported because there are pending requirements in the merchant's payment account.%1$d will contain the localized deadline (e.g. August 11, 2021) */
+/* Error message when because there are pending requirements in the merchant's In-Person Payments account. %1$d will contain the localized deadline (e.g. August 11, 2021) */
 "There are pending requirements for your account. Please complete those requirements by %1$@ to keep accepting In-Person Payments." = "您的账户中存在待处理的要求。 请在 %1$@之前完成这些要求，以继续接受现场付款。";
 
-/* Error message when In-Person Payments is not supportedThere are pending requirements in the merchant's payment account (without a known deadline) */
+/* Error message when there are pending requirements in the merchant's payment account (without a known deadline) */
 "There are pending requirements for your account. Please complete those requirements to keep accepting In-Person Payments." = "您的账户中存在待处理的要求。 请完成这些要求，以继续接受现场付款。";
 
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
@@ -5097,6 +5152,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "此电子邮件地址并未在 WordPress.com 上注册。";
+
+/* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
+"This email isn't used with a WordPress.com account." = "此电子邮件未用于 WordPress.com 账户。";
 
 /* Error for missing package details on the Add New Custom Package screen in Shipping Label flow */
 "This field is required" = "此字段为必填字段";
@@ -5766,6 +5824,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
 "We couldn't connect your reader" = "我们无法连接您的读卡器";
 
+/* Displayed during the Login flow, whenever the user has no woo stores associated. */
+"We couldn't find a WooCommerce store connected to your account." = "我们找不到与您的账户连接的 WooCommerce 商店。";
+
 /* The title of the Error Loading Data banner */
 "We couldn't load your data" = "我们无法加载您的数据";
 
@@ -6012,7 +6073,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message displayed when a coupon was successfully created */
 "Your new coupon was created!" = "您的新优惠券已创建！";
 
-/* Title for the error screen when the merchant's In-Person Payments account is restricted because there are pending requirements */
+/* Title for the error screen when the merchant's In-Person Payments account has pending requirements which will result in their account being restricted if not resolved by a deadline */
 "Your payments account has pending requirements" = "您的付款账户中存在待处理的要求";
 
 /* Label that displays when an optional software update is happening */

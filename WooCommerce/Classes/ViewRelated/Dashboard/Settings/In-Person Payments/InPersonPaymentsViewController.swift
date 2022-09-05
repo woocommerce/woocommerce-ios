@@ -1,4 +1,5 @@
 import SwiftUI
+import Yosemite
 
 final class InPersonPaymentsViewController: UIHostingController<InPersonPaymentsView> {
     private let onWillDisappear: (() -> ())?
@@ -40,57 +41,56 @@ struct InPersonPaymentsView: View {
             case .loading:
                 InPersonPaymentsLoading()
             case let .selectPlugin(pluginSelectionWasCleared):
-                if viewModel.gatewaySelectionAvailable {
-                    // Preselect WCPay only if there was no selection done before
-                    InPersonPaymentsSelectPluginView(selectedPlugin: pluginSelectionWasCleared == true ? nil : .wcPay) { plugin in
-                        viewModel.selectPlugin(plugin)
-                        ServiceLocator.analytics.track(.cardPresentPaymentGatewaySelected, withProperties: ["payment_gateway": plugin.pluginName])
-                    }
-                } else if viewModel.userIsAdministrator {
-                    InPersonPaymentsPluginConflictAdmin(onRefresh: viewModel.refresh)
-                } else {
-                    InPersonPaymentsPluginConflictShopManager(onRefresh: viewModel.refresh)
+                // Preselect WCPay only if there was no selection done before
+                InPersonPaymentsSelectPluginView(selectedPlugin: pluginSelectionWasCleared == true ? nil : .wcPay) { plugin in
+                    viewModel.selectPlugin(plugin)
+                    ServiceLocator.analytics.track(.cardPresentPaymentGatewaySelected, withProperties: ["payment_gateway": plugin.pluginName])
                 }
-            case let .pluginShouldBeDeactivated(plugin) where plugin == .stripe:
-                InPersonPaymentsDeactivateStripeView(onRefresh: viewModel.refresh, showSetupPluginsButton: viewModel.userIsAdministrator)
             case .countryNotSupported(let countryCode):
-                InPersonPaymentsCountryNotSupported(countryCode: countryCode)
+                InPersonPaymentsCountryNotSupported(countryCode: countryCode, analyticReason: viewModel.state.reasonForAnalytics)
             case .countryNotSupportedStripe(_, let countryCode):
-                InPersonPaymentsCountryNotSupportedStripe(countryCode: countryCode)
+                InPersonPaymentsCountryNotSupportedStripe(countryCode: countryCode, analyticReason: viewModel.state.reasonForAnalytics)
             case .pluginNotInstalled:
-                InPersonPaymentsPluginNotInstalled(onRefresh: viewModel.refresh)
+                InPersonPaymentsPluginNotInstalled(analyticReason: viewModel.state.reasonForAnalytics, onRefresh: viewModel.refresh)
             case .pluginUnsupportedVersion(let plugin):
-                InPersonPaymentsPluginNotSupportedVersion(plugin: plugin, onRefresh: viewModel.refresh)
+                InPersonPaymentsPluginNotSupportedVersion(plugin: plugin, analyticReason: viewModel.state.reasonForAnalytics, onRefresh: viewModel.refresh)
             case .pluginNotActivated(let plugin):
-                InPersonPaymentsPluginNotActivated(plugin: plugin, onRefresh: viewModel.refresh)
+                InPersonPaymentsPluginNotActivated(plugin: plugin, analyticReason: viewModel.state.reasonForAnalytics, onRefresh: viewModel.refresh)
             case .pluginInTestModeWithLiveStripeAccount(let plugin):
-                InPersonPaymentsLiveSiteInTestMode(plugin: plugin, onRefresh:
+                InPersonPaymentsLiveSiteInTestMode(plugin: plugin, analyticReason: viewModel.state.reasonForAnalytics, onRefresh:
                     viewModel.refresh)
             case .pluginSetupNotCompleted(let plugin):
-                InPersonPaymentsPluginNotSetup(plugin: plugin, onRefresh: viewModel.refresh)
+                InPersonPaymentsPluginNotSetup(plugin: plugin, analyticReason: viewModel.state.reasonForAnalytics, onRefresh: viewModel.refresh)
             case .stripeAccountOverdueRequirement:
-                InPersonPaymentsStripeAccountOverdue()
+                InPersonPaymentsStripeAccountOverdue(analyticReason: viewModel.state.reasonForAnalytics)
             case .stripeAccountPendingRequirement(_, let deadline):
-                InPersonPaymentsStripeAccountPending(deadline: deadline, onSkip: viewModel.skipPendingRequirements)
+                InPersonPaymentsStripeAccountPending(
+                    deadline: deadline,
+                    analyticReason: viewModel.state.reasonForAnalytics,
+                    onSkip: viewModel.skipPendingRequirements)
             case .stripeAccountUnderReview:
-                InPersonPaymentsStripeAccountReview()
+                InPersonPaymentsStripeAccountReview(analyticReason: viewModel.state.reasonForAnalytics)
             case .stripeAccountRejected:
-                InPersonPaymentsStripeRejected()
-            case .codPaymentGatewayNotSetUp:
-                InPersonPaymentsCodPaymentGatewayNotSetUp(viewModel: viewModel.codStepViewModel)
+                InPersonPaymentsStripeRejected(analyticReason: viewModel.state.reasonForAnalytics)
+            case .codPaymentGatewayNotSetUp(let plugin):
+                InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView(
+                    viewModel: InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(
+                        plugin: plugin,
+                        analyticReason: viewModel.state.reasonForAnalytics,
+                        completion: viewModel.refresh))
             case .completed:
                 InPersonPaymentsCompleted()
             case .noConnectionError:
-                InPersonPaymentsNoConnection(onRefresh: viewModel.refresh)
+                InPersonPaymentsNoConnection(analyticReason: viewModel.state.reasonForAnalytics, onRefresh: viewModel.refresh)
             default:
-                InPersonPaymentsUnavailable()
+                InPersonPaymentsUnavailable(analyticReason: viewModel.state.reasonForAnalytics)
             }
         }
         .customOpenURL(action: { url in
             switch url {
             case InPersonPaymentsSupportLink.supportURL:
                 showSupport?()
-            case InPersonPaymentsLearnMore.learnMoreURL:
+            case LearnMoreViewModel.learnMoreURL:
                 if let url = viewModel.learnMoreURL {
                     showURL?(url)
                 }

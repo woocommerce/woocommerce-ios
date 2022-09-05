@@ -2,6 +2,7 @@ import SwiftUI
 
 struct InPersonPaymentsStripeAccountPending: View {
     let deadline: Date?
+    let analyticReason: String
     let onSkip: () -> ()
 
     var body: some View {
@@ -14,8 +15,10 @@ struct InPersonPaymentsStripeAccountPending: View {
             ),
             supportLink: true,
             learnMore: true,
-            button: InPersonPaymentsOnboardingError.ButtonInfo(
+            analyticReason: analyticReason,
+            buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(
                 text: Localization.skipButton,
+                analyticReason: analyticReason,
                 action: onSkip
             )
         )
@@ -55,7 +58,7 @@ private enum Localization {
 
 struct InPersonPaymentsStripeAccountPending_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsStripeAccountPending(deadline: Date(), onSkip: {})
+        InPersonPaymentsStripeAccountPending(deadline: Date(), analyticReason: "", onSkip: {})
     }
 }
 

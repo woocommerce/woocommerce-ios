@@ -184,6 +184,16 @@ public enum WooAnalyticsStat: String {
     // MARK: Card-Present Payments Onboarding
     case cardPresentOnboardingLearnMoreTapped = "card_present_onboarding_learn_more_tapped"
     case cardPresentOnboardingNotCompleted = "card_present_onboarding_not_completed"
+    case cardPresentOnboardingStepSkipped = "card_present_onboarding_step_skipped"
+    case cardPresentOnboardingCtaTapped = "card_present_onboarding_cta_tapped"
+
+    // MARK: Cash on Delivery Enable events
+    case enableCashOnDeliverySuccess = "enable_cash_on_delivery_success"
+    case enableCashOnDeliveryFailed = "enable_cash_on_delivery_failed"
+    case disableCashOnDeliverySuccess = "disable_cash_on_delivery_success"
+    case disableCashOnDeliveryFailed = "disable_cash_on_delivery_failed"
+    case paymentsHubCashOnDeliveryToggled = "payments_hub_cash_on_delivery_toggled"
+    case paymentsHubCashOnDeliveryToggleLearnMoreTapped = "payments_hub_cash_on_delivery_toggle_learn_more_tapped"
 
     // MARK: Payment Gateways selection
     case cardPresentPaymentGatewaySelected = "card_present_payment_gateway_selected"
@@ -263,6 +273,7 @@ public enum WooAnalyticsStat: String {
     case collectPaymentTapped = "payments_flow_order_collect_payment_tapped"
     case orderViewCustomFieldsTapped = "order_view_custom_fields_tapped"
     case orderDetailWaitingTimeLoaded = "order_detail_waiting_time_loaded"
+    case orderAddressValidationError = "order_address_validation_error"
 
     // MARK: Order List Sorting/Filtering
     //
@@ -361,6 +372,7 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Review Data/Action Events
     //
+    case reviewOpen = "review_open"
     case reviewLoaded = "review_loaded"
     case reviewLoadFailed = "review_load_failed"
     case reviewMarkRead = "review_mark_read"

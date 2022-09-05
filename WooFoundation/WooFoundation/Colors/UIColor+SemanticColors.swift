@@ -1,7 +1,7 @@
 import UIKit
 
 // MARK: - Base colors.
-extension UIColor {
+public extension UIColor {
     /// Accent. Pink-50 (< iOS 13 and Light Mode) and Pink-30 (Dark Mode)
     ///
     static var accent: UIColor {
@@ -64,14 +64,14 @@ extension UIColor {
 
     /// Blue. Blue-50 (< iOS 13 and Light Mode) and Blue-30 (Dark Mode)
     ///
-    static var blue: UIColor {
+    static var wooBlue: UIColor {
         return UIColor(light: .withColorStudio(.blue, shade: .shade50),
                        dark: .withColorStudio(.blue, shade: .shade30))
     }
 
     /// Orange. Orange-50 (< iOS 13 and Light Mode) and Orange-30 (Dark Mode)
     ///
-    static var orange: UIColor {
+    static var wooOrange: UIColor {
         return UIColor(light: .withColorStudio(.orange, shade: .shade50),
                        dark: .withColorStudio(.orange, shade: .shade30))
     }
@@ -79,7 +79,7 @@ extension UIColor {
 
 
 // MARK: - Text Colors.
-extension UIColor {
+public extension UIColor {
     /// Text link. Pink-50
     ///
     static var textLink: UIColor {
@@ -146,7 +146,7 @@ extension UIColor {
 
 
 // MARK: - Image Colors.
-extension UIColor {
+public extension UIColor {
     /// Placeholder image tint color.
     ///
     static var placeholderImage: UIColor {
@@ -155,7 +155,7 @@ extension UIColor {
 }
 
 // MARK: - UI elements.
-extension UIColor {
+public extension UIColor {
     /// Basic Background.
     ///
     static var basicBackground: UIColor {
@@ -346,7 +346,7 @@ extension UIColor {
 }
 
 // MARK: - UI elements.
-extension UIColor {
+public extension UIColor {
     /// Stats chart data bar color.
     ///
     static var chartDataBar: UIColor {
@@ -362,7 +362,7 @@ extension UIColor {
 }
 
 // MARK: - Borders.
-extension UIColor {
+public extension UIColor {
     /// Default border color.
     ///
     static var border: UIColor {
@@ -372,7 +372,7 @@ extension UIColor {
 
 
 // MARK: - Table Views.
-extension UIColor {
+public extension UIColor {
     /// List Icon.
     ///
     static var listIcon: UIColor {
@@ -400,7 +400,7 @@ extension UIColor {
 
 
 // MARK: - Login.
-extension UIColor {
+public extension UIColor {
     class var alertHeaderImageBackgroundColor: UIColor {
         return UIColor(light: .systemColor(.systemGray6),
                        dark: .systemColor(.systemGray5))
@@ -416,7 +416,7 @@ extension UIColor {
 
 
 // MARK: - Grays
-extension UIColor {
+public extension UIColor {
     /// Muriel gray palette
     /// - Parameter shade: a MurielColorShade of the desired shade of gray
     class func gray(_ shade: ColorStudioShade) -> UIColor {
@@ -456,7 +456,7 @@ extension UIColor {
 }
 
 // MARK: - Woo Purples
-extension UIColor {
+public extension UIColor {
     class func wooCommercePurple(_ shade: ColorStudioShade) -> UIColor {
         switch shade {
         case .shade0:

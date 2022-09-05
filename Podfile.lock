@@ -6,7 +6,7 @@ PODS:
   - AppAuth/Core (1.5.0)
   - AppAuth/ExternalUserAgent (1.5.0):
     - AppAuth/Core
-  - Automattic-Tracks-iOS (0.11.1):
+  - Automattic-Tracks-iOS (0.12.0-beta.2):
     - Sentry (~> 6)
     - Sodium (>= 0.9.1)
     - UIDeviceIdentifier (~> 2.0)
@@ -42,7 +42,7 @@ PODS:
   - WordPress-Aztec-iOS (1.11.0)
   - WordPress-Editor-iOS (1.11.0):
     - WordPress-Aztec-iOS (= 1.11.0)
-  - WordPressAuthenticator (2.3.0):
+  - WordPressAuthenticator (2.4.0):
     - Alamofire (~> 4.8)
     - CocoaLumberjack (~> 3.5)
     - GoogleSignIn (~> 6.0.1)
@@ -83,7 +83,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.8)
-  - Automattic-Tracks-iOS (~> 0.11.1)
+  - Automattic-Tracks-iOS (~> 0.12.0-beta.2)
   - CocoaLumberjack (~> 3.7.4)
   - CocoaLumberjack/Swift (~> 3.7.4)
   - Gridicons (~> 1.2.0)
@@ -92,7 +92,7 @@ DEPENDENCIES:
   - Sourcery (~> 1.0.3)
   - StripeTerminal (~> 2.7)
   - WordPress-Editor-iOS (~> 1.11.0)
-  - WordPressAuthenticator (~> 2.3.0)
+  - WordPressAuthenticator (~> 2.4.0)
   - WordPressKit (~> 4.49.0)
   - WordPressShared (~> 1.15)
   - WordPressUI (~> 1.12.5)
@@ -144,7 +144,7 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
   AppAuth: 80317d99ac7ff2801a2f18ff86b48cd315ed465d
-  Automattic-Tracks-iOS: 5cd49d3acf76c26b92b4094d34ba84e6b55e5425
+  Automattic-Tracks-iOS: f31213fbf0391968ffcff75e8c1bdad398589261
   CocoaLumberjack: 543c79c114dadc3b1aba95641d8738b06b05b646
   FormatterKit: 184db51bf120b633693a73624a4cede89ec51a41
   GoogleSignIn: fd381840dbe7c1137aa6dc30849a5c3e070c034a
@@ -163,7 +163,7 @@ SPEC CHECKSUMS:
   UIDeviceIdentifier: af4e11e25a2ea670078e2bd677bb0e8144f9f063
   WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348
   WordPress-Editor-iOS: 304098424f1051cb271546c99f906aac296b1b81
-  WordPressAuthenticator: df55cd04a8157fa38b2e8c7c9cb28ab0a82d00a8
+  WordPressAuthenticator: afc1b7ec564f2b8e71c3d2ab8afa29df70ed6d03
   WordPressKit: 96deb6ba37ea5eaec4ddcaa53eca04d653246152
   WordPressShared: 5477f179c7fe03b5d574f91adda66f67d131827e
   WordPressUI: c5be816f6c7b3392224ac21de9e521e89fa108ac
@@ -179,6 +179,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2bdf8544f7cd0fd4c002546f5704b813845beb2a
   ZendeskSupportSDK: 3a8e508ab1d9dd22dc038df6c694466414e037ba
 
-PODFILE CHECKSUM: 8c1958091efafb7741ffe41719ea753dafe38041
+PODFILE CHECKSUM: 4bdf9f791fbedc1074a7e20f9ff254db1f59c7ba
 
 COCOAPODS: 1.11.2

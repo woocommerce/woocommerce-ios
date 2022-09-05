@@ -2,6 +2,7 @@ import SwiftUI
 
 struct InPersonPaymentsCountryNotSupportedStripe: View {
     let countryCode: String
+    let analyticReason: String
 
     var body: some View {
         InPersonPaymentsOnboardingError(
@@ -12,7 +13,8 @@ struct InPersonPaymentsCountryNotSupportedStripe: View {
                 height: 180.0
             ),
             supportLink: true,
-            learnMore: true
+            learnMore: true,
+            analyticReason: analyticReason
         )
     }
 
@@ -45,8 +47,8 @@ private enum Localization {
 struct InPersonPaymentsCountryNotSupportedStripe_Previews: PreviewProvider {
     static var previews: some View {
         // Valid country code
-        InPersonPaymentsCountryNotSupportedStripe(countryCode: "ES")
+        InPersonPaymentsCountryNotSupportedStripe(countryCode: "ES", analyticReason: "")
         // Invalid country code
-        InPersonPaymentsCountryNotSupportedStripe(countryCode: "OO")
+        InPersonPaymentsCountryNotSupportedStripe(countryCode: "OO", analyticReason: "")
     }
 }

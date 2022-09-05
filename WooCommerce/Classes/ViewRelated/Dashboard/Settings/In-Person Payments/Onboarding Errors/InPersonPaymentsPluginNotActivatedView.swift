@@ -3,6 +3,7 @@ import Yosemite
 
 struct InPersonPaymentsPluginNotActivated: View {
     let plugin: CardPresentPaymentsPlugin
+    let analyticReason: String
     let onRefresh: () -> Void
 
     var body: some View {
@@ -15,8 +16,10 @@ struct InPersonPaymentsPluginNotActivated: View {
             ),
             supportLink: false,
             learnMore: true,
-            button: InPersonPaymentsOnboardingError.ButtonInfo(
+            analyticReason: analyticReason,
+            buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(
                 text: Localization.primaryButton,
+                analyticReason: analyticReason,
                 action: onRefresh
             )
         )
@@ -42,6 +45,6 @@ private enum Localization {
 
 struct InPersonPaymentsPluginNotActivated_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsPluginNotActivated(plugin: .wcPay, onRefresh: {})
+        InPersonPaymentsPluginNotActivated(plugin: .wcPay, analyticReason: "", onRefresh: {})
     }
 }

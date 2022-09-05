@@ -8,7 +8,6 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isSplitViewInOrdersTabOn: Bool
     private let isUpdateOrderOptimisticallyOn: Bool
     private let shippingLabelsOnboardingM1: Bool
-    private let inPersonPaymentGatewaySelection: Bool
     private let isAppleIDAccountDeletionEnabled: Bool
     private let isBackgroundImageUploadEnabled: Bool
     private let isLoginPrologueOnboardingEnabled: Bool
@@ -19,7 +18,6 @@ struct MockFeatureFlagService: FeatureFlagService {
          isSplitViewInOrdersTabOn: Bool = false,
          isUpdateOrderOptimisticallyOn: Bool = false,
          shippingLabelsOnboardingM1: Bool = false,
-         inPersonPaymentGatewaySelection: Bool = false,
          isAppleIDAccountDeletionEnabled: Bool = false,
          isBackgroundImageUploadEnabled: Bool = false,
          isLoginPrologueOnboardingEnabled: Bool = false) {
@@ -29,7 +27,6 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isSplitViewInOrdersTabOn = isSplitViewInOrdersTabOn
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
         self.shippingLabelsOnboardingM1 = shippingLabelsOnboardingM1
-        self.inPersonPaymentGatewaySelection = inPersonPaymentGatewaySelection
         self.isAppleIDAccountDeletionEnabled = isAppleIDAccountDeletionEnabled
         self.isBackgroundImageUploadEnabled = isBackgroundImageUploadEnabled
         self.isLoginPrologueOnboardingEnabled = isLoginPrologueOnboardingEnabled
@@ -49,8 +46,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isUpdateOrderOptimisticallyOn
         case .shippingLabelsOnboardingM1:
             return shippingLabelsOnboardingM1
-        case .inPersonPaymentGatewaySelection:
-            return inPersonPaymentGatewaySelection
         case .appleIDAccountDeletion:
             return isAppleIDAccountDeletionEnabled
         case .backgroundProductImageUpload:

@@ -57,11 +57,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v10.0-whats-new"
+msgctxt "v10.2-whats-new"
 msgid ""
-"We made it much easier to find everything about accepting payments in the app. Head on to the Payments section from the Menu! We also fixed an issue where you might be unnecessarily blocked from taking payments.\n"
-"We also made various enhancements to our login flows to help you get started quickly with the app.\n"
-"Lastly, we’ve made some tweaks to performance. But we’re not done. Look forward to more improvements in the future. Please keep sending your feedback!\n"
+"Even though this release doesn’t have any new features, we still put a lot of love into it! You can now enable or disable the option to take card or cash payments on collection or delivery. We also added a new Help Center page that makes it easier for you to login to the app.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

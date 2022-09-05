@@ -1,1 +1,2 @@
-Rilis ini berisi sejumlah peningkatan untuk pengalaman login Anda, termasuk pilihan untuk menggunakan kredensial situs `wp-admin`, dan pilihan tautan ajaib untuk login. Mohon terus berikan feedback – kami siap mendengarkan!
+Rilis ini mencakup sejumlah perbaikan yang memudahkan penerimaan pembayaran dari aplikasi. Kami juga telah menambahkan halaman Pusat Bantuan Tanya Jawab Umum (TJU) yang memudahkan Anda untuk login ke aplikasi. 
+Terus berikan kami feedback – kami siap mendengarkan!

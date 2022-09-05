@@ -1,1 +1,2 @@
-This release has a few improvements to your login experience, including the option to use your `wp-admin` site credentials and magic link option to login. Continuez à nous envoyer vos commentaires, votre avis nous intéresse !
+Cette version contient plusieurs correctifs qui facilitent l’encaissement des paiements depuis l’application. Nous avons également ajouté une nouvelle page de FAQ au centre d’aide qui facilite votre connexion à l’application.
+Continuez à nous envoyer vos commentaires. Votre avis nous intéresse !

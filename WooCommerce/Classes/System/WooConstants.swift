@@ -21,6 +21,10 @@ enum WooConstants {
     ///
     static let keychainAppleIDKey = "AppleID"
 
+    /// Keychain Access's Key for anonymous ID
+    ///
+    static let anonymousIDKey = "anonymousID"
+
     /// Push Notifications ApplicationID
     ///
 #if DEBUG
@@ -51,7 +55,7 @@ extension WooConstants {
         ///
         /// Displayed by the Authenticator in the Continue with WordPress.com flow.
         ///
-        case whatIsWPComURL = "https://woocommerce.com/document/what-is-a-wordpress-com-account/"
+        case whatIsWPCom = "https://woocommerce.com/document/what-is-a-wordpress-com-account/"
 
         /// Terms of Service Website. Displayed by the Authenticator (when / if needed).
         ///
@@ -72,6 +76,32 @@ extension WooConstants {
         /// Help Center URL
         ///
         case helpCenter = "https://docs.woocommerce.com/document/woocommerce-ios/"
+
+        /// Help Center for "Enter your Store Address" screen
+        ///
+        case helpCenterForEnterStoreAddress = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#enter-store-address"
+
+        /// Help Center for "Enter WordPress.com email" screen
+        ///
+        /// - Used for providing help in the "Enter WordPress.com email screen" when user tries to login using WordPress.com email address
+        ///
+        // swiftlint:disable:next line_length
+        case helpCenterForWPCOMEmailScreen = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#login-with-wordpress-com"
+
+        /// Help Center for "Enter WordPress.com email" screen
+        ///
+        /// - Used for providing help in the "Ente WordPress.comr email screen" when user tries to login using the store address
+        ///
+        // swiftlint:disable:next line_length
+        case helpCenterForWPCOMEmailFromSiteAddressFlow = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#enter-wordpress-com-email-address-login-using-store-address-flow"
+
+        /// Help Center for "Enter Store Credentials" screen
+        ///
+        case helpCenterForEnterStoreCredentials = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#enter-store-credentials"
+
+        /// Help Center for "Jetpack required error" screen
+        ///
+        case helpCenterForJetpackRequiredError = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#jetpack-required"
 
         /// URL used for Learn More button in Orders empty state.
         ///
@@ -154,6 +184,14 @@ extension WooConstants {
 #else
         case couponManagementFeedback = "https://automattic.survey.fm/woo-app-coupon-management-production"
 #endif
+        /// URL for the Enable Cash on Delivery (or Pay in Person) onboarding step's learn more link using the Stripe plugin
+        /// 
+        case stripeCashOnDeliveryLearnMore = "https://woocommerce.com/document/stripe/accept-in-person-payments-with-stripe/#section-8"
+
+        /// URL for the Enable Cash on Delivery (or Pay in Person) onboarding step's learn more link using the WCPay plugin
+        ///
+        case wcPayCashOnDeliveryLearnMore =
+                "https://woocommerce.com/document/payments/getting-started-with-in-person-payments-with-woocommerce-payments/#add-cod-payment-method"
 
         /// Returns the URL version of the receiver
         ///

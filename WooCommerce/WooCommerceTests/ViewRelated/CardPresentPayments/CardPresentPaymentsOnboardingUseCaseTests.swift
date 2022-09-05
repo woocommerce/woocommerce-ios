@@ -106,21 +106,6 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .countryNotSupportedStripe(plugin: .stripe, countryCode: "CA"))
     }
 
-    func test_onboarding_returns_deactivate_stripe_when_stripe_and_wcPay_plugins_are_installed_in_Canada_with_inPersonPaymentGatewaySelection_false() {
-        // Given
-        setupCountry(country: .ca)
-        setupStripePlugin(status: .active, version: .minimumSupportedVersion)
-        setupWCPayPlugin(status: .active, version: .minimumSupportedVersionCanada)
-
-        // When
-        let featureFlagService = MockFeatureFlagService(inPersonPaymentGatewaySelection: false)
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores, featureFlagService: featureFlagService)
-        let state = useCase.state
-
-        // Then
-        XCTAssertEqual(state, .pluginShouldBeDeactivated(plugin: .stripe))
-    }
-
     func test_onboarding_returns_setup_not_completed_stripe_when_stripe_and_wcPay_plugins_are_installed_in_Canada() {
         // Given
         setupCountry(country: .ca)
@@ -238,22 +223,6 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
-        let state = useCase.state
-
-        // Then
-        XCTAssertEqual(state, .selectPlugin(pluginSelectionWasCleared: false))
-    }
-
-    func test_onboarding_returns_select_plugin_when_both_stripe_and_wcpay_plugins_are_active_ignoring_preference_if_inPersonPaymentGatewaySelection_false() {
-        // Given
-        setupCountry(country: .us)
-        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
-        setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
-        setupPreferredPaymentGateway(.stripe)
-
-        // When
-        let featureFlagService = MockFeatureFlagService(inPersonPaymentGatewaySelection: false)
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores, featureFlagService: featureFlagService)
         let state = useCase.state
 
         // Then
@@ -811,7 +780,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        assertEqual(.codPaymentGatewayNotSetUp, state)
+        assertEqual(.codPaymentGatewayNotSetUp(plugin: .wcPay), state)
     }
 
     func test_onboarding_returns_complete_when_cod_disabled_and_cod_step_was_skipped() {

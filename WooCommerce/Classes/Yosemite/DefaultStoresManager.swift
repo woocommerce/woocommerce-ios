@@ -293,10 +293,8 @@ private extension DefaultStoresManager {
     /// Synchronizes the WordPress.com Sites, associated with the current credentials.
     ///
     func synchronizeSites(onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        let isJetpackConnectionPackageSupported = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport)
         let action = AccountAction
-            .synchronizeSites(selectedSiteID: sessionManager.defaultStoreID,
-                              isJetpackConnectionPackageSupported: isJetpackConnectionPackageSupported) { result in
+            .synchronizeSites(selectedSiteID: sessionManager.defaultStoreID) { result in
                 onCompletion(result.map { _ in () })
             }
         dispatch(action)

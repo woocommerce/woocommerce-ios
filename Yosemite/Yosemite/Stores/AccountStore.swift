@@ -68,7 +68,7 @@ public class AccountStore: Store {
             synchronizeAccount(onCompletion: onCompletion)
         case .synchronizeAccountSettings(let userID, let onCompletion):
             synchronizeAccountSettings(userID: userID, onCompletion: onCompletion)
-        case .synchronizeSites(let selectedSiteID, let isJetpackConnectionPackageSupported, let onCompletion):
+        case .synchronizeSites(let selectedSiteID, let onCompletion):
             synchronizeSites(selectedSiteID: selectedSiteID,
                              onCompletion: onCompletion)
         case .synchronizeSitePlan(let siteID, let onCompletion):

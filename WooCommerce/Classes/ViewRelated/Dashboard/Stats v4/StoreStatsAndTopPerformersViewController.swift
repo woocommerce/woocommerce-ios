@@ -32,7 +32,9 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
 
     private var periodVCs = [StoreStatsAndTopPerformersPeriodViewController]()
     private let siteID: Int64
-    private var isSyncing = false
+    // A set of syncing time ranges is tracked instead of a single boolean so that the stats for each time range
+    // can be synced when swiping or tapping to change the time range tab before the syncing finishes for the previously selected tab.
+    private var syncingTimeRanges: Set<StatsTimeRangeV4> = []
     private let usageTracksEventEmitter = StoreStatsUsageTracksEventEmitter()
     private let dashboardViewModel: DashboardViewModel
     private let timeRanges: [StatsTimeRangeV4] = [.today, .thisWeek, .thisMonth, .thisYear]
@@ -118,8 +120,11 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
     }
 
     func observeSelectedTimeRangeIndex() {
+        let timeRangeCount = timeRanges.count
         selectedTimeRangeIndexSubscription = $selectedTimeRangeIndex
             .compactMap { $0 }
+            // It's possible to reach an out-of-bound index by swipe gesture, thus checking the index range here.
+            .filter { $0 >= 0 && $0 < timeRangeCount }
             .removeDuplicates()
             .sink { [weak self] timeRangeTabIndex in
                 guard let self = self else { return }
@@ -161,12 +166,13 @@ private extension StoreStatsAndTopPerformersViewController {
     }
 
     func syncStats(forced: Bool, viewControllerToSync: StoreStatsAndTopPerformersPeriodViewController, onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
-        guard !isSyncing else {
+        let timeRange = viewControllerToSync.timeRange
+        guard !syncingTimeRanges.contains(timeRange) else {
             onCompletion?(.success(()))
             return
         }
 
-        isSyncing = true
+        syncingTimeRanges.insert(timeRange)
 
         let group = DispatchGroup()
 
@@ -177,7 +183,7 @@ private extension StoreStatsAndTopPerformersViewController {
 
         defer {
             group.notify(queue: .main) { [weak self] in
-                self?.isSyncing = false
+                self?.syncingTimeRanges.remove(timeRange)
                 self?.showSpinner(for: viewControllerToSync, shouldShowSpinner: false)
                 if let error = syncError {
                     DDLogError("⛔️ Error loading dashboard: \(error)")

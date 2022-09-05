@@ -35,7 +35,7 @@ public final class JetpackConnectionStore: DeauthenticatedStore {
 }
 
 private extension JetpackConnectionStore {
-    func fetchJetpackConnectionURL(siteURL: String, with authenticator: Authenticator, completion: @escaping (Result<URL?, Error>) -> Void) {
+    func fetchJetpackConnectionURL(siteURL: String, with authenticator: Authenticator, completion: @escaping (Result<URL, Error>) -> Void) {
         let network = WordPressOrgNetwork(authenticator: authenticator, userAgent: UserAgent.defaultUserAgent)
         let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
 

@@ -21,7 +21,7 @@ final class JetpackConnectionRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connection-url")
 
         // When
-        let result: Result<URL?, Error> = waitFor { promise in
+        let result: Result<URL, Error> = waitFor { promise in
             remote.fetchJetpackConnectionURL { result in
                 promise(result)
             }
@@ -43,7 +43,7 @@ final class JetpackConnectionRemoteTests: XCTestCase {
         network.simulateError(requestUrlSuffix: urlSuffix, error: error)
 
         // When
-        let result: Result<URL?, Error> = waitFor { promise in
+        let result: Result<URL, Error> = waitFor { promise in
             remote.fetchJetpackConnectionURL { result in
                 promise(result)
             }

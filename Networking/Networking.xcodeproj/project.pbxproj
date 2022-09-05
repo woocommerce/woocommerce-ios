@@ -632,12 +632,12 @@
 		DE34051D28BDF1C900CF0D97 /* JetpackConnectionURLMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE34051C28BDF1C900CF0D97 /* JetpackConnectionURLMapperTests.swift */; };
 		DE34051F28BDFB0B00CF0D97 /* JetpackConnectionRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE34051E28BDFB0B00CF0D97 /* JetpackConnectionRemoteTests.swift */; };
 		DE34052128BDFE3500CF0D97 /* WordPressOrgRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE34052028BDFE3500CF0D97 /* WordPressOrgRequestTests.swift */; };
-		DE50295928C5BD0200551736 /* JetpackConnectedUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50295828C5BD0200551736 /* JetpackConnectedUser.swift */; };
+		DE50295928C5BD0200551736 /* JetpackUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50295828C5BD0200551736 /* JetpackUser.swift */; };
 		DE50295B28C5F99700551736 /* WordPressComUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50295A28C5F99700551736 /* WordPressComUser.swift */; };
-		DE50295D28C6068B00551736 /* JetpackConnectedUserMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50295C28C6068B00551736 /* JetpackConnectedUserMapper.swift */; };
+		DE50295D28C6068B00551736 /* JetpackUserMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50295C28C6068B00551736 /* JetpackUserMapper.swift */; };
 		DE50296128C609A300551736 /* jetpack-connected-user.json in Resources */ = {isa = PBXBuildFile; fileRef = DE50295F28C609A300551736 /* jetpack-connected-user.json */; };
 		DE50296328C609DE00551736 /* jetpack-user-not-connected.json in Resources */ = {isa = PBXBuildFile; fileRef = DE50296228C609DE00551736 /* jetpack-user-not-connected.json */; };
-		DE50296528C60A8000551736 /* JetpackConnectedUserMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50296428C60A8000551736 /* JetpackConnectedUserMapperTests.swift */; };
+		DE50296528C60A8000551736 /* JetpackUserMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50296428C60A8000551736 /* JetpackUserMapperTests.swift */; };
 		DE5CA111288A3E080077BEF9 /* product-malformed-variations-and-image-alt.json in Resources */ = {isa = PBXBuildFile; fileRef = DE5CA110288A3E080077BEF9 /* product-malformed-variations-and-image-alt.json */; };
 		DE6F308727966FEF004E1C9A /* CouponReportListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6F308627966FEF004E1C9A /* CouponReportListMapperTests.swift */; };
 		DE74F29A27E08F5A0002FE59 /* SiteSettingMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE74F29927E08F5A0002FE59 /* SiteSettingMapper.swift */; };
@@ -1327,12 +1327,12 @@
 		DE34051C28BDF1C900CF0D97 /* JetpackConnectionURLMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackConnectionURLMapperTests.swift; sourceTree = "<group>"; };
 		DE34051E28BDFB0B00CF0D97 /* JetpackConnectionRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackConnectionRemoteTests.swift; sourceTree = "<group>"; };
 		DE34052028BDFE3500CF0D97 /* WordPressOrgRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressOrgRequestTests.swift; sourceTree = "<group>"; };
-		DE50295828C5BD0200551736 /* JetpackConnectedUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackConnectedUser.swift; sourceTree = "<group>"; };
+		DE50295828C5BD0200551736 /* JetpackUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackUser.swift; sourceTree = "<group>"; };
 		DE50295A28C5F99700551736 /* WordPressComUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressComUser.swift; sourceTree = "<group>"; };
-		DE50295C28C6068B00551736 /* JetpackConnectedUserMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackConnectedUserMapper.swift; sourceTree = "<group>"; };
+		DE50295C28C6068B00551736 /* JetpackUserMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackUserMapper.swift; sourceTree = "<group>"; };
 		DE50295F28C609A300551736 /* jetpack-connected-user.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "jetpack-connected-user.json"; sourceTree = "<group>"; };
 		DE50296228C609DE00551736 /* jetpack-user-not-connected.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "jetpack-user-not-connected.json"; sourceTree = "<group>"; };
-		DE50296428C60A8000551736 /* JetpackConnectedUserMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackConnectedUserMapperTests.swift; sourceTree = "<group>"; };
+		DE50296428C60A8000551736 /* JetpackUserMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackUserMapperTests.swift; sourceTree = "<group>"; };
 		DE5CA110288A3E080077BEF9 /* product-malformed-variations-and-image-alt.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-malformed-variations-and-image-alt.json"; sourceTree = "<group>"; };
 		DE6F308627966FEF004E1C9A /* CouponReportListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponReportListMapperTests.swift; sourceTree = "<group>"; };
 		DE74F29927E08F5A0002FE59 /* SiteSettingMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteSettingMapper.swift; sourceTree = "<group>"; };
@@ -1853,7 +1853,7 @@
 				0359EA0E27AAC6410048DE2D /* WCPayPaymentMethodDetails.swift */,
 				0359EA1027AAC6740048DE2D /* WCPayPaymentMethodType.swift */,
 				FE28F6E126840DED004465C7 /* User.swift */,
-				DE50295828C5BD0200551736 /* JetpackConnectedUser.swift */,
+				DE50295828C5BD0200551736 /* JetpackUser.swift */,
 				DE50295A28C5F99700551736 /* WordPressComUser.swift */,
 			);
 			path = Model;
@@ -2107,7 +2107,7 @@
 				45150A9D26836A57006922EA /* CountryListMapper.swift */,
 				B524193E21AC5FE400D6FC0A /* DotcomDeviceMapper.swift */,
 				24F98C572502EA8800F49B68 /* FeatureFlagMapper.swift */,
-				DE50295C28C6068B00551736 /* JetpackConnectedUserMapper.swift */,
+				DE50295C28C6068B00551736 /* JetpackUserMapper.swift */,
 				AEF9458A27297FF6001DCCFB /* IgnoringResponseMapper.swift */,
 				4513382327A951B300AE5E78 /* InboxNoteMapper.swift */,
 				45CCFCE527A2E3710012E8CB /* InboxNoteListMapper.swift */,
@@ -2301,7 +2301,7 @@
 				02C254D22563992900A04423 /* OrderShippingLabelListMapperTests.swift */,
 				FE28F6E926842E49004465C7 /* UserMapperTests.swift */,
 				DE34051C28BDF1C900CF0D97 /* JetpackConnectionURLMapperTests.swift */,
-				DE50296428C60A8000551736 /* JetpackConnectedUserMapperTests.swift */,
+				DE50296428C60A8000551736 /* JetpackUserMapperTests.swift */,
 				0359EA1E27AAE4680048DE2D /* WCPayChargeMapperTests.swift */,
 			);
 			path = Mapper;
@@ -3022,7 +3022,7 @@
 				314703082670222500EF253A /* PaymentGatewayAccount.swift in Sources */,
 				CCF48B282628A4EB0034EA83 /* ShippingLabelAccountSettingsMapper.swift in Sources */,
 				B5BB1D1220A255EC00112D92 /* OrderStatusEnum.swift in Sources */,
-				DE50295928C5BD0200551736 /* JetpackConnectedUser.swift in Sources */,
+				DE50295928C5BD0200551736 /* JetpackUser.swift in Sources */,
 				0359EA1727AAC7740048DE2D /* WCPayCardFunding.swift in Sources */,
 				D88E229425AC9B420023F3B1 /* OrderFeeTaxStatus.swift in Sources */,
 				B5DAEFF02180DD5A0002356A /* NotificationsRemote.swift in Sources */,
@@ -3039,7 +3039,7 @@
 				74046E1D217A6989007DD7BF /* SiteSetting.swift in Sources */,
 				B5BB1D1020A237FB00112D92 /* Address.swift in Sources */,
 				CE43066A23465F340073CBFF /* Refund.swift in Sources */,
-				DE50295D28C6068B00551736 /* JetpackConnectedUserMapper.swift in Sources */,
+				DE50295D28C6068B00551736 /* JetpackUserMapper.swift in Sources */,
 				B524194121AC60A700D6FC0A /* DotcomDevice.swift in Sources */,
 				D8EDFE2225EE88C9003D2213 /* ReaderConnectionToken.swift in Sources */,
 				4599FC5824A624BD0056157A /* ProductTagListMapper.swift in Sources */,
@@ -3188,7 +3188,7 @@
 				B518663520A0A2E800037A38 /* Constants.swift in Sources */,
 				D8FBFF1E22D51F39006E3336 /* OrderStatsMapperV4Tests.swift in Sources */,
 				02E7FFCB256218F600C53030 /* ShippingLabelRemoteTests.swift in Sources */,
-				DE50296528C60A8000551736 /* JetpackConnectedUserMapperTests.swift in Sources */,
+				DE50296528C60A8000551736 /* JetpackUserMapperTests.swift in Sources */,
 				9387A6F0226E3F15001B53D7 /* AccountSettingsMapperTests.swift in Sources */,
 				2685C102263B6A1000D9EE97 /* AddOnGroupRemoteTests.swift in Sources */,
 				B57B1E6721C916850046E764 /* NetworkErrorTests.swift in Sources */,

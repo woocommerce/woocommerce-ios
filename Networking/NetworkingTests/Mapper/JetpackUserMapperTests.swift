@@ -1,9 +1,9 @@
 import XCTest
 @testable import Networking
 
-/// JetpackConnectedUserMapper Unit Tests
+/// JetpackUserMapper Unit Tests
 ///
-final class JetpackConnectedUserMapperTests: XCTestCase {
+final class JetpackUserMapperTests: XCTestCase {
 
     func test_all_fields_are_parsed_properly_when_user_is_connected() throws {
         // Given
@@ -38,21 +38,21 @@ final class JetpackConnectedUserMapperTests: XCTestCase {
     }
 }
 
-private extension JetpackConnectedUserMapperTests {
-    func mapUserFromMockResponse() throws -> JetpackConnectedUser {
+private extension JetpackUserMapperTests {
+    func mapUserFromMockResponse() throws -> JetpackUser {
         guard let response = Loader.contentsOf("jetpack-connected-user") else {
             throw FileNotFoundError()
         }
 
-        return try JetpackConnectedUserMapper().map(response: response)
+        return try JetpackUserMapper().map(response: response)
     }
 
-    func mapNotConnectedUserFromMockResponse() throws -> JetpackConnectedUser {
+    func mapNotConnectedUserFromMockResponse() throws -> JetpackUser {
         guard let response = Loader.contentsOf("jetpack-user-not-connected") else {
             throw FileNotFoundError()
         }
 
-        return try JetpackConnectedUserMapper().map(response: response)
+        return try JetpackUserMapper().map(response: response)
     }
 
     struct FileNotFoundError: Error {}

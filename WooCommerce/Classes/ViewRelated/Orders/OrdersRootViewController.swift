@@ -75,10 +75,6 @@ final class OrdersRootViewController: UIViewController {
         super.init(nibName: Self.nibName, bundle: nil)
 
         configureTitle()
-
-        if !featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
-            configureTabBarItem()
-        }
     }
 
     required init?(coder: NSCoder) {
@@ -103,10 +99,7 @@ final class OrdersRootViewController: UIViewController {
     }
 
     override var shouldShowOfflineBanner: Bool {
-        if featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
-            return false
-        }
-        return true
+        false
     }
 
     /// Shows `SearchViewController`.
@@ -121,23 +114,6 @@ final class OrdersRootViewController: UIViewController {
         let navigationController = WooNavigationController(rootViewController: searchViewController)
 
         present(navigationController, animated: true, completion: nil)
-    }
-
-    /// Presents the Details for the Notification with the specified Identifier.
-    ///
-    func presentDetails(for note: Note) {
-        guard let orderID = note.meta.identifier(forKey: .order),
-              let siteID = note.meta.identifier(forKey: .site) else {
-            DDLogError("## Notification with [\(note.noteID)] lacks its OrderID!")
-            return
-        }
-
-        presentDetails(for: Int64(orderID), siteID: Int64(siteID), note: note)
-    }
-
-    func presentDetails(for orderID: Int64, siteID: Int64, note: Note? = nil) {
-        let loaderViewController = OrderLoaderViewController(orderID: Int64(orderID), siteID: Int64(siteID), note: note)
-        navigationController?.pushViewController(loaderViewController, animated: true)
     }
 
     /// Present `FilterListViewController`
@@ -368,21 +344,8 @@ private extension OrdersRootViewController {
     ///
     private func navigateToOrderDetail(_ order: Order) {
         let viewModel = OrderDetailsViewModel(order: order)
-        guard !featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
-            return handleSwitchingDetails(viewModel: viewModel)
-        }
-
-        let orderViewController = OrderDetailsViewController(viewModel: viewModel)
-
-        // Cleanup navigation (remove new order flow views) before navigating to order details
-        if let navigationController = navigationController, let indexOfSelf = navigationController.viewControllers.firstIndex(of: self) {
-            let viewControllersIncludingSelf = navigationController.viewControllers[0...indexOfSelf]
-            navigationController.setViewControllers(viewControllersIncludingSelf + [orderViewController], animated: true)
-        } else {
-            show(orderViewController, sender: self)
-        }
-
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order))
+        
+        handleSwitchingDetails(viewModel: viewModel)
     }
 }
 

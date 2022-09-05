@@ -59,7 +59,7 @@ final class EditableOrderViewModel: ObservableObject {
     /// Indicates whether the cancel button is visible.
     ///
     var shouldShowCancelButton: Bool {
-        featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) && flow == .creation
+        flow == .creation
     }
 
     var title: String {

@@ -38,10 +38,6 @@ public enum FeatureFlag: Int {
     ///
     case bulkEditProductVariations
 
-    /// Displays the Orders tab in a split view
-    ///
-    case splitViewInOrdersTab
-
     /// Displays the option to delete coupons
     ///
     case couponDeletion

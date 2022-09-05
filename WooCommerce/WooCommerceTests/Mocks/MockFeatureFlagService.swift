@@ -5,7 +5,6 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isJetpackConnectionPackageSupportOn: Bool
     private let isHubMenuOn: Bool
     private let isInboxOn: Bool
-    private let isSplitViewInOrdersTabOn: Bool
     private let isUpdateOrderOptimisticallyOn: Bool
     private let shippingLabelsOnboardingM1: Bool
     private let isAppleIDAccountDeletionEnabled: Bool
@@ -15,7 +14,6 @@ struct MockFeatureFlagService: FeatureFlagService {
     init(isJetpackConnectionPackageSupportOn: Bool = false,
          isHubMenuOn: Bool = false,
          isInboxOn: Bool = false,
-         isSplitViewInOrdersTabOn: Bool = false,
          isUpdateOrderOptimisticallyOn: Bool = false,
          shippingLabelsOnboardingM1: Bool = false,
          isAppleIDAccountDeletionEnabled: Bool = false,
@@ -24,7 +22,6 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isJetpackConnectionPackageSupportOn = isJetpackConnectionPackageSupportOn
         self.isHubMenuOn = isHubMenuOn
         self.isInboxOn = isInboxOn
-        self.isSplitViewInOrdersTabOn = isSplitViewInOrdersTabOn
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
         self.shippingLabelsOnboardingM1 = shippingLabelsOnboardingM1
         self.isAppleIDAccountDeletionEnabled = isAppleIDAccountDeletionEnabled
@@ -40,8 +37,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isHubMenuOn
         case .inbox:
             return isInboxOn
-        case .splitViewInOrdersTab:
-            return isSplitViewInOrdersTabOn
         case .updateOrderOptimistically:
             return isUpdateOrderOptimisticallyOn
         case .shippingLabelsOnboardingM1:

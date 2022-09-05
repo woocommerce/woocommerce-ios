@@ -116,8 +116,6 @@ final class MainTabBarController: UITabBarController {
 
     private lazy var isHubMenuFeatureFlagOn = featureFlagService.isFeatureFlagEnabled(.hubMenu)
 
-    private lazy var isOrdersSplitViewFeatureFlagOn = featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
-
     init?(coder: NSCoder,
           featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
           noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
@@ -365,11 +363,7 @@ extension MainTabBarController {
         switch note.kind {
         case .storeOrder:
             switchToOrdersTab {
-                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
-                    (childViewController() as? OrdersSplitViewWrapperController)?.presentDetails(for: note)
-                } else {
-                    (childViewController() as? OrdersRootViewController)?.presentDetails(for: note)
-                }
+                (childViewController() as? OrdersSplitViewWrapperController)?.presentDetails(for: note)
             }
         default:
             break
@@ -414,11 +408,7 @@ extension MainTabBarController {
     }
 
     private static func presentDetails(for orderID: Int64, siteID: Int64) {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
-            (childViewController() as? OrdersSplitViewWrapperController)?.presentDetails(for: orderID, siteID: siteID)
-        } else {
-            (childViewController() as? OrdersRootViewController)?.presentDetails(for: orderID, siteID: siteID)
-        }
+        (childViewController() as? OrdersSplitViewWrapperController)?.presentDetails(for: orderID, siteID: siteID)
     }
 
     static func presentPayments() {
@@ -514,11 +504,7 @@ private extension MainTabBarController {
     }
 
     func createOrdersViewController(siteID: Int64) -> UIViewController {
-        if isOrdersSplitViewFeatureFlagOn {
-            return OrdersSplitViewWrapperController(siteID: siteID)
-        } else {
-            return OrdersRootViewController(siteID: siteID)
-        }
+        return OrdersSplitViewWrapperController(siteID: siteID)
     }
 
     func createProductsViewController(siteID: Int64) -> UIViewController {

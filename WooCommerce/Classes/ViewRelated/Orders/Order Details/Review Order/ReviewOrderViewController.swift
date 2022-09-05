@@ -66,10 +66,7 @@ final class ReviewOrderViewController: UIViewController {
     }
 
     override var shouldShowOfflineBanner: Bool {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
-            return false
-        }
-        return true
+        return false
     }
 }
 

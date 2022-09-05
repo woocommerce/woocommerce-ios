@@ -102,9 +102,8 @@ final class MainTabBarControllerTests: XCTestCase {
     func test_tab_view_controllers_returns_expected_values_with_hub_menu_and_split_view_in_orders_tab_enabled() {
         // Arrange
         // Sets mock `FeatureFlagService` before `MainTabBarController` is initialized so that the feature flags are set correctly.
-        let isSplitViewInOrdersTabOn = true
         let isHubMenuFeatureFlagOn = true
-        let featureFlagService = MockFeatureFlagService(isHubMenuOn: isHubMenuFeatureFlagOn, isSplitViewInOrdersTabOn: isSplitViewInOrdersTabOn)
+        let featureFlagService = MockFeatureFlagService(isHubMenuOn: isHubMenuFeatureFlagOn)
 
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
             return MainTabBarController(coder: coder, featureFlagService: featureFlagService)

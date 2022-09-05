@@ -3,7 +3,7 @@ import Foundation
 
 /// Basic information of a WordPress.com user
 public struct WordPressComUser: Decodable, GeneratedFakeable, GeneratedCopiable {
-    
+
     /// User ID in WP.com
     public let id: Int64
 
@@ -46,16 +46,7 @@ public struct WordPressComUser: Decodable, GeneratedFakeable, GeneratedCopiable 
         textDirection = try container.decode(String.self, forKey: .textDirection)
         siteCount = try container.decode(Int64.self, forKey: .siteCount)
         avatar = try? container.decode(String.self, forKey: .avatar)
-        
     }
-
-    /// JSON decoder appropriate for `WordPressComUser` responses.
-    ///
-    static let decoder: JSONDecoder = {
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        return decoder
-    }()
 }
 
 /// Defines all of the `WordPressComUser` CodingKeys.
@@ -66,9 +57,9 @@ private extension WordPressComUser {
         case id = "ID"
         case username = "login"
         case email
-        case displayName
-        case textDirection
-        case siteCount
+        case displayName = "display_name"
+        case textDirection = "text_direction"
+        case siteCount = "site_count"
         case avatar
     }
 }

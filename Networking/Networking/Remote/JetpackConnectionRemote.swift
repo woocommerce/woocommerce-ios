@@ -24,6 +24,7 @@ public final class JetpackConnectionRemote: Remote {
 public extension JetpackConnectionRemote {
     enum ConnectionError: Int, Error {
         case malformedURL
+        case currentUserNotFound
     }
 }
 

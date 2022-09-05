@@ -634,6 +634,7 @@
 		DE34052128BDFE3500CF0D97 /* WordPressOrgRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE34052028BDFE3500CF0D97 /* WordPressOrgRequestTests.swift */; };
 		DE50295928C5BD0200551736 /* JetpackConnectedUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50295828C5BD0200551736 /* JetpackConnectedUser.swift */; };
 		DE50295B28C5F99700551736 /* WordPressComUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50295A28C5F99700551736 /* WordPressComUser.swift */; };
+		DE50295D28C6068B00551736 /* JetpackConnectedUserMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50295C28C6068B00551736 /* JetpackConnectedUserMapper.swift */; };
 		DE5CA111288A3E080077BEF9 /* product-malformed-variations-and-image-alt.json in Resources */ = {isa = PBXBuildFile; fileRef = DE5CA110288A3E080077BEF9 /* product-malformed-variations-and-image-alt.json */; };
 		DE6F308727966FEF004E1C9A /* CouponReportListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6F308627966FEF004E1C9A /* CouponReportListMapperTests.swift */; };
 		DE74F29A27E08F5A0002FE59 /* SiteSettingMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE74F29927E08F5A0002FE59 /* SiteSettingMapper.swift */; };
@@ -1325,6 +1326,7 @@
 		DE34052028BDFE3500CF0D97 /* WordPressOrgRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressOrgRequestTests.swift; sourceTree = "<group>"; };
 		DE50295828C5BD0200551736 /* JetpackConnectedUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackConnectedUser.swift; sourceTree = "<group>"; };
 		DE50295A28C5F99700551736 /* WordPressComUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressComUser.swift; sourceTree = "<group>"; };
+		DE50295C28C6068B00551736 /* JetpackConnectedUserMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackConnectedUserMapper.swift; sourceTree = "<group>"; };
 		DE5CA110288A3E080077BEF9 /* product-malformed-variations-and-image-alt.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-malformed-variations-and-image-alt.json"; sourceTree = "<group>"; };
 		DE6F308627966FEF004E1C9A /* CouponReportListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponReportListMapperTests.swift; sourceTree = "<group>"; };
 		DE74F29927E08F5A0002FE59 /* SiteSettingMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteSettingMapper.swift; sourceTree = "<group>"; };
@@ -2097,6 +2099,7 @@
 				45150A9D26836A57006922EA /* CountryListMapper.swift */,
 				B524193E21AC5FE400D6FC0A /* DotcomDeviceMapper.swift */,
 				24F98C572502EA8800F49B68 /* FeatureFlagMapper.swift */,
+				DE50295C28C6068B00551736 /* JetpackConnectedUserMapper.swift */,
 				AEF9458A27297FF6001DCCFB /* IgnoringResponseMapper.swift */,
 				4513382327A951B300AE5E78 /* InboxNoteMapper.swift */,
 				45CCFCE527A2E3710012E8CB /* InboxNoteListMapper.swift */,
@@ -3025,6 +3028,7 @@
 				74046E1D217A6989007DD7BF /* SiteSetting.swift in Sources */,
 				B5BB1D1020A237FB00112D92 /* Address.swift in Sources */,
 				CE43066A23465F340073CBFF /* Refund.swift in Sources */,
+				DE50295D28C6068B00551736 /* JetpackConnectedUserMapper.swift in Sources */,
 				B524194121AC60A700D6FC0A /* DotcomDevice.swift in Sources */,
 				D8EDFE2225EE88C9003D2213 /* ReaderConnectionToken.swift in Sources */,
 				4599FC5824A624BD0056157A /* ProductTagListMapper.swift in Sources */,

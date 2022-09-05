@@ -7,13 +7,9 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         switch featureFlag {
         case .barcodeScanner:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .orderListFilters:
-            return true
         case .jetpackConnectionPackageSupport:
             return true
         case .hubMenu:
-            return true
-        case .systemStatusReport:
             return true
         case .couponView:
             return true
@@ -53,6 +49,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .promptToEnableCodInIppOnboarding:
             return true
+        case .storeWidgets:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

@@ -52,7 +52,7 @@ class AuthenticationManager: Authentication {
                                                                 wpcomScheme: ApiCredentials.dotcomAuthScheme,
                                                                 wpcomTermsOfServiceURL: WooConstants.URLs.termsOfService.rawValue,
                                                                 wpcomAPIBaseURL: Settings.wordpressApiBaseURL,
-                                                                whatIsWPComURL: WooConstants.URLs.whatIsWPComURL.rawValue,
+                                                                whatIsWPComURL: WooConstants.URLs.whatIsWPCom.rawValue,
                                                                 googleLoginClientId: ApiCredentials.googleClientId,
                                                                 googleLoginServerClientId: ApiCredentials.googleServerId,
                                                                 googleLoginScheme: ApiCredentials.googleAuthScheme,
@@ -106,6 +106,7 @@ class AuthenticationManager: Authentication {
                                                                   siteLoginInstructions: AuthenticationConstants.siteInstructions,
                                                                   siteCredentialInstructions: AuthenticationConstants.siteCredentialInstructions,
                                                                   usernamePasswordInstructions: AuthenticationConstants.usernamePasswordInstructions,
+                                                                  applePasswordInstructions: AuthenticationConstants.applePasswordInstructions,
                                                                   continueWithWPButtonTitle: AuthenticationConstants.continueWithWPButtonTitle,
                                                                   enterYourSiteAddressButtonTitle: AuthenticationConstants.enterYourSiteAddressButtonTitle,
                                                                   signInWithSiteCredentialsButtonTitle: AuthenticationConstants.signInWithSiteCredsButtonTitle,
@@ -376,6 +377,18 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         sync(credentials: credentials) { [weak self] in
             self?.startStorePicker(in: navigationController)
         }
+    }
+
+    /// Presents the Support Interface
+    ///
+    /// - Parameters:
+    ///     - from: UIViewController instance from which to present the support interface
+    ///     - screen: A case from `CustomHelpCenterContent.Screen` enum. This represents authentication related screens from WCiOS.
+    ///
+    func presentSupport(from sourceViewController: UIViewController, screen: CustomHelpCenterContent.Screen) {
+        let customHelpCenterContent = CustomHelpCenterContent(screen: screen,
+                                                              flow: AuthenticatorAnalyticsTracker.shared.state.lastFlow)
+        presentSupport(from: sourceViewController, customHelpCenterContent: customHelpCenterContent)
     }
 
     /// Presents the Support Interface from a given ViewController, with a specified SourceTag.

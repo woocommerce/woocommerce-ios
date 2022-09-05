@@ -14,10 +14,6 @@ public enum FeatureFlag: Int {
     ///
     case reviews
 
-    /// Display the bar for displaying the filters in the Order List
-    ///
-    case orderListFilters
-
     /// Allows sites with plugins that include Jetpack Connection Package and without Jetpack-the-plugin to connect to the app
     ///
     case jetpackConnectionPackageSupport
@@ -25,10 +21,6 @@ public enum FeatureFlag: Int {
     /// Display the new tab "Menu" in the tab bar.
     ///
     case hubMenu
-
-    /// Displays the System Status Report on Settings/Help screen
-    ///
-    case systemStatusReport
 
     /// Displays the option to view coupons
     ///
@@ -109,4 +101,8 @@ public enum FeatureFlag: Int {
     /// Whether to include the Cash on Delivery enable step in In-Person Payment onboarding
     ///
     case promptToEnableCodInIppOnboarding
+
+    /// Enables home screen store widgets.
+    ///
+    case storeWidgets
 }

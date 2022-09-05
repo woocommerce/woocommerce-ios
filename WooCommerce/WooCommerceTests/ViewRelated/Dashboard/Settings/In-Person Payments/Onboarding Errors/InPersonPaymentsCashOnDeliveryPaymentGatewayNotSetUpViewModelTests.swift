@@ -31,19 +31,25 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests: 
             noticePresenter: noticePresenter,
             analytics: analytics
         )
-        sut = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(dependencies: dependencies,
-                                                                            configuration: configuration,
-                                                                            completion: {})
+        sut = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(
+            dependencies: dependencies,
+            configuration: configuration,
+            plugin: .wcPay,
+            analyticReason: AnalyticProperties.cashOnDeliveryDisabledReason,
+            completion: {})
     }
 
     func test_skip_always_calls_completion() {
         // Given
         let completionCalled: Bool = waitFor { promise in
-            let sut = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(dependencies: self.dependencies,
-                                                                                    configuration: self.configuration,
-                                                                                    completion: {
-                promise(true)
-            })
+            let sut = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(
+                dependencies: self.dependencies,
+                configuration: self.configuration,
+                plugin: .wcPay,
+                analyticReason: AnalyticProperties.cashOnDeliveryDisabledReason,
+                completion: {
+                    promise(true)
+                })
 
             // When
             sut.skipTapped()
@@ -85,11 +91,14 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests: 
         }
 
         let completionCalled: Bool = waitFor { promise in
-            let sut = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(dependencies: self.dependencies,
-                                                                                    configuration: self.configuration,
-                                                                                    completion: {
-                promise(true)
-            })
+            let sut = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(
+                dependencies: self.dependencies,
+                configuration: self.configuration,
+                plugin: .wcPay,
+                analyticReason: AnalyticProperties.cashOnDeliveryDisabledReason,
+                completion: {
+                    promise(true)
+                })
             // When
             sut.enableTapped()
         }
@@ -163,9 +172,12 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests: 
         }
 
         let _: Void = waitFor { promise in
-            let sut = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(dependencies: self.dependencies,
-                                                                                    configuration: self.configuration,
-                                                                                    completion: {
+            let sut = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(
+                dependencies: self.dependencies,
+                configuration: self.configuration,
+                plugin: .wcPay,
+                analyticReason: AnalyticProperties.cashOnDeliveryDisabledReason,
+                completion: {
                 promise(())
             })
             // When
@@ -177,6 +189,7 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests: 
         let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == AnalyticEvents.enableCashOnDeliverySuccess }))
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
         assertEqual("US", eventProperties[AnalyticProperties.countryCodeKey] as? String)
+        assertEqual("onboarding", eventProperties[AnalyticProperties.sourceKey] as? String)
     }
 
     func test_enable_failure_logs_enable_failure_event() throws {
@@ -199,6 +212,7 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests: 
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
         assertEqual("US", eventProperties[AnalyticProperties.countryCodeKey] as? String)
         assertEqual("Dotcom Invalid REST Route", eventProperties[AnalyticProperties.errorDescriptionKey] as? String)
+        assertEqual("onboarding", eventProperties[AnalyticProperties.sourceKey] as? String)
     }
 }
 
@@ -215,4 +229,5 @@ private enum AnalyticProperties {
     static let remindLaterKey = "remind_later"
     static let countryCodeKey = "country"
     static let errorDescriptionKey = "error_description"
+    static let sourceKey = "source"
 }

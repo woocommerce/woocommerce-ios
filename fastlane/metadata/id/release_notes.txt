@@ -1,3 +1,2 @@
-Kami mempermudah Anda menemukan segala hal seputar penerimaan pembayaran di aplikasi. Buka bagian Pembayaran dari Menu! Kami juga memperbaiki kesalahan pemblokiran terhadap pengambilan pembayaran Anda.
-Kami juga melakukan berbagai penyempurnaan dalam alur login agar Anda dapat memulai aplikasi dengan lebih cepat.
-Terakhir, kami mengutak-atik performa supaya lebih baik. Namun, kami belum selesai. Nantikan perbaikan lainnya di masa mendatang. Terus kirimkan feedback Anda kepada kami!
+Rilis ini mencakup sejumlah perbaikan yang memudahkan penerimaan pembayaran dari aplikasi. Kami juga telah menambahkan halaman Pusat Bantuan Tanya Jawab Umum (TJU) yang memudahkan Anda untuk login ke aplikasi. 
+Terus berikan kami feedback – kami siap mendengarkan!

@@ -28,17 +28,22 @@ struct InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView: View {
 
             Spacer()
 
-            InPersonPaymentsLearnMore(url: WooConstants.URLs.cashOnDeliveryLearnMoreUrl.asURL(),
-                                      formatText: Localization.cashOnDeliveryLearnMore,
-                                      analyticReason: viewModel.analyticReason)
+            InPersonPaymentsLearnMore(
+                viewModel: LearnMoreViewModel(
+                    url: viewModel.learnMoreURL,
+                    formatText: Localization.cashOnDeliveryLearnMore,
+                    tappedAnalyticEvent: viewModel.learnMoreEvent))
         }
     }
 }
 
 struct InPersonPaymentsCodPaymentGatewayNotSetUp_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(configuration: CardPresentPaymentsConfiguration(country: "US"),
-                                                                                      completion: {})
+        let viewModel = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(
+            configuration: CardPresentPaymentsConfiguration(country: "US"),
+            plugin: .wcPay,
+            analyticReason: "",
+            completion: {})
         return InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView(viewModel: viewModel)
     }
 }

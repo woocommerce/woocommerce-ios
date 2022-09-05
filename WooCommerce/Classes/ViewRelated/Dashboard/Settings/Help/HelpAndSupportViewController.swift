@@ -165,10 +165,8 @@ private extension HelpAndSupportViewController {
 
         rows.append(contentsOf: [.myTickets,
                                  .contactEmail,
-                                 .applicationLog])
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.systemStatusReport) {
-            rows.append(.systemStatusReport)
-        }
+                                 .applicationLog,
+                                 .systemStatusReport])
         return rows
     }
 

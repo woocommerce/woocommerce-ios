@@ -31,6 +31,7 @@ private struct StoreInfoView: View {
             Color(.brand)
 
             VStack(spacing: Layout.sectionSpacing) {
+
                 // Store Name
                 HStack {
                     Text(entry.name)
@@ -98,9 +99,9 @@ private struct NotLoggedInView: View {
             Color(.brand)
 
             VStack {
-                Rectangle()
-                    .frame(width: 40, height: 20, alignment: .center)
-                    .foregroundColor(Color(.white))
+                Image(uiImage: .wooLogoWhite)
+                    .resizable()
+                    .frame(width: Layout.logoSize.width, height: Layout.logoSize.height)
 
                 Spacer()
 
@@ -110,7 +111,7 @@ private struct NotLoggedInView: View {
                 Spacer()
 
                 Text(Localization.login)
-                    statButtonStyle()
+                    .statButtonStyle()
             }
             .padding(.vertical, Layout.cardVerticalPadding)
         }
@@ -147,6 +148,7 @@ private extension NotLoggedInView {
 
     enum Layout {
         static let cardVerticalPadding = 22.0
+        static let logoSize = CGSize(width: 24, height: 16)
     }
 }
 

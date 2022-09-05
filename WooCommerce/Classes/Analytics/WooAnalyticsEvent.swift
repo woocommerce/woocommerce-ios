@@ -370,6 +370,8 @@ extension WooAnalyticsEvent {
             static let orderID = "id"
             static let hasMultipleShippingLines = "has_multiple_shipping_lines"
             static let hasMultipleFeeLines = "has_multiple_fee_lines"
+            static let errorMessage = "error_message"
+            static let validationScenario = "validation_scenario"
         }
 
         static func orderOpen(order: Order) -> WooAnalyticsEvent {
@@ -487,6 +489,25 @@ extension WooAnalyticsEvent {
         ///
         static func pluginsNotSyncedYet() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pluginsNotSyncedYet, properties: [:])
+        }
+
+        /// Tracked when the Order details view detects a malformed shipping address data.
+        ///
+        static func addressValidationFailed(error: AddressValidator.AddressValidationError, orderID: Int64) -> WooAnalyticsEvent {
+            switch error {
+            case .local(let errorMessage):
+                return WooAnalyticsEvent(statName: .orderAddressValidationError, properties: [
+                    Keys.errorMessage: errorMessage,
+                    Keys.validationScenario: "local",
+                    Keys.orderID: orderID
+                ])
+            case .remote(let error):
+                return WooAnalyticsEvent(statName: .orderAddressValidationError, properties: [
+                    Keys.errorMessage: "\(String(describing: error?.addressError ?? "Unknown"))",
+                    Keys.validationScenario: "remote",
+                    Keys.orderID: orderID
+                ])
+            }
         }
     }
 }
@@ -751,6 +772,8 @@ extension WooAnalyticsEvent {
             static let errorDescription = "error_description"
             static let paymentMethodType = "payment_method_type"
             static let softwareUpdateType = "software_update_type"
+            static let source = "source"
+            static let enabled = "enabled"
         }
 
         static let unknownGatewayID = "unknown"
@@ -1189,15 +1212,22 @@ extension WooAnalyticsEvent {
                               ])
         }
 
+        enum CashOnDeliverySource: String {
+            case onboarding
+            case paymentsHub = "payments_hub"
+        }
+
         /// Tracked when the Cash on Delivery Payment Gateway is successfully enabled, e.g. from the IPP onboarding flow.
         ///
         /// - Parameters:
         ///   - countryCode: the country code of the store.
+        ///   - source: the screen which the enable attempt was made on     
         ///
-        static func enableCashOnDeliverySuccess(countryCode: String) -> WooAnalyticsEvent {
+        static func enableCashOnDeliverySuccess(countryCode: String, source: CashOnDeliverySource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .enableCashOnDeliverySuccess,
                               properties: [
-                                Keys.countryCode: countryCode
+                                Keys.countryCode: countryCode,
+                                Keys.source: source.rawValue
                               ])
         }
 
@@ -1205,14 +1235,62 @@ extension WooAnalyticsEvent {
         ///
         /// - Parameters:
         ///   - countryCode: the country code of the store.
+        ///   - source: the screen which the enable attempt was made on
         ///
         static func enableCashOnDeliveryFailed(countryCode: String,
-                                               error: Error?) -> WooAnalyticsEvent {
+                                               error: Error?,
+                                               source: CashOnDeliverySource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .enableCashOnDeliveryFailed,
                               properties: [
-                                Keys.countryCode: countryCode
+                                Keys.countryCode: countryCode,
+                                Keys.source: source.rawValue
                               ],
                               error: error)
+        }
+
+        /// Tracked when the Cash on Delivery Payment Gateway is successfully disabled, e.g. from the toggle on the Payments hub menu.
+        ///
+        /// - Parameters:
+        ///   - countryCode: the country code of the store.
+        ///   - source: the screen which the disable attempt was made on
+        ///
+        static func disableCashOnDeliverySuccess(countryCode: String, source: CashOnDeliverySource) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .disableCashOnDeliverySuccess,
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                Keys.source: source.rawValue
+                              ])
+        }
+
+        /// Tracked when the Cash on Delivery Payment Gateway disabling fails, e.g. from the toggle on the Payments hub menu.
+        ///
+        /// - Parameters:
+        ///   - countryCode: the country code of the store.
+        ///   - source: the screen which the disable attempt was made on
+        ///
+        static func disableCashOnDeliveryFailed(countryCode: String,
+                                               error: Error?,
+                                               source: CashOnDeliverySource) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .disableCashOnDeliveryFailed,
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                Keys.source: source.rawValue
+                              ],
+                              error: error)
+        }
+
+        /// Tracked when the Cash on Delivery Payment Gateway toggle is changed from the toggle on the Payments hub menu.
+        ///
+        /// - Parameters:
+        ///   - enabled: the reason why the onboarding step was shown (effectively the name of the step.)
+        ///   - countryCode: the country code of the store.
+        ///
+        static func paymentsHubCashOnDeliveryToggled(enabled: Bool, countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .paymentsHubCashOnDeliveryToggled,
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                Keys.enabled: enabled
+                              ])
         }
 
         /// Tracked when the user taps on the "See Receipt" button to view a receipt.

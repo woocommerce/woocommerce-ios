@@ -126,11 +126,17 @@ final class OrdersRootViewController: UIViewController {
     /// Presents the Details for the Notification with the specified Identifier.
     ///
     func presentDetails(for note: Note) {
-        guard let orderID = note.meta.identifier(forKey: .order), let siteID = note.meta.identifier(forKey: .site) else {
+        guard let orderID = note.meta.identifier(forKey: .order),
+              let siteID = note.meta.identifier(forKey: .site) else {
             DDLogError("## Notification with [\(note.noteID)] lacks its OrderID!")
             return
         }
-        let loaderViewController = OrderLoaderViewController(note: note, orderID: Int64(orderID), siteID: Int64(siteID))
+
+        presentDetails(for: Int64(orderID), siteID: Int64(siteID), note: note)
+    }
+
+    func presentDetails(for orderID: Int64, siteID: Int64, note: Note? = nil) {
+        let loaderViewController = OrderLoaderViewController(orderID: Int64(orderID), siteID: Int64(siteID), note: note)
         navigationController?.pushViewController(loaderViewController, animated: true)
     }
 
@@ -212,11 +218,7 @@ private extension OrdersRootViewController {
 
     func configureFiltersBar() {
         // Display the filtered orders bar
-        // if the feature flag is enabled
-        let isOrderListFiltersEnabled = featureFlagService.isFeatureFlagEnabled(.orderListFilters)
-        if isOrderListFiltersEnabled {
-            stackView.addArrangedSubview(filtersBar)
-        }
+        stackView.addArrangedSubview(filtersBar)
         filtersBar.onAction = { [weak self] in
             self?.filterButtonTapped()
         }

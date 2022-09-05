@@ -49,6 +49,7 @@ final class ULErrorViewController: UIViewController {
         super.viewDidLoad()
 
         configureTitle()
+        configureRightBarButtonItem()
         configureImageView()
         configureErrorMessage()
         configureExtraInfoButton()
@@ -85,6 +86,16 @@ final class ULErrorViewController: UIViewController {
 private extension ULErrorViewController {
     func configureTitle() {
         title = viewModel.title
+    }
+
+    func configureRightBarButtonItem() {
+        guard let rightBarButtonTitle = viewModel.rightBarButtonItemTitle else {
+            return
+        }
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: rightBarButtonTitle,
+                                                            style: .plain,
+                                                            target: self,
+                                                            action: #selector(didTapRightBarButtonItem))
     }
 
     func configureImageView() {
@@ -202,6 +213,10 @@ private extension ULErrorViewController {
 
     func didTapSecondaryButton() {
         viewModel.didTapSecondaryButton(in: self)
+    }
+
+    @objc func didTapRightBarButtonItem() {
+        viewModel.didTapRightBarButtonItem(in: self)
     }
 }
 

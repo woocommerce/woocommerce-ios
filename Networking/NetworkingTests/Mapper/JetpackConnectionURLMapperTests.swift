@@ -1,7 +1,7 @@
 import XCTest
 @testable import Networking
 
-/// UserMapper Unit Tests
+/// JetpackConnectionURLMapper Unit Tests
 ///
 final class JetpackConnectionURLMapperTests: XCTestCase {
 

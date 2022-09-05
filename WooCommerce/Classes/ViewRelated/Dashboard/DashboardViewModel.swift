@@ -18,6 +18,7 @@ final class DashboardViewModel {
                    siteTimezone: TimeZone,
                    timeRange: StatsTimeRangeV4,
                    latestDateToInclude: Date,
+                   forceRefresh: Bool,
                    onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
         let waitingTracker = WaitingTimeTracker(trackScenario: .dashboardMainStats)
         let earliestDateToInclude = timeRange.earliestDate(latestDate: latestDateToInclude, siteTimezone: siteTimezone)
@@ -26,6 +27,7 @@ final class DashboardViewModel {
                                                  earliestDateToInclude: earliestDateToInclude,
                                                  latestDateToInclude: latestDateToInclude,
                                                  quantity: timeRange.maxNumberOfIntervals,
+                                                 forceRefresh: forceRefresh,
                                                  onCompletion: { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -69,6 +71,7 @@ final class DashboardViewModel {
                              siteTimezone: TimeZone,
                              timeRange: StatsTimeRangeV4,
                              latestDateToInclude: Date,
+                             forceRefresh: Bool,
                              onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
         let waitingTracker = WaitingTimeTracker(trackScenario: .dashboardTopPerformers)
         let earliestDateToInclude = timeRange.earliestDate(latestDate: latestDateToInclude, siteTimezone: siteTimezone)
@@ -77,6 +80,7 @@ final class DashboardViewModel {
                                                           earliestDateToInclude: earliestDateToInclude,
                                                           latestDateToInclude: latestDateToInclude,
                                                           quantity: Constants.topEarnerStatsLimit,
+                                                          forceRefresh: forceRefresh,
                                                           onCompletion: { result in
             switch result {
             case .success:

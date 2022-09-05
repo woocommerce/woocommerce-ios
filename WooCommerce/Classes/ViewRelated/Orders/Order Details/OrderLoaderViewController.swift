@@ -3,8 +3,9 @@ import UIKit
 import Yosemite
 
 
-// MARK: - OrderLoaderViewController: Loads asynchronously an Order from a push notification (given it's OrderID + SiteID).
-//         On Success the OrderDetailsViewController will be rendered "in place".
+// Loads and render an Order details asynchronously.
+// This is useful for showing the details of an order coming from a push notification or universal link.
+// On Success the OrderDetailsViewController will be rendered "in place".
 //
 class OrderLoaderViewController: UIViewController {
 
@@ -14,7 +15,7 @@ class OrderLoaderViewController: UIViewController {
 
     /// Source push notification `Note`
     ///
-    private let note: Note
+    private let note: Note?
 
     /// Target OrderID
     ///
@@ -50,10 +51,10 @@ class OrderLoaderViewController: UIViewController {
 
     // MARK: - Initializers
 
-    init(note: Note, orderID: Int64, siteID: Int64) {
-        self.note = note
+    init(orderID: Int64, siteID: Int64, note: Note? = nil) {
         self.orderID = orderID
         self.siteID = siteID
+        self.note = note
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -264,7 +265,9 @@ private extension OrderLoaderViewController {
             startSpinner()
         case .success(let order):
             presentOrderDetails(for: order)
-            markNotificationAsReadIfNeeded(note: note)
+            if let note = note {
+                markNotificationAsReadIfNeeded(note: note)
+            }
         case .failure:
             displayFailureOverlay()
         }

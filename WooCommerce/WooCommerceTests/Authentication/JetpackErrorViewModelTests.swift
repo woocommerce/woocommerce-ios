@@ -75,6 +75,14 @@ final class JetpackErrorViewModelTests: XCTestCase {
         XCTAssertEqual(secondaryButtonTitle, Expectations.secondaryButtonTitle)
     }
 
+    func test_viewmodel_provides_expected_title_for_right_bar_button_item() {
+        // Given
+        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url) { _ in }
+
+        // Then
+        XCTAssertEqual(viewModel.rightBarButtonItemTitle, Expectations.helpBarButtonItemTitle)
+    }
+
     func test_viewModel_logs_an_event_when_viewDidLoad_is_triggered() throws {
         // Given
         let viewModel = JetpackErrorViewModel(siteURL: Expectations.url, analytics: analytics) { _ in }
@@ -116,6 +124,18 @@ final class JetpackErrorViewModelTests: XCTestCase {
         let firstEvent = try XCTUnwrap(analyticsProvider.receivedEvents.first)
         XCTAssertEqual(firstEvent, "login_what_is_jetpack_help_screen_viewed")
     }
+
+    func test_viewModel_invokes_present_support_when_the_help_button_is_tapped() throws {
+        // Given
+        let mockAuthentication = MockAuthentication()
+        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url, authentication: mockAuthentication) { _ in }
+
+        // When
+        viewModel.didTapRightBarButtonItem(in: UIViewController())
+
+        // Then
+        XCTAssertTrue(mockAuthentication.presentSupportFromScreenInvoked)
+    }
 }
 
 
@@ -133,5 +153,8 @@ private extension JetpackErrorViewModelTests {
         static let secondaryButtonTitle = NSLocalizedString("Log In With Another Account",
                                                             comment: "Action button that will restart the login flow."
                                                             + "Presented when logging in with a site address that does not have a valid Jetpack installation")
+
+        static let helpBarButtonItemTitle = NSLocalizedString("Help",
+                                                       comment: "Help button on Jetpack required error screen.")
     }
 }

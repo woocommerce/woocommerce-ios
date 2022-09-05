@@ -6,7 +6,7 @@ PODS:
   - AppAuth/Core (1.5.0)
   - AppAuth/ExternalUserAgent (1.5.0):
     - AppAuth/Core
-  - Automattic-Tracks-iOS (0.12.0-beta.1):
+  - Automattic-Tracks-iOS (0.12.0):
     - Sentry (~> 6)
     - Sodium (>= 0.9.1)
     - UIDeviceIdentifier (~> 2.0)
@@ -83,7 +83,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.8)
-  - Automattic-Tracks-iOS (~> 0.12.0-beta.1)
+  - Automattic-Tracks-iOS (~> 0.12.0-beta.2)
   - CocoaLumberjack (~> 3.7.4)
   - CocoaLumberjack/Swift (~> 3.7.4)
   - Gridicons (~> 1.2.0)
@@ -144,7 +144,7 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
   AppAuth: 80317d99ac7ff2801a2f18ff86b48cd315ed465d
-  Automattic-Tracks-iOS: b6f9873770a57e54941c5a3ca8296cbc8dd1015b
+  Automattic-Tracks-iOS: dae8787ffc2c74493a3a908abc48aed527686131
   CocoaLumberjack: 543c79c114dadc3b1aba95641d8738b06b05b646
   FormatterKit: 184db51bf120b633693a73624a4cede89ec51a41
   GoogleSignIn: fd381840dbe7c1137aa6dc30849a5c3e070c034a
@@ -179,6 +179,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2bdf8544f7cd0fd4c002546f5704b813845beb2a
   ZendeskSupportSDK: 3a8e508ab1d9dd22dc038df6c694466414e037ba
 
-PODFILE CHECKSUM: d72ea2099db46ccdbe3937b108f4dee7149f0575
+PODFILE CHECKSUM: 4ef69667fcfd76f7eb1b67b68003b6b98facaddd
 
 COCOAPODS: 1.11.2

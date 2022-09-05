@@ -13,11 +13,17 @@ public final class JetpackConnectionRemote: Remote {
 
     /// Fetches the URL for setting up Jetpack connection.
     ///
-    public func fetchJetpackConnectionURL(completion: @escaping (Result<URL?, Error>) -> Void) {
+    public func fetchJetpackConnectionURL(completion: @escaping (Result<URL, Error>) -> Void) {
         let request = WordPressOrgRequest(baseURL: siteURL, method: .get, path: Path.jetpackConnectionURL)
         let mapper = JetpackConnectionURLMapper()
 
         enqueue(request, mapper: mapper, completion: completion)
+    }
+}
+
+public extension JetpackConnectionRemote {
+    enum ConnectionError: Int, Error {
+        case malformedURL
     }
 }
 

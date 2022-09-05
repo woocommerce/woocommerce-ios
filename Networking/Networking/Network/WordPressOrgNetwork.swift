@@ -52,17 +52,11 @@ public final class WordPressOrgNetwork: Network {
     /// Executes the specified Network Request. Upon completion, the payload will be sent back to the caller as a Data instance.
     ///
     /// - Important:
-    ///     - User agent and authenticator from the initializer will be injected.
+    ///     - User agent and authenticator from the initializer will be injected through the `validate` call.
     ///
     /// - Parameters:
     ///     - request: Request that should be performed.
     ///     - completion: Closure to be executed upon completion.
-    ///
-    /// - Note:
-    ///     - The response body will always be returned (when possible), even when there's a networking error.
-    ///       This differs slightly from the standard Alamofire `.validate()` behavior, and it's required so that
-    ///       the upper layers can properly detect "Jetpack Tunnel" Errors.
-    ///     - Yes. We do the above because the Jetpack Tunnel endpoint doesn't properly relay the correct statusCode.
     ///
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
         sessionManager.request(request)
@@ -75,7 +69,7 @@ public final class WordPressOrgNetwork: Network {
     /// Executes the specified Network Request. Upon completion, the payload will be sent back to the caller as a Data instance.
     ///
     /// - Important:
-    ///     - User agent and authenticator from the initializer will be injected.
+    ///     - User agent and authenticator from the initializer will be injected through the `validate` call..
     ///
     /// - Parameters:
     ///     - request: Request that should be performed.
@@ -93,7 +87,7 @@ public final class WordPressOrgNetwork: Network {
     /// Only one value will be emitted and the request cannot be retried.
     ///
     /// - Important:
-    ///     - User agent and authenticator from the initializer will be injected.
+    ///     - User agent and authenticator from the initializer will be injected through the `validate` call..
     ///
     /// - Parameter request: Request that should be performed.
     /// - Returns: A publisher that emits the result of the given request.

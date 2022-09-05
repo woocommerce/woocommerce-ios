@@ -19,25 +19,10 @@ struct WordPressOrgRequest: URLRequestConvertible {
 
     /// Parameters
     ///
-    let parameters: [String: Any]
+    var parameters: [String: Any]?
 
 
-    /// Designated Initializer.
-    ///
-    /// - Parameters:
-    ///     - method: HTTP Method we should use.
-    ///     - path: RPC that should be called.
-    ///     - parameters: Collection of Key/Value parameters.
-    ///
-    init(baseURL: String, method: HTTPMethod, path: String, parameters: [String: Any]? = nil) {
-        self.baseURL = baseURL
-        self.method = method
-        self.path = path
-        self.parameters = parameters ?? [:]
-    }
-
-
-    /// Returns a URLRequest instance reprensenting the current Jetpack Request.
+    /// Returns a URLRequest instance reprensenting the current WordPress.org REST API Request.
     ///
     func asURLRequest() throws -> URLRequest {
         let url = URL(string: baseURL + Settings.basePath + path.removingPrefix("/"))!

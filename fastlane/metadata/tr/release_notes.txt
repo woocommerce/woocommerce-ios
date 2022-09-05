@@ -1,3 +1,2 @@
-Uygulama içinden ödeme kabul etmeyle ilgili her şeyi çok daha kolay hale getirdik. Menüden Ödemeler bölümüne gidin! Ayrıca ödeme almanızı gereksiz yere engellenebilecek bir sorunu da düzelttik.
-Bunun yanında, uygulamayı kullanmaya hızlı şekilde başlamanıza yardımcı olmak için oturum açma akışlarımızda çeşitli geliştirmeler yaptık.
-Son olarak, performansta bazı ince ayarlar yaptık. Ama işimiz daha bitmedi. Gelecekte daha fazla iyileştirme yapmayı umuyoruz. Lütfen geri bildirimlerinizi göndermeye devam edin!
+Bu sürüm, uygulamadan ödeme almanızı kolaylaştıran birkaç düzeltmeye sahiptir. Ayrıca, uygulamaya giriş yapmanızı kolaylaştıran yeni bir Yardım Merkezi SSS sayfası ekledik.
+Lütfen bize geri bildirim göndermeye devam edin, sizi dinliyoruz.

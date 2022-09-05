@@ -198,6 +198,65 @@ final class MainTabBarControllerTests: XCTestCase {
         XCTAssertEqual(selectedTabIndexAfterSiteChange, WooTab.myStore.visibleIndex())
     }
 
+    func test_when_receiving_a_review_notification_from_a_different_site_navigates_to_hubMenu_tab() throws {
+        // Arrange
+        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController else {
+            return
+        }
+
+        let pushNotificationsManager = MockPushNotificationsManager()
+        ServiceLocator.setPushNotesManager(pushNotificationsManager)
+
+        let storesManager = MockStoresManager(sessionManager: .testingInstance)
+        // Reset `receivedActions`
+        storesManager.reset()
+        ServiceLocator.setStores(storesManager)
+
+        // Trigger `viewDidLoad`
+        XCTAssertNotNil(tabBarController.view)
+        stores.updateDefaultStore(storeID: 134)
+
+        // Simulate successful state resetting after logging out from push notification store switching
+        storesManager.whenReceivingAction(ofType: StatsActionV4.self) { action in
+            if case let .resetStoredStats(completion) = action {
+                completion()
+            }
+        }
+        storesManager.whenReceivingAction(ofType: OrderAction.self) { action in
+            if case let .resetStoredOrders(completion) = action {
+                completion()
+            }
+        }
+        storesManager.whenReceivingAction(ofType: ProductReviewAction.self) { action in
+            if case let .resetStoredProductReviews(completion) = action {
+                completion()
+            }
+        }
+
+        let hubMenuNavigationController = try XCTUnwrap(tabBarController.tabNavigationController(tab: .hubMenu))
+        assertThat(hubMenuNavigationController.topViewController, isAnInstanceOf: HubMenuViewController.self)
+
+        // Action
+        // Send push notification in inactive state
+        let pushNotification = PushNotification(noteID: 1_234, kind: .comment, title: "", subtitle: "", message: "")
+        pushNotificationsManager.sendInactiveNotification(pushNotification)
+
+        // Simulate that the network call returns a parcel
+        let receivedAction = try XCTUnwrap(storesManager.receivedActions.first as? ProductReviewAction)
+        guard case .retrieveProductReviewFromNote(_, let completion) = receivedAction else {
+            return XCTFail("Expected retrieveProductReviewFromNote action.")
+        }
+        completion(.success(ProductReviewFromNoteParcelFactory().parcel(metaSiteID: 606)))
+
+        // Assert
+        waitUntil {
+            hubMenuNavigationController.viewControllers.count != 0
+        }
+        // HubMenuViewController should be pushed, and be the MainTabBarController visible index
+        assertThat(hubMenuNavigationController.topViewController, isAnInstanceOf: HubMenuViewController.self)
+        XCTAssertEqual(tabBarController.selectedIndex, WooTab.hubMenu.visibleIndex())
+    }
+
     func test_when_receiving_product_image_upload_error_a_notice_is_enqueued() throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isBackgroundImageUploadEnabled: true)

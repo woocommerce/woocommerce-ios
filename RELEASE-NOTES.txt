@@ -2,7 +2,7 @@
 
 10.3
 -----
-
+- [*] Dashboard: the last selected time range tab (Today/This Week/This Month/This Year) is persisted for the site and shown on the next site launch (app launch or switching stores). [https://github.com/woocommerce/woocommerce-ios/pull/7638]
 
 10.2
 -----

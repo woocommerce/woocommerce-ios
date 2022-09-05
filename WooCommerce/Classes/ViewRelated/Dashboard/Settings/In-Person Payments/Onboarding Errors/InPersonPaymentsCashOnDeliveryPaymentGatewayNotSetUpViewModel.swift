@@ -131,13 +131,15 @@ extension InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel {
     }
 
     private func trackEnableCashOnDeliverySuccess() {
-        let event = Event.enableCashOnDeliverySuccess(countryCode: cardPresentPaymentsConfiguration.countryCode)
+        let event = Event.enableCashOnDeliverySuccess(countryCode: cardPresentPaymentsConfiguration.countryCode,
+                                                      source: .onboarding)
         analytics.track(event: event)
     }
 
     private func trackEnableCashOnDeliveryFailed(error: Error?) {
         let event = Event.enableCashOnDeliveryFailed(countryCode: cardPresentPaymentsConfiguration.countryCode,
-                                                     error: error)
+                                                     error: error,
+                                                     source: .onboarding)
         analytics.track(event: event)
     }
 }

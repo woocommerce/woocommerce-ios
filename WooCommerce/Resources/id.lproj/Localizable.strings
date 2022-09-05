@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-08-23 11:54:04+0000 */
+/* Translation-Revision-Date: 2022-09-02 09:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -1096,9 +1096,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to confirm the preferred provider for In-Person Payments */
 "Confirm Payment Method" = "Konfirmasi Metode Pembayaran";
 
-/* Title for the error screen when there is more than one plugin active that supports in-person payments. */
-"Conflicting payment plugins detected" = "Konflik plugin pembayaran terdeteksi";
-
 /* Title displayed if there are no inbox notes in the inbox screen. */
 "Congrats, you’ve read everything!" = "Selamat, Anda telah membaca semuanya!";
 
@@ -1207,7 +1204,8 @@ which should be translated separately and considered part of this sentence. */
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
 "Continuing with Apple" = "Melanjutkan dengan Apple";
 
-/* Conversion stat label on dashboard. */
+/* Conversion stat label on dashboard.
+   Conversion title label for the store info widget */
 "Conversion" = "Konversi";
 
 /* Copy address text button title — should be one word and as short as possible. */
@@ -2007,6 +2005,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message on the Coupon Details screen when deleting coupon fails */
 "Failed to delete coupon. Please try again." = "Gagal menghapus kupon. Mohon ulangi.";
 
+/* Error displayed when the attempt to enable a Pay in Person checkout payment option fails */
+"Failed to enable Pay in Person. Please try again later." = "Gagal mengaktifkan Pembayaran Langsung. Silakan coba lagi nanti.";
+
 /* Error message on the Issue Refund screen when fetching the charge details failed */
 "Failed to fetch your charge details. Please try again." = "Gagal mengambil detail tagihan Anda. Silakan coba lagi.";
 
@@ -2268,6 +2269,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Help and Support navigation title
    Help button
+   Help button on Jetpack required error screen.
    Help button on store picker screen. */
 "Help" = "Bantuan";
 
@@ -2347,9 +2349,6 @@ which should be translated separately and considered part of this sentence. */
 /* Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled. */
 "In-Person Payments Setup is incomplete." = "Pengaturan Pembayaran Langsung belum lengkap.";
 
-/* Title for the error screen when there is more than one plugin active and the Stripe plugin should be deactivated */
-"In-Person Payments are processed through WooCommerce Payments." = "Pembayaran Langsung diproses melalui WooCommerce Payments.";
-
 /* Main prompt for the screen to select the preferred provider for In-Person Payments */
 "In-Person Payments can be processed through either of these payment providers. Which provider would you like to use?" = "Pembayaran Langsung dapat diproses melalui penyedia pembayaran berikut. Penyedia mana yang ingin Anda gunakan?";
 
@@ -2360,12 +2359,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when the merchant's payment account has been rejected. */
 "In-Person Payments isn't available for this store" = "Pembayaran Langsung tidak tersedia untuk toko ini";
-
-/* Message prompting a shop manager to ask an administrator to deactivate one of two plugins */
-"In-Person Payments will only work with one of following plugins activated. Please contact a site administrator to deactivate one of these plugins to continue:" = "Pembayaran Langsung hanya akan berfungsi jika salah satu plugin berikut diaktifkan. Hubungi administrator situs untuk menonaktifkan salah satu plugin berikut agar dapat melanjutkan:";
-
-/* Message prompting an administrator to deactivate one of two plugins */
-"In-Person Payments will only work with one of following plugins activated. Please deactivate one of these plugins to continue:" = "Pembayaran Langsung hanya akan berfungsi jika salah satu plugin berikut diaktifkan. Harap nonaktifkan salah satu plugin berikut untuk melanjutkan:";
 
 /* Application's Inactive State */
 "Inactive" = "Nonaktif";
@@ -2525,6 +2518,9 @@ which should be translated separately and considered part of this sentence. */
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "Sepertinya Anda memasukkan kata sandi yang salah. Ingin mencoba lagi?";
 
+/* An error message displayed when the user tries to log in to the app with a simple WP.com site. Reads like: It seems that your site google.com is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce. */
+"It seems that your site %@ is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce." = "Sepertinya situs %@ Anda adalah situs WordPress.com sederhana yang tidak dapat menginstal plugin. Upgrade paket Anda untuk dapat menggunakan WooCommerce.";
+
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "Miring";
 
@@ -2593,8 +2589,11 @@ which should be translated separately and considered part of this sentence. */
 
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
+   A label prompting users to learn more about In-Person Payments.
+This is the link to the website, and forms part of a longer sentence which it should be considered a part of.
    Button title in the shipping label creation info screen
    Settings > Privacy Settings. A text link to the cookie policy.
+   The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. 
    Title of button shown in the Orders → All Orders tab if the list is empty.
    Title of button shown in the Reviews tab if the list is empty
    Title of button shown on the Product Reviews screen if the list is empty */
@@ -2694,7 +2693,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Action button that will restart the login flow.Presented when logging in with a site address that appears to be invalid.
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
-   Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce */
+   Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
+   Action button that will restart the login flow.Presented when the user tries to log in to the app with a simple WP.com site. */
 "Log In With Another Account" = "Login Dengan Akun Lain";
 
 /* Action button triggering a Log Out.Presented when logging in with a store address that does not match the account entered
@@ -2765,9 +2765,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the action sheet displayed from the Coupon Details screen */
 "Manage Coupon" = "Kelola Kupon";
-
-/* Button to open browser to manage plugins */
-"Manage Plugins" = "Kelola Plugin";
 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Manage and edit orders on the go" = "Kelola dan sunting pesanan dari mana saja";
@@ -3238,6 +3235,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Ordered List" = "Daftar Berurutan";
 
 /* Orders stat label on dashboard - should be plural.
+   Orders title label for the store info widget
    The title of the Orders tab. */
 "Orders" = "Pesanan";
 
@@ -3328,6 +3326,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Paste without Formatting Menu Item */
 "Paste without Formatting" = "Tempel tanpa Format";
+
+/* Customer-facing description showing more details about the Pay in Person option which is added to the store checkout when the merchant enables Pay in Person
+   Customer-facing instructions shown on Order Thank-you pages and confirmation emails, showing more details about the Pay in Person option added to the store checkout when the merchant enables Pay in Person */
+"Pay by card or another accepted payment method" = "Bayar menggunakan kartu atau metode pembayaran lain yang diterima";
+
+/* Customer-facing title for the payment option added to the store checkout when the merchant enables Pay in Person
+   Title for a switch on the In-Person Payments menu to enable Cash on Delivery */
+"Pay in Person" = "Pembayaran Langsung";
 
 /* Payment section title
    Title text of the row that shows the payment headline when creating a simple payment
@@ -3993,6 +3999,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button to retry when there was a network error checking In-Person Payments requirements
    Retry Action
    Retry action for an error notice
+   Retry Action on error displayed when the attempt to enable a Pay in Person checkout payment option fails
+   Retry Action on error displayed when the attempt to toggle a Pay in Person checkout payment option fails
    Retry Action on the notice when loading product categories fails
    Retry the last action */
 "Retry" = "Coba Lagi";
@@ -4010,7 +4018,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "Kembalikan ke pengirim jika paket tidak dapat dikirimkan";
 
-/* Revenue stat label on dashboard. */
+/* Revenue stat label on dashboard.
+   Revenue title label for the store info widget */
 "Revenue" = "Pendapatan";
 
 /* Title of Review Order screen */
@@ -5215,12 +5224,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message displayed when unable to close user account due to having active atomic site. */
 "To close this account now, contact our support team." = "Untuk menutup akun ini sekarang juga, hubungi tim dukungan kami.";
 
-/* Message prompting an administrator to deactivate Stripe plugin */
-"To collect payments, please ask an administrator to deactivate WooCommerce Stripe Gateway." = "Untuk menerima pembayaran, harap minta administrator untuk menonaktifkan WooCommerce Stripe Gateway.";
-
-/* Message prompting an administrator to deactivate Stripe plugin */
-"To collect payments, please deactivate WooCommerce Stripe Gateway." = "Untuk menerima pembayaran, harap nonaktifkan WooCommerce Stripe Gateway.";
-
 /* Close Account confirmation alert message. The %1$@ is the user's WordPress.com username. */
 "To confirm, please re-enter your username before closing.\n\n%1$@" = "Untuk mengonfirmasi, silakan masukkan lagi nama pengguna Anda sebelum menutup.\n\n%1$@";
 
@@ -5781,7 +5784,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Visibility label in Product Settings */
 "Visibility" = "Visibilitas";
 
-/* Visitors stat label on dashboard - should be plural. */
+/* Visitors stat label on dashboard - should be plural.
+   Visitors title label for the store info widget */
 "Visitors" = "Pengunjung";
 
 /* Add a note screen - Write Note section title */

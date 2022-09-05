@@ -14,10 +14,6 @@ public enum FeatureFlag: Int {
     ///
     case reviews
 
-    /// Display the new tab "Menu" in the tab bar.
-    ///
-    case hubMenu
-
     /// Displays the option to view coupons
     ///
     case couponView

@@ -1096,9 +1096,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to confirm the preferred provider for In-Person Payments */
 "Confirm Payment Method" = "确认付款方式";
 
-/* Title for the error screen when there is more than one plugin active that supports in-person payments. */
-"Conflicting payment plugins detected" = "检测到存在冲突的付款插件";
-
 /* Title displayed if there are no inbox notes in the inbox screen. */
 "Congrats, you’ve read everything!" = "恭喜您，已全部阅读！";
 
@@ -1207,7 +1204,8 @@ which should be translated separately and considered part of this sentence. */
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
 "Continuing with Apple" = "继续使用 Apple";
 
-/* Conversion stat label on dashboard. */
+/* Conversion stat label on dashboard.
+   Conversion title label for the store info widget */
 "Conversion" = "转化";
 
 /* Copy address text button title — should be one word and as short as possible. */
@@ -2271,6 +2269,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Help and Support navigation title
    Help button
+   Help button on Jetpack required error screen.
    Help button on store picker screen. */
 "Help" = "帮助";
 
@@ -2350,9 +2349,6 @@ which should be translated separately and considered part of this sentence. */
 /* Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled. */
 "In-Person Payments Setup is incomplete." = "现场付款设置未完成。";
 
-/* Title for the error screen when there is more than one plugin active and the Stripe plugin should be deactivated */
-"In-Person Payments are processed through WooCommerce Payments." = "通过 WooCommerce Payments 处理现场付款。";
-
 /* Main prompt for the screen to select the preferred provider for In-Person Payments */
 "In-Person Payments can be processed through either of these payment providers. Which provider would you like to use?" = "现场付款可以通过这些付款提供商中的任何一个进行处理。 您想使用哪个提供商？";
 
@@ -2363,12 +2359,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when the merchant's payment account has been rejected. */
 "In-Person Payments isn't available for this store" = "此商店不支持现场付款";
-
-/* Message prompting a shop manager to ask an administrator to deactivate one of two plugins */
-"In-Person Payments will only work with one of following plugins activated. Please contact a site administrator to deactivate one of these plugins to continue:" = "必须启用下面其中一个插件，才能进行现场付款。 请联系站点管理员，禁用下面其中一个插件，然后再继续：";
-
-/* Message prompting an administrator to deactivate one of two plugins */
-"In-Person Payments will only work with one of following plugins activated. Please deactivate one of these plugins to continue:" = "必须启用下面其中一个插件，才能进行现场付款。 请禁用下面其中一个插件，然后再继续：";
 
 /* Application's Inactive State */
 "Inactive" = "未激活";
@@ -2599,8 +2589,11 @@ which should be translated separately and considered part of this sentence. */
 
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
+   A label prompting users to learn more about In-Person Payments.
+This is the link to the website, and forms part of a longer sentence which it should be considered a part of.
    Button title in the shipping label creation info screen
    Settings > Privacy Settings. A text link to the cookie policy.
+   The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. 
    Title of button shown in the Orders → All Orders tab if the list is empty.
    Title of button shown in the Reviews tab if the list is empty
    Title of button shown on the Product Reviews screen if the list is empty */
@@ -2772,9 +2765,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the action sheet displayed from the Coupon Details screen */
 "Manage Coupon" = "管理优惠券";
-
-/* Button to open browser to manage plugins */
-"Manage Plugins" = "管理插件";
 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Manage and edit orders on the go" = "随时随地管理和编辑订单";
@@ -3245,6 +3235,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Ordered List" = "有序列表";
 
 /* Orders stat label on dashboard - should be plural.
+   Orders title label for the store info widget
    The title of the Orders tab. */
 "Orders" = "订单";
 
@@ -3340,7 +3331,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Customer-facing instructions shown on Order Thank-you pages and confirmation emails, showing more details about the Pay in Person option added to the store checkout when the merchant enables Pay in Person */
 "Pay by card or another accepted payment method" = "银行卡付款或其他可接受的付款方式";
 
-/* Customer-facing title for the payment option added to the store checkout when the merchant enables Pay in Person */
+/* Customer-facing title for the payment option added to the store checkout when the merchant enables Pay in Person
+   Title for a switch on the In-Person Payments menu to enable Cash on Delivery */
 "Pay in Person" = "现场付款";
 
 /* Payment section title
@@ -4008,6 +4000,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Retry Action
    Retry action for an error notice
    Retry Action on error displayed when the attempt to enable a Pay in Person checkout payment option fails
+   Retry Action on error displayed when the attempt to toggle a Pay in Person checkout payment option fails
    Retry Action on the notice when loading product categories fails
    Retry the last action */
 "Retry" = "重试";
@@ -4025,7 +4018,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "如果包裹无法送达，请退回给寄件人";
 
-/* Revenue stat label on dashboard. */
+/* Revenue stat label on dashboard.
+   Revenue title label for the store info widget */
 "Revenue" = "收益";
 
 /* Title of Review Order screen */
@@ -5230,12 +5224,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message displayed when unable to close user account due to having active atomic site. */
 "To close this account now, contact our support team." = "要立即关闭此帐户，请联系我们的支持团队。";
 
-/* Message prompting an administrator to deactivate Stripe plugin */
-"To collect payments, please ask an administrator to deactivate WooCommerce Stripe Gateway." = "如需收款，需请求管理员禁用 WooCommerce Stripe Gateway。";
-
-/* Message prompting an administrator to deactivate Stripe plugin */
-"To collect payments, please deactivate WooCommerce Stripe Gateway." = "如需收款，请禁用 WooCommerce Stripe Gateway。";
-
 /* Close Account confirmation alert message. The %1$@ is the user's WordPress.com username. */
 "To confirm, please re-enter your username before closing.\n\n%1$@" = "如果您确认关闭账户，请在关闭之前重新输入您的用户名。\n\n%1$@";
 
@@ -5796,7 +5784,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Visibility label in Product Settings */
 "Visibility" = "可见性";
 
-/* Visitors stat label on dashboard - should be plural. */
+/* Visitors stat label on dashboard - should be plural.
+   Visitors title label for the store info widget */
 "Visitors" = "访客";
 
 /* Add a note screen - Write Note section title */

@@ -42,6 +42,9 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
     @Published private var isSelectedTimeRangeReady: Bool = false
     private var reloadDataAfterSelectedTimeRangeSubscriptions: Set<AnyCancellable> = []
 
+    @Published private var selectedTimeRangeIndex: Int = 0
+    private var selectedTimeRangeIndexSubscription: AnyCancellable?
+
     // MARK: - View Lifecycle
 
     init(siteID: Int64, dashboardViewModel: DashboardViewModel) {
@@ -76,6 +79,7 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
 
         super.viewDidLoad()
         configureView()
+        observeSelectedTimeRangeIndex()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -101,15 +105,30 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
         }
     }
 
-    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        super.collectionView(collectionView, didSelectItemAt: indexPath)
-        let timeRangeTabIndex = indexPath.item
-        guard let periodViewController = viewControllers[timeRangeTabIndex] as? StoreStatsAndTopPerformersPeriodViewController,
-              timeRangeTabIndex != currentIndex else {
-            return
-        }
-        saveLastTimeRange(periodViewController.timeRange)
-        syncStats(forced: false, viewControllerToSync: periodViewController)
+    override func updateIndicator(for viewController: PagerTabStripViewController,
+                                  fromIndex: Int,
+                                  toIndex: Int,
+                                  withProgressPercentage progressPercentage: CGFloat,
+                                  indexWasChanged: Bool) {
+        super.updateIndicator(for: viewController,
+                              fromIndex: fromIndex,
+                              toIndex: toIndex,
+                              withProgressPercentage: progressPercentage,
+                              indexWasChanged: indexWasChanged)
+        selectedTimeRangeIndex = toIndex
+    }
+
+    func observeSelectedTimeRangeIndex() {
+        selectedTimeRangeIndexSubscription = $selectedTimeRangeIndex
+            .removeDuplicates()
+            .sink { [weak self] timeRangeTabIndex in
+                guard let self = self else { return }
+                guard let periodViewController = self.viewControllers[timeRangeTabIndex] as? StoreStatsAndTopPerformersPeriodViewController else {
+                    return
+                }
+                self.saveLastTimeRange(periodViewController.timeRange)
+                self.syncStats(forced: false, viewControllerToSync: periodViewController)
+            }
     }
 }
 

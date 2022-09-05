@@ -101,4 +101,8 @@ public enum FeatureFlag: Int {
     /// Whether to include the Cash on Delivery enable step in In-Person Payment onboarding
     ///
     case promptToEnableCodInIppOnboarding
+
+    /// Enables home screen store widgets.
+    ///
+    case storeWidgets
 }

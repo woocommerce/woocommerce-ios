@@ -1,18 +1,22 @@
 import Foundation
 import Yosemite
+import protocol Storage.StorageManagerType
 
 class InPersonPaymentsMenuViewModel: ObservableObject {
 
     // MARK: - Dependencies
     struct Dependencies {
         let stores: StoresManager
+        let storageManager: StorageManagerType
         let noticePresenter: NoticePresenter
         let analytics: Analytics
 
         init(stores: StoresManager = ServiceLocator.stores,
+             storageManager: StorageManagerType = ServiceLocator.storageManager,
              noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
              analytics: Analytics = ServiceLocator.analytics) {
             self.stores = stores
+            self.storageManager = storageManager
             self.noticePresenter = noticePresenter
             self.analytics = analytics
         }
@@ -22,6 +26,10 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
 
     private var stores: StoresManager {
         dependencies.stores
+    }
+
+    private var storageManager: StorageManagerType {
+        dependencies.storageManager
     }
 
     private var noticePresenter: NoticePresenter {
@@ -40,14 +48,19 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         stores.sessionManager.defaultStoreID
     }
 
+    private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
+
     private let paymentGatewaysFetchedResultsController: ResultsController<StoragePaymentGateway>?
 
     var selectedPlugin: CardPresentPaymentsPlugin?
 
-    init(dependencies: Dependencies = Dependencies()) {
+    init(dependencies: Dependencies = Dependencies(),
+         configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration) {
         self.dependencies = dependencies
+        self.cardPresentPaymentsConfiguration = configuration
         paymentGatewaysFetchedResultsController = Self.createPaymentGatewaysResultsController(
-            siteID: dependencies.stores.sessionManager.defaultStoreID)
+            siteID: dependencies.stores.sessionManager.defaultStoreID,
+            storageManager: dependencies.storageManager)
         observePaymentGateways()
     }
 
@@ -63,14 +76,15 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         }
     }
 
-    private static func createPaymentGatewaysResultsController(siteID: Int64?) -> ResultsController<StoragePaymentGateway>? {
+    private static func createPaymentGatewaysResultsController(siteID: Int64?,
+                                                               storageManager: StorageManagerType) -> ResultsController<StoragePaymentGateway>? {
         guard let siteID = siteID else {
             return nil
         }
 
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
 
-        return ResultsController<StoragePaymentGateway>(storageManager: ServiceLocator.storageManager,
+        return ResultsController<StoragePaymentGateway>(storageManager: storageManager,
                                                         matching: predicate,
                                                         sortedBy: [])
     }
@@ -88,6 +102,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     // MARK: - Toggle Cash on Delivery Payment Gateway
 
     func updateCashOnDeliverySetting(enabled: Bool) {
+        trackCashOnDeliveryToggled(enabled: enabled)
         switch enabled {
         case true:
             enableCashOnDeliveryGateway()
@@ -108,9 +123,11 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
                 // Resetting the toggle to the most recent stored value, or false because we failed to make it true.
                 self.cashOnDeliveryEnabledState = self.cashOnDeliveryGateway?.enabled ?? false
                 self.displayEnableCashOnDeliveryFailureNotice()
+                self.trackEnableCashOnDeliveryFailed(error: result.failure)
                 return
             }
 
+            self.trackEnableCashOnDeliverySuccess()
         }
         stores.dispatch(action)
     }
@@ -138,9 +155,11 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
                 // Resetting the toggle to the most recent stored value, or true because we failed to make it false.
                 self.cashOnDeliveryEnabledState = self.cashOnDeliveryGateway?.enabled ?? true
                 self.displayDisableCashOnDeliveryFailureNotice()
+                self.trackDisableCashOnDeliveryFailed(error: result.failure)
                 return
             }
 
+            self.trackDisableCashOnDeliverySuccess()
         }
         stores.dispatch(action)
     }
@@ -163,6 +182,44 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
 
     func learnMoreTapped(from viewController: UIViewController) {
         WebviewHelper.launch(learnMoreURL, with: viewController)
+        analytics.track(.paymentsHubCashOnDeliveryToggleLearnMoreTapped)
+    }
+}
+
+// MARK: - Analytics
+extension InPersonPaymentsMenuViewModel {
+    private typealias Event = WooAnalyticsEvent.InPersonPayments
+
+    private func trackCashOnDeliveryToggled(enabled: Bool) {
+        let event = Event.paymentsHubCashOnDeliveryToggled(enabled: enabled,
+                                                           countryCode: cardPresentPaymentsConfiguration.countryCode)
+        analytics.track(event: event)
+    }
+
+    private func trackEnableCashOnDeliverySuccess() {
+        let event = Event.enableCashOnDeliverySuccess(countryCode: cardPresentPaymentsConfiguration.countryCode,
+                                                      source: .paymentsHub)
+        analytics.track(event: event)
+    }
+
+    private func trackEnableCashOnDeliveryFailed(error: Error?) {
+        let event = Event.enableCashOnDeliveryFailed(countryCode: cardPresentPaymentsConfiguration.countryCode,
+                                                     error: error,
+                                                     source: .paymentsHub)
+        analytics.track(event: event)
+    }
+
+    private func trackDisableCashOnDeliverySuccess() {
+        let event = Event.disableCashOnDeliverySuccess(countryCode: cardPresentPaymentsConfiguration.countryCode,
+                                                       source: .paymentsHub)
+        analytics.track(event: event)
+    }
+
+    private func trackDisableCashOnDeliveryFailed(error: Error?) {
+        let event = Event.disableCashOnDeliveryFailed(countryCode: cardPresentPaymentsConfiguration.countryCode,
+                                                      error: error,
+                                                      source: .paymentsHub)
+        analytics.track(event: event)
     }
 }
 

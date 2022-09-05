@@ -26,7 +26,7 @@ class DeauthenticatedState: StoresManagerState {
     ///
     func willLeave() { }
 
-    /// During deauth method, we're not handling actions that don't require access token.
+    /// During deauth method, we're handling actions that don't require access token to WordPress.com.
     ///
     func onAction(_ action: Action) {
         dispatcher.dispatch(action)

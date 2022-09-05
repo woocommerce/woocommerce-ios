@@ -53,4 +53,45 @@ final class JetpackConnectionRemoteTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
         XCTAssertEqual(result.failure as? NetworkError, error)
     }
+
+    func test_fetchJetpackConnectionUser_correctly_returns_parsed_url() throws {
+        // Given
+        let siteURL = "http://test.com"
+        let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
+        let urlSuffix = "/jetpack/v4/connection/data"
+        network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connected-user")
+
+        // When
+        let result: Result<JetpackUser, Error> = waitFor { promise in
+            remote.fetchJetpackConnectionUser { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let user = try XCTUnwrap(result.get())
+        XCTAssertTrue(user.isConnected)
+        XCTAssertNotNil(user.wpcomUser)
+    }
+
+    func test_fetchJetpackConnectionUser_properly_relays_errors() {
+        // Given
+        let siteURL = "http://test.com"
+        let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
+        let urlSuffix = "/jetpack/v4/connection/data"
+        let error = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: urlSuffix, error: error)
+
+        // When
+        let result: Result<JetpackUser, Error> = waitFor { promise in
+            remote.fetchJetpackConnectionUser { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, error)
+    }
 }

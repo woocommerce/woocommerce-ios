@@ -37,13 +37,12 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
     private let dashboardViewModel: DashboardViewModel
     private let timeRanges: [StatsTimeRangeV4] = [.today, .thisWeek, .thisMonth, .thisYear]
 
-    /// Because loading the last selected time range tab is async, we need to make sure any call to the public `reloadData` is after the selected time range
-    /// is ready to avoid making unnecessary API requests for the non-selected tab.
-    @Published private var isSelectedTimeRangeReady: Bool = false
-    private var reloadDataAfterSelectedTimeRangeSubscriptions: Set<AnyCancellable> = []
-
-    @Published private var selectedTimeRangeIndex: Int = 0
+    /// Because loading the last selected time range tab is async, the selected tab index is initially `nil` and set after the last selected value is loaded.
+    /// We need to make sure any call to the public `reloadData` is after the selected time range is set to avoid making unnecessary API requests
+    /// for the non-selected tab.
+    @Published private var selectedTimeRangeIndex: Int?
     private var selectedTimeRangeIndexSubscription: AnyCancellable?
+    private var reloadDataAfterSelectedTimeRangeSubscriptions: Set<AnyCancellable> = []
 
     // MARK: - View Lifecycle
 
@@ -65,14 +64,14 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
             let selectedTimeRange = await loadLastTimeRange() ?? .today
             guard let selectedTabIndex = timeRanges.firstIndex(of: selectedTimeRange),
                   selectedTabIndex != currentIndex else {
-                isSelectedTimeRangeReady = true
+                selectedTimeRangeIndex = currentIndex
                 return
             }
             // There is currently no straightforward way to set a different default tab using `XLPagerTabStrip` without forking.
             // This is a workaround following https://github.com/xmartlabs/XLPagerTabStrip/issues/537#issuecomment-534903598
             moveToViewController(at: selectedTabIndex, animated: false)
             reloadPagerTabStripView()
-            isSelectedTimeRangeReady = true
+            selectedTimeRangeIndex = selectedTabIndex
         }
 
         // 👆 must be called before super.viewDidLoad()
@@ -120,6 +119,7 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
 
     func observeSelectedTimeRangeIndex() {
         selectedTimeRangeIndexSubscription = $selectedTimeRangeIndex
+            .compactMap { $0 }
             .removeDuplicates()
             .sink { [weak self] timeRangeTabIndex in
                 guard let self = self else { return }
@@ -136,7 +136,9 @@ extension StoreStatsAndTopPerformersViewController: DashboardUI {
     @MainActor
     func reloadData(forced: Bool) async {
         await withCheckedContinuation { continuation in
-            $isSelectedTimeRangeReady.filter { $0 == true }.first()
+            $selectedTimeRangeIndex
+                .compactMap { $0 }
+                .first()
                 .sink { [weak self] _ in
                     self?.syncAllStats(forced: forced) { _ in
                         continuation.resume(returning: ())

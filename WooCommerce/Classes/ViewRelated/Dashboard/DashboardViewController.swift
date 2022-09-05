@@ -464,9 +464,7 @@ private extension DashboardViewController {
                                                                                    calendar: .current) { [weak self] isVisibleFromAppSettings in
                     guard let self = self else { return }
 
-                    let shouldShowJetpackBenefitsBanner = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport)
-                    && site?.isJetpackCPConnected == true
-                    && isVisibleFromAppSettings
+                    let shouldShowJetpackBenefitsBanner = site?.isJetpackCPConnected == true && isVisibleFromAppSettings
 
                     self.updateJetpackBenefitsBannerVisibility(isBannerVisible: shouldShowJetpackBenefitsBanner, contentView: contentView)
                 }

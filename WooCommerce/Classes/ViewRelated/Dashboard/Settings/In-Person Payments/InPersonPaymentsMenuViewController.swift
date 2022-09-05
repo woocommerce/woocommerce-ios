@@ -20,6 +20,9 @@ final class InPersonPaymentsMenuViewController: UIViewController {
                             reason: "reason",
                             countryCode: configurationLoader.configuration.countryCode))
     }()
+
+    private let viewModel: InPersonPaymentsMenuViewModel = InPersonPaymentsMenuViewModel()
+
     private let cashOnDeliveryToggleRowViewModel: InPersonPaymentsCashOnDeliveryToggleRowViewModel
 
     /// No Manuals to be shown in a country where IPP is not supported
@@ -71,6 +74,7 @@ final class InPersonPaymentsMenuViewController: UIViewController {
         registerTableViewCells()
         configureTableReload()
         runCardPresentPaymentsOnboarding()
+        viewModel.viewDidLoad()
     }
 }
 

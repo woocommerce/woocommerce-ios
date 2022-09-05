@@ -4,12 +4,14 @@ import XCTest
 
 final class WordPressComSiteInfoWooTests: XCTestCase {
     func test_is_valid_when_jetpack_is_active_and_connected() {
+        // When
         let infoSite = WordPressComSiteInfo(remote: hasJetpack())
 
+        // Then
         XCTAssertTrue(infoSite.hasValidJetpack)
     }
 
-    func test_is_valid_when_site_does_not_have_jetpack_with_jcp_feature_on() {
+    func test_is_valid_when_site_does_not_have_jetpack_installed_but_jcp_is_connected() {
         // When
         let infoSite = WordPressComSiteInfo(remote: doesNotHaveJetpack())
 
@@ -17,7 +19,7 @@ final class WordPressComSiteInfoWooTests: XCTestCase {
         XCTAssertTrue(infoSite.hasValidJetpack)
     }
 
-    func test_is_not_valid_when_site_has_jetpack_installed_but_not_active_with_jcp_feature_on() {
+    func test_is_valid_when_site_has_jetpack_installed_and_inactive_but_jcp_is_connected() {
         // When
         let infoSite = WordPressComSiteInfo(remote: hasJetpackInactive())
 

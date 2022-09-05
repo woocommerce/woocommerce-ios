@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+10.3
+-----
+- [*] In-Person Payments: Fixed an issue where the Pay in Person toggle could be out of sync with the setting on the website. [https://github.com/woocommerce/woocommerce-ios/pull/7656]
+
 10.2
 -----
 - [*] Help center: Added help center web page with FAQs for "Enter Store Credentials", "Enter WordPress.com email " and "Jetpack required Error" screens. [https://github.com/woocommerce/woocommerce-ios/pull/7588, https://github.com/woocommerce/woocommerce-ios/pull/7590, https://github.com/woocommerce/woocommerce-ios/pull/7621]

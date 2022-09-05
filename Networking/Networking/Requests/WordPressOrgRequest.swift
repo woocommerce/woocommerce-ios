@@ -22,7 +22,7 @@ struct WordPressOrgRequest: URLRequestConvertible {
     var parameters: [String: Any]?
 
 
-    /// Returns a URLRequest instance reprensenting the current Jetpack Request.
+    /// Returns a URLRequest instance reprensenting the current WordPress.org REST API Request.
     ///
     func asURLRequest() throws -> URLRequest {
         let url = URL(string: baseURL + Settings.basePath + path.removingPrefix("/"))!

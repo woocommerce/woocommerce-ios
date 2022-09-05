@@ -23,8 +23,6 @@ final class OrdersTests: XCTestCase {
             .verifySingleOrder(order: orders[0])
             .goBackToOrdersScreen()
             .verifyOrdersScreenLoaded()
-
-        XCTAssertEqual(0, 1)
     }
 
     func test_create_new_order() throws {

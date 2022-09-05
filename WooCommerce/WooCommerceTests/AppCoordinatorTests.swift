@@ -112,7 +112,7 @@ final class AppCoordinatorTests: XCTestCase {
             // so we have to wait a bit
             loginNavigationController.viewControllers.count > 1
         }
-        XCTAssertTrue(loginNavigationController.topViewController is ULAccountMismatchViewController)
+        XCTAssertFalse(loginNavigationController.topViewController is ULAccountMismatchViewController)
     }
 
     func test_starting_app_logged_in_without_selected_site_presents_error_if_the_error_site_address_does_not_have_woo() throws {

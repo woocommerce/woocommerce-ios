@@ -598,6 +598,7 @@ private extension PushNotificationsManager {
 private extension PushNotification {
     static func from(userInfo: [AnyHashable: Any]) -> PushNotification? {
         guard let noteID = userInfo.integer(forKey: APNSKey.identifier),
+              let siteID = userInfo.integer(forKey: APNSKey.siteID),
               let alert = userInfo.dictionary(forKey: APNSKey.aps)?.dictionary(forKey: APNSKey.alert),
               let title = alert.string(forKey: APNSKey.alertTitle),
               let type = userInfo.string(forKey: APNSKey.type),
@@ -606,7 +607,7 @@ private extension PushNotification {
               }
         let subtitle = alert.string(forKey: APNSKey.alertSubtitle)
         let message = alert.string(forKey: APNSKey.alertMessage)
-        return PushNotification(noteID: noteID, kind: noteKind, title: title, subtitle: subtitle, message: message)
+        return PushNotification(noteID: noteID, siteID: siteID, kind: noteKind, title: title, subtitle: subtitle, message: message)
     }
 }
 

@@ -107,8 +107,8 @@ public class AlamofireNetwork: Network {
 }
 
 
-/// MARK: - Alamofire.DataResponse: Helper Methods
-///
+// MARK: - Alamofire.DataResponse: Helper Methods
+//
 extension Alamofire.DataResponse {
 
     /// Returns the Networking Layer Error (if any):
@@ -136,7 +136,7 @@ extension Alamofire.DataResponse {
 }
 
 // MARK: - Swift.Result Conversion
-
+//
 extension Alamofire.Result {
     /// Convert this `Alamofire.Result` to a `Swift.Result`.
     ///

@@ -3,6 +3,7 @@ import Foundation
 import Yosemite
 import enum Networking.DotcomError
 import class Networking.UserAgent
+import KeychainAccess
 
 // MARK: - DefaultStoresManager
 //
@@ -173,12 +174,17 @@ class DefaultStoresManager: StoresManager {
         return self
     }
 
+//    private let sharedDefaults = UserDefaults(suiteName: "group.com.automattic.woocommerce")
+    private lazy var keychain = Keychain(service: WooConstants.keychainServiceName, accessGroup: "PZYM8XX95Q.com.automattic.woocommerce")
+
     /// Updates the Default Store as specified.
     /// After this call, `siteID` is updated while `site` might still be nil when it is a newly connected site.
     /// In the case of a newly connected site, it synchronizes the site asynchronously and `site` observable is updated.
     ///
     func updateDefaultStore(storeID: Int64) {
         sessionManager.defaultStoreID = storeID
+        updateWidgetInformation(with: storeID)
+
         // Because `defaultSite` is loaded or synced asynchronously, it is reset here so that any UI that calls this does not show outdated data.
         // For example, `sessionManager.defaultSite` is used to show site name in various screens in the app.
         sessionManager.defaultSite = nil
@@ -208,6 +214,13 @@ class DefaultStoresManager: StoresManager {
 // MARK: - Private Methods
 //
 private extension DefaultStoresManager {
+
+    func updateWidgetInformation(with storeID: Int64) {
+        keychain["storeID"] = String(storeID)
+
+        let credentials = sessionManager.defaultCredentials
+        keychain["authToken"] = credentials?.authToken
+    }
 
     /// Loads the Default Account into the current Session, if possible.
     ///
@@ -490,6 +503,7 @@ private extension DefaultStoresManager {
                 return
             }
             self.sessionManager.defaultSite = site
+            self.keychain["siteName"] = site.name
         }
         dispatch(action)
     }

@@ -89,6 +89,7 @@ end
 target 'StoreWidgetsExtension' do
   project 'WooCommerce/WooCommerce.xcodeproj'
   tracks
+  pod 'KeychainAccess', '~> 4.2.2'
 end
 
 # Yosemite Layer:

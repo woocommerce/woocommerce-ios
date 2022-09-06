@@ -36,12 +36,18 @@ struct StoreInfoEntry: TimelineEntry {
 
 /// Type that provides data entries to the widget system.
 ///
-struct StoreInfoProvider: TimelineProvider {
+final class StoreInfoProvider: TimelineProvider {
 
     // TODO: use store currency settings
     private let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
 
     private let keychain = Keychain(service: "com.automattic.woocommerce", accessGroup: "PZYM8XX95Q.com.automattic.woocommerce")
+
+    /// Storage for the widgets service.
+    /// Optional because the auth-token is set later.
+    /// TODO: Check if we can read auth-token from the  initializer safely. EG: Widget is redrawn
+    ///
+    private var service: StoreWidgetsDataService?
 
     /// Redacted entry with sample data.
     ///
@@ -74,16 +80,21 @@ struct StoreInfoProvider: TimelineProvider {
             return
         }
 
-        let service = StoreWidgetsDataService(authToken: authToken)
-        service.fetchDailyStatsData(for: storeID) { result in
+        // Needs to be retained or completion blocks won't be invoked
+        service = StoreWidgetsDataService(authToken: authToken)
+        service?.fetchDailyStatsData(for: storeID) { [weak self] result in
+            guard let self = self else {
+                return // TODO: Return some error view
+            }
+
             switch result {
             case .success(let storeStats):
-                let entry = timelineEntry(for: siteName, storeStats: storeStats)
+                let entry = self.timelineEntry(for: siteName, storeStats: storeStats)
                 let nextRefreshDate = Calendar.current.date(byAdding: .hour, value: 1, to: entry.date) ?? entry.date
                 completion(Timeline<StoreInfoEntry>(entries: [entry], policy: .after(nextRefreshDate)))
             case .failure(let error):
                 // TODO: Handle networking error
-                completion(errorTimeline(with: error, in: context))
+                completion(self.errorTimeline(with: error, in: context))
             }
         }
     }

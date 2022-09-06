@@ -107,12 +107,13 @@ private extension StoreInfoProvider {
     }
 
     func timelineEntry(for siteName: String, storeStats: StoreWidgetsDataService.StoreInfoStats) -> StoreInfoEntry {
+        let conversion = storeStats.totalVisitors > 0 ? storeStats.totalOrders/storeStats.totalVisitors : 0
         return StoreInfoEntry(date: storeStats.date,
                               range: "Today",
                               name: siteName,
                               revenue: currencyFormatter.formatAmount(storeStats.revenue) ?? "-",
                               visitors: "\(storeStats.totalVisitors)",
                               orders: "\(storeStats.totalOrders)",
-                              conversion: "\(storeStats.totalOrders/storeStats.totalVisitors)")
+                              conversion: "\(conversion)%")
     }
 }

@@ -1,3 +1,0 @@
-Tornamos muito mais fácil encontrar tudo sobre como aceitar pagamentos no aplicativo. Vá para a seção de Pagamentos no Menu! Também corrigimos um problema que bloqueava o recebimento de pagamentos sem necessidade.
-Além disso, fizemos várias melhorias em nossos fluxos de login para ajudar você a começar rapidamente com o aplicativo.
-Por fim, fizemos alguns ajustes para melhorar o desempenho. E não para por aí. Aguarde mais melhorias no futuro. Continue enviando seu feedback!

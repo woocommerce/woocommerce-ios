@@ -132,7 +132,6 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
         // When
         var checkedSiteID: Int64?
         var forcedUpdateSite: Bool?
-        var supportsJCPSites: Bool?
         storesManager.whenReceivingAction(ofType: SitePluginAction.self) { action in
             switch action {
             case .installSitePlugin(_, _, let onCompletion):
@@ -147,10 +146,9 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
         }
         storesManager.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
-            case .loadAndSynchronizeSite(let siteID, let forcedUpdate, let isJetpackConnectionPackageSupported, _):
+            case .loadAndSynchronizeSite(let siteID, let forcedUpdate, _):
                 checkedSiteID = siteID
                 forcedUpdateSite = forcedUpdate
-                supportsJCPSites = isJetpackConnectionPackageSupported
             default:
                 break
             }
@@ -160,7 +158,6 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(checkedSiteID, testSiteID)
         XCTAssertEqual(forcedUpdateSite, true)
-        XCTAssertEqual(supportsJCPSites, true)
     }
 
     func test_currentStep_is_installation_on_startInstallation() {
@@ -250,7 +247,7 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
         storesManager.whenReceivingAction(ofType: AccountAction.self) { [weak self] action in
             guard let self = self else { return }
             switch action {
-            case .loadAndSynchronizeSite(_, _, _, let onCompletion):
+            case .loadAndSynchronizeSite(_, _, let onCompletion):
                 let fetchedSite = Site.fake().copy(siteID: self.testSiteID,
                                                    isJetpackThePluginInstalled: true,
                                                    isJetpackConnected: true,
@@ -286,7 +283,7 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
         storesManager.whenReceivingAction(ofType: AccountAction.self) { [weak self] action in
             guard let self = self else { return }
             switch action {
-            case .loadAndSynchronizeSite(_, _, _, let onCompletion):
+            case .loadAndSynchronizeSite(_, _, let onCompletion):
                 checkConnectionInvokedCount += 1
                 let fetchedSite = Site.fake().copy(siteID: self.testSiteID,
                                                    isJetpackThePluginInstalled: true,

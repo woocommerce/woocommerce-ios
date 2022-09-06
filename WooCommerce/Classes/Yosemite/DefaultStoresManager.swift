@@ -175,7 +175,7 @@ class DefaultStoresManager: StoresManager {
         return self
     }
 
-    /// If the state is deauthenticated, send it a siteURL and authenticator.
+    /// If the state is deauthenticated, send it a siteURL and network.
     ///
     func updateDeauthenticatedState(with siteURL: String, authenticator: Authenticator) {
         guard let state = state as? DeauthenticatedState else {

@@ -470,6 +470,48 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertNil(emittedNotification.message)
     }
 
+    // MARK: - Background Notification Observable
+
+    func test_it_emits_background_notifications_when_it_receives_a_notification_while_app_is_active() async throws {
+        // Given
+        application.applicationState = .background
+
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: self.storesManager,
+                                                               supportManager: self.supportManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
+            return PushNotificationsManager(configuration: configuration)
+        }()
+
+        var emittedNotifications = [PushNotification]()
+        manager.backgroundNotifications.sink { notification in
+            emittedNotifications.append(notification)
+        }.store(in: &subscriptions)
+
+        let userinfo = notificationPayload(noteID: 9_981,
+                                           type: .storeOrder,
+                                           siteID: 606,
+                                           title: Sample.defaultTitle,
+                                           subtitle: Sample.defaultSubtitle,
+                                           message: Sample.defaultMessage)
+
+        // When
+        _ = await manager.handleRemoteNotificationInTheBackground(userInfo: userinfo)
+
+        // Then
+        XCTAssertEqual(emittedNotifications.count, 1)
+
+        let emittedNotification = try XCTUnwrap(emittedNotifications.first)
+        XCTAssertEqual(emittedNotification.kind, .storeOrder)
+        XCTAssertEqual(emittedNotification.noteID, 9_981)
+        XCTAssertEqual(emittedNotification.siteID, 606)
+        XCTAssertEqual(emittedNotification.title, Sample.defaultTitle)
+        XCTAssertEqual(emittedNotification.subtitle, Sample.defaultSubtitle)
+        XCTAssertEqual(emittedNotification.message, Sample.defaultMessage)
+    }
+
     // MARK: - App Badge Number
 
     /// Verifies that `handleNotification` updates app badge number to 1 when the notification is from the same site.

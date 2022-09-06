@@ -74,6 +74,7 @@ final class InPersonPaymentsMenuViewController: UIViewController {
         registerTableViewCells()
         configureTableReload()
         runCardPresentPaymentsOnboarding()
+        configureWebViewPresentation()
         viewModel.viewDidLoad()
     }
 }
@@ -321,6 +322,16 @@ private extension InPersonPaymentsMenuViewController {
             self?.tableView.reloadData()
         }.store(in: &cancellables)
     }
+
+    private func configureWebViewPresentation() {
+        viewModel.$showWebView.sink { viewModel in
+            guard let viewModel = viewModel else {
+                return
+            }
+            let connectionController = AuthenticatedWebViewController(viewModel: viewModel)
+            self.navigationController?.show(connectionController, sender: nil)
+        }.store(in: &cancellables)
+    }
 }
 
 // MARK: - Convenience methods
@@ -335,8 +346,7 @@ private extension InPersonPaymentsMenuViewController {
 //
 extension InPersonPaymentsMenuViewController {
     func orderCardReaderWasPressed() {
-        ServiceLocator.analytics.track(.paymentsMenuOrderCardReaderTapped)
-        WebviewHelper.launch(configurationLoader.configuration.purchaseCardReaderUrl(), with: self)
+        viewModel.orderCardReaderPressed()
     }
 
     func manageCardReaderWasPressed() {

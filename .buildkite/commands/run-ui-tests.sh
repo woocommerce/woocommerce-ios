@@ -35,7 +35,18 @@ install_cocoapods
 echo "--- 🧪 Testing"
 xcrun simctl list >> /dev/null
 rake mocks &
+set +e
 bundle exec fastlane test_without_building name:"$TEST_NAME" device:"$DEVICE" ios_version:"$IOS_VERSION"
+TESTS_EXIT_STATUS=$?
+set -e
+
+if [[ "$TESTS_EXIT_STATUS" -ne 0 ]]; then
+  # Keep the (otherwise collapsed) current "Testing" section open in Buildkite logs on error. See https://buildkite.com/docs/pipelines/managing-log-output#collapsing-output
+  echo "^^^ +++"
+  echo "UI Tests failed!"
+fi
 
 echo "--- 📦 Zipping test results"
 cd fastlane/test_output/ && zip -rq WooCommerce.xcresult.zip WooCommerce.xcresult && cd -
+
+exit $TESTS_EXIT_STATUS

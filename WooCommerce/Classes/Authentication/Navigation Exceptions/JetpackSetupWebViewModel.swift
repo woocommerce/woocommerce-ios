@@ -3,7 +3,7 @@ import WebKit
 
 /// View model used for the web view controller to install Jetpack the plugin during the login flow.
 ///
-final class JetpackSetupWebViewModel: PluginSetupWebViewModel {
+final class JetpackSetupWebViewModel: AuthenticatedWebViewModel {
 
     /// The site URL to set up Jetpack for.
     private let siteURL: String

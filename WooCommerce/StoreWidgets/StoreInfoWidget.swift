@@ -20,7 +20,7 @@ struct StoreInfoWidget: Widget {
 
 /// StoreInfo Widget View
 ///
-struct StoreInfoView: View {
+private struct StoreInfoView: View {
 
     // Entry to render
     let entry: StoreInfoEntry
@@ -31,6 +31,7 @@ struct StoreInfoView: View {
             Color(.brand)
 
             VStack(spacing: Layout.sectionSpacing) {
+
                 // Store Name
                 HStack {
                     Text(entry.name)
@@ -91,6 +92,34 @@ struct StoreInfoView: View {
     }
 }
 
+private struct NotLoggedInView: View {
+    var body: some View {
+        ZStack {
+            // Background
+            Color(.brand)
+
+            VStack {
+                Image(uiImage: .wooLogoWhite)
+                    .resizable()
+                    .frame(width: Layout.logoSize.width, height: Layout.logoSize.height)
+
+                Spacer()
+
+                Text(Localization.notLoggedIn)
+                    .statTextStyle()
+
+                Spacer()
+
+                Text(Localization.login)
+                    .statButtonStyle()
+            }
+            .padding(.vertical, Layout.cardVerticalPadding)
+        }
+    }
+}
+
+// MARK: Constants
+
 /// Constants definition
 ///
 private extension StoreInfoView {
@@ -104,6 +133,22 @@ private extension StoreInfoView {
     enum Layout {
         static let sectionSpacing = 8.0
         static let cardSpacing = 2.0
+    }
+}
+
+/// Constants definition
+///
+private extension NotLoggedInView {
+    enum Localization {
+        static let notLoggedIn = NSLocalizedString("Log in to see today’s stats.",
+                                                   comment: "Title label when the widget does not have a logged-in store.")
+        static let login = NSLocalizedString("Log in",
+                                             comment: "Title label for the login button on the store info widget.")
+    }
+
+    enum Layout {
+        static let cardVerticalPadding = 22.0
+        static let logoSize = CGSize(width: 24, height: 16)
     }
 }
 
@@ -121,5 +166,8 @@ struct StoreWidgets_Previews: PreviewProvider {
                                   conversion: "37%")
         )
         .previewContext(WidgetPreviewContext(family: .systemMedium))
+
+        NotLoggedInView()
+            .previewContext(WidgetPreviewContext(family: .systemMedium))
     }
 }

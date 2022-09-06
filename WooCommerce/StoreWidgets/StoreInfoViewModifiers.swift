@@ -35,6 +35,22 @@ public struct StatValueStyle: ViewModifier {
     }
 }
 
+public struct StatTextStyle: ViewModifier {
+    public func body(content: Content) -> some View {
+        content
+            .font(.footnote)
+            .foregroundColor(Color(.white))
+    }
+}
+
+public struct StatButtonStyle: ViewModifier {
+    public func body(content: Content) -> some View {
+        content
+            .font(.subheadline.weight(.semibold))
+            .foregroundColor(Color(.white))
+    }
+}
+
 // MARK: View Extensions.
 extension View {
     func storeNameStyle() -> some View {
@@ -51,5 +67,13 @@ extension View {
 
     func statValueStyle() -> some View {
         self.modifier(StatValueStyle())
+    }
+
+    func statTextStyle() -> some View {
+        self.modifier(StatTextStyle())
+    }
+
+    func statButtonStyle() -> some View {
+        self.modifier(StatButtonStyle())
     }
 }

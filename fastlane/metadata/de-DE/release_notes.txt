@@ -1,2 +1,0 @@
-Dieses Release enthält mehrere Problembehebungen, die es einfacher machen, Zahlungen in der App anzunehmen. Außerdem haben wir eine neue FAQ-Seite zum Hilfe-Center hinzugefügt, die dir das Anmelden bei der App erleichtert.
-Sende uns bitte weiter Feedback – wir freuen uns darauf!

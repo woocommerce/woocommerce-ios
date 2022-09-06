@@ -329,7 +329,7 @@ private extension StoreStatsAndTopPerformersViewController {
     func observeRemotelyCreatedOrdersToResetLastSyncTimestamp() {
         let siteID = self.siteID
         remoteOrdersSubscription = Publishers
-            .Merge(pushNotificationsManager.inactiveNotifications, pushNotificationsManager.foregroundNotificationsToView)
+            .Merge(pushNotificationsManager.backgroundNotifications, pushNotificationsManager.foregroundNotifications)
             .filter { $0.kind == .storeOrder && $0.siteID == siteID }
             .sink { [weak self] _ in
                 self?.resetLastSyncTimestamp()

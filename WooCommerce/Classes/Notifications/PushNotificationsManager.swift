@@ -45,6 +45,16 @@ final class PushNotificationsManager: PushNotesManager {
     /// Mutable reference to `inactiveNotifications`
     private let inactiveNotificationsSubject = PassthroughSubject<PushNotification, Never>()
 
+    /// An observable that emits values when a Remote Notification is received while the app is
+    /// in the background.
+    ///
+    var backgroundNotifications: AnyPublisher<PushNotification, Never> {
+        backgroundNotificationsSubject.eraseToAnyPublisher()
+    }
+
+    /// Mutable reference to `backgroundNotifications`
+    private let backgroundNotificationsSubject = PassthroughSubject<PushNotification, Never>()
+
     /// An observable that emits values when a local notification is received.
     ///
     var localNotificationUserResponses: AnyPublisher<UNNotificationResponse, Never> {
@@ -291,6 +301,10 @@ extension PushNotificationsManager {
         }
 
         handleRemoteNotificationInAllAppStates(userInfo)
+
+        if let notification = PushNotification.from(userInfo: userInfo) {
+            backgroundNotificationsSubject.send(notification)
+        }
 
         return await synchronizeNotifications()
     }

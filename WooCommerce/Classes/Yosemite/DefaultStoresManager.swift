@@ -3,6 +3,7 @@ import Foundation
 import Yosemite
 import enum Networking.DotcomError
 import class Networking.UserAgent
+import class WidgetKit.WidgetCenter
 import KeychainAccess
 
 // MARK: - DefaultStoresManager
@@ -220,6 +221,8 @@ private extension DefaultStoresManager {
 
         let credentials = sessionManager.defaultCredentials
         keychain["authToken"] = credentials?.authToken
+
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
     /// Loads the Default Account into the current Session, if possible.

@@ -70,7 +70,7 @@ final class NoWooErrorViewModel: ULErrorViewModel {
         }, onDismiss: {
             viewController.navigationController?.popViewController(animated: true)
         })
-        let setupViewController = PluginSetupWebViewController(viewModel: viewModel)
+        let setupViewController = AuthenticatedWebViewController(viewModel: viewModel)
         viewController.navigationController?.show(setupViewController, sender: nil)
     }
 

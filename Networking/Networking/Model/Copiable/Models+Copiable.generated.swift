@@ -235,6 +235,30 @@ extension InboxNote {
     }
 }
 
+extension JetpackUser {
+    public func copy(
+        isConnected: CopiableProp<Bool> = .copy,
+        isMaster: CopiableProp<Bool> = .copy,
+        username: CopiableProp<String> = .copy,
+        wpcomUser: NullableCopiableProp<WordPressComUser> = .copy,
+        gravatar: NullableCopiableProp<String> = .copy
+    ) -> JetpackUser {
+        let isConnected = isConnected ?? self.isConnected
+        let isMaster = isMaster ?? self.isMaster
+        let username = username ?? self.username
+        let wpcomUser = wpcomUser ?? self.wpcomUser
+        let gravatar = gravatar ?? self.gravatar
+
+        return JetpackUser(
+            isConnected: isConnected,
+            isMaster: isMaster,
+            username: username,
+            wpcomUser: wpcomUser,
+            gravatar: gravatar
+        )
+    }
+}
+
 extension Media {
     public func copy(
         mediaID: CopiableProp<Int64> = .copy,
@@ -1980,6 +2004,36 @@ extension WCPayCharge {
             paymentMethodDetails: paymentMethodDetails,
             refunded: refunded,
             status: status
+        )
+    }
+}
+
+extension WordPressComUser {
+    public func copy(
+        id: CopiableProp<Int64> = .copy,
+        username: CopiableProp<String> = .copy,
+        email: CopiableProp<String> = .copy,
+        displayName: CopiableProp<String> = .copy,
+        textDirection: CopiableProp<String> = .copy,
+        siteCount: CopiableProp<Int64> = .copy,
+        avatar: NullableCopiableProp<String> = .copy
+    ) -> WordPressComUser {
+        let id = id ?? self.id
+        let username = username ?? self.username
+        let email = email ?? self.email
+        let displayName = displayName ?? self.displayName
+        let textDirection = textDirection ?? self.textDirection
+        let siteCount = siteCount ?? self.siteCount
+        let avatar = avatar ?? self.avatar
+
+        return WordPressComUser(
+            id: id,
+            username: username,
+            email: email,
+            displayName: displayName,
+            textDirection: textDirection,
+            siteCount: siteCount,
+            avatar: avatar
         )
     }
 }

@@ -2,7 +2,7 @@ import Combine
 import UIKit
 import WebKit
 
-/// The web view to handle plugin setup in the login flow.
+/// A web view which is authenticated for WordPress.com, when possible.
 ///
 final class AuthenticatedWebViewController: UIViewController {
 

@@ -70,7 +70,11 @@ public final class SingleOrderScreen: ScreenObject {
 
     @discardableResult
     public func goBackToOrdersScreen() throws -> OrdersScreen {
-        pop()
+        // Only needed for iPhone because iPad shows both Orders and Single Order screens on the same view
+        if XCUIDevice.isPhone {
+            pop()
+        }
+
         return try OrdersScreen()
     }
 

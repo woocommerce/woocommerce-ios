@@ -476,6 +476,33 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertFalse(containsJCPSites)
     }
 
+    /// Verifies that `synchronizeSites` returns `true` when one site is JCP.
+    ///
+    func test_synchronizeSites_returns_true_when_one_site_is_jcp() throws {
+        // Given
+        let remote = MockAccountRemote()
+        remote.loadSitesResult = .success([
+            Site.fake().copy(siteID: 1, isJetpackThePluginInstalled: true, isJetpackConnected: true),
+            Site.fake().copy(siteID: 2, isJetpackThePluginInstalled: false, isJetpackConnected: true)
+        ])
+        remote.whenCheckingIfWooCommerceIsActive(siteID: 2, thenReturn: .success(true))
+        remote.whenFetchingWordPressSiteSettings(siteID: 2, thenReturn: .failure(NetworkError.notFound))
+
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = AccountAction.synchronizeSites(selectedSiteID: nil) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let containsJCPSites = try XCTUnwrap(result.get())
+        XCTAssertTrue(containsJCPSites)
+    }
+
     // MARK: - AccountAction.loadAccount
 
     func test_loadAccount_returns_expected_account() {

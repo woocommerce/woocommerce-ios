@@ -5,7 +5,7 @@ import TestKit
 import Yosemite
 import Networking
 
-final class InPersonPaymentsMenuViewModelTests: XCTestCase {
+final class InPersonPaymentsCashOnDeliveryToggleRowViewModelTests: XCTestCase {
     private var stores: MockStoresManager!
 
     private var storageManager: MockStorageManager!
@@ -17,9 +17,9 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
 
     private var configuration: CardPresentPaymentsConfiguration!
 
-    private var dependencies: InPersonPaymentsMenuViewModel.Dependencies!
+    private var dependencies: InPersonPaymentsCashOnDeliveryToggleRowViewModel.Dependencies!
 
-    private var sut: InPersonPaymentsMenuViewModel!
+    private var sut: InPersonPaymentsCashOnDeliveryToggleRowViewModel!
 
     private let sampleStoreID: Int64 = 12345
 
@@ -34,13 +34,13 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         configuration = CardPresentPaymentsConfiguration.init(country: "US")
 
-        dependencies = InPersonPaymentsMenuViewModel.Dependencies(
+        dependencies = InPersonPaymentsCashOnDeliveryToggleRowViewModel.Dependencies(
             stores: stores,
             storageManager: storageManager,
             noticePresenter: noticePresenter,
             analytics: analytics
         )
-        sut = InPersonPaymentsMenuViewModel(dependencies: dependencies,
+        sut = InPersonPaymentsCashOnDeliveryToggleRowViewModel(dependencies: dependencies,
                                             configuration: configuration)
     }
 

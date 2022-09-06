@@ -39,7 +39,7 @@ struct InPersonPaymentsPluginNotSetup: View {
             .buttonStyle(PrimaryButtonStyle())
             .padding(.bottom, 24.0)
 
-            InPersonPaymentsLearnMore(analyticReason: analyticReason)
+            InPersonPaymentsLearnMore(viewModel: LearnMoreViewModel(tappedAnalyticEvent: learnMoreAnalyticEvent))
         }
         .safariSheet(url: $presentedSetupURL, onDismiss: onRefresh)
     }
@@ -69,8 +69,16 @@ private enum Localization {
         comment: "Button to set up an in-person payments plugin after activating it"
     )
 }
+
 struct InPersonPaymentsPluginNotSetup_Previews: PreviewProvider {
     static var previews: some View {
         InPersonPaymentsPluginNotSetup(plugin: .wcPay, analyticReason: "", onRefresh: {})
+    }
+}
+
+private extension InPersonPaymentsPluginNotSetup {
+    var learnMoreAnalyticEvent: WooAnalyticsEvent? {
+        WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingLearnMoreTapped(reason: analyticReason,
+                                                                                countryCode: cardPresentConfiguration.countryCode)
     }
 }

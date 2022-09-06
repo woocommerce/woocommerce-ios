@@ -18,10 +18,6 @@ public enum FeatureFlag: Int {
     ///
     case jetpackConnectionPackageSupport
 
-    /// Display the new tab "Menu" in the tab bar.
-    ///
-    case hubMenu
-
     /// Displays the option to view coupons
     ///
     case couponView
@@ -101,4 +97,8 @@ public enum FeatureFlag: Int {
     /// Whether to include the Cash on Delivery enable step in In-Person Payment onboarding
     ///
     case promptToEnableCodInIppOnboarding
+
+    /// Enables home screen store widgets.
+    ///
+    case storeWidgets
 }

@@ -17,9 +17,9 @@ extension MockNetwork {
 
         guard let queryString = parameters?.first(where: { $0.name == "query" })?.value,
               let queryData = queryString.data(using: .utf8),
-              let queryDictionary = try? JSONSerialization.jsonObject(with: queryData) as? [String: String] else {
+              let queryDictionary = try? JSONSerialization.jsonObject(with: queryData) as? [String: Any] else {
             return nil
         }
-        return queryDictionary.map({ $0.0 + "=" + $0.1 })
+        return queryDictionary.map { "\($0.0)=\($0.1)" }
     }
 }

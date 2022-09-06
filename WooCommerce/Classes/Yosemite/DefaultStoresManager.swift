@@ -184,7 +184,6 @@ class DefaultStoresManager: StoresManager {
     ///
     func updateDefaultStore(storeID: Int64) {
         sessionManager.defaultStoreID = storeID
-        updateWidgetInformation(with: storeID)
 
         // Because `defaultSite` is loaded or synced asynchronously, it is reset here so that any UI that calls this does not show outdated data.
         // For example, `sessionManager.defaultSite` is used to show site name in various screens in the app.
@@ -477,6 +476,9 @@ private extension DefaultStoresManager {
         guard let siteID = sessionManager.defaultStoreID else {
             return
         }
+
+        // Updates & reloads Widgets
+        updateWidgetInformation(with: siteID)
 
         restoreSessionSiteAndSynchronizeIfNeeded(with: siteID)
         synchronizeSettings(with: siteID) {

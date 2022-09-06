@@ -1137,6 +1137,9 @@
 		AEA622B427466B78002A9B57 /* BottomSheetOrderType.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA622B327466B78002A9B57 /* BottomSheetOrderType.swift */; };
 		AEA622B727468790002A9B57 /* AddOrderCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA622B627468790002A9B57 /* AddOrderCoordinatorTests.swift */; };
 		AEACCB6D2785FF4A000D01F0 /* NavigationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEACCB6C2785FF4A000D01F0 /* NavigationRow.swift */; };
+		AEB2175928C69F9E0044E089 /* StoreWidgetsDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB2175828C69F9E0044E089 /* StoreWidgetsDataService.swift */; };
+		AEB2175B28C6AA7F0044E089 /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEB2175A28C6AA7F0044E089 /* Networking.framework */; };
+		AEB2175C28C6AA7F0044E089 /* Networking.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AEB2175A28C6AA7F0044E089 /* Networking.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AEB73C0C25CD734200A8454A /* AttributePickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB73C0B25CD734200A8454A /* AttributePickerViewModel.swift */; };
 		AEB73C1725CD8E5800A8454A /* AttributePickerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB73C1625CD8E5800A8454A /* AttributePickerViewModelTests.swift */; };
 		AEC12B7A2758D55900845F97 /* OrderStatusList.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC12B792758D55900845F97 /* OrderStatusList.swift */; };
@@ -1878,6 +1881,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				AEB2175C28C6AA7F0044E089 /* Networking.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3015,6 +3019,8 @@
 		AEA622B327466B78002A9B57 /* BottomSheetOrderType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetOrderType.swift; sourceTree = "<group>"; };
 		AEA622B627468790002A9B57 /* AddOrderCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOrderCoordinatorTests.swift; sourceTree = "<group>"; };
 		AEACCB6C2785FF4A000D01F0 /* NavigationRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationRow.swift; sourceTree = "<group>"; };
+		AEB2175828C69F9E0044E089 /* StoreWidgetsDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreWidgetsDataService.swift; sourceTree = "<group>"; };
+		AEB2175A28C6AA7F0044E089 /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AEB2175D28C6AD4E0044E089 /* StoreWidgetsExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = StoreWidgetsExtension.entitlements; sourceTree = "<group>"; };
 		AEB73C0B25CD734200A8454A /* AttributePickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewModel.swift; sourceTree = "<group>"; };
 		AEB73C1625CD8E5800A8454A /* AttributePickerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewModelTests.swift; sourceTree = "<group>"; };
@@ -3749,6 +3755,7 @@
 			files = (
 				3F1FA84328B60125009E246C /* SwiftUI.framework in Frameworks */,
 				26D9E54428C107F80098DF26 /* WooFoundation.framework in Frameworks */,
+				AEB2175B28C6AA7F0044E089 /* Networking.framework in Frameworks */,
 				3F1FA84228B60125009E246C /* WidgetKit.framework in Frameworks */,
 				8194A48313C34FE1782D51BC /* Pods_StoreWidgetsExtension.framework in Frameworks */,
 				26D9E54828C10A3B0098DF26 /* Experiments.framework in Frameworks */,
@@ -5331,6 +5338,7 @@
 				265C99E028B9BA43005E6117 /* StoreInfoWidget.swift */,
 				265C99E328B9C834005E6117 /* StoreInfoProvider.swift */,
 				265C99E528B9CB8E005E6117 /* StoreInfoViewModifiers.swift */,
+				AEB2175828C69F9E0044E089 /* StoreWidgetsDataService.swift */,
 				3F1FA84728B60125009E246C /* StoreWidgets.intentdefinition */,
 				AEB2175D28C6AD4E0044E089 /* StoreWidgetsExtension.entitlements */,
 				3F1FA84828B60126009E246C /* Assets.xcassets */,
@@ -6361,6 +6369,7 @@
 		88A44ABE866401E6DB03AC60 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AEB2175A28C6AA7F0044E089 /* Networking.framework */,
 				26D9E54728C10A3B0098DF26 /* Experiments.framework */,
 				26D9E54328C107F80098DF26 /* WooFoundation.framework */,
 				B9151B3E2840EB330036180F /* WooFoundation.framework */,
@@ -9289,6 +9298,7 @@
 				265C99E228B9BCD0005E6117 /* StoreInfoWidget.swift in Sources */,
 				265C99E428B9C834005E6117 /* StoreInfoProvider.swift in Sources */,
 				3F1FA84628B60125009E246C /* StoreWidgets.swift in Sources */,
+				AEB2175928C69F9E0044E089 /* StoreWidgetsDataService.swift in Sources */,
 				26BBEA8628C6AE1400ED7F6C /* UIImage+Widgets.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

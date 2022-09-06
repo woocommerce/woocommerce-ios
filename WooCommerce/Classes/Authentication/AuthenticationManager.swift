@@ -318,7 +318,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     func troubleshootSite(_ siteInfo: WordPressComSiteInfo?, in navigationController: UINavigationController?) {
         ServiceLocator.analytics.track(event: .SitePicker.siteDiscovery(hasWordPress: siteInfo?.isWP ?? false,
                                                                         isWPCom: siteInfo?.isWPCom ?? false,
-                                                                        hasValidJetpack: siteInfo?.hasValidJetpack ?? false))
+                                                                        hasValidJetpack: siteInfo?.isJetpackConnected ?? false))
 
         guard let site = siteInfo, let navigationController = navigationController else {
             navigationController?.show(noWPUI, sender: nil)
@@ -533,7 +533,7 @@ private extension AuthenticationManager {
 private extension AuthenticationManager {
     func isJetpackInvalidForSelfHostedSite(url: String) -> Bool {
         if let site = currentSelfHostedSite,
-           site.url == url, !site.hasValidJetpack {
+           site.url == url, !site.isJetpackConnected {
             return true
         }
         return false
@@ -656,7 +656,7 @@ private extension AuthenticationManager {
         }
 
         /// Jetpack is required. Present an error if we don't detect a valid installation.
-        guard site.hasValidJetpack == true else {
+        guard site.isJetpackConnected == true else {
             return jetpackErrorUI(for: site.url, with: matcher, in: navigationController)
         }
 

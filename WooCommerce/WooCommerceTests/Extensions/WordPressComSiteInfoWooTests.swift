@@ -8,7 +8,7 @@ final class WordPressComSiteInfoWooTests: XCTestCase {
         let infoSite = WordPressComSiteInfo(remote: hasJetpack())
 
         // Then
-        XCTAssertTrue(infoSite.hasValidJetpack)
+        XCTAssertTrue(infoSite.isJetpackConnected)
     }
 
     func test_is_valid_when_site_does_not_have_jetpack_installed_but_jcp_is_connected() {
@@ -16,7 +16,7 @@ final class WordPressComSiteInfoWooTests: XCTestCase {
         let infoSite = WordPressComSiteInfo(remote: doesNotHaveJetpack())
 
         // Then
-        XCTAssertTrue(infoSite.hasValidJetpack)
+        XCTAssertTrue(infoSite.isJetpackConnected)
     }
 
     func test_is_valid_when_site_has_jetpack_installed_and_inactive_but_jcp_is_connected() {
@@ -24,13 +24,13 @@ final class WordPressComSiteInfoWooTests: XCTestCase {
         let infoSite = WordPressComSiteInfo(remote: hasJetpackInactive())
 
         // Then
-        XCTAssertTrue(infoSite.hasValidJetpack)
+        XCTAssertTrue(infoSite.isJetpackConnected)
     }
 
     func test_is_not_valid_when_site_has_jetpack_installed_but_not_connected() {
         let infoSite = WordPressComSiteInfo(remote: hasJetpackNotConnected())
 
-        XCTAssertFalse(infoSite.hasValidJetpack)
+        XCTAssertFalse(infoSite.isJetpackConnected)
     }
 }
 

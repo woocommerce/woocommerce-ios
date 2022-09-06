@@ -1,7 +1,6 @@
 import Foundation
 import Yosemite
-
-
+import protocol Networking.Network
 
 // MARK: - DeauthenticatedState
 //
@@ -12,10 +11,18 @@ class DeauthenticatedState: StoresManagerState {
 
     /// Retains all of the active Services
     ///
-    private let services: [ActionsProcessor]
+    private let services: [DeauthenticatedStore]
 
     init() {
         services = [JetpackConnectionStore(dispatcher: dispatcher)]
+    }
+
+    /// Asks the persisted stores to update their remote with the given siteURL and network.
+    ///
+    func updateStores(with siteURL: String, network: Network) {
+        for store in services {
+            store.updateRemote(with: siteURL, network: network)
+        }
     }
 
     /// NO-OP: Executed when current state is activated.

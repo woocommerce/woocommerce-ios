@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import WordPressKit
 
 /// Abstracts the Stores coordination
 ///
@@ -26,6 +27,10 @@ public protocol StoresManager {
     ///
     @discardableResult
     func deauthenticate() -> StoresManager
+
+    /// If the state is deauthenticated, send it a siteURL and authenticator.
+    ///
+    func updateDeauthenticatedState(with siteURL: String, authenticator: Authenticator)
 
     /// Synchronizes all of the Session's Entities.
     ///

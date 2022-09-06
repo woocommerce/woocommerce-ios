@@ -1,5 +1,6 @@
 import Combine
 import Storage
+import WordPressKit
 
 public class MockStoresManager: StoresManager {
 
@@ -158,6 +159,10 @@ public class MockStoresManager: StoresManager {
     @discardableResult
     public func deauthenticate() -> StoresManager {
         return self
+    }
+
+    public func updateDeauthenticatedState(with siteURL: String, authenticator: Authenticator) {
+        // no-op
     }
 
     @discardableResult

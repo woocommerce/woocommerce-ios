@@ -27,6 +27,8 @@ public final class JetpackConnectionStore: DeauthenticatedStore {
         switch action {
         case let .fetchJetpackConnectionURL(siteURL, authenticator, completion):
             fetchJetpackConnectionURL(siteURL: siteURL, with: authenticator, completion: completion)
+        case let .fetchJetpackUser(siteURL, authenticator, completion):
+            fetchJetpackUser(siteURL: siteURL, with: authenticator, completion: completion)
         }
     }
 }
@@ -40,5 +42,13 @@ private extension JetpackConnectionStore {
         self.remote = remote
 
         remote.fetchJetpackConnectionURL(completion: completion)
+    }
+
+    func fetchJetpackUser(siteURL: String, with authenticator: Authenticator, completion: @escaping (Result<JetpackUser, Error>) -> Void) {
+        let network = WordPressOrgNetwork(authenticator: authenticator, userAgent: UserAgent.defaultUserAgent)
+        let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
+
+        self.remote = remote
+        remote.fetchJetpackUser(completion: completion)
     }
 }

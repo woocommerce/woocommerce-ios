@@ -36,6 +36,6 @@ struct UniversalLinkRouter {
             return bouncingURLOpener.open(url)
         }
 
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.universalLinkOpened(with: matchedRoute.route.path))
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.universalLinkOpened(with: matchedRoute.route.subPath))
     }
 }

@@ -415,6 +415,43 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         // Then
         XCTAssertEqual(connectionResult, .canceled)
     }
+
+    func test_cancelling_connection_calls_completion_with_success_and_canceled() throws {
+        // Given
+        let unknownReader = MockCardReader.bbposChipper2XBT()
+
+        let mockStoresManager = MockCardPresentPaymentsStoresManager(
+            connectedReaders: [],
+            discoveredReaders: [unknownReader],
+            sessionManager: SessionManager.testingInstance,
+            storageManager: storageManager
+        )
+        ServiceLocator.setStores(mockStoresManager)
+        let mockPresentingViewController = UIViewController()
+        let mockKnownReaderProvider = MockKnownReaderProvider(knownReader: nil)
+        let mockAlerts = MockCardReaderSettingsAlerts(mode: .cancelFoundReader)
+        let controller = CardReaderConnectionController(
+            forSiteID: sampleSiteID,
+            storageManager: storageManager,
+            knownReaderProvider: mockKnownReaderProvider,
+            alertsProvider: mockAlerts,
+            configuration: Mocks.configuration,
+            analyticsTracker: .init(configuration: Mocks.configuration,
+                                    stores: mockStoresManager)
+        )
+
+        // When
+        let connectionResult: CardReaderConnectionController.ConnectionResult = waitFor { promise in
+            controller.searchAndConnect(from: mockPresentingViewController) { result in
+                if case .success(let connectionResult) = result {
+                    promise(connectionResult)
+                }
+            }
+        }
+
+        // Then
+        XCTAssertEqual(connectionResult, .canceled)
+    }
 }
 
 private extension CardReaderConnectionControllerTests {

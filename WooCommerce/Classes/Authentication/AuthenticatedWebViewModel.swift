@@ -2,8 +2,8 @@ import Foundation
 import WebKit
 
 /// Abstracts different configurations and logic for web view controllers
-/// used for setting up plugins during the login flow
-protocol PluginSetupWebViewModel {
+/// which are authenticated for WordPress.com, where possible
+protocol AuthenticatedWebViewModel {
     /// Title for the view
     var title: String { get }
 

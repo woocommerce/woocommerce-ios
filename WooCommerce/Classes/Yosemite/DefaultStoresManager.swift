@@ -293,10 +293,8 @@ private extension DefaultStoresManager {
     /// Synchronizes the WordPress.com Sites, associated with the current credentials.
     ///
     func synchronizeSites(onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        let isJetpackConnectionPackageSupported = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport)
         let action = AccountAction
-            .synchronizeSites(selectedSiteID: sessionManager.defaultStoreID,
-                              isJetpackConnectionPackageSupported: isJetpackConnectionPackageSupported) { result in
+            .synchronizeSites(selectedSiteID: sessionManager.defaultStoreID) { result in
                 onCompletion(result.map { _ in () })
             }
         dispatch(action)
@@ -480,11 +478,9 @@ private extension DefaultStoresManager {
     /// If the site does not exist in storage, it synchronizes the site asynchronously.
     ///
     func restoreSessionSiteAndSynchronizeIfNeeded(with siteID: Int64) {
-        let isJCPEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport)
         let action = AccountAction
             .loadAndSynchronizeSite(siteID: siteID,
-                                    forcedUpdate: false,
-                                    isJetpackConnectionPackageSupported: isJCPEnabled) { [weak self] result in
+                                    forcedUpdate: false) { [weak self] result in
             guard let self = self else { return }
             guard case .success(let site) = result else {
                 return

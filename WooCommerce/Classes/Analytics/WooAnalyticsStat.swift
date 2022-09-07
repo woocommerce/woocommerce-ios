@@ -676,6 +676,10 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Payments Menu
     case pluginsNotSyncedYet = "plugins_not_synced_yet"
+
+    // MARK: Universal Links
+    case universalLinkOpened = "universal_link_opened"
+    case universalLinkFailed = "universal_link_failed"
 }
 
 public extension WooAnalyticsStat {

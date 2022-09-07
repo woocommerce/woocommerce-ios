@@ -195,15 +195,13 @@ extension ProductVariationFormViewModel {
                      formType: ProductFormType = .edit,
                      productImageActionHandler: ProductImageActionHandlerProtocol,
                      storesManager: StoresManager = ServiceLocator.stores,
-                     productImagesUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
-                     isBackgroundImageUploadEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload)) {
+                     productImagesUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
         self.init(productVariation: productVariation,
                   allAttributes: [],
                   parentProductSKU: nil,
                   formType: formType,
                   productImageActionHandler: productImageActionHandler,
                   storesManager: storesManager,
-                  productImagesUploader: productImagesUploader,
-                  isBackgroundImageUploadEnabled: isBackgroundImageUploadEnabled)
+                  productImagesUploader: productImagesUploader)
     }
 }

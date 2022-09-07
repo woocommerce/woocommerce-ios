@@ -3,7 +3,6 @@ import WordPressAuthenticator
 import WordPressKit
 
 final class MockAuthentication: Authentication {
-    
     private(set) var presentSupportFromScreenInvoked = false
 
     func presentSupport(from sourceViewController: UIViewController, screen: CustomHelpCenterContent.Screen) {

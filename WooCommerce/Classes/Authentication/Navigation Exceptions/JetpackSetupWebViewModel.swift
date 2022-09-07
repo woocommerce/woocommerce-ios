@@ -53,7 +53,7 @@ final class JetpackSetupWebViewModel: AuthenticatedWebViewModel {
             if let match = JetpackSetupWebStep.matchingStep(for: url) {
                 analytics.track(event: .LoginJetpackSetup.setupFlow(source: .web, step: match.trackingStep))
             } else if url.hasPrefix(Constants.jetpackAuthorizeURL) {
-                authorizedEmailAddress = url.getQueryStringParameter(param: Constants.userEmailParam)
+                authorizedEmailAddress = getQueryStringParameter(url: url, param: Constants.userEmailParam)
             }
             return .allow
         }
@@ -65,6 +65,13 @@ private extension JetpackSetupWebViewModel {
     func handleSetupCompletion() {
         analytics.track(event: .LoginJetpackSetup.setupCompleted(source: .web))
         completionHandler(authorizedEmailAddress)
+    }
+
+    func getQueryStringParameter(url: String, param: String) -> String? {
+        guard let url = URLComponents(string: url) else {
+            return nil
+        }
+        return url.queryItems?.first(where: { $0.name == param })?.value
     }
 
     enum Constants {

@@ -28,11 +28,6 @@ public protocol StoresManager {
     @discardableResult
     func deauthenticate() -> StoresManager
 
-    /// This should be called before making any request to the WP.org REST API in the deauthenticated state.
-    /// The site URL and authenticator will be used for handling cookie authentication.
-    ///
-    func updateDeauthenticatedState(with siteURL: String, authenticator: Authenticator)
-
     /// Synchronizes all of the Session's Entities.
     ///
     @discardableResult

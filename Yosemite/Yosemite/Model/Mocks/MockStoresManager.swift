@@ -161,10 +161,6 @@ public class MockStoresManager: StoresManager {
         return self
     }
 
-    public func updateDeauthenticatedState(with siteURL: String, authenticator: Authenticator) {
-        // no-op
-    }
-
     @discardableResult
     public func synchronizeEntities(onCompletion: (() -> Void)?) -> StoresManager {
         if let siteID = sessionManager.defaultStoreID {

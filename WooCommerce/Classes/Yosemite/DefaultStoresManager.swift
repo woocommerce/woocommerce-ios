@@ -175,16 +175,6 @@ class DefaultStoresManager: StoresManager {
         return self
     }
 
-    /// If the state is deauthenticated, send it a siteURL and network.
-    ///
-    func updateDeauthenticatedState(with siteURL: String, authenticator: Authenticator) {
-        guard let state = state as? DeauthenticatedState else {
-            return
-        }
-        let network = WordPressOrgNetwork(authenticator: authenticator, userAgent: UserAgent.defaultUserAgent)
-        state.updateStores(with: siteURL, network: network)
-    }
-
     /// Updates the Default Store as specified.
     /// After this call, `siteID` is updated while `site` might still be nil when it is a newly connected site.
     /// In the case of a newly connected site, it synchronizes the site asynchronously and `site` observable is updated.

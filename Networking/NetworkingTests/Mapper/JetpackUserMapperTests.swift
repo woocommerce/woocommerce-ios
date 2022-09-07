@@ -13,15 +13,13 @@ final class JetpackUserMapperTests: XCTestCase {
         // Then
         XCTAssertEqual(user.username, "admin")
         XCTAssertEqual(user.gravatar, "<img alt='' src='http://2.gravatar.com/avatar/5e1a8fhjd'/>")
-        XCTAssertTrue(user.isMaster)
+        XCTAssertTrue(user.isPrimary)
         XCTAssertTrue(user.isConnected)
 
         XCTAssertEqual(wpcomUser.id, 223)
         XCTAssertEqual(wpcomUser.username, "test")
-        XCTAssertEqual(wpcomUser.siteCount, 12)
         XCTAssertEqual(wpcomUser.email, "test@gmail.com")
         XCTAssertEqual(wpcomUser.displayName, "Test")
-        XCTAssertEqual(wpcomUser.textDirection, "ltr")
         XCTAssertEqual(wpcomUser.avatar, "http://2.gravatar.com/avatar/5e1a8fhjd")
     }
 
@@ -30,7 +28,7 @@ final class JetpackUserMapperTests: XCTestCase {
         let user = try mapNotConnectedUserFromMockResponse()
 
         // Then
-        XCTAssertFalse(user.isMaster)
+        XCTAssertFalse(user.isPrimary)
         XCTAssertFalse(user.isConnected)
         XCTAssertEqual(user.username, "test")
         XCTAssertEqual(user.gravatar, "https://secure.gravatar.com/avatar/a7839e14")

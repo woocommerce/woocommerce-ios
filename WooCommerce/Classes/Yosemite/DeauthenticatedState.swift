@@ -1,6 +1,5 @@
 import Foundation
 import Yosemite
-import protocol Networking.Network
 
 // MARK: - DeauthenticatedState
 //

@@ -1,6 +1,5 @@
 import Combine
 import Foundation
-import WordPressKit
 import Yosemite
 import enum Networking.DotcomError
 import class Networking.UserAgent
@@ -201,7 +200,7 @@ class DefaultStoresManager: StoresManager {
 
     /// Updates the user roles for the default Store site.
     ///
-    func updateDefaultRoles(_ roles: [Yosemite.User.Role]) {
+    func updateDefaultRoles(_ roles: [User.Role]) {
         sessionManager.defaultRoles = roles
     }
 }

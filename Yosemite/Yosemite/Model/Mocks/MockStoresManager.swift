@@ -1,6 +1,5 @@
 import Combine
 import Storage
-import WordPressKit
 
 public class MockStoresManager: StoresManager {
 

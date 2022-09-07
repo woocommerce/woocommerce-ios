@@ -1,6 +1,5 @@
 import Combine
 import Foundation
-import WordPressKit
 
 /// Abstracts the Stores coordination
 ///

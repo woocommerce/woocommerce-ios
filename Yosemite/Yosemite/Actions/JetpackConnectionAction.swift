@@ -1,6 +1,5 @@
 import Foundation
-import Networking
-import WordPressKit
+import protocol Networking.Network
 
 /// Defines actions supported by `JetpackConnectionStore`.
 public enum JetpackConnectionAction: Action {

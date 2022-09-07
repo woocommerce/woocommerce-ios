@@ -10,7 +10,7 @@ extension UserDefaults {
         case defaultUsername
         case defaultSiteAddress
         case defaultStoreID
-        case defaultSiteName
+        case defaultStoreName
         case defaultAnonymousID
         case defaultRoles
         case deviceID

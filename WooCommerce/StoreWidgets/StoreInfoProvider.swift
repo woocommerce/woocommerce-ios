@@ -39,40 +39,61 @@ struct StoreInfoProvider: TimelineProvider {
     /// Redacted entry with sample data.
     ///
     func placeholder(in context: Context) -> StoreInfoEntry {
-        StoreInfoEntry(date: Date(),
-                       range: "Today",
-                       name: "Ernest Shop",
-                       revenue: "$132.234",
-                       visitors: "67",
-                       orders: "23",
-                       conversion: "37%")
+        let dependencies = Self.fetchDependencies()
+        return StoreInfoEntry(date: Date(),
+                              range: "Today",
+                              name: dependencies?.storeName ?? "My Shop", // TODO: Localize
+                              revenue: "$132.234",
+                              visitors: "67",
+                              orders: "23",
+                              conversion: "37%")
     }
 
     /// Quick Snapshot. Required when previewing the widget.
-    /// TODO: Update with real data.
     ///
     func getSnapshot(in context: Context, completion: @escaping (StoreInfoEntry) -> Void) {
-        completion(StoreInfoEntry(date: Date(),
-                                  range: "Today",
-                                  name: "Ernest Shop",
-                                  revenue: "$132.234",
-                                  visitors: "67",
-                                  orders: "23",
-                                  conversion: "37%"))
+        completion(placeholder(in: context))
     }
 
     /// Real data widget.
     /// TODO: Update with real data.
     ///
     func getTimeline(in context: Context, completion: @escaping (Timeline<StoreInfoEntry>) -> Void) {
+        // TODO: Temp store name to check dependency status while we fetch real data.
+        let dependencies = Self.fetchDependencies()
+        let authStatus = dependencies?.authToken != nil ? "Authenticated" : "Non Authenticated"
+        let storeName = dependencies?.storeName ?? "Undefined Shop"
         let entry = StoreInfoEntry(date: Date(),
                                    range: "Today",
-                                   name: "Ernest Shop",
+                                   name: "\(authStatus) - \(storeName)",
                                    revenue: "$132.234",
                                    visitors: "67",
                                    orders: "23",
                                    conversion: "37%")
         let timeline = Timeline<StoreInfoEntry>(entries: [entry], policy: .never)
         completion(timeline)
+    }
+}
+
+private extension StoreInfoProvider {
+
+    /// Dependencies needed by the `StoreInfoProvider`
+    /// //
+    struct Dependencies {
+        let authToken: String
+        let storeID: Int64
+        let storeName: String
+    }
+
+    /// Fetches the required dependencies from the keychain and the shared users default.
+    ///
+    static func fetchDependencies() -> Dependencies? {
+        let keychain = Keychain(service: WooConstants.keychainServiceName)
+        guard let authToken = keychain[WooConstants.authToken],
+              let storeID = UserDefaults.group?[.defaultStoreID] as? Int64,
+              let storeName = UserDefaults.group?[.defaultStoreName] as? String else {
+            return nil
+        }
+        return Dependencies(authToken: authToken, storeID: storeID, storeName: storeName)
     }
 }

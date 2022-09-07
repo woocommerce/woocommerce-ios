@@ -467,7 +467,6 @@ private extension DefaultStoresManager {
             return
         }
 
-        updateAndReloadWidgetInformation(with: siteID)
         restoreSessionSiteAndSynchronizeIfNeeded(with: siteID)
         synchronizeSettings(with: siteID) {
             ServiceLocator.selectedSiteSettings.refresh()
@@ -494,6 +493,7 @@ private extension DefaultStoresManager {
                 return
             }
             self.sessionManager.defaultSite = site
+            self.updateAndReloadWidgetInformation(with: siteID)
         }
         dispatch(action)
     }
@@ -507,7 +507,7 @@ private extension DefaultStoresManager {
 
         // Non-critical store info
         UserDefaults.group?[.defaultStoreID] = siteID
-        UserDefaults.group?[.defaultSiteName] = sessionManager.defaultSite?.name
+        UserDefaults.group?[.defaultStoreName] = sessionManager.defaultSite?.name
 
         // Reload widgets UI
         WidgetCenter.shared.reloadAllTimelines()

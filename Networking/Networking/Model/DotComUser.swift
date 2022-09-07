@@ -16,23 +16,15 @@ public struct DotComUser: Decodable, GeneratedFakeable, GeneratedCopiable {
     /// Display name in WP.com
     public let displayName: String
 
-    /// Text direction in WP.com
-    public let textDirection: String
-
-    /// Number of registered sites in WP.com
-    public let siteCount: Int64
-
     /// Link to avatar used in WP.com
     public let avatar: String?
 
     /// Member-wise initializer
-    public init(id: Int64, username: String, email: String, displayName: String, textDirection: String, siteCount: Int64, avatar: String?) {
+    public init(id: Int64, username: String, email: String, displayName: String, avatar: String?) {
         self.id = id
         self.username = username
         self.email = email
         self.displayName = displayName
-        self.textDirection = textDirection
-        self.siteCount = siteCount
         self.avatar = avatar
     }
 }
@@ -46,8 +38,6 @@ private extension DotComUser {
         case username = "login"
         case email
         case displayName = "display_name"
-        case textDirection = "text_direction"
-        case siteCount = "site_count"
         case avatar
     }
 }

@@ -175,16 +175,12 @@ extension DotComUser {
         username: CopiableProp<String> = .copy,
         email: CopiableProp<String> = .copy,
         displayName: CopiableProp<String> = .copy,
-        textDirection: CopiableProp<String> = .copy,
-        siteCount: CopiableProp<Int64> = .copy,
         avatar: NullableCopiableProp<String> = .copy
     ) -> DotComUser {
         let id = id ?? self.id
         let username = username ?? self.username
         let email = email ?? self.email
         let displayName = displayName ?? self.displayName
-        let textDirection = textDirection ?? self.textDirection
-        let siteCount = siteCount ?? self.siteCount
         let avatar = avatar ?? self.avatar
 
         return DotComUser(
@@ -192,8 +188,6 @@ extension DotComUser {
             username: username,
             email: email,
             displayName: displayName,
-            textDirection: textDirection,
-            siteCount: siteCount,
             avatar: avatar
         )
     }

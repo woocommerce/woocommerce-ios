@@ -28,7 +28,8 @@ public protocol StoresManager {
     @discardableResult
     func deauthenticate() -> StoresManager
 
-    /// If the state is deauthenticated, send it a siteURL and authenticator.
+    /// This should be called before making any request to the WP.org REST API in the deauthenticated state.
+    /// The site URL and authenticator will be used for handling cookie authentication.
     ///
     func updateDeauthenticatedState(with siteURL: String, authenticator: Authenticator)
 

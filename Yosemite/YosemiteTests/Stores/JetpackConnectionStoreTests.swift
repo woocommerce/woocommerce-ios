@@ -24,7 +24,9 @@ final class JetpackConnectionStoreTests: XCTestCase {
         let urlSuffix = "/jetpack/v4/connection/url"
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connection-url")
         let store = JetpackConnectionStore(dispatcher: dispatcher)
-        store.updateRemote(with: siteURL, network: network)
+
+        let setupAction = JetpackConnectionAction.updateRemote(siteURL: siteURL, network: network)
+        store.onAction(setupAction)
 
         // When
         let result: Result<URL, Error> = waitFor { promise in
@@ -48,7 +50,9 @@ final class JetpackConnectionStoreTests: XCTestCase {
         let error = NetworkError.unacceptableStatusCode(statusCode: 500)
         network.simulateError(requestUrlSuffix: urlSuffix, error: error)
         let store = JetpackConnectionStore(dispatcher: dispatcher)
-        store.updateRemote(with: siteURL, network: network)
+
+        let setupAction = JetpackConnectionAction.updateRemote(siteURL: siteURL, network: network)
+        store.onAction(setupAction)
 
         // When
         let result: Result<URL, Error> = waitFor { promise in
@@ -69,7 +73,9 @@ final class JetpackConnectionStoreTests: XCTestCase {
         let urlSuffix = "/jetpack/v4/connection/data"
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connected-user")
         let store = JetpackConnectionStore(dispatcher: dispatcher)
-        store.updateRemote(with: siteURL, network: network)
+
+        let setupAction = JetpackConnectionAction.updateRemote(siteURL: siteURL, network: network)
+        store.onAction(setupAction)
 
         // When
         let result: Result<JetpackUser, Error> = waitFor { promise in
@@ -93,7 +99,9 @@ final class JetpackConnectionStoreTests: XCTestCase {
         let error = NetworkError.unacceptableStatusCode(statusCode: 500)
         network.simulateError(requestUrlSuffix: urlSuffix, error: error)
         let store = JetpackConnectionStore(dispatcher: dispatcher)
-        store.updateRemote(with: siteURL, network: network)
+
+        let setupAction = JetpackConnectionAction.updateRemote(siteURL: siteURL, network: network)
+        store.onAction(setupAction)
 
         // When
         let result: Result<JetpackUser, Error> = waitFor { promise in

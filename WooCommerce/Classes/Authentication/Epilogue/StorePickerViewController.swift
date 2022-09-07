@@ -637,7 +637,6 @@ extension StorePickerViewController: UITableViewDataSource {
             hideActionButton()
             let cell = tableView.dequeueReusableCell(EmptyStoresTableViewCell.self, for: indexPath)
             let isRemoveAppleIDAccessButtonVisible = appleIDCredentialChecker.hasAppleUserID()
-            && featureFlagService.isFeatureFlagEnabled(.appleIDAccountDeletion)
             cell.updateRemoveAppleIDAccessButtonVisibility(isVisible: isRemoveAppleIDAccessButtonVisible)
             if isRemoveAppleIDAccessButtonVisible {
                 cell.onCloseAccountButtonTapped = { [weak self] in

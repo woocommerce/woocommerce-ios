@@ -54,7 +54,7 @@ final class JetpackConnectionRemoteTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, error)
     }
 
-    func test_fetchJetpackUser_correctly_returns_parsed_url() throws {
+    func test_fetchJetpackUser_correctly_returns_parsed_user() throws {
         // Given
         let siteURL = "http://test.com"
         let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)

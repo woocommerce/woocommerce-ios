@@ -23,7 +23,7 @@ public final class JetpackConnectionRemote: Remote {
     /// Fetches the user connection state with the site's Jetpack.
     ///
     public func fetchJetpackUser(completion: @escaping (Result<JetpackUser, Error>) -> Void) {
-        let request = WordPressOrgRequest(baseURL: siteURL, method: .get, path: Path.jetpackConnectionData)
+        let request = WordPressOrgRequest(baseURL: siteURL, method: .get, path: Path.jetpackConnectionUser)
         let mapper = JetpackUserMapper()
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -32,13 +32,12 @@ public final class JetpackConnectionRemote: Remote {
 public extension JetpackConnectionRemote {
     enum ConnectionError: Int, Error {
         case malformedURL
-        case currentUserNotFound
     }
 }
 
 private extension JetpackConnectionRemote {
     enum Path {
         static let jetpackConnectionURL = "/jetpack/v4/connection/url"
-        static let jetpackConnectionData = "/jetpack/v4/connection/data"
+        static let jetpackConnectionUser = "/jetpack/v4/connection/data"
     }
 }

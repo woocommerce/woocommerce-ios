@@ -11032,7 +11032,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_ENTITLEMENTS = StoreWidgets/Entitlements/StoreWidgetsExtension.entitlements;
+				CODE_SIGN_ENTITLEMENTS = StoreWidgets/Entitlements/StoreWidgets-Debug.entitlements;
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
@@ -11068,7 +11068,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_ENTITLEMENTS = StoreWidgets/Entitlements/StoreWidgetsExtensionRelease.entitlements;
+				CODE_SIGN_ENTITLEMENTS = StoreWidgets/Entitlements/StoreWidgets-Release.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
@@ -11104,7 +11104,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_ENTITLEMENTS = "StoreWidgets/Entitlements/StoreWidgetsExtensionRelease-Alpha.entitlements";
+				CODE_SIGN_ENTITLEMENTS = StoreWidgets/Entitlements/StoreWidgets-Alpha.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;

@@ -22,13 +22,6 @@ extension String {
 /// String: URL manipulation
 ///
 extension String {
-    func getQueryStringParameter(param: String) -> String? {
-        guard let components = URLComponents(string: self) else {
-            return nil
-        }
-        return components.queryItems?.first(where: { $0.name == param })?.value
-    }
-
     var hasValidSchemeForBrowser: Bool {
         hasPrefix("http://") || hasPrefix("https://")
     }

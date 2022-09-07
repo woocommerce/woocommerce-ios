@@ -2,6 +2,7 @@ import Combine
 import Foundation
 import Yosemite
 import WordPressAuthenticator
+import class Networking.WordPressOrgNetwork
 
 final class JetpackConnectionErrorViewModel: ULErrorViewModel {
     private let siteURL: String
@@ -17,7 +18,7 @@ final class JetpackConnectionErrorViewModel: ULErrorViewModel {
         self.siteURL = siteURL
         self.stores = stores
         self.jetpackSetupCompletionHandler = onJetpackSetupCompletion
-        fetchJetpackConnectionURL(with: credentials)
+        fetchJetpackConnectionURL()
     }
 
     // MARK: - Data and configuration
@@ -73,19 +74,22 @@ private extension JetpackConnectionErrorViewModel {
             return
         }
         let viewModel = JetpackConnectionWebViewModel(initialURL: url, siteURL: siteURL, completion: jetpackSetupCompletionHandler)
-        let pluginViewController = PluginSetupWebViewController(viewModel: viewModel)
+        let pluginViewController = AuthenticatedWebViewController(viewModel: viewModel)
         viewController?.navigationController?.show(pluginViewController, sender: nil)
     }
 
-    func fetchJetpackConnectionURL(with credentials: WordPressOrgCredentials) {
+    func authenticate(with credentials: WordPressOrgCredentials) {
         guard let authenticator = credentials.makeCookieNonceAuthenticator() else {
             return
         }
+        let network = WordPressOrgNetwork(authenticator: authenticator)
+        let action = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
+        stores.dispatch(action)
+    }
 
+    func fetchJetpackConnectionURL() {
         isPrimaryButtonLoadingSubject.send(true)
-        let action = JetpackConnectionAction.fetchJetpackConnectionURL(siteURL: credentials.siteURL,
-                                                                       authenticator: authenticator,
-                                                                       completion: { [weak self] result in
+        let action = JetpackConnectionAction.fetchJetpackConnectionURL { [weak self] result in
             guard let self = self else { return }
             self.isPrimaryButtonLoadingSubject.send(false)
             switch result {
@@ -94,7 +98,7 @@ private extension JetpackConnectionErrorViewModel {
             case .failure(let error):
                 DDLogWarn("⚠️ Error fetching Jetpack connection URL: \(error)")
             }
-        })
+        }
         stores.dispatch(action)
     }
 }

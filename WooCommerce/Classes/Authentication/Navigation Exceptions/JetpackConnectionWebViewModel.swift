@@ -3,7 +3,7 @@ import WebKit
 
 /// View model used for the web view controller to setup Jetpack connection during the login flow.
 ///
-final class JetpackConnectionWebViewModel: PluginSetupWebViewModel {
+final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
     let title = Localization.title
 
     let initialURL: URL?

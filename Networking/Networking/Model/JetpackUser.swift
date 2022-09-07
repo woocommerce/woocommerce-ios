@@ -27,6 +27,16 @@ public struct JetpackUser: Decodable, GeneratedFakeable, GeneratedCopiable {
         self.wpcomUser = wpcomUser
         self.gravatar = gravatar
     }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        isConnected = try container.decode(Bool.self, forKey: .isConnected)
+        isPrimary = try container.decode(Bool.self, forKey: .isPrimary)
+        username = try container.decode(String.self, forKey: .username)
+        wpcomUser = try? container.decode(DotcomUser.self, forKey: .wpcomUser)
+        gravatar = try? container.decode(String.self, forKey: .gravatar)
+    }
 }
 
 /// Defines all of the `JetpackUser` CodingKeys.

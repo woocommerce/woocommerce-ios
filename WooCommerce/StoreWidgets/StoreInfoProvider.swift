@@ -1,4 +1,5 @@
 import WidgetKit
+import KeychainAccess
 
 /// Type that represents the Widget information
 ///

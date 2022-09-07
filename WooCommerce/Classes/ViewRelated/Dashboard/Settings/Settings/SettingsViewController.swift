@@ -130,8 +130,6 @@ private extension SettingsViewController {
             configurePlugins(cell: cell)
         case let cell as HostingTableViewCell<FeatureAnnouncementCardView> where row == .upsellCardReadersFeatureAnnouncement:
             configureUpsellCardReadersFeatureAnnouncement(cell: cell)
-        case let cell as BasicTableViewCell where row == .inPersonPayments:
-            configureInPersonPayments(cell: cell)
         case let cell as BasicTableViewCell where row == .installJetpack:
             configureInstallJetpack(cell: cell)
         case let cell as BasicTableViewCell where row == .support:
@@ -188,12 +186,6 @@ private extension SettingsViewController {
         })
         cell.host(view, parent: self)
         cell.selectionStyle = .none
-    }
-
-    func configureInPersonPayments(cell: BasicTableViewCell) {
-        cell.accessoryType = .disclosureIndicator
-        cell.selectionStyle = .default
-        cell.textLabel?.text = Localization.inPersonPayments
     }
 
     func configureInstallJetpack(cell: BasicTableViewCell) {
@@ -336,13 +328,6 @@ private extension SettingsViewController {
         guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: HelpAndSupportViewController.self) else {
             fatalError("Cannot instantiate `HelpAndSupportViewController` from Dashboard storyboard")
         }
-        show(viewController, sender: self)
-    }
-
-    func inPersonPaymentsWasPressed() {
-        let viewModel = InPersonPaymentsViewModel()
-        viewModel.refresh()
-        let viewController = InPersonPaymentsViewController(viewModel: viewModel)
         show(viewController, sender: self)
     }
 
@@ -529,8 +514,6 @@ extension SettingsViewController: UITableViewDelegate {
             sitePluginsWasPressed()
         case .support:
             supportWasPressed()
-        case .inPersonPayments:
-            inPersonPaymentsWasPressed()
         case .installJetpack:
             installJetpackWasPressed()
         case .privacy:
@@ -606,7 +589,6 @@ extension SettingsViewController {
 
         // Store settings
         case upsellCardReadersFeatureAnnouncement
-        case inPersonPayments
         case installJetpack
 
         // Help & Feedback
@@ -652,8 +634,6 @@ extension SettingsViewController {
                 return BasicTableViewCell.self
             case .upsellCardReadersFeatureAnnouncement:
                 return HostingTableViewCell<FeatureAnnouncementCardView>.self
-            case .inPersonPayments:
-                return BasicTableViewCell.self
             case .installJetpack:
                 return BasicTableViewCell.self
             case .logout, .removeAppleIDAccess:

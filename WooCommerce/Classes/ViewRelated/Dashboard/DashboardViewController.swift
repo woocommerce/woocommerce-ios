@@ -148,7 +148,6 @@ private extension DashboardViewController {
     func configureNavigation() {
         configureTitle()
         configureHeaderStackView()
-        configureNavigationItem()
     }
 
     func configureTabBarItem() {
@@ -194,23 +193,6 @@ private extension DashboardViewController {
             contentView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
         ])
         contentBottomToContainerConstraint = contentView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
-    }
-
-    private func configureNavigationItem() {
-        if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.hubMenu) {
-            let rightBarButton = UIBarButtonItem(image: .gearBarButtonItemImage,
-                                                 style: .plain,
-                                                 target: self,
-                                                 action: #selector(settingsTapped))
-            rightBarButton.accessibilityLabel = NSLocalizedString("Settings", comment: "Accessibility label for the Settings button.")
-            rightBarButton.accessibilityTraits = .button
-            rightBarButton.accessibilityHint = NSLocalizedString(
-                "Navigates to Settings.",
-                comment: "VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen."
-            )
-            rightBarButton.accessibilityIdentifier = "dashboard-settings-button"
-            navigationItem.setRightBarButton(rightBarButton, animated: false)
-        }
     }
 
     func configureDashboardUIContainer() {
@@ -464,9 +446,7 @@ private extension DashboardViewController {
                                                                                    calendar: .current) { [weak self] isVisibleFromAppSettings in
                     guard let self = self else { return }
 
-                    let shouldShowJetpackBenefitsBanner = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport)
-                    && site?.isJetpackCPConnected == true
-                    && isVisibleFromAppSettings
+                    let shouldShowJetpackBenefitsBanner = site?.isJetpackCPConnected == true && isVisibleFromAppSettings
 
                     self.updateJetpackBenefitsBannerVisibility(isBannerVisible: shouldShowJetpackBenefitsBanner, contentView: contentView)
                 }

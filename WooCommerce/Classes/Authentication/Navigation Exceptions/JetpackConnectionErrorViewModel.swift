@@ -73,8 +73,8 @@ private extension JetpackConnectionErrorViewModel {
             DDLogWarn("⚠️ No Jetpack connection URL found")
             return
         }
-        let viewModel = JetpackConnectionWebViewModel(initialURL: url, siteURL: siteURL, completion: {
-            // TODO: fetch connected user
+        let viewModel = JetpackConnectionWebViewModel(initialURL: url, siteURL: siteURL, completion: { [weak self] in
+            self?.fetchJetpackUser()
         })
         let pluginViewController = AuthenticatedWebViewController(viewModel: viewModel)
         viewController?.navigationController?.show(pluginViewController, sender: nil)
@@ -99,6 +99,27 @@ private extension JetpackConnectionErrorViewModel {
                 self.jetpackConnectionURL = url
             case .failure(let error):
                 DDLogWarn("⚠️ Error fetching Jetpack connection URL: \(error)")
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    /// Gets the connected WPcom email address if possible, or show error otherwise.
+    ///
+    func fetchJetpackUser() {
+        let action = JetpackConnectionAction.fetchJetpackUser { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let user):
+                guard let emailAddress = user.wpcomUser?.email else {
+                    DDLogWarn("⚠️ Cannot find connected WPcom user")
+                    // TODO: show error
+                    return
+                }
+                self.jetpackSetupCompletionHandler(emailAddress)
+            case .failure:
+                // TODO: show error
+                break
             }
         }
         stores.dispatch(action)

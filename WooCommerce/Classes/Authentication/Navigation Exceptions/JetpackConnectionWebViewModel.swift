@@ -8,12 +8,9 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
 
     let initialURL: URL?
     let siteURL: String
-    let completionHandler: (String?) -> Void
+    let completionHandler: () -> Void
 
-    /// The email address that the user uses to authorize Jetpack
-    private var authorizedEmailAddress: String?
-
-    init(initialURL: URL, siteURL: String, completion: @escaping (String?) -> Void) {
+    init(initialURL: URL, siteURL: String, completion: @escaping () -> Void) {
         self.initialURL = initialURL
         self.siteURL = siteURL
         self.completionHandler = completion
@@ -43,7 +40,7 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
 
     private func handleSetupCompletion() {
         // TODO: tracks?
-        completionHandler(authorizedEmailAddress)
+        completionHandler()
     }
 }
 

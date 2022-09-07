@@ -73,7 +73,9 @@ private extension JetpackConnectionErrorViewModel {
             DDLogWarn("⚠️ No Jetpack connection URL found")
             return
         }
-        let viewModel = JetpackConnectionWebViewModel(initialURL: url, siteURL: siteURL, completion: jetpackSetupCompletionHandler)
+        let viewModel = JetpackConnectionWebViewModel(initialURL: url, siteURL: siteURL, completion: {
+            // TODO: fetch connected user
+        })
         let pluginViewController = AuthenticatedWebViewController(viewModel: viewModel)
         viewController?.navigationController?.show(pluginViewController, sender: nil)
     }

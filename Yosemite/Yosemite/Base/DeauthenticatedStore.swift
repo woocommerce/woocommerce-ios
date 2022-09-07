@@ -33,12 +33,6 @@ public class DeauthenticatedStore: ActionsProcessor {
 
     // MARK: - Dispatcher's Delegate Methods
 
-    /// Subclasses should override this and update remote based on the given siteURL and network.
-    ///
-    public func updateRemote(with siteURL: String, network: Network) {
-        logErrorAndExit("Override me!")
-    }
-
     /// Subclasses should override this and register for supported Dispatcher Actions.
     ///
     public func registerSupportedActions(in dispatcher: Dispatcher) {

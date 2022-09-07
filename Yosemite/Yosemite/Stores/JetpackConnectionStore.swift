@@ -12,10 +12,6 @@ public final class JetpackConnectionStore: DeauthenticatedStore {
         super.init(dispatcher: dispatcher)
     }
 
-    public override func updateRemote(with siteURL: String, network: Network) {
-        self.remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
-    }
-
     public override func registerSupportedActions(in dispatcher: Dispatcher) {
         dispatcher.register(processor: self, for: JetpackConnectionAction.self)
     }
@@ -28,6 +24,8 @@ public final class JetpackConnectionStore: DeauthenticatedStore {
             return
         }
         switch action {
+        case .updateRemote(let siteURL, let network):
+            updateRemote(with: siteURL, network: network)
         case .fetchJetpackConnectionURL(let completion):
             fetchJetpackConnectionURL(completion: completion)
         case .fetchJetpackUser(let completion):
@@ -37,6 +35,10 @@ public final class JetpackConnectionStore: DeauthenticatedStore {
 }
 
 private extension JetpackConnectionStore {
+    func updateRemote(with siteURL: String, network: Network) {
+        self.remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
+    }
+
     func fetchJetpackConnectionURL(completion: @escaping (Result<URL, Error>) -> Void) {
         remote?.fetchJetpackConnectionURL(completion: completion)
     }

@@ -2,7 +2,7 @@ import Codegen
 import Foundation
 
 /// Basic information of a WordPress.com user
-public struct DotComUser: Decodable, GeneratedFakeable, GeneratedCopiable {
+public struct DotcomUser: Decodable, GeneratedFakeable, GeneratedCopiable {
 
     /// User ID in WP.com
     public let id: Int64
@@ -31,7 +31,7 @@ public struct DotComUser: Decodable, GeneratedFakeable, GeneratedCopiable {
 
 /// Defines all of the `WordPressComUser` CodingKeys.
 ///
-private extension DotComUser {
+private extension DotcomUser {
 
     enum CodingKeys: String, CodingKey {
         case id = "ID"

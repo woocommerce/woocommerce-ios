@@ -169,21 +169,21 @@ extension CouponReport {
     }
 }
 
-extension DotComUser {
+extension DotcomUser {
     public func copy(
         id: CopiableProp<Int64> = .copy,
         username: CopiableProp<String> = .copy,
         email: CopiableProp<String> = .copy,
         displayName: CopiableProp<String> = .copy,
         avatar: NullableCopiableProp<String> = .copy
-    ) -> DotComUser {
+    ) -> DotcomUser {
         let id = id ?? self.id
         let username = username ?? self.username
         let email = email ?? self.email
         let displayName = displayName ?? self.displayName
         let avatar = avatar ?? self.avatar
 
-        return DotComUser(
+        return DotcomUser(
             id: id,
             username: username,
             email: email,
@@ -264,7 +264,7 @@ extension JetpackUser {
         isConnected: CopiableProp<Bool> = .copy,
         isPrimary: CopiableProp<Bool> = .copy,
         username: CopiableProp<String> = .copy,
-        wpcomUser: NullableCopiableProp<DotComUser> = .copy,
+        wpcomUser: NullableCopiableProp<DotcomUser> = .copy,
         gravatar: NullableCopiableProp<String> = .copy
     ) -> JetpackUser {
         let isConnected = isConnected ?? self.isConnected

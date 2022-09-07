@@ -14,13 +14,13 @@ public struct JetpackUser: Decodable, GeneratedFakeable, GeneratedCopiable {
     public let username: String
 
     /// The connected WP.com user if exists
-    public let wpcomUser: DotComUser?
+    public let wpcomUser: DotcomUser?
 
     /// Gravatar link of the user
     public let gravatar: String?
 
     /// Member-wise initializer
-    public init(isConnected: Bool, isPrimary: Bool, username: String, wpcomUser: DotComUser?, gravatar: String?) {
+    public init(isConnected: Bool, isPrimary: Bool, username: String, wpcomUser: DotcomUser?, gravatar: String?) {
         self.isConnected = isConnected
         self.isPrimary = isPrimary
         self.username = username

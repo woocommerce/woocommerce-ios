@@ -30,7 +30,6 @@ public struct JetpackUser: Decodable, GeneratedFakeable, GeneratedCopiable {
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        
         isConnected = try container.decode(Bool.self, forKey: .isConnected)
         isPrimary = try container.decode(Bool.self, forKey: .isPrimary)
         username = try container.decode(String.self, forKey: .username)

@@ -81,8 +81,10 @@ final class JetpackConnectionErrorViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
-            case .fetchJetpackConnectionURL(_, _, let completion):
+            case .fetchJetpackConnectionURL(let completion):
                 completion(.success(expectedURL))
+            default:
+                break
             }
         }
         let viewModel = JetpackConnectionErrorViewModel(siteURL: siteURL, credentials: credentials, stores: stores, onJetpackSetupCompletion: { _ in })
@@ -96,7 +98,7 @@ final class JetpackConnectionErrorViewModelTests: XCTestCase {
         }
 
         // Then
-        XCTAssertTrue(navigationController.topViewController is PluginSetupWebViewController)
+        XCTAssertTrue(navigationController.topViewController is AuthenticatedWebViewController)
     }
 }
 

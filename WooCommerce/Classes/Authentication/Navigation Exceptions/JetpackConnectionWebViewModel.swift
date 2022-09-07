@@ -31,15 +31,12 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
         let url = navigationURL.absoluteString
         switch url {
         // When the web view is about to navigate to the site address, we can assume that the setup has completed.
-        case let url where url.hasPrefix(siteURL):
+        case let url where url.hasPrefix(siteURL) || url.hasPrefix(Constants.plansPage):
             await MainActor.run { [weak self] in
                 self?.handleSetupCompletion()
             }
             return .cancel
         default:
-            if url.hasPrefix(Constants.jetpackAuthorizeURL) {
-                authorizedEmailAddress = url.getQueryStringParameter(param: Constants.userEmailParam)
-            }
             return .allow
         }
     }
@@ -52,8 +49,7 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
 
 private extension JetpackConnectionWebViewModel {
     enum Constants {
-        static let jetpackAuthorizeURL = "https://jetpack.wordpress.com/jetpack.authorize"
-        static let userEmailParam = "user_email"
+        static let plansPage = "https://wordpress.com/jetpack/connect/plans"
     }
 
     enum Localization {

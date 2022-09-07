@@ -169,6 +169,30 @@ extension CouponReport {
     }
 }
 
+extension DotcomUser {
+    public func copy(
+        id: CopiableProp<Int64> = .copy,
+        username: CopiableProp<String> = .copy,
+        email: CopiableProp<String> = .copy,
+        displayName: CopiableProp<String> = .copy,
+        avatar: NullableCopiableProp<String> = .copy
+    ) -> DotcomUser {
+        let id = id ?? self.id
+        let username = username ?? self.username
+        let email = email ?? self.email
+        let displayName = displayName ?? self.displayName
+        let avatar = avatar ?? self.avatar
+
+        return DotcomUser(
+            id: id,
+            username: username,
+            email: email,
+            displayName: displayName,
+            avatar: avatar
+        )
+    }
+}
+
 extension InboxAction {
     public func copy(
         id: CopiableProp<Int64> = .copy,
@@ -231,6 +255,30 @@ extension InboxNote {
             isRemoved: isRemoved,
             isRead: isRead,
             dateCreated: dateCreated
+        )
+    }
+}
+
+extension JetpackUser {
+    public func copy(
+        isConnected: CopiableProp<Bool> = .copy,
+        isPrimary: CopiableProp<Bool> = .copy,
+        username: CopiableProp<String> = .copy,
+        wpcomUser: NullableCopiableProp<DotcomUser> = .copy,
+        gravatar: NullableCopiableProp<String> = .copy
+    ) -> JetpackUser {
+        let isConnected = isConnected ?? self.isConnected
+        let isPrimary = isPrimary ?? self.isPrimary
+        let username = username ?? self.username
+        let wpcomUser = wpcomUser ?? self.wpcomUser
+        let gravatar = gravatar ?? self.gravatar
+
+        return JetpackUser(
+            isConnected: isConnected,
+            isPrimary: isPrimary,
+            username: username,
+            wpcomUser: wpcomUser,
+            gravatar: gravatar
         )
     }
 }

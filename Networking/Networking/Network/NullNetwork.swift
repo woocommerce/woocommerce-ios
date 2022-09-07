@@ -8,7 +8,6 @@ import Alamofire
 ///
 public final class NullNetwork: Network {
     public init() { }
-    public required init(credentials: Credentials) { }
 
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) { }
 

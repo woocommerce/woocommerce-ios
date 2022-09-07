@@ -18,6 +18,7 @@ final class JetpackConnectionErrorViewModel: ULErrorViewModel {
         self.siteURL = siteURL
         self.stores = stores
         self.jetpackSetupCompletionHandler = onJetpackSetupCompletion
+        authenticate(with: credentials)
         fetchJetpackConnectionURL()
     }
 
@@ -113,7 +114,7 @@ private extension JetpackConnectionErrorViewModel {
         stores.dispatch(action)
     }
 
-    /// Gets the connected WPcom email address if possible, or show error otherwise.
+    /// Gets the connected WP.com email address if possible, or show error otherwise.
     ///
     func fetchJetpackUser(in viewController: UIViewController) {
         showInProgressView(in: viewController)
@@ -126,13 +127,12 @@ private extension JetpackConnectionErrorViewModel {
             case .success(let user):
                 guard let emailAddress = user.wpcomUser?.email else {
                     DDLogWarn("⚠️ Cannot find connected WPcom user")
-                    // TODO: show error
-                    return
+                    return self.showSetupErrorNotice(in: viewController)
                 }
                 self.jetpackSetupCompletionHandler(emailAddress)
-            case .failure:
-                // TODO: show error
-                break
+            case .failure(let error):
+                DDLogWarn("⚠️ Error fetching Jetpack user: \(error)")
+                self.showSetupErrorNotice(in: viewController)
             }
         }
         stores.dispatch(action)
@@ -144,6 +144,14 @@ private extension JetpackConnectionErrorViewModel {
         inProgressViewController.modalPresentationStyle = .overCurrentContext
 
         viewController.navigationController?.present(inProgressViewController, animated: true, completion: nil)
+    }
+
+    func showSetupErrorNotice(in viewController: UIViewController) {
+        let message = Localization.setupErrorMessage
+        let notice = Notice(title: message, feedbackType: .error)
+        let noticePresenter = DefaultNoticePresenter()
+        noticePresenter.presentingViewController = viewController
+        noticePresenter.enqueue(notice: notice)
     }
 }
 
@@ -168,6 +176,11 @@ private extension JetpackConnectionErrorViewModel {
         static let inProgressMessage = NSLocalizedString(
             "Verifying Jetpack connection...",
             comment: "Message displayed when checking whether Jetpack has been connected successfully"
+        )
+
+        static let setupErrorMessage = NSLocalizedString(
+            "Cannot verify your Jetpack connection. Please try again.",
+            comment: "Error message displayed when failed to check for Jetpack connection."
         )
     }
 }

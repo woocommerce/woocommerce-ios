@@ -169,6 +169,36 @@ extension CouponReport {
     }
 }
 
+extension DotComUser {
+    public func copy(
+        id: CopiableProp<Int64> = .copy,
+        username: CopiableProp<String> = .copy,
+        email: CopiableProp<String> = .copy,
+        displayName: CopiableProp<String> = .copy,
+        textDirection: CopiableProp<String> = .copy,
+        siteCount: CopiableProp<Int64> = .copy,
+        avatar: NullableCopiableProp<String> = .copy
+    ) -> DotComUser {
+        let id = id ?? self.id
+        let username = username ?? self.username
+        let email = email ?? self.email
+        let displayName = displayName ?? self.displayName
+        let textDirection = textDirection ?? self.textDirection
+        let siteCount = siteCount ?? self.siteCount
+        let avatar = avatar ?? self.avatar
+
+        return DotComUser(
+            id: id,
+            username: username,
+            email: email,
+            displayName: displayName,
+            textDirection: textDirection,
+            siteCount: siteCount,
+            avatar: avatar
+        )
+    }
+}
+
 extension InboxAction {
     public func copy(
         id: CopiableProp<Int64> = .copy,
@@ -240,7 +270,7 @@ extension JetpackUser {
         isConnected: CopiableProp<Bool> = .copy,
         isMaster: CopiableProp<Bool> = .copy,
         username: CopiableProp<String> = .copy,
-        wpcomUser: NullableCopiableProp<WordPressComUser> = .copy,
+        wpcomUser: NullableCopiableProp<DotComUser> = .copy,
         gravatar: NullableCopiableProp<String> = .copy
     ) -> JetpackUser {
         let isConnected = isConnected ?? self.isConnected
@@ -2004,36 +2034,6 @@ extension WCPayCharge {
             paymentMethodDetails: paymentMethodDetails,
             refunded: refunded,
             status: status
-        )
-    }
-}
-
-extension WordPressComUser {
-    public func copy(
-        id: CopiableProp<Int64> = .copy,
-        username: CopiableProp<String> = .copy,
-        email: CopiableProp<String> = .copy,
-        displayName: CopiableProp<String> = .copy,
-        textDirection: CopiableProp<String> = .copy,
-        siteCount: CopiableProp<Int64> = .copy,
-        avatar: NullableCopiableProp<String> = .copy
-    ) -> WordPressComUser {
-        let id = id ?? self.id
-        let username = username ?? self.username
-        let email = email ?? self.email
-        let displayName = displayName ?? self.displayName
-        let textDirection = textDirection ?? self.textDirection
-        let siteCount = siteCount ?? self.siteCount
-        let avatar = avatar ?? self.avatar
-
-        return WordPressComUser(
-            id: id,
-            username: username,
-            email: email,
-            displayName: displayName,
-            textDirection: textDirection,
-            siteCount: siteCount,
-            avatar: avatar
         )
     }
 }

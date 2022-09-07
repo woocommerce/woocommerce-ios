@@ -2,7 +2,6 @@
 
 TEST_NAME=$1
 DEVICE=$2
-IOS_VERSION=$3
 
 echo "Running $TEST_NAME on $DEVICE for iOS $IOS_VERSION"
 
@@ -36,7 +35,7 @@ echo "--- 🧪 Testing"
 xcrun simctl list >> /dev/null
 rake mocks &
 set +e
-bundle exec fastlane test_without_building name:"$TEST_NAME" device:"$DEVICE" ios_version:"$IOS_VERSION"
+bundle exec fastlane test_without_building name:"$TEST_NAME" device:"$DEVICE"
 TESTS_EXIT_STATUS=$?
 set -e
 

@@ -132,7 +132,7 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
             .removeDuplicates()
             // Tapping to change to a farther tab could result in `updateIndicator` callback to be triggered for the middle tabs.
             // A short debounce workaround is applied here to avoid making API requests for the middle tabs.
-            .debounce(for: .seconds(0.1), scheduler: DispatchQueue.main)
+            .debounce(for: .seconds(0.3), scheduler: DispatchQueue.main)
             .sink { [weak self] timeRangeTabIndex in
                 guard let self = self else { return }
                 guard let periodViewController = self.viewControllers[timeRangeTabIndex] as? StoreStatsAndTopPerformersPeriodViewController else {

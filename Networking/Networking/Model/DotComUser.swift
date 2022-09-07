@@ -35,18 +35,6 @@ public struct DotComUser: Decodable, GeneratedFakeable, GeneratedCopiable {
         self.siteCount = siteCount
         self.avatar = avatar
     }
-
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-
-        id = try container.decode(Int64.self, forKey: .id)
-        username = try container.decode(String.self, forKey: .username)
-        email = try container.decode(String.self, forKey: .email)
-        displayName = try container.decode(String.self, forKey: .displayName)
-        textDirection = try container.decode(String.self, forKey: .textDirection)
-        siteCount = try container.decode(Int64.self, forKey: .siteCount)
-        avatar = try? container.decode(String.self, forKey: .avatar)
-    }
 }
 
 /// Defines all of the `WordPressComUser` CodingKeys.

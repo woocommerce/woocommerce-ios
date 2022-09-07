@@ -268,20 +268,20 @@ extension InboxNote {
 extension JetpackUser {
     public func copy(
         isConnected: CopiableProp<Bool> = .copy,
-        isMaster: CopiableProp<Bool> = .copy,
+        isPrimary: CopiableProp<Bool> = .copy,
         username: CopiableProp<String> = .copy,
         wpcomUser: NullableCopiableProp<DotComUser> = .copy,
         gravatar: NullableCopiableProp<String> = .copy
     ) -> JetpackUser {
         let isConnected = isConnected ?? self.isConnected
-        let isMaster = isMaster ?? self.isMaster
+        let isPrimary = isPrimary ?? self.isPrimary
         let username = username ?? self.username
         let wpcomUser = wpcomUser ?? self.wpcomUser
         let gravatar = gravatar ?? self.gravatar
 
         return JetpackUser(
             isConnected: isConnected,
-            isMaster: isMaster,
+            isPrimary: isPrimary,
             username: username,
             wpcomUser: wpcomUser,
             gravatar: gravatar

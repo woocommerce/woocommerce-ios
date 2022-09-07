@@ -54,10 +54,6 @@ public enum FeatureFlag: Int {
     ///
     case shippingLabelsOnboardingM1
 
-    /// Enable image upload after leaving the product form
-    ///
-    case backgroundProductImageUpload
-
     /// Enable IPP reader manuals consolidation screen
     ///
     case consolidatedCardReaderManuals

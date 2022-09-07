@@ -7,7 +7,7 @@ public struct StoreNameStyle: ViewModifier {
     public func body(content: Content) -> some View {
         content
             .font(.footnote.weight(.bold))
-            .foregroundColor(Color(.textInverted))
+            .foregroundColor(Color(.white))
     }
 }
 
@@ -31,7 +31,23 @@ public struct StatValueStyle: ViewModifier {
     public func body(content: Content) -> some View {
         content
             .font(.title2)
-            .foregroundColor(Color(.textInverted))
+            .foregroundColor(Color(.white))
+    }
+}
+
+public struct StatTextStyle: ViewModifier {
+    public func body(content: Content) -> some View {
+        content
+            .font(.footnote)
+            .foregroundColor(Color(.white))
+    }
+}
+
+public struct StatButtonStyle: ViewModifier {
+    public func body(content: Content) -> some View {
+        content
+            .font(.subheadline.weight(.semibold))
+            .foregroundColor(Color(.white))
     }
 }
 
@@ -51,5 +67,13 @@ extension View {
 
     func statValueStyle() -> some View {
         self.modifier(StatValueStyle())
+    }
+
+    func statTextStyle() -> some View {
+        self.modifier(StatTextStyle())
+    }
+
+    func statButtonStyle() -> some View {
+        self.modifier(StatButtonStyle())
     }
 }

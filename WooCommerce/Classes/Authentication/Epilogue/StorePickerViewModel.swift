@@ -64,10 +64,8 @@ private extension StorePickerViewModel {
 
     func synchronizeSites(selectedSiteID: Int64?, onCompletion: @escaping (Result<Void, Error>) -> Void) {
         let syncStartTime = Date()
-        let isJetpackConnectionPackageSupported = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport)
         let action = AccountAction
-            .synchronizeSites(selectedSiteID: selectedSiteID,
-                              isJetpackConnectionPackageSupported: isJetpackConnectionPackageSupported) { result in
+            .synchronizeSites(selectedSiteID: selectedSiteID) { result in
                 switch result {
                 case .success(let containsJCPSites):
                     if containsJCPSites {

@@ -1,8 +1,6 @@
 import Foundation
 import Yosemite
 
-
-
 // MARK: - DeauthenticatedState
 //
 class DeauthenticatedState: StoresManagerState {
@@ -12,7 +10,7 @@ class DeauthenticatedState: StoresManagerState {
 
     /// Retains all of the active Services
     ///
-    private let services: [ActionsProcessor]
+    private let services: [DeauthenticatedStore]
 
     init() {
         services = [JetpackConnectionStore(dispatcher: dispatcher)]

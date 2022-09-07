@@ -1,6 +1,5 @@
 import Foundation
 import Networking
-import WordPressKit
 
 /// Handles `JetpackConnectionAction`
 ///
@@ -13,7 +12,7 @@ public final class JetpackConnectionStore: DeauthenticatedStore {
         super.init(dispatcher: dispatcher)
     }
 
-    override public func registerSupportedActions(in dispatcher: Dispatcher) {
+    public override func registerSupportedActions(in dispatcher: Dispatcher) {
         dispatcher.register(processor: self, for: JetpackConnectionAction.self)
     }
 
@@ -25,20 +24,26 @@ public final class JetpackConnectionStore: DeauthenticatedStore {
             return
         }
         switch action {
-        case let .fetchJetpackConnectionURL(siteURL, authenticator, completion):
-            fetchJetpackConnectionURL(siteURL: siteURL, with: authenticator, completion: completion)
+        case .updateRemote(let siteURL, let network):
+            updateRemote(with: siteURL, network: network)
+        case .fetchJetpackConnectionURL(let completion):
+            fetchJetpackConnectionURL(completion: completion)
+        case .fetchJetpackUser(let completion):
+            fetchJetpackUser(completion: completion)
         }
     }
 }
 
 private extension JetpackConnectionStore {
-    func fetchJetpackConnectionURL(siteURL: String, with authenticator: Authenticator, completion: @escaping (Result<URL, Error>) -> Void) {
-        let network = WordPressOrgNetwork(authenticator: authenticator, userAgent: UserAgent.defaultUserAgent)
-        let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
+    func updateRemote(with siteURL: String, network: Network) {
+        self.remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
+    }
 
-        // hold strong references
-        self.remote = remote
+    func fetchJetpackConnectionURL(completion: @escaping (Result<URL, Error>) -> Void) {
+        remote?.fetchJetpackConnectionURL(completion: completion)
+    }
 
-        remote.fetchJetpackConnectionURL(completion: completion)
+    func fetchJetpackUser(completion: @escaping (Result<JetpackUser, Error>) -> Void) {
+        remote?.fetchJetpackUser(completion: completion)
     }
 }

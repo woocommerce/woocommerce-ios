@@ -35,13 +35,13 @@ public class DeauthenticatedStore: ActionsProcessor {
 
     /// Subclasses should override this and register for supported Dispatcher Actions.
     ///
-    open func registerSupportedActions(in dispatcher: Dispatcher) {
+    public func registerSupportedActions(in dispatcher: Dispatcher) {
         logErrorAndExit("Override me!")
     }
 
     /// This method is called for every Action. Subclasses should override this and deal with the Actions relevant to them.
     ///
-    open func onAction(_ action: Action) {
+    public func onAction(_ action: Action) {
         logErrorAndExit("Override me!")
     }
 }

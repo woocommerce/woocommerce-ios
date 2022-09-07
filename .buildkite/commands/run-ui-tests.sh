@@ -3,7 +3,7 @@
 TEST_NAME=$1
 DEVICE=$2
 
-echo "Running $TEST_NAME on $DEVICE for iOS $IOS_VERSION"
+echo "Running $TEST_NAME on $DEVICE"
 
 # Run this at the start to fail early if value not available
 echo '--- :test-analytics: Configuring Test Analytics'

@@ -1,0 +1,31 @@
+{
+    "currentUser": {
+        "isConnected": true,
+        "isMaster": true,
+        "username": "admin",
+        "wpcomUser": {
+            "ID": 223,
+            "login": "test",
+            "email": "test@gmail.com",
+            "display_name": "Test",
+            "text_direction": "ltr",
+            "site_count": 12,
+            "jetpack_connect": "",
+            "avatar": "http://2.gravatar.com/avatar/5e1a8fhjd"
+        },
+        "gravatar": "<img alt='' src='http://2.gravatar.com/avatar/5e1a8fhjd'/>",
+        "permissions": {
+            "admin_page": true,
+            "connect": true,
+            "disconnect": true,
+            "manage_modules": true,
+            "network_admin": false,
+            "network_sites_page": false,
+            "edit_posts": true,
+            "publish_posts": true,
+            "manage_options": true,
+            "view_stats": true,
+            "manage_plugins": true
+        }
+    }
+}

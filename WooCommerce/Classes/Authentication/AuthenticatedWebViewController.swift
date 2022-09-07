@@ -62,8 +62,19 @@ private extension AuthenticatedWebViewController {
             view.leadingAnchor.constraint(equalTo: webView.leadingAnchor),
             view.trailingAnchor.constraint(equalTo: webView.trailingAnchor),
             view.safeTopAnchor.constraint(equalTo: webView.topAnchor),
-            view.bottomAnchor.constraint(equalTo: webView.bottomAnchor),
+            view.safeBottomAnchor.constraint(equalTo: webView.bottomAnchor),
         ])
+
+        extendContentUnderSafeAreas()
+    }
+
+    func extendContentUnderSafeAreas() {
+        webView.scrollView.clipsToBounds = false
+        if #available(iOS 15.0, *) {
+            view.backgroundColor = webView.underPageBackgroundColor
+        } else {
+            view.backgroundColor = webView.backgroundColor
+        }
     }
 
     func configureProgressBar() {

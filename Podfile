@@ -160,6 +160,10 @@ def networking_pods
 
   # Used for HTML parsing
   aztec
+
+  # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
+  pod 'WordPressKit', '~> 4.49.0'
+  # pod 'WordPressKit', :git => 'https://github.com/wordpress-mobile/WordPressKit-iOS.git', :branch => ''
 end
 
 # Networking Target:

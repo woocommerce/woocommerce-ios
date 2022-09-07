@@ -14,10 +14,6 @@ public enum FeatureFlag: Int {
     ///
     case reviews
 
-    /// Allows sites with plugins that include Jetpack Connection Package and without Jetpack-the-plugin to connect to the app
-    ///
-    case jetpackConnectionPackageSupport
-
     /// Displays the option to view coupons
     ///
     case couponView

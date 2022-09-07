@@ -1,11 +1,20 @@
 import Foundation
 import Yosemite
 
-
-
 // MARK: - DeauthenticatedState
 //
 class DeauthenticatedState: StoresManagerState {
+    /// Dispatcher: Glues all of the Stores!
+    ///
+    private let dispatcher = Dispatcher()
+
+    /// Retains all of the active Services
+    ///
+    private let services: [DeauthenticatedStore]
+
+    init() {
+        services = [JetpackConnectionStore(dispatcher: dispatcher)]
+    }
 
     /// NO-OP: Executed when current state is activated.
     ///
@@ -15,7 +24,9 @@ class DeauthenticatedState: StoresManagerState {
     ///
     func willLeave() { }
 
-    /// NO-OP: During deauth method, we're not running any actions.
+    /// During deauth method, we're handling actions that don't require access token to WordPress.com.
     ///
-    func onAction(_ action: Action) { }
+    func onAction(_ action: Action) {
+        dispatcher.dispatch(action)
+    }
 }

@@ -3,6 +3,9 @@
 10.3
 -----
 - [*] Dashboard: the last selected time range tab (Today/This Week/This Month/This Year) is persisted for the site and shown on the next site launch (app launch or switching stores). [https://github.com/woocommerce/woocommerce-ios/pull/7638]
+- [*] Dashboard: swiping to another time range tab now triggers syncing for the target tab. Previously, the stats on the target tab aren't synced from the swipe gesture. [https://github.com/woocommerce/woocommerce-ios/pull/7650]
+- [*] In-Person Payments: Fixed an issue where the Pay in Person toggle could be out of sync with the setting on the website. [https://github.com/woocommerce/woocommerce-ios/pull/7656]
+- [*] In-Person Payments: Removed the need to sign in when purchasing a card reader [https://github.com/woocommerce/woocommerce-ios/pull/7670]
 
 10.2
 -----

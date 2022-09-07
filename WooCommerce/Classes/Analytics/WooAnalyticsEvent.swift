@@ -1574,3 +1574,20 @@ extension WooAnalyticsEvent {
         }
     }
 }
+
+// MARK: - Universal Links
+//
+extension WooAnalyticsEvent {
+    enum Key: String {
+        case path = "path"
+        case url = "url"
+    }
+
+    static func universalLinkOpened(with path: String) -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .universalLinkOpened, properties: [Key.path.rawValue: path])
+    }
+
+    static func universalLinkFailed(with url: URL) -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .universalLinkFailed, properties: [Key.url.rawValue: url.absoluteString])
+    }
+}

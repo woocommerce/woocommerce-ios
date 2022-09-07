@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-08-23 09:54:03+0000 */
+/* Translation-Revision-Date: 2022-08-30 15:54:03+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -1096,9 +1096,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to confirm the preferred provider for In-Person Payments */
 "Confirm Payment Method" = "تأكيد طريقة الدفع";
 
-/* Title for the error screen when there is more than one plugin active that supports in-person payments. */
-"Conflicting payment plugins detected" = "تم اكتشاف إضافات دفع متعارضة";
-
 /* Title displayed if there are no inbox notes in the inbox screen. */
 "Congrats, you’ve read everything!" = "تهانينا، لقد قرأت كل شيء!";
 
@@ -1207,7 +1204,8 @@ which should be translated separately and considered part of this sentence. */
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
 "Continuing with Apple" = "المتابعة باستخدام Apple";
 
-/* Conversion stat label on dashboard. */
+/* Conversion stat label on dashboard.
+   Conversion title label for the store info widget */
 "Conversion" = "تحويل";
 
 /* Copy address text button title — should be one word and as short as possible. */
@@ -2007,6 +2005,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message on the Coupon Details screen when deleting coupon fails */
 "Failed to delete coupon. Please try again." = "فشل حذف القسيمة. يرجى المحاولة مجددًا.";
 
+/* Error displayed when the attempt to enable a Pay in Person checkout payment option fails */
+"Failed to enable Pay in Person. Please try again later." = "فشل تمكين الدفع بشكل شخصي. يرجى المحاولة مرة أخرى لاحقًا.";
+
 /* Error message on the Issue Refund screen when fetching the charge details failed */
 "Failed to fetch your charge details. Please try again." = "فشل إحضار تفاصيل الدفع الخاصة بك. يرجى المحاولة مرة أخرى.";
 
@@ -2268,6 +2269,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Help and Support navigation title
    Help button
+   Help button on Jetpack required error screen.
    Help button on store picker screen. */
 "Help" = "مساعدة";
 
@@ -2347,9 +2349,6 @@ which should be translated separately and considered part of this sentence. */
 /* Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled. */
 "In-Person Payments Setup is incomplete." = "لم يكتمل إعداد المدفوعات الشخصية.";
 
-/* Title for the error screen when there is more than one plugin active and the Stripe plugin should be deactivated */
-"In-Person Payments are processed through WooCommerce Payments." = "تتم معالجة المدفوعات الشخصية من خلال WooCommerce Payments.";
-
 /* Main prompt for the screen to select the preferred provider for In-Person Payments */
 "In-Person Payments can be processed through either of these payment providers. Which provider would you like to use?" = "يمكن معالجة المدفوعات الشخصية من خلال أي من مزوِّدي الدفع هؤلاء. ما المزوِّد الذي ترغب في استخدامه؟";
 
@@ -2360,12 +2359,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when the merchant's payment account has been rejected. */
 "In-Person Payments isn't available for this store" = "المدفوعات الشخصية غير متاحة لهذا المخزن";
-
-/* Message prompting a shop manager to ask an administrator to deactivate one of two plugins */
-"In-Person Payments will only work with one of following plugins activated. Please contact a site administrator to deactivate one of these plugins to continue:" = "لن تعمل المدفوعات الشخصية سوى مع تفعيل إحدى الإضافات الآتية. يرجى الاتصال بمسؤول الموقع لتعطيل إحدى هذه الإضافات للمتابعة:";
-
-/* Message prompting an administrator to deactivate one of two plugins */
-"In-Person Payments will only work with one of following plugins activated. Please deactivate one of these plugins to continue:" = "لن تعمل المدفوعات الشخصية سوى مع تفعيل إحدى الإضافات الآتية. يرجى تعطيل إحدى هذه الإضافات للمتابعة:";
 
 /* Application's Inactive State */
 "Inactive" = "غير نشط";
@@ -2525,6 +2518,9 @@ which should be translated separately and considered part of this sentence. */
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "يبدو أنك أدخلت كلمة مرور غير صحيحة. هل ترغب في تجربته مرة أخرى؟";
 
+/* An error message displayed when the user tries to log in to the app with a simple WP.com site. Reads like: It seems that your site google.com is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce. */
+"It seems that your site %@ is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce." = "يبدو أن موقعك %@ عبارة عن موقع ووردبريس.كوم بسيط يتعذر عليه تثبيت إضافات. يرجى ترقية خطتك لاستخدام WooCommerce.";
+
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "مائل";
 
@@ -2593,8 +2589,11 @@ which should be translated separately and considered part of this sentence. */
 
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
+   A label prompting users to learn more about In-Person Payments.
+This is the link to the website, and forms part of a longer sentence which it should be considered a part of.
    Button title in the shipping label creation info screen
    Settings > Privacy Settings. A text link to the cookie policy.
+   The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. 
    Title of button shown in the Orders → All Orders tab if the list is empty.
    Title of button shown in the Reviews tab if the list is empty
    Title of button shown on the Product Reviews screen if the list is empty */
@@ -2694,7 +2693,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Action button that will restart the login flow.Presented when logging in with a site address that appears to be invalid.
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
-   Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce */
+   Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
+   Action button that will restart the login flow.Presented when the user tries to log in to the app with a simple WP.com site. */
 "Log In With Another Account" = "تسجيل الدخول باستخدام حساب آخر";
 
 /* Action button triggering a Log Out.Presented when logging in with a store address that does not match the account entered
@@ -2765,9 +2765,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the action sheet displayed from the Coupon Details screen */
 "Manage Coupon" = "إدارة قسيمة";
-
-/* Button to open browser to manage plugins */
-"Manage Plugins" = "إدارة الإضافات";
 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Manage and edit orders on the go" = "إدارة الطلبات وتحريرها في أثناء التنقل";
@@ -3238,6 +3235,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Ordered List" = "قائمة مرتَّبة";
 
 /* Orders stat label on dashboard - should be plural.
+   Orders title label for the store info widget
    The title of the Orders tab. */
 "Orders" = "الطلبات";
 
@@ -3328,6 +3326,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Paste without Formatting Menu Item */
 "Paste without Formatting" = "اللصق من دون تنسيق";
+
+/* Customer-facing description showing more details about the Pay in Person option which is added to the store checkout when the merchant enables Pay in Person
+   Customer-facing instructions shown on Order Thank-you pages and confirmation emails, showing more details about the Pay in Person option added to the store checkout when the merchant enables Pay in Person */
+"Pay by card or another accepted payment method" = "الدفع باستخدام بطاقة أو طريقة دفع أخرى مقبولة";
+
+/* Customer-facing title for the payment option added to the store checkout when the merchant enables Pay in Person
+   Title for a switch on the In-Person Payments menu to enable Cash on Delivery */
+"Pay in Person" = "الدفع بشكل شخصي";
 
 /* Payment section title
    Title text of the row that shows the payment headline when creating a simple payment
@@ -3993,6 +3999,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button to retry when there was a network error checking In-Person Payments requirements
    Retry Action
    Retry action for an error notice
+   Retry Action on error displayed when the attempt to enable a Pay in Person checkout payment option fails
+   Retry Action on error displayed when the attempt to toggle a Pay in Person checkout payment option fails
    Retry Action on the notice when loading product categories fails
    Retry the last action */
 "Retry" = "إعادة المحاولة";
@@ -4010,7 +4018,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "الرجوع إلى المرسل إذا تعذر توصيل الحزمة";
 
-/* Revenue stat label on dashboard. */
+/* Revenue stat label on dashboard.
+   Revenue title label for the store info widget */
 "Revenue" = "الإيراد";
 
 /* Title of Review Order screen */
@@ -5215,12 +5224,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message displayed when unable to close user account due to having active atomic site. */
 "To close this account now, contact our support team." = "لإغلاق هذا الحساب الآن، اتصل بفريق الدعم.";
 
-/* Message prompting an administrator to deactivate Stripe plugin */
-"To collect payments, please ask an administrator to deactivate WooCommerce Stripe Gateway." = "لتحصيل المدفوعات، يرجى أن تطلب من أحد المسؤولين تعطيل WooCommerce Stripe Gateway.";
-
-/* Message prompting an administrator to deactivate Stripe plugin */
-"To collect payments, please deactivate WooCommerce Stripe Gateway." = "لتحصيل المدفوعات، يرجى تعطيل WooCommerce Stripe Gateway.";
-
 /* Close Account confirmation alert message. The %1$@ is the user's WordPress.com username. */
 "To confirm, please re-enter your username before closing.\n\n%1$@" = "للتأكيد، يرجى إعادة إدخال اسم المستخدم الخاص بك قبل الإغلاق.\n\n%1$@";
 
@@ -5781,7 +5784,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Visibility label in Product Settings */
 "Visibility" = "الرؤية";
 
-/* Visitors stat label on dashboard - should be plural. */
+/* Visitors stat label on dashboard - should be plural.
+   Visitors title label for the store info widget */
 "Visitors" = "الزائرون";
 
 /* Add a note screen - Write Note section title */

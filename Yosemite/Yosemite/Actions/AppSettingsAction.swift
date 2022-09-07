@@ -200,4 +200,10 @@ public enum AppSettingsAction: Action {
     case setFeatureAnnouncementDismissed(campaign: FeatureAnnouncementCampaign, remindLater: Bool, onCompletion: ((Result<Bool, Error>) -> ())?)
 
     case getFeatureAnnouncementVisibility(campaign: FeatureAnnouncementCampaign, onCompletion: (Result<Bool, Error>) -> ())
+
+    // MARK: - Stats Time Range Tab
+
+    case setLastSelectedStatsTimeRange(siteID: Int64, timeRange: StatsTimeRangeV4)
+
+    case loadLastSelectedStatsTimeRange(siteID: Int64, onCompletion: (StatsTimeRangeV4?) -> Void)
 }

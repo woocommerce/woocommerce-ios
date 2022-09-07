@@ -68,7 +68,7 @@ steps:
   # UI Tests
   #################
   - label: "🔬 UI Tests (iPhone)"
-    command: .buildkite/commands/run-ui-tests.sh UITests 'iPhone 11' 15.0
+    command: .buildkite/commands/run-ui-tests.sh UITests 'iPhone 11'
     depends_on: "build"
     env: *common_env
     plugins: *common_plugins
@@ -79,7 +79,7 @@ steps:
           context: "UI Tests (iPhone)"
 
   - label: "🔬 UI Tests (iPad)"
-    command: .buildkite/commands/run-ui-tests.sh UITests "iPad Air (4th generation)" 15.0
+    command: .buildkite/commands/run-ui-tests.sh UITests "iPad Air (5th generation)"
     depends_on: "build"
     env: *common_env
     plugins: *common_plugins

@@ -60,18 +60,16 @@ public class AccountStore: Store {
         switch action {
         case .loadAccount(let userID, let onCompletion):
             loadAccount(userID: userID, onCompletion: onCompletion)
-        case .loadAndSynchronizeSite(let siteID, let forcedUpdate, let isJetpackConnectionPackageSupported, let onCompletion):
+        case .loadAndSynchronizeSite(let siteID, let forcedUpdate, let onCompletion):
             loadAndSynchronizeSite(siteID: siteID,
                                    forcedUpdate: forcedUpdate,
-                                   isJetpackConnectionPackageSupported: isJetpackConnectionPackageSupported,
                                    onCompletion: onCompletion)
         case .synchronizeAccount(let onCompletion):
             synchronizeAccount(onCompletion: onCompletion)
         case .synchronizeAccountSettings(let userID, let onCompletion):
             synchronizeAccountSettings(userID: userID, onCompletion: onCompletion)
-        case .synchronizeSites(let selectedSiteID, let isJetpackConnectionPackageSupported, let onCompletion):
+        case .synchronizeSites(let selectedSiteID, let onCompletion):
             synchronizeSites(selectedSiteID: selectedSiteID,
-                             isJetpackConnectionPackageSupported: isJetpackConnectionPackageSupported,
                              onCompletion: onCompletion)
         case .synchronizeSitePlan(let siteID, let onCompletion):
             synchronizeSitePlan(siteID: siteID, onCompletion: onCompletion)
@@ -119,12 +117,11 @@ private extension AccountStore {
     ///
     func loadAndSynchronizeSite(siteID: Int64,
                                 forcedUpdate: Bool,
-                                isJetpackConnectionPackageSupported: Bool,
                                 onCompletion: @escaping (Result<Site, Error>) -> Void) {
         if let site = storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly(), !forcedUpdate {
             onCompletion(.success(site))
         } else {
-            synchronizeSites(selectedSiteID: siteID, isJetpackConnectionPackageSupported: isJetpackConnectionPackageSupported) { [weak self] result in
+            synchronizeSites(selectedSiteID: siteID) { [weak self] result in
                 guard let self = self else { return }
                 guard let site = self.storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly() else {
                     return onCompletion(.failure(SynchronizeSiteError.unknownSite))
@@ -136,7 +133,7 @@ private extension AccountStore {
 
     /// Synchronizes the WordPress.com sites associated with the Network's Auth Token.
     ///
-    func synchronizeSites(selectedSiteID: Int64?, isJetpackConnectionPackageSupported: Bool, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+    func synchronizeSites(selectedSiteID: Int64?, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         remote.loadSites()
             .flatMap { result -> AnyPublisher<Result<[Site], Error>, Never> in
                 switch result {
@@ -152,7 +149,7 @@ private extension AccountStore {
                         // As a workaround, we need to make 2 other API requests (ref p91TBi-6lK-p2):
                         // - Check if WooCommerce plugin is active via `wc/v3/settings` endpoint
                         // - Fetch site metadata like the site name, description, and URL via `wp/v2/settings` endpoint
-                        if site.isJetpackCPConnected, isJetpackConnectionPackageSupported {
+                        if site.isJetpackCPConnected {
                             let wcAvailabilityPublisher = self.remote.checkIfWooCommerceIsActive(for: site.siteID)
                             let wpSiteSettingsPublisher = self.remote.fetchWordPressSiteSettings(for: site.siteID)
                             return Publishers.Zip3(sitePublisher, wcAvailabilityPublisher, wpSiteSettingsPublisher)

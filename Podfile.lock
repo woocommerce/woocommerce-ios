@@ -83,7 +83,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.8)
-  - Automattic-Tracks-iOS (~> 0.12.0-beta.2)
+  - Automattic-Tracks-iOS (~> 0.12.0)
   - CocoaLumberjack (~> 3.7.4)
   - CocoaLumberjack/Swift (~> 3.7.4)
   - Gridicons (~> 1.2.0)
@@ -179,6 +179,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2bdf8544f7cd0fd4c002546f5704b813845beb2a
   ZendeskSupportSDK: 3a8e508ab1d9dd22dc038df6c694466414e037ba
 
-PODFILE CHECKSUM: 4ef69667fcfd76f7eb1b67b68003b6b98facaddd
+PODFILE CHECKSUM: 80d9a174d49019dc7c51488f07c2d792de8f991d
 
 COCOAPODS: 1.11.2

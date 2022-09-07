@@ -42,7 +42,7 @@ struct StoreInfoProvider: TimelineProvider {
         let dependencies = Self.fetchDependencies()
         return StoreInfoEntry(date: Date(),
                               range: "Today",
-                              name: dependencies?.storeName ?? "My Shop", // TODO: Localize
+                              name: dependencies?.storeName ?? Localization.myShop,
                               revenue: "$132.234",
                               visitors: "67",
                               orders: "23",
@@ -95,5 +95,11 @@ private extension StoreInfoProvider {
             return nil
         }
         return Dependencies(authToken: authToken, storeID: storeID, storeName: storeName)
+    }
+}
+
+private extension StoreInfoProvider {
+    enum Localization {
+        static let myShop = NSLocalizedString("My Shop", comment: "Generic store name for the store info widget preview")
     }
 }

@@ -68,18 +68,25 @@ final class JetpackConnectionErrorViewModel: ULErrorViewModel {
 
 // MARK: - Private helpers
 private extension JetpackConnectionErrorViewModel {
+    /// Presents a web view pointing to the Jetpack connection URL.
+    ///
     func showJetpackConnectionWebView(from viewController: UIViewController?) {
+        guard let viewController = viewController else {
+            return
+        }
         guard let url = jetpackConnectionURL else {
             DDLogWarn("⚠️ No Jetpack connection URL found")
             return
         }
         let viewModel = JetpackConnectionWebViewModel(initialURL: url, siteURL: siteURL, completion: { [weak self] in
-            self?.fetchJetpackUser()
+            self?.fetchJetpackUser(in: viewController)
         })
         let pluginViewController = AuthenticatedWebViewController(viewModel: viewModel)
-        viewController?.navigationController?.show(pluginViewController, sender: nil)
+        viewController.navigationController?.show(pluginViewController, sender: nil)
     }
 
+    /// Prepares `JetpackConnectionStore` to authenticate subsequent requests to WP.org API.
+    ///
     func authenticate(with credentials: WordPressOrgCredentials) {
         guard let authenticator = credentials.makeCookieNonceAuthenticator() else {
             return
@@ -89,6 +96,8 @@ private extension JetpackConnectionErrorViewModel {
         stores.dispatch(action)
     }
 
+    /// Fetches the URL for handling Jetpack connection in a web view
+    ///
     func fetchJetpackConnectionURL() {
         isPrimaryButtonLoadingSubject.send(true)
         let action = JetpackConnectionAction.fetchJetpackConnectionURL { [weak self] result in
@@ -106,9 +115,13 @@ private extension JetpackConnectionErrorViewModel {
 
     /// Gets the connected WPcom email address if possible, or show error otherwise.
     ///
-    func fetchJetpackUser() {
+    func fetchJetpackUser(in viewController: UIViewController) {
+        showInProgressView(in: viewController)
         let action = JetpackConnectionAction.fetchJetpackUser { [weak self] result in
             guard let self = self else { return }
+            // dismisses the in-progress view
+            viewController.navigationController?.dismiss(animated: true)
+
             switch result {
             case .success(let user):
                 guard let emailAddress = user.wpcomUser?.email else {
@@ -123,6 +136,14 @@ private extension JetpackConnectionErrorViewModel {
             }
         }
         stores.dispatch(action)
+    }
+
+    func showInProgressView(in viewController: UIViewController) {
+        let viewProperties = InProgressViewProperties(title: Localization.inProgressMessage, message: "")
+        let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
+        inProgressViewController.modalPresentationStyle = .overCurrentContext
+
+        viewController.navigationController?.present(inProgressViewController, animated: true, completion: nil)
     }
 }
 
@@ -142,6 +163,11 @@ private extension JetpackConnectionErrorViewModel {
             "Log In With Another Account",
             comment: "Action button that will restart the login flow." +
             "Presented when logging in with store credentials of an account not connected to the site's Jetpack"
+        )
+
+        static let inProgressMessage = NSLocalizedString(
+            "Verifying Jetpack connection...",
+            comment: "Message displayed when checking whether Jetpack has been connected successfully"
         )
     }
 }

@@ -29,6 +29,10 @@ enum WooConstants {
     ///
     static let authToken = "authToken"
 
+    /// Shared UsersDefaults Suite Name
+    ///
+    static let sharedUserDefaultsSuiteName = "group.com.automattic.woocommerce"
+
     /// Push Notifications ApplicationID
     ///
 #if DEBUG

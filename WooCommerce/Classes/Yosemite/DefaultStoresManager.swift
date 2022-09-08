@@ -467,7 +467,6 @@ private extension DefaultStoresManager {
             return
         }
 
-        updateAndReloadWidgetInformation()
         restoreSessionSiteAndSynchronizeIfNeeded(with: siteID)
         synchronizeSettings(with: siteID) {
             ServiceLocator.selectedSiteSettings.refresh()
@@ -494,6 +493,7 @@ private extension DefaultStoresManager {
                 return
             }
             self.sessionManager.defaultSite = site
+            self.updateAndReloadWidgetInformation(with: siteID)
         }
         dispatch(action)
     }
@@ -501,9 +501,13 @@ private extension DefaultStoresManager {
     /// Updates the necesary dependencies for the widget to function correctly.
     /// Reloads widgets timelines.
     ///
-    func updateAndReloadWidgetInformation() {
+    func updateAndReloadWidgetInformation(with siteID: Int64) {
         // Token to fire network requests
         keychain.currentAuthToken = sessionManager.defaultCredentials?.authToken
+
+        // Non-critical store info
+        UserDefaults.group?[.defaultStoreID] = siteID
+        UserDefaults.group?[.defaultStoreName] = sessionManager.defaultSite?.name
 
         // Reload widgets UI
         WidgetCenter.shared.reloadAllTimelines()

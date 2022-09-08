@@ -5,7 +5,7 @@ import enum Networking.DotcomError
 import class Networking.UserAgent
 import class Networking.WordPressOrgNetwork
 import KeychainAccess
-import WidgetKit
+import class WidgetKit.WidgetCenter
 
 // MARK: - DefaultStoresManager
 //

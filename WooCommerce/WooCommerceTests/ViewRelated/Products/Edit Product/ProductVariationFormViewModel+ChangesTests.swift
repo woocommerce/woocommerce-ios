@@ -43,7 +43,13 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
         let productVariation = MockProductVariation().productVariation()
         let model = EditableProductVariationModel(productVariation: productVariation)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
-        let viewModel = ProductVariationFormViewModel(productVariation: model, productImageActionHandler: productImageActionHandler)
+        let mockProductImageUploader = MockProductImageUploader()
+        let viewModel = ProductVariationFormViewModel(
+            productVariation: model,
+            productImageActionHandler: productImageActionHandler,
+            productImagesUploader: mockProductImageUploader)
+
+        mockProductImageUploader.whenHasUnsavedChangesOnImagesIsCalled(thenReturn: true)
 
         // Action
         waitForExpectation { expectation in
@@ -64,7 +70,12 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
         let productVariation = MockProductVariation().productVariation()
         let model = EditableProductVariationModel(productVariation: productVariation)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
-        let viewModel = ProductVariationFormViewModel(productVariation: model, productImageActionHandler: productImageActionHandler)
+        let mockProductImageUploader = MockProductImageUploader()
+        let viewModel = ProductVariationFormViewModel(productVariation: model,
+                                                      productImageActionHandler: productImageActionHandler,
+                                                      productImagesUploader: mockProductImageUploader)
+
+        mockProductImageUploader.whenHasUnsavedChangesOnImagesIsCalled(thenReturn: true)
 
         // Action
         let productImage = ProductImage(imageID: 6,

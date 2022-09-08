@@ -27,7 +27,8 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
     func decidePolicy(for navigationURL: URL) async -> WKNavigationActionPolicy {
         let url = navigationURL.absoluteString
         switch url {
-        // When the web view is about to navigate to the site address, we can assume that the setup has completed.
+        // When the web view navigates to the site address or Jetpack plans page,
+        // we can assume that the setup has completed.
         case let url where url.hasPrefix(siteURL) || url.hasPrefix(Constants.plansPage):
             await MainActor.run { [weak self] in
                 self?.handleSetupCompletion()

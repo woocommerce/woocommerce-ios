@@ -2,6 +2,7 @@ import WidgetKit
 import SwiftUI
 import WooFoundation
 import Experiments
+import KeychainAccess // TODO: Temp - Delete once token is used for fetching data.
 
 /// Main StoreInfo Widget type.
 ///
@@ -25,6 +26,9 @@ private struct StoreInfoView: View {
     // Entry to render
     let entry: StoreInfoEntry
 
+    // TODO: Temp - Delete once token is used for fetching data.
+    let keychain = Keychain(service: WooConstants.keychainServiceName)
+
     var body: some View {
         ZStack {
             // Background
@@ -34,6 +38,11 @@ private struct StoreInfoView: View {
 
                 // Store Name
                 HStack {
+
+                    // TODO: Temp - Delete once token is used for fetching data.
+                    Text(keychain[WooConstants.authToken] != nil ? "Authenticated -" : "Not Authenticated -")
+                        .storeNameStyle()
+
                     Text(entry.name)
                         .storeNameStyle()
 

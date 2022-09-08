@@ -4,6 +4,8 @@ import Yosemite
 import enum Networking.DotcomError
 import class Networking.UserAgent
 import class Networking.WordPressOrgNetwork
+import KeychainAccess
+import class WidgetKit.WidgetCenter
 
 // MARK: - DefaultStoresManager
 //
@@ -18,6 +20,10 @@ class DefaultStoresManager: StoresManager {
     /// `Thread 1: Simultaneous accesses to <MEMORY_ADDESS>, but modification requires exclusive access`
     /// https://github.com/woocommerce/woocommerce-ios/issues/878
     private var _sessionManager: SessionManagerProtocol
+
+    /// Keychain access. Used for sharing the auth access token with the widgets extension.
+    ///
+    private lazy var keychain = Keychain(service: WooConstants.keychainServiceName)
 
     /// SessionManager: Persistent Storage for Session-Y Properties.
     /// This property is thread safe
@@ -461,6 +467,7 @@ private extension DefaultStoresManager {
             return
         }
 
+        updateAndReloadWidgetInformation()
         restoreSessionSiteAndSynchronizeIfNeeded(with: siteID)
         synchronizeSettings(with: siteID) {
             ServiceLocator.selectedSiteSettings.refresh()
@@ -489,6 +496,17 @@ private extension DefaultStoresManager {
             self.sessionManager.defaultSite = site
         }
         dispatch(action)
+    }
+
+    /// Updates the necesary dependencies for the widget to function correctly.
+    /// Reloads widgets timelines.
+    ///
+    func updateAndReloadWidgetInformation() {
+        // Token to fire network requests
+        keychain.currentAuthToken = sessionManager.defaultCredentials?.authToken
+
+        // Reload widgets UI
+        WidgetCenter.shared.reloadAllTimelines()
     }
 }
 

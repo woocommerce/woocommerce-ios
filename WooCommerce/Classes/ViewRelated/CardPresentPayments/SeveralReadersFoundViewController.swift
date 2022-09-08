@@ -196,15 +196,11 @@ private extension SeveralReadersFoundViewController {
 //
 private extension SeveralReadersFoundViewController {
     @objc func didTapConnect(readerID: String) {
-        self.dismiss(animated: true, completion: {
-            self.onConnect?(readerID)
-        })
+        self.onConnect?(readerID)
     }
 
     @objc func didTapCancel() {
-        self.dismiss(animated: true, completion: {
-            self.onCancel?()
-        })
+        self.onCancel?()
     }
 }
 

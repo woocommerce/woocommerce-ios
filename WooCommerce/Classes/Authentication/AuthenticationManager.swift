@@ -623,9 +623,9 @@ private extension AuthenticationManager {
                              with credentials: WordPressOrgCredentials,
                              in navigationController: UINavigationController) -> UIViewController {
         let viewModel = JetpackConnectionErrorViewModel(siteURL: siteURL, credentials: credentials, onJetpackSetupCompletion: { email in
-            return WordPressAuthenticator.showLoginForJustWPCom(
+            return WordPressAuthenticator.showVerifyEmailForWPCom(
                 from: navigationController,
-                jetpackLogin: true,
+                xmlrpc: credentials.xmlrpc,
                 connectedEmail: email,
                 siteURL: siteURL
             )

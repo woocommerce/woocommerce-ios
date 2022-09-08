@@ -1,5 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+10.4
+-----
+- [*] In-Person Payments: Fixed a bug where cancelling a card reader connection would temporarily prevent further connections [https://github.com/woocommerce/woocommerce-ios/pull/7689]
+- [*] In-Person Payments: Improvements to the card reader connection flow UI [https://github.com/woocommerce/woocommerce-ios/pull/7687]
+
 10.3
 -----
 - [*] Dashboard: the last selected time range tab (Today/This Week/This Month/This Year) is persisted for the site and shown on the next site launch (app launch or switching stores). [https://github.com/woocommerce/woocommerce-ios/pull/7638]

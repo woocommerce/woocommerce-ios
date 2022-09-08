@@ -3,9 +3,6 @@ import XCTest
 
 public final class OrdersScreen: ScreenObject {
 
-    // TODO: Remove force `try` once `ScreenObject` migration is completed
-    public let tabBar = try! TabNavComponent()
-
     private let searchButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["order-search-button"]
     }

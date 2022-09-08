@@ -46,7 +46,7 @@ struct StoreInfoProvider: TimelineProvider {
                               revenue: "$132.234",
                               visitors: "67",
                               orders: "23",
-                              conversion: "37%")
+                              conversion: "34%")
     }
 
     /// Quick Snapshot. Required when previewing the widget.
@@ -78,7 +78,7 @@ struct StoreInfoProvider: TimelineProvider {
 private extension StoreInfoProvider {
 
     /// Dependencies needed by the `StoreInfoProvider`
-    /// //
+    ///
     struct Dependencies {
         let authToken: String
         let storeID: Int64

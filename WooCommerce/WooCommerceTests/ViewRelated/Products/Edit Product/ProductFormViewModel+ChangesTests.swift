@@ -82,6 +82,21 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }
 
+    func test_hasUnsavedChanges_when_productImagesUploader_hasUnsavedChangesOnImages_then_returns_true() {
+        // When
+        let product = Product.fake()
+        let model = EditableProductModel(product: product)
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
+        let mockProductImageUploader = MockProductImageUploader()
+        mockProductImageUploader.whenHasUnsavedChangesOnImagesIsCalled(thenReturn: true)
+        let viewModel = ProductFormViewModel(product: model,
+                                             formType: .edit,
+                                             productImageActionHandler: productImageActionHandler,
+                                             productImagesUploader: mockProductImageUploader)
+
+        XCTAssertTrue(viewModel.hasUnsavedChanges())
+    }
+
     func testProductHasUnsavedChangesFromUploadingAnImage() {
         // Arrange
         let product = Product.fake()

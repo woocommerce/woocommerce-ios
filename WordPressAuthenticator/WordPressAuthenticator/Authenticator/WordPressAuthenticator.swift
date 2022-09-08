@@ -194,6 +194,29 @@ import WordPressKit
         showGetStarted(from: presenter, jetpackLogin: jetpackLogin, connectedEmail: connectedEmail, siteURL: siteURL)
     }
 
+    /// Used to present the Verify Email flow from the app delegate
+    ///
+    @objc public class func showVerifyEmailForWPCom(from presenter: UIViewController, xmlrpc: String, connectedEmail: String, siteURL: String) {
+        guard let xmlrpcURL = URL(string: xmlrpc) else {
+            DDLogError("Failed to initiate XML-RPC URL from \(xmlrpc)")
+            return
+        }
+        let loginFields = LoginFields()
+        loginFields.meta.xmlrpcURL = xmlrpcURL as NSURL
+        loginFields.username = connectedEmail
+        loginFields.siteAddress = siteURL
+
+        guard let vc = VerifyEmailViewController.instantiate(from: .verifyEmail) else {
+            DDLogError("Failed to navigate to VerifyEmailViewController")
+            return
+        }
+
+        vc.loginFields = loginFields
+        let navController = LoginNavigationController(rootViewController: vc)
+        navController.modalPresentationStyle = .fullScreen
+        presenter.present(navController, animated: true, completion: nil)
+    }
+
     /// Shows the unified Login/Signup flow.
     ///
     private class func showGetStarted(from presenter: UIViewController, jetpackLogin: Bool, connectedEmail: String? = nil, siteURL: String? = nil) {

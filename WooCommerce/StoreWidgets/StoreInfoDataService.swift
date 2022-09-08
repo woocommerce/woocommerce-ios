@@ -42,7 +42,7 @@ final class StoreInfoDataService {
         let (revenueAndOrders, visitors) = try await (revenueAndOrdersRequest, visitorsRequest)
 
         // Assemble stats data
-        let conversion: Double = visitors.totalVisitors > 0 ? Double(revenueAndOrders.totals.totalOrders / visitors.totalVisitors) : 0
+        let conversion = visitors.totalVisitors > 0 ? Double(revenueAndOrders.totals.totalOrders) / Double(visitors.totalVisitors) * 100 : 0
         return Stats(revenue: revenueAndOrders.totals.grossRevenue,
                      totalOrders: revenueAndOrders.totals.totalOrders,
                      totalVisitors: visitors.totalVisitors,

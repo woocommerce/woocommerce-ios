@@ -212,7 +212,7 @@ extension MainTabBarController: UIViewControllerTransitioningDelegate {
     func presentationController(forPresented presented: UIViewController,
                                 presenting: UIViewController?,
                                 source: UIViewController) -> UIPresentationController? {
-        guard presented is FancyAlertViewController || presented is CardPresentPaymentsModalViewController else {
+        guard presented is FancyAlertViewController else {
             return nil
         }
 

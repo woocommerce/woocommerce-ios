@@ -97,49 +97,40 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }
 
-    func testProductHasUnsavedChangesFromUploadingAnImage() {
-        // Arrange
+    func test_hasUnsavedChangesOnImages_when_productImagesUploader_hasUnsavedChangesOnImagesFromEditingImages_then_returns_true() {
+        // Given
         let product = Product.fake()
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
-        let viewModel = ProductFormViewModel(product: model,
-                                             formType: .edit,
-                                             productImageActionHandler: productImageActionHandler)
-        let expectation = self.expectation(description: "Wait for image upload")
-        productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { statuses in
-            if statuses.productImageStatuses.isNotEmpty {
-                expectation.fulfill()
-            }
-        }
+        let mockProductImageUploader = MockProductImageUploader()
 
-        // Action
-        productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: PHAsset())
-
-        // Assert
-        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
-        XCTAssertTrue(viewModel.hasUnsavedChanges())
-    }
-
-    func testProductHasUnsavedChangesFromEditingImages() {
-        // Arrange
-        let product = Product.fake()
-        let model = EditableProductModel(product: product)
-        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
-        let viewModel = ProductFormViewModel(product: model,
-                                             formType: .edit,
-                                             productImageActionHandler: productImageActionHandler)
-
-        // Action
         let productImage = ProductImage(imageID: 6,
                                         dateCreated: Date(),
                                         dateModified: Date(),
                                         src: "",
                                         name: "woo",
                                         alt: nil)
+
+
+        // When
+        mockProductImageUploader.whenHasUnsavedChangesOnImagesIsCalled(thenReturn: true)
+
+        let viewModel = ProductFormViewModel(product: model,
+                                             formType: .edit,
+                                             productImageActionHandler: productImageActionHandler, productImagesUploader: mockProductImageUploader)
+
+        let unsavedChanges = mockProductImageUploader.hasUnsavedChangesOnImages(
+            key: .init(
+                siteID: defaultSiteID,
+                productOrVariationID: .product(id: product.productID),
+                isLocalID: false),
+            originalImages: [productImage])
+
         viewModel.updateImages([productImage])
 
-        // Assert
+        // Then
         XCTAssertTrue(viewModel.hasUnsavedChanges())
+        XCTAssertTrue(unsavedChanges)
     }
 
     func testProductHasUnsavedChangesFromEditingProductDescription() {

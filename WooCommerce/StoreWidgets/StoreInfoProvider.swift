@@ -81,7 +81,7 @@ final class StoreInfoProvider: TimelineProvider {
                                            revenue: "$\(todayStats.revenue)",
                                            visitors: "\(todayStats.totalVisitors)",
                                            orders: "\(todayStats.totalOrders)",
-                                           conversion: "\(todayStats.conversion)")
+                                           conversion: "\(todayStats.conversion)%")
                 let timeline = Timeline<StoreInfoEntry>(entries: [entry], policy: .never)
                 completion(timeline)
 

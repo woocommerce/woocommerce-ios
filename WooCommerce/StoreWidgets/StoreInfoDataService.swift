@@ -82,7 +82,7 @@ private extension StoreInfoDataService {
             Task { @MainActor in
                 siteVisitStatsRemote.loadSiteVisitorStats(for: storeID,
                                                           unit: .day,
-                                                          latestDateToInclude: Date.endOfToday,
+                                                          latestDateToInclude: Date.startOfToday,
                                                           quantity: 1) { result in
                     continuation.resume(with: result)
                 }
@@ -108,6 +108,7 @@ private extension Date {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = .current
         let startDate = calendar.startOfDay(for: Date())
-        return calendar.date(byAdding: .day, value: 1, to: startDate) ?? Date()
+        let components = DateComponents(day: 1, second: -1)
+        return calendar.date(byAdding: components, to: startDate) ?? Date()
     }
 }

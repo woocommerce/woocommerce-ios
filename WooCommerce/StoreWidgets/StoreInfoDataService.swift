@@ -63,8 +63,8 @@ private extension StoreInfoDataService {
             Task { @MainActor in
                 orderStatsRemoteV4.loadOrderStats(for: storeID,
                                                   unit: .hourly,
-                                                  earliestDateToInclude: Calendar.current.startOfDay(for: Date()),
-                                                  latestDateToInclude: Date(),
+                                                  earliestDateToInclude: Date.startOfToday,
+                                                  latestDateToInclude: Date.endOfToday,
                                                   quantity: 24,
                                                   forceRefresh: true) { result in
                     continuation.resume(with: result)
@@ -82,11 +82,32 @@ private extension StoreInfoDataService {
             Task { @MainActor in
                 siteVisitStatsRemote.loadSiteVisitorStats(for: storeID,
                                                           unit: .day,
-                                                          latestDateToInclude: Date(),
+                                                          latestDateToInclude: Date.endOfToday,
                                                           quantity: 1) { result in
                     continuation.resume(with: result)
                 }
             }
         }
+    }
+}
+
+// TEMP: Update dates with the correct timezones mimic the app behaviour
+private extension Date {
+
+    /// Temporary function to get the start of day in the device timezone.
+    ///
+    static var startOfToday: Date {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = .current
+        return calendar.startOfDay(for: Date())
+    }
+
+    /// Temporary function to get the end of day in the device timezone.
+    ///
+    static var endOfToday: Date {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = .current
+        let startDate = calendar.startOfDay(for: Date())
+        return calendar.date(byAdding: .day, value: 1, to: startDate) ?? Date()
     }
 }

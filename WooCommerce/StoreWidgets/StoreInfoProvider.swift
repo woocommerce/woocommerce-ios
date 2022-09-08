@@ -35,7 +35,12 @@ struct StoreInfoEntry: TimelineEntry {
 
 /// Type that provides data entries to the widget system.
 ///
-struct StoreInfoProvider: TimelineProvider {
+final class StoreInfoProvider: TimelineProvider {
+
+    /// Holds a reference to the service while a network request is being performed.
+    ///
+    private var networkService: StoreInfoDataService?
+
     /// Redacted entry with sample data.
     ///
     func placeholder(in context: Context) -> StoreInfoEntry {
@@ -61,6 +66,12 @@ struct StoreInfoProvider: TimelineProvider {
     func getTimeline(in context: Context, completion: @escaping (Timeline<StoreInfoEntry>) -> Void) {
         // TODO: Temp store name to check dependency status while we fetch real data.
         let dependencies = Self.fetchDependencies()
+
+        networkService = StoreInfoDataService(authToken: dependencies?.authToken ?? "")
+        networkService?.fetchData(for: dependencies?.storeID ?? 0, completion: { result in
+            // No Op
+        })
+
         let authStatus = dependencies?.authToken != nil ? "Authenticated" : "Non Authenticated"
         let storeName = dependencies?.storeName ?? "Undefined Shop"
         let entry = StoreInfoEntry(date: Date(),

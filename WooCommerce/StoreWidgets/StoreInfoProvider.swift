@@ -64,25 +64,33 @@ final class StoreInfoProvider: TimelineProvider {
     /// TODO: Update with real data.
     ///
     func getTimeline(in context: Context, completion: @escaping (Timeline<StoreInfoEntry>) -> Void) {
-        // TODO: Temp store name to check dependency status while we fetch real data.
-        let dependencies = Self.fetchDependencies()
+        guard let dependencies = Self.fetchDependencies() else {
+            return // TODO: Dispatch non auth error entry
+        }
 
-        networkService = StoreInfoDataService(authToken: dependencies?.authToken ?? "")
-        networkService?.fetchData(for: dependencies?.storeID ?? 0, completion: { result in
-            // No Op
-        })
+        let strongService = StoreInfoDataService(authToken: dependencies.authToken)
+        networkService = strongService
+        Task {
+            do {
+                let todayStats = try await strongService.fetchTodayStats(for: dependencies.storeID)
 
-        let authStatus = dependencies?.authToken != nil ? "Authenticated" : "Non Authenticated"
-        let storeName = dependencies?.storeName ?? "Undefined Shop"
-        let entry = StoreInfoEntry(date: Date(),
-                                   range: "Today",
-                                   name: "\(authStatus) - \(storeName)",
-                                   revenue: "$132.234",
-                                   visitors: "67",
-                                   orders: "23",
-                                   conversion: "37%")
-        let timeline = Timeline<StoreInfoEntry>(entries: [entry], policy: .never)
-        completion(timeline)
+                // TODO: Use proper store formatting.
+                let entry = StoreInfoEntry(date: Date(),
+                                           range: Localization.today,
+                                           name: dependencies.storeName,
+                                           revenue: "$\(todayStats.revenue)",
+                                           visitors: "\(todayStats.totalVisitors)",
+                                           orders: "\(todayStats.totalOrders)",
+                                           conversion: "\(todayStats.conversion)")
+                let timeline = Timeline<StoreInfoEntry>(entries: [entry], policy: .never)
+                completion(timeline)
+
+            } catch {
+                // TODO: Dispatch network error entry.
+                print("Error: \(error)")
+            }
+
+        }
     }
 }
 
@@ -112,5 +120,6 @@ private extension StoreInfoProvider {
 private extension StoreInfoProvider {
     enum Localization {
         static let myShop = NSLocalizedString("My Shop", comment: "Generic store name for the store info widget preview")
+        static let today = NSLocalizedString("Today", comment: "Range title for the today store info widget")
     }
 }

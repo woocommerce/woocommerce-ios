@@ -175,6 +175,8 @@ class DefaultStoresManager: StoresManager {
         ServiceLocator.storageManager.reset()
         ServiceLocator.productImageUploader.reset()
 
+        updateAndReloadWidgetInformation(with: 0)
+
         NotificationCenter.default.post(name: .logOutEventReceived, object: nil)
 
         return self
@@ -501,7 +503,7 @@ private extension DefaultStoresManager {
     /// Updates the necesary dependencies for the widget to function correctly.
     /// Reloads widgets timelines.
     ///
-    func updateAndReloadWidgetInformation(with siteID: Int64) {
+    func updateAndReloadWidgetInformation(with siteID: Int64?) {
         // Token to fire network requests
         keychain.currentAuthToken = sessionManager.defaultCredentials?.authToken
 

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -8647,6 +8647,7 @@
 			buildPhases = (
 				91990E72B3E1D58AC13D7628 /* [CP] Check Pods Manifest.lock */,
 				57CCFFD4249D2A5700825FCF /* SwiftLint */,
+				3F50FE4528CAEE9F00C89201 /* Enforce AppLocalizedString usages */,
 				B56DB3C22049BFAA00D4AA8E /* Sources */,
 				B56DB3C32049BFAA00D4AA8E /* Frameworks */,
 				B56DB3C42049BFAA00D4AA8E /* Resources */,
@@ -9176,6 +9177,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = "/bin/sh -euo pipefail";
 			shellScript = "${PROJECT_DIR}/../Scripts/check-nested-frameworks.sh\n";
+			showEnvVarsInLog = 0;
+		};
+		3F50FE4528CAEE9F00C89201 /* Enforce AppLocalizedString usages */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Enforce AppLocalizedString usages";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"$SRCROOT/../Scripts/build-phases/LintAppLocalizedStringsUsage.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		57CCFFD4249D2A5700825FCF /* SwiftLint */ = {

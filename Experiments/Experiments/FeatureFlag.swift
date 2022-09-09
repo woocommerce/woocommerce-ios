@@ -14,10 +14,6 @@ public enum FeatureFlag: Int {
     ///
     case reviews
 
-    /// Displays the option to view coupons
-    ///
-    case couponView
-
     /// Barcode scanner for product SKU input
     ///
     case productSKUInputScanner

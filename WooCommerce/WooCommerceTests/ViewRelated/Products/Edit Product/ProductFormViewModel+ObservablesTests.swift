@@ -201,7 +201,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         XCTAssertEqual(updatedUpdateEnabled, false)
     }
 
-    func test_observables_from_mockProductImageUploader_when_uploadMediaAssetToSiteMediaLibrary_then_returns_true() {
+    func test_observables_when_productImageActionHandler_uploads_media_asset_then_observables_are_called() {
         // Given
         let product = Product.fake()
         let model = EditableProductModel(product: product)

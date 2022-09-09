@@ -15,8 +15,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .splitViewInOrdersTab:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .couponDeletion:
-            return true
         case .updateOrderOptimistically:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .shippingLabelsOnboardingM1:

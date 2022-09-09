@@ -30,10 +30,6 @@ public enum FeatureFlag: Int {
     ///
     case splitViewInOrdersTab
 
-    /// Displays the option to delete coupons
-    ///
-    case couponDeletion
-
     /// Enable optimistic updates for orders
     ///
     case updateOrderOptimistically

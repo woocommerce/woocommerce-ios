@@ -149,7 +149,7 @@ final class CouponDetailsViewModel: ObservableObject {
         self.onDeletion = onDeletion
         self.onUpdate = onUpdate
 
-        isEditingEnabled = featureFlags.isFeatureFlagEnabled(.couponEditing) && coupon.discountType != .other
+        isEditingEnabled = coupon.discountType != .other
         isDeletingEnabled = featureFlags.isFeatureFlagEnabled(.couponDeletion)
         populateDetails()
     }

@@ -34,10 +34,6 @@ public enum FeatureFlag: Int {
     ///
     case couponDeletion
 
-    /// Displays the option to edit a coupon
-    ///
-    case couponEditing
-
     /// Enable optimistic updates for orders
     ///
     case updateOrderOptimistically

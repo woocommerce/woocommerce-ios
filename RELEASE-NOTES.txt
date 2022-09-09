@@ -7,6 +7,7 @@
 - [*] In-Person Payments: Fixed an issue where the Pay in Person toggle could be out of sync with the setting on the website. [https://github.com/woocommerce/woocommerce-ios/pull/7656]
 - [*] In-Person Payments: Removed the need to sign in when purchasing a card reader [https://github.com/woocommerce/woocommerce-ios/pull/7670]
 - [*] In-Person Payments: Fixed a bug where canceling a reader connection could result in being unable to connect a reader in future [https://github.com/woocommerce/woocommerce-ios/pull/7678]
+- [*] In-Person Payments: Fixed a bug which prevented the Collect Payment button from being shown for Cash on Delivery orders  [https://github.com/woocommerce/woocommerce-ios/pull/7694]
 
 10.2
 -----

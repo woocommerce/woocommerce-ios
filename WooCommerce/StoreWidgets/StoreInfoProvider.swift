@@ -83,7 +83,7 @@ final class StoreInfoProvider: TimelineProvider {
                                            orders: "\(todayStats.totalOrders)",
                                            conversion: "\(todayStats.conversion)%")
 
-                let reloadDate = Date(timeIntervalSinceNow: 15 * 60) // Ask for a 15 minutes reload.
+                let reloadDate = Date(timeIntervalSinceNow: 30 * 60) // Ask for a 15 minutes reload.
                 let timeline = Timeline<StoreInfoEntry>(entries: [entry], policy: .after(reloadDate))
                 completion(timeline)
 

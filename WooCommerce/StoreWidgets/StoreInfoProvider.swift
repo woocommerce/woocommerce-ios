@@ -1,6 +1,5 @@
 import WidgetKit
 import KeychainAccess
-import WooFoundation
 
 /// Type that represents the all the possible Widget states.
 ///

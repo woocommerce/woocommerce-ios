@@ -461,6 +461,9 @@ private extension CardReaderConnectionController {
                 self.candidateReader = nil
                 self.pruneSkippedReaders()
                 self.state = .searching
+            },
+            cancelSearch: { [weak self] in
+                self?.state = .cancel
             })
     }
 

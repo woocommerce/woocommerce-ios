@@ -10,6 +10,7 @@ enum MockCardReaderSettingsAlertsMode {
     case connectFoundReader
     case connectFirstFound
     case cancelFoundSeveral
+    case cancelFoundReader
     case continueSearchingAfterConnectionFailure
     case cancelSearchingAfterConnectionFailure
 }
@@ -49,15 +50,22 @@ extension MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         }
     }
 
-    func foundReader(from: UIViewController, name: String, connect: @escaping () -> Void, continueSearch: @escaping () -> Void) {
+    func foundReader(from: UIViewController,
+                     name: String,
+                     connect: @escaping () -> Void,
+                     continueSearch: @escaping () -> Void,
+                     cancelSearch: @escaping () -> Void) {
         didPresentFoundReader = true
 
-        if mode == .continueSearching {
+        switch mode {
+        case .continueSearching:
             continueSearch()
-        }
-
-        if mode == .connectFoundReader || mode == .cancelSearchingAfterConnectionFailure || mode == .continueSearchingAfterConnectionFailure {
+        case .connectFoundReader, .cancelSearchingAfterConnectionFailure, .continueSearchingAfterConnectionFailure:
             connect()
+        case .cancelFoundReader:
+            cancelSearch()
+        default:
+            break
         }
     }
 

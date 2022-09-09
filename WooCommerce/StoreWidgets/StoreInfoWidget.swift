@@ -123,22 +123,22 @@ private struct NotLoggedInView: View {
 ///
 private extension StoreInfoView {
     enum Localization {
-        static let revenue = NSLocalizedString(
+        static let revenue = AppLocalizedString(
             "storeWidgets.infoView.revenue",
             value: "Revenue",
             comment: "Revenue title label for the store info widget"
         )
-        static let visitors = NSLocalizedString(
+        static let visitors = AppLocalizedString(
             "storeWidgets.infoView.visitors",
             value: "Visitors",
             comment: "Visitors title label for the store info widget"
         )
-        static let orders = NSLocalizedString(
+        static let orders = AppLocalizedString(
             "storeWidgets.infoView.orders",
             value: "Orders",
             comment: "Orders title label for the store info widget"
         )
-        static let conversion = NSLocalizedString(
+        static let conversion = AppLocalizedString(
             "storeWidgets.infoView.orders",
             value: "Conversion",
             comment: "Conversion title label for the store info widget"
@@ -155,12 +155,12 @@ private extension StoreInfoView {
 ///
 private extension NotLoggedInView {
     enum Localization {
-        static let notLoggedIn = NSLocalizedString(
+        static let notLoggedIn = AppLocalizedString(
             "storeWidgets.notLoggedInView.notLoggedIn",
             value: "Log in to see today’s stats.",
             comment: "Title label when the widget does not have a logged-in store."
         )
-        static let login = NSLocalizedString(
+        static let login = AppLocalizedString(
             "storeWidgets.notLoggedInView.login",
             value: "Log in",
             comment: "Title label for the login button on the store info widget."

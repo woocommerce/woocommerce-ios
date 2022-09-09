@@ -123,10 +123,26 @@ private struct NotLoggedInView: View {
 ///
 private extension StoreInfoView {
     enum Localization {
-        static let revenue = NSLocalizedString("Revenue", comment: "Revenue title label for the store info widget")
-        static let visitors = NSLocalizedString("Visitors", comment: "Visitors title label for the store info widget")
-        static let orders = NSLocalizedString("Orders", comment: "Orders title label for the store info widget")
-        static let conversion = NSLocalizedString("Conversion", comment: "Conversion title label for the store info widget")
+        static let revenue = NSLocalizedString(
+            "storeWidgets.infoView.revenue",
+            value: "Revenue",
+            comment: "Revenue title label for the store info widget"
+        )
+        static let visitors = NSLocalizedString(
+            "storeWidgets.infoView.visitors",
+            value: "Visitors",
+            comment: "Visitors title label for the store info widget"
+        )
+        static let orders = NSLocalizedString(
+            "storeWidgets.infoView.orders",
+            value: "Orders",
+            comment: "Orders title label for the store info widget"
+        )
+        static let conversion = NSLocalizedString(
+            "storeWidgets.infoView.orders",
+            value: "Conversion",
+            comment: "Conversion title label for the store info widget"
+        )
     }
 
     enum Layout {
@@ -139,10 +155,16 @@ private extension StoreInfoView {
 ///
 private extension NotLoggedInView {
     enum Localization {
-        static let notLoggedIn = NSLocalizedString("Log in to see today’s stats.",
-                                                   comment: "Title label when the widget does not have a logged-in store.")
-        static let login = NSLocalizedString("Log in",
-                                             comment: "Title label for the login button on the store info widget.")
+        static let notLoggedIn = NSLocalizedString(
+            "storeWidgets.notLoggedInView.notLoggedIn",
+            value: "Log in to see today’s stats.",
+            comment: "Title label when the widget does not have a logged-in store."
+        )
+        static let login = NSLocalizedString(
+            "storeWidgets.notLoggedInView.login",
+            value: "Log in",
+            comment: "Title label for the login button on the store info widget."
+        )
     }
 
     enum Layout {

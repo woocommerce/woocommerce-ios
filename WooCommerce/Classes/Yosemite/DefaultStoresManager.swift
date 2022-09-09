@@ -175,7 +175,7 @@ class DefaultStoresManager: StoresManager {
         ServiceLocator.storageManager.reset()
         ServiceLocator.productImageUploader.reset()
 
-        updateAndReloadWidgetInformation(with: 0)
+        updateAndReloadWidgetInformation(with: nil)
 
         NotificationCenter.default.post(name: .logOutEventReceived, object: nil)
 

@@ -54,13 +54,16 @@ final class CardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
     func foundReader(from: UIViewController,
                      name: String,
                      connect: @escaping () -> Void,
-                     continueSearch: @escaping () -> Void) {
+                     continueSearch: @escaping () -> Void,
+                     cancelSearch: @escaping () -> Void) {
         setViewModelAndPresent(from: from,
                                viewModel: foundReader(name: name,
                                                       connect: connect,
                                                       continueSearch: continueSearch,
-                                                      cancel: { from.dismiss(animated: true) }
-                               )
+                                                      cancel: {
+            cancelSearch()
+            from.dismiss(animated: true)
+        })
         )
     }
 

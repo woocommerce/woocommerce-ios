@@ -16,7 +16,7 @@ struct StoreInfoWidget: Widget {
                 case .notConnected:
                     NotLoggedInView()
                 case .error:
-                    EmptyView() // TODO:
+                    UnableToFetchView()
                 case .data(let data):
                     StoreInfoView(entry: data)
                 }

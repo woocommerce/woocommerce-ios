@@ -68,7 +68,7 @@ final class StoreInfoProvider: TimelineProvider {
             return // TODO: Dispatch non auth error entry
         }
 
-        let strongService = StoreInfoDataService(authToken: dependencies.authToken)
+        let strongService = StoreInfoDataService(authToken: dependencies.authToken, siteTimeZone: dependencies.storeTimeZone)
         networkService = strongService
         Task {
             do {

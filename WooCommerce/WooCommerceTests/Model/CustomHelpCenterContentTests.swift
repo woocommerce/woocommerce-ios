@@ -36,12 +36,12 @@ final class CustomHelpCenterContentTests: XCTestCase {
         // Given
         let step: AuthenticatorAnalyticsTracker.Step = .start
         let flow: AuthenticatorAnalyticsTracker.Flow = .loginWithSiteAddress
-        let helpContentURL = WooConstants.URLs.helpCenterForEnterStoreAddress.asURL()
 
         // When
         let sut = try XCTUnwrap(CustomHelpCenterContent(step: step, flow: flow))
 
         // Then
+        let helpContentURL = WooConstants.URLs.helpCenterForEnterStoreAddress.asURL()
         XCTAssertEqual(sut.url, helpContentURL)
 
         // Test the `trackingProperties` dictionary values
@@ -56,12 +56,12 @@ final class CustomHelpCenterContentTests: XCTestCase {
         // Given
         let step: AuthenticatorAnalyticsTracker.Step = .enterEmailAddress
         let flow: AuthenticatorAnalyticsTracker.Flow = .loginWithSiteAddress
-        let helpContentURL = WooConstants.URLs.helpCenterForWPCOMEmailFromSiteAddressFlow.asURL()
 
         // When
         let sut = try XCTUnwrap(CustomHelpCenterContent(step: step, flow: flow))
 
         // Then
+        let helpContentURL = WooConstants.URLs.helpCenterForWPCOMEmailFromSiteAddressFlow.asURL()
         XCTAssertEqual(sut.url, helpContentURL)
 
         // Test the `trackingProperties` dictionary values
@@ -76,12 +76,12 @@ final class CustomHelpCenterContentTests: XCTestCase {
         // Given
         let step: AuthenticatorAnalyticsTracker.Step = .enterEmailAddress
         let flow: AuthenticatorAnalyticsTracker.Flow = .wpCom
-        let helpContentURL = WooConstants.URLs.helpCenterForWPCOMEmailScreen.asURL()
 
         // When
         let sut = try XCTUnwrap(CustomHelpCenterContent(step: step, flow: flow))
 
         // Then
+        let helpContentURL = WooConstants.URLs.helpCenterForWPCOMEmailScreen.asURL()
         XCTAssertEqual(sut.url, helpContentURL)
 
         // Test the `trackingProperties` dictionary values
@@ -96,12 +96,12 @@ final class CustomHelpCenterContentTests: XCTestCase {
         // Given
         let step: AuthenticatorAnalyticsTracker.Step = .usernamePassword
         let flow: AuthenticatorAnalyticsTracker.Flow = .loginWithSiteAddress
-        let helpContentURL = WooConstants.URLs.helpCenterForEnterStoreCredentials.asURL()
 
         // When
         let sut = try XCTUnwrap(CustomHelpCenterContent(step: step, flow: flow))
 
         // Then
+        let helpContentURL = WooConstants.URLs.helpCenterForEnterStoreCredentials.asURL()
         XCTAssertEqual(sut.url, helpContentURL)
 
         // Test the `trackingProperties` dictionary values
@@ -116,12 +116,12 @@ final class CustomHelpCenterContentTests: XCTestCase {
         // Given
         let step = "jetpack_not_connected"
         let flow: AuthenticatorAnalyticsTracker.Flow = .loginWithPasswordWithMagicLinkEmphasis
-        let helpContentURL = WooConstants.URLs.helpCenterForJetpackRequiredError.asURL()
 
         // When
         let sut = CustomHelpCenterContent(screen: .jetpackRequired, flow: flow)
 
         // Then
+        let helpContentURL = WooConstants.URLs.helpCenterForJetpackRequiredError.asURL()
         XCTAssertEqual(sut.url, helpContentURL)
 
         // Test the `trackingProperties` dictionary values
@@ -136,12 +136,12 @@ final class CustomHelpCenterContentTests: XCTestCase {
         // Given
         let step = "site_list"
         let flow: AuthenticatorAnalyticsTracker.Flow = .loginWithPasswordWithMagicLinkEmphasis
-        let helpContentURL = WooConstants.URLs.helpCenterForStorePicker.asURL()
 
         // When
         let sut = CustomHelpCenterContent(screen: .storePicker, flow: flow)
 
         // Then
+        let helpContentURL = WooConstants.URLs.helpCenterForStorePicker.asURL()
         XCTAssertEqual(sut.url, helpContentURL)
 
         // Test the `trackingProperties` dictionary values

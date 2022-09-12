@@ -64,10 +64,10 @@ final class StoreInfoProvider: TimelineProvider {
         let dependencies = Self.fetchDependencies()
         return StoreInfoEntry.data(.init(range: Localization.today,
                                          name: dependencies?.storeName ?? Localization.myShop,
-                                         revenue: "$132.234",
+                                         revenue: formattedAmountString(for: 132.234, with: dependencies?.storeCurrencySettings),
                                          visitors: "67",
                                          orders: "23",
-                                         conversion: "34%"))
+                                         conversion: formattedConversionString(for: 23/67)))
     }
 
     /// Quick Snapshot. Required when previewing the widget.

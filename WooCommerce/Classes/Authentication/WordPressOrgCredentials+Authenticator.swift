@@ -6,17 +6,17 @@ import WordPressAuthenticator
 ///
 extension WordPressOrgCredentials {
     var loginURL: String {
-        let value = optionValue(for: Strings.loginURLKey) as? String
+        let value = optionValue(for: Key.loginURL.rawValue) as? String
         return value ?? siteURL + Strings.loginPath
     }
 
     var adminURL: String {
-        let value = optionValue(for: Strings.adminURLKey) as? String
+        let value = optionValue(for: Key.adminURL.rawValue) as? String
         return value ?? siteURL + Strings.adminPath
     }
 
     var version: String {
-        let value = optionValue(for: Strings.versionKey)
+        let value = optionValue(for: Key.version.rawValue)
         if let stringValue = value as? String {
             return stringValue
         }
@@ -50,7 +50,7 @@ private extension WordPressOrgCredentials {
     ///
     func optionValue(for key: String) -> Any? {
         let option = options[key] as? [String: Any]
-        return option?[Strings.valueKey]
+        return option?[Key.value.rawValue]
     }
 }
 
@@ -58,9 +58,14 @@ private extension WordPressOrgCredentials {
     enum Strings {
         static let loginPath = "/wp-login.php"
         static let adminPath = "/wp-admin"
-        static let loginURLKey = "login_url"
-        static let adminURLKey = "admin_url"
-        static let versionKey = "software_version"
-        static let valueKey = "value"
+    }
+
+    /// Key for getting value from `options`.
+    ///
+    enum Key: String {
+        case loginURL = "login_url"
+        case adminURL = "admin_url"
+        case version = "software_version"
+        case value
     }
 }

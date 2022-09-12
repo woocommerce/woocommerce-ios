@@ -333,7 +333,6 @@
 		02B2828E27C35061004A332A /* RefreshableInfiniteScrollList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B2828D27C35061004A332A /* RefreshableInfiniteScrollList.swift */; };
 		02B2829027C352DA004A332A /* RefreshableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B2828F27C352DA004A332A /* RefreshableScrollView.swift */; };
 		02B2829227C4808D004A332A /* InfiniteScrollIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B2829127C4808D004A332A /* InfiniteScrollIndicator.swift */; };
-		02B296A922FA6E0000FD7A4C /* DateStartAndEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B296A822FA6E0000FD7A4C /* DateStartAndEndTests.swift */; };
 		02B2C831249C4C8D0040C83C /* TextFieldTextAlignmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B2C830249C4C8D0040C83C /* TextFieldTextAlignmentTests.swift */; };
 		02B653AC2429F7BF00A9C839 /* MockTaxClassStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B653AB2429F7BF00A9C839 /* MockTaxClassStoresManager.swift */; };
 		02B8650F24A9E2D800265779 /* Product+SwiftUIPreviewHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B8650E24A9E2D800265779 /* Product+SwiftUIPreviewHelpers.swift */; };
@@ -2231,7 +2230,6 @@
 		02B2828D27C35061004A332A /* RefreshableInfiniteScrollList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshableInfiniteScrollList.swift; sourceTree = "<group>"; };
 		02B2828F27C352DA004A332A /* RefreshableScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshableScrollView.swift; sourceTree = "<group>"; };
 		02B2829127C4808D004A332A /* InfiniteScrollIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfiniteScrollIndicator.swift; sourceTree = "<group>"; };
-		02B296A822FA6E0000FD7A4C /* DateStartAndEndTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateStartAndEndTests.swift; sourceTree = "<group>"; };
 		02B2C830249C4C8D0040C83C /* TextFieldTextAlignmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldTextAlignmentTests.swift; sourceTree = "<group>"; };
 		02B653AB2429F7BF00A9C839 /* MockTaxClassStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockTaxClassStoresManager.swift; sourceTree = "<group>"; };
 		02B8650E24A9E2D800265779 /* Product+SwiftUIPreviewHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+SwiftUIPreviewHelpers.swift"; sourceTree = "<group>"; };
@@ -6832,7 +6830,6 @@
 				B5980A6621AC91AA00EBF596 /* BundleWooTests.swift */,
 				B57C5C9821B80E7100FF82B2 /* DataWooTests.swift */,
 				746FC23C2200A62B00C3096C /* DateWooTests.swift */,
-				02B296A822FA6E0000FD7A4C /* DateStartAndEndTests.swift */,
 				B57C5C9721B80E7100FF82B2 /* DictionaryWooTests.swift */,
 				748C7783211E2D8400814F2C /* DoubleWooTests.swift */,
 				B5C6CE602190D28E00515926 /* NSAttributedStringHelperTests.swift */,
@@ -10578,7 +10575,6 @@
 				4572641B27F1FDF2004E1F95 /* AddEditCouponViewModelTests.swift in Sources */,
 				AEE1D4FF25D1580E006A490B /* AttributeOptionListSelectorCommandTests.swift in Sources */,
 				CC5BA5F5287EDC900072F307 /* OrderCustomFieldsViewModelTests.swift in Sources */,
-				02B296A922FA6E0000FD7A4C /* DateStartAndEndTests.swift in Sources */,
 				02B653AC2429F7BF00A9C839 /* MockTaxClassStoresManager.swift in Sources */,
 				0277AEA5256CAA4200F45C4A /* MockShippingLabel.swift in Sources */,
 				02BAB02324D0250300F8B06E /* ProductVariation+ProductFormTests.swift in Sources */,

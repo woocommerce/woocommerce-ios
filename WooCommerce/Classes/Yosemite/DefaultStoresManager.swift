@@ -508,6 +508,7 @@ private extension DefaultStoresManager {
         // Non-critical store info
         UserDefaults.group?[.defaultStoreID] = siteID
         UserDefaults.group?[.defaultStoreName] = sessionManager.defaultSite?.name
+        UserDefaults.group?[.defaultStoreTimeZoneGMTOffset] = sessionManager.defaultSite?.siteTimezone.secondsFromGMT() ?? TimeZone.current.secondsFromGMT()
 
         // Reload widgets UI
         WidgetCenter.shared.reloadAllTimelines()

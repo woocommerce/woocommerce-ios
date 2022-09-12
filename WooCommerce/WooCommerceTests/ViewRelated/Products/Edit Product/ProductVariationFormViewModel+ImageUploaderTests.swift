@@ -26,8 +26,7 @@ final class ProductVariationFormViewModel_ImageUploaderTests: XCTestCase {
         let productImageActionHandler = MockProductImageActionHandler(productImageStatuses: [.uploading(asset: PHAsset())])
         let viewModel = ProductVariationFormViewModel(productVariation: model,
                                                       productImageActionHandler: productImageActionHandler,
-                                                      storesManager: storesManager,
-                                                      isBackgroundImageUploadEnabled: true)
+                                                      storesManager: storesManager)
         storesManager.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             if case let ProductVariationAction.updateProductVariation(productVariation, onCompletion) = action {
                 onCompletion(.success(productVariation))
@@ -64,8 +63,7 @@ final class ProductVariationFormViewModel_ImageUploaderTests: XCTestCase {
         let viewModel = ProductVariationFormViewModel(productVariation: model,
                                                       productImageActionHandler: productImageActionHandler,
                                                       storesManager: storesManager,
-                                                      productImagesUploader: productImageUploader,
-                                                      isBackgroundImageUploadEnabled: true)
+                                                      productImagesUploader: productImageUploader)
 
         var isUpdateEnabledValues: [Bool] = []
         viewModel.isUpdateEnabled.removeDuplicates().sink { isUpdateEnabled in
@@ -118,8 +116,7 @@ final class ProductVariationFormViewModel_ImageUploaderTests: XCTestCase {
         let viewModel = ProductVariationFormViewModel(productVariation: model,
                                                       productImageActionHandler: productImageActionHandler,
                                                       storesManager: storesManager,
-                                                      productImagesUploader: productImageUploader,
-                                                      isBackgroundImageUploadEnabled: true)
+                                                      productImagesUploader: productImageUploader)
 
         var isUpdateEnabledValues: [Bool] = []
         viewModel.isUpdateEnabled.removeDuplicates().sink { isUpdateEnabled in

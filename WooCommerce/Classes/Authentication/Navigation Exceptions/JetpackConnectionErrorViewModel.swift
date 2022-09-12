@@ -58,6 +58,7 @@ final class JetpackConnectionErrorViewModel: ULErrorViewModel {
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
+        analytics.track(.loginJetpackConnectButtonTapped)
         showJetpackConnectionWebView(from: viewController)
     }
 
@@ -111,6 +112,7 @@ private extension JetpackConnectionErrorViewModel {
             case .success(let url):
                 self.jetpackConnectionURL = url
             case .failure(let error):
+                self.analytics.track(.loginJetpackConnectionURLFetchFailed, withError: error)
                 DDLogWarn("⚠️ Error fetching Jetpack connection URL: \(error)")
             }
         }
@@ -130,11 +132,13 @@ private extension JetpackConnectionErrorViewModel {
             case .success(let user):
                 guard let emailAddress = user.wpcomUser?.email else {
                     DDLogWarn("⚠️ Cannot find connected WPcom user")
+                    self.analytics.track(.loginJetpackConnectionVerificationFailed)
                     return self.showSetupErrorNotice(in: viewController)
                 }
                 self.jetpackSetupCompletionHandler(emailAddress)
             case .failure(let error):
                 DDLogWarn("⚠️ Error fetching Jetpack user: \(error)")
+                self.analytics.track(.loginJetpackConnectionVerificationFailed, withError: error)
                 self.showSetupErrorNotice(in: viewController)
             }
         }

@@ -84,7 +84,6 @@ private struct StoreInfoView: View {
                             .statValueStyle()
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
-
                 }
             }
             .padding(.horizontal)

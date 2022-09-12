@@ -1,0 +1,1 @@
+Den här versionen kanske inte innehåller några nya funktioner, men vi har ändå lagt ner mycket jobb på den. Du kan nu aktivera eller inaktivera alternativet att ta emot kortbetalningar eller kontanta betalningar vid upphämtning eller leverans. Vi har också lagt till en ny Hjälpcenter-sida som gör det enklare för dig att logga in i appen.

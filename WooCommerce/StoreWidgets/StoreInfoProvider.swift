@@ -77,7 +77,6 @@ final class StoreInfoProvider: TimelineProvider {
     }
 
     /// Real data widget.
-    /// TODO: Update with real data.
     ///
     func getTimeline(in context: Context, completion: @escaping (Timeline<StoreInfoEntry>) -> Void) {
         guard let dependencies = Self.fetchDependencies() else {
@@ -90,10 +89,9 @@ final class StoreInfoProvider: TimelineProvider {
             do {
                 let todayStats = try await strongService.fetchTodayStats(for: dependencies.storeID)
 
-                // TODO: Use proper store formatting.
                 let entry = StoreInfoEntry.data(.init(range: Localization.today,
                                                       name: dependencies.storeName,
-                                                      revenue: "$\(todayStats.revenue)",
+                                                      revenue: formattedAmountString(for: todayStats.revenue, with: dependencies.storeCurrencySettings),
                                                       visitors: "\(todayStats.totalVisitors)",
                                                       orders: "\(todayStats.totalOrders)",
                                                       conversion: formattedConversionString(for: todayStats.conversion)))
@@ -149,6 +147,11 @@ private extension StoreInfoProvider {
 }
 
 private extension StoreInfoProvider {
+
+    func formattedAmountString(for amountValue: Decimal, with currencySettings: CurrencySettings?) -> String {
+        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings ?? CurrencySettings())
+        return currencyFormatter.formatAmount(amountValue) ?? Constants.valuePlaceholderText
+    }
 
     func formattedConversionString(for conversionRate: Double) -> String {
         let numberFormatter = NumberFormatter()

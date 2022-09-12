@@ -11,7 +11,16 @@ struct StoreInfoWidget: Widget {
 
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: "StoreInfoWidget", provider: StoreInfoProvider()) { entry in
-            StoreInfoView(entry: entry)
+            Group {
+                switch entry {
+                case .notConnected:
+                    NotLoggedInView()
+                case .error:
+                    EmptyView() // TODO:
+                case .data(let data):
+                    StoreInfoView(entry: data)
+                }
+            }
         }
         .configurationDisplayName("Store Info")
         .supportedFamilies(enableWidgets ? [.systemMedium] : [])
@@ -23,7 +32,7 @@ struct StoreInfoWidget: Widget {
 private struct StoreInfoView: View {
 
     // Entry to render
-    let entry: StoreInfoEntry
+    let entry: StoreInfoData
 
     var body: some View {
         ZStack {
@@ -156,13 +165,12 @@ private extension NotLoggedInView {
 struct StoreWidgets_Previews: PreviewProvider {
     static var previews: some View {
         StoreInfoView(
-            entry: StoreInfoEntry(date: Date(),
-                                  range: "Today",
-                                  name: "Ernest Shop",
-                                  revenue: "$132.234",
-                                  visitors: "67",
-                                  orders: "23",
-                                  conversion: "37%")
+            entry: StoreInfoData(range: "Today",
+                                 name: "Ernest Shop",
+                                 revenue: "$132.234",
+                                 visitors: "67",
+                                 orders: "23",
+                                 conversion: "37%")
         )
         .previewContext(WidgetPreviewContext(family: .systemMedium))
 

@@ -13,6 +13,7 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
     }
 
     override func viewWillAppear(_ animated: Bool) {
+        // Workaround on iOS 16: hide the navigation bar before showing the hub menu
         navigationController?.isNavigationBarHidden = true
         super.viewWillAppear(animated)
     }
@@ -29,6 +30,7 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        // Restore the visibility of the navigation bar when the view disappears.
         navigationController?.isNavigationBarHidden = false
     }
 

@@ -85,7 +85,7 @@ private extension BetaFeaturesViewController {
     }
 
     func productSKUInputScannerSection() -> Section? {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productSKUInputScanner), UIImagePickerController.isSourceTypeAvailable(.camera) else {
+        guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
             return nil
         }
 

@@ -285,7 +285,7 @@ private extension ProductInventorySettingsViewController {
         cell.configure(viewModel: cellViewModel)
 
         // Configures accessory view for adding SKU from barcode scanner by fetching switch's state from app settings.
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productSKUInputScanner) && UIImagePickerController.isSourceTypeAvailable(.camera) else {
+        guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
             return
         }
         let action = AppSettingsAction.loadProductSKUInputScannerFeatureSwitchState() { [weak cell, self] result in

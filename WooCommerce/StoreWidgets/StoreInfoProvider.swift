@@ -1,4 +1,5 @@
 import WidgetKit
+import WooFoundation
 import KeychainAccess
 
 /// Type that represents the all the possible Widget states.
@@ -123,6 +124,7 @@ private extension StoreInfoProvider {
         let storeID: Int64
         let storeName: String
         let storeTimeZone: TimeZone
+        let storeCurrencySettings: CurrencySettings
     }
 
     /// Fetches the required dependencies from the keychain and the shared users default.
@@ -133,10 +135,16 @@ private extension StoreInfoProvider {
               let storeID = UserDefaults.group?[.defaultStoreID] as? Int64,
               let storeName = UserDefaults.group?[.defaultStoreName] as? String,
               let storeTimeZoneGMTOffset = UserDefaults.group?[.defaultStoreTimeZoneGMTOffset] as? Int,
-              let storeTimeZone = TimeZone(secondsFromGMT: storeTimeZoneGMTOffset) else {
+              let storeTimeZone = TimeZone(secondsFromGMT: storeTimeZoneGMTOffset),
+              let storeCurrencySettingsData = UserDefaults.group?[.defaultStoreCurrencySettings] as? Data,
+              let storeCurrencySettings = try? JSONDecoder().decode(CurrencySettings.self, from: storeCurrencySettingsData) else {
             return nil
         }
-        return Dependencies(authToken: authToken, storeID: storeID, storeName: storeName, storeTimeZone: storeTimeZone)
+        return Dependencies(authToken: authToken,
+                            storeID: storeID,
+                            storeName: storeName,
+                            storeTimeZone: storeTimeZone,
+                            storeCurrencySettings: storeCurrencySettings)
     }
 }
 

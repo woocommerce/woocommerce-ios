@@ -26,6 +26,23 @@ final class DateStartAndEndTests: XCTestCase {
         XCTAssertEqual(endOfDay, expectedDate)
     }
 
+    func test_endOfDay_is_on_the_same_day_of_dst_change() throws {
+        // Given
+        let timeZone = try XCTUnwrap(TimeZone(identifier: "America/Santiago"))
+        // Chile time zone: 2022-09-11 01:45:44
+        // Daily saving time on 2022-09-11, therefore 0-1AM is non-existent.
+        // Please note that Chile just removed daily saving time last minute in 2022.
+        let date = Date(timeIntervalSince1970: 1662871544)
+
+        // When
+        let endOfDay = date.endOfDay(timezone: timeZone)
+
+        // Then
+        // Chile time zone: 2022-09-11 23:59:59
+        let expectedDate = Date(timeIntervalSince1970: 1662951599)
+        XCTAssertEqual(endOfDay, expectedDate)
+    }
+
     // MARK: Week
 
     func testStartOfWeekInTaipei() {

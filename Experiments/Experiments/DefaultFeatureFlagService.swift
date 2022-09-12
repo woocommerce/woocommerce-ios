@@ -19,8 +19,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .shippingLabelsOnboardingM1:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .appleIDAccountDeletion:
-            return true
         case .newToWooCommerceLinkInLoginPrologue:
             return true
         case .loginPrologueOnboarding:

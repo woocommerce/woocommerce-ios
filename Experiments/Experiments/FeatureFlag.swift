@@ -14,10 +14,6 @@ public enum FeatureFlag: Int {
     ///
     case reviews
 
-    /// Displays the option to view coupons
-    ///
-    case couponView
-
     /// Barcode scanner for product SKU input
     ///
     case productSKUInputScanner
@@ -33,18 +29,6 @@ public enum FeatureFlag: Int {
     /// Displays the Orders tab in a split view
     ///
     case splitViewInOrdersTab
-
-    /// Displays the option to delete coupons
-    ///
-    case couponDeletion
-
-    /// Displays the option to edit a coupon
-    ///
-    case couponEditing
-
-    /// Displays the option to create a coupon
-    ///
-    case couponCreation
 
     /// Enable optimistic updates for orders
     ///

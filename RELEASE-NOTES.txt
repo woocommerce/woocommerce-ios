@@ -3,6 +3,7 @@
 10.4
 -----
 - [*] Help center: Added help center web page with FAQs for "Pick a WooCommerce Store" screen. [https://github.com/woocommerce/woocommerce-ios/pull/7641]
+- [*] Login: Users can now set up the Jetpack connection between a self-hosted site and their WP.com account. [https://github.com/woocommerce/woocommerce-ios/pull/7608]
 
 10.3
 -----

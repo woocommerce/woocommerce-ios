@@ -1,5 +1,6 @@
 @testable import WooCommerce
 import WordPressAuthenticator
+import WordPressKit
 
 final class MockAuthentication: Authentication {
     private(set) var presentSupportFromScreenInvoked = false
@@ -30,6 +31,7 @@ final class MockAuthentication: Authentication {
 
     func errorViewController(for siteURL: String,
                              with matcher: ULAccountMatcher,
+                             credentials: AuthenticatorCredentials?,
                              navigationController: UINavigationController,
                              onStorePickerDismiss: @escaping () -> Void) -> UIViewController? {
         nil

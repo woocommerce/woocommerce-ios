@@ -8,15 +8,18 @@ final class JetpackConnectionErrorViewModel: ULErrorViewModel {
     private let siteURL: String
     private var jetpackConnectionURL: URL?
     private let stores: StoresManager
+    private let analytics: Analytics
     private let isPrimaryButtonLoadingSubject = CurrentValueSubject<Bool, Never>(false)
     private let jetpackSetupCompletionHandler: (String) -> Void
 
     init(siteURL: String,
          credentials: WordPressOrgCredentials,
          stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics,
          onJetpackSetupCompletion: @escaping (String) -> Void) {
         self.siteURL = siteURL
         self.stores = stores
+        self.analytics = analytics
         self.jetpackSetupCompletionHandler = onJetpackSetupCompletion
         authenticate(with: credentials)
         fetchJetpackConnectionURL()
@@ -51,7 +54,7 @@ final class JetpackConnectionErrorViewModel: ULErrorViewModel {
     let secondaryButtonTitle = Localization.secondaryButtonTitle
 
     func viewDidLoad(_ viewController: UIViewController?) {
-        // TODO: Tracks?
+        analytics.track(event: .LoginJetpackConnection.jetpackConnectionErrorShown(selfHostedSite: true))
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {

@@ -1591,3 +1591,17 @@ extension WooAnalyticsEvent {
         WooAnalyticsEvent(statName: .universalLinkFailed, properties: [Key.url.rawValue: url.absoluteString])
     }
 }
+
+// MARK: - Jetpack connection
+//
+extension WooAnalyticsEvent {
+    enum LoginJetpackConnection {
+        enum Key: String {
+            case selfHosted = "is_selfhosted_site"
+        }
+
+        static func jetpackConnectionErrorShown(selfHostedSite: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginJetpackConnectionErrorShown, properties: [Key.selfHosted.rawValue: selfHostedSite])
+        }
+    }
+}

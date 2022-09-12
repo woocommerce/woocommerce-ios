@@ -51,7 +51,7 @@ final class StoreInfoDataService {
         return Stats(revenue: revenueAndOrders.totals.grossRevenue,
                      totalOrders: revenueAndOrders.totals.totalOrders,
                      totalVisitors: visitors.totalVisitors,
-                     conversion: conversion)
+                     conversion: min(conversion, 100))
     }
 }
 

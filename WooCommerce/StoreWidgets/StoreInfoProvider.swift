@@ -95,7 +95,7 @@ final class StoreInfoProvider: TimelineProvider {
                                                       revenue: "$\(todayStats.revenue)",
                                                       visitors: "\(todayStats.totalVisitors)",
                                                       orders: "\(todayStats.totalOrders)",
-                                                      conversion: "\(todayStats.conversion)%"))
+                                                      conversion: formattedConversionString(for: todayStats.conversion)))
 
                 let reloadDate = Date(timeIntervalSinceNow: reloadInterval)
                 let timeline = Timeline<StoreInfoEntry>(entries: [entry], policy: .after(reloadDate))
@@ -141,6 +141,22 @@ private extension StoreInfoProvider {
 }
 
 private extension StoreInfoProvider {
+
+    func formattedConversionString(for conversionRate: Double) -> String {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .percent
+        numberFormatter.minimumFractionDigits = 1
+
+        // do not add 0 fraction digit if the percentage is round
+        let minimumFractionDigits = floor(conversionRate * 100.0) == conversionRate * 100.0 ? 0 : 1
+        numberFormatter.minimumFractionDigits = minimumFractionDigits
+        return numberFormatter.string(from: conversionRate as NSNumber) ?? Constants.valuePlaceholderText
+    }
+
+    enum Constants {
+        static let valuePlaceholderText = "-"
+    }
+
     enum Localization {
         static let myShop = NSLocalizedString("My Shop", comment: "Generic store name for the store info widget preview")
         static let today = NSLocalizedString("Today", comment: "Range title for the today store info widget")

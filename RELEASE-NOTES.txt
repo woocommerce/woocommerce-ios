@@ -2,7 +2,7 @@
 
 10.4
 -----
-
+- [*] Help center: Added help center web page with FAQs for "Pick a WooCommerce Store" screen. [https://github.com/woocommerce/woocommerce-ios/pull/7641]
 
 10.3
 -----

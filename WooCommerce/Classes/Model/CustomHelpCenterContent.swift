@@ -59,6 +59,10 @@ extension CustomHelpCenterContent {
         /// Jetpack required error screen presented using `JetpackErrorViewModel`
         ///
         case jetpackRequired
+
+        /// Store picker screen - `StorePickerViewController`
+        ///
+        case storePicker
     }
 
     init(screen: Screen, flow: AuthenticatorAnalyticsTracker.Flow) {
@@ -67,6 +71,9 @@ extension CustomHelpCenterContent {
         case .jetpackRequired:
             step = "jetpack_not_connected" // Matching Android `Step` value
             url = WooConstants.URLs.helpCenterForJetpackRequiredError.asURL()
+        case .storePicker:
+            step = "site_list" // Matching Android `Step` value
+            url = WooConstants.URLs.helpCenterForStorePicker.asURL()
         }
 
         trackingProperties = [

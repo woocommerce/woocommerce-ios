@@ -194,7 +194,13 @@ import WordPressKit
         showGetStarted(from: presenter, jetpackLogin: jetpackLogin, connectedEmail: connectedEmail, siteURL: siteURL)
     }
 
-    /// Used to present the Verify Email flow from the app delegate
+    /// Used to present the Verify Email flow from the app delegate.
+    ///
+    /// - Parameters:
+    ///     - presenter: The view controller that presents the Verify Email view.
+    ///     - xmlrpc: The URL to reach the XMLRPC file of the site to log in to.
+    ///     - connectedEmail: The email address used to authorized Jetpack connection with the site.
+    ///     - siteURL: The URL of the site to log in to.
     ///
     @objc public class func showVerifyEmailForWPCom(from presenter: UIViewController, xmlrpc: String, connectedEmail: String, siteURL: String) {
         guard let xmlrpcURL = URL(string: xmlrpc) else {

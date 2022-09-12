@@ -74,7 +74,13 @@ final class ProductVariationFormViewModel_ObservablesTests: XCTestCase {
         let productVariation = MockProductVariation().productVariation()
         let model = EditableProductVariationModel(productVariation: productVariation)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
-        let viewModel = ProductVariationFormViewModel(productVariation: model, productImageActionHandler: productImageActionHandler)
+        let mockProductImageUploader = MockProductImageUploader()
+        mockProductImageUploader.whenHasUnsavedChangesOnImagesIsCalled(thenReturn: true)
+        let viewModel = ProductVariationFormViewModel(
+            productVariation: model,
+            productImageActionHandler: productImageActionHandler,
+            productImagesUploader: mockProductImageUploader)
+
         var isProductUpdated: Bool?
         cancellableProduct = viewModel.observableProduct.sink { product in
             isProductUpdated = true

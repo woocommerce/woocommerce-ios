@@ -168,8 +168,6 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     private let storageManager: StorageManagerType
 
-    private let isBackgroundImageUploadEnabled: Bool
-
     private let analytics: Analytics
 
     init(product: EditableProductModel,
@@ -178,7 +176,6 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          productImagesUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
-         isBackgroundImageUploadEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload),
          analytics: Analytics = ServiceLocator.analytics) {
         self.formType = formType
         self.productImageActionHandler = productImageActionHandler
@@ -188,17 +185,10 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.stores = stores
         self.storageManager = storageManager
         self.productImagesUploader = productImagesUploader
-        self.isBackgroundImageUploadEnabled = isBackgroundImageUploadEnabled
         self.analytics = analytics
 
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
             guard let self = self else { return }
-            guard self.isBackgroundImageUploadEnabled else {
-                if allStatuses.productImageStatuses.hasPendingUpload {
-                    self.isUpdateEnabledSubject.send(true)
-                }
-                return
-            }
             self.isUpdateEnabledSubject.send(self.hasUnsavedChanges())
         }
 
@@ -211,9 +201,6 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     }
 
     func hasUnsavedChanges() -> Bool {
-        guard isBackgroundImageUploadEnabled else {
-            return product != originalProduct || productImageActionHandler.productImageStatuses.hasPendingUpload || password != originalPassword
-        }
         let hasProductChangesExcludingImages = product.product.copy(images: []) != originalProduct.product.copy(images: [])
         let hasImageChanges = productImagesUploader
             .hasUnsavedChangesOnImages(key: .init(siteID: product.siteID,
@@ -443,10 +430,8 @@ extension ProductFormViewModel {
                     self.resetProduct(data.product)
                     self.resetPassword(data.password)
                     onCompletion(.success(data.product))
-                    if self.isBackgroundImageUploadEnabled {
-                        self.replaceProductID(productIDBeforeSave: productIDBeforeSave)
-                        self.saveProductImagesWhenNoneIsPendingUploadAnymore()
-                    }
+                    self.replaceProductID(productIDBeforeSave: productIDBeforeSave)
+                    self.saveProductImagesWhenNoneIsPendingUploadAnymore()
                 }
             }
         case .edit:
@@ -462,9 +447,7 @@ extension ProductFormViewModel {
                                                     self.resetProduct(data.product)
                                                     self.resetPassword(data.password)
                                                     onCompletion(.success(data.product))
-                                                    if self.isBackgroundImageUploadEnabled {
-                                                        self.saveProductImagesWhenNoneIsPendingUploadAnymore()
-                                                    }
+                                                    self.saveProductImagesWhenNoneIsPendingUploadAnymore()
                                                 case .failure(let error):
                                                     onCompletion(.failure(error))
                                                 }

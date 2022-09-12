@@ -571,9 +571,6 @@ private extension MainTabBarController {
 
 private extension MainTabBarController {
     func observeProductImageUploadStatusUpdates() {
-        guard featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) else {
-            return
-        }
         productImageUploadErrorsSubscription = productImageUploader.errors.sink { [weak self] error in
             guard let self = self else { return }
             switch error.error {

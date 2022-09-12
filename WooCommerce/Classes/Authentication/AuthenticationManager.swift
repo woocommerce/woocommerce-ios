@@ -195,12 +195,14 @@ class AuthenticationManager: Authentication {
 
         /// Account mismatched case
         guard matcher.match(originalURL: siteURL) else {
+            /// Account mismatch experiment iteration 1: show jetpack connection error
+            /// if the error happens during site credential login.
             if let credentials = credentials?.wporg {
                 DDLogWarn("⚠️ Present Jetpack connection error for site: \(String(describing: siteURL))")
                 return jetpackConnectionUI(for: siteURL, with: credentials, in: navigationController)
             }
             DDLogWarn("⚠️ Present account mismatch error for site: \(String(describing: siteURL))")
-            return accountMismatchUI(for: siteURL, with: matcher, credentials: credentials)
+            return accountMismatchUI(for: siteURL, with: matcher)
         }
 
         /// No Woo found
@@ -618,6 +620,7 @@ private extension AuthenticationManager {
 
     /// The error screen to be displayed when the user tries to enter as site
     /// whose Jetpack is not connected to their WP.com account.
+    /// This screen is currently displayed when user logged in with site credentials.
     ///
     func jetpackConnectionUI(for siteURL: String,
                              with credentials: WordPressOrgCredentials,
@@ -635,8 +638,9 @@ private extension AuthenticationManager {
 
     /// The error screen to be displayed when the user tries to enter a site
     /// whose Jetpack is not associated with their account.
+    /// This screen is currently displayed when user logged in with a WP.com account.
     ///
-    func accountMismatchUI(for siteURL: String, with matcher: ULAccountMatcher, credentials: AuthenticatorCredentials? = nil) -> UIViewController {
+    func accountMismatchUI(for siteURL: String, with matcher: ULAccountMatcher) -> UIViewController {
         let viewModel = WrongAccountErrorViewModel(siteURL: siteURL, showsConnectedStores: matcher.hasConnectedStores)
         let mismatchAccountUI = ULAccountMismatchViewController(viewModel: viewModel)
         return mismatchAccountUI

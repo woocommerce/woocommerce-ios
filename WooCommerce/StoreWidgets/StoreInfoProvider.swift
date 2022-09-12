@@ -53,6 +53,10 @@ final class StoreInfoProvider: TimelineProvider {
     ///
     private var networkService: StoreInfoDataService?
 
+    /// Desired data reload interval provided to system = 30 minutes.
+    ///
+    private let reloadInterval: TimeInterval = 30 * 60
+
     /// Redacted entry with sample data.
     ///
     func placeholder(in context: Context) -> StoreInfoEntry {
@@ -93,7 +97,7 @@ final class StoreInfoProvider: TimelineProvider {
                                                       orders: "\(todayStats.totalOrders)",
                                                       conversion: "\(todayStats.conversion)%"))
 
-                let reloadDate = Date(timeIntervalSinceNow: 30 * 60) // Ask for a 15 minutes reload.
+                let reloadDate = Date(timeIntervalSinceNow: reloadInterval)
                 let timeline = Timeline<StoreInfoEntry>(entries: [entry], policy: .after(reloadDate))
                 completion(timeline)
 
@@ -102,7 +106,7 @@ final class StoreInfoProvider: TimelineProvider {
                 // WooFoundation does not expose `DDLOG` types. Should we include them?
                 print("⛔️ Error fetching today's widget stats: \(error)")
 
-                let reloadDate = Date(timeIntervalSinceNow: 30 * 60) // Ask for a 30 minutes reload.
+                let reloadDate = Date(timeIntervalSinceNow: reloadInterval)
                 let timeline = Timeline<StoreInfoEntry>(entries: [.error], policy: .after(reloadDate))
                 completion(timeline)
             }

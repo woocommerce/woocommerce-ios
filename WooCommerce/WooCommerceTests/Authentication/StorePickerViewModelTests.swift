@@ -26,7 +26,7 @@ final class StorePickerViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
-            case let .synchronizeSites(_, _, onCompletion):
+            case let .synchronizeSites(_, onCompletion):
                 onCompletion(.success(false))
             default:
                 break
@@ -50,7 +50,7 @@ final class StorePickerViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
-            case let .synchronizeSites(_, _, onCompletion):
+            case let .synchronizeSites(_, onCompletion):
                 onCompletion(.success(false))
             default:
                 break
@@ -70,7 +70,7 @@ final class StorePickerViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
-            case let .synchronizeSites(_, _, onCompletion):
+            case let .synchronizeSites(_, onCompletion):
                 onCompletion(.success(false))
             default:
                 break
@@ -95,7 +95,7 @@ final class StorePickerViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
-            case let .synchronizeSites(_, _, onCompletion):
+            case let .synchronizeSites(_, onCompletion):
                 onCompletion(.success(false))
             default:
                 break
@@ -126,7 +126,7 @@ final class StorePickerViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
-            case let .synchronizeSites(_, _, onCompletion):
+            case let .synchronizeSites(_, onCompletion):
                 onCompletion(.success(false))
             default:
                 break
@@ -164,7 +164,7 @@ final class StorePickerViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
-            case let .synchronizeSites(_, _, onCompletion):
+            case let .synchronizeSites(_, onCompletion):
                 onCompletion(.success(false))
             default:
                 break

@@ -1,2 +1,1 @@
-This release has several fixes that makes it easier for you to take payments from the app. We’ve also added a new Help Center FAQ page that makes it easier for you to login to the app.
-Please continue to send us feedback – we are listening!
+More love for In-Person Payments and Analytics this time around. We fixed a bug which could prevent you from collecting payments in the app. Card reader connections are more stable. And we fixed an issue where your store's analytics are sometimes not updated.

@@ -32,7 +32,10 @@ struct UniversalLinkRouter {
     func handle(url: URL) {
         guard let matchedRoute = matcher.firstRouteMatching(url),
               matchedRoute.performAction() else {
+            ServiceLocator.analytics.track(event: WooAnalyticsEvent.universalLinkFailed(with: url))
             return bouncingURLOpener.open(url)
         }
+
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.universalLinkOpened(with: matchedRoute.route.subPath))
     }
 }

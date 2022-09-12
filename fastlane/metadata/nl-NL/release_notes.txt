@@ -1,3 +1,1 @@
-We made it much easier to find everything about accepting payments in the app. Head on to the Payments section from the Menu! We also fixed an issue where you might be unnecessarily blocked from taking payments.
-We also made various enhancements to our login flows to help you get started quickly with the app.
-Lastly, we’ve made some tweaks to performance. But we’re not done. Look forward to more improvements in the future. Please keep sending your feedback!
+Deze release heeft misschien geen nieuwe functies, maar we hebben er wel ons uiterste best op gedaan! Je kan nu de optie om contante of kaartbetalingen te accepteren bij ophalen of ontvangst in- of uitschakelen. We hebben ook een nieuwe Help Center-pagina toegevoegd waarmee je eenvoudiger kunt inloggen in de app.

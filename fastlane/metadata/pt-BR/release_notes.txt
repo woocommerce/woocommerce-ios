@@ -1,3 +1,1 @@
-Tornamos muito mais fácil encontrar tudo sobre como aceitar pagamentos no aplicativo. Vá para a seção de Pagamentos no Menu! Também corrigimos um problema que bloqueava o recebimento de pagamentos sem necessidade.
-Além disso, fizemos várias melhorias em nossos fluxos de login para ajudar você a começar rapidamente com o aplicativo.
-Por fim, fizemos alguns ajustes para melhorar o desempenho. E não para por aí. Aguarde mais melhorias no futuro. Continue enviando seu feedback!
+Ainda que esta versão não tenha nenhuma funcionalidade nova, nós a fizemos com muito amor. Agora você pode ativar ou desativar a opção de receber pagamentos com cartão ou dinheiro na coleta ou entrega. Também adicionamos uma nova página da Central de ajuda que facilita o login no aplicativo.

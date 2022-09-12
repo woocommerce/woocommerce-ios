@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-08-23 11:54:04+0000 */
+/* Translation-Revision-Date: 2022-09-06 11:54:03+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -32,6 +32,12 @@
 
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ — %2$@ (для заказчика)";
+
+/* A label prompting users to learn more about In-Person Payments.
+\u{2011} is a special character that acts as nonbreaking hyphen for "-" in the "In-Person" string.
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"%1$@ about Inu{2011}Person Payments" = "%1$@ об очных платежах (Inu{2011}Person Payments)";
 
 /* A label prompting users to learn more about card readers"
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
@@ -1096,9 +1102,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to confirm the preferred provider for In-Person Payments */
 "Confirm Payment Method" = "Подтвердить способ оплаты";
 
-/* Title for the error screen when there is more than one plugin active that supports in-person payments. */
-"Conflicting payment plugins detected" = "Обнаружены конфликтующие плагины оплаты";
-
 /* Title displayed if there are no inbox notes in the inbox screen. */
 "Congrats, you’ve read everything!" = "Поздравляем, вы прочитали все примечания!";
 
@@ -1207,7 +1210,8 @@ which should be translated separately and considered part of this sentence. */
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
 "Continuing with Apple" = "Вход с помощью данных Apple";
 
-/* Conversion stat label on dashboard. */
+/* Conversion stat label on dashboard.
+   Conversion title label for the store info widget */
 "Conversion" = "Переход";
 
 /* Copy address text button title — should be one word and as short as possible. */
@@ -2007,6 +2011,12 @@ which should be translated separately and considered part of this sentence. */
 /* Error message on the Coupon Details screen when deleting coupon fails */
 "Failed to delete coupon. Please try again." = "Не удалось удалить купон. Повторите попытку.";
 
+/* Error displayed when the attempt to disable a Pay in Person checkout payment option fails */
+"Failed to disable Pay in Person. Please try again later." = "Не удалось деактивировать опцию \"Очная оплата\". Повторите попытку позже.";
+
+/* Error displayed when the attempt to enable a Pay in Person checkout payment option fails */
+"Failed to enable Pay in Person. Please try again later." = "Не удалось включить опцию «Очная оплата». Повторите попытку позже.";
+
 /* Error message on the Issue Refund screen when fetching the charge details failed */
 "Failed to fetch your charge details. Please try again." = "Не удалось получить сведения об оплате. Повторите попытку.";
 
@@ -2268,6 +2278,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Help and Support navigation title
    Help button
+   Help button on Jetpack required error screen.
    Help button on store picker screen. */
 "Help" = "Помощь";
 
@@ -2347,9 +2358,6 @@ which should be translated separately and considered part of this sentence. */
 /* Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled. */
 "In-Person Payments Setup is incomplete." = "Настройка очных платежей не завершена.";
 
-/* Title for the error screen when there is more than one plugin active and the Stripe plugin should be deactivated */
-"In-Person Payments are processed through WooCommerce Payments." = "Очные платежи обрабатываются через WooCommerce Payments.";
-
 /* Main prompt for the screen to select the preferred provider for In-Person Payments */
 "In-Person Payments can be processed through either of these payment providers. Which provider would you like to use?" = "Очные платежи можно обрабатывать через любую из этих платёжных систем. Какую платёжную систему вы хотите использовать?";
 
@@ -2360,12 +2368,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when the merchant's payment account has been rejected. */
 "In-Person Payments isn't available for this store" = "Очные платежи для этого магазина недоступны";
-
-/* Message prompting a shop manager to ask an administrator to deactivate one of two plugins */
-"In-Person Payments will only work with one of following plugins activated. Please contact a site administrator to deactivate one of these plugins to continue:" = "Очные платежи будут работать только с одним из следующих активированных плагинов. Для продолжения обратитесь к администратору сайта, чтобы деактивировать один из следующих плагинов:";
-
-/* Message prompting an administrator to deactivate one of two plugins */
-"In-Person Payments will only work with one of following plugins activated. Please deactivate one of these plugins to continue:" = "Очные платежи будут работать только с одним из следующих активированных плагинов. Для продолжения деактивируйте один из следующих плагинов:";
 
 /* Application's Inactive State */
 "Inactive" = "Неактивно";
@@ -2525,6 +2527,9 @@ which should be translated separately and considered part of this sentence. */
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "Похоже, вы ввели неправильный пароль. Хотите попытаться ещё раз?";
 
+/* An error message displayed when the user tries to log in to the app with a simple WP.com site. Reads like: It seems that your site google.com is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce. */
+"It seems that your site %@ is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce." = "Похоже, ваш сайт %@ является простым сайтом WordPress.com, на котором нельзя устанавливать плагины. Обновите тарифный план для использования WooCommerce.";
+
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "Курсив";
 
@@ -2593,8 +2598,11 @@ which should be translated separately and considered part of this sentence. */
 
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
+   A label prompting users to learn more about In-Person Payments.
+This is the link to the website, and forms part of a longer sentence which it should be considered a part of.
    Button title in the shipping label creation info screen
    Settings > Privacy Settings. A text link to the cookie policy.
+   The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. 
    Title of button shown in the Orders → All Orders tab if the list is empty.
    Title of button shown in the Reviews tab if the list is empty
    Title of button shown on the Product Reviews screen if the list is empty */
@@ -2694,7 +2702,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Action button that will restart the login flow.Presented when logging in with a site address that appears to be invalid.
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
-   Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce */
+   Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
+   Action button that will restart the login flow.Presented when the user tries to log in to the app with a simple WP.com site. */
 "Log In With Another Account" = "Войдите с помощью другой учётной записи";
 
 /* Action button triggering a Log Out.Presented when logging in with a store address that does not match the account entered
@@ -2765,9 +2774,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the action sheet displayed from the Coupon Details screen */
 "Manage Coupon" = "Управление купоном";
-
-/* Button to open browser to manage plugins */
-"Manage Plugins" = "Управление плагинами";
 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Manage and edit orders on the go" = "Управляйте заказами и редактируйте их на ходу";
@@ -3238,6 +3244,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Ordered List" = "Упорядоченный список";
 
 /* Orders stat label on dashboard - should be plural.
+   Orders title label for the store info widget
    The title of the Orders tab. */
 "Orders" = "Заказы";
 
@@ -3328,6 +3335,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Paste without Formatting Menu Item */
 "Paste without Formatting" = "Вставить без форматирования";
+
+/* Customer-facing description showing more details about the Pay in Person option which is added to the store checkout when the merchant enables Pay in Person
+   Customer-facing instructions shown on Order Thank-you pages and confirmation emails, showing more details about the Pay in Person option added to the store checkout when the merchant enables Pay in Person */
+"Pay by card or another accepted payment method" = "Платите картой или используйте другой разрешённый способ оплаты";
+
+/* Customer-facing title for the payment option added to the store checkout when the merchant enables Pay in Person
+   Title for a switch on the In-Person Payments menu to enable Cash on Delivery */
+"Pay in Person" = "Очная оплата";
 
 /* Payment section title
    Title text of the row that shows the payment headline when creating a simple payment
@@ -3993,6 +4008,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button to retry when there was a network error checking In-Person Payments requirements
    Retry Action
    Retry action for an error notice
+   Retry Action on error displayed when the attempt to enable a Pay in Person checkout payment option fails
+   Retry Action on error displayed when the attempt to toggle a Pay in Person checkout payment option fails
    Retry Action on the notice when loading product categories fails
    Retry the last action */
 "Retry" = "Повторить";
@@ -4010,7 +4027,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "Вернуть отправителю в случае невозможности доставки";
 
-/* Revenue stat label on dashboard. */
+/* Revenue stat label on dashboard.
+   Revenue title label for the store info widget */
 "Revenue" = "Доход";
 
 /* Title of Review Order screen */
@@ -4882,6 +4900,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Fetching an Order Failed */
 "The Order couldn't be loaded!" = "Невозможно загрузить заказ!";
 
+/* A label prompting users to learn more about adding Pay in Person to their checkout. %1$@ is a placeholder that always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
+"The Pay in Person checkout option lets you accept payments for website orders, on collection or delivery. %1$@" = "Способ оформления заказа \"Очная оплата\" позволяет вам принимать платежи за заказы на веб-сайте при получении товара покупателем. %1$@";
+
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "В URL-адресе отсутствует допустимый хост.";
 
@@ -5215,12 +5236,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message displayed when unable to close user account due to having active atomic site. */
 "To close this account now, contact our support team." = "Чтобы закрыть эту учётную запись, обратитесь в службу поддержки.";
 
-/* Message prompting an administrator to deactivate Stripe plugin */
-"To collect payments, please ask an administrator to deactivate WooCommerce Stripe Gateway." = "Чтобы собирать платежи, попросите администратора отключить WooCommerce Stripe Gateway.";
-
-/* Message prompting an administrator to deactivate Stripe plugin */
-"To collect payments, please deactivate WooCommerce Stripe Gateway." = "Чтобы собирать платежи, отключите WooCommerce Stripe Gateway.";
-
 /* Close Account confirmation alert message. The %1$@ is the user's WordPress.com username. */
 "To confirm, please re-enter your username before closing.\n\n%1$@" = "Введите ваше имя пользователя для подтверждения закрытия.\n\n%1$@";
 
@@ -5241,6 +5256,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Instructional text shown when requesting the user's password for Google login. */
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "Чтобы войти через эту учетную запись Google, пожалуйста войдите сначала с паролем WordPress.com. Это запрашивается только один раз.";
+
+/* Sign in instructions asking user to enter WordPress.com password to proceed with sign in using Apple process */
+"To proceed with this account, please first log in with your WordPress.com password. This will only be asked once." = "Чтобы продолжить работу с этой учётной записью, сначала войдите в систему со своим паролем WordPress.com. Он будет запрошен только один раз.";
 
 /* Label within the modal dialog that appears when searching for a card reader */
 "To turn on your card reader, briefly press its power button." = "Чтобы включить устройство чтения карт, нажмите кнопку питания.";
@@ -5781,7 +5799,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Visibility label in Product Settings */
 "Visibility" = "Настройки видимости";
 
-/* Visitors stat label on dashboard - should be plural. */
+/* Visitors stat label on dashboard - should be plural.
+   Visitors title label for the store info widget */
 "Visitors" = "Посетители";
 
 /* Add a note screen - Write Note section title */

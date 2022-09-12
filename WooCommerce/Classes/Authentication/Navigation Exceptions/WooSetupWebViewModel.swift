@@ -1,7 +1,7 @@
 import Foundation
 import WebKit
 
-final class WooSetupWebViewModel: PluginSetupWebViewModel {
+final class WooSetupWebViewModel: AuthenticatedWebViewModel {
     private let siteURL: String
     private let analytics: Analytics
     private let completionHandler: () -> Void

@@ -21,7 +21,8 @@ protocol CardReaderSettingsAlertsProvider {
     func foundReader(from: UIViewController,
                      name: String,
                      connect: @escaping () -> Void,
-                     continueSearch: @escaping () -> Void)
+                     continueSearch: @escaping () -> Void,
+                     cancelSearch: @escaping () -> Void)
 
     /// Defines an interactive alert indicating more than one reader has been found. The user must
     /// choose to connect to that reader or cancel searching

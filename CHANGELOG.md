@@ -2,6 +2,14 @@
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
 
+## 10.3
+
+More love for In-Person Payments and Analytics this time around. We fixed a bug which could prevent you from collecting payments in the app. Card reader connections are more stable. And we fixed an issue where your store's analytics are sometimes not updated. 
+
+
+## 10.2
+Even though this release doesn’t have any new features, we still put a lot of love into it! You can now enable or disable the option to take card or cash payments on collection or delivery. We also added a new Help Center page that makes it easier for you to login to the app.
+
 ## 10.1
 This release has several fixes that makes it easier for you to take payments from the app. We’ve also added a new Help Center FAQ page that makes it easier for you to login to the app.
 Please continue to send us feedback – we are listening!

@@ -12,6 +12,11 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
         configureTabBarItem()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.isNavigationBarHidden = true
+        super.viewWillAppear(animated)
+    }
+
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -20,6 +25,11 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
         super.viewDidAppear(animated)
 
         viewModel.viewDidAppear()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.isNavigationBarHidden = false
     }
 
     /// Present the specific Review Details View from a push notification

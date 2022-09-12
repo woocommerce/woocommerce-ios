@@ -39,6 +39,7 @@ protocol Authentication {
     ///
     func errorViewController(for siteURL: String,
                              with matcher: ULAccountMatcher,
+                             credentials: AuthenticatorCredentials?,
                              navigationController: UINavigationController,
                              onStorePickerDismiss: @escaping () -> Void) -> UIViewController?
 }

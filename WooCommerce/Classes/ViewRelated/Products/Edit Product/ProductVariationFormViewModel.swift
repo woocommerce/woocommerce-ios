@@ -98,7 +98,6 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
     private let productImageActionHandler: ProductImageActionHandlerProtocol
     private let storesManager: StoresManager
     private let productImagesUploader: ProductImageUploaderProtocol
-    private let isBackgroundImageUploadEnabled: Bool
     private var cancellable: AnyCancellable?
 
     init(productVariation: EditableProductVariationModel,
@@ -107,8 +106,7 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
          formType: ProductFormType,
          productImageActionHandler: ProductImageActionHandlerProtocol,
          storesManager: StoresManager = ServiceLocator.stores,
-         productImagesUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
-         isBackgroundImageUploadEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload)) {
+         productImagesUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
         self.allAttributes = allAttributes
         self.parentProductSKU = parentProductSKU
         self.productImageActionHandler = productImageActionHandler
@@ -120,15 +118,8 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
         self.actionsFactory = ProductVariationFormActionsFactory(productVariation: productVariation, editable: editable)
         self.isUpdateEnabledSubject = PassthroughSubject<Bool, Never>()
         self.productImagesUploader = productImagesUploader
-        self.isBackgroundImageUploadEnabled = isBackgroundImageUploadEnabled
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
             guard let self = self else { return }
-            guard self.isBackgroundImageUploadEnabled else {
-                if allStatuses.productImageStatuses.hasPendingUpload {
-                    self.isUpdateEnabledSubject.send(true)
-                }
-                return
-            }
             self.isUpdateEnabledSubject.send(self.hasUnsavedChanges())
         }
     }
@@ -138,9 +129,6 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
     }
 
     func hasUnsavedChanges() -> Bool {
-        guard isBackgroundImageUploadEnabled else {
-            return productVariation != originalProductVariation || productImageActionHandler.productImageStatuses.hasPendingUpload
-        }
         let hasProductChangesExcludingImages =
         productVariation.productVariation.copy(image: .some(nil)) != originalProductVariation.productVariation.copy(image: .some(nil))
         let hasImageChanges = productImagesUploader
@@ -325,9 +313,7 @@ extension ProductVariationFormViewModel {
                                                           parentProductSKU: self.parentProductSKU)
                 self.resetProductVariation(model)
                 onCompletion(.success(model))
-                if self.isBackgroundImageUploadEnabled {
-                    self.saveProductVariationImageWhenUploaded()
-                }
+                self.saveProductVariationImageWhenUploaded()
             }
         }
         storesManager.dispatch(updateAction)

@@ -2712,12 +2712,18 @@ This is the link to the website, and forms part of a longer sentence which it sh
    View title during the log in process. */
 "Log In" = "Log In";
 
+/* Title label for the login button on the store info widget. */
+"Log in" = "Log in";
+
 /* A generic error message for a failed log in. */
 "Log in failed. Please try again." = "Log in failed. Please try again.";
 
 /* Button title. Takes the user to the login by email flow.
    Button title. Tapping begins our normal log in process. */
 "Log in or sign up with WordPress.com" = "Log in or sign up with WordPress.com";
+
+/* Title label when the widget does not have a logged-in store. */
+"Log in to see today’s stats." = "Log in to see today’s stats.";
 
 /* Instruction text on the login's email address screen. */
 "Log in to the WordPress.com account you used to connect Jetpack." = "Log in to the WordPress.com account you used to connect Jetpack.";
@@ -2908,6 +2914,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
 "Multiple Contactless Cards Detected" = "Multiple Contactless Cards Detected";
 
+/* Generic store name for the store info widget preview */
+"My Shop" = "My Shop";
+
 /* Title of the hub menu view in case there is no title for the store */
 "My Store" = "My Store";
 
@@ -2924,9 +2933,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Error showed in Shipping Label Address Validation for the name field */
 "Name missing" = "Name missing";
-
-/* VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen. */
-"Navigates to Settings." = "Navigates to Settings.";
 
 /* Title of the banner in the Order Detail for suggesting to install WCShip extension. */
 "Need a shipping label?" = "Need a shipping label?";
@@ -3234,6 +3240,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Navigates to Card Reader ordering screen */
 "Order card reader" = "Order card reader";
+
+/* Title for the webview used by merchants to place an order for a card reader, for use with In-Person Payments. */
+"Order Card Reader" = "Order Card Reader";
 
 /* Order notes section title */
 "Order Notes" = "Order Notes";
@@ -4248,9 +4257,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Placeholder in Shipping Label form for the Carrier and Rates row. */
 "Select your shipping carrier and rates" = "Select your shipping carrier and rates";
 
-/* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
-"Selected Store" = "Selected Store";
-
 /* Button title. Sends a email verification link (Magin link) for signing in. */
 "Send email verification link" = "Send email verification link";
 
@@ -4279,8 +4285,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Header text on Add New Service Package screen in Shipping Label flow */
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "Set up the package you'll be using to ship your products. We'll save it for future orders.";
 
-/* Accessibility label for the Settings button.
-   Settings button in the hub menu
+/* Settings button in the hub menu
    Settings navigation title */
 "Settings" = "Settings";
 
@@ -5288,6 +5293,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store.";
 
 /* Label for one of the filters in order date range
+   Range title for the today store info widget
    Tab selector title that shows the statistics for today
    Today Section Header
    Top Performers section title - today */

@@ -128,7 +128,6 @@ final class CouponDetailsViewModel: ObservableObject {
     private let currencySettings: CurrencySettings
 
     let isEditingEnabled: Bool
-    let isDeletingEnabled: Bool
 
     // Closure to be triggered when the coupon is updated successfully
     let onUpdate: () -> Void
@@ -149,8 +148,7 @@ final class CouponDetailsViewModel: ObservableObject {
         self.onDeletion = onDeletion
         self.onUpdate = onUpdate
 
-        isEditingEnabled = featureFlags.isFeatureFlagEnabled(.couponEditing) && coupon.discountType != .other
-        isDeletingEnabled = featureFlags.isFeatureFlagEnabled(.couponDeletion)
+        isEditingEnabled = coupon.discountType != .other
         populateDetails()
     }
 

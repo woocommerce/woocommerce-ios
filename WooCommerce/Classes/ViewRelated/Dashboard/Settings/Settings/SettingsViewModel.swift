@@ -272,7 +272,7 @@ private extension SettingsViewModel {
 
         // Remove Apple ID Access
         let removeAppleIDAccessSection: Section? = {
-            guard appleIDCredentialChecker.hasAppleUserID(), featureFlagService.isFeatureFlagEnabled(.appleIDAccountDeletion) else {
+            guard appleIDCredentialChecker.hasAppleUserID() else {
                 return nil
             }
             return Section(title: nil,

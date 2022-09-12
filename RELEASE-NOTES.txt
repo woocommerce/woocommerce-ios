@@ -1,5 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+10.4
+-----
+- [*] Help center: Added help center web page with FAQs for "Pick a WooCommerce Store" screen. [https://github.com/woocommerce/woocommerce-ios/pull/7641]
+- [*] Login: Users can now set up the Jetpack connection between a self-hosted site and their WP.com account. [https://github.com/woocommerce/woocommerce-ios/pull/7608]
+
 10.3
 -----
 - [*] Dashboard: the last selected time range tab (Today/This Week/This Month/This Year) is persisted for the site and shown on the next site launch (app launch or switching stores). [https://github.com/woocommerce/woocommerce-ios/pull/7638]

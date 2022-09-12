@@ -191,7 +191,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(rootController is ULErrorViewController)
     }
 
-    func test_errorViewController_returns_jetpack_connection_error_if_no_site_matches_the_given_self_hosted_site() {
+    func test_errorViewController_display_error_screen_if_no_site_matches_the_given_self_hosted_site() {
         // Given
         let manager = AuthenticationManager()
         let testSite = "http://test.com"

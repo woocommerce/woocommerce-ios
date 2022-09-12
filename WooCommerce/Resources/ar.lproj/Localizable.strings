@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-08-30 15:54:03+0000 */
+/* Translation-Revision-Date: 2022-09-07 12:54:03+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -32,6 +32,12 @@
 
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (خاص بالعميل)";
+
+/* A label prompting users to learn more about In-Person Payments.
+\u{2011} is a special character that acts as nonbreaking hyphen for "-" in the "In-Person" string.
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"%1$@ about Inu{2011}Person Payments" = "%1$@ بشأن المدفوعات⁦{2011}⁩ بشكل شخصي";
 
 /* A label prompting users to learn more about card readers"
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
@@ -2004,6 +2010,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message on the Coupon Details screen when deleting coupon fails */
 "Failed to delete coupon. Please try again." = "فشل حذف القسيمة. يرجى المحاولة مجددًا.";
+
+/* Error displayed when the attempt to disable a Pay in Person checkout payment option fails */
+"Failed to disable Pay in Person. Please try again later." = "فشل تمكين \"الدفع بشكل شخصي\". يرجى المحاولة مرة أخرى لاحقًا.";
 
 /* Error displayed when the attempt to enable a Pay in Person checkout payment option fails */
 "Failed to enable Pay in Person. Please try again later." = "فشل تمكين الدفع بشكل شخصي. يرجى المحاولة مرة أخرى لاحقًا.";
@@ -4891,6 +4900,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Fetching an Order Failed */
 "The Order couldn't be loaded!" = "تعذر تحميل الطلب!";
 
+/* A label prompting users to learn more about adding Pay in Person to their checkout. %1$@ is a placeholder that always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
+"The Pay in Person checkout option lets you accept payments for website orders, on collection or delivery. %1$@" = "يتيح لك خيار السداد \"الدفع بشكل شخصي\" قبول المدفوعات بالنسبة إلى الطلبات على موقع الويب عند التحصيل أو التسليم. %1$@";
+
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "يفتقد عنوان URL إلى مضيف صالح.";
 
@@ -5244,6 +5256,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Instructional text shown when requesting the user's password for Google login. */
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "للاستمرار باستخدام حساب Google هذا، يُرجى تسجيل الدخول أولاً باستخدام كلمة مرور وردبرس.كوم. سيُطلب منك هذا مرة واحدة فقط.";
+
+/* Sign in instructions asking user to enter WordPress.com password to proceed with sign in using Apple process */
+"To proceed with this account, please first log in with your WordPress.com password. This will only be asked once." = "للاستمرار باستخدام هذا الحساب، يُرجى تسجيل الدخول أولاً باستخدام كلمة مرورك في ووردبريس.كوم. سيُطلب منك هذا مرة واحدة فقط.";
 
 /* Label within the modal dialog that appears when searching for a card reader */
 "To turn on your card reader, briefly press its power button." = "لتشغيل قارئ البطاقات لديك، اضغط لفترة وجيزة على زر التشغيل لديك";

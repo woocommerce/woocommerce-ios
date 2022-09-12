@@ -94,11 +94,7 @@ private extension BetaFeaturesViewController {
     }
 
     func couponManagementSection() -> Section? {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.couponView) else {
-            return nil
-        }
-        return Section(rows: [.couponManagement,
-                              .couponManagementDescription])
+        Section(rows: [.couponManagement, .couponManagementDescription])
     }
 
     /// Register table cells.

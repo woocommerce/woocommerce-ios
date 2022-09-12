@@ -1,0 +1,1 @@
+Ainda que esta versão não tenha nenhuma funcionalidade nova, nós a fizemos com muito amor. Agora você pode ativar ou desativar a opção de receber pagamentos com cartão ou dinheiro na coleta ou entrega. Também adicionamos uma nova página da Central de ajuda que facilita o login no aplicativo.

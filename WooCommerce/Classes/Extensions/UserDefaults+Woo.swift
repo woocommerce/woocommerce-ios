@@ -10,6 +10,7 @@ extension UserDefaults {
         case defaultUsername
         case defaultSiteAddress
         case defaultStoreID
+        case defaultStoreName
         case defaultAnonymousID
         case defaultRoles
         case deviceID
@@ -23,6 +24,12 @@ extension UserDefaults {
         case notificationsLastSeenTime
         case notificationsMarkAsReadCount
     }
+}
+
+extension UserDefaults {
+    /// User defaults instance ready to be shared between extensions of the same group.
+    ///
+    static let group = UserDefaults(suiteName: WooConstants.sharedUserDefaultsSuiteName)
 }
 
 

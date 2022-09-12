@@ -33,6 +33,10 @@ def tracks
   # pod 'Automattic-Tracks-iOS', :path => '../Automattic-Tracks-iOS'
 end
 
+def keychain
+  pod 'KeychainAccess', '~> 4.2.2'
+end
+
 # Main Target!
 # ============
 #
@@ -66,7 +70,7 @@ target 'WooCommerce' do
   # ==================
   #
   pod 'Alamofire', '~> 4.8'
-  pod 'KeychainAccess', '~> 4.2.2'
+  keychain
   pod 'CocoaLumberjack', '~> 3.7.4'
   pod 'CocoaLumberjack/Swift', '~> 3.7.4'
   pod 'XLPagerTabStrip', '~> 9.0'
@@ -89,6 +93,7 @@ end
 target 'StoreWidgetsExtension' do
   project 'WooCommerce/WooCommerce.xcodeproj'
   tracks
+  keychain
 end
 
 # Yosemite Layer:

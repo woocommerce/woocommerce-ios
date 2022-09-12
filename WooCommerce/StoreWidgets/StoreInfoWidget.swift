@@ -16,7 +16,7 @@ struct StoreInfoWidget: Widget {
                 case .notConnected:
                     NotLoggedInView()
                 case .error:
-                    EmptyView() // TODO:
+                    UnableToFetchView()
                 case .data(let data):
                     StoreInfoView(entry: data)
                 }
@@ -126,6 +126,29 @@ private struct NotLoggedInView: View {
     }
 }
 
+private struct UnableToFetchView: View {
+    var body: some View {
+        ZStack {
+            // Background
+            Color(.brand)
+
+            VStack {
+                Image(uiImage: .wooLogoWhite)
+                    .resizable()
+                    .frame(width: Layout.logoSize.width, height: Layout.logoSize.height)
+
+                Spacer()
+
+                Text(Localization.unableToFetch)
+                    .statTextStyle()
+
+                Spacer()
+            }
+            .padding(.vertical, Layout.cardVerticalPadding)
+        }
+    }
+}
+
 // MARK: Constants
 
 /// Constants definition
@@ -160,6 +183,20 @@ private extension NotLoggedInView {
     }
 }
 
+/// Constants definition
+///
+private extension UnableToFetchView {
+    enum Localization {
+        static let unableToFetch = NSLocalizedString("Unable to fetch today's stats",
+                                                     comment: "Title label when the widget can't fetch data.")
+    }
+
+    enum Layout {
+        static let cardVerticalPadding = 22.0
+        static let logoSize = CGSize(width: 24, height: 16)
+    }
+}
+
 // MARK: Previews
 
 struct StoreWidgets_Previews: PreviewProvider {
@@ -175,6 +212,9 @@ struct StoreWidgets_Previews: PreviewProvider {
         .previewContext(WidgetPreviewContext(family: .systemMedium))
 
         NotLoggedInView()
+            .previewContext(WidgetPreviewContext(family: .systemMedium))
+
+        UnableToFetchView()
             .previewContext(WidgetPreviewContext(family: .systemMedium))
     }
 }

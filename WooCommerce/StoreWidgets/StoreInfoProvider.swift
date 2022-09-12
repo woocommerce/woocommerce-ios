@@ -98,10 +98,14 @@ final class StoreInfoProvider: TimelineProvider {
                 completion(timeline)
 
             } catch {
-                // TODO: Dispatch network error entry.
-                print("Error: \(error)")
-            }
 
+                // WooFoundation does not expose `DDLOG` types. Should we include them?
+                print("⛔️ Error fetching today's widget stats: \(error)")
+
+                let reloadDate = Date(timeIntervalSinceNow: 30 * 60) // Ask for a 30 minutes reload.
+                let timeline = Timeline<StoreInfoEntry>(entries: [.error], policy: .after(reloadDate))
+                completion(timeline)
+            }
         }
     }
 }

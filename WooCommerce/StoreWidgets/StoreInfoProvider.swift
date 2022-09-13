@@ -141,8 +141,8 @@ private extension StoreInfoProvider {
             comment: "Generic store name for the store info widget preview"
         )
         static let today = AppLocalizedString(
-            "storWidgets.infoProvider.today",
-            value "Today",
+            "storeWidgets.infoProvider.today",
+            value: "Today",
             comment: "Range title for the today store info widget"
         )
     }

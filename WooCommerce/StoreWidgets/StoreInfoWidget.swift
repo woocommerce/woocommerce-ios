@@ -209,8 +209,11 @@ private extension NotLoggedInView {
 ///
 private extension UnableToFetchView {
     enum Localization {
-        static let unableToFetch = NSLocalizedString("Unable to fetch today's stats",
-                                                     comment: "Title label when the widget can't fetch data.")
+        static let unableToFetch = AppLocalizedString(
+            "storeWidgets.unableToFetchView.unableToFetch",
+            value: "Unable to fetch today's stats",
+            comment: "Title label when the widget can't fetch data."
+        )
     }
 
     enum Layout {

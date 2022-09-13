@@ -304,7 +304,6 @@ private extension StoreStatsAndTopPerformersViewController {
                     if vc.timeRange == .today {
                         WidgetCenter.shared.reloadTimelines(ofKind: WooConstants.storeInfoWidgetKind)
                     }
-                    
                 } else {
                     syncError = periodSyncError
                 }

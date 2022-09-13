@@ -83,7 +83,7 @@ final class StoreInfoProvider: TimelineProvider {
             return completion(Timeline<StoreInfoEntry>(entries: [StoreInfoEntry.notConnected], policy: .never))
         }
 
-        let strongService = StoreInfoDataService(authToken: dependencies.authToken, siteTimeZone: dependencies.storeTimeZone)
+        let strongService = StoreInfoDataService(authToken: dependencies.authToken)
         networkService = strongService
         Task {
             do {
@@ -121,7 +121,6 @@ private extension StoreInfoProvider {
         let authToken: String
         let storeID: Int64
         let storeName: String
-        let storeTimeZone: TimeZone
         let storeCurrencySettings: CurrencySettings
     }
 
@@ -132,8 +131,6 @@ private extension StoreInfoProvider {
         guard let authToken = keychain[WooConstants.authToken],
               let storeID = UserDefaults.group?[.defaultStoreID] as? Int64,
               let storeName = UserDefaults.group?[.defaultStoreName] as? String,
-              let storeTimeZoneGMTOffset = UserDefaults.group?[.defaultStoreTimeZoneGMTOffset] as? Int,
-              let storeTimeZone = TimeZone(secondsFromGMT: storeTimeZoneGMTOffset),
               let storeCurrencySettingsData = UserDefaults.group?[.defaultStoreCurrencySettings] as? Data,
               let storeCurrencySettings = try? JSONDecoder().decode(CurrencySettings.self, from: storeCurrencySettingsData) else {
             return nil
@@ -141,7 +138,6 @@ private extension StoreInfoProvider {
         return Dependencies(authToken: authToken,
                             storeID: storeID,
                             storeName: storeName,
-                            storeTimeZone: storeTimeZone,
                             storeCurrencySettings: storeCurrencySettings)
     }
 }

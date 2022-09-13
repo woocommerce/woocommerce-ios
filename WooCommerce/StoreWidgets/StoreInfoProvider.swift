@@ -1,4 +1,5 @@
 import WidgetKit
+import WooFoundation
 import KeychainAccess
 
 /// Type that represents the all the possible Widget states.
@@ -53,16 +54,20 @@ final class StoreInfoProvider: TimelineProvider {
     ///
     private var networkService: StoreInfoDataService?
 
+    /// Desired data reload interval provided to system = 30 minutes.
+    ///
+    private let reloadInterval: TimeInterval = 30 * 60
+
     /// Redacted entry with sample data.
     ///
     func placeholder(in context: Context) -> StoreInfoEntry {
         let dependencies = Self.fetchDependencies()
         return StoreInfoEntry.data(.init(range: Localization.today,
                                          name: dependencies?.storeName ?? Localization.myShop,
-                                         revenue: "$132.234",
+                                         revenue: Self.formattedAmountString(for: 132.234, with: dependencies?.storeCurrencySettings),
                                          visitors: "67",
                                          orders: "23",
-                                         conversion: "34%"))
+                                         conversion: Self.formattedConversionString(for: 23/67)))
     }
 
     /// Quick Snapshot. Required when previewing the widget.
@@ -72,7 +77,6 @@ final class StoreInfoProvider: TimelineProvider {
     }
 
     /// Real data widget.
-    /// TODO: Update with real data.
     ///
     func getTimeline(in context: Context, completion: @escaping (Timeline<StoreInfoEntry>) -> Void) {
         guard let dependencies = Self.fetchDependencies() else {
@@ -85,15 +89,14 @@ final class StoreInfoProvider: TimelineProvider {
             do {
                 let todayStats = try await strongService.fetchTodayStats(for: dependencies.storeID)
 
-                // TODO: Use proper store formatting.
                 let entry = StoreInfoEntry.data(.init(range: Localization.today,
                                                       name: dependencies.storeName,
-                                                      revenue: "$\(todayStats.revenue)",
+                                                      revenue: Self.formattedAmountString(for: todayStats.revenue, with: dependencies.storeCurrencySettings),
                                                       visitors: "\(todayStats.totalVisitors)",
                                                       orders: "\(todayStats.totalOrders)",
-                                                      conversion: "\(todayStats.conversion)%"))
+                                                      conversion: Self.formattedConversionString(for: todayStats.conversion)))
 
-                let reloadDate = Date(timeIntervalSinceNow: 30 * 60) // Ask for a 15 minutes reload.
+                let reloadDate = Date(timeIntervalSinceNow: reloadInterval)
                 let timeline = Timeline<StoreInfoEntry>(entries: [entry], policy: .after(reloadDate))
                 completion(timeline)
 
@@ -102,7 +105,7 @@ final class StoreInfoProvider: TimelineProvider {
                 // WooFoundation does not expose `DDLOG` types. Should we include them?
                 print("⛔️ Error fetching today's widget stats: \(error)")
 
-                let reloadDate = Date(timeIntervalSinceNow: 30 * 60) // Ask for a 30 minutes reload.
+                let reloadDate = Date(timeIntervalSinceNow: reloadInterval)
                 let timeline = Timeline<StoreInfoEntry>(entries: [.error], policy: .after(reloadDate))
                 completion(timeline)
             }
@@ -118,6 +121,7 @@ private extension StoreInfoProvider {
         let authToken: String
         let storeID: Int64
         let storeName: String
+        let storeCurrencySettings: CurrencySettings
     }
 
     /// Fetches the required dependencies from the keychain and the shared users default.
@@ -126,14 +130,40 @@ private extension StoreInfoProvider {
         let keychain = Keychain(service: WooConstants.keychainServiceName)
         guard let authToken = keychain[WooConstants.authToken],
               let storeID = UserDefaults.group?[.defaultStoreID] as? Int64,
-              let storeName = UserDefaults.group?[.defaultStoreName] as? String else {
+              let storeName = UserDefaults.group?[.defaultStoreName] as? String,
+              let storeCurrencySettingsData = UserDefaults.group?[.defaultStoreCurrencySettings] as? Data,
+              let storeCurrencySettings = try? JSONDecoder().decode(CurrencySettings.self, from: storeCurrencySettingsData) else {
             return nil
         }
-        return Dependencies(authToken: authToken, storeID: storeID, storeName: storeName)
+        return Dependencies(authToken: authToken,
+                            storeID: storeID,
+                            storeName: storeName,
+                            storeCurrencySettings: storeCurrencySettings)
     }
 }
 
 private extension StoreInfoProvider {
+
+    static func formattedAmountString(for amountValue: Decimal, with currencySettings: CurrencySettings?) -> String {
+        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings ?? CurrencySettings())
+        return currencyFormatter.formatAmount(amountValue) ?? Constants.valuePlaceholderText
+    }
+
+    static func formattedConversionString(for conversionRate: Double) -> String {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .percent
+        numberFormatter.minimumFractionDigits = 1
+
+        // do not add 0 fraction digit if the percentage is round
+        let minimumFractionDigits = floor(conversionRate * 100.0) == conversionRate * 100.0 ? 0 : 1
+        numberFormatter.minimumFractionDigits = minimumFractionDigits
+        return numberFormatter.string(from: conversionRate as NSNumber) ?? Constants.valuePlaceholderText
+    }
+
+    enum Constants {
+        static let valuePlaceholderText = "-"
+    }
+
     enum Localization {
         static let myShop = AppLocalizedString(
             "storeWidgets.infoProvider.myShop",

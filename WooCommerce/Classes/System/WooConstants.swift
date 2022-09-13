@@ -25,6 +25,14 @@ enum WooConstants {
     ///
     static let anonymousIDKey = "anonymousID"
 
+    /// Keychain Access's Key for auth token
+    ///
+    static let authToken = "authToken"
+
+    /// Shared UsersDefaults Suite Name
+    ///
+    static let sharedUserDefaultsSuiteName = "group.com.automattic.woocommerce"
+
     /// Push Notifications ApplicationID
     ///
 #if DEBUG
@@ -102,6 +110,10 @@ extension WooConstants {
         /// Help Center for "Jetpack required error" screen
         ///
         case helpCenterForJetpackRequiredError = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#jetpack-required"
+
+        /// Help Center for "Store picker" screen
+        ///
+        case helpCenterForStorePicker = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#pick-store-after-entering-password"
 
         /// URL used for Learn More button in Orders empty state.
         ///

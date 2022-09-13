@@ -1,0 +1,1 @@
+Diese Version enthält zwar keine neuen Funktionen, wir haben uns aber trotzdem viel Mühe gegeben! Du kannst jetzt die Option für Karten- oder Bargeldzahlungen bei Abholung oder Zustellung aktivieren oder deaktivieren. Außerdem haben wir eine neue Seite zum Hilfe-Center hinzugefügt, die dir das Anmelden in der App erleichtert.

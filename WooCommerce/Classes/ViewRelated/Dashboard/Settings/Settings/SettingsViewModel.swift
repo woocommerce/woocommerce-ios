@@ -212,8 +212,7 @@ private extension SettingsViewModel {
         let storeSettingsSection: Section? = {
             var rows: [Row] = []
 
-            if stores.sessionManager.defaultSite?.isJetpackCPConnected == true,
-                featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport) {
+            if stores.sessionManager.defaultSite?.isJetpackCPConnected == true {
                 rows.append(.installJetpack)
             }
 
@@ -273,7 +272,7 @@ private extension SettingsViewModel {
 
         // Remove Apple ID Access
         let removeAppleIDAccessSection: Section? = {
-            guard appleIDCredentialChecker.hasAppleUserID(), featureFlagService.isFeatureFlagEnabled(.appleIDAccountDeletion) else {
+            guard appleIDCredentialChecker.hasAppleUserID() else {
                 return nil
             }
             return Section(title: nil,

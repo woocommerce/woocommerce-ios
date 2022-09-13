@@ -62,7 +62,8 @@ class WooCommerceScreenshots: XCTestCase {
         .goBackToOrdersScreen()
 
         // Products
-        .tabBar.goToProductsScreen()
+        try TabNavComponent()
+        .goToProductsScreen()
         .selectAddProduct()
         .thenTakeScreenshot(named: "product-add")
 

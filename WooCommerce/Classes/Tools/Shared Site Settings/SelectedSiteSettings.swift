@@ -62,6 +62,8 @@ extension SelectedSiteSettings {
         fetchedObjects.forEach {
             ServiceLocator.currencySettings.updateCurrencyOptions(with: $0)
         }
+
+        UserDefaults.group?[.defaultStoreCurrencySettings] = try? JSONEncoder().encode(ServiceLocator.currencySettings)
     }
 }
 

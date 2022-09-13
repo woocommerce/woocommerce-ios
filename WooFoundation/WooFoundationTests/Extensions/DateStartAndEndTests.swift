@@ -1,5 +1,5 @@
 import XCTest
-@testable import WooCommerce
+@testable import WooFoundation
 
 final class DateStartAndEndTests: XCTestCase {
     private let gmtPlus8TimeZone: TimeZone = TimeZone(secondsFromGMT: 8 * 3600)!

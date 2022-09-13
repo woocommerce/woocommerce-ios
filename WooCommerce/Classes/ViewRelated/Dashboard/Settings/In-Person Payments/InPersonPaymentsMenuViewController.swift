@@ -20,7 +20,10 @@ final class InPersonPaymentsMenuViewController: UIViewController {
                             reason: "reason",
                             countryCode: configurationLoader.configuration.countryCode))
     }()
-    private let inPersonPaymentsMenuViewModel: InPersonPaymentsMenuViewModel
+
+    private let viewModel: InPersonPaymentsMenuViewModel = InPersonPaymentsMenuViewModel()
+
+    private let cashOnDeliveryToggleRowViewModel: InPersonPaymentsCashOnDeliveryToggleRowViewModel
 
     /// No Manuals to be shown in a country where IPP is not supported
     /// 
@@ -53,7 +56,7 @@ final class InPersonPaymentsMenuViewController: UIViewController {
         self.featureFlagService = featureFlagService
         self.cardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase()
         configurationLoader = CardPresentConfigurationLoader()
-        self.inPersonPaymentsMenuViewModel = InPersonPaymentsMenuViewModel()
+        self.cashOnDeliveryToggleRowViewModel = InPersonPaymentsCashOnDeliveryToggleRowViewModel()
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -71,6 +74,8 @@ final class InPersonPaymentsMenuViewController: UIViewController {
         registerTableViewCells()
         configureTableReload()
         runCardPresentPaymentsOnboarding()
+        configureWebViewPresentation()
+        viewModel.viewDidLoad()
     }
 }
 
@@ -136,11 +141,11 @@ private extension InPersonPaymentsMenuViewController {
     func updateViewModelSelectedPlugin(state: CardPresentPaymentOnboardingState) {
         switch state {
         case let .completed(pluginState):
-            inPersonPaymentsMenuViewModel.selectedPlugin = pluginState.preferred
+            cashOnDeliveryToggleRowViewModel.selectedPlugin = pluginState.preferred
         case let .codPaymentGatewayNotSetUp(plugin):
-            inPersonPaymentsMenuViewModel.selectedPlugin = plugin
+            cashOnDeliveryToggleRowViewModel.selectedPlugin = plugin
         default:
-            inPersonPaymentsMenuViewModel.selectedPlugin = nil
+            cashOnDeliveryToggleRowViewModel.selectedPlugin = nil
         }
     }
 
@@ -298,11 +303,11 @@ private extension InPersonPaymentsMenuViewController {
         cell.configure(image: .creditCardIcon,
                        text: Localization.toggleEnableCashOnDelivery,
                        subtitle: learnMoreViewModel.learnMoreAttributedString,
-                       switchState: inPersonPaymentsMenuViewModel.cashOnDeliveryEnabledState,
-                       switchAction: inPersonPaymentsMenuViewModel.updateCashOnDeliverySetting(enabled:),
+                       switchState: cashOnDeliveryToggleRowViewModel.cashOnDeliveryEnabledState,
+                       switchAction: cashOnDeliveryToggleRowViewModel.updateCashOnDeliverySetting(enabled:),
                        subtitleTapAction: { [weak self] in
             guard let self = self else { return }
-            self.inPersonPaymentsMenuViewModel.learnMoreTapped(from: self)
+            self.cashOnDeliveryToggleRowViewModel.learnMoreTapped(from: self)
         })
     }
 
@@ -313,8 +318,18 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     func configureTableReload() {
-        inPersonPaymentsMenuViewModel.$cashOnDeliveryEnabledState.sink { [weak self] _ in
+        cashOnDeliveryToggleRowViewModel.$cashOnDeliveryEnabledState.sink { [weak self] _ in
             self?.tableView.reloadData()
+        }.store(in: &cancellables)
+    }
+
+    private func configureWebViewPresentation() {
+        viewModel.$showWebView.sink { viewModel in
+            guard let viewModel = viewModel else {
+                return
+            }
+            let connectionController = AuthenticatedWebViewController(viewModel: viewModel)
+            self.navigationController?.show(connectionController, sender: nil)
         }.store(in: &cancellables)
     }
 }
@@ -331,8 +346,7 @@ private extension InPersonPaymentsMenuViewController {
 //
 extension InPersonPaymentsMenuViewController {
     func orderCardReaderWasPressed() {
-        ServiceLocator.analytics.track(.paymentsMenuOrderCardReaderTapped)
-        WebviewHelper.launch(configurationLoader.configuration.purchaseCardReaderUrl(), with: self)
+        viewModel.orderCardReaderPressed()
     }
 
     func manageCardReaderWasPressed() {

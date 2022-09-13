@@ -70,7 +70,7 @@ final class NoWooErrorViewModel: ULErrorViewModel {
         }, onDismiss: {
             viewController.navigationController?.popViewController(animated: true)
         })
-        let setupViewController = PluginSetupWebViewController(viewModel: viewModel)
+        let setupViewController = AuthenticatedWebViewController(viewModel: viewModel)
         viewController.navigationController?.show(setupViewController, sender: nil)
     }
 
@@ -97,7 +97,7 @@ final class NoWooErrorViewModel: ULErrorViewModel {
 // MARK: - Private helpers
 private extension NoWooErrorViewModel {
     func handleSetupCompletion(in viewController: UIViewController, retryCount: Int = 0) {
-        let action = AccountAction.synchronizeSites(selectedSiteID: site.siteID, isJetpackConnectionPackageSupported: true) { [weak self] _ in
+        let action = AccountAction.synchronizeSites(selectedSiteID: site.siteID) { [weak self] _ in
             guard let self = self else { return }
 
             let matcher = ULAccountMatcher()

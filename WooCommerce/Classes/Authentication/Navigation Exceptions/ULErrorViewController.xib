@@ -74,7 +74,7 @@
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="mhI-fa-Yzw">
                             <rect key="frame" x="20" y="20" width="374" height="86"/>
                             <subviews>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZHa-is-GJK" userLabel="secondary action button">
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZHa-is-GJK" userLabel="secondary action button" customClass="ButtonActivityIndicator" customModule="WooCommerce" customModuleProvider="target">
                                     <rect key="frame" x="0.0" y="0.0" width="374" height="33"/>
                                     <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                                     <state key="normal" title="Primary Action Button">

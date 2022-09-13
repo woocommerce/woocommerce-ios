@@ -5,6 +5,7 @@
 - [*] Help center: Added help center web page with FAQs for "Pick a WooCommerce Store" screen. [https://github.com/woocommerce/woocommerce-ios/pull/7641]
 - [*] In-Person Payments: Fixed a bug where cancelling a card reader connection would temporarily prevent further connections [https://github.com/woocommerce/woocommerce-ios/pull/7689]
 - [*] In-Person Payments: Improvements to the card reader connection flow UI [https://github.com/woocommerce/woocommerce-ios/pull/7687]
+- [*] Login: Users can now set up the Jetpack connection between a self-hosted site and their WP.com account. [https://github.com/woocommerce/woocommerce-ios/pull/7608]
 
 10.3
 -----

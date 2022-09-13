@@ -11,7 +11,16 @@ struct StoreInfoWidget: Widget {
 
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: "StoreInfoWidget", provider: StoreInfoProvider()) { entry in
-            StoreInfoView(entry: entry)
+            Group {
+                switch entry {
+                case .notConnected:
+                    NotLoggedInView()
+                case .error:
+                    UnableToFetchView()
+                case .data(let data):
+                    StoreInfoView(entry: data)
+                }
+            }
         }
         .configurationDisplayName("Store Info")
         .supportedFamilies(enableWidgets ? [.systemMedium] : [])
@@ -23,7 +32,7 @@ struct StoreInfoWidget: Widget {
 private struct StoreInfoView: View {
 
     // Entry to render
-    let entry: StoreInfoEntry
+    let entry: StoreInfoData
 
     var body: some View {
         ZStack {
@@ -117,16 +126,55 @@ private struct NotLoggedInView: View {
     }
 }
 
+private struct UnableToFetchView: View {
+    var body: some View {
+        ZStack {
+            // Background
+            Color(.brand)
+
+            VStack {
+                Image(uiImage: .wooLogoWhite)
+                    .resizable()
+                    .frame(width: Layout.logoSize.width, height: Layout.logoSize.height)
+
+                Spacer()
+
+                Text(Localization.unableToFetch)
+                    .statTextStyle()
+
+                Spacer()
+            }
+            .padding(.vertical, Layout.cardVerticalPadding)
+        }
+    }
+}
+
 // MARK: Constants
 
 /// Constants definition
 ///
 private extension StoreInfoView {
     enum Localization {
-        static let revenue = NSLocalizedString("Revenue", comment: "Revenue title label for the store info widget")
-        static let visitors = NSLocalizedString("Visitors", comment: "Visitors title label for the store info widget")
-        static let orders = NSLocalizedString("Orders", comment: "Orders title label for the store info widget")
-        static let conversion = NSLocalizedString("Conversion", comment: "Conversion title label for the store info widget")
+        static let revenue = AppLocalizedString(
+            "storeWidgets.infoView.revenue",
+            value: "Revenue",
+            comment: "Revenue title label for the store info widget"
+        )
+        static let visitors = AppLocalizedString(
+            "storeWidgets.infoView.visitors",
+            value: "Visitors",
+            comment: "Visitors title label for the store info widget"
+        )
+        static let orders = AppLocalizedString(
+            "storeWidgets.infoView.orders",
+            value: "Orders",
+            comment: "Orders title label for the store info widget"
+        )
+        static let conversion = AppLocalizedString(
+            "storeWidgets.infoView.orders",
+            value: "Conversion",
+            comment: "Conversion title label for the store info widget"
+        )
     }
 
     enum Layout {
@@ -139,10 +187,33 @@ private extension StoreInfoView {
 ///
 private extension NotLoggedInView {
     enum Localization {
-        static let notLoggedIn = NSLocalizedString("Log in to see today’s stats.",
-                                                   comment: "Title label when the widget does not have a logged-in store.")
-        static let login = NSLocalizedString("Log in",
-                                             comment: "Title label for the login button on the store info widget.")
+        static let notLoggedIn = AppLocalizedString(
+            "storeWidgets.notLoggedInView.notLoggedIn",
+            value: "Log in to see today’s stats.",
+            comment: "Title label when the widget does not have a logged-in store."
+        )
+        static let login = AppLocalizedString(
+            "storeWidgets.notLoggedInView.login",
+            value: "Log in",
+            comment: "Title label for the login button on the store info widget."
+        )
+    }
+
+    enum Layout {
+        static let cardVerticalPadding = 22.0
+        static let logoSize = CGSize(width: 24, height: 16)
+    }
+}
+
+/// Constants definition
+///
+private extension UnableToFetchView {
+    enum Localization {
+        static let unableToFetch = AppLocalizedString(
+            "storeWidgets.unableToFetchView.unableToFetch",
+            value: "Unable to fetch today's stats",
+            comment: "Title label when the widget can't fetch data."
+        )
     }
 
     enum Layout {
@@ -156,17 +227,19 @@ private extension NotLoggedInView {
 struct StoreWidgets_Previews: PreviewProvider {
     static var previews: some View {
         StoreInfoView(
-            entry: StoreInfoEntry(date: Date(),
-                                  range: "Today",
-                                  name: "Ernest Shop",
-                                  revenue: "$132.234",
-                                  visitors: "67",
-                                  orders: "23",
-                                  conversion: "37%")
+            entry: StoreInfoData(range: "Today",
+                                 name: "Ernest Shop",
+                                 revenue: "$132.234",
+                                 visitors: "67",
+                                 orders: "23",
+                                 conversion: "37%")
         )
         .previewContext(WidgetPreviewContext(family: .systemMedium))
 
         NotLoggedInView()
+            .previewContext(WidgetPreviewContext(family: .systemMedium))
+
+        UnableToFetchView()
             .previewContext(WidgetPreviewContext(family: .systemMedium))
     }
 }

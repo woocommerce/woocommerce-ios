@@ -118,7 +118,6 @@ private extension StoreInfoProvider {
         let authToken: String
         let storeID: Int64
         let storeName: String
-        let storeTimeZone: TimeZone
     }
 
     /// Fetches the required dependencies from the keychain and the shared users default.
@@ -127,12 +126,10 @@ private extension StoreInfoProvider {
         let keychain = Keychain(service: WooConstants.keychainServiceName)
         guard let authToken = keychain[WooConstants.authToken],
               let storeID = UserDefaults.group?[.defaultStoreID] as? Int64,
-              let storeName = UserDefaults.group?[.defaultStoreName] as? String,
-              let storeTimeZoneGMTOffset = UserDefaults.group?[.defaultStoreTimeZoneGMTOffset] as? Int,
-              let storeTimeZone = TimeZone(secondsFromGMT: storeTimeZoneGMTOffset) else {
+              let storeName = UserDefaults.group?[.defaultStoreName] as? String else {
             return nil
         }
-        return Dependencies(authToken: authToken, storeID: storeID, storeName: storeName, storeTimeZone: storeTimeZone)
+        return Dependencies(authToken: authToken, storeID: storeID, storeName: storeName)
     }
 }
 

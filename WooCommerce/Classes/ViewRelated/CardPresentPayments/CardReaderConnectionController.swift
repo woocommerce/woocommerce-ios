@@ -532,7 +532,6 @@ private extension CardReaderConnectionController {
     /// End the search for a card reader
     ///
     func onCancel() {
-        alerts.dismiss()
         let action = CardPresentPaymentAction.cancelCardReaderDiscovery() { [weak self] _ in
             self?.returnSuccess(result: .canceled)
         }
@@ -764,8 +763,8 @@ private extension CardReaderConnectionController {
     /// Calls the completion with a success result
     ///
     private func returnSuccess(result: ConnectionResult) {
-        alerts.dismiss()
         onCompletion?(.success(result))
+        alerts.dismiss()
         state = .idle
     }
 

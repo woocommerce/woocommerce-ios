@@ -1,4 +1,5 @@
 import Foundation
+import WooFoundation
 
 extension Date {
     // MARK: Day
@@ -17,7 +18,7 @@ extension Date {
             var components = DateComponents()
             components.day = 1
             guard let nextDay = calendar.date(byAdding: components, to: startOfDay(timezone: timezone)) else {
-                fatalError("The next day cannot be calculated for \(self) with time zone \(timezone)")
+                logErrorAndExit("The next day cannot be calculated for \(self) with time zone \(timezone)")
             }
             return nextDay.startOfDay(timezone: timezone)
         }()
@@ -26,7 +27,7 @@ extension Date {
             var components = DateComponents()
             components.second = -1
             guard let date = calendar.date(byAdding: components, to: startOfNextDay) else {
-                fatalError("The end of today cannot be calculated from the start of tomorrow \(startOfNextDay) with time zone \(timezone)")
+                logErrorAndExit("The end of today cannot be calculated from the start of tomorrow \(startOfNextDay) with time zone \(timezone)")
             }
             return date
         }()

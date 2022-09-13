@@ -1,6 +1,6 @@
 import UIKit
 
-final class SeveralReadersFoundViewController: UIViewController, UITableViewDelegate {
+final class SeveralReadersFoundViewController: UIViewController, UITableViewDelegate, CardReaderModalFlowViewControllerProtocol {
 
     @IBOutlet private weak var containerView: UIView!
 
@@ -21,8 +21,6 @@ final class SeveralReadersFoundViewController: UIViewController, UITableViewDele
 
     init() {
         super.init(nibName: Self.nibName, bundle: nil)
-
-        modalPresentationStyle = .overFullScreen
     }
 
     required init?(coder: NSCoder) {
@@ -198,15 +196,11 @@ private extension SeveralReadersFoundViewController {
 //
 private extension SeveralReadersFoundViewController {
     @objc func didTapConnect(readerID: String) {
-        self.dismiss(animated: true, completion: {
-            self.onConnect?(readerID)
-        })
+        self.onConnect?(readerID)
     }
 
     @objc func didTapCancel() {
-        self.dismiss(animated: true, completion: {
-            self.onCancel?()
-        })
+        self.onCancel?()
     }
 }
 

@@ -79,11 +79,15 @@ final class CardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
                              connect: @escaping (String) -> Void,
                              cancelSearch: @escaping () -> Void) {
         severalFoundController = SeveralReadersFoundViewController()
-        severalFoundController?.configureController(
-            readerIDs: readerIDs,
-            connect: connect,
-            cancelSearch: cancelSearch
-        )
+
+        if let severalFoundController = severalFoundController {
+            severalFoundController.configureController(
+                readerIDs: readerIDs,
+                connect: connect,
+                cancelSearch: cancelSearch
+            )
+            severalFoundController.prepareForCardReaderModalFlow()
+        }
 
         dismissCommonAndPresent(animated: false, from: from, present: severalFoundController)
     }
@@ -121,7 +125,8 @@ private extension CardReaderSettingsAlerts {
         /// Dismiss any common modal
         ///
         guard modalController == nil else {
-            modalController?.dismiss(animated: false, completion: { [weak self] in
+            let shouldAnimateDismissal = animated && present == nil
+            modalController?.dismiss(animated: shouldAnimateDismissal, completion: { [weak self] in
                 self?.modalController = nil
                 guard let from = from, let present = present else {
                     return
@@ -144,7 +149,8 @@ private extension CardReaderSettingsAlerts {
     ///
     func dismissSeveralFoundAndPresent(animated: Bool = true, from: UIViewController? = nil, present: CardPresentPaymentsModalViewController? = nil) {
         guard severalFoundController == nil else {
-            severalFoundController?.dismiss(animated: false, completion: { [weak self] in
+            let shouldAnimateDismissal = animated && present == nil
+            severalFoundController?.dismiss(animated: shouldAnimateDismissal, completion: { [weak self] in
                 self?.severalFoundController = nil
                 guard let from = from, let present = present else {
                     return
@@ -229,9 +235,8 @@ private extension CardReaderSettingsAlerts {
             return
         }
 
-        modalController.modalPresentationStyle = .custom
-        modalController.transitioningDelegate = AppDelegate.shared.tabBarController
+        modalController.prepareForCardReaderModalFlow()
 
-        dismissSeveralFoundAndPresent(animated: false, from: from, present: modalController)
+        dismissSeveralFoundAndPresent(animated: true, from: from, present: modalController)
     }
 }

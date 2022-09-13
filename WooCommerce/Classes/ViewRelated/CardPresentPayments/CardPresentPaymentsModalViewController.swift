@@ -4,7 +4,7 @@ import SafariServices
 
 
 /// UI containing modals presented in the Card Present Payments flows.
-final class CardPresentPaymentsModalViewController: UIViewController {
+final class CardPresentPaymentsModalViewController: UIViewController, CardReaderModalFlowViewControllerProtocol {
     /// The view model providing configuration for this view controller
     /// and support for user actions
     private var viewModel: CardPresentPaymentsModalViewModel

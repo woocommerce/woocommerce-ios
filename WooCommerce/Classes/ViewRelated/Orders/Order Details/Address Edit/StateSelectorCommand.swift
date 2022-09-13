@@ -1,44 +1,43 @@
 import Foundation
 import Yosemite
 
+extension StateOfACountry: CommonProtocol {}
+
 /// Command to be used to select a state when editing addresses.
 ///
 final class StateSelectorCommand: ObservableListSelectorCommand {
-    //typealias Model = StateOfACountry
-    //typealias Cell = BasicTableViewCell
-
     /// Original array of states.
     ///
-    private let states: [StateOfACountry]
+    private let states: [CommonProtocol]
 
     /// Data to display
     ///
-    @Published private(set) var data: [StateOfACountry]
+    @Published private(set) var data: [CommonProtocol]
 
     /// Current selected state
     ///
-    @Binding private(set) var selected: StateOfACountry?
+    @Binding private(set) var selected: CommonProtocol?
 
     /// Navigation bar title
     ///
     var navigationBarTitle: String? = ""
 
-    init(states: [StateOfACountry], selected: Binding<StateOfACountry?>) {
+    init(states: [CommonProtocol], selected: Binding<CommonProtocol?>) {
         self.states = states
         self.data = states
         self._selected = selected
     }
 
-    func handleSelectedChange(selected: StateOfACountry, viewController: ViewController) {
+    func handleSelectedChange(selected: CommonProtocol, viewController: ViewController) {
         self.selected = selected
         viewController.navigationController?.popViewController(animated: true)
     }
 
-    func isSelected(model: StateOfACountry) -> Bool {
-        model == selected
+    func isSelected(model: CommonProtocol) -> Bool {
+        model.name == selected?.name
     }
 
-    func configureCell(cell: BasicTableViewCell, model: StateOfACountry) {
+    func configureCell(cell: BasicTableViewCell, model: CommonProtocol) {
         cell.textLabel?.text = model.name
     }
 

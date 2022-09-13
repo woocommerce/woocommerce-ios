@@ -347,9 +347,9 @@ open class AddressFormViewModel: ObservableObject {
     /// Creates a view model to be used when selecting a state for primary fields
     ///
     func createStateViewModel() -> StateSelectorViewModel {
-        let selectedStateBinding = Binding(
+        let selectedStateBinding = Binding<CommonProtocol?>(
             get: { self.fields.selectedState },
-            set: { self.fields.selectedState = $0 }
+            set: { self.fields.selectedState = $0 as? StateOfACountry}
         )
 
         // Sort states from the selected country
@@ -370,9 +370,9 @@ open class AddressFormViewModel: ObservableObject {
     /// Creates a view model to be used when selecting a state for secondary fields
     ///
     func createSecondaryStateViewModel() -> StateSelectorViewModel {
-        let selectedStateBinding = Binding(
+        let selectedStateBinding = Binding<CommonProtocol?>(
             get: { self.secondaryFields.selectedState },
-            set: { self.secondaryFields.selectedState = $0 }
+            set: { self.secondaryFields.selectedState = $0 as? StateOfACountry}
         )
 
         // Sort states from the selected country

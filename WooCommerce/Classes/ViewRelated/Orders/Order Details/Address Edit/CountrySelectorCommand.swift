@@ -3,7 +3,6 @@ import Yosemite
 import SwiftUI
 
 protocol CommonProtocol {
-    //var navigationBarTitle: String? { get }
     var name: String { get }
     var code: String { get }
 }
@@ -12,9 +11,6 @@ extension Country: CommonProtocol {}
 /// Command to be used to select a country when editing addresses.
 ///
 final class CountrySelectorCommand: ObservableListSelectorCommand {
-    //typealias Model = CommonProtocol
-    //typealias Cell = BasicTableViewCell
-
     /// Original array of countries.
     ///
     private let countries: [CommonProtocol]

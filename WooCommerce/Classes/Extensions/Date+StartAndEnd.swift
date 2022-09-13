@@ -1,4 +1,5 @@
 import Foundation
+import WooFoundation
 
 extension Date {
     // MARK: Day
@@ -12,10 +13,25 @@ extension Date {
     /// Returns self's end of day in the given time zone.
     func endOfDay(timezone: TimeZone) -> Date {
         let calendar = createCalendar(timezone: timezone)
-        var components = DateComponents()
-        components.day = 1
-        components.second = -1
-        return calendar.date(byAdding: components, to: startOfDay(timezone: timezone))!
+
+        let startOfNextDay: Date = {
+            var components = DateComponents()
+            components.day = 1
+            guard let nextDay = calendar.date(byAdding: components, to: startOfDay(timezone: timezone)) else {
+                logErrorAndExit("The next day cannot be calculated for \(self) with time zone \(timezone)")
+            }
+            return nextDay.startOfDay(timezone: timezone)
+        }()
+
+        let endOfToday: Date = {
+            var components = DateComponents()
+            components.second = -1
+            guard let date = calendar.date(byAdding: components, to: startOfNextDay) else {
+                logErrorAndExit("The end of today cannot be calculated from the start of tomorrow \(startOfNextDay) with time zone \(timezone)")
+            }
+            return date
+        }()
+        return endOfToday
     }
 
     // MARK: Week

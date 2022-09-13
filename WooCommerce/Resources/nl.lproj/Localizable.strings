@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-08-31 16:54:05+0000 */
+/* Translation-Revision-Date: 2022-09-06 15:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -32,6 +32,12 @@
 
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (aan klant)";
+
+/* A label prompting users to learn more about In-Person Payments.
+\u{2011} is a special character that acts as nonbreaking hyphen for "-" in the "In-Person" string.
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"%1$@ about Inu{2011}Person Payments" = "%1$@ over {2011}Fysieke betalingen";
 
 /* A label prompting users to learn more about card readers"
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
@@ -2004,6 +2010,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message on the Coupon Details screen when deleting coupon fails */
 "Failed to delete coupon. Please try again." = "Verwijderen van coupon mislukt. Probeer het nog eens.";
+
+/* Error displayed when the attempt to disable a Pay in Person checkout payment option fails */
+"Failed to disable Pay in Person. Please try again later." = "Uitschakelen van fysieke betalingen mislukt. Probeer het later opnieuw.";
 
 /* Error displayed when the attempt to enable a Pay in Person checkout payment option fails */
 "Failed to enable Pay in Person. Please try again later." = "Inschakelen van fysieke betalingen mislukt. Probeer het later opnieuw.";
@@ -4891,6 +4900,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Fetching an Order Failed */
 "The Order couldn't be loaded!" = "De bestelling kon niet worden geladen!";
 
+/* A label prompting users to learn more about adding Pay in Person to their checkout. %1$@ is a placeholder that always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
+"The Pay in Person checkout option lets you accept payments for website orders, on collection or delivery. %1$@" = "Met de optie 'Fysiek betalen' kan je betalingen voor websitebestellingen accepteren bij ophalen of ontvangst. %1$@";
+
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "De URL heeft geen geldige host.";
 
@@ -5244,6 +5256,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Instructional text shown when requesting the user's password for Google login. */
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "Om verder te gaan met dit Google account, meld je eerst aan met je WordPress.com wachtwoord. Dit wordt maar één keer gevraagd.";
+
+/* Sign in instructions asking user to enter WordPress.com password to proceed with sign in using Apple process */
+"To proceed with this account, please first log in with your WordPress.com password. This will only be asked once." = "Om door te gaan met dit account moet je eerst inloggen met je wachtwoord van WordPress.com. Je wordt hier slechts eenmaal om gevraagd.";
 
 /* Label within the modal dialog that appears when searching for a card reader */
 "To turn on your card reader, briefly press its power button." = "Zet je kaartlezer aan door kort op de aan-uitknop te drukken.";

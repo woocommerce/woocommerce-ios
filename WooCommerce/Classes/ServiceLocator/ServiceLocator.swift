@@ -38,8 +38,7 @@ final class ServiceLocator {
 
     /// Product image uploader
     ///
-    private static var _productImageUploader: ProductImageUploaderProtocol =
-    featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) ? ProductImageUploader(): LegacyProductImageUploader()
+    private static var _productImageUploader: ProductImageUploaderProtocol = ProductImageUploader()
 
     /// Push Notifications Manager
     ///

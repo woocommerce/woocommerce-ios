@@ -47,7 +47,7 @@ final class OrderDetailsDataSource: NSObject {
     /// Whether the order is eligible for card present payment.
     ///
     var isEligibleForPayment: Bool {
-        order.needsPayment
+        return order.datePaid == nil
     }
 
     var isEligibleForRefund: Bool {
@@ -999,17 +999,17 @@ extension OrderDetailsDataSource {
 
             var rows: [Row] = Array(repeating: .aggregateOrderItem, count: aggregateOrderItemCount)
 
-            switch (shouldShowShippingLabelCreation, isProcessingStatus, isRefundedStatus) {
-            case (true, false, false):
+            switch (shouldShowShippingLabelCreation, isProcessingStatus, isRefundedStatus, isEligibleForPayment) {
+            case (true, false, false, false):
                 // Order completed and eligible for shipping label creation:
                 rows.append(.shippingLabelCreateButton)
                 rows.append(.shippingLabelCreationInfo(showsSeparator: false))
-            case (true, true, false):
+            case (true, true, false, false):
                 // Order processing shippable:
                 rows.append(.shippingLabelCreateButton)
                 rows.append(.markCompleteButton(style: .secondary, showsBottomSpacing: false))
                 rows.append(.shippingLabelCreationInfo(showsSeparator: false))
-            case (false, true, false):
+            case (false, true, false, false):
                 // Order processing digital:
                 rows.append(.markCompleteButton(style: .primary, showsBottomSpacing: true))
             default:

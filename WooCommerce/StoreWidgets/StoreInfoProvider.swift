@@ -1,13 +1,25 @@
 import WidgetKit
 import KeychainAccess
 
-/// Type that represents the Widget information
+/// Type that represents the all the possible Widget states.
 ///
-struct StoreInfoEntry: TimelineEntry {
-    /// Date to request new info
-    ///
-    var date: Date
+enum StoreInfoEntry: TimelineEntry {
+    // Represents a not logged-in state
+    case notConnected
 
+    // Represents a fetching error state
+    case error
+
+    // Represents a fetched data state
+    case data(StoreInfoData)
+
+    // Current date, needed by the `TimelineEntry` protocol.
+    var date: Date { Date() }
+}
+
+/// Type that represents the the widget state data.
+///
+struct StoreInfoData {
     /// Eg: Today, Weekly, Monthly, Yearly
     ///
     var range: String
@@ -35,18 +47,22 @@ struct StoreInfoEntry: TimelineEntry {
 
 /// Type that provides data entries to the widget system.
 ///
-struct StoreInfoProvider: TimelineProvider {
+final class StoreInfoProvider: TimelineProvider {
+
+    /// Holds a reference to the service while a network request is being performed.
+    ///
+    private var networkService: StoreInfoDataService?
+
     /// Redacted entry with sample data.
     ///
     func placeholder(in context: Context) -> StoreInfoEntry {
         let dependencies = Self.fetchDependencies()
-        return StoreInfoEntry(date: Date(),
-                              range: "Today",
-                              name: dependencies?.storeName ?? Localization.myShop,
-                              revenue: "$132.234",
-                              visitors: "67",
-                              orders: "23",
-                              conversion: "34%")
+        return StoreInfoEntry.data(.init(range: Localization.today,
+                                         name: dependencies?.storeName ?? Localization.myShop,
+                                         revenue: "$132.234",
+                                         visitors: "67",
+                                         orders: "23",
+                                         conversion: "34%"))
     }
 
     /// Quick Snapshot. Required when previewing the widget.
@@ -59,19 +75,38 @@ struct StoreInfoProvider: TimelineProvider {
     /// TODO: Update with real data.
     ///
     func getTimeline(in context: Context, completion: @escaping (Timeline<StoreInfoEntry>) -> Void) {
-        // TODO: Temp store name to check dependency status while we fetch real data.
-        let dependencies = Self.fetchDependencies()
-        let authStatus = dependencies?.authToken != nil ? "Authenticated" : "Non Authenticated"
-        let storeName = dependencies?.storeName ?? "Undefined Shop"
-        let entry = StoreInfoEntry(date: Date(),
-                                   range: "Today",
-                                   name: "\(authStatus) - \(storeName)",
-                                   revenue: "$132.234",
-                                   visitors: "67",
-                                   orders: "23",
-                                   conversion: "37%")
-        let timeline = Timeline<StoreInfoEntry>(entries: [entry], policy: .never)
-        completion(timeline)
+        guard let dependencies = Self.fetchDependencies() else {
+            return completion(Timeline<StoreInfoEntry>(entries: [StoreInfoEntry.notConnected], policy: .never))
+        }
+
+        let strongService = StoreInfoDataService(authToken: dependencies.authToken)
+        networkService = strongService
+        Task {
+            do {
+                let todayStats = try await strongService.fetchTodayStats(for: dependencies.storeID)
+
+                // TODO: Use proper store formatting.
+                let entry = StoreInfoEntry.data(.init(range: Localization.today,
+                                                      name: dependencies.storeName,
+                                                      revenue: "$\(todayStats.revenue)",
+                                                      visitors: "\(todayStats.totalVisitors)",
+                                                      orders: "\(todayStats.totalOrders)",
+                                                      conversion: "\(todayStats.conversion)%"))
+
+                let reloadDate = Date(timeIntervalSinceNow: 30 * 60) // Ask for a 15 minutes reload.
+                let timeline = Timeline<StoreInfoEntry>(entries: [entry], policy: .after(reloadDate))
+                completion(timeline)
+
+            } catch {
+
+                // WooFoundation does not expose `DDLOG` types. Should we include them?
+                print("⛔️ Error fetching today's widget stats: \(error)")
+
+                let reloadDate = Date(timeIntervalSinceNow: 30 * 60) // Ask for a 30 minutes reload.
+                let timeline = Timeline<StoreInfoEntry>(entries: [.error], policy: .after(reloadDate))
+                completion(timeline)
+            }
+        }
     }
 }
 
@@ -104,6 +139,11 @@ private extension StoreInfoProvider {
             "storeWidgets.infoProvider.myShop",
             value: "My Shop",
             comment: "Generic store name for the store info widget preview"
+        )
+        static let today = AppLocalizedString(
+            "storWidgets.infoProvider.today",
+            value "Today",
+            comment: "Range title for the today store info widget"
         )
     }
 }

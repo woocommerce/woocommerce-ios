@@ -10,14 +10,20 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
     let siteURL: String
     let completionHandler: () -> Void
 
-    init(initialURL: URL, siteURL: String, completion: @escaping () -> Void) {
+    private let analytics: Analytics
+
+    init(initialURL: URL,
+         siteURL: String,
+         analytics: Analytics = ServiceLocator.analytics,
+         completion: @escaping () -> Void) {
+        self.analytics = analytics
         self.initialURL = initialURL
         self.siteURL = siteURL
         self.completionHandler = completion
     }
 
     func handleDismissal() {
-        // TODO: tracks?
+        analytics.track(.loginJetpackConnectDismissed)
     }
 
     func handleRedirect(for url: URL?) {
@@ -40,7 +46,7 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
     }
 
     private func handleSetupCompletion() {
-        // TODO: tracks?
+        analytics.track(.loginJetpackConnectCompleted)
         completionHandler()
     }
 }

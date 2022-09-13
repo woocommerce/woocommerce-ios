@@ -100,6 +100,73 @@ final class JetpackConnectionErrorViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(navigationController.topViewController is AuthenticatedWebViewController)
     }
+
+    func test_error_view_is_tracked() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let viewModel = JetpackConnectionErrorViewModel(siteURL: siteURL,
+                                                        credentials: credentials,
+                                                        analytics: analytics,
+                                                        onJetpackSetupCompletion: { _ in })
+
+        // When
+        viewModel.viewDidLoad(nil)
+
+        // Then
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_connection_error_shown" }))
+    }
+
+    func test_primary_button_tap_is_tracked() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let viewModel = JetpackConnectionErrorViewModel(siteURL: siteURL,
+                                                        credentials: credentials,
+                                                        analytics: analytics,
+                                                        onJetpackSetupCompletion: { _ in })
+
+        // When
+        viewModel.didTapPrimaryButton(in: nil)
+
+        // Then
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_connect_button_tapped" }))
+    }
+
+    func test_failure_to_fetch_connection_url_is_tracked() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        var completed = false
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .fetchJetpackConnectionURL(let completion):
+                let error = NSError(domain: "Test", code: 123)
+                completion(.failure(error))
+                completed = true
+            default:
+                break
+            }
+        }
+
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+
+        // When
+        _ = JetpackConnectionErrorViewModel(siteURL: siteURL,
+                                            credentials: credentials,
+                                            stores: stores,
+                                            analytics: analytics,
+                                            onJetpackSetupCompletion: { _ in })
+        waitUntil {
+            completed == true
+        }
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "login_jetpack_connection_url_fetch_failed" }))
+        let properties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(properties["error_code"] as? String, "123")
+        XCTAssertEqual(properties["error_domain"] as? String, "Test")
+    }
 }
 
 private extension JetpackConnectionErrorViewModelTests {

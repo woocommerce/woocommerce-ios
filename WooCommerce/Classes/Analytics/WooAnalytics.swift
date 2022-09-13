@@ -216,7 +216,7 @@ private extension WooAnalytics {
         return updatedProperties
     }
 
-    /// Buildes the necesary properties for the `application_opened` event.
+    /// Builds the necesary properties for the `application_opened` event.
     ///
     func applicationOpenedProperties(_ configurationResult: Result<[WidgetInfo], Error>) -> [String: [String]] {
         guard let installedWidgets = try? configurationResult.get() else {

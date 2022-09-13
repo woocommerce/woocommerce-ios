@@ -8,8 +8,9 @@ protocol CommonProtocol {
 }
 
 extension Country: CommonProtocol {}
+extension StateOfACountry: CommonProtocol {}
 
-public final class CommonSelectorCommand: ObservableListSelectorCommand {
+final class CommonSelectorCommand: ObservableListSelectorCommand {
     /// Original array of countries or states.
     ///
     private let countriesOrStates: [CommonProtocol]

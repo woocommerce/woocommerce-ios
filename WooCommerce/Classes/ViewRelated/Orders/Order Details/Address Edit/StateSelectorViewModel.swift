@@ -10,13 +10,13 @@ final class StateSelectorViewModel: FilterListSelectorViewModelable, ObservableO
     /// Each update will trigger an update to the `command` that contains the state data.
     var searchTerm: String = "" {
         didSet {
-            command.filterStates(term: searchTerm)
+            command.filterCountriesOrStates(term: searchTerm)
         }
     }
 
     /// Command that powers the `ListSelector` view.
     ///
-    let command: StateSelectorCommand
+    let command: CommonSelectorCommand
 
     /// Navigation title
     ///
@@ -27,7 +27,7 @@ final class StateSelectorViewModel: FilterListSelectorViewModelable, ObservableO
     let filterPlaceholder = Localization.placeholder
 
     init(states: [StateOfACountry], selected: Binding<CommonProtocol?>) {
-        self.command = StateSelectorCommand(states: states, selected: selected)
+        self.command = CommonSelectorCommand(countriesOrStates: states, selected: selected)
     }
 }
 

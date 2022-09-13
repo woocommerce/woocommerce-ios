@@ -25,15 +25,10 @@ final class StoreInfoDataService {
     ///
     private var network: AlamofireNetwork
 
-    /// Timezone of the website
-    ///
-    private let siteTimeZone: TimeZone
-
-    init(authToken: String, siteTimeZone: TimeZone) {
+    init(authToken: String) {
         network = AlamofireNetwork(credentials: Credentials(authToken: authToken))
         orderStatsRemoteV4 = OrderStatsRemoteV4(network: network)
         siteVisitStatsRemote = SiteVisitStatsRemote(network: network)
-        self.siteTimeZone = siteTimeZone
     }
 
     /// Async function that fetches todays stats data.
@@ -63,12 +58,12 @@ private extension StoreInfoDataService {
     ///
     func fetchTodaysRevenueAndOrders(for storeID: Int64) async throws -> OrderStatsV4 {
         try await withCheckedThrowingContinuation { continuation in
-            // `WKWebView` is accessed internally, we are foreced to dispatch the call in the main thread.
+            // `WKWebView` is accessed internally, we are forced to dispatch the call in the main thread.
             Task { @MainActor in
                 orderStatsRemoteV4.loadOrderStats(for: storeID,
                                                   unit: .hourly,
-                                                  earliestDateToInclude: Date().startOfDay(timezone: siteTimeZone),
-                                                  latestDateToInclude: Date().endOfDay(timezone: siteTimeZone),
+                                                  earliestDateToInclude: Date().startOfDay(timezone: .current),
+                                                  latestDateToInclude: Date().endOfDay(timezone: .current),
                                                   quantity: 24,
                                                   forceRefresh: true) { result in
                     continuation.resume(with: result)
@@ -85,7 +80,7 @@ private extension StoreInfoDataService {
             Task { @MainActor in
                 siteVisitStatsRemote.loadSiteVisitorStats(for: storeID,
                                                           unit: .day,
-                                                          latestDateToInclude: Date().endOfDay(timezone: siteTimeZone),
+                                                          latestDateToInclude: Date().endOfDay(timezone: .current),
                                                           quantity: 1) { result in
                     continuation.resume(with: result)
                 }

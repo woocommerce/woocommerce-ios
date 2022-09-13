@@ -79,7 +79,7 @@ final class StoreInfoProvider: TimelineProvider {
             return completion(Timeline<StoreInfoEntry>(entries: [StoreInfoEntry.notConnected], policy: .never))
         }
 
-        let strongService = StoreInfoDataService(authToken: dependencies.authToken, siteTimeZone: dependencies.storeTimeZone)
+        let strongService = StoreInfoDataService(authToken: dependencies.authToken)
         networkService = strongService
         Task {
             do {

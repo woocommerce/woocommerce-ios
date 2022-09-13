@@ -10,7 +10,7 @@ struct StoreInfoWidget: Widget {
     let enableWidgets = DefaultFeatureFlagService().isFeatureFlagEnabled(.storeWidgets)
 
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: "StoreInfoWidget", provider: StoreInfoProvider()) { entry in
+        StaticConfiguration(kind: WooConstants.storeInfoWidgetKind, provider: StoreInfoProvider()) { entry in
             Group {
                 switch entry {
                 case .notConnected:

@@ -135,7 +135,15 @@ private extension StoreInfoProvider {
 
 private extension StoreInfoProvider {
     enum Localization {
-        static let myShop = NSLocalizedString("My Shop", comment: "Generic store name for the store info widget preview")
-        static let today = NSLocalizedString("Today", comment: "Range title for the today store info widget")
+        static let myShop = AppLocalizedString(
+            "storeWidgets.infoProvider.myShop",
+            value: "My Shop",
+            comment: "Generic store name for the store info widget preview"
+        )
+        static let today = AppLocalizedString(
+            "storeWidgets.infoProvider.today",
+            value: "Today",
+            comment: "Range title for the today store info widget"
+        )
     }
 }

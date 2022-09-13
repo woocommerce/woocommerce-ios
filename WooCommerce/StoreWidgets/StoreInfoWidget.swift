@@ -155,10 +155,26 @@ private struct UnableToFetchView: View {
 ///
 private extension StoreInfoView {
     enum Localization {
-        static let revenue = NSLocalizedString("Revenue", comment: "Revenue title label for the store info widget")
-        static let visitors = NSLocalizedString("Visitors", comment: "Visitors title label for the store info widget")
-        static let orders = NSLocalizedString("Orders", comment: "Orders title label for the store info widget")
-        static let conversion = NSLocalizedString("Conversion", comment: "Conversion title label for the store info widget")
+        static let revenue = AppLocalizedString(
+            "storeWidgets.infoView.revenue",
+            value: "Revenue",
+            comment: "Revenue title label for the store info widget"
+        )
+        static let visitors = AppLocalizedString(
+            "storeWidgets.infoView.visitors",
+            value: "Visitors",
+            comment: "Visitors title label for the store info widget"
+        )
+        static let orders = AppLocalizedString(
+            "storeWidgets.infoView.orders",
+            value: "Orders",
+            comment: "Orders title label for the store info widget"
+        )
+        static let conversion = AppLocalizedString(
+            "storeWidgets.infoView.orders",
+            value: "Conversion",
+            comment: "Conversion title label for the store info widget"
+        )
     }
 
     enum Layout {
@@ -171,10 +187,16 @@ private extension StoreInfoView {
 ///
 private extension NotLoggedInView {
     enum Localization {
-        static let notLoggedIn = NSLocalizedString("Log in to see today’s stats.",
-                                                   comment: "Title label when the widget does not have a logged-in store.")
-        static let login = NSLocalizedString("Log in",
-                                             comment: "Title label for the login button on the store info widget.")
+        static let notLoggedIn = AppLocalizedString(
+            "storeWidgets.notLoggedInView.notLoggedIn",
+            value: "Log in to see today’s stats.",
+            comment: "Title label when the widget does not have a logged-in store."
+        )
+        static let login = AppLocalizedString(
+            "storeWidgets.notLoggedInView.login",
+            value: "Log in",
+            comment: "Title label for the login button on the store info widget."
+        )
     }
 
     enum Layout {
@@ -187,8 +209,11 @@ private extension NotLoggedInView {
 ///
 private extension UnableToFetchView {
     enum Localization {
-        static let unableToFetch = NSLocalizedString("Unable to fetch today's stats",
-                                                     comment: "Title label when the widget can't fetch data.")
+        static let unableToFetch = AppLocalizedString(
+            "storeWidgets.unableToFetchView.unableToFetch",
+            value: "Unable to fetch today's stats",
+            comment: "Title label when the widget can't fetch data."
+        )
     }
 
     enum Layout {

@@ -27,7 +27,7 @@ def aztec
 end
 
 def tracks
-  pod 'Automattic-Tracks-iOS', '~> 0.12.0'
+  pod 'Automattic-Tracks-iOS', '~> 0.12.1-beta.2'
   # pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => ''
   # pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :commit => ''
   # pod 'Automattic-Tracks-iOS', :path => '../Automattic-Tracks-iOS'

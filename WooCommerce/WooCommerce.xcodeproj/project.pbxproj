@@ -524,7 +524,7 @@
 		265BCA0E2430E771004E53EE /* ProductCategoryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 265BCA0D2430E771004E53EE /* ProductCategoryTableViewCell.xib */; };
 		265D909D2446688C00D66F0F /* ProductCategoryViewModelBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267CFE1824435A5500AF3A13 /* ProductCategoryViewModelBuilderTests.swift */; };
 		2662D90626E1571900E25611 /* ListSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2662D90526E1571900E25611 /* ListSelector.swift */; };
-		2662D90826E15D6E00E25611 /* CommonSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2662D90726E15D6E00E25611 /* CommonSelectorCommand.swift */; };
+		2662D90826E15D6E00E25611 /* AddressSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2662D90726E15D6E00E25611 /* AddressSelectorCommand.swift */; };
 		2662D90A26E16B3600E25611 /* FilterListSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2662D90926E16B3600E25611 /* FilterListSelector.swift */; };
 		2664210126F3E1BB001FC5B4 /* ModalHostingPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2664210026F3E1BB001FC5B4 /* ModalHostingPresentationController.swift */; };
 		2664210326F40FB1001FC5B4 /* View+ScrollModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2664210226F40FB1001FC5B4 /* View+ScrollModifiers.swift */; };
@@ -2361,7 +2361,7 @@
 		265BCA0B2430E741004E53EE /* ProductCategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryTableViewCell.swift; sourceTree = "<group>"; };
 		265BCA0D2430E771004E53EE /* ProductCategoryTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductCategoryTableViewCell.xib; sourceTree = "<group>"; };
 		2662D90526E1571900E25611 /* ListSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListSelector.swift; sourceTree = "<group>"; };
-		2662D90726E15D6E00E25611 /* CommonSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonSelectorCommand.swift; sourceTree = "<group>"; };
+		2662D90726E15D6E00E25611 /* AddressSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressSelectorCommand.swift; sourceTree = "<group>"; };
 		2662D90926E16B3600E25611 /* FilterListSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterListSelector.swift; sourceTree = "<group>"; };
 		2664210026F3E1BB001FC5B4 /* ModalHostingPresentationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalHostingPresentationController.swift; sourceTree = "<group>"; };
 		2664210226F40FB1001FC5B4 /* View+ScrollModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+ScrollModifiers.swift"; sourceTree = "<group>"; };
@@ -6319,7 +6319,7 @@
 				AEC95D402774C5AE001571F5 /* AddressFormViewModelProtocol.swift */,
 				AEE2610E26E664CE00B142A0 /* EditOrderAddressFormViewModel.swift */,
 				2662D90926E16B3600E25611 /* FilterListSelector.swift */,
-				2662D90726E15D6E00E25611 /* CommonSelectorCommand.swift */,
+				2662D90726E15D6E00E25611 /* AddressSelectorCommand.swift */,
 				26C6E8DF26E2B7BD00C7BB0F /* CountrySelectorViewModel.swift */,
 				26C6E8E526E6B5F500C7BB0F /* StateSelectorViewModel.swift */,
 			);
@@ -9463,7 +9463,7 @@
 				D831E2DC230E0558000037D0 /* Authentication.swift in Sources */,
 				26DB7E3528636D2200506173 /* NonEditableOrderBanner.swift in Sources */,
 				314DC4BF268D183600444C9E /* CardReaderSettingsKnownReaderStorage.swift in Sources */,
-				2662D90826E15D6E00E25611 /* CommonSelectorCommand.swift in Sources */,
+				2662D90826E15D6E00E25611 /* AddressSelectorCommand.swift in Sources */,
 				024A543422BA6F8F00F4F38E /* DeveloperEmailChecker.swift in Sources */,
 				02AB407C27827C9100929CF3 /* ChartPlaceholderView.swift in Sources */,
 				027B8BB823FE0CB30040944E /* DefaultProductUIImageLoader.swift in Sources */,

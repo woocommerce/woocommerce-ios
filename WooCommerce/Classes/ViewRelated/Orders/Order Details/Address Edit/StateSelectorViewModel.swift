@@ -16,7 +16,7 @@ final class StateSelectorViewModel: FilterListSelectorViewModelable, ObservableO
 
     /// Command that powers the `ListSelector` view.
     ///
-    let command: CommonSelectorCommand
+    let command: AddressSelectorCommand
 
     /// Navigation title
     ///
@@ -26,8 +26,8 @@ final class StateSelectorViewModel: FilterListSelectorViewModelable, ObservableO
     ///
     let filterPlaceholder = Localization.placeholder
 
-    init(states: [StateOfACountry], selected: Binding<CommonProtocol?>) {
-        self.command = CommonSelectorCommand(countriesOrStates: states, selected: selected)
+    init(states: [StateOfACountry], selected: Binding<AddressSelectorCommandProtocol?>) {
+        self.command = AddressSelectorCommand(countriesOrStates: states, selected: selected)
     }
 }
 

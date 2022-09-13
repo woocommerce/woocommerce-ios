@@ -16,7 +16,7 @@ final class CountrySelectorViewModelTests: XCTestCase {
 
     func test_filter_countries_return_expected_results() {
         // Given
-        let binding = Binding<CommonProtocol?>(get: { nil }, set: { _ in })
+        let binding = Binding<AddressSelectorCommandProtocol?>(get: { nil }, set: { _ in })
         let viewModel = CountrySelectorViewModel(countries: Self.sampleCountries, selected: binding)
 
         // When
@@ -42,7 +42,7 @@ final class CountrySelectorViewModelTests: XCTestCase {
 
     func test_filter_term_with_last_character_whitespace_return_expected_result() {
         // Given
-        let binding = Binding<CommonProtocol?>(get: { nil }, set: { _ in })
+        let binding = Binding<AddressSelectorCommandProtocol?>(get: { nil }, set: { _ in })
         let viewModel = CountrySelectorViewModel(countries: Self.sampleCountries, selected: binding)
 
         // When
@@ -57,7 +57,7 @@ final class CountrySelectorViewModelTests: XCTestCase {
 
     func test_filter_term_with_last_character_newline_return_expected_result() {
         // Given
-        let binding = Binding<CommonProtocol?>(get: { nil }, set: { _ in })
+        let binding = Binding<AddressSelectorCommandProtocol?>(get: { nil }, set: { _ in })
         let viewModel = CountrySelectorViewModel(countries: Self.sampleCountries, selected: binding)
 
         // When
@@ -72,7 +72,7 @@ final class CountrySelectorViewModelTests: XCTestCase {
 
     func test_filter_countries_with_uppercase_letters_return_expected_results() {
         // Given
-        let binding = Binding<CommonProtocol?>(get: { nil }, set: { _ in })
+        let binding = Binding<AddressSelectorCommandProtocol?>(get: { nil }, set: { _ in })
         let viewModel = CountrySelectorViewModel(countries: Self.sampleCountries, selected: binding)
 
         // When
@@ -98,7 +98,7 @@ final class CountrySelectorViewModelTests: XCTestCase {
 
     func test_cleaning_search_terms_return_all_countries() {
         // Given
-        let binding = Binding<CommonProtocol?>(get: { nil }, set: { _ in })
+        let binding = Binding<AddressSelectorCommandProtocol?>(get: { nil }, set: { _ in })
         let viewModel = CountrySelectorViewModel(countries: Self.sampleCountries, selected: binding)
         let totalNumberOfCountries = viewModel.command.data.count
 
@@ -113,7 +113,7 @@ final class CountrySelectorViewModelTests: XCTestCase {
 
     func test_providing_a_selected_country_is_reflected_on_command() {
         // Given
-        let binding = Binding<CommonProtocol?>(get: { Self.sampleCountries[0]}, set: { _ in })
+        let binding = Binding<AddressSelectorCommandProtocol?>(get: { Self.sampleCountries[0]}, set: { _ in })
 
         // When
         let viewModel = CountrySelectorViewModel(countries: Self.sampleCountries, selected: binding)
@@ -126,7 +126,7 @@ final class CountrySelectorViewModelTests: XCTestCase {
         // Given
         let expectedCountry = Self.sampleCountries[0]
         var selectedCountry: Country? = nil
-        let binding = Binding<CommonProtocol?>(get: { selectedCountry }, set: { selectedCountry = $0 as? Country})
+        let binding = Binding<AddressSelectorCommandProtocol?>(get: { selectedCountry }, set: { selectedCountry = $0 as? Country})
         let viewModel = CountrySelectorViewModel(countries: Self.sampleCountries, selected: binding)
 
         // When

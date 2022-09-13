@@ -2,47 +2,47 @@ import Foundation
 import Yosemite
 import SwiftUI
 
-protocol CommonProtocol {
+protocol AddressSelectorCommandProtocol {
     var name: String { get }
     var code: String { get }
 }
 
-extension Country: CommonProtocol {}
-extension StateOfACountry: CommonProtocol {}
+extension Country: AddressSelectorCommandProtocol {}
+extension StateOfACountry: AddressSelectorCommandProtocol {}
 
-final class CommonSelectorCommand: ObservableListSelectorCommand {
+final class AddressSelectorCommand: ObservableListSelectorCommand {
     /// Original array of countries or states.
     ///
-    private let countriesOrStates: [CommonProtocol]
+    private let countriesOrStates: [AddressSelectorCommandProtocol]
 
     /// Data to display
     ///
-    @Published private(set) var data: [CommonProtocol]
+    @Published private(set) var data: [AddressSelectorCommandProtocol]
 
-    /// Current selected country
+    /// Current selected country or state
     ///
-    @Binding private(set) var selected: CommonProtocol?
+    @Binding private(set) var selected: AddressSelectorCommandProtocol?
 
     /// Navigation bar title
     ///
     var navigationBarTitle: String? = ""
 
-    init(countriesOrStates: [CommonProtocol], selected: Binding<CommonProtocol?>) {
+    init(countriesOrStates: [AddressSelectorCommandProtocol], selected: Binding<AddressSelectorCommandProtocol?>) {
         self.countriesOrStates = countriesOrStates
         self.data = countriesOrStates
         self._selected = selected
     }
 
-    func handleSelectedChange(selected: CommonProtocol, viewController: ViewController) {
+    func handleSelectedChange(selected: AddressSelectorCommandProtocol, viewController: ViewController) {
         self.selected = selected
         viewController.navigationController?.popViewController(animated: true)
     }
 
-    func isSelected(model: CommonProtocol) -> Bool {
+    func isSelected(model: AddressSelectorCommandProtocol) -> Bool {
         (model.code == selected?.code) && (model.name == selected?.name)
     }
 
-    func configureCell(cell: BasicTableViewCell, model: CommonProtocol) {
+    func configureCell(cell: BasicTableViewCell, model: AddressSelectorCommandProtocol) {
         cell.textLabel?.text = model.name
     }
 

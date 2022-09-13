@@ -64,10 +64,10 @@ final class StoreInfoProvider: TimelineProvider {
         let dependencies = Self.fetchDependencies()
         return StoreInfoEntry.data(.init(range: Localization.today,
                                          name: dependencies?.storeName ?? Localization.myShop,
-                                         revenue: formattedAmountString(for: 132.234, with: dependencies?.storeCurrencySettings),
+                                         revenue: Self.formattedAmountString(for: 132.234, with: dependencies?.storeCurrencySettings),
                                          visitors: "67",
                                          orders: "23",
-                                         conversion: formattedConversionString(for: 23/67)))
+                                         conversion: Self.formattedConversionString(for: 23/67)))
     }
 
     /// Quick Snapshot. Required when previewing the widget.
@@ -91,10 +91,10 @@ final class StoreInfoProvider: TimelineProvider {
 
                 let entry = StoreInfoEntry.data(.init(range: Localization.today,
                                                       name: dependencies.storeName,
-                                                      revenue: formattedAmountString(for: todayStats.revenue, with: dependencies.storeCurrencySettings),
+                                                      revenue: Self.formattedAmountString(for: todayStats.revenue, with: dependencies.storeCurrencySettings),
                                                       visitors: "\(todayStats.totalVisitors)",
                                                       orders: "\(todayStats.totalOrders)",
-                                                      conversion: formattedConversionString(for: todayStats.conversion)))
+                                                      conversion: Self.formattedConversionString(for: todayStats.conversion)))
 
                 let reloadDate = Date(timeIntervalSinceNow: reloadInterval)
                 let timeline = Timeline<StoreInfoEntry>(entries: [entry], policy: .after(reloadDate))
@@ -148,12 +148,12 @@ private extension StoreInfoProvider {
 
 private extension StoreInfoProvider {
 
-    func formattedAmountString(for amountValue: Decimal, with currencySettings: CurrencySettings?) -> String {
+    static func formattedAmountString(for amountValue: Decimal, with currencySettings: CurrencySettings?) -> String {
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings ?? CurrencySettings())
         return currencyFormatter.formatAmount(amountValue) ?? Constants.valuePlaceholderText
     }
 
-    func formattedConversionString(for conversionRate: Double) -> String {
+    static func formattedConversionString(for conversionRate: Double) -> String {
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .percent
         numberFormatter.minimumFractionDigits = 1

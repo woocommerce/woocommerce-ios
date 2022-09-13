@@ -39,7 +39,7 @@ final class CommonSelectorCommand: ObservableListSelectorCommand {
     }
 
     func isSelected(model: CommonProtocol) -> Bool {
-        model.code == selected?.code
+        (model.code == selected?.code) && (model.name == selected?.name)
     }
 
     func configureCell(cell: BasicTableViewCell, model: CommonProtocol) {

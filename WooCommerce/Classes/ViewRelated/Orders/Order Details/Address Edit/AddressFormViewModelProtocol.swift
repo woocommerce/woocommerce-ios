@@ -361,8 +361,8 @@ open class AddressFormViewModel: ObservableObject {
     ///
     func createSecondaryCountryViewModel() -> CountrySelectorViewModel {
         let selectedCountryBinding = Binding<CommonProtocol?>(
-            get: { self.fields.selectedCountry },
-            set: { self.fields.selectedCountry = $0 as? Country}
+            get: { self.secondaryFields.selectedCountry },
+            set: { self.secondaryFields.selectedCountry = $0 as? Country}
         )
         return CountrySelectorViewModel(countries: allCountries, selected: selectedCountryBinding)
     }

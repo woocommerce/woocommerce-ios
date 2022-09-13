@@ -25,4 +25,36 @@ final class JetpackConnectionWebViewModelTests: XCTestCase {
         XCTAssertTrue(completionTriggered)
     }
 
+    func test_dismissal_is_tracked() throws {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+
+        let siteURL = "https://test.com"
+        let initialURL = try XCTUnwrap(URL(string: "https://jetpack.wordpress.com/jetpack.authorize/1/"))
+        let viewModel = JetpackConnectionWebViewModel(initialURL: initialURL, siteURL: siteURL, analytics: analytics, completion: {})
+
+        // When
+        viewModel.handleDismissal()
+
+        // Then
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_connect_dismissed" }))
+    }
+
+    func test_completion_is_tracked() async throws {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+
+        let siteURL = "https://test.com"
+        let initialURL = try XCTUnwrap(URL(string: "https://jetpack.wordpress.com/jetpack.authorize/1/"))
+        let viewModel = JetpackConnectionWebViewModel(initialURL: initialURL, siteURL: siteURL, analytics: analytics, completion: {})
+
+        // When
+        let finalUrl = try XCTUnwrap(URL(string: siteURL + "/wp-admin"))
+        _ = await viewModel.decidePolicy(for: finalUrl)
+
+        // Then
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_connect_completed" }))
+    }
 }

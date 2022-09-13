@@ -980,8 +980,10 @@ platform :ios do
       ],
       exclude: [
         '*Vendor*',
+        '**/AppLocalizedString.swift',
         'WooCommerce/WooCommerceTests/**' # Some unit tests include localized strings, but we don't want to crowd GlotPress with them
       ],
+      routines: ['AppLocalizedString'],
       output_dir: en_lproj_path
     )
 

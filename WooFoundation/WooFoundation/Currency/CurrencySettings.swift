@@ -396,6 +396,10 @@ public class CurrencySettings: Codable {
     }
 
     // MARK: - Codable implementation
+    // Used for serialization in UserDefaults to share settings between app and widgets extension
+    //
+    // No custom logic, but it is required because `@Published` property prevents automatic Codable synthesis
+    // (currencyCode type is Published<CurrencyCode> instead of CurrencyCode)
 
     enum CodingKeys: CodingKey {
         case currencyCode

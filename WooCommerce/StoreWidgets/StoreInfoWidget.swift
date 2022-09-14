@@ -10,7 +10,7 @@ struct StoreInfoWidget: Widget {
     let enableWidgets = DefaultFeatureFlagService().isFeatureFlagEnabled(.storeWidgets)
 
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: "StoreInfoWidget", provider: StoreInfoProvider()) { entry in
+        StaticConfiguration(kind: WooConstants.storeInfoWidgetKind, provider: StoreInfoProvider()) { entry in
             Group {
                 switch entry {
                 case .notConnected:
@@ -22,7 +22,7 @@ struct StoreInfoWidget: Widget {
                 }
             }
         }
-        .configurationDisplayName("Store Info")
+        .configurationDisplayName(Localization.storeInfo)
         .supportedFamilies(enableWidgets ? [.systemMedium] : [])
     }
 }
@@ -150,6 +150,18 @@ private struct UnableToFetchView: View {
 }
 
 // MARK: Constants
+
+/// Constants definition
+///
+private extension StoreInfoWidget {
+    enum Localization {
+        static let storeInfo = AppLocalizedString(
+            "storeWidgets.displayName",
+            value: "Store Info",
+            comment: "Widget title, displayed when selecting which widget to add"
+        )
+    }
+}
 
 /// Constants definition
 ///

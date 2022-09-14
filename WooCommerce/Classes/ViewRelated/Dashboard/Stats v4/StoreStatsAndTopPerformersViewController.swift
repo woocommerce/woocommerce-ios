@@ -2,6 +2,7 @@ import Combine
 import UIKit
 import XLPagerTabStrip
 import Yosemite
+import class WidgetKit.WidgetCenter
 
 /// Top-level stats container view controller that consists of a button bar with 4 time ranges.
 /// Each time range tab is managed by a `StoreStatsAndTopPerformersPeriodViewController`.
@@ -298,6 +299,11 @@ private extension StoreStatsAndTopPerformersViewController {
                 // Update last successful data sync timestamp
                 if periodSyncError == nil {
                     vc.lastFullSyncTimestamp = Date()
+
+                    // Reload the Store Info Widget after syncing the today's stats.
+                    if vc.timeRange == .today {
+                        WidgetCenter.shared.reloadTimelines(ofKind: WooConstants.storeInfoWidgetKind)
+                    }
                 } else {
                     syncError = periodSyncError
                 }

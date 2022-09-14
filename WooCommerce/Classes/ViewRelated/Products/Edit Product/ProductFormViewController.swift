@@ -782,6 +782,7 @@ private extension ProductFormViewController {
     }
 
     func duplicateProduct() {
+        showSavingProgress(.duplicate)
         viewModel.duplicateProduct(onCompletion: { [weak self] result in
             switch result {
             case .failure(let error):

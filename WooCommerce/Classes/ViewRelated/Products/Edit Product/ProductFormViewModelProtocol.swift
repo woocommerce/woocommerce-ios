@@ -20,6 +20,7 @@ enum SaveMessageType {
     case publish
     case save
     case saveVariation
+    case duplicate
 }
 
 

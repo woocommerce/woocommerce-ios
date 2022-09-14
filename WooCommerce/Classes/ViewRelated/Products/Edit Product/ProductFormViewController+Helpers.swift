@@ -95,6 +95,8 @@ extension ProductFormViewController {
             displayInProgressView(title: Localization.ProgressView.productSavingTitle, message: Localization.ProgressView.productSavingMessage)
         case .saveVariation:
             displayInProgressView(title: Localization.ProgressView.productVariationTitle, message: Localization.ProgressView.productVariationMessage)
+        case .duplicate:
+            displayInProgressView(title: Localization.ProgressView.productDuplicatingTitle, message: Localization.ProgressView.productDuplicatingMessage)
         }
     }
 
@@ -176,6 +178,11 @@ private enum Localization {
                                                           comment: "Title of the in-progress UI while saving a Product as draft remotely")
         static let productSavingMessage = NSLocalizedString("Please wait while we save this product to your store",
                                                             comment: "Message of the in-progress UI while saving a Product as draft remotely")
+
+        static let productDuplicatingTitle = NSLocalizedString("Duplicating your product...",
+                                                               comment: "Title of the in-progress UI while duplicated a Product remotely")
+        static let productDuplicatingMessage = NSLocalizedString("Please wait while we save a copy of this product to your store",
+                                                                 comment: "Message of the in-progress UI while duplicating a Product as draft remotely")
 
         static let productDeletionTitle = NSLocalizedString("Placing your product in the trash...",
                                                             comment: "Title of the in-progress UI while deleting the Product remotely")

@@ -68,7 +68,7 @@ steps:
   # UI Tests
   #################
   - label: "🔬 UI Tests (iPhone)"
-    command: .buildkite/commands/run-ui-tests.sh UITests 'iPhone 11'
+    command: .buildkite/commands/run-ui-tests.sh UITests 'iPhone 14'
     depends_on: "build"
     env: *common_env
     plugins: *common_plugins

@@ -95,7 +95,7 @@ private struct StoreInfoView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
 
-                Text(Localization.updatedAt("10:23 PM"))
+                Text(Localization.updatedAt(entry.updatedTime))
                     .statRangeStyle()
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -254,7 +254,8 @@ struct StoreWidgets_Previews: PreviewProvider {
                                  revenue: "$132.234",
                                  visitors: "67",
                                  orders: "23",
-                                 conversion: "37%")
+                                 conversion: "37%",
+                                 updatedTime: "10:24 PM")
         )
         .previewContext(WidgetPreviewContext(family: .systemMedium))
 

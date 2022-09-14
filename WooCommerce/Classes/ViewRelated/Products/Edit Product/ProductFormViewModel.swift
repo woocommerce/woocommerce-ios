@@ -462,9 +462,14 @@ extension ProductFormViewModel {
     }
 
     func duplicateProduct(onCompletion: @escaping (Result<ProductModel, ProductUpdateError>) -> Void) {
-        let productIDBeforeSave: Int64 = -1
+        let productIDBeforeSave: Int64 = 0
         let productModelToSave: EditableProductModel = {
-            let copiedProduct = product.product.copy(productID: productIDBeforeSave, name: "\(product.name) Copy")
+            let newName = String(format: Localization.copyProductName, product.name)
+            let copiedProduct = product.product.copy(
+                productID: productIDBeforeSave,
+                name: newName,
+                statusKey: ProductStatus.draft.rawValue
+            )
             return EditableProductModel(product: copiedProduct)
         }()
         let remoteActionUseCase = ProductFormRemoteActionUseCase()
@@ -640,5 +645,14 @@ private extension ProductFormViewModel {
                                                    addOnsFeatureEnabled: isAddOnsFeatureEnabled,
                                                    isLinkedProductsPromoEnabled: isLinkedProductsPromoEnabled,
                                                    variationsPrice: calculateVariationPriceState())
+    }
+}
+
+private extension ProductFormViewModel {
+    enum Localization {
+        static let copyProductName = NSLocalizedString(
+            "%1$@ Copy",
+            comment: "The default name for a duplicated product, with %1$@ being the original name. Reads like: Ramen Copy"
+        )
     }
 }

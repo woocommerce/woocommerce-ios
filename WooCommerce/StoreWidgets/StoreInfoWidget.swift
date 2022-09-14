@@ -94,6 +94,10 @@ private struct StoreInfoView: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
+
+                Text(Localization.updatedAt("10:23 PM"))
+                    .statRangeStyle()
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
             .padding(.horizontal)
         }
@@ -187,6 +191,12 @@ private extension StoreInfoView {
             value: "Conversion",
             comment: "Conversion title label for the store info widget"
         )
+        static func updatedAt(_ updatedTime: String) -> LocalizedString {
+            let format = AppLocalizedString("storeWidgets.infoView.updatedAt",
+                                            value: "Updated at: %1$@",
+                                            comment: "Displays the time when the widget was last updated. %1$@ is the time to render.")
+            return LocalizedString.localizedStringWithFormat(format, updatedTime)
+        }
     }
 
     enum Layout {

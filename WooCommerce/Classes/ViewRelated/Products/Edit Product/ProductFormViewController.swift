@@ -251,6 +251,13 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             }
         }
 
+        if viewModel.canDuplicateProduct() {
+            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.duplicate) { [weak self] _ in
+                // TODO: Tracks?
+                self?.duplicateProduct()
+            }
+        }
+
         if viewModel.canDeleteProduct() {
             actionSheet.addDestructiveActionWithTitle(ActionSheetStrings.delete) { [weak self] _ in
                 self?.displayDeleteProductAlert()
@@ -772,6 +779,10 @@ private extension ProductFormViewController {
         }
 
         SharingHelper.shareURL(url: url, title: product.name, from: view, in: self)
+    }
+
+    func duplicateProduct() {
+        // TODO
     }
 
     func displayDeleteProductAlert() {
@@ -1530,6 +1541,7 @@ private enum ActionSheetStrings {
     static let delete = NSLocalizedString("Delete", comment: "Button title Delete in Edit Product More Options Action Sheet")
     static let productSettings = NSLocalizedString("Product Settings", comment: "Button title Product Settings in Edit Product More Options Action Sheet")
     static let cancel = NSLocalizedString("Cancel", comment: "Button title Cancel in Edit Product More Options Action Sheet")
+    static let duplicate = NSLocalizedString("Duplicate", comment: "Button title to duplicate a product in Product More Options Action Sheet")
 }
 
 private enum Constants {

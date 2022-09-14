@@ -139,6 +139,8 @@ protocol ProductFormViewModelProtocol {
 
     func deleteProductRemotely(onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void)
 
+    func duplicateProduct(onCompletion: @escaping (Result<ProductModel, ProductUpdateError>) -> Void)
+
     // Reset action
 
     func resetPassword(_ password: String?)

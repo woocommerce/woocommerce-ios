@@ -461,6 +461,31 @@ extension ProductFormViewModel {
         }
     }
 
+    func duplicateProduct(onCompletion: @escaping (Result<ProductModel, ProductUpdateError>) -> Void) {
+        let productIDBeforeSave: Int64 = -1
+        let productModelToSave: EditableProductModel = {
+            let copiedProduct = product.product.copy(productID: productIDBeforeSave, name: "\(product.name) Copy")
+            return EditableProductModel(product: copiedProduct)
+        }()
+        let remoteActionUseCase = ProductFormRemoteActionUseCase()
+
+        remoteActionUseCase.addProduct(product: productModelToSave, password: password) { [weak self] result in
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(error))
+            case .success(let data):
+                guard let self = self else {
+                    return
+                }
+                self.resetProduct(data.product)
+                self.resetPassword(data.password)
+                onCompletion(.success(data.product))
+                self.replaceProductID(productIDBeforeSave: productIDBeforeSave)
+                self.saveProductImagesWhenNoneIsPendingUploadAnymore()
+            }
+        }
+    }
+
     func deleteProductRemotely(onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void) {
         let remoteActionUseCase = ProductFormRemoteActionUseCase()
         remoteActionUseCase.deleteProduct(product: product) { result in

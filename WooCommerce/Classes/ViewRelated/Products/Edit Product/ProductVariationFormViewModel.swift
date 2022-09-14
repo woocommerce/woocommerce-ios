@@ -323,6 +323,10 @@ extension ProductVariationFormViewModel {
         storesManager.dispatch(updateAction)
     }
 
+    func duplicateProduct(onCompletion: @escaping (Result<EditableProductVariationModel, ProductUpdateError>) -> Void) {
+        // no-op
+    }
+
     func deleteProductRemotely(onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void) {
         let deleteAction = ProductVariationAction.deleteProductVariation(productVariation: productVariation.productVariation) { [weak self] result in
             switch result {

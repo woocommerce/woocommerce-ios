@@ -79,6 +79,8 @@ protocol ProductFormViewModelProtocol {
 
     func canDeleteProduct() -> Bool
 
+    func canDuplicateProduct() -> Bool
+
     // Update actions
 
     func updateName(_ name: String)

@@ -170,6 +170,10 @@ extension ProductVariationFormViewModel {
     func canDeleteProduct() -> Bool {
         formType == .edit
     }
+
+    func canDuplicateProduct() -> Bool {
+        false
+    }
 }
 
 // MARK: Action handling

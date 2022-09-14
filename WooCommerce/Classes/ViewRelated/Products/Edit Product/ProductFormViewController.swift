@@ -736,7 +736,7 @@ private extension ProductFormViewController {
             case .success:
                 // Dismisses the in-progress UI, then presents the confirmation alert.
                 self?.navigationController?.dismiss(animated: true, completion: nil)
-                self?.presentProductConfirmationSaveAlert()
+                self?.presentProductConfirmationSaveAlert(hasDuplicated: false)
 
                 // Show linked products promo banner after product save
                 (self?.viewModel as? ProductFormViewModel)?.isLinkedProductsPromoEnabled = true
@@ -782,7 +782,21 @@ private extension ProductFormViewController {
     }
 
     func duplicateProduct() {
-        // TODO
+        viewModel.duplicateProduct(onCompletion: { [weak self] result in
+            switch result {
+            case .failure(let error):
+                DDLogError("⛔️ Error duplicating Product: \(error)")
+
+                // Dismisses the in-progress UI then presents the error alert.
+                self?.navigationController?.dismiss(animated: true) {
+                    self?.displayError(error: error)
+                }
+            case .success:
+                // Dismisses the in-progress UI, then presents the confirmation alert.
+                self?.navigationController?.dismiss(animated: true, completion: nil)
+                self?.presentProductConfirmationSaveAlert(hasDuplicated: true)
+            }
+        })
     }
 
     func displayDeleteProductAlert() {

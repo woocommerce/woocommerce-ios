@@ -193,7 +193,7 @@ private extension StoreInfoView {
         )
         static func updatedAt(_ updatedTime: String) -> LocalizedString {
             let format = AppLocalizedString("storeWidgets.infoView.updatedAt",
-                                            value: "Updated at: %1$@",
+                                            value: "as of %1$@",
                                             comment: "Displays the time when the widget was last updated. %1$@ is the time to render.")
             return LocalizedString.localizedStringWithFormat(format, updatedTime)
         }

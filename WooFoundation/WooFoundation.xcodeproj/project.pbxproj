@@ -548,6 +548,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 81B8569CD52D20EAE64EE737 /* Pods-WooFoundation.release-alpha.xcconfig */;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
@@ -709,6 +710,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 99861FECBD0975C25DA03D80 /* Pods-WooFoundation.debug.xcconfig */;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
@@ -741,6 +743,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D64F2A76E9373989B3F181FC /* Pods-WooFoundation.release.xcconfig */;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;

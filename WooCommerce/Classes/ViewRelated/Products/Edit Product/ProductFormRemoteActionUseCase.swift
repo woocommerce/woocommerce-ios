@@ -290,7 +290,7 @@ private extension ProductFormRemoteActionUseCase {
             DispatchQueue.main.async { [weak self] in
                 self?.stores.dispatch(action)
             }
-        }
+        } as Product?
     }
 
     func retrieveProductVariation(id: Int64, siteID: Int64, productID: Int64) async -> ProductVariation? {
@@ -307,7 +307,7 @@ private extension ProductFormRemoteActionUseCase {
             DispatchQueue.main.async { [weak self] in
                 self?.stores.dispatch(action)
             }
-        }
+        } as ProductVariation?
     }
 
     func duplicateProductVariation(_ newVariation: CreateProductVariation, parent: EditableProductModel) async {
@@ -322,7 +322,7 @@ private extension ProductFormRemoteActionUseCase {
             DispatchQueue.main.async { [weak self] in
                 self?.stores.dispatch(createAction)
             }
-        }
+        } as Void
     }
 }
 

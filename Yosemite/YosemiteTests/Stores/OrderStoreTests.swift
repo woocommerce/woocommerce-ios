@@ -1,3 +1,4 @@
+import Combine
 import XCTest
 @testable import Yosemite
 @testable import Networking
@@ -46,7 +47,7 @@ final class OrderStoreTests: XCTestCase {
     ///
     private let defaultSearchKeyword = "gooooooooogol"
 
-
+    private var subscriptions: Set<AnyCancellable> = []
 
     // MARK: - Overridden Methods
 
@@ -1117,6 +1118,122 @@ final class OrderStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)
+    }
+
+    // MARK: - `observeInsertedOrders`
+
+    func test_observeInsertedOrders_emits_inserted_order() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let siteID: Int64 = 6688
+
+        // Ensures the assertions take place after the Core Data notifications are sent.
+        var viewContextChanged = false
+        NotificationCenter.default
+            .publisher(for: .NSManagedObjectContextObjectsDidChange, object: viewStorage)
+            .sink { _ in
+                viewContextChanged = true
+            }.store(in: &subscriptions)
+
+        // When
+        let publisher: AnyPublisher<[Yosemite.Order], Never> = waitFor { promise in
+            let action = OrderAction.observeInsertedOrders(siteID: siteID) { publisher in
+                promise(publisher)
+            }
+            store.onAction(action)
+        }
+        var ordersSequence = [[Yosemite.Order]]()
+        publisher.sink { orders in
+            ordersSequence.append(orders)
+        }.store(in: &subscriptions)
+
+        // Inserts an order on the same site.
+        let order = sampleOrder().copy(siteID: siteID, status: .autoDraft)
+        store.upsertStoredOrder(readOnlyOrder: order, in: viewStorage)
+
+        waitUntil {
+            viewContextChanged == true
+        }
+
+        // Then
+        XCTAssertEqual(ordersSequence.count, 1)
+        XCTAssertEqual(ordersSequence.first, [order])
+    }
+
+    func test_observeInsertedOrders_does_not_emit_values_after_inserting_orders_in_a_different_site() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let siteID: Int64 = 6688
+        let anotherSiteID: Int64 = 7799
+
+        // Ensures the assertions take place after the Core Data notifications are sent.
+        var viewContextChanged = false
+        NotificationCenter.default
+            .publisher(for: .NSManagedObjectContextObjectsDidChange, object: viewStorage)
+            .sink { _ in
+                viewContextChanged = true
+            }.store(in: &subscriptions)
+
+        // When
+        let publisher: AnyPublisher<[Yosemite.Order], Never> = waitFor { promise in
+            let action = OrderAction.observeInsertedOrders(siteID: siteID) { publisher in
+                promise(publisher)
+            }
+            store.onAction(action)
+        }
+        var ordersSequence = [[Yosemite.Order]]()
+        publisher.sink { orders in
+            ordersSequence.append(orders)
+        }.store(in: &subscriptions)
+
+        // Inserts an order on another site.
+        let order = sampleOrder().copy(siteID: anotherSiteID, status: .autoDraft)
+        store.upsertStoredOrder(readOnlyOrder: order, in: viewStorage)
+
+        waitUntil {
+            viewContextChanged == true
+        }
+
+        // Then
+        XCTAssertEqual(ordersSequence.count, 0)
+    }
+
+    func test_observeInsertedOrders_does_not_emit_values_after_inserting_a_non_order_object() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let siteID: Int64 = 6688
+
+        // Ensures the assertions take place after the Core Data notifications are sent.
+        var viewContextChanged = false
+        NotificationCenter.default
+            .publisher(for: .NSManagedObjectContextObjectsDidChange, object: viewStorage)
+            .sink { _ in
+                viewContextChanged = true
+            }.store(in: &subscriptions)
+
+        // When
+        let publisher: AnyPublisher<[Yosemite.Order], Never> = waitFor { promise in
+            let action = OrderAction.observeInsertedOrders(siteID: siteID) { publisher in
+                promise(publisher)
+            }
+            store.onAction(action)
+        }
+        var ordersSequence = [[Yosemite.Order]]()
+        publisher.sink { orders in
+            ordersSequence.append(orders)
+        }.store(in: &subscriptions)
+
+        // Inserts a product on the same site.
+        let product = Product.fake().copy(siteID: siteID)
+        let storageProduct = viewStorage.insertNewObject(ofType: Storage.Product.self)
+        storageProduct.update(with: product)
+
+        waitUntil {
+            viewContextChanged == true
+        }
+
+        // Then
+        XCTAssertEqual(ordersSequence.count, 0)
     }
 }
 

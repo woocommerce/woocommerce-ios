@@ -94,6 +94,10 @@ private struct StoreInfoView: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
+
+                Text(Localization.updatedAt(entry.updatedTime))
+                    .statRangeStyle()
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
             .padding(.horizontal)
         }
@@ -187,6 +191,12 @@ private extension StoreInfoView {
             value: "Conversion",
             comment: "Conversion title label for the store info widget"
         )
+        static func updatedAt(_ updatedTime: String) -> LocalizedString {
+            let format = AppLocalizedString("storeWidgets.infoView.updatedAt",
+                                            value: "as of %1$@",
+                                            comment: "Displays the time when the widget was last updated. %1$@ is the time to render.")
+            return LocalizedString.localizedStringWithFormat(format, updatedTime)
+        }
     }
 
     enum Layout {
@@ -244,7 +254,8 @@ struct StoreWidgets_Previews: PreviewProvider {
                                  revenue: "$132.234",
                                  visitors: "67",
                                  orders: "23",
-                                 conversion: "37%")
+                                 conversion: "37%",
+                                 updatedTime: "10:24 PM")
         )
         .previewContext(WidgetPreviewContext(family: .systemMedium))
 

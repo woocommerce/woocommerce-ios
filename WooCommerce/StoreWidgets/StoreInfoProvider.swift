@@ -44,6 +44,10 @@ struct StoreInfoData {
     /// Conversion at the range (eg: today)
     ///
     var conversion: String
+
+    /// Time when the widget was last refreshed (eg: 10.24PM)
+    ///
+    var updatedTime: String
 }
 
 /// Type that provides data entries to the widget system.
@@ -140,7 +144,8 @@ private extension StoreInfoProvider {
                                   revenue: Self.formattedAmountString(for: 132.234, with: dependencies?.storeCurrencySettings),
                                   visitors: "67",
                                   orders: "23",
-                                  conversion: Self.formattedConversionString(for: 23/67)))
+                                  conversion: Self.formattedConversionString(for: 23/67),
+                                  updatedTime: Self.currentFormattedTime()))
     }
 
     /// Real data entry.
@@ -151,7 +156,8 @@ private extension StoreInfoProvider {
                                   revenue: Self.formattedAmountString(for: todayStats.revenue, with: dependencies.storeCurrencySettings),
                                   visitors: "\(todayStats.totalVisitors)",
                                   orders: "\(todayStats.totalOrders)",
-                                  conversion: Self.formattedConversionString(for: todayStats.conversion)))
+                                  conversion: Self.formattedConversionString(for: todayStats.conversion),
+                                  updatedTime: Self.currentFormattedTime()))
     }
 
     static func formattedAmountString(for amountValue: Decimal, with currencySettings: CurrencySettings?) -> String {
@@ -168,6 +174,15 @@ private extension StoreInfoProvider {
         let minimumFractionDigits = floor(conversionRate * 100.0) == conversionRate * 100.0 ? 0 : 1
         numberFormatter.minimumFractionDigits = minimumFractionDigits
         return numberFormatter.string(from: conversionRate as NSNumber) ?? Constants.valuePlaceholderText
+    }
+
+    /// Returns the current time formatted as `10:24 PM` or `22:24` depending on the phone settings.
+    ///
+    static func currentFormattedTime() -> String {
+        let timeFormatter = DateFormatter()
+        timeFormatter.timeStyle = .short
+        timeFormatter.dateStyle = .none
+        return timeFormatter.string(from: Date())
     }
 
     enum Constants {

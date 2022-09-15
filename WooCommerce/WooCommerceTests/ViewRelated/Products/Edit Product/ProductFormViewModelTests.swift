@@ -171,6 +171,43 @@ final class ProductFormViewModelTests: XCTestCase {
         XCTAssertFalse(canDeleteProduct)
     }
 
+    // MARK: `canDuplicateProduct`
+    func test_add_product_form_with_non_published_status_cannot_duplicate_product() {
+        // Arrange
+        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.pending.rawValue)
+        let viewModel = createViewModel(product: product, formType: .add)
+
+        // Action
+        let canDuplicateProduct = viewModel.canDuplicateProduct()
+
+        // Assert
+        XCTAssertFalse(canDuplicateProduct)
+    }
+
+    func test_edit_product_form_with_non_published_status_can_duplicate_product() {
+        // Arrange
+        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.pending.rawValue)
+        let viewModel = createViewModel(product: product, formType: .edit)
+
+        // Action
+        let canDuplicateProduct = viewModel.canDuplicateProduct()
+
+        // Assert
+        XCTAssertTrue(canDuplicateProduct)
+    }
+
+    func test_edit_product_form_with_published_status_can_duplicate_product() {
+        // Arrange
+        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.published.rawValue)
+        let viewModel = createViewModel(product: product, formType: .edit)
+
+        // Action
+        let canDuplicateProduct = viewModel.canDuplicateProduct()
+
+        // Assert
+        XCTAssertTrue(canDuplicateProduct)
+    }
+
     func test_update_variations_updates_original_product_while_maintaining_pending_changes() throws {
         // Given
         let product = Product.fake()

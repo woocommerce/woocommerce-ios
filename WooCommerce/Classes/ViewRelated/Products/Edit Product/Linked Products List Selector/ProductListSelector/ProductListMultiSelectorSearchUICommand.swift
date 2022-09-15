@@ -12,6 +12,8 @@ final class ProductListMultiSelectorSearchUICommand: NSObject, SearchUICommand {
 
     let cancelButtonAccessibilityIdentifier = "product-search-screen-cancel-button"
 
+    var resynchronizeModels: (() -> Void) = {}
+
     private let siteID: Int64
 
     private let excludedProductIDs: [Int64]
@@ -89,6 +91,10 @@ final class ProductListMultiSelectorSearchUICommand: NSObject, SearchUICommand {
         onProductSelected(model)
         reloadData()
         updateActionButton()
+    }
+
+    func searchResultsPredicate(keyword: String) -> NSPredicate {
+        NSPredicate(format: "ANY searchResults.keyword = %@", keyword)
     }
 }
 

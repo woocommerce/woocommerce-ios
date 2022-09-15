@@ -102,6 +102,12 @@ final class OrdersRootViewController: UIViewController {
         }
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        ServiceLocator.pushNotesManager.resetBadgeCount(type: .storeOrder)
+    }
+
     override var shouldShowOfflineBanner: Bool {
         if featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
             return false

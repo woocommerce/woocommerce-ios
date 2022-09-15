@@ -476,14 +476,16 @@ extension ProductFormViewModel {
         let remoteActionUseCase = ProductFormRemoteActionUseCase()
         remoteActionUseCase.duplicateProduct(product: productModelToSave,
                                              originalProductID: product.productID,
-                                             originalProductVariationIDs: product.product.variations) { [weak self] result in
+                                             originalProductVariationIDs: product.product.variations,
+                                             password: password) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .failure(let error):
                 onCompletion(.failure(error))
-            case .success(let product):
-                self.resetProduct(product)
-                onCompletion(.success(product))
+            case .success(let data):
+                self.resetProduct(data.product)
+                self.resetPassword(data.password)
+                onCompletion(.success(data.product))
                 self.replaceProductID(productIDBeforeSave: productIDBeforeSave)
                 self.saveProductImagesWhenNoneIsPendingUploadAnymore()
             }

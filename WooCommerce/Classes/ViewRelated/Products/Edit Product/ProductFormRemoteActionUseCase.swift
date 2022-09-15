@@ -10,7 +10,7 @@ final class ProductFormRemoteActionUseCase {
     }
     typealias AddProductCompletion = (_ result: Result<ResultData, ProductUpdateError>) -> Void
     typealias EditProductCompletion = (_ productResult: Result<ResultData, ProductUpdateError>) -> Void
-    typealias DuplicateProductCompletion = (_ result: Result<EditableProductModel, ProductUpdateError>) -> Void
+    typealias DuplicateProductCompletion = (_ result: Result<ResultData, ProductUpdateError>) -> Void
 
     private let stores: StoresManager
 
@@ -54,23 +54,28 @@ final class ProductFormRemoteActionUseCase {
     func duplicateProduct(product: EditableProductModel,
                           originalProductID: Int64,
                           originalProductVariationIDs: [Int64],
+                          password: String?,
                           onCompletion: @escaping DuplicateProductCompletion) {
-        let productVariations = product.product.variations
-        let oldProductID = product.productID
-        addProductRemotely(product: product) { productResult in
-            switch productResult {
-            case .failure(let error):
-                ServiceLocator.analytics.track(.addProductFailed, withError: error)
-                onCompletion(.failure(error))
-            case .success(let product):
+        addProduct(product: product, password: password) { result in
+            switch result {
+            case .success(let data):
                 guard originalProductVariationIDs.isNotEmpty else {
-                    return onCompletion(.success(product))
+                    return onCompletion(.success(data))
                 }
                 // `self` is retained because the use case is not usually strongly held.
                 self.duplicateVariations(originalProductVariationIDs,
                                          from: originalProductID,
-                                         to: product,
-                                         onCompletion: onCompletion)
+                                         to: data.product,
+                                         onCompletion: { result in
+                    switch result {
+                    case .success(let product):
+                        onCompletion(.success(ResultData(product: product, password: data.password)))
+                    case .failure(let error):
+                        onCompletion(.failure(error))
+                    }
+                })
+            case .failure(let error):
+                onCompletion(.failure(error))
             }
         }
     }

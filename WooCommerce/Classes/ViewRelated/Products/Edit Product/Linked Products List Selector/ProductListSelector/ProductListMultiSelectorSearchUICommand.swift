@@ -93,7 +93,7 @@ final class ProductListMultiSelectorSearchUICommand: NSObject, SearchUICommand {
         updateActionButton()
     }
 
-    func searchResultsPredicate(keyword: String) -> NSPredicate {
+    func searchResultsPredicate(keyword: String) -> NSPredicate? {
         NSPredicate(format: "ANY searchResults.keyword = %@", keyword)
     }
 }

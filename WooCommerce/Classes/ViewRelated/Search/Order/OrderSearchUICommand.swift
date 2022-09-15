@@ -94,7 +94,7 @@ final class OrderSearchUICommand: SearchUICommand {
         return keyword
     }
 
-    func searchResultsPredicate(keyword: String) -> NSPredicate {
+    func searchResultsPredicate(keyword: String) -> NSPredicate? {
         NSPredicate(format: "ANY searchResults.keyword = %@", keyword)
     }
 }

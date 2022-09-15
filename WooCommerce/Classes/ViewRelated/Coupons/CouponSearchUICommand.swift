@@ -83,7 +83,7 @@ final class CouponSearchUICommand: SearchUICommand {
         viewController.configure(.simple(message: message, image: .emptySearchResultsImage))
     }
 
-    func searchResultsPredicate(keyword: String) -> NSPredicate {
+    func searchResultsPredicate(keyword: String) -> NSPredicate? {
         NSPredicate(format: "ANY searchResults.keyword = %@", keyword)
     }
 }

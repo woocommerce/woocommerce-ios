@@ -101,8 +101,8 @@ protocol SearchUICommand {
     /// The predicate to fetch product search results based on the keyword.
     /// Called when a search API request is made for the keyword.
     /// - Parameter keyword: search query.
-    /// - Returns: predicate that is based on the search keyword.
-    func searchResultsPredicate(keyword: String) -> NSPredicate
+    /// - Returns: predicate that is based on the search keyword. When the keyword is empty, `nil` can be returned as an example use case.
+    func searchResultsPredicate(keyword: String) -> NSPredicate?
 }
 
 // MARK: - Default implementation

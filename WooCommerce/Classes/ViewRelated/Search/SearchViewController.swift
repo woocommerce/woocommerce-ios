@@ -431,7 +431,7 @@ private extension SearchViewController {
         // When the search query changes, also includes the original results predicate in addition to the search keyword.
         let keyword = searchUICommand.sanitizeKeyword(keyword)
         let searchResultsPredicate = searchUICommand.searchResultsPredicate(keyword: keyword)
-        let subpredicates = [resultsPredicate].compactMap { $0 } + [searchResultsPredicate]
+        let subpredicates = [resultsPredicate].compactMap { $0 } + [searchResultsPredicate].compactMap { $0 }
         resultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: subpredicates)
 
         tableView.setContentOffset(.zero, animated: false)

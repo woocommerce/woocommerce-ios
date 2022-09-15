@@ -121,7 +121,10 @@ final class ProductSearchUICommand: SearchUICommand {
         }
     }
 
-    func searchResultsPredicate(keyword: String) -> NSPredicate {
+    func searchResultsPredicate(keyword: String) -> NSPredicate? {
+        guard keyword.isNotEmpty else {
+            return nil
+        }
         guard isSearchProductsBySKUEnabled else {
             return NSPredicate(format: "ANY searchResults.keyword = %@", keyword)
         }

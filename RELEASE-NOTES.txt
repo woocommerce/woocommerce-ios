@@ -8,6 +8,7 @@
 - [*] In-Person Payments: Improvements to the card reader connection flow UI [https://github.com/woocommerce/woocommerce-ios/pull/7687]
 - [*] Login: Users can now set up the Jetpack connection between a self-hosted site and their WP.com account. [https://github.com/woocommerce/woocommerce-ios/pull/7608]
 - [*] Product list: the "Draft" blue color is fixed to be more readable for a draft product row in the product list. [https://github.com/woocommerce/woocommerce-ios/pull/7724]
+- [*] Notifications: App icon badge is now cleared correctly after visiting the orders tab. [https://github.com/woocommerce/woocommerce-ios/pull/7735]
 
 10.3
 -----

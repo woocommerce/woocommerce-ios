@@ -1,0 +1,19 @@
+name: Login with WP.com flow
+appId: com.automattic.woocommerce
+---
+- launchApp:
+    clearState: true
+- tapOn: "Skip"
+- tapOn:
+    id: "Prologue Continue Button"
+    text: "Continue With WordPress.com"
+- inputText: mucidev@gmail.com
+- tapOn: "Continue"
+- tapOn:
+    id: "com.woocommerce.android.dev:id/input"
+- inputText: "fatrA15."
+- tapOn: "Continue"
+- tapOn:
+    below: "Select store to connect"
+    retryTapIfNoChange: false
+- tapOn: "Continue"

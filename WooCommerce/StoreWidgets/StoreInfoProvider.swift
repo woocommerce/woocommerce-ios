@@ -66,13 +66,7 @@ final class StoreInfoProvider: TimelineProvider {
     ///
     func placeholder(in context: Context) -> StoreInfoEntry {
         let dependencies = Self.fetchDependencies()
-        return StoreInfoEntry.data(.init(range: Localization.today,
-                                         name: dependencies?.storeName ?? Localization.myShop,
-                                         revenue: Self.formattedAmountString(for: 132.234, with: dependencies?.storeCurrencySettings),
-                                         visitors: "67",
-                                         orders: "23",
-                                         conversion: Self.formattedConversionString(for: 23/67),
-                                         updatedTime: Self.currentFormattedTime()))
+        return Self.placeholderEntry(for: dependencies)
     }
 
     /// Quick Snapshot. Required when previewing the widget.
@@ -93,21 +87,11 @@ final class StoreInfoProvider: TimelineProvider {
         Task {
             do {
                 let todayStats = try await strongService.fetchTodayStats(for: dependencies.storeID)
-
-                let entry = StoreInfoEntry.data(.init(range: Localization.today,
-                                                      name: dependencies.storeName,
-                                                      revenue: Self.formattedAmountString(for: todayStats.revenue, with: dependencies.storeCurrencySettings),
-                                                      visitors: "\(todayStats.totalVisitors)",
-                                                      orders: "\(todayStats.totalOrders)",
-                                                      conversion: Self.formattedConversionString(for: todayStats.conversion),
-                                                      updatedTime: Self.currentFormattedTime()))
-
+                let entry = Self.dataEntry(for: todayStats, with: dependencies)
                 let reloadDate = Date(timeIntervalSinceNow: reloadInterval)
                 let timeline = Timeline<StoreInfoEntry>(entries: [entry], policy: .after(reloadDate))
                 completion(timeline)
-
             } catch {
-
                 // WooFoundation does not expose `DDLOG` types. Should we include them?
                 print("⛔️ Error fetching today's widget stats: \(error)")
 
@@ -148,7 +132,33 @@ private extension StoreInfoProvider {
     }
 }
 
+/// Data configuration
+///
 private extension StoreInfoProvider {
+
+    /// Redacted entry with sample data. If dependencies are available - store name and currency settings will be used.
+    ///
+    static func placeholderEntry(for dependencies: Dependencies?) -> StoreInfoEntry {
+        StoreInfoEntry.data(.init(range: Localization.today,
+                                  name: dependencies?.storeName ?? Localization.myShop,
+                                  revenue: Self.formattedAmountString(for: 132.234, with: dependencies?.storeCurrencySettings),
+                                  visitors: "67",
+                                  orders: "23",
+                                  conversion: Self.formattedConversionString(for: 23/67),
+                                  updatedTime: Self.currentFormattedTime()))
+    }
+
+    /// Real data entry.
+    ///
+    static func dataEntry(for todayStats: StoreInfoDataService.Stats, with dependencies: Dependencies) -> StoreInfoEntry {
+        StoreInfoEntry.data(.init(range: Localization.today,
+                                  name: dependencies.storeName,
+                                  revenue: Self.formattedAmountString(for: todayStats.revenue, with: dependencies.storeCurrencySettings),
+                                  visitors: "\(todayStats.totalVisitors)",
+                                  orders: "\(todayStats.totalOrders)",
+                                  conversion: Self.formattedConversionString(for: todayStats.conversion),
+                                  updatedTime: Self.currentFormattedTime()))
+    }
 
     static func formattedAmountString(for amountValue: Decimal, with currencySettings: CurrencySettings?) -> String {
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings ?? CurrencySettings())

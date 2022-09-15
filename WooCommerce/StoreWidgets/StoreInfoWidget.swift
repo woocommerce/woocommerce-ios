@@ -22,7 +22,8 @@ struct StoreInfoWidget: Widget {
                 }
             }
         }
-        .configurationDisplayName(Localization.storeInfo)
+        .configurationDisplayName(Localization.title)
+        .description(Localization.description)
         .supportedFamilies(enableWidgets ? [.systemMedium] : [])
     }
 }
@@ -159,10 +160,15 @@ private struct UnableToFetchView: View {
 ///
 private extension StoreInfoWidget {
     enum Localization {
-        static let storeInfo = AppLocalizedString(
+        static let title = AppLocalizedString(
             "storeWidgets.displayName",
-            value: "Store Info",
+            value: "Today",
             comment: "Widget title, displayed when selecting which widget to add"
+        )
+        static let description = AppLocalizedString(
+            "storeWidgets.description",
+            value: "WooCommerce Stats Today",
+            comment: "Widget description, displayed when selecting which widget to add"
         )
     }
 }

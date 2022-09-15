@@ -7,8 +7,6 @@ import Experiments
 ///
 struct StoreInfoWidget: Widget {
 
-    let enableWidgets = DefaultFeatureFlagService().isFeatureFlagEnabled(.storeWidgets)
-
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: WooConstants.storeInfoWidgetKind, provider: StoreInfoProvider()) { entry in
             Group {
@@ -24,7 +22,7 @@ struct StoreInfoWidget: Widget {
         }
         .configurationDisplayName(Localization.title)
         .description(Localization.description)
-        .supportedFamilies(enableWidgets ? [.systemMedium] : [])
+        .supportedFamilies([.systemMedium])
     }
 }
 

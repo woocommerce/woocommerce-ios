@@ -10,6 +10,7 @@ final class ProductFormRemoteActionUseCase {
     }
     typealias AddProductCompletion = (_ result: Result<ResultData, ProductUpdateError>) -> Void
     typealias EditProductCompletion = (_ productResult: Result<ResultData, ProductUpdateError>) -> Void
+    typealias DuplicateProductCompletion = (_ result: Result<EditableProductModel, ProductUpdateError>) -> Void
 
     private let stores: StoresManager
 
@@ -42,6 +43,34 @@ final class ProductFormRemoteActionUseCase {
                         onCompletion(.success(ResultData(product: product, password: password)))
                     }
                 }
+            }
+        }
+    }
+
+    /// Adds a copy of the input product remotely.
+    /// - Parameters:
+    ///   - product: The product to be duplicated remotely.
+    ///   - onCompletion: Called when the remote process finishes.
+    func duplicateProduct(product: EditableProductModel,
+                          originalProductID: Int64,
+                          originalProductVariationIDs: [Int64],
+                          onCompletion: @escaping DuplicateProductCompletion) {
+        let productVariations = product.product.variations
+        let oldProductID = product.productID
+        addProductRemotely(product: product) { productResult in
+            switch productResult {
+            case .failure(let error):
+                ServiceLocator.analytics.track(.addProductFailed, withError: error)
+                onCompletion(.failure(error))
+            case .success(let product):
+                guard originalProductVariationIDs.isNotEmpty else {
+                    return onCompletion(.success(product))
+                }
+                // `self` is retained because the use case is not usually strongly held.
+                self.duplicateVariations(originalProductVariationIDs,
+                                         from: originalProductID,
+                                         to: product,
+                                         onCompletion: onCompletion)
             }
         }
     }
@@ -204,5 +233,81 @@ private extension ProductFormRemoteActionUseCase {
                                                                             }
         }
         stores.dispatch(passwordUpdateAction)
+    }
+
+    func duplicateVariations(_ variationIDs: [Int64],
+                             from oldProductID: Int64,
+                             to newProduct: EditableProductModel,
+                             onCompletion: @escaping (Result<EditableProductModel, ProductUpdateError>) -> Void) {
+        Task { [weak self] in
+            guard let self = self else { return }
+            for id in variationIDs {
+                guard let variation = await self.retrieveProductVariation(id: id, siteID: newProduct.siteID, productID: oldProductID) else {
+                    continue
+                }
+                let newVariation = CreateProductVariation(regularPrice: variation.regularPrice ?? "", attributes: variation.attributes)
+                await self.duplicateProductVariation(newVariation, parent: newProduct)
+            }
+
+            let updatedProduct: EditableProductModel = await {
+                guard let productModel = await retrieveProduct(id: newProduct.productID, siteID: newProduct.siteID) else {
+                    return newProduct
+                }
+                return EditableProductModel(product: productModel)
+            }()
+
+            await MainActor.run {
+                onCompletion(.success(updatedProduct))
+            }
+        }
+    }
+
+    func retrieveProduct(id: Int64, siteID: Int64) async -> Product? {
+        await withCheckedContinuation { [weak self] continuation in
+            guard let self = self else { return }
+            let action = ProductAction.retrieveProduct(siteID: siteID, productID: id) { result in
+                switch result {
+                case .success(let product):
+                    continuation.resume(returning: product)
+                case .failure:
+                    continuation.resume(returning: nil)
+                }
+            }
+            DispatchQueue.main.async { [weak self] in
+                self?.stores.dispatch(action)
+            }
+        }
+    }
+
+    func retrieveProductVariation(id: Int64, siteID: Int64, productID: Int64) async -> ProductVariation? {
+        await withCheckedContinuation { [weak self] continuation in
+            guard let self = self else { return }
+            let action = ProductVariationAction.retrieveProductVariation(siteID: siteID, productID: productID, variationID: id, onCompletion: { result in
+                switch result {
+                case .success(let variation):
+                    continuation.resume(returning: variation)
+                case .failure:
+                    continuation.resume(returning: nil)
+                }
+            })
+            DispatchQueue.main.async { [weak self] in
+                self?.stores.dispatch(action)
+            }
+        }
+    }
+
+    func duplicateProductVariation(_ newVariation: CreateProductVariation, parent: EditableProductModel) async {
+        await withCheckedContinuation { [weak self] continuation in
+            guard let self = self else { return }
+            let createAction = ProductVariationAction.createProductVariation(
+                siteID: parent.siteID,
+                productID: parent.productID,
+                newVariation: newVariation) { result in
+                continuation.resume(returning: ())
+            }
+            DispatchQueue.main.async { [weak self] in
+                self?.stores.dispatch(createAction)
+            }
+        }
     }
 }

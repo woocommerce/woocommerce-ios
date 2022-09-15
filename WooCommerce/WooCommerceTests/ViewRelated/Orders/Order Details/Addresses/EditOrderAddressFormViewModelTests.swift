@@ -163,7 +163,20 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
 
     func test_loading_indicator_gets_disabled_after_the_network_operation_completes() {
         // Given
-        let viewModel = EditOrderAddressFormViewModel(order: order(withShippingAddress: sampleAddress()), type: .shipping, storageManager: testingStorage)
+        let viewModel = EditOrderAddressFormViewModel(
+            order: order(withShippingAddress: sampleAddress()),
+            type: .shipping,
+            storageManager: testingStorage,
+            stores: testingStores
+        )
+        testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateOrder(_, _, _, onCompletion):
+                onCompletion(.failure(NSError(domain: "", code: 0)))
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
 
         // When
         viewModel.onLoadTrigger.send()

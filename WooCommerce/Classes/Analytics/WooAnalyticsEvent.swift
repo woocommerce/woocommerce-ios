@@ -1605,3 +1605,22 @@ extension WooAnalyticsEvent {
         }
     }
 }
+
+// MARK: - Widgets {
+extension WooAnalyticsEvent {
+    enum Widgets {
+        enum Key: String {
+            case name = "name"
+        }
+
+        enum Name: String {
+            case todayStats = "today_stats"
+        }
+
+        /// Event when a widget is tapped and opens the app.
+        ///
+        static func widgetTapped(name: Name) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .widgetTapped, properties: [Key.name.rawValue: name.rawValue])
+        }
+    }
+}

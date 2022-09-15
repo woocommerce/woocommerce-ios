@@ -49,6 +49,10 @@ enum WooConstants {
     /// before an app review prompt appears
     ///
     static let systemEventCount = 10
+
+    /// Store Info Widget Identifier.
+    ///
+    static let storeInfoWidgetKind = "StoreInfoWidget"
 }
 
 // MARK: URLs

@@ -3293,6 +3293,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9BD9C6C44CAC220B3C3B90B7 /* Pods-Networking.release-alpha.xcconfig */;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
@@ -3466,6 +3467,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 753D6504FF01F09F6A33B73E /* Pods-Networking.debug.xcconfig */;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
@@ -3495,6 +3497,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = C8F9A8CC6F90A8C9B5EF2EE2 /* Pods-Networking.release.xcconfig */;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;

@@ -172,7 +172,7 @@ final class CustomHelpCenterContentTests: XCTestCase {
 
     // MARK: Enter WordPress.com password screen from magic link emphasis flow
     //
-    func test_init_using_step_and_flow_returns_valid_instance_for_enter_WPCOM_password_screen_in_magic_link_emphasis() throws {
+    func test_init_using_step_and_flow_returns_valid_instance_for_enter_WPCOM_password_screen_in_magic_link_emphasis_flow() throws {
         // Given
         let step: AuthenticatorAnalyticsTracker.Step = .start
         let flow: AuthenticatorAnalyticsTracker.Flow = .loginWithPasswordWithMagicLinkEmphasis

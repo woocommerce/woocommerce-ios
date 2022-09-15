@@ -5,7 +5,7 @@ private extension ProductStatus {
     var descriptionColor: UIColor {
         switch self {
         case .draft:
-            return .blue
+            return .wooBlue
         case .pending:
             return .orange
         default:

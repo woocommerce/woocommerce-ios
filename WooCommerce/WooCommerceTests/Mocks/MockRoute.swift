@@ -1,11 +1,11 @@
 @testable import WooCommerce
 
 final class MockRoute: Route {
-    let path: String
+    let subPath: String
     let performAction: ([String: String]) -> Bool
 
-    init(path: String, performAction: @escaping ([String: String]) -> Bool) {
-        self.path = path
+    init(subPath: String, performAction: @escaping ([String: String]) -> Bool) {
+        self.subPath = subPath
         self.performAction = performAction
     }
 

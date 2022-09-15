@@ -27,10 +27,14 @@ def aztec
 end
 
 def tracks
-  pod 'Automattic-Tracks-iOS', '~> 0.12.0'
+  pod 'Automattic-Tracks-iOS', '~> 0.12.1-beta.2'
   # pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => ''
   # pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :commit => ''
   # pod 'Automattic-Tracks-iOS', :path => '../Automattic-Tracks-iOS'
+end
+
+def keychain
+  pod 'KeychainAccess', '~> 4.2.2'
 end
 
 # Main Target!
@@ -48,8 +52,8 @@ target 'WooCommerce' do
   pod 'Gridicons', '~> 1.2.0'
 
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
-  pod 'WordPressAuthenticator', '~> 2.4.0'
-  # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :commit => ''
+  pod 'WordPressAuthenticator', '~> 3.1.0-beta.1'
+#   pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :commit => ''
   # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => ''
   # pod 'WordPressAuthenticator', :path => '../WordPressAuthenticator-iOS'
 
@@ -66,7 +70,7 @@ target 'WooCommerce' do
   # ==================
   #
   pod 'Alamofire', '~> 4.8'
-  pod 'KeychainAccess', '~> 4.2.2'
+  keychain
   pod 'CocoaLumberjack', '~> 3.7.4'
   pod 'CocoaLumberjack/Swift', '~> 3.7.4'
   pod 'XLPagerTabStrip', '~> 9.0'
@@ -89,6 +93,7 @@ end
 target 'StoreWidgetsExtension' do
   project 'WooCommerce/WooCommerce.xcodeproj'
   tracks
+  keychain
 end
 
 # Yosemite Layer:
@@ -159,6 +164,10 @@ def networking_pods
 
   # Used for HTML parsing
   aztec
+
+  # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
+  pod 'WordPressKit', '~> 4.49.0'
+  # pod 'WordPressKit', :git => 'https://github.com/wordpress-mobile/WordPressKit-iOS.git', :branch => ''
 end
 
 # Networking Target:

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-08-31 09:54:04+0000 */
+/* Translation-Revision-Date: 2022-09-06 11:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -32,6 +32,12 @@
 
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (Para el cliente)";
+
+/* A label prompting users to learn more about In-Person Payments.
+\u{2011} is a special character that acts as nonbreaking hyphen for "-" in the "In-Person" string.
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"%1$@ about Inu{2011}Person Payments" = "%1$@ acerca de Pagos{2011}en persona";
 
 /* A label prompting users to learn more about card readers"
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
@@ -2004,6 +2010,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message on the Coupon Details screen when deleting coupon fails */
 "Failed to delete coupon. Please try again." = "No se ha podido eliminar el cupón. Inténtalo de nuevo.";
+
+/* Error displayed when the attempt to disable a Pay in Person checkout payment option fails */
+"Failed to disable Pay in Person. Please try again later." = "No se ha podido desactivar Pagos en persona. Inténtalo de nuevo más tarde.";
 
 /* Error displayed when the attempt to enable a Pay in Person checkout payment option fails */
 "Failed to enable Pay in Person. Please try again later." = "No se ha podido activar Pagos en persona. Inténtalo de nuevo más tarde.";
@@ -4891,6 +4900,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Fetching an Order Failed */
 "The Order couldn't be loaded!" = "No se ha podido cargar el pedido.";
 
+/* A label prompting users to learn more about adding Pay in Person to their checkout. %1$@ is a placeholder that always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
+"The Pay in Person checkout option lets you accept payments for website orders, on collection or delivery. %1$@" = "Con Pagos en persona puedes aceptar pagos para pedidos en el sitio web, en la recogida o entrega. %1$@";
+
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "La URL no contiene un host válido.";
 
@@ -5244,6 +5256,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Instructional text shown when requesting the user's password for Google login. */
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "Para seguir con esta cuenta de Google, por favor, primero accede con tu contraseña de WordPress.com. Esto solo se te pedirá una vez.";
+
+/* Sign in instructions asking user to enter WordPress.com password to proceed with sign in using Apple process */
+"To proceed with this account, please first log in with your WordPress.com password. This will only be asked once." = "Para continuar con esta cuenta, primero debes acceder con tu contraseña de WordPress.com. Solo se te pedirá una vez.";
 
 /* Label within the modal dialog that appears when searching for a card reader */
 "To turn on your card reader, briefly press its power button." = "Para encender el lector de tarjetas, pulsa el botón de encendido.";

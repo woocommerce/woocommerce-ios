@@ -256,7 +256,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
     func test_reloadSections_when_isEligibleForPayment_is_true_then_collect_payment_button_is_visible() throws {
         //Given
-        let order = makeOrder().copy(needsPayment: true) // Unpaid orders are eligible for payment
+        let order = makeOrder().copy(datePaid: .some(nil)) // Unpaid orders are eligible for payment
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
 
         // When
@@ -337,7 +337,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
     func test_create_shipping_label_button_is_not_visible_when_order_is_eligible_for_payment() throws {
         // Given
-        let order = makeOrder().copy(needsPayment: true, status: .pending)
+        let order = makeOrder().copy(status: .processing, datePaid: .some(nil), total: "100")
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.isEligibleForShippingLabelCreation = true
 

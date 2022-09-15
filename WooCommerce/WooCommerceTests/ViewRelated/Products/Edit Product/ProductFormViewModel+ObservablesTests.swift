@@ -201,14 +201,17 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         XCTAssertEqual(updatedUpdateEnabled, false)
     }
 
-    func testObservablesFromUploadingAnImage() {
-        // Arrange
+    func test_observables_when_productImageActionHandler_uploads_media_asset_then_observables_are_called() {
+        // Given
         let product = Product.fake()
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
+        let mockProductImageUploader = MockProductImageUploader()
+        mockProductImageUploader.whenHasUnsavedChangesOnImagesIsCalled(thenReturn: true)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler)
+                                             productImageActionHandler: productImageActionHandler,
+                                             productImagesUploader: mockProductImageUploader)
         var isProductUpdated: Bool?
         productSubscription = viewModel.observableProduct.sink { product in
             isProductUpdated = true
@@ -222,15 +225,17 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         var updatedUpdateEnabled: Bool?
         let expectationForUpdateEnabled = self.expectation(description: "Update enabled updates")
         expectationForUpdateEnabled.expectedFulfillmentCount = 1
-        updateEnabledSubscription = viewModel.isUpdateEnabled.sink { isUpdateEnabled in
+        // Emits a boolean of whether the product has unsaved changes for remote update
+        updateEnabledSubscription = viewModel.isUpdateEnabled.sink {
+            isUpdateEnabled in
             updatedUpdateEnabled = isUpdateEnabled
             expectationForUpdateEnabled.fulfill()
         }
 
-        // Action
+        // When
         productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: PHAsset())
 
-        // Assert
+        // Then
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
         XCTAssertNil(isProductUpdated)
         XCTAssertNil(updatedProductName)

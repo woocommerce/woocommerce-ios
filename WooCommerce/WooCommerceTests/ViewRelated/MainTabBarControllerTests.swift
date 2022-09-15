@@ -258,15 +258,13 @@ final class MainTabBarControllerTests: XCTestCase {
     }
 
     func test_when_receiving_product_image_upload_error_a_notice_is_enqueued() throws {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isBackgroundImageUploadEnabled: true)
+        // Given)
         let noticePresenter = MockNoticePresenter()
         let statusUpdates = PassthroughSubject<ProductImageUploadErrorInfo, Never>()
         let productImageUploader = MockProductImageUploader(errors: statusUpdates.eraseToAnyPublisher())
 
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
             return MainTabBarController(coder: coder,
-                                        featureFlagService: featureFlagService,
                                         noticePresenter: noticePresenter,
                                         productImageUploader: productImageUploader)
         }) else {
@@ -291,14 +289,12 @@ final class MainTabBarControllerTests: XCTestCase {
 
     func test_when_receiving_product_images_saving_error_a_notice_is_enqueued() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isBackgroundImageUploadEnabled: true)
         let noticePresenter = MockNoticePresenter()
         let statusUpdates = PassthroughSubject<ProductImageUploadErrorInfo, Never>()
         let productImageUploader = MockProductImageUploader(errors: statusUpdates.eraseToAnyPublisher())
 
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
             return MainTabBarController(coder: coder,
-                                        featureFlagService: featureFlagService,
                                         noticePresenter: noticePresenter,
                                         productImageUploader: productImageUploader)
         }) else {
@@ -323,14 +319,12 @@ final class MainTabBarControllerTests: XCTestCase {
 
     func test_when_receiving_variation_image_saving_error_a_notice_is_enqueued() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isBackgroundImageUploadEnabled: true)
         let noticePresenter = MockNoticePresenter()
         let statusUpdates = PassthroughSubject<ProductImageUploadErrorInfo, Never>()
         let productImageUploader = MockProductImageUploader(errors: statusUpdates.eraseToAnyPublisher())
 
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
             return MainTabBarController(coder: coder,
-                                        featureFlagService: featureFlagService,
                                         noticePresenter: noticePresenter,
                                         productImageUploader: productImageUploader)
         }) else {
@@ -355,14 +349,12 @@ final class MainTabBarControllerTests: XCTestCase {
 
     func test_when_tapping_product_image_upload_error_notice_product_details_is_pushed_to_products_tab() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isBackgroundImageUploadEnabled: true)
         let noticePresenter = MockNoticePresenter()
         let statusUpdates = PassthroughSubject<ProductImageUploadErrorInfo, Never>()
         let productImageUploader = MockProductImageUploader(errors: statusUpdates.eraseToAnyPublisher())
 
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
             return MainTabBarController(coder: coder,
-                                        featureFlagService: featureFlagService,
                                         noticePresenter: noticePresenter,
                                         productImageUploader: productImageUploader)
         }) else {
@@ -392,49 +384,16 @@ final class MainTabBarControllerTests: XCTestCase {
         assertThat(productNavigationController.topViewController, isAnInstanceOf: ProductLoaderViewController.self)
     }
 
-    func test_when_receiving_product_image_upload_error_with_feature_flag_off_a_notice_is_not_enqueued() throws {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isBackgroundImageUploadEnabled: false)
-        let noticePresenter = MockNoticePresenter()
-        let statusUpdates = PassthroughSubject<ProductImageUploadErrorInfo, Never>()
-        let productImageUploader = MockProductImageUploader(errors: statusUpdates.eraseToAnyPublisher())
-
-        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
-            return MainTabBarController(coder: coder,
-                                        featureFlagService: featureFlagService,
-                                        noticePresenter: noticePresenter,
-                                        productImageUploader: productImageUploader)
-        }) else {
-            return
-        }
-
-        // Trigger `viewDidLoad`
-        XCTAssertNotNil(tabBarController.view)
-        XCTAssertEqual(noticePresenter.queuedNotices.count, 0)
-
-        // When
-        let error = NSError(domain: "", code: 8)
-        statusUpdates.send(.init(siteID: 134,
-                                 productOrVariationID: .product(id: 606),
-                                 productImageStatuses: [],
-                                 error: .failedUploadingImage(error: error)))
-
-        // Then
-        XCTAssertEqual(noticePresenter.queuedNotices.count, 0)
-    }
-
     // MARK: - Analytics
 
     func test_failureUploadingImageNotice_events_are_tracked_when_showing_and_tapping_product_image_upload_error_notice() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isBackgroundImageUploadEnabled: true)
         let noticePresenter = MockNoticePresenter()
         let statusUpdates = PassthroughSubject<ProductImageUploadErrorInfo, Never>()
         let productImageUploader = MockProductImageUploader(errors: statusUpdates.eraseToAnyPublisher())
 
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
             return MainTabBarController(coder: coder,
-                                        featureFlagService: featureFlagService,
                                         noticePresenter: noticePresenter,
                                         productImageUploader: productImageUploader,
                                         analytics: self.analytics)
@@ -471,14 +430,12 @@ final class MainTabBarControllerTests: XCTestCase {
 
     func test_failureSavingProductAfterImageUploadNotice_events_are_tracked_when_showing_and_tapping_product_saving_error_notice() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isBackgroundImageUploadEnabled: true)
         let noticePresenter = MockNoticePresenter()
         let statusUpdates = PassthroughSubject<ProductImageUploadErrorInfo, Never>()
         let productImageUploader = MockProductImageUploader(errors: statusUpdates.eraseToAnyPublisher())
 
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
             return MainTabBarController(coder: coder,
-                                        featureFlagService: featureFlagService,
                                         noticePresenter: noticePresenter,
                                         productImageUploader: productImageUploader,
                                         analytics: self.analytics)

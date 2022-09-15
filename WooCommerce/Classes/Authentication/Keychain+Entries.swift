@@ -12,4 +12,11 @@ extension Keychain {
         get { self[WooConstants.anonymousIDKey] }
         set { self[WooConstants.anonymousIDKey] = newValue }
     }
+
+    /// Auth token for the current selected store
+    ///
+    var currentAuthToken: String? {
+        get { self[WooConstants.authToken] }
+        set { self[WooConstants.authToken] = newValue }
+    }
 }

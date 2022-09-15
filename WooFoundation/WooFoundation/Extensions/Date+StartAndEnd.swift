@@ -1,6 +1,6 @@
 import Foundation
 
-extension Date {
+public extension Date {
     // MARK: Day
 
     /// Returns self's start of day in the given time zone.

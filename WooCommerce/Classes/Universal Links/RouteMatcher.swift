@@ -16,6 +16,7 @@ struct MatchedRoute {
 /// and extracts parameters from the URL.
 ///
 class RouteMatcher {
+    private let mobilePathSegment = "/mobile"
     let routes: [Route]
 
     /// - parameter routes: A collection of routes to match against.
@@ -23,9 +24,22 @@ class RouteMatcher {
         self.routes = routes
     }
 
+    /// Validates, compares and matches the given URL with the routes previously passed.
+    /// If the URL doesn't have the mobile path segment (universal link is not mobile) nil is returned.
+    ///
+    /// - Parameter url: The universal link URL to be analyzed
+    ///
+    /// - Returns: The MatchedRoute object with the Route and url query parameters
+    ///
     func firstRouteMatching(_ url: URL) -> MatchedRoute? {
         guard let components = URLComponents(string: url.absoluteString),
-              let firstRoute = routes.first(where: { $0.path == components.path }) else {
+              components.path.hasPrefix(mobilePathSegment) else {
+            return nil
+        }
+
+        let routeSubPath = String(components.path.dropFirst(mobilePathSegment.count))
+
+        guard let firstRoute = routes.first(where: { $0.subPath == routeSubPath }) else {
             return nil
         }
 

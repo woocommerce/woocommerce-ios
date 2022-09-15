@@ -360,9 +360,13 @@
 		D8C11A5622DFB0BE00D4A88D /* OrderStatsV4Totals+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C11A5522DFB0BE00D4A88D /* OrderStatsV4Totals+ReadOnlyConvertible.swift */; };
 		D8C11A5822DFB2FF00D4A88D /* OrderStatsV4Interval+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C11A5722DFB2FF00D4A88D /* OrderStatsV4Interval+ReadOnlyConvertible.swift */; };
 		D8C11A5A22DFC21600D4A88D /* StatsStoreV4Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C11A5922DFC21600D4A88D /* StatsStoreV4Tests.swift */; };
+		DE3404FC28BC5E7800CF0D97 /* JetpackConnectionAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3404FB28BC5E7800CF0D97 /* JetpackConnectionAction.swift */; };
+		DE3404FE28BC5F4200CF0D97 /* JetpackConnectionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3404FD28BC5F4200CF0D97 /* JetpackConnectionStore.swift */; };
+		DE34050828BC706B00CF0D97 /* DeauthenticatedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE34050728BC706B00CF0D97 /* DeauthenticatedStore.swift */; };
 		DE3C5B1D286AEDA10049E6AA /* MockOrderCardPresentPaymentEligibilityActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3C5B1C286AEDA10049E6AA /* MockOrderCardPresentPaymentEligibilityActionHandler.swift */; };
 		DE3C5B21286BF2270049E6AA /* MockSystemStatusActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3C5B20286BF2270049E6AA /* MockSystemStatusActionHandler.swift */; };
 		DE3C5B23286C03F90049E6AA /* MockCardPresentPaymentActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3C5B22286C03F80049E6AA /* MockCardPresentPaymentActionHandler.swift */; };
+		DE50296728C7114800551736 /* JetpackConnectionStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50296628C7114800551736 /* JetpackConnectionStoreTests.swift */; };
 		DE6831DD26445B2B00E88B9E /* SitePluginStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6831DC26445B2B00E88B9E /* SitePluginStoreTests.swift */; };
 		DEFD6D9326443A4000E51E0D /* SitePluginAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D9226443A4000E51E0D /* SitePluginAction.swift */; };
 		DEFD6D9526443CA100E51E0D /* SitePluginStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D9426443CA100E51E0D /* SitePluginStore.swift */; };
@@ -761,9 +765,13 @@
 		D8C11A5522DFB0BE00D4A88D /* OrderStatsV4Totals+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4Totals+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		D8C11A5722DFB2FF00D4A88D /* OrderStatsV4Interval+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4Interval+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		D8C11A5922DFC21600D4A88D /* StatsStoreV4Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsStoreV4Tests.swift; sourceTree = "<group>"; };
+		DE3404FB28BC5E7800CF0D97 /* JetpackConnectionAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackConnectionAction.swift; sourceTree = "<group>"; };
+		DE3404FD28BC5F4200CF0D97 /* JetpackConnectionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackConnectionStore.swift; sourceTree = "<group>"; };
+		DE34050728BC706B00CF0D97 /* DeauthenticatedStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeauthenticatedStore.swift; sourceTree = "<group>"; };
 		DE3C5B1C286AEDA10049E6AA /* MockOrderCardPresentPaymentEligibilityActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockOrderCardPresentPaymentEligibilityActionHandler.swift; sourceTree = "<group>"; };
 		DE3C5B20286BF2270049E6AA /* MockSystemStatusActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSystemStatusActionHandler.swift; sourceTree = "<group>"; };
 		DE3C5B22286C03F80049E6AA /* MockCardPresentPaymentActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCardPresentPaymentActionHandler.swift; sourceTree = "<group>"; };
+		DE50296628C7114800551736 /* JetpackConnectionStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackConnectionStoreTests.swift; sourceTree = "<group>"; };
 		DE6831DC26445B2B00E88B9E /* SitePluginStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginStoreTests.swift; sourceTree = "<group>"; };
 		DEFD6D9226443A4000E51E0D /* SitePluginAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginAction.swift; sourceTree = "<group>"; };
 		DEFD6D9426443CA100E51E0D /* SitePluginStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginStore.swift; sourceTree = "<group>"; };
@@ -1348,6 +1356,7 @@
 				077F39DF26A5A6F500ABEADC /* SystemStatusStore.swift */,
 				FE28F6EF26844231004465C7 /* UserStore.swift */,
 				B9AECD3B2850F3C600E78584 /* OrderCardPresentPaymentEligibilityStore.swift */,
+				DE3404FD28BC5F4200CF0D97 /* JetpackConnectionStore.swift */,
 			);
 			path = Stores;
 			sourceTree = "<group>";
@@ -1403,6 +1412,7 @@
 				077F39E426A5C98200ABEADC /* SystemStatusStoreTests.swift */,
 				FE28F6F1268462A6004465C7 /* UserStoreTests.swift */,
 				D4CBAE5B26D401BC00BBE6D1 /* AnnouncementsStoreTests.swift */,
+				DE50296628C7114800551736 /* JetpackConnectionStoreTests.swift */,
 			);
 			path = Stores;
 			sourceTree = "<group>";
@@ -1491,6 +1501,7 @@
 				B5C9DE112087FF0E006B910A /* Store.swift */,
 				24163B9D257F41A600F94EC3 /* StoresManager.swift */,
 				24163BA7257F41C500F94EC3 /* SessionManagerProtocol.swift */,
+				DE34050728BC706B00CF0D97 /* DeauthenticatedStore.swift */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -1582,6 +1593,7 @@
 				077F39DD26A5A1CB00ABEADC /* SystemStatusAction.swift */,
 				FE28F6ED268440B1004465C7 /* UserAction.swift */,
 				B9AECD3D2850F41100E78584 /* OrderCardPresentPaymentEligibilityAction.swift */,
+				DE3404FB28BC5E7800CF0D97 /* JetpackConnectionAction.swift */,
 			);
 			path = Actions;
 			sourceTree = "<group>";
@@ -1868,6 +1880,7 @@
 				CE179D57235F4E7500C24EB3 /* RefundStore.swift in Sources */,
 				0218B4EE242E08B20083A847 /* MediaType.swift in Sources */,
 				247CE7C42582DE5300F9D9D1 /* ProductStockStatus+Mocks.swift in Sources */,
+				DE3404FC28BC5E7800CF0D97 /* JetpackConnectionAction.swift in Sources */,
 				CE3B7AD72225ECA90050FE4B /* OrderStatusStore.swift in Sources */,
 				B5631ECD2114DF8C008D3535 /* EntityListener.swift in Sources */,
 				D80F758A223F72AA002F4A3B /* ShipmentTrackingProviderGroup+ReadOnlyConvertible.swift in Sources */,
@@ -1946,6 +1959,7 @@
 				26788979270E057900BD249E /* OrderFactory.swift in Sources */,
 				B5B5C797208E49B600642956 /* Action+Internal.swift in Sources */,
 				74A7688C20D45EBA00F9D437 /* OrderStore.swift in Sources */,
+				DE3404FE28BC5F4200CF0D97 /* JetpackConnectionStore.swift in Sources */,
 				2618707C2540B6A4006522A1 /* ShippingLineTax+ReadOnlyConvertible.swift in Sources */,
 				749375002249605E007D85D1 /* ProductAction.swift in Sources */,
 				D831E2E4230E3524000037D0 /* ProductReviewAction.swift in Sources */,
@@ -1980,6 +1994,7 @@
 				0248B3652459018100A271A4 /* ResultsController+FilterProducts.swift in Sources */,
 				02E262C2238CF74D00B79588 /* StorageShippingSettingsService.swift in Sources */,
 				FE28F6EE268440B1004465C7 /* UserAction.swift in Sources */,
+				DE34050828BC706B00CF0D97 /* DeauthenticatedStore.swift in Sources */,
 				749375042249691D007D85D1 /* Product+ReadOnlyConvertible.swift in Sources */,
 				D4CBAE6426D4464500BBE6D1 /* AnnouncementsAction.swift in Sources */,
 				CE43A90222A072D800A4FF29 /* ProductDownload+ReadOnlyConvertible.swift in Sources */,
@@ -2156,6 +2171,7 @@
 				B5C9DE282087FF20006B910A /* MockSiteStore.swift in Sources */,
 				FEEB2F5F268A1C5E0075A6E0 /* User+RolesTests.swift in Sources */,
 				B5BC736820D1AA8F00B5B6FA /* AccountStoreTests.swift in Sources */,
+				DE50296728C7114800551736 /* JetpackConnectionStoreTests.swift in Sources */,
 				0212AC67242C799B00C51F6C /* ResultsController+StorageProductTests.swift in Sources */,
 				D4CBAE6026D440FA00BBE6D1 /* MockAnnouncementsRemote.swift in Sources */,
 				578CE7902475EBAB00492EBF /* MockProductReviewsRemote.swift in Sources */,

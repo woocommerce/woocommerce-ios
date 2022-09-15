@@ -1591,3 +1591,36 @@ extension WooAnalyticsEvent {
         WooAnalyticsEvent(statName: .universalLinkFailed, properties: [Key.url.rawValue: url.absoluteString])
     }
 }
+
+// MARK: - Jetpack connection
+//
+extension WooAnalyticsEvent {
+    enum LoginJetpackConnection {
+        enum Key: String {
+            case selfHosted = "is_selfhosted_site"
+        }
+
+        static func jetpackConnectionErrorShown(selfHostedSite: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginJetpackConnectionErrorShown, properties: [Key.selfHosted.rawValue: selfHostedSite])
+        }
+    }
+}
+
+// MARK: - Widgets {
+extension WooAnalyticsEvent {
+    enum Widgets {
+        enum Key: String {
+            case name = "name"
+        }
+
+        enum Name: String {
+            case todayStats = "today_stats"
+        }
+
+        /// Event when a widget is tapped and opens the app.
+        ///
+        static func widgetTapped(name: Name) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .widgetTapped, properties: [Key.name.rawValue: name.rawValue])
+        }
+    }
+}

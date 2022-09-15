@@ -1,0 +1,19 @@
+name: Order detail
+appId: com.automattic.woocommerce
+---
+- launchApp
+# - tapOn:
+#      point: 120,800
+- tapOn:
+    below: "Menu"
+# - tapOn:
+#     below: "TODAY"
+#     retryTapIfNoChange: false
+# - 
+# - tapOn: "ADD A NOTE"
+# - inputText: "This is a new note generated from Maestro testing framework"
+# - tapOn: "ADD"
+# - scroll
+# - scroll
+# - assertVisible:
+#     text: "This is a new note generated from Maestro testing framework"

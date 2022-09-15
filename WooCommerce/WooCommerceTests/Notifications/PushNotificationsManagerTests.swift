@@ -472,7 +472,7 @@ final class PushNotificationsManagerTests: XCTestCase {
 
     // MARK: - Background Notification Observable
 
-    func test_it_emits_background_notifications_when_it_receives_a_notification_while_app_is_active() async throws {
+    func test_it_emits_background_notifications_when_it_receives_a_notification_while_app_is_in_the_background() async throws {
         // Given
         application.applicationState = .background
 

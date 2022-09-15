@@ -49,22 +49,31 @@ final class ProductFormRemoteActionUseCase {
 
     /// Adds a copy of the input product remotely.
     /// - Parameters:
-    ///   - product: The product to be duplicated remotely.
+    ///   - originalProduct: The product to be duplicated remotely.
     ///   - onCompletion: Called when the remote process finishes.
-    func duplicateProduct(product: EditableProductModel,
-                          originalProductID: Int64,
-                          originalProductVariationIDs: [Int64],
+    func duplicateProduct(originalProduct: EditableProductModel,
                           password: String?,
                           onCompletion: @escaping DuplicateProductCompletion) {
-        addProduct(product: product, password: password) { result in
+        let productModelToSave: EditableProductModel = {
+            let newName = String(format: Localization.copyProductName, originalProduct.name)
+            let copiedProduct = originalProduct.product.copy(
+                productID: 0,
+                name: newName,
+                statusKey: ProductStatus.draft.rawValue,
+                sku: .some(nil) // just resetting SKU to nil for simplicity
+            )
+            return EditableProductModel(product: copiedProduct)
+        }()
+
+        addProduct(product: productModelToSave, password: password) { result in
             switch result {
             case .success(let data):
-                guard originalProductVariationIDs.isNotEmpty else {
+                guard data.product.productType == .variable else {
                     return onCompletion(.success(data))
                 }
                 // `self` is retained because the use case is not usually strongly held.
-                self.duplicateVariations(originalProductVariationIDs,
-                                         from: originalProductID,
+                self.duplicateVariations(originalProduct.product.variations,
+                                         from: originalProduct.productID,
                                          to: data.product,
                                          onCompletion: { result in
                     switch result {
@@ -314,5 +323,14 @@ private extension ProductFormRemoteActionUseCase {
                 self?.stores.dispatch(createAction)
             }
         }
+    }
+}
+
+private extension ProductFormRemoteActionUseCase {
+    enum Localization {
+        static let copyProductName = NSLocalizedString(
+            "%1$@ Copy",
+            comment: "The default name for a duplicated product, with %1$@ being the original name. Reads like: Ramen Copy"
+        )
     }
 }

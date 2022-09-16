@@ -25,21 +25,23 @@ final class ProductFormRemoteActionUseCase {
     ///   - onCompletion: Called when the remote process finishes.
     func addProduct(product: EditableProductModel,
                     password: String?,
+                    successEventName: WooAnalyticsStat = .addProductSuccess,
+                    failureEventName: WooAnalyticsStat = .addProductFailed,
                     onCompletion: @escaping AddProductCompletion) {
         addProductRemotely(product: product) { productResult in
             switch productResult {
             case .failure(let error):
-                ServiceLocator.analytics.track(.addProductFailed, withError: error)
+                ServiceLocator.analytics.track(successEventName, withError: error)
                 onCompletion(.failure(error))
             case .success(let product):
                 // `self` is retained because the use case is not usually strongly held.
                 self.updatePasswordRemotely(product: product, password: password) { passwordResult in
                     switch passwordResult {
                     case .failure(let error):
-                        ServiceLocator.analytics.track(.addProductFailed, withError: error)
+                        ServiceLocator.analytics.track(failureEventName, withError: error)
                         onCompletion(.failure(.passwordCannotBeUpdated))
                     case .success(let password):
-                        ServiceLocator.analytics.track(.addProductSuccess)
+                        ServiceLocator.analytics.track(successEventName)
                         onCompletion(.success(ResultData(product: product, password: password)))
                     }
                 }
@@ -65,7 +67,13 @@ final class ProductFormRemoteActionUseCase {
             return EditableProductModel(product: copiedProduct)
         }()
 
-        addProduct(product: productModelToSave, password: password) { result in
+        let successEventName: WooAnalyticsStat = .duplicateProductSuccess
+        let failureEventName: WooAnalyticsStat = .duplicateProductFailed
+
+        addProduct(product: productModelToSave,
+                   password: password,
+                   successEventName: successEventName,
+                   failureEventName: failureEventName) { result in
             switch result {
             case .success(let data):
                 guard data.product.productType == .variable else {
@@ -78,8 +86,10 @@ final class ProductFormRemoteActionUseCase {
                                          onCompletion: { result in
                     switch result {
                     case .success(let product):
+                        ServiceLocator.analytics.track(successEventName)
                         onCompletion(.success(ResultData(product: product, password: data.password)))
                     case .failure(let error):
+                        ServiceLocator.analytics.track(failureEventName, withError: error)
                         onCompletion(.failure(error))
                     }
                 })

@@ -253,7 +253,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
         if viewModel.canDuplicateProduct() {
             actionSheet.addDefaultActionWithTitle(ActionSheetStrings.duplicate) { [weak self] _ in
-                // TODO: Tracks?
+                ServiceLocator.analytics.track(.productDetailDuplicateButtonTapped)
                 self?.duplicateProduct()
             }
         }

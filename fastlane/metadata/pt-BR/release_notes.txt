@@ -1,1 +1,1 @@
-Ainda que esta versão não tenha nenhuma funcionalidade nova, nós a fizemos com muito amor. Agora você pode ativar ou desativar a opção de receber pagamentos com cartão ou dinheiro na coleta ou entrega. Também adicionamos uma nova página da Central de ajuda que facilita o login no aplicativo.
+Muito amor por análises e pagamentos presenciais nesta versão. Corrigimos um bug que poderia impedir você de receber pagamentos no aplicativo. As conexões de leitores de cartão estão mais estáveis. E corrigimos também um problema na análise da loja, que às vezes não atualizava.

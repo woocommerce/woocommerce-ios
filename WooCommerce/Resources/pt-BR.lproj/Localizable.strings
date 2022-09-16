@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-09-06 17:54:05+0000 */
+/* Translation-Revision-Date: 2022-09-14 14:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -2714,12 +2714,18 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Explains that the files are sorted by LIFO date: most recent day listed first. */
 "Log files by created date" = "Registrar arquivos de acordo com a data de criação";
 
+/* Title label for the login button on the store info widget. */
+"Log in" = "Acessar";
+
 /* A generic error message for a failed log in. */
 "Log in failed. Please try again." = "Falha ao tentar fazer login. Tente novamente.";
 
 /* Button title. Takes the user to the login by email flow.
    Button title. Tapping begins our normal log in process. */
 "Log in or sign up with WordPress.com" = "Faça login ou entre com o WordPress.com";
+
+/* Title label when the widget does not have a logged-in store. */
+"Log in to see today’s stats." = "Faça login para ver as estatísticas de hoje.";
 
 /* Instruction text on the login's email address screen. */
 "Log in to the WordPress.com account you used to connect Jetpack." = "Acesse a conta do WordPress.com usada para se conectar ao Jetpack.";
@@ -2896,6 +2902,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
 "Multiple Contactless Cards Detected" = "Vários cartões por aproximação detectados";
 
+/* Generic store name for the store info widget preview */
+"My Shop" = "Minha loja";
+
 /* Title of the hub menu view in case there is no title for the store */
 "My Store" = "Minha loja";
 
@@ -2912,9 +2921,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Error showed in Shipping Label Address Validation for the name field */
 "Name missing" = "Informe o nome";
-
-/* VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen. */
-"Navigates to Settings." = "Vai até as Configurações.";
 
 /* Title of the banner in the Order Detail for suggesting to install WCShip extension. */
 "Need a shipping label?" = "Precisa de uma etiqueta de envio?";
@@ -3216,6 +3222,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Notice title when an order is marked as completed via a swipe action. Parameter: Order Number */
 "Order #%1$d marked as completed" = "Pedido nº %1$d marcado como concluído";
+
+/* Title for the webview used by merchants to place an order for a card reader, for use with In-Person Payments. */
+"Order Card Reader" = "Solicitar leitor de cartão";
 
 /* Order notes section title */
 "Order Notes" = "Observações do pedido";
@@ -4248,9 +4257,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Placeholder in Shipping Label form for the Carrier and Rates row. */
 "Select your shipping carrier and rates" = "Selecione sua transportadora e as tarifas";
 
-/* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
-"Selected Store" = "Loja selecionada";
-
 /* Presents a survey to gather feedback from the user. */
 "Send Feedback" = "Enviar feedback";
 
@@ -4279,8 +4285,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Header text on Add New Service Package screen in Shipping Label flow */
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "Defina o pacote que você usará para enviar seus produtos. Salvaremos suas configurações para pedidos futuros.";
 
-/* Accessibility label for the Settings button.
-   Settings button in the hub menu
+/* Settings button in the hub menu
    Settings navigation title */
 "Settings" = "Configurações";
 
@@ -5267,6 +5272,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "Para usar esse aplicativo para %@, é necessário ter o plugin do Jetpack conectado à sua loja.";
 
 /* Label for one of the filters in order date range
+   Range title for the today store info widget
    Tab selector title that shows the statistics for today
    Today Section Header
    Top Performers section title - today */

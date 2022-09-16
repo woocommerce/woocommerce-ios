@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-09-07 12:54:03+0000 */
+/* Translation-Revision-Date: 2022-09-13 10:54:04+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -2714,12 +2714,18 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Explains that the files are sorted by LIFO date: most recent day listed first. */
 "Log files by created date" = "تسجيل الملفات حسب تاريخ إنشائها";
 
+/* Title label for the login button on the store info widget. */
+"Log in" = "تسجيل الدخول";
+
 /* A generic error message for a failed log in. */
 "Log in failed. Please try again." = "فشل تسجيل الدخول. يُرجى المحاولة مرة أخرى.";
 
 /* Button title. Takes the user to the login by email flow.
    Button title. Tapping begins our normal log in process. */
 "Log in or sign up with WordPress.com" = "تسجيل الدخول أو التسجيل باستخدام ووردبريس.كوم";
+
+/* Title label when the widget does not have a logged-in store. */
+"Log in to see today’s stats." = "قم بتسجيل الدخول للاطلاع على إحصاءات اليوم.";
 
 /* Instruction text on the login's email address screen. */
 "Log in to the WordPress.com account you used to connect Jetpack." = "سجّل الدخول إلى حساب وردبرس الذي تستخدمه للاتصال بـ Jetpack.";
@@ -2896,6 +2902,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
 "Multiple Contactless Cards Detected" = "تم اكتشاف عدة بطاقات غير تلامسية";
 
+/* Generic store name for the store info widget preview */
+"My Shop" = "متجري";
+
 /* Title of the hub menu view in case there is no title for the store */
 "My Store" = "مخزني";
 
@@ -2912,9 +2921,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Error showed in Shipping Label Address Validation for the name field */
 "Name missing" = "الاسم مفقود";
-
-/* VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen. */
-"Navigates to Settings." = "الانتقال إلى الإعدادات.";
 
 /* Title of the banner in the Order Detail for suggesting to install WCShip extension. */
 "Need a shipping label?" = "هل تحتاج إلى ملصق شحن؟";
@@ -3216,6 +3222,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Notice title when an order is marked as completed via a swipe action. Parameter: Order Number */
 "Order #%1$d marked as completed" = "تم وضع علامة على الطلب رقم ⁦%1$d⁩ بأنه مكتمل";
+
+/* Title for the webview used by merchants to place an order for a card reader, for use with In-Person Payments. */
+"Order Card Reader" = "طلب قارئ البطاقة";
 
 /* Order notes section title */
 "Order Notes" = "ملاحظات الطلب";
@@ -4248,9 +4257,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Placeholder in Shipping Label form for the Carrier and Rates row. */
 "Select your shipping carrier and rates" = "تحديد شركة شحنك وأسعارها";
 
-/* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
-"Selected Store" = "متجرر محدّد";
-
 /* Presents a survey to gather feedback from the user. */
 "Send Feedback" = "إرسال الملاحظات";
 
@@ -4279,8 +4285,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Header text on Add New Service Package screen in Shipping Label flow */
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "قم بإعداد الحزمة التي ستستخدمها لشحن منتجاتك. سنقوم بحفظها للطلبات المستقبلية.";
 
-/* Accessibility label for the Settings button.
-   Settings button in the hub menu
+/* Settings button in the hub menu
    Settings navigation title */
 "Settings" = "إعدادات";
 
@@ -5267,6 +5272,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "لاستخدام هذا التطبيق مقابل %@، ستحتاج إلى تثبيت إضافة Jetpack واتصالها بمتجرك.";
 
 /* Label for one of the filters in order date range
+   Range title for the today store info widget
    Tab selector title that shows the statistics for today
    Today Section Header
    Top Performers section title - today */

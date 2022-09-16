@@ -1,1 +1,1 @@
-אומנם אין הפעם אפשרויות חדשות אבל עדיין הקדשנו המון זמן ואהבה לגרסה הזאת! You can now enable or disable the option to take card or cash payments on collection or delivery. We also added a new Help Center page that makes it easier for you to login to the app.
+הקדשנו יותר תשומת לב ל'תשלומים באופן אישי' ולניתוח הסטטיסטי בסבב התיקונים הזה. תיקנו באג שלפעמים מנע ממך לגבות תשלומים באפליקציה. החיבורים לקורא הכרטיסים יציבים יותר עכשיו. ותיקנו בעיה שגרמה לתצוגה לא מעודכנת של הניתוח הסטטיסטי בחנות שלך.

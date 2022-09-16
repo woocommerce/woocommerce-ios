@@ -511,6 +511,8 @@ private extension DefaultStoresManager {
         UserDefaults.group?[.defaultStoreID] = siteID
         UserDefaults.group?[.defaultStoreName] = sessionManager.defaultSite?.name
 
+        // Currency Settings are stored in `SelectedSiteSettings.defaultStoreCurrencySettings`
+
         // Reload widgets UI
         WidgetCenter.shared.reloadAllTimelines()
     }

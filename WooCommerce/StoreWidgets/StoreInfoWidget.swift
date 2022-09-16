@@ -7,10 +7,8 @@ import Experiments
 ///
 struct StoreInfoWidget: Widget {
 
-    let enableWidgets = DefaultFeatureFlagService().isFeatureFlagEnabled(.storeWidgets)
-
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: "StoreInfoWidget", provider: StoreInfoProvider()) { entry in
+        StaticConfiguration(kind: WooConstants.storeInfoWidgetKind, provider: StoreInfoProvider()) { entry in
             Group {
                 switch entry {
                 case .notConnected:
@@ -22,8 +20,9 @@ struct StoreInfoWidget: Widget {
                 }
             }
         }
-        .configurationDisplayName("Store Info")
-        .supportedFamilies(enableWidgets ? [.systemMedium] : [])
+        .configurationDisplayName(Localization.title)
+        .description(Localization.description)
+        .supportedFamilies([.systemMedium])
     }
 }
 
@@ -94,6 +93,10 @@ private struct StoreInfoView: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
+
+                Text(Localization.updatedAt(entry.updatedTime))
+                    .statRangeStyle()
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
             .padding(.horizontal)
         }
@@ -153,6 +156,23 @@ private struct UnableToFetchView: View {
 
 /// Constants definition
 ///
+private extension StoreInfoWidget {
+    enum Localization {
+        static let title = AppLocalizedString(
+            "storeWidgets.displayName",
+            value: "Today",
+            comment: "Widget title, displayed when selecting which widget to add"
+        )
+        static let description = AppLocalizedString(
+            "storeWidgets.description",
+            value: "WooCommerce Stats Today",
+            comment: "Widget description, displayed when selecting which widget to add"
+        )
+    }
+}
+
+/// Constants definition
+///
 private extension StoreInfoView {
     enum Localization {
         static let revenue = AppLocalizedString(
@@ -175,6 +195,12 @@ private extension StoreInfoView {
             value: "Conversion",
             comment: "Conversion title label for the store info widget"
         )
+        static func updatedAt(_ updatedTime: String) -> LocalizedString {
+            let format = AppLocalizedString("storeWidgets.infoView.updatedAt",
+                                            value: "As of %1$@",
+                                            comment: "Displays the time when the widget was last updated. %1$@ is the time to render.")
+            return LocalizedString.localizedStringWithFormat(format, updatedTime)
+        }
     }
 
     enum Layout {
@@ -232,7 +258,8 @@ struct StoreWidgets_Previews: PreviewProvider {
                                  revenue: "$132.234",
                                  visitors: "67",
                                  orders: "23",
-                                 conversion: "37%")
+                                 conversion: "37%",
+                                 updatedTime: "10:24 PM")
         )
         .previewContext(WidgetPreviewContext(family: .systemMedium))
 

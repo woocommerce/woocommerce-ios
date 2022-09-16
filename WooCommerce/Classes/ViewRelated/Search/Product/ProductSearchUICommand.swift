@@ -18,11 +18,14 @@ final class ProductSearchUICommand: SearchUICommand {
     private var filter: ProductSearchFilter = .all
 
     private let siteID: Int64
+    private let stores: StoresManager
     private let isSearchProductsBySKUEnabled: Bool
 
     init(siteID: Int64,
+         stores: StoresManager = ServiceLocator.stores,
          isSearchProductsBySKUEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsBySKU)) {
         self.siteID = siteID
+        self.stores = stores
         self.isSearchProductsBySKUEnabled = isSearchProductsBySKUEnabled
     }
 
@@ -90,8 +93,11 @@ final class ProductSearchUICommand: SearchUICommand {
     ///
     func synchronizeModels(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
         if isSearchProductsBySKUEnabled {
-            // Returns early if the search query is the same for the given filter to avoid duplicate API requests when switching filter tabs.
-            if let lastFilterSearchQuery = lastSearchQueryByFilter[filter], lastFilterSearchQuery == keyword {
+            // Returns early if the search query is the same for the given filter and for the first page to avoid duplicate API requests when
+            // switching filter tabs.
+            if let lastFilterSearchQuery = lastSearchQueryByFilter[filter],
+               lastFilterSearchQuery == keyword,
+               pageNumber == SyncingCoordinator.Defaults.pageFirstIndex {
                 onCompletion?(true)
                 return
             }
@@ -110,7 +116,7 @@ final class ProductSearchUICommand: SearchUICommand {
             onCompletion?(result.isSuccess)
         }
 
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
 
         ServiceLocator.analytics.track(.productListSearched)
     }
@@ -122,11 +128,11 @@ final class ProductSearchUICommand: SearchUICommand {
     }
 
     func searchResultsPredicate(keyword: String) -> NSPredicate? {
-        guard keyword.isNotEmpty else {
-            return nil
-        }
         guard isSearchProductsBySKUEnabled else {
             return NSPredicate(format: "ANY searchResults.keyword = %@", keyword)
+        }
+        guard keyword.isNotEmpty else {
+            return nil
         }
         return NSPredicate(format: "SUBQUERY(searchResults, $result, $result.keyword = %@ AND $result.filterKey = %@).@count > 0",
                            keyword, filter.rawValue)

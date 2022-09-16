@@ -209,6 +209,7 @@
 		0260B1B12805321B00FCFE8C /* OrderDetailsPaymentAlertsProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0260B1B02805321B00FCFE8C /* OrderDetailsPaymentAlertsProtocol.swift */; };
 		0260F40123224E8100EDA10A /* ProductsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0260F40023224E8100EDA10A /* ProductsViewController.swift */; };
 		02619858256B53DD00E321E9 /* AggregatedShippingLabelOrderItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02619857256B53DD00E321E9 /* AggregatedShippingLabelOrderItems.swift */; };
+		0261F5A728D454CF00B7AC72 /* ProductSearchUICommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0261F5A628D454CF00B7AC72 /* ProductSearchUICommandTests.swift */; };
 		0262DA5323A238460029AF30 /* UnitInputTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0262DA5123A238460029AF30 /* UnitInputTableViewCell.swift */; };
 		0262DA5423A238460029AF30 /* UnitInputTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0262DA5223A238460029AF30 /* UnitInputTableViewCell.xib */; };
 		0262DA5823A23AC80029AF30 /* ProductShippingSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0262DA5623A23AC80029AF30 /* ProductShippingSettingsViewController.swift */; };
@@ -2114,6 +2115,7 @@
 		0260B1B02805321B00FCFE8C /* OrderDetailsPaymentAlertsProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsPaymentAlertsProtocol.swift; sourceTree = "<group>"; };
 		0260F40023224E8100EDA10A /* ProductsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsViewController.swift; sourceTree = "<group>"; };
 		02619857256B53DD00E321E9 /* AggregatedShippingLabelOrderItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AggregatedShippingLabelOrderItems.swift; sourceTree = "<group>"; };
+		0261F5A628D454CF00B7AC72 /* ProductSearchUICommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSearchUICommandTests.swift; sourceTree = "<group>"; };
 		0262DA5123A238460029AF30 /* UnitInputTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitInputTableViewCell.swift; sourceTree = "<group>"; };
 		0262DA5223A238460029AF30 /* UnitInputTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UnitInputTableViewCell.xib; sourceTree = "<group>"; };
 		0262DA5623A23AC80029AF30 /* ProductShippingSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductShippingSettingsViewController.swift; sourceTree = "<group>"; };
@@ -3930,6 +3932,7 @@
 			isa = PBXGroup;
 			children = (
 				020C908324C84652001E2BEB /* ProductListMultiSelectorSearchUICommandTests.swift */,
+				0261F5A628D454CF00B7AC72 /* ProductSearchUICommandTests.swift */,
 			);
 			path = Product;
 			sourceTree = "<group>";
@@ -10424,6 +10427,7 @@
 				0279F0E2252DC4BF0098D7DE /* ProductLoaderViewControllerModelTests.swift in Sources */,
 				093B265727DF05270026F92D /* UnitInputViewModelTests.swift in Sources */,
 				4552085B25829091001CF873 /* AddAttributeViewModelTests.swift in Sources */,
+				0261F5A728D454CF00B7AC72 /* ProductSearchUICommandTests.swift in Sources */,
 				098FFA1727AD7F5D002EBEE4 /* OrderStatusListDataSourceTests.swift in Sources */,
 				DE19BB1D26C6911900AB70D9 /* ShippingLabelCustomsFormListViewModelTests.swift in Sources */,
 				D449C52C26E02F2F00D75B02 /* WhatsNewFactoryTests.swift in Sources */,

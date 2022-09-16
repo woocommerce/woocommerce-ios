@@ -972,7 +972,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductAction.searchProducts` effectively upserts the `ProductSearchResults` entity.
     ///
-    func test_searchProducts_effectively_persists_search_eesults_entity() throws {
+    func test_searchProducts_effectively_persists_search_results_entity() throws {
         // Given
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
@@ -993,12 +993,12 @@ final class ProductStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isSuccess)
-        let searchResults = try XCTUnwrap(viewStorage.loadProductSearchResults(keyword: keyword))
+        let searchResults = try XCTUnwrap(viewStorage.loadProductSearchResults(keyword: keyword, filterKey: ProductSearchFilter.all.rawValue))
         XCTAssertEqual(searchResults.keyword, keyword)
         XCTAssertEqual(searchResults.products?.count, viewStorage.countObjects(ofType: Storage.Product.self))
 
         let anotherKeyword = "hello"
-        let searchResultsWithAnotherKeyword = viewStorage.loadProductSearchResults(keyword: anotherKeyword)
+        let searchResultsWithAnotherKeyword = viewStorage.loadProductSearchResults(keyword: anotherKeyword, filterKey: ProductSearchFilter.all.rawValue)
         XCTAssertNil(searchResultsWithAnotherKeyword)
     }
 

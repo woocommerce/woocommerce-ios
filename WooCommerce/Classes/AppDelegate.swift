@@ -180,6 +180,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             handleWebActivity(userActivity)
         }
 
+        trackWidgetTappedIfNeeded(userActivity: userActivity)
+
         return true
     }
 }
@@ -373,6 +375,17 @@ private extension AppDelegate {
     ///
     func startABTesting() async {
         await ABTest.start()
+    }
+
+    /// Tracks if the application was opened via a widget tap.
+    ///
+    func trackWidgetTappedIfNeeded(userActivity: NSUserActivity) {
+        switch userActivity.activityType {
+        case WooConstants.storeInfoWidgetKind:
+            ServiceLocator.analytics.track(event: .Widgets.widgetTapped(name: .todayStats))
+        default:
+            break
+        }
     }
 }
 

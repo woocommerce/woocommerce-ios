@@ -70,10 +70,6 @@ public enum FeatureFlag: Int {
     ///
     case promptToEnableCodInIppOnboarding
 
-    /// Enables home screen store widgets.
-    ///
-    case storeWidgets
-
     /// Enables searching products by partial SKU for WC version 6.6+.
     ///
     case searchProductsBySKU

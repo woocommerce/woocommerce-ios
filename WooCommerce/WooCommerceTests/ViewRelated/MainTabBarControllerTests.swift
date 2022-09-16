@@ -238,7 +238,7 @@ final class MainTabBarControllerTests: XCTestCase {
 
         // Action
         // Send push notification in inactive state
-        let pushNotification = PushNotification(noteID: 1_234, kind: .comment, title: "", subtitle: "", message: "")
+        let pushNotification = PushNotification(noteID: 1_234, siteID: 1, kind: .comment, title: "", subtitle: "", message: "")
         pushNotificationsManager.sendInactiveNotification(pushNotification)
 
         // Simulate that the network call returns a parcel

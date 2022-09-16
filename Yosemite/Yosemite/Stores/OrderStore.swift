@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Networking
 import Storage
@@ -82,6 +83,8 @@ public class OrderStore: Store {
             markOrderAsPaidLocally(siteID: siteID, orderID: orderID, datePaid: datePaid, onCompletion: onCompletion)
         case let .deleteOrder(siteID, order, deletePermanently, onCompletion):
             deleteOrder(siteID: siteID, order: order, deletePermanently: deletePermanently, onCompletion: onCompletion)
+        case let .observeInsertedOrders(siteID, completion):
+            observeInsertedOrders(siteID: siteID, completion: completion)
         }
     }
 }
@@ -450,6 +453,26 @@ private extension OrderStore {
                 })
             }
         }
+    }
+
+    func observeInsertedOrders(siteID: Int64, completion: (AnyPublisher<[Order], Never>) -> Void) {
+        completion(
+            NotificationCenter.default
+                .publisher(for: .NSManagedObjectContextObjectsDidChange, object: storageManager.viewStorage)
+                .map { notification -> [Order] in
+                    guard let note = ManagedObjectsDidChangeNotification(notification: notification) else {
+                        return []
+                    }
+
+                    return note.insertedObjects.compactMap { ($0 as? StorageOrder)?.toReadOnly() }
+                }
+                .map { orders in
+                    orders.filter { $0.siteID == siteID }
+                }
+                .filter { $0.isEmpty == false }
+                .removeDuplicates()
+                .eraseToAnyPublisher()
+        )
     }
 }
 

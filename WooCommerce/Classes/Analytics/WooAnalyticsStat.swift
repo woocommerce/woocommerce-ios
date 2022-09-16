@@ -688,6 +688,9 @@ public enum WooAnalyticsStat: String {
     case loginJetpackConnectDismissed = "login_jetpack_connect_dismissed"
     case loginJetpackConnectionURLFetchFailed = "login_jetpack_connection_url_fetch_failed"
     case loginJetpackConnectionVerificationFailed = "login_jetpack_connection_verification_failed"
+
+    // MARK: Widgets
+    case widgetTapped = "widget_tapped"
 }
 
 public extension WooAnalyticsStat {

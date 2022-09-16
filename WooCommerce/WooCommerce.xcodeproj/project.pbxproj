@@ -708,7 +708,7 @@
 		3F1FA84928B60126009E246C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3F1FA84828B60126009E246C /* Assets.xcassets */; };
 		3F1FA84B28B60126009E246C /* StoreWidgets.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 3F1FA84728B60125009E246C /* StoreWidgets.intentdefinition */; };
 		3F1FA84C28B60126009E246C /* StoreWidgets.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 3F1FA84728B60125009E246C /* StoreWidgets.intentdefinition */; };
-		3F1FA84F28B60126009E246C /* StoreWidgetsExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 3F1FA84028B60125009E246C /* StoreWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		3F1FA84F28B60126009E246C /* StoreWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 3F1FA84028B60125009E246C /* StoreWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		3F2C8A19285B038800B1A5BB /* BuildkiteTestCollector in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2C8A18285B038800B1A5BB /* BuildkiteTestCollector */; };
 		3F2C8A1B285B039900B1A5BB /* BuildkiteTestCollector in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2C8A1A285B039900B1A5BB /* BuildkiteTestCollector */; };
 		3F2C8A1D285B03A400B1A5BB /* BuildkiteTestCollector in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2C8A1C285B03A400B1A5BB /* BuildkiteTestCollector */; };
@@ -1895,15 +1895,15 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		3F1FA85028B60126009E246C /* Embed App Extensions */ = {
+		3F1FA85028B60126009E246C /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				3F1FA84F28B60126009E246C /* StoreWidgetsExtension.appex in Embed App Extensions */,
+				3F1FA84F28B60126009E246C /* StoreWidgetsExtension.appex in Embed Foundation Extensions */,
 			);
-			name = "Embed App Extensions";
+			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		B5650B1020A4CD7F009702D0 /* Embed Frameworks */ = {
@@ -8673,7 +8673,7 @@
 				B5650B1020A4CD7F009702D0 /* Embed Frameworks */,
 				B7A94351C1ADC31EA528B895 /* [CP] Embed Pods Frameworks */,
 				095040D72655531C001D08FA /* Check for nested frameworks */,
-				3F1FA85028B60126009E246C /* Embed App Extensions */,
+				3F1FA85028B60126009E246C /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
@@ -8774,7 +8774,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1340;
-				LastUpgradeCheck = 1210;
+				LastUpgradeCheck = 1400;
 				ORGANIZATIONNAME = Automattic;
 				TargetAttributes = {
 					3F1FA83F28B60125009E246C = {
@@ -11093,14 +11093,12 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_ENTITLEMENTS = "StoreWidgets/Entitlements/StoreWidgets-Debug.entitlements";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				ENABLE_BITCODE = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = StoreWidgets/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = StoreWidgets;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022 Automattic. All rights reserved.";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -11135,7 +11133,6 @@
 				INFOPLIST_FILE = StoreWidgets/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = StoreWidgets;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022 Automattic. All rights reserved.";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -11169,7 +11166,6 @@
 				INFOPLIST_FILE = StoreWidgets/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = StoreWidgets;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022 Automattic. All rights reserved.";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

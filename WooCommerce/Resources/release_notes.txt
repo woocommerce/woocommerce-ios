@@ -1,8 +1,1 @@
-- [***] Stats: Now you can add a Today's Stats Widget to your homescreen to monitor your sales. [https://github.com/woocommerce/woocommerce-ios/pull/7732]
-- [*] Help center: Added help center web page with FAQs for "Pick a WooCommerce Store", "Enter WordPress.com password" and "Open mail to find magic link" screens. [https://github.com/woocommerce/woocommerce-ios/pull/7641, https://github.com/woocommerce/woocommerce-ios/pull/7730, https://github.com/woocommerce/woocommerce-ios/pull/7737]
-- [*] In-Person Payments: Fixed a bug where cancelling a card reader connection would temporarily prevent further connections [https://github.com/woocommerce/woocommerce-ios/pull/7689]
-- [*] In-Person Payments: Improvements to the card reader connection flow UI [https://github.com/woocommerce/woocommerce-ios/pull/7687]
-- [*] Login: Users can now set up the Jetpack connection between a self-hosted site and their WP.com account. [https://github.com/woocommerce/woocommerce-ios/pull/7608]
-- [*] Product list: the "Draft" blue color is fixed to be more readable for a draft product row in the product list. [https://github.com/woocommerce/woocommerce-ios/pull/7724]
-- [*] Notifications: App icon badge is now cleared correctly after visiting the orders tab. [https://github.com/woocommerce/woocommerce-ios/pull/7735]
-
+This release contains a handful of minor improvements to make your experience smoother. It's now possible to set up the Jetpack connection between your self-hosted site and your WP.com account. We continue to make small tweaks and enhancements to the in person payments feature. We hope you notice the love we put into our software.

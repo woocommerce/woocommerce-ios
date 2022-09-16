@@ -111,6 +111,10 @@ extension WooConstants {
         ///
         case helpCenterForOpenEmail = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#open-mail-to-find-login-link"
 
+        /// Help Center for "Enter WordPress.com password" screen
+        ///
+        case helpCenterForWPCOMPasswordScreen = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#enter-wordpress-com-password"
+
         /// Help Center for "Enter Store Credentials" screen
         ///
         case helpCenterForEnterStoreCredentials = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#enter-store-credentials"

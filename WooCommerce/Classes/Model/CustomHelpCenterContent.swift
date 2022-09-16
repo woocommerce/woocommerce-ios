@@ -37,6 +37,10 @@ extension CustomHelpCenterContent {
             url = WooConstants.URLs.helpCenterForWPCOMEmailScreen.asURL()
         case .usernamePassword: // Enter Store credentials screen (wp-admin creds)
             url = WooConstants.URLs.helpCenterForEnterStoreCredentials.asURL()
+        // Enter WordPress.com password screen
+        case .start where (flow == .loginWithPasswordWithMagicLinkEmphasis || flow == .loginWithPassword),
+                .passwordChallenge: // Password challenge when logging in using social account
+            url = WooConstants.URLs.helpCenterForWPCOMPasswordScreen.asURL()
         case .magicLinkAutoRequested, .magicLinkRequested: // Open magic link from email screen
             url = WooConstants.URLs.helpCenterForOpenEmail.asURL()
         default:

@@ -24,7 +24,7 @@ final class CustomHelpCenterContentTests: XCTestCase {
     // MARK: Invalid `Step` and `Flow`
     //
     func test_init_using_invalid_step_and_flow_returns_nil() {
-        let step: AuthenticatorAnalyticsTracker.Step = .magicLinkRequested
+        let step: AuthenticatorAnalyticsTracker.Step = .twoFactorAuthentication
         let flow: AuthenticatorAnalyticsTracker.Flow = .prologue
 
         XCTAssertNil(CustomHelpCenterContent(step: step, flow: flow))

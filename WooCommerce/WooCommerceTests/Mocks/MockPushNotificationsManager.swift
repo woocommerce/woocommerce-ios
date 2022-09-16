@@ -24,6 +24,12 @@ final class MockPushNotificationsManager: PushNotesManager {
 
     private let inactiveNotificationsSubject = PassthroughSubject<PushNotification, Never>()
 
+    var backgroundNotifications: AnyPublisher<PushNotification, Never> {
+        backgroundNotificationsSubject.eraseToAnyPublisher()
+    }
+
+    private let backgroundNotificationsSubject = PassthroughSubject<PushNotification, Never>()
+
     var localNotificationUserResponses: AnyPublisher<UNNotificationResponse, Never> {
         localNotificationResponsesSubject.eraseToAnyPublisher()
     }

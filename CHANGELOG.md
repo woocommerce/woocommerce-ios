@@ -2,6 +2,10 @@
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
 
+## 10.4
+
+This release contains a handful of minor improvements to make your experience smoother. It's now possible to set up the Jetpack connection between your self-hosted site and your WP.com account. We continue to make small tweaks and enhancements to the in person payments feature. We hope you notice the love we put into our software. 
+
 ## 10.3
 
 More love for In-Person Payments and Analytics this time around. We fixed a bug which could prevent you from collecting payments in the app. Card reader connections are more stable. And we fixed an issue where your store's analytics are sometimes not updated. 

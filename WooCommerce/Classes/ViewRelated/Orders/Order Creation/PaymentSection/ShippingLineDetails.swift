@@ -52,6 +52,9 @@ struct ShippingLineDetails: View {
                                                  symbol: nil,
                                                  keyboardType: .default)
                                 .accessibilityIdentifier("add-shipping-name-field")
+                                .onTapGesture {
+                                    focusAmountInput = false
+                                }
                         }
                         .padding(.horizontal, insets: safeAreaInsets)
                         .addingTopAndBottomDividers()

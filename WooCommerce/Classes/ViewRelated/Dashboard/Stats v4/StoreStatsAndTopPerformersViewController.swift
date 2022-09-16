@@ -47,11 +47,18 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
     private var selectedTimeRangeIndexSubscription: AnyCancellable?
     private var reloadDataAfterSelectedTimeRangeSubscriptions: Set<AnyCancellable> = []
 
+    private let pushNotificationsManager: PushNotesManager
+    private var localOrdersSubscription: AnyCancellable?
+    private var remoteOrdersSubscription: AnyCancellable?
+
     // MARK: - View Lifecycle
 
-    init(siteID: Int64, dashboardViewModel: DashboardViewModel) {
+    init(siteID: Int64,
+         dashboardViewModel: DashboardViewModel,
+         pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.siteID = siteID
         self.dashboardViewModel = dashboardViewModel
+        self.pushNotificationsManager = pushNotificationsManager
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -82,6 +89,8 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
         super.viewDidLoad()
         configureView()
         observeSelectedTimeRangeIndex()
+        observeRemotelyCreatedOrdersToResetLastSyncTimestamp()
+        observeLocallyCreatedOrdersToResetLastSyncTimestamp()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -320,6 +329,35 @@ private extension StoreStatsAndTopPerformersViewController {
             periodViewController.refreshControl.beginRefreshing()
         } else {
             periodViewController.refreshControl.endRefreshing()
+        }
+    }
+
+    func observeRemotelyCreatedOrdersToResetLastSyncTimestamp() {
+        let siteID = self.siteID
+        remoteOrdersSubscription = Publishers
+            .Merge(pushNotificationsManager.backgroundNotifications, pushNotificationsManager.foregroundNotifications)
+            .filter { $0.kind == .storeOrder && $0.siteID == siteID }
+            .sink { [weak self] _ in
+                self?.resetLastSyncTimestamp()
+            }
+    }
+
+    func observeLocallyCreatedOrdersToResetLastSyncTimestamp() {
+        let action = OrderAction.observeInsertedOrders(siteID: siteID) { [weak self] observableInsertedOrders in
+            guard let self = self else { return }
+            self.localOrdersSubscription = observableInsertedOrders
+                .filter { $0.isNotEmpty }
+                .sink { [weak self] _ in
+                    guard let self = self else { return }
+                    self.resetLastSyncTimestamp()
+                }
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+
+    func resetLastSyncTimestamp() {
+        periodVCs.forEach { periodVC in
+            periodVC.lastFullSyncTimestamp = nil
         }
     }
 }

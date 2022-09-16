@@ -37,6 +37,8 @@ extension CustomHelpCenterContent {
             url = WooConstants.URLs.helpCenterForWPCOMEmailScreen.asURL()
         case .usernamePassword: // Enter Store credentials screen (wp-admin creds)
             url = WooConstants.URLs.helpCenterForEnterStoreCredentials.asURL()
+        case .magicLinkAutoRequested, .magicLinkRequested: // Open magic link from email screen
+            url = WooConstants.URLs.helpCenterForOpenEmail.asURL()
         default:
             return nil
         }

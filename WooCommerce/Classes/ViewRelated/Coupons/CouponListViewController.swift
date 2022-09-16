@@ -253,13 +253,9 @@ private extension CouponListViewController {
 
     func configureNavigationBarItems(hasCoupons: Bool) {
         if hasCoupons {
-            navigationItem.rightBarButtonItems = viewModel.isCreationEnabled
-            ? [createCouponButtonItem, searchBarButtonItem]
-            : [searchBarButtonItem]
+            navigationItem.rightBarButtonItems = [createCouponButtonItem, searchBarButtonItem]
         } else {
-            navigationItem.rightBarButtonItems = viewModel.isCreationEnabled
-            ? [createCouponButtonItem]
-            : []
+            navigationItem.rightBarButtonItems = [createCouponButtonItem]
         }
     }
 
@@ -382,21 +378,14 @@ private extension CouponListViewController {
     }
 
     func buildNoResultConfig() -> EmptyStateViewController.Config {
-        if viewModel.isCreationEnabled {
-            return .withButton(
-                    message: .init(string: Localization.couponCreationSuggestionMessage),
-                    image: .emptyCouponsImage,
-                    details: Localization.emptyStateDetails,
-                    buttonTitle: Localization.createCouponAction
-            ) { [weak self] button in
-                guard let self = self else { return }
-                self.displayCouponTypeBottomSheet()
-            }
-        } else {
-            return .simple(
-                    message: .init(string: Localization.emptyStateMessage),
-                    image: .emptyCouponsImage
-            )
+        return .withButton(
+            message: .init(string: Localization.couponCreationSuggestionMessage),
+            image: .emptyCouponsImage,
+            details: Localization.emptyStateDetails,
+            buttonTitle: Localization.createCouponAction
+        ) { [weak self] button in
+            guard let self = self else { return }
+            self.displayCouponTypeBottomSheet()
         }
     }
 

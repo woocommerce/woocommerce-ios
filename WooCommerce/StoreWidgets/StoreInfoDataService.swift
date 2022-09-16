@@ -42,11 +42,11 @@ final class StoreInfoDataService {
         let (revenueAndOrders, visitors) = try await (revenueAndOrdersRequest, visitorsRequest)
 
         // Assemble stats data
-        let conversion = visitors.totalVisitors > 0 ? Double(revenueAndOrders.totals.totalOrders) / Double(visitors.totalVisitors) * 100 : 0
+        let conversion = visitors.totalVisitors > 0 ? Double(revenueAndOrders.totals.totalOrders) / Double(visitors.totalVisitors) : 0
         return Stats(revenue: revenueAndOrders.totals.grossRevenue,
                      totalOrders: revenueAndOrders.totals.totalOrders,
                      totalVisitors: visitors.totalVisitors,
-                     conversion: conversion)
+                     conversion: min(conversion, 1))
     }
 }
 
@@ -55,16 +55,15 @@ final class StoreInfoDataService {
 private extension StoreInfoDataService {
 
     /// Async wrapper that fetches todays revenues & orders.
-    /// TODO: Update dates with the correct timezone.
     ///
     func fetchTodaysRevenueAndOrders(for storeID: Int64) async throws -> OrderStatsV4 {
         try await withCheckedThrowingContinuation { continuation in
-            // `WKWebView` is accessed internally, we are foreced to dispatch the call in the main thread.
+            // `WKWebView` is accessed internally, we are forced to dispatch the call in the main thread.
             Task { @MainActor in
                 orderStatsRemoteV4.loadOrderStats(for: storeID,
                                                   unit: .hourly,
-                                                  earliestDateToInclude: Date.startOfToday,
-                                                  latestDateToInclude: Date.endOfToday,
+                                                  earliestDateToInclude: Date().startOfDay(timezone: .current),
+                                                  latestDateToInclude: Date().endOfDay(timezone: .current),
                                                   quantity: 24,
                                                   forceRefresh: true) { result in
                     continuation.resume(with: result)
@@ -74,7 +73,6 @@ private extension StoreInfoDataService {
     }
 
     /// Async wrapper that fetches todays visitors.
-    /// TODO: Update dates with the correct timezone.
     ///
     func fetchTodaysVisitors(for storeID: Int64) async throws -> SiteVisitStats {
         try await withCheckedThrowingContinuation { continuation in
@@ -82,33 +80,11 @@ private extension StoreInfoDataService {
             Task { @MainActor in
                 siteVisitStatsRemote.loadSiteVisitorStats(for: storeID,
                                                           unit: .day,
-                                                          latestDateToInclude: Date.startOfToday,
+                                                          latestDateToInclude: Date().endOfDay(timezone: .current),
                                                           quantity: 1) { result in
                     continuation.resume(with: result)
                 }
             }
         }
-    }
-}
-
-// TEMP: Update dates with the correct timezones mimic the app behaviour
-private extension Date {
-
-    /// Temporary function to get the start of day in the device timezone.
-    ///
-    static var startOfToday: Date {
-        var calendar = Calendar(identifier: .gregorian)
-        calendar.timeZone = .current
-        return calendar.startOfDay(for: Date())
-    }
-
-    /// Temporary function to get the end of day in the device timezone.
-    ///
-    static var endOfToday: Date {
-        var calendar = Calendar(identifier: .gregorian)
-        calendar.timeZone = .current
-        let startDate = calendar.startOfDay(for: Date())
-        let components = DateComponents(day: 1, second: -1)
-        return calendar.date(byAdding: components, to: startDate) ?? Date()
     }
 }

@@ -11,6 +11,7 @@ extension UserDefaults {
         case defaultSiteAddress
         case defaultStoreID
         case defaultStoreName
+        case defaultStoreCurrencySettings
         case defaultAnonymousID
         case defaultRoles
         case deviceID

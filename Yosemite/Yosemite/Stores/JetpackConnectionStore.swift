@@ -24,7 +24,7 @@ public final class JetpackConnectionStore: DeauthenticatedStore {
             return
         }
         switch action {
-        case .updateRemote(let siteURL, let network):
+        case .authenticate(let siteURL, let network):
             updateRemote(with: siteURL, network: network)
         case .fetchJetpackConnectionURL(let completion):
             fetchJetpackConnectionURL(completion: completion)

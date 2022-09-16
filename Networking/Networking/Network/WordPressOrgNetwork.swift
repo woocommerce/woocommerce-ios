@@ -25,7 +25,7 @@ public final class WordPressOrgNetwork: Network {
         return sessionManager
     }()
 
-    public init(authenticator: Authenticator? = nil, userAgent: String? = nil) {
+    public init(authenticator: Authenticator? = nil, userAgent: String = UserAgent.defaultUserAgent) {
         self.authenticator = authenticator
         self.userAgent = userAgent
     }

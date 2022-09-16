@@ -63,7 +63,6 @@ final class CardPresentModalScanningForReader: CardPresentPaymentsModalViewModel
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
         cancelAction()
-        viewController?.dismiss(animated: true, completion: nil)
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {

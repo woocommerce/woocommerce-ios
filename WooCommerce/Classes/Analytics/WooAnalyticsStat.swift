@@ -680,6 +680,17 @@ public enum WooAnalyticsStat: String {
     // MARK: Universal Links
     case universalLinkOpened = "universal_link_opened"
     case universalLinkFailed = "universal_link_failed"
+
+    // MARK: Login Jetpack Connection
+    case loginJetpackConnectionErrorShown = "login_jetpack_connection_error_shown"
+    case loginJetpackConnectButtonTapped = "login_jetpack_connect_button_tapped"
+    case loginJetpackConnectCompleted = "login_jetpack_connect_completed"
+    case loginJetpackConnectDismissed = "login_jetpack_connect_dismissed"
+    case loginJetpackConnectionURLFetchFailed = "login_jetpack_connection_url_fetch_failed"
+    case loginJetpackConnectionVerificationFailed = "login_jetpack_connection_verification_failed"
+
+    // MARK: Widgets
+    case widgetTapped = "widget_tapped"
 }
 
 public extension WooAnalyticsStat {

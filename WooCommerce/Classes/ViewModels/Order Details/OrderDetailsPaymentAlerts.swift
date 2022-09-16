@@ -38,8 +38,7 @@ final class OrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
         let controller = modalController
         controller.setViewModel(viewModel)
         if controller.presentingViewController == nil {
-            controller.modalPresentationStyle = .custom
-            controller.transitioningDelegate = AppDelegate.shared.tabBarController
+            controller.prepareForCardReaderModalFlow()
             presentingController?.present(controller, animated: true)
         }
     }

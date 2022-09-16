@@ -7,8 +7,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         switch featureFlag {
         case .barcodeScanner:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .couponView:
-            return true
         case .productSKUInputScanner:
             return true
         case .inbox:
@@ -17,20 +15,10 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .splitViewInOrdersTab:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .couponDeletion:
-            return true
-        case .couponEditing:
-            return true
-        case .couponCreation:
-            return true
         case .updateOrderOptimistically:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .shippingLabelsOnboardingM1:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .backgroundProductImageUpload:
-            return true
-        case .appleIDAccountDeletion:
-            return true
         case .newToWooCommerceLinkInLoginPrologue:
             return true
         case .loginPrologueOnboarding:
@@ -45,8 +33,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .promptToEnableCodInIppOnboarding:
             return true
-        case .storeWidgets:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

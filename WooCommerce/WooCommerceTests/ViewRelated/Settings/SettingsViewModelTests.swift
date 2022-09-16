@@ -140,11 +140,9 @@ final class SettingsViewModelTests: XCTestCase {
 
     func test_removeAppleIDAccess_section_is_shown_when_user_apple_id_exists() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isAppleIDAccountDeletionEnabled: true)
         let appleIDCredentialChecker = MockAppleIDCredentialChecker(hasAppleUserID: true)
         let viewModel = SettingsViewModel(stores: stores,
                                           storageManager: storageManager,
-                                          featureFlagService: featureFlagService,
                                           appleIDCredentialChecker: appleIDCredentialChecker)
 
         // When
@@ -156,27 +154,9 @@ final class SettingsViewModelTests: XCTestCase {
 
     func test_removeAppleIDAccess_section_is_not_shown_when_user_apple_id_does_not_exist() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isAppleIDAccountDeletionEnabled: true)
         let appleIDCredentialChecker = MockAppleIDCredentialChecker(hasAppleUserID: false)
         let viewModel = SettingsViewModel(stores: stores,
                                           storageManager: storageManager,
-                                          featureFlagService: featureFlagService,
-                                          appleIDCredentialChecker: appleIDCredentialChecker)
-
-        // When
-        viewModel.onViewDidLoad()
-
-        // Then
-        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.removeAppleIDAccess) })
-    }
-
-    func test_removeAppleIDAccess_section_is_not_shown_when_user_apple_id_exists_but_feature_flag_disabled() {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isAppleIDAccountDeletionEnabled: false)
-        let appleIDCredentialChecker = MockAppleIDCredentialChecker(hasAppleUserID: true)
-        let viewModel = SettingsViewModel(stores: stores,
-                                          storageManager: storageManager,
-                                          featureFlagService: featureFlagService,
                                           appleIDCredentialChecker: appleIDCredentialChecker)
 
         // When

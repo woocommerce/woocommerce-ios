@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-09-08 10:54:03+0000 */
+/* Translation-Revision-Date: 2022-09-15 09:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -2714,12 +2714,18 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Explains that the files are sorted by LIFO date: most recent day listed first. */
 "Log files by created date" = "ログファイル (作成日順)";
 
+/* Title label for the login button on the store info widget. */
+"Log in" = "ログイン";
+
 /* A generic error message for a failed log in. */
 "Log in failed. Please try again." = "ログインに失敗しました。もう一度お試しください。";
 
 /* Button title. Takes the user to the login by email flow.
    Button title. Tapping begins our normal log in process. */
 "Log in or sign up with WordPress.com" = "WordPress.com でログインまたは登録";
+
+/* Title label when the widget does not have a logged-in store. */
+"Log in to see today’s stats." = "ログインして今日の統計情報を確認しましょう。";
 
 /* Instruction text on the login's email address screen. */
 "Log in to the WordPress.com account you used to connect Jetpack." = "Jetpack を接続するのに使用した WordPress.com アカウントにログインします。";
@@ -2896,6 +2902,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
 "Multiple Contactless Cards Detected" = "複数の非接触型カードが検出されました";
 
+/* Generic store name for the store info widget preview */
+"My Shop" = "マイショップ";
+
 /* Title of the hub menu view in case there is no title for the store */
 "My Store" = "自分のストア";
 
@@ -2912,9 +2921,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Error showed in Shipping Label Address Validation for the name field */
 "Name missing" = "氏名がありません";
-
-/* VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen. */
-"Navigates to Settings." = "「設定」に移動します。";
 
 /* Title of the banner in the Order Detail for suggesting to install WCShip extension. */
 "Need a shipping label?" = "配送ラベルが必要な場合";
@@ -3216,6 +3222,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Notice title when an order is marked as completed via a swipe action. Parameter: Order Number */
 "Order #%1$d marked as completed" = "注文番号%1$dが完了としてマークされました";
+
+/* Title for the webview used by merchants to place an order for a card reader, for use with In-Person Payments. */
+"Order Card Reader" = "カードリーダーを注文";
 
 /* Order notes section title */
 "Order Notes" = "注文メモ";
@@ -4248,9 +4257,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Placeholder in Shipping Label form for the Carrier and Rates row. */
 "Select your shipping carrier and rates" = "配送業者と金額を選択";
 
-/* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
-"Selected Store" = "選択したストア";
-
 /* Presents a survey to gather feedback from the user. */
 "Send Feedback" = "意見を送る";
 
@@ -4279,8 +4285,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Header text on Add New Service Package screen in Shipping Label flow */
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "商品の配送に使用する荷物を設定します。 今後の注文用に保存されます。";
 
-/* Accessibility label for the Settings button.
-   Settings button in the hub menu
+/* Settings button in the hub menu
    Settings navigation title */
 "Settings" = "設定";
 
@@ -5267,6 +5272,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "﻿%@ にこのアプリを使用するには、Jetpack プラグインをインストールし、ストアと連携する必要があります。";
 
 /* Label for one of the filters in order date range
+   Range title for the today store info widget
    Tab selector title that shows the statistics for today
    Today Section Header
    Top Performers section title - today */

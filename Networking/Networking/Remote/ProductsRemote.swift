@@ -33,7 +33,6 @@ public protocol ProductsRemoteProtocol {
                         completion: @escaping (Result<[Product], Error>) -> Void)
     func searchProductsBySKU(for siteID: Int64,
                              keyword: String,
-                             useLegacyEndpoint: Bool,
                              pageNumber: Int,
                              pageSize: Int,
                              completion: @escaping (Result<[Product], Error>) -> Void)
@@ -246,13 +245,12 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
 
     public func searchProductsBySKU(for siteID: Int64,
                                     keyword: String,
-                                    useLegacyEndpoint: Bool,
                                     pageNumber: Int,
                                     pageSize: Int,
                                     completion: @escaping (Result<[Product], Error>) -> Void) {
-        let skuParameterKey = useLegacyEndpoint ? ParameterKey.sku: ParameterKey.partialSKUSearch
         let parameters = [
-            skuParameterKey: keyword,
+            ParameterKey.sku: keyword,
+            ParameterKey.partialSKUSearch: keyword,
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize)
         ]

@@ -153,7 +153,6 @@ private extension ProductStore {
         case .sku:
             remote.searchProductsBySKU(for: siteID,
                                        keyword: keyword,
-                                       useLegacyEndpoint: false,
                                        pageNumber: pageNumber,
                                        pageSize: pageSize) { [weak self] result in
                 self?.handleSearchResults(siteID: siteID,

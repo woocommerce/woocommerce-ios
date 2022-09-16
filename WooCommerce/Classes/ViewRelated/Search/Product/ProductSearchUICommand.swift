@@ -6,7 +6,7 @@ final class ProductSearchUICommand: SearchUICommand {
     typealias CellViewModel = ProductsTabProductViewModel
     typealias ResultsControllerModel = StorageProduct
 
-    let searchBarPlaceholder = NSLocalizedString("Search all products", comment: "Products Search Placeholder")
+    let searchBarPlaceholder = NSLocalizedString("Search products", comment: "Products Search Placeholder")
 
     let searchBarAccessibilityIdentifier = "product-search-screen-search-field"
 

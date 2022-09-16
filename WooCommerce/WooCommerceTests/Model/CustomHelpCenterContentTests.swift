@@ -149,4 +149,24 @@ final class CustomHelpCenterContentTests: XCTestCase {
         XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.flow.rawValue], flow.rawValue)
         XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.url.rawValue], helpContentURL.absoluteString)
     }
+
+    // MARK: Open email screen after requesting magic link
+    //
+    func test_init_using_step_and_flow_returns_valid_instance_for_open_email_screen() throws {
+        // Given
+        let step: AuthenticatorAnalyticsTracker.Step = .magicLinkRequested
+        let flow: AuthenticatorAnalyticsTracker.Flow = .loginWithSiteAddress
+
+        // When
+        let sut = try XCTUnwrap(CustomHelpCenterContent(step: step, flow: flow))
+
+        // Then
+        let helpContentURL = WooConstants.URLs.helpCenterForOpenEmail.asURL()
+        XCTAssertEqual(sut.url, helpContentURL)
+
+        // Test the `trackingProperties` dictionary values
+        XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.step.rawValue], step.rawValue)
+        XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.flow.rawValue], flow.rawValue)
+        XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.url.rawValue], helpContentURL.absoluteString)
+    }
 }

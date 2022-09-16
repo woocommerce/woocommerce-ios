@@ -31,6 +31,6 @@ extension ProductSearchResults {
 
 }
 
-extension ProductSearchResults : Identifiable {
+extension ProductSearchResults: Identifiable {
 
 }

@@ -149,4 +149,64 @@ final class CustomHelpCenterContentTests: XCTestCase {
         XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.flow.rawValue], flow.rawValue)
         XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.url.rawValue], helpContentURL.absoluteString)
     }
+
+    // MARK: Enter WordPress.com password screen from normal WPCOM flow
+    //
+    func test_init_using_step_and_flow_returns_valid_instance_for_enter_WPCOM_password_screen() throws {
+        // Given
+        let step: AuthenticatorAnalyticsTracker.Step = .start
+        let flow: AuthenticatorAnalyticsTracker.Flow = .loginWithPassword
+
+        // When
+        let sut = try XCTUnwrap(CustomHelpCenterContent(step: step, flow: flow))
+
+        // Then
+        let helpContentURL = WooConstants.URLs.helpCenterForWPCOMPasswordScreen.asURL()
+        XCTAssertEqual(sut.url, helpContentURL)
+
+        // Test the `trackingProperties` dictionary values
+        XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.step.rawValue], step.rawValue)
+        XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.flow.rawValue], flow.rawValue)
+        XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.url.rawValue], helpContentURL.absoluteString)
+    }
+
+    // MARK: Enter WordPress.com password screen from magic link emphasis flow
+    //
+    func test_init_using_step_and_flow_returns_valid_instance_for_enter_WPCOM_password_screen_in_magic_link_emphasis_flow() throws {
+        // Given
+        let step: AuthenticatorAnalyticsTracker.Step = .start
+        let flow: AuthenticatorAnalyticsTracker.Flow = .loginWithPasswordWithMagicLinkEmphasis
+
+        // When
+        let sut = try XCTUnwrap(CustomHelpCenterContent(step: step, flow: flow))
+
+        // Then
+        let helpContentURL = WooConstants.URLs.helpCenterForWPCOMPasswordScreen.asURL()
+        XCTAssertEqual(sut.url, helpContentURL)
+
+        // Test the `trackingProperties` dictionary values
+        XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.step.rawValue], step.rawValue)
+        XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.flow.rawValue], flow.rawValue)
+        XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.url.rawValue], helpContentURL.absoluteString)
+    }
+
+    // MARK: Enter WordPress.com password screen for social login password challenge
+    //
+    func test_init_using_step_and_flow_returns_valid_instance_for_enter_WPCOM_password_screen_in_password_challenge_mode() throws {
+        // Given
+        let step: AuthenticatorAnalyticsTracker.Step = .passwordChallenge
+        let flow: AuthenticatorAnalyticsTracker.Flow = .loginWithGoogle
+
+        // When
+        let sut = try XCTUnwrap(CustomHelpCenterContent(step: step, flow: flow))
+
+        // Then
+        let helpContentURL = WooConstants.URLs.helpCenterForWPCOMPasswordScreen.asURL()
+        XCTAssertEqual(sut.url, helpContentURL)
+
+        // Test the `trackingProperties` dictionary values
+        XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.step.rawValue], step.rawValue)
+        XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.flow.rawValue], flow.rawValue)
+        XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.url.rawValue], helpContentURL.absoluteString)
+    }
 }

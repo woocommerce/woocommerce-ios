@@ -3,7 +3,7 @@
 10.4
 -----
 - [***] Stats: Now you can add a Today's Stats Widget to your homescreen to monitor your sales. [https://github.com/woocommerce/woocommerce-ios/pull/7732]
-- [*] Help center: Added help center web page with FAQs for "Pick a WooCommerce Store" and "Enter WordPress.com password" screens. [https://github.com/woocommerce/woocommerce-ios/pull/7641, https://github.com/woocommerce/woocommerce-ios/pull/7730]
+- [*] Help center: Added help center web page with FAQs for "Pick a WooCommerce Store", "Enter WordPress.com password" and "Open mail to find magic link" screens. [https://github.com/woocommerce/woocommerce-ios/pull/7641, https://github.com/woocommerce/woocommerce-ios/pull/7730, https://github.com/woocommerce/woocommerce-ios/pull/7737]
 - [*] In-Person Payments: Fixed a bug where cancelling a card reader connection would temporarily prevent further connections [https://github.com/woocommerce/woocommerce-ios/pull/7689]
 - [*] In-Person Payments: Improvements to the card reader connection flow UI [https://github.com/woocommerce/woocommerce-ios/pull/7687]
 - [*] Login: Users can now set up the Jetpack connection between a self-hosted site and their WP.com account. [https://github.com/woocommerce/woocommerce-ios/pull/7608]

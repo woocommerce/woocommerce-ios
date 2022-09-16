@@ -41,6 +41,8 @@ extension CustomHelpCenterContent {
         case .start where (flow == .loginWithPasswordWithMagicLinkEmphasis || flow == .loginWithPassword),
                 .passwordChallenge: // Password challenge when logging in using social account
             url = WooConstants.URLs.helpCenterForWPCOMPasswordScreen.asURL()
+        case .magicLinkAutoRequested, .magicLinkRequested: // Open magic link from email screen
+            url = WooConstants.URLs.helpCenterForOpenEmail.asURL()
         default:
             return nil
         }

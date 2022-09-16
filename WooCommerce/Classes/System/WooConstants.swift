@@ -107,6 +107,10 @@ extension WooConstants {
         // swiftlint:disable:next line_length
         case helpCenterForWPCOMEmailFromSiteAddressFlow = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#enter-wordpress-com-email-address-login-using-store-address-flow"
 
+        /// Help Center for "Open magic link from email " screen
+        ///
+        case helpCenterForOpenEmail = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#open-mail-to-find-login-link"
+
         /// Help Center for "Enter WordPress.com password" screen
         ///
         case helpCenterForWPCOMPasswordScreen = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#enter-wordpress-com-password"

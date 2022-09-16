@@ -243,6 +243,13 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
+    /// Retrieves all of the `Product`s that match the SKU. Partial SKU search is supported for WooCommerce version 6.6+, otherwise full SKU match is performed.
+    /// - Parameters:
+    ///   - siteID: Site for which we'll fetch remote products
+    ///   - keyword: Search string that should be matched by the SKU (partial or full depending on the WC version).
+    ///   - pageNumber: Number of page that should be retrieved.
+    ///   - pageSize: Number of products to be retrieved per page.
+    ///   - completion: Closure to be executed upon completion.
     public func searchProductsBySKU(for siteID: Int64,
                                     keyword: String,
                                     pageNumber: Int,

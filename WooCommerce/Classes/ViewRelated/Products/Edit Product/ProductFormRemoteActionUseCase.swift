@@ -31,7 +31,7 @@ final class ProductFormRemoteActionUseCase {
         addProductRemotely(product: product) { productResult in
             switch productResult {
             case .failure(let error):
-                ServiceLocator.analytics.track(successEventName, withError: error)
+                ServiceLocator.analytics.track(failureEventName, withError: error)
                 onCompletion(.failure(error))
             case .success(let product):
                 // `self` is retained because the use case is not usually strongly held.

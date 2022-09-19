@@ -745,11 +745,8 @@ private extension ProductFormViewController {
         }
     }
 
-    func displayError(error: ProductUpdateError?) {
-        let title = NSLocalizedString("Cannot update product", comment: "The title of the alert when there is an error updating the product")
-
+    func displayError(error: ProductUpdateError?, title: String = Localization.updateProductError) {
         let message = error?.errorDescription
-
         displayErrorAlert(title: title, message: message)
     }
 
@@ -790,7 +787,7 @@ private extension ProductFormViewController {
 
                 // Dismisses the in-progress UI then presents the error alert.
                 self?.navigationController?.dismiss(animated: true) {
-                    self?.displayError(error: error)
+                    self?.displayError(error: error, title: Localization.duplicateProductError)
                 }
             case .success:
                 // Dismisses the in-progress UI, then presents the confirmation alert.
@@ -1545,6 +1542,11 @@ private enum Localization {
         let titleFormat = NSLocalizedString("Variation #%1$@", comment: "Navigation bar title for variation. Parameters: %1$@ - Product variation ID")
         return String.localizedStringWithFormat(titleFormat, variationID)
     }
+    static let updateProductError = NSLocalizedString("Cannot update product", comment: "The title of the alert when there is an error updating the product")
+    static let duplicateProductError = NSLocalizedString(
+        "Cannot duplicate product",
+        comment: "The title of the alert when there is an error duplicating the product"
+    )
 }
 
 private enum ActionSheetStrings {

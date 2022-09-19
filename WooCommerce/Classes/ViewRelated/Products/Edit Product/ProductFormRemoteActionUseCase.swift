@@ -265,6 +265,7 @@ private extension ProductFormRemoteActionUseCase {
                              onCompletion: @escaping (Result<EditableProductModel, ProductUpdateError>) -> Void) {
         Task { [weak self] in
             guard let self = self else { return }
+            // Retrieves and duplicate product variations
             await withTaskGroup(of: Void.self, body: { group in
                 for id in variationIDs {
                     group.addTask {
@@ -277,33 +278,35 @@ private extension ProductFormRemoteActionUseCase {
                 }
             })
 
-            let updatedProduct = await {
-                guard let productModel = await retrieveProduct(id: newProduct.productID, siteID: newProduct.siteID) else {
-                    return newProduct
+            // Fetches the updated product and return
+            do {
+                let productModel = try await retrieveProduct(id: newProduct.productID, siteID: newProduct.siteID)
+                await MainActor.run {
+                    let updatedProduct = EditableProductModel(product: productModel)
+                    onCompletion(.success(updatedProduct))
                 }
-                return EditableProductModel(product: productModel)
-            }()
-
-            await MainActor.run {
-                onCompletion(.success(updatedProduct))
+            } catch let error {
+                await MainActor.run {
+                    onCompletion(.failure(.unknown(error: AnyError(error))))
+                }
             }
         }
     }
 
-    func retrieveProduct(id: Int64, siteID: Int64) async -> Product? {
-        await withCheckedContinuation { [weak self] continuation in
+    func retrieveProduct(id: Int64, siteID: Int64) async throws -> Product {
+        try await withCheckedThrowingContinuation { [weak self] continuation in
             let action = ProductAction.retrieveProduct(siteID: siteID, productID: id) { result in
                 switch result {
                 case .success(let product):
                     continuation.resume(returning: product)
-                case .failure:
-                    continuation.resume(returning: nil)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
                 }
             }
             DispatchQueue.main.async { [weak self] in
                 self?.stores.dispatch(action)
             }
-        } as Product?
+        } as Product
     }
 
     func retrieveProductVariation(variationID: Int64, siteID: Int64, productID: Int64) async -> ProductVariation? {

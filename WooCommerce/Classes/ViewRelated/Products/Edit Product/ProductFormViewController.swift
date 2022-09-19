@@ -736,7 +736,7 @@ private extension ProductFormViewController {
             case .success:
                 // Dismisses the in-progress UI, then presents the confirmation alert.
                 self?.navigationController?.dismiss(animated: true, completion: nil)
-                self?.presentProductConfirmationSaveAlert(hasDuplicated: false)
+                self?.presentProductConfirmationSaveAlert()
 
                 // Show linked products promo banner after product save
                 (self?.viewModel as? ProductFormViewModel)?.isLinkedProductsPromoEnabled = true
@@ -792,7 +792,8 @@ private extension ProductFormViewController {
             case .success:
                 // Dismisses the in-progress UI, then presents the confirmation alert.
                 self?.navigationController?.dismiss(animated: true, completion: nil)
-                self?.presentProductConfirmationSaveAlert(hasDuplicated: true)
+                let alertTitle =  Localization.presentProductCopiedAlert
+                self?.presentProductConfirmationSaveAlert(title: alertTitle)
             }
         })
     }
@@ -1547,6 +1548,7 @@ private enum Localization {
         "Cannot duplicate product",
         comment: "The title of the alert when there is an error duplicating the product"
     )
+    static let presentProductCopiedAlert = NSLocalizedString("Product copied", comment: "Title of the alert when a user has copied a product")
 }
 
 private enum ActionSheetStrings {

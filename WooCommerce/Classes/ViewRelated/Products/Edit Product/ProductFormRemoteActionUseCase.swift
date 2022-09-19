@@ -265,13 +265,17 @@ private extension ProductFormRemoteActionUseCase {
                              onCompletion: @escaping (Result<EditableProductModel, ProductUpdateError>) -> Void) {
         Task { [weak self] in
             guard let self = self else { return }
-            for id in variationIDs {
-                guard let variation = await self.retrieveProductVariation(variationID: id, siteID: newProduct.siteID, productID: oldProductID) else {
-                    continue
+            await withTaskGroup(of: Void.self, body: { group in
+                for id in variationIDs {
+                    group.addTask {
+                        guard let variation = await self.retrieveProductVariation(variationID: id, siteID: newProduct.siteID, productID: oldProductID) else {
+                            return
+                        }
+                        let newVariation = CreateProductVariation(regularPrice: variation.regularPrice ?? "", attributes: variation.attributes)
+                        await self.duplicateProductVariation(newVariation, parent: newProduct)
+                    }
                 }
-                let newVariation = CreateProductVariation(regularPrice: variation.regularPrice ?? "", attributes: variation.attributes)
-                await self.duplicateProductVariation(newVariation, parent: newProduct)
-            }
+            })
 
             let updatedProduct = await {
                 guard let productModel = await retrieveProduct(id: newProduct.productID, siteID: newProduct.siteID) else {

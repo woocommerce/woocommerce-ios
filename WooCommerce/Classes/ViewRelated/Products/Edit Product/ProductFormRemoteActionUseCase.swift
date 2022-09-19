@@ -288,7 +288,6 @@ private extension ProductFormRemoteActionUseCase {
 
     func retrieveProduct(id: Int64, siteID: Int64) async -> Product? {
         await withCheckedContinuation { [weak self] continuation in
-            guard let self = self else { return }
             let action = ProductAction.retrieveProduct(siteID: siteID, productID: id) { result in
                 switch result {
                 case .success(let product):
@@ -305,8 +304,10 @@ private extension ProductFormRemoteActionUseCase {
 
     func retrieveProductVariation(variationID: Int64, siteID: Int64, productID: Int64) async -> ProductVariation? {
         await withCheckedContinuation { [weak self] continuation in
-            guard let self = self else { return }
-            let action = ProductVariationAction.retrieveProductVariation(siteID: siteID, productID: productID, variationID: variationID, onCompletion: { result in
+            let action = ProductVariationAction.retrieveProductVariation(siteID: siteID,
+                                                                         productID: productID,
+                                                                         variationID: variationID,
+                                                                         onCompletion: { result in
                 switch result {
                 case .success(let variation):
                     continuation.resume(returning: variation)
@@ -322,7 +323,6 @@ private extension ProductFormRemoteActionUseCase {
 
     func duplicateProductVariation(_ newVariation: CreateProductVariation, parent: EditableProductModel) async {
         await withCheckedContinuation { [weak self] continuation in
-            guard let self = self else { return }
             let createAction = ProductVariationAction.createProductVariation(
                 siteID: parent.siteID,
                 productID: parent.productID,

@@ -56,7 +56,7 @@ final class ProductFormRemoteActionUseCase {
     func duplicateProduct(originalProduct: EditableProductModel,
                           password: String?,
                           onCompletion: @escaping DuplicateProductCompletion) {
-        let productModelToSave = {
+        let productModelToSave: EditableProductModel = {
             let newName = String(format: Localization.copyProductName, originalProduct.name)
             let copiedProduct = originalProduct.product.copy(
                 productID: 0,

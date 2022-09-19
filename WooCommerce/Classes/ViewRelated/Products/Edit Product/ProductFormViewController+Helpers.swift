@@ -35,14 +35,15 @@ extension ProductFormViewController {
     }
     /// Product Confirmation Save alert
     ///
-    func presentProductConfirmationSaveAlert() {
+    func presentProductConfirmationSaveAlert(title: String = Localization.Alert.presentProductConfirmationSaveAlert) {
         let contextNoticePresenter: NoticePresenter = {
             let noticePresenter = DefaultNoticePresenter()
             noticePresenter.presentingViewController = self
             return noticePresenter
         }()
-        contextNoticePresenter.enqueue(notice: .init(title: Localization.Alert.presentProductConfirmationSaveAlert))
+        contextNoticePresenter.enqueue(notice: .init(title: title))
     }
+
     /// Product Confirmation Delete alert
     ///
     func presentProductConfirmationDeleteAlert(completion: @escaping (_ isConfirmed: Bool) -> ()) {
@@ -93,6 +94,8 @@ extension ProductFormViewController {
             displayInProgressView(title: Localization.ProgressView.productSavingTitle, message: Localization.ProgressView.productSavingMessage)
         case .saveVariation:
             displayInProgressView(title: Localization.ProgressView.productVariationTitle, message: Localization.ProgressView.productVariationMessage)
+        case .duplicate:
+            displayInProgressView(title: Localization.ProgressView.productDuplicatingTitle, message: Localization.ProgressView.productDuplicatingMessage)
         }
     }
 
@@ -124,6 +127,7 @@ private enum Localization {
         // Product saved or updated
         static let presentProductConfirmationSaveAlert = NSLocalizedString("Product saved",
                                                                            comment: "Title of the alert when a user is saving a product")
+
         // Product type change
         static let productTypeChangeTitle = NSLocalizedString("Are you sure you want to change the product type?",
                                                               comment: "Title of the alert when a user is changing the product type")
@@ -169,6 +173,11 @@ private enum Localization {
                                                           comment: "Title of the in-progress UI while saving a Product as draft remotely")
         static let productSavingMessage = NSLocalizedString("Please wait while we save this product to your store",
                                                             comment: "Message of the in-progress UI while saving a Product as draft remotely")
+
+        static let productDuplicatingTitle = NSLocalizedString("Duplicating your product...",
+                                                               comment: "Title of the in-progress UI while duplicating a Product remotely")
+        static let productDuplicatingMessage = NSLocalizedString("Please wait while we save a copy of this product to your store",
+                                                                 comment: "Message of the in-progress UI while duplicating a Product as draft remotely")
 
         static let productDeletionTitle = NSLocalizedString("Placing your product in the trash...",
                                                             comment: "Title of the in-progress UI while deleting the Product remotely")

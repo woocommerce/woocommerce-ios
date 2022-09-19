@@ -2,6 +2,7 @@
 
 10.5
 -----
+- [**] Products: Now you can duplicate products from the More menu of the product detail screen. [https://github.com/woocommerce/woocommerce-ios/pull/7727]
 
 
 10.4

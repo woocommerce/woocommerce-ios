@@ -49,14 +49,14 @@ final class ProductFormRemoteActionUseCase {
         }
     }
 
-    /// Adds a copy of the input product remotely.
+    /// Adds a copy of the input product remotely. The new product will have an updated name, no SKU and its status will be Draft.
     /// - Parameters:
     ///   - originalProduct: The product to be duplicated remotely.
     ///   - onCompletion: Called when the remote process finishes.
     func duplicateProduct(originalProduct: EditableProductModel,
                           password: String?,
                           onCompletion: @escaping DuplicateProductCompletion) {
-        let productModelToSave: EditableProductModel = {
+        let productModelToSave = {
             let newName = String(format: Localization.copyProductName, originalProduct.name)
             let copiedProduct = originalProduct.product.copy(
                 productID: 0,
@@ -273,7 +273,7 @@ private extension ProductFormRemoteActionUseCase {
                 await self.duplicateProductVariation(newVariation, parent: newProduct)
             }
 
-            let updatedProduct: EditableProductModel = await {
+            let updatedProduct = await {
                 guard let productModel = await retrieveProduct(id: newProduct.productID, siteID: newProduct.siteID) else {
                     return newProduct
                 }

@@ -266,7 +266,7 @@ private extension ProductFormRemoteActionUseCase {
         Task { [weak self] in
             guard let self = self else { return }
             for id in variationIDs {
-                guard let variation = await self.retrieveProductVariation(id: id, siteID: newProduct.siteID, productID: oldProductID) else {
+                guard let variation = await self.retrieveProductVariation(variationID: id, siteID: newProduct.siteID, productID: oldProductID) else {
                     continue
                 }
                 let newVariation = CreateProductVariation(regularPrice: variation.regularPrice ?? "", attributes: variation.attributes)
@@ -303,10 +303,10 @@ private extension ProductFormRemoteActionUseCase {
         } as Product?
     }
 
-    func retrieveProductVariation(id: Int64, siteID: Int64, productID: Int64) async -> ProductVariation? {
+    func retrieveProductVariation(variationID: Int64, siteID: Int64, productID: Int64) async -> ProductVariation? {
         await withCheckedContinuation { [weak self] continuation in
             guard let self = self else { return }
-            let action = ProductVariationAction.retrieveProductVariation(siteID: siteID, productID: productID, variationID: id, onCompletion: { result in
+            let action = ProductVariationAction.retrieveProductVariation(siteID: siteID, productID: productID, variationID: variationID, onCompletion: { result in
                 switch result {
                 case .success(let variation):
                     continuation.resume(returning: variation)

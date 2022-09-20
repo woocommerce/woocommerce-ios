@@ -46,6 +46,10 @@ protocol ULAccountMismatchViewModel {
     /// Provides the title for the logout button
     var logOutButtonTitle: String { get }
 
+    /// Executed by the view controller when its view was loaded.
+    /// - Parameter viewController: the view controller that loads the view.
+    func viewDidLoad(_ viewController: UIViewController?)
+
     /// Executes action associated to a tap in the view controller log out button
     /// - Parameter viewController: usually the view controller sending the tap
     func didTapLogOutButton(in viewController: UIViewController?)

@@ -3,7 +3,7 @@ import SafariServices
 import Combine
 import WordPressUI
 import Yosemite
-
+import WordPressAuthenticator
 
 /// Configuration and actions for an ULErrorViewController, modelling
 /// an error when Jetpack is not installed or is not connected
@@ -103,6 +103,10 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
     }
 
     // MARK: - Actions
+    func viewDidLoad(_ viewController: UIViewController?) {
+        fetchSiteInfo()
+    }
+
     func didTapPrimaryButton(in viewController: UIViewController?) {
         // TODO:
     }
@@ -127,6 +131,26 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
         // Log out and pop
         storesManager.deauthenticate()
         viewController?.navigationController?.popToRootViewController(animated: true)
+    }
+}
+
+// MARK: - Private helpers
+private extension WrongAccountErrorViewModel {
+    func fetchSiteInfo() {
+        activityIndicatorLoadingSubject.send(true)
+        WordPressAuthenticator.fetchSiteInfo(for: siteURL) { [weak self] result in
+            guard let self = self else { return }
+            self.activityIndicatorLoadingSubject.send(false)
+
+            switch result {
+            case .success(let siteInfo):
+                if siteInfo.isWPCom == false {
+                    self.primaryButtonHiddenSubject.send(false)
+                }
+            case .failure(let error):
+                DDLogWarn("⚠️ Error fetching site info: \(error)")
+            }
+        }
     }
 }
 

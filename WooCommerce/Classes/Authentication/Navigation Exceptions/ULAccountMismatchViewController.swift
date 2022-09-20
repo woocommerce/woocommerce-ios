@@ -67,6 +67,8 @@ final class ULAccountMismatchViewController: UIViewController {
         configureActivityIndicator()
 
         setUnifiedMargins(forWidth: view.frame.width)
+
+        viewModel.viewDidLoad(self)
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {

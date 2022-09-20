@@ -251,6 +251,17 @@ import WordPressKit
         presenter.present(navController, animated: true, completion: nil)
     }
 
+    /// A helper method to fetch site info for a given URL.
+    ///
+    public class func fetchSiteInfo(for siteURL: String, onCompletion: @escaping (Result<WordPressComSiteInfo, Error>) -> Void) {
+        let service = WordPressComBlogService()
+        service.fetchUnauthenticatedSiteInfoForAddress(for: siteURL, success: { siteInfo in
+            onCompletion(.success(siteInfo))
+        }, failure: { error in
+            onCompletion(.failure(error))
+        })
+    }
+
     /// Shows the unified Login/Signup flow.
     ///
     private class func showGetStarted(from presenter: UIViewController, jetpackLogin: Bool, connectedEmail: String? = nil, siteURL: String? = nil) {

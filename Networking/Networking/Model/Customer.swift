@@ -4,25 +4,25 @@ import Codegen
 /// Represents a Customer entity:
 /// https://woocommerce.github.io/woocommerce-rest-api-docs/#customer-properties
 ///
-struct Customer: Codable, GeneratedCopiable, GeneratedFakeable {
+public struct Customer: Codable, GeneratedCopiable, GeneratedFakeable {
 
     /// Unique identifier for the customer
-    let customerID: Int64
+    public let customerID: Int64
 
     /// The email address for the customer
-    let email: String
+    public let email: String
 
     /// Customer first name
-    let firstName: String?
+    public let firstName: String?
 
     /// Customer last name
-    let lastName: String?
+    public let lastName: String?
 
     /// List of billing address data
-    let billing: Address?
+    public let billing: Address?
 
     /// List of shipping address data
-    let shipping: Address?
+    public let shipping: Address?
 
     /// Customer struct initializer
     ///

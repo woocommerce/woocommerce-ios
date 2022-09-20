@@ -58,6 +58,9 @@ final class SiteCredentialsViewController: LoginViewController {
         loginFields.meta.userIsDotCom = false
 
         navigationItem.title = WordPressAuthenticator.shared.displayStrings.logInTitle
+        if completionHandler != nil {
+            navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(dismissView))
+        }
         styleNavigationBar(forUnified: true)
 
         // Store default margin, and size table for the view.
@@ -233,6 +236,9 @@ extension SiteCredentialsViewController: UITextFieldDelegate {
 // MARK: - Private Methods
 private extension SiteCredentialsViewController {
 
+    @objc func dismissView() {
+        navigationController?.dismiss(animated: true)
+    }
     /// Registers all of the available TableViewCells.
     ///
     func registerTableViewCells() {

@@ -242,9 +242,6 @@ import WordPressKit
         let loginFields = LoginFields()
         loginFields.siteAddress = siteURL
         controller.loginFields = loginFields
-        controller.dismissBlock = { _ in
-            controller.navigationController?.dismiss(animated: true)
-        }
 
         let navController = LoginNavigationController(rootViewController: controller)
         navController.modalPresentationStyle = .fullScreen

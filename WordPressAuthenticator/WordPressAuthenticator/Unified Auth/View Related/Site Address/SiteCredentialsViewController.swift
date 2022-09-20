@@ -474,9 +474,6 @@ extension SiteCredentialsViewController {
         }
 
         let wporg = WordPressOrgCredentials(username: username, password: password, xmlrpc: xmlrpc, options: options)
-        if let completionHandler = completionHandler {
-            return completionHandler(wporg)
-        }
         let credentials = AuthenticatorCredentials(wporg: wporg)
 
         guard WordPressAuthenticator.shared.configuration.isWPComLoginRequiredForSiteCredentialsLogin else {
@@ -493,6 +490,9 @@ extension SiteCredentialsViewController {
         // Try to get the jetpack email from XML-RPC response dictionary.
         //
         guard let loginFields = makeLoginFieldsUsing(xmlrpc: xmlrpc, options: options) else {
+            if let completionHandler = completionHandler {
+                return completionHandler(wporg)
+            }
             DDLogError("Unexpected response from .org site credentials sign in using XMLRPC.")
             showLoginEpilogue(for: credentials)
             return

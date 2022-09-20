@@ -223,6 +223,27 @@ import WordPressKit
         presenter.present(navController, animated: true, completion: nil)
     }
 
+    /// Used to present the site credential login flow directly from the delegate.
+    ///
+    /// - Parameters:
+    ///     - presenter: The view controller that presents the site credential login flow.
+    ///     - siteURL: The URL of the site to log in to.
+    ///
+    @objc public class func showSiteCredentialLogin(from presenter: UIViewController, siteURL: String) {
+        guard let controller = SiteCredentialsViewController.instantiate(from: .siteAddress) else {
+            DDLogError("Failed to navigate from GetStartedViewController to SiteCredentialsViewController")
+            return
+        }
+
+        let loginFields = LoginFields()
+        loginFields.siteAddress = siteURL
+        controller.loginFields = loginFields
+
+        let navController = LoginNavigationController(rootViewController: controller)
+        navController.modalPresentationStyle = .fullScreen
+        presenter.present(navController, animated: true, completion: nil)
+    }
+
     /// Shows the unified Login/Signup flow.
     ///
     private class func showGetStarted(from presenter: UIViewController, jetpackLogin: Bool, connectedEmail: String? = nil, siteURL: String? = nil) {

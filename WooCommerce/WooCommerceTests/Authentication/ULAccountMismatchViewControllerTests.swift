@@ -172,10 +172,13 @@ private final class MismatchViewModel: ULAccountMismatchViewModel {
 
     let primaryButtonTitle: String = "Primary"
 
+    var rightBarButtonItemTitle: String?
+
     let isPrimaryButtonHidden: Bool = false
     var primaryButtonTapped: Bool = false
     var logOutButtonTapped: Bool = false
     var auxiliaryButtonTapped: Bool = false
+    var rightBarButtonItemTapped = false
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
         primaryButtonTapped = true
@@ -187,5 +190,9 @@ private final class MismatchViewModel: ULAccountMismatchViewModel {
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {
         auxiliaryButtonTapped = true
+    }
+
+    func didTapRightBarButtonItem(in viewController: UIViewController?) {
+        rightBarButtonItemTapped = true
     }
 }

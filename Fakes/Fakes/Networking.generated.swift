@@ -181,6 +181,20 @@ extension CreateProductVariation {
         )
     }
 }
+extension Customer {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    static func fake() -> Customer {
+        .init(
+            customerID: .fake(),
+            email: .fake(),
+            firstName: .fake(),
+            lastName: .fake(),
+            billing: .fake(),
+            shipping: .fake()
+        )
+    }
+}
 extension DotcomError {
     /// Returns a "ready to use" type filled with fake values.
     ///

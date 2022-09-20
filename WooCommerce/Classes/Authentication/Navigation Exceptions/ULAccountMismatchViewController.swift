@@ -263,6 +263,14 @@ extension ULAccountMismatchViewController {
         return primaryButton
     }
 
+    func getSecondaryActionButton() -> UIButton {
+        return secondaryButton
+    }
+
+    func getActivityIndicator() -> UIActivityIndicatorView {
+        return activityIndicator
+    }
+
     func getUserNameLabel() -> UILabel {
         return userNameLabel
     }

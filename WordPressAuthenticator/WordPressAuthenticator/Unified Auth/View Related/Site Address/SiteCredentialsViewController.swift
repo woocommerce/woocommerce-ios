@@ -16,6 +16,18 @@ final class SiteCredentialsViewController: LoginViewController {
     private var errorMessage: String?
     private var shouldChangeVoiceOverFocus: Bool = false
 
+    private let completionHandler: ((WordPressOrgCredentials) -> Void)?
+
+    init?(coder: NSCoder, onCompletion: @escaping (WordPressOrgCredentials) -> Void) {
+        self.completionHandler = onCompletion
+        super.init(coder: coder)
+    }
+
+    required init?(coder: NSCoder) {
+        self.completionHandler = nil
+        super.init(coder: coder)
+    }
+
     // Required for `NUXKeyboardResponder` but unused here.
     var verticalCenterConstraint: NSLayoutConstraint?
 
@@ -462,6 +474,9 @@ extension SiteCredentialsViewController {
         }
 
         let wporg = WordPressOrgCredentials(username: username, password: password, xmlrpc: xmlrpc, options: options)
+        if let completionHandler = completionHandler {
+            return completionHandler(wporg)
+        }
         let credentials = AuthenticatorCredentials(wporg: wporg)
 
         guard WordPressAuthenticator.shared.configuration.isWPComLoginRequiredForSiteCredentialsLogin else {

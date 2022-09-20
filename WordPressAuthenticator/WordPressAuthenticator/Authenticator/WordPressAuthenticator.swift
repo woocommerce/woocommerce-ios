@@ -228,9 +228,13 @@ import WordPressKit
     /// - Parameters:
     ///     - presenter: The view controller that presents the site credential login flow.
     ///     - siteURL: The URL of the site to log in to.
+    ///     - onCompletion: The closure to be trigged when the login succeeds with the input credentials.
     ///
-    @objc public class func showSiteCredentialLogin(from presenter: UIViewController, siteURL: String) {
-        guard let controller = SiteCredentialsViewController.instantiate(from: .siteAddress) else {
+    public class func showSiteCredentialLogin(from presenter: UIViewController, siteURL: String, onCompletion: @escaping (WordPressOrgCredentials) -> Void) {
+        let controller = SiteCredentialsViewController.instantiate(from: .siteAddress) { coder in
+            SiteCredentialsViewController(coder: coder, onCompletion: onCompletion)
+        }
+        guard let controller = controller else {
             DDLogError("Failed to navigate from GetStartedViewController to SiteCredentialsViewController")
             return
         }

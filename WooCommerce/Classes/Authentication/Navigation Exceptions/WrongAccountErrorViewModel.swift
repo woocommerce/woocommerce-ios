@@ -8,7 +8,7 @@ import Yosemite
 /// Configuration and actions for an ULErrorViewController, modelling
 /// an error when Jetpack is not installed or is not connected
 final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
-    
+
     private let siteURL: String
     private let showsConnectedStores: Bool
     private let defaultAccount: Account?
@@ -16,7 +16,7 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
 
     private var storePickerCoordinator: StorePickerCoordinator?
 
-    private let primaryButtonVisibilitySubject = CurrentValueSubject<Bool, Never>(false)
+    private let primaryButtonHiddenSubject = CurrentValueSubject<Bool, Never>(true)
     private let primaryButtonLoadingSubject = CurrentValueSubject<Bool, Never>(false)
     private let activityIndicatorLoadingSubject = CurrentValueSubject<Bool, Never>(false)
 
@@ -89,7 +89,7 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
     let secondaryButtonTitle = Localization.secondaryButtonTitle
 
     var isPrimaryButtonHidden: AnyPublisher<Bool, Never> {
-        primaryButtonVisibilitySubject.eraseToAnyPublisher()
+        primaryButtonHiddenSubject.eraseToAnyPublisher()
     }
 
     var isPrimaryButtonLoading: AnyPublisher<Bool, Never> {

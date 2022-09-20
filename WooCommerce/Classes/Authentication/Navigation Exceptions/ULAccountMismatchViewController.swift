@@ -52,6 +52,7 @@ final class ULAccountMismatchViewController: UIViewController {
         super.viewDidLoad()
 
         configureAccountHeader()
+        configureRightBarButtonItem()
         configureImageView()
         configureErrorMessage()
         configureExtraInfoButton()

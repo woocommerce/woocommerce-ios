@@ -69,6 +69,18 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(mockAuthentication.presentSupportFromScreenInvoked)
     }
+
+    func test_viewModel_sends_correct_screen_value_in_present_support_method() throws {
+        // Given
+        let mockAuthentication = MockAuthentication()
+        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url, showsConnectedStores: false, authentication: mockAuthentication)
+
+        // When
+        viewModel.didTapRightBarButtonItem(in: UIViewController())
+
+        // Then
+        XCTAssertEqual(mockAuthentication.presentSupportFromScreen, .wrongAccountError)
+    }
 }
 
 

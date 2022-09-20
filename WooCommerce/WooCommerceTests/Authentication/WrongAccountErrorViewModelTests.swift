@@ -57,6 +57,18 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(visibility)
     }
+
+    func test_viewModel_invokes_present_support_when_the_help_button_is_tapped() throws {
+        // Given
+        let mockAuthentication = MockAuthentication()
+        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url, showsConnectedStores: false, authentication: mockAuthentication)
+
+        // When
+        viewModel.didTapRightBarButtonItem(in: UIViewController())
+
+        // Then
+        XCTAssertTrue(mockAuthentication.presentSupportFromScreenInvoked)
+    }
 }
 
 

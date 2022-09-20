@@ -4,6 +4,7 @@ import Combine
 import WordPressUI
 import Yosemite
 import WordPressAuthenticator
+import class Networking.WordPressOrgNetwork
 
 /// Configuration and actions for an ULErrorViewController, modelling
 /// an error when Jetpack is not installed or is not connected
@@ -18,6 +19,8 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
 
     private var storePickerCoordinator: StorePickerCoordinator?
     private var siteXMLRPC: String = ""
+    private var siteUsername: String = ""
+    private var jetpackConnectionURL: URL?
 
     private let primaryButtonHiddenSubject = CurrentValueSubject<Bool, Never>(true)
     private let primaryButtonLoadingSubject = CurrentValueSubject<Bool, Never>(false)
@@ -38,39 +41,25 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
         self.jetpackSetupCompletionHandler = onJetpackSetupCompletion
 
         if let credentials = siteCredentials {
+            siteUsername = credentials.username
             siteXMLRPC = credentials.xmlrpc
+            authenticate(with: credentials)
+            fetchJetpackConnectionURL()
         }
     }
 
     // MARK: - Data and configuration
     var userEmail: String {
-        guard let account = defaultAccount else {
-            DDLogWarn("⚠️ Present account mismatch UI for \(siteURL) without a default account")
-
-            return ""
-        }
-        return account.email
+        return defaultAccount?.email ?? ""
     }
 
     var userName: String {
-        guard let account = defaultAccount else {
-            DDLogWarn("⚠️ Present account mismatch UI for \(siteURL) without a default account")
-
-            return ""
-        }
-
-        return account.displayName
+        return defaultAccount?.displayName ?? siteUsername
     }
 
     var signedInText: String {
-        guard let account = defaultAccount else {
-            DDLogWarn("⚠️ Present account mismatch UI for \(siteURL) without a default display account")
-
-            return ""
-        }
-
         return String.localizedStringWithFormat(Localization.signedInMessageFormat,
-                                                account.username)
+                                                defaultAccount?.username ?? siteUsername)
     }
 
     let logOutTitle: String = Localization.wrongAccountMessage
@@ -116,14 +105,28 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
 
     // MARK: - Actions
     func viewDidLoad(_ viewController: UIViewController?) {
+        analytics.track(event: .LoginJetpackConnection.jetpackConnectionErrorShown(selfHostedSite: true))
+
         // Fetches site info if we're not sure whether the site is self-hosted.
         if siteXMLRPC.isEmpty {
             fetchSiteInfo()
+        } else {
+            // Shows the Connect Jetpack button if the site is self-hosted
+            primaryButtonHiddenSubject.send(false)
         }
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        // TODO:
+        analytics.track(.loginJetpackConnectButtonTapped)
+        guard let viewController = viewController else {
+            return
+        }
+
+        guard let url = jetpackConnectionURL else {
+            return showSiteCredentialLoginAndJetpackConnection(from: viewController)
+        }
+
+        showJetpackConnectionWebView(url: url, from: viewController)
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
@@ -151,6 +154,9 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
 
 // MARK: - Private helpers
 private extension WrongAccountErrorViewModel {
+    /// Fetches the site info and show the primary button if the site is self-hosted.
+    /// This will enables Jetpack connection support for self-hosted sites.
+    ///
     func fetchSiteInfo() {
         activityIndicatorLoadingSubject.send(true)
         WordPressAuthenticator.fetchSiteInfo(for: siteURL) { [weak self] result in
@@ -166,6 +172,128 @@ private extension WrongAccountErrorViewModel {
                 DDLogWarn("⚠️ Error fetching site info: \(error)")
             }
         }
+    }
+
+    /// Prepares `JetpackConnectionStore` to authenticate subsequent requests to WP.org API.
+    ///
+    func authenticate(with credentials: WordPressOrgCredentials) {
+        guard let authenticator = credentials.makeCookieNonceAuthenticator() else {
+            return
+        }
+        let network = WordPressOrgNetwork(authenticator: authenticator)
+        let action = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
+        storesManager.dispatch(action)
+    }
+
+    /// Fetches the URL for handling Jetpack connection in a web view
+    ///
+    func fetchJetpackConnectionURL(onCompletion: ((URL) -> Void)? = nil) {
+        primaryButtonLoadingSubject.send(true)
+        let action = JetpackConnectionAction.fetchJetpackConnectionURL { [weak self] result in
+            guard let self = self else { return }
+            self.primaryButtonLoadingSubject.send(false)
+            switch result {
+            case .success(let url):
+                onCompletion?(url)
+                self.jetpackConnectionURL = url
+            case .failure(let error):
+                self.analytics.track(.loginJetpackConnectionURLFetchFailed, withError: error)
+                DDLogWarn("⚠️ Error fetching Jetpack connection URL: \(error)")
+            }
+        }
+        storesManager.dispatch(action)
+    }
+
+    func showSiteCredentialLoginAndJetpackConnection(from viewController: UIViewController) {
+        WordPressAuthenticator.showSiteCredentialLogin(from: viewController, siteURL: siteURL) { [weak self] credentials in
+            guard let self = self else { return }
+            // dismisses the site credential login flow
+            viewController.dismiss(animated: true)
+
+            self.siteXMLRPC = credentials.xmlrpc
+            self.authenticate(with: credentials)
+            self.fetchJetpackConnectionURL { [weak self] url in
+                self?.showJetpackConnectionWebView(url: url, from: viewController)
+            }
+        }
+    }
+
+    /// Presents a web view pointing to the Jetpack connection URL.
+    ///
+    func showJetpackConnectionWebView(url: URL, from viewController: UIViewController) {
+        let viewModel = JetpackConnectionWebViewModel(initialURL: url, siteURL: siteURL, completion: { [weak self] in
+            self?.fetchJetpackUser(in: viewController)
+        })
+        let pluginViewController = AuthenticatedWebViewController(viewModel: viewModel)
+        viewController.navigationController?.show(pluginViewController, sender: nil)
+    }
+
+    /// Gets the connected WP.com email address if possible, or show error otherwise.
+    ///
+    func fetchJetpackUser(in viewController: UIViewController) {
+        showInProgressView(in: viewController)
+        let action = JetpackConnectionAction.fetchJetpackUser { [weak self] result in
+            guard let self = self else { return }
+            // dismisses the in-progress view
+            viewController.navigationController?.dismiss(animated: true)
+
+            switch result {
+            case .success(let user):
+                guard let emailAddress = user.wpcomUser?.email else {
+                    DDLogWarn("⚠️ Cannot find connected WPcom user")
+                    self.analytics.track(.loginJetpackConnectionVerificationFailed)
+                    return self.showSetupErrorNotice(in: viewController)
+                }
+
+                if self.defaultAccount?.email == emailAddress {
+                    // if user has already logged in with a WP.com account, show the store picker.
+                    self.showStorePickerForLogin(in: viewController.navigationController)
+                } else {
+                    self.jetpackSetupCompletionHandler(emailAddress, self.siteXMLRPC)
+                }
+
+            case .failure(let error):
+                DDLogWarn("⚠️ Error fetching Jetpack user: \(error)")
+                self.analytics.track(.loginJetpackConnectionVerificationFailed, withError: error)
+                self.showSetupErrorNotice(in: viewController)
+            }
+        }
+        storesManager.dispatch(action)
+    }
+
+    func showStorePickerForLogin(in navigationController: UINavigationController?) {
+        guard let navigationController = navigationController else {
+            return
+        }
+        storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)
+
+        // Tries re-syncing to get an updated store list
+        storesManager.synchronizeEntities { [weak self] in
+            guard let self = self else { return }
+            let matcher = ULAccountMatcher()
+            matcher.refreshStoredSites()
+            guard let matchedSite = matcher.matchedSite(originalURL: self.siteURL) else {
+                DDLogWarn("⚠️ Could not find \(self.siteURL) connected to the account")
+                return
+            }
+            self.storePickerCoordinator?.didSelectStore(with: matchedSite.siteID, onCompletion: {})
+        }
+    }
+
+    func showInProgressView(in viewController: UIViewController) {
+        let viewProperties = InProgressViewProperties(title: Localization.inProgressMessage, message: "")
+        let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
+        inProgressViewController.modalPresentationStyle = .overCurrentContext
+
+        viewController.navigationController?.present(inProgressViewController, animated: true, completion: nil)
+    }
+
+    func showSetupErrorNotice(in viewController: UIViewController) {
+        let message = Localization.setupErrorMessage
+        let notice = Notice(title: message, feedbackType: .error)
+        let noticePresenter = DefaultNoticePresenter()
+        noticePresenter.presentingViewController = viewController
+        noticePresenter.enqueue(notice: notice)
     }
 }
 
@@ -205,6 +333,16 @@ private extension WrongAccountErrorViewModel {
         static let wrongAccountMessage = NSLocalizedString("Wrong account?",
                                                            comment: "Prompt asking users if the logged in to the wrong account."
                                                                + "Presented when logging in with a store address that does not match the account entered.")
+
+        static let inProgressMessage = NSLocalizedString(
+            "Verifying Jetpack connection...",
+            comment: "Message displayed when checking whether Jetpack has been connected successfully"
+        )
+
+        static let setupErrorMessage = NSLocalizedString(
+            "Cannot verify your Jetpack connection. Please try again.",
+            comment: "Error message displayed when failed to check for Jetpack connection."
+        )
 
     }
 

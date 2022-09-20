@@ -2,9 +2,8 @@
 
 10.5
 -----
-- [*] Help center: Added help center web page with FAQs for "Wrong WordPress.com account error" screen. [https://github.com/woocommerce/woocommerce-ios/pull/7747]
 - [**] Products: Now you can duplicate products from the More menu of the product detail screen. [https://github.com/woocommerce/woocommerce-ios/pull/7727]
-
+- [*] Help center: Added help center web page with FAQs for "Wrong WordPress.com account error" screen. [https://github.com/woocommerce/woocommerce-ios/pull/7747]
 
 10.4
 -----

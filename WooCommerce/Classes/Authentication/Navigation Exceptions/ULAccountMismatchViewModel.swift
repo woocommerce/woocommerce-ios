@@ -1,3 +1,4 @@
+import Combine
 import UIKit
 
 /// Abstracts different configurations and logic related to user interaction
@@ -28,7 +29,19 @@ protocol ULAccountMismatchViewModel {
     var primaryButtonTitle: String { get }
 
     /// Provides the visibility of the primary button
-    var isPrimaryButtonHidden: Bool { get }
+    var isPrimaryButtonHidden: AnyPublisher<Bool, Never> { get }
+
+    /// Provides the loading state of the primary button
+    var isPrimaryButtonLoading: AnyPublisher<Bool, Never> { get }
+
+    /// Provides a title for a secondary action button
+    var secondaryButtonTitle: String { get }
+
+    /// Provides the visibility of the secondary button
+    var isSecondaryButtonHidden: Bool { get }
+
+    /// Provides the visibility of the activity indicator
+    var isShowingActivityIndicator: AnyPublisher<Bool, Never> { get }
 
     /// Provides the title for the logout button
     var logOutButtonTitle: String { get }
@@ -40,6 +53,10 @@ protocol ULAccountMismatchViewModel {
     /// Executes action associated to a tap in the view controller primary button
     /// - Parameter viewController: usually the view controller sending the tap
     func didTapPrimaryButton(in viewController: UIViewController?)
+
+    /// Executes action associated to a tap in the view controller secondary button
+    /// - Parameter viewController: usually the view controller sending the tap
+    func didTapSecondaryButton(in viewController: UIViewController?)
 
     /// Executes action associated to a tap in the view controller auxiliary button
     /// - Parameter viewController: usually the view controller sending the tap

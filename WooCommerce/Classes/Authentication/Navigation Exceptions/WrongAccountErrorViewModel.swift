@@ -1,5 +1,6 @@
 import UIKit
 import SafariServices
+import Combine
 import WordPressUI
 import Yosemite
 
@@ -7,12 +8,17 @@ import Yosemite
 /// Configuration and actions for an ULErrorViewController, modelling
 /// an error when Jetpack is not installed or is not connected
 final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
+    
     private let siteURL: String
     private let showsConnectedStores: Bool
     private let defaultAccount: Account?
     private let storesManager: StoresManager
 
     private var storePickerCoordinator: StorePickerCoordinator?
+
+    private let primaryButtonVisibilitySubject = CurrentValueSubject<Bool, Never>(false)
+    private let primaryButtonLoadingSubject = CurrentValueSubject<Bool, Never>(false)
+    private let activityIndicatorLoadingSubject = CurrentValueSubject<Bool, Never>(false)
 
     init(siteURL: String?,
          showsConnectedStores: Bool,
@@ -80,10 +86,28 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
 
     let primaryButtonTitle = Localization.primaryButtonTitle
 
-    var isPrimaryButtonHidden: Bool { !showsConnectedStores }
+    let secondaryButtonTitle = Localization.secondaryButtonTitle
+
+    var isPrimaryButtonHidden: AnyPublisher<Bool, Never> {
+        primaryButtonVisibilitySubject.eraseToAnyPublisher()
+    }
+
+    var isPrimaryButtonLoading: AnyPublisher<Bool, Never> {
+        primaryButtonLoadingSubject.eraseToAnyPublisher()
+    }
+
+    var isSecondaryButtonHidden: Bool { !showsConnectedStores }
+
+    var isShowingActivityIndicator: AnyPublisher<Bool, Never> {
+        activityIndicatorLoadingSubject.eraseToAnyPublisher()
+    }
 
     // MARK: - Actions
     func didTapPrimaryButton(in viewController: UIViewController?) {
+        // TODO:
+    }
+
+    func didTapSecondaryButton(in viewController: UIViewController?) {
         guard let navigationController = viewController?.navigationController else {
             return
         }
@@ -127,9 +151,13 @@ private extension WrongAccountErrorViewModel {
                                                           comment: "Action button triggering a Log Out."
                                                           + "Presented when logging in with a store address that does not match the account entered")
 
-        static let primaryButtonTitle = NSLocalizedString("See Connected Stores",
+        static let secondaryButtonTitle = NSLocalizedString("See Connected Stores",
                                                           comment: "Action button linking to a list of connected stores."
                                                           + "Presented when logging in with a store address that does not match the account entered")
+
+        static let primaryButtonTitle = NSLocalizedString("Connect Jetpack",
+                                                          comment: "Action button to handle Jetpack connection."
+                                                          + "Presented when logging in with a self-hosted site that does not match the account entered")
 
         static let yourSite = NSLocalizedString("your site",
                                                 comment: "Placeholder for site url, if the url is unknown."

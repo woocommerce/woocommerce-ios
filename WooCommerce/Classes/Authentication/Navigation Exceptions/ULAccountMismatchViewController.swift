@@ -1,3 +1,4 @@
+import Combine
 import UIKit
 import WordPressAuthenticator
 import SafariServices
@@ -17,12 +18,17 @@ final class ULAccountMismatchViewController: UIViewController {
         return AccountHeaderView.instantiateFromNib()
     }()
 
+    private var subscriptions: Set<AnyCancellable> = []
+
     @IBOutlet private weak var gravatarImageView: CircularImageView!
     @IBOutlet private weak var userNameLabel: UILabel!
     @IBOutlet private weak var singedInAsLabel: UILabel!
     @IBOutlet private weak var wrongAccountLabel: UILabel!
     @IBOutlet private weak var logOutButton: UIButton!
     @IBOutlet private weak var primaryButton: NUXButton!
+    @IBOutlet private weak var secondaryButton: NUXButton!
+    @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
+
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var errorMessage: UILabel!
     @IBOutlet private weak var extraInfoButton: UIButton!
@@ -57,6 +63,8 @@ final class ULAccountMismatchViewController: UIViewController {
         configureExtraInfoButton()
 
         configurePrimaryButton()
+        configureSecondaryButon()
+        configureActivityIndicator()
 
         setUnifiedMargins(forWidth: view.frame.width)
     }
@@ -131,13 +139,46 @@ private extension ULAccountMismatchViewController {
 
     func configurePrimaryButton() {
         primaryButton.isPrimary = true
-        primaryButton.isHidden = viewModel.isPrimaryButtonHidden
         primaryButton.setTitle(viewModel.primaryButtonTitle, for: .normal)
         primaryButton.on(.touchUpInside) { [weak self] _ in
             self?.didTapPrimaryButton()
         }
+
+        viewModel.isPrimaryButtonLoading
+            .sink { [weak self] isLoading in
+                self?.primaryButton.showActivityIndicator(isLoading)
+            }
+            .store(in: &subscriptions)
+
+        viewModel.isPrimaryButtonHidden
+            .sink { [weak self] isHidden in
+                self?.primaryButton.isHidden = isHidden
+            }
+            .store(in: &subscriptions)
     }
 
+    func configureSecondaryButon() {
+        secondaryButton.isPrimary = false
+        secondaryButton.isHidden = viewModel.isSecondaryButtonHidden
+        secondaryButton.setTitle(viewModel.secondaryButtonTitle, for: .normal)
+        secondaryButton.on(.touchUpInside) { [weak self] _ in
+            self?.didTapSecondaryButton()
+        }
+    }
+
+    func configureActivityIndicator() {
+        activityIndicator.hidesWhenStopped = true
+
+        viewModel.isShowingActivityIndicator
+            .sink { [weak self] showing in
+                if showing {
+                    self?.activityIndicator.startAnimating()
+                } else {
+                    self?.activityIndicator.stopAnimating()
+                }
+            }
+            .store(in: &subscriptions)
+    }
 
     /// This logic is lifted from WPAuthenticator's LoginPrologueViewController
     /// This View Controller will be provided to WPAuthenticator. WPAuthenticator
@@ -179,6 +220,10 @@ private extension ULAccountMismatchViewController {
 
     func didTapPrimaryButton() {
         viewModel.didTapPrimaryButton(in: self)
+    }
+
+    func didTapSecondaryButton() {
+        viewModel.didTapSecondaryButton(in: self)
     }
 
     func didTapLogOutButton() {

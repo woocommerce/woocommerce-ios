@@ -13,8 +13,11 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
     private let showsConnectedStores: Bool
     private let defaultAccount: Account?
     private let storesManager: StoresManager
+    private let analytics: Analytics
+    private let jetpackSetupCompletionHandler: (_ email: String, _ xmlrpc: String) -> Void
 
     private var storePickerCoordinator: StorePickerCoordinator?
+    private var siteXMLRPC: String = ""
 
     private let primaryButtonHiddenSubject = CurrentValueSubject<Bool, Never>(true)
     private let primaryButtonLoadingSubject = CurrentValueSubject<Bool, Never>(false)
@@ -22,12 +25,21 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
 
     init(siteURL: String?,
          showsConnectedStores: Bool,
+         siteCredentials: WordPressOrgCredentials?,
          sessionManager: SessionManagerProtocol =  ServiceLocator.stores.sessionManager,
-         storesManager: StoresManager = ServiceLocator.stores) {
+         storesManager: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics,
+         onJetpackSetupCompletion: @escaping (String, String) -> Void) {
         self.siteURL = siteURL ?? Localization.yourSite
         self.showsConnectedStores = showsConnectedStores
         self.defaultAccount = sessionManager.defaultAccount
         self.storesManager = storesManager
+        self.analytics = analytics
+        self.jetpackSetupCompletionHandler = onJetpackSetupCompletion
+
+        if let credentials = siteCredentials {
+            siteXMLRPC = credentials.xmlrpc
+        }
     }
 
     // MARK: - Data and configuration
@@ -104,7 +116,10 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
 
     // MARK: - Actions
     func viewDidLoad(_ viewController: UIViewController?) {
-        fetchSiteInfo()
+        // Fetches site info if we're not sure whether the site is self-hosted.
+        if siteXMLRPC.isEmpty {
+            fetchSiteInfo()
+        }
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {

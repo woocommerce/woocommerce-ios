@@ -16,14 +16,17 @@ final class SiteCredentialsViewController: LoginViewController {
     private var errorMessage: String?
     private var shouldChangeVoiceOverFocus: Bool = false
 
+    private let isDismissible: Bool
     private let completionHandler: ((WordPressOrgCredentials) -> Void)?
 
-    init?(coder: NSCoder, onCompletion: @escaping (WordPressOrgCredentials) -> Void) {
+    init?(coder: NSCoder, isDismissible: Bool, onCompletion: @escaping (WordPressOrgCredentials) -> Void) {
+        self.isDismissible = isDismissible
         self.completionHandler = onCompletion
         super.init(coder: coder)
     }
 
     required init?(coder: NSCoder) {
+        self.isDismissible = false
         self.completionHandler = nil
         super.init(coder: coder)
     }
@@ -58,8 +61,8 @@ final class SiteCredentialsViewController: LoginViewController {
         loginFields.meta.userIsDotCom = false
 
         navigationItem.title = WordPressAuthenticator.shared.displayStrings.logInTitle
-        if completionHandler != nil {
-            navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(dismissView))
+        if isDismissible {
+            navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(dismissView))
         }
         styleNavigationBar(forUnified: true)
 
@@ -237,7 +240,7 @@ extension SiteCredentialsViewController: UITextFieldDelegate {
 private extension SiteCredentialsViewController {
 
     @objc func dismissView() {
-        navigationController?.dismiss(animated: true)
+        dismissBlock?(true)
     }
     /// Registers all of the available TableViewCells.
     ///

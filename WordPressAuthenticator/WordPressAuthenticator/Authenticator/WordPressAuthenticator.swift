@@ -232,7 +232,7 @@ import WordPressKit
     ///
     public class func showSiteCredentialLogin(from presenter: UIViewController, siteURL: String, onCompletion: @escaping (WordPressOrgCredentials) -> Void) {
         let controller = SiteCredentialsViewController.instantiate(from: .siteAddress) { coder in
-            SiteCredentialsViewController(coder: coder, onCompletion: onCompletion)
+            SiteCredentialsViewController(coder: coder, isDismissible: true, onCompletion: onCompletion)
         }
         guard let controller = controller else {
             DDLogError("Failed to navigate from GetStartedViewController to SiteCredentialsViewController")
@@ -242,6 +242,9 @@ import WordPressKit
         let loginFields = LoginFields()
         loginFields.siteAddress = siteURL
         controller.loginFields = loginFields
+        controller.dismissBlock = { _ in
+            controller.navigationController?.dismiss(animated: true)
+        }
 
         let navController = LoginNavigationController(rootViewController: controller)
         navController.modalPresentationStyle = .fullScreen

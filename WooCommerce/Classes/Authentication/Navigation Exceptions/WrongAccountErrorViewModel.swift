@@ -11,17 +11,20 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
     private let showsConnectedStores: Bool
     private let defaultAccount: Account?
     private let storesManager: StoresManager
+    private let authentication: Authentication
 
     private var storePickerCoordinator: StorePickerCoordinator?
 
     init(siteURL: String?,
          showsConnectedStores: Bool,
          sessionManager: SessionManagerProtocol =  ServiceLocator.stores.sessionManager,
-         storesManager: StoresManager = ServiceLocator.stores) {
+         storesManager: StoresManager = ServiceLocator.stores,
+         authentication: Authentication = ServiceLocator.authenticationManager) {
         self.siteURL = siteURL ?? Localization.yourSite
         self.showsConnectedStores = showsConnectedStores
         self.defaultAccount = sessionManager.defaultAccount
         self.storesManager = storesManager
+        self.authentication = authentication
     }
 
     // MARK: - Data and configuration
@@ -82,6 +85,11 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
 
     var isPrimaryButtonHidden: Bool { !showsConnectedStores }
 
+    // Configures `Help` button title
+    var rightBarButtonItemTitle: String? {
+        Localization.helpBarButtonItemTitle
+    }
+
     // MARK: - Actions
     func didTapPrimaryButton(in viewController: UIViewController?) {
         guard let navigationController = viewController?.navigationController else {
@@ -103,6 +111,13 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
         // Log out and pop
         storesManager.deauthenticate()
         viewController?.navigationController?.popToRootViewController(animated: true)
+    }
+
+    func didTapRightBarButtonItem(in viewController: UIViewController?) {
+        guard let viewController = viewController else {
+            return
+        }
+        authentication.presentSupport(from: viewController, screen: .wrongAccountError)
     }
 }
 
@@ -139,6 +154,8 @@ private extension WrongAccountErrorViewModel {
                                                            comment: "Prompt asking users if the logged in to the wrong account."
                                                                + "Presented when logging in with a store address that does not match the account entered.")
 
+        static let helpBarButtonItemTitle = NSLocalizedString("Help",
+                                                       comment: "Help button on account mismatch error screen.")
     }
 
     enum Strings {

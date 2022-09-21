@@ -36,6 +36,14 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
         XCTAssertEqual(primaryButtonTitle, Expectations.primaryButtonTitle)
     }
 
+    func test_viewmodel_provides_expected_title_for_right_bar_button_item() {
+        // Given
+        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url, showsConnectedStores: false)
+
+        // Then
+        XCTAssertEqual(viewModel.rightBarButtonItemTitle, Expectations.helpBarButtonItemTitle)
+    }
+
     func test_viewmodel_provides_expected_title_for_log_out_button() {
         // Given
         let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url, showsConnectedStores: false)
@@ -57,6 +65,30 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(visibility)
     }
+
+    func test_viewModel_invokes_present_support_when_the_help_button_is_tapped() throws {
+        // Given
+        let mockAuthentication = MockAuthentication()
+        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url, showsConnectedStores: false, authentication: mockAuthentication)
+
+        // When
+        viewModel.didTapRightBarButtonItem(in: UIViewController())
+
+        // Then
+        XCTAssertTrue(mockAuthentication.presentSupportFromScreenInvoked)
+    }
+
+    func test_viewModel_sends_correct_screen_value_in_present_support_method() throws {
+        // Given
+        let mockAuthentication = MockAuthentication()
+        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url, showsConnectedStores: false, authentication: mockAuthentication)
+
+        // When
+        viewModel.didTapRightBarButtonItem(in: UIViewController())
+
+        // Then
+        XCTAssertEqual(mockAuthentication.presentSupportFromScreen, .wrongAccountError)
+    }
 }
 
 
@@ -76,5 +108,8 @@ private extension WrongAccountErrorViewModelTests {
         static let findYourConnectedEmail = NSLocalizedString("Find your connected email",
                                                      comment: "Button linking to webview explaining how to find your connected email"
                                                         + "Presented when logging in with a store address that does not match the account entered")
+
+        static let helpBarButtonItemTitle = NSLocalizedString("Help",
+                                                       comment: "Help button on account mismatch error screen.")
     }
 }

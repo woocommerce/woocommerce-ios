@@ -269,4 +269,24 @@ final class CustomHelpCenterContentTests: XCTestCase {
         XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.flow.rawValue], flow.rawValue)
         XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.url.rawValue], helpContentURL.absoluteString)
     }
+
+    // MARK: Not a WooCommerce site error screen presented using `NoWooErrorViewModel`
+    //
+    func test_init_screen_returns_valid_instance_for_not_a_woocommerce_site_error_screen() throws {
+        // Given
+        let step = "not_woo_store"
+        let flow: AuthenticatorAnalyticsTracker.Flow = .loginWithPasswordWithMagicLinkEmphasis
+
+        // When
+        let sut = CustomHelpCenterContent(screen: .noWooError, flow: flow)
+
+        // Then
+        let helpContentURL = WooConstants.URLs.helpCenterForNoWooError.asURL()
+        XCTAssertEqual(sut.url, helpContentURL)
+
+        // Test the `trackingProperties` dictionary values
+        XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.step.rawValue], step)
+        XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.flow.rawValue], flow.rawValue)
+        XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.url.rawValue], helpContentURL.absoluteString)
+    }
 }

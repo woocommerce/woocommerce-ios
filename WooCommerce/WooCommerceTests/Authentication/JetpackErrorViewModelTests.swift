@@ -136,6 +136,18 @@ final class JetpackErrorViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(mockAuthentication.presentSupportFromScreenInvoked)
     }
+
+    func test_viewModel_sends_correct_screen_value_in_present_support_method() throws {
+        // Given
+        let mockAuthentication = MockAuthentication()
+        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url, authentication: mockAuthentication) { _ in }
+
+        // When
+        viewModel.didTapRightBarButtonItem(in: UIViewController())
+
+        // Then
+        XCTAssertEqual(mockAuthentication.presentSupportFromScreen, .jetpackRequired)
+    }
 }
 
 

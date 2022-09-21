@@ -69,6 +69,10 @@ extension CustomHelpCenterContent {
         /// Store picker screen - `StorePickerViewController`
         ///
         case storePicker
+
+        /// Account mismatch / Wrong WordPress.com account screen - `WrongAccountErrorViewModel`
+        ///
+        case wrongAccountError
     }
 
     init(screen: Screen, flow: AuthenticatorAnalyticsTracker.Flow) {
@@ -80,6 +84,9 @@ extension CustomHelpCenterContent {
         case .storePicker:
             step = "site_list" // Matching Android `Step` value
             url = WooConstants.URLs.helpCenterForStorePicker.asURL()
+        case .wrongAccountError:
+            step = "wrong_wordpress_account" // Matching Android `Step` value
+            url = WooConstants.URLs.helpCenterForWrongAccountError.asURL()
         }
 
         trackingProperties = [

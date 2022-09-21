@@ -249,4 +249,24 @@ final class CustomHelpCenterContentTests: XCTestCase {
         XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.flow.rawValue], flow.rawValue)
         XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.url.rawValue], helpContentURL.absoluteString)
     }
+
+    // MARK: Account mismatch / Wrong WordPress.com account screen - `WrongAccountErrorViewModel`
+    //
+    func test_init_screen_returns_valid_instance_for_wrong_account_error_screen() throws {
+        // Given
+        let step = "wrong_wordpress_account"
+        let flow: AuthenticatorAnalyticsTracker.Flow = .loginWithPasswordWithMagicLinkEmphasis
+
+        // When
+        let sut = CustomHelpCenterContent(screen: .wrongAccountError, flow: flow)
+
+        // Then
+        let helpContentURL = WooConstants.URLs.helpCenterForWrongAccountError.asURL()
+        XCTAssertEqual(sut.url, helpContentURL)
+
+        // Test the `trackingProperties` dictionary values
+        XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.step.rawValue], step)
+        XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.flow.rawValue], flow.rawValue)
+        XCTAssertEqual(sut.trackingProperties[CustomHelpCenterContent.Key.url.rawValue], helpContentURL.absoluteString)
+    }
 }

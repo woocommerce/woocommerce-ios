@@ -150,6 +150,50 @@ final class ULAccountMismatchViewControllerTests: XCTestCase {
         // Then
         XCTAssertEqual(primaryButton.isHidden, viewModel.isPrimaryButtonHidden)
     }
+
+    func test_viewcontroller_does_not_have_right_bar_button_item_when_rightBarButtonItemTitle_is_nil_in_viewmodel() throws {
+        // Given
+        let viewModel = MismatchViewModel()
+        viewModel.rightBarButtonItemTitle = nil
+        let viewController = ULAccountMismatchViewController(viewModel: viewModel)
+
+        // When
+        _ = try XCTUnwrap(viewController.view)
+
+        // Then
+        XCTAssertNil(viewController.navigationItem.rightBarButtonItem)
+    }
+
+    func test_viewcontroller_shows_right_bar_button_item_when_rightBarButtonItemTitle_provided_by_viewmodel() throws {
+        // Given
+        let title = "Title"
+        let viewModel = MismatchViewModel()
+        viewModel.rightBarButtonItemTitle = title
+        let viewController = ULAccountMismatchViewController(viewModel: viewModel)
+
+        // When
+        _ = try XCTUnwrap(viewController.view)
+        let rightBarButtonItem = try XCTUnwrap(viewController.navigationItem.rightBarButtonItem)
+
+        // Then
+        XCTAssertEqual(rightBarButtonItem.title, title)
+    }
+
+    func test_viewcontroller_hits_viewmodel_when_right_bar_button_item_is_tapped() throws {
+        // Given
+        let viewModel = MismatchViewModel()
+        viewModel.rightBarButtonItemTitle = "Button"
+        let viewController = ULAccountMismatchViewController(viewModel: viewModel)
+
+        // When
+        _ = try XCTUnwrap(viewController.view)
+        let rightBarButtonItem = try XCTUnwrap(viewController.navigationItem.rightBarButtonItem)
+
+        _ = rightBarButtonItem.target?.perform(rightBarButtonItem.action)
+
+        // Then
+        XCTAssertTrue(viewModel.rightBarButtonItemTapped)
+    }
 }
 
 
@@ -172,10 +216,13 @@ private final class MismatchViewModel: ULAccountMismatchViewModel {
 
     let primaryButtonTitle: String = "Primary"
 
+    var rightBarButtonItemTitle: String?
+
     let isPrimaryButtonHidden: Bool = false
     var primaryButtonTapped: Bool = false
     var logOutButtonTapped: Bool = false
     var auxiliaryButtonTapped: Bool = false
+    var rightBarButtonItemTapped = false
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
         primaryButtonTapped = true
@@ -187,5 +234,9 @@ private final class MismatchViewModel: ULAccountMismatchViewModel {
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {
         auxiliaryButtonTapped = true
+    }
+
+    func didTapRightBarButtonItem(in viewController: UIViewController?) {
+        rightBarButtonItemTapped = true
     }
 }

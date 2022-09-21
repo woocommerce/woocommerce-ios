@@ -223,6 +223,48 @@ import WordPressKit
         presenter.present(navController, animated: true, completion: nil)
     }
 
+    /// Used to present the site credential login flow directly from the delegate.
+    ///
+    /// - Parameters:
+    ///     - presenter: The view controller that presents the site credential login flow.
+    ///     - siteURL: The URL of the site to log in to.
+    ///     - onCompletion: The closure to be trigged when the login succeeds with the input credentials.
+    ///
+    public class func showSiteCredentialLogin(from presenter: UIViewController, siteURL: String, onCompletion: @escaping (WordPressOrgCredentials) -> Void) {
+        let controller = SiteCredentialsViewController.instantiate(from: .siteAddress) { coder in
+            SiteCredentialsViewController(coder: coder, isDismissible: true, onCompletion: onCompletion)
+        }
+        guard let controller = controller else {
+            DDLogError("Failed to navigate from GetStartedViewController to SiteCredentialsViewController")
+            return
+        }
+
+        let loginFields = LoginFields()
+        loginFields.siteAddress = siteURL
+        controller.loginFields = loginFields
+        controller.dismissBlock = { _ in
+            controller.navigationController?.dismiss(animated: true)
+        }
+
+        let navController = LoginNavigationController(rootViewController: controller)
+        navController.modalPresentationStyle = .fullScreen
+        presenter.present(navController, animated: true, completion: nil)
+    }
+
+    /// A helper method to fetch site info for a given URL.
+    /// - Parameters:
+    ///     - siteURL: The URL of the site to fetch information for.
+    ///     - onCompletion: The closure to be triggered when fetching site info is done.
+    ///
+    public class func fetchSiteInfo(for siteURL: String, onCompletion: @escaping (Result<WordPressComSiteInfo, Error>) -> Void) {
+        let service = WordPressComBlogService()
+        service.fetchUnauthenticatedSiteInfoForAddress(for: siteURL, success: { siteInfo in
+            onCompletion(.success(siteInfo))
+        }, failure: { error in
+            onCompletion(.failure(error))
+        })
+    }
+
     /// Shows the unified Login/Signup flow.
     ///
     private class func showGetStarted(from presenter: UIViewController, jetpackLogin: Bool, connectedEmail: String? = nil, siteURL: String? = nil) {

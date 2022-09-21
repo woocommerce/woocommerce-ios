@@ -16,6 +16,21 @@ final class SiteCredentialsViewController: LoginViewController {
     private var errorMessage: String?
     private var shouldChangeVoiceOverFocus: Bool = false
 
+    private let isDismissible: Bool
+    private let completionHandler: ((WordPressOrgCredentials) -> Void)?
+
+    init?(coder: NSCoder, isDismissible: Bool, onCompletion: @escaping (WordPressOrgCredentials) -> Void) {
+        self.isDismissible = isDismissible
+        self.completionHandler = onCompletion
+        super.init(coder: coder)
+    }
+
+    required init?(coder: NSCoder) {
+        self.isDismissible = false
+        self.completionHandler = nil
+        super.init(coder: coder)
+    }
+
     // Required for `NUXKeyboardResponder` but unused here.
     var verticalCenterConstraint: NSLayoutConstraint?
 
@@ -46,6 +61,9 @@ final class SiteCredentialsViewController: LoginViewController {
         loginFields.meta.userIsDotCom = false
 
         navigationItem.title = WordPressAuthenticator.shared.displayStrings.logInTitle
+        if isDismissible {
+            navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(dismissView))
+        }
         styleNavigationBar(forUnified: true)
 
         // Store default margin, and size table for the view.
@@ -221,6 +239,9 @@ extension SiteCredentialsViewController: UITextFieldDelegate {
 // MARK: - Private Methods
 private extension SiteCredentialsViewController {
 
+    @objc func dismissView() {
+        dismissBlock?(true)
+    }
     /// Registers all of the available TableViewCells.
     ///
     func registerTableViewCells() {
@@ -478,6 +499,9 @@ extension SiteCredentialsViewController {
         // Try to get the jetpack email from XML-RPC response dictionary.
         //
         guard let loginFields = makeLoginFieldsUsing(xmlrpc: xmlrpc, options: options) else {
+            if let completionHandler = completionHandler {
+                return completionHandler(wporg)
+            }
             DDLogError("Unexpected response from .org site credentials sign in using XMLRPC.")
             showLoginEpilogue(for: credentials)
             return

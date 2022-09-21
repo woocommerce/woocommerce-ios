@@ -9,6 +9,7 @@ final class NoWooErrorViewModel: ULErrorViewModel {
     private let analytics: Analytics
     private let stores: StoresManager
     private let setupCompletionHandler: (Int64) -> Void
+    private let authentication: Authentication
 
     private var storePickerCoordinator: StorePickerCoordinator?
 
@@ -16,12 +17,14 @@ final class NoWooErrorViewModel: ULErrorViewModel {
          showsConnectedStores: Bool,
          analytics: Analytics = ServiceLocator.analytics,
          stores: StoresManager = ServiceLocator.stores,
+         authentication: Authentication = ServiceLocator.authenticationManager,
          onSetupCompletion: @escaping (Int64) -> Void) {
         self.site = site
         self.title = site.name
         self.showsConnectedStores = showsConnectedStores
         self.analytics = analytics
         self.stores = stores
+        self.authentication = authentication
         self.setupCompletionHandler = onSetupCompletion
     }
 

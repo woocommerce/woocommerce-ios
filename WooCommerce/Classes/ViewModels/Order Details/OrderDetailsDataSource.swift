@@ -458,12 +458,16 @@ private extension OrderDetailsDataSource {
         cell.selectionStyle = .none
         if customerNote.isNotEmpty {
             cell.body = customerNote.quoted
+            cell.onEditTapped = { [weak self] in
+                self?.onCellAction?(.editCustomerNote, nil)
+            }
         } else {
             cell.body = nil
+            cell.onAddTapped = { [weak self] in
+                self?.onCellAction?(.editCustomerNote, nil)
+            }
         }
 
-        cell.onEditTapped = nil
-        cell.onAddTapped = nil
         cell.addButtonTitle = NSLocalizedString("Add Customer Note", comment: "Title for the button to add the Customer Provided Note in Order Details")
         cell.editButtonAccessibilityLabel = NSLocalizedString(
             "Update Note",
@@ -890,12 +894,16 @@ private extension OrderDetailsDataSource {
 
         if let formattedPostalAddress = shippingAddress?.formattedPostalAddress {
             cell.address = formattedPostalAddress
+            cell.onEditTapped = { [weak self] in
+                self?.onCellAction?(.editShippingAddress, nil)
+            }
         } else {
             cell.address = nil
+            cell.onAddTapped = { [weak self] in
+                self?.onCellAction?(.editShippingAddress, nil)
+            }
         }
 
-        cell.onEditTapped = nil
-        cell.onAddTapped = nil
         cell.addButtonTitle = NSLocalizedString("Add Shipping Address", comment: "Title for the button to add the Shipping Address in Order Details")
         cell.editButtonAccessibilityLabel = NSLocalizedString(
             "Update Address",
@@ -1095,12 +1103,17 @@ extension OrderDetailsDataSource {
             var rows: [Row] = []
 
             /// Customer Note
-            if order.customerNote?.isNotEmpty == true {
-                rows.append(.customerNote)
-            }
+            /// Always visible to allow adding & editing.
+            rows.append(.customerNote)
 
             /// Shipping Address
-            if order.shippingAddress?.isEmpty == false {
+            /// Almost always visible to allow editing.
+            let orderContainsOnlyVirtualProducts = self.products.filter { (product) -> Bool in
+                return items.first(where: { $0.productID == product.productID}) != nil
+            }.allSatisfy { $0.virtual == true }
+
+
+            if order.shippingAddress != nil && orderContainsOnlyVirtualProducts == false {
                 rows.append(.shippingAddress)
             }
 
@@ -1110,9 +1123,8 @@ extension OrderDetailsDataSource {
             }
 
             /// Billing Address
-            if order.billingAddress?.isEmpty == false {
-                rows.append(.billingDetail)
-            }
+            /// Always visible to allow editing.
+            rows.append(.billingDetail)
 
             /// Return `nil` if there is no rows to display.
             guard rows.isNotEmpty else {
@@ -1599,6 +1611,8 @@ extension OrderDetailsDataSource {
         case createShippingLabel
         case shippingLabelTrackingMenu(shippingLabel: ShippingLabel, sourceView: UIView)
         case viewAddOns(addOns: [OrderItemAttribute])
+        case editCustomerNote
+        case editShippingAddress
     }
 
     enum Constants {

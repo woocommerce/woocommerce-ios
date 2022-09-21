@@ -52,15 +52,15 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
 
     // MARK: - Data and configuration
     var userEmail: String {
-        return defaultAccount?.email ?? ""
+        defaultAccount?.email ?? ""
     }
 
     var userName: String {
-        return defaultAccount?.displayName ?? siteUsername
+        defaultAccount?.displayName ?? siteUsername
     }
 
     var signedInText: String {
-        return String.localizedStringWithFormat(Localization.signedInMessageFormat,
+        String.localizedStringWithFormat(Localization.signedInMessageFormat,
                                                 defaultAccount?.username ?? siteUsername)
     }
 

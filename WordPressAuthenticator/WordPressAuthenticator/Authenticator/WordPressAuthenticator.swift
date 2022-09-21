@@ -252,6 +252,9 @@ import WordPressKit
     }
 
     /// A helper method to fetch site info for a given URL.
+    /// - Parameters:
+    ///     - siteURL: The URL of the site to fetch information for.
+    ///     - onCompletion: The closure to be triggered when fetching site info is done.
     ///
     public class func fetchSiteInfo(for siteURL: String, onCompletion: @escaping (Result<WordPressComSiteInfo, Error>) -> Void) {
         let service = WordPressComBlogService()

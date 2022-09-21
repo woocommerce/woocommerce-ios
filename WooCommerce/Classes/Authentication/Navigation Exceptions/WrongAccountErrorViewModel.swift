@@ -162,7 +162,7 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
 // MARK: - Private helpers
 private extension WrongAccountErrorViewModel {
     /// Fetches the site info and show the primary button if the site is self-hosted.
-    /// This will enables Jetpack connection support for self-hosted sites.
+    /// If the site is self-hosted, make the Connect Jetpack button visible.
     ///
     func fetchSiteInfo() {
         activityIndicatorLoadingSubject.send(true)

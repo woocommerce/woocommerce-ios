@@ -60,7 +60,7 @@ private struct StoreInfoView: View {
                         .statRangeStyle()
                 }
 
-                if category.isAccessibilityCategory {
+                if category > .extraLarge {
                     AccessibilityStatsCard(entry: entry)
                 } else {
                     StatsCard(entry: entry)
@@ -324,7 +324,7 @@ struct StoreWidgets_Previews: PreviewProvider {
                                  updatedTime: "10:24 PM")
         )
         .previewContext(WidgetPreviewContext(family: .systemMedium))
-        .environment(\.sizeCategory, .accessibilityMedium)
+        .environment(\.sizeCategory, .extraExtraLarge)
 
         NotLoggedInView()
             .previewContext(WidgetPreviewContext(family: .systemMedium))

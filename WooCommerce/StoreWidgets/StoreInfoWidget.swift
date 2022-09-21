@@ -40,15 +40,22 @@ private struct StoreInfoView: View {
 
             VStack(spacing: Layout.sectionSpacing) {
 
-                // Store Name
-                HStack {
-                    Text(entry.name)
-                        .storeNameStyle()
+                VStack(spacing: Layout.cardSpacing) {
+                    // Store Name
+                    HStack {
+                        Text(entry.name)
+                            .storeNameStyle()
 
-                    Spacer()
+                        Spacer()
 
-                    Text(entry.range)
+                        Text(entry.range)
+                            .statRangeStyle()
+                    }
+
+                    // Updated at
+                    Text(Localization.updatedAt(entry.updatedTime))
                         .statRangeStyle()
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
 
                 // Revenue & Visitors
@@ -93,10 +100,6 @@ private struct StoreInfoView: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
-
-                Text(Localization.updatedAt(entry.updatedTime))
-                    .statRangeStyle()
-                    .frame(maxWidth: .infinity, alignment: .leading)
             }
             .padding(.horizontal)
         }

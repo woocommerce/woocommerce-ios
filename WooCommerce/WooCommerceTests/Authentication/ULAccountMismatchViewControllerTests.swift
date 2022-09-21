@@ -319,7 +319,6 @@ private final class MismatchViewModel: ULAccountMismatchViewModel {
     var viewLoaded: Bool = false
     var rightBarButtonItemTitle: String?
 
-    let isPrimaryButtonHidden: Bool = false
     var primaryButtonTapped: Bool = false
     var secondaryButtonTapped: Bool = false
     var logOutButtonTapped: Bool = false

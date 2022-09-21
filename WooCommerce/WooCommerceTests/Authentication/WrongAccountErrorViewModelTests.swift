@@ -61,7 +61,10 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
 
     func test_viewmodel_provides_expected_title_for_right_bar_button_item() {
         // Given
-        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url, showsConnectedStores: false)
+        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url,
+                                                   showsConnectedStores: false,
+                                                   siteCredentials: nil,
+                                                   onJetpackSetupCompletion: { _, _ in })
 
         // Then
         XCTAssertEqual(viewModel.rightBarButtonItemTitle, Expectations.helpBarButtonItemTitle)
@@ -98,7 +101,11 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
     func test_viewModel_invokes_present_support_when_the_help_button_is_tapped() throws {
         // Given
         let mockAuthentication = MockAuthentication()
-        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url, showsConnectedStores: false, authentication: mockAuthentication)
+        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url,
+                                                   showsConnectedStores: false,
+                                                   siteCredentials: nil,
+                                                   authentication: mockAuthentication,
+                                                   onJetpackSetupCompletion: { _, _ in })
 
         // When
         viewModel.didTapRightBarButtonItem(in: UIViewController())
@@ -110,7 +117,11 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
     func test_viewModel_sends_correct_screen_value_in_present_support_method() throws {
         // Given
         let mockAuthentication = MockAuthentication()
-        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url, showsConnectedStores: false, authentication: mockAuthentication)
+        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url,
+                                                   showsConnectedStores: false,
+                                                   siteCredentials: nil,
+                                                   authentication: mockAuthentication,
+                                                   onJetpackSetupCompletion: { _, _ in })
 
         // When
         viewModel.didTapRightBarButtonItem(in: UIViewController())

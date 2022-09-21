@@ -35,7 +35,7 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
          sessionManager: SessionManagerProtocol =  ServiceLocator.stores.sessionManager,
          storesManager: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         authentication: Authentication = ServiceLocator.authenticationManager
+         authentication: Authentication = ServiceLocator.authenticationManager,
          onJetpackSetupCompletion: @escaping (String, String) -> Void) {
         self.siteURL = siteURL ?? Localization.yourSite
         self.showsConnectedStores = showsConnectedStores

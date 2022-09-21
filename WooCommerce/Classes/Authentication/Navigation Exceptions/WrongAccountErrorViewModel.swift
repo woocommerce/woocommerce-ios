@@ -26,6 +26,8 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
     private let primaryButtonLoadingSubject = CurrentValueSubject<Bool, Never>(false)
     private let activityIndicatorLoadingSubject = CurrentValueSubject<Bool, Never>(false)
 
+    private var primaryButtonSubscription: AnyCancellable?
+
     init(siteURL: String?,
          showsConnectedStores: Bool,
          siteCredentials: WordPressOrgCredentials?,
@@ -105,7 +107,12 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
 
     // MARK: - Actions
     func viewDidLoad(_ viewController: UIViewController?) {
-        analytics.track(event: .LoginJetpackConnection.jetpackConnectionErrorShown(selfHostedSite: true))
+        primaryButtonSubscription = primaryButtonHiddenSubject
+            .dropFirst() // ignores first element
+            .sink { [weak self] isHidden in
+                // if the button is hidden, the site is not self-hosted.
+                self?.analytics.track(event: .LoginJetpackConnection.jetpackConnectionErrorShown(selfHostedSite: !isHidden))
+            }
 
         // Fetches site info if we're not sure whether the site is self-hosted.
         if siteXMLRPC.isEmpty {
@@ -167,6 +174,8 @@ private extension WrongAccountErrorViewModel {
             case .success(let siteInfo):
                 if siteInfo.isWPCom == false {
                     self.primaryButtonHiddenSubject.send(false)
+                } else {
+                    self.primaryButtonHiddenSubject.send(true)
                 }
             case .failure(let error):
                 DDLogWarn("⚠️ Error fetching site info: \(error)")

@@ -126,7 +126,7 @@ private struct StatsCard: View {
     }
 }
 
-/// Accessibility card sub view.
+/// Accessibility card sub view. Shows only revenue and a `View More` button.
 /// To be used inside `StoreInfoView`.
 ///
 private struct AccessibilityStatsCard: View {

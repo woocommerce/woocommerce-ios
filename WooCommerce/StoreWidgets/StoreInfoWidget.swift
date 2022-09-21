@@ -191,7 +191,7 @@ private extension StoreInfoView {
             comment: "Orders title label for the store info widget"
         )
         static let conversion = AppLocalizedString(
-            "storeWidgets.infoView.orders",
+            "storeWidgets.infoView.conversion",
             value: "Conversion",
             comment: "Conversion title label for the store info widget"
         )

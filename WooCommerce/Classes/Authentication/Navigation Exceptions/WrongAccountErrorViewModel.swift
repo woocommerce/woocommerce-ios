@@ -16,6 +16,7 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
     private let storesManager: StoresManager
     private let analytics: Analytics
     private let jetpackSetupCompletionHandler: (_ email: String, _ xmlrpc: String) -> Void
+    private let authentication: Authentication
 
     private var storePickerCoordinator: StorePickerCoordinator?
     private var siteXMLRPC: String = ""
@@ -34,12 +35,14 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
          sessionManager: SessionManagerProtocol =  ServiceLocator.stores.sessionManager,
          storesManager: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
+         authentication: Authentication = ServiceLocator.authenticationManager
          onJetpackSetupCompletion: @escaping (String, String) -> Void) {
         self.siteURL = siteURL ?? Localization.yourSite
         self.showsConnectedStores = showsConnectedStores
         self.defaultAccount = sessionManager.defaultAccount
         self.storesManager = storesManager
         self.analytics = analytics
+        self.authentication = authentication
         self.jetpackSetupCompletionHandler = onJetpackSetupCompletion
 
         if let credentials = siteCredentials {
@@ -105,6 +108,11 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
         activityIndicatorLoadingSubject.eraseToAnyPublisher()
     }
 
+    // Configures `Help` button title
+    var rightBarButtonItemTitle: String? {
+        Localization.helpBarButtonItemTitle
+    }
+
     // MARK: - Actions
     func viewDidLoad(_ viewController: UIViewController?) {
         primaryButtonSubscription = primaryButtonHiddenSubject
@@ -156,6 +164,13 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
         // Log out and pop
         storesManager.deauthenticate()
         viewController?.navigationController?.popToRootViewController(animated: true)
+    }
+
+    func didTapRightBarButtonItem(in viewController: UIViewController?) {
+        guard let viewController = viewController else {
+            return
+        }
+        authentication.presentSupport(from: viewController, screen: .wrongAccountError)
     }
 }
 
@@ -353,6 +368,8 @@ private extension WrongAccountErrorViewModel {
             comment: "Error message displayed when failed to check for Jetpack connection."
         )
 
+        static let helpBarButtonItemTitle = NSLocalizedString("Help",
+                                                       comment: "Help button on account mismatch error screen.")
     }
 
     enum Strings {

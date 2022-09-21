@@ -59,6 +59,11 @@ final class NoWooErrorViewModel: ULErrorViewModel {
 
     let secondaryButtonTitle = Localization.secondaryButtonTitle
 
+    // Configures `Help` button title
+    var rightBarButtonItemTitle: String? {
+        Localization.helpBarButtonItemTitle
+    }
+
     // MARK: - Actions
     func didTapPrimaryButton(in viewController: UIViewController?) {
         analytics.track(.loginWooCommerceSetupButtonTapped)
@@ -90,6 +95,13 @@ final class NoWooErrorViewModel: ULErrorViewModel {
 
         storePickerCoordinator = StorePickerCoordinator(navigationController, config: .listStores)
         storePickerCoordinator?.start()
+    }
+
+    func didTapRightBarButtonItem(in viewController: UIViewController?) {
+        guard let viewController = viewController else {
+            return
+        }
+        authentication.presentSupport(from: viewController, screen: .noWooError)
     }
 
     func viewDidLoad(_ viewController: UIViewController?) {

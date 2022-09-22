@@ -55,6 +55,9 @@ class LoginPrologueViewController: LoginViewController {
         }
 
         defaultButtonViewMargin = buttonViewLeadingConstraint?.constant ?? 0
+        if let backgroundImage = WordPressAuthenticator.shared.unifiedStyle?.prologueBackgroundImage {
+            view.layer.contents = backgroundImage.cgImage
+        }
     }
 
     override func styleBackground() {
@@ -276,9 +279,16 @@ class LoginPrologueViewController: LoginViewController {
             buttonBlurEffectView.effect = UIBlurEffect(style: blurEffect)
             return
         }
-
-        buttonBlurEffectView.isHidden = true
-        view.backgroundColor = prologueViewBackgroundColor
+        // do not set background color if we've set a background image earlier
+        if WordPressAuthenticator.shared.unifiedStyle?.prologueBackgroundImage == nil {
+            view.backgroundColor = prologueViewBackgroundColor
+        }
+        // if a blur effect for the buttons was passed, use it; otherwise hide the view.
+        guard let blurEffect = WordPressAuthenticator.shared.unifiedStyle?.prologueButtonsBlurEffect else {
+            buttonBlurEffectView.isHidden = true
+            return
+        }
+        buttonBlurEffectView.effect = blurEffect
     }
 
     // MARK: - Actions

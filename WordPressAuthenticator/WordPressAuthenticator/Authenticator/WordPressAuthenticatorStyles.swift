@@ -84,9 +84,16 @@ public struct WordPressAuthenticatorStyle {
     ///
     public let prologueBackgroundColor: UIColor
 
+    /// Style: optional prologue background image
+    ///
+    public let prologueBackgroundImage: UIImage?
+
     /// Style: prologue background colors
     ///
     public let prologueTitleColor: UIColor
+
+    /// Style: optional prologue buttons blur effect
+    public let prologueButtonsBlurEffect: UIBlurEffect?
 
     /// Style: primary button on the prologue view (continue)
     /// When `nil` it will use the primary styles defined here
@@ -139,7 +146,9 @@ public struct WordPressAuthenticatorStyle {
                 navBarBackgroundColor: UIColor,
                 navButtonTextColor: UIColor = .white,
                 prologueBackgroundColor: UIColor = WPStyleGuide.wordPressBlue(),
+                prologueBackgroundImage: UIImage? = nil,
                 prologueTitleColor: UIColor = .white,
+                prologueButtonsBlurEffect: UIBlurEffect? = nil,
                 prologuePrimaryButtonStyle: NUXButtonStyle? = nil,
                 prologueSecondaryButtonStyle: NUXButtonStyle? = nil,
                 prologueTopContainerChildViewController: @autoclosure @escaping () -> UIViewController? = nil,
@@ -172,7 +181,9 @@ public struct WordPressAuthenticatorStyle {
         self.navBarBackgroundColor = navBarBackgroundColor
         self.navButtonTextColor = navButtonTextColor
         self.prologueBackgroundColor = prologueBackgroundColor
+        self.prologueBackgroundImage = prologueBackgroundImage
         self.prologueTitleColor = prologueTitleColor
+        self.prologueButtonsBlurEffect = prologueButtonsBlurEffect
         self.prologuePrimaryButtonStyle = prologuePrimaryButtonStyle
         self.prologueSecondaryButtonStyle = prologueSecondaryButtonStyle
         self.prologueTopContainerChildViewController = prologueTopContainerChildViewController
@@ -220,6 +231,12 @@ public struct WordPressAuthenticatorUnifiedStyle {
     /// Style: Auth Prologue view background color
     public let prologueViewBackgroundColor: UIColor
 
+    /// Style: optional auth Prologue view background image
+    public let prologueBackgroundImage: UIImage?
+
+    /// Style: optional blur effect for the buttons view
+    public let prologueButtonsBlurEffect: UIBlurEffect?
+
     /// Style: Status bar style. Defaults to `default`.
     ///
     public let statusBarStyle: UIStatusBarStyle
@@ -245,6 +262,8 @@ public struct WordPressAuthenticatorUnifiedStyle {
                 viewControllerBackgroundColor: UIColor,
                 prologueButtonsBackgroundColor: UIColor = .clear,
                 prologueViewBackgroundColor: UIColor? = nil,
+                prologueBackgroundImage: UIImage? = nil,
+                prologueButtonsBlurEffect: UIBlurEffect? = nil,
                 statusBarStyle: UIStatusBarStyle = .default,
                 navBarBackgroundColor: UIColor,
                 navButtonTextColor: UIColor,
@@ -259,6 +278,8 @@ public struct WordPressAuthenticatorUnifiedStyle {
         self.viewControllerBackgroundColor = viewControllerBackgroundColor
         self.prologueButtonsBackgroundColor = prologueButtonsBackgroundColor
         self.prologueViewBackgroundColor = prologueViewBackgroundColor ?? viewControllerBackgroundColor
+        self.prologueBackgroundImage = prologueBackgroundImage
+        self.prologueButtonsBlurEffect = prologueButtonsBlurEffect
         self.statusBarStyle = statusBarStyle
         self.navBarBackgroundColor = navBarBackgroundColor
         self.navButtonTextColor = navButtonTextColor

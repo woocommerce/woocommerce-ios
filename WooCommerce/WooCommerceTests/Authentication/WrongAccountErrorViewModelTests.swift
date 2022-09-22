@@ -276,3 +276,34 @@ private extension WrongAccountErrorViewModelTests {
                                                        comment: "Help button on account mismatch error screen.")
     }
 }
+
+private final class MockAuthenticator: Authenticator {
+    enum AuthenticatorError: Error {
+        case serviceError
+    }
+
+    private static var credentials: WordPressOrgCredentials?
+    private static var siteInfo: WordPressComSiteInfo?
+
+    static func setMockCredentials(_ credentials: WordPressOrgCredentials) {
+        Self.credentials = credentials
+    }
+
+    static func setMockSiteInfo(_ siteInfo: WordPressComSiteInfo) {
+        Self.siteInfo = siteInfo
+    }
+
+    static func showSiteCredentialLogin(from presenter: UIViewController, siteURL: String, onCompletion: @escaping (WordPressOrgCredentials) -> Void) {
+        guard let credentials = credentials else {
+            return
+        }
+        onCompletion(credentials)
+    }
+    
+    static func fetchSiteInfo(for siteURL: String, onCompletion: @escaping (Result<WordPressComSiteInfo, Error>) -> Void) {
+        guard let siteInfo = siteInfo else {
+            return onCompletion(.failure(AuthenticatorError.serviceError))
+        }
+        onCompletion(.success(siteInfo))
+    }
+}

@@ -183,6 +183,54 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
         XCTAssertEqual(properties["is_selfhosted_site"] as? Bool, true)
     }
 
+    func test_error_view_is_tracked_with_selfhosted_site_if_siteInfo_returns_selfhosted() throws {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+
+        let siteInfo = WordPressComSiteInfo(remote: ["isWordPressDotCom": false])
+        MockAuthenticator.setMockSiteInfo(siteInfo)
+
+        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url,
+                                                   showsConnectedStores: false,
+                                                   siteCredentials: nil,
+                                                   authenticatorType: MockAuthenticator.self,
+                                                   analytics: analytics,
+                                                   onJetpackSetupCompletion: { _, _ in })
+
+        // When
+        viewModel.viewDidLoad(nil)
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "login_jetpack_connection_error_shown" }))
+        let properties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(properties["is_selfhosted_site"] as? Bool, true)
+    }
+
+    func test_error_view_is_tracked_without_selfhosted_site_if_siteInfo_returns_wpcom_site() throws {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+
+        let siteInfo = WordPressComSiteInfo(remote: ["isWordPressDotCom": true])
+        MockAuthenticator.setMockSiteInfo(siteInfo)
+
+        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url,
+                                                   showsConnectedStores: false,
+                                                   siteCredentials: nil,
+                                                   authenticatorType: MockAuthenticator.self,
+                                                   analytics: analytics,
+                                                   onJetpackSetupCompletion: { _, _ in })
+
+        // When
+        viewModel.viewDidLoad(nil)
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "login_jetpack_connection_error_shown" }))
+        let properties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(properties["is_selfhosted_site"] as? Bool, false)
+    }
+
     func test_primary_button_tap_is_tracked() throws {
         // Given
         let expectedURL = try XCTUnwrap(URL(string: "http://jetpack.wordpress.com/jetpack.authorize/1/"))
@@ -299,7 +347,7 @@ private final class MockAuthenticator: Authenticator {
         }
         onCompletion(credentials)
     }
-    
+
     static func fetchSiteInfo(for siteURL: String, onCompletion: @escaping (Result<WordPressComSiteInfo, Error>) -> Void) {
         guard let siteInfo = siteInfo else {
             return onCompletion(.failure(AuthenticatorError.serviceError))

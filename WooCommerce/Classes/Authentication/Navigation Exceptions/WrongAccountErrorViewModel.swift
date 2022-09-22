@@ -34,14 +34,13 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
          showsConnectedStores: Bool,
          siteCredentials: WordPressOrgCredentials?,
          authenticatorType: Authenticator.Type = WordPressAuthenticator.self,
-         sessionManager: SessionManagerProtocol =  ServiceLocator.stores.sessionManager,
          storesManager: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          authentication: Authentication = ServiceLocator.authenticationManager,
          onJetpackSetupCompletion: @escaping (String, String) -> Void) {
         self.siteURL = siteURL ?? Localization.yourSite
         self.showsConnectedStores = showsConnectedStores
-        self.defaultAccount = sessionManager.defaultAccount
+        self.defaultAccount = storesManager.sessionManager.defaultAccount
         self.storesManager = storesManager
         self.analytics = analytics
         self.authentication = authentication

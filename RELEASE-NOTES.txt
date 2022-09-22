@@ -3,6 +3,7 @@
 10.5
 -----
 - [**] Products: Now you can duplicate products from the More menu of the product detail screen. [https://github.com/woocommerce/woocommerce-ios/pull/7727]
+- [**] Login: Added Jetpack connection support from the Account Mismatch error screen. [https://github.com/woocommerce/woocommerce-ios/pull/7748]
 - [*] Orders: We are bringing back the ability to add/edit customer notes and addresses from the main order screen [https://github.com/woocommerce/woocommerce-ios/pull/7750]
 - [*] Help center: Added help center web page with FAQs for "Wrong WordPress.com account error" screen. [https://github.com/woocommerce/woocommerce-ios/pull/7747]
 - [*] Widgets: The Today's Stat Widget adds support for bigger fonts. [https://github.com/woocommerce/woocommerce-ios/pull/7752]

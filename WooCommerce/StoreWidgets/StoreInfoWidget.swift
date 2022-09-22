@@ -33,72 +33,118 @@ private struct StoreInfoView: View {
     // Entry to render
     let entry: StoreInfoData
 
+    // Current size category
+    @Environment(\.sizeCategory) var category
+
     var body: some View {
         ZStack {
             // Background
             Color(.brand)
 
-            VStack(spacing: Layout.sectionSpacing) {
+            VStack(alignment: .leading, spacing: Layout.sectionSpacing) {
 
-                // Store Name
-                HStack {
-                    Text(entry.name)
-                        .storeNameStyle()
+                VStack(alignment: .leading, spacing: Layout.cardSpacing) {
+                    // Store Name
+                    HStack {
+                        Text(entry.name)
+                            .storeNameStyle()
 
-                    Spacer()
+                        Spacer()
 
-                    Text(entry.range)
+                        Text(entry.range)
+                            .statRangeStyle()
+                    }
+
+                    // Updated at
+                    Text(Localization.updatedAt(entry.updatedTime))
                         .statRangeStyle()
                 }
 
-                // Revenue & Visitors
-                HStack() {
-                    VStack(alignment: .leading, spacing: Layout.cardSpacing) {
-                        Text(Localization.revenue)
-                            .statTitleStyle()
-
-                        Text(entry.revenue)
-                            .statValueStyle()
-
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-
-                    VStack(alignment: .leading, spacing: Layout.cardSpacing) {
-                        Text(Localization.visitors)
-                            .statTitleStyle()
-
-                        Text(entry.visitors)
-                            .statValueStyle()
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                if category > .extraLarge {
+                    AccessibilityStatsCard(entry: entry)
+                } else {
+                    StatsCard(entry: entry)
                 }
-
-                // Orders & Conversion
-                HStack {
-                    VStack(alignment: .leading, spacing: Layout.cardSpacing) {
-                        Text(Localization.orders)
-                            .statTitleStyle()
-
-                        Text(entry.orders)
-                            .statValueStyle()
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-
-                    VStack(alignment: .leading, spacing: Layout.cardSpacing) {
-                        Text(Localization.conversion)
-                            .statTitleStyle()
-
-                        Text(entry.conversion)
-                            .statValueStyle()
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                }
-
-                Text(Localization.updatedAt(entry.updatedTime))
-                    .statRangeStyle()
-                    .frame(maxWidth: .infinity, alignment: .leading)
             }
             .padding(.horizontal)
+        }
+    }
+}
+
+/// Stats card sub view.
+/// To be used inside `StoreInfoView`.
+///
+private struct StatsCard: View {
+    // Entry to render
+    let entry: StoreInfoData
+
+    var body: some View {
+        Group {
+            // Revenue & Visitors
+            HStack() {
+                VStack(alignment: .leading, spacing: StoreInfoView.Layout.cardSpacing) {
+                    Text(StoreInfoView.Localization.revenue)
+                        .statTitleStyle()
+
+                    Text(entry.revenue)
+                        .statValueStyle()
+
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+                VStack(alignment: .leading, spacing: StoreInfoView.Layout.cardSpacing) {
+                    Text(StoreInfoView.Localization.visitors)
+                        .statTitleStyle()
+
+                    Text(entry.visitors)
+                        .statValueStyle()
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+
+            // Orders & Conversion
+            HStack {
+                VStack(alignment: .leading, spacing: StoreInfoView.Layout.cardSpacing) {
+                    Text(StoreInfoView.Localization.orders)
+                        .statTitleStyle()
+
+                    Text(entry.orders)
+                        .statValueStyle()
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+                VStack(alignment: .leading, spacing: StoreInfoView.Layout.cardSpacing) {
+                    Text(StoreInfoView.Localization.conversion)
+                        .statTitleStyle()
+
+                    Text(entry.conversion)
+                        .statValueStyle()
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+        }
+    }
+}
+
+/// Accessibility card sub view. Shows only revenue and a `View More` button.
+/// To be used inside `StoreInfoView`.
+///
+private struct AccessibilityStatsCard: View {
+    // Entry to render
+    let entry: StoreInfoData
+
+    var body: some View {
+        Group {
+            VStack(alignment: .leading, spacing: StoreInfoView.Layout.cardSpacing) {
+                Text(StoreInfoView.Localization.revenue)
+                    .statTitleStyle()
+
+                Text(entry.revenue)
+                    .statValueStyle()
+            }
+
+            Text(StoreInfoView.Localization.viewMore)
+                .statButtonStyle()
         }
     }
 }
@@ -195,6 +241,11 @@ private extension StoreInfoView {
             value: "Conversion",
             comment: "Conversion title label for the store info widget"
         )
+        static let viewMore = AppLocalizedString(
+            "storeWidgets.infoView.viewMore",
+            value: "View More",
+            comment: "Title for the button indicator to display more stats in the Today's Stat widget when using accessibility fonts."
+        )
         static func updatedAt(_ updatedTime: String) -> LocalizedString {
             let format = AppLocalizedString("storeWidgets.infoView.updatedAt",
                                             value: "As of %1$@",
@@ -262,6 +313,18 @@ struct StoreWidgets_Previews: PreviewProvider {
                                  updatedTime: "10:24 PM")
         )
         .previewContext(WidgetPreviewContext(family: .systemMedium))
+
+        StoreInfoView(
+            entry: StoreInfoData(range: "Today",
+                                 name: "Ernest Shop",
+                                 revenue: "$132.234",
+                                 visitors: "67",
+                                 orders: "23",
+                                 conversion: "37%",
+                                 updatedTime: "10:24 PM")
+        )
+        .previewContext(WidgetPreviewContext(family: .systemMedium))
+        .environment(\.sizeCategory, .extraExtraLarge)
 
         NotLoggedInView()
             .previewContext(WidgetPreviewContext(family: .systemMedium))

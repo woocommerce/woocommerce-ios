@@ -123,6 +123,10 @@ extension WooConstants {
         ///
         case helpCenterForJetpackRequiredError = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#jetpack-required"
 
+        /// Help Center for "Wrong Account error" screen
+        ///
+        case helpCenterForWrongAccountError = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#wrong-account"
+
         /// Help Center for "Store picker" screen
         ///
         case helpCenterForStorePicker = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#pick-store-after-entering-password"

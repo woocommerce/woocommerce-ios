@@ -16,6 +16,7 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
     private let storesManager: StoresManager
     private let analytics: Analytics
     private let jetpackSetupCompletionHandler: (_ email: String, _ xmlrpc: String) -> Void
+    private let authentication: Authentication
 
     private var storePickerCoordinator: StorePickerCoordinator?
     private var siteXMLRPC: String = ""
@@ -26,18 +27,22 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
     private let primaryButtonLoadingSubject = CurrentValueSubject<Bool, Never>(false)
     private let activityIndicatorLoadingSubject = CurrentValueSubject<Bool, Never>(false)
 
+    private var primaryButtonSubscription: AnyCancellable?
+
     init(siteURL: String?,
          showsConnectedStores: Bool,
          siteCredentials: WordPressOrgCredentials?,
          sessionManager: SessionManagerProtocol =  ServiceLocator.stores.sessionManager,
          storesManager: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
+         authentication: Authentication = ServiceLocator.authenticationManager,
          onJetpackSetupCompletion: @escaping (String, String) -> Void) {
         self.siteURL = siteURL ?? Localization.yourSite
         self.showsConnectedStores = showsConnectedStores
         self.defaultAccount = sessionManager.defaultAccount
         self.storesManager = storesManager
         self.analytics = analytics
+        self.authentication = authentication
         self.jetpackSetupCompletionHandler = onJetpackSetupCompletion
 
         if let credentials = siteCredentials {
@@ -50,15 +55,15 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
 
     // MARK: - Data and configuration
     var userEmail: String {
-        return defaultAccount?.email ?? ""
+        defaultAccount?.email ?? ""
     }
 
     var userName: String {
-        return defaultAccount?.displayName ?? siteUsername
+        defaultAccount?.displayName ?? siteUsername
     }
 
     var signedInText: String {
-        return String.localizedStringWithFormat(Localization.signedInMessageFormat,
+        String.localizedStringWithFormat(Localization.signedInMessageFormat,
                                                 defaultAccount?.username ?? siteUsername)
     }
 
@@ -103,9 +108,19 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
         activityIndicatorLoadingSubject.eraseToAnyPublisher()
     }
 
+    // Configures `Help` button title
+    var rightBarButtonItemTitle: String? {
+        Localization.helpBarButtonItemTitle
+    }
+
     // MARK: - Actions
     func viewDidLoad(_ viewController: UIViewController?) {
-        analytics.track(event: .LoginJetpackConnection.jetpackConnectionErrorShown(selfHostedSite: true))
+        primaryButtonSubscription = primaryButtonHiddenSubject
+            .dropFirst() // ignores first element
+            .sink { [weak self] isHidden in
+                // if the button is hidden, the site is not self-hosted.
+                self?.analytics.track(event: .LoginJetpackConnection.jetpackConnectionErrorShown(selfHostedSite: !isHidden))
+            }
 
         // Fetches site info if we're not sure whether the site is self-hosted.
         if siteXMLRPC.isEmpty {
@@ -150,12 +165,19 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
         storesManager.deauthenticate()
         viewController?.navigationController?.popToRootViewController(animated: true)
     }
+
+    func didTapRightBarButtonItem(in viewController: UIViewController?) {
+        guard let viewController = viewController else {
+            return
+        }
+        authentication.presentSupport(from: viewController, screen: .wrongAccountError)
+    }
 }
 
 // MARK: - Private helpers
 private extension WrongAccountErrorViewModel {
     /// Fetches the site info and show the primary button if the site is self-hosted.
-    /// This will enables Jetpack connection support for self-hosted sites.
+    /// If the site is self-hosted, make the Connect Jetpack button visible.
     ///
     func fetchSiteInfo() {
         activityIndicatorLoadingSubject.send(true)
@@ -167,6 +189,8 @@ private extension WrongAccountErrorViewModel {
             case .success(let siteInfo):
                 if siteInfo.isWPCom == false {
                     self.primaryButtonHiddenSubject.send(false)
+                } else {
+                    self.primaryButtonHiddenSubject.send(true)
                 }
             case .failure(let error):
                 DDLogWarn("⚠️ Error fetching site info: \(error)")
@@ -344,6 +368,8 @@ private extension WrongAccountErrorViewModel {
             comment: "Error message displayed when failed to check for Jetpack connection."
         )
 
+        static let helpBarButtonItemTitle = NSLocalizedString("Help",
+                                                       comment: "Help button on account mismatch error screen.")
     }
 
     enum Strings {

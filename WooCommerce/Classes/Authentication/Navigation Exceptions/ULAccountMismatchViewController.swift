@@ -58,6 +58,7 @@ final class ULAccountMismatchViewController: UIViewController {
         super.viewDidLoad()
 
         configureAccountHeader()
+        configureRightBarButtonItem()
         configureImageView()
         configureErrorMessage()
         configureExtraInfoButton()
@@ -85,6 +86,16 @@ final class ULAccountMismatchViewController: UIViewController {
 
 // MARK: - View configuration
 private extension ULAccountMismatchViewController {
+    func configureRightBarButtonItem() {
+        guard let rightBarButtonTitle = viewModel.rightBarButtonItemTitle else {
+            return
+        }
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: rightBarButtonTitle,
+                                                            style: .plain,
+                                                            target: self,
+                                                            action: #selector(didTapRightBarButtonItem))
+    }
+
     func configureAccountHeader() {
         configureGravatar()
         configureUserNameLabel()
@@ -230,6 +241,10 @@ private extension ULAccountMismatchViewController {
 
     func didTapLogOutButton() {
         viewModel.didTapLogOutButton(in: self)
+    }
+
+    @objc func didTapRightBarButtonItem() {
+        viewModel.didTapRightBarButtonItem(in: self)
     }
 }
 

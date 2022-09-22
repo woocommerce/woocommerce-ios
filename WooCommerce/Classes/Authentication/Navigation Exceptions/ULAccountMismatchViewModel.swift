@@ -65,4 +65,27 @@ protocol ULAccountMismatchViewModel {
     /// Executes action associated to a tap in the view controller auxiliary button
     /// - Parameter viewController: usually the view controller sending the tap
     func didTapAuxiliaryButton(in viewController: UIViewController?)
+
+    // MARK: Navigation bar - right bar button item
+    //
+
+    /// Title of the right bar button item in the navigation bar
+    ///  return `nil` if you don't want a `rightBarButtonItem`
+    ///
+    var rightBarButtonItemTitle: String? { get }
+
+    /// Executes action associated to a tap on the right bar button item in the navigation bar
+    /// - Parameter viewController: usually the view controller sending the tap
+    ///
+    func didTapRightBarButtonItem(in viewController: UIViewController?)
+}
+
+// MARK: Default implementation for optional right bar button item
+//
+extension ULAccountMismatchViewModel {
+    var rightBarButtonItemTitle: String? { nil }
+
+    func didTapRightBarButtonItem(in viewController: UIViewController?) {
+        // NO-OP
+    }
 }

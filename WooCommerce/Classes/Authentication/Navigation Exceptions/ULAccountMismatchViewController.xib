@@ -144,12 +144,12 @@
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="10Z-y1-ZQ6" secondAttribute="trailing" id="3Fe-tr-bmb"/>
-                <constraint firstItem="jIt-xb-rrN" firstAttribute="top" relation="greaterThanOrEqual" secondItem="fnl-2z-Ty3" secondAttribute="top" id="4vu-ll-3S2"/>
                 <constraint firstAttribute="trailing" secondItem="jIt-xb-rrN" secondAttribute="trailing" constant="34" id="Z7E-hC-lbB"/>
                 <constraint firstItem="jIt-xb-rrN" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="34" id="jMe-jj-6Bt"/>
-                <constraint firstItem="10Z-y1-ZQ6" firstAttribute="top" secondItem="jIt-xb-rrN" secondAttribute="bottom" id="puI-lL-LT9"/>
                 <constraint firstItem="10Z-y1-ZQ6" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="r9Z-y5-j3W"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="10Z-y1-ZQ6" secondAttribute="bottom" id="rPP-rT-zVR"/>
+                <constraint firstItem="10Z-y1-ZQ6" firstAttribute="top" relation="greaterThanOrEqual" secondItem="jIt-xb-rrN" secondAttribute="bottom" id="yet-32-SBz"/>
+                <constraint firstItem="jIt-xb-rrN" firstAttribute="centerY" secondItem="fnl-2z-Ty3" secondAttribute="centerY" priority="250" constant="-20" id="z5R-69-jBg"/>
             </constraints>
             <point key="canvasLocation" x="137.68115942028987" y="86.383928571428569"/>
         </view>

@@ -29,6 +29,7 @@ final class CustomerNoteTableViewCell: UITableViewCell {
         }
         set {
             bodyTextView.text = newValue
+            bodyTextView.isHidden = newValue == nil || newValue?.isEmpty == true
         }
     }
 

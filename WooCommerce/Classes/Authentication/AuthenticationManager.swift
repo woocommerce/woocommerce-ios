@@ -537,8 +537,10 @@ private extension AuthenticationManager {
 // MARK: - Private helpers
 private extension AuthenticationManager {
     func isJetpackInvalidForSelfHostedSite(url: String) -> Bool {
-        if let site = currentSelfHostedSite,
-           site.url == url, !site.isJetpackConnected {
+        // Checks if the site has Jetpack and it's active
+        // We can handle Jetpack connection later in the account mismatch flow.
+        if let site = currentSelfHostedSite, site.url == url,
+            (!site.hasJetpack || !site.isJetpackActive) {
             return true
         }
         return false

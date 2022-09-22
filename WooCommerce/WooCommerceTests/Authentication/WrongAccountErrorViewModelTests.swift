@@ -163,6 +163,22 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
         XCTAssertTrue(navigationController.topViewController is AuthenticatedWebViewController)
     }
 
+    func test_fetchSiteInfo_is_triggered_if_credentials_are_not_present() throws {
+        // Given
+
+        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url,
+                                                   showsConnectedStores: false,
+                                                   siteCredentials: nil,
+                                                   authenticatorType: MockAuthenticator.self,
+                                                   onJetpackSetupCompletion: { _, _ in })
+
+        // When
+        viewModel.viewDidLoad(nil)
+
+        // Then
+        XCTAssertTrue(MockAuthenticator.fetchSiteInfoTriggered)
+    }
+
     func test_error_view_is_tracked_with_selfhosted_site_if_credentials_are_present() throws {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
@@ -233,23 +249,13 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
 
     func test_primary_button_tap_is_tracked() throws {
         // Given
-        let expectedURL = try XCTUnwrap(URL(string: "http://jetpack.wordpress.com/jetpack.authorize/1/"))
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
-            switch action {
-            case .fetchJetpackConnectionURL(let completion):
-                completion(.success(expectedURL))
-            default:
-                break
-            }
-        }
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let credentials = WordPressOrgCredentials(username: "test", password: "pwd", xmlrpc: "http://test.com/xmlrpc.php", options: [:])
+
         let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url,
                                                    showsConnectedStores: false,
-                                                   siteCredentials: credentials,
-                                                   storesManager: stores,
+                                                   siteCredentials: nil,
+                                                   authenticatorType: MockAuthenticator.self,
                                                    analytics: analytics,
                                                    onJetpackSetupCompletion: { _, _ in })
 
@@ -258,6 +264,21 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_connect_button_tapped" }))
+    }
+
+    func test_primary_button_tap_triggers_site_credential_login_if_credentials_are_not_present() throws {
+        // Given
+        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url,
+                                                   showsConnectedStores: false,
+                                                   siteCredentials: nil,
+                                                   authenticatorType: MockAuthenticator.self,
+                                                   onJetpackSetupCompletion: { _, _ in })
+
+        // When
+        viewModel.didTapPrimaryButton(in: UIViewController())
+
+        // Then
+        XCTAssertTrue(MockAuthenticator.siteCredentialLoginTriggered)
     }
 
     func test_failure_to_fetch_connection_url_is_tracked() throws {
@@ -333,6 +354,9 @@ private final class MockAuthenticator: Authenticator {
     private static var credentials: WordPressOrgCredentials?
     private static var siteInfo: WordPressComSiteInfo?
 
+    static var fetchSiteInfoTriggered = false
+    static var siteCredentialLoginTriggered = false
+
     static func setMockCredentials(_ credentials: WordPressOrgCredentials) {
         Self.credentials = credentials
     }
@@ -342,6 +366,7 @@ private final class MockAuthenticator: Authenticator {
     }
 
     static func showSiteCredentialLogin(from presenter: UIViewController, siteURL: String, onCompletion: @escaping (WordPressOrgCredentials) -> Void) {
+        siteCredentialLoginTriggered = true
         guard let credentials = credentials else {
             return
         }
@@ -349,6 +374,7 @@ private final class MockAuthenticator: Authenticator {
     }
 
     static func fetchSiteInfo(for siteURL: String, onCompletion: @escaping (Result<WordPressComSiteInfo, Error>) -> Void) {
+        fetchSiteInfoTriggered = true
         guard let siteInfo = siteInfo else {
             return onCompletion(.failure(AuthenticatorError.serviceError))
         }

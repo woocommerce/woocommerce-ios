@@ -246,6 +246,10 @@ extension ProductFormViewModel {
     func canDeleteProduct() -> Bool {
         formType == .edit
     }
+
+    func canDuplicateProduct() -> Bool {
+        formType == .edit
+    }
 }
 
 // MARK: Action handling
@@ -454,6 +458,22 @@ extension ProductFormViewModel {
             }
         case .readonly:
             assertionFailure("Trying to save a product remotely in readonly mode")
+        }
+    }
+
+    func duplicateProduct(onCompletion: @escaping (Result<ProductModel, ProductUpdateError>) -> Void) {
+        let remoteActionUseCase = ProductFormRemoteActionUseCase()
+        remoteActionUseCase.duplicateProduct(originalProduct: product,
+                                             password: password) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(error))
+            case .success(let data):
+                self.resetProduct(data.product)
+                self.resetPassword(data.password)
+                onCompletion(.success(data.product))
+            }
         }
     }
 

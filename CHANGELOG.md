@@ -1,6 +1,11 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 10.5
+
+This release includes a lot of exciting features! It's now possible to duplicate a product from the app. Just tap on the More Menu available inside the Product detail screen. We have also added a new stats widget so now you can view you current days stats without opening the app. Lastly, due to popular demand, we're bringing back the ability to add/edit customer notes and addresses from the main order screen. 
+
+We welcome your feedback on the app, especially the new features we’re working on. 
 
 ## 10.4
 

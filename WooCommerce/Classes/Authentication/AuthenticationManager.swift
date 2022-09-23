@@ -679,7 +679,7 @@ private extension AuthenticationManager {
         }
 
         /// Jetpack is required. Present an error if we don't detect a valid installation.
-        guard site.hasJetpack && site.isJetpackActive else {
+        guard site.isJetpackConnected else {
             return jetpackErrorUI(for: site.url, with: matcher, in: navigationController)
         }
 

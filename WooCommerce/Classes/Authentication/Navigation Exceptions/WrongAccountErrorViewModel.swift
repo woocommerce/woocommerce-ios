@@ -17,6 +17,7 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
     private let analytics: Analytics
     private let jetpackSetupCompletionHandler: (_ email: String, _ xmlrpc: String) -> Void
     private let authentication: Authentication
+    private let authenticatorType: Authenticator.Type
 
     private var storePickerCoordinator: StorePickerCoordinator?
     private var siteXMLRPC: String = ""
@@ -32,18 +33,19 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
     init(siteURL: String?,
          showsConnectedStores: Bool,
          siteCredentials: WordPressOrgCredentials?,
-         sessionManager: SessionManagerProtocol =  ServiceLocator.stores.sessionManager,
+         authenticatorType: Authenticator.Type = WordPressAuthenticator.self,
          storesManager: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          authentication: Authentication = ServiceLocator.authenticationManager,
          onJetpackSetupCompletion: @escaping (String, String) -> Void) {
         self.siteURL = siteURL ?? Localization.yourSite
         self.showsConnectedStores = showsConnectedStores
-        self.defaultAccount = sessionManager.defaultAccount
+        self.defaultAccount = storesManager.sessionManager.defaultAccount
         self.storesManager = storesManager
         self.analytics = analytics
         self.authentication = authentication
         self.jetpackSetupCompletionHandler = onJetpackSetupCompletion
+        self.authenticatorType = authenticatorType
 
         if let credentials = siteCredentials {
             siteUsername = credentials.username
@@ -181,7 +183,7 @@ private extension WrongAccountErrorViewModel {
     ///
     func fetchSiteInfo() {
         activityIndicatorLoadingSubject.send(true)
-        WordPressAuthenticator.fetchSiteInfo(for: siteURL) { [weak self] result in
+        authenticatorType.fetchSiteInfo(for: siteURL) { [weak self] result in
             guard let self = self else { return }
             self.activityIndicatorLoadingSubject.send(false)
 
@@ -229,7 +231,7 @@ private extension WrongAccountErrorViewModel {
     }
 
     func showSiteCredentialLoginAndJetpackConnection(from viewController: UIViewController) {
-        WordPressAuthenticator.showSiteCredentialLogin(from: viewController, siteURL: siteURL) { [weak self] credentials in
+        authenticatorType.showSiteCredentialLogin(from: viewController, siteURL: siteURL) { [weak self] credentials in
             guard let self = self else { return }
             // dismisses the site credential login flow
             viewController.dismiss(animated: true)

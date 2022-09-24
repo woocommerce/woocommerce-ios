@@ -1,1 +1,6 @@
-This release contains a handful of minor improvements to make your experience smoother. It's now possible to set up the Jetpack connection between your self-hosted site and your WP.com account. We continue to make small tweaks and enhancements to the in person payments feature. We hope you notice the love we put into our software.
+- [**] Products: Now you can duplicate products from the More menu of the product detail screen. [https://github.com/woocommerce/woocommerce-ios/pull/7727]
+- [**] Login: Added Jetpack connection support from the Account Mismatch error screen. [https://github.com/woocommerce/woocommerce-ios/pull/7748]
+- [*] Orders: We are bringing back the ability to add/edit customer notes and addresses from the main order screen [https://github.com/woocommerce/woocommerce-ios/pull/7750]
+- [*] Help center: Added help center web page with FAQs for "Wrong WordPress.com account error" screen. [https://github.com/woocommerce/woocommerce-ios/pull/7747]
+- [*] Widgets: The Today's Stat Widget adds support for bigger fonts. [https://github.com/woocommerce/woocommerce-ios/pull/7752]
+

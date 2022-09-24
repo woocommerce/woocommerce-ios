@@ -69,4 +69,8 @@ public enum FeatureFlag: Int {
     /// Whether to include the Cash on Delivery enable step in In-Person Payment onboarding
     ///
     case promptToEnableCodInIppOnboarding
+
+    /// Enables the Search Customers functionality in the Order Creation screen
+    ///
+    case orderCreationSearchCustomers
 }

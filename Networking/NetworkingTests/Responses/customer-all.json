@@ -1,0 +1,23 @@
+[
+    {"id":1,"user_id":0,"username":"","name":" ","email":"","country":"","city":"","state":"","postcode":"","date_registered":null,"date_last_active":"2022-08-05T10:56:36","date_last_order":"2022-08-05 10:59:36","orders_count":1,"total_spend":10,"avg_order_value":10,"date_registered_gmt":null,"date_last_active_gmt":"2022-08-07T10:59:36"},
+
+    {"id":2,"user_id":0,"username":"","name":" ","email":"","country":"","city":"","state":"","postcode":"","date_registered":null,"date_last_active":"2022-08-07T10:59:36","date_last_order":"2022-08-07 10:59:36","orders_count":1,"total_spend":10,"avg_order_value":10,"date_registered_gmt":null,"date_last_active_gmt":"2022-08-07T10:59:36"},
+
+    {"id":3,"user_id":0,"username":"","name":"7207 edge case status switcheroo ","email":"","country":"","city":"","state":"","postcode":"","date_registered":null,"date_last_active":"2022-07-15T05:28:42","date_last_order":"2022-07-15 05:28:42","orders_count":1,"total_spend":10,"avg_order_value":10,"date_registered_gmt":null,"date_last_active_gmt":"2022-07-15T05:28:42"},
+
+    {"id":4,"user_id":0,"username":"","name":" ","email":"","country":"","city":"","state":"","postcode":"","date_registered":null,"date_last_active":"2022-07-07T02:26:32","date_last_order":null,"orders_count":0,"total_spend":0,"avg_order_value":0,"date_registered_gmt":null,"date_last_active_gmt":"2022-07-07T02:26:32"},
+
+    {"id":5,"user_id":0,"username":"","name":" ","email":"","country":"","city":"","state":"","postcode":"","date_registered":null,"date_last_active":"2022-06-28T06:03:02","date_last_order":"2022-06-28 06:03:02","orders_count":1,"total_spend":10,"avg_order_value":10,"date_registered_gmt":null,"date_last_active_gmt":"2022-06-28T06:03:02"},
+
+    {"id":6,"user_id":0,"username":"","name":" ","email":"","country":"","city":"","state":"","postcode":"","date_registered":null,"date_last_active":"2022-06-15T05:25:05","date_last_order":null,"orders_count":0,"total_spend":0,"avg_order_value":0,"date_registered_gmt":null,"date_last_active_gmt":"2022-06-15T05:25:05"},
+
+    {"id":7,"user_id":0,"username":"","name":" ","email":"","country":"","city":"","state":"","postcode":"","date_registered":null,"date_last_active":"2022-06-11T02:23:37","date_last_order":null,"orders_count":0,"total_spend":0,"avg_order_value":0,"date_registered_gmt":null,"date_last_active_gmt":"2022-06-11T02:23:37"},
+
+    {"id":8,"user_id":0,"username":"","name":"7277 paid & digital ","email":"","country":"","city":"","state":"","postcode":"","date_registered":null,"date_last_active":"2022-07-21T16:37:49","date_last_order":"2022-07-21 16:37:49","orders_count":1,"total_spend":10,"avg_order_value":10,"date_registered_gmt":null,"date_last_active_gmt":"2022-07-21T16:37:49"},
+
+    {"id":9,"user_id":0,"username":"","name":"7227 - 4: Digital & processing ","email":"","country":"","city":"","state":"","postcode":"","date_registered":null,"date_last_active":"2022-07-13T01:42:17","date_last_order":"2022-07-13 01:42:17","orders_count":1,"total_spend":10,"avg_order_value":10,"date_registered_gmt":null,"date_last_active_gmt":"2022-07-13T01:42:17"},
+
+    {"id":10,"user_id":0,"username":"","name":" ","email":"","country":"","city":"","state":"","postcode":"","date_registered":null,"date_last_active":"2022-07-06T13:42:38","date_last_order":"2022-07-06 13:42:38","orders_count":1,"total_spend":10,"avg_order_value":10,"date_registered_gmt":null,"date_last_active_gmt":"2022-07-06T13:42:38"
+
+    }
+]

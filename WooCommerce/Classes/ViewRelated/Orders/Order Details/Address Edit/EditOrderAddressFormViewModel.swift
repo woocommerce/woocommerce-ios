@@ -161,6 +161,11 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
     func userDidCancelFlow() {
         analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCanceled(subject: self.analyticsFlowType()))
     }
+    /// Testing CustomerAction
+    ///
+    func callToCustomerAction() {
+        print("EditOrderAddressFormViewModel: callToCustomerAction called")
+    }
 }
 
 extension EditOrderAddressFormViewModel {

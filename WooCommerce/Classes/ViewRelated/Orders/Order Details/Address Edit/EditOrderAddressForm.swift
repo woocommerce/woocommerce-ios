@@ -146,6 +146,13 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                     viewModel.userDidCancelFlow()
                 })
             }
+            ToolbarItem(placement: .automatic) {
+                Button(action: {
+                    viewModel.callToCustomerAction()
+                }, label: {
+                    Image(systemName: "magnifyingglass")
+                })
+            }
             ToolbarItem(placement: .confirmationAction) {
                 navigationBarTrailingItem()
             }

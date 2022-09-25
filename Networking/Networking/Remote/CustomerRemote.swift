@@ -8,7 +8,7 @@ public class CustomerRemote: Remote {
     ///     - siteID: Site for which we'll fetch the customer.
     ///     - completion: Closure to be executed upon completion.
     ///
-    func retrieveCustomer(for siteID: Int64, with customerID: Int64, completion: @escaping (Result<Customer, Error>) -> Void) {
+    public func retrieveCustomer(for siteID: Int64, with customerID: Int64, completion: @escaping (Result<Customer, Error>) -> Void) {
         let path = "/customers/\(customerID)"
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .get,

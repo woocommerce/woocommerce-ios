@@ -264,6 +264,19 @@ extension CoreDataManager {
   }
 }
 
+public extension CoreDataManager {
+    func managedObjectWithURI<T: NSManagedObject>(_ uri: URL) -> T? {
+    guard let objectID =
+            persistentContainer.persistentStoreCoordinator
+      .managedObjectID(forURIRepresentation: uri)
+    else {
+      return nil
+    }
+
+      return persistentContainer.viewContext.object(with: objectID) as? T
+  }
+}
+
 // MARK: - Errors
 //
 enum CoreDataManagerError: Error {

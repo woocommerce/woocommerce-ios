@@ -3,6 +3,8 @@ import CoreData
 import Storage
 import class Networking.UserAgent
 import Experiments
+import CoreSpotlight
+import Yosemite
 
 import CocoaLumberjack
 import KeychainAccess
@@ -178,11 +180,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
         if userActivity.activityType == NSUserActivityTypeBrowsingWeb {
             handleWebActivity(userActivity)
+        } else if userActivity.activityType == CSSearchableItemActionType {
+            continueSpotlightActivity(userActivity)
         }
 
         trackWidgetTappedIfNeeded(userActivity: userActivity)
 
         return true
+    }
+
+    func continueSpotlightActivity(_ activity: NSUserActivity) {
+      if let info = activity.userInfo,
+        let objectIdentifier = info[CSSearchableItemActivityIdentifier] as? String,
+        let objectURI = URL(string: objectIdentifier) {
+          if let product = (ServiceLocator.storageManager.managedObjectWithURI(objectURI) as? Storage.Product)?.toReadOnly() {
+              MainTabBarController.presentProduct(product)
+          }
+      }
     }
 }
 

@@ -99,27 +99,10 @@ protocol AddressFormViewModelProtocol: ObservableObject {
     /// Creates a view model to be used when selecting a state for secondary fields
     ///
     func createSecondaryStateViewModel() -> StateSelectorViewModel
-}
 
-extension AddressFormViewModelProtocol {
-    func callToCustomerAction() {
-        // Dummy protocol extension that gives a default implementation just for testing:
-        print("Calling callToCustomerAction() from the protocol extension")
-        lazy var siteID: Int64 = 121710041
-        lazy var stores: StoresManager = ServiceLocator.stores
-        // Action:
-        let newaction = CustomerAction.retrieveCustomer(
-            siteID: siteID,
-            customerID: 1) { result in
-                switch result {
-                case .success(let data):
-                    print(data)
-                case .failure(let error):
-                    print(error)
-                }
-            }
-        stores.dispatch(newaction)
-    }
+    /// Callback method for the Search button when creating a new Order
+    ///
+    func callToCustomerAction()
 }
 
 /// Type to hold values from all the form fields

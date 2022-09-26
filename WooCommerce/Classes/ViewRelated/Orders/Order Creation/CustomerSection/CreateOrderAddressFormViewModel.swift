@@ -93,6 +93,25 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
     override func trackOnLoad() { }
 
     func userDidCancelFlow() { }
+
+    /// Dummy function call to test fetching customer data:
+    ///
+    func callToCustomerAction() {
+        lazy var siteID: Int64 = 121710041
+        lazy var stores: StoresManager = ServiceLocator.stores
+        // Action:
+        let newaction = CustomerAction.retrieveCustomer(
+            siteID: siteID,
+            customerID: 1) { result in
+                switch result {
+                case .success(let data):
+                    print(data)
+                case .failure(let error):
+                    print(error)
+                }
+            }
+        stores.dispatch(newaction)
+    }
 }
 
 private extension CreateOrderAddressFormViewModel {

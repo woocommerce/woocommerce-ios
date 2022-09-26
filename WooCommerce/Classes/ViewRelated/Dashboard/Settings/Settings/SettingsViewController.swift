@@ -17,7 +17,8 @@ final class SettingsViewController: UIViewController {
 
     private let viewModel: ViewModel
 
-    private lazy var woocommercePluginViewModel: WooCommercePluginViewModel = WooCommercePluginViewModel(siteID: stores.sessionManager.defaultStoreID ?? 0)
+    private lazy var woocommercePluginViewModel: WooCommercePluginViewModel = WooCommercePluginViewModel(siteID: stores.sessionManager.defaultStoreID ?? 0,
+                                                                                                         title: "WooCommerce Version")
 
     /// Main TableView
     ///
@@ -130,7 +131,7 @@ private extension SettingsViewController {
             configureSwitchStore(cell: cell)
         case let cell as BasicTableViewCell where row == .plugins:
             configurePlugins(cell: cell)
-        case let cell as HostingTableViewCell<TitleAndValueRow> where row == .woocommerceDetails:
+        case let cell as HostingTableViewCell<PluginDetailsRowView> where row == .woocommerceDetails:
             configureWooCommmerceDetails(cell: cell)
         case let cell as HostingTableViewCell<FeatureAnnouncementCardView> where row == .upsellCardReadersFeatureAnnouncement:
             configureUpsellCardReadersFeatureAnnouncement(cell: cell)
@@ -177,9 +178,8 @@ private extension SettingsViewController {
         cell.textLabel?.text = Localization.plugins
     }
 
-    func configureWooCommmerceDetails(cell: HostingTableViewCell<TitleAndValueRow>) {
-        let view = TitleAndValueRow(title: "WooCommerce version",
-                                    value: .content(woocommercePluginViewModel.woocommercePlugin?.version ?? ""))
+    func configureWooCommmerceDetails(cell: HostingTableViewCell<PluginDetailsRowView>) {
+        let view = PluginDetailsRowView.init(viewModel: woocommercePluginViewModel)
         cell.host(view, parent: self)
         cell.selectionStyle = .none
     }
@@ -643,7 +643,7 @@ extension SettingsViewController {
             case .plugins:
                 return BasicTableViewCell.self
             case .woocommerceDetails:
-                return HostingTableViewCell<TitleAndValueRow>.self
+                return HostingTableViewCell<PluginDetailsRowView>.self
             case .support:
                 return BasicTableViewCell.self
             case .upsellCardReadersFeatureAnnouncement:

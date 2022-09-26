@@ -11,7 +11,6 @@ struct CustomerMapper: Mapper {
     ///
     func map(response: Data) throws -> Customer {
         let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo = [.siteID: siteID]
         let customer = try decoder.decode(CustomerEnvelope.self, from: response).customer
         return customer

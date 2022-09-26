@@ -73,6 +73,10 @@ extension CustomHelpCenterContent {
         /// Account mismatch / Wrong WordPress.com account screen - `WrongAccountErrorViewModel`
         ///
         case wrongAccountError
+
+        /// No WooCommerce site error  using `NoWooErrorViewModel`
+        ///
+        case noWooError
     }
 
     init(screen: Screen, flow: AuthenticatorAnalyticsTracker.Flow) {
@@ -87,6 +91,9 @@ extension CustomHelpCenterContent {
         case .wrongAccountError:
             step = "wrong_wordpress_account" // Matching Android `Step` value
             url = WooConstants.URLs.helpCenterForWrongAccountError.asURL()
+        case .noWooError:
+            step = "not_woo_store" // Matching Android `Step` value
+            url = WooConstants.URLs.helpCenterForNoWooError.asURL()
         }
 
         trackingProperties = [

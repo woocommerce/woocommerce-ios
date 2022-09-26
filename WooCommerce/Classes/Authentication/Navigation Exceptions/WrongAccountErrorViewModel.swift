@@ -24,11 +24,10 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
     private var siteUsername: String = ""
     private var jetpackConnectionURL: URL?
 
-    private let primaryButtonHiddenSubject = CurrentValueSubject<Bool, Never>(true)
-    private let primaryButtonLoadingSubject = CurrentValueSubject<Bool, Never>(false)
-    private let activityIndicatorLoadingSubject = CurrentValueSubject<Bool, Never>(false)
+    @Published private var isSelfHostedSite = false
+    @Published private var primaryButtonLoading = false
 
-    private var primaryButtonSubscription: AnyCancellable?
+    private var siteInfoSubscription: AnyCancellable?
 
     init(siteURL: String?,
          showsConnectedStores: Bool,
@@ -96,19 +95,12 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
 
     let secondaryButtonTitle = Localization.secondaryButtonTitle
 
-    var isPrimaryButtonHidden: AnyPublisher<Bool, Never> {
-        primaryButtonHiddenSubject.eraseToAnyPublisher()
-    }
-
     var isPrimaryButtonLoading: AnyPublisher<Bool, Never> {
-        primaryButtonLoadingSubject.eraseToAnyPublisher()
+        $primaryButtonLoading.eraseToAnyPublisher()
     }
 
     var isSecondaryButtonHidden: Bool { !showsConnectedStores }
 
-    var isShowingActivityIndicator: AnyPublisher<Bool, Never> {
-        activityIndicatorLoadingSubject.eraseToAnyPublisher()
-    }
 
     // Configures `Help` button title
     var rightBarButtonItemTitle: String? {
@@ -117,19 +109,16 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
 
     // MARK: - Actions
     func viewDidLoad(_ viewController: UIViewController?) {
-        primaryButtonSubscription = primaryButtonHiddenSubject
+        siteInfoSubscription = $isSelfHostedSite
             .dropFirst() // ignores first element
-            .sink { [weak self] isHidden in
+            .sink { [weak self] isSelfHosted in
                 // if the button is hidden, the site is not self-hosted.
-                self?.analytics.track(event: .LoginJetpackConnection.jetpackConnectionErrorShown(selfHostedSite: !isHidden))
+                self?.analytics.track(event: .LoginJetpackConnection.jetpackConnectionErrorShown(selfHostedSite: isSelfHosted))
             }
 
         // Fetches site info if we're not sure whether the site is self-hosted.
         if siteXMLRPC.isEmpty {
             fetchSiteInfo()
-        } else {
-            // Shows the Connect Jetpack button if the site is self-hosted
-            primaryButtonHiddenSubject.send(false)
         }
     }
 
@@ -140,7 +129,10 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
         }
 
         guard let url = jetpackConnectionURL else {
-            return showSiteCredentialLoginAndJetpackConnection(from: viewController)
+            if isSelfHostedSite {
+                return showSiteCredentialLoginAndJetpackConnection(from: viewController)
+            }
+            return // TODO: show alert
         }
 
         showJetpackConnectionWebView(url: url, from: viewController)
@@ -182,18 +174,14 @@ private extension WrongAccountErrorViewModel {
     /// If the site is self-hosted, make the Connect Jetpack button visible.
     ///
     func fetchSiteInfo() {
-        activityIndicatorLoadingSubject.send(true)
+        primaryButtonLoading = true
         authenticatorType.fetchSiteInfo(for: siteURL) { [weak self] result in
             guard let self = self else { return }
-            self.activityIndicatorLoadingSubject.send(false)
+            self.primaryButtonLoading = false
 
             switch result {
             case .success(let siteInfo):
-                if siteInfo.isWPCom == false {
-                    self.primaryButtonHiddenSubject.send(false)
-                } else {
-                    self.primaryButtonHiddenSubject.send(true)
-                }
+                self.isSelfHostedSite = !siteInfo.isWPCom
             case .failure(let error):
                 DDLogWarn("⚠️ Error fetching site info: \(error)")
             }
@@ -214,10 +202,10 @@ private extension WrongAccountErrorViewModel {
     /// Fetches the URL for handling Jetpack connection in a web view
     ///
     func fetchJetpackConnectionURL(onCompletion: ((URL) -> Void)? = nil) {
-        primaryButtonLoadingSubject.send(true)
+        primaryButtonLoading = true
         let action = JetpackConnectionAction.fetchJetpackConnectionURL { [weak self] result in
             guard let self = self else { return }
-            self.primaryButtonLoadingSubject.send(false)
+            self.primaryButtonLoading = false
             switch result {
             case .success(let url):
                 onCompletion?(url)

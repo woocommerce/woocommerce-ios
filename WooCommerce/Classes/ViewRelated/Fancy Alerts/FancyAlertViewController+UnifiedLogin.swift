@@ -22,7 +22,7 @@ extension FancyAlertViewController {
         return controller
     }
 
-    static func makeNeedHelpFindingEmailAlertController() -> FancyAlertViewController {
+    static func makeNeedHelpFindingEmailAlertController(screen: CustomHelpCenterContent.Screen? = nil) -> FancyAlertViewController {
         let dismissButton = makeDismissButtonConfig()
         let moreHelpButton = makeNeedMoreHelpButton()
         let config = FancyAlertViewController.Config(titleText: Localization.whatEmailDoIUse,

@@ -146,21 +146,6 @@ extension StorePickerViewModel {
         }
         return resultsController.safeObject(at: indexPath)
     }
-
-    /// Returns the IndexPath for the specified Site.
-    ///
-    func indexPath(for siteID: Int64) -> IndexPath? {
-        guard resultsController.numberOfObjects > 0 else {
-            return nil
-        }
-
-        for (sectionIndex, section) in resultsController.sections.enumerated() {
-            if let rowIndex = section.objects.firstIndex(where: { $0.siteID == siteID }) {
-                return IndexPath(row: rowIndex, section: sectionIndex)
-            }
-        }
-        return nil
-    }
 }
 
 private extension StorePickerViewModel {

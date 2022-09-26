@@ -127,6 +127,10 @@ extension WooConstants {
         ///
         case helpCenterForWrongAccountError = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#wrong-account"
 
+        /// Help Center for No WooCommerce site error
+        ///
+        case helpCenterForNoWooError = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#not-a-woocommerce-site"
+
         /// Help Center for "Store picker" screen
         ///
         case helpCenterForStorePicker = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#pick-store-after-entering-password"

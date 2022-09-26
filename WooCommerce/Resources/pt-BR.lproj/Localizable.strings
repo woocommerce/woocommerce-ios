@@ -1210,8 +1210,7 @@ which should be translated separately and considered part of this sentence. */
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
 "Continuing with Apple" = "Continuar com Apple";
 
-/* Conversion stat label on dashboard.
-   Conversion title label for the store info widget */
+/* Conversion stat label on dashboard. */
 "Conversion" = "Conversão";
 
 /* Copy address text button title — should be one word and as short as possible. */
@@ -2703,6 +2702,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Action button that will restart the login flow.Presented when logging in with a site address that appears to be invalid.
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
    Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
+   Action button that will restart the login flow.Presented when logging in with store credentials of an account not connected to the site's Jetpack
    Action button that will restart the login flow.Presented when the user tries to log in to the app with a simple WP.com site. */
 "Log In With Another Account" = "Faça login com outra conta";
 
@@ -2714,18 +2714,12 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Explains that the files are sorted by LIFO date: most recent day listed first. */
 "Log files by created date" = "Registrar arquivos de acordo com a data de criação";
 
-/* Title label for the login button on the store info widget. */
-"Log in" = "Acessar";
-
 /* A generic error message for a failed log in. */
 "Log in failed. Please try again." = "Falha ao tentar fazer login. Tente novamente.";
 
 /* Button title. Takes the user to the login by email flow.
    Button title. Tapping begins our normal log in process. */
 "Log in or sign up with WordPress.com" = "Faça login ou entre com o WordPress.com";
-
-/* Title label when the widget does not have a logged-in store. */
-"Log in to see today’s stats." = "Faça login para ver as estatísticas de hoje.";
 
 /* Instruction text on the login's email address screen. */
 "Log in to the WordPress.com account you used to connect Jetpack." = "Acesse a conta do WordPress.com usada para se conectar ao Jetpack.";
@@ -2901,9 +2895,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
 "Multiple Contactless Cards Detected" = "Vários cartões por aproximação detectados";
-
-/* Generic store name for the store info widget preview */
-"My Shop" = "Minha loja";
 
 /* Title of the hub menu view in case there is no title for the store */
 "My Store" = "Minha loja";
@@ -3253,7 +3244,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "Ordered List" = "Lista ordenada";
 
 /* Orders stat label on dashboard - should be plural.
-   Orders title label for the store info widget
    The title of the Orders tab. */
 "Orders" = "Pedidos";
 
@@ -4036,8 +4026,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "Devolver o pacote ao remetente caso não possa ser enviado";
 
-/* Revenue stat label on dashboard.
-   Revenue title label for the store info widget */
+/* Revenue stat label on dashboard. */
 "Revenue" = "Receita";
 
 /* Title of Review Order screen */
@@ -5272,7 +5261,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "Para usar esse aplicativo para %@, é necessário ter o plugin do Jetpack conectado à sua loja.";
 
 /* Label for one of the filters in order date range
-   Range title for the today store info widget
    Tab selector title that shows the statistics for today
    Today Section Header
    Top Performers section title - today */
@@ -5805,8 +5793,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Visibility label in Product Settings */
 "Visibility" = "Visibilidade";
 
-/* Visitors stat label on dashboard - should be plural.
-   Visitors title label for the store info widget */
+/* Visitors stat label on dashboard - should be plural. */
 "Visitors" = "Visitantes";
 
 /* Add a note screen - Write Note section title */

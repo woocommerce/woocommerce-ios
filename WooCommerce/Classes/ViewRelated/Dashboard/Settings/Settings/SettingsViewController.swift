@@ -130,7 +130,7 @@ private extension SettingsViewController {
             configureSwitchStore(cell: cell)
         case let cell as BasicTableViewCell where row == .plugins:
             configurePlugins(cell: cell)
-        case let cell as TitleAndValueTableViewCell where row == .woocommerceDetails:
+        case let cell as HostingTableViewCell<TitleAndValueRow> where row == .woocommerceDetails:
             configureWooCommmerceDetails(cell: cell)
         case let cell as HostingTableViewCell<FeatureAnnouncementCardView> where row == .upsellCardReadersFeatureAnnouncement:
             configureUpsellCardReadersFeatureAnnouncement(cell: cell)
@@ -177,10 +177,11 @@ private extension SettingsViewController {
         cell.textLabel?.text = Localization.plugins
     }
 
-    func configureWooCommmerceDetails(cell: TitleAndValueTableViewCell) {
+    func configureWooCommmerceDetails(cell: HostingTableViewCell<TitleAndValueRow>) {
+        let view = TitleAndValueRow(title: "WooCommerce version",
+                                    value: .content(woocommercePluginViewModel.woocommercePlugin?.version ?? ""))
+        cell.host(view, parent: self)
         cell.selectionStyle = .none
-        cell.accessoryType = .none
-        cell.updateUI(title: "WooCommerce version", value: woocommercePluginViewModel.woocommercePlugin?.version)
     }
 
     func configureSupport(cell: BasicTableViewCell) {
@@ -626,7 +627,7 @@ extension SettingsViewController {
 
         fileprivate var registerWithNib: Bool {
             switch self {
-            case .upsellCardReadersFeatureAnnouncement:
+            case .upsellCardReadersFeatureAnnouncement, .woocommerceDetails:
                 return false
             default:
                 return true
@@ -642,7 +643,7 @@ extension SettingsViewController {
             case .plugins:
                 return BasicTableViewCell.self
             case .woocommerceDetails:
-                return TitleAndValueTableViewCell.self
+                return HostingTableViewCell<TitleAndValueRow>.self
             case .support:
                 return BasicTableViewCell.self
             case .upsellCardReadersFeatureAnnouncement:

@@ -47,8 +47,8 @@ public struct Customer: Codable, GeneratedCopiable, GeneratedFakeable {
 
         let customerID = try container.decode(Int64.self, forKey: .customerID)
         let email = try container.decode(String.self, forKey: .email)
-        let firstName = try container.decodeIfPresent(String.self, forKey: .firstName) ?? ""
-        let lastName = try container.decodeIfPresent(String.self, forKey: .lastName) ?? ""
+        let firstName = try container.decodeIfPresent(String.self, forKey: .firstName)
+        let lastName = try container.decodeIfPresent(String.self, forKey: .lastName)
         let billing = try? container.decode(Address.self, forKey: .billing)
         let shipping = try? container.decode(Address.self, forKey: .shipping)
 

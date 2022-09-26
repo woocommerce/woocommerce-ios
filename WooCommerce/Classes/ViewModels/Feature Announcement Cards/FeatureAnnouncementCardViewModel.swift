@@ -58,6 +58,10 @@ class FeatureAnnouncementCardViewModel {
     }
 
     private func updateShouldBeVisible() {
+        guard CardPresentConfigurationLoader(stores: stores).configuration.isSupportedCountry else {
+            shouldBeVisible = false
+            return
+        }
         let action = AppSettingsAction.getFeatureAnnouncementVisibility(campaign: config.campaign) { [weak self] result in
             guard let self = self else { return }
             switch result {

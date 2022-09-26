@@ -204,7 +204,7 @@ private extension SettingsViewModel {
             }
 
             return Section(title: Localization.pluginsTitle,
-                           rows: [.plugins],
+                           rows: [.plugins, .woocommerceDetails],
                            footerHeight: UITableView.automaticDimension)
         }()
 

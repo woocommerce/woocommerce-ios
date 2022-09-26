@@ -15,6 +15,8 @@ public final class CoreDataManager: StorageManagerType {
 
     private let modelsInventory: ManagedObjectModelsInventory
 
+    private(set) var spotlightIndexer: ProductSpotlightDelegate?
+
     /// Module-private designated Initializer.
     ///
     /// - Parameter name: Identifier to be used for: [database, data model, container].
@@ -37,6 +39,11 @@ public final class CoreDataManager: StorageManagerType {
             } else {
                 self.modelsInventory = try .from(packageName: name, bundle: Bundle(for: type(of: self)))
             }
+
+            self.spotlightIndexer = ProductSpotlightDelegate(
+                forStoreWith: storeDescription,
+                coordinator: persistentContainer.persistentStoreCoordinator)
+            toggleSpotlightIndexing(enabled: true)
         } catch {
             // We'll throw a fatalError() because we can't really proceed without a
             // ManagedObjectModel.
@@ -221,6 +228,9 @@ extension CoreDataManager {
     ///
     var storeDescription: NSPersistentStoreDescription {
         let description = NSPersistentStoreDescription(url: storeURL)
+        description.setOption(
+          true as NSNumber,
+          forKey: NSPersistentHistoryTrackingKey)
         description.shouldAddStoreAsynchronously = false
         description.shouldMigrateStoreAutomatically = false
         return description
@@ -240,6 +250,18 @@ extension CoreDataManager {
 
         return url.appendingPathComponent(name + ".sqlite")
     }
+}
+
+extension CoreDataManager {
+  func toggleSpotlightIndexing(enabled: Bool) {
+    guard let spotlightIndexer = spotlightIndexer else { return }
+
+    if enabled {
+      spotlightIndexer.startSpotlightIndexing()
+    } else {
+      spotlightIndexer.stopSpotlightIndexing()
+    }
+  }
 }
 
 // MARK: - Errors

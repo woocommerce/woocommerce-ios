@@ -1195,7 +1195,6 @@
 		B557652D20F6827900185843 /* StoreTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B557652C20F6827900185843 /* StoreTableViewCell.xib */; };
 		B559EBAF20A0BF8F00836CD4 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B559EBAD20A0BF8E00836CD4 /* README.md */; };
 		B559EBB020A0BF8F00836CD4 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = B559EBAE20A0BF8F00836CD4 /* LICENSE */; };
-		B55BC1F121A878A30011A0C0 /* String+HTML.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55BC1F021A878A30011A0C0 /* String+HTML.swift */; };
 		B55BC1F321A8790F0011A0C0 /* StringHTMLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55BC1F221A8790F0011A0C0 /* StringHTMLTests.swift */; };
 		B55D4BFD20B5CDE700D7A50F /* replace_secrets.rb in Resources */ = {isa = PBXBuildFile; fileRef = B55D4BFB20B5CDE600D7A50F /* replace_secrets.rb */; };
 		B55D4C0620B6027200D7A50F /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55D4C0520B6027100D7A50F /* AuthenticationManager.swift */; };
@@ -3082,7 +3081,6 @@
 		B557652C20F6827900185843 /* StoreTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StoreTableViewCell.xib; sourceTree = "<group>"; };
 		B559EBAD20A0BF8E00836CD4 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		B559EBAE20A0BF8F00836CD4 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
-		B55BC1F021A878A30011A0C0 /* String+HTML.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+HTML.swift"; sourceTree = "<group>"; };
 		B55BC1F221A8790F0011A0C0 /* StringHTMLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringHTMLTests.swift; sourceTree = "<group>"; };
 		B55D4BFA20B5CDE600D7A50F /* ApiCredentials.tpl */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; fileEncoding = 4; path = ApiCredentials.tpl; sourceTree = "<group>"; };
 		B55D4BFB20B5CDE600D7A50F /* replace_secrets.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = replace_secrets.rb; sourceTree = "<group>"; };
@@ -7514,7 +7512,6 @@
 				B541B222218A29A6008FE7C1 /* NSParagraphStyle+Woo.swift */,
 				B541B2142189EEA1008FE7C1 /* Scanner+Helpers.swift */,
 				74D0A52F2139CF1300E2919F /* String+Helpers.swift */,
-				B55BC1F021A878A30011A0C0 /* String+HTML.swift */,
 				B517EA1C218B41F200730EC4 /* String+Woo.swift */,
 				453227B623C4D6EC00D816B3 /* TimeZone+Woo.swift */,
 				B5C3876321C41B9F006CE970 /* UIApplication+Woo.swift */,
@@ -10241,7 +10238,6 @@
 				AE8AEA8628084EC90054BDA2 /* MaxWidthPreference.swift in Sources */,
 				DE19BB1A26C3B5DC00AB70D9 /* ShippingLabelCustomsFormItemDetailsViewModel.swift in Sources */,
 				2667BFE52530DCF4008099D4 /* RefundItemsValuesCalculationUseCase.swift in Sources */,
-				B55BC1F121A878A30011A0C0 /* String+HTML.swift in Sources */,
 				B56C721221B5B44000E5E85B /* PushNotificationsConfiguration.swift in Sources */,
 				26FE09DF24DB871100B9BDF5 /* SurveyViewControllersFactory.swift in Sources */,
 				02279587237A50C900787C63 /* AztecHeaderFormatBarCommand.swift in Sources */,

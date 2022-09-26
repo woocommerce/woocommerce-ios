@@ -3,7 +3,7 @@ import Foundation
 
 /// String: HTML Stripping
 ///
-extension String {
+public extension String {
 
     /// Convert HTML to an attributed string
     ///

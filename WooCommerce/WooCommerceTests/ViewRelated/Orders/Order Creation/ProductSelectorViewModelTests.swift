@@ -152,7 +152,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let expectation = expectation(description: "Completed product search")
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .searchProducts(_, _, _, _, _, _, _, _, _, onCompletion):
+            case let .searchProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
                 let product = Product.fake().copy(siteID: self.sampleSiteID, purchasable: true)
                 self.insert(product, withSearchTerm: "shirt")
                 onCompletion(.success(()))
@@ -180,7 +180,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let expectation = expectation(description: "Completed product search")
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .searchProducts(_, _, _, _, _, _, _, _, _, onCompletion):
+            case let .searchProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
                 self.insert(shirt, withSearchTerm: "shirt")
                 onCompletion(.success(()))
                 expectation.fulfill()
@@ -226,7 +226,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         insert([product.copy(name: "T-shirt"), product.copy(name: "Hoodie")])
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .searchProducts(_, _, _, _, _, _, _, _, _, onCompletion):
+            case let .searchProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
                 self.insert(product.copy(name: "T-shirt"), withSearchTerm: "shirt")
                 onCompletion(.success(()))
             case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
@@ -273,7 +273,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let notice: Notice? = waitFor { promise in
             self.stores.whenReceivingAction(ofType: ProductAction.self) { action in
                 switch action {
-                case let .searchProducts(_, _, _, _, _, _, _, _, _, onCompletion):
+                case let .searchProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
                     onCompletion(.failure(NSError(domain: "Error", code: 0)))
                     promise(viewModel.notice)
                 default:
@@ -613,7 +613,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         )
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .searchProducts(_, _, _, _, stockStatus, productStatus, productType, category, _, onCompletion):
+            case let .searchProducts(_, _, _, _, _, stockStatus, productStatus, productType, category, _, onCompletion):
                 filteredStockStatus = stockStatus
                 filteredProductType = productType
                 filteredProductStatus = productStatus

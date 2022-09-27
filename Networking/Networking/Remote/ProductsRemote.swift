@@ -31,6 +31,11 @@ public protocol ProductsRemoteProtocol {
                         productCategory: ProductCategory?,
                         excludedProductIDs: [Int64],
                         completion: @escaping (Result<[Product], Error>) -> Void)
+    func searchProductsBySKU(for siteID: Int64,
+                             keyword: String,
+                             pageNumber: Int,
+                             pageSize: Int,
+                             completion: @escaping (Result<[Product], Error>) -> Void)
     func searchSku(for siteID: Int64,
                    sku: String,
                    completion: @escaping (Result<String, Error>) -> Void)
@@ -238,6 +243,30 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
+    /// Retrieves all of the `Product`s that match the SKU. Partial SKU search is supported for WooCommerce version 6.6+, otherwise full SKU match is performed.
+    /// - Parameters:
+    ///   - siteID: Site for which we'll fetch remote products
+    ///   - keyword: Search string that should be matched by the SKU (partial or full depending on the WC version).
+    ///   - pageNumber: Number of page that should be retrieved.
+    ///   - pageSize: Number of products to be retrieved per page.
+    ///   - completion: Closure to be executed upon completion.
+    public func searchProductsBySKU(for siteID: Int64,
+                                    keyword: String,
+                                    pageNumber: Int,
+                                    pageSize: Int,
+                                    completion: @escaping (Result<[Product], Error>) -> Void) {
+        let parameters = [
+            ParameterKey.sku: keyword,
+            ParameterKey.partialSKUSearch: keyword,
+            ParameterKey.page: String(pageNumber),
+            ParameterKey.perPage: String(pageSize)
+        ]
+        let path = Path.products
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let mapper = ProductListMapper(siteID: siteID)
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
     /// Retrieves a product SKU if available.
     ///
     /// - Parameters:
@@ -329,6 +358,7 @@ public extension ProductsRemote {
         static let orderBy: String    = "orderby"
         static let order: String      = "order"
         static let sku: String        = "sku"
+        static let partialSKUSearch: String = "search_sku"
         static let productStatus: String = "status"
         static let productType: String = "type"
         static let stockStatus: String = "stock_status"

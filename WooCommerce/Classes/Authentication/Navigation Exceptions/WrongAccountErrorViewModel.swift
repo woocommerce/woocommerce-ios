@@ -132,7 +132,7 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
             if isSelfHostedSite {
                 return showSiteCredentialLoginAndJetpackConnection(from: viewController)
             }
-            return // TODO: show alert
+            return presentConnectToWPComSiteAlert(from: viewController)
         }
 
         showJetpackConnectionWebView(url: url, from: viewController)
@@ -230,6 +230,13 @@ private extension WrongAccountErrorViewModel {
                 self?.showJetpackConnectionWebView(url: url, from: viewController)
             }
         }
+    }
+
+    func presentConnectToWPComSiteAlert(from viewController: UIViewController) {
+        let fancyAlert = FancyAlertViewController.makeConnectAccountToWPComSiteAlert()
+        fancyAlert.modalPresentationStyle = .custom
+        fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
+        viewController.present(fancyAlert, animated: true)
     }
 
     /// Presents a web view pointing to the Jetpack connection URL.

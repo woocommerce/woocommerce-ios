@@ -11,6 +11,7 @@ protocol SearchUICommand {
     var searchBarPlaceholder: String { get }
 
     /// A closure to resynchronize models if the data source might change (e.g. when the filter changes in products search).
+    /// Set externally to enable resyncing the models when needed. Otherwise, an empty closure can be set by default.
     var resynchronizeModels: (() -> Void) { get set }
 
     associatedtype ResultsControllerModel: ResultsControllerMutableType where ResultsControllerModel.ReadOnlyType == Model

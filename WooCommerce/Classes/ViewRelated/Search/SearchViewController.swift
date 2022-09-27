@@ -433,6 +433,11 @@ private extension SearchViewController {
         let searchResultsPredicate = searchUICommand.searchResultsPredicate(keyword: keyword)
         let subpredicates = [resultsPredicate].compactMap { $0 } + [searchResultsPredicate].compactMap { $0 }
         resultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: subpredicates)
+        do {
+            try resultsController.performFetch()
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
+        }
 
         tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()

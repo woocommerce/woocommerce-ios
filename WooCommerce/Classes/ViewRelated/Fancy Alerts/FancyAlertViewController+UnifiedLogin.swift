@@ -24,11 +24,7 @@ extension FancyAlertViewController {
 
     static func makeNeedHelpFindingEmailAlertController(screen: CustomHelpCenterContent.Screen? = nil) -> FancyAlertViewController {
         let dismissButton = makeDismissButtonConfig()
-        var customHelpCenterContent: CustomHelpCenterContent?
-        if let screen = screen {
-            customHelpCenterContent = CustomHelpCenterContent(screen: screen,
-                                                              flow: AuthenticatorAnalyticsTracker.shared.state.lastFlow)
-        }
+        let customHelpCenterContent = screen.map { CustomHelpCenterContent(screen: $0, flow: AuthenticatorAnalyticsTracker.shared.state.lastFlow) }
         let moreHelpButton = makeNeedMoreHelpButton(customHelpCenterContent: customHelpCenterContent)
         let config = FancyAlertViewController.Config(titleText: Localization.whatEmailDoIUse,
                                                      bodyText: Localization.whatEmailDoIUseLongDescription,

@@ -343,8 +343,8 @@ private extension WrongAccountErrorViewModel {
                                                           comment: "Action button linking to a list of connected stores."
                                                           + "Presented when logging in with a store address that does not match the account entered")
 
-        static let primaryButtonTitle = NSLocalizedString("Connect Jetpack",
-                                                          comment: "Action button to handle Jetpack connection."
+        static let primaryButtonTitle = NSLocalizedString("Connect to the site",
+                                                          comment: "Action button to handle connecting the logged-in account to the site."
                                                           + "Presented when logging in with a self-hosted site that does not match the account entered")
 
         static let yourSite = NSLocalizedString("your site",

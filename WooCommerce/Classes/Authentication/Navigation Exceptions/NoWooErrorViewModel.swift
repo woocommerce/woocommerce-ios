@@ -9,6 +9,7 @@ final class NoWooErrorViewModel: ULErrorViewModel {
     private let analytics: Analytics
     private let stores: StoresManager
     private let setupCompletionHandler: (Int64) -> Void
+    private let authentication: Authentication
 
     private var storePickerCoordinator: StorePickerCoordinator?
 
@@ -16,12 +17,14 @@ final class NoWooErrorViewModel: ULErrorViewModel {
          showsConnectedStores: Bool,
          analytics: Analytics = ServiceLocator.analytics,
          stores: StoresManager = ServiceLocator.stores,
+         authentication: Authentication = ServiceLocator.authenticationManager,
          onSetupCompletion: @escaping (Int64) -> Void) {
         self.site = site
         self.title = site.name
         self.showsConnectedStores = showsConnectedStores
         self.analytics = analytics
         self.stores = stores
+        self.authentication = authentication
         self.setupCompletionHandler = onSetupCompletion
     }
 
@@ -56,6 +59,11 @@ final class NoWooErrorViewModel: ULErrorViewModel {
 
     let secondaryButtonTitle = Localization.secondaryButtonTitle
 
+    // Configures `Help` button title
+    var rightBarButtonItemTitle: String? {
+        Localization.helpBarButtonItemTitle
+    }
+
     // MARK: - Actions
     func didTapPrimaryButton(in viewController: UIViewController?) {
         analytics.track(.loginWooCommerceSetupButtonTapped)
@@ -87,6 +95,13 @@ final class NoWooErrorViewModel: ULErrorViewModel {
 
         storePickerCoordinator = StorePickerCoordinator(navigationController, config: .listStores)
         storePickerCoordinator?.start()
+    }
+
+    func didTapRightBarButtonItem(in viewController: UIViewController?) {
+        guard let viewController = viewController else {
+            return
+        }
+        authentication.presentSupport(from: viewController, screen: .noWooError)
     }
 
     func viewDidLoad(_ viewController: UIViewController?) {
@@ -162,5 +177,9 @@ private extension NoWooErrorViewModel {
                                                              comment: "Message displayed when checking whether a site has successfully installed WooCommerce")
         static let setupErrorMessage = NSLocalizedString("Cannot verify your site's WooCommerce installation.",
                                                          comment: "Error message displayed when failed to check for WooCommerce in a site.")
+
+        static let helpBarButtonItemTitle = NSLocalizedString("Help",
+                                                              comment: "Action button for opening Help."
+                                                              + "Presented when logging in with a site address that does not have WooCommerce")
     }
 }

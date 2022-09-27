@@ -158,6 +158,49 @@ final class NoWooErrorViewModelTests: XCTestCase {
         // Then
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_woocommerce_error_shown" }))
     }
+
+    func test_viewmodel_provides_expected_title_for_right_bar_button_item() {
+        // Given
+        let site = Site.fake().copy(url: "https://test.com")
+        let viewModel = NoWooErrorViewModel(site: site,
+                                            showsConnectedStores: false,
+                                            onSetupCompletion: { _ in })
+
+        // Then
+        XCTAssertEqual(viewModel.rightBarButtonItemTitle, Localization.helpBarButtonItemTitle)
+    }
+
+    func test_viewModel_invokes_present_support_when_the_help_button_is_tapped() throws {
+        // Given
+        let site = Site.fake().copy(url: "https://test.com")
+        let mockAuthentication = MockAuthentication()
+        let viewModel = NoWooErrorViewModel(site: site,
+                                            showsConnectedStores: false,
+                                            authentication: mockAuthentication,
+                                            onSetupCompletion: { _ in })
+
+        // When
+        viewModel.didTapRightBarButtonItem(in: UIViewController())
+
+        // Then
+        XCTAssertTrue(mockAuthentication.presentSupportFromScreenInvoked)
+    }
+
+    func test_viewModel_sends_correct_screen_value_in_present_support_method() throws {
+        // Given
+        let site = Site.fake().copy(url: "https://test.com")
+        let mockAuthentication = MockAuthentication()
+        let viewModel = NoWooErrorViewModel(site: site,
+                                            showsConnectedStores: false,
+                                            authentication: mockAuthentication,
+                                            onSetupCompletion: { _ in })
+
+        // When
+        viewModel.didTapRightBarButtonItem(in: UIViewController())
+
+        // Then
+        XCTAssertEqual(mockAuthentication.presentSupportFromScreen, .noWooError)
+    }
 }
 
 private extension NoWooErrorViewModelTests {
@@ -176,5 +219,9 @@ private extension NoWooErrorViewModelTests {
         static let secondaryButtonTitle = NSLocalizedString("Log In With Another Account",
                                                             comment: "Action button that will restart the login flow."
                                                             + "Presented when logging in with a site address that does not have WooCommerce")
+
+        static let helpBarButtonItemTitle = NSLocalizedString("Help",
+                                                              comment: "Action button for opening Help."
+                                                              + "Presented when logging in with a site address that does not have WooCommerce")
     }
 }

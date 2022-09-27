@@ -1,1 +1,3 @@
-This release contains a handful of minor improvements to make your experience smoother. It's now possible to set up the Jetpack connection between your self-hosted site and your WP.com account. We continue to make small tweaks and enhancements to the in person payments feature. We hope you notice the love we put into our software.
+This release includes a lot of exciting features! It's now possible to duplicate a product from the app. Just tap on the More Menu available inside the Product detail screen. We have also added a new stats widget so now you can view your current day's stats without opening the app. Lastly, due to popular demand, we're bringing back the ability to add/edit customer notes and addresses from the main order screen. 
+
+We welcome your feedback on the app, especially the new features we’re working on.

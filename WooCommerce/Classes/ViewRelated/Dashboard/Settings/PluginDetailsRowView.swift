@@ -10,7 +10,10 @@ struct PluginDetailsRowView: View {
         NavigationRow(selectable: viewModel.updateURL != nil,
                       content: {
             PluginDetailsRowContent(viewModel: viewModel)
-                .sheet(isPresented: $webViewPresented) {
+                .sheet(isPresented: $webViewPresented,
+                       onDismiss: {
+                    viewModel.refreshPlugin()
+                }) {
                     if let updateURL = viewModel.updateURL {
                         SafariView(url: updateURL)
                     }
@@ -86,4 +89,8 @@ private struct PreviewsPluginDetailsRowViewModel: PluginDetailsViewModel {
     var version = "5.9.0"
 
     var versionLatest: String? = "6.9.0"
+
+    func refreshPlugin() {
+        // no-op
+    }
 }

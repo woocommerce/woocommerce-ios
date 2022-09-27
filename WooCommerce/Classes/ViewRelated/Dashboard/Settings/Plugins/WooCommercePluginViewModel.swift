@@ -7,6 +7,7 @@ protocol PluginDetailsViewModel {
     var versionLatest: String? { get }
     var title: String { get }
     var updateURL: URL? { get }
+    func refreshPlugin()
 }
 
 final class WooCommercePluginViewModel: PluginDetailsViewModel {
@@ -54,7 +55,7 @@ final class WooCommercePluginViewModel: PluginDetailsViewModel {
     /// Results controller for the plugin list
     ///
     private lazy var resultsController: ResultsController<StorageSystemPlugin> = {
-        let predicate = NSPredicate(format: "siteID = %ld AND name = %@", self.siteID, "WooCommerce")
+        let predicate = NSPredicate(format: "siteID = %ld AND name = %@", self.siteID, Constants.wooCommercePluginName)
         let resultsController = ResultsController<StorageSystemPlugin>(
             storageManager: storageManager,
             matching: predicate,
@@ -83,9 +84,18 @@ final class WooCommercePluginViewModel: PluginDetailsViewModel {
 
     /// Start fetching and observing plugin data from local storage.
     ///
-    func observeWooCommercePlugin(onDataChanged: @escaping () -> Void) {
+    private func observeWooCommercePlugin(onDataChanged: @escaping () -> Void) {
         resultsController.onDidChangeContent = onDataChanged
     }
+
+    func refreshPlugin() {
+        let action = SystemStatusAction.synchronizeSystemPlugins(siteID: siteID) { _ in }
+        storesManager.dispatch(action)
+    }
+}
+
+private enum Constants {
+    static let wooCommercePluginName = "WooCommerce"
 }
 
 private enum Localization {

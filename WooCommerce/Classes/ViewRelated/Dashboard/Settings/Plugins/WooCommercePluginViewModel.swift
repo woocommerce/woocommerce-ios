@@ -2,47 +2,14 @@ import Foundation
 import Yosemite
 import protocol Storage.StorageManagerType
 
-protocol PluginDetailsViewModel {
-    var version: String { get }
-    var versionLatest: String? { get }
-    var title: String { get }
-    var updateURL: URL? { get }
-    func refreshPlugin()
-}
-
-final class WooCommercePluginViewModel: PluginDetailsViewModel {
-    var updateURL: URL? {
-        guard let url = storesManager.sessionManager.defaultSite?.pluginsURL,
-              updateAvailable
-        else {
-            return nil
-        }
-
-        return URL(string: url)
-    }
-
-    var updateAvailable: Bool {
-        guard let plugin = plugin else {
-            return false
-        }
-        return !VersionHelpers.isVersionSupported(version: plugin.version, minimumRequired: plugin.versionLatest)
-    }
-
-    var version: String {
-        plugin?.version ?? Localization.unknownVersionValue
-    }
-
-    var versionLatest: String? {
-        plugin?.versionLatest
-    }
-
-    private var plugin: SystemPlugin?
-
-    let title: String
-
+final class PluginDetailsViewModel: ObservableObject {
     /// ID of the site to load plugins for
     ///
     private let siteID: Int64
+
+    /// Name of the plugin to show details for
+    ///
+    private let pluginName: String
 
     /// Reference to the StoresManager to dispatch Yosemite Actions.
     ///
@@ -55,7 +22,7 @@ final class WooCommercePluginViewModel: PluginDetailsViewModel {
     /// Results controller for the plugin list
     ///
     private lazy var resultsController: ResultsController<StorageSystemPlugin> = {
-        let predicate = NSPredicate(format: "siteID = %ld AND name = %@", self.siteID, Constants.wooCommercePluginName)
+        let predicate = NSPredicate(format: "siteID = %ld AND name = %@", self.siteID, pluginName)
         let resultsController = ResultsController<StorageSystemPlugin>(
             storageManager: storageManager,
             matching: predicate,
@@ -71,38 +38,92 @@ final class WooCommercePluginViewModel: PluginDetailsViewModel {
         return resultsController
     }()
 
+    /// Title for the plugin details row
+    ///
+    let title: String
+
+    var updateAvailable: Bool {
+        guard let plugin = plugin else {
+            return false
+        }
+        return !VersionHelpers.isVersionSupported(version: plugin.version, minimumRequired: plugin.versionLatest)
+    }
+
+    /// URL for the plugins page in WP-admin, used for the update webview when an update is available
+    ///
+    @Published var updateURL: URL?
+
+    /// Version of the plugin installed on the current site
+    ///
+    @Published var version: String
+
+    /// Latest version of the plugin installed on the current site
+    ///
+    @Published var versionLatest: String?
+
+    var plugin: SystemPlugin? {
+        didSet {
+            version = plugin?.version ?? Localization.unknownVersionValue
+            versionLatest = plugin?.versionLatest
+            updateURL = updateURL(for: plugin)
+        }
+    }
+
     init(siteID: Int64,
+         pluginName: String,
          storesManager: StoresManager = ServiceLocator.stores,
-         storageManager: StorageManagerType = ServiceLocator.storageManager,
-         title: String = Localization.pluginDetailTitle) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
+        self.pluginName = pluginName
         self.storesManager = storesManager
         self.storageManager = storageManager
-        self.title = title
-        observeWooCommercePlugin { self.plugin = self.resultsController.fetchedObjects.first }
+        self.title = String(format: Localization.pluginDetailTitle, pluginName)
+        self.plugin = nil
+        self.updateURL = nil
+        self.version = ""
+        self.versionLatest = nil
+        observePlugin { self.plugin = self.resultsController.fetchedObjects.first }
     }
 
     /// Start fetching and observing plugin data from local storage.
     ///
-    private func observeWooCommercePlugin(onDataChanged: @escaping () -> Void) {
+    private func observePlugin(onDataChanged: @escaping () -> Void) {
         resultsController.onDidChangeContent = onDataChanged
     }
 
+    /// Used to refresh the store after the webview is used to perform an update
+    ///
     func refreshPlugin() {
         let action = SystemStatusAction.synchronizeSystemPlugins(siteID: siteID) { _ in }
         storesManager.dispatch(action)
     }
 }
 
-private enum Constants {
-    static let wooCommercePluginName = "WooCommerce"
+private extension PluginDetailsViewModel {
+    private func updateURL(for plugin: SystemPlugin?) -> URL? {
+        guard let url = storesManager.sessionManager.defaultSite?.pluginsURL,
+              updateAvailable(for: plugin)
+        else {
+            return nil
+        }
+
+        return URL(string: url)
+    }
+
+    private func updateAvailable(for plugin: SystemPlugin?) -> Bool {
+        guard let plugin = plugin else {
+            return false
+        }
+        return !VersionHelpers.isVersionSupported(version: plugin.version, minimumRequired: plugin.versionLatest)
+    }
+
 }
 
 private enum Localization {
     static let pluginDetailTitle = NSLocalizedString(
-        "WooCommerce Version",
-        comment: "Title for the WooCommerce plugin version detail row in settings. This is displayed with the " +
-        "current version number, and whether an update is available.")
+        "%1$@ Version",
+        comment: "Title for the plugin version detail row in settings. %1$@ is a placeholder for the plugin name. " +
+        "This is displayed with the current version number, and whether an update is available.")
 
     static let unknownVersionValue = NSLocalizedString(
         "unknown",

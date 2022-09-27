@@ -17,8 +17,9 @@ final class SettingsViewController: UIViewController {
 
     private let viewModel: ViewModel
 
-    private lazy var woocommercePluginViewModel: WooCommercePluginViewModel = WooCommercePluginViewModel(siteID: stores.sessionManager.defaultStoreID ?? 0,
-                                                                                                         title: "WooCommerce Version")
+    private lazy var woocommercePluginViewModel: PluginDetailsViewModel = PluginDetailsViewModel(
+        siteID: stores.sessionManager.defaultStoreID ?? 0,
+        pluginName: "WooCommerce")
 
     /// Main TableView
     ///

@@ -2,7 +2,7 @@ import SwiftUI
 import Yosemite
 
 struct PluginDetailsRowView: View {
-    let viewModel: PluginDetailsViewModel
+    @ObservedObject var viewModel: PluginDetailsViewModel
 
     @State var webViewPresented = false
 
@@ -24,7 +24,7 @@ struct PluginDetailsRowView: View {
 }
 
 struct PluginDetailsRowContent: View {
-    let viewModel: PluginDetailsViewModel
+    @ObservedObject var viewModel: PluginDetailsViewModel
 
     var body: some View {
         HStack {
@@ -36,9 +36,12 @@ struct PluginDetailsRowContent: View {
                     Text(viewModel.version)
                         .secondaryBodyStyle()
                 }
-                if viewModel.updateURL != nil {
+                .padding([.bottom], 2)
+
+                if viewModel.updateAvailable {
                     PluginDetailsRowUpdateAvailable(versionLatest: viewModel.versionLatest)
-                    .padding([.top], 2)
+                } else {
+                    PluginDetailsRowUpToDate()
                 }
             }
         }
@@ -63,34 +66,62 @@ struct PluginDetailsRowUpdateAvailable: View {
     }
 }
 
+struct PluginDetailsRowUpToDate: View {
+    var body: some View {
+        HStack {
+            Image(systemName: Constants.upToDateSymbolName)
+            Text(Localization.upToDateTitle)
+            Spacer()
+        }
+        .font(.footnote)
+        .foregroundColor(Color(UIColor.systemGreen))
+    }
+}
+
 private enum Constants {
     static let softwareUpdateSymbolName = "exclamationmark.arrow.triangle.2.circlepath"
+    static let upToDateSymbolName = "checkmark.circle"
 }
 
 private enum Localization {
     static let updateAvailableTitle = NSLocalizedString(
-        "Latest version",
+        "Update available",
+        comment: "String shown to indicate the latest version of a plugin when an " +
+        "update is available and highlighted to the user")
+    static let upToDateTitle = NSLocalizedString(
+        "Up to date",
         comment: "String shown to indicate the latest version of a plugin when an " +
         "update is available and highlighted to the user")
 }
 
+
 struct PluginDetailsRowView_Previews: PreviewProvider {
-    static var previews: some View {
-        PluginDetailsRowView(viewModel: PreviewsPluginDetailsRowViewModel())
-            .previewLayout(.fixed(width: 375, height: 100))
+    private static func viewModel(
+        version: String,
+        versionLatest: String) -> PluginDetailsViewModel {
+            let viewModel = PluginDetailsViewModel(
+                siteID: 0,
+                pluginName: "WooCommerce")
+            viewModel.plugin = SystemPlugin(siteID: 0,
+                                            plugin: "",
+                                            name: "",
+                                            version: version,
+                                            versionLatest: versionLatest,
+                                            url: "",
+                                            authorName: "",
+                                            authorUrl: "",
+                                            networkActivated: false,
+                                            active: true)
+            viewModel.updateURL = URL(string: "https://woocommerce.com")!
+            return viewModel
     }
-}
 
-private struct PreviewsPluginDetailsRowViewModel: PluginDetailsViewModel {
-    var updateURL: URL? = URL(string: "https://woocommerce.com/plugins/update")!
-
-    var title = "WooCommerce Version"
-
-    var version = "5.9.0"
-
-    var versionLatest: String? = "6.9.0"
-
-    func refreshPlugin() {
-        // no-op
+    static var previews: some View {
+        Group {
+            PluginDetailsRowView(viewModel: viewModel(version: "6.8.0", versionLatest: "6.11.0"))
+                .previewLayout(.fixed(width: 375, height: 100))
+            PluginDetailsRowView(viewModel: viewModel(version: "6.11.0", versionLatest: "6.11.0"))
+                .previewLayout(.fixed(width: 375, height: 100))
+        }
     }
 }

@@ -43,10 +43,12 @@ class AuthenticationManager: Authentication {
 
     /// Initializes the WordPress Authenticator.
     ///
-    func initialize() {
+    func initialize(loggedOutAppSettings: LoggedOutAppSettingsProtocol) {
         let isWPComMagicLinkPreferredToPassword = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasis)
         let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasisM2)
         let continueWithSiteAddressFirst = ABTest.loginPrologueButtonOrder.variation == .control
+        let isFeatureCarouselShown = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginPrologueOnboarding) == false
+        || loggedOutAppSettings.hasFinishedOnboarding == true
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
                                                                 wpcomScheme: ApiCredentials.dotcomAuthScheme,
@@ -97,7 +99,8 @@ class AuthenticationManager: Authentication {
                                                 navBarImage: StyleManager.navBarImage,
                                                 navBarBadgeColor: .primary,
                                                 navBarBackgroundColor: .appBar,
-                                                prologueTopContainerChildViewController: LoginPrologueViewController(),
+                                                prologueTopContainerChildViewController:
+                                                    LoginPrologueViewController(isFeatureCarouselShown: isFeatureCarouselShown),
                                                 statusBarStyle: .default)
 
         let displayStrings = WordPressAuthenticatorDisplayStrings(emailLoginInstructions: AuthenticationConstants.emailInstructions,

@@ -169,6 +169,33 @@ extension CouponReport {
     }
 }
 
+extension Customer {
+    func copy(
+        customerID: CopiableProp<Int64> = .copy,
+        email: CopiableProp<String> = .copy,
+        firstName: NullableCopiableProp<String> = .copy,
+        lastName: NullableCopiableProp<String> = .copy,
+        billing: NullableCopiableProp<Address> = .copy,
+        shipping: NullableCopiableProp<Address> = .copy
+    ) -> Customer {
+        let customerID = customerID ?? self.customerID
+        let email = email ?? self.email
+        let firstName = firstName ?? self.firstName
+        let lastName = lastName ?? self.lastName
+        let billing = billing ?? self.billing
+        let shipping = shipping ?? self.shipping
+
+        return Customer(
+            customerID: customerID,
+            email: email,
+            firstName: firstName,
+            lastName: lastName,
+            billing: billing,
+            shipping: shipping
+        )
+    }
+}
+
 extension DotcomUser {
     public func copy(
         id: CopiableProp<Int64> = .copy,

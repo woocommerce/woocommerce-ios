@@ -156,7 +156,7 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {
-        let fancyAlert = FancyAlertViewController.makeNeedHelpFindingEmailAlertController()
+        let fancyAlert = FancyAlertViewController.makeNeedHelpFindingEmailAlertController(screen: .wrongAccountError)
         fancyAlert.modalPresentationStyle = .custom
         fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
         viewController?.present(fancyAlert, animated: true)

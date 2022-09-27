@@ -3,6 +3,7 @@
 10.6
 -----
 - [*] Fixed a rare crash when selecting a store in the store picker. [https://github.com/woocommerce/woocommerce-ios/pull/7765]
+- [*] Show suggestion for logging in to a WP.com site with a mismatched WP.com account. [https://github.com/woocommerce/woocommerce-ios/pull/7773]
 
 10.5
 -----

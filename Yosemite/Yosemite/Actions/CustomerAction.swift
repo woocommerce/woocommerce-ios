@@ -4,7 +4,7 @@ import Foundation
 ///
 public enum CustomerAction: Action {
 
-    /// Retrieves Customers from a site
+    /// Retrieves a single Customer from a site
     ///
     ///- `siteID`: The site for which customers should be fetched.
     ///- `customerID`: ID of the Customer to be fetched.

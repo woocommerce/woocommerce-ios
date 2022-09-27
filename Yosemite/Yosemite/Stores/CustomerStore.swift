@@ -31,11 +31,11 @@ public final class CustomerStore: Store {
 
     /// Receives and executes Actions.
     /// - Parameters:
-    ///   - action: An action to handle. Must be a `CouponAction`
+    ///   - action: An action to handle. Must be a `CustomerAction`
     ///
     override public func onAction(_ action: Action) {
         guard let action = action as? CustomerAction else {
-            assertionFailure("CouponStore received an unsupported action")
+            assertionFailure("CustomerStore received an unsupported action")
             return
         }
         switch action {
@@ -44,12 +44,16 @@ public final class CustomerStore: Store {
         }
     }
 
+    /// Attempts to retrieve a single Customer from a site, returning the Customer object upon success, or an Error.
+    /// - Parameters:
+    ///   - siteID: The site for which customers should be fetched.
+    ///   - customerID: ID of the Customer to be fetched.
+    ///   - onCompletion: Invoked when the operation finishes.
+    ///
     func retrieveCustomer(
         for siteID: Int64,
         with customerID: Int64,
         onCompletion: @escaping (Result<Customer, Error>) -> Void) {
-            // Want to return this Result<Customer, Error> to a completion handler
-            // So we can call it across the app and extend for CD
             remote.retrieveCustomer(for: siteID, with: customerID) { result in
                 switch result {
                 case .failure(let error):

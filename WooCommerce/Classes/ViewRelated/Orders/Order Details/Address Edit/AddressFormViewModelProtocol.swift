@@ -100,7 +100,7 @@ protocol AddressFormViewModelProtocol: ObservableObject {
     ///
     func createSecondaryStateViewModel() -> StateSelectorViewModel
 
-    /// Callback method for the Search button when creating a new Order
+    /// Callback method when the Customer Search button is tapped
     ///
     func customerSearchTapped()
 }

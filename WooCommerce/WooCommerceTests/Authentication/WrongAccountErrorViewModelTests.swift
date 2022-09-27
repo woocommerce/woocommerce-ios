@@ -286,7 +286,7 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
         XCTAssertTrue(MockAuthenticator.siteCredentialLoginTriggered)
     }
 
-    func test_primary_button_tap_presents_fancy_alert_if_credentials_are_not_present_and_fetched_site_info_returns_wpcom_site() {
+    func test_primary_button_tap_does_not_trigger_site_credential_login_if_credentials_are_not_present_and_fetched_site_info_returns_wpcom_site() {
         // Given
         let siteInfo = WordPressComSiteInfo(remote: ["isWordPressDotCom": true])
         MockAuthenticator.setMockSiteInfo(siteInfo)
@@ -295,7 +295,7 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
                                                    siteCredentials: nil,
                                                    authenticatorType: MockAuthenticator.self,
                                                    onJetpackSetupCompletion: { _, _ in })
-        let viewController = ULAccountMismatchViewController(viewModel: viewModel)
+        let viewController = UIViewController()
 
         // When
         viewModel.viewDidLoad(viewController)
@@ -303,11 +303,6 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(MockAuthenticator.siteCredentialLoginTriggered)
-
-        waitUntil { // waiting for a bit since the presentation involves animation
-            viewController.presentedViewController != nil
-        }
-        XCTAssertTrue(viewController.presentedViewController is FancyAlertViewController)
     }
 
     func test_failure_to_fetch_connection_url_is_tracked() throws {

@@ -27,7 +27,14 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
     }
 
     func handleRedirect(for url: URL?) {
-        // No-op
+        guard let path = url?.absoluteString else {
+            return
+        }
+        // When the web view navigates to the site address or Jetpack plans page,
+        // we can assume that the setup has completed.
+        if path.hasPrefix(siteURL) || path.hasPrefix(Constants.plansPage) {
+            handleSetupCompletion()
+        }
     }
 
     func decidePolicy(for navigationURL: URL) async -> WKNavigationActionPolicy {

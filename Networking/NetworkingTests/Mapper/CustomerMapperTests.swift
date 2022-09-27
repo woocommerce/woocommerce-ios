@@ -29,12 +29,6 @@ class CustomerMapperTests: XCTestCase {
         // Then
         XCTAssertNotNil(mapper)
         XCTAssertNotNil(customer)
-        XCTAssertNotNil(customer?.customerID)
-        XCTAssertNotNil(customer?.email)
-        XCTAssertNotNil(customer?.firstName)
-        XCTAssertNotNil(customer?.lastName)
-        XCTAssertNotNil(customer?.billing)
-        XCTAssertNotNil(customer?.shipping)
     }
 
     /// Verifies that all of the Customer response values are parsed correctly

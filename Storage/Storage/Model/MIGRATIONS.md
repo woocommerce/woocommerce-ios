@@ -2,7 +2,7 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
-## Model 73 (Release 10.4.0.0)
+## Model 73 (Release 10.6.0.0)
 - @jaclync 2022-09-14
     - Added `filterKey` attribute to `ProductSearchResults` entity.
 

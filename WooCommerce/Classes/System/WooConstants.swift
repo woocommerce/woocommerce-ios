@@ -107,6 +107,14 @@ extension WooConstants {
         // swiftlint:disable:next line_length
         case helpCenterForWPCOMEmailFromSiteAddressFlow = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#enter-wordpress-com-email-address-login-using-store-address-flow"
 
+        /// Help Center for "Open magic link from email " screen
+        ///
+        case helpCenterForOpenEmail = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#open-mail-to-find-login-link"
+
+        /// Help Center for "Enter WordPress.com password" screen
+        ///
+        case helpCenterForWPCOMPasswordScreen = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#enter-wordpress-com-password"
+
         /// Help Center for "Enter Store Credentials" screen
         ///
         case helpCenterForEnterStoreCredentials = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#enter-store-credentials"
@@ -114,6 +122,14 @@ extension WooConstants {
         /// Help Center for "Jetpack required error" screen
         ///
         case helpCenterForJetpackRequiredError = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#jetpack-required"
+
+        /// Help Center for "Wrong Account error" screen
+        ///
+        case helpCenterForWrongAccountError = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#wrong-account"
+
+        /// Help Center for No WooCommerce site error
+        ///
+        case helpCenterForNoWooError = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#not-a-woocommerce-site"
 
         /// Help Center for "Store picker" screen
         ///

@@ -1,13 +1,28 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+10.6
+-----
+
+- [*] Fixed a rare crash when selecting a store in the store picker. [https://github.com/woocommerce/woocommerce-ios/pull/7765]
+- [*] Help center: Added help center web page with FAQs for "Not a WooCommerce site" error screen. [https://github.com/woocommerce/woocommerce-ios/pull/7767]
+
+10.5
+-----
+- [**] Products: Now you can duplicate products from the More menu of the product detail screen. [https://github.com/woocommerce/woocommerce-ios/pull/7727]
+- [**] Login: Added Jetpack connection support from the Account Mismatch error screen. [https://github.com/woocommerce/woocommerce-ios/pull/7748]
+- [*] Orders: We are bringing back the ability to add/edit customer notes and addresses from the main order screen [https://github.com/woocommerce/woocommerce-ios/pull/7750]
+- [*] Help center: Added help center web page with FAQs for "Wrong WordPress.com account error" screen. [https://github.com/woocommerce/woocommerce-ios/pull/7747]
+- [*] Widgets: The Today's Stat Widget adds support for bigger fonts. [https://github.com/woocommerce/woocommerce-ios/pull/7752]
+
 10.4
 -----
 - [***] Stats: Now you can add a Today's Stats Widget to your homescreen to monitor your sales. [https://github.com/woocommerce/woocommerce-ios/pull/7732]
-- [*] Help center: Added help center web page with FAQs for "Pick a WooCommerce Store" screen. [https://github.com/woocommerce/woocommerce-ios/pull/7641]
+- [*] Help center: Added help center web page with FAQs for "Pick a WooCommerce Store", "Enter WordPress.com password" and "Open mail to find magic link" screens. [https://github.com/woocommerce/woocommerce-ios/pull/7641, https://github.com/woocommerce/woocommerce-ios/pull/7730, https://github.com/woocommerce/woocommerce-ios/pull/7737]
 - [*] In-Person Payments: Fixed a bug where cancelling a card reader connection would temporarily prevent further connections [https://github.com/woocommerce/woocommerce-ios/pull/7689]
 - [*] In-Person Payments: Improvements to the card reader connection flow UI [https://github.com/woocommerce/woocommerce-ios/pull/7687]
 - [*] Login: Users can now set up the Jetpack connection between a self-hosted site and their WP.com account. [https://github.com/woocommerce/woocommerce-ios/pull/7608]
 - [*] Product list: the "Draft" blue color is fixed to be more readable for a draft product row in the product list. [https://github.com/woocommerce/woocommerce-ios/pull/7724]
+- [*] Notifications: App icon badge is now cleared correctly after visiting the orders tab. [https://github.com/woocommerce/woocommerce-ios/pull/7735]
 
 10.3
 -----

@@ -73,4 +73,8 @@ public enum FeatureFlag: Int {
     /// Enables searching products by partial SKU for WC version 6.6+.
     ///
     case searchProductsBySKU
+
+    /// Enables the Search Customers functionality in the Order Creation screen
+    ///
+    case orderCreationSearchCustomers
 }

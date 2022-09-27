@@ -74,6 +74,10 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
         Localization.differentAddressToggleTitle
     }
 
+    var siteID: Int64 {
+        stores.sessionManager.defaultStoreID ?? Int64.min
+    }
+
     func saveAddress(onFinish: @escaping (Bool) -> Void) {
         guard validateEmail() else {
             notice = AddressFormViewModel.NoticeFactory.createInvalidEmailNotice()
@@ -94,13 +98,12 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
 
     func userDidCancelFlow() { }
 
-    /// Dummy function call to test fetching customer data:
+    /// Dispatches the retrieveCustomer action when the Search button is tapped
+    /// customerID is temporary until we implement that part of the feature:
+    /// https://github.com/woocommerce/woocommerce-ios/issues/7741
     ///
-    func callToCustomerAction() {
-        lazy var siteID: Int64 = 121710041
-        lazy var stores: StoresManager = ServiceLocator.stores
-        // Action:
-        let newaction = CustomerAction.retrieveCustomer(
+    func customerSearchTapped() {
+        let action = CustomerAction.retrieveCustomer(
             siteID: siteID,
             customerID: 1) { result in
                 switch result {
@@ -110,7 +113,7 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
                     print(error)
                 }
             }
-        stores.dispatch(newaction)
+        stores.dispatch(action)
     }
 }
 

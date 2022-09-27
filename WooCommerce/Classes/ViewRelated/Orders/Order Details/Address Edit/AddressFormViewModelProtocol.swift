@@ -102,7 +102,7 @@ protocol AddressFormViewModelProtocol: ObservableObject {
 
     /// Callback method for the Search button when creating a new Order
     ///
-    func callToCustomerAction()
+    func customerSearchTapped()
 }
 
 /// Type to hold values from all the form fields

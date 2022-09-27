@@ -163,7 +163,7 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
     }
     /// Testing CustomerAction
     ///
-    func callToCustomerAction() {
+    func customerSearchTapped() {
         print("EditOrderAddressFormViewModel: callToCustomerAction called")
     }
 }

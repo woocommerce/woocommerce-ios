@@ -152,7 +152,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
             ToolbarItem(placement: .automatic) {
                 if isSearchCustomersEnabled {
                     Button(action: {
-                        viewModel.callToCustomerAction()
+                        viewModel.customerSearchTapped()
                     }, label: {
                         Image(systemName: "magnifyingglass")
                     })

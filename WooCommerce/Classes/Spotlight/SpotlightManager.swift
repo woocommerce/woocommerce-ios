@@ -12,6 +12,8 @@ struct SpotlightManager {
 
         if let product = object as? Storage.Product {
             MainTabBarController.presentProduct(product.toReadOnly())
+        } else if let order = object as? Storage.Order {
+            MainTabBarController.navigateToOrderDetails(with: order.orderID, siteID: order.siteID)
         }
     }
 }

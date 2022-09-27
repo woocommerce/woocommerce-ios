@@ -108,8 +108,8 @@
         <attribute name="billingCompany" optional="YES" attributeType="String"/>
         <attribute name="billingCountry" optional="YES" attributeType="String"/>
         <attribute name="billingEmail" optional="YES" attributeType="String"/>
-        <attribute name="billingFirstName" optional="YES" attributeType="String"/>
-        <attribute name="billingLastName" optional="YES" attributeType="String"/>
+        <attribute name="billingFirstName" optional="YES" attributeType="String" spotlightIndexingEnabled="YES"/>
+        <attribute name="billingLastName" optional="YES" attributeType="String" spotlightIndexingEnabled="YES"/>
         <attribute name="billingPhone" optional="YES" attributeType="String"/>
         <attribute name="billingPostcode" optional="YES" attributeType="String"/>
         <attribute name="billingState" optional="YES" attributeType="String"/>

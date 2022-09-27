@@ -15,7 +15,7 @@ public final class CoreDataManager: StorageManagerType {
 
     private let modelsInventory: ManagedObjectModelsInventory
 
-    private(set) var spotlightIndexer: ProductSpotlightDelegate?
+    private(set) var spotlightIndexer: CoreDataSpotlightDelegate?
 
     /// Module-private designated Initializer.
     ///
@@ -40,7 +40,7 @@ public final class CoreDataManager: StorageManagerType {
                 self.modelsInventory = try .from(packageName: name, bundle: Bundle(for: type(of: self)))
             }
 
-            self.spotlightIndexer = ProductSpotlightDelegate(
+            self.spotlightIndexer = CoreDataSpotlightDelegate(
                 forStoreWith: storeDescription,
                 coordinator: persistentContainer.persistentStoreCoordinator)
             toggleSpotlightIndexing(enabled: true)

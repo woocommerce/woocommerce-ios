@@ -119,6 +119,8 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
         // Fetches site info if we're not sure whether the site is self-hosted.
         if siteXMLRPC.isEmpty {
             fetchSiteInfo()
+        } else {
+            isSelfHostedSite = true
         }
     }
 
@@ -344,8 +346,8 @@ private extension WrongAccountErrorViewModel {
                                                           + "Presented when logging in with a store address that does not match the account entered")
 
         static let primaryButtonTitle = NSLocalizedString("Connect to the site",
-                                                          comment: "Action button to handle connecting the logged-in account to the site."
-                                                          + "Presented when logging in with a self-hosted site that does not match the account entered")
+                                                          comment: "Action button to handle connecting the logged-in account to a given site."
+                                                          + "Presented when logging in with a store address that does not match the account entered")
 
         static let yourSite = NSLocalizedString("your site",
                                                 comment: "Placeholder for site url, if the url is unknown."

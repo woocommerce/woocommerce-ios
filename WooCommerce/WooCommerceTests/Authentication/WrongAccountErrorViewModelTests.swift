@@ -1,6 +1,7 @@
 import XCTest
 import Yosemite
 import WordPressAuthenticator
+import WordPressUI
 @testable import WooCommerce
 
 final class WrongAccountErrorViewModelTests: XCTestCase {
@@ -163,7 +164,7 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
         XCTAssertTrue(navigationController.topViewController is AuthenticatedWebViewController)
     }
 
-    func test_fetchSiteInfo_is_triggered_if_credentials_are_not_present() throws {
+    func test_fetchSiteInfo_is_triggered_if_credentials_are_not_present() {
         // Given
 
         let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url,
@@ -247,7 +248,7 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
         XCTAssertEqual(properties["is_selfhosted_site"] as? Bool, false)
     }
 
-    func test_primary_button_tap_is_tracked() throws {
+    func test_primary_button_tap_is_tracked() {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
@@ -266,19 +267,47 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_connect_button_tapped" }))
     }
 
-    func test_primary_button_tap_triggers_site_credential_login_if_credentials_are_not_present() throws {
+    func test_primary_button_tap_triggers_site_credential_login_if_credentials_are_not_present_and_fetched_site_info_returns_self_hosted_site() {
         // Given
+        let siteInfo = WordPressComSiteInfo(remote: ["isWordPressDotCom": false])
+        MockAuthenticator.setMockSiteInfo(siteInfo)
         let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url,
                                                    showsConnectedStores: false,
                                                    siteCredentials: nil,
                                                    authenticatorType: MockAuthenticator.self,
                                                    onJetpackSetupCompletion: { _, _ in })
+        let viewController = UIViewController()
 
         // When
-        viewModel.didTapPrimaryButton(in: UIViewController())
+        viewModel.viewDidLoad(viewController)
+        viewModel.didTapPrimaryButton(in: viewController)
 
         // Then
         XCTAssertTrue(MockAuthenticator.siteCredentialLoginTriggered)
+    }
+
+    func test_primary_button_tap_presents_fancy_alert_if_credentials_are_not_present_and_fetched_site_info_returns_wpcom_site() {
+        // Given
+        let siteInfo = WordPressComSiteInfo(remote: ["isWordPressDotCom": true])
+        MockAuthenticator.setMockSiteInfo(siteInfo)
+        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url,
+                                                   showsConnectedStores: false,
+                                                   siteCredentials: nil,
+                                                   authenticatorType: MockAuthenticator.self,
+                                                   onJetpackSetupCompletion: { _, _ in })
+        let viewController = ULAccountMismatchViewController(viewModel: viewModel)
+
+        // When
+        viewModel.viewDidLoad(viewController)
+        viewModel.didTapPrimaryButton(in: viewController)
+
+        // Then
+        XCTAssertFalse(MockAuthenticator.siteCredentialLoginTriggered)
+
+        waitUntil { // waiting for a bit since the presentation involves animation
+            viewController.presentedViewController != nil
+        }
+        XCTAssertTrue(viewController.presentedViewController is FancyAlertViewController)
     }
 
     func test_failure_to_fetch_connection_url_is_tracked() throws {
@@ -325,9 +354,9 @@ private extension WrongAccountErrorViewModelTests {
         static let url = "https://woocommerce.com"
         static let image = UIImage.productErrorImage
 
-        static let primaryButtonTitle = NSLocalizedString("Connect Jetpack",
-                                                          comment: "Action button to handle Jetpack connection."
-                                                          + "Presented when logging in with a self-hosted site that does not match the account entered")
+        static let primaryButtonTitle = NSLocalizedString("Connect to the site",
+                                                          comment: "Action button to handle connecting the logged-in account to a given site."
+                                                          + "Presented when logging in with a store address that does not match the account entered")
 
         static let secondaryButtonTitle = NSLocalizedString("See Connected Stores",
                                                             comment: "Action button linking to a list of connected stores."

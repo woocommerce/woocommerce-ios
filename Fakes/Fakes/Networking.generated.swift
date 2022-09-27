@@ -181,11 +181,38 @@ extension CreateProductVariation {
         )
     }
 }
+extension Customer {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Customer {
+        .init(
+            customerID: .fake(),
+            email: .fake(),
+            firstName: .fake(),
+            lastName: .fake(),
+            billing: .fake(),
+            shipping: .fake()
+        )
+    }
+}
 extension DotcomError {
     /// Returns a "ready to use" type filled with fake values.
     ///
     public static func fake() -> DotcomError {
         .empty
+    }
+}
+extension DotcomUser {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> DotcomUser {
+        .init(
+            id: .fake(),
+            username: .fake(),
+            email: .fake(),
+            displayName: .fake(),
+            avatar: .fake()
+        )
     }
 }
 extension InboxAction {
@@ -217,6 +244,19 @@ extension InboxNote {
             isRemoved: .fake(),
             isRead: .fake(),
             dateCreated: .fake()
+        )
+    }
+}
+extension JetpackUser {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> JetpackUser {
+        .init(
+            isConnected: .fake(),
+            isPrimary: .fake(),
+            username: .fake(),
+            wpcomUser: .fake(),
+            gravatar: .fake()
         )
     }
 }

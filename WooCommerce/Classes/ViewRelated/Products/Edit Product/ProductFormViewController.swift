@@ -251,6 +251,13 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             }
         }
 
+        if viewModel.canDuplicateProduct() {
+            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.duplicate) { [weak self] _ in
+                ServiceLocator.analytics.track(.productDetailDuplicateButtonTapped)
+                self?.duplicateProduct()
+            }
+        }
+
         if viewModel.canDeleteProduct() {
             actionSheet.addDestructiveActionWithTitle(ActionSheetStrings.delete) { [weak self] _ in
                 self?.displayDeleteProductAlert()
@@ -738,11 +745,8 @@ private extension ProductFormViewController {
         }
     }
 
-    func displayError(error: ProductUpdateError?) {
-        let title = NSLocalizedString("Cannot update product", comment: "The title of the alert when there is an error updating the product")
-
+    func displayError(error: ProductUpdateError?, title: String = Localization.updateProductError) {
         let message = error?.errorDescription
-
         displayErrorAlert(title: title, message: message)
     }
 
@@ -772,6 +776,27 @@ private extension ProductFormViewController {
         }
 
         SharingHelper.shareURL(url: url, title: product.name, from: view, in: self)
+    }
+
+    func duplicateProduct() {
+        showSavingProgress(.duplicate)
+        viewModel.duplicateProduct(onCompletion: { [weak self] result in
+            switch result {
+            case .failure(let error):
+                DDLogError("⛔️ Error duplicating Product: \(error)")
+
+                // Dismisses the in-progress UI then presents the error alert.
+                self?.navigationController?.dismiss(animated: true) {
+                    self?.displayError(error: error, title: Localization.duplicateProductError)
+                }
+            case .success:
+                // Dismisses the in-progress UI, then presents the confirmation alert.
+                self?.navigationController?.dismiss(animated: true) {
+                    let alertTitle =  Localization.presentProductCopiedAlert
+                    self?.presentProductConfirmationSaveAlert(title: alertTitle)
+                }
+            }
+        })
     }
 
     func displayDeleteProductAlert() {
@@ -1519,6 +1544,12 @@ private enum Localization {
         let titleFormat = NSLocalizedString("Variation #%1$@", comment: "Navigation bar title for variation. Parameters: %1$@ - Product variation ID")
         return String.localizedStringWithFormat(titleFormat, variationID)
     }
+    static let updateProductError = NSLocalizedString("Cannot update product", comment: "The title of the alert when there is an error updating the product")
+    static let duplicateProductError = NSLocalizedString(
+        "Cannot duplicate product",
+        comment: "The title of the alert when there is an error duplicating the product"
+    )
+    static let presentProductCopiedAlert = NSLocalizedString("Product copied", comment: "Title of the alert when a user has copied a product")
 }
 
 private enum ActionSheetStrings {
@@ -1530,6 +1561,7 @@ private enum ActionSheetStrings {
     static let delete = NSLocalizedString("Delete", comment: "Button title Delete in Edit Product More Options Action Sheet")
     static let productSettings = NSLocalizedString("Product Settings", comment: "Button title Product Settings in Edit Product More Options Action Sheet")
     static let cancel = NSLocalizedString("Cancel", comment: "Button title Cancel in Edit Product More Options Action Sheet")
+    static let duplicate = NSLocalizedString("Duplicate", comment: "Button title to duplicate a product in Product More Options Action Sheet")
 }
 
 private enum Constants {

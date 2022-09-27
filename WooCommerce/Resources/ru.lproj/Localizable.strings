@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-09-06 11:54:03+0000 */
+/* Translation-Revision-Date: 2022-09-19 16:54:03+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -927,6 +927,9 @@ which should be translated separately and considered part of this sentence. */
    Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "Невозможно загрузить изображение";
 
+/* Error message displayed when failed to check for Jetpack connection. */
+"Cannot verify your Jetpack connection. Please try again." = "Не удалось проверить подключение Jetpack. Повторите попытку.";
+
 /* Error message displayed when failed to check for WooCommerce in a site. */
 "Cannot verify your site's WooCommerce installation." = "Не удалось подтвердить установку WooCommerce на сайте.";
 
@@ -1114,6 +1117,12 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connect > A button to begin a search for a reader */
 "Connect Card Reader" = "Подключить устройство чтения карт";
 
+/* Title of the Jetpack connection web view in the login flow */
+"Connect Jetpack" = "Подключить Jetpack";
+
+/* Button linking to web view for setting up Jetpack connection. Presented when logging in with store credentials of an account not connected to the site's Jetpack */
+"Connect Jetpack to your account" = "Подключите Jetpack к учётной записи";
+
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "Подключить устройство чтения";
 
@@ -1210,8 +1219,7 @@ which should be translated separately and considered part of this sentence. */
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
 "Continuing with Apple" = "Вход с помощью данных Apple";
 
-/* Conversion stat label on dashboard.
-   Conversion title label for the store info widget */
+/* Conversion stat label on dashboard. */
 "Conversion" = "Переход";
 
 /* Copy address text button title — should be one word and as short as possible. */
@@ -2524,6 +2532,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message on enable analytics screen to notify that the module is disabled for the store */
 "It looks like you have analytics disabled." = "Кажется, у вас отключена аналитика.";
 
+/* Message explaining that the entered site credentials belong to an account that is not connected to the site's Jetpack. Reads like 'It looks like your account is not connected to awebsite.com's Jetpack */
+"It looks like your account is not connected to %@'s Jetpack" = "Похоже, что ваша учётная запись не подключена к Jetpack на %@";
+
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "Похоже, вы ввели неправильный пароль. Хотите попытаться ещё раз?";
 
@@ -2703,6 +2714,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Action button that will restart the login flow.Presented when logging in with a site address that appears to be invalid.
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
    Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
+   Action button that will restart the login flow.Presented when logging in with store credentials of an account not connected to the site's Jetpack
    Action button that will restart the login flow.Presented when the user tries to log in to the app with a simple WP.com site. */
 "Log In With Another Account" = "Войдите с помощью другой учётной записи";
 
@@ -2912,9 +2924,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Error showed in Shipping Label Address Validation for the name field */
 "Name missing" = "Не указано имя";
-
-/* VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen. */
-"Navigates to Settings." = "Переход к настройкам.";
 
 /* Title of the banner in the Order Detail for suggesting to install WCShip extension. */
 "Need a shipping label?" = "Нужна транспортная этикетка?";
@@ -3217,6 +3226,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Notice title when an order is marked as completed via a swipe action. Parameter: Order Number */
 "Order #%1$d marked as completed" = "Заказ № %1$d отмечен как выполненный";
 
+/* Title for the webview used by merchants to place an order for a card reader, for use with In-Person Payments. */
+"Order Card Reader" = "Заказать устройство чтения карт";
+
 /* Order notes section title */
 "Order Notes" = "Примечания к заказу";
 
@@ -3244,7 +3256,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "Ordered List" = "Упорядоченный список";
 
 /* Orders stat label on dashboard - should be plural.
-   Orders title label for the store info widget
    The title of the Orders tab. */
 "Orders" = "Заказы";
 
@@ -4027,8 +4038,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "Вернуть отправителю в случае невозможности доставки";
 
-/* Revenue stat label on dashboard.
-   Revenue title label for the store info widget */
+/* Revenue stat label on dashboard. */
 "Revenue" = "Доход";
 
 /* Title of Review Order screen */
@@ -4248,9 +4258,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Placeholder in Shipping Label form for the Carrier and Rates row. */
 "Select your shipping carrier and rates" = "Выберите перевозчика и тарифы";
 
-/* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
-"Selected Store" = "Выбранный магазин";
-
 /* Presents a survey to gather feedback from the user. */
 "Send Feedback" = "Отправить отзыв";
 
@@ -4279,8 +4286,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Header text on Add New Service Package screen in Shipping Label flow */
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "Настройте посылку, которую вы будете использовать для отправки своих товаров. Она будет сохранена для дальнейших заказов.";
 
-/* Accessibility label for the Settings button.
-   Settings button in the hub menu
+/* Settings button in the hub menu
    Settings navigation title */
 "Settings" = "Настройки";
 
@@ -5729,6 +5735,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Step 1 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network." = "Убедитесь, что принтер и устройство подключены к **одной сети Wi-Fi**.\n\nИнформацию о том, как подключить принтер к сети Wi-Fi, см. в документации устройства.";
 
+/* Message displayed when checking whether Jetpack has been connected successfully */
+"Verifying Jetpack connection..." = "Проверка подключения Jetpack...";
+
 /* Message displayed when checking whether a site has successfully installed WooCommerce */
 "Verifying installation..." = "Проверка установки...";
 
@@ -5799,8 +5808,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Visibility label in Product Settings */
 "Visibility" = "Настройки видимости";
 
-/* Visitors stat label on dashboard - should be plural.
-   Visitors title label for the store info widget */
+/* Visitors stat label on dashboard - should be plural. */
 "Visitors" = "Посетители";
 
 /* Add a note screen - Write Note section title */
@@ -6134,6 +6142,40 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Format of the number of product ratings in singular form */
 "rated once" = "оценен один раз";
+
+/* Widget description, displayed when selecting which widget to add */
+"storeWidgets.description" = "Статистика WooCommerce за сегодня";
+
+/* Widget title, displayed when selecting which widget to add */
+"storeWidgets.displayName" = "Сегодня";
+
+/* Generic store name for the store info widget preview */
+"storeWidgets.infoProvider.myShop" = "Мой магазин";
+
+/* Range title for the today store info widget */
+"storeWidgets.infoProvider.today" = "Сегодня";
+
+/* Conversion title label for the store info widget
+   Orders title label for the store info widget */
+"storeWidgets.infoView.orders" = "Заказы";
+
+/* Revenue title label for the store info widget */
+"storeWidgets.infoView.revenue" = "Доход";
+
+/* Displays the time when the widget was last updated. %1$@ is the time to render. */
+"storeWidgets.infoView.updatedAt" = "На %1$@";
+
+/* Visitors title label for the store info widget */
+"storeWidgets.infoView.visitors" = "Посетители";
+
+/* Title label for the login button on the store info widget. */
+"storeWidgets.notLoggedInView.login" = "Войти";
+
+/* Title label when the widget does not have a logged-in store. */
+"storeWidgets.notLoggedInView.notLoggedIn" = "Войдите, чтобы посмотреть статистику за сегодня.";
+
+/* Title label when the widget can't fetch data. */
+"storeWidgets.unableToFetchView.unableToFetch" = "Не удаётся получить статистику за сегодня";
 
 /* Today */
 "today" = "сегодня";

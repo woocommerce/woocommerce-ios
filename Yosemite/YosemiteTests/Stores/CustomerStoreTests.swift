@@ -35,19 +35,72 @@ class CustomerStoreTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_retrieveCustomer_calls_remote_using_correct_request_parameters() {
+    func test_retrieveCustomer_returns_Customer_upon_success() {
         // Given
-        let action = CustomerAction.retrieveCustomer(
-            siteID: dummySiteID,
-            customerID: dummyCustomerID,
-            onCompletion: { _ in }
-        )
+        network.simulateResponse(requestUrlSuffix: "customers/\(dummyCustomerID)", filename: "customer")
 
         // When
-        store.onAction(action)
+        let result: Result<Customer, Error> = waitFor { promise in
+            let action = CustomerAction.retrieveCustomer(siteID: self.dummySiteID, customerID: self.dummyCustomerID) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
 
         // Then
-        // ...
+        XCTAssertTrue(result.isSuccess)
+    }
 
+    func test_retrieveCustomer_returns_notFound_Error_upon_siteID_error() {
+        // Given
+        let expectedError = NetworkError.notFound
+        network.simulateError(requestUrlSuffix: "customers/\(dummyCustomerID)", error: expectedError)
+
+        // When
+        let result: Result<Customer, Error> = waitFor { promise in
+            let action = CustomerAction.retrieveCustomer(siteID: 999, customerID: self.dummyCustomerID) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, expectedError)
+    }
+
+    func test_retrieveCustomer_returns_Error_upon_customerID_error() {
+        let expectedError = NetworkError.notFound
+        network.simulateError(requestUrlSuffix: "customers/999", error: expectedError )
+
+        // When
+        let result: Result<Customer, Error> = waitFor { promise in
+            let action = CustomerAction.retrieveCustomer(siteID: self.dummySiteID, customerID: self.dummyCustomerID) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, expectedError)
+    }
+
+    func test_retrieveCustomer_returns_notFound_Error_upon_network_error() {
+        // Given
+        let expectedError = NetworkError.notFound
+        network.simulateError(requestUrlSuffix: "customers/\(dummyCustomerID)", error: expectedError)
+
+        // When
+        let result: Result<Customer, Error> = waitFor { promise in
+            let action = CustomerAction.retrieveCustomer(siteID: self.dummySiteID, customerID: self.dummyCustomerID) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, expectedError)
     }
 }

@@ -4,11 +4,11 @@ import WooFoundation
 
 class ProductSpotlightDelegate: NSCoreDataCoreSpotlightDelegate {
   override func domainIdentifier() -> String {
-    return "com.raywenderlich.pointybug.bugs"
+    return (Bundle.main.bundleIdentifier ?? "unknown") + ".products"
   }
 
   override func indexName() -> String? {
-    return "bugs-index"
+    return "products-index"
   }
 
   override func attributeSet(for object: NSManagedObject)

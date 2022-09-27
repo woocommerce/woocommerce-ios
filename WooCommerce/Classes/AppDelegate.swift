@@ -48,6 +48,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     private let universalLinkRouter = UniversalLinkRouter.defaultUniversalLinkRouter()
+    private let spotlightManager = SpotlightManager()
 
     // MARK: - AppDelegate Methods
 
@@ -181,25 +182,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if userActivity.activityType == NSUserActivityTypeBrowsingWeb {
             handleWebActivity(userActivity)
         } else if userActivity.activityType == CSSearchableItemActionType {
-            continueSpotlightActivity(userActivity)
+            handleSpotlightActivity(userActivity)
         }
 
         trackWidgetTappedIfNeeded(userActivity: userActivity)
 
         return true
     }
-
-    func continueSpotlightActivity(_ activity: NSUserActivity) {
-      if let info = activity.userInfo,
-        let objectIdentifier = info[CSSearchableItemActivityIdentifier] as? String,
-        let objectURI = URL(string: objectIdentifier) {
-          if let product = (ServiceLocator.storageManager.managedObjectWithURI(objectURI) as? Storage.Product)?.toReadOnly() {
-              MainTabBarController.presentProduct(product)
-          }
-      }
-    }
 }
-
 
 // MARK: - Initialization Methods
 //
@@ -468,5 +458,12 @@ private extension AppDelegate {
         }
 
         universalLinkRouter.handle(url: linkURL)
+    }
+
+    func handleSpotlightActivity(_ activity: NSUserActivity) {
+      if let info = activity.userInfo,
+        let objectIdentifier = info[CSSearchableItemActivityIdentifier] as? String {
+          spotlightManager.handleSearchableItemObjectIdentifier(objectIdentifier)
+      }
     }
 }

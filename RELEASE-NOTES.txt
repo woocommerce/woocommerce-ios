@@ -2,8 +2,10 @@
 
 10.6
 -----
+
 - [*] Fixed a rare crash when selecting a store in the store picker. [https://github.com/woocommerce/woocommerce-ios/pull/7765]
 - [*] Help center: Added help center web page with FAQs for "Not a WooCommerce site" error screen. [https://github.com/woocommerce/woocommerce-ios/pull/7767]
+- [*] Help center: Added help center web page with FAQs for "Not a WooCommerce site" and "Wrong WordPress.com account" error screens. [https://github.com/woocommerce/woocommerce-ios/pull/7767, https://github.com/woocommerce/woocommerce-ios/pull/7769]
 - [*] Settings: Display the WooCommerce version and available updates in Settings [https://github.com/woocommerce/woocommerce-ios/pull/7779]
 
 10.5

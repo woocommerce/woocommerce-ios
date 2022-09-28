@@ -103,8 +103,7 @@ final class ProductsTabProductViewModelTests: XCTestCase {
         let detailsText = viewModel.detailsAttributedString.string
 
         // Then
-        let skuFormat = NSLocalizedString("SKU: %1$@", comment: "Label about the SKU of a product in the product list. Reads, `SKU: productSku`")
-        let expectedSKU = String.localizedStringWithFormat(skuFormat, sku)
+        let expectedSKU = String.localizedStringWithFormat(Localization.skuFormat, sku)
         XCTAssertTrue(detailsText.contains(expectedSKU))
     }
 
@@ -118,8 +117,7 @@ final class ProductsTabProductViewModelTests: XCTestCase {
         let detailsText = viewModel.detailsAttributedString.string
 
         // Then
-        let skuFormat = NSLocalizedString("SKU: %1$@", comment: "Label about the SKU of a product in the product list. Reads, `SKU: productSku`")
-        let skuText = String.localizedStringWithFormat(skuFormat, sku)
+        let skuText = String.localizedStringWithFormat(Localization.skuFormat, sku)
         XCTAssertFalse(detailsText.contains(skuText))
     }
 }
@@ -136,5 +134,11 @@ extension ProductsTabProductViewModelTests {
                                    stockStatusKey: stockStatus.rawValue,
                                    images: images,
                                    variations: variations)
+    }
+}
+
+private extension ProductsTabProductViewModelTests {
+    enum Localization {
+        static let skuFormat = NSLocalizedString("SKU: %1$@", comment: "Label about the SKU of a product in the product list. Reads, `SKU: productSku`")
     }
 }

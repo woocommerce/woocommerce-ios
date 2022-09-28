@@ -407,6 +407,10 @@ public enum WooAnalyticsStat: String {
     case addProductSuccess = "add_product_success"
     case addProductFailed = "add_product_failed"
 
+    // MARK: Duplicate Product events
+    case duplicateProductSuccess = "duplicate_product_success"
+    case duplicateProductFailed = "duplicate_product_failed"
+
     // MARK: Edit Product Events
     //
     case productDetailLoaded = "product_detail_loaded"
@@ -512,6 +516,7 @@ public enum WooAnalyticsStat: String {
     // MARK: Product Settings
     //
     case productDetailViewSettingsButtonTapped = "product_detail_view_settings_button_tapped"
+    case productDetailDuplicateButtonTapped = "product_detail_duplicate_button_tapped"
     case productSettingsDoneButtonTapped = "product_settings_done_button_tapped"
     case productSettingsStatusTapped = "product_settings_status_tapped"
     case productSettingsVisibilityTapped = "product_settings_visibility_tapped"

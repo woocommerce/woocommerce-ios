@@ -5,6 +5,7 @@
 
 - [*] Fixed a rare crash when selecting a store in the store picker. [https://github.com/woocommerce/woocommerce-ios/pull/7765]
 - [*] Help center: Added help center web page with FAQs for "Not a WooCommerce site" and "Wrong WordPress.com account" error screens. [https://github.com/woocommerce/woocommerce-ios/pull/7767, https://github.com/woocommerce/woocommerce-ios/pull/7769]
+- [*] Products tab: products search now has an option to search products by SKU. Stores with WC version 6.6+ support partial SKU search, otherwise the product(s) with the exact SKU match is returned. [https://github.com/woocommerce/woocommerce-ios/pull/7781]
 
 10.5
 -----

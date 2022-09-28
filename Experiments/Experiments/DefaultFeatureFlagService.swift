@@ -34,7 +34,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .promptToEnableCodInIppOnboarding:
             return true
         case .searchProductsBySKU:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .orderCreationSearchCustomers:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:

@@ -13,7 +13,7 @@ public final class SettingsScreen: ScreenObject {
     init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
             expectedElementGetters: [
-                logOutButtonGetter
+                betaFeaturesGetter
             ],
             app: app
         )

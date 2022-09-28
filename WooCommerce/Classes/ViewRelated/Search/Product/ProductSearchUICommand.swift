@@ -101,6 +101,11 @@ final class ProductSearchUICommand: SearchUICommand {
                 onCompletion?(true)
                 return
             }
+            // Skips the product search API request if the keyword is empty.
+            guard keyword.isNotEmpty else {
+                onCompletion?(true)
+                return
+            }
             lastSearchQueryByFilter[filter] = keyword
         }
 

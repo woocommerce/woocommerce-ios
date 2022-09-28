@@ -22,7 +22,7 @@ public enum CommentAction: Action {
     ///
     case updateTrashStatus(siteID: Int64, commentID: Int64, isTrash: Bool, onCompletion: (CommentStatus?, Error?) -> Void)
 
-    /// Creates a comment as a reply to another comment.
+    /// Creates a comment as a reply to another comment (including product reviews).
     /// The completion closure will return the new comment's status or error (if any).
     ///
     case replyToComment(siteID: Int64, commentID: Int64, content: String, onCompletion: (Result<CommentStatus, Error>) -> Void)

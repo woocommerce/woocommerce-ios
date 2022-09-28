@@ -71,7 +71,7 @@ private extension CommentStore {
         }
     }
 
-    /// Creates a comment as a reply to another comment.
+    /// Creates a comment as a reply to another comment (including product reviews).
     ///
     func replyToComment(siteID: Int64, commentID: Int64, content: String, onCompletion: @escaping (Result<CommentStatus, Error>) -> Void) {
         remote.replyToComment(siteID: siteID, commentID: commentID, content: content) { result in

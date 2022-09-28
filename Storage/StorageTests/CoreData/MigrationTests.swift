@@ -1272,6 +1272,35 @@ final class MigrationTests: XCTestCase {
         // Check instructions are correctly set.
         assertEqual("payment gateway instructions", migratedPaymentGateway.value(forKey: "instructions") as? String)
     }
+
+    func test_migrating_from_72_to_73_adds_filterKey_attribute_to_ProductSearchResults() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 72")
+        let sourceContext = sourceContainer.viewContext
+
+        let productSearchResults = insertProductSearchResults(to: sourceContext)
+        try sourceContext.save()
+
+        // `filterKey` should not be present before migration.
+        XCTAssertNil(productSearchResults.entity.attributesByName["filterKey"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 73")
+        let targetContext = targetContainer.viewContext
+
+        XCTAssertEqual(try targetContext.count(entityName: "ProductSearchResults"), 1)
+        let migratedProductSearchResults = try XCTUnwrap(targetContext.first(entityName: "ProductSearchResults"))
+
+        // Checks for nil URL value.
+        XCTAssertNil(migratedProductSearchResults.value(forKey: "filterKey"))
+
+        // Sets a random `filterKey`.
+        migratedProductSearchResults.setValue("sku", forKey: "filterKey")
+        targetContext.saveIfNeeded()
+
+        // Check `filterKey` is correctly set.
+        XCTAssertEqual(migratedProductSearchResults.value(forKey: "filterKey") as? String, "sku")
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -1799,6 +1828,13 @@ private extension MigrationTests {
             "metadataID": 18148,
             "key": "Viewed Currency",
             "value": "USD"
+        ])
+    }
+
+    @discardableResult
+    func insertProductSearchResults(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "ProductSearchResults", properties: [
+            "keyword": "soul"
         ])
     }
 }

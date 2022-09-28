@@ -18,6 +18,8 @@ struct SpotlightManager {
             MainTabBarController.switchToProductsTab()
         case WooActivityType.hubMenu.rawValue:
             MainTabBarController.switchToHubMenuTab()
+        case WooActivityType.payments.rawValue:
+            MainTabBarController.presentPayments()
         default:
             break
         }

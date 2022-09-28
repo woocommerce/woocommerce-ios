@@ -500,6 +500,11 @@ extension DashboardViewController: SearchableActivityConvertable {
         return NSLocalizedString("Dashboard", comment: "Title of the 'Dashboard' tab - used for spotlight indexing on iOS.")
     }
 
+    var activityDescription: String? {
+        return NSLocalizedString("See at a glance which products are winning.",
+                                 comment: "Description of the 'Payments' screen - used for spotlight indexing on iOS.")
+    }
+
     var activityKeywords: Set<String>? {
         let keyWordString = NSLocalizedString("woocommerce, my store, today, this week, this month, this year," +
                                               "orders, visitors, conversion, top conversion, items sold",

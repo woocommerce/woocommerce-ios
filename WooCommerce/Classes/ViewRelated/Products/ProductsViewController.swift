@@ -1037,6 +1037,11 @@ extension ProductsViewController: SearchableActivityConvertable {
         return NSLocalizedString("Products", comment: "Title of the 'Products' tab - used for spotlight indexing on iOS.")
     }
 
+    var activityDescription: String? {
+        return NSLocalizedString("Create, edit, and publish products directly from your favorite mobile device.",
+                                 comment: "Description of the 'Payments' screen - used for spotlight indexing on iOS.")
+    }
+
     var activityKeywords: Set<String>? {
         let keyWordString = NSLocalizedString("woocommerce, woo, products, categories, new product, search products",
                                               comment: "This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab.")

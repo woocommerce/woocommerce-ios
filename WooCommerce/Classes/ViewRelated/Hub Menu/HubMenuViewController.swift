@@ -83,8 +83,13 @@ extension HubMenuViewController: SearchableActivityConvertable {
         return NSLocalizedString("Menu", comment: "Title of the 'Menu' tab - used for spotlight indexing on iOS.")
     }
 
+    var activityDescription: String? {
+        return NSLocalizedString("Payments, messages, reviews and more", comment: "Description of the 'Payments' screen - used for spotlight indexing on iOS.")
+    }
+
     var activityKeywords: Set<String>? {
-        let keyWordString = NSLocalizedString("menu, woocommerce, woo, settings, admin, switch store, payments, woocommerce admin, admin, view store, inbox, reviews",
+        let keyWordString = NSLocalizedString("menu, woocommerce, woo, settings, admin, switch store, payments, woocommerce admin" +
+                                              "admin, view store, inbox, reviews",
                                               comment: "This is a comma separated list of keywords used for spotlight indexing of the 'Menu' tab.")
         let keywordArray = keyWordString.arrayOfTags()
 

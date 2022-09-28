@@ -8,6 +8,7 @@ extension ProductSearchResults {
         return NSFetchRequest<ProductSearchResults>(entityName: "ProductSearchResults")
     }
 
+    @NSManaged public var filterKey: String?
     @NSManaged public var keyword: String?
     @NSManaged public var products: Set<Product>?
 
@@ -27,5 +28,9 @@ extension ProductSearchResults {
 
     @objc(removeProducts:)
     @NSManaged public func removeFromProducts(_ values: NSSet)
+
+}
+
+extension ProductSearchResults: Identifiable {
 
 }

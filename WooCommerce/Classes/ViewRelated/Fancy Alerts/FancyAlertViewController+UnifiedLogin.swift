@@ -1,5 +1,6 @@
 import WordPressUI
 import SafariServices
+import WordPressAuthenticator
 
 extension FancyAlertViewController {
     static func makeWhatIsJetpackAlertController(analytics: Analytics) -> FancyAlertViewController {
@@ -21,9 +22,10 @@ extension FancyAlertViewController {
         return controller
     }
 
-    static func makeNeedHelpFindingEmailAlertController() -> FancyAlertViewController {
+    static func makeNeedHelpFindingEmailAlertController(screen: CustomHelpCenterContent.Screen? = nil) -> FancyAlertViewController {
         let dismissButton = makeDismissButtonConfig()
-        let moreHelpButton = makeNeedMoreHelpButton()
+        let customHelpCenterContent = screen.map { CustomHelpCenterContent(screen: $0, flow: AuthenticatorAnalyticsTracker.shared.state.lastFlow) }
+        let moreHelpButton = makeNeedMoreHelpButton(customHelpCenterContent: customHelpCenterContent)
         let config = FancyAlertViewController.Config(titleText: Localization.whatEmailDoIUse,
                                                      bodyText: Localization.whatEmailDoIUseLongDescription,
                                                      headerImage: nil,
@@ -134,14 +136,20 @@ private extension FancyAlertViewController {
         }
     }
 
-    static func makeNeedMoreHelpButton() -> FancyAlertViewController.Config.ButtonConfig {
+    static func makeNeedMoreHelpButton(customHelpCenterContent: CustomHelpCenterContent? = nil) -> FancyAlertViewController.Config.ButtonConfig {
         return FancyAlertViewController.Config.ButtonConfig(Localization.needMoreHelp) { controller, _ in
             let identifier = HelpAndSupportViewController.classNameWithoutNamespaces
-            guard let supportViewController = UIStoryboard
-                    .dashboard
-                    .instantiateViewController(withIdentifier: identifier) as? HelpAndSupportViewController else {
-                return
-            }
+            let supportViewController = UIStoryboard.dashboard.instantiateViewController(identifier: identifier,
+                                                                                         creator: { coder -> HelpAndSupportViewController? in
+                guard let customHelpCenterContent = customHelpCenterContent else {
+                    /// Returning nil as we don't need to customise the HelpAndSupportViewController
+                    /// In this case `instantiateViewController` method will use the default `HelpAndSupportViewController` created from storyboard.
+                    ///
+                    return nil
+                }
+
+                return HelpAndSupportViewController(customHelpCenterContent: customHelpCenterContent, coder: coder)
+            })
 
             supportViewController.displaysDismissAction = true
 

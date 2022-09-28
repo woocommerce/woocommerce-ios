@@ -10,6 +10,7 @@ public enum ProductAction: Action {
     ///
     case searchProducts(siteID: Int64,
                         keyword: String,
+                        filter: ProductSearchFilter = .all,
                         pageNumber: Int,
                         pageSize: Int,
                         stockStatus: ProductStockStatus? = nil,

@@ -28,13 +28,16 @@ class CoreDataSpotlightDelegate: NSCoreDataCoreSpotlightDelegate {
 
     private func attributeSet(for order: Order) -> CSSearchableItemAttributeSet? {
         let attributeSet = CSSearchableItemAttributeSet(contentType: .text)
-        attributeSet.displayName = String.localizedStringWithFormat(Localization.orderDisplayName, order.billingFirstName ?? "", order.billingLastName ?? "")
+        attributeSet.displayName = String.localizedStringWithFormat(Localization.orderDisplayName,
+                                                                    order.orderID,
+                                                                    order.billingFirstName ?? "",
+                                                                    order.billingLastName ?? "")
 
         return attributeSet
     }
 
     private enum Localization {
         static let productDisplayName = NSLocalizedString("Woo Product: %1$@", comment: "Title for products items search in Spotlight")
-        static let orderDisplayName = NSLocalizedString("Woo Order: #%d %1$@ %2$@", comment: "Title for orders items search in Spotlight")
+        static let orderDisplayName = NSLocalizedString("Woo Order #%d %2$@ %3$@", comment: "Title for orders items search in Spotlight")
     }
 }

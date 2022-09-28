@@ -1315,6 +1315,7 @@
 		B983E96028E2FCA10053CE1D /* SpotlightManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B983E95F28E2FCA10053CE1D /* SpotlightManager.swift */; };
 		B983E96528E457A10053CE1D /* SearchableActivityConvertable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B983E96428E457A10053CE1D /* SearchableActivityConvertable.swift */; };
 		B983E96728E483EC0053CE1D /* CoreDataSpotlightDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B983E96628E483EC0053CE1D /* CoreDataSpotlightDelegate.swift */; };
+		B983E96928E4A4630053CE1D /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B983E96828E4A4630053CE1D /* SearchView.swift */; };
 		B9B0391628A6824200DC1C83 /* PermanentNoticePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B0391528A6824200DC1C83 /* PermanentNoticePresenter.swift */; };
 		B9B0391828A6838400DC1C83 /* PermanentNoticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B0391728A6838400DC1C83 /* PermanentNoticeView.swift */; };
 		B9B0391A28A68ADE00DC1C83 /* ConstraintsUpdatingHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B0391928A68ADE00DC1C83 /* ConstraintsUpdatingHostingController.swift */; };
@@ -3224,6 +3225,7 @@
 		B983E95F28E2FCA10053CE1D /* SpotlightManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotlightManager.swift; sourceTree = "<group>"; };
 		B983E96428E457A10053CE1D /* SearchableActivityConvertable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchableActivityConvertable.swift; sourceTree = "<group>"; };
 		B983E96628E483EC0053CE1D /* CoreDataSpotlightDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataSpotlightDelegate.swift; sourceTree = "<group>"; };
+		B983E96828E4A4630053CE1D /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		B9B0391528A6824200DC1C83 /* PermanentNoticePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermanentNoticePresenter.swift; sourceTree = "<group>"; };
 		B9B0391728A6838400DC1C83 /* PermanentNoticeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PermanentNoticeView.swift; sourceTree = "<group>"; };
 		B9B0391928A68ADE00DC1C83 /* ConstraintsUpdatingHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstraintsUpdatingHostingController.swift; sourceTree = "<group>"; };
@@ -7098,6 +7100,7 @@
 				B983E96628E483EC0053CE1D /* CoreDataSpotlightDelegate.swift */,
 				B983E95F28E2FCA10053CE1D /* SpotlightManager.swift */,
 				B983E96428E457A10053CE1D /* SearchableActivityConvertable.swift */,
+				B983E96828E4A4630053CE1D /* SearchView.swift */,
 			);
 			path = Spotlight;
 			sourceTree = "<group>";
@@ -9956,6 +9959,7 @@
 				0202B68D23876BC100F3EBE0 /* ProductsTabProductViewModel+ProductVariation.swift in Sources */,
 				D8B4D5F426C30E7C00F34E94 /* InPersonPaymentsStripeRejectedView.swift in Sources */,
 				DE0A2EAD281BA1FA007A8015 /* ProductCategorySelector.swift in Sources */,
+				B983E96928E4A4630053CE1D /* SearchView.swift in Sources */,
 				57612989245888E2007BB2D9 /* NumberFormatter+LocalizedOrNinetyNinePlus.swift in Sources */,
 				B5A8532220BDBFAF00FAAB4D /* CircularImageView.swift in Sources */,
 				CE1F51252064179A00C6C810 /* UILabel+Helpers.swift in Sources */,

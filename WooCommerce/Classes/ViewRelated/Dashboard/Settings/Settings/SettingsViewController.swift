@@ -397,7 +397,12 @@ private extension SettingsViewController {
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "wormholy_fire"), object: nil)
     }
 
-    func searchWasPressed() {}
+    func searchWasPressed() {
+        let searchView = SearchView()
+        let viewController = UIHostingController(rootView: searchView)
+
+        navigationController?.show(viewController, sender: self)
+    }
 
     func whatsNewWasPressed() {
         ServiceLocator.analytics.track(event: .featureAnnouncementShown(source: .appSettings))

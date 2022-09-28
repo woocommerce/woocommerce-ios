@@ -234,7 +234,7 @@ private extension WooAnalytics {
             }
         }
 
-        return ["widgets": widgetAnalyticNames.description]
+        return ["widgets": widgetAnalyticNames.joined(separator: ",")]
     }
 }
 

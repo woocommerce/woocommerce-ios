@@ -19,13 +19,16 @@ final class ProductSearchUICommand: SearchUICommand {
 
     private let siteID: Int64
     private let stores: StoresManager
+    private let analytics: Analytics
     private let isSearchProductsBySKUEnabled: Bool
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics,
          isSearchProductsBySKUEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsBySKU)) {
         self.siteID = siteID
         self.stores = stores
+        self.analytics = analytics
         self.isSearchProductsBySKUEnabled = isSearchProductsBySKUEnabled
     }
 
@@ -123,7 +126,7 @@ final class ProductSearchUICommand: SearchUICommand {
 
         stores.dispatch(action)
 
-        ServiceLocator.analytics.track(.productListSearched)
+        analytics.track(.productListSearched, withProperties: isSearchProductsBySKUEnabled ? ["filter": filter.analyticsValue]: nil)
     }
 
     func didSelectSearchResult(model: Product, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void) {
@@ -161,6 +164,16 @@ private extension ProductSearchFilter {
             return NSLocalizedString("All Products", comment: "Title of the product search filter to search for all products.")
         case .sku:
             return NSLocalizedString("SKU", comment: "Title of the product search filter to search for products that match the SKU.")
+        }
+    }
+
+    /// The value that is set in the analytics event property.
+    var analyticsValue: String {
+        switch self {
+        case .all:
+            return "all"
+        case .sku:
+            return "sku"
         }
     }
 }

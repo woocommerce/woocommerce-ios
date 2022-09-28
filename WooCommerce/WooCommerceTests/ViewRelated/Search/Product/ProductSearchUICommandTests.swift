@@ -156,7 +156,14 @@ final class ProductSearchUICommandTests: XCTestCase {
 
     func test_productListSearched_is_tracked_when_synchronizing_models() throws {
         // Given
-        let command = ProductSearchUICommand(siteID: sampleSiteID, analytics: analytics, isSearchProductsBySKUEnabled: true)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let command = ProductSearchUICommand(siteID: sampleSiteID, stores: stores, analytics: analytics, isSearchProductsBySKUEnabled: true)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            guard case let .searchProducts(_, _, _, _, _, _, _, _, _, _, onCompletion) = action else {
+                return XCTFail("Unexpected action: \(action)")
+            }
+            onCompletion(.success(()))
+        }
 
         // When
         waitFor { promise in

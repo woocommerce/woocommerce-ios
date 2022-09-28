@@ -27,27 +27,37 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
     }
 
     func handleRedirect(for url: URL?) {
-        // No-op
+        guard let path = url?.absoluteString else {
+            return
+        }
+        handleCompletionIfPossible(path)
     }
 
     func decidePolicy(for navigationURL: URL) async -> WKNavigationActionPolicy {
         let url = navigationURL.absoluteString
-        switch url {
-        // When the web view navigates to the site address or Jetpack plans page,
-        // we can assume that the setup has completed.
-        case let url where url.hasPrefix(siteURL) || url.hasPrefix(Constants.plansPage):
-            await MainActor.run { [weak self] in
-                self?.handleSetupCompletion()
-            }
+        if handleCompletionIfPossible(url) {
             return .cancel
-        default:
-            return .allow
         }
+        return .allow
     }
 
     private func handleSetupCompletion() {
         analytics.track(.loginJetpackConnectCompleted)
         completionHandler()
+    }
+
+    @discardableResult
+    func handleCompletionIfPossible(_ url: String) -> Bool {
+        // When the web view navigates to the site address or Jetpack plans page,
+        // we can assume that the setup has completed.
+        if url.hasPrefix(siteURL) || url.hasPrefix(Constants.plansPage) {
+            // Running on the main thread is necessary if this method is triggered from `decidePolicy`.
+            DispatchQueue.main.async { [weak self] in
+                self?.handleSetupCompletion()
+            }
+            return true
+        }
+        return false
     }
 }
 

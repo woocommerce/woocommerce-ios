@@ -186,24 +186,6 @@ final class ULAccountMismatchViewControllerTests: XCTestCase {
         XCTAssertTrue(viewModel.logOutButtonTapped)
     }
 
-    func test_viewcontroller_assigns_visibility_provided_by_viewmodel_to_primary_button() throws {
-        // Given
-        let viewModel = MismatchViewModel()
-        let viewController = ULAccountMismatchViewController(viewModel: viewModel)
-
-        // When
-        _ = try XCTUnwrap(viewController.view)
-        let primaryButton = viewController.getPrimaryActionButton()
-        var isHidden: Bool?
-        viewModel.isPrimaryButtonHidden
-            .sink { isHidden = $0 }
-            .store(in: &subscriptions)
-        viewModel.primaryButtonHidden = true
-
-        // Then
-        XCTAssertEqual(primaryButton.isHidden, isHidden)
-    }
-
     func test_viewcontroller_assigns_visibility_provided_by_viewmodel_to_secondary_button() throws {
         // Given
         let viewModel = MismatchViewModel()
@@ -215,24 +197,6 @@ final class ULAccountMismatchViewControllerTests: XCTestCase {
 
         // Then
         XCTAssertEqual(secondaryButton.isHidden, viewModel.isSecondaryButtonHidden)
-    }
-
-    func test_viewcontroller_assigns_loading_state_provided_by_viewmodel_to_activity_indicator() throws {
-        // Given
-        let viewModel = MismatchViewModel()
-        let viewController = ULAccountMismatchViewController(viewModel: viewModel)
-
-        // When
-        _ = try XCTUnwrap(viewController.view)
-        let activityIndicator = viewController.getActivityIndicator()
-        var isLoading: Bool?
-        viewModel.isShowingActivityIndicator
-            .sink { isLoading = $0 }
-            .store(in: &subscriptions)
-        viewModel.showingActivityIndicator = true
-
-        // Then
-        XCTAssertEqual(activityIndicator.isAnimating, isLoading)
     }
 
     func test_viewcontroller_does_not_have_right_bar_button_item_when_rightBarButtonItemTitle_is_nil_in_viewmodel() throws {
@@ -282,9 +246,6 @@ final class ULAccountMismatchViewControllerTests: XCTestCase {
 
 
 private final class MismatchViewModel: ULAccountMismatchViewModel {
-    var isPrimaryButtonHidden: AnyPublisher<Bool, Never> {
-        Just(primaryButtonHidden).eraseToAnyPublisher()
-    }
 
     var isPrimaryButtonLoading: AnyPublisher<Bool, Never> {
         Just(primaryButtonLoading).eraseToAnyPublisher()
@@ -293,10 +254,6 @@ private final class MismatchViewModel: ULAccountMismatchViewModel {
     let secondaryButtonTitle: String = "Secondary"
 
     let isSecondaryButtonHidden: Bool = false
-
-    var isShowingActivityIndicator: AnyPublisher<Bool, Never> {
-        Just(showingActivityIndicator).eraseToAnyPublisher()
-    }
 
     let userEmail: String = "email@awebsite.com"
 
@@ -323,8 +280,6 @@ private final class MismatchViewModel: ULAccountMismatchViewModel {
     var secondaryButtonTapped: Bool = false
     var logOutButtonTapped: Bool = false
     var auxiliaryButtonTapped: Bool = false
-    var showingActivityIndicator: Bool = false
-    var primaryButtonHidden: Bool = false
     var primaryButtonLoading: Bool = false
     var rightBarButtonItemTapped = false
 

@@ -6,13 +6,16 @@ import MobileCoreServices
 ///
 enum WooActivityType: String {
     case dashboard               = "com.automattic.woocommerce.dashboard"
+    case orders                  = "com.automattic.woocommerce.orders"
 }
 
 extension WooActivityType {
     var suggestedInvocationPhrase: String {
         switch self {
         case .dashboard:
-            return NSLocalizedString("Dashboard in WordPress", comment: "Siri Suggestion to open My Sites")
+            return NSLocalizedString("Dashboard in Woo", comment: "Siri Suggestion to open Dasboard")
+        case .orders:
+            return NSLocalizedString("Orders in Woo", comment: "Siri Suggestion to open Orders")
         }
     }
 }

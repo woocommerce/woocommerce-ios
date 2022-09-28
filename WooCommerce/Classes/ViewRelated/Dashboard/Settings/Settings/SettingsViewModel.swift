@@ -261,7 +261,7 @@ private extension SettingsViewModel {
         let otherSection: Section = {
             let rows: [Row]
             #if DEBUG
-            rows = [.deviceSettings, .wormholy]
+            rows = [.deviceSettings, .wormholy, .search]
             #else
             rows = [.deviceSettings]
             #endif

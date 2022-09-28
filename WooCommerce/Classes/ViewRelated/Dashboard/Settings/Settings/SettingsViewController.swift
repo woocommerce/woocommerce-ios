@@ -148,6 +148,8 @@ private extension SettingsViewController {
             configureAppSettings(cell: cell)
         case let cell as BasicTableViewCell where row == .wormholy:
             configureWormholy(cell: cell)
+        case let cell as BasicTableViewCell where row == .search:
+            configureSearch(cell: cell)
         case let cell as BasicTableViewCell where row == .removeAppleIDAccess:
             configureRemoveAppleIDAccess(cell: cell)
         case let cell as BasicTableViewCell where row == .logout:
@@ -229,6 +231,12 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = Localization.launchWormHolyDebug
+    }
+
+    func configureSearch(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = Localization.openSearch
     }
 
     func configureWhatsNew(cell: BasicTableViewCell) {
@@ -389,6 +397,8 @@ private extension SettingsViewController {
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "wormholy_fire"), object: nil)
     }
 
+    func searchWasPressed() {}
+
     func whatsNewWasPressed() {
         ServiceLocator.analytics.track(event: .featureAnnouncementShown(source: .appSettings))
         guard let announcement = viewModel.announcement else { return }
@@ -528,6 +538,8 @@ extension SettingsViewController: UITableViewDelegate {
             deviceSettingsWasPressed()
         case .wormholy:
             wormholyWasPressed()
+        case .search:
+            searchWasPressed()
         case .whatsNew:
             whatsNewWasPressed()
         case .removeAppleIDAccess:
@@ -606,6 +618,7 @@ extension SettingsViewController {
         // Other
         case deviceSettings
         case wormholy
+        case search
 
         // Account deletion
         case removeAppleIDAccess
@@ -649,6 +662,8 @@ extension SettingsViewController {
             case .deviceSettings:
                 return BasicTableViewCell.self
             case .wormholy:
+                return BasicTableViewCell.self
+            case .search:
                 return BasicTableViewCell.self
             case .whatsNew:
                 return BasicTableViewCell.self
@@ -732,6 +747,11 @@ private extension SettingsViewController {
         static let launchWormHolyDebug = NSLocalizedString(
             "Launch Wormholy Debug",
             comment: "Opens an internal library called Wormholy. Not visible to users."
+        )
+
+        static let openSearch = NSLocalizedString(
+            "Search in the App",
+            comment: "Opens the search screen from settings."
         )
 
         static let whatsNew = NSLocalizedString(

@@ -181,8 +181,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
         if userActivity.activityType == NSUserActivityTypeBrowsingWeb {
             handleWebActivity(userActivity)
-        } else if userActivity.activityType == CSSearchableItemActionType {
-            handleSpotlightActivity(userActivity)
+        } else {
+            spotlightManager.handleUserActivity(userActivity)
         }
 
         trackWidgetTappedIfNeeded(userActivity: userActivity)

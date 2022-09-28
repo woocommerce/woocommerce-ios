@@ -1,8 +1,21 @@
-
+import CoreSpotlight
 import Foundation
 import Storage
 
 struct SpotlightManager {
+    func handleUserActivity(_ userActivity: NSUserActivity) {
+        switch userActivity.activityType {
+        case CSSearchableItemActionType:
+            if let info = userActivity.userInfo,
+              let objectIdentifier = info[CSSearchableItemActivityIdentifier] as? String {
+                handleSearchableItemObjectIdentifier(objectIdentifier)
+            }
+        case WooActivityType.dashboard.rawValue:
+            MainTabBarController.switchToMyStoreTab()
+        default:
+            break
+        }
+    }
     func handleSearchableItemObjectIdentifier(_ identifier: String) {
         guard let objectURI = URL(string: identifier) else {
             return

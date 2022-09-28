@@ -16,11 +16,14 @@ struct SpotlightManager {
             MainTabBarController.switchToOrdersTab()
         case WooActivityType.products.rawValue:
             MainTabBarController.switchToProductsTab()
+        case WooActivityType.hubMenu.rawValue:
+            MainTabBarController.switchToHubMenuTab()
         default:
             break
         }
     }
-    func handleSearchableItemObjectIdentifier(_ identifier: String) {
+
+    private func handleSearchableItemObjectIdentifier(_ identifier: String) {
         guard let objectURI = URL(string: identifier) else {
             return
         }

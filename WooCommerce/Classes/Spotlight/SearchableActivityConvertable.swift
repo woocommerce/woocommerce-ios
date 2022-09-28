@@ -8,6 +8,7 @@ enum WooActivityType: String {
     case dashboard               = "com.automattic.woocommerce.dashboard"
     case orders                  = "com.automattic.woocommerce.orders"
     case products                = "com.automattic.woocommerce.products"
+    case hubMenu                 = "com.automattic.woocommerce.hubMenu"
 }
 
 extension WooActivityType {
@@ -19,6 +20,8 @@ extension WooActivityType {
             return NSLocalizedString("Orders in Woo", comment: "Siri Suggestion to open Orders")
         case .products:
             return NSLocalizedString("Products in Woo", comment: "Siri Suggestion to open Products")
+        case .hubMenu:
+            return NSLocalizedString("Menu in Woo", comment: "Siri Suggestion to open the Menu")
         }
     }
 }

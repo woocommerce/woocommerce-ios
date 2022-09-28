@@ -459,11 +459,4 @@ private extension AppDelegate {
 
         universalLinkRouter.handle(url: linkURL)
     }
-
-    func handleSpotlightActivity(_ activity: NSUserActivity) {
-      if let info = activity.userInfo,
-        let objectIdentifier = info[CSSearchableItemActivityIdentifier] as? String {
-          spotlightManager.handleSearchableItemObjectIdentifier(objectIdentifier)
-      }
-    }
 }

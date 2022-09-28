@@ -8,7 +8,7 @@ public class WCAnalyticsCustomerRemote: Remote {
     ///     - name: Name of the customer that will be retrieved
     ///     - completion: Closure to be executed upon completion.
     ///
-    func retrieveCustomerByName(for siteID: Int64, with name: String, completion: @escaping (Result<WCAnalyticsCustomer, Error>) -> Void) {
+    func retrieveCustomerByName(for siteID: Int64, with name: String, completion: @escaping (Result<[WCAnalyticsCustomer], Error>) -> Void) {
 
         let path = "customers?search=\(name)"
         let request = JetpackRequest(

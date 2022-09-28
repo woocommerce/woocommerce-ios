@@ -7,20 +7,13 @@ struct WCAnalyticsCustomerMapper: Mapper {
     ///
     let siteID: Int64
 
-    /// (Attempts) to convert a dictionary into a `WCAnalyticsCustomer` entity
+    /// (Attempts) to convert a dictionary into a `[WCAnalyticsCustomer]` entity
     ///
-    func map(response: Data) throws -> WCAnalyticsCustomer {
+    func map(response: Data) throws -> [WCAnalyticsCustomer] {
         let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo = [.siteID: siteID]
-        let customer = try decoder.decode(CustomerEnvelope.self, from: response).customer
-        return customer
-    }
-}
-
-private struct CustomerEnvelope: Decodable {
-    let customer: WCAnalyticsCustomer
-
-    private enum CodingKeys: String, CodingKey {
-        case customer = "data"
+        let customers = try decoder.decode([WCAnalyticsCustomer].self, from: response)
+        return customers
     }
 }

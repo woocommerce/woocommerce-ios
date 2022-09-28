@@ -16,4 +16,15 @@ struct WCAnalyticsCustomerMapper: Mapper {
         let customers = try decoder.decode([WCAnalyticsCustomer].self, from: response)
         return customers
     }
+
+    /// (Attempts) to convert a dictionary into a `WCAnalyticsCustomer` entity
+    ///
+    func mapUniqueCustomer(response: Data) throws -> WCAnalyticsCustomer? {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
+        decoder.userInfo = [.siteID: siteID]
+        let customers = try decoder.decode([WCAnalyticsCustomer].self, from: response)
+        let customer = customers.filter{ $0.name == "foo" }.first
+        return customer
+    }
 }

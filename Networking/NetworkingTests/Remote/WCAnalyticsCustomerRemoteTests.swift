@@ -13,9 +13,6 @@ class WCAnalyticsCustomerRemoteTests: XCTestCase {
     ///
     private let sampleSiteID: Int64 = 123
 
-    /// Dummy Customer name
-    private let sampleCustomerName: String = "John"
-
     override func setUp() {
         super.setUp()
         network = MockNetwork()
@@ -28,13 +25,13 @@ class WCAnalyticsCustomerRemoteTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_WCAnalyticsCustomerRemote_when_calls_retrieveCustomerByName_then_returns_result_isSuccess() throws {
+    func test_WCAnalyticsCustomerRemote_when_calls_retrieveCustomers_then_returns_result_isSuccess() throws {
         // Given
-        network.simulateResponse(requestUrlSuffix: "customers?search=\(sampleCustomerName)", filename: "wc-analytics-customers")
+        network.simulateResponse(requestUrlSuffix: "customers", filename: "wc-analytics-customers")
 
         // When
         let result = waitFor { promise in
-            self.remote.retrieveCustomerByName(for: self.sampleSiteID, with: self.sampleCustomerName) { result in
+            self.remote.retrieveCustomers(for: self.sampleSiteID) { result in
                 promise(result)
             }
         }
@@ -43,13 +40,13 @@ class WCAnalyticsCustomerRemoteTests: XCTestCase {
         XCTAssert(result.isSuccess)
     }
 
-    func test_WCAnalyticsCustomerRemote_when_calls_retrieveCustomerByName_then_returns_all_parsed_customers_successfully() throws {
+    func test_WCAnalyticsCustomerRemote_when_calls_retrieveCustomers_then_returns_all_parsed_customers_successfully() throws {
         // Given
-        network.simulateResponse(requestUrlSuffix: "customers?search=\(sampleCustomerName)", filename: "wc-analytics-customers")
+        network.simulateResponse(requestUrlSuffix: "customers", filename: "wc-analytics-customers")
 
         // When
         let result = waitFor { promise in
-            self.remote.retrieveCustomerByName(for: self.sampleSiteID, with: self.sampleCustomerName) { result in
+            self.remote.retrieveCustomers(for: self.sampleSiteID) { result in
                 promise(result)
             }
         }

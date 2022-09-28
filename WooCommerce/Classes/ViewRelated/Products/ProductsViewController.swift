@@ -168,6 +168,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        registerUserActivity()
         configureNavigationBar()
         configureMainView()
         configureTableView()
@@ -1022,5 +1023,29 @@ private extension ProductsViewController {
         static let headerDefaultHeight = CGFloat(130)
         static let headerContainerInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         static let toolbarButtonInsets = UIEdgeInsets(top: 12, left: 16, bottom: 12, right: 16)
+    }
+}
+
+// MARK: - SearchableActivity Conformance
+
+extension ProductsViewController: SearchableActivityConvertable {
+    var activityType: String {
+        return WooActivityType.products.rawValue
+    }
+
+    var activityTitle: String {
+        return NSLocalizedString("Products", comment: "Title of the 'Products' tab - used for spotlight indexing on iOS.")
+    }
+
+    var activityKeywords: Set<String>? {
+        let keyWordString = NSLocalizedString("woocommerce, woo, products, categories, new product, search products",
+                                              comment: "This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab.")
+        let keywordArray = keyWordString.arrayOfTags()
+
+        guard !keywordArray.isEmpty else {
+            return nil
+        }
+
+        return Set(keywordArray)
     }
 }

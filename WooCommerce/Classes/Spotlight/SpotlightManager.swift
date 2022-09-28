@@ -14,6 +14,8 @@ struct SpotlightManager {
             MainTabBarController.switchToMyStoreTab()
         case WooActivityType.orders.rawValue:
             MainTabBarController.switchToOrdersTab()
+        case WooActivityType.products.rawValue:
+            MainTabBarController.switchToProductsTab()
         default:
             break
         }

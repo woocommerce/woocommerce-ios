@@ -7,6 +7,7 @@ import MobileCoreServices
 enum WooActivityType: String {
     case dashboard               = "com.automattic.woocommerce.dashboard"
     case orders                  = "com.automattic.woocommerce.orders"
+    case products                = "com.automattic.woocommerce.products"
 }
 
 extension WooActivityType {
@@ -16,6 +17,8 @@ extension WooActivityType {
             return NSLocalizedString("Dashboard in Woo", comment: "Siri Suggestion to open Dasboard")
         case .orders:
             return NSLocalizedString("Orders in Woo", comment: "Siri Suggestion to open Orders")
+        case .products:
+            return NSLocalizedString("Products in Woo", comment: "Siri Suggestion to open Products")
         }
     }
 }

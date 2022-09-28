@@ -888,4 +888,3 @@ extension OrderListViewController: SearchableActivityConvertable {
         return Set(keywordArray)
     }
 }
-

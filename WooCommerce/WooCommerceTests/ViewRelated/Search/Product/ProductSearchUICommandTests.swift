@@ -5,6 +5,20 @@ import Yosemite
 
 final class ProductSearchUICommandTests: XCTestCase {
     private let sampleSiteID: Int64 = 134
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
+    override func setUp() {
+        super.setUp()
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+    }
+
+    override func tearDown() {
+        analytics = nil
+        analyticsProvider = nil
+        super.tearDown()
+    }
 
     // MARK: - `createHeaderView`
 
@@ -111,5 +125,50 @@ final class ProductSearchUICommandTests: XCTestCase {
             }
         }
         XCTAssertEqual(invocationCount, 2)
+    }
+
+    func test_synchronizeModels_does_not_dispatch_search_action_when_keyword_is_empty() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let command = ProductSearchUICommand(siteID: sampleSiteID, isSearchProductsBySKUEnabled: true)
+
+        var invocationCount = 0
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            guard case let .searchProducts(_, _, _, _, _, _, _, _, _, _, onCompletion) = action else {
+                return XCTFail("Unexpected action: \(action)")
+            }
+            invocationCount += 1
+            onCompletion(.success(()))
+        }
+
+        // When
+        waitFor { promise in
+            command.synchronizeModels(siteID: self.sampleSiteID, keyword: "", pageNumber: 1, pageSize: 10) { _ in
+                promise(())
+            }
+        }
+
+        // Then
+        XCTAssertEqual(invocationCount, 0)
+    }
+
+    // MARK: - Analytics
+
+    func test_productListSearched_is_tracked_when_synchronizing_models() throws {
+        // Given
+        let command = ProductSearchUICommand(siteID: sampleSiteID, analytics: analytics, isSearchProductsBySKUEnabled: true)
+
+        // When
+        waitFor { promise in
+            command.synchronizeModels(siteID: self.sampleSiteID, keyword: "coffee", pageNumber: 1, pageSize: 10) { _ in
+                promise(())
+            }
+        }
+
+        // Then
+        let event = try XCTUnwrap(analyticsProvider.receivedEvents.first)
+        XCTAssertEqual(event, "product_list_searched")
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties.first)
+        XCTAssertEqual(eventProperties["filter"] as? String, "all")
     }
 }

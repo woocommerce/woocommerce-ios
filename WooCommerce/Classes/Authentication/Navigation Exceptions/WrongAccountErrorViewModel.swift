@@ -112,7 +112,6 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
         siteInfoSubscription = $isSelfHostedSite
             .dropFirst() // ignores first element
             .sink { [weak self] isSelfHosted in
-                // if the button is hidden, the site is not self-hosted.
                 self?.analytics.track(event: .LoginJetpackConnection.jetpackConnectionErrorShown(selfHostedSite: isSelfHosted))
             }
 

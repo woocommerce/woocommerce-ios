@@ -90,6 +90,7 @@ extension SearchableActivityConvertable where Self: UIViewController {
         }
 
         activity.isEligibleForSearch = true
+        activity.isEligibleForPublicIndexing = true
         activity.isEligibleForHandoff = false
 
         activity.isEligibleForPrediction = true

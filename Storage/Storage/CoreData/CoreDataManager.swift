@@ -15,7 +15,7 @@ public final class CoreDataManager: StorageManagerType {
 
     private let modelsInventory: ManagedObjectModelsInventory
 
-    private(set) var spotlightIndexer: CoreDataSpotlightDelegate?
+    private(set) var spotlightDelegate: NSCoreDataCoreSpotlightDelegate?
 
     /// Module-private designated Initializer.
     ///
@@ -29,7 +29,8 @@ public final class CoreDataManager: StorageManagerType {
     ///
     init(name: String,
          crashLogger: CrashLogger,
-         modelsInventory: ManagedObjectModelsInventory?) {
+         modelsInventory: ManagedObjectModelsInventory?,
+         spotlightDelegateType: NSCoreDataCoreSpotlightDelegate.Type? = nil) {
         self.name = name
         self.crashLogger = crashLogger
 
@@ -40,7 +41,7 @@ public final class CoreDataManager: StorageManagerType {
                 self.modelsInventory = try .from(packageName: name, bundle: Bundle(for: type(of: self)))
             }
 
-            self.spotlightIndexer = CoreDataSpotlightDelegate(
+            self.spotlightDelegate = spotlightDelegateType?.init(
                 forStoreWith: storeDescription,
                 coordinator: persistentContainer.persistentStoreCoordinator)
             toggleSpotlightIndexing(enabled: true)
@@ -59,8 +60,9 @@ public final class CoreDataManager: StorageManagerType {
     ///
     /// - Important: This should *match* with your actual Data Model file!.
     ///
-    public convenience init(name: String, crashLogger: CrashLogger) {
-        self.init(name: name, crashLogger: crashLogger, modelsInventory: nil)
+    public convenience init(name: String, crashLogger: CrashLogger,
+                            spotlightDelegateType: NSCoreDataCoreSpotlightDelegate.Type? = nil) {
+        self.init(name: name, crashLogger: crashLogger, modelsInventory: nil, spotlightDelegateType: spotlightDelegateType)
     }
 
     /// Returns the Storage associated with the View Thread.
@@ -254,7 +256,7 @@ extension CoreDataManager {
 
 extension CoreDataManager {
   func toggleSpotlightIndexing(enabled: Bool) {
-    guard let spotlightIndexer = spotlightIndexer else { return }
+    guard let spotlightIndexer = spotlightDelegate else { return }
 
     if enabled {
       spotlightIndexer.startSpotlightIndexing()

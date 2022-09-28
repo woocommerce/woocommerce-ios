@@ -164,7 +164,6 @@
 		B5B914C620EFF03500F2F832 /* Site+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B914C420EFF03500F2F832 /* Site+CoreDataProperties.swift */; };
 		B5FD111E21D4046E00560344 /* OrderSearchResults+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5FD111C21D4046E00560344 /* OrderSearchResults+CoreDataProperties.swift */; };
 		B5FD111F21D4046E00560344 /* OrderSearchResults+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5FD111D21D4046E00560344 /* OrderSearchResults+CoreDataClass.swift */; };
-		B9B30EBD28E1EB3500C2C9C1 /* CoreDataSpotlightDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B30EBC28E1EB3500C2C9C1 /* CoreDataSpotlightDelegate.swift */; };
 		B9EFC27728903F7C00667217 /* WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9EFC27628903F7C00667217 /* WooFoundation.framework */; };
 		BAB373762796327000837B4A /* OrderTaxLine+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAB373742796327000837B4A /* OrderTaxLine+CoreDataClass.swift */; };
 		BAB373772796327000837B4A /* OrderTaxLine+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAB373752796327000837B4A /* OrderTaxLine+CoreDataProperties.swift */; };
@@ -407,7 +406,6 @@
 		B5FD111C21D4046E00560344 /* OrderSearchResults+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderSearchResults+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		B5FD111D21D4046E00560344 /* OrderSearchResults+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderSearchResults+CoreDataClass.swift"; sourceTree = "<group>"; };
 		B963A5CA2853859400EFADA0 /* Model 70.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 70.xcdatamodel"; sourceTree = "<group>"; };
-		B9B30EBC28E1EB3500C2C9C1 /* CoreDataSpotlightDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataSpotlightDelegate.swift; sourceTree = "<group>"; };
 		B9EFC27628903F7C00667217 /* WooFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = WooFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAB373732796310100837B4A /* Model 61.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 61.xcdatamodel"; sourceTree = "<group>"; };
 		BAB373742796327000837B4A /* OrderTaxLine+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderTaxLine+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -698,7 +696,6 @@
 		B505F6DC20BEEA4F00BB1B69 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
-				B983E96128E30D2C0053CE1D /* Spotlight */,
 				B505F6DD20BEEA4F00BB1B69 /* CoreDataManager.swift */,
 				9302E3A5220DC3AE00DA5018 /* CoreDataIterativeMigrator.swift */,
 				5736878D24AAADAE00B528FE /* ManagedObjectModelsInventory.swift */,
@@ -981,14 +978,6 @@
 			name = Internal;
 			sourceTree = "<group>";
 		};
-		B983E96128E30D2C0053CE1D /* Spotlight */ = {
-			isa = PBXGroup;
-			children = (
-				B9B30EBC28E1EB3500C2C9C1 /* CoreDataSpotlightDelegate.swift */,
-			);
-			path = Spotlight;
-			sourceTree = "<group>";
-		};
 		D4466F5426D524D1003E931B /* WhatsNew */ = {
 			isa = PBXGroup;
 			children = (
@@ -1257,7 +1246,6 @@
 				262B27132621412700A421CF /* ProductAddOnOption+CoreDataClass.swift in Sources */,
 				2685C109263C88B000D9EE97 /* AddOnGroup+CoreDataProperties.swift in Sources */,
 				BAB373762796327000837B4A /* OrderTaxLine+CoreDataClass.swift in Sources */,
-				B9B30EBD28E1EB3500C2C9C1 /* CoreDataSpotlightDelegate.swift in Sources */,
 				74B7D6AD20F90CBB002667AC /* OrderNote+CoreDataClass.swift in Sources */,
 				B52B0F7920AA287C00477698 /* StorageManagerType.swift in Sources */,
 				028296F5237D404F00E84012 /* GenericAttribute+CoreDataProperties.swift in Sources */,

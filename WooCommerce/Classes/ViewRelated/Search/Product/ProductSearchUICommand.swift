@@ -86,7 +86,7 @@ final class ProductSearchUICommand: SearchUICommand {
     }
 
     func createCellViewModel(model: Product) -> ProductsTabProductViewModel {
-        return ProductsTabProductViewModel(product: model)
+        ProductsTabProductViewModel(product: model, isSKUShown: true)
     }
 
     /// Synchronizes the Products matching a given Keyword

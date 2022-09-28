@@ -31,6 +31,7 @@ struct ProductsTabProductViewModel {
          productVariation: ProductVariation? = nil,
          isSelected: Bool = false,
          isDraggable: Bool = false,
+         isSKUShown: Bool = false,
          imageService: ImageService = ServiceLocator.imageService) {
 
         imageUrl = product.images.first?.src
@@ -38,7 +39,7 @@ struct ProductsTabProductViewModel {
         self.productVariation = productVariation
         self.isSelected = isSelected
         self.isDraggable = isDraggable
-        detailsAttributedString = EditableProductModel(product: product).createDetailsAttributedString()
+        detailsAttributedString = EditableProductModel(product: product).createDetailsAttributedString(isSKUShown: isSKUShown)
 
         self.imageService = imageService
     }
@@ -57,7 +58,7 @@ struct ProductsTabProductViewModel {
 }
 
 private extension EditableProductModel {
-    func createDetailsAttributedString() -> NSAttributedString {
+    func createDetailsAttributedString(isSKUShown: Bool) -> NSAttributedString {
         let statusText = createStatusText()
         let stockText = createStockText()
         let variationsText = createVariationsText()
@@ -65,8 +66,10 @@ private extension EditableProductModel {
         let detailsText = [statusText, stockText, variationsText]
             .compactMap({ $0 })
             .joined(separator: " • ")
+        let skuText = isSKUShown ? createSKUText(): nil
+        let text = [detailsText, skuText].compactMap { $0 }.joined(separator: "\n")
 
-        let attributedString = NSMutableAttributedString(string: detailsText,
+        let attributedString = NSMutableAttributedString(string: text,
                                                          attributes: [
                                                             .foregroundColor: UIColor.textSubtle,
                                                             .font: StyleManager.footerLabelFont
@@ -97,6 +100,13 @@ private extension EditableProductModel {
                                       plural: Localization.VariationCount.plural)
         return String.localizedStringWithFormat(format, numberOfVariations)
     }
+
+    func createSKUText() -> String? {
+        guard let sku = product.sku, sku.isNotEmpty else {
+            return nil
+        }
+        return String.localizedStringWithFormat(Localization.skuFormat, sku)
+    }
 }
 
 // MARK: Localization
@@ -109,6 +119,7 @@ private extension EditableProductModel {
             static let plural = NSLocalizedString("%1$ld variations",
                                                   comment: "Label about number of variations shown on Products tab. Reads, `2 variations`")
         }
+        static let skuFormat = NSLocalizedString("SKU: %1$@", comment: "Label about the SKU of a product in the product list. Reads, `SKU: productSku`")
     }
 }
 

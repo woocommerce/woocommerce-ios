@@ -40,6 +40,21 @@ class WCAnalyticsCustomerRemoteTests: XCTestCase {
         XCTAssert(result.isSuccess)
     }
 
+    func test_WCAnalyticsCustomerRemote_when_calls_retrieveCustomers_fails_then_returns_result_isFailure() {
+        // Given
+        network.simulateError(requestUrlSuffix: "", error: NetworkError.notFound)
+
+        // When
+        let result = waitFor { promise in
+            self.remote.retrieveCustomers(for: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssert(result.isFailure)
+    }
+
     func test_WCAnalyticsCustomerRemote_when_calls_retrieveCustomers_then_returns_all_parsed_customers_successfully() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "customers", filename: "wc-analytics-customers")

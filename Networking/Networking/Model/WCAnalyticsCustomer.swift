@@ -30,6 +30,6 @@ public struct WCAnalyticsCustomer: Codable {
 extension WCAnalyticsCustomer {
     enum CodingKeys: String, CodingKey {
         case userID =   "id"
-        case name
+        case name   =   "username"
     }
 }

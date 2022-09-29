@@ -1,6 +1,7 @@
 import Combine
 import UIKit
 import WebKit
+import struct WordPressAuthenticator.WordPressOrgCredentials
 
 /// A web view which is authenticated for WordPress.com, when possible.
 ///
@@ -26,8 +27,13 @@ final class AuthenticatedWebViewController: UIViewController {
     /// Strong reference for the subscription to update progress bar
     private var subscriptions: Set<AnyCancellable> = []
 
-    init(viewModel: AuthenticatedWebViewModel) {
+    /// Optional credentials for authenticating with WP.org
+    ///
+    private let wporgCredentials: WordPressOrgCredentials?
+
+    init(viewModel: AuthenticatedWebViewModel, wporgCredentials: WordPressOrgCredentials? = nil) {
         self.viewModel = viewModel
+        self.wporgCredentials = wporgCredentials
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -107,8 +113,7 @@ private extension AuthenticatedWebViewController {
             }
             .store(in: &subscriptions)
 
-        if let wporgCredentials = viewModel.wporgCredentials,
-            let request = try? webView.authenticateForWPOrg(with: wporgCredentials) {
+        if let wporgCredentials, let request = try? webView.authenticateForWPOrg(with: wporgCredentials) {
             webView.load(request)
         } else {
             loadContent()

@@ -6,7 +6,7 @@ final class JetpackSetupWebViewModelTests: XCTestCase {
     func test_initial_url_is_correct() {
         // Given
         let siteURL = "https://test.com"
-        let viewModel = JetpackSetupWebViewModel(siteURL: siteURL, onCompletion: {_ in })
+        let viewModel = JetpackSetupWebViewModel(siteURL: siteURL, siteCredentials: nil, onCompletion: {_ in })
 
         // Then
         let expectedURL = "https://wordpress.com/jetpack/connect?url=https://test.com&mobile_redirect=woocommerce://jetpack-connected&from=mobile"
@@ -20,7 +20,7 @@ final class JetpackSetupWebViewModelTests: XCTestCase {
         let completionHandler: (String?) -> Void = { _ in
             triggeredCompletion = true
         }
-        let viewModel = JetpackSetupWebViewModel(siteURL: siteURL, onCompletion: completionHandler)
+        let viewModel = JetpackSetupWebViewModel(siteURL: siteURL, siteCredentials: nil, onCompletion: completionHandler)
 
         // When
         let url = try XCTUnwrap(URL(string: "woocommerce://jetpack-connected"))
@@ -39,7 +39,7 @@ final class JetpackSetupWebViewModelTests: XCTestCase {
         let completionHandler: (String?) -> Void = { email in
             authorizedEmail = email
         }
-        let viewModel = JetpackSetupWebViewModel(siteURL: siteURL, onCompletion: completionHandler)
+        let viewModel = JetpackSetupWebViewModel(siteURL: siteURL, siteCredentials: nil, onCompletion: completionHandler)
 
         // When
         let authorizeURL = try XCTUnwrap(URL(string: "https://jetpack.wordpress.com/jetpack.authorize?user_email=\(expectedEmail)"))
@@ -57,7 +57,7 @@ final class JetpackSetupWebViewModelTests: XCTestCase {
         let siteURL = "https://test.com"
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let viewModel = JetpackSetupWebViewModel(siteURL: siteURL, analytics: analytics, onCompletion: { _ in })
+        let viewModel = JetpackSetupWebViewModel(siteURL: siteURL, siteCredentials: nil, analytics: analytics, onCompletion: { _ in })
 
         // When
         viewModel.handleDismissal()
@@ -73,7 +73,7 @@ final class JetpackSetupWebViewModelTests: XCTestCase {
         let siteURL = "https://test.com"
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let viewModel = JetpackSetupWebViewModel(siteURL: siteURL, analytics: analytics, onCompletion: { _ in })
+        let viewModel = JetpackSetupWebViewModel(siteURL: siteURL, siteCredentials: nil, analytics: analytics, onCompletion: { _ in })
 
         // When
         let url = try XCTUnwrap(URL(string: "woocommerce://jetpack-connected"))

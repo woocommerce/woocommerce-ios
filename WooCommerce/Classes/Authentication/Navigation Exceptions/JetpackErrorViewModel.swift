@@ -8,15 +8,18 @@ import WordPressUI
 /// an error when Jetpack is not installed or is not connected
 struct JetpackErrorViewModel: ULErrorViewModel {
     private let siteURL: String
+    private let siteCredentials: WordPressOrgCredentials?
     private let analytics: Analytics
     private let jetpackSetupCompletionHandler: (String?) -> Void
     private let authentication: Authentication
 
     init(siteURL: String?,
+         siteCredentials: WordPressOrgCredentials?,
          analytics: Analytics = ServiceLocator.analytics,
          authentication: Authentication = ServiceLocator.authenticationManager,
          onJetpackSetupCompletion: @escaping (String?) -> Void) {
         self.siteURL = siteURL ?? Localization.yourSite
+        self.siteCredentials = siteCredentials
         self.analytics = analytics
         self.authentication = authentication
         self.jetpackSetupCompletionHandler = onJetpackSetupCompletion
@@ -62,7 +65,10 @@ struct JetpackErrorViewModel: ULErrorViewModel {
             return
         }
 
-        let viewModel = JetpackSetupWebViewModel(siteURL: siteURL, analytics: analytics, onCompletion: jetpackSetupCompletionHandler)
+        let viewModel = JetpackSetupWebViewModel(siteURL: siteURL,
+                                                 siteCredentials: siteCredentials,
+                                                 analytics: analytics,
+                                                 onCompletion: jetpackSetupCompletionHandler)
         let connectionController = AuthenticatedWebViewController(viewModel: viewModel)
         viewController.navigationController?.show(connectionController, sender: nil)
     }

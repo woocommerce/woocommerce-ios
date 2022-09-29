@@ -1,5 +1,6 @@
 import Foundation
 import WebKit
+import WordPressAuthenticator
 
 /// Abstracts different configurations and logic for web view controllers
 /// which are authenticated for WordPress.com, where possible
@@ -10,6 +11,10 @@ protocol AuthenticatedWebViewModel {
     /// Initial URL to be loaded on the web view
     var initialURL: URL? { get }
 
+    /// Optional credentials for authenticating with WP.org
+    ///
+    var wporgCredentials: WordPressOrgCredentials? { get }
+
     /// Triggered when the web view is dismissed
     func handleDismissal()
 
@@ -18,4 +23,9 @@ protocol AuthenticatedWebViewModel {
 
     /// Handler for a navigation URL
     func decidePolicy(for navigationURL: URL) async -> WKNavigationActionPolicy
+}
+
+/// Default implementation
+extension AuthenticatedWebViewModel {
+    var wporgCredentials: WordPressOrgCredentials? { nil }
 }

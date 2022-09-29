@@ -297,13 +297,13 @@ extension OrderListViewModel {
         let isSupportedCountryForCPP = cppConfiguration.isSupportedCountry
 
         Publishers.CombineLatest3(errorState, $hideOrdersBanners, upsellCardReadersAnnouncementViewModel.$shouldBeVisible)
-            .map { hasError, hasDismissedOrdersBanners, upsellCardReadersBannerShouldBeVisible  -> TopBanner in
+            .map { hasError, hasDismissedOrdersBanners, upsellCardReadersBannerAvailable  -> TopBanner in
 
                 if hasError {
                     return .error
                 }
 
-                if upsellCardReadersBannerShouldBeVisible && isSupportedCountryForCPP {
+                if upsellCardReadersBannerAvailable && isSupportedCountryForCPP {
                     return .upsellCardReaders
                 }
 

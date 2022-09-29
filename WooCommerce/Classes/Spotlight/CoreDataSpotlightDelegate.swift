@@ -9,6 +9,8 @@ class CoreDataSpotlightDelegate: NSCoreDataCoreSpotlightDelegate {
             return attributeSet(for: product)
         } else if let order = object as? Order {
             return attributeSet(for: order)
+        } else if let review = object as? ProductReview {
+            return attributeSet(for: review)
         }
 
         return nil
@@ -37,8 +39,20 @@ class CoreDataSpotlightDelegate: NSCoreDataCoreSpotlightDelegate {
         return attributeSet
     }
 
-    private enum Localization {
+    private func attributeSet(for review: ProductReview) -> CSSearchableItemAttributeSet? {
+        let attributeSet = CSSearchableItemAttributeSet(contentType: .text)
+        attributeSet.textContent = "\(review.reviewer ?? "") \(review.review ?? "")"
+        attributeSet.displayName = String.localizedStringWithFormat(Localization.reviewDisplayName,
+                                                                    review.reviewer ?? "")
+        attributeSet.contentDescription = review.review
+
+        return attributeSet
+
+    }
+
+    enum Localization {
         static let productDisplayName = NSLocalizedString("Woo Product: %1$@", comment: "Title for products items search in Spotlight")
         static let orderDisplayName = NSLocalizedString("Woo Order #%d %2$@ %3$@", comment: "Title for orders items search in Spotlight")
+        static let reviewDisplayName = NSLocalizedString("%1$@ left a review", comment: "Title for reviews items search in Spotlight")
     }
 }

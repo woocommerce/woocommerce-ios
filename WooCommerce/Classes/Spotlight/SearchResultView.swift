@@ -45,6 +45,8 @@ final class SearchResultViewController: UIViewController {
             presentProduct(product)
         } else if let order = searchResultObject as? Storage.Order {
             presentOrder(order)
+        } else if let review = searchResultObject as? Storage.ProductReview {
+            presentReview(review)
         }
     }
 
@@ -72,4 +74,14 @@ final class SearchResultViewController: UIViewController {
         }
     }
 
+    private func presentReview(_ review: Storage.ProductReview) {
+        let reviewViewController = ReviewDetailsViewController(productReview: review.toReadOnly(), product: nil, notification: nil)
+
+        addChild(reviewViewController)
+
+        reviewViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(reviewViewController.view)
+        view.pinSubviewToAllEdges(reviewViewController.view)
+        reviewViewController.didMove(toParent: self)
+    }
 }

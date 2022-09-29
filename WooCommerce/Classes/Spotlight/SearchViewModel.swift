@@ -69,9 +69,12 @@ class SearchViewModel: ObservableObject {
 
 
         if let product = object as? Storage.Product {
-            return SearchResultItem(title: "Woo Product: \(product.name)", object: object)
+            return SearchResultItem(title: "Product: \(product.name)", object: object)
         } else if let order = object as? Storage.Order {
-            return SearchResultItem(title: "Woo order #\(order.orderID) \(order.billingFirstName ?? "") \(order.billingLastName ?? "")", object: object)
+            return SearchResultItem(title: "Order #\(order.orderID) \(order.billingFirstName ?? "") \(order.billingLastName ?? "")", object: object)
+        } else if let review = object as? ProductReview {
+            return SearchResultItem(title: "Review: " + String.localizedStringWithFormat(CoreDataSpotlightDelegate.Localization.reviewDisplayName,
+                                                                            review.reviewer ?? ""), object: object)
         }
 
         return nil

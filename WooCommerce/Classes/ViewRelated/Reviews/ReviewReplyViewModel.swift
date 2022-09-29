@@ -62,7 +62,12 @@ final class ReviewReplyViewModel: ObservableObject {
             self.performingNetworkRequest.send(false)
 
             switch result {
-            case .success:
+            case .success(let status):
+                // If the comment isn't approved, log it (to help support)
+                if status != .approved {
+                    DDLogInfo("Reply to product review succeeded with comment status: \(status)")
+                }
+
                 self.displayReplySuccessNotice()
                 onCompletion(true)
             case .failure(let error):

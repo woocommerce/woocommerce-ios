@@ -389,7 +389,8 @@ private extension ReviewDetailsViewController {
                 return
             }
 
-            let reviewReplyViewController = ReviewReplyHostingController(viewModel: ReviewReplyViewModel())
+            let reviewReplyViewModel = ReviewReplyViewModel(siteID: self.siteID, reviewID: self.productReview.reviewID)
+            let reviewReplyViewController = ReviewReplyHostingController(viewModel: reviewReplyViewModel)
             self.present(reviewReplyViewController, animated: true)
         }
     }

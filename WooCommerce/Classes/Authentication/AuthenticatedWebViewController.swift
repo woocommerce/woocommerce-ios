@@ -87,9 +87,6 @@ private extension AuthenticatedWebViewController {
     }
 
     func startLoading() {
-        guard let url = viewModel.initialURL else {
-            return
-        }
         webView.publisher(for: \.estimatedProgress)
             .sink { [weak self] progress in
                 if progress == 1 {
@@ -102,10 +99,26 @@ private extension AuthenticatedWebViewController {
 
         webView.publisher(for: \.url)
             .sink { [weak self] url in
-                self?.viewModel.handleRedirect(for: url)
+                if url?.absoluteString.contains(WKWebView.wporgNoncePath) == true {
+                    self?.loadContent()
+                } else {
+                    self?.viewModel.handleRedirect(for: url)
+                }
             }
             .store(in: &subscriptions)
 
+        if let wporgCredentials = viewModel.wporgCredentials,
+            let request = try? webView.authenticateForWPOrg(with: wporgCredentials) {
+            webView.load(request)
+        } else {
+            loadContent()
+        }
+    }
+
+    private func loadContent() {
+        guard let url = viewModel.initialURL else {
+            return
+        }
         if let credentials = ServiceLocator.stores.sessionManager.defaultCredentials {
             webView.authenticateForWPComAndRedirect(to: url, credentials: credentials)
         } else {

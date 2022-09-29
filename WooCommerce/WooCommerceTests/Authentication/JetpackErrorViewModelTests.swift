@@ -158,8 +158,8 @@ private extension JetpackErrorViewModelTests {
         static let whatIsJetpack = NSLocalizedString("What is Jetpack?",
                                                      comment: "Button linking to webview that explains what Jetpack is"
                                                         + "Presented when logging in with a site address that does not have a valid Jetpack installation")
-        static let primaryButtonTitle = NSLocalizedString("Install Jetpack",
-                                                          comment: "Action button for installing Jetpack."
+        static let primaryButtonTitle = NSLocalizedString("Set up Jetpack",
+                                                          comment: "Action button for setting up Jetpack."
                                                           + "Presented when logging in with a site address that does not have a valid Jetpack installation")
 
         static let secondaryButtonTitle = NSLocalizedString("Log In With Another Account",

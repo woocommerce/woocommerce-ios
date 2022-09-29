@@ -1,12 +1,32 @@
 import Alamofire
 import Foundation
 import WebKit
+import struct WordPressAuthenticator.WordPressOrgCredentials
 import struct Yosemite.Credentials
 import class Networking.UserAgent
 
 /// An extension to authenticate WPCom automatically
 ///
 extension WKWebView {
+    static let wporgNoncePath = "/admin-ajax.php?action=rest-nonce"
+
+    /// Cookie authentication following WordPressKit implementation:
+    /// https://github.com/wordpress-mobile/WordPressKit-iOS/blob/trunk/WordPressKit/Authenticator.swift
+    ///
+    func authenticateForWPOrg(with credentials: WordPressOrgCredentials) throws -> URLRequest {
+        var request = try URLRequest(url: credentials.loginURL.asURL(), method: .post)
+        request.httpShouldHandleCookies = true
+
+        let redirectLink = (credentials.adminURL + Self.wporgNoncePath)
+            .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+
+        let parameters = ["log": credentials.username,
+                          "pwd": credentials.password,
+                          "redirect_to": redirectLink ?? ""]
+
+        return try URLEncoding.default.encode(request, with: parameters)
+    }
+
     func authenticateForWPComAndRedirect(to url: URL, credentials: Credentials?) {
         customUserAgent = UserAgent.defaultUserAgent
         do {

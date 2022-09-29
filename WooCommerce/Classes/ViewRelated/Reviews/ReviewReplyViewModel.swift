@@ -28,10 +28,22 @@ final class ReviewReplyViewModel: ObservableObject {
     ///
     private let stores: StoresManager
 
-    init(siteID: Int64, reviewID: Int64, stores: StoresManager = ServiceLocator.stores) {
+    /// Presents a success notice in the tab bar context.
+    ///
+    private let noticePresenter: NoticePresenter
+
+    /// Presents an error notice in the current modal presentation context.
+    ///
+    var modalNoticePresenter: NoticePresenter?
+
+    init(siteID: Int64,
+         reviewID: Int64,
+         stores: StoresManager = ServiceLocator.stores,
+         noticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
         self.siteID = siteID
         self.reviewID = reviewID
         self.stores = stores
+        self.noticePresenter = noticePresenter
         bindNavigationTrailingItemPublisher()
     }
 
@@ -51,10 +63,11 @@ final class ReviewReplyViewModel: ObservableObject {
 
             switch result {
             case .success:
-                // TODO: Show a success notice, e.g. "Reply sent!"
+                self.displayReplySuccessNotice()
                 onCompletion(true)
             case .failure(let error):
-                // TODO: Show an error notice, e.g. "There was an error sending the reply"
+                self.displayReplyErrorNotice(onCompletion: onCompletion)
+                DDLogError("⛔️ Error replying to product review: \(error)")
                 onCompletion(false)
             }
         }
@@ -77,6 +90,35 @@ private extension ReviewReplyViewModel {
                 return .send(enabled: newReply.isNotEmpty)
             }
             .assign(to: &$navigationTrailingItem)
+    }
+
+    /// Enqueues the `Reply sent` success notice.
+    ///
+    func displayReplySuccessNotice() {
+        noticePresenter.enqueue(notice: Notice(title: Localization.success, feedbackType: .success))
+    }
+
+    /// Enqueues the `Error sending reply` notice.
+    ///
+    func displayReplyErrorNotice(onCompletion: @escaping (Bool) -> Void) {
+        let noticeIdentifier = UUID().uuidString
+        let notice = Notice(title: Localization.error,
+                            feedbackType: .error,
+                            notificationInfo: NoticeNotificationInfo(identifier: noticeIdentifier),
+                            actionTitle: Localization.retry) { [weak self] in
+            self?.sendReply(onCompletion: onCompletion)
+        }
+
+        modalNoticePresenter?.enqueue(notice: notice)
+    }
+}
+
+// MARK: Localization
+private extension ReviewReplyViewModel {
+    enum Localization {
+        static let success = NSLocalizedString("Reply sent!", comment: "Notice text after sending a reply to a product review successfully")
+        static let error = NSLocalizedString("There was an error sending the reply", comment: "Notice text after failing to send a reply to a product review")
+        static let retry = NSLocalizedString("Retry", comment: "Retry Action")
     }
 }
 

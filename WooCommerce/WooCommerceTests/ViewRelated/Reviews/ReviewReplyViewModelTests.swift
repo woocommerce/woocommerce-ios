@@ -127,4 +127,58 @@ class ReviewReplyViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(successResponse)
     }
+
+    func test_view_model_enqueues_success_notice_after_reply_is_sent_successfully() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let noticePresenter = MockNoticePresenter()
+        let viewModel = ReviewReplyViewModel(siteID: sampleSiteID, reviewID: sampleReviewID, stores: stores, noticePresenter: noticePresenter)
+        stores.whenReceivingAction(ofType: CommentAction.self) { action in
+            switch action {
+            case let .replyToComment(_, _, _, onCompletion):
+                onCompletion(.success(.approved))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+
+        // When
+        viewModel.newReply = "New reply"
+        let noticeType: UINotificationFeedbackGenerator.FeedbackType? = waitFor { promise in
+            viewModel.sendReply { _ in
+                promise(noticePresenter.queuedNotices.first?.feedbackType)
+            }
+        }
+
+        // Then
+        XCTAssertEqual(noticeType, .success)
+    }
+
+    func test_view_model_enqueues_error_notice_using_modal_notice_presenter_after_reply_fails() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let noticePresenter = MockNoticePresenter()
+        let modalNoticePresenter = MockNoticePresenter()
+        let viewModel = ReviewReplyViewModel(siteID: sampleSiteID, reviewID: sampleReviewID, stores: stores, noticePresenter: noticePresenter)
+        viewModel.modalNoticePresenter = modalNoticePresenter
+        stores.whenReceivingAction(ofType: CommentAction.self) { action in
+            switch action {
+            case let .replyToComment(_, _, _, onCompletion):
+                onCompletion(.failure(NSError(domain: "", code: 0)))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+
+        // When
+        viewModel.newReply = "New reply"
+        let noticeType: UINotificationFeedbackGenerator.FeedbackType? = waitFor { promise in
+            viewModel.sendReply { _ in
+                promise(modalNoticePresenter.queuedNotices.first?.feedbackType)
+            }
+        }
+
+        // Then
+        XCTAssertEqual(noticeType, .error)
+    }
 }

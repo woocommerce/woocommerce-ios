@@ -12,6 +12,11 @@ final class ReviewReplyHostingController: UIHostingController<ReviewReply>, UIAd
             self?.dismiss(animated: true, completion: nil)
         }
 
+        // This notice presenter is needed to display an error notice without closing the modal if the network request fails.
+        let errorNoticePresenter = DefaultNoticePresenter()
+        errorNoticePresenter.presentingViewController = self
+        viewModel.modalNoticePresenter = errorNoticePresenter
+
         // Set presentation delegate to track the user dismiss flow event
         presentationController?.delegate = self
     }

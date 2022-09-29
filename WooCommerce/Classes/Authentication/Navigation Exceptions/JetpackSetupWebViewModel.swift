@@ -1,13 +1,9 @@
 import Foundation
 import WebKit
-import WordPressAuthenticator
 
 /// View model used for the web view controller to install Jetpack the plugin during the login flow.
 ///
 final class JetpackSetupWebViewModel: AuthenticatedWebViewModel {
-
-    // Site credentials if available
-    let wporgCredentials: WordPressOrgCredentials?
 
     /// The site URL to set up Jetpack for.
     private let siteURL: String
@@ -20,11 +16,9 @@ final class JetpackSetupWebViewModel: AuthenticatedWebViewModel {
     private var authorizedEmailAddress: String?
 
     init(siteURL: String,
-         siteCredentials: WordPressOrgCredentials?,
          analytics: Analytics = ServiceLocator.analytics,
          onCompletion: @escaping (String?) -> Void) {
         self.siteURL = siteURL
-        self.wporgCredentials = siteCredentials
         self.analytics = analytics
         self.completionHandler = onCompletion
     }

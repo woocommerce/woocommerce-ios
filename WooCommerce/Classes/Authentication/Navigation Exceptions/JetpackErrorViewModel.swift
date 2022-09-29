@@ -66,10 +66,9 @@ struct JetpackErrorViewModel: ULErrorViewModel {
         }
 
         let viewModel = JetpackSetupWebViewModel(siteURL: siteURL,
-                                                 siteCredentials: siteCredentials,
                                                  analytics: analytics,
                                                  onCompletion: jetpackSetupCompletionHandler)
-        let connectionController = AuthenticatedWebViewController(viewModel: viewModel)
+        let connectionController = AuthenticatedWebViewController(viewModel: viewModel, wporgCredentials: siteCredentials)
         viewController.navigationController?.show(connectionController, sender: nil)
     }
 

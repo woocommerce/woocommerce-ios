@@ -105,10 +105,14 @@ private extension AuthenticatedWebViewController {
 
         webView.publisher(for: \.url)
             .sink { [weak self] url in
-                if url?.absoluteString.contains(WKWebView.wporgNoncePath) == true {
-                    self?.loadContent()
+                guard let self else { return }
+                let initialURL = self.viewModel.initialURL
+                // avoids infinite loop if the initial url happens to be the nonce retrieval path.
+                if url?.absoluteString.contains(WKWebView.wporgNoncePath) == true,
+                   initialURL?.absoluteString.contains(WKWebView.wporgNoncePath) != true {
+                    self.loadContent()
                 } else {
-                    self?.viewModel.handleRedirect(for: url)
+                    self.viewModel.handleRedirect(for: url)
                 }
             }
             .store(in: &subscriptions)

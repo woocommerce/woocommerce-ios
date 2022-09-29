@@ -1153,6 +1153,7 @@
 		AEC95D432774D07B001571F5 /* CreateOrderAddressFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC95D422774D07B001571F5 /* CreateOrderAddressFormViewModel.swift */; };
 		AECD57D226DFDF7500A3B580 /* EditOrderAddressForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECD57D126DFDF7500A3B580 /* EditOrderAddressForm.swift */; };
 		AED089F227C794BC0020AE10 /* View+CurrencySymbol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AED089F127C794BC0020AE10 /* View+CurrencySymbol.swift */; };
+		AED9012D28E5F517002B4572 /* AppLinkWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = AED9012C28E5F517002B4572 /* AppLinkWidget.swift */; };
 		AEDDDA0A25CA9C980077F9B2 /* AttributePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDDA0925CA9C980077F9B2 /* AttributePickerViewController.swift */; };
 		AEDDDA1A25CAB2170077F9B2 /* AttributePickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AEDDDA1925CAB2170077F9B2 /* AttributePickerViewController.xib */; };
 		AEE085B52897C871007ACE20 /* LinkedProductsPromoCampaign.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE085B42897C871007ACE20 /* LinkedProductsPromoCampaign.swift */; };
@@ -3041,6 +3042,7 @@
 		AEC95D422774D07B001571F5 /* CreateOrderAddressFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOrderAddressFormViewModel.swift; sourceTree = "<group>"; };
 		AECD57D126DFDF7500A3B580 /* EditOrderAddressForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditOrderAddressForm.swift; sourceTree = "<group>"; };
 		AED089F127C794BC0020AE10 /* View+CurrencySymbol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+CurrencySymbol.swift"; sourceTree = "<group>"; };
+		AED9012C28E5F517002B4572 /* AppLinkWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLinkWidget.swift; sourceTree = "<group>"; };
 		AEDDDA0925CA9C980077F9B2 /* AttributePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewController.swift; sourceTree = "<group>"; };
 		AEDDDA1925CAB2170077F9B2 /* AttributePickerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AttributePickerViewController.xib; sourceTree = "<group>"; };
 		AEE085B42897C871007ACE20 /* LinkedProductsPromoCampaign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkedProductsPromoCampaign.swift; sourceTree = "<group>"; };
@@ -5353,6 +5355,7 @@
 			children = (
 				3F50FE4028C8319A00C89201 /* Entitlements */,
 				26FFD32828C6A0E4002E5E5E /* Images */,
+				AED9012B28E5F27B002B4572 /* Lockscreen */,
 				3F1FA84528B60125009E246C /* StoreWidgets.swift */,
 				265C99E028B9BA43005E6117 /* StoreInfoWidget.swift */,
 				265C99E328B9C834005E6117 /* StoreInfoProvider.swift */,
@@ -6474,6 +6477,14 @@
 				26C6E8E526E6B5F500C7BB0F /* StateSelectorViewModel.swift */,
 			);
 			path = "Address Edit";
+			sourceTree = "<group>";
+		};
+		AED9012B28E5F27B002B4572 /* Lockscreen */ = {
+			isa = PBXGroup;
+			children = (
+				AED9012C28E5F517002B4572 /* AppLinkWidget.swift */,
+			);
+			path = Lockscreen;
 			sourceTree = "<group>";
 		};
 		AEDDDA0825CA9C0A0077F9B2 /* Edit Attributes */ = {
@@ -9338,6 +9349,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AED9012D28E5F517002B4572 /* AppLinkWidget.swift in Sources */,
 				2608C50728C941D600C9DFC0 /* UserDefaults+Woo.swift in Sources */,
 				265C99E628B9CB8E005E6117 /* StoreInfoViewModifiers.swift in Sources */,
 				2608C50628C93AB700C9DFC0 /* WooConstants.swift in Sources */,

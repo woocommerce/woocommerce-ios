@@ -53,6 +53,10 @@ enum WooConstants {
     /// Store Info Widget Identifier.
     ///
     static let storeInfoWidgetKind = "StoreInfoWidget"
+
+    /// App link Widget Identifier.
+    ///
+    static let appLinkWidgetKind = "AppLinkWidget"
 }
 
 // MARK: URLs

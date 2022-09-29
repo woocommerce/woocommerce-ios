@@ -5,8 +5,10 @@ import Experiments
 /// Static widget - app launch button
 ///
 struct AppLinkWidget: Widget {
+    private let enableLockscreenWidgets = DefaultFeatureFlagService().isFeatureFlagEnabled(.lockscreenWidgets)
+
     private var supportedFamilies: [WidgetFamily] {
-        if #available(iOSApplicationExtension 16.0, *) {
+        if #available(iOSApplicationExtension 16.0, *), enableLockscreenWidgets {
             return [.accessoryCircular]
         } else {
             return []

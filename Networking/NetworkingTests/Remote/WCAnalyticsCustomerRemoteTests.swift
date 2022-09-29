@@ -71,7 +71,7 @@ class WCAnalyticsCustomerRemoteTests: XCTestCase {
         XCTAssertNotNil(customers)
         XCTAssertEqual(customers[0].userID, 1)
         XCTAssertEqual(customers[1].userID, 2)
-        XCTAssertEqual(customers[0].name, "Order name #1")
-        XCTAssertEqual(customers[1].name, "Order name #2")
+        XCTAssertEqual(customers[0].name, "John")
+        XCTAssertEqual(customers[1].name, "Paul")
     }
 }

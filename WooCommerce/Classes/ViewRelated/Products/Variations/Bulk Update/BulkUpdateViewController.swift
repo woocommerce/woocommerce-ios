@@ -265,7 +265,7 @@ private extension BulkUpdateViewController {
         static let noticeUnableToSyncVariations = NSLocalizedString("Unable to retrieve variations",
                                                                     comment: "Unable to retrieve variations for bulk update screen")
         static let noticeRetryAction = NSLocalizedString("Retry", comment: "Retry Action")
-        static let pricesUpdated = NSLocalizedString("Prices updated succesfully.",
+        static let pricesUpdated = NSLocalizedString("Prices updated successfully.",
                                                      comment: "Notice title when updating the price via the bulk variation screen")
     }
 }

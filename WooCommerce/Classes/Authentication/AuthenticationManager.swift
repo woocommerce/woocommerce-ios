@@ -588,7 +588,8 @@ private extension AuthenticationManager {
     }
 
     /// The error screen to be displayed when the user enters a site
-    /// without Jetpack in the site discovery flow
+    /// without Jetpack in the site discovery flow.
+    /// More about this flow: pe5sF9-mz-p2.
     ///
     func jetpackErrorUI(for siteURL: String, with matcher: ULAccountMatcher, in navigationController: UINavigationController) -> UIViewController {
         let viewModel = JetpackErrorViewModel(siteURL: siteURL,
@@ -671,6 +672,7 @@ private extension AuthenticationManager {
     }
 
     /// Appropriate error to display for a site when entered from the site discovery flow.
+    /// More about this flow: pe5sF9-mz-p2
     ///
     func errorUI(for site: WordPressComSiteInfo, in navigationController: UINavigationController) -> UIViewController {
         guard site.isWP else {

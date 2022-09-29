@@ -77,4 +77,8 @@ public enum FeatureFlag: Int {
     /// Enables the Search Customers functionality in the Order Creation screen
     ///
     case orderCreationSearchCustomers
+
+    /// Enables signing up for a WP.com account.
+    ///
+    case wpcomSignup
 }

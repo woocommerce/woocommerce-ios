@@ -1,7 +1,7 @@
 import Alamofire
 import Foundation
 import WebKit
-import WordPressAuthenticator
+import struct WordPressAuthenticator.WordPressOrgCredentials
 import struct Yosemite.Credentials
 import class Networking.UserAgent
 

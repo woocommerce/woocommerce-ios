@@ -10,6 +10,9 @@ import class Networking.UserAgent
 extension WKWebView {
     static let wporgNoncePath = "/admin-ajax.php?action=rest-nonce"
 
+    /// Cookie authentication following WordPressKit implementation:
+    /// https://github.com/wordpress-mobile/WordPressKit-iOS/blob/trunk/WordPressKit/Authenticator.swift
+    ///
     func authenticateForWPOrg(with credentials: WordPressOrgCredentials) throws -> URLRequest {
         var request = try URLRequest(url: credentials.loginURL.asURL(), method: .post)
         request.httpShouldHandleCookies = true

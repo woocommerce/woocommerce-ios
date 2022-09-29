@@ -131,6 +131,17 @@ final class NoteDetailsCommentTableViewCell: UITableViewCell {
         }
     }
 
+    /// Indicates if the Reply Button is enabled (or not!)
+    ///
+    var isReplyEnabled: Bool {
+        get {
+            return replyButton.isHidden
+        }
+        set {
+            replyButton.isHidden = !newValue
+        }
+    }
+
     /// Title: Usually displays the Author's Name.
     ///
     var titleText: String? {

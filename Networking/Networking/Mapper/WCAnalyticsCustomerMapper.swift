@@ -21,7 +21,7 @@ struct WCAnalyticsCustomerMapper: Mapper {
     ///
     func mapUniqueCustomer(response: Data, searchValue: String? = "") throws -> WCAnalyticsCustomer? {
         if searchValue == "" {
-            return WCAnalyticsCustomer(userID: 0, name: "")
+            return nil
         }
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)

@@ -56,7 +56,7 @@ class WCAnalyticsCustomerMapperTests: XCTestCase {
         XCTAssertEqual(customers[1].name, "Paul")
     }
 
-    func test_WCAnalyticsCustomer_returns_no_entities_when_no_searchValue_is_provided() {
+    func test_WCAnalyticsCustomer_returns_nil_when_no_searchValue_is_provided() {
         // Given
         let mapper = WCAnalyticsCustomerMapper(siteID: dummySiteID)
 
@@ -68,8 +68,7 @@ class WCAnalyticsCustomerMapperTests: XCTestCase {
         let customer = try! mapper.mapUniqueCustomer(response: data, searchValue: "")
 
         // Then
-        XCTAssertEqual(customer?.userID, 0)
-        XCTAssertEqual(customer?.name, "")
+        XCTAssertNil(customer)
     }
 
     func test_WCAnalyticsCustomer_entity_is_correctly_mapped_from_encoded_data() {

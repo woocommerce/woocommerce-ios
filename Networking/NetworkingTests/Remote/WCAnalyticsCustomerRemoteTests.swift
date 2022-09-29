@@ -9,9 +9,13 @@ class WCAnalyticsCustomerRemoteTests: XCTestCase {
 
     private var remote: WCAnalyticsCustomerRemote!
 
-    /// Dummy Site ID
+    /// Sample Site ID
     ///
     private let sampleSiteID: Int64 = 123
+
+    /// Sample Customer name
+    ///
+    private let sampleCustomerName = "John"
 
     override func setUp() {
         super.setUp()
@@ -47,6 +51,37 @@ class WCAnalyticsCustomerRemoteTests: XCTestCase {
         // When
         let result = waitFor { promise in
             self.remote.retrieveCustomers(for: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssert(result.isFailure)
+    }
+
+    func test_WCAnalyticsCustomerRemote_when_calls_retrieveCustomerByName_then_returns_result_isSuccess() throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "customers?search=\(sampleCustomerName)", filename: "wc-analytics-customers")
+
+        // When
+        let result = waitFor { promise in
+            self.remote.retrieveCustomerByName(for: self.sampleSiteID, with: self.sampleCustomerName) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssert(result.isSuccess)
+        assertEqual(true, result.isSuccess)
+    }
+
+    func test_WCAnalyticsCustomerRemote_when_calls_retrieveCustomerByName_fails_then_returns_result_isFailure() {
+        // Given
+        network.simulateError(requestUrlSuffix: "", error: NetworkError.notFound)
+
+        // When
+        let result = waitFor { promise in
+            self.remote.retrieveCustomerByName(for: self.sampleSiteID, with: self.sampleCustomerName) { result in
                 promise(result)
             }
         }

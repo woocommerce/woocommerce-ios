@@ -383,6 +383,10 @@ private extension ReviewDetailsViewController {
 
             self.moderateReview(siteID: reviewSiteID, reviewID: reviewID, doneStatus: .spam, undoStatus: .unspam)
         }
+
+        commentCell.onReply = {
+            // TODO: Open a text view to send a comment reply to the product review
+        }
     }
 }
 

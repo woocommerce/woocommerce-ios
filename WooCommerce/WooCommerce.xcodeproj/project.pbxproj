@@ -1316,6 +1316,8 @@
 		B983E96528E457A10053CE1D /* SearchableActivityConvertable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B983E96428E457A10053CE1D /* SearchableActivityConvertable.swift */; };
 		B983E96728E483EC0053CE1D /* CoreDataSpotlightDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B983E96628E483EC0053CE1D /* CoreDataSpotlightDelegate.swift */; };
 		B983E96928E4A4630053CE1D /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B983E96828E4A4630053CE1D /* SearchView.swift */; };
+		B983E96B28E59BA50053CE1D /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B983E96A28E59BA50053CE1D /* SearchViewModel.swift */; };
+		B983E96D28E5E9740053CE1D /* SearchResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B983E96C28E5E9740053CE1D /* SearchResultView.swift */; };
 		B9B0391628A6824200DC1C83 /* PermanentNoticePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B0391528A6824200DC1C83 /* PermanentNoticePresenter.swift */; };
 		B9B0391828A6838400DC1C83 /* PermanentNoticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B0391728A6838400DC1C83 /* PermanentNoticeView.swift */; };
 		B9B0391A28A68ADE00DC1C83 /* ConstraintsUpdatingHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B0391928A68ADE00DC1C83 /* ConstraintsUpdatingHostingController.swift */; };
@@ -3226,6 +3228,8 @@
 		B983E96428E457A10053CE1D /* SearchableActivityConvertable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchableActivityConvertable.swift; sourceTree = "<group>"; };
 		B983E96628E483EC0053CE1D /* CoreDataSpotlightDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataSpotlightDelegate.swift; sourceTree = "<group>"; };
 		B983E96828E4A4630053CE1D /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
+		B983E96A28E59BA50053CE1D /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
+		B983E96C28E5E9740053CE1D /* SearchResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultView.swift; sourceTree = "<group>"; };
 		B9B0391528A6824200DC1C83 /* PermanentNoticePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermanentNoticePresenter.swift; sourceTree = "<group>"; };
 		B9B0391728A6838400DC1C83 /* PermanentNoticeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PermanentNoticeView.swift; sourceTree = "<group>"; };
 		B9B0391928A68ADE00DC1C83 /* ConstraintsUpdatingHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstraintsUpdatingHostingController.swift; sourceTree = "<group>"; };
@@ -7101,6 +7105,8 @@
 				B983E95F28E2FCA10053CE1D /* SpotlightManager.swift */,
 				B983E96428E457A10053CE1D /* SearchableActivityConvertable.swift */,
 				B983E96828E4A4630053CE1D /* SearchView.swift */,
+				B983E96A28E59BA50053CE1D /* SearchViewModel.swift */,
+				B983E96C28E5E9740053CE1D /* SearchResultView.swift */,
 			);
 			path = Spotlight;
 			sourceTree = "<group>";
@@ -9556,6 +9562,7 @@
 				B5A8F8AD20B88D9900D211DE /* LoginPrologueViewController.swift in Sources */,
 				B5D1AFC620BC7B7300DB0E8C /* StorePickerViewController.swift in Sources */,
 				02DD81FB242CAA400060E50B /* WordPressMediaLibraryPickerDataSource.swift in Sources */,
+				B983E96B28E59BA50053CE1D /* SearchViewModel.swift in Sources */,
 				0240B3AC230A910C000A866C /* StoreStatsV4ChartAxisHelper.swift in Sources */,
 				31579028273EE2B1008CA3AF /* VersionHelpers.swift in Sources */,
 				CCD2F51C26D697860010E679 /* ShippingLabelServicePackageListViewModel.swift in Sources */,
@@ -9631,6 +9638,7 @@
 				269098B427D2BBFC001FEB07 /* ShippingInputTransformer.swift in Sources */,
 				740987B321B87760000E4C80 /* FancyAnimatedButton+Woo.swift in Sources */,
 				45F627B6253603AE00894B86 /* Product+DownloadSettingsViewModels.swift in Sources */,
+				B983E96D28E5E9740053CE1D /* SearchResultView.swift in Sources */,
 				B511ED27218A660E005787DC /* StringDescriptor.swift in Sources */,
 				B5F355EF21CD500200A7077A /* SearchViewController.swift in Sources */,
 				773077EC251E943700178696 /* ProductDownloadFileViewModel.swift in Sources */,

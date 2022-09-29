@@ -3,36 +3,30 @@ import SwiftUI
 
 struct SearchView: View {
     let names: [String] = []
+    @ObservedObject var viewModel: SearchViewModel
     @State private var searchText = ""
+    @State private var selection: String?
 
-    var body: some View {
-        NavigationView {
-            if #available(iOS 15.0, *) {
-                List {
-                    ForEach(searchResults, id: \.self) { name in
-                        NavigationLink(destination: Text(name)) {
-                            Text(name)
-                        }
-                    }
-                }
-                .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always)) {
-                    ForEach(searchResults, id: \.self) { result in
-                        Text("Are you looking for \(result)?").searchCompletion(result)
-                    }
-                }
-                .navigationTitle("Search in the App")
-                .listStyle(PlainListStyle())
-            } else {
-                // Fallback on earlier versions
-            }
-        }
+    init(viewModel: SearchViewModel = SearchViewModel()) {
+        self.viewModel = viewModel
     }
 
-    var searchResults: [String] {
-        if searchText.isEmpty {
-            return names
+    var body: some View {
+        if #available(iOS 15.0, *) {
+            List(viewModel.results) { result in
+                NavigationLink(destination: SearchResultView(searchResultObject: result.object)) {
+                    Text(result.title)
+                }
+            }
+            .searchable(text: $searchText, placement:
+                    .navigationBarDrawer(displayMode: .always))
+            .onChange(of: searchText) { newValue in
+                viewModel.setSearchText(newValue)
+            }
+            .navigationTitle("Search in the App")
+            .listStyle(PlainListStyle())
         } else {
-            return names.filter { $0.contains(searchText) }
+            // Fallback on earlier versions
         }
     }
 }

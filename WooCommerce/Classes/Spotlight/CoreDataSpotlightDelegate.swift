@@ -28,6 +28,7 @@ class CoreDataSpotlightDelegate: NSCoreDataCoreSpotlightDelegate {
 
     private func attributeSet(for order: Order) -> CSSearchableItemAttributeSet? {
         let attributeSet = CSSearchableItemAttributeSet(contentType: .text)
+        attributeSet.textContent = "\(order.orderID) \(order.billingFirstName ?? "") \(order.billingLastName ?? "")"
         attributeSet.displayName = String.localizedStringWithFormat(Localization.orderDisplayName,
                                                                     order.orderID,
                                                                     order.billingFirstName ?? "",

@@ -110,7 +110,9 @@ class AuthenticationManager: Authentication {
                                                 statusBarStyle: .default)
 
         let displayStrings = WordPressAuthenticatorDisplayStrings(emailLoginInstructions: AuthenticationConstants.emailInstructions,
-                                                                  getStartedInstructions: AuthenticationConstants.getStartedInstructions,
+                                                                  getStartedInstructions: isWPComSignupEnabled ?
+                                                                  AuthenticationConstants.getStartedInstructionsWithWPComSignupEnabled:
+                                                                    AuthenticationConstants.getStartedInstructions,
                                                                   jetpackLoginInstructions: AuthenticationConstants.jetpackInstructions,
                                                                   siteLoginInstructions: AuthenticationConstants.siteInstructions,
                                                                   siteCredentialInstructions: AuthenticationConstants.siteCredentialInstructions,

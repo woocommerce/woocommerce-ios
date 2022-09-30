@@ -385,9 +385,7 @@ private extension ReviewDetailsViewController {
         }
 
         commentCell.onReply = { [weak self] in
-            guard let self = self else {
-                return
-            }
+            guard let self else { return }
 
             let reviewReplyViewModel = ReviewReplyViewModel(siteID: self.siteID, reviewID: self.productReview.reviewID)
             let reviewReplyViewController = ReviewReplyHostingController(viewModel: reviewReplyViewModel)

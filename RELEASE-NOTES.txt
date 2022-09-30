@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+10.7
+-----
+- [*] Allow in-app notices to be swiped away [https://github.com/woocommerce/woocommerce-ios/pull/7801]
+
 10.6
 -----
 

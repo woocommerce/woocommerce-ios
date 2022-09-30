@@ -575,7 +575,10 @@ private extension ProductVariationsViewController {
         actionSheet.addDefaultActionWithTitle(ActionSheetStrings.bulkUpdate) { [weak self] _ in
             guard let self = self else { return }
 
-            let viewModel = BulkUpdateViewModel(siteID: self.siteID, productID: self.productID, onCancelButtonTapped: { [weak self] in
+            let viewModel = BulkUpdateViewModel(siteID: self.siteID,
+                                                productID: self.productID,
+                                                variationCount: self.product.variations.count,
+                                                onCancelButtonTapped: { [weak self] in
                 self?.dismiss(animated: true)
             })
             let navigationController = WooNavigationController(rootViewController: BulkUpdateViewController(viewModel: viewModel))

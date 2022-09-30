@@ -33,6 +33,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         let expectedPageNumber = 1
         let viewModel = BulkUpdateViewModel(siteID: expectedSiteID,
                                             productID: expectedProductID,
+                                            variationCount: 10,
                                             onCancelButtonTapped: {},
                                             storageManager: storageManager,
                                             storesManager: storesManager)
@@ -56,7 +57,12 @@ final class BulkUpdateViewModelTests: XCTestCase {
 
     func test_initial_sync_state() throws {
         // Given
-        let viewModel = BulkUpdateViewModel(siteID: 0, productID: 0, onCancelButtonTapped: {}, storageManager: storageManager, storesManager: storesManager)
+        let viewModel = BulkUpdateViewModel(siteID: 0,
+                                            productID: 0,
+                                            variationCount: 10,
+                                            onCancelButtonTapped: {},
+                                            storageManager: storageManager,
+                                            storesManager: storesManager)
 
         // Then
         XCTAssertEqual(viewModel.syncState, .notStarted)
@@ -64,7 +70,12 @@ final class BulkUpdateViewModelTests: XCTestCase {
 
     func test_sync_state_updates_to_loading_when_product_variations_syncing_starts() {
         // Given
-        let viewModel = BulkUpdateViewModel(siteID: 0, productID: 0, onCancelButtonTapped: {}, storageManager: storageManager, storesManager: storesManager)
+        let viewModel = BulkUpdateViewModel(siteID: 0,
+                                            productID: 0,
+                                            variationCount: 10,
+                                            onCancelButtonTapped: {},
+                                            storageManager: storageManager,
+                                            storesManager: storesManager)
         storesManager.whenReceivingAction(ofType: ProductVariationAction.self) { _ in
             // do nothing to stay in "syncing" state
         }
@@ -78,7 +89,12 @@ final class BulkUpdateViewModelTests: XCTestCase {
 
     func test_sync_state_updates_to_syncerror_when_product_variations_syncing_fails() {
         // Given
-        let viewModel = BulkUpdateViewModel(siteID: 0, productID: 0, onCancelButtonTapped: {}, storageManager: storageManager, storesManager: storesManager)
+        let viewModel = BulkUpdateViewModel(siteID: 0,
+                                            productID: 0,
+                                            variationCount: 10,
+                                            onCancelButtonTapped: {},
+                                            storageManager: storageManager,
+                                            storesManager: storesManager)
         storesManager.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {
             case let .synchronizeProductVariations(_, _, _, _, onCompletion):
@@ -97,7 +113,12 @@ final class BulkUpdateViewModelTests: XCTestCase {
 
     func test_sync_state_updates_to_syncResults_when_product_variations_syncing_is_successful() {
         // Given
-        let viewModel = BulkUpdateViewModel(siteID: 0, productID: 0, onCancelButtonTapped: {}, storageManager: storageManager, storesManager: storesManager)
+        let viewModel = BulkUpdateViewModel(siteID: 0,
+                                            productID: 0,
+                                            variationCount: 10,
+                                            onCancelButtonTapped: {},
+                                            storageManager: storageManager,
+                                            storesManager: storesManager)
         storesManager.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {
             case let .synchronizeProductVariations(_, _, _, _, onCompletion):
@@ -128,7 +149,12 @@ final class BulkUpdateViewModelTests: XCTestCase {
                 XCTFail("Unsupported Action")
             }
         }
-        let viewModel = BulkUpdateViewModel(siteID: 1, productID: 1, onCancelButtonTapped: {}, storageManager: storageManager, storesManager: storesManager)
+        let viewModel = BulkUpdateViewModel(siteID: 1,
+                                            productID: 1,
+                                            variationCount: 10,
+                                            onCancelButtonTapped: {},
+                                            storageManager: storageManager,
+                                            storesManager: storesManager)
 
         // When
         viewModel.syncVariations()
@@ -161,6 +187,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         }
         let viewModel = BulkUpdateViewModel(siteID: 1,
                                             productID: 1,
+                                            variationCount: 10,
                                             onCancelButtonTapped: {},
                                             storageManager: storageManager,
                                             storesManager: storesManager,
@@ -196,7 +223,12 @@ final class BulkUpdateViewModelTests: XCTestCase {
                 XCTFail("Unsupported Action")
             }
         }
-        let viewModel = BulkUpdateViewModel(siteID: 1, productID: 1, onCancelButtonTapped: {}, storageManager: storageManager, storesManager: storesManager)
+        let viewModel = BulkUpdateViewModel(siteID: 1,
+                                            productID: 1,
+                                            variationCount: 10,
+                                            onCancelButtonTapped: {},
+                                            storageManager: storageManager,
+                                            storesManager: storesManager)
 
         // When
         viewModel.syncVariations()
@@ -228,7 +260,12 @@ final class BulkUpdateViewModelTests: XCTestCase {
                 XCTFail("Unsupported Action")
             }
         }
-        let viewModel = BulkUpdateViewModel(siteID: 1, productID: 1, onCancelButtonTapped: {}, storageManager: storageManager, storesManager: storesManager)
+        let viewModel = BulkUpdateViewModel(siteID: 1,
+                                            productID: 1,
+                                            variationCount: 10,
+                                            onCancelButtonTapped: {},
+                                            storageManager: storageManager,
+                                            storesManager: storesManager)
 
         // When
         viewModel.syncVariations()
@@ -260,7 +297,12 @@ final class BulkUpdateViewModelTests: XCTestCase {
                 XCTFail("Unsupported Action")
             }
         }
-        let viewModel = BulkUpdateViewModel(siteID: 1, productID: 1, onCancelButtonTapped: {}, storageManager: storageManager, storesManager: storesManager)
+        let viewModel = BulkUpdateViewModel(siteID: 1,
+                                            productID: 1,
+                                            variationCount: 10,
+                                            onCancelButtonTapped: {},
+                                            storageManager: storageManager,
+                                            storesManager: storesManager)
 
         // When
         viewModel.syncVariations()
@@ -281,6 +323,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         var onCancelButtonTappedInvoked = false
         let viewModel = BulkUpdateViewModel(siteID: 0,
                                             productID: 0,
+                                            variationCount: 10,
                                             onCancelButtonTapped: {
                                                 onCancelButtonTappedInvoked = true
                                             },
@@ -292,6 +335,32 @@ final class BulkUpdateViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(onCancelButtonTappedInvoked)
+    }
+
+    func test_less_than_100_variations_does_not_shows_warning() throws {
+        // Given
+        let viewModel = BulkUpdateViewModel(siteID: 0,
+                                            productID: 0,
+                                            variationCount: 10,
+                                            onCancelButtonTapped: {},
+                                            storageManager: storageManager,
+                                            storesManager: storesManager)
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowVariationLimitWarning)
+    }
+
+    func test_more_than_100_variations_shows_shows_warning() throws {
+        // Given
+        let viewModel = BulkUpdateViewModel(siteID: 0,
+                                            productID: 0,
+                                            variationCount: 101,
+                                            onCancelButtonTapped: {},
+                                            storageManager: storageManager,
+                                            storesManager: storesManager)
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowVariationLimitWarning)
     }
 }
 

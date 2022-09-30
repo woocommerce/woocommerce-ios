@@ -14,7 +14,12 @@ final class BulkUpdateViewControllerTests: XCTestCase {
         let storageManager =  MockStorageManager()
         let storesManager = MockStoresManager(sessionManager: SessionManager.makeForTesting())
         let noticePresenter = MockNoticePresenter()
-        let viewModel = BulkUpdateViewModel(siteID: 0, productID: 0, onCancelButtonTapped: {}, storageManager: storageManager, storesManager: storesManager)
+        let viewModel = BulkUpdateViewModel(siteID: 0,
+                                            productID: 0,
+                                            variationCount: 10,
+                                            onCancelButtonTapped: {},
+                                            storageManager: storageManager,
+                                            storesManager: storesManager)
         storesManager.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {
             case let .synchronizeProductVariations(_, _, _, _, onCompletion):

@@ -6,6 +6,12 @@ import Yosemite
 ///
 final class ReviewReplyViewModel: ObservableObject {
 
+    private let siteID: Int64
+
+    /// ID for the product review being replied to.
+    ///
+    private let reviewID: Int64
+
     /// New reply to send
     ///
     @Published var newReply: String = ""
@@ -18,7 +24,20 @@ final class ReviewReplyViewModel: ObservableObject {
     ///
     private let performingNetworkRequest: CurrentValueSubject<Bool, Never> = .init(false)
 
-    init() {
+    /// Action dispatcher
+    ///
+    private let stores: StoresManager
+
+    /// Trigger to present a `ReviewReplyNotice`
+    ///
+    let presentNoticeSubject = PassthroughSubject<ReviewReplyNotice, Never>()
+
+    init(siteID: Int64,
+         reviewID: Int64,
+         stores: StoresManager = ServiceLocator.stores) {
+        self.siteID = siteID
+        self.reviewID = reviewID
+        self.stores = stores
         bindNavigationTrailingItemPublisher()
     }
 
@@ -27,8 +46,33 @@ final class ReviewReplyViewModel: ObservableObject {
     /// Use this method to send the reply and invoke a completion block when finished
     ///
     func sendReply(onCompletion: @escaping (Bool) -> Void) {
-        // TODO: Call CommentAction.replyToComment to send the reply to remote
-        // Set `performingNetworkRequest` to true while the request is being performed
+        guard newReply.isNotEmpty else {
+            return
+        }
+
+        let action = CommentAction.replyToComment(siteID: siteID, commentID: reviewID, content: newReply) { [weak self] result in
+            guard let self = self else { return }
+
+            self.performingNetworkRequest.send(false)
+
+            switch result {
+            case .success(let status):
+                // If the comment isn't approved, log it (to help support)
+                if status != .approved {
+                    DDLogInfo("Reply to product review succeeded with comment status: \(status)")
+                }
+
+                self.presentNoticeSubject.send(.success)
+                onCompletion(true)
+            case .failure(let error):
+                self.presentNoticeSubject.send(.error)
+                DDLogError("⛔️ Error replying to product review: \(error)")
+                onCompletion(false)
+            }
+        }
+
+        performingNetworkRequest.send(true)
+        stores.dispatch(action)
     }
 }
 

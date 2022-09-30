@@ -39,6 +39,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .lockscreenWidgets:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .replyToProductReviews:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -49,13 +49,13 @@
                                         <rect key="frame" x="56" y="0.0" width="232" height="40"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="249" horizontalCompressionResistancePriority="250" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MB2-nk-Fuo">
-                                                <rect key="frame" x="0.0" y="0.0" width="232" height="24"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="232" height="25.5"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" horizontalCompressionResistancePriority="250" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6d4-9R-dcK">
-                                                <rect key="frame" x="0.0" y="24" width="232" height="16"/>
+                                                <rect key="frame" x="0.0" y="25.5" width="232" height="14.5"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
@@ -98,7 +98,7 @@
                                 <rect key="frame" x="0.0" y="160" width="288" height="52"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qUJ-uA-W4N" customClass="VerticalButton" customModule="WooCommerce" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="89.5" height="52"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="64.5" height="52"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                         <state key="normal" title="Spam"/>
                                         <connections>
@@ -106,7 +106,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6As-Iw-caM" customClass="VerticalButton" customModule="WooCommerce" customModuleProvider="target">
-                                        <rect key="frame" x="99.5" y="0.0" width="89" height="52"/>
+                                        <rect key="frame" x="74.5" y="0.0" width="64.5" height="52"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                         <state key="normal" title="Trash">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -116,11 +116,20 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uc0-Kk-Npt" customClass="VerticalButton" customModule="WooCommerce" customModuleProvider="target">
-                                        <rect key="frame" x="198.5" y="0.0" width="89.5" height="52"/>
+                                        <rect key="frame" x="149" y="0.0" width="64.5" height="52"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                         <state key="normal" title="Approve"/>
                                         <connections>
                                             <action selector="approveWasPressed:" destination="ba1-rz-4HV" eventType="touchUpInside" id="XrG-F9-l5a"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jZy-9J-G3f" userLabel="Reply Button" customClass="VerticalButton" customModule="WooCommerce" customModuleProvider="target">
+                                        <rect key="frame" x="223.5" y="0.0" width="64.5" height="52"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <state key="normal" title="Reply"/>
+                                        <connections>
+                                            <action selector="replyWasPressed:" destination="ba1-rz-4HV" eventType="touchUpInside" id="jZu-dE-X4p"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -143,6 +152,7 @@
                 <outlet property="approvalButton" destination="uc0-Kk-Npt" id="tZL-iM-Q2H"/>
                 <outlet property="detailsLabel" destination="6d4-9R-dcK" id="pCn-M7-He8"/>
                 <outlet property="gravatarImageView" destination="qcp-iw-3SL" id="e8j-K5-3V4"/>
+                <outlet property="replyButton" destination="jZy-9J-G3f" id="uvH-7W-9fm"/>
                 <outlet property="spamButton" destination="qUJ-uA-W4N" id="Gbe-6K-KhN"/>
                 <outlet property="starRatingView" destination="1Iy-55-tos" id="bcq-5i-2Gp"/>
                 <outlet property="textView" destination="FpQ-yp-a6e" id="qCC-ZC-o7p"/>

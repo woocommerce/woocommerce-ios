@@ -128,12 +128,21 @@ final class BulkUpdateViewController: UIViewController, GhostableViewController 
         noticePresenter.enqueue(notice: notice)
     }
 
+    /// Displays the success price update `Notice`.
+    ///
+    private func displayPriceUpdatedNotice() {
+        let title = Localization.pricesUpdated
+        let notice = Notice(title: title, feedbackType: .success)
+        noticePresenter.enqueue(notice: notice)
+    }
+
     /// Called when the price option is selected
     ///
     private func navigateToEditPriceSettings() {
         let bulkUpdatePriceSettingsViewModel = viewModel.viewModelForBulkUpdatePriceOfType(.regular, priceUpdateDidFinish: { [weak self] in
             guard let self = self else { return }
             self.navigationController?.popToViewController(self, animated: true)
+            self.displayPriceUpdatedNotice()
         })
         let viewController = BulkUpdatePriceViewController(viewModel: bulkUpdatePriceSettingsViewModel)
         show(viewController, sender: nil)
@@ -256,6 +265,8 @@ private extension BulkUpdateViewController {
         static let noticeUnableToSyncVariations = NSLocalizedString("Unable to retrieve variations",
                                                                     comment: "Unable to retrieve variations for bulk update screen")
         static let noticeRetryAction = NSLocalizedString("Retry", comment: "Retry Action")
+        static let pricesUpdated = NSLocalizedString("Prices updated successfully.",
+                                                     comment: "Notice title when updating the price via the bulk variation screen")
     }
 }
 

@@ -1,7 +1,6 @@
 import WidgetKit
 import SwiftUI
 import WooFoundation
-import Experiments
 
 /// Main StoreInfo Widget type.
 ///
@@ -325,11 +324,14 @@ struct StoreWidgets_Previews: PreviewProvider {
         )
         .previewContext(WidgetPreviewContext(family: .systemMedium))
         .environment(\.sizeCategory, .extraExtraLarge)
+        .previewDisplayName("XXL font")
 
         NotLoggedInView()
             .previewContext(WidgetPreviewContext(family: .systemMedium))
+            .previewDisplayName("Not logged in")
 
         UnableToFetchView()
             .previewContext(WidgetPreviewContext(family: .systemMedium))
+            .previewDisplayName("Unable to fetch data")
     }
 }

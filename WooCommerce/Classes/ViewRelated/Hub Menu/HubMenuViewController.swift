@@ -38,6 +38,12 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
         show(InPersonPaymentsMenuViewController(), sender: self)
     }
 
+    func showProductReview(_ review: ProductReview) {
+        let reviewViewController = ReviewDetailsViewController(productReview: review, product: nil, notification: nil)
+
+        show(reviewViewController, sender: self)
+    }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 

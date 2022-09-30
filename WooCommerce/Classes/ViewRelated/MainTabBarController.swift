@@ -437,6 +437,16 @@ extension MainTabBarController {
             productsViewController.navigationController?.pushViewController(viewController, animated: true)
         }
     }
+
+    static func presentProductReview(_ review: ProductReview) {
+        switchToHubMenuTab()
+
+        guard let hubMenuViewController: HubMenuViewController = childViewController() else {
+            return
+        }
+
+        hubMenuViewController.showProductReview(review)
+    }
 }
 
 // MARK: - Site ID observation for updating tab view controllers

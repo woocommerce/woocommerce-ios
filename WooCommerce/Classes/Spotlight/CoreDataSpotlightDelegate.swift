@@ -44,7 +44,7 @@ class CoreDataSpotlightDelegate: NSCoreDataCoreSpotlightDelegate {
         attributeSet.textContent = "\(review.reviewer ?? "") \(review.review ?? "")"
         attributeSet.displayName = String.localizedStringWithFormat(Localization.reviewDisplayName,
                                                                     review.reviewer ?? "")
-        attributeSet.contentDescription = review.review
+        attributeSet.contentDescription = review.review?.removedHTMLTags
 
         return attributeSet
 

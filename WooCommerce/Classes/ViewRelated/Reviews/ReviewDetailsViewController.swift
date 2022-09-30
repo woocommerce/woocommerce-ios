@@ -63,6 +63,7 @@ final class ReviewDetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        setupNavigationBar()
         configureMainView()
         configureTableView()
         configureEntityListener()
@@ -385,6 +386,10 @@ private extension ReviewDetailsViewController {
 // MARK: - Private Methods
 //
 private extension ReviewDetailsViewController {
+    func setupNavigationBar() {
+        navigationController?.setNavigationBarHidden(false, animated: true)
+        navigationItem.title = Constants.title
+    }
 
     /// Presents a WebView at the product URL
     ///

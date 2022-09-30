@@ -273,30 +273,22 @@ private extension UnableToFetchView {
 // MARK: - Previews
 
 struct StoreWidgets_Previews: PreviewProvider {
-    static var previews: some View {
-        StoreInfoView(
-            entryData: StoreInfoData(range: "Today",
-                                 name: "Ernest Shop",
-                                 revenue: "$132.234",
-                                 visitors: "67",
-                                 orders: "23",
-                                 conversion: "37%",
-                                 updatedTime: "10:24 PM")
-        )
-        .previewContext(WidgetPreviewContext(family: .systemMedium))
+    static var exampleData = StoreInfoData(range: "Today",
+                                           name: "Ernest Shop",
+                                           revenue: "$132.234",
+                                           visitors: "67",
+                                           orders: "23",
+                                           conversion: "34%",
+                                           updatedTime: "10:24 PM")
 
-        StoreInfoView(
-            entryData: StoreInfoData(range: "Today",
-                                 name: "Ernest Shop",
-                                 revenue: "$132.234",
-                                 visitors: "67",
-                                 orders: "23",
-                                 conversion: "37%",
-                                 updatedTime: "10:24 PM")
-        )
-        .previewContext(WidgetPreviewContext(family: .systemMedium))
-        .environment(\.sizeCategory, .extraExtraLarge)
-        .previewDisplayName("XXL font")
+    static var previews: some View {
+        StoreInfoView(entryData: exampleData)
+            .previewContext(WidgetPreviewContext(family: .systemMedium))
+
+        StoreInfoView(entryData: exampleData)
+            .previewContext(WidgetPreviewContext(family: .systemMedium))
+            .environment(\.sizeCategory, .extraExtraLarge)
+            .previewDisplayName("XXL font")
 
         NotLoggedInView()
             .previewContext(WidgetPreviewContext(family: .systemMedium))

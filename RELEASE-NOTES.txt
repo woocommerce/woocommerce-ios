@@ -7,6 +7,7 @@
 - [*] Fixed a rare crash when selecting a store in the store picker. [https://github.com/woocommerce/woocommerce-ios/pull/7765]
 - [*] Show suggestion for logging in to a WP.com site with a mismatched WP.com account. [https://github.com/woocommerce/woocommerce-ios/pull/7773]
 - [*] Help center: Added help center web page with FAQs for "Not a WooCommerce site" and "Wrong WordPress.com account" error screens. [https://github.com/woocommerce/woocommerce-ios/pull/7767, https://github.com/woocommerce/woocommerce-ios/pull/7769]
+- [*] Now you can bulk edit variation prices. [https://github.com/woocommerce/woocommerce-ios/pull/7803]
 
 10.5
 -----

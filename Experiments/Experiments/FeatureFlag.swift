@@ -22,10 +22,6 @@ public enum FeatureFlag: Int {
     ///
     case inbox
 
-    /// Displays the bulk update option in product variations
-    ///
-    case bulkEditProductVariations
-
     /// Displays the Orders tab in a split view
     ///
     case splitViewInOrdersTab

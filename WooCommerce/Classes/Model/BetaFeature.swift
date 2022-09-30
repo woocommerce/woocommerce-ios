@@ -86,28 +86,6 @@ extension GeneralAppSettingsStorage {
     }
 }
 
-extension BetaFeature {
-    var isEnabled: Bool {
-        ServiceLocator.generalAppSettings.value(for: settingsKey)
-    }
-
-    func setEnabled(_ value: Bool) {
-        if let analyticStat = analyticsStat {
-            let event = WooAnalyticsEvent(statName: analyticStat, properties: ["state": value ? "on" : "off"])
-            ServiceLocator.analytics.track(event: event)
-        }
-        try? ServiceLocator.generalAppSettings.setValue(value, for: settingsKey)
-    }
-
-    func isEnabledBinding() -> Binding<Bool> {
-        Binding(get: {
-            ServiceLocator.generalAppSettings.value(for: settingsKey)
-        }, set: { newValue in
-            setEnabled(newValue)
-        })
-    }
-}
-
 extension BetaFeature: Identifiable {
     var id: String {
         description

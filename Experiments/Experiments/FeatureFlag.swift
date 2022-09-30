@@ -81,7 +81,7 @@ public enum FeatureFlag: Int {
     /// Enables replying to product reviews
     ///
     case replyToProductReviews
-    
+
     /// Enables signing up for a WP.com account.
     ///
     case wpcomSignup

@@ -22,20 +22,26 @@ private struct StoreInfoRectangularView: View {
     let entryData: StoreInfoData
 
     var body: some View {
-        VStack(alignment: .leading) {
-            Text(Localization.revenue)
-                .font(.headline)
-            Text(entryData.revenue)
+        HStack {
+            VStack(alignment: .leading) {
+                Text(Localization.revenue)
+                    .font(.headline)
+                Text(entryData.revenue)
+            }
+            Spacer()
         }
     }
 }
 
 private struct UnableToFetchView: View {
     var body: some View {
-        VStack(alignment: .leading) {
-            Text(StoreInfoRectangularView.Localization.revenue)
-                .font(.headline)
-            Text(Localization.noData)
+        HStack {
+            VStack(alignment: .leading) {
+                Text(StoreInfoRectangularView.Localization.revenue)
+                    .font(.headline)
+                Text(Localization.noData)
+            }
+            Spacer()
         }
     }
 }

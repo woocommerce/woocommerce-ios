@@ -32,12 +32,18 @@ final class ReviewReplyViewModel: ObservableObject {
     ///
     let presentNoticeSubject = PassthroughSubject<ReviewReplyNotice, Never>()
 
+    /// Analytics
+    ///
+    private let analytics: Analytics
+
     init(siteID: Int64,
          reviewID: Int64,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.reviewID = reviewID
         self.stores = stores
+        self.analytics = analytics
         bindNavigationTrailingItemPublisher()
     }
 
@@ -62,15 +68,18 @@ final class ReviewReplyViewModel: ObservableObject {
                     DDLogInfo("Reply to product review succeeded with comment status: \(status)")
                 }
 
+                self.analytics.track(.reviewReplySendSuccess)
                 self.presentNoticeSubject.send(.success)
                 onCompletion(true)
             case .failure(let error):
-                self.presentNoticeSubject.send(.error)
                 DDLogError("⛔️ Error replying to product review: \(error)")
+                self.analytics.track(.reviewReplySendFailed, withError: error)
+                self.presentNoticeSubject.send(.error)
                 onCompletion(false)
             }
         }
 
+        analytics.track(.reviewReplySend)
         performingNetworkRequest.send(true)
         stores.dispatch(action)
     }

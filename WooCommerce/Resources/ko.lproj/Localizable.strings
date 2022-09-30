@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-08-31 09:54:04+0000 */
+/* Translation-Revision-Date: 2022-09-20 13:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -32,6 +32,12 @@
 
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@(고객에게)";
+
+/* A label prompting users to learn more about In-Person Payments.
+\u{2011} is a special character that acts as nonbreaking hyphen for "-" in the "In-Person" string.
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"%1$@ about Inu{2011}Person Payments" = "대면{2011} 결제에 대한 %1$@";
 
 /* A label prompting users to learn more about card readers"
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
@@ -921,6 +927,9 @@ which should be translated separately and considered part of this sentence. */
    Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "이미지를 업로드할 수 없습니다.";
 
+/* Error message displayed when failed to check for Jetpack connection. */
+"Cannot verify your Jetpack connection. Please try again." = "젯팩 연결을 확인할 수 없습니다. 다시 시도하세요.";
+
 /* Error message displayed when failed to check for WooCommerce in a site. */
 "Cannot verify your site's WooCommerce installation." = "사이트의 우커머스 설치를 확인할 수 없습니다.";
 
@@ -1108,6 +1117,12 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connect > A button to begin a search for a reader */
 "Connect Card Reader" = "카드 리더 연결";
 
+/* Title of the Jetpack connection web view in the login flow */
+"Connect Jetpack" = "젯팩 연결";
+
+/* Button linking to web view for setting up Jetpack connection. Presented when logging in with store credentials of an account not connected to the site's Jetpack */
+"Connect Jetpack to your account" = "계정에 젯팩 연결";
+
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "리더에 연결";
 
@@ -1204,8 +1219,7 @@ which should be translated separately and considered part of this sentence. */
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
 "Continuing with Apple" = "Apple로 계속하기";
 
-/* Conversion stat label on dashboard.
-   Conversion title label for the store info widget */
+/* Conversion stat label on dashboard. */
 "Conversion" = "전환";
 
 /* Copy address text button title — should be one word and as short as possible. */
@@ -2005,6 +2019,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message on the Coupon Details screen when deleting coupon fails */
 "Failed to delete coupon. Please try again." = "쿠폰을 삭제하지 못했습니다. 다시 시도하세요.";
 
+/* Error displayed when the attempt to disable a Pay in Person checkout payment option fails */
+"Failed to disable Pay in Person. Please try again later." = "대면 결제를 활성화하지 못했습니다. 나중에 다시 시도하세요.";
+
 /* Error displayed when the attempt to enable a Pay in Person checkout payment option fails */
 "Failed to enable Pay in Person. Please try again later." = "대면 결제 활성화 실패 나중에 다시 시도하세요.";
 
@@ -2515,6 +2532,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message on enable analytics screen to notify that the module is disabled for the store */
 "It looks like you have analytics disabled." = "분석을 비활성화하신 것 같습니다.";
 
+/* Message explaining that the entered site credentials belong to an account that is not connected to the site's Jetpack. Reads like 'It looks like your account is not connected to awebsite.com's Jetpack */
+"It looks like your account is not connected to %@'s Jetpack" = "계정이 %@의 젯팩에 연결되지 않은 것 같습니다.";
+
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "잘못된 비밀번호를 입력하신 것 같습니다. 다시 시도해보시겠어요?";
 
@@ -2694,6 +2714,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Action button that will restart the login flow.Presented when logging in with a site address that appears to be invalid.
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
    Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
+   Action button that will restart the login flow.Presented when logging in with store credentials of an account not connected to the site's Jetpack
    Action button that will restart the login flow.Presented when the user tries to log in to the app with a simple WP.com site. */
 "Log In With Another Account" = "다른 계정으로 로그인";
 
@@ -2903,9 +2924,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Error showed in Shipping Label Address Validation for the name field */
 "Name missing" = "이름 누락";
-
-/* VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen. */
-"Navigates to Settings." = "설정으로 이동합니다.";
 
 /* Title of the banner in the Order Detail for suggesting to install WCShip extension. */
 "Need a shipping label?" = "배송 레이블이 필요하신가요?";
@@ -3208,6 +3226,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Notice title when an order is marked as completed via a swipe action. Parameter: Order Number */
 "Order #%1$d marked as completed" = "주문 #%1$d이(가) 완료됨으로 표시됨";
 
+/* Title for the webview used by merchants to place an order for a card reader, for use with In-Person Payments. */
+"Order Card Reader" = "카드 리더 주문";
+
 /* Order notes section title */
 "Order Notes" = "주문 메모";
 
@@ -3235,7 +3256,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "Ordered List" = "순서 있는 목록";
 
 /* Orders stat label on dashboard - should be plural.
-   Orders title label for the store info widget
    The title of the Orders tab. */
 "Orders" = "주문";
 
@@ -4018,8 +4038,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "패키지를 배송할 수 없는 경우 보낸 사람에게 반송";
 
-/* Revenue stat label on dashboard.
-   Revenue title label for the store info widget */
+/* Revenue stat label on dashboard. */
 "Revenue" = "수익";
 
 /* Title of Review Order screen */
@@ -4239,9 +4258,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Placeholder in Shipping Label form for the Carrier and Rates row. */
 "Select your shipping carrier and rates" = "배송업체 및 요금 선택";
 
-/* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
-"Selected Store" = "선택한 스토어";
-
 /* Presents a survey to gather feedback from the user. */
 "Send Feedback" = "의견 보내기";
 
@@ -4270,8 +4286,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Header text on Add New Service Package screen in Shipping Label flow */
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "상품 배송에 사용할 패키지를 설정하세요. 향후 주문을 위해 저장됩니다.";
 
-/* Accessibility label for the Settings button.
-   Settings button in the hub menu
+/* Settings button in the hub menu
    Settings navigation title */
 "Settings" = "설정";
 
@@ -4891,6 +4906,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Fetching an Order Failed */
 "The Order couldn't be loaded!" = "주문을 로드할 수 없습니다!";
 
+/* A label prompting users to learn more about adding Pay in Person to their checkout. %1$@ is a placeholder that always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
+"The Pay in Person checkout option lets you accept payments for website orders, on collection or delivery. %1$@" = "대면 결제 계산 옵션을 통해 수거 또는 배달 시 웹사이트 오더 결제를 수락할 수 있습니다. %1$@";
+
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "URL에 올바른 호스트가 없습니다.";
 
@@ -5244,6 +5262,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Instructional text shown when requesting the user's password for Google login. */
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "이 Google 계정을 진행하려면 먼저 워드프레스닷컴 비밀번호로 로그인하세요. 이 메시지는 한 번만 표시됩니다.";
+
+/* Sign in instructions asking user to enter WordPress.com password to proceed with sign in using Apple process */
+"To proceed with this account, please first log in with your WordPress.com password. This will only be asked once." = "이 계정으로 진행하려면 먼저 워드프레스닷컴 비밀번호로 로그인하세요. 이 메시지는 한 번만 표시됩니다.";
 
 /* Label within the modal dialog that appears when searching for a card reader */
 "To turn on your card reader, briefly press its power button." = "카드 리더를 켜려면 전원 버튼만 누르면 됩니다.";
@@ -5714,6 +5735,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Step 1 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network." = "프린터와 기기가 **같은 WiFi 네트워크**에 연결되었는지 확인\n\nWi-Fi 네트워크에 프린터를 연결하는 내용은 해당 프린터의 설명서를 참조하세요.";
 
+/* Message displayed when checking whether Jetpack has been connected successfully */
+"Verifying Jetpack connection..." = "젯팩 연결 확인 중…";
+
 /* Message displayed when checking whether a site has successfully installed WooCommerce */
 "Verifying installation..." = "설치 확인 중...";
 
@@ -5784,8 +5808,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Visibility label in Product Settings */
 "Visibility" = "공개 설정";
 
-/* Visitors stat label on dashboard - should be plural.
-   Visitors title label for the store info widget */
+/* Visitors stat label on dashboard - should be plural. */
 "Visitors" = "방문자";
 
 /* Add a note screen - Write Note section title */
@@ -6119,6 +6142,40 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Format of the number of product ratings in singular form */
 "rated once" = "한 번 평가됨";
+
+/* Widget description, displayed when selecting which widget to add */
+"storeWidgets.description" = "우커머스 통계 오늘";
+
+/* Widget title, displayed when selecting which widget to add */
+"storeWidgets.displayName" = "오늘";
+
+/* Generic store name for the store info widget preview */
+"storeWidgets.infoProvider.myShop" = "내 상점";
+
+/* Range title for the today store info widget */
+"storeWidgets.infoProvider.today" = "오늘";
+
+/* Conversion title label for the store info widget
+   Orders title label for the store info widget */
+"storeWidgets.infoView.orders" = "주문";
+
+/* Revenue title label for the store info widget */
+"storeWidgets.infoView.revenue" = "수익";
+
+/* Displays the time when the widget was last updated. %1$@ is the time to render. */
+"storeWidgets.infoView.updatedAt" = "%1$@ 현재";
+
+/* Visitors title label for the store info widget */
+"storeWidgets.infoView.visitors" = "방문자";
+
+/* Title label for the login button on the store info widget. */
+"storeWidgets.notLoggedInView.login" = "로그인";
+
+/* Title label when the widget does not have a logged-in store. */
+"storeWidgets.notLoggedInView.notLoggedIn" = "로그인하여 오늘의 통계를 보세요.";
+
+/* Title label when the widget can't fetch data. */
+"storeWidgets.unableToFetchView.unableToFetch" = "오늘의 통계를 가져올 수 없음";
 
 /* Today */
 "today" = "오늘";

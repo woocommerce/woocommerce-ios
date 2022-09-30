@@ -57,9 +57,11 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v10.2-whats-new"
+msgctxt "v10.5-whats-new"
 msgid ""
-"Even though this release doesn’t have any new features, we still put a lot of love into it! You can now enable or disable the option to take card or cash payments on collection or delivery. We also added a new Help Center page that makes it easier for you to login to the app.\n"
+"This release includes a lot of exciting features! It's now possible to duplicate a product from the app. Just tap on the More Menu available inside the Product detail screen. We have also added a new stats widget so now you can view your current day's stats without opening the app. Lastly, due to popular demand, we're bringing back the ability to add/edit customer notes and addresses from the main order screen.\n"
+"\n"
+"We welcome your feedback on the app, especially the new features we’re working on.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

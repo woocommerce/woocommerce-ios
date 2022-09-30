@@ -43,10 +43,12 @@ class AuthenticationManager: Authentication {
 
     /// Initializes the WordPress Authenticator.
     ///
-    func initialize() {
+    func initialize(loggedOutAppSettings: LoggedOutAppSettingsProtocol) {
         let isWPComMagicLinkPreferredToPassword = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasis)
         let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasisM2)
         let continueWithSiteAddressFirst = ABTest.loginPrologueButtonOrder.variation == .control
+        let isFeatureCarouselShown = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginPrologueOnboarding) == false
+        || loggedOutAppSettings.hasFinishedOnboarding == true
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
                                                                 wpcomScheme: ApiCredentials.dotcomAuthScheme,
@@ -97,7 +99,8 @@ class AuthenticationManager: Authentication {
                                                 navBarImage: StyleManager.navBarImage,
                                                 navBarBadgeColor: .primary,
                                                 navBarBackgroundColor: .appBar,
-                                                prologueTopContainerChildViewController: LoginPrologueViewController(),
+                                                prologueTopContainerChildViewController:
+                                                    LoginPrologueViewController(isFeatureCarouselShown: isFeatureCarouselShown),
                                                 statusBarStyle: .default)
 
         let displayStrings = WordPressAuthenticatorDisplayStrings(emailLoginInstructions: AuthenticationConstants.emailInstructions,
@@ -189,13 +192,14 @@ class AuthenticationManager: Authentication {
     /// and returns an error view controller if not.
     func errorViewController(for siteURL: String,
                              with matcher: ULAccountMatcher,
+                             credentials: AuthenticatorCredentials? = nil,
                              navigationController: UINavigationController,
                              onStorePickerDismiss: @escaping () -> Void) -> UIViewController? {
 
         /// Account mismatched case
         guard matcher.match(originalURL: siteURL) else {
             DDLogWarn("⚠️ Present account mismatch error for site: \(String(describing: siteURL))")
-            return accountMismatchUI(for: siteURL, with: matcher)
+            return accountMismatchUI(for: siteURL, siteCredentials: credentials?.wporg, with: matcher, in: navigationController)
         }
 
         /// No Woo found
@@ -350,7 +354,11 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         let matcher = ULAccountMatcher(storageManager: storageManager)
         matcher.refreshStoredSites()
 
-        if let vc = errorViewController(for: siteURL, with: matcher, navigationController: navigationController, onStorePickerDismiss: onDismiss) {
+        if let vc = errorViewController(for: siteURL,
+                                        with: matcher,
+                                        credentials: credentials,
+                                        navigationController: navigationController,
+                                        onStorePickerDismiss: onDismiss) {
             loggedOutAppSettings?.setErrorLoginSiteAddress(siteURL)
             navigationController.show(vc, sender: nil)
         } else {
@@ -545,7 +553,9 @@ private extension AuthenticationManager {
                              with credentials: AuthenticatorCredentials,
                              in navigationController: UINavigationController,
                              onDismiss: @escaping () -> Void) {
-        let viewModel = JetpackErrorViewModel(siteURL: siteURL, onJetpackSetupCompletion: { [weak self] authorizedEmailAddress in
+        let viewModel = JetpackErrorViewModel(siteURL: siteURL,
+                                              siteCredentials: credentials.wporg,
+                                              onJetpackSetupCompletion: { [weak self] authorizedEmailAddress in
             guard let self = self else { return }
             // Resets the referenced site since the setup completed now.
             self.currentSelfHostedSite = nil
@@ -578,10 +588,13 @@ private extension AuthenticationManager {
     }
 
     /// The error screen to be displayed when the user enters a site
-    /// without Jetpack in the site discovery flow
+    /// without Jetpack in the site discovery flow.
+    /// More about this flow: pe5sF9-mz-p2.
     ///
     func jetpackErrorUI(for siteURL: String, with matcher: ULAccountMatcher, in navigationController: UINavigationController) -> UIViewController {
-        let viewModel = JetpackErrorViewModel(siteURL: siteURL, onJetpackSetupCompletion: { [weak self] authorizedEmailAddress in
+        let viewModel = JetpackErrorViewModel(siteURL: siteURL,
+                                              siteCredentials: nil,
+                                              onJetpackSetupCompletion: { [weak self] authorizedEmailAddress in
             guard let self = self else { return }
 
             // Tries re-syncing to get an updated store list
@@ -609,9 +622,27 @@ private extension AuthenticationManager {
 
     /// The error screen to be displayed when the user tries to enter a site
     /// whose Jetpack is not associated with their account.
+    /// - Parameters:
+    ///     - siteURL: URL for the site to log in to.
+    ///     - siteCredentials: WP.org credentials used to log in to the site if available.
+    ///     - matcher: the matcher used to check for matching sites.
+    ///     - navigationController: the controller that will present the view.
     ///
-    func accountMismatchUI(for siteURL: String, with matcher: ULAccountMatcher) -> UIViewController {
-        let viewModel = WrongAccountErrorViewModel(siteURL: siteURL, showsConnectedStores: matcher.hasConnectedStores)
+    func accountMismatchUI(for siteURL: String,
+                           siteCredentials: WordPressOrgCredentials?,
+                           with matcher: ULAccountMatcher,
+                           in navigationController: UINavigationController) -> UIViewController {
+        let viewModel = WrongAccountErrorViewModel(siteURL: siteURL,
+                                                   showsConnectedStores: matcher.hasConnectedStores,
+                                                   siteCredentials: siteCredentials,
+                                                   onJetpackSetupCompletion: { email, xmlrpc in
+            WordPressAuthenticator.showVerifyEmailForWPCom(
+                from: navigationController,
+                xmlrpc: xmlrpc,
+                connectedEmail: email,
+                siteURL: siteURL
+            )
+        })
         let mismatchAccountUI = ULAccountMismatchViewController(viewModel: viewModel)
         return mismatchAccountUI
     }
@@ -641,6 +672,7 @@ private extension AuthenticationManager {
     }
 
     /// Appropriate error to display for a site when entered from the site discovery flow.
+    /// More about this flow: pe5sF9-mz-p2
     ///
     func errorUI(for site: WordPressComSiteInfo, in navigationController: UINavigationController) -> UIViewController {
         guard site.isWP else {
@@ -652,15 +684,15 @@ private extension AuthenticationManager {
 
         guard !site.isWPCom else {
             // The site doesn't belong to the current account since it was not included in the site picker.
-            return accountMismatchUI(for: site.url, with: matcher)
+            return accountMismatchUI(for: site.url, siteCredentials: nil, with: matcher, in: navigationController)
         }
 
         /// Jetpack is required. Present an error if we don't detect a valid installation.
-        guard site.isJetpackConnected == true else {
+        guard site.isJetpackConnected else {
             return jetpackErrorUI(for: site.url, with: matcher, in: navigationController)
         }
 
-        return accountMismatchUI(for: site.url, with: matcher)
+        return accountMismatchUI(for: site.url, siteCredentials: nil, with: matcher, in: navigationController)
     }
 }
 

@@ -45,6 +45,16 @@ final class PushNotificationsManager: PushNotesManager {
     /// Mutable reference to `inactiveNotifications`
     private let inactiveNotificationsSubject = PassthroughSubject<PushNotification, Never>()
 
+    /// An observable that emits values when a Remote Notification is received while the app is
+    /// in the background.
+    ///
+    var backgroundNotifications: AnyPublisher<PushNotification, Never> {
+        backgroundNotificationsSubject.eraseToAnyPublisher()
+    }
+
+    /// Mutable reference to `backgroundNotifications`
+    private let backgroundNotificationsSubject = PassthroughSubject<PushNotification, Never>()
+
     /// An observable that emits values when a local notification is received.
     ///
     var localNotificationUserResponses: AnyPublisher<UNNotificationResponse, Never> {
@@ -291,6 +301,10 @@ extension PushNotificationsManager {
         }
 
         handleRemoteNotificationInAllAppStates(userInfo)
+
+        if let notification = PushNotification.from(userInfo: userInfo) {
+            backgroundNotificationsSubject.send(notification)
+        }
 
         return await synchronizeNotifications()
     }
@@ -598,6 +612,7 @@ private extension PushNotificationsManager {
 private extension PushNotification {
     static func from(userInfo: [AnyHashable: Any]) -> PushNotification? {
         guard let noteID = userInfo.integer(forKey: APNSKey.identifier),
+              let siteID = userInfo.integer(forKey: APNSKey.siteID),
               let alert = userInfo.dictionary(forKey: APNSKey.aps)?.dictionary(forKey: APNSKey.alert),
               let title = alert.string(forKey: APNSKey.alertTitle),
               let type = userInfo.string(forKey: APNSKey.type),
@@ -606,7 +621,7 @@ private extension PushNotification {
               }
         let subtitle = alert.string(forKey: APNSKey.alertSubtitle)
         let message = alert.string(forKey: APNSKey.alertMessage)
-        return PushNotification(noteID: noteID, kind: noteKind, title: title, subtitle: subtitle, message: message)
+        return PushNotification(noteID: noteID, siteID: siteID, kind: noteKind, title: title, subtitle: subtitle, message: message)
     }
 }
 

@@ -155,7 +155,7 @@ private extension AppCoordinator {
 
     /// Configures the WPAuthenticator for usage in both logged-in and logged-out states.
     func configureAuthenticator() {
-        authenticationManager.initialize()
+        authenticationManager.initialize(loggedOutAppSettings: loggedOutAppSettings)
         appleIDCredentialChecker.observeLoggedInStateForAppleIDObservations()
     }
 
@@ -226,6 +226,7 @@ private extension AppCoordinator {
             if let authenticationUI = authenticationManager.authenticationUI() as? UINavigationController,
                let errorController = authenticationManager.errorViewController(for: siteURL,
                                                                                with: matcher,
+                                                                               credentials: nil,
                                                                                navigationController: authenticationUI,
                                                                                onStorePickerDismiss: {}) {
                 window.rootViewController = authenticationUI

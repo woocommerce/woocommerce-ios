@@ -1,0 +1,1 @@
+Questa versione contiene alcuni miglioramenti minori per rendere la tua esperienza più fluida. È ora possibile configurare la connessione Jetpack tra il tuo sito self-hosted e il tuo account WP.com. Continuiamo ad apportare piccole modifiche e miglioramenti alla funzione dei pagamenti di persona. Speriamo si noti l'amore che mettiamo nel nostro software.

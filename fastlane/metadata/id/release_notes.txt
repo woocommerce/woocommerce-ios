@@ -1,0 +1,1 @@
+Rilis ini memuat berbagai perbaikan minor agar pengalaman Anda makin mulus. Sekarang, Anda dapat menyiapkan koneksi Jetpack antara situs hosting sendiri dan akun WP.com Anda. Kami terus melakukan perubahan dan peningkatan kecil untuk fitur pembayaran langsung. Kami harap Anda menyukai upaya yang kami berikan dalam perangkat lunak kami.

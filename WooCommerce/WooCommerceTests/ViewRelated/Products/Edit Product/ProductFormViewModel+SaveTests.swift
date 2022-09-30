@@ -70,7 +70,7 @@ final class ProductFormViewModel_SaveTests: XCTestCase {
         // Given
         let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
         let productImagesUploader = MockProductImageUploader()
-        let viewModel = createViewModel(product: product, formType: .add, productImagesUploader: productImagesUploader, isBackgroundImageUploadEnabled: true)
+        let viewModel = createViewModel(product: product, formType: .add, productImagesUploader: productImagesUploader)
         storesManager.whenReceivingAction(ofType: ProductAction.self) { action in
             if case let ProductAction.addProduct(product, onCompletion) = action {
                 onCompletion(.success(product))
@@ -91,7 +91,7 @@ final class ProductFormViewModel_SaveTests: XCTestCase {
         // Given
         let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
         let productImagesUploader = MockProductImageUploader()
-        let viewModel = createViewModel(product: product, formType: .add, productImagesUploader: productImagesUploader, isBackgroundImageUploadEnabled: true)
+        let viewModel = createViewModel(product: product, formType: .add, productImagesUploader: productImagesUploader)
         storesManager.whenReceivingAction(ofType: ProductAction.self) { action in
             if case let ProductAction.addProduct(product, onCompletion) = action {
                 onCompletion(.success(product))
@@ -161,7 +161,7 @@ final class ProductFormViewModel_SaveTests: XCTestCase {
         // Given
         let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
         let productImagesUploader = MockProductImageUploader()
-        let viewModel = createViewModel(product: product, formType: .edit, productImagesUploader: productImagesUploader, isBackgroundImageUploadEnabled: true)
+        let viewModel = createViewModel(product: product, formType: .edit, productImagesUploader: productImagesUploader)
         storesManager.whenReceivingAction(ofType: ProductAction.self) { action in
             if case let ProductAction.updateProduct(product, onCompletion) = action {
                 onCompletion(.success(product))
@@ -184,15 +184,13 @@ private extension ProductFormViewModel_SaveTests {
     func createViewModel(
         product: Product,
         formType: ProductFormType,
-        productImagesUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
-        isBackgroundImageUploadEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload)
+        productImagesUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader
     ) -> ProductFormViewModel {
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
         return ProductFormViewModel(product: model,
                                     formType: formType,
                                     productImageActionHandler: productImageActionHandler,
-                                    productImagesUploader: productImagesUploader,
-                                    isBackgroundImageUploadEnabled: isBackgroundImageUploadEnabled)
+                                    productImagesUploader: productImagesUploader)
     }
 }

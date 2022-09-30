@@ -49,6 +49,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "%1$@ card ending %2$@";
 
+/* The default name for a duplicated product, with %1$@ being the original name. Reads like: Ramen Copy */
+"%1$@ Copy" = "%1$@ Copy";
+
 /* Exception rule for a coupon. Reads like: 3 Products excl. 1 Category */
 "%1$@ excl. %2$@" = "%1$@ excl. %2$@";
 
@@ -915,6 +918,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert when there is an error adding new product tags. */
 "Cannot Add Tags" = "Cannot Add Tags";
 
+/* The title of the alert when there is an error duplicating the product */
+"Cannot duplicate product" = "Cannot duplicate product";
+
 /* Error message when no URL to WP-Admin page is found during Jetpack install flow */
 "Cannot find information about your site's WP-Admin. Please try again." = "Cannot find information about your site's WP-Admin. Please try again.";
 
@@ -925,6 +931,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the alert when there is an error uploading an image
    Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "Cannot upload image";
+
+/* Error message displayed when failed to check for Jetpack connection. */
+"Cannot verify your Jetpack connection. Please try again." = "Cannot verify your Jetpack connection. Please try again.";
 
 /* Error message displayed when failed to check for WooCommerce in a site. */
 "Cannot verify your site's WooCommerce installation." = "Cannot verify your site's WooCommerce installation.";
@@ -1113,6 +1122,10 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connect > A button to begin a search for a reader */
 "Connect Card Reader" = "Connect Card Reader";
 
+/* Action button to handle Jetpack connection.Presented when logging in with a self-hosted site that does not match the account entered
+   Title of the Jetpack connection web view in the login flow */
+"Connect Jetpack" = "Connect Jetpack";
+
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "Connect to Reader";
 
@@ -1209,8 +1222,7 @@ which should be translated separately and considered part of this sentence. */
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
 "Continuing with Apple" = "Continuing with Apple";
 
-/* Conversion stat label on dashboard.
-   Conversion title label for the store info widget */
+/* Conversion stat label on dashboard. */
 "Conversion" = "Conversion";
 
 /* Copy address text button title — should be one word and as short as possible. */
@@ -1691,6 +1703,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Drag and drop helper text above photo list in Product images screen */
 "Drag and drop to re-order photos" = "Drag and drop to re-order photos";
+
+/* Button title to duplicate a product in Product More Options Action Sheet */
+"Duplicate" = "Duplicate";
+
+/* Title of the in-progress UI while duplicating a Product remotely */
+"Duplicating your product..." = "Duplicating your product...";
 
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "Easily identify your products with unique codes";
@@ -2268,6 +2286,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Help and Support navigation title
    Help button
+   Help button on account mismatch error screen.
    Help button on Jetpack required error screen.
    Help button on store picker screen. */
 "Help" = "Help";
@@ -2925,9 +2944,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Error showed in Shipping Label Address Validation for the name field */
 "Name missing" = "Name missing";
 
-/* VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen. */
-"Navigates to Settings." = "Navigates to Settings.";
-
 /* Title of the banner in the Order Detail for suggesting to install WCShip extension. */
 "Need a shipping label?" = "Need a shipping label?";
 
@@ -3235,6 +3251,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Navigates to Card Reader ordering screen */
 "Order card reader" = "Order card reader";
 
+/* Title for the webview used by merchants to place an order for a card reader, for use with In-Person Payments. */
+"Order Card Reader" = "Order Card Reader";
+
 /* Order notes section title */
 "Order Notes" = "Order Notes";
 
@@ -3256,7 +3275,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "Ordered List" = "Ordered List";
 
 /* Orders stat label on dashboard - should be plural.
-   Orders title label for the store info widget
    The title of the Orders tab. */
 "Orders" = "Orders";
 
@@ -3566,6 +3584,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "Please wait while we publish this product to your store";
 
+/* Message of the in-progress UI while duplicating a Product as draft remotely */
+"Please wait while we save a copy of this product to your store" = "Please wait while we save a copy of this product to your store";
+
 /* Message of the in-progress UI while saving a Product as draft remotely */
 "Please wait while we save this product to your store" = "Please wait while we save this product to your store";
 
@@ -3700,6 +3721,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Row title for filtering products by product category. */
 "Product Category" = "Product Category";
+
+/* Title of the alert when a user has copied a product */
+"Product copied" = "Product copied";
 
 /* Edit Product External Link navigation title */
 "Product Link" = "Product Link";
@@ -4048,8 +4072,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "Return to sender if package is unable to be delivered";
 
-/* Revenue stat label on dashboard.
-   Revenue title label for the store info widget */
+/* Revenue stat label on dashboard. */
 "Revenue" = "Revenue";
 
 /* Review moderation success notice message. It reads: Review marked as {new status} */
@@ -4248,9 +4271,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Placeholder in Shipping Label form for the Carrier and Rates row. */
 "Select your shipping carrier and rates" = "Select your shipping carrier and rates";
 
-/* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
-"Selected Store" = "Selected Store";
-
 /* Button title. Sends a email verification link (Magin link) for signing in. */
 "Send email verification link" = "Send email verification link";
 
@@ -4279,8 +4299,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Header text on Add New Service Package screen in Shipping Label flow */
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "Set up the package you'll be using to ship your products. We'll save it for future orders.";
 
-/* Accessibility label for the Settings button.
-   Settings button in the hub menu
+/* Settings button in the hub menu
    Settings navigation title */
 "Settings" = "Settings";
 
@@ -4657,6 +4676,45 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* My Store > Settings > Store Settings section title */
 "Store Settings" = "Store Settings";
+
+/* Widget description, displayed when selecting which widget to add */
+"storeWidgets.description" = "WooCommerce Stats Today";
+
+/* Widget title, displayed when selecting which widget to add */
+"storeWidgets.displayName" = "Today";
+
+/* Generic store name for the store info widget preview */
+"storeWidgets.infoProvider.myShop" = "My Shop";
+
+/* Range title for the today store info widget */
+"storeWidgets.infoProvider.today" = "Today";
+
+/* Conversion title label for the store info widget */
+"storeWidgets.infoView.conversion" = "Conversion";
+
+/* Orders title label for the store info widget */
+"storeWidgets.infoView.orders" = "Orders";
+
+/* Revenue title label for the store info widget */
+"storeWidgets.infoView.revenue" = "Revenue";
+
+/* Displays the time when the widget was last updated. %1$@ is the time to render. */
+"storeWidgets.infoView.updatedAt" = "As of %1$@";
+
+/* Title for the button indicator to display more stats in the Today's Stat widget when using accessibility fonts. */
+"storeWidgets.infoView.viewMore" = "View More";
+
+/* Visitors title label for the store info widget */
+"storeWidgets.infoView.visitors" = "Visitors";
+
+/* Title label for the login button on the store info widget. */
+"storeWidgets.notLoggedInView.login" = "Log in";
+
+/* Title label when the widget does not have a logged-in store. */
+"storeWidgets.notLoggedInView.notLoggedIn" = "Log in to see today’s stats.";
+
+/* Title label when the widget can't fetch data. */
+"storeWidgets.unableToFetchView.unableToFetch" = "Unable to fetch today's stats";
 
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "Strike Through";
@@ -5759,6 +5817,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Message displayed when checking whether a site has successfully installed WooCommerce */
 "Verifying installation..." = "Verifying installation...";
 
+/* Message displayed when checking whether Jetpack has been connected successfully */
+"Verifying Jetpack connection..." = "Verifying Jetpack connection...";
+
 /* Displays the connected reader software version */
 "Version: %1$@" = "Version: %1$@";
 
@@ -5826,8 +5887,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Visibility label in Product Settings */
 "Visibility" = "Visibility";
 
-/* Visitors stat label on dashboard - should be plural.
-   Visitors title label for the store info widget */
+/* Visitors stat label on dashboard - should be plural. */
 "Visitors" = "Visitors";
 
 /* Message shown on screen while waiting for Google to finish its signup process. */

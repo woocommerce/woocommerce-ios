@@ -341,7 +341,11 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
         viewModel.selectedIntervalIndex = 0
 
         // Then
-        XCTAssertEqual(timeRangeBarViewModels.map { $0.timeRangeText }, ["Monday, Jan 3", "Monday, Jan 3, 1:00 AM"])
+        if #available(iOS 16.0, *) {
+            XCTAssertEqual(timeRangeBarViewModels.map { $0.timeRangeText }, ["Monday, Jan 3", "Monday, Jan 3 at 1:00 AM"])
+        } else {
+            XCTAssertEqual(timeRangeBarViewModels.map { $0.timeRangeText }, ["Monday, Jan 3", "Monday, Jan 3, 1:00 AM"])
+        }
     }
 
     func test_timeRangeBarViewModel_for_thisWeek_is_emitted_twice_after_order_and_visitor_stats_updated_and_selecting_interval() {

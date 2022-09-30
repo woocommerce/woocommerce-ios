@@ -6,23 +6,17 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isSplitViewInOrdersTabOn: Bool
     private let isUpdateOrderOptimisticallyOn: Bool
     private let shippingLabelsOnboardingM1: Bool
-    private let isAppleIDAccountDeletionEnabled: Bool
-    private let isBackgroundImageUploadEnabled: Bool
     private let isLoginPrologueOnboardingEnabled: Bool
 
     init(isInboxOn: Bool = false,
          isSplitViewInOrdersTabOn: Bool = false,
          isUpdateOrderOptimisticallyOn: Bool = false,
          shippingLabelsOnboardingM1: Bool = false,
-         isAppleIDAccountDeletionEnabled: Bool = false,
-         isBackgroundImageUploadEnabled: Bool = false,
          isLoginPrologueOnboardingEnabled: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isSplitViewInOrdersTabOn = isSplitViewInOrdersTabOn
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
         self.shippingLabelsOnboardingM1 = shippingLabelsOnboardingM1
-        self.isAppleIDAccountDeletionEnabled = isAppleIDAccountDeletionEnabled
-        self.isBackgroundImageUploadEnabled = isBackgroundImageUploadEnabled
         self.isLoginPrologueOnboardingEnabled = isLoginPrologueOnboardingEnabled
     }
 
@@ -36,10 +30,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isUpdateOrderOptimisticallyOn
         case .shippingLabelsOnboardingM1:
             return shippingLabelsOnboardingM1
-        case .appleIDAccountDeletion:
-            return isAppleIDAccountDeletionEnabled
-        case .backgroundProductImageUpload:
-            return isBackgroundImageUploadEnabled
         case .loginPrologueOnboarding:
             return isLoginPrologueOnboardingEnabled
         default:

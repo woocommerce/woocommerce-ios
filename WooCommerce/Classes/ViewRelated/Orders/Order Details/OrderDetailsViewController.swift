@@ -386,6 +386,10 @@ private extension OrderDetailsViewController {
             shippingLabelTrackingMoreMenuTapped(shippingLabel: shippingLabel, sourceView: sourceView)
         case let .viewAddOns(addOns):
             itemAddOnsButtonTapped(addOns: addOns)
+        case .editCustomerNote:
+            editCustomerNoteTapped()
+        case .editShippingAddress:
+            editShippingAddressTapped()
         }
     }
 
@@ -540,6 +544,20 @@ private extension OrderDetailsViewController {
         popoverController?.sourceView = sourceView
 
         present(actionSheet, animated: true)
+    }
+
+    func editCustomerNoteTapped() {
+        let editNoteViewController = EditCustomerNoteHostingController(viewModel: viewModel.editNoteViewModel)
+        present(editNoteViewController, animated: true)
+
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowStarted(subject: .customerNote))
+    }
+
+    func editShippingAddressTapped() {
+        let viewModel = EditOrderAddressFormViewModel(order: viewModel.order, type: .shipping)
+        let editAddressViewController = EditOrderAddressHostingController(viewModel: viewModel)
+        let navigationController = WooNavigationController(rootViewController: editAddressViewController)
+        present(navigationController, animated: true, completion: nil)
     }
 
     @objc private func collectPaymentTapped() {

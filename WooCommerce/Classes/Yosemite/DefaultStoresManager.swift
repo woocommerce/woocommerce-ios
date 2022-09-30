@@ -3,6 +3,9 @@ import Foundation
 import Yosemite
 import enum Networking.DotcomError
 import class Networking.UserAgent
+import class Networking.WordPressOrgNetwork
+import KeychainAccess
+import class WidgetKit.WidgetCenter
 
 // MARK: - DefaultStoresManager
 //
@@ -17,6 +20,10 @@ class DefaultStoresManager: StoresManager {
     /// `Thread 1: Simultaneous accesses to <MEMORY_ADDESS>, but modification requires exclusive access`
     /// https://github.com/woocommerce/woocommerce-ios/issues/878
     private var _sessionManager: SessionManagerProtocol
+
+    /// Keychain access. Used for sharing the auth access token with the widgets extension.
+    ///
+    private lazy var keychain = Keychain(service: WooConstants.keychainServiceName)
 
     /// SessionManager: Persistent Storage for Session-Y Properties.
     /// This property is thread safe
@@ -167,6 +174,8 @@ class DefaultStoresManager: StoresManager {
         ZendeskProvider.shared.reset()
         ServiceLocator.storageManager.reset()
         ServiceLocator.productImageUploader.reset()
+
+        updateAndReloadWidgetInformation(with: nil)
 
         NotificationCenter.default.post(name: .logOutEventReceived, object: nil)
 
@@ -486,8 +495,26 @@ private extension DefaultStoresManager {
                 return
             }
             self.sessionManager.defaultSite = site
+            self.updateAndReloadWidgetInformation(with: siteID)
         }
         dispatch(action)
+    }
+
+    /// Updates the necesary dependencies for the widget to function correctly.
+    /// Reloads widgets timelines.
+    ///
+    func updateAndReloadWidgetInformation(with siteID: Int64?) {
+        // Token to fire network requests
+        keychain.currentAuthToken = sessionManager.defaultCredentials?.authToken
+
+        // Non-critical store info
+        UserDefaults.group?[.defaultStoreID] = siteID
+        UserDefaults.group?[.defaultStoreName] = sessionManager.defaultSite?.name
+
+        // Currency Settings are stored in `SelectedSiteSettings.defaultStoreCurrencySettings`
+
+        // Reload widgets UI
+        WidgetCenter.shared.reloadAllTimelines()
     }
 }
 

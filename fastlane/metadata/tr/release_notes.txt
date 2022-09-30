@@ -1,0 +1,1 @@
+Bu sürüm, deneyiminizi daha sorunsuz hale getirmek için birkaç küçük iyileştirme içerir. Artık kendi barındırdığınız siteniz ile WP.com hesabınız arasında Jetpack bağlantısı oluşturmak mümkün. Şahsen ödeme özelliğinde küçük değişiklikler ve geliştirmeler yapmaya devam ediyoruz. Yazılımımıza gönlümüzden kattığımız sevgiyi fark edeceğinizi umuyoruz.

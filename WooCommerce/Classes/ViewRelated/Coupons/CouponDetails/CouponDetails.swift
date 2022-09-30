@@ -86,12 +86,11 @@ struct CouponDetails: View {
             ])
         }
 
-        if viewModel.isDeletingEnabled {
-            buttons.append(.destructive(Text(Localization.deleteCoupon), action: {
-                ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "tapped_delete"])
-                showingDeletionConfirmAlert = true
-            }))
-        }
+        buttons.append(.destructive(Text(Localization.deleteCoupon), action: {
+            ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "tapped_delete"])
+            showingDeletionConfirmAlert = true
+        }))
+
 
         buttons.append(.cancel())
 

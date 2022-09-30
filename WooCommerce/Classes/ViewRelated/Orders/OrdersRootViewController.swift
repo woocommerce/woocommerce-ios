@@ -102,6 +102,13 @@ final class OrdersRootViewController: UIViewController {
         }
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        // Clears application icon badge and requests new reports/orders/totals data
+        ServiceLocator.pushNotesManager.resetBadgeCount(type: .storeOrder)
+    }
+
     override var shouldShowOfflineBanner: Bool {
         if featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
             return false

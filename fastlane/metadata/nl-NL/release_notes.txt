@@ -1,0 +1,1 @@
+Deze release bevat tal van kleine verbeteringen om je ervaring soepeler te laten verlopen. Het is nu mogelijk om een Jetpack-verbinding in te stellen tussen je zelf-gehoste site en je WP.com-account. We blijven kleine aanpassingen maken en verbeteringen aanbrengen aan de functie fysieke betalingen. We hopen dat je merkt dat we dit met liefde doen.

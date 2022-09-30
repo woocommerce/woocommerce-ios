@@ -2,6 +2,7 @@ import UIKit
 import Yosemite
 import Gridicons
 import SafariServices
+import Experiments
 
 
 // MARK: - ReviewDetailsViewController
@@ -44,13 +45,16 @@ final class ReviewDetailsViewController: UIViewController {
     ///
     private var rows = [Row]()
 
+    private let featureFlagService: FeatureFlagService
+
     /// Designated Initializer
     ///
-    init(productReview: ProductReview, product: Product?, notification: Note?) {
+    init(productReview: ProductReview, product: Product?, notification: Note?, featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.productReview = productReview
         self.siteID = productReview.siteID
         self.product = product
         self.notification = notification
+        self.featureFlagService = featureFlagService
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -332,6 +336,7 @@ private extension ReviewDetailsViewController {
         commentCell.isTrashEnabled    = true
         commentCell.isSpamEnabled     = true
         commentCell.isApproveSelected = productReview.status == .approved
+        commentCell.isReplyEnabled    = featureFlagService.isFeatureFlagEnabled(.replyToProductReviews)
 
         let reviewID = productReview.reviewID
         let reviewSiteID = productReview.siteID
@@ -377,6 +382,10 @@ private extension ReviewDetailsViewController {
             ServiceLocator.analytics.track(.notificationReviewAction, withProperties: ["type": ProductReviewStatus.spam.rawValue])
 
             self.moderateReview(siteID: reviewSiteID, reviewID: reviewID, doneStatus: .spam, undoStatus: .unspam)
+        }
+
+        commentCell.onReply = {
+            // TODO: Open a text view to send a comment reply to the product review
         }
     }
 }

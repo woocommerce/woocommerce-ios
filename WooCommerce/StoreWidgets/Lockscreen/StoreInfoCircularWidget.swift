@@ -25,9 +25,7 @@ private struct StoreInfoCircularView: View {
         ZStack {
             Circle()
                 .fill(Color.black)
-            VStack {
-                Text(entryData.revenueCompact)
-            }
+            Text(entryData.revenueCompact)
         }
     }
 }

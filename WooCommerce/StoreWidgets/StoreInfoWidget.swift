@@ -10,9 +10,9 @@ struct StoreInfoWidget: Widget {
     private var supportedFamilies: [WidgetFamily] {
         if #available(iOSApplicationExtension 16.0, *), enableLockscreenWidgets {
             return [
-//                .accessoryInline,
 //                .accessoryRectangular,
 //                .accessoryCircular,
+                .accessoryInline,
                 .systemMedium
             ]
         } else {
@@ -39,12 +39,12 @@ private struct StoreInfoWidgetEntryView: View {
     var body: some View {
         if #available(iOSApplicationExtension 16.0, *) {
             switch widgetFamily {
-//            case .accessoryInline:
-//                Text("Inline")
 //            case .accessoryRectangular:
 //                Text("Rectangular")
 //            case .accessoryCircular:
 //                Text("Circular")
+            case .accessoryInline:
+                StoreInfoInlineWidget(entry: entry)
             case .systemMedium:
                 StoreInfoHomescreenWidget(entry: entry)
             default:

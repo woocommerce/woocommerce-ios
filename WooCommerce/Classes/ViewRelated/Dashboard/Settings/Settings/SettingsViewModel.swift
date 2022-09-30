@@ -134,6 +134,13 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
         } else {
             paymentGatewayAccountsResultsController = nil
         }
+
+        /// Synchronize system plugins for the WooCommerce plugin version row
+        ///
+        if let siteID = stores.sessionManager.defaultSite?.siteID {
+            let action = SystemStatusAction.synchronizeSystemPlugins(siteID: siteID, onCompletion: { _ in })
+            stores.dispatch(action)
+        }
     }
 
     /// Sets up the view model and loads the settings.

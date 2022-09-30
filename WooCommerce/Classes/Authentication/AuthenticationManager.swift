@@ -569,7 +569,9 @@ private extension AuthenticationManager {
                              with credentials: AuthenticatorCredentials,
                              in navigationController: UINavigationController,
                              onDismiss: @escaping () -> Void) {
-        let viewModel = JetpackErrorViewModel(siteURL: siteURL, onJetpackSetupCompletion: { [weak self] authorizedEmailAddress in
+        let viewModel = JetpackErrorViewModel(siteURL: siteURL,
+                                              siteCredentials: credentials.wporg,
+                                              onJetpackSetupCompletion: { [weak self] authorizedEmailAddress in
             guard let self = self else { return }
             // Resets the referenced site since the setup completed now.
             self.currentSelfHostedSite = nil
@@ -602,10 +604,13 @@ private extension AuthenticationManager {
     }
 
     /// The error screen to be displayed when the user enters a site
-    /// without Jetpack in the site discovery flow
+    /// without Jetpack in the site discovery flow.
+    /// More about this flow: pe5sF9-mz-p2.
     ///
     func jetpackErrorUI(for siteURL: String, with matcher: ULAccountMatcher, in navigationController: UINavigationController) -> UIViewController {
-        let viewModel = JetpackErrorViewModel(siteURL: siteURL, onJetpackSetupCompletion: { [weak self] authorizedEmailAddress in
+        let viewModel = JetpackErrorViewModel(siteURL: siteURL,
+                                              siteCredentials: nil,
+                                              onJetpackSetupCompletion: { [weak self] authorizedEmailAddress in
             guard let self = self else { return }
 
             // Tries re-syncing to get an updated store list
@@ -683,6 +688,7 @@ private extension AuthenticationManager {
     }
 
     /// Appropriate error to display for a site when entered from the site discovery flow.
+    /// More about this flow: pe5sF9-mz-p2
     ///
     func errorUI(for site: WordPressComSiteInfo, in navigationController: UINavigationController) -> UIViewController {
         guard site.isWP else {

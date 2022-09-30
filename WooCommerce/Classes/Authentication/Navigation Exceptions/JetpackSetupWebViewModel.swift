@@ -15,7 +15,9 @@ final class JetpackSetupWebViewModel: AuthenticatedWebViewModel {
     /// The email address that the user uses to authorize Jetpack
     private var authorizedEmailAddress: String?
 
-    init(siteURL: String, analytics: Analytics = ServiceLocator.analytics, onCompletion: @escaping (String?) -> Void) {
+    init(siteURL: String,
+         analytics: Analytics = ServiceLocator.analytics,
+         onCompletion: @escaping (String?) -> Void) {
         self.siteURL = siteURL
         self.analytics = analytics
         self.completionHandler = onCompletion

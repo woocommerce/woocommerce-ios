@@ -1,5 +1,6 @@
 import Foundation
 import WebKit
+import WordPressAuthenticator
 
 /// Abstracts different configurations and logic for web view controllers
 /// which are authenticated for WordPress.com, where possible

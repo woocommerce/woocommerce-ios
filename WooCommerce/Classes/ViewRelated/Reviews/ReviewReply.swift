@@ -4,7 +4,11 @@ import SwiftUI
 /// Hosting controller that wraps a `ReviewDetailsReply` view.
 ///
 final class ReviewReplyHostingController: UIHostingController<ReviewReply>, UIAdaptivePresentationControllerDelegate {
+
+    private let viewModel: ReviewReplyViewModel
+
     init(viewModel: ReviewReplyViewModel) {
+        self.viewModel = viewModel
         super.init(rootView: ReviewReply(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController

@@ -1,4 +1,5 @@
 import XCTest
+import Combine
 @testable import WooCommerce
 @testable import Yosemite
 
@@ -7,6 +8,8 @@ class ReviewReplyViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 12345
 
     private let sampleReviewID: Int64 = 7
+
+    private var subscriptions: [AnyCancellable] = []
 
     func test_send_button_is_disabled_when_reply_content_is_empty() {
         // Given
@@ -128,11 +131,10 @@ class ReviewReplyViewModelTests: XCTestCase {
         XCTAssertFalse(successResponse)
     }
 
-    func test_view_model_enqueues_success_notice_after_reply_is_sent_successfully() {
+    func test_view_model_triggers_success_notice_after_reply_is_sent_successfully() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let noticePresenter = MockNoticePresenter()
-        let viewModel = ReviewReplyViewModel(siteID: sampleSiteID, reviewID: sampleReviewID, stores: stores, noticePresenter: noticePresenter)
+        let viewModel = ReviewReplyViewModel(siteID: sampleSiteID, reviewID: sampleReviewID, stores: stores)
         stores.whenReceivingAction(ofType: CommentAction.self) { action in
             switch action {
             case let .replyToComment(_, _, _, onCompletion):
@@ -142,25 +144,23 @@ class ReviewReplyViewModelTests: XCTestCase {
             }
         }
 
+        var noticeTypes: [ReviewReplyNotice] = []
+        viewModel.presentNoticeSubject.sink { notice in
+            noticeTypes.append(notice)
+        }.store(in: &subscriptions)
+
         // When
         viewModel.newReply = "New reply"
-        let noticeType: UINotificationFeedbackGenerator.FeedbackType? = waitFor { promise in
-            viewModel.sendReply { _ in
-                promise(noticePresenter.queuedNotices.first?.feedbackType)
-            }
-        }
+        viewModel.sendReply { _ in }
 
         // Then
-        XCTAssertEqual(noticeType, .success)
+        XCTAssertEqual(noticeTypes, [.success])
     }
 
-    func test_view_model_enqueues_error_notice_using_modal_notice_presenter_after_reply_fails() {
+    func test_view_model_triggers_error_notice_using_modal_notice_presenter_after_reply_fails() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let noticePresenter = MockNoticePresenter()
-        let modalNoticePresenter = MockNoticePresenter()
-        let viewModel = ReviewReplyViewModel(siteID: sampleSiteID, reviewID: sampleReviewID, stores: stores, noticePresenter: noticePresenter)
-        viewModel.modalNoticePresenter = modalNoticePresenter
+        let viewModel = ReviewReplyViewModel(siteID: sampleSiteID, reviewID: sampleReviewID, stores: stores)
         stores.whenReceivingAction(ofType: CommentAction.self) { action in
             switch action {
             case let .replyToComment(_, _, _, onCompletion):
@@ -170,15 +170,16 @@ class ReviewReplyViewModelTests: XCTestCase {
             }
         }
 
+        var noticeTypes: [ReviewReplyNotice] = []
+        viewModel.presentNoticeSubject.sink { notice in
+            noticeTypes.append(notice)
+        }.store(in: &subscriptions)
+
         // When
         viewModel.newReply = "New reply"
-        let noticeType: UINotificationFeedbackGenerator.FeedbackType? = waitFor { promise in
-            viewModel.sendReply { _ in
-                promise(modalNoticePresenter.queuedNotices.first?.feedbackType)
-            }
-        }
+        viewModel.sendReply { _ in }
 
         // Then
-        XCTAssertEqual(noticeType, .error)
+        XCTAssertEqual(noticeTypes, [.error])
     }
 }

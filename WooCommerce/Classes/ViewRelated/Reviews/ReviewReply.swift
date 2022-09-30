@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import Combine
 
 /// Hosting controller that wraps a `ReviewDetailsReply` view.
 ///
@@ -7,8 +8,32 @@ final class ReviewReplyHostingController: UIHostingController<ReviewReply>, UIAd
 
     private let viewModel: ReviewReplyViewModel
 
-    init(viewModel: ReviewReplyViewModel) {
+    /// Presents notices in the tab bar context.
+    ///
+    private let systemNoticePresenter: NoticePresenter
+
+    /// Presents notices in the current modal presentation context.
+    ///
+    private lazy var modalNoticePresenter: NoticePresenter = {
+        let presenter = DefaultNoticePresenter()
+        presenter.presentingViewController = self
+        return presenter
+    }()
+
+    /// Emits the intent to present a `ReviewReplyNotice`
+    ///
+    private lazy var presentNoticePublisher = {
+        viewModel.presentNoticeSubject.eraseToAnyPublisher()
+    }()
+
+    /// References to keep the Combine subscriptions alive within the lifecycle of the object.
+    ///
+    private var subscriptions: Set<AnyCancellable> = []
+
+    init(viewModel: ReviewReplyViewModel,
+         noticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
         self.viewModel = viewModel
+        self.systemNoticePresenter = noticePresenter
         super.init(rootView: ReviewReply(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
@@ -16,10 +41,30 @@ final class ReviewReplyHostingController: UIHostingController<ReviewReply>, UIAd
             self?.dismiss(animated: true, completion: nil)
         }
 
-        // This notice presenter is needed to display an error notice without closing the modal if the network request fails.
-        let errorNoticePresenter = DefaultNoticePresenter()
-        errorNoticePresenter.presentingViewController = self
-        viewModel.modalNoticePresenter = errorNoticePresenter
+        // Observe the present notice intent.
+        presentNoticePublisher
+            .compactMap { $0 }
+            .sink { [weak self] notice in
+                switch notice {
+                case .success:
+                    self?.systemNoticePresenter.enqueue(notice: Notice(title: Localization.success, feedbackType: .success))
+                case .error:
+                    let noticeIdentifier = UUID().uuidString
+                    let notice = Notice(title: Localization.error,
+                                        feedbackType: .error,
+                                        notificationInfo: NoticeNotificationInfo(identifier: noticeIdentifier),
+                                        actionTitle: Localization.retry) { [weak self] in
+                        self?.viewModel.sendReply(onCompletion: { [weak self] success in
+                            if success {
+                                self?.dismiss(animated: true, completion: nil)
+                            }
+                        })
+                    }
+
+                    self?.modalNoticePresenter.enqueue(notice: notice)
+                }
+            }
+            .store(in: &subscriptions)
 
         // Set presentation delegate to track the user dismiss flow event
         presentationController?.delegate = self
@@ -83,9 +128,19 @@ struct ReviewReply: View {
     }
 }
 
+enum ReviewReplyNotice: Equatable {
+    case success
+    case error
+}
+
 // MARK: Constants
 private enum Localization {
     static let title = NSLocalizedString("Reply to Product Review", comment: "Title for the product review reply screen")
     static let send = NSLocalizedString("Send", comment: "Text for the send button in the product review reply screen")
     static let cancel = NSLocalizedString("Cancel", comment: "Text for the cancel button in the product review reply screen")
+
+    // Notice strings
+    static let success = NSLocalizedString("Reply sent!", comment: "Notice text after sending a reply to a product review successfully")
+    static let error = NSLocalizedString("There was an error sending the reply", comment: "Notice text after failing to send a reply to a product review")
+    static let retry = NSLocalizedString("Retry", comment: "Retry Action")
 }

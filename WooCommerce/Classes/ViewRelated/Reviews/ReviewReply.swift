@@ -49,6 +49,7 @@ final class ReviewReplyHostingController: UIHostingController<ReviewReply>, UIAd
                 case .success:
                     self?.systemNoticePresenter.enqueue(notice: Notice(title: Localization.success, feedbackType: .success))
                 case .error:
+                    // Include a notice identifier so the the error can be presented as a system notification even if the app is closed.
                     let noticeIdentifier = UUID().uuidString
                     let notice = Notice(title: Localization.error,
                                         feedbackType: .error,

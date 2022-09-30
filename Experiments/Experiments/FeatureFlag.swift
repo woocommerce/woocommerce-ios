@@ -78,6 +78,10 @@ public enum FeatureFlag: Int {
     ///
     case orderCreationSearchCustomers
 
+    /// Enables lock screen widgets
+    ///
+    case lockscreenWidgets
+
     /// Enables replying to product reviews
     ///
     case replyToProductReviews

@@ -337,7 +337,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         XCTAssertTrue(onCancelButtonTappedInvoked)
     }
 
-    func test_less_than_100_variations_shows_warning() throws {
+    func test_less_than_100_variations_does_not_shows_warning() throws {
         // Given
         let viewModel = BulkUpdateViewModel(siteID: 0,
                                             productID: 0,
@@ -350,7 +350,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldShowVariationLimitWarning)
     }
 
-    func test_more_than_100_variations_does_not_shows_warning() throws {
+    func test_more_than_100_variations_shows_warning() throws {
         // Given
         let viewModel = BulkUpdateViewModel(siteID: 0,
                                             productID: 0,

@@ -1,6 +1,6 @@
 import Storage
 
-enum BetaFeature: CaseIterable {
+enum BetaFeature: String, CaseIterable {
     case viewAddOns
     case productSKUScanner
     case couponManagement
@@ -52,15 +52,23 @@ extension BetaFeature {
         }
     }
 
-    var analyticsStat: WooAnalyticsStat? {
+    /// This is intended for removal, and new specific analytic stats should not be set here.
+    /// When `viewAddOns` is removed, we can remove this property and always use the `settingsBetaFeatureToggled` event
+    var analyticsStat: WooAnalyticsStat {
         switch self {
         case .viewAddOns:
             return .settingsBetaFeaturesOrderAddOnsToggled
-        case .productSKUScanner:
-            return nil
-        case .couponManagement:
-            return nil
+        default:
+            return .settingsBetaFeatureToggled
         }
+    }
+
+    func analyticsProperties(toggleState enabled: Bool) -> [String: WooAnalyticsEventPropertyType] {
+        var properties = ["state": enabled ? "on" : "off"]
+        if analyticsStat == .settingsBetaFeatureToggled {
+            properties["feature_name"] = self.rawValue
+        }
+        return properties
     }
 }
 
@@ -78,10 +86,9 @@ extension GeneralAppSettingsStorage {
     }
 
     func setBetaFeatureEnabled(_ feature: BetaFeature, enabled: Bool) throws {
-        if let analyticStat = feature.analyticsStat {
-            let event = WooAnalyticsEvent(statName: analyticStat, properties: ["state": enabled ? "on" : "off"])
-            ServiceLocator.analytics.track(event: event)
-        }
+        let event = WooAnalyticsEvent(statName: feature.analyticsStat,
+                                      properties: feature.analyticsProperties(toggleState: enabled))
+        ServiceLocator.analytics.track(event: event)
         try setValue(enabled, for: feature.settingsKey)
     }
 }

@@ -1,3 +1,1 @@
-Vi har gjort det mycket enklare att hitta allt om att ta emot betalningar i appen. Det är bara att gå till sektionen Betalningar från menyn. Vi har också åtgärdat ett problem som gjorde att man felaktigt kunde bli blockerad från att ta emot betalningar.
-Vi har dessutom gjort diverse förbättringar av våra inloggningsflöden, så att det ska gå snabbare att komma igång med appen.
-Slutligen har vi även gjort några förbättringar av prestandan. Men vi är inte klara. Det kommer fler förbättringar framöver. Fortsätt att skicka feedback.
+Den här versionen innehåller en handfull mindre förbättringar som ska göra din upplevelse smidigare. Det är nu möjligt att konfigurera Jetpack-anslutningen mellan din webbplats på egen server och ditt WP.com-konto. Vi fortsätter att göra små justeringar och förbättringar av funktionen Personliga betalningar. Vi hoppas att du kommer att märka hur mycket arbete vi lägger ned på vår programvara.

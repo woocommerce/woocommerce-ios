@@ -27,8 +27,19 @@ SCREENSHOT_DEVICES = [
   'iPad Pro (12.9-inch) (3rd generation)'
 ].freeze
 
-MAIN_BUNDLE_IDENTIFIERS = %w[com.automattic.woocommerce].freeze        # Registered in our main account, for development and AppStore
-ALPHA_BUNDLE_IDENTIFIERS = %w[com.automattic.alpha.woocommerce].freeze # Registered in our Enterprise account, for App Center / Installable Builds
+APP_STORE_VERSION_BUNDLE_IDENTIFIER = 'com.automattic.woocommerce'
+# Registered in our main account, for development and App Store
+MAIN_BUNDLE_IDENTIFIERS = [
+  APP_STORE_VERSION_BUNDLE_IDENTIFIER,
+  "#{APP_STORE_VERSION_BUNDLE_IDENTIFIER}.storewidgets"
+].freeze
+
+ALPHA_VERSION_BUNDLE_IDENTIFIER = 'com.automattic.alpha.woocommerce'
+# Registered in our Enterprise account, for App Center / Installable Builds
+ALPHA_BUNDLE_IDENTIFIERS = [
+  ALPHA_VERSION_BUNDLE_IDENTIFIER,
+  "#{ALPHA_VERSION_BUNDLE_IDENTIFIER}.storewidgets"
+].freeze
 
 TEST_SCHEME = 'WooCommerce'
 
@@ -932,8 +943,8 @@ platform :ios do
     match(
       type: 'enterprise',
       team_id: get_required_env('INT_EXPORT_TEAM_ID'),
-      readonly: true,
-      app_identifier: ALPHA_BUNDLE_IDENTIFIERS
+      app_identifier: ALPHA_BUNDLE_IDENTIFIERS,
+      readonly: true
     )
   end
 
@@ -941,9 +952,8 @@ platform :ios do
     match(
       type: 'appstore',
       team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
-      readonly: false,
       app_identifier: MAIN_BUNDLE_IDENTIFIERS,
-      template_name: 'Apple Pay Pass Suppression'
+      readonly: true
     )
   end
 
@@ -970,8 +980,10 @@ platform :ios do
       ],
       exclude: [
         '*Vendor*',
+        '**/AppLocalizedString.swift',
         'WooCommerce/WooCommerceTests/**' # Some unit tests include localized strings, but we don't want to crowd GlotPress with them
       ],
+      routines: ['AppLocalizedString'],
       output_dir: en_lproj_path
     )
 
@@ -1065,7 +1077,6 @@ lane :test_without_building do |options|
     workspace: 'WooCommerce.xcworkspace',
     scheme: TEST_SCHEME,
     device: options[:device],
-    deployment_target_version: options[:ios_version],
     test_without_building: true,
     xctestrun: xctestrun_path,
     result_bundle: true,

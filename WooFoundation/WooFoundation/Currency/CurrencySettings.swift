@@ -2,13 +2,13 @@ import Foundation
 
 /// Site-wide settings for displaying prices/money
 ///
-public class CurrencySettings {
+public class CurrencySettings: Codable {
 
     // MARK: - Enums
 
     /// Designates where the currency symbol is located on a formatted price
     ///
-    public enum CurrencyPosition: String {
+    public enum CurrencyPosition: String, Codable {
         case left = "left"
         case right = "right"
         case leftSpace = "left_space"
@@ -393,5 +393,37 @@ public class CurrencySettings {
         case .ZMW:
             return "ZK"
         }
+    }
+
+    // MARK: - Codable implementation
+    // Used for serialization in UserDefaults to share settings between app and widgets extension
+    //
+    // No custom logic, but it is required because `@Published` property prevents automatic Codable synthesis
+    // (currencyCode type is Published<CurrencyCode> instead of CurrencyCode)
+
+    enum CodingKeys: CodingKey {
+        case currencyCode
+        case currencyPosition
+        case groupingSeparator
+        case decimalSeparator
+        case fractionDigits
+    }
+
+    public required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        currencyCode = try container.decode(CurrencyCode.self, forKey: .currencyCode)
+        currencyPosition = try container.decode(CurrencyPosition.self, forKey: .currencyPosition)
+        groupingSeparator = try container.decode(String.self, forKey: .groupingSeparator)
+        decimalSeparator = try container.decode(String.self, forKey: .decimalSeparator)
+        fractionDigits = try container.decode(Int.self, forKey: .fractionDigits)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(currencyCode, forKey: .currencyCode)
+        try container.encode(currencyPosition, forKey: .currencyPosition)
+        try container.encode(groupingSeparator, forKey: .groupingSeparator)
+        try container.encode(decimalSeparator, forKey: .decimalSeparator)
+        try container.encode(fractionDigits, forKey: .fractionDigits)
     }
 }

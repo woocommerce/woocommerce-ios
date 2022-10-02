@@ -1,3 +1,1 @@
-Tornamos muito mais fácil encontrar tudo sobre como aceitar pagamentos no aplicativo. Vá para a seção de Pagamentos no Menu! Também corrigimos um problema que bloqueava o recebimento de pagamentos sem necessidade.
-Além disso, fizemos várias melhorias em nossos fluxos de login para ajudar você a começar rapidamente com o aplicativo.
-Por fim, fizemos alguns ajustes para melhorar o desempenho. E não para por aí. Aguarde mais melhorias no futuro. Continue enviando seu feedback!
+This release contains a handful of minor improvements to make your experience smoother. It's now possible to set up the Jetpack connection between your self-hosted site and your WP.com account. We continue to make small tweaks and enhancements to the in person payments feature. We hope you notice the love we put into our software.

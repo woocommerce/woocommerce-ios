@@ -235,11 +235,7 @@ private extension ReviewsViewController {
     }
 
     func refreshTitle() {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.hubMenu) {
-            title = Localization.title
-        } else {
-            navigationItem.title = Localization.title
-        }
+        title = Localization.title
     }
 }
 

@@ -190,6 +190,10 @@ public enum WooAnalyticsStat: String {
     // MARK: Cash on Delivery Enable events
     case enableCashOnDeliverySuccess = "enable_cash_on_delivery_success"
     case enableCashOnDeliveryFailed = "enable_cash_on_delivery_failed"
+    case disableCashOnDeliverySuccess = "disable_cash_on_delivery_success"
+    case disableCashOnDeliveryFailed = "disable_cash_on_delivery_failed"
+    case paymentsHubCashOnDeliveryToggled = "payments_hub_cash_on_delivery_toggled"
+    case paymentsHubCashOnDeliveryToggleLearnMoreTapped = "payments_hub_cash_on_delivery_toggle_learn_more_tapped"
 
     // MARK: Payment Gateways selection
     case cardPresentPaymentGatewaySelected = "card_present_payment_gateway_selected"
@@ -403,6 +407,10 @@ public enum WooAnalyticsStat: String {
     case addProductSuccess = "add_product_success"
     case addProductFailed = "add_product_failed"
 
+    // MARK: Duplicate Product events
+    case duplicateProductSuccess = "duplicate_product_success"
+    case duplicateProductFailed = "duplicate_product_failed"
+
     // MARK: Edit Product Events
     //
     case productDetailLoaded = "product_detail_loaded"
@@ -508,6 +516,7 @@ public enum WooAnalyticsStat: String {
     // MARK: Product Settings
     //
     case productDetailViewSettingsButtonTapped = "product_detail_view_settings_button_tapped"
+    case productDetailDuplicateButtonTapped = "product_detail_duplicate_button_tapped"
     case productSettingsDoneButtonTapped = "product_settings_done_button_tapped"
     case productSettingsStatusTapped = "product_settings_status_tapped"
     case productSettingsVisibilityTapped = "product_settings_visibility_tapped"
@@ -672,6 +681,21 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Payments Menu
     case pluginsNotSyncedYet = "plugins_not_synced_yet"
+
+    // MARK: Universal Links
+    case universalLinkOpened = "universal_link_opened"
+    case universalLinkFailed = "universal_link_failed"
+
+    // MARK: Login Jetpack Connection
+    case loginJetpackConnectionErrorShown = "login_jetpack_connection_error_shown"
+    case loginJetpackConnectButtonTapped = "login_jetpack_connect_button_tapped"
+    case loginJetpackConnectCompleted = "login_jetpack_connect_completed"
+    case loginJetpackConnectDismissed = "login_jetpack_connect_dismissed"
+    case loginJetpackConnectionURLFetchFailed = "login_jetpack_connection_url_fetch_failed"
+    case loginJetpackConnectionVerificationFailed = "login_jetpack_connection_verification_failed"
+
+    // MARK: Widgets
+    case widgetTapped = "widget_tapped"
 }
 
 public extension WooAnalyticsStat {

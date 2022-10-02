@@ -37,6 +37,12 @@ extension CustomHelpCenterContent {
             url = WooConstants.URLs.helpCenterForWPCOMEmailScreen.asURL()
         case .usernamePassword: // Enter Store credentials screen (wp-admin creds)
             url = WooConstants.URLs.helpCenterForEnterStoreCredentials.asURL()
+        // Enter WordPress.com password screen
+        case .start where (flow == .loginWithPasswordWithMagicLinkEmphasis || flow == .loginWithPassword),
+                .passwordChallenge: // Password challenge when logging in using social account
+            url = WooConstants.URLs.helpCenterForWPCOMPasswordScreen.asURL()
+        case .magicLinkAutoRequested, .magicLinkRequested: // Open magic link from email screen
+            url = WooConstants.URLs.helpCenterForOpenEmail.asURL()
         default:
             return nil
         }
@@ -59,6 +65,18 @@ extension CustomHelpCenterContent {
         /// Jetpack required error screen presented using `JetpackErrorViewModel`
         ///
         case jetpackRequired
+
+        /// Store picker screen - `StorePickerViewController`
+        ///
+        case storePicker
+
+        /// Account mismatch / Wrong WordPress.com account screen - `WrongAccountErrorViewModel`
+        ///
+        case wrongAccountError
+
+        /// No WooCommerce site error  using `NoWooErrorViewModel`
+        ///
+        case noWooError
     }
 
     init(screen: Screen, flow: AuthenticatorAnalyticsTracker.Flow) {
@@ -67,6 +85,15 @@ extension CustomHelpCenterContent {
         case .jetpackRequired:
             step = "jetpack_not_connected" // Matching Android `Step` value
             url = WooConstants.URLs.helpCenterForJetpackRequiredError.asURL()
+        case .storePicker:
+            step = "site_list" // Matching Android `Step` value
+            url = WooConstants.URLs.helpCenterForStorePicker.asURL()
+        case .wrongAccountError:
+            step = "wrong_wordpress_account" // Matching Android `Step` value
+            url = WooConstants.URLs.helpCenterForWrongAccountError.asURL()
+        case .noWooError:
+            step = "not_woo_store" // Matching Android `Step` value
+            url = WooConstants.URLs.helpCenterForNoWooError.asURL()
         }
 
         trackingProperties = [

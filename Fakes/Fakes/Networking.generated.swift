@@ -188,6 +188,19 @@ extension DotcomError {
         .empty
     }
 }
+extension DotcomUser {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> DotcomUser {
+        .init(
+            id: .fake(),
+            username: .fake(),
+            email: .fake(),
+            displayName: .fake(),
+            avatar: .fake()
+        )
+    }
+}
 extension InboxAction {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -217,6 +230,19 @@ extension InboxNote {
             isRemoved: .fake(),
             isRead: .fake(),
             dateCreated: .fake()
+        )
+    }
+}
+extension JetpackUser {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> JetpackUser {
+        .init(
+            isConnected: .fake(),
+            isPrimary: .fake(),
+            username: .fake(),
+            wpcomUser: .fake(),
+            gravatar: .fake()
         )
     }
 }

@@ -289,7 +289,7 @@ private extension StorePickerViewController {
     }
 
     func presentHelp() {
-        ServiceLocator.authenticationManager.presentSupport(from: self, sourceTag: .generalLogin)
+        ServiceLocator.authenticationManager.presentSupport(from: self, screen: .storePicker)
     }
 }
 
@@ -404,36 +404,6 @@ private extension StorePickerViewController {
         }
 
         dismissButton.isEnabled = enabled
-    }
-
-    /// This method will reload the [Selected Row]
-    ///
-    func reloadSelectedStoreRows(afterRunning block: () -> Void) {
-        /// Preserve: Selected and Checked Rows
-        ///
-        var rowsToReload = [IndexPath]()
-
-        if let oldSiteID = currentlySelectedSite?.siteID,
-           let oldCheckedRow = viewModel.indexPath(for: oldSiteID) {
-            rowsToReload.append(oldCheckedRow)
-        }
-
-        if let oldSelectedRow = tableView.indexPathForSelectedRow {
-            rowsToReload.append(oldSelectedRow)
-        }
-
-        /// Update the Default Store
-        ///
-        block()
-
-        if let newSiteID = currentlySelectedSite?.siteID,
-           let selectedRow = viewModel.indexPath(for: newSiteID) {
-            rowsToReload.append(selectedRow)
-        }
-
-        /// Refresh: Selected and Checked Rows
-        ///
-        tableView.reloadRows(at: rowsToReload, with: .none)
     }
 
     /// Re-initializes the Login Flow, forcing a logout. This may be required if the WordPress.com Account has no Stores available.
@@ -637,7 +607,6 @@ extension StorePickerViewController: UITableViewDataSource {
             hideActionButton()
             let cell = tableView.dequeueReusableCell(EmptyStoresTableViewCell.self, for: indexPath)
             let isRemoveAppleIDAccessButtonVisible = appleIDCredentialChecker.hasAppleUserID()
-            && featureFlagService.isFeatureFlagEnabled(.appleIDAccountDeletion)
             cell.updateRemoveAppleIDAccessButtonVisibility(isVisible: isRemoveAppleIDAccessButtonVisible)
             if isRemoveAppleIDAccessButtonVisible {
                 cell.onCloseAccountButtonTapped = { [weak self] in
@@ -700,12 +669,8 @@ extension StorePickerViewController: UITableViewDelegate {
             return tableView.deselectRow(at: indexPath, animated: true)
         }
 
-        reloadSelectedStoreRows() {
-            currentlySelectedSite = site
-        }
-
-        tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
-        tableView.deselectRow(at: indexPath, animated: true)
+        currentlySelectedSite = site
+        tableView.reloadData()
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {

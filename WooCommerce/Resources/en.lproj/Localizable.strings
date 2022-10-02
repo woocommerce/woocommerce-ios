@@ -40,6 +40,12 @@ which should be translated separately and considered part of this sentence. */
 /* A label prompting users to learn more about card readers. %1$@ is a placeholder that is always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
 "%1$@ about adding Pay in Person to your checkout" = "%1$@ about adding Pay in Person to your checkout";
 
+/* A label prompting users to learn more about In-Person Payments.
+\u{2011} is a special character that acts as nonbreaking hyphen for "-" in the "In-Person" string.
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"%1$@ about In\u{2011}Person Payments" = "%1$@ about In\u{2011}Person Payments";
+
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "%1$@ card ending %2$@";
 
@@ -920,6 +926,9 @@ which should be translated separately and considered part of this sentence. */
    Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "Cannot upload image";
 
+/* Error message displayed when failed to check for Jetpack connection. */
+"Cannot verify your Jetpack connection. Please try again." = "Cannot verify your Jetpack connection. Please try again.";
+
 /* Error message displayed when failed to check for WooCommerce in a site. */
 "Cannot verify your site's WooCommerce installation." = "Cannot verify your site's WooCommerce installation.";
 
@@ -1095,9 +1104,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to confirm the preferred provider for In-Person Payments */
 "Confirm Payment Method" = "Confirm Payment Method";
 
-/* Title for the error screen when there is more than one plugin active that supports in-person payments. */
-"Conflicting payment plugins detected" = "Conflicting payment plugins detected";
-
 /* Title displayed if there are no inbox notes in the inbox screen. */
 "Congrats, you’ve read everything!" = "Congrats, you’ve read everything!";
 
@@ -1109,6 +1115,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Settings > Manage Card Reader > Connect > A button to begin a search for a reader */
 "Connect Card Reader" = "Connect Card Reader";
+
+/* Title of the Jetpack connection web view in the login flow */
+"Connect Jetpack" = "Connect Jetpack";
+
+/* Button linking to web view for setting up Jetpack connection. Presented when logging in with store credentials of an account not connected to the site's Jetpack */
+"Connect Jetpack to your account" = "Connect Jetpack to your account";
 
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "Connect to Reader";
@@ -2013,6 +2025,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message on the Coupon Details screen when deleting coupon fails */
 "Failed to delete coupon. Please try again." = "Failed to delete coupon. Please try again.";
 
+/* Error displayed when the attempt to disable a Pay in Person checkout payment option fails */
+"Failed to disable Pay in Person. Please try again later." = "Failed to disable Pay in Person. Please try again later.";
+
 /* Error displayed when the attempt to enable a Pay in Person checkout payment option fails */
 "Failed to enable Pay in Person. Please try again later." = "Failed to enable Pay in Person. Please try again later.";
 
@@ -2261,6 +2276,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Help and Support navigation title
    Help button
+   Help button on Jetpack required error screen.
    Help button on store picker screen. */
 "Help" = "Help";
 
@@ -2341,9 +2357,6 @@ which should be translated separately and considered part of this sentence. */
    Title for the In-Person Payments settings screen */
 "In-Person Payments" = "In-Person Payments";
 
-/* Title for the error screen when there is more than one plugin active and the Stripe plugin should be deactivated */
-"In-Person Payments are processed through WooCommerce Payments." = "In-Person Payments are processed through WooCommerce Payments.";
-
 /* Main prompt for the screen to select the preferred provider for In-Person Payments */
 "In-Person Payments can be processed through either of these payment providers. Which provider would you like to use?" = "In-Person Payments can be processed through either of these payment providers. Which provider would you like to use?";
 
@@ -2357,12 +2370,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled. */
 "In-Person Payments Setup is incomplete." = "In-Person Payments Setup is incomplete.";
-
-/* Message prompting a shop manager to ask an administrator to deactivate one of two plugins */
-"In-Person Payments will only work with one of following plugins activated. Please contact a site administrator to deactivate one of these plugins to continue:" = "In-Person Payments will only work with one of following plugins activated. Please contact a site administrator to deactivate one of these plugins to continue:";
-
-/* Message prompting an administrator to deactivate one of two plugins */
-"In-Person Payments will only work with one of following plugins activated. Please deactivate one of these plugins to continue:" = "In-Person Payments will only work with one of following plugins activated. Please deactivate one of these plugins to continue:";
 
 /* Application's Inactive State */
 "Inactive" = "Inactive";
@@ -2519,6 +2526,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message on enable analytics screen to notify that the module is disabled for the store */
 "It looks like you have analytics disabled." = "It looks like you have analytics disabled.";
 
+/* Message explaining that the entered site credentials belong to an account that is not connected to the site's Jetpack. Reads like 'It looks like your account is not connected to awebsite.com's Jetpack */
+"It looks like your account is not connected to %@'s Jetpack" = "It looks like your account is not connected to %@'s Jetpack";
+
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "It seems like you've entered an incorrect password. Want to give it another try?";
 
@@ -2608,8 +2618,11 @@ which should be translated separately and considered part of this sentence. */
 
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
+   A label prompting users to learn more about In-Person Payments.
+This is the link to the website, and forms part of a longer sentence which it should be considered a part of.
    Button title in the shipping label creation info screen
    Settings > Privacy Settings. A text link to the cookie policy.
+   The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. 
    Title of button shown in the Orders → All Orders tab if the list is empty.
    Title of button shown in the Reviews tab if the list is empty
    Title of button shown on the Product Reviews screen if the list is empty */
@@ -2729,6 +2742,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button that will restart the login flow.Presented when logging in with a site address that appears to be invalid.
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
    Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
+   Action button that will restart the login flow.Presented when logging in with store credentials of an account not connected to the site's Jetpack
    Action button that will restart the login flow.Presented when the user tries to log in to the app with a simple WP.com site. */
 "Log In With Another Account" = "Log In With Another Account";
 
@@ -2790,9 +2804,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Login onboarding survey option: manage my orders. */
 "Manage my orders" = "Manage my orders";
-
-/* Button to open browser to manage plugins */
-"Manage Plugins" = "Manage Plugins";
 
 /* Title of the cell in Product Inventory Settings > Manage stock */
 "Manage stock" = "Manage stock";
@@ -2925,9 +2936,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error showed in Shipping Label Address Validation for the name field */
 "Name missing" = "Name missing";
-
-/* VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen. */
-"Navigates to Settings." = "Navigates to Settings.";
 
 /* Title of the banner in the Order Detail for suggesting to install WCShip extension. */
 "Need a shipping label?" = "Need a shipping label?";
@@ -3236,6 +3244,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigates to Card Reader ordering screen */
 "Order card reader" = "Order card reader";
 
+/* Title for the webview used by merchants to place an order for a card reader, for use with In-Person Payments. */
+"Order Card Reader" = "Order Card Reader";
+
 /* Order notes section title */
 "Order Notes" = "Order Notes";
 
@@ -3352,7 +3363,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Customer-facing instructions shown on Order Thank-you pages and confirmation emails, showing more details about the Pay in Person option added to the store checkout when the merchant enables Pay in Person */
 "Pay by card or another accepted payment method" = "Pay by card or another accepted payment method";
 
-/* Customer-facing title for the payment option added to the store checkout when the merchant enables Pay in Person */
+/* Customer-facing title for the payment option added to the store checkout when the merchant enables Pay in Person
+   Title for a switch on the In-Person Payments menu to enable Cash on Delivery */
 "Pay in Person" = "Pay in Person";
 
 /* Payment section title
@@ -4029,6 +4041,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Retry Action
    Retry action for an error notice
    Retry Action on error displayed when the attempt to enable a Pay in Person checkout payment option fails
+   Retry Action on error displayed when the attempt to toggle a Pay in Person checkout payment option fails
    Retry Action on the notice when loading product categories fails
    Retry the last action */
 "Retry" = "Retry";
@@ -4245,9 +4258,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Placeholder in Shipping Label form for the Carrier and Rates row. */
 "Select your shipping carrier and rates" = "Select your shipping carrier and rates";
 
-/* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
-"Selected Store" = "Selected Store";
-
 /* Button title. Sends a email verification link (Magin link) for signing in. */
 "Send email verification link" = "Send email verification link";
 
@@ -4276,8 +4286,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Header text on Add New Service Package screen in Shipping Label flow */
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "Set up the package you'll be using to ship your products. We'll save it for future orders.";
 
-/* Accessibility label for the Settings button.
-   Settings button in the hub menu
+/* Settings button in the hub menu
    Settings navigation title */
 "Settings" = "Settings";
 
@@ -4655,6 +4664,40 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* My Store > Settings > Store Settings section title */
 "Store Settings" = "Store Settings";
 
+/* Widget description, displayed when selecting which widget to add */
+"storeWidgets.description" = "WooCommerce Stats Today";
+
+/* Widget title, displayed when selecting which widget to add */
+"storeWidgets.displayName" = "Today";
+
+/* Generic store name for the store info widget preview */
+"storeWidgets.infoProvider.myShop" = "My Shop";
+
+/* Range title for the today store info widget */
+"storeWidgets.infoProvider.today" = "Today";
+
+/* Conversion title label for the store info widget
+   Orders title label for the store info widget */
+"storeWidgets.infoView.orders" = "Orders";
+
+/* Revenue title label for the store info widget */
+"storeWidgets.infoView.revenue" = "Revenue";
+
+/* Displays the time when the widget was last updated. %1$@ is the time to render. */
+"storeWidgets.infoView.updatedAt" = "As of %1$@";
+
+/* Visitors title label for the store info widget */
+"storeWidgets.infoView.visitors" = "Visitors";
+
+/* Title label for the login button on the store info widget. */
+"storeWidgets.notLoggedInView.login" = "Log in";
+
+/* Title label when the widget does not have a logged-in store. */
+"storeWidgets.notLoggedInView.notLoggedIn" = "Log in to see today’s stats.";
+
+/* Title label when the widget can't fetch data. */
+"storeWidgets.unableToFetchView.unableToFetch" = "Unable to fetch today's stats";
+
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "Strike Through";
 
@@ -4990,6 +5033,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Fetching an Order Failed */
 "The Order couldn't be loaded!" = "The Order couldn't be loaded!";
 
+/* A label prompting users to learn more about adding Pay in Person to their checkout. %1$@ is a placeholder that always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
+"The Pay in Person checkout option lets you accept payments for website orders, on collection or delivery. %1$@" = "The Pay in Person checkout option lets you accept payments for website orders, on collection or delivery. %1$@";
+
 /* Message when the presented card does not allow the purchase amount. */
 "The payment amount is not allowed for the card presented. Try another means of payment." = "The payment amount is not allowed for the card presented. Try another means of payment.";
 
@@ -5251,12 +5297,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message displayed when unable to close user account due to having active atomic site. */
 "To close this account now, contact our support team." = "To close this account now, contact our support team.";
 
-/* Message prompting an administrator to deactivate Stripe plugin */
-"To collect payments, please ask an administrator to deactivate WooCommerce Stripe Gateway." = "To collect payments, please ask an administrator to deactivate WooCommerce Stripe Gateway.";
-
-/* Message prompting an administrator to deactivate Stripe plugin */
-"To collect payments, please deactivate WooCommerce Stripe Gateway." = "To collect payments, please deactivate WooCommerce Stripe Gateway.";
-
 /* Close Account confirmation alert message. The %1$@ is the user's WordPress.com username. */
 "To confirm, please re-enter your username before closing.\n\n%1$@" = "To confirm, please re-enter your username before closing.\n\n%1$@";
 
@@ -5271,6 +5311,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Settings > Privacy Settings > report crashes section. Explains what the 'report crashes' toggle does */
 "To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports." = "To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports.";
+
+/* Sign in instructions asking user to enter WordPress.com password to proceed with sign in using Apple process */
+"To proceed with this account, please first log in with your WordPress.com password. This will only be asked once." = "To proceed with this account, please first log in with your WordPress.com password. This will only be asked once.";
 
 /* Instructional text shown when requesting the user's password for Apple login. */
 "To proceed with this Apple ID, please first log in with your WordPress.com password. This will only be asked once." = "To proceed with this Apple ID, please first log in with your WordPress.com password. This will only be asked once.";
@@ -5755,6 +5798,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message displayed when checking whether a site has successfully installed WooCommerce */
 "Verifying installation..." = "Verifying installation...";
+
+/* Message displayed when checking whether Jetpack has been connected successfully */
+"Verifying Jetpack connection..." = "Verifying Jetpack connection...";
 
 /* Displays the connected reader software version */
 "Version: %1$@" = "Version: %1$@";

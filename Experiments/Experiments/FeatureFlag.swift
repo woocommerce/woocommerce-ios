@@ -14,18 +14,6 @@ public enum FeatureFlag: Int {
     ///
     case reviews
 
-    /// Allows sites with plugins that include Jetpack Connection Package and without Jetpack-the-plugin to connect to the app
-    ///
-    case jetpackConnectionPackageSupport
-
-    /// Display the new tab "Menu" in the tab bar.
-    ///
-    case hubMenu
-
-    /// Displays the option to view coupons
-    ///
-    case couponView
-
     /// Barcode scanner for product SKU input
     ///
     case productSKUInputScanner
@@ -42,18 +30,6 @@ public enum FeatureFlag: Int {
     ///
     case splitViewInOrdersTab
 
-    /// Displays the option to delete coupons
-    ///
-    case couponDeletion
-
-    /// Displays the option to edit a coupon
-    ///
-    case couponEditing
-
-    /// Displays the option to create a coupon
-    ///
-    case couponCreation
-
     /// Enable optimistic updates for orders
     ///
     case updateOrderOptimistically
@@ -62,17 +38,9 @@ public enum FeatureFlag: Int {
     ///
     case shippingLabelsOnboardingM1
 
-    /// Enable image upload after leaving the product form
-    ///
-    case backgroundProductImageUpload
-
     /// Enable IPP reader manuals consolidation screen
     ///
     case consolidatedCardReaderManuals
-
-    /// Apple ID account deletion
-    ///
-    case appleIDAccountDeletion
 
     /// Showing a "New to WooCommerce" link in the login prologue screen
     ///
@@ -101,4 +69,8 @@ public enum FeatureFlag: Int {
     /// Whether to include the Cash on Delivery enable step in In-Person Payment onboarding
     ///
     case promptToEnableCodInIppOnboarding
+
+    /// Enables the Search Customers functionality in the Order Creation screen
+    ///
+    case orderCreationSearchCustomers
 }

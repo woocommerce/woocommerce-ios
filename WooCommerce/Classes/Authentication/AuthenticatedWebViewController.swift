@@ -2,11 +2,11 @@ import Combine
 import UIKit
 import WebKit
 
-/// The web view to handle plugin setup in the login flow.
+/// A web view which is authenticated for WordPress.com, when possible.
 ///
-final class PluginSetupWebViewController: UIViewController {
+final class AuthenticatedWebViewController: UIViewController {
 
-    private let viewModel: PluginSetupWebViewModel
+    private let viewModel: AuthenticatedWebViewModel
 
     /// Main web view
     private lazy var webView: WKWebView = {
@@ -26,7 +26,7 @@ final class PluginSetupWebViewController: UIViewController {
     /// Strong reference for the subscription to update progress bar
     private var subscriptions: Set<AnyCancellable> = []
 
-    init(viewModel: PluginSetupWebViewModel) {
+    init(viewModel: AuthenticatedWebViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -51,7 +51,7 @@ final class PluginSetupWebViewController: UIViewController {
     }
 }
 
-private extension PluginSetupWebViewController {
+private extension AuthenticatedWebViewController {
     func configureNavigationBar() {
         title = viewModel.title
     }
@@ -62,8 +62,19 @@ private extension PluginSetupWebViewController {
             view.leadingAnchor.constraint(equalTo: webView.leadingAnchor),
             view.trailingAnchor.constraint(equalTo: webView.trailingAnchor),
             view.safeTopAnchor.constraint(equalTo: webView.topAnchor),
-            view.bottomAnchor.constraint(equalTo: webView.bottomAnchor),
+            view.safeBottomAnchor.constraint(equalTo: webView.bottomAnchor),
         ])
+
+        extendContentUnderSafeAreas()
+    }
+
+    func extendContentUnderSafeAreas() {
+        webView.scrollView.clipsToBounds = false
+        if #available(iOS 15.0, *) {
+            view.backgroundColor = webView.underPageBackgroundColor
+        } else {
+            view.backgroundColor = webView.backgroundColor
+        }
     }
 
     func configureProgressBar() {
@@ -104,7 +115,7 @@ private extension PluginSetupWebViewController {
     }
 }
 
-extension PluginSetupWebViewController: WKNavigationDelegate {
+extension AuthenticatedWebViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction) async -> WKNavigationActionPolicy {
         guard let navigationURL = navigationAction.request.url else {
             return .allow

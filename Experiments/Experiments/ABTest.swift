@@ -14,7 +14,7 @@ public enum ABTest: String, CaseIterable {
 
     /// A/A test to make sure there is no bias in the logged out state.
     /// Experiment ref: pbxNRc-1S0-p2
-    case aaTestLoggedOut202208 = "woocommerceios_explat_aa_test_logged_out_202208"
+    case aaTestLoggedOut202209 = "woocommerceios_explat_aa_test_logged_out_202209"
 
     /// A/B test for promoting linked products in Product Details.
     /// Experiment ref: pbxNRc-1Pp-p2
@@ -22,7 +22,7 @@ public enum ABTest: String, CaseIterable {
 
     /// A/B test for the login button order on the prologues screen.
     /// Experiment ref: pbxNRc-1VA-p2
-    case loginPrologueButtonOrder = "woocommerceios_login_prologue_button_order"
+    case loginPrologueButtonOrder = "woocommerceios_login_prologue_button_order_202209"
 
     /// Returns a variation for the given experiment
     public var variation: Variation {

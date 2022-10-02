@@ -61,9 +61,6 @@ final class CouponListViewModel {
     ///
     private let storageManager: StorageManagerType
 
-    /// Marks if the Coupon Creation feature is enabled or not
-    let isCreationEnabled: Bool
-
     // MARK: - Initialization and setup
     //
     init(siteID: Int64,
@@ -78,7 +75,6 @@ final class CouponListViewModel {
         self.resultsController = Self.createResultsController(siteID: siteID,
                                                               storageManager: storageManager)
 
-        isCreationEnabled = featureFlags.isFeatureFlagEnabled(.couponCreation)
         configureSyncingCoordinator()
         configureResultsController()
         configureFeedbackBannerVisibility()

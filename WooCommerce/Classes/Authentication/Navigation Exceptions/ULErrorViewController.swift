@@ -1,3 +1,4 @@
+import Combine
 import UIKit
 import WordPressAuthenticator
 import SafariServices
@@ -13,7 +14,7 @@ final class ULErrorViewController: UIViewController {
 
     /// Contains a vertical stack of the image, error message, and extra info button by default.
     @IBOutlet private weak var contentStackView: UIStackView!
-    @IBOutlet private weak var primaryButton: UIButton!
+    @IBOutlet private weak var primaryButton: ButtonActivityIndicator!
     @IBOutlet private weak var secondaryButton: UIButton!
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var errorMessage: UILabel!
@@ -26,6 +27,10 @@ final class ULErrorViewController: UIViewController {
     @IBOutlet private weak var buttonViewTrailingConstraint: NSLayoutConstraint!
     @IBOutlet private weak var stackViewLeadingConstraint: NSLayoutConstraint!
     @IBOutlet private weak var stackViewTrailingConstraint: NSLayoutConstraint!
+
+    private var primaryButtonSubscription: AnyCancellable?
+
+    private let viewDidAppearSubject = PassthroughSubject<Void, Never>()
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         UIDevice.isPad() ? .all : .portrait
@@ -58,6 +63,11 @@ final class ULErrorViewController: UIViewController {
         setUnifiedMargins(forWidth: view.frame.width)
 
         viewModel.viewDidLoad(self)
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        viewDidAppearSubject.send()
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -127,6 +137,18 @@ private extension ULErrorViewController {
         primaryButton.on(.touchUpInside) { [weak self] _ in
             self?.didTapPrimaryButton()
         }
+
+        // We need to wait until view did appear to make sure the indicator stays at the correct position
+        primaryButtonSubscription = viewModel.isPrimaryButtonLoading.combineLatest(viewDidAppearSubject.prefix(1))
+            .sink { [weak self] (isLoading, _) in
+                guard let self = self else { return }
+                self.primaryButton.isEnabled = !isLoading
+                if isLoading {
+                    self.primaryButton.showActivityIndicator()
+                } else {
+                    self.primaryButton.hideActivityIndicator()
+                }
+            }
     }
 
     func configureSecondaryButton() {

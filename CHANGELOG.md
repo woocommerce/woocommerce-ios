@@ -1,6 +1,23 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 10.5
+
+This release includes a lot of exciting features! It's now possible to duplicate a product from the app. Just tap on the More Menu available inside the Product detail screen. We have also added a new stats widget so now you can view your current day's stats without opening the app. Lastly, due to popular demand, we're bringing back the ability to add/edit customer notes and addresses from the main order screen. 
+
+We welcome your feedback on the app, especially the new features we’re working on. 
+
+## 10.4
+
+This release contains a handful of minor improvements to make your experience smoother. It's now possible to set up the Jetpack connection between your self-hosted site and your WP.com account. We continue to make small tweaks and enhancements to the in person payments feature. We hope you notice the love we put into our software. 
+
+## 10.3
+
+More love for In-Person Payments and Analytics this time around. We fixed a bug which could prevent you from collecting payments in the app. Card reader connections are more stable. And we fixed an issue where your store's analytics are sometimes not updated. 
+
+
+## 10.2
+Even though this release doesn’t have any new features, we still put a lot of love into it! You can now enable or disable the option to take card or cash payments on collection or delivery. We also added a new Help Center page that makes it easier for you to login to the app.
 
 ## 10.1
 This release has several fixes that makes it easier for you to take payments from the app. We’ve also added a new Help Center FAQ page that makes it easier for you to login to the app.

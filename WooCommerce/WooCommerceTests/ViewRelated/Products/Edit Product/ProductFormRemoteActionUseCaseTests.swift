@@ -290,6 +290,145 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         XCTAssertNotNil(storesManager.receivedActions.first as? ProductAction)
         XCTAssertEqual(result, .failure(.unexpected))
     }
+
+    // MARK: - Duplicate a product (`duplicateProduct`)
+    func test_duplicating_product_triggers_adding_copy_of_product_correctly() {
+        // Given
+        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.published.rawValue, sku: "12356")
+        let model = EditableProductModel(product: product)
+        var copiedProductName: String?
+        var copiedProductStatusKey: String?
+        var copiedProductSKU: String?
+        let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
+
+        // When
+        storesManager.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case .addProduct(let product, _):
+                copiedProductName = product.name
+                copiedProductStatusKey = product.statusKey
+                copiedProductSKU = product.sku
+            default:
+                break
+            }
+        }
+        useCase.duplicateProduct(originalProduct: model, password: nil, onCompletion: { _ in })
+
+        // Then
+        assertEqual(String(format: Localization.copyProductName, product.name), copiedProductName)
+        assertEqual(ProductStatus.draft.rawValue, copiedProductStatusKey)
+        XCTAssertNil(copiedProductSKU)
+    }
+
+    func test_duplicating_product_with_a_password_unsuccessfully_returns_failure_result_with_password_error() {
+        // Given
+        let product = Product.fake()
+        let model = EditableProductModel(product: product)
+        let password = "wo0oo!"
+        let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
+        mockAddProduct(result: .success(product))
+        mockUpdatePassword(result: .failure(NSError(domain: "", code: 100, userInfo: nil)))
+
+        // When
+        var result: Result<ResultData, ProductUpdateError>?
+        useCase.duplicateProduct(originalProduct: model, password: password) { aResult in
+            result = aResult
+        }
+
+        // Then
+        XCTAssertEqual(storesManager.receivedActions.count, 2)
+        XCTAssertNotNil(storesManager.receivedActions[0] as? ProductAction)
+        XCTAssertNotNil(storesManager.receivedActions[1] as? SitePostAction)
+        XCTAssertEqual(result, .failure(.passwordCannotBeUpdated))
+    }
+
+    func test_duplicating_product_without_a_password_successfully_does_not_trigger_password_action_and_returns_success_result() {
+        // Given
+        let product = Product.fake()
+        let model = EditableProductModel(product: product)
+        let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
+        mockAddProduct(result: .success(product))
+
+        // When
+        var result: Result<ResultData, ProductUpdateError>?
+        useCase.duplicateProduct(originalProduct: model, password: nil) { aResult in
+            result = aResult
+        }
+
+        // Then
+        XCTAssertEqual(storesManager.receivedActions.count, 1)
+        XCTAssertNotNil(storesManager.receivedActions.first as? ProductAction)
+        XCTAssertEqual(result, .success(ResultData(product: model, password: nil)))
+    }
+
+    func test_duplicating_product_unsuccessfully_does_not_trigger_password_action_and_returns_failure_result_with_product_error() {
+        // Given
+        let product = Product.fake()
+        let model = EditableProductModel(product: product)
+        mockAddProduct(result: .failure(.invalidSKU))
+        let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
+
+        // When
+        var result: Result<ResultData, ProductUpdateError>?
+        useCase.duplicateProduct(originalProduct: model, password: "test") { aResult in
+            result = aResult
+        }
+
+        // Then
+        XCTAssertEqual(storesManager.receivedActions.count, 1)
+        XCTAssertNotNil(storesManager.receivedActions.first as? ProductAction)
+        XCTAssertEqual(result, .failure(.invalidSKU))
+    }
+
+    func test_duplicating_variable_product_triggers_retrieving_original_product_variations_and_creating_new_variations_for_duplicated_product() {
+        // Given
+        let testVariationIDs: [Int64] = [11, 20, 35]
+        let product = Product.fake().copy(productID: 2, productTypeKey: ProductType.variable.rawValue, variations: testVariationIDs)
+        let model = EditableProductModel(product: product)
+
+        var retrievedVariationIDs: [Int64] = []
+        var createdVariationCount = 0
+        storesManager.whenReceivingAction(ofType: ProductVariationAction.self) { action in
+            switch action {
+            case let .retrieveProductVariation(_, _, variationID, onCompletion):
+                retrievedVariationIDs.append(variationID)
+                onCompletion(.success(ProductVariation.fake().copy(productVariationID: variationID)))
+            case let .createProductVariation(_, _, _, onCompletion):
+                createdVariationCount += 1
+                let fakeVariation = ProductVariation.fake().copy(productVariationID: Int64.random(in: 99..<999))
+                onCompletion(.success(fakeVariation))
+            default:
+                break
+            }
+        }
+
+        let copiedProduct = product.copy(productID: 13)
+        let finalProduct = copiedProduct.copy(variations: testVariationIDs)
+        storesManager.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case .addProduct(_, let onCompletion):
+                onCompletion(.success(copiedProduct))
+            case .retrieveProduct(_, _, let onCompletion):
+                onCompletion(.success(finalProduct))
+            default:
+                break
+            }
+        }
+
+        // When
+        let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
+        var result: Result<ResultData, ProductUpdateError>?
+        useCase.duplicateProduct(originalProduct: model, password: nil) { aResult in
+            result = aResult
+        }
+        waitUntil {
+            createdVariationCount == 3
+        }
+
+        // Then
+        XCTAssertEqual(retrievedVariationIDs, testVariationIDs)
+        XCTAssertEqual(result?.isSuccess, true)
+    }
 }
 
 private extension ProductFormRemoteActionUseCaseTests {
@@ -323,5 +462,15 @@ private extension ProductFormRemoteActionUseCaseTests {
                 onCompletion(result)
             }
         }
+    }
+}
+
+
+private extension ProductFormRemoteActionUseCaseTests {
+    enum Localization {
+        static let copyProductName = NSLocalizedString(
+            "%1$@ Copy",
+            comment: "The default name for a duplicated product, with %1$@ being the original name. Reads like: Ramen Copy"
+        )
     }
 }

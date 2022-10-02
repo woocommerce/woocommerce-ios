@@ -1,6 +1,8 @@
+import Combine
 import UIKit
 import XLPagerTabStrip
 import Yosemite
+import class WidgetKit.WidgetCenter
 
 /// Top-level stats container view controller that consists of a button bar with 4 time ranges.
 /// Each time range tab is managed by a `StoreStatsAndTopPerformersPeriodViewController`.
@@ -31,15 +33,32 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
 
     private var periodVCs = [StoreStatsAndTopPerformersPeriodViewController]()
     private let siteID: Int64
-    private var isSyncing = false
+    // A set of syncing time ranges is tracked instead of a single boolean so that the stats for each time range
+    // can be synced when swiping or tapping to change the time range tab before the syncing finishes for the previously selected tab.
+    private var syncingTimeRanges: Set<StatsTimeRangeV4> = []
     private let usageTracksEventEmitter = StoreStatsUsageTracksEventEmitter()
     private let dashboardViewModel: DashboardViewModel
+    private let timeRanges: [StatsTimeRangeV4] = [.today, .thisWeek, .thisMonth, .thisYear]
+
+    /// Because loading the last selected time range tab is async, the selected tab index is initially `nil` and set after the last selected value is loaded.
+    /// We need to make sure any call to the public `reloadData` is after the selected time range is set to avoid making unnecessary API requests
+    /// for the non-selected tab.
+    @Published private var selectedTimeRangeIndex: Int?
+    private var selectedTimeRangeIndexSubscription: AnyCancellable?
+    private var reloadDataAfterSelectedTimeRangeSubscriptions: Set<AnyCancellable> = []
+
+    private let pushNotificationsManager: PushNotesManager
+    private var localOrdersSubscription: AnyCancellable?
+    private var remoteOrdersSubscription: AnyCancellable?
 
     // MARK: - View Lifecycle
 
-    init(siteID: Int64, dashboardViewModel: DashboardViewModel) {
+    init(siteID: Int64,
+         dashboardViewModel: DashboardViewModel,
+         pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.siteID = siteID
         self.dashboardViewModel = dashboardViewModel
+        self.pushNotificationsManager = pushNotificationsManager
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -50,10 +69,28 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
     override func viewDidLoad() {
         configurePeriodViewControllers()
         configureTabStrip()
+
+        Task { @MainActor in
+            let selectedTimeRange = await loadLastTimeRange() ?? .today
+            guard let selectedTabIndex = timeRanges.firstIndex(of: selectedTimeRange),
+                  selectedTabIndex != currentIndex else {
+                selectedTimeRangeIndex = currentIndex
+                return
+            }
+            // There is currently no straightforward way to set a different default tab using `XLPagerTabStrip` without forking.
+            // This is a workaround following https://github.com/xmartlabs/XLPagerTabStrip/issues/537#issuecomment-534903598
+            moveToViewController(at: selectedTabIndex, animated: false)
+            reloadPagerTabStripView()
+            selectedTimeRangeIndex = selectedTabIndex
+        }
+
         // 👆 must be called before super.viewDidLoad()
 
         super.viewDidLoad()
         configureView()
+        observeSelectedTimeRangeIndex()
+        observeRemotelyCreatedOrdersToResetLastSyncTimestamp()
+        observeLocallyCreatedOrdersToResetLastSyncTimestamp()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -79,14 +116,41 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
         }
     }
 
-    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        super.collectionView(collectionView, didSelectItemAt: indexPath)
-        let timeRangeTabIndex = indexPath.item
-        guard let periodViewController = viewControllers[timeRangeTabIndex] as? StoreStatsAndTopPerformersPeriodViewController,
-              timeRangeTabIndex != currentIndex else {
+    override func updateIndicator(for viewController: PagerTabStripViewController,
+                                  fromIndex: Int,
+                                  toIndex: Int,
+                                  withProgressPercentage progressPercentage: CGFloat,
+                                  indexWasChanged: Bool) {
+        super.updateIndicator(for: viewController,
+                              fromIndex: fromIndex,
+                              toIndex: toIndex,
+                              withProgressPercentage: progressPercentage,
+                              indexWasChanged: indexWasChanged)
+        // The initially selected tab should be ignored because it should be set after `loadLastTimeRange` in `viewDidLoad`.
+        guard selectedTimeRangeIndex != nil else {
             return
         }
-        syncStats(forced: false, viewControllerToSync: periodViewController)
+        selectedTimeRangeIndex = toIndex
+    }
+
+    func observeSelectedTimeRangeIndex() {
+        let timeRangeCount = timeRanges.count
+        selectedTimeRangeIndexSubscription = $selectedTimeRangeIndex
+            .compactMap { $0 }
+            // It's possible to reach an out-of-bound index by swipe gesture, thus checking the index range here.
+            .filter { $0 >= 0 && $0 < timeRangeCount }
+            .removeDuplicates()
+            // Tapping to change to a farther tab could result in `updateIndicator` callback to be triggered for the middle tabs.
+            // A short debounce workaround is applied here to avoid making API requests for the middle tabs.
+            .debounce(for: .seconds(0.3), scheduler: DispatchQueue.main)
+            .sink { [weak self] timeRangeTabIndex in
+                guard let self = self else { return }
+                guard let periodViewController = self.viewControllers[timeRangeTabIndex] as? StoreStatsAndTopPerformersPeriodViewController else {
+                    return
+                }
+                self.saveLastTimeRange(periodViewController.timeRange)
+                self.syncStats(forced: false, viewControllerToSync: periodViewController)
+            }
     }
 }
 
@@ -94,9 +158,15 @@ extension StoreStatsAndTopPerformersViewController: DashboardUI {
     @MainActor
     func reloadData(forced: Bool) async {
         await withCheckedContinuation { continuation in
-            syncAllStats(forced: forced) { _ in
-                continuation.resume(returning: ())
-            }
+            $selectedTimeRangeIndex
+                .compactMap { $0 }
+                .first()
+                .sink { [weak self] _ in
+                    self?.syncAllStats(forced: forced) { _ in
+                        continuation.resume(returning: ())
+                    }
+                }
+                .store(in: &reloadDataAfterSelectedTimeRangeSubscriptions)
         }
     }
 
@@ -113,12 +183,13 @@ private extension StoreStatsAndTopPerformersViewController {
     }
 
     func syncStats(forced: Bool, viewControllerToSync: StoreStatsAndTopPerformersPeriodViewController, onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
-        guard !isSyncing else {
+        let timeRange = viewControllerToSync.timeRange
+        guard !syncingTimeRanges.contains(timeRange) else {
             onCompletion?(.success(()))
             return
         }
 
-        isSyncing = true
+        syncingTimeRanges.insert(timeRange)
 
         let group = DispatchGroup()
 
@@ -129,7 +200,7 @@ private extension StoreStatsAndTopPerformersViewController {
 
         defer {
             group.notify(queue: .main) { [weak self] in
-                self?.isSyncing = false
+                self?.syncingTimeRanges.remove(timeRange)
                 self?.showSpinner(for: viewControllerToSync, shouldShowSpinner: false)
                 if let error = syncError {
                     DDLogError("⛔️ Error loading dashboard: \(error)")
@@ -237,6 +308,11 @@ private extension StoreStatsAndTopPerformersViewController {
                 // Update last successful data sync timestamp
                 if periodSyncError == nil {
                     vc.lastFullSyncTimestamp = Date()
+
+                    // Reload the Store Info Widget after syncing the today's stats.
+                    if vc.timeRange == .today {
+                        WidgetCenter.shared.reloadTimelines(ofKind: WooConstants.storeInfoWidgetKind)
+                    }
                 } else {
                     syncError = periodSyncError
                 }
@@ -253,6 +329,35 @@ private extension StoreStatsAndTopPerformersViewController {
             periodViewController.refreshControl.beginRefreshing()
         } else {
             periodViewController.refreshControl.endRefreshing()
+        }
+    }
+
+    func observeRemotelyCreatedOrdersToResetLastSyncTimestamp() {
+        let siteID = self.siteID
+        remoteOrdersSubscription = Publishers
+            .Merge(pushNotificationsManager.backgroundNotifications, pushNotificationsManager.foregroundNotifications)
+            .filter { $0.kind == .storeOrder && $0.siteID == siteID }
+            .sink { [weak self] _ in
+                self?.resetLastSyncTimestamp()
+            }
+    }
+
+    func observeLocallyCreatedOrdersToResetLastSyncTimestamp() {
+        let action = OrderAction.observeInsertedOrders(siteID: siteID) { [weak self] observableInsertedOrders in
+            guard let self = self else { return }
+            self.localOrdersSubscription = observableInsertedOrders
+                .filter { $0.isNotEmpty }
+                .sink { [weak self] _ in
+                    guard let self = self else { return }
+                    self.resetLastSyncTimestamp()
+                }
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+
+    func resetLastSyncTimestamp() {
+        periodVCs.forEach { periodVC in
+            periodVC.lastFullSyncTimestamp = nil
         }
     }
 }
@@ -317,38 +422,34 @@ private extension StoreStatsAndTopPerformersViewController {
 
     func configurePeriodViewControllers() {
         let currentDate = Date()
-        let dayVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
-                                                                   timeRange: .today,
-                                                                   currentDate: currentDate,
-                                                                   canDisplayInAppFeedbackCard: true,
-                                                                   usageTracksEventEmitter: usageTracksEventEmitter)
-        let weekVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
-                                                                    timeRange: .thisWeek,
-                                                                    currentDate: currentDate,
-                                                                    canDisplayInAppFeedbackCard: false,
-                                                                    usageTracksEventEmitter: usageTracksEventEmitter)
-        let monthVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
-                                                                     timeRange: .thisMonth,
-                                                                     currentDate: currentDate,
-                                                                     canDisplayInAppFeedbackCard: false,
-                                                                     usageTracksEventEmitter: usageTracksEventEmitter)
-        let yearVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
-                                                                    timeRange: .thisYear,
-                                                                    currentDate: currentDate,
-                                                                    canDisplayInAppFeedbackCard: false,
-                                                                    usageTracksEventEmitter: usageTracksEventEmitter)
-
-        periodVCs.append(dayVC)
-        periodVCs.append(weekVC)
-        periodVCs.append(monthVC)
-        periodVCs.append(yearVC)
-
+        let periodViewControllers = timeRanges.map {
+            StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
+                                                           timeRange: $0,
+                                                           currentDate: currentDate,
+                                                           canDisplayInAppFeedbackCard: $0 == .today,
+                                                           usageTracksEventEmitter: usageTracksEventEmitter)
+        }
+        periodVCs = periodViewControllers
         periodVCs.forEach { (vc) in
             vc.scrollDelegate = scrollDelegate
             vc.onPullToRefresh = { [weak self] in
                 await self?.onPullToRefresh()
             }
         }
+    }
+
+    func loadLastTimeRange() async -> StatsTimeRangeV4? {
+        await withCheckedContinuation { continuation in
+            let action = AppSettingsAction.loadLastSelectedStatsTimeRange(siteID: siteID) { timeRange in
+                continuation.resume(returning: timeRange)
+            }
+            ServiceLocator.stores.dispatch(action)
+        }
+    }
+
+    func saveLastTimeRange(_ timeRange: StatsTimeRangeV4) {
+        let action = AppSettingsAction.setLastSelectedStatsTimeRange(siteID: siteID, timeRange: timeRange)
+        ServiceLocator.stores.dispatch(action)
     }
 
     func configureTabStrip() {
@@ -388,8 +489,7 @@ private extension StoreStatsAndTopPerformersViewController {
             updateSiteVisitors(mode: .hidden)
         case .statsModuleDisabled:
             let defaultSite = ServiceLocator.stores.sessionManager.defaultSite
-            let jcpFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport)
-            if defaultSite?.isJetpackCPConnected == true, jcpFeatureFlagEnabled {
+            if defaultSite?.isJetpackCPConnected == true {
                 updateSiteVisitors(mode: .redactedDueToJetpack)
             } else {
                 updateSiteVisitors(mode: .hidden)

@@ -64,10 +64,8 @@ private extension StorePickerViewModel {
 
     func synchronizeSites(selectedSiteID: Int64?, onCompletion: @escaping (Result<Void, Error>) -> Void) {
         let syncStartTime = Date()
-        let isJetpackConnectionPackageSupported = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport)
         let action = AccountAction
-            .synchronizeSites(selectedSiteID: selectedSiteID,
-                              isJetpackConnectionPackageSupported: isJetpackConnectionPackageSupported) { result in
+            .synchronizeSites(selectedSiteID: selectedSiteID) { result in
                 switch result {
                 case .success(let containsJCPSites):
                     if containsJCPSites {
@@ -147,21 +145,6 @@ extension StorePickerViewModel {
             return nil
         }
         return resultsController.safeObject(at: indexPath)
-    }
-
-    /// Returns the IndexPath for the specified Site.
-    ///
-    func indexPath(for siteID: Int64) -> IndexPath? {
-        guard resultsController.numberOfObjects > 0 else {
-            return nil
-        }
-
-        for (sectionIndex, section) in resultsController.sections.enumerated() {
-            if let rowIndex = section.objects.firstIndex(where: { $0.siteID == siteID }) {
-                return IndexPath(row: rowIndex, section: sectionIndex)
-            }
-        }
-        return nil
     }
 }
 

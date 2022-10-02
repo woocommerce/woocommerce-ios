@@ -195,20 +195,6 @@ private extension SettingsViewModel {
     }
 
     func configureSections() {
-        // Selected Store
-        let selectedStoreSection: Section? = {
-            if featureFlagService.isFeatureFlagEnabled(.hubMenu) {
-                return nil
-            }
-            else {
-                let storeRows: [Row] = sites.count > 1 ?
-                [.selectedStore, .switchStore] : [.selectedStore]
-                return Section(title: Localization.selectedStoreTitle,
-                               rows: storeRows,
-                               footerHeight: UITableView.automaticDimension)
-            }
-        }()
-
         // Plugins
         let pluginsSection: Section? = {
             // Show the plugins section only if the user has an `admin` role for the default store site.
@@ -226,8 +212,7 @@ private extension SettingsViewModel {
         let storeSettingsSection: Section? = {
             var rows: [Row] = []
 
-            if stores.sessionManager.defaultSite?.isJetpackCPConnected == true,
-                featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport) {
+            if stores.sessionManager.defaultSite?.isJetpackCPConnected == true {
                 rows.append(.installJetpack)
             }
 
@@ -287,7 +272,7 @@ private extension SettingsViewModel {
 
         // Remove Apple ID Access
         let removeAppleIDAccessSection: Section? = {
-            guard appleIDCredentialChecker.hasAppleUserID(), featureFlagService.isFeatureFlagEnabled(.appleIDAccountDeletion) else {
+            guard appleIDCredentialChecker.hasAppleUserID() else {
                 return nil
             }
             return Section(title: nil,
@@ -301,7 +286,6 @@ private extension SettingsViewModel {
                                     footerHeight: CGFloat.leastNonzeroMagnitude)
 
         sections = [
-            selectedStoreSection,
             pluginsSection,
             storeSettingsSection,
             helpAndFeedbackSection,
@@ -371,12 +355,6 @@ private extension SettingsViewModel {
 //
 private extension SettingsViewModel {
     enum Localization {
-        static let selectedStoreTitle = NSLocalizedString(
-            "Selected Store",
-            comment: "My Store > Settings > Selected Store information section. " +
-                "This is the heading listed above the information row that displays the store website and their username."
-        ).uppercased()
-
         static let pluginsTitle = NSLocalizedString(
             "Plugins",
             comment: "My Store > Settings > Plugins section title"

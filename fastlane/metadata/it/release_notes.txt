@@ -1,3 +1,1 @@
-Ora è più facile trovare tutto ciò di cui hai bisogno su come accettare i pagamenti nell'app. Vai alla sezione Pagamenti dal menu. Abbiamo anche corretto un problema che impediva la riscossione dei pagamenti.
-Inoltre, abbiamo apportato varie ottimizzazioni ai flussi di accesso per aiutarti a iniziare a usare rapidamente l'app.
-Infine, abbiamo effettuato alcune piccole modifiche per migliorare le prestazioni. Ma non è tutto. Sono in arrivo altre ottimizzazioni in futuro. Continua a inviarci il tuo feedback.
+Questa versione contiene alcuni miglioramenti minori per rendere la tua esperienza più fluida. È ora possibile configurare la connessione Jetpack tra il tuo sito self-hosted e il tuo account WP.com. Continuiamo ad apportare piccole modifiche e miglioramenti alla funzione dei pagamenti di persona. Speriamo si noti l'amore che mettiamo nel nostro software.

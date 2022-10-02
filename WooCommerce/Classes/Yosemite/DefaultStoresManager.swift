@@ -3,6 +3,9 @@ import Foundation
 import Yosemite
 import enum Networking.DotcomError
 import class Networking.UserAgent
+import class Networking.WordPressOrgNetwork
+import KeychainAccess
+import class WidgetKit.WidgetCenter
 
 // MARK: - DefaultStoresManager
 //
@@ -17,6 +20,10 @@ class DefaultStoresManager: StoresManager {
     /// `Thread 1: Simultaneous accesses to <MEMORY_ADDESS>, but modification requires exclusive access`
     /// https://github.com/woocommerce/woocommerce-ios/issues/878
     private var _sessionManager: SessionManagerProtocol
+
+    /// Keychain access. Used for sharing the auth access token with the widgets extension.
+    ///
+    private lazy var keychain = Keychain(service: WooConstants.keychainServiceName)
 
     /// SessionManager: Persistent Storage for Session-Y Properties.
     /// This property is thread safe
@@ -168,6 +175,8 @@ class DefaultStoresManager: StoresManager {
         ServiceLocator.storageManager.reset()
         ServiceLocator.productImageUploader.reset()
 
+        updateAndReloadWidgetInformation(with: nil)
+
         NotificationCenter.default.post(name: .logOutEventReceived, object: nil)
 
         return self
@@ -293,10 +302,8 @@ private extension DefaultStoresManager {
     /// Synchronizes the WordPress.com Sites, associated with the current credentials.
     ///
     func synchronizeSites(onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        let isJetpackConnectionPackageSupported = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport)
         let action = AccountAction
-            .synchronizeSites(selectedSiteID: sessionManager.defaultStoreID,
-                              isJetpackConnectionPackageSupported: isJetpackConnectionPackageSupported) { result in
+            .synchronizeSites(selectedSiteID: sessionManager.defaultStoreID) { result in
                 onCompletion(result.map { _ in () })
             }
         dispatch(action)
@@ -480,18 +487,34 @@ private extension DefaultStoresManager {
     /// If the site does not exist in storage, it synchronizes the site asynchronously.
     ///
     func restoreSessionSiteAndSynchronizeIfNeeded(with siteID: Int64) {
-        let isJCPEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport)
         let action = AccountAction
             .loadAndSynchronizeSite(siteID: siteID,
-                                    forcedUpdate: false,
-                                    isJetpackConnectionPackageSupported: isJCPEnabled) { [weak self] result in
+                                    forcedUpdate: false) { [weak self] result in
             guard let self = self else { return }
             guard case .success(let site) = result else {
                 return
             }
             self.sessionManager.defaultSite = site
+            self.updateAndReloadWidgetInformation(with: siteID)
         }
         dispatch(action)
+    }
+
+    /// Updates the necesary dependencies for the widget to function correctly.
+    /// Reloads widgets timelines.
+    ///
+    func updateAndReloadWidgetInformation(with siteID: Int64?) {
+        // Token to fire network requests
+        keychain.currentAuthToken = sessionManager.defaultCredentials?.authToken
+
+        // Non-critical store info
+        UserDefaults.group?[.defaultStoreID] = siteID
+        UserDefaults.group?[.defaultStoreName] = sessionManager.defaultSite?.name
+
+        // Currency Settings are stored in `SelectedSiteSettings.defaultStoreCurrencySettings`
+
+        // Reload widgets UI
+        WidgetCenter.shared.reloadAllTimelines()
     }
 }
 

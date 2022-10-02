@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-08-23 11:54:03+0000 */
+/* Translation-Revision-Date: 2022-09-20 09:54:29+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -32,6 +32,12 @@
 
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@（对客户可见）";
+
+/* A label prompting users to learn more about In-Person Payments.
+\u{2011} is a special character that acts as nonbreaking hyphen for "-" in the "In-Person" string.
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"%1$@ about Inu{2011}Person Payments" = "%1$@现场付款{2011}";
 
 /* A label prompting users to learn more about card readers"
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
@@ -921,6 +927,9 @@ which should be translated separately and considered part of this sentence. */
    Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "无法上传图像";
 
+/* Error message displayed when failed to check for Jetpack connection. */
+"Cannot verify your Jetpack connection. Please try again." = "无法验证您的 Jetpack 连接。 请重试。";
+
 /* Error message displayed when failed to check for WooCommerce in a site. */
 "Cannot verify your site's WooCommerce installation." = "无法验证您站点的 WooCommerce 安装信息。";
 
@@ -1096,9 +1105,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to confirm the preferred provider for In-Person Payments */
 "Confirm Payment Method" = "确认付款方式";
 
-/* Title for the error screen when there is more than one plugin active that supports in-person payments. */
-"Conflicting payment plugins detected" = "检测到存在冲突的付款插件";
-
 /* Title displayed if there are no inbox notes in the inbox screen. */
 "Congrats, you’ve read everything!" = "恭喜您，已全部阅读！";
 
@@ -1110,6 +1116,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Settings > Manage Card Reader > Connect > A button to begin a search for a reader */
 "Connect Card Reader" = "连接读卡器";
+
+/* Title of the Jetpack connection web view in the login flow */
+"Connect Jetpack" = "连接 Jetpack";
+
+/* Button linking to web view for setting up Jetpack connection. Presented when logging in with store credentials of an account not connected to the site's Jetpack */
+"Connect Jetpack to your account" = "将 Jetpack 连接到您的账户";
 
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "连接读卡器";
@@ -2007,6 +2019,12 @@ which should be translated separately and considered part of this sentence. */
 /* Error message on the Coupon Details screen when deleting coupon fails */
 "Failed to delete coupon. Please try again." = "优惠券删除失败。 请重试。";
 
+/* Error displayed when the attempt to disable a Pay in Person checkout payment option fails */
+"Failed to disable Pay in Person. Please try again later." = "未能禁用“现场付款”。 请稍后重试。";
+
+/* Error displayed when the attempt to enable a Pay in Person checkout payment option fails */
+"Failed to enable Pay in Person. Please try again later." = "无法启用现场付款功能。 请稍后重试。";
+
 /* Error message on the Issue Refund screen when fetching the charge details failed */
 "Failed to fetch your charge details. Please try again." = "获取扣费详细信息失败。 请重试。";
 
@@ -2268,6 +2286,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Help and Support navigation title
    Help button
+   Help button on Jetpack required error screen.
    Help button on store picker screen. */
 "Help" = "帮助";
 
@@ -2347,9 +2366,6 @@ which should be translated separately and considered part of this sentence. */
 /* Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled. */
 "In-Person Payments Setup is incomplete." = "现场付款设置未完成。";
 
-/* Title for the error screen when there is more than one plugin active and the Stripe plugin should be deactivated */
-"In-Person Payments are processed through WooCommerce Payments." = "通过 WooCommerce Payments 处理现场付款。";
-
 /* Main prompt for the screen to select the preferred provider for In-Person Payments */
 "In-Person Payments can be processed through either of these payment providers. Which provider would you like to use?" = "现场付款可以通过这些付款提供商中的任何一个进行处理。 您想使用哪个提供商？";
 
@@ -2360,12 +2376,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when the merchant's payment account has been rejected. */
 "In-Person Payments isn't available for this store" = "此商店不支持现场付款";
-
-/* Message prompting a shop manager to ask an administrator to deactivate one of two plugins */
-"In-Person Payments will only work with one of following plugins activated. Please contact a site administrator to deactivate one of these plugins to continue:" = "必须启用下面其中一个插件，才能进行现场付款。 请联系站点管理员，禁用下面其中一个插件，然后再继续：";
-
-/* Message prompting an administrator to deactivate one of two plugins */
-"In-Person Payments will only work with one of following plugins activated. Please deactivate one of these plugins to continue:" = "必须启用下面其中一个插件，才能进行现场付款。 请禁用下面其中一个插件，然后再继续：";
 
 /* Application's Inactive State */
 "Inactive" = "未激活";
@@ -2522,8 +2532,14 @@ which should be translated separately and considered part of this sentence. */
 /* Message on enable analytics screen to notify that the module is disabled for the store */
 "It looks like you have analytics disabled." = "看起来您已禁用分析。";
 
+/* Message explaining that the entered site credentials belong to an account that is not connected to the site's Jetpack. Reads like 'It looks like your account is not connected to awebsite.com's Jetpack */
+"It looks like your account is not connected to %@'s Jetpack" = "您的账户似乎未连接到 %@ 的 Jetpack";
+
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "您可能输入了错误的密码。是否想重试？";
+
+/* An error message displayed when the user tries to log in to the app with a simple WP.com site. Reads like: It seems that your site google.com is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce. */
+"It seems that your site %@ is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce." = "您的站点 %@ 似乎是简单的 WordPress.com 站点，无法安装插件。 请升级您的套餐来使用 WooCommerce。";
 
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "斜体";
@@ -2593,8 +2609,11 @@ which should be translated separately and considered part of this sentence. */
 
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
+   A label prompting users to learn more about In-Person Payments.
+This is the link to the website, and forms part of a longer sentence which it should be considered a part of.
    Button title in the shipping label creation info screen
    Settings > Privacy Settings. A text link to the cookie policy.
+   The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. 
    Title of button shown in the Orders → All Orders tab if the list is empty.
    Title of button shown in the Reviews tab if the list is empty
    Title of button shown on the Product Reviews screen if the list is empty */
@@ -2694,7 +2713,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Action button that will restart the login flow.Presented when logging in with a site address that appears to be invalid.
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
-   Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce */
+   Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
+   Action button that will restart the login flow.Presented when logging in with store credentials of an account not connected to the site's Jetpack
+   Action button that will restart the login flow.Presented when the user tries to log in to the app with a simple WP.com site. */
 "Log In With Another Account" = "使用其他帐户登录";
 
 /* Action button triggering a Log Out.Presented when logging in with a store address that does not match the account entered
@@ -2765,9 +2786,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the action sheet displayed from the Coupon Details screen */
 "Manage Coupon" = "管理优惠券";
-
-/* Button to open browser to manage plugins */
-"Manage Plugins" = "管理插件";
 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Manage and edit orders on the go" = "随时随地管理和编辑订单";
@@ -2906,9 +2924,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error showed in Shipping Label Address Validation for the name field */
 "Name missing" = "缺少名称";
-
-/* VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen. */
-"Navigates to Settings." = "导航至“设置”。";
 
 /* Title of the banner in the Order Detail for suggesting to install WCShip extension. */
 "Need a shipping label?" = "是否需要货运标签？";
@@ -3211,6 +3226,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Notice title when an order is marked as completed via a swipe action. Parameter: Order Number */
 "Order #%1$d marked as completed" = "订单 #%1$d 已标为“已完成”";
 
+/* Title for the webview used by merchants to place an order for a card reader, for use with In-Person Payments. */
+"Order Card Reader" = "订购读卡器";
+
 /* Order notes section title */
 "Order Notes" = "订单备注";
 
@@ -3328,6 +3346,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Paste without Formatting Menu Item */
 "Paste without Formatting" = "不带格式粘贴";
+
+/* Customer-facing description showing more details about the Pay in Person option which is added to the store checkout when the merchant enables Pay in Person
+   Customer-facing instructions shown on Order Thank-you pages and confirmation emails, showing more details about the Pay in Person option added to the store checkout when the merchant enables Pay in Person */
+"Pay by card or another accepted payment method" = "银行卡付款或其他可接受的付款方式";
+
+/* Customer-facing title for the payment option added to the store checkout when the merchant enables Pay in Person
+   Title for a switch on the In-Person Payments menu to enable Cash on Delivery */
+"Pay in Person" = "现场付款";
 
 /* Payment section title
    Title text of the row that shows the payment headline when creating a simple payment
@@ -3993,6 +4019,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button to retry when there was a network error checking In-Person Payments requirements
    Retry Action
    Retry action for an error notice
+   Retry Action on error displayed when the attempt to enable a Pay in Person checkout payment option fails
+   Retry Action on error displayed when the attempt to toggle a Pay in Person checkout payment option fails
    Retry Action on the notice when loading product categories fails
    Retry the last action */
 "Retry" = "重试";
@@ -4230,9 +4258,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Placeholder in Shipping Label form for the Carrier and Rates row. */
 "Select your shipping carrier and rates" = "选择您的承运商和收费标准";
 
-/* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
-"Selected Store" = "已选商店";
-
 /* Presents a survey to gather feedback from the user. */
 "Send Feedback" = "发送反馈";
 
@@ -4261,8 +4286,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Header text on Add New Service Package screen in Shipping Label flow */
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "设置您要用来发运商品的包裹。 我们会保存它，以供您在将来的订单中使用。";
 
-/* Accessibility label for the Settings button.
-   Settings button in the hub menu
+/* Settings button in the hub menu
    Settings navigation title */
 "Settings" = "设置";
 
@@ -4882,6 +4906,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Fetching an Order Failed */
 "The Order couldn't be loaded!" = "无法加载命令！";
 
+/* A label prompting users to learn more about adding Pay in Person to their checkout. %1$@ is a placeholder that always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
+"The Pay in Person checkout option lets you accept payments for website orders, on collection or delivery. %1$@" = "通过启用“现场付款”结账选项，您可在收货或交货时接受网站订单付款。%1$@";
+
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "URL 缺少有效主机。";
 
@@ -5215,12 +5242,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message displayed when unable to close user account due to having active atomic site. */
 "To close this account now, contact our support team." = "要立即关闭此帐户，请联系我们的支持团队。";
 
-/* Message prompting an administrator to deactivate Stripe plugin */
-"To collect payments, please ask an administrator to deactivate WooCommerce Stripe Gateway." = "如需收款，需请求管理员禁用 WooCommerce Stripe Gateway。";
-
-/* Message prompting an administrator to deactivate Stripe plugin */
-"To collect payments, please deactivate WooCommerce Stripe Gateway." = "如需收款，请禁用 WooCommerce Stripe Gateway。";
-
 /* Close Account confirmation alert message. The %1$@ is the user's WordPress.com username. */
 "To confirm, please re-enter your username before closing.\n\n%1$@" = "如果您确认关闭账户，请在关闭之前重新输入您的用户名。\n\n%1$@";
 
@@ -5241,6 +5262,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Instructional text shown when requesting the user's password for Google login. */
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "要继续使用此 Google 帐户，请先使用您的 WordPress.com 密码登录。此要求只会出现一次。";
+
+/* Sign in instructions asking user to enter WordPress.com password to proceed with sign in using Apple process */
+"To proceed with this account, please first log in with your WordPress.com password. This will only be asked once." = "要继续使用此账户，请先使用您的 WordPress.com 密码登录。 此要求只会出现一次。";
 
 /* Label within the modal dialog that appears when searching for a card reader */
 "To turn on your card reader, briefly press its power button." = "要打开读卡器，只需按下电源按钮。";
@@ -5711,6 +5735,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Step 1 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network." = "验证您的打印机和设备连接到**相同的 Wi-Fi 网络**。\n\n请查看您的打印机文档，了解有关连接到 Wi-Fi 网络的信息。";
 
+/* Message displayed when checking whether Jetpack has been connected successfully */
+"Verifying Jetpack connection..." = "正在验证 Jetpack 连接…";
+
 /* Message displayed when checking whether a site has successfully installed WooCommerce */
 "Verifying installation..." = "正在验证安装信息...";
 
@@ -6115,6 +6142,40 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Format of the number of product ratings in singular form */
 "rated once" = "1 次评分";
+
+/* Widget description, displayed when selecting which widget to add */
+"storeWidgets.description" = "WooCommerce 今日统计数据";
+
+/* Widget title, displayed when selecting which widget to add */
+"storeWidgets.displayName" = "今天";
+
+/* Generic store name for the store info widget preview */
+"storeWidgets.infoProvider.myShop" = "我的商店";
+
+/* Range title for the today store info widget */
+"storeWidgets.infoProvider.today" = "今天";
+
+/* Conversion title label for the store info widget
+   Orders title label for the store info widget */
+"storeWidgets.infoView.orders" = "订单";
+
+/* Revenue title label for the store info widget */
+"storeWidgets.infoView.revenue" = "收益";
+
+/* Displays the time when the widget was last updated. %1$@ is the time to render. */
+"storeWidgets.infoView.updatedAt" = "截至 %1$@";
+
+/* Visitors title label for the store info widget */
+"storeWidgets.infoView.visitors" = "访客";
+
+/* Title label for the login button on the store info widget. */
+"storeWidgets.notLoggedInView.login" = "登录";
+
+/* Title label when the widget does not have a logged-in store. */
+"storeWidgets.notLoggedInView.notLoggedIn" = "登录查看今日统计数据。";
+
+/* Title label when the widget can't fetch data. */
+"storeWidgets.unableToFetchView.unableToFetch" = "无法获取今日统计数据";
 
 /* Today */
 "today" = "今天";

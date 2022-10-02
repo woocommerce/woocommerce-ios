@@ -8,7 +8,7 @@ common_params:
         repo: "woocommerce/woocommerce-ios/"
   # Common environment values to use with the `env` key.
   - &common_env
-    IMAGE_ID: xcode-13.4.1
+    IMAGE_ID: xcode-14
 
 # This is the default pipeline – it will build and test the app
 steps:
@@ -44,6 +44,8 @@ steps:
     depends_on: "build"
     env: *common_env
     plugins: *common_plugins
+    artifact_paths:
+      - "fastlane/test_output/*"
     notify:
       - github_commit_status:
           context: "Unit Tests"
@@ -66,23 +68,23 @@ steps:
   # UI Tests
   #################
   - label: "🔬 UI Tests (iPhone)"
-    command: .buildkite/commands/run-ui-tests.sh UITests 'iPhone 11' 15.0
+    command: .buildkite/commands/run-ui-tests.sh UITests 'iPhone 14'
     depends_on: "build"
     env: *common_env
     plugins: *common_plugins
     artifact_paths:
-      - "build/results/"
+      - "fastlane/test_output/*"
     notify:
       - github_commit_status:
           context: "UI Tests (iPhone)"
 
   - label: "🔬 UI Tests (iPad)"
-    command: .buildkite/commands/run-ui-tests.sh UITests "iPad Air (4th generation)" 15.0
+    command: .buildkite/commands/run-ui-tests.sh UITests "iPad Air (5th generation)"
     depends_on: "build"
     env: *common_env
     plugins: *common_plugins
     artifact_paths:
-      - "build/results/"
+      - "fastlane/test_output/*"
     notify:
       - github_commit_status:
           context: "UI Tests (iPad)"

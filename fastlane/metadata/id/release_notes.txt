@@ -1,3 +1,1 @@
-Kami mempermudah Anda menemukan segala hal seputar penerimaan pembayaran di aplikasi. Buka bagian Pembayaran dari Menu! Kami juga memperbaiki kesalahan pemblokiran terhadap pengambilan pembayaran Anda.
-Kami juga melakukan berbagai penyempurnaan dalam alur login agar Anda dapat memulai aplikasi dengan lebih cepat.
-Terakhir, kami mengutak-atik performa supaya lebih baik. Namun, kami belum selesai. Nantikan perbaikan lainnya di masa mendatang. Terus kirimkan feedback Anda kepada kami!
+Rilis ini memuat berbagai perbaikan minor agar pengalaman Anda makin mulus. Sekarang, Anda dapat menyiapkan koneksi Jetpack antara situs hosting sendiri dan akun WP.com Anda. Kami terus melakukan perubahan dan peningkatan kecil untuk fitur pembayaran langsung. Kami harap Anda menyukai upaya yang kami berikan dalam perangkat lunak kami.

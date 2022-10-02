@@ -25,13 +25,17 @@ struct UniversalLinkRouter {
     /// As we only perform one action to avoid conflicts, order matters (only the first matched route will be called to perform its action)
     ///
     private static let defaultRoutes: [Route] = [
-        OrderDetailsRoute()
+        OrderDetailsRoute(),
+        PaymentsRoute()
     ]
 
     func handle(url: URL) {
         guard let matchedRoute = matcher.firstRouteMatching(url),
               matchedRoute.performAction() else {
+            ServiceLocator.analytics.track(event: WooAnalyticsEvent.universalLinkFailed(with: url))
             return bouncingURLOpener.open(url)
         }
+
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.universalLinkOpened(with: matchedRoute.route.subPath))
     }
 }

@@ -28,9 +28,6 @@ protocol ULAccountMismatchViewModel {
     /// Provides a title for a primary action button
     var primaryButtonTitle: String { get }
 
-    /// Provides the visibility of the primary button
-    var isPrimaryButtonHidden: AnyPublisher<Bool, Never> { get }
-
     /// Provides the loading state of the primary button
     var isPrimaryButtonLoading: AnyPublisher<Bool, Never> { get }
 
@@ -39,9 +36,6 @@ protocol ULAccountMismatchViewModel {
 
     /// Provides the visibility of the secondary button
     var isSecondaryButtonHidden: Bool { get }
-
-    /// Provides the visibility of the activity indicator
-    var isShowingActivityIndicator: AnyPublisher<Bool, Never> { get }
 
     /// Provides the title for the logout button
     var logOutButtonTitle: String { get }

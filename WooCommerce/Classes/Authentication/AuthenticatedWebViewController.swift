@@ -1,6 +1,7 @@
 import Combine
 import UIKit
 import WebKit
+import struct WordPressAuthenticator.WordPressOrgCredentials
 
 /// A web view which is authenticated for WordPress.com, when possible.
 ///
@@ -26,8 +27,13 @@ final class AuthenticatedWebViewController: UIViewController {
     /// Strong reference for the subscription to update progress bar
     private var subscriptions: Set<AnyCancellable> = []
 
-    init(viewModel: AuthenticatedWebViewModel) {
+    /// Optional credentials for authenticating with WP.org
+    ///
+    private let wporgCredentials: WordPressOrgCredentials?
+
+    init(viewModel: AuthenticatedWebViewModel, wporgCredentials: WordPressOrgCredentials? = nil) {
         self.viewModel = viewModel
+        self.wporgCredentials = wporgCredentials
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -87,9 +93,6 @@ private extension AuthenticatedWebViewController {
     }
 
     func startLoading() {
-        guard let url = viewModel.initialURL else {
-            return
-        }
         webView.publisher(for: \.estimatedProgress)
             .sink { [weak self] progress in
                 if progress == 1 {
@@ -102,10 +105,29 @@ private extension AuthenticatedWebViewController {
 
         webView.publisher(for: \.url)
             .sink { [weak self] url in
-                self?.viewModel.handleRedirect(for: url)
+                guard let self else { return }
+                let initialURL = self.viewModel.initialURL
+                // avoids infinite loop if the initial url happens to be the nonce retrieval path.
+                if url?.absoluteString.contains(WKWebView.wporgNoncePath) == true,
+                   initialURL?.absoluteString.contains(WKWebView.wporgNoncePath) != true {
+                    self.loadContent()
+                } else {
+                    self.viewModel.handleRedirect(for: url)
+                }
             }
             .store(in: &subscriptions)
 
+        if let wporgCredentials, let request = try? webView.authenticateForWPOrg(with: wporgCredentials) {
+            webView.load(request)
+        } else {
+            loadContent()
+        }
+    }
+
+    private func loadContent() {
+        guard let url = viewModel.initialURL else {
+            return
+        }
         if let credentials = ServiceLocator.stores.sessionManager.defaultCredentials {
             webView.authenticateForWPComAndRedirect(to: url, credentials: credentials)
         } else {

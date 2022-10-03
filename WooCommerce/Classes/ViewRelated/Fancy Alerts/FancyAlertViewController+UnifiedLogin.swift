@@ -39,6 +39,20 @@ extension FancyAlertViewController {
         return controller
 
     }
+
+    static func makeConnectAccountToWPComSiteAlert() -> FancyAlertViewController {
+        let dismissButton = makeDismissButtonConfig()
+        let config = FancyAlertViewController.Config(titleText: Localization.connectToWPComSite,
+                                                     bodyText: Localization.connectToWPComSiteDescription,
+                                                     headerImage: nil,
+                                                     dividerPosition: .top,
+                                                     defaultButton: dismissButton,
+                                                     cancelButton: nil,
+                                                     dismissAction: {})
+
+        let controller = FancyAlertViewController.controllerWithConfiguration(configuration: config)
+        return controller
+    }
 }
 
 
@@ -80,6 +94,18 @@ private extension FancyAlertViewController {
         static let needMoreHelp = NSLocalizedString(
             "Need more help?",
             comment: "Title of button to learn more presented when users attempt to log in with an email address that does not match a WP.com account"
+        )
+
+        static let connectToWPComSite = NSLocalizedString(
+            "Connecting to a WordPress.com site",
+            comment: "Title of alert for suggestion on how to connect to a WP.com site" +
+            "Presented when a user logs in with an email that does not have access to a WP.com site"
+        )
+
+        static let connectToWPComSiteDescription = NSLocalizedString(
+            "Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app.",
+            comment: "Description of alert for suggestion on how to connect to a WP.com site" +
+            "Presented when a user logs in with an email that does not have access to a WP.com site"
         )
     }
 

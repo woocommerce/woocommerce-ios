@@ -27,7 +27,6 @@ final class ULAccountMismatchViewController: UIViewController {
     @IBOutlet private weak var logOutButton: UIButton!
     @IBOutlet private weak var primaryButton: NUXButton!
     @IBOutlet private weak var secondaryButton: NUXButton!
-    @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
 
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var errorMessage: UILabel!
@@ -65,7 +64,6 @@ final class ULAccountMismatchViewController: UIViewController {
 
         configurePrimaryButton()
         configureSecondaryButon()
-        configureActivityIndicator()
 
         setUnifiedMargins(forWidth: view.frame.width)
 
@@ -162,12 +160,6 @@ private extension ULAccountMismatchViewController {
                 self?.primaryButton.showActivityIndicator(isLoading)
             }
             .store(in: &subscriptions)
-
-        viewModel.isPrimaryButtonHidden
-            .sink { [weak self] isHidden in
-                self?.primaryButton.isHidden = isHidden
-            }
-            .store(in: &subscriptions)
     }
 
     func configureSecondaryButon() {
@@ -177,20 +169,6 @@ private extension ULAccountMismatchViewController {
         secondaryButton.on(.touchUpInside) { [weak self] _ in
             self?.didTapSecondaryButton()
         }
-    }
-
-    func configureActivityIndicator() {
-        activityIndicator.hidesWhenStopped = true
-
-        viewModel.isShowingActivityIndicator
-            .sink { [weak self] showing in
-                if showing {
-                    self?.activityIndicator.startAnimating()
-                } else {
-                    self?.activityIndicator.stopAnimating()
-                }
-            }
-            .store(in: &subscriptions)
     }
 
     /// This logic is lifted from WPAuthenticator's LoginPrologueViewController
@@ -280,10 +258,6 @@ extension ULAccountMismatchViewController {
 
     func getSecondaryActionButton() -> UIButton {
         return secondaryButton
-    }
-
-    func getActivityIndicator() -> UIActivityIndicatorView {
-        return activityIndicator
     }
 
     func getUserNameLabel() -> UILabel {

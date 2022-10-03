@@ -762,9 +762,10 @@
         <relationship name="stats" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TopEarnerStats" inverseName="items" inverseEntity="TopEarnerStats"/>
     </entity>
     <entity name="WCAnalyticsCustomer" representedClassName="WCAnalyticsCustomer" syncable="YES">
-        <attribute name="customerID" attributeType="String"/>
+        <attribute name="customerID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="customerName" optional="YES" attributeType="String"/>
+        <attribute name="email" optional="YES" attributeType="String"/>
         <attribute name="username" optional="YES" attributeType="String"/>
-        <relationship name="orderID" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Order"/>
     </entity>
     <entity name="WCPayCardPaymentDetails" representedClassName="WCPayCardPaymentDetails" syncable="YES">
         <attribute name="brand" attributeType="String"/>

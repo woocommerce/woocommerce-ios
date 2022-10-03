@@ -1326,8 +1326,10 @@ final class MigrationTests: XCTestCase {
         let migratedCustomer = insertWCAnalyticsCustomer(to: targetContext)
 
         XCTAssertEqual(try targetContext.count(entityName: "WCAnalyticsCustomer"), 1)
-        XCTAssertEqual(migratedCustomer.value(forKey: "customerID") as? String, "1")
+        XCTAssertEqual(migratedCustomer.value(forKey: "customerID") as? Int64, 1)
         XCTAssertEqual(migratedCustomer.value(forKey: "username") as? String, "")
+        XCTAssertEqual(migratedCustomer.value(forKey: "email") as? String, "")
+        XCTAssertEqual(migratedCustomer.value(forKey: "customerName") as? String, "")
     }
 }
 
@@ -1417,8 +1419,10 @@ private extension MigrationTests {
     @discardableResult
     func insertWCAnalyticsCustomer(to context: NSManagedObjectContext) -> NSManagedObject {
         context.insert(entityName: "WCAnalyticsCustomer", properties: [
-            "customerID": "1",
-            "username": ""
+            "customerID": 1,
+            "username": "",
+            "email": "",
+            "customerName": ""
         ])
     }
 

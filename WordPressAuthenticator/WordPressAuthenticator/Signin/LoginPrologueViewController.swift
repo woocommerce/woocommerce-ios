@@ -163,6 +163,7 @@ class LoginPrologueViewController: LoginViewController {
         buttonViewController.shadowLayoutGuide = view.safeAreaLayoutGuide
         buttonViewController.topButtonStyle = WordPressAuthenticator.shared.style.prologuePrimaryButtonStyle
         buttonViewController.bottomButtonStyle = WordPressAuthenticator.shared.style.prologueSecondaryButtonStyle
+        buttonViewController.tertiaryButtonStyle = WordPressAuthenticator.shared.style.prologueSecondaryButtonStyle
     }
 
     /// Displays the old UI prologue buttons.

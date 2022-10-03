@@ -177,6 +177,10 @@ import WordPressKit
             return nil
         }
 
+        if let loginNavController = controller as? LoginNavigationController, let loginPrologueViewController = loginNavController.viewControllers.first as? LoginPrologueViewController {
+            loginPrologueViewController.showCancel = showCancel
+        }
+
         controller.modalPresentationStyle = .fullScreen
         return controller
     }

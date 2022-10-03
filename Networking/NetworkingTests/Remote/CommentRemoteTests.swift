@@ -154,4 +154,43 @@ class CommentRemoteTests: XCTestCase {
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    func test_replyToComment_returns_parsed_status_for_comment_reply() throws {
+        // Given
+        let remote = CommentRemote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/comments/\(sampleCommentID)/replies/new", filename: "comment-moderate-approved")
+
+        // When
+        var result: Result<CommentStatus, Error>?
+        waitForExpectation { expectation in
+            remote.replyToComment(siteID: sampleSiteID, commentID: sampleCommentID, content: "Sample comment") { aResult in
+                result = aResult
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        let commentStatus = try XCTUnwrap(result?.get())
+        XCTAssertEqual(commentStatus, .approved)
+    }
+
+    func test_replyToComment_properly_parses_error_responses() throws {
+        // Given
+        let remote = CommentRemote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/comments/\(sampleCommentID)/replies/new", filename: "generic_error")
+
+        // When
+        var result: Result<CommentStatus, Error>?
+        waitForExpectation { expectation in
+            remote.replyToComment(siteID: sampleSiteID, commentID: sampleCommentID, content: "Sample comment") { aResult in
+                result = aResult
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(result).isFailure)
+    }
 }

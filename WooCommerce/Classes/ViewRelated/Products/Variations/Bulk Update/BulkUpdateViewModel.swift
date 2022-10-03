@@ -26,6 +26,10 @@ final class BulkUpdateViewModel {
     private let currencyFormatter: CurrencyFormatter
     private var onCancelButtonTapped: () -> Void
 
+    /// Returns `true` if there are more than 100 variations to edit.
+    ///
+    let shouldShowVariationLimitWarning: Bool
+
     /// Product Variations Controller.
     ///
     private lazy var resultsController: ResultsController<StorageProductVariation> = {
@@ -48,6 +52,7 @@ final class BulkUpdateViewModel {
 
     init(siteID: Int64,
          productID: Int64,
+         variationCount: Int,
          onCancelButtonTapped: @escaping () -> Void,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          storesManager: StoresManager = ServiceLocator.stores,
@@ -59,6 +64,7 @@ final class BulkUpdateViewModel {
         self.storesManager = storesManager
         self.currencySettings = currencySettings
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.shouldShowVariationLimitWarning = variationCount > Constants.numberOfObjects
         syncState = .notStarted
     }
 

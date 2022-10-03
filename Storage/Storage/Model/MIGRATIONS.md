@@ -2,6 +2,11 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 74 (WIP xx.x.x.x)
+- @iamgabrielma 2022-10-xx
+    - Added `WCAnalyticsCustomer` entity
+    - Added `customerID` (non-optional) and `username` (optional) properties to `WCAnalyticsCustomer` entity
+
 ## Model 73 (Release 10.6.0.0)
 - @jaclync 2022-09-14
     - Added `filterKey` attribute to `ProductSearchResults` entity.

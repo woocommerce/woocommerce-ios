@@ -1301,6 +1301,34 @@ final class MigrationTests: XCTestCase {
         // Check `filterKey` is correctly set.
         XCTAssertEqual(migratedProductSearchResults.value(forKey: "filterKey") as? String, "sku")
     }
+
+    func test_migrating_from_73_to_74_adds_WCAnalyticsCustomer_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 73")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. This entity should not exist in Model 73
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "WCAnalyticsCustomer", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 74")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+
+        // This entity should exist in Model 74
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "WCAnalyticsCustomer", in: targetContext))
+        XCTAssertEqual(try targetContext.count(entityName: "WCAnalyticsCustomer"), 0)
+
+        // Insert a new WCAnalyticsCustomer
+        let migratedCustomer = insertWCAnalyticsCustomer(to: targetContext)
+
+        XCTAssertEqual(try targetContext.count(entityName: "WCAnalyticsCustomer"), 1)
+        XCTAssertEqual(migratedCustomer.value(forKey: "customerID") as? String, "1")
+        XCTAssertEqual(migratedCustomer.value(forKey: "username") as? String, "")
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -1385,6 +1413,15 @@ private extension MigrationTests {
 //
 
 private extension MigrationTests {
+    /// Inserts a `WCAnalyticsCustomer` entity, providing default values for the required properties.
+    @discardableResult
+    func insertWCAnalyticsCustomer(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "WCAnalyticsCustomer", properties: [
+            "customerID": "1",
+            "username": ""
+        ])
+    }
+    
     /// Inserts a `ProductVariation` entity, providing default values for the required properties.
     @discardableResult
     func insertProductVariation(to context: NSManagedObjectContext) -> NSManagedObject {

@@ -692,11 +692,13 @@ final class StorageTypeExtensionsTests: XCTestCase {
     func test_loadProductSearchResult_by_keyboard() throws {
         // Given
         let keyword = "Keyword"
+        let filterKey = "all"
         let searchResult = storage.insertNewObject(ofType: ProductSearchResults.self)
         searchResult.keyword = keyword
+        searchResult.filterKey = filterKey
 
         // When
-        let storedSearchResult = try XCTUnwrap(storage.loadProductSearchResults(keyword: keyword))
+        let storedSearchResult = try XCTUnwrap(storage.loadProductSearchResults(keyword: keyword, filterKey: filterKey))
 
         // Then
         XCTAssertEqual(searchResult, storedSearchResult)

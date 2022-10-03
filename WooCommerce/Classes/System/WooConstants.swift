@@ -53,6 +53,10 @@ enum WooConstants {
     /// Store Info Widget Identifier.
     ///
     static let storeInfoWidgetKind = "StoreInfoWidget"
+
+    /// App link Widget Identifier.
+    ///
+    static let appLinkWidgetKind = "AppLinkWidget"
 }
 
 // MARK: URLs
@@ -126,6 +130,10 @@ extension WooConstants {
         /// Help Center for "Wrong Account error" screen
         ///
         case helpCenterForWrongAccountError = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#wrong-account"
+
+        /// Help Center for No WooCommerce site error
+        ///
+        case helpCenterForNoWooError = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#not-a-woocommerce-site"
 
         /// Help Center for "Store picker" screen
         ///

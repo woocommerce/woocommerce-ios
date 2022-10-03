@@ -23,7 +23,7 @@ final class MockAuthentication: Authentication {
         UIViewController()
     }
 
-    func initialize() {
+    func initialize(loggedOutAppSettings: LoggedOutAppSettingsProtocol) {
         // no-op
     }
 

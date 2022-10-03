@@ -22,10 +22,6 @@ public enum FeatureFlag: Int {
     ///
     case inbox
 
-    /// Displays the bulk update option in product variations
-    ///
-    case bulkEditProductVariations
-
     /// Displays the Orders tab in a split view
     ///
     case splitViewInOrdersTab
@@ -70,7 +66,15 @@ public enum FeatureFlag: Int {
     ///
     case promptToEnableCodInIppOnboarding
 
+    /// Enables searching products by partial SKU for WC version 6.6+.
+    ///
+    case searchProductsBySKU
+
     /// Enables the Search Customers functionality in the Order Creation screen
     ///
     case orderCreationSearchCustomers
+
+    /// Enables lock screen widgets
+    ///
+    case lockscreenWidgets
 }

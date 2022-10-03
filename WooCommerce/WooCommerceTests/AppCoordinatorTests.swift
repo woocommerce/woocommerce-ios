@@ -23,7 +23,7 @@ final class AppCoordinatorTests: XCTestCase {
         stores = MockStoresManager(sessionManager: sessionManager)
         storageManager = MockStorageManager()
         authenticationManager = AuthenticationManager()
-        authenticationManager.initialize()
+        authenticationManager.initialize(loggedOutAppSettings: MockLoggedOutAppSettings())
     }
 
     override func tearDown() {

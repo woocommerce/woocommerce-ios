@@ -48,6 +48,7 @@ public class ProductStore: Store {
             retrieveProducts(siteID: siteID, productIDs: productIDs, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case let .searchProducts(siteID,
                                  keyword,
+                                 filter,
                                  pageNumber,
                                  pageSize,
                                  stockStatus,
@@ -58,6 +59,7 @@ public class ProductStore: Store {
                                  onCompletion):
             searchProducts(siteID: siteID,
                            keyword: keyword,
+                           filter: filter,
                            pageNumber: pageNumber,
                            pageSize: pageSize,
                            stockStatus: stockStatus,
@@ -122,6 +124,7 @@ private extension ProductStore {
     ///
     func searchProducts(siteID: Int64,
                         keyword: String,
+                        filter: ProductSearchFilter,
                         pageNumber: Int,
                         pageSize: Int,
                         stockStatus: ProductStockStatus?,
@@ -130,24 +133,33 @@ private extension ProductStore {
                         productCategory: ProductCategory?,
                         excludedProductIDs: [Int64],
                         onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        remote.searchProducts(for: siteID,
-                                 keyword: keyword,
-                                 pageNumber: pageNumber,
-                                 pageSize: pageSize,
-                                 stockStatus: stockStatus,
-                                 productStatus: productStatus,
-                                 productType: productType,
-                                 productCategory: productCategory,
-                                 excludedProductIDs: excludedProductIDs) { [weak self] result in
-            switch result {
-            case .success(let products):
-                self?.upsertSearchResultsInBackground(siteID: siteID,
-                                                      keyword: keyword,
-                                                      readOnlyProducts: products) {
-                    onCompletion(.success(()))
-                }
-            case .failure(let error):
-                onCompletion(.failure(error))
+        switch filter {
+        case .all:
+            remote.searchProducts(for: siteID,
+                                  keyword: keyword,
+                                  pageNumber: pageNumber,
+                                  pageSize: pageSize,
+                                  stockStatus: stockStatus,
+                                  productStatus: productStatus,
+                                  productType: productType,
+                                  productCategory: productCategory,
+                                  excludedProductIDs: excludedProductIDs) { [weak self] result in
+                self?.handleSearchResults(siteID: siteID,
+                                          keyword: keyword,
+                                          filter: filter,
+                                          result: result,
+                                          onCompletion: onCompletion)
+            }
+        case .sku:
+            remote.searchProductsBySKU(for: siteID,
+                                       keyword: keyword,
+                                       pageNumber: pageNumber,
+                                       pageSize: pageSize) { [weak self] result in
+                self?.handleSearchResults(siteID: siteID,
+                                          keyword: keyword,
+                                          filter: filter,
+                                          result: result,
+                                          onCompletion: onCompletion)
             }
         }
     }
@@ -665,17 +677,35 @@ private extension ProductStore {
 // MARK: - Storage: Search Results
 //
 private extension ProductStore {
+    func handleSearchResults(siteID: Int64,
+                             keyword: String,
+                             filter: ProductSearchFilter,
+                             result: Result<[Product], Error>,
+                             onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        switch result {
+        case .success(let products):
+            upsertSearchResultsInBackground(siteID: siteID,
+                                            keyword: keyword,
+                                            filter: filter,
+                                            readOnlyProducts: products) {
+                onCompletion(.success(()))
+            }
+        case .failure(let error):
+            onCompletion(.failure(error))
+        }
+    }
 
     /// Upserts the Products, and associates them to the SearchResults Entity (in Background)
     ///
     private func upsertSearchResultsInBackground(siteID: Int64,
                                                  keyword: String,
+                                                 filter: ProductSearchFilter,
                                                  readOnlyProducts: [Networking.Product],
                                                  onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform { [weak self] in
             self?.upsertStoredProducts(readOnlyProducts: readOnlyProducts, in: derivedStorage)
-            self?.upsertStoredResults(siteID: siteID, keyword: keyword, readOnlyProducts: readOnlyProducts, in: derivedStorage)
+            self?.upsertStoredResults(siteID: siteID, keyword: keyword, filter: filter, readOnlyProducts: readOnlyProducts, in: derivedStorage)
         }
 
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {
@@ -685,9 +715,15 @@ private extension ProductStore {
 
     /// Upserts the Products, and associates them to the Search Results Entity (in the specified Storage)
     ///
-    private func upsertStoredResults(siteID: Int64, keyword: String, readOnlyProducts: [Networking.Product], in storage: StorageType) {
-        let searchResults = storage.loadProductSearchResults(keyword: keyword) ?? storage.insertNewObject(ofType: Storage.ProductSearchResults.self)
+    private func upsertStoredResults(siteID: Int64,
+                                     keyword: String,
+                                     filter: ProductSearchFilter,
+                                     readOnlyProducts: [Networking.Product],
+                                     in storage: StorageType) {
+        let searchResults = storage.loadProductSearchResults(keyword: keyword, filterKey: filter.rawValue) ??
+        storage.insertNewObject(ofType: Storage.ProductSearchResults.self)
         searchResults.keyword = keyword
+        searchResults.filterKey = filter.rawValue
 
         for readOnlyProduct in readOnlyProducts {
             guard let storedProduct = storage.loadProduct(siteID: siteID, productID: readOnlyProduct.productID) else {

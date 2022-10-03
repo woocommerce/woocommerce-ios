@@ -273,7 +273,6 @@ public enum WooAnalyticsStat: String {
     case collectPaymentTapped = "payments_flow_order_collect_payment_tapped"
     case orderViewCustomFieldsTapped = "order_view_custom_fields_tapped"
     case orderDetailWaitingTimeLoaded = "order_detail_waiting_time_loaded"
-    case orderAddressValidationError = "order_address_validation_error"
 
     // MARK: Order List Sorting/Filtering
     //

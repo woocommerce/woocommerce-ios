@@ -1421,7 +1421,7 @@ private extension MigrationTests {
             "username": ""
         ])
     }
-    
+
     /// Inserts a `ProductVariation` entity, providing default values for the required properties.
     @discardableResult
     func insertProductVariation(to context: NSManagedObjectContext) -> NSManagedObject {

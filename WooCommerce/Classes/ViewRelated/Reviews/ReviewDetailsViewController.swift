@@ -2,7 +2,6 @@ import UIKit
 import Yosemite
 import Gridicons
 import SafariServices
-import Experiments
 
 
 // MARK: - ReviewDetailsViewController
@@ -45,16 +44,13 @@ final class ReviewDetailsViewController: UIViewController {
     ///
     private var rows = [Row]()
 
-    private let featureFlagService: FeatureFlagService
-
     /// Designated Initializer
     ///
-    init(productReview: ProductReview, product: Product?, notification: Note?, featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+    init(productReview: ProductReview, product: Product?, notification: Note?) {
         self.productReview = productReview
         self.siteID = productReview.siteID
         self.product = product
         self.notification = notification
-        self.featureFlagService = featureFlagService
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -336,7 +332,7 @@ private extension ReviewDetailsViewController {
         commentCell.isTrashEnabled    = true
         commentCell.isSpamEnabled     = true
         commentCell.isApproveSelected = productReview.status == .approved
-        commentCell.isReplyEnabled    = featureFlagService.isFeatureFlagEnabled(.replyToProductReviews)
+        commentCell.isReplyEnabled    = true
 
         let reviewID = productReview.reviewID
         let reviewSiteID = productReview.siteID
@@ -384,8 +380,12 @@ private extension ReviewDetailsViewController {
             self.moderateReview(siteID: reviewSiteID, reviewID: reviewID, doneStatus: .spam, undoStatus: .unspam)
         }
 
-        commentCell.onReply = {
-            // TODO: Open a text view to send a comment reply to the product review
+        commentCell.onReply = { [weak self] in
+            guard let self else { return }
+
+            let reviewReplyViewModel = ReviewReplyViewModel(siteID: self.siteID, reviewID: self.productReview.reviewID)
+            let reviewReplyViewController = ReviewReplyHostingController(viewModel: reviewReplyViewModel)
+            self.present(reviewReplyViewController, animated: true)
         }
     }
 }

@@ -17,6 +17,10 @@ final class SettingsViewController: UIViewController {
 
     private let viewModel: ViewModel
 
+    private lazy var woocommercePluginViewModel: PluginDetailsViewModel = PluginDetailsViewModel(
+        siteID: stores.sessionManager.defaultStoreID ?? 0,
+        pluginName: "WooCommerce")
+
     /// Main TableView
     ///
     @IBOutlet private weak var tableView: UITableView!
@@ -128,6 +132,8 @@ private extension SettingsViewController {
             configureSwitchStore(cell: cell)
         case let cell as BasicTableViewCell where row == .plugins:
             configurePlugins(cell: cell)
+        case let cell as HostingTableViewCell<PluginDetailsRowView> where row == .woocommerceDetails:
+            configureWooCommmerceDetails(cell: cell)
         case let cell as HostingTableViewCell<FeatureAnnouncementCardView> where row == .upsellCardReadersFeatureAnnouncement:
             configureUpsellCardReadersFeatureAnnouncement(cell: cell)
         case let cell as BasicTableViewCell where row == .installJetpack:
@@ -171,6 +177,12 @@ private extension SettingsViewController {
         cell.selectionStyle = .default
         cell.accessoryType = .disclosureIndicator
         cell.textLabel?.text = Localization.plugins
+    }
+
+    func configureWooCommmerceDetails(cell: HostingTableViewCell<PluginDetailsRowView>) {
+        let view = PluginDetailsRowView.init(viewModel: woocommercePluginViewModel)
+        cell.host(view, parent: self)
+        cell.selectionStyle = .none
     }
 
     func configureSupport(cell: BasicTableViewCell) {
@@ -586,6 +598,7 @@ extension SettingsViewController {
 
         // Plugins
         case plugins
+        case woocommerceDetails
 
         // Store settings
         case upsellCardReadersFeatureAnnouncement
@@ -615,7 +628,7 @@ extension SettingsViewController {
 
         fileprivate var registerWithNib: Bool {
             switch self {
-            case .upsellCardReadersFeatureAnnouncement:
+            case .upsellCardReadersFeatureAnnouncement, .woocommerceDetails:
                 return false
             default:
                 return true
@@ -630,6 +643,8 @@ extension SettingsViewController {
                 return BasicTableViewCell.self
             case .plugins:
                 return BasicTableViewCell.self
+            case .woocommerceDetails:
+                return HostingTableViewCell<PluginDetailsRowView>.self
             case .support:
                 return BasicTableViewCell.self
             case .upsellCardReadersFeatureAnnouncement:

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-09-14 14:54:03+0000 */
+/* Translation-Revision-Date: 2022-09-27 02:10:06+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -927,6 +927,9 @@ which should be translated separately and considered part of this sentence. */
    Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "Não foi possível carregar a imagem";
 
+/* Error message displayed when failed to check for Jetpack connection. */
+"Cannot verify your Jetpack connection. Please try again." = "Não foi possível verificar sua conexão ao Jetpack. Tente novamente.";
+
 /* Error message displayed when failed to check for WooCommerce in a site. */
 "Cannot verify your site's WooCommerce installation." = "Não foi possível verificar a instalação do WooCommerce no seu site.";
 
@@ -1113,6 +1116,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* Settings > Manage Card Reader > Connect > A button to begin a search for a reader */
 "Connect Card Reader" = "Conectar leitor de cartão";
+
+/* Action button to handle Jetpack connection.Presented when logging in with a self-hosted site that does not match the account entered
+   Title of the Jetpack connection web view in the login flow */
+"Connect Jetpack" = "Conectar ao Jetpack";
 
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "Conectar-se ao leitor";
@@ -1688,6 +1695,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Drag and drop helper text above photo list in Product images screen */
 "Drag and drop to re-order photos" = "Arrastar e soltar para reorganizar as fotos";
+
+/* Button title to duplicate a product in Product More Options Action Sheet */
+"Duplicate" = "Duplicar";
 
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "Identifique com facilidade seus produtos usando códigos exclusivos";
@@ -2277,6 +2287,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Help and Support navigation title
    Help button
+   Help button on account mismatch error screen.
    Help button on Jetpack required error screen.
    Help button on store picker screen. */
 "Help" = "Ajuda";
@@ -2702,7 +2713,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Action button that will restart the login flow.Presented when logging in with a site address that appears to be invalid.
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
    Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
-   Action button that will restart the login flow.Presented when logging in with store credentials of an account not connected to the site's Jetpack
    Action button that will restart the login flow.Presented when the user tries to log in to the app with a simple WP.com site. */
 "Log In With Another Account" = "Faça login com outra conta";
 
@@ -5723,6 +5733,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Step 1 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network." = "Primeiro, garanta que sua impressora e o dispositivo estejam conectados à **mesma rede Wi-Fi**.\n\nVerifique a documentação da sua impressora para obter informações sobre como conectá-la à sua rede Wi-Fi.";
 
+/* Message displayed when checking whether Jetpack has been connected successfully */
+"Verifying Jetpack connection..." = "Verificando a conexão do Jetpack...";
+
 /* Message displayed when checking whether a site has successfully installed WooCommerce */
 "Verifying installation..." = "Verificando instalação...";
 
@@ -6127,6 +6140,39 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Format of the number of product ratings in singular form */
 "rated once" = "classificado 1 vez";
+
+/* Widget description, displayed when selecting which widget to add */
+"storeWidgets.description" = "Estatísticas de hoje do WooCommerce";
+
+/* Widget title, displayed when selecting which widget to add */
+"storeWidgets.displayName" = "Hoje";
+
+/* Generic store name for the store info widget preview */
+"storeWidgets.infoProvider.myShop" = "Minha loja";
+
+/* Range title for the today store info widget */
+"storeWidgets.infoProvider.today" = "Hoje";
+
+/* Orders title label for the store info widget */
+"storeWidgets.infoView.orders" = "Pedidos";
+
+/* Revenue title label for the store info widget */
+"storeWidgets.infoView.revenue" = "Receita";
+
+/* Displays the time when the widget was last updated. %1$@ is the time to render. */
+"storeWidgets.infoView.updatedAt" = "Às %1$@";
+
+/* Visitors title label for the store info widget */
+"storeWidgets.infoView.visitors" = "Visitantes";
+
+/* Title label for the login button on the store info widget. */
+"storeWidgets.notLoggedInView.login" = "Fazer login";
+
+/* Title label when the widget does not have a logged-in store. */
+"storeWidgets.notLoggedInView.notLoggedIn" = "Faça login para ver as estatísticas de hoje.";
+
+/* Title label when the widget can't fetch data. */
+"storeWidgets.unableToFetchView.unableToFetch" = "Não é possível buscar as estatísticas de hoje";
 
 /* Today */
 "today" = "hoje";

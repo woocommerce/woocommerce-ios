@@ -22,11 +22,7 @@ public class Remote {
     }
 
 
-    /// Enqueues the specified Network Request.
-    ///
-    /// - Parameters:
-    ///     - request: Request that should be performed.
-    ///     - completion: Closure to be executed upon completion. Will receive the JSON Parsed Response (if successful)
+    /// Enqueues the specified Network Request with a generic expected result type.
     ///
     /// - Parameter request: Request that should be performed.
     /// - Returns: The result from the JSON parsed response for the expected type.

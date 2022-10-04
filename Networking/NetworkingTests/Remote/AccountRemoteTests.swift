@@ -5,6 +5,7 @@ import XCTest
 
 /// AccountRemote Unit Tests
 ///
+@MainActor
 final class AccountRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
@@ -141,5 +142,101 @@ final class AccountRemoteTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
         let siteSettings = try XCTUnwrap(result.get())
         XCTAssertEqual(siteSettings.name, "Zucchini recipes")
+    }
+
+    // MARK: - `updateSettings`
+
+    func test_updateSettings_displayName_returns_success_when_response_is_valid() async throws {
+        // Given
+        let remote = AccountRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "me/settings", filename: "update-account-display-name")
+
+        // When
+        let result = await remote.updateSettings(field: .displayName(value: "woo"))
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_updateSettings_password_returns_success_when_response_is_valid() async throws {
+        // Given
+        let remote = AccountRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "me/settings", filename: "update-account-password")
+
+        // When
+        let result = await remote.updateSettings(field: .password(value: "168"))
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_updateSettings_password_returns_DotcomError_on_error() async throws {
+        // Given
+        let remote = AccountRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "me/settings", filename: "update-account-password-error")
+
+        // When
+        let result = await remote.updateSettings(field: .password(value: "168"))
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        let error = try XCTUnwrap(result.failure as? DotcomError)
+        XCTAssertEqual(error, .unknown(code: "invalid_input", message: """
+        This password is too easy to guess: you can improve it by adding additional uppercase letters, lowercase letters, or numbers.
+        """))
+    }
+
+    // MARK: - `updateUsername`
+
+    func test_updateUsername_returns_success_when_response_is_valid() async throws {
+        // Given
+        let remote = AccountRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "me/username", filename: "update-account-username")
+
+        // When
+        let result = await remote.updateUsername(to: "woo seller")
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_updateUsername_returns_DotcomError_on_error() async throws {
+        // Given
+        let remote = AccountRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "me/username", filename: "update-account-username-error")
+
+        // When
+        let result = await remote.updateUsername(to: "woo seller")
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        let error = try XCTUnwrap(result.failure as? DotcomError)
+        XCTAssertEqual(error, .unknown(code: "invalid_input",
+                                       message: "Sorry, that username already exists!"))
+    }
+
+    // MARK: - `loadUsernameSuggestions`
+
+    func test_loadUsernameSuggestions_returns_success_when_response_is_valid() async throws {
+        // Given
+        let remote = AccountRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "username/suggestions", filename: "update-account-username-suggestions")
+
+        // When
+        let suggestions = await remote.loadUsernameSuggestions(from: "woo")
+
+        // Then
+        XCTAssertEqual(suggestions, ["woowriter", "woowoowoo", "woodaily"])
+    }
+
+    func test_loadUsernameSuggestions_returns_empty_suggestions_on_empty_response() async throws {
+        // Given
+        let remote = AccountRemote(network: network)
+
+        // When
+        let suggestions = await remote.loadUsernameSuggestions(from: "woo")
+
+        // Then
+        XCTAssertEqual(suggestions, [])
     }
 }

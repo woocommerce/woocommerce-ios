@@ -28,28 +28,34 @@ public class Remote {
     ///     - request: Request that should be performed.
     ///     - completion: Closure to be executed upon completion. Will receive the JSON Parsed Response (if successful)
     ///
-    func enqueue(_ request: URLRequestConvertible, completion: @escaping (Any?, Error?) -> Void) {
-        network.responseData(for: request) { [weak self] (data, networError) in
-            guard let self = self else {
-                return
-            }
+    /// - Parameter request: Request that should be performed.
+    /// - Returns: The result from the JSON parsed response for the expected type.
+    func enqueue<T>(_ request: URLRequestConvertible) async -> Result<T, Error> {
+        await withCheckedContinuation { continuation in
+            network.responseData(for: request) { [weak self] result in
+                guard let self = self else {
+                    return
+                }
 
-            guard let data = data else {
-                completion(nil, networError)
-                return
-            }
+                switch result {
+                case .success(let data):
+                    if let dotcomError = DotcomValidator.error(from: data) {
+                        self.dotcomErrorWasReceived(error: dotcomError, for: request)
+                        continuation.resume(returning: .failure(dotcomError))
+                        return
+                    }
 
-            if let dotcomError = DotcomValidator.error(from: data) {
-                self.dotcomErrorWasReceived(error: dotcomError, for: request)
-                completion(nil, dotcomError)
-                return
-            }
-
-            do {
-                let document = try JSONSerialization.jsonObject(with: data, options: [])
-                completion(document, nil)
-            } catch {
-                completion(nil, error)
+                    do {
+                        guard let document = try JSONSerialization.jsonObject(with: data, options: []) as? T else {
+                            return continuation.resume(returning: .failure(RemoteError.unexpectedResponseData))
+                        }
+                        continuation.resume(returning: .success(document))
+                    } catch {
+                        continuation.resume(returning: .failure(error))
+                    }
+                case .failure(let error):
+                    continuation.resume(returning: .failure(error))
+                }
             }
         }
     }
@@ -268,4 +274,9 @@ public extension NSNotification.Name {
     /// Posted whenever a Jetpack Timeout is received.
     ///
     static let RemoteDidReceiveJetpackTimeoutError = NSNotification.Name(rawValue: "RemoteDidReceiveJetpackTimeoutError")
+}
+
+enum RemoteError: Error {
+    /// The response data does not match the expected type.
+    case unexpectedResponseData
 }

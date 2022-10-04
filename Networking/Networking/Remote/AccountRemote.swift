@@ -13,6 +13,15 @@ public protocol AccountRemoteProtocol {
     func checkIfWooCommerceIsActive(for siteID: Int64) -> AnyPublisher<Result<Bool, Error>, Never>
     func fetchWordPressSiteSettings(for siteID: Int64) -> AnyPublisher<Result<WordPressSiteSettings, Error>, Never>
     func loadSitePlan(for siteID: Int64, completion: @escaping (Result<SitePlan, Error>) -> Void)
+    func updateSettings(field: AccountField) async -> Result<Void, Error>
+    func updateUsername(to username: String) async -> Result<Void, Error>
+    func loadUsernameSuggestions(from username: String) async -> [String]
+}
+
+/// A field of a WordPress.com account for updating the account settings.
+public enum AccountField {
+    case displayName(value: String)
+    case password(value: String)
 }
 
 /// Account: Remote Endpoints
@@ -114,6 +123,32 @@ public class AccountRemote: Remote, AccountRemoteProtocol {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    public func updateSettings(field: AccountField) async -> Result<Void, Error> {
+        let path = Path.settings
+        let parameters = [field.parameterKey: field.parameterValue]
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)
+        return await enqueue(request).map { (_: [String: String]) in () }
+    }
+
+    public func updateUsername(to username: String) async -> Result<Void, Error> {
+        let path = Path.username
+        let parameters = [
+            "username": username,
+            "action": "none"
+        ]
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)
+        return await enqueue(request).map { (_: [String: Bool]) in () }
+    }
+
+    public func loadUsernameSuggestions(from username: String) async -> [String] {
+        let path = Path.usernameSuggestions
+        let parameters = ["name": username]
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path, parameters: parameters)
+        let result: Result<[String: [String]], Error> = await enqueue(request)
+        let suggestions = (try? result.get())?["suggestions"] ?? []
+        return suggestions
+    }
 }
 
 // MARK: - Constants
@@ -121,5 +156,31 @@ public class AccountRemote: Remote, AccountRemoteProtocol {
 private extension AccountRemote {
     enum Constants {
         static let wooCommerceSiteSettingsPath: String = "settings"
+    }
+
+    enum Path {
+        static let settings = "me/settings"
+        static let username = "me/username"
+        static let usernameSuggestions = "wpcom/v2/users/username/suggestions"
+    }
+}
+
+private extension AccountField {
+    var parameterKey: String {
+        switch self {
+        case .displayName:
+            return "display_name"
+        case .password:
+            return "password"
+        }
+    }
+
+    var parameterValue: Codable {
+        switch self {
+        case .displayName(let value):
+            return value
+        case .password(let value):
+            return value
+        }
     }
 }

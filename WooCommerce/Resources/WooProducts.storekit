@@ -1,0 +1,77 @@
+{
+  "identifier" : "DCC433DF",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+
+  ],
+  "settings" : {
+
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "00631319",
+      "localizations" : [
+
+      ],
+      "name" : "Test HostedWoo Site 1",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "49.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "24ED08B5",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "",
+              "displayName" : "",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.woocommerce.test.hosted_1_yearly",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Test HostedWoo — Yearly",
+          "subscriptionGroupID" : "00631319",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "4.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "145D04E0",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "",
+              "displayName" : "",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.woocommerce.test.hosted_1_monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Test HostedWoo — Monthly",
+          "subscriptionGroupID" : "00631319",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 2,
+    "minor" : 0
+  }
+}

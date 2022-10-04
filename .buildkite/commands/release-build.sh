@@ -1,9 +1,5 @@
 #!/bin/bash -eu
 
-# Workaround for https://github.com/Automattic/buildkite-ci/issues/79
-echo "--- :rubygems: Fixing Ruby Setup"
-gem install bundler
-
 echo "--- :arrow_down: Installing Release Dependencies"
 brew update # Update homebrew to temporarily fix a bintray issue
 brew install imagemagick

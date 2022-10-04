@@ -4,10 +4,17 @@
 -----
 - [*] Universal Links: Users can now open universal links in the app. [https://github.com/woocommerce/woocommerce-ios/pull/7632]
 
+
 10.6
 -----
+
+- [**] Products tab: products search now has an option to search products by SKU. Stores with WC version 6.6+ support partial SKU search, otherwise the product(s) with the exact SKU match is returned. [https://github.com/woocommerce/woocommerce-ios/pull/7781]
 - [*] Fixed a rare crash when selecting a store in the store picker. [https://github.com/woocommerce/woocommerce-ios/pull/7765]
-- [*] Help center: Added help center web page with FAQs for "Not a WooCommerce site" error screen. [https://github.com/woocommerce/woocommerce-ios/pull/7767]
+- [*] Settings: Display the WooCommerce version and available updates in Settings [https://github.com/woocommerce/woocommerce-ios/pull/7779]
+- [*] Show suggestion for logging in to a WP.com site with a mismatched WP.com account. [https://github.com/woocommerce/woocommerce-ios/pull/7773]
+- [*] Help center: Added help center web page with FAQs for "Not a WooCommerce site" and "Wrong WordPress.com account" error screens. [https://github.com/woocommerce/woocommerce-ios/pull/7767, https://github.com/woocommerce/woocommerce-ios/pull/7769]
+- [*] Now you can bulk edit variation prices. [https://github.com/woocommerce/woocommerce-ios/pull/7803]
+- [**] Reviews: Now you can reply to product reviews using the Reply button while viewing a product review. [https://github.com/woocommerce/woocommerce-ios/pull/7799]
 
 10.5
 -----

@@ -23,12 +23,12 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
     private var siteXMLRPC: String = ""
     private var siteUsername: String = ""
     private var jetpackConnectionURL: URL?
+    private var siteCredentials: WordPressOrgCredentials?
 
-    private let primaryButtonHiddenSubject = CurrentValueSubject<Bool, Never>(true)
-    private let primaryButtonLoadingSubject = CurrentValueSubject<Bool, Never>(false)
-    private let activityIndicatorLoadingSubject = CurrentValueSubject<Bool, Never>(false)
+    @Published private var isSelfHostedSite = false
+    @Published private var primaryButtonLoading = false
 
-    private var primaryButtonSubscription: AnyCancellable?
+    private var siteInfoSubscription: AnyCancellable?
 
     init(siteURL: String?,
          showsConnectedStores: Bool,
@@ -47,6 +47,7 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
         self.jetpackSetupCompletionHandler = onJetpackSetupCompletion
         self.authenticatorType = authenticatorType
 
+        self.siteCredentials = siteCredentials
         if let credentials = siteCredentials {
             siteUsername = credentials.username
             siteXMLRPC = credentials.xmlrpc
@@ -96,19 +97,12 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
 
     let secondaryButtonTitle = Localization.secondaryButtonTitle
 
-    var isPrimaryButtonHidden: AnyPublisher<Bool, Never> {
-        primaryButtonHiddenSubject.eraseToAnyPublisher()
-    }
-
     var isPrimaryButtonLoading: AnyPublisher<Bool, Never> {
-        primaryButtonLoadingSubject.eraseToAnyPublisher()
+        $primaryButtonLoading.eraseToAnyPublisher()
     }
 
     var isSecondaryButtonHidden: Bool { !showsConnectedStores }
 
-    var isShowingActivityIndicator: AnyPublisher<Bool, Never> {
-        activityIndicatorLoadingSubject.eraseToAnyPublisher()
-    }
 
     // Configures `Help` button title
     var rightBarButtonItemTitle: String? {
@@ -117,19 +111,17 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
 
     // MARK: - Actions
     func viewDidLoad(_ viewController: UIViewController?) {
-        primaryButtonSubscription = primaryButtonHiddenSubject
+        siteInfoSubscription = $isSelfHostedSite
             .dropFirst() // ignores first element
-            .sink { [weak self] isHidden in
-                // if the button is hidden, the site is not self-hosted.
-                self?.analytics.track(event: .LoginJetpackConnection.jetpackConnectionErrorShown(selfHostedSite: !isHidden))
+            .sink { [weak self] isSelfHosted in
+                self?.analytics.track(event: .LoginJetpackConnection.jetpackConnectionErrorShown(selfHostedSite: isSelfHosted))
             }
 
         // Fetches site info if we're not sure whether the site is self-hosted.
         if siteXMLRPC.isEmpty {
             fetchSiteInfo()
         } else {
-            // Shows the Connect Jetpack button if the site is self-hosted
-            primaryButtonHiddenSubject.send(false)
+            isSelfHostedSite = true
         }
     }
 
@@ -140,7 +132,10 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
         }
 
         guard let url = jetpackConnectionURL else {
-            return showSiteCredentialLoginAndJetpackConnection(from: viewController)
+            if isSelfHostedSite {
+                return showSiteCredentialLoginAndJetpackConnection(from: viewController)
+            }
+            return presentConnectToWPComSiteAlert(from: viewController)
         }
 
         showJetpackConnectionWebView(url: url, from: viewController)
@@ -156,7 +151,7 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {
-        let fancyAlert = FancyAlertViewController.makeNeedHelpFindingEmailAlertController()
+        let fancyAlert = FancyAlertViewController.makeNeedHelpFindingEmailAlertController(screen: .wrongAccountError)
         fancyAlert.modalPresentationStyle = .custom
         fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
         viewController?.present(fancyAlert, animated: true)
@@ -182,21 +177,24 @@ private extension WrongAccountErrorViewModel {
     /// If the site is self-hosted, make the Connect Jetpack button visible.
     ///
     func fetchSiteInfo() {
-        activityIndicatorLoadingSubject.send(true)
+        primaryButtonLoading = true
         authenticatorType.fetchSiteInfo(for: siteURL) { [weak self] result in
             guard let self = self else { return }
-            self.activityIndicatorLoadingSubject.send(false)
+            self.primaryButtonLoading = false
 
             switch result {
             case .success(let siteInfo):
-                if siteInfo.isWPCom == false {
-                    self.primaryButtonHiddenSubject.send(false)
-                } else {
-                    self.primaryButtonHiddenSubject.send(true)
-                }
+                self.isSelfHostedSite = !siteInfo.isWPCom
             case .failure(let error):
                 DDLogWarn("⚠️ Error fetching site info: \(error)")
             }
+        }
+    }
+
+    func authenticateWithJetpack(siteCredentials: WordPressOrgCredentials, from viewController: UIViewController) {
+        authenticate(with: siteCredentials)
+        fetchJetpackConnectionURL { [weak self] url in
+            self?.showJetpackConnectionWebView(url: url, from: viewController)
         }
     }
 
@@ -214,10 +212,10 @@ private extension WrongAccountErrorViewModel {
     /// Fetches the URL for handling Jetpack connection in a web view
     ///
     func fetchJetpackConnectionURL(onCompletion: ((URL) -> Void)? = nil) {
-        primaryButtonLoadingSubject.send(true)
+        primaryButtonLoading = true
         let action = JetpackConnectionAction.fetchJetpackConnectionURL { [weak self] result in
             guard let self = self else { return }
-            self.primaryButtonLoadingSubject.send(false)
+            self.primaryButtonLoading = false
             switch result {
             case .success(let url):
                 onCompletion?(url)
@@ -231,17 +229,25 @@ private extension WrongAccountErrorViewModel {
     }
 
     func showSiteCredentialLoginAndJetpackConnection(from viewController: UIViewController) {
-        authenticatorType.showSiteCredentialLogin(from: viewController, siteURL: siteURL) { [weak self] credentials in
-            guard let self = self else { return }
-            // dismisses the site credential login flow
-            viewController.dismiss(animated: true)
+        guard let siteCredentials else {
+            return authenticatorType.showSiteCredentialLogin(from: viewController, siteURL: siteURL) { [weak self] credentials in
+                guard let self = self else { return }
+                // dismisses the site credential login flow
+                viewController.dismiss(animated: true)
 
-            self.siteXMLRPC = credentials.xmlrpc
-            self.authenticate(with: credentials)
-            self.fetchJetpackConnectionURL { [weak self] url in
-                self?.showJetpackConnectionWebView(url: url, from: viewController)
+                self.siteXMLRPC = credentials.xmlrpc
+                self.siteCredentials = credentials
+                self.authenticateWithJetpack(siteCredentials: credentials, from: viewController)
             }
         }
+        authenticateWithJetpack(siteCredentials: siteCredentials, from: viewController)
+    }
+
+    func presentConnectToWPComSiteAlert(from viewController: UIViewController) {
+        let fancyAlert = FancyAlertViewController.makeConnectAccountToWPComSiteAlert()
+        fancyAlert.modalPresentationStyle = .custom
+        fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
+        viewController.present(fancyAlert, animated: true)
     }
 
     /// Presents a web view pointing to the Jetpack connection URL.
@@ -348,9 +354,9 @@ private extension WrongAccountErrorViewModel {
                                                           comment: "Action button linking to a list of connected stores."
                                                           + "Presented when logging in with a store address that does not match the account entered")
 
-        static let primaryButtonTitle = NSLocalizedString("Connect Jetpack",
-                                                          comment: "Action button to handle Jetpack connection."
-                                                          + "Presented when logging in with a self-hosted site that does not match the account entered")
+        static let primaryButtonTitle = NSLocalizedString("Connect to the site",
+                                                          comment: "Action button to handle connecting the logged-in account to a given site."
+                                                          + "Presented when logging in with a store address that does not match the account entered")
 
         static let yourSite = NSLocalizedString("your site",
                                                 comment: "Placeholder for site url, if the url is unknown."

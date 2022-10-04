@@ -57,9 +57,11 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v10.4-whats-new"
+msgctxt "v10.6-whats-new"
 msgid ""
-"This release contains a handful of minor improvements to make your experience smoother. It's now possible to set up the Jetpack connection between your self-hosted site and your WP.com account. We continue to make small tweaks and enhancements to the in person payments feature. We hope you notice the love we put into our software.\n"
+"Exciting news! It's now possible to search for a product by its SKU. All you need is to have the latest version of WooCommerce available on your store! We also focused on polishing a few things and taking care of minor bugs that our team found, like making it easier for you to login to the app and fixing a rare crash when selecting a store in the store picker.\n"
+"\n"
+"Keep your feedback rolling in; it helps us figure out what to work on next.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

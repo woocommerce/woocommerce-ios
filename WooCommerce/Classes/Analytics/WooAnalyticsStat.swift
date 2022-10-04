@@ -385,6 +385,9 @@ public enum WooAnalyticsStat: String {
     case reviewsMarkAllReadFailed = "reviews_mark_all_read_failed"
     case reviewsProductsLoaded = "reviews_products_loaded"
     case reviewsProductsLoadFailed = "reviews_products_load_failed"
+    case reviewReplySend = "review_reply_send"
+    case reviewReplySendSuccess = "review_reply_send_success"
+    case reviewReplySendFailed = "review_reply_send_failed"
 
     // MARK: Product List Events
     //

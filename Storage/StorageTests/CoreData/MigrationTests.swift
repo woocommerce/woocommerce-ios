@@ -1203,6 +1203,27 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(migratedOrder.value(forKey: "needsProcessing") as? Bool, false)
     }
 
+    func test_migrating_from_69_to_70_adds_refundedItemID_property_to_OrderItemRefund() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 69")
+        let sourceContext = sourceContainer.viewContext
+
+        let orderItemRefund = insertOrderItemRefund(to: sourceContext)
+
+        // Confidence check:
+        // The `itemID` property already exists on Model 69, but the `refundedItemID` does not
+        XCTAssertNotNil(orderItemRefund.entity.attributesByName["itemID"])
+        XCTAssertNil(orderItemRefund.entity.attributesByName["refundedItemID"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 70")
+        let targetContext = targetContainer.viewContext
+        let migratedOrderItemRefund = insertOrderItemRefund(to: targetContext)
+
+        // Confirms the `refundedItemID` property now exists on Model 70
+        XCTAssertNotNil(migratedOrderItemRefund.entity.attributesByName["refundedItemID"])
+    }
+
     func test_migrating_from_70_to_71_adds_custom_fields_property_to_order() throws {
         // Given
         let sourceContainer = try startPersistentContainer("Model 70")
@@ -1271,6 +1292,35 @@ final class MigrationTests: XCTestCase {
 
         // Check instructions are correctly set.
         assertEqual("payment gateway instructions", migratedPaymentGateway.value(forKey: "instructions") as? String)
+    }
+
+    func test_migrating_from_72_to_73_adds_filterKey_attribute_to_ProductSearchResults() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 72")
+        let sourceContext = sourceContainer.viewContext
+
+        let productSearchResults = insertProductSearchResults(to: sourceContext)
+        try sourceContext.save()
+
+        // `filterKey` should not be present before migration.
+        XCTAssertNil(productSearchResults.entity.attributesByName["filterKey"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 73")
+        let targetContext = targetContainer.viewContext
+
+        XCTAssertEqual(try targetContext.count(entityName: "ProductSearchResults"), 1)
+        let migratedProductSearchResults = try XCTUnwrap(targetContext.first(entityName: "ProductSearchResults"))
+
+        // Checks for nil URL value.
+        XCTAssertNil(migratedProductSearchResults.value(forKey: "filterKey"))
+
+        // Sets a random `filterKey`.
+        migratedProductSearchResults.setValue("sku", forKey: "filterKey")
+        targetContext.saveIfNeeded()
+
+        // Check `filterKey` is correctly set.
+        XCTAssertEqual(migratedProductSearchResults.value(forKey: "filterKey") as? String, "sku")
     }
 }
 
@@ -1495,6 +1545,13 @@ private extension MigrationTests {
             "byUserID": 456,
             "isAutomated": false,
             "createAutomated": false
+        ])
+    }
+
+    @discardableResult
+    func insertOrderItemRefund(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "OrderItemRefund", properties: [
+            "itemID": 123
         ])
     }
 
@@ -1799,6 +1856,13 @@ private extension MigrationTests {
             "metadataID": 18148,
             "key": "Viewed Currency",
             "value": "USD"
+        ])
+    }
+
+    @discardableResult
+    func insertProductSearchResults(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "ProductSearchResults", properties: [
+            "keyword": "soul"
         ])
     }
 }

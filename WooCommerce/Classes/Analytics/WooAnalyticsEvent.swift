@@ -1614,7 +1614,7 @@ extension WooAnalyticsEvent {
         }
 
         enum Name: String {
-            case todayStats = "today_stats"
+            case todayStats = "today-stats"
         }
 
         /// Event when a widget is tapped and opens the app.

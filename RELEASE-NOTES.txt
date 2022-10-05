@@ -3,6 +3,7 @@
 10.7
 -----
 - [*] Universal Links: Users can now open universal links in the app. [https://github.com/woocommerce/woocommerce-ios/pull/7632]
+- [internal] Store picker: Show error when the role eligibility check fails while selecting a store. [https://github.com/woocommerce/woocommerce-ios/pull/7816]
 
 
 10.6

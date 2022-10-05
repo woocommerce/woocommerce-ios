@@ -35,7 +35,7 @@ class WCAnalyticsCustomerMapperTests: XCTestCase {
         customers = try! mapper.map(response: data)
 
         // Then
-        XCTAssertEqual(customers.count, 2)
+        XCTAssertEqual(customers.count, 3)
     }
 
     func test_WCAnalyticsCustomer_array_response_values_are_correctly_parsed() {
@@ -54,5 +54,7 @@ class WCAnalyticsCustomerMapperTests: XCTestCase {
         XCTAssertEqual(customers[0].name, "John")
         XCTAssertEqual(customers[1].userID, 2)
         XCTAssertEqual(customers[1].name, "Paul")
+        XCTAssertEqual(customers[2].userID, 3)
+        XCTAssertEqual(customers[2].name, "John Doe")
     }
 }

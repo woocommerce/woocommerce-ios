@@ -29,27 +29,6 @@ class WCAnalyticsCustomerRemoteTests: XCTestCase {
         super.tearDown()
     }
 
-//    func test_WCAnalyticsCustomerRemote_when_calls_retrieveCustomers_then_returns_all_parsed_customers_successfully() throws {
-//        // Given
-//        network.simulateResponse(requestUrlSuffix: "customers", filename: "wc-analytics-customers")
-//
-//        // When
-//        let result = waitFor { promise in
-//            self.remote.retrieveCustomers(for: self.sampleSiteID) { result in
-//                promise(result)
-//            }
-//        }
-//        let customers = try XCTUnwrap(result.get())
-//
-//        // Then
-//        XCTAssertNotNil(customers)
-//        XCTAssertEqual(customers.count, 2)
-//        XCTAssertEqual(customers[0].userID, 1)
-//        XCTAssertEqual(customers[1].userID, 2)
-//        XCTAssertEqual(customers[0].name, "John")
-//        XCTAssertEqual(customers[1].name, "Paul")
-//    }
-
     func test_WCAnalyticsCustomerRemote_when_calls_retrieveCustomersByName_then_returns_parsed_customers_successfully() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "customers?search=\(sampleCustomerName)", filename: "wc-analytics-customers")
@@ -69,21 +48,6 @@ class WCAnalyticsCustomerRemoteTests: XCTestCase {
         XCTAssertEqual(customers[0].name, "John")
         XCTAssertEqual(customers[1].name, "John Doe")
     }
-
-//    func test_WCAnalyticsCustomerRemote_when_calls_retrieveCustomers_fails_then_returns_result_isFailure() {
-//        // Given
-//        network.simulateError(requestUrlSuffix: "", error: NetworkError.notFound)
-//
-//        // When
-//        let result = waitFor { promise in
-//            self.remote.retrieveCustomers(for: self.sampleSiteID) { result in
-//                promise(result)
-//            }
-//        }
-//
-//        // Then
-//        XCTAssert(result.isFailure)
-//    }
 
     func test_WCAnalyticsCustomerRemote_when_calls_retrieveCustomersByName_fails_then_returns_result_isFailure() {
         // Given

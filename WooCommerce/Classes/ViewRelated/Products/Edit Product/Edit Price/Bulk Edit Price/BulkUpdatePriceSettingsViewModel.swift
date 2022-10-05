@@ -56,6 +56,7 @@ final class BulkUpdatePriceSettingsViewModel {
     private let priceSettingsValidator: ProductPriceSettingsValidator
     private let currencySettings: CurrencySettings
     private let currencyFormatter: CurrencyFormatter
+    private let analytics: Analytics
 
     init(siteID: Int64,
          productID: Int64,
@@ -63,7 +64,8 @@ final class BulkUpdatePriceSettingsViewModel {
          editingPriceType: EditingPriceType,
          priceUpdateDidFinish: @escaping () -> Void,
          storesManager: StoresManager = ServiceLocator.stores,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.productID = productID
         self.bulkUpdateOptionsModel = bulkUpdateOptionsModel
@@ -73,6 +75,7 @@ final class BulkUpdatePriceSettingsViewModel {
         self.priceSettingsValidator = ProductPriceSettingsValidator(currencySettings: currencySettings)
         self.currencySettings = currencySettings
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.analytics = analytics
     }
 
     var sections: [Section] {
@@ -87,6 +90,8 @@ final class BulkUpdatePriceSettingsViewModel {
             return
         }
 
+        analytics.track(event: .Variations.bulkUpdateFieldTapped(field: .regularPrice))
+
         saveButtonState = .loading
 
         let action = ProductVariationAction.updateProductVariations(siteID: siteID,
@@ -97,9 +102,12 @@ final class BulkUpdatePriceSettingsViewModel {
             switch result {
             case .success:
                 self.priceUpdateDidFinish()
+                self.analytics.track(event: .Variations.bulkUpdateFieldSuccess(field: .regularPrice))
+
             case let .failure(error):
                 DDLogError("⛔️ Error updating product variations: \(error)")
                 self.bulkUpdatePriceError = .priceUpdateError
+                self.analytics.track(event: .Variations.bulkUpdateFieldFailed(field: .regularPrice, error: error))
             }
 
             self.saveButtonState = .enabled

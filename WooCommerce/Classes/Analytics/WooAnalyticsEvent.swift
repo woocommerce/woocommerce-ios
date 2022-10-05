@@ -307,7 +307,7 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productVariationBulkUpdateFieldSuccess, properties: [Keys.field: field.rawValue])
         }
 
-        static func bulkUpdateRegularPriceFailed(field: BulkUpdateField, error: Error) -> WooAnalyticsEvent {
+        static func bulkUpdateFieldFailed(field: BulkUpdateField, error: Error) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productVariationBulkUpdateFieldFail, properties: [Keys.field: field.rawValue], error: error)
         }
     }

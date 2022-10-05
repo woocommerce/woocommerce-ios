@@ -4,13 +4,17 @@ import Storage
 
 public final class CustomerStore: Store {
 
-    private let remote: CustomerRemote
+    private let customerRemote: CustomerRemote
+    private let searchRemote: WCAnalyticsCustomerRemote
 
     init(dispatcher: Dispatcher,
          storageManager: StorageManagerType,
          network: Network,
-         remote: CustomerRemote) {
-        self.remote = remote
+         customerRemote: CustomerRemote,
+         searchRemote: WCAnalyticsCustomerRemote) {
+        self.customerRemote = customerRemote
+        self.searchRemote = searchRemote
+
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -20,7 +24,8 @@ public final class CustomerStore: Store {
         self.init(dispatcher: dispatcher,
                   storageManager: storageManager,
                   network: network,
-                  remote: CustomerRemote(network: network))
+                  customerRemote: CustomerRemote(network: network),
+                  searchRemote: WCAnalyticsCustomerRemote(network: network))
     }
 
     /// Registers for supported Actions.
@@ -39,11 +44,33 @@ public final class CustomerStore: Store {
             return
         }
         switch action {
+        case .searchCustomers(siteID: let siteID, keyword: let keyword, onCompletion: let onCompletion):
+            searchCustomers(for: siteID, keyword: keyword, onCompletion: onCompletion)
         case .retrieveCustomer(siteID: let siteID, customerID: let customerID, onCompletion: let onCompletion):
             retrieveCustomer(for: siteID, with: customerID, onCompletion: onCompletion)
         }
     }
 
+    /// Attempts to retrieve a `WCAnalyticsCustomer` collection  from a site based on an input keyword,
+    /// Returns the `[WCAnalyticsCustomer]` object upon success, or an `Error`.
+    /// - Parameters:
+    ///   - siteID: The site for which customers should be fetched.
+    ///   - keyword: Keyword to perform the search for WCAnalyticsCustomer to be fetched.
+    ///   - onCompletion: Invoked when the operation finishes.
+    ///
+    func searchCustomers(
+        for siteID: Int64,
+        keyword: String,
+        onCompletion: @escaping (Result<Void, Error>) -> Void) {
+            searchRemote.searchCustomers(for: siteID, name: keyword) { result in
+                switch result {
+                case .success(_):
+                    onCompletion(.success(()))
+                case .failure(let error):
+                    onCompletion(.failure(error))
+                }
+            }
+        }
     /// Attempts to retrieve a single Customer from a site, returning the Customer object upon success, or an Error.
     /// - Parameters:
     ///   - siteID: The site for which customers should be fetched.
@@ -54,7 +81,7 @@ public final class CustomerStore: Store {
         for siteID: Int64,
         with customerID: Int64,
         onCompletion: @escaping (Result<Customer, Error>) -> Void) {
-            remote.retrieveCustomer(for: siteID, with: customerID) { result in
+            customerRemote.retrieveCustomer(for: siteID, with: customerID) { result in
                 switch result {
                 case .failure(let error):
                     onCompletion(.failure(error))

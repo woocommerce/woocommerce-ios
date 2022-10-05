@@ -583,6 +583,8 @@ private extension ProductVariationsViewController {
             })
             let navigationController = WooNavigationController(rootViewController: BulkUpdateViewController(viewModel: viewModel))
             self.present(navigationController, animated: true)
+
+            self.analytics.track(event: .Variations.bulkUpdateSectionTapped())
         }
 
         actionSheet.addCancelActionWithTitle(ActionSheetStrings.cancel)

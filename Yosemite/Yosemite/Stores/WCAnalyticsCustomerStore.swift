@@ -14,6 +14,36 @@ public final class WCAnalyticsCustomerStore: Store {
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
+    public override convenience init(dispatcher: Dispatcher,
+                                     storageManager: StorageManagerType,
+                                     network: Network) {
+            self.init(dispatcher: dispatcher,
+                      storageManager: storageManager,
+                      network: network,
+                      remote: WCAnalyticsCustomerRemote(network: network)
+            )
+    }
+
+    /// Registers for supported Actions.
+    ///
+    override public func registerSupportedActions(in dispatcher: Dispatcher) {
+        dispatcher.register(processor: self, for: WCAnalyticsCustomerAction.self)
+    }
+
+    /// Receives and executes Actions.
+    /// - Parameters:
+    /// - action: An action to handle. Must be a `WCAnalyticsCustomerAction`
+    override public func onAction(_ action: Action) {
+        guard let action = action as? WCAnalyticsCustomerAction else {
+            assertionFailure("WCAnalyticsCustomerStore received an unsupported action")
+            return
+        }
+        switch action {
+        case .retrieveCustomers(siteID: let siteID, keyword: let keyword, onCompletion: let onCompletion):
+            retrieveCustomers(for: siteID, with: keyword, onCompletion: onCompletion)
+        }
+    }
+
     /// Attempts to retrieve a `WCAnalyticsCustomer` collection  from a site based on an input keyword,
     /// Returns the `[WCAnalyticsCustomer]` object upon success, or an `Error`.
     /// - Parameters:

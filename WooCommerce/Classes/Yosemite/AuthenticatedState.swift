@@ -78,7 +78,8 @@ class AuthenticatedState: StoresManagerState {
                                storageManager: storageManager,
                                network: network,
                                fileStorage: PListFileStorage()),
-            JetpackConnectionStore(dispatcher: dispatcher)
+            JetpackConnectionStore(dispatcher: dispatcher),
+            WCAnalyticsCustomerStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         ]
 
         startListeningToNotifications()

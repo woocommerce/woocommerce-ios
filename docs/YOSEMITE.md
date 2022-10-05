@@ -51,6 +51,7 @@ At the moment, we provide the following subclasses of `Store`:
 * `ShipmentStore` implements support for the operations declared in `ShipmentAction`
 * `TaxClassesStore` implements support for the operations declared in `TaxClassesAction`
 * `StatStore`implements the logic to present statistics, supporting operations declared in `StatsAction`
+* `WCAnalyticsCustomerStore` implements support for operations related to WCAnalyticsCustomer, like retrieving specific customers based on a given keyword.
 
 ## Operations with domain level concerns. Action
 As mentioned in the precious section, there is an implementation of the `Action` protocol per domain level concern. 

@@ -13,6 +13,6 @@ public enum WCAnalyticsCustomerAction: Action {
     ///     - `result.failure(Error)`: Error fetching Customer
     case retrieveCustomers(
         siteID: Int64,
-        keyword: Int64,
+        keyword: String,
         onCompletion: (Result<[WCAnalyticsCustomer], Error>) -> Void)
 }

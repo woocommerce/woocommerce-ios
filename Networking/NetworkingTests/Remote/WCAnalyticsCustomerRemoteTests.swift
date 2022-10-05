@@ -1,4 +1,5 @@
 import XCTest
+import TestKit
 @testable import Networking
 
 class WCAnalyticsCustomerRemoteTests: XCTestCase {
@@ -35,18 +36,20 @@ class WCAnalyticsCustomerRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            self.remote.retrieveCustomersByName(for: self.sampleSiteID, with: self.sampleCustomerName) { result in
+            self.remote.searchCustomers(for: self.sampleSiteID, name: self.sampleCustomerName) { result in
                 promise(result)
             }
         }
 
         // Then
         let customers = try XCTUnwrap(result.get())
-        XCTAssertEqual(customers.count, 2)
-        XCTAssertEqual(customers[0].userID, 1)
-        XCTAssertEqual(customers[1].userID, 3)
-        XCTAssertEqual(customers[0].name, "John")
-        XCTAssertEqual(customers[1].name, "John Doe")
+        assertEqual(3, customers.count)
+        assertEqual(1, customers[0].userID)
+        assertEqual(2, customers[1].userID)
+        assertEqual(3, customers[2].userID)
+        assertEqual("John", customers[0].name)
+        assertEqual("Paul", customers[1].name)
+        assertEqual("John Doe", customers[2].name)
     }
 
     func test_WCAnalyticsCustomerRemote_when_calls_retrieveCustomersByName_fails_then_returns_result_isFailure() {
@@ -55,7 +58,7 @@ class WCAnalyticsCustomerRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            self.remote.retrieveCustomersByName(for: self.sampleSiteID, with: self.sampleCustomerName) { result in
+            self.remote.searchCustomers(for: self.sampleSiteID, name: self.sampleCustomerName) { result in
                 promise(result)
             }
         }
@@ -71,7 +74,7 @@ class WCAnalyticsCustomerRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            self.remote.retrieveCustomersByName(for: self.sampleSiteID, with: self.sampleCustomerName) { result in
+            self.remote.searchCustomers(for: self.sampleSiteID, name: self.sampleCustomerName) { result in
                 promise(result)
             }
         }

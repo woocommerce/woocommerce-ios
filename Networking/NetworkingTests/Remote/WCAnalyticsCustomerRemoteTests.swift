@@ -30,9 +30,9 @@ class WCAnalyticsCustomerRemoteTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_WCAnalyticsCustomerRemote_when_calls_retrieveCustomersByName_then_returns_parsed_customers_successfully() throws {
+    func test_WCAnalyticsCustomerRemote_when_calls_searchCustomers_then_returns_parsed_customers_successfully() throws {
         // Given
-        network.simulateResponse(requestUrlSuffix: "customers?search=\(sampleCustomerName)", filename: "wc-analytics-customers")
+        network.simulateResponse(requestUrlSuffix: "customers", filename: "wc-analytics-customers")
 
         // When
         let result = waitFor { promise in
@@ -43,6 +43,8 @@ class WCAnalyticsCustomerRemoteTests: XCTestCase {
 
         // Then
         let customers = try XCTUnwrap(result.get())
+        let hasSearchParameter = network.queryParameters?.contains(where: { $0 == "search=John" }) ?? false
+        XCTAssertTrue(hasSearchParameter)
         assertEqual(3, customers.count)
         assertEqual(1, customers[0].userID)
         assertEqual(2, customers[1].userID)

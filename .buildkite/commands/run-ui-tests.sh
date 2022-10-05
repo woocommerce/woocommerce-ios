@@ -13,10 +13,6 @@ else
   export BUILDKITE_ANALYTICS_TOKEN=$BUILDKITE_ANALYTICS_TOKEN_UI_TESTS_IPAD
 fi
 
-# Workaround for https://github.com/Automattic/buildkite-ci/issues/79
-echo "--- :rubygems: Fixing Ruby Setup"
-gem install bundler
-
 # FIXIT-13.1: Temporary fix until all VMs have a JVM
 brew install openjdk@11
 sudo ln -sfn /usr/local/opt/openjdk@11/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-11.jdk

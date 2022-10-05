@@ -222,6 +222,11 @@ extension WooAnalyticsEvent {
             static let variationID = "product_variation_id"
             static let serverTime = "time"
             static let errorDescription = "error_description"
+            static let field = "field"
+        }
+
+        enum BulkUpdateField: String {
+            case regularPrice = "regular_price"
         }
 
         static func addFirstVariationButtonTapped(productID: Int64) -> WooAnalyticsEvent {
@@ -288,6 +293,22 @@ extension WooAnalyticsEvent {
         static func editVariationAttributeOptionsDoneButtonTapped(productID: Int64, variationID: Int64) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .editProductVariationAttributeOptionsDoneButtonTapped, properties: [Keys.productID: "\(productID)",
                                                                                                             Keys.variationID: "\(variationID)"])
+        }
+
+        static func variationBulkUpdateSectionTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationBulkUpdateSectionTapped, properties: [:])
+        }
+
+        static func variationBulkUpdateFieldTapped(field: BulkUpdateField) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationBulkUpdateFieldTapped, properties: [Keys.field: field.rawValue])
+        }
+
+        static func variationBulkUpdateFieldSuccess(field: BulkUpdateField) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationBulkUpdateFieldSuccess, properties: [Keys.field: field.rawValue])
+        }
+
+        static func variationBulkUpdateRegularPriceFailed(field: BulkUpdateField, error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationBulkUpdateFieldFail, properties: [Keys.field: field.rawValue], error: error)
         }
     }
 }

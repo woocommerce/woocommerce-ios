@@ -30,7 +30,7 @@ public class WCAnalyticsCustomerRemote: Remote {
     ///     - name: Name of the customer that will be retrieved
     ///     - completion: Closure to be executed upon completion.
     ///
-    func retrieveCustomerByName(for siteID: Int64, with name: String, completion: @escaping (Result<[WCAnalyticsCustomer], Error>) -> Void) {
+    func retrieveCustomersByName(for siteID: Int64, with name: String, completion: @escaping (Result<[WCAnalyticsCustomer], Error>) -> Void) {
         // If there's no search term, we can exit and avoid the HTTP request
         if name == "" {
             return
@@ -50,10 +50,8 @@ public class WCAnalyticsCustomerRemote: Remote {
             case .success(let customers):
                 // If the successful response contains a Customer with the same name as the search term,
                 // return a new collection with only these values
-                if customers.contains(where: { $0.name == name }) {
-                    let matchCustomers = customers.filter { $0.name == name }
-                    completion(.success(matchCustomers))
-                }
+                let matchCustomers = customers.filter { $0.name?.contains(name) ?? false }
+                completion(.success(matchCustomers))
             case .failure(let error):
                 completion(.failure(error))
             }

@@ -29,7 +29,7 @@ public struct WCAnalyticsCustomer: Codable {
 
 extension WCAnalyticsCustomer {
     enum CodingKeys: String, CodingKey {
-        case userID =   "id"
-        case name   =   "username"
+        case userID =   "user_id"
+        case name   =   "name"
     }
 }

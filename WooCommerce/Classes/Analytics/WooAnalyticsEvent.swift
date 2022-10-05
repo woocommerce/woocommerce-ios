@@ -295,19 +295,19 @@ extension WooAnalyticsEvent {
                                                                                                             Keys.variationID: "\(variationID)"])
         }
 
-        static func variationBulkUpdateSectionTapped() -> WooAnalyticsEvent {
+        static func bulkUpdateSectionTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productVariationBulkUpdateSectionTapped, properties: [:])
         }
 
-        static func variationBulkUpdateFieldTapped(field: BulkUpdateField) -> WooAnalyticsEvent {
+        static func bulkUpdateFieldTapped(field: BulkUpdateField) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productVariationBulkUpdateFieldTapped, properties: [Keys.field: field.rawValue])
         }
 
-        static func variationBulkUpdateFieldSuccess(field: BulkUpdateField) -> WooAnalyticsEvent {
+        static func bulkUpdateFieldSuccess(field: BulkUpdateField) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productVariationBulkUpdateFieldSuccess, properties: [Keys.field: field.rawValue])
         }
 
-        static func variationBulkUpdateRegularPriceFailed(field: BulkUpdateField, error: Error) -> WooAnalyticsEvent {
+        static func bulkUpdateRegularPriceFailed(field: BulkUpdateField, error: Error) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productVariationBulkUpdateFieldFail, properties: [Keys.field: field.rawValue], error: error)
         }
     }

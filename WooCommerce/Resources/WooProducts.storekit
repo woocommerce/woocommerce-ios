@@ -31,8 +31,8 @@
           "introductoryOffer" : null,
           "localizations" : [
             {
-              "description" : "",
-              "displayName" : "",
+              "description" : "1 Year of Hosted Woo",
+              "displayName" : "Test HostedWoo — Yearly",
               "locale" : "en_US"
             }
           ],
@@ -56,8 +56,8 @@
           "introductoryOffer" : null,
           "localizations" : [
             {
-              "description" : "",
-              "displayName" : "",
+              "description" : "1 Month of Hosted Woo",
+              "displayName" : "Test HostedWoo — Monthly",
               "locale" : "en_US"
             }
           ],

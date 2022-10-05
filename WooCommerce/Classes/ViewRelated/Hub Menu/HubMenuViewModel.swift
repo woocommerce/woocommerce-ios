@@ -79,7 +79,7 @@ final class HubMenuViewModel: ObservableObject {
     /// Resets the menu elements displayed on the menu.
     ///
     func setupMenuElements() {
-        menuElements = [Payments(), WoocommerceAdmin(), ViewStore(), Reviews()]
+        menuElements = [Payments(), WoocommerceAdmin(), ViewStore(), Reviews(), Upgrade()]
 
         let inboxUseCase = InboxEligibilityUseCase(stores: stores, featureFlagService: featureFlagService)
         inboxUseCase.isEligibleForInbox(siteID: siteID) { [weak self] isInboxMenuShown in
@@ -258,6 +258,18 @@ extension HubMenuViewModel {
         let accessibilityIdentifier: String = "menu-reviews"
         let trackingOption: String = "reviews"
     }
+
+    struct Upgrade: HubMenuItem {
+        static var id = "upgrade"
+
+        let title: String = "Upgrade"
+        let icon: UIImage = .plusImage
+        let iconColor: UIColor = .primary
+        let badge: HubMenuBadgeType = .number(number: 0)
+        let accessibilityIdentifier: String = "menu-upgrade"
+        let trackingOption: String = "debug"
+    }
+
 
     private enum Localization {
         static let payments = NSLocalizedString("Payments",

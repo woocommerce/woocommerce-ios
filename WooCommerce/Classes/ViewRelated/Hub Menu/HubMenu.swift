@@ -16,6 +16,7 @@ struct HubMenu: View {
     @State private var showingInbox = false
     @State private var showingReviews = false
     @State private var showingCoupons = false
+    @State private var showingUpgrade = false
 
     /// State to disable multiple taps on menu items
     /// Make sure to reset the value to false after dismissing sub-flows
@@ -73,6 +74,8 @@ struct HubMenu: View {
                                 showingReviews = true
                             case HubMenuViewModel.Coupons.id:
                                 showingCoupons = true
+                            case HubMenuViewModel.Upgrade.id:
+                                showingUpgrade = true
                             default:
                                 break
                             }
@@ -108,6 +111,9 @@ struct HubMenu: View {
                 EmptyView()
             }.hidden()
             NavigationLink(destination: CouponListView(siteID: viewModel.siteID), isActive: $showingCoupons) {
+                EmptyView()
+            }.hidden()
+            NavigationLink(destination: UpgradesView(), isActive: $showingUpgrade) {
                 EmptyView()
             }.hidden()
             LazyNavigationLink(destination: viewModel.getReviewDetailDestination(), isActive: $viewModel.showingReviewDetail) {

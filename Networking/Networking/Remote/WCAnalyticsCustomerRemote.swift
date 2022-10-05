@@ -14,6 +14,7 @@ public class WCAnalyticsCustomerRemote: Remote {
         if name == "" {
             return
         }
+
         let path = "customers"
         let request = JetpackRequest(
             wooApiVersion: .wcAnalytics,

@@ -1,33 +1,8 @@
 #!/bin/bash -eu
 
-echo '+++ 🤔 Bundle version'
-set -x
-which ruby
-ruby --version
-which gem
-gem --version
-which bundle
-bundle version
-gem list bundler
-set -x
-
 echo "--- :rubygems: Setting up Gems"
 restore_cache "$(hash_file .ruby-version)-$(hash_file Gemfile.lock)"
 install_gems
-
-echo '+++ 🤔 Bundle version'
-set -x
-which ruby
-ruby --version
-which gem
-gem --version
-which bundle
-bundle version
-gem list bundler
-set -x
-
-echo '--- ✋ Early exit. Test completed'
-exit 1
 
 echo "--- :cocoapods: Setting up Pods"
 install_cocoapods

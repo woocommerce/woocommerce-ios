@@ -729,8 +729,12 @@ private extension StorePickerViewController {
             return
         }
 
+        updateActionButtonAndTableState(animating: true, enabled: false)
+
         viewModel.checkEligibility(for: site.siteID) { [weak self] result in
             guard let self = self else { return }
+
+            self.updateActionButtonAndTableState(animating: false, enabled: true)
 
             switch result {
             case .success:

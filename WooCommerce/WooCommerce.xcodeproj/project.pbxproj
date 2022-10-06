@@ -1820,7 +1820,7 @@
 		FE28F7132684CA29004465C7 /* RoleErrorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE28F7112684CA29004465C7 /* RoleErrorViewController.xib */; };
 		FE28F7182684EE6A004465C7 /* RoleErrorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F7172684EE6A004465C7 /* RoleErrorViewModel.swift */; };
 		FE3E427726A8545B00C596CE /* MockRoleEligibilityUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE3E427626A8545B00C596CE /* MockRoleEligibilityUseCase.swift */; };
-		FE6BCDFC26A9D0E700D96FE2 /* rest_v2_sites_users_me.json in Resources */ = {isa = PBXBuildFile; fileRef = FE6BCDFB26A9D0E700D96FE2 /* rest_v2_sites_users_me.json */; };
+		FE6BCDFC26A9D0E700D96FE2 /* users_me.json in Resources */ = {isa = PBXBuildFile; fileRef = FE6BCDFB26A9D0E700D96FE2 /* users_me.json */; };
 		FEDD70AF26A7223500194C3A /* StorageEligibilityErrorInfo+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEDD70AE26A7223500194C3A /* StorageEligibilityErrorInfo+Woo.swift */; };
 		FEEB2F61268A215E0075A6E0 /* StorageEligibilityErrorInfoWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEB2F60268A215E0075A6E0 /* StorageEligibilityErrorInfoWooTests.swift */; };
 		FEEB2F6E268A2F7B0075A6E0 /* RoleEligibilityUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEB2F6D268A2F7B0075A6E0 /* RoleEligibilityUseCaseTests.swift */; };
@@ -3769,7 +3769,7 @@
 		FE28F7112684CA29004465C7 /* RoleErrorViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RoleErrorViewController.xib; sourceTree = "<group>"; };
 		FE28F7172684EE6A004465C7 /* RoleErrorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleErrorViewModel.swift; sourceTree = "<group>"; };
 		FE3E427626A8545B00C596CE /* MockRoleEligibilityUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRoleEligibilityUseCase.swift; sourceTree = "<group>"; };
-		FE6BCDFB26A9D0E700D96FE2 /* rest_v2_sites_users_me.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = rest_v2_sites_users_me.json; sourceTree = "<group>"; };
+		FE6BCDFB26A9D0E700D96FE2 /* users_me.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = users_me.json; sourceTree = "<group>"; };
 		FEDD70AE26A7223500194C3A /* StorageEligibilityErrorInfo+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StorageEligibilityErrorInfo+Woo.swift"; sourceTree = "<group>"; };
 		FEEB2F60268A215E0075A6E0 /* StorageEligibilityErrorInfoWooTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageEligibilityErrorInfoWooTests.swift; sourceTree = "<group>"; };
 		FEEB2F6D268A2F7B0075A6E0 /* RoleEligibilityUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleEligibilityUseCaseTests.swift; sourceTree = "<group>"; };
@@ -7342,6 +7342,7 @@
 		CCFC00C423E9BD5500157A78 /* wc */ = {
 			isa = PBXGroup;
 			children = (
+				EE6BAAB428EF093D0099288E /* me */,
 				C0CE1F80282AB1160019138E /* data */,
 				800A5B932755B9B9009DE2CD /* system_status */,
 				800A5B922755B99D009DE2CD /* payments */,
@@ -7426,7 +7427,6 @@
 			children = (
 				CCFC00D723E9BD5500157A78 /* rest_v11_me.json */,
 				CCFC00D823E9BD5500157A78 /* rest_v11_me_sites.json */,
-				FE6BCDFB26A9D0E700D96FE2 /* rest_v2_sites_users_me.json */,
 			);
 			path = me;
 			sourceTree = "<group>";
@@ -8507,6 +8507,14 @@
 			path = "In-Person Payments";
 			sourceTree = "<group>";
 		};
+		EE6BAAB428EF093D0099288E /* me */ = {
+			isa = PBXGroup;
+			children = (
+				FE6BCDFB26A9D0E700D96FE2 /* users_me.json */,
+			);
+			path = me;
+			sourceTree = "<group>";
+		};
 		EEADF61C281A3DB7001B40F1 /* ShippingValueLocalizer */ = {
 			isa = PBXGroup;
 			children = (
@@ -9141,7 +9149,7 @@
 				800A5BB2275869DC009DE2CD /* products_reviews_6154.json in Resources */,
 				C0A37CB8282957EB00E0826D /* orders_3337_add_customer_details.json in Resources */,
 				800A5BBE27586AEF009DE2CD /* products_reviews_6163.json in Resources */,
-				FE6BCDFC26A9D0E700D96FE2 /* rest_v2_sites_users_me.json in Resources */,
+				FE6BCDFC26A9D0E700D96FE2 /* users_me.json in Resources */,
 				CCF27B3A280EF98F00B755E1 /* orders_3337.json in Resources */,
 				CC5C278B27EE314F00B25D2A /* orders_3337_create_order.json in Resources */,
 				800A5BA027562EE5009DE2CD /* orders_processing.json in Resources */,

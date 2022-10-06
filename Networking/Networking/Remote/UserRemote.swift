@@ -20,3 +20,11 @@ public final class UserRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 }
+
+// MARK: - Constants!
+//
+private extension UserRemote {
+    enum Constants {
+        static let usersPath: String = "wp/v2/users/me"
+    }
+}

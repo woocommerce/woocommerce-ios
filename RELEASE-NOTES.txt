@@ -3,6 +3,7 @@
 10.7
 -----
 - [internal] Store picker: Show error when the role eligibility check fails while selecting a store. [https://github.com/woocommerce/woocommerce-ios/pull/7816]
+- [internal] Store picker: Add loading state to `Continue` button. [https://github.com/woocommerce/woocommerce-ios/pull/7821]
 
 
 10.6

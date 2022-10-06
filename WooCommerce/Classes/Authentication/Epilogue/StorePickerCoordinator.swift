@@ -119,13 +119,4 @@ private extension StorePickerCoordinator {
             self.onDismiss?()
         }
     }
-
-    /// Displays a generic error view as a modal with options to see troubleshooting tips and to contact support.
-    ///
-    func displayUnknownErrorModal() {
-        let viewController = StorePickerErrorHostingController.createWithActions(presenting: storePicker)
-        viewController.modalPresentationStyle = .custom
-        viewController.transitioningDelegate = storePicker
-        storePicker.present(viewController, animated: true)
-    }
 }

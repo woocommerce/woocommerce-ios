@@ -49,22 +49,7 @@ final class StorePickerCoordinator: Coordinator {
 extension StorePickerCoordinator: StorePickerViewControllerDelegate {
 
     func didSelectStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure) {
-        roleEligibilityUseCase.checkEligibility(for: storeID) { [weak self] result in
-            guard let self = self else { return }
-
-            switch result {
-            case .success:
-                // if user is eligible, then switch to the desired store.
-                self.switchStore(with: storeID, onCompletion: onCompletion)
-
-            case .failure(let error):
-                if case let RoleEligibilityError.insufficientRole(errorInfo) = error {
-                    self.showRoleErrorScreen(for: storeID, errorInfo: errorInfo, onCompletion: onCompletion)
-                } else {
-                    self.displayUnknownErrorModal()
-                }
-            }
-        }
+        switchStore(with: storeID, onCompletion: onCompletion)
     }
 
     /// Shows a Role Error page using the provided error information.

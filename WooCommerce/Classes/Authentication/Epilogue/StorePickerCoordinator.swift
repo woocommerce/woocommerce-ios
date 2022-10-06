@@ -49,22 +49,31 @@ final class StorePickerCoordinator: Coordinator {
 extension StorePickerCoordinator: StorePickerViewControllerDelegate {
 
     func didSelectStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure) {
-        roleEligibilityUseCase.checkEligibility(for: storeID) { [weak self] result in
-            guard let self = self else { return }
+        switchStore(with: storeID, onCompletion: onCompletion)
+    }
 
-            switch result {
-            case .success:
-                // if user is eligible, then switch to the desired store.
-                self.switchStore(with: storeID, onCompletion: onCompletion)
+    /// Shows a Role Error page using the provided error information.
+    /// The error page is pushed to the navigation stack so the user is not locked out, and can go back to select another store.
+    func showRoleErrorScreen(for siteID: Int64, errorInfo: StorageEligibilityErrorInfo, onCompletion: @escaping SelectStoreClosure) {
+        let errorViewModel = RoleErrorViewModel(siteID: siteID, title: errorInfo.name, subtitle: errorInfo.humanizedRoles, useCase: self.roleEligibilityUseCase)
+        let errorViewController = RoleErrorViewController(viewModel: errorViewModel)
 
-            case .failure(let error):
-                if case let RoleEligibilityError.insufficientRole(errorInfo) = error {
-                    self.showRoleErrorScreen(for: storeID, errorInfo: errorInfo, onCompletion: onCompletion)
-                } else {
-                    self.displayUnknownErrorModal()
-                }
-            }
+        // when the retry is successful, resume the original switchStore intention.
+        errorViewModel.onSuccess = {
+            self.switchStore(with: siteID, onCompletion: onCompletion)
         }
+
+        errorViewModel.onDeauthenticationRequest = {
+            self.restartAuthentication()
+        }
+
+        // find the top-most navigation controller by checking if there's a navigationController being presented.
+        // this takes care of the different variation of presentation, based on configurations.
+        var topNavigationController = navigationController
+        while let presented = topNavigationController.presentedViewController as? UINavigationController {
+            topNavigationController = presented
+        }
+        topNavigationController.show(errorViewController, sender: self)
     }
 
     func restartAuthentication() {
@@ -109,38 +118,5 @@ private extension StorePickerCoordinator {
             onCompletion()
             self.onDismiss?()
         }
-    }
-
-    /// Shows a Role Error page using the provided error information.
-    /// The error page is pushed to the navigation stack so the user is not locked out, and can go back to select another store.
-    func showRoleErrorScreen(for siteID: Int64, errorInfo: StorageEligibilityErrorInfo, onCompletion: @escaping SelectStoreClosure) {
-        let errorViewModel = RoleErrorViewModel(siteID: siteID, title: errorInfo.name, subtitle: errorInfo.humanizedRoles, useCase: self.roleEligibilityUseCase)
-        let errorViewController = RoleErrorViewController(viewModel: errorViewModel)
-
-        // when the retry is successful, resume the original switchStore intention.
-        errorViewModel.onSuccess = {
-            self.switchStore(with: siteID, onCompletion: onCompletion)
-        }
-
-        errorViewModel.onDeauthenticationRequest = {
-            self.restartAuthentication()
-        }
-
-        // find the top-most navigation controller by checking if there's a navigationController being presented.
-        // this takes care of the different variation of presentation, based on configurations.
-        var topNavigationController = navigationController
-        while let presented = topNavigationController.presentedViewController as? UINavigationController {
-            topNavigationController = presented
-        }
-        topNavigationController.show(errorViewController, sender: self)
-    }
-
-    /// Displays a generic error view as a modal with options to see troubleshooting tips and to contact support.
-    ///
-    func displayUnknownErrorModal() {
-        let viewController = StorePickerErrorHostingController.createWithActions(presenting: storePicker)
-        viewController.modalPresentationStyle = .custom
-        viewController.transitioningDelegate = storePicker
-        storePicker.present(viewController, animated: true)
     }
 }

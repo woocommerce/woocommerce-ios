@@ -549,16 +549,11 @@ extension StorePickerViewController {
         case .empty:
             restartAuthentication()
         default:
-            guard let delegate = delegate else {
-                return
-            }
             guard let site = currentlySelectedSite else {
                 return
             }
 
-            delegate.didSelectStore(with: site.siteID) { [weak self] in
-                self?.dismiss()
-            }
+            checkRoleEligibility(for: site)
         }
     }
 

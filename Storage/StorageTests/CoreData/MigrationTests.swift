@@ -1323,7 +1323,7 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(migratedProductSearchResults.value(forKey: "filterKey") as? String, "sku")
     }
 
-    func test_migrating_from_73_to_74_adds_WCAnalyticsCustomer_entity() throws {
+    func test_migrating_from_73_to_74_adds_Customer_entity() throws {
         // Given
         let sourceContainer = try startPersistentContainer("Model 73")
         let sourceContext = sourceContainer.viewContext
@@ -1331,7 +1331,7 @@ final class MigrationTests: XCTestCase {
         try sourceContext.save()
 
         // Confidence Check. This entity should not exist in Model 73
-        XCTAssertNil(NSEntityDescription.entity(forEntityName: "WCAnalyticsCustomer", in: sourceContext))
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "Customer", in: sourceContext))
 
         // When
         let targetContainer = try migrate(sourceContainer, to: "Model 74")
@@ -1340,13 +1340,13 @@ final class MigrationTests: XCTestCase {
         let targetContext = targetContainer.viewContext
 
         // This entity should exist in Model 74
-        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "WCAnalyticsCustomer", in: targetContext))
-        XCTAssertEqual(try targetContext.count(entityName: "WCAnalyticsCustomer"), 0)
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "Customer", in: targetContext))
+        XCTAssertEqual(try targetContext.count(entityName: "Customer"), 0)
 
-        // Insert a new WCAnalyticsCustomer
-        let migratedCustomer = insertWCAnalyticsCustomer(to: targetContext)
+        // Insert a new Customer
+        let migratedCustomer = insertCustomer(to: targetContext)
 
-        XCTAssertEqual(try targetContext.count(entityName: "WCAnalyticsCustomer"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "Customer"), 1)
         XCTAssertEqual(migratedCustomer.value(forKey: "customerID") as? Int64, 1)
         XCTAssertEqual(migratedCustomer.value(forKey: "username") as? String, "")
         XCTAssertEqual(migratedCustomer.value(forKey: "email") as? String, "")
@@ -1436,10 +1436,10 @@ private extension MigrationTests {
 //
 
 private extension MigrationTests {
-    /// Inserts a `WCAnalyticsCustomer` entity, providing default values for the required properties.
+    /// Inserts a `Customer` entity, providing default values for the required properties.
     @discardableResult
-    func insertWCAnalyticsCustomer(to context: NSManagedObjectContext) -> NSManagedObject {
-        context.insert(entityName: "WCAnalyticsCustomer", properties: [
+    func insertCustomer(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "Customer", properties: [
             "customerID": 1,
             "username": "",
             "email": "",

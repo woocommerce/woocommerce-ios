@@ -56,6 +56,12 @@
         <attribute name="keyword" optional="YES" attributeType="String"/>
         <relationship name="coupons" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Coupon" inverseName="searchResults" inverseEntity="Coupon"/>
     </entity>
+    <entity name="Customer" representedClassName="Customer" syncable="YES">
+        <attribute name="customerID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="customerName" optional="YES" attributeType="String"/>
+        <attribute name="email" optional="YES" attributeType="String"/>
+        <attribute name="username" optional="YES" attributeType="String"/>
+    </entity>
     <entity name="Entity" representedClassName="Entity" syncable="YES" codeGenerationType="class"/>
     <entity name="GenericAttribute" representedClassName="GenericAttribute" syncable="YES">
         <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
@@ -760,12 +766,6 @@
         <attribute name="quantity" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="total" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <relationship name="stats" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TopEarnerStats" inverseName="items" inverseEntity="TopEarnerStats"/>
-    </entity>
-    <entity name="WCAnalyticsCustomer" representedClassName="WCAnalyticsCustomer" syncable="YES">
-        <attribute name="customerID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="customerName" optional="YES" attributeType="String"/>
-        <attribute name="email" optional="YES" attributeType="String"/>
-        <attribute name="username" optional="YES" attributeType="String"/>
     </entity>
     <entity name="WCPayCardPaymentDetails" representedClassName="WCPayCardPaymentDetails" syncable="YES">
         <attribute name="brand" attributeType="String"/>

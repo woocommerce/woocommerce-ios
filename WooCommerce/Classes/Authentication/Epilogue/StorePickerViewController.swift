@@ -20,6 +20,11 @@ protocol StorePickerViewControllerDelegate: AnyObject {
     ///
     func didSelectStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure)
 
+    /// Shows a Role Error page using the provided error information.
+    /// The error page is pushed to the navigation stack so the user is not locked out, and can go back to select another store.
+    ///
+    func showRoleErrorScreen(for siteID: Int64, errorInfo: StorageEligibilityErrorInfo, onCompletion: @escaping SelectStoreClosure)
+
     /// Notifies the delegate to dismiss the store picker and restart authentication.
     func restartAuthentication()
 }

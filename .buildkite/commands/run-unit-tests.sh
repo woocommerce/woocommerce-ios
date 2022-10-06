@@ -8,9 +8,6 @@ echo "--- 📦 Downloading Build Artifacts"
 buildkite-agent artifact download build-products.tar .
 tar -xf build-products.tar
 
-echo "--- :rubygems: Fixing Ruby Setup"
-gem install bundler
-
 echo "--- :rubygems: Setting up Gems"
 install_gems
 

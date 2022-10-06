@@ -2,6 +2,7 @@ import Combine
 import SwiftUI
 import UIKit
 import Yosemite
+import Experiments
 
 /// Hosting controller that wraps an `EditOrderAddressForm`.
 ///
@@ -89,6 +90,8 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
 
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
 
+    let isSearchCustomersEnabled = DefaultFeatureFlagService().isFeatureFlagEnabled(.orderCreationSearchCustomers)
+
     var body: some View {
         Group {
             ScrollView {
@@ -145,6 +148,15 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                     dismiss()
                     viewModel.userDidCancelFlow()
                 })
+            }
+            ToolbarItem(placement: .automatic) {
+                if isSearchCustomersEnabled {
+                    Button(action: {
+                        viewModel.customerSearchTapped()
+                    }, label: {
+                        Image(systemName: "magnifyingglass")
+                    })
+                }
             }
             ToolbarItem(placement: .confirmationAction) {
                 navigationBarTrailingItem()

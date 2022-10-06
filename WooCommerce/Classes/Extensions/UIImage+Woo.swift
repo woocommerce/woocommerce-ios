@@ -804,6 +804,12 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Reply Icon
+    ///
+    static var replyImage: UIImage {
+        return UIImage.gridicon(.reply)
+    }
+
     /// Search Icon - used in `UIBarButtonItem`
     ///
     static var searchBarButtonItemImage: UIImage {

@@ -1,1 +1,0 @@
-Diese Version enthält ein paar kleinere Verbesserungen am Gesamterlebnis. Du kannst jetzt auch eine Jetpack-Verbindung zwischen deiner selbst gehosteten Website und deinem WP.com-Konto einrichten. Wir werden weiterhin kleinere Verbesserungen an der Funktion „Persönliche Zahlungen“ vornehmen. Wir hoffen, dass dir unsere Bemühungen auffallen und sie dir weiterhelfen.

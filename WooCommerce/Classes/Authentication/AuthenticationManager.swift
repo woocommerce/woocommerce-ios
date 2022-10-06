@@ -6,6 +6,7 @@ import Yosemite
 import class Networking.UserAgent
 import enum Experiments.ABTest
 import struct Networking.Settings
+import protocol Experiments.FeatureFlagService
 import protocol Storage.StorageManagerType
 
 
@@ -37,8 +38,13 @@ class AuthenticationManager: Authentication {
     ///
     private let storageManager: StorageManagerType
 
-    init(storageManager: StorageManagerType = ServiceLocator.storageManager) {
+    /// Whether WP.com signup is enabled in the authentication flow based on the feature flag.
+    private let isWPComSignupEnabled: Bool
+
+    init(storageManager: StorageManagerType = ServiceLocator.storageManager,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.storageManager = storageManager
+        self.isWPComSignupEnabled = featureFlagService.isFeatureFlagEnabled(.wpcomSignup)
     }
 
     /// Initializes the WordPress Authenticator.
@@ -60,7 +66,7 @@ class AuthenticationManager: Authentication {
                                                                 googleLoginScheme: ApiCredentials.googleAuthScheme,
                                                                 userAgent: UserAgent.defaultUserAgent,
                                                                 showLoginOptions: true,
-                                                                enableSignUp: false,
+                                                                enableSignUp: isWPComSignupEnabled,
                                                                 enableSignInWithApple: true,
                                                                 enableSignupWithGoogle: false,
                                                                 enableUnifiedAuth: true,
@@ -104,7 +110,9 @@ class AuthenticationManager: Authentication {
                                                 statusBarStyle: .default)
 
         let displayStrings = WordPressAuthenticatorDisplayStrings(emailLoginInstructions: AuthenticationConstants.emailInstructions,
-                                                                  getStartedInstructions: AuthenticationConstants.getStartedInstructions,
+                                                                  getStartedInstructions: isWPComSignupEnabled ?
+                                                                  AuthenticationConstants.getStartedInstructionsWithWPComSignupEnabled:
+                                                                    AuthenticationConstants.getStartedInstructions,
                                                                   jetpackLoginInstructions: AuthenticationConstants.jetpackInstructions,
                                                                   siteLoginInstructions: AuthenticationConstants.siteInstructions,
                                                                   siteCredentialInstructions: AuthenticationConstants.siteCredentialInstructions,
@@ -371,19 +379,27 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Presents the Signup Epilogue, in the specified NavigationController.
     ///
     func presentSignupEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, service: SocialService?) {
-        // NO-OP: The current WC version does not support Signup. Let SIWA through.
-        guard case .apple = service else {
-            return
-        }
+        if isWPComSignupEnabled {
+            // A proper signup epilogue flow will be added incrementally later as part of the WP.com signup experiment:
+            // Ref: pe5sF9-xP-p2
+            sync(credentials: credentials) { [weak self] in
+                self?.startStorePicker(in: navigationController)
+            }
+        } else {
+            // NO-OP: The current WC version does not support Signup. Let SIWA through.
+            guard case .apple = service else {
+                return
+            }
 
-        // For SIWA, signups are treating like signing in for now.
-        // Signup code in Authenticator normally synchronizes the auth credentials but
-        // since we're hacking in SIWA, that's never called in the pod. Call here so the
-        // person's name and user ID show up on the picker screen.
-        //
-        // This is effectively a useless screen for them other than telling them to install Jetpack.
-        sync(credentials: credentials) { [weak self] in
-            self?.startStorePicker(in: navigationController)
+            // For SIWA, signups are treating like signing in for now.
+            // Signup code in Authenticator normally synchronizes the auth credentials but
+            // since we're hacking in SIWA, that's never called in the pod. Call here so the
+            // person's name and user ID show up on the picker screen.
+            //
+            // This is effectively a useless screen for them other than telling them to install Jetpack.
+            sync(credentials: credentials) { [weak self] in
+                self?.startStorePicker(in: navigationController)
+            }
         }
     }
 
@@ -441,7 +457,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Note: As of now, this is a NO-OP, we're not supporting any signup flows.
     ///
     func shouldPresentSignupEpilogue() -> Bool {
-        return false
+        isWPComSignupEnabled
     }
 
     /// Synchronizes the specified WordPress Account.
@@ -553,7 +569,9 @@ private extension AuthenticationManager {
                              with credentials: AuthenticatorCredentials,
                              in navigationController: UINavigationController,
                              onDismiss: @escaping () -> Void) {
-        let viewModel = JetpackErrorViewModel(siteURL: siteURL, onJetpackSetupCompletion: { [weak self] authorizedEmailAddress in
+        let viewModel = JetpackErrorViewModel(siteURL: siteURL,
+                                              siteCredentials: credentials.wporg,
+                                              onJetpackSetupCompletion: { [weak self] authorizedEmailAddress in
             guard let self = self else { return }
             // Resets the referenced site since the setup completed now.
             self.currentSelfHostedSite = nil
@@ -586,10 +604,13 @@ private extension AuthenticationManager {
     }
 
     /// The error screen to be displayed when the user enters a site
-    /// without Jetpack in the site discovery flow
+    /// without Jetpack in the site discovery flow.
+    /// More about this flow: pe5sF9-mz-p2.
     ///
     func jetpackErrorUI(for siteURL: String, with matcher: ULAccountMatcher, in navigationController: UINavigationController) -> UIViewController {
-        let viewModel = JetpackErrorViewModel(siteURL: siteURL, onJetpackSetupCompletion: { [weak self] authorizedEmailAddress in
+        let viewModel = JetpackErrorViewModel(siteURL: siteURL,
+                                              siteCredentials: nil,
+                                              onJetpackSetupCompletion: { [weak self] authorizedEmailAddress in
             guard let self = self else { return }
 
             // Tries re-syncing to get an updated store list
@@ -667,6 +688,7 @@ private extension AuthenticationManager {
     }
 
     /// Appropriate error to display for a site when entered from the site discovery flow.
+    /// More about this flow: pe5sF9-mz-p2
     ///
     func errorUI(for site: WordPressComSiteInfo, in navigationController: UINavigationController) -> UIViewController {
         guard site.isWP else {

@@ -293,18 +293,21 @@ extension OrderListViewModel {
     ///
     private func bindTopBannerState() {
         let errorState = $hasErrorLoadingData.removeDuplicates()
-        Publishers.CombineLatest3(errorState, $hideOrdersBanners, upsellCardReadersAnnouncementViewModel.$shouldBeVisible)
-            .map { hasError, hasDismissedOrdersBanners, upsellCardReadersBannerShouldBeVisible  -> TopBanner in
+        let cppConfiguration = CardPresentConfigurationLoader(stores: stores).configuration
+        let isSupportedCountryForCPP = cppConfiguration.isSupportedCountry
 
-                guard !hasError else {
+        Publishers.CombineLatest3(errorState, $hideOrdersBanners, upsellCardReadersAnnouncementViewModel.$shouldBeVisible)
+            .map { hasError, hasDismissedOrdersBanners, upsellCardReadersBannerAvailable  -> TopBanner in
+
+                if hasError {
                     return .error
                 }
 
-                guard !upsellCardReadersBannerShouldBeVisible else {
+                if upsellCardReadersBannerAvailable && isSupportedCountryForCPP {
                     return .upsellCardReaders
                 }
 
-                guard !hasDismissedOrdersBanners else {
+                if hasDismissedOrdersBanners {
                     return .none
                 }
 

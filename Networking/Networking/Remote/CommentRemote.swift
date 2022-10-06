@@ -56,6 +56,24 @@ public class CommentRemote: Remote {
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Reply to a comment (including product reviews)
+    ///
+    /// - Parameters:
+    ///    - siteID: site ID which contains the comment
+    ///    - commentID: ID of the comment to reply to
+    ///    - content: the text of the comment reply
+    ///    - completion: callback to be executed on completion
+    ///
+    public func replyToComment(siteID: Int64, commentID: Int64, content: String, completion: @escaping (Result<CommentStatus, Error>) -> Void) {
+        let path = "\(Paths.sites)/" + String(siteID) + "/" + "\(Paths.comments)/" + String(commentID) + "/\(Paths.commentReply)"
+        let parameters = [
+            ParameterKeys.content: content
+        ]
+        let mapper = CommentResultMapper()
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 
@@ -65,11 +83,13 @@ private extension CommentRemote {
     enum Paths {
         static let sites: String        = "sites"
         static let comments: String     = "comments"
+        static let commentReply: String = "replies/new"
     }
 
     enum ParameterKeys {
         static let status: String       = "status"
         static let context: String      = "context"
+        static let content: String      = "content"
     }
 
     enum ParameterValues {

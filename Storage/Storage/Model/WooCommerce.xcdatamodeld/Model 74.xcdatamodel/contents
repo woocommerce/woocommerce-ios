@@ -57,12 +57,22 @@
         <relationship name="coupons" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Coupon" inverseName="searchResults" inverseEntity="Coupon"/>
     </entity>
     <entity name="Customer" representedClassName="Customer" syncable="YES">
+        <attribute name="billing" optional="YES" attributeType="String"/>
+        <attribute name="customerID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="email" optional="YES" attributeType="String"/>
+        <attribute name="firstName" optional="YES" attributeType="String"/>
+        <attribute name="lastName" optional="YES" attributeType="String"/>
+        <attribute name="shipping" optional="YES" attributeType="String"/>
+        <attribute name="username" optional="YES" attributeType="String"/>
+        <relationship name="id" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CustomerSearchResult" inverseName="id" inverseEntity="CustomerSearchResult"/>
+    </entity>
+    <entity name="CustomerSearchResult" representedClassName="CustomerSearchResult" syncable="YES">
         <attribute name="customerID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="customerName" optional="YES" attributeType="String"/>
         <attribute name="email" optional="YES" attributeType="String"/>
-        <attribute name="username" optional="YES" attributeType="String"/>
+        <attribute name="keyword" optional="YES" attributeType="String"/>
+        <relationship name="id" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Customer" inverseName="id" inverseEntity="Customer"/>
     </entity>
-    <entity name="Entity" representedClassName="Entity" syncable="YES" codeGenerationType="class"/>
     <entity name="GenericAttribute" representedClassName="GenericAttribute" syncable="YES">
         <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="key" attributeType="String"/>

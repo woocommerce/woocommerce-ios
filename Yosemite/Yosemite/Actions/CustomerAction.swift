@@ -3,7 +3,7 @@ import Foundation
 /// Defines the `actions` supported by the `CustomerStore`.
 ///
 public enum CustomerAction: Action {
-    /// Searches for Customers by name
+    /// Searches for Customers by keyword. Currently, only searches by name.
     ///
     ///- `siteID`: The site for which we will perform the search.
     ///- `keyword`: Keyword to perform the search. Only searches by name.

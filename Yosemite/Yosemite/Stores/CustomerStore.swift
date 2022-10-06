@@ -35,6 +35,7 @@ public final class CustomerStore: Store {
     }
 
     /// Receives and executes Actions.
+    ///
     /// - Parameters:
     ///   - action: An action to handle. Must be a `CustomerAction`
     ///
@@ -51,8 +52,9 @@ public final class CustomerStore: Store {
         }
     }
 
-    /// Attempts to retrieve a `WCAnalyticsCustomer` collection  from a site based on an input keyword,
-    /// Returns the `[WCAnalyticsCustomer]` object upon success, or an `Error`.
+    /// Attempts to search Customers that match the given keyword, for a specific siteID
+    /// Returns Void upon success, or an Error
+    ///
     /// - Parameters:
     ///   - siteID: The site for which customers should be fetched.
     ///   - keyword: Keyword to perform the search for WCAnalyticsCustomer to be fetched.
@@ -71,7 +73,9 @@ public final class CustomerStore: Store {
                 }
             }
         }
+
     /// Attempts to retrieve a single Customer from a site, returning the Customer object upon success, or an Error.
+    ///
     /// - Parameters:
     ///   - siteID: The site for which customers should be fetched.
     ///   - customerID: ID of the Customer to be fetched.

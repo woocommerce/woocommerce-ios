@@ -78,7 +78,7 @@ class AuthenticatedState: StoresManagerState {
                                storageManager: storageManager,
                                network: network,
                                fileStorage: PListFileStorage()),
-            JetpackConnectionStore(dispatcher: dispatcher),
+            JetpackConnectionStore(dispatcher: dispatcher)
         ]
 
         startListeningToNotifications()

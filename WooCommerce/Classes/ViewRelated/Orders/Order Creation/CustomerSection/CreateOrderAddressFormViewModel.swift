@@ -98,8 +98,8 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
 
     func userDidCancelFlow() { }
 
-    /// Dispatches the retrieveCustomers action when the Search button is tapped
-    /// `keyword` is temporary until we implement the rest of the feature:
+    /// Dispatches the searchCustomers action when the Search button is tapped.
+    /// The hardcoded `keyword` is temporary until we implement the rest of the feature:
     /// https://github.com/woocommerce/woocommerce-ios/issues/7741
     ///
     func customerSearchTapped() {

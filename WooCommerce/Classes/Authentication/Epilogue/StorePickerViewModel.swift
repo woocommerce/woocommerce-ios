@@ -62,7 +62,7 @@ final class StorePickerViewModel {
     /// - Parameters:
     ///   - storeID: The dotcom site ID of the store.
     ///   - completion: The block to be called when the check completes, with an optional RoleEligibilityError.
-    ///   
+    ///
     func checkEligibility(for storeID: Int64, completion: @escaping (Result<Void, RoleEligibilityError>) -> Void) {
         roleEligibilityUseCase.checkEligibility(for: storeID, completion: completion)
     }

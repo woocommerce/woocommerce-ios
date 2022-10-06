@@ -77,4 +77,8 @@ public enum FeatureFlag: Int {
     /// Enables lock screen widgets
     ///
     case lockscreenWidgets
+
+    /// Enables signing up for a WP.com account.
+    ///
+    case wpcomSignup
 }

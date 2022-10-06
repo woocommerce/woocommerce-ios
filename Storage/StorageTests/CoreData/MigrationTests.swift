@@ -1203,6 +1203,27 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(migratedOrder.value(forKey: "needsProcessing") as? Bool, false)
     }
 
+    func test_migrating_from_69_to_70_adds_refundedItemID_property_to_OrderItemRefund() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 69")
+        let sourceContext = sourceContainer.viewContext
+
+        let orderItemRefund = insertOrderItemRefund(to: sourceContext)
+
+        // Confidence check:
+        // The `itemID` property already exists on Model 69, but the `refundedItemID` does not
+        XCTAssertNotNil(orderItemRefund.entity.attributesByName["itemID"])
+        XCTAssertNil(orderItemRefund.entity.attributesByName["refundedItemID"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 70")
+        let targetContext = targetContainer.viewContext
+        let migratedOrderItemRefund = insertOrderItemRefund(to: targetContext)
+
+        // Confirms the `refundedItemID` property now exists on Model 70
+        XCTAssertNotNil(migratedOrderItemRefund.entity.attributesByName["refundedItemID"])
+    }
+
     func test_migrating_from_70_to_71_adds_custom_fields_property_to_order() throws {
         // Given
         let sourceContainer = try startPersistentContainer("Model 70")
@@ -1565,6 +1586,13 @@ private extension MigrationTests {
             "byUserID": 456,
             "isAutomated": false,
             "createAutomated": false
+        ])
+    }
+
+    @discardableResult
+    func insertOrderItemRefund(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "OrderItemRefund", properties: [
+            "itemID": 123
         ])
     }
 

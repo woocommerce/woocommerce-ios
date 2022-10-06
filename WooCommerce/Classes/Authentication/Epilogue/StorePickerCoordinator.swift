@@ -60,6 +60,8 @@ extension StorePickerCoordinator: StorePickerViewControllerDelegate {
             case .failure(let error):
                 if case let RoleEligibilityError.insufficientRole(errorInfo) = error {
                     self.showRoleErrorScreen(for: storeID, errorInfo: errorInfo, onCompletion: onCompletion)
+                } else {
+                    self.displayUnknownErrorModal()
                 }
             }
         }
@@ -133,4 +135,12 @@ private extension StorePickerCoordinator {
         topNavigationController.show(errorViewController, sender: self)
     }
 
+    /// Displays a generic error view as a modal with options to see troubleshooting tips and to contact support.
+    ///
+    func displayUnknownErrorModal() {
+        let viewController = StorePickerErrorHostingController.createWithActions(presenting: storePicker)
+        viewController.modalPresentationStyle = .custom
+        viewController.transitioningDelegate = storePicker
+        storePicker.present(viewController, animated: true)
+    }
 }

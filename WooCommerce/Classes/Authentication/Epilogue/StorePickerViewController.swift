@@ -723,6 +723,32 @@ private extension StorePickerViewController {
         navigationController?.show(noWooUI, sender: nil)
         navigationController?.setNavigationBarHidden(false, animated: true)
     }
+
+    func checkRoleEligibility(for site: Site) {
+        guard let delegate = delegate else {
+            return
+        }
+
+        viewModel.checkEligibility(for: site.siteID) { [weak self] result in
+            guard let self = self else { return }
+
+            switch result {
+            case .success:
+                // if user is eligible, then switch to the desired store.
+                delegate.didSelectStore(with: site.siteID) { [weak self] in
+                    self?.dismiss()
+                }
+            case .failure(let error):
+                if case let RoleEligibilityError.insufficientRole(errorInfo) = error {
+                    delegate.showRoleErrorScreen(for: site.siteID, errorInfo: errorInfo) { [weak self] in
+                        self?.dismiss()
+                    }
+                } else {
+                    self.displayUnknownErrorModal()
+                }
+            }
+        }
+    }
 }
 
 private extension StorePickerViewController {

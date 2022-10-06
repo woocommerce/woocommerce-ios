@@ -6,7 +6,6 @@
 - [internal] Store picker: Add loading state to `Continue` button. [https://github.com/woocommerce/woocommerce-ios/pull/7821]
 - [internal] Store picker: Use Jetpack tunnel API for fetching user info for role checking. [https://github.com/woocommerce/woocommerce-ios/pull/7822]
 
-
 10.6
 -----
 

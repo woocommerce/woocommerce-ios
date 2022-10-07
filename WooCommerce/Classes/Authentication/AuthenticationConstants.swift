@@ -18,6 +18,13 @@ struct AuthenticationConstants {
         comment: "Sign in instructions on the 'log in using WordPress.com account' screen."
     )
 
+    /// Get started instructions (Continue with WordPress.com) when signup is enabled.
+    ///
+    static let getStartedInstructionsWithWPComSignupEnabled = NSLocalizedString(
+        "Enter your email address to log in to manage your WooCommerce stores or create a WordPress.com account.",
+        comment: "Sign in instructions on the 'log in using WordPress.com account' screen."
+    )
+
     /// What is WordPress.com? link (Continue with WordPress.com)
     ///
     static let whatIsWPComLinkTitle = NSLocalizedString(

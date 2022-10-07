@@ -148,6 +148,7 @@ public enum WooAnalyticsStat: String {
     case settingsBetaFeaturesButtonTapped = "settings_beta_features_button_tapped"
     case settingsBetaFeaturesProductsToggled = "settings_beta_features_products_toggled"
     case settingsBetaFeaturesOrderAddOnsToggled = "settings_beta_features_order_addons_toggled"
+    case settingsBetaFeatureToggled = "settings_beta_feature_toggled"
 
     case settingsPrivacySettingsTapped = "settings_privacy_settings_button_tapped"
     case settingsCollectInfoToggled = "privacy_settings_collect_info_toggled"
@@ -273,7 +274,6 @@ public enum WooAnalyticsStat: String {
     case collectPaymentTapped = "payments_flow_order_collect_payment_tapped"
     case orderViewCustomFieldsTapped = "order_view_custom_fields_tapped"
     case orderDetailWaitingTimeLoaded = "order_detail_waiting_time_loaded"
-    case orderAddressValidationError = "order_address_validation_error"
 
     // MARK: Order List Sorting/Filtering
     //
@@ -455,6 +455,11 @@ public enum WooAnalyticsStat: String {
     case productVariationDetailUpdateButtonTapped = "product_variation_update_button_tapped"
     case productVariationDetailUpdateSuccess = "product_variation_update_success"
     case productVariationDetailUpdateError = "product_variation_update_error"
+
+    case productVariationBulkUpdateSectionTapped = "product_variation_bulk_update_section_tapped"
+    case productVariationBulkUpdateFieldTapped = "product_variation_bulk_update_field_tapped"
+    case productVariationBulkUpdateFieldSuccess = "product_variation_bulk_update_field_success"
+    case productVariationBulkUpdateFieldFail = "product_variation_bulk_update_field_fail"
 
     // MARK: Product Images Events
     //

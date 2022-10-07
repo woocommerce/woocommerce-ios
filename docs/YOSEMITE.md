@@ -39,7 +39,7 @@ At the moment, we provide the following subclasses of `Store`:
 * `AppSettingsStore`. Registers and responds to actions declared in `AppSettingsAction`. It implements the logic to save and retrieve application settings.
 * `CommentStore`.  Registers and responds to actions declared in `CommentAction` It implements the business logic pertaining comments.
 * `CardPresentPaymentsStore`. Registers and responds to actions declared in `CardPresentPaymentsAction`. It implements the logic to collect payments with external card readers.
-* `CustomerStore`. Implements support for operations related to Customers, like retrieving customer details.
+* `CustomerStore`. Implements support for operations related to Customers, like searching and retrieving customer details.
 * `NotificationStore`. Registers  and responds to`NotificationAction` 
 * `OrderStore`. Registers `OrderAction` with the `Dispatcher` and responds to the actions declared in it.
 * `OrderNoteStore`. Business logic pertaining order notes. Registers and responds to operation declared in `OrderNoteAction`

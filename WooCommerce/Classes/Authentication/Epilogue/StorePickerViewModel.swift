@@ -25,6 +25,7 @@ final class StorePickerViewModel {
     private let storageManager: StorageManagerType
     private let stores: StoresManager
     private let analytics: Analytics
+    private let roleEligibilityUseCase: RoleEligibilityUseCase
 
     init(configuration: StorePickerConfiguration,
          stores: StoresManager = ServiceLocator.stores,
@@ -34,6 +35,7 @@ final class StorePickerViewModel {
         self.stores = stores
         self.storageManager = storageManager
         self.analytics = analytics
+        self.roleEligibilityUseCase = RoleEligibilityUseCase(stores: stores)
     }
 
     func trackScreenView() {
@@ -52,6 +54,17 @@ final class StorePickerViewModel {
         synchronizeSites(selectedSiteID: currentlySelectedSiteID) { [weak self] _ in
             self?.refetchSitesAndUpdateState()
         }
+    }
+
+    /// Checks whether the current authenticated session has the correct role to manage the store.
+    /// Any error returned from the block means that the user is not eligible.
+    ///
+    /// - Parameters:
+    ///   - storeID: The dotcom site ID of the store.
+    ///   - completion: The block to be called when the check completes, with an optional RoleEligibilityError.
+    ///
+    func checkEligibility(for storeID: Int64, completion: @escaping (Result<Void, RoleEligibilityError>) -> Void) {
+        roleEligibilityUseCase.checkEligibility(for: storeID, completion: completion)
     }
 }
 

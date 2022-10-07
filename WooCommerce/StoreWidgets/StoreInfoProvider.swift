@@ -33,6 +33,10 @@ struct StoreInfoData {
     ///
     var revenue: String
 
+    /// Revenue at the range (eg: today) in compact format (eg: $12k)
+    ///
+    var revenueCompact: String
+
     /// Visitors count at the range (eg: today)
     ///
     var visitors: String
@@ -142,6 +146,7 @@ private extension StoreInfoProvider {
         StoreInfoEntry.data(.init(range: Localization.today,
                                   name: dependencies?.storeName ?? Localization.myShop,
                                   revenue: Self.formattedAmountString(for: 132.234, with: dependencies?.storeCurrencySettings),
+                                  revenueCompact: Self.formattedAmountCompactString(for: 132.234, with: dependencies?.storeCurrencySettings),
                                   visitors: "67",
                                   orders: "23",
                                   conversion: Self.formattedConversionString(for: 23/67),
@@ -154,6 +159,7 @@ private extension StoreInfoProvider {
         StoreInfoEntry.data(.init(range: Localization.today,
                                   name: dependencies.storeName,
                                   revenue: Self.formattedAmountString(for: todayStats.revenue, with: dependencies.storeCurrencySettings),
+                                  revenueCompact: Self.formattedAmountCompactString(for: todayStats.revenue, with: dependencies.storeCurrencySettings),
                                   visitors: "\(todayStats.totalVisitors)",
                                   orders: "\(todayStats.totalOrders)",
                                   conversion: Self.formattedConversionString(for: todayStats.conversion),
@@ -163,6 +169,11 @@ private extension StoreInfoProvider {
     static func formattedAmountString(for amountValue: Decimal, with currencySettings: CurrencySettings?) -> String {
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings ?? CurrencySettings())
         return currencyFormatter.formatAmount(amountValue) ?? Constants.valuePlaceholderText
+    }
+
+    static func formattedAmountCompactString(for amountValue: Decimal, with currencySettings: CurrencySettings?) -> String {
+        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings ?? CurrencySettings())
+        return currencyFormatter.formatHumanReadableAmount(amountValue) ?? Constants.valuePlaceholderText
     }
 
     static func formattedConversionString(for conversionRate: Double) -> String {

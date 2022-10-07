@@ -38,7 +38,7 @@ final class UserStoreTests: XCTestCase {
 
     func test_retrieveUser_returns_user_model_correctly() {
         // Given
-        let urlSuffix = "sites/\(testSiteID)/users/me"
+        let urlSuffix = "users/me"
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "user-complete")
         let store = UserStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 

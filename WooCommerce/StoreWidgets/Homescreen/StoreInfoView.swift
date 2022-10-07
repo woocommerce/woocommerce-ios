@@ -276,6 +276,7 @@ struct StoreWidgets_Previews: PreviewProvider {
     static var exampleData = StoreInfoData(range: "Today",
                                            name: "Ernest Shop",
                                            revenue: "$132.234",
+                                           revenueCompact: "$132",
                                            visitors: "67",
                                            orders: "23",
                                            conversion: "34%",

@@ -159,12 +159,11 @@ public class CurrencyFormatter {
         return formatAmount(decimalAmount, with: currency ?? currencySettings.currencyCode.rawValue, locale: locale)
     }
 
-
     /// Formats the provided `amount` param into a human readable value and applies the currency option
     /// settings for the given currency.
     ///
     /// - Parameters:
-    ///   - stringAmount: a raw string representation of the amount, from the API, with no formatting applied. e.g. "19.87"
+    ///   - amount: a NSDecimalNumber representation of the amount, from the API, with no formatting applied. e.g. "19.87"
     ///   - currency: a 3-letter country code for currencies that are supported in the API. e.g. "USD"
     ///   - roundSmallNumbers: if `true`, small numbers are rounded, if `false`, no rounding occurs (defaults to true)
     ///   - locale: the locale that is used to format the currency amount string.
@@ -191,15 +190,10 @@ public class CurrencyFormatter {
     ///  - 1000 becomes "$1.0k"
     ///  - 5800199.56 becomes "$5.8m"
     ///
-    public func formatHumanReadableAmount(_ stringAmount: String,
-                                   with currency: String? = nil,
-                                   roundSmallNumbers: Bool = true,
-                                   locale: Locale = .current) -> String? {
-        guard let amount = convertToDecimal(stringAmount, locale: locale) else {
-            assertionFailure("Cannot convert the amount \"\(stringAmount)\" to decimal value with locale \(locale.identifier)")
-            return nil
-        }
-
+    public func formatHumanReadableAmount(_ amount: NSDecimalNumber,
+                                          with currency: String? = nil,
+                                          roundSmallNumbers: Bool = true,
+                                          locale: Locale = .current) -> String? {
         let currency = currency ?? currencySettings.currencyCode.rawValue
 
         let humanReadableAmount = amount.abs().humanReadableString(roundSmallNumbers: roundSmallNumbers)
@@ -221,6 +215,45 @@ public class CurrencyFormatter {
                               currencySymbol: symbol,
                               isNegative: isNegative,
                               locale: locale)
+    }
+
+    /// Formats the provided `stringAmount` param into a human readable value and applies the currency option
+    /// settings for the given currency.
+    ///
+    /// - Parameters:
+    ///   - stringAmount: a raw string representation of the amount, from the API, with no formatting applied. e.g. "19.87"
+    ///   - currency: a 3-letter country code for currencies that are supported in the API. e.g. "USD"
+    ///   - roundSmallNumbers: if `true`, small numbers are rounded, if `false`, no rounding occurs (defaults to true)
+    ///   - locale: the locale that is used to format the currency amount string.
+    /// - Returns: a formatted amount string
+    ///
+    public func formatHumanReadableAmount(_ stringAmount: String,
+                                          with currency: String? = nil,
+                                          roundSmallNumbers: Bool = true,
+                                          locale: Locale = .current) -> String? {
+        guard let amount = convertToDecimal(stringAmount, locale: locale) else {
+            assertionFailure("Cannot convert the amount \"\(stringAmount)\" to decimal value with locale \(locale.identifier)")
+            return nil
+        }
+
+        return formatHumanReadableAmount(amount, with: currency, roundSmallNumbers: roundSmallNumbers, locale: locale)
+    }
+
+    /// Formats the provided `amount` param into a human readable value and applies the currency option
+    /// settings for the given currency.
+    ///
+    /// - Parameters:
+    ///   - amount: a Decimal representation of the amount, from the API, with no formatting applied. e.g. "19.87"
+    ///   - currency: a 3-letter country code for currencies that are supported in the API. e.g. "USD"
+    ///   - roundSmallNumbers: if `true`, small numbers are rounded, if `false`, no rounding occurs (defaults to true)
+    ///   - locale: the locale that is used to format the currency amount string.
+    /// - Returns: a formatted amount string
+    ///
+    public func formatHumanReadableAmount(_ amount: Decimal,
+                                          with currency: String? = nil,
+                                          roundSmallNumbers: Bool = true,
+                                          locale: Locale = .current) -> String? {
+        return formatHumanReadableAmount(amount as NSDecimalNumber, with: currency, roundSmallNumbers: roundSmallNumbers, locale: locale)
     }
 
     /// Applies currency option settings to the amount for the given currency.

@@ -1685,7 +1685,6 @@ extension User {
         .init(
             localID: .fake(),
             siteID: .fake(),
-            wpcomID: .fake(),
             email: .fake(),
             username: .fake(),
             firstName: .fake(),

@@ -1,0 +1,3 @@
+Tolle Neuigkeiten! Du kannst Produkte jetzt auch über ihre Artikelnummer finden. Dazu brauchst du nur die neueste Version von WooCommerce in deinem Shop! Wir haben außerdem einige Dinge verbessert und kleinere Bugs beseitigt, die unser Team gefunden hat. So ist es jetzt noch einfacher, sich in der App anzumelden, und ein seltener Absturz bei der Auswahl eines Shops in der Shop-Auswahl konnte behoben werden.
+
+Sendet uns weiterhin Feedback! So finden wir heraus, was wir als Nächstes optimieren können.

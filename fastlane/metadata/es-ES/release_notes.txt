@@ -1,0 +1,3 @@
+¡Buenas noticias! Ya es posible buscar un producto por su SKU. Solo necesitas tener la última versión de WooCommerce disponible en tu tienda. También nos hemos centrado en mejorar algunos aspectos y solucionar pequeños errores que nuestro equipo ha encontrado, como facilitar el acceso a la aplicación y corregir un problema que aparecía al elegir una tienda en el selector de tiendas.
+
+Sigue compartiendo tus opiniones, ya que nos ayudarán a averiguar en qué debemos trabajar.

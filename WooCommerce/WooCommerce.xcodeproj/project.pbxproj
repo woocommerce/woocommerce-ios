@@ -1150,6 +1150,7 @@
 		AEACCB6D2785FF4A000D01F0 /* NavigationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEACCB6C2785FF4A000D01F0 /* NavigationRow.swift */; };
 		AEB73C0C25CD734200A8454A /* AttributePickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB73C0B25CD734200A8454A /* AttributePickerViewModel.swift */; };
 		AEB73C1725CD8E5800A8454A /* AttributePickerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB73C1625CD8E5800A8454A /* AttributePickerViewModelTests.swift */; };
+		AEBFD13F28E7655F00F598C6 /* StoreInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBFD13E28E7655F00F598C6 /* StoreInfoView.swift */; };
 		AEC12B7A2758D55900845F97 /* OrderStatusList.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC12B792758D55900845F97 /* OrderStatusList.swift */; };
 		AEC95D412774C5AE001571F5 /* AddressFormViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC95D402774C5AE001571F5 /* AddressFormViewModelProtocol.swift */; };
 		AEC95D432774D07B001571F5 /* CreateOrderAddressFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC95D422774D07B001571F5 /* CreateOrderAddressFormViewModel.swift */; };
@@ -3044,6 +3045,7 @@
 		AEACCB6C2785FF4A000D01F0 /* NavigationRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationRow.swift; sourceTree = "<group>"; };
 		AEB73C0B25CD734200A8454A /* AttributePickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewModel.swift; sourceTree = "<group>"; };
 		AEB73C1625CD8E5800A8454A /* AttributePickerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewModelTests.swift; sourceTree = "<group>"; };
+		AEBFD13E28E7655F00F598C6 /* StoreInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreInfoView.swift; sourceTree = "<group>"; };
 		AEC12B792758D55900845F97 /* OrderStatusList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusList.swift; sourceTree = "<group>"; };
 		AEC95D402774C5AE001571F5 /* AddressFormViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressFormViewModelProtocol.swift; sourceTree = "<group>"; };
 		AEC95D422774D07B001571F5 /* CreateOrderAddressFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOrderAddressFormViewModel.swift; sourceTree = "<group>"; };
@@ -5365,6 +5367,7 @@
 			children = (
 				3F50FE4028C8319A00C89201 /* Entitlements */,
 				26FFD32828C6A0E4002E5E5E /* Images */,
+				AEBFD13D28E7653E00F598C6 /* Homescreen */,
 				AED9012B28E5F27B002B4572 /* Lockscreen */,
 				3F1FA84528B60125009E246C /* StoreWidgets.swift */,
 				265C99E028B9BA43005E6117 /* StoreInfoWidget.swift */,
@@ -6472,6 +6475,14 @@
 				CC4D1E7825EE415D00B6E4E7 /* RenameAttributesViewModelTests.swift */,
 			);
 			path = "Edit Product Variation";
+			sourceTree = "<group>";
+		};
+		AEBFD13D28E7653E00F598C6 /* Homescreen */ = {
+			isa = PBXGroup;
+			children = (
+				AEBFD13E28E7655F00F598C6 /* StoreInfoView.swift */,
+			);
+			path = Homescreen;
 			sourceTree = "<group>";
 		};
 		AECD57D026DFDF3E00A3B580 /* Address Edit */ = {
@@ -9378,6 +9389,7 @@
 				2608C50628C93AB700C9DFC0 /* WooConstants.swift in Sources */,
 				260DE20A28CA7CFE009ECD7C /* StoreInfoDataService.swift in Sources */,
 				3F1FA84B28B60126009E246C /* StoreWidgets.intentdefinition in Sources */,
+				AEBFD13F28E7655F00F598C6 /* StoreInfoView.swift in Sources */,
 				265C99E228B9BCD0005E6117 /* StoreInfoWidget.swift in Sources */,
 				265C99E428B9C834005E6117 /* StoreInfoProvider.swift in Sources */,
 				3F1FA84628B60125009E246C /* StoreWidgets.swift in Sources */,

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-10-06 15:54:03+0000 */
+/* Translation-Revision-Date: 2022-10-07 16:29:42+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -37,7 +37,7 @@
 "%1$@ Copy" = "Copie %1$@";
 
 /* Title for the plugin version detail row in settings. %1$@ is a placeholder for the plugin name. This is displayed with the current version number, and whether an update is available. */
-"%1$@ Version" = "Version";
+"%1$@ Version" = "%1$@ Version";
 
 /* A label prompting users to learn more about In-Person Payments.
 \u{2011} is a special character that acts as nonbreaking hyphen for "-" in the "In-Person" string.

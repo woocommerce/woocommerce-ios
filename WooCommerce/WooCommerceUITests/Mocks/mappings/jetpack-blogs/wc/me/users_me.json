@@ -3,14 +3,11 @@
     "method": "GET",
     "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
     "queryParameters": {
-      "context": {
-        "equalTo": "edit"
-      },
       "path": {
         "equalTo": "/wp/v2/users/me&_method=get"
       },
-      "fields": {
-        "equalTo": "id,username,id_wpcom,email,first_name,last_name,nickname,roles"
+      "query": {
+        "matches": "(.*)\"fields\":\"id,username,id_wpcom,email,first_name,last_name,nickname,roles\"(.*)"
       }
     }
   },

@@ -1,0 +1,3 @@
+Boa notícia! Agora é possível pesquisar um produto pela SKU. Basta ter a versão mais recente do WooCommerce, disponível na nossa loja. Também focamos na correção de bugs irrelevantes que a nossa equipe encontrou e em algumas melhorias, como facilitar o login no aplicativo e corrigir uma falha rara que ocorria ao escolher uma loja no seletor de lojas.
+
+Continue dando feedback, ele nos ajuda a saber no que trabalhar em seguida.

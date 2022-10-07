@@ -1,0 +1,3 @@
+Berita menarik! Kini Anda bisa mencari produk dengan SKU-nya. Yang Anda butuhkan hanyalah versi terbaru WooCommerce di toko Anda! Kami juga fokus memoles beberapa hal dan mengatasi bug minor yang ditemukan oleh tim, seperti mempermudah Anda login ke aplikasi dan memperbaiki crash yang kadang terjadi saat memilih toko di pemilih toko.
+
+Terus kirimkan feedback Anda untuk memberi tahu kami apa yang harus ditingkatkan selanjutnya.

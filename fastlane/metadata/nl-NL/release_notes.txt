@@ -1,0 +1,3 @@
+Spannend nieuws! Je kunt nu een product zoeken met het SKU. Alles wat je nodig hebt is de nieuwste versie van WooCommerce bij je winkel. We hebben ons ook gericht op het stroomlijnen van een aantal dingen en wat kleine bugs verholpen die ons team tegenkwam, zoals het makkelijker maken om in te loggen in de app en een crash verhelpen bij het selecteren van een winkel in de store picker.
+
+Blijf komen met jullie feedback; dat helpt ons kiezen waar we aan moeten werken.

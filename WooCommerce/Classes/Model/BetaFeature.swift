@@ -10,34 +10,22 @@ extension BetaFeature {
     var title: String {
         switch self {
         case .viewAddOns:
-            return NSLocalizedString(
-                "View Add-Ons",
-                comment: "Cell title on the beta features screen to enable the order add-ons feature")
+            return Localization.viewAddOnsTitle
         case .productSKUScanner:
-            return NSLocalizedString(
-                "Product SKU Scanner",
-                comment: "Cell title on beta features screen to enable product SKU input scanner in inventory settings.")
+            return Localization.productSKUScannerTitle
         case .couponManagement:
-            return NSLocalizedString(
-                "Coupon Management",
-                comment: "Cell title on beta features screen to enable coupon management")
+            return Localization.couponManagementTitle
         }
     }
 
     var description: String {
         switch self {
         case .viewAddOns:
-            return NSLocalizedString(
-                "Test out viewing Order Add-Ons as we get ready to launch",
-                comment: "Cell description on the beta features screen to enable the order add-ons feature")
+            return Localization.viewAddOnsDescription
         case .productSKUScanner:
-            return NSLocalizedString(
-                "Test out scanning a barcode for a product SKU in the product inventory settings",
-                comment: "Cell description on beta features screen to enable product SKU input scanner in inventory settings.")
+            return Localization.productSKUScannerDescription
         case .couponManagement:
-            return NSLocalizedString(
-                "Test out managing coupons as we get ready to launch",
-                comment: "Cell description on beta features screen to enable coupon management")
+            return Localization.couponManagementDescription
         }
     }
 
@@ -96,5 +84,30 @@ extension GeneralAppSettingsStorage {
 extension BetaFeature: Identifiable {
     var id: String {
         description
+    }
+}
+
+private extension BetaFeature {
+    enum Localization {
+        static let viewAddOnsTitle = NSLocalizedString(
+            "View Add-Ons",
+            comment: "Cell title on the beta features screen to enable the order add-ons feature")
+        static let viewAddOnsDescription = NSLocalizedString(
+            "Test out viewing Order Add-Ons as we get ready to launch",
+            comment: "Cell description on the beta features screen to enable the order add-ons feature")
+
+        static let productSKUScannerTitle = NSLocalizedString(
+            "Product SKU Scanner",
+            comment: "Cell title on beta features screen to enable product SKU input scanner in inventory settings.")
+        static let productSKUScannerDescription = NSLocalizedString(
+            "Test out scanning a barcode for a product SKU in the product inventory settings",
+            comment: "Cell description on beta features screen to enable product SKU input scanner in inventory settings.")
+
+        static let couponManagementTitle = NSLocalizedString(
+            "Coupon Management",
+            comment: "Cell title on beta features screen to enable coupon management")
+        static let couponManagementDescription = NSLocalizedString(
+            "Test out managing coupons as we get ready to launch",
+            comment: "Cell description on beta features screen to enable coupon management")
     }
 }

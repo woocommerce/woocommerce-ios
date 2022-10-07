@@ -736,7 +736,7 @@ private extension StorePickerViewController {
 //
 private enum StorePickerConstants {
     static let estimatedRowHeight = CGFloat(50)
-    static let newToWooCommerceURL = "https://woocommerce.com/document/woocommerce-features"
+    static let newToWooCommerceURL = "https://woocommerce.com/woocommerce-features"
 }
 
 

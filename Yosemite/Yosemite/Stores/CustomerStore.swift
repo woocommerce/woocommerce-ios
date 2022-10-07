@@ -66,7 +66,8 @@ public final class CustomerStore: Store {
         onCompletion: @escaping (Result<Void, Error>) -> Void) {
             searchRemote.searchCustomers(for: siteID, name: keyword) { result in
                 switch result {
-                case .success(_):
+                case .success(let data):
+                    self.mapSearchResultsToCustomerObject(for: siteID, with: data, onCompletion: { _ in })
                     onCompletion(.success(()))
                 case .failure(let error):
                     onCompletion(.failure(error))
@@ -94,4 +95,39 @@ public final class CustomerStore: Store {
                 }
             }
         }
+
+    /// Maps SearchResult (/analytics/customer endpoint) to customer (/wp/v3/customer endpoint) objects
+    ///
+    /// - Parameters:
+    ///   - siteID: The site for which customers should be fetched.
+    ///   - data: A WCAnalyticsCustomer collection that represents the matches we've got from the API based in our keyword search
+    ///   - onCompletion: Invoked when the operation finishes, returns an array of Customer objects, which we'll be upserting into Core Data, or an Error.
+    ///
+    func mapSearchResultsToCustomerObject(for siteID: Int64, with data: [WCAnalyticsCustomer], onCompletion: @escaping (Result<[Customer], Error>) -> Void) {
+        var temp_customersHolder = [Customer]()
+
+        for each in data {
+            retrieveCustomer(for: siteID, with: each.userID) { customer in
+                switch customer {
+                case .success(let customer):
+                    temp_customersHolder.append(customer)
+                    print("Step 2 - Map SearchResults to Customer: Success!")
+                case .failure(_):
+                    break
+                }
+                self.upsert(readOnlyCustomers: temp_customersHolder, onCompletion: {
+                    print("Step 4 - Process completed")
+                })
+            }
+        }
+    }
+
+    func upsert(readOnlyCustomers: [Networking.Customer], onCompletion: @escaping () -> Void) {
+        // Logic for inserting or updating in Storage will go here.
+        for eachCustomer in readOnlyCustomers {
+            print("Upserting customer ID: \(eachCustomer.customerID) in Storage. Name: \(eachCustomer.firstName ?? "Name not found")")
+            print("Step 3 - Upsert to Storage: Success!")
+        }
+        onCompletion()
+    }
 }

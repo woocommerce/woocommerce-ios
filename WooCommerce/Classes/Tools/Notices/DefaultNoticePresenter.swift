@@ -161,18 +161,7 @@ private extension DefaultNoticePresenter {
             }
             noticeView.alpha = UIKitConstants.alphaZero
         }
-
-        let dismiss = { [weak noticeContainerView] in
-            guard let noticeContainerView = noticeContainerView, noticeContainerView.superview != nil else {
-                return
-            }
-
-            self.animatePresentation(fromState: {}, toState: hiddenState, completion: {
-                noticeContainerView.removeFromSuperview()
-                self.dismiss()
-            })
-        }
-
+        let dismiss = dismissHandler(for: noticeContainerView, fromState: {}, toState: hiddenState)
         noticeView.dismissHandler = dismiss
 
         if let feedbackType = notice.feedbackType {
@@ -182,6 +171,21 @@ private extension DefaultNoticePresenter {
         animatePresentation(fromState: offScreenState, toState: onScreenState, completion: {
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Animations.dismissDelay, execute: dismiss)
         })
+    }
+
+    private func dismissHandler(for noticeContainerView: UIView,
+                                fromState: (() -> Void)? = nil,
+                                toState: @escaping () -> Void) -> () -> Void {
+        return {
+            guard noticeContainerView.superview != nil else {
+                return
+            }
+
+            self.animatePresentation(fromState: fromState, toState: toState, completion: {
+                noticeContainerView.removeFromSuperview()
+                self.dismiss()
+            })
+        }
     }
 
     func dismiss() {

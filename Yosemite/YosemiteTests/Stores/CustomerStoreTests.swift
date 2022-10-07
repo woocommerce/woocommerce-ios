@@ -7,7 +7,8 @@ class CustomerStoreTests: XCTestCase {
     private var dispatcher: Dispatcher!
     private var storageManager: MockStorageManager!
     private var network: MockNetwork!
-    private var remote: CustomerRemote!
+    private var customerRemote: CustomerRemote!
+    private var searchRemote: WCAnalyticsCustomerRemote!
     private var store: CustomerStore!
     private let dummySiteID: Int64 = 12345
     private let dummyCustomerID: Int64 = 1
@@ -17,12 +18,14 @@ class CustomerStoreTests: XCTestCase {
         dispatcher = Dispatcher()
         storageManager = MockStorageManager()
         network = MockNetwork()
-        remote = CustomerRemote(network: network)
+        customerRemote = CustomerRemote(network: network)
+        searchRemote = WCAnalyticsCustomerRemote(network: network)
         store = CustomerStore(
             dispatcher: dispatcher,
             storageManager: storageManager,
             network: network,
-            remote: remote
+            customerRemote: customerRemote,
+            searchRemote: searchRemote
         )
     }
 

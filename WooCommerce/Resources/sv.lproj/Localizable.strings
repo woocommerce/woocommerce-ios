@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-09-20 09:54:23+0000 */
+/* Translation-Revision-Date: 2022-09-27 05:49:58+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -916,6 +916,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the alert when there is a generic error adding the package */
 "Cannot add package" = "Kan inte lägga till paket";
 
+/* The title of the alert when there is an error duplicating the product */
+"Cannot duplicate product" = "Kan inte duplicera produkt";
+
 /* Error message when no URL to WP-Admin page is found during Jetpack install flow */
 "Cannot find information about your site's WP-Admin. Please try again." = "Det gick inte att hitta information om din webbplats WP-admin. Försök igen.";
 
@@ -1117,11 +1120,9 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connect > A button to begin a search for a reader */
 "Connect Card Reader" = "Anslut kortläsare";
 
-/* Title of the Jetpack connection web view in the login flow */
+/* Action button to handle Jetpack connection.Presented when logging in with a self-hosted site that does not match the account entered
+   Title of the Jetpack connection web view in the login flow */
 "Connect Jetpack" = "Anslut Jetpack";
-
-/* Button linking to web view for setting up Jetpack connection. Presented when logging in with store credentials of an account not connected to the site's Jetpack */
-"Connect Jetpack to your account" = "Anslut Jetpack till ditt konto";
 
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "Anslut till läsare";
@@ -1697,6 +1698,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Drag and drop helper text above photo list in Product images screen */
 "Drag and drop to re-order photos" = "Dra och släpp för att ändra ordning på foton";
+
+/* Button title to duplicate a product in Product More Options Action Sheet */
+"Duplicate" = "Duplicera";
+
+/* Title of the in-progress UI while duplicating a Product remotely */
+"Duplicating your product..." = "Duplicerar din produkt …";
 
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "Identifiera enkelt dina produkter med unika koder";
@@ -2286,6 +2293,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Help and Support navigation title
    Help button
+   Help button on account mismatch error screen.
    Help button on Jetpack required error screen.
    Help button on store picker screen. */
 "Help" = "Hjälp";
@@ -2532,9 +2540,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message on enable analytics screen to notify that the module is disabled for the store */
 "It looks like you have analytics disabled." = "Det verkar som att du har inaktiverat analys.";
 
-/* Message explaining that the entered site credentials belong to an account that is not connected to the site's Jetpack. Reads like 'It looks like your account is not connected to awebsite.com's Jetpack */
-"It looks like your account is not connected to %@'s Jetpack" = "Det verkar som att ditt konto inte är anslutet till Jetpack för %@";
-
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "Du verkar ha skrivit fel lösenord. Vill du försöka en gång till?";
 
@@ -2714,7 +2719,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Action button that will restart the login flow.Presented when logging in with a site address that appears to be invalid.
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
    Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
-   Action button that will restart the login flow.Presented when logging in with store credentials of an account not connected to the site's Jetpack
    Action button that will restart the login flow.Presented when the user tries to log in to the app with a simple WP.com site. */
 "Log In With Another Account" = "Logga in med ett annat konto";
 
@@ -3721,6 +3725,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Title of the text field for editing the external URL for an external/affiliate product */
 "Product URL" = "Produkt-URL";
+
+/* Title of the alert when a user has copied a product */
+"Product copied" = "Produkt kopierad";
 
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "Produktlänk";
@@ -6155,8 +6162,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Range title for the today store info widget */
 "storeWidgets.infoProvider.today" = "Idag";
 
-/* Conversion title label for the store info widget
-   Orders title label for the store info widget */
+/* Orders title label for the store info widget */
 "storeWidgets.infoView.orders" = "Beställningar";
 
 /* Revenue title label for the store info widget */
@@ -6164,6 +6170,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Displays the time when the widget was last updated. %1$@ is the time to render. */
 "storeWidgets.infoView.updatedAt" = "Per den %1$@";
+
+/* Title for the button indicator to display more stats in the Today's Stat widget when using accessibility fonts. */
+"storeWidgets.infoView.viewMore" = "Visa mer";
 
 /* Visitors title label for the store info widget */
 "storeWidgets.infoView.visitors" = "Besökare";

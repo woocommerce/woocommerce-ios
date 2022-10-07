@@ -248,7 +248,7 @@ private extension RoleEligibilityUseCaseTests {
     }
 
     func makeUser(eligible: Bool = false) -> User {
-        return User(localID: 0, siteID: 0, wpcomID: 0, email: "email", username: "username", firstName: "first", lastName: "last",
-                    nickname: "nick", roles: eligible ? Constants.eligibleRoles : Constants.ineligibleRoles)
+        User(localID: 0, siteID: 0, email: "email", username: "username", firstName: "first", lastName: "last",
+             nickname: "nick", roles: eligible ? Constants.eligibleRoles : Constants.ineligibleRoles)
     }
 }

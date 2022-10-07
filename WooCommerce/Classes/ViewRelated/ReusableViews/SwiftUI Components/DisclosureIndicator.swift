@@ -1,16 +1,10 @@
 import SwiftUI
 
 struct DisclosureIndicator: View {
-    /// Keeps track of the current screen scale
-    ///
-    @ScaledMetric private var scale = 1
-
     var body: some View {
-        Image(uiImage: .chevronImage)
-            .resizable()
-            .flipsForRightToLeftLayoutDirection(true)
-            .frame(width: Constants.chevronSize(scale: scale), height: Constants.chevronSize(scale: scale))
-            .foregroundColor(Color(.systemGray))
+        Image(systemName: Constants.chevronSymbolName)
+            .font(.system(size: Constants.chevronSize, weight: .bold))
+            .foregroundColor(Color(UIColor.systemGray3))
             .accessibility(hidden: true)
     }
 }
@@ -18,15 +12,16 @@ struct DisclosureIndicator: View {
 // MARK: Constants
 private extension DisclosureIndicator {
     enum Constants {
-        static func chevronSize(scale: CGFloat) -> CGFloat {
-            22 * scale
-        }
+        static let chevronSize: CGFloat = 14.0
+        static let chevronSymbolName = "chevron.forward"
     }
 }
 
 struct DisclosureIndicator_Previews: PreviewProvider {
     static var previews: some View {
-        DisclosureIndicator()
-            .previewLayout(.sizeThatFits)
+        Group {
+            DisclosureIndicator()
+                .previewLayout(.sizeThatFits)
+        }
     }
 }

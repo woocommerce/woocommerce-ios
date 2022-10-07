@@ -218,9 +218,9 @@ private extension WooAnalytics {
 
     /// Builds the necesary properties for the `application_opened` event.
     ///
-    func applicationOpenedProperties(_ configurationResult: Result<[WidgetInfo], Error>) -> [String: [String]] {
+    func applicationOpenedProperties(_ configurationResult: Result<[WidgetInfo], Error>) -> [String: String] {
         guard let installedWidgets = try? configurationResult.get() else {
-            return ["widgets": []]
+            return ["widgets": ""]
         }
 
         // Translate the widget kind into a name recognized by tracks.
@@ -234,7 +234,7 @@ private extension WooAnalytics {
             }
         }
 
-        return ["widgets": widgetAnalyticNames]
+        return ["widgets": widgetAnalyticNames.joined(separator: ",")]
     }
 }
 

@@ -222,6 +222,11 @@ extension WooAnalyticsEvent {
             static let variationID = "product_variation_id"
             static let serverTime = "time"
             static let errorDescription = "error_description"
+            static let field = "field"
+        }
+
+        enum BulkUpdateField: String {
+            case regularPrice = "regular_price"
         }
 
         static func addFirstVariationButtonTapped(productID: Int64) -> WooAnalyticsEvent {
@@ -288,6 +293,22 @@ extension WooAnalyticsEvent {
         static func editVariationAttributeOptionsDoneButtonTapped(productID: Int64, variationID: Int64) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .editProductVariationAttributeOptionsDoneButtonTapped, properties: [Keys.productID: "\(productID)",
                                                                                                             Keys.variationID: "\(variationID)"])
+        }
+
+        static func bulkUpdateSectionTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationBulkUpdateSectionTapped, properties: [:])
+        }
+
+        static func bulkUpdateFieldTapped(field: BulkUpdateField) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationBulkUpdateFieldTapped, properties: [Keys.field: field.rawValue])
+        }
+
+        static func bulkUpdateFieldSuccess(field: BulkUpdateField) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationBulkUpdateFieldSuccess, properties: [Keys.field: field.rawValue])
+        }
+
+        static func bulkUpdateFieldFailed(field: BulkUpdateField, error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationBulkUpdateFieldFail, properties: [Keys.field: field.rawValue], error: error)
         }
     }
 }
@@ -370,8 +391,6 @@ extension WooAnalyticsEvent {
             static let orderID = "id"
             static let hasMultipleShippingLines = "has_multiple_shipping_lines"
             static let hasMultipleFeeLines = "has_multiple_fee_lines"
-            static let errorMessage = "error_message"
-            static let validationScenario = "validation_scenario"
         }
 
         static func orderOpen(order: Order) -> WooAnalyticsEvent {
@@ -489,25 +508,6 @@ extension WooAnalyticsEvent {
         ///
         static func pluginsNotSyncedYet() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pluginsNotSyncedYet, properties: [:])
-        }
-
-        /// Tracked when the Order details view detects a malformed shipping address data.
-        ///
-        static func addressValidationFailed(error: AddressValidator.AddressValidationError, orderID: Int64) -> WooAnalyticsEvent {
-            switch error {
-            case .local(let errorMessage):
-                return WooAnalyticsEvent(statName: .orderAddressValidationError, properties: [
-                    Keys.errorMessage: errorMessage,
-                    Keys.validationScenario: "local",
-                    Keys.orderID: orderID
-                ])
-            case .remote(let error):
-                return WooAnalyticsEvent(statName: .orderAddressValidationError, properties: [
-                    Keys.errorMessage: "\(String(describing: error?.addressError ?? "Unknown"))",
-                    Keys.validationScenario: "remote",
-                    Keys.orderID: orderID
-                ])
-            }
         }
     }
 }
@@ -1614,7 +1614,7 @@ extension WooAnalyticsEvent {
         }
 
         enum Name: String {
-            case todayStats = "today_stats"
+            case todayStats = "today-stats"
         }
 
         /// Event when a widget is tapped and opens the app.

@@ -77,6 +77,7 @@ final class BulkUpdateViewController: UIViewController, GhostableViewController 
                 self.sections = sections
                 self.removeGhostContent()
                 self.tableView.reloadData()
+                self.displayTooManyVariationsWarningIfNeeded()
             case .error:
                 self.removeGhostContent()
                 self.displaySyncingError()
@@ -146,6 +147,26 @@ final class BulkUpdateViewController: UIViewController, GhostableViewController 
         })
         let viewController = BulkUpdatePriceViewController(viewModel: bulkUpdatePriceSettingsViewModel)
         show(viewController, sender: nil)
+    }
+
+    /// Displays a warning informing the user that only the first 100 variations would be editted.
+    /// This is due to API limitations.
+    ///
+    private func displayTooManyVariationsWarningIfNeeded() {
+        guard viewModel.shouldShowVariationLimitWarning else {
+            return
+        }
+
+        let bannerViewModel = TopBannerViewModel(title: nil,
+                                    infoText: Localization.tooManyVariations,
+                                    icon: .noticeImage,
+                                    iconTintColor: .warning,
+                                    isExpanded: false,
+                                    topButton: .none,
+                                    type: .warning)
+        let banner = TopBannerView(viewModel: bannerViewModel)
+        tableView.tableHeaderView = banner
+        tableView.updateHeaderHeight()
     }
 }
 
@@ -267,6 +288,8 @@ private extension BulkUpdateViewController {
         static let noticeRetryAction = NSLocalizedString("Retry", comment: "Retry Action")
         static let pricesUpdated = NSLocalizedString("Prices updated successfully.",
                                                      comment: "Notice title when updating the price via the bulk variation screen")
+        static let tooManyVariations = NSLocalizedString("Only the first 100 variations will be updated.",
+                                                         comment: "Warning when trying to bulk edit more than 100 variations")
     }
 }
 

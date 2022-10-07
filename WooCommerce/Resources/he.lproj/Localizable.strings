@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-09-27 02:10:06+0000 */
+/* Translation-Revision-Date: 2022-10-07 09:54:21+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -32,6 +32,12 @@
 
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (ללקוח)";
+
+/* The default name for a duplicated product, with %1$@ being the original name. Reads like: Ramen Copy */
+"%1$@ Copy" = "להעתיק את %1$@";
+
+/* Title for the plugin version detail row in settings. %1$@ is a placeholder for the plugin name. This is displayed with the current version number, and whether an update is available. */
+"%1$@ Version" = "גרסת %1$@";
 
 /* A label prompting users to learn more about In-Person Payments.
 \u{2011} is a special character that acts as nonbreaking hyphen for "-" in the "In-Person" string.
@@ -518,7 +524,8 @@ which should be translated separately and considered part of this sentence. */
 "All Orders" = "כל ההזמנות";
 
 /* Button indicating that coupon can be applied to all products in the view for adding or editing a coupon.
-   Text indicating that there's no limit to the number of products that a coupon can be applied for. Displayed on coupon list items and details screen */
+   Text indicating that there's no limit to the number of products that a coupon can be applied for. Displayed on coupon list items and details screen
+   Title of the product search filter to search for all products. */
 "All Products" = "כל המוצרים";
 
 /* Exception rule for a coupon. Reads like: All Products excl. 2 Products */
@@ -893,6 +900,7 @@ which should be translated separately and considered part of this sentence. */
    Option to cancel the email app selection when logging in with magic links
    Text for the cancel button in the edit customer provided note screen
    Text for the cancel button in the Exclude Products screen
+   Text for the cancel button in the product review reply screen
    Text for the cancel button in the Select Products screen
    The title for a button that dismisses the crash debug menu
    The title of the button to cancel issuing a refund.
@@ -915,6 +923,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the alert when there is a generic error adding the package */
 "Cannot add package" = "לא ניתן להוסיף חבילה";
+
+/* The title of the alert when there is an error duplicating the product */
+"Cannot duplicate product" = "לא ניתן לשכפל את המוצר";
 
 /* Error message when no URL to WP-Admin page is found during Jetpack install flow */
 "Cannot find information about your site's WP-Admin. Please try again." = "לא ניתן למצוא מידע לגבי 'ניהול WP' של האתר שלך. יש לנסות שוב.";
@@ -1117,12 +1128,14 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connect > A button to begin a search for a reader */
 "Connect Card Reader" = "לחבר קורא כרטיסים";
 
-/* Action button to handle Jetpack connection.Presented when logging in with a self-hosted site that does not match the account entered
-   Title of the Jetpack connection web view in the login flow */
+/* Title of the Jetpack connection web view in the login flow */
 "Connect Jetpack" = "לחבר את Jetpack";
 
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "להתחבר לקורא";
+
+/* Action button to handle connecting the logged-in account to a given site.Presented when logging in with a store address that does not match the account entered */
+"Connect to the site" = "להתחבר לאתר";
 
 /* Settings > Manage Card Reader > Prompt user to connect their first reader */
 "Connect your card reader" = "לחבר את קורא הכרטיסים שלך";
@@ -1144,6 +1157,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "מתחבר לוורדפרס.קום";
+
+/* Title of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
+"Connecting to a WordPress.com site" = "מתחבר לאתר ב-WordPress.com";
 
 /* Title label for modal dialog that appears when connecting to a card reader */
 "Connecting to reader" = "מתחבר אל קורא הכרטיסים";
@@ -1698,6 +1714,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title to duplicate a product in Product More Options Action Sheet */
 "Duplicate" = "לשכפל";
+
+/* Title of the in-progress UI while duplicating a Product remotely */
+"Duplicating your product..." = "משכפל את המוצר שלך...";
 
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "לזהות בקלות את המוצרים שלך בעזרת קודים ייחודיים";
@@ -2285,7 +2304,8 @@ which should be translated separately and considered part of this sentence. */
    Title of the cell in Product Shipping Settings > Height */
 "Height" = "גובה";
 
-/* Help and Support navigation title
+/* Action button for opening Help.Presented when logging in with a site address that does not have WooCommerce
+   Help and Support navigation title
    Help button
    Help button on account mismatch error screen.
    Help button on Jetpack required error screen.
@@ -2438,8 +2458,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the app's Instagram profile */
 "Instagram" = "אינסטגרם";
 
-/* Action button for installing Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation
-   Navigates to Install Jetpack screen.
+/* Navigates to Install Jetpack screen.
    Title of install action in the Jetpack benefits view.
    Title of the Install Jetpack intro view
    Title of the Install Jetpack view */
@@ -3152,6 +3171,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Helper text above photo list in Product images screen */
 "Only one photo can be displayed by variation" = "ניתן להציג רק תמונה אחת לכל סוג מוצר";
 
+/* Warning when trying to bulk edit more than 100 variations */
+"Only the first 100 variations will be updated." = "יעודכנו רק מאה הסוגים הראשונים.";
+
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "רק בעלי האתר יכולים לנהל את אמצעי התשלום של תוויות המשלוח. יש ליצור קשר עם %1$@ (%2$@) כדי לנהל את אמצעי התשלום.";
 
@@ -3179,6 +3201,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "פתיחת רשימה של מצבים זמינים.";
+
+/* Reply to a comment. Spoken Hint. */
+"Opens a text view to reply to the comment" = "האפשרות פותחת תצוגת טקסט כדי לכתוב מענה לתגובה";
 
 /* Accessibility hint for excluding a variable product in the Exclude Products screen
    Accessibility hint for selecting a variable product in the Add Product screen
@@ -3453,6 +3478,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "יש להטעין את הקורא";
 
+/* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
+"Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app." = "כדי להשתמש באפליקציה, יש לפנות לבעלי האתר כדי לקבל הזמנה לאתר זה כמנהל חנות או כמנהל מערכת.";
+
 /* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to address problems */
 "Please correct your store address to proceed" = "עליך לתקן את הכתובת של החנות שלך כדי להמשיך";
 
@@ -3563,6 +3591,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "יש להמתין מעט לפרסום המוצר הזה בחנות שלך";
 
+/* Message of the in-progress UI while duplicating a Product as draft remotely */
+"Please wait while we save a copy of this product to your store" = "עליך להמתין זמן מה בזמן שאנחנו שומרים עותק של המוצר בחנות שלך";
+
 /* Message of the in-progress UI while saving a Product as draft remotely */
 "Please wait while we save this product to your store" = "עליך להמתין זמן מה בזמן שאנחנו שומרים מוצר זה בחנות שלך";
 
@@ -3607,6 +3638,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Title for editing the price settings row on Product main screen
    Title of the cell in Product Price Settings > Price */
 "Price" = "מחיר";
+
+/* Notice title when updating the price via the bulk variation screen */
+"Prices updated successfully." = "המחירים עודכנו בהצלחה.";
 
 /* Title of print button on Print Customs Invoice screen of Shipping Label flow when there are more than one invoice */
 "Print" = "להדפיס";
@@ -3719,6 +3753,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Title of the text field for editing the external URL for an external/affiliate product */
 "Product URL" = "כתובת ה-URL של המוצר";
+
+/* Title of the alert when a user has copied a product */
+"Product copied" = "המוצר הועתק";
 
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "קישור למוצר";
@@ -3972,6 +4009,15 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Action to replace one photo on the Product images screen */
 "Replace Photo" = "להחליף את התמונה";
 
+/* Reply to a comment */
+"Reply" = "תגובה";
+
+/* Notice text after sending a reply to a product review successfully */
+"Reply sent!" = "התגובה נשלחה!";
+
+/* Title for the product review reply screen */
+"Reply to Product Review" = "להגיב לביקורת על מוצר";
+
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "דיווח על קריסות";
 
@@ -4061,13 +4107,15 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Edit Product SKU navigation title
    Title of the cell in Product Inventory Settings > SKU
    Title of the product form bottom sheet action for editing short description.
+   Title of the product search filter to search for products that match the SKU.
    Title of the SKU row on Product main screen */
 "SKU" = "מק\"ט";
 
 /* The message of the alert when there is an error updating the product SKU */
 "SKU already in use by another product" = "הקוד של SKU כבר נמצא בשימוש של מוצר אחר";
 
-/* SKU label in order details > product row. The variable shows the SKU of the product. */
+/* Label about the SKU of a product in the product list. Reads, `SKU: productSku`
+   SKU label in order details > product row. The variable shows the SKU of the product. */
 "SKU: %1$@" = "מק\"ט: %1$@";
 
 /* Format of the SKU on the Inventory Settings row */
@@ -4174,7 +4222,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Search Orders */
 "Search orders" = "חיפוש הזמנות";
 
-/* Search Products */
+/* Products Search Placeholder
+   Search Products */
 "Search products" = "חיפוש מוצרים";
 
 /* Display label for the product's catalog visibility */
@@ -4256,6 +4305,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Placeholder in Shipping Label form for the Carrier and Rates row. */
 "Select your shipping carrier and rates" = "יש לבחור את ספק המשלוח והתעריפים";
 
+/* Text for the send button in the product review reply screen */
+"Send" = "לשלוח";
+
 /* Presents a survey to gather feedback from the user. */
 "Send Feedback" = "שליחת משוב";
 
@@ -4279,6 +4331,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Subtitle of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Set the percentage of the discount you want to offer." = "יש להגדיר את אחוז ההנחה שברצונך להציע.";
+
+/* Action button for setting up Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
+"Set up Jetpack" = "הגדרת Jetpack";
 
 /* Header text on Add New Custom Package screen in Shipping Label flow
    Header text on Add New Service Package screen in Shipping Label flow */
@@ -5113,6 +5168,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Notice displayed when searching the list of products fails */
 "There was an error searching products" = "אירעה שגיאה בחיפוש המוצרים";
 
+/* Notice text after failing to send a reply to a product review */
+"There was an error sending the reply" = "אירעה שגיאה בשליחת התגובה";
+
 /* Notice displayed when syncing the list of product variations fails */
 "There was an error syncing product variations" = "אירעה שגיאה בסנכרון סוגי המוצרים";
 
@@ -5583,6 +5641,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Display label for the review's untrash status */
 "Untrash" = "ביטול ההעברה לפח";
 
+/* String shown to indicate the latest version of a plugin when an update is available and highlighted to the user */
+"Up to date" = "הכול מעודכן";
+
 /* Footer text below the list of logs explaining the maximum number of logs saved. */
 "Up to seven days՚ worth of logs are saved." = "אנחנו שומרים יומנים באורך של עד שבעה ימים.";
 
@@ -5614,6 +5675,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Title that appears on top of the of bulk price setting screen */
 "Update Regular Price" = "לעדכן את המחיר הרגיל";
+
+/* String shown to indicate the latest version of a plugin when an update is available and highlighted to the user */
+"Update available" = "עדכון זמין";
 
 /* Subtitle of the product form bottom sheet action for editing inventory settings. */
 "Update product inventory and SKU" = "לעדכן את המלאי וה-SKU של המוצר";
@@ -6107,6 +6171,12 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Comment Attachment Label */
 "[COMMENT]" = "[תגובה]";
 
+/* Widget description, displayed when selecting which widget to add */
+"appLinkWidget.description" = "להפעיל את WooCommerce במהירות";
+
+/* Widget title, displayed when selecting which widget to add */
+"appLinkWidget.displayName" = "סמל";
+
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "example.com";
@@ -6153,6 +6223,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Range title for the today store info widget */
 "storeWidgets.infoProvider.today" = "היום";
 
+/* Conversion title label for the store info widget */
+"storeWidgets.infoView.conversion" = "המרה";
+
 /* Orders title label for the store info widget */
 "storeWidgets.infoView.orders" = "הזמנות";
 
@@ -6161,6 +6234,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Displays the time when the widget was last updated. %1$@ is the time to render. */
 "storeWidgets.infoView.updatedAt" = "החל ממועד %1$@";
+
+/* Title for the button indicator to display more stats in the Today's Stat widget when using accessibility fonts. */
+"storeWidgets.infoView.viewMore" = "הצגת פריטים נוספים";
 
 /* Visitors title label for the store info widget */
 "storeWidgets.infoView.visitors" = "מבקרים";
@@ -6176,6 +6252,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Today */
 "today" = "היום";
+
+/* Value for the WooCommerce plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
+"unknown" = "לא ידוע";
 
 /* Used when the response doesn't have a valid url to display */
 "unknown url" = "כתובת URL לא ידועה";

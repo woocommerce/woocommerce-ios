@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-09-27 02:10:06+0000 */
+/* Translation-Revision-Date: 2022-10-06 17:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -32,6 +32,12 @@
 
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@(고객에게)";
+
+/* The default name for a duplicated product, with %1$@ being the original name. Reads like: Ramen Copy */
+"%1$@ Copy" = "%1$@ 복사본";
+
+/* Title for the plugin version detail row in settings. %1$@ is a placeholder for the plugin name. This is displayed with the current version number, and whether an update is available. */
+"%1$@ Version" = "%1$@ 버전";
 
 /* A label prompting users to learn more about In-Person Payments.
 \u{2011} is a special character that acts as nonbreaking hyphen for "-" in the "In-Person" string.
@@ -518,7 +524,8 @@ which should be translated separately and considered part of this sentence. */
 "All Orders" = "모든 주문";
 
 /* Button indicating that coupon can be applied to all products in the view for adding or editing a coupon.
-   Text indicating that there's no limit to the number of products that a coupon can be applied for. Displayed on coupon list items and details screen */
+   Text indicating that there's no limit to the number of products that a coupon can be applied for. Displayed on coupon list items and details screen
+   Title of the product search filter to search for all products. */
 "All Products" = "모든 상품";
 
 /* Exception rule for a coupon. Reads like: All Products excl. 2 Products */
@@ -893,6 +900,7 @@ which should be translated separately and considered part of this sentence. */
    Option to cancel the email app selection when logging in with magic links
    Text for the cancel button in the edit customer provided note screen
    Text for the cancel button in the Exclude Products screen
+   Text for the cancel button in the product review reply screen
    Text for the cancel button in the Select Products screen
    The title for a button that dismisses the crash debug menu
    The title of the button to cancel issuing a refund.
@@ -915,6 +923,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the alert when there is a generic error adding the package */
 "Cannot add package" = "패키지를 추가할 수 없음";
+
+/* The title of the alert when there is an error duplicating the product */
+"Cannot duplicate product" = "상품을 복제할 수 없음";
 
 /* Error message when no URL to WP-Admin page is found during Jetpack install flow */
 "Cannot find information about your site's WP-Admin. Please try again." = "사이트의 WP 관리자에 대한 정보를 찾을 수 없습니다. 다시 시도하세요.";
@@ -1117,12 +1128,14 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connect > A button to begin a search for a reader */
 "Connect Card Reader" = "카드 리더 연결";
 
-/* Action button to handle Jetpack connection.Presented when logging in with a self-hosted site that does not match the account entered
-   Title of the Jetpack connection web view in the login flow */
+/* Title of the Jetpack connection web view in the login flow */
 "Connect Jetpack" = "젯팩 연결";
 
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "리더에 연결";
+
+/* Action button to handle connecting the logged-in account to a given site.Presented when logging in with a store address that does not match the account entered */
+"Connect to the site" = "사이트에 연결";
 
 /* Settings > Manage Card Reader > Prompt user to connect their first reader */
 "Connect your card reader" = "카드 리더 연결";
@@ -1144,6 +1157,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "워드프레스닷컴에 접속 중입니다";
+
+/* Title of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
+"Connecting to a WordPress.com site" = "워드프레스닷컴 사이트에 연결하기";
 
 /* Title label for modal dialog that appears when connecting to a card reader */
 "Connecting to reader" = "리더에 연결 중";
@@ -1698,6 +1714,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title to duplicate a product in Product More Options Action Sheet */
 "Duplicate" = "복제";
+
+/* Title of the in-progress UI while duplicating a Product remotely */
+"Duplicating your product..." = "상품 복제 중...";
 
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "고유 코드로 제품을 간편하게 식별합니다.";
@@ -2285,7 +2304,8 @@ which should be translated separately and considered part of this sentence. */
    Title of the cell in Product Shipping Settings > Height */
 "Height" = "높이";
 
-/* Help and Support navigation title
+/* Action button for opening Help.Presented when logging in with a site address that does not have WooCommerce
+   Help and Support navigation title
    Help button
    Help button on account mismatch error screen.
    Help button on Jetpack required error screen.
@@ -2438,8 +2458,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the app's Instagram profile */
 "Instagram" = "Instagram";
 
-/* Action button for installing Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation
-   Navigates to Install Jetpack screen.
+/* Navigates to Install Jetpack screen.
    Title of install action in the Jetpack benefits view.
    Title of the Install Jetpack intro view
    Title of the Install Jetpack view */
@@ -3152,6 +3171,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Helper text above photo list in Product images screen */
 "Only one photo can be displayed by variation" = "변형당 하나의 사진만 표시할 수 있습니다.";
 
+/* Warning when trying to bulk edit more than 100 variations */
+"Only the first 100 variations will be updated." = "처음 100개 변형만 업데이트됩니다.";
+
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "사이트 소유자만 배송 레이블 결제 수단을 관리할 수 있습니다. 결제 수단 관리는 %1$@(%2$@)에게 문의하세요.";
 
@@ -3179,6 +3201,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "사용 가능한 상태 목록을 엽니다.";
+
+/* Reply to a comment. Spoken Hint. */
+"Opens a text view to reply to the comment" = "텍스트 보기를 열어 댓글에 답하기";
 
 /* Accessibility hint for excluding a variable product in the Exclude Products screen
    Accessibility hint for selecting a variable product in the Add Product screen
@@ -3453,6 +3478,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "리더를 충전하세요.";
 
+/* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
+"Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app." = "상점 관리자 또는 앱을 사용하는 관리자로 사이트에 초대받으려면 사이트 소유자에게 문의하세요.";
+
 /* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to address problems */
 "Please correct your store address to proceed" = "계속하려면 스토어 주소를 수정하세요.";
 
@@ -3563,6 +3591,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "이 제품을 회원님의 스토어에 게시하는 동안 기다려주세요...";
 
+/* Message of the in-progress UI while duplicating a Product as draft remotely */
+"Please wait while we save a copy of this product to your store" = "이 상품의 복사본을 스토어에 저장하는 동안 기다려 주세요.";
+
 /* Message of the in-progress UI while saving a Product as draft remotely */
 "Please wait while we save this product to your store" = "이 제품을 스토어에 저장하는 동안 기다려주세요...";
 
@@ -3607,6 +3638,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Title for editing the price settings row on Product main screen
    Title of the cell in Product Price Settings > Price */
 "Price" = "가격";
+
+/* Notice title when updating the price via the bulk variation screen */
+"Prices updated successfully." = "가격이 업데이트되었습니다.";
 
 /* Title of print button on Print Customs Invoice screen of Shipping Label flow when there are more than one invoice */
 "Print" = "인쇄";
@@ -3719,6 +3753,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Title of the text field for editing the external URL for an external/affiliate product */
 "Product URL" = "제품 URL";
+
+/* Title of the alert when a user has copied a product */
+"Product copied" = "상품 복사됨";
 
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "제품 링크";
@@ -3972,6 +4009,15 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Action to replace one photo on the Product images screen */
 "Replace Photo" = "사진 바꾸기";
 
+/* Reply to a comment */
+"Reply" = "응답";
+
+/* Notice text after sending a reply to a product review successfully */
+"Reply sent!" = "답글을 보냈습니다!";
+
+/* Title for the product review reply screen */
+"Reply to Product Review" = "상품 리뷰에 답하기";
+
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "충돌 보고";
 
@@ -4061,13 +4107,15 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Edit Product SKU navigation title
    Title of the cell in Product Inventory Settings > SKU
    Title of the product form bottom sheet action for editing short description.
+   Title of the product search filter to search for products that match the SKU.
    Title of the SKU row on Product main screen */
 "SKU" = "SKU";
 
 /* The message of the alert when there is an error updating the product SKU */
 "SKU already in use by another product" = "SKU가 다른 제품에서 이미 사용 중";
 
-/* SKU label in order details > product row. The variable shows the SKU of the product. */
+/* Label about the SKU of a product in the product list. Reads, `SKU: productSku`
+   SKU label in order details > product row. The variable shows the SKU of the product. */
 "SKU: %1$@" = "SKU: %1$@";
 
 /* Format of the SKU on the Inventory Settings row */
@@ -4174,7 +4222,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Search Orders */
 "Search orders" = "주문 검색";
 
-/* Search Products */
+/* Products Search Placeholder
+   Search Products */
 "Search products" = "상품 검색";
 
 /* Display label for the product's catalog visibility */
@@ -4256,6 +4305,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Placeholder in Shipping Label form for the Carrier and Rates row. */
 "Select your shipping carrier and rates" = "배송업체 및 요금 선택";
 
+/* Text for the send button in the product review reply screen */
+"Send" = "보내기";
+
 /* Presents a survey to gather feedback from the user. */
 "Send Feedback" = "의견 보내기";
 
@@ -4279,6 +4331,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Subtitle of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Set the percentage of the discount you want to offer." = "제공하려는 할인 비율을 설정하세요.";
+
+/* Action button for setting up Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
+"Set up Jetpack" = "젯팩 설정";
 
 /* Header text on Add New Custom Package screen in Shipping Label flow
    Header text on Add New Service Package screen in Shipping Label flow */
@@ -5113,6 +5168,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Notice displayed when searching the list of products fails */
 "There was an error searching products" = "상품을 검색하는 동안 오류가 발생했습니다.";
 
+/* Notice text after failing to send a reply to a product review */
+"There was an error sending the reply" = "답글 보내기 중 오류가 발생했습니다.";
+
 /* Notice displayed when syncing the list of product variations fails */
 "There was an error syncing product variations" = "상품 변형을 동기화하는 동안 오류가 발생했습니다.";
 
@@ -5583,6 +5641,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Display label for the review's untrash status */
 "Untrash" = "휴지통에서 복원";
 
+/* String shown to indicate the latest version of a plugin when an update is available and highlighted to the user */
+"Up to date" = "최신";
+
 /* Footer text below the list of logs explaining the maximum number of logs saved. */
 "Up to seven days՚ worth of logs are saved." = "최대 7일 상당의 로그가 저장됩니다.";
 
@@ -5614,6 +5675,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Title that appears on top of the of bulk price setting screen */
 "Update Regular Price" = "정가 업데이트";
+
+/* String shown to indicate the latest version of a plugin when an update is available and highlighted to the user */
+"Update available" = "업데이트 사용 가능";
 
 /* Subtitle of the product form bottom sheet action for editing inventory settings. */
 "Update product inventory and SKU" = "제품 인벤토리 및 SKU 업데이트";
@@ -6107,6 +6171,12 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Comment Attachment Label */
 "[COMMENT]" = "[댓글]";
 
+/* Widget description, displayed when selecting which widget to add */
+"appLinkWidget.description" = "빠르게 우커머스 시작";
+
+/* Widget title, displayed when selecting which widget to add */
+"appLinkWidget.displayName" = "아이콘";
+
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "example.com";
@@ -6153,6 +6223,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Range title for the today store info widget */
 "storeWidgets.infoProvider.today" = "오늘";
 
+/* Conversion title label for the store info widget */
+"storeWidgets.infoView.conversion" = "전환";
+
 /* Orders title label for the store info widget */
 "storeWidgets.infoView.orders" = "주문";
 
@@ -6161,6 +6234,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Displays the time when the widget was last updated. %1$@ is the time to render. */
 "storeWidgets.infoView.updatedAt" = "%1$@ 현재";
+
+/* Title for the button indicator to display more stats in the Today's Stat widget when using accessibility fonts. */
+"storeWidgets.infoView.viewMore" = "더 보기";
 
 /* Visitors title label for the store info widget */
 "storeWidgets.infoView.visitors" = "방문자";
@@ -6176,6 +6252,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Today */
 "today" = "오늘";
+
+/* Value for the WooCommerce plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
+"unknown" = "알 수 없음";
 
 /* Used when the response doesn't have a valid url to display */
 "unknown url" = "알 수 없는 url";

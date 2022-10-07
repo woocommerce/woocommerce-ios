@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-09-19 22:54:03+0000 */
+/* Translation-Revision-Date: 2022-10-03 14:54:03+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -32,6 +32,9 @@
 
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (خاص بالعميل)";
+
+/* The default name for a duplicated product, with %1$@ being the original name. Reads like: Ramen Copy */
+"%1$@ Copy" = "نسخ %1$@";
 
 /* A label prompting users to learn more about In-Person Payments.
 \u{2011} is a special character that acts as nonbreaking hyphen for "-" in the "In-Person" string.
@@ -916,6 +919,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the alert when there is a generic error adding the package */
 "Cannot add package" = "تتعذر إضافة الحزمة";
 
+/* The title of the alert when there is an error duplicating the product */
+"Cannot duplicate product" = "يتعذر تكرار المنتج";
+
 /* Error message when no URL to WP-Admin page is found during Jetpack install flow */
 "Cannot find information about your site's WP-Admin. Please try again." = "يتعذر العثور على معلومات حول مسؤول ووردبريس الخاص بموقعك. يرجى المحاولة مجددًا.";
 
@@ -1117,11 +1123,9 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connect > A button to begin a search for a reader */
 "Connect Card Reader" = "توصيل قارئ البطاقة";
 
-/* Title of the Jetpack connection web view in the login flow */
+/* Action button to handle Jetpack connection.Presented when logging in with a self-hosted site that does not match the account entered
+   Title of the Jetpack connection web view in the login flow */
 "Connect Jetpack" = "الاتصال بـ Jetpack";
-
-/* Button linking to web view for setting up Jetpack connection. Presented when logging in with store credentials of an account not connected to the site's Jetpack */
-"Connect Jetpack to your account" = "ربط Jetpack بحسابك";
 
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "الربط بالقارئ";
@@ -1697,6 +1701,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Drag and drop helper text above photo list in Product images screen */
 "Drag and drop to re-order photos" = "السحب والإفلات لإعادة ترتيب الصور";
+
+/* Button title to duplicate a product in Product More Options Action Sheet */
+"Duplicate" = "تكرار";
+
+/* Title of the in-progress UI while duplicating a Product remotely */
+"Duplicating your product..." = "جارٍ تكرار منتجك...";
 
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "حدِّد منتجاتك التي تحتوي على أكواد مميزة بسهولة.";
@@ -2286,6 +2296,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Help and Support navigation title
    Help button
+   Help button on account mismatch error screen.
    Help button on Jetpack required error screen.
    Help button on store picker screen. */
 "Help" = "مساعدة";
@@ -2532,9 +2543,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message on enable analytics screen to notify that the module is disabled for the store */
 "It looks like you have analytics disabled." = "يبدو أن التحليلات مُعطلة لديك.";
 
-/* Message explaining that the entered site credentials belong to an account that is not connected to the site's Jetpack. Reads like 'It looks like your account is not connected to awebsite.com's Jetpack */
-"It looks like your account is not connected to %@'s Jetpack" = "يبدو أن حسابك غير متصل بـ Jetpack الخاص بـ %@";
-
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "يبدو أنك أدخلت كلمة مرور غير صحيحة. هل ترغب في تجربته مرة أخرى؟";
 
@@ -2714,7 +2722,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Action button that will restart the login flow.Presented when logging in with a site address that appears to be invalid.
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
    Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
-   Action button that will restart the login flow.Presented when logging in with store credentials of an account not connected to the site's Jetpack
    Action button that will restart the login flow.Presented when the user tries to log in to the app with a simple WP.com site. */
 "Log In With Another Account" = "تسجيل الدخول باستخدام حساب آخر";
 
@@ -3565,6 +3572,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "يرجى الانتظار بينما ننشر هذا المنتج في المخزن الخاص بك";
 
+/* Message of the in-progress UI while duplicating a Product as draft remotely */
+"Please wait while we save a copy of this product to your store" = "يرجى الانتظار بينما نحفظ نسخة من هذا المنتج إلى متجرك";
+
 /* Message of the in-progress UI while saving a Product as draft remotely */
 "Please wait while we save this product to your store" = "يرجى الانتظار بينما نحفظ هذا المنتج في مخزنك";
 
@@ -3721,6 +3731,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Title of the text field for editing the external URL for an external/affiliate product */
 "Product URL" = "عنوان URL للمنتج";
+
+/* Title of the alert when a user has copied a product */
+"Product copied" = "تم نسخ المنتج";
 
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "رابط المنتج";
@@ -6155,8 +6168,10 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Range title for the today store info widget */
 "storeWidgets.infoProvider.today" = "اليوم";
 
-/* Conversion title label for the store info widget
-   Orders title label for the store info widget */
+/* Conversion title label for the store info widget */
+"storeWidgets.infoView.conversion" = "تحويل";
+
+/* Orders title label for the store info widget */
 "storeWidgets.infoView.orders" = "الطلبات";
 
 /* Revenue title label for the store info widget */
@@ -6164,6 +6179,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Displays the time when the widget was last updated. %1$@ is the time to render. */
 "storeWidgets.infoView.updatedAt" = "بدءًا من %1$@";
+
+/* Title for the button indicator to display more stats in the Today's Stat widget when using accessibility fonts. */
+"storeWidgets.infoView.viewMore" = "عرض المزيد";
 
 /* Visitors title label for the store info widget */
 "storeWidgets.infoView.visitors" = "الزائرون";

@@ -155,6 +155,10 @@ private extension NoticeView {
     func configureDismissRecognizer() {
         let recognizer = UITapGestureRecognizer(target: self, action: #selector(viewTapped))
         addGestureRecognizer(recognizer)
+
+        let swipeRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(viewSwiped))
+        swipeRecognizer.direction = .down
+        addGestureRecognizer(swipeRecognizer)
     }
 
     func configureForNotice() {
@@ -189,6 +193,10 @@ private extension NoticeView {
 private extension NoticeView {
 
     @objc private func viewTapped() {
+        dismissHandler?()
+    }
+
+    @objc func viewSwiped() {
         dismissHandler?()
     }
 

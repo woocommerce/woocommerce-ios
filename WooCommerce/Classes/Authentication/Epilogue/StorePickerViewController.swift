@@ -20,6 +20,11 @@ protocol StorePickerViewControllerDelegate: AnyObject {
     ///
     func didSelectStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure)
 
+    /// Shows a Role Error page using the provided error information.
+    /// The error page is pushed to the navigation stack so the user is not locked out, and can go back to select another store.
+    ///
+    func showRoleErrorScreen(for siteID: Int64, errorInfo: StorageEligibilityErrorInfo, onCompletion: @escaping SelectStoreClosure)
+
     /// Notifies the delegate to dismiss the store picker and restart authentication.
     func restartAuthentication()
 }
@@ -544,16 +549,11 @@ extension StorePickerViewController {
         case .empty:
             restartAuthentication()
         default:
-            guard let delegate = delegate else {
-                return
-            }
             guard let site = currentlySelectedSite else {
                 return
             }
 
-            delegate.didSelectStore(with: site.siteID) { [weak self] in
-                self?.dismiss()
-            }
+            checkRoleEligibility(for: site)
         }
     }
 
@@ -717,6 +717,36 @@ private extension StorePickerViewController {
         let noWooUI = ULErrorViewController(viewModel: viewModel)
         navigationController?.show(noWooUI, sender: nil)
         navigationController?.setNavigationBarHidden(false, animated: true)
+    }
+
+    func checkRoleEligibility(for site: Site) {
+        guard let delegate = delegate else {
+            return
+        }
+
+        updateActionButtonAndTableState(animating: true, enabled: false)
+
+        viewModel.checkEligibility(for: site.siteID) { [weak self] result in
+            guard let self = self else { return }
+
+            self.updateActionButtonAndTableState(animating: false, enabled: true)
+
+            switch result {
+            case .success:
+                // if user is eligible, then switch to the desired store.
+                delegate.didSelectStore(with: site.siteID) { [weak self] in
+                    self?.dismiss()
+                }
+            case .failure(let error):
+                if case let RoleEligibilityError.insufficientRole(errorInfo) = error {
+                    delegate.showRoleErrorScreen(for: site.siteID, errorInfo: errorInfo) { [weak self] in
+                        self?.dismiss()
+                    }
+                } else {
+                    self.displayUnknownErrorModal()
+                }
+            }
+        }
     }
 }
 

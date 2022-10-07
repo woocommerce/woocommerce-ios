@@ -22,10 +22,6 @@ public enum FeatureFlag: Int {
     ///
     case inbox
 
-    /// Displays the bulk update option in product variations
-    ///
-    case bulkEditProductVariations
-
     /// Displays the Orders tab in a split view
     ///
     case splitViewInOrdersTab
@@ -78,7 +74,11 @@ public enum FeatureFlag: Int {
     ///
     case orderCreationSearchCustomers
 
-    /// Enables replying to product reviews
+    /// Enables lock screen widgets
     ///
-    case replyToProductReviews
+    case lockscreenWidgets
+
+    /// Enables signing up for a WP.com account.
+    ///
+    case wpcomSignup
 }

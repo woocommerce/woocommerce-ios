@@ -11,8 +11,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .inbox:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .bulkEditProductVariations:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .splitViewInOrdersTab:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .updateOrderOptimistically:
@@ -37,7 +35,9 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .orderCreationSearchCustomers:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .replyToProductReviews:
+        case .lockscreenWidgets:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .wpcomSignup:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

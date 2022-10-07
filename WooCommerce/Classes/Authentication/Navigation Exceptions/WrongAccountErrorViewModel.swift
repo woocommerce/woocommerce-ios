@@ -23,6 +23,7 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
     private var siteXMLRPC: String = ""
     private var siteUsername: String = ""
     private var jetpackConnectionURL: URL?
+    private var siteCredentials: WordPressOrgCredentials?
 
     @Published private var isSelfHostedSite = false
     @Published private var primaryButtonLoading = false
@@ -46,6 +47,7 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
         self.jetpackSetupCompletionHandler = onJetpackSetupCompletion
         self.authenticatorType = authenticatorType
 
+        self.siteCredentials = siteCredentials
         if let credentials = siteCredentials {
             siteUsername = credentials.username
             siteXMLRPC = credentials.xmlrpc
@@ -189,6 +191,13 @@ private extension WrongAccountErrorViewModel {
         }
     }
 
+    func authenticateWithJetpack(siteCredentials: WordPressOrgCredentials, from viewController: UIViewController) {
+        authenticate(with: siteCredentials)
+        fetchJetpackConnectionURL { [weak self] url in
+            self?.showJetpackConnectionWebView(url: url, from: viewController)
+        }
+    }
+
     /// Prepares `JetpackConnectionStore` to authenticate subsequent requests to WP.org API.
     ///
     func authenticate(with credentials: WordPressOrgCredentials) {
@@ -220,17 +229,18 @@ private extension WrongAccountErrorViewModel {
     }
 
     func showSiteCredentialLoginAndJetpackConnection(from viewController: UIViewController) {
-        authenticatorType.showSiteCredentialLogin(from: viewController, siteURL: siteURL) { [weak self] credentials in
-            guard let self = self else { return }
-            // dismisses the site credential login flow
-            viewController.dismiss(animated: true)
+        guard let siteCredentials else {
+            return authenticatorType.showSiteCredentialLogin(from: viewController, siteURL: siteURL) { [weak self] credentials in
+                guard let self = self else { return }
+                // dismisses the site credential login flow
+                viewController.dismiss(animated: true)
 
-            self.siteXMLRPC = credentials.xmlrpc
-            self.authenticate(with: credentials)
-            self.fetchJetpackConnectionURL { [weak self] url in
-                self?.showJetpackConnectionWebView(url: url, from: viewController)
+                self.siteXMLRPC = credentials.xmlrpc
+                self.siteCredentials = credentials
+                self.authenticateWithJetpack(siteCredentials: credentials, from: viewController)
             }
         }
+        authenticateWithJetpack(siteCredentials: siteCredentials, from: viewController)
     }
 
     func presentConnectToWPComSiteAlert(from viewController: UIViewController) {

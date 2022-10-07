@@ -386,6 +386,9 @@ public enum WooAnalyticsStat: String {
     case reviewsMarkAllReadFailed = "reviews_mark_all_read_failed"
     case reviewsProductsLoaded = "reviews_products_loaded"
     case reviewsProductsLoadFailed = "reviews_products_load_failed"
+    case reviewReplySend = "review_reply_send"
+    case reviewReplySendSuccess = "review_reply_send_success"
+    case reviewReplySendFailed = "review_reply_send_failed"
 
     // MARK: Product List Events
     //
@@ -453,6 +456,11 @@ public enum WooAnalyticsStat: String {
     case productVariationDetailUpdateButtonTapped = "product_variation_update_button_tapped"
     case productVariationDetailUpdateSuccess = "product_variation_update_success"
     case productVariationDetailUpdateError = "product_variation_update_error"
+
+    case productVariationBulkUpdateSectionTapped = "product_variation_bulk_update_section_tapped"
+    case productVariationBulkUpdateFieldTapped = "product_variation_bulk_update_field_tapped"
+    case productVariationBulkUpdateFieldSuccess = "product_variation_bulk_update_field_success"
+    case productVariationBulkUpdateFieldFail = "product_variation_bulk_update_field_fail"
 
     // MARK: Product Images Events
     //

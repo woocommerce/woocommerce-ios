@@ -1,6 +1,11 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 10.7
+Exciting news! Now you an edit variation prices in bulk. All you need is to have the latest version of WooCommerce available on your store! We also focused on polishing a few things and taking care of minor bugs that our team found.
+
+Keep your feedback rolling in; it helps us figure out what to work on next.
+
 ## 10.6
 Exciting news! It's now possible to search for a product by its SKU. All you need is to have the latest version of WooCommerce available on your store! We also focused on polishing a few things and taking care of minor bugs that our team found, like making it easier for you to login to the app and fixing a rare crash when selecting a store in the store picker. 
 

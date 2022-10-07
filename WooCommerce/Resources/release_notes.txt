@@ -1,3 +1,6 @@
-Exciting news! It's now possible to search for a product by its SKU. All you need is to have the latest version of WooCommerce available on your store! We also focused on polishing a few things and taking care of minor bugs that our team found, like making it easier for you to login to the app and fixing a rare crash when selecting a store in the store picker. 
+- [*] Universal Links: Users can now open universal links in the app. [https://github.com/woocommerce/woocommerce-ios/pull/7632]
+- [internal] Store picker: Show error when the role eligibility check fails while selecting a store. [https://github.com/woocommerce/woocommerce-ios/pull/7816]
+- [internal] Store picker: Add loading state to `Continue` button. [https://github.com/woocommerce/woocommerce-ios/pull/7821]
+- [internal] Store picker: Use Jetpack tunnel API for fetching user info for role checking. [https://github.com/woocommerce/woocommerce-ios/pull/7822]
+- [*] Allow in-app notices to be swiped away [https://github.com/woocommerce/woocommerce-ios/pull/7801]
 
-Keep your feedback rolling in; it helps us figure out what to work on next.

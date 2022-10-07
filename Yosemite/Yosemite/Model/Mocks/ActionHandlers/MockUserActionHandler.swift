@@ -12,7 +12,6 @@ struct MockUserActionHandler: MockActionHandler {
         case .retrieveUser(let siteID, let onCompletion):
             onCompletion(.success(User(localID: 0,
                                        siteID: siteID,
-                                       wpcomID: 0,
                                        email: "",
                                        username: "",
                                        firstName: "",

@@ -4,6 +4,7 @@
 -----
 - [internal] Store picker: Show error when the role eligibility check fails while selecting a store. [https://github.com/woocommerce/woocommerce-ios/pull/7816]
 - [internal] Store picker: Add loading state to `Continue` button. [https://github.com/woocommerce/woocommerce-ios/pull/7821]
+- [internal] Store picker: Use Jetpack tunnel API for fetching user info for role checking. [https://github.com/woocommerce/woocommerce-ios/pull/7822]
 - [*] Allow in-app notices to be swiped away [https://github.com/woocommerce/woocommerce-ios/pull/7801]
 
 10.6

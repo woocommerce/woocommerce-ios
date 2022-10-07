@@ -20,7 +20,6 @@ final class UserMapperTests: XCTestCase {
         XCTAssertEqual(user.email, "example@example.blog")
         XCTAssertEqual(user.nickname, "User's Nickname")
         XCTAssertEqual(user.roles, ["administrator"])
-        XCTAssertEqual(user.wpcomID, 1)
         XCTAssertEqual(user.siteID, testSiteID)
     }
 }

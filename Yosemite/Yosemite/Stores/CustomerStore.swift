@@ -70,13 +70,10 @@ public final class CustomerStore: Store {
         onCompletion: @escaping (Result<Void, Error>) -> Void) {
             searchRemote.searchCustomers(for: siteID, name: keyword) { result in
                 switch result {
-                case .success(let data):
-                    print("Step 1.1 - SearchResults: Success!")
-                    self.upsertSearchResults(siteID: siteID, readOnlySearchResults: data, onCompletion: {
-                        print("Step 1.2 - Upsert SearchResults to Storage: Success!")
-                    })
-                    //self.mapSearchResultsToCustomerObject(for: siteID, with: data, onCompletion: { _ in })
-                    onCompletion(.success(()))
+                case .success(let customers):
+                    self.upsertSearchResults(siteID: siteID, readOnlySearchResults: customers) {
+                        onCompletion(.success(()))
+                    }
                 case .failure(let error):
                     onCompletion(.failure(error))
                 }
@@ -96,15 +93,15 @@ public final class CustomerStore: Store {
         onCompletion: @escaping (Result<Customer, Error>) -> Void) {
             customerRemote.retrieveCustomer(for: siteID, with: customerID) { result in
                 switch result {
-                case .failure(let error):
-                    onCompletion(.failure(error))
                 case .success(let customer):
                     onCompletion(.success(customer))
+                case .failure(let error):
+                    onCompletion(.failure(error))
                 }
             }
         }
 
-    /// Maps SearchResult (/analytics/customer endpoint) to customer (/wp/v3/customer endpoint) objects
+    /// Maps CustomerSearchResult to Customer objects
     ///
     /// - Parameters:
     ///   - siteID: The site for which customers should be fetched.
@@ -119,32 +116,30 @@ public final class CustomerStore: Store {
                 switch customer {
                 case .success(let customer):
                     temp_customersHolder.append(customer)
-                    print("Step 2 - Map SearchResults to Customer: Success!")
                 case .failure(_):
                     break
                 }
-                self.upsertCustomers(readOnlyCustomers: temp_customersHolder, onCompletion: {
-                    print("Step 3 - Upsert Customer to Storage: Success!")
-                })
             }
         }
     }
 
+    /// Inserts or updates CustomerSearchResults in Storage
+    ///
     func upsertSearchResults(siteID: Int64, readOnlySearchResults: [Networking.WCAnalyticsCustomer], onCompletion: @escaping () -> Void) {
-        // Logic for inserting or updating in Storage will go here.
-        for eachCustomer in readOnlySearchResults {
-            print("Upserting SearchResults: \(eachCustomer.userID) in Storage. Name: \(eachCustomer.name ?? "Name not found")")
+
+        for searchResult in readOnlySearchResults {
+            // Logic for inserting or updating in Storage will go here.
+            print("Upserting SearchResults: \(searchResult.userID) in Storage. Name: \(searchResult.name ?? "Name not found")")
         }
-        onCompletion()
-        self.mapSearchResultsToCustomerObject(for: siteID, with: readOnlySearchResults, onCompletion: { _ in })
     }
 
+    /// Inserts or updates Customers in Storage
+    ///
     func upsertCustomers(readOnlyCustomers: [Networking.Customer], onCompletion: @escaping () -> Void) {
-        // Logic for inserting or updating in Storage will go here.
-        for eachCustomer in readOnlyCustomers {
-            print("Upserting customer ID: \(eachCustomer.customerID) in Storage. Name: \(eachCustomer.firstName ?? "Name not found")")
+
+        for customer in readOnlyCustomers {
+            // Logic for inserting or updating in Storage will go here.
+            print("Upserting customer ID: \(customer.customerID) in Storage. Name: \(customer.firstName ?? "Name not found")")
         }
-        onCompletion()
-        print("Step 4 - Process completed")
     }
 }

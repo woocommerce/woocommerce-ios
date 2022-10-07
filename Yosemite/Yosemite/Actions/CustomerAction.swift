@@ -25,7 +25,8 @@ public enum CustomerAction: Action {
     case retrieveCustomer(
         siteID: Int64,
         customerID: Int64,
-        onCompletion: (Result<Customer, Error>) -> Void)
+        onCompletion: (Result<Customer, Error>) -> Void
+    )
 
     /// Inserts or updates CustomerSearchResults in Storage
     case upsertSearchResults(
@@ -34,9 +35,17 @@ public enum CustomerAction: Action {
         onCompletion: () -> Void
     )
 
-    /// Inserts or updates Customers in Storage
-    case upsertCustomers(
-        readOnlyCustomers: [Customer],
+    /// Inserts or updates a Customer in Storage
+    case upsertCustomer(
+        siteID: Int64,
+        readOnlyCustomer: Customer,
         onCompletion: () -> Void
+    )
+
+    /// Maps CustomerSearchResult to Customer objects
+    case mapSearchResultsToCustomerObject(
+        siteID: Int64,
+        searchResults: [WCAnalyticsCustomer],
+        onCompletion: (Result<Customer, Error>) -> Void
     )
 }

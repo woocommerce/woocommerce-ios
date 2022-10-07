@@ -103,12 +103,13 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
     /// https://github.com/woocommerce/woocommerce-ios/issues/7741
     ///
     func customerSearchTapped() {
+        print("1 - SearchResults: Start")
         let action = CustomerAction.searchCustomers(
             siteID: siteID,
             keyword: "hello") { result in
                 switch result {
                 case .success():
-                    print("Step 1.3 - SearchResults: Completed!")
+                    print("9 - SearchResults: End")
                 case .failure(let error):
                     print(error)
                 }

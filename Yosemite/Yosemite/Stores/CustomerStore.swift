@@ -51,13 +51,16 @@ public final class CustomerStore: Store {
             retrieveCustomer(for: siteID, with: customerID, onCompletion: onCompletion)
         case .upsertSearchResults(siteID: let siteID, readOnlySearchResults: let readOnlySearchResults, onCompletion: let onCompletion):
             upsertSearchResults(siteID: siteID, readOnlySearchResults: readOnlySearchResults, onCompletion: onCompletion)
-        case .upsertCustomers(readOnlyCustomers: let readOnlyCustomers, onCompletion: let onCompletion):
-            upsertCustomers(readOnlyCustomers: readOnlyCustomers, onCompletion: onCompletion)
+        case .upsertCustomer(siteID: let siteID, readOnlyCustomer: let readOnlyCustomer, onCompletion: let onCompletion):
+            upsertCustomer(siteID: siteID, readOnlyCustomer: readOnlyCustomer, onCompletion: onCompletion)
+        case .mapSearchResultsToCustomerObject(siteID: let siteID, searchResults: let searchResults, onCompletion: let onCompletion):
+            mapSearchResultsToCustomerObject(for: siteID, with: searchResults, onCompletion: onCompletion)
         }
     }
 
-    /// Attempts to search Customers that match the given keyword, for a specific siteID
-    /// Returns Void upon success, or an Error
+    /// Attempts to search Customers that match the given keyword, for a specific siteID.
+    /// Returns Void upon success, or an Error.
+    /// Search results are persisted in the local storage
     ///
     /// - Parameters:
     ///   - siteID: The site for which customers should be fetched.
@@ -71,8 +74,13 @@ public final class CustomerStore: Store {
             searchRemote.searchCustomers(for: siteID, name: keyword) { result in
                 switch result {
                 case .success(let customers):
+                    print("2 - Hit analytics endpoint")
                     self.upsertSearchResults(siteID: siteID, readOnlySearchResults: customers) {
-                        onCompletion(.success(()))
+                        print("4 - Saved SearchResults")
+                        self.mapSearchResultsToCustomerObject(for: siteID, with: customers) { _ in
+                            print("8 - Mapped SearchResults to Customer objects")
+                            onCompletion(.success(()))
+                        }
                     }
                 case .failure(let error):
                     onCompletion(.failure(error))
@@ -81,6 +89,7 @@ public final class CustomerStore: Store {
         }
 
     /// Attempts to retrieve a single Customer from a site, returning the Customer object upon success, or an Error.
+    /// The fetched Customer is persisted to the local storage.
     ///
     /// - Parameters:
     ///   - siteID: The site for which customers should be fetched.
@@ -105,22 +114,26 @@ public final class CustomerStore: Store {
     ///
     /// - Parameters:
     ///   - siteID: The site for which customers should be fetched.
-    ///   - data: A WCAnalyticsCustomer collection that represents the matches we've got from the API based in our keyword search
-    ///   - onCompletion: Invoked when the operation finishes, returns an array of Customer objects, which we'll be upserting into Core Data, or an Error.
+    ///   - searchResults: A WCAnalyticsCustomer collection that represents the matches we've got from the API based in our keyword search
+    ///   - onCompletion: Invoked when the operation finishes, returns a Customer object, which we'll be upserting into Core Data, or an Error.
     ///
-    func mapSearchResultsToCustomerObject(for siteID: Int64, with data: [WCAnalyticsCustomer], onCompletion: @escaping (Result<[Customer], Error>) -> Void) {
-        var temp_customersHolder = [Customer]()
-
-        for each in data {
-            retrieveCustomer(for: siteID, with: each.userID) { customer in
-                switch customer {
-                case .success(let customer):
-                    temp_customersHolder.append(customer)
-                case .failure(_):
-                    break
+    func mapSearchResultsToCustomerObject(for siteID: Int64,
+                                          with searchResults: [WCAnalyticsCustomer],
+                                          onCompletion: @escaping (Result<Customer, Error>) -> Void) {
+            for result in searchResults {
+                self.retrieveCustomer(for: siteID, with: result.userID) { customer in
+                    switch customer {
+                    case .success(let customer):
+                        print("5 - Map SearchResults to Customer objects")
+                        self.upsertCustomer(siteID: siteID, readOnlyCustomer: customer) {
+                            print("7 - Saved Customer")
+                            onCompletion(.success(customer))
+                        }
+                    case .failure(let error):
+                        onCompletion(.failure(error))
+                    }
                 }
             }
-        }
     }
 
     /// Inserts or updates CustomerSearchResults in Storage
@@ -129,17 +142,16 @@ public final class CustomerStore: Store {
 
         for searchResult in readOnlySearchResults {
             // Logic for inserting or updating in Storage will go here.
-            print("Upserting SearchResults: \(searchResult.userID) in Storage. Name: \(searchResult.name ?? "Name not found")")
+            print("3 - Saving SearchResults: \(searchResult.userID) in Storage. Name: \(searchResult.name ?? "Name not found")")
         }
+        onCompletion()
     }
 
     /// Inserts or updates Customers in Storage
     ///
-    func upsertCustomers(readOnlyCustomers: [Networking.Customer], onCompletion: @escaping () -> Void) {
-
-        for customer in readOnlyCustomers {
+    func upsertCustomer(siteID: Int64, readOnlyCustomer: Networking.Customer, onCompletion: @escaping () -> Void) {
             // Logic for inserting or updating in Storage will go here.
-            print("Upserting customer ID: \(customer.customerID) in Storage. Name: \(customer.firstName ?? "Name not found")")
-        }
+            print("6 - Saving Customer: \(readOnlyCustomer.customerID) in Storage. Name: \(readOnlyCustomer.firstName ?? "Name not found")")
+        onCompletion()
     }
 }

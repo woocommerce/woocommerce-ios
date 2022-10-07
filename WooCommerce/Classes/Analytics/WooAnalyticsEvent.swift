@@ -391,8 +391,6 @@ extension WooAnalyticsEvent {
             static let orderID = "id"
             static let hasMultipleShippingLines = "has_multiple_shipping_lines"
             static let hasMultipleFeeLines = "has_multiple_fee_lines"
-            static let errorMessage = "error_message"
-            static let validationScenario = "validation_scenario"
         }
 
         static func orderOpen(order: Order) -> WooAnalyticsEvent {
@@ -510,25 +508,6 @@ extension WooAnalyticsEvent {
         ///
         static func pluginsNotSyncedYet() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pluginsNotSyncedYet, properties: [:])
-        }
-
-        /// Tracked when the Order details view detects a malformed shipping address data.
-        ///
-        static func addressValidationFailed(error: AddressValidator.AddressValidationError, orderID: Int64) -> WooAnalyticsEvent {
-            switch error {
-            case .local(let errorMessage):
-                return WooAnalyticsEvent(statName: .orderAddressValidationError, properties: [
-                    Keys.errorMessage: errorMessage,
-                    Keys.validationScenario: "local",
-                    Keys.orderID: orderID
-                ])
-            case .remote(let error):
-                return WooAnalyticsEvent(statName: .orderAddressValidationError, properties: [
-                    Keys.errorMessage: "\(String(describing: error?.addressError ?? "Unknown"))",
-                    Keys.validationScenario: "remote",
-                    Keys.orderID: orderID
-                ])
-            }
         }
     }
 }

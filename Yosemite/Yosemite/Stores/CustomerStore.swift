@@ -67,7 +67,11 @@ public final class CustomerStore: Store {
             searchRemote.searchCustomers(for: siteID, name: keyword) { result in
                 switch result {
                 case .success(let data):
-                    self.mapSearchResultsToCustomerObject(for: siteID, with: data, onCompletion: { _ in })
+                    print("Step 1.1 - SearchResults: Success!")
+                    self.upsertSearchResults(siteID: siteID, readOnlySearchResults: data, onCompletion: {
+                        print("Step 1.2 - Upsert SearchResults to Storage: Success!")
+                    })
+                    //self.mapSearchResultsToCustomerObject(for: siteID, with: data, onCompletion: { _ in })
                     onCompletion(.success(()))
                 case .failure(let error):
                     onCompletion(.failure(error))
@@ -115,19 +119,28 @@ public final class CustomerStore: Store {
                 case .failure(_):
                     break
                 }
-                self.upsert(readOnlyCustomers: temp_customersHolder, onCompletion: {
-                    print("Step 4 - Process completed")
+                self.upsertCustomers(readOnlyCustomers: temp_customersHolder, onCompletion: {
+                    print("Step 3 - Upsert Customer to Storage: Success!")
                 })
             }
         }
     }
 
-    func upsert(readOnlyCustomers: [Networking.Customer], onCompletion: @escaping () -> Void) {
+    func upsertSearchResults(siteID: Int64, readOnlySearchResults: [Networking.WCAnalyticsCustomer], onCompletion: @escaping () -> Void) {
+        // Logic for inserting or updating in Storage will go here.
+        for eachCustomer in readOnlySearchResults {
+            print("Upserting SearchResults: \(eachCustomer.userID) in Storage. Name: \(eachCustomer.name ?? "Name not found")")
+        }
+        onCompletion()
+        self.mapSearchResultsToCustomerObject(for: siteID, with: readOnlySearchResults, onCompletion: { _ in })
+    }
+
+    func upsertCustomers(readOnlyCustomers: [Networking.Customer], onCompletion: @escaping () -> Void) {
         // Logic for inserting or updating in Storage will go here.
         for eachCustomer in readOnlyCustomers {
             print("Upserting customer ID: \(eachCustomer.customerID) in Storage. Name: \(eachCustomer.firstName ?? "Name not found")")
-            print("Step 3 - Upsert to Storage: Success!")
         }
         onCompletion()
+        print("Step 4 - Process completed")
     }
 }

@@ -26,4 +26,17 @@ public enum CustomerAction: Action {
         siteID: Int64,
         customerID: Int64,
         onCompletion: (Result<Customer, Error>) -> Void)
+
+    /// Inserts or updates CustomerSearchResults in Storage
+    case upsertSearchResults(
+        siteID: Int64,
+        readOnlySearchResults: [WCAnalyticsCustomer],
+        onCompletion: () -> Void
+    )
+
+    /// Inserts or updates Customers in Storage
+    case upsertCustomers(
+        readOnlyCustomers: [Customer],
+        onCompletion: () -> Void
+    )
 }

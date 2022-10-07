@@ -49,6 +49,10 @@ public final class CustomerStore: Store {
             searchCustomers(for: siteID, keyword: keyword, onCompletion: onCompletion)
         case .retrieveCustomer(siteID: let siteID, customerID: let customerID, onCompletion: let onCompletion):
             retrieveCustomer(for: siteID, with: customerID, onCompletion: onCompletion)
+        case .upsertSearchResults(siteID: let siteID, readOnlySearchResults: let readOnlySearchResults, onCompletion: let onCompletion):
+            upsertSearchResults(siteID: siteID, readOnlySearchResults: readOnlySearchResults, onCompletion: onCompletion)
+        case .upsertCustomers(readOnlyCustomers: let readOnlyCustomers, onCompletion: let onCompletion):
+            upsertCustomers(readOnlyCustomers: readOnlyCustomers, onCompletion: onCompletion)
         }
     }
 

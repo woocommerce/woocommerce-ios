@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+10.8
+-----
+
+
 10.7
 -----
 - [*] Universal Links: Users can now open universal links in the app. [https://github.com/woocommerce/woocommerce-ios/pull/7632]

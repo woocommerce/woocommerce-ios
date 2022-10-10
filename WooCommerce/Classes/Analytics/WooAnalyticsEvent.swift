@@ -1620,8 +1620,14 @@ extension WooAnalyticsEvent {
 
         /// Event when a widget is tapped and opens the app.
         ///
-        static func widgetTapped(name: Name) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .widgetTapped, properties: [Key.name.rawValue: name.rawValue])
+        static func widgetTapped(name: Name, family: String? = nil) -> WooAnalyticsEvent {
+            let properties: [String: WooAnalyticsEventPropertyType]
+            if let family {
+                properties = [Key.name.rawValue: "\(name.rawValue)-\(family)"]
+            } else {
+                properties = [Key.name.rawValue: name.rawValue]
+            }
+            return WooAnalyticsEvent(statName: .widgetTapped, properties: properties)
         }
     }
 }

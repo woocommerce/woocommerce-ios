@@ -442,11 +442,13 @@ platform :ios do
 
     appstore_code_signing
 
-    gym(scheme: 'WooCommerce', workspace: './WooCommerce.xcworkspace',
-        clean: true, export_team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
-        export_options: {
-          method: 'app-store'
-        })
+    gym(
+      scheme: 'WooCommerce',
+      workspace: './WooCommerce.xcworkspace',
+      clean: true,
+      export_team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
+      export_options: { method: 'app-store' }
+    )
 
     testflight(
       skip_waiting_for_build_processing: true,

@@ -69,14 +69,8 @@ public final class CustomerStore: Store {
                 guard let self else { return }
                 switch result {
                 case .success(let customers):
-                    print("1 - SearchCustomer: Search for keyword: \(keyword)")
-                    self.upsertSearchCustomerResults(siteID: siteID, readOnlySearchResults: customers) {
-                        // We'll be saving the search results to Core Data. Not implemented yet.
-                        print("3 - SearchCustomer: Upsert SearchCustomer done")
-                    }
-                    Task {
-                        try await self.mapSearchResultsToCustomerObjects(for: siteID, with: customers)
-                    }
+                    print("1 - Successfully got [WCAnalyticsCustomer] array")
+                    self.mapSearchResultsToCustomerObject(for: siteID, with: customers)
                 case .failure(let error):
                     onCompletion(.failure(error))
                 }
@@ -99,60 +93,50 @@ public final class CustomerStore: Store {
                 guard let self else { return }
                 switch result {
                 case .success(let customer):
-                    self.upsertCustomer(siteID: siteID, readOnlyCustomer: customer) {
-                        print("6 - Customer: Upsert Customer done")
-                        onCompletion(.success(customer))
-                    }
+                    print("3 - Mapping -> Got the Customer: \(customer.customerID)")
+                    self.upsertCustomer(siteID: siteID, readOnlyCustomer: customer, onCompletion: {})
+                    onCompletion(.success(customer))
                 case .failure(let error):
                     onCompletion(.failure(error))
                 }
             }
         }
 
-    /// Helper that acts as intermediate step between our mapping CustomerSearchResults to Customer Objects,
-    /// we can use async await and map these concurrently
-    private func retrieveCustomerTaskAsyncHelper(for siteID: Int64, with customerID: Int64) async throws -> Result<Customer, Error> {
-        try await withCheckedThrowingContinuation { continuation in
-            retrieveCustomer(for: siteID, with: customerID) { customer in
-                continuation.resume(returning: customer)
-                print("X - Customer: Async retrieve customer \(customerID)")
-            }
-        }
-    }
-
     /// Maps CustomerSearchResult to Customer objects
     ///
     /// - Parameters:
     ///   - siteID: The site for which customers should be fetched.
     ///   - searchResults: A WCAnalyticsCustomer collection that represents the matches we've got from the API based in our keyword search
-    ///   - onCompletion: Invoked when the operation finishes, returns a Customer object, which we'll be upserting into Core Data, or an Error.
     ///
-    private func mapSearchResultsToCustomerObjects(for siteID: Int64,
-                                                  with searchResults: [WCAnalyticsCustomer]) async throws {
+    private func mapSearchResultsToCustomerObject(for siteID: Int64,
+                                          with searchResults: [WCAnalyticsCustomer]) {
+        let group = DispatchGroup()
+        print("2 - For each WCAnalyticsCustomer in [WCAnalyticsCustomer]...")
         for result in searchResults {
-            // TODO: TaskGroup
-            print("4 - Mapping: SearchResult to Customer \(result.userID)")
-            let _ = try await retrieveCustomerTaskAsyncHelper(for: siteID, with: result.userID)
+            group.enter()
+            self.retrieveCustomer(for: siteID, with: result.userID, onCompletion: { result in
+                print("Working with: \(String(describing: try? result.get()))")
+                group.leave()
+            })
+        }
+        group.notify(queue: .main) {
             self.upsertSearchCustomerResults(siteID: siteID, readOnlySearchResults: searchResults, onCompletion: {})
+            print("Mapping done!")
         }
     }
 
     /// Inserts or updates CustomerSearchResults in Storage
     ///
     private func upsertSearchCustomerResults(siteID: Int64, readOnlySearchResults: [Networking.WCAnalyticsCustomer], onCompletion: @escaping () -> Void) {
-
         for searchResult in readOnlySearchResults {
             // Logic for inserting or updating in Storage will go here.
-            print("2 - SearchCustomer: Saving SearchCustomerResults for UserID: \(searchResult.userID). Name: \(searchResult.name ?? "Not found")")
+            print("5 - Saving SearchResults: \(searchResult.userID) in Storage. Name: \(searchResult.name ?? "Name not found")")
         }
-        onCompletion()
     }
-
     /// Inserts or updates Customers in Storage
     ///
     private func upsertCustomer(siteID: Int64, readOnlyCustomer: Networking.Customer, onCompletion: @escaping () -> Void) {
-            // Logic for inserting or updating in Storage will go here.
-            print("5 - Customer: Saving Customer for UserID: \(readOnlyCustomer.customerID). Name: \(readOnlyCustomer.firstName ?? "Not found")")
-        onCompletion()
+        // Logic for inserting or updating in Storage will go here.
+        print("4 - Saving Customer: \(readOnlyCustomer.customerID) in Storage. Name: \(readOnlyCustomer.firstName ?? "Name not found")")
     }
 }

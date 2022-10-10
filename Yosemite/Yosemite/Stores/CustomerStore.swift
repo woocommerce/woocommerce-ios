@@ -49,10 +49,6 @@ public final class CustomerStore: Store {
             searchCustomers(for: siteID, keyword: keyword, onCompletion: onCompletion)
         case .retrieveCustomer(siteID: let siteID, customerID: let customerID, onCompletion: let onCompletion):
             retrieveCustomer(for: siteID, with: customerID, onCompletion: onCompletion)
-        case .upsertSearchResults(siteID: let siteID, readOnlySearchResults: let readOnlySearchResults, onCompletion: let onCompletion):
-            upsertSearchResults(siteID: siteID, readOnlySearchResults: readOnlySearchResults, onCompletion: onCompletion)
-        case .upsertCustomer(siteID: let siteID, readOnlyCustomer: let readOnlyCustomer, onCompletion: let onCompletion):
-            upsertCustomer(siteID: siteID, readOnlyCustomer: readOnlyCustomer, onCompletion: onCompletion)
         case .mapSearchResultsToCustomerObject(siteID: let siteID, searchResults: let searchResults, onCompletion: let onCompletion):
             mapSearchResultsToCustomerObject(for: siteID, with: searchResults, onCompletion: onCompletion)
         }
@@ -138,7 +134,7 @@ public final class CustomerStore: Store {
 
     /// Inserts or updates CustomerSearchResults in Storage
     ///
-    func upsertSearchResults(siteID: Int64, readOnlySearchResults: [Networking.WCAnalyticsCustomer], onCompletion: @escaping () -> Void) {
+    private func upsertSearchResults(siteID: Int64, readOnlySearchResults: [Networking.WCAnalyticsCustomer], onCompletion: @escaping () -> Void) {
 
         for searchResult in readOnlySearchResults {
             // Logic for inserting or updating in Storage will go here.
@@ -149,7 +145,7 @@ public final class CustomerStore: Store {
 
     /// Inserts or updates Customers in Storage
     ///
-    func upsertCustomer(siteID: Int64, readOnlyCustomer: Networking.Customer, onCompletion: @escaping () -> Void) {
+    private func upsertCustomer(siteID: Int64, readOnlyCustomer: Networking.Customer, onCompletion: @escaping () -> Void) {
             // Logic for inserting or updating in Storage will go here.
             print("6 - Saving Customer: \(readOnlyCustomer.customerID) in Storage. Name: \(readOnlyCustomer.firstName ?? "Name not found")")
         onCompletion()

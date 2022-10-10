@@ -107,7 +107,7 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
             siteID: siteID,
             keyword: "hello") { result in
                 switch result {
-                case .success():
+                case .success(_):
                     print("Success!")
                 case .failure(let error):
                     print(error)

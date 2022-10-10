@@ -25,6 +25,5 @@ public enum CustomerAction: Action {
     case retrieveCustomer(
         siteID: Int64,
         customerID: Int64,
-        onCompletion: (Result<Customer, Error>) -> Void
-    )
+        onCompletion: (Result<Customer, Error>) -> Void)
 }

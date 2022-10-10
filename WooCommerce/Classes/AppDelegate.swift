@@ -383,6 +383,8 @@ private extension AppDelegate {
         switch userActivity.activityType {
         case WooConstants.storeInfoWidgetKind:
             ServiceLocator.analytics.track(event: .Widgets.widgetTapped(name: .todayStats))
+        case WooConstants.appLinkWidgetKind:
+            ServiceLocator.analytics.track(event: .Widgets.widgetTapped(name: .appLink))
         default:
             break
         }

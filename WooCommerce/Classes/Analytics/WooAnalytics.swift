@@ -228,6 +228,8 @@ private extension WooAnalytics {
             switch widgetInfo.kind {
             case WooConstants.storeInfoWidgetKind:
                 return WooAnalyticsEvent.Widgets.Name.todayStats.rawValue
+            case WooConstants.appLinkWidgetKind:
+                return WooAnalyticsEvent.Widgets.Name.appLink.rawValue
             default:
                 DDLogWarn("⚠️ Make sure the widget: \(widgetInfo.kind), has the correct tracks name.")
                 return widgetInfo.kind

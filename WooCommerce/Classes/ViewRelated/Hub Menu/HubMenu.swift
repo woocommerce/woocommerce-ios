@@ -113,7 +113,7 @@ struct HubMenu: View {
             NavigationLink(destination: CouponListView(siteID: viewModel.siteID), isActive: $showingCoupons) {
                 EmptyView()
             }.hidden()
-            NavigationLink(destination: UpgradesView(), isActive: $showingUpgrade) {
+            NavigationLink(destination: UpgradesView(siteID: viewModel.siteID), isActive: $showingUpgrade) {
                 EmptyView()
             }.hidden()
             LazyNavigationLink(destination: viewModel.getReviewDetailDestination(), isActive: $viewModel.showingReviewDetail) {

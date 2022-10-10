@@ -88,6 +88,10 @@ final class ServiceLocator {
     ///
     private static var _generalAppSettings: GeneralAppSettingsStorage = GeneralAppSettingsStorage()
 
+    /// In-app Purchase support
+    ///
+    private static var _inAppPurchaseService: InAppPurchaseService = InAppPurchaseService()
+
     // MARK: - Getters
 
     /// Provides the access point to the analytics.
@@ -217,6 +221,12 @@ final class ServiceLocator {
     /// - Returns: An instance of GeneralAppSetingsStorage
     static var generalAppSettings: GeneralAppSettingsStorage {
         _generalAppSettings
+    }
+
+    /// Provides access point to InAppPurchaseService
+    /// - Returns: An instance of InAppPurchaseService
+    static var inAppPurchaseService: InAppPurchaseService {
+        _inAppPurchaseService
     }
 }
 
@@ -360,6 +370,14 @@ extension ServiceLocator {
         }
 
         _productImageUploader = mock
+    }
+
+    static func setInAppPurchaseService(_ mock: InAppPurchaseService) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _inAppPurchaseService = mock
     }
 }
 

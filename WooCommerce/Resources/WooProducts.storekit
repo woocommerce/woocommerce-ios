@@ -24,32 +24,7 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "49.99",
-          "familyShareable" : false,
-          "groupNumber" : 1,
-          "internalID" : "24ED08B5",
-          "introductoryOffer" : null,
-          "localizations" : [
-            {
-              "description" : "1 Year of Hosted Woo",
-              "displayName" : "Test HostedWoo — Yearly",
-              "locale" : "en_US"
-            }
-          ],
-          "productID" : "com.woocommerce.test.hosted_1_yearly",
-          "recurringSubscriptionPeriod" : "P1Y",
-          "referenceName" : "Test HostedWoo — Yearly",
-          "subscriptionGroupID" : "00631319",
-          "type" : "RecurringSubscription"
-        },
-        {
-          "adHocOffers" : [
-
-          ],
-          "codeOffers" : [
-
-          ],
-          "displayPrice" : "4.99",
+          "displayPrice" : "24.99",
           "familyShareable" : false,
           "groupNumber" : 1,
           "internalID" : "145D04E0",
@@ -61,7 +36,7 @@
               "locale" : "en_US"
             }
           ],
-          "productID" : "com.woocommerce.test.hosted_1_monthly",
+          "productID" : "woocommerce_entry_monthly",
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Test HostedWoo — Monthly",
           "subscriptionGroupID" : "00631319",

@@ -27,11 +27,4 @@ public enum CustomerAction: Action {
         customerID: Int64,
         onCompletion: (Result<Customer, Error>) -> Void
     )
-
-    /// Maps CustomerSearchResult to Customer objects
-    case mapSearchResultsToCustomerObject(
-        siteID: Int64,
-        searchResults: [WCAnalyticsCustomer],
-        onCompletion: (Result<Customer, Error>) -> Void
-    )
 }

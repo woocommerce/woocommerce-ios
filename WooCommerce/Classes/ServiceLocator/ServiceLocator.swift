@@ -90,7 +90,11 @@ final class ServiceLocator {
 
     /// In-app Purchase support
     ///
-    private static var _inAppPurchaseService: InAppPurchaseService = InAppPurchaseService()
+    private static var _inAppPurchaseService: InAppPurchaseService = {
+        let inAppPurchaseService = InAppPurchaseService()
+        inAppPurchaseService.listenForTransactions()
+        return inAppPurchaseService
+    }()
 
     // MARK: - Getters
 

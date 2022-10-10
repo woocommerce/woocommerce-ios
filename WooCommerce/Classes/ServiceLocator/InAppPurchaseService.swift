@@ -1,10 +1,16 @@
 import Foundation
 import StoreKit
 
-struct InAppPurchaseService {
+final class InAppPurchaseService {
+    private var listenTask: Task<Void, Error>?
+
     private let identifiers = [
         "woocommerce_entry_monthly"
     ]
+
+    deinit {
+        listenTask?.cancel()
+    }
 
     func fetchWordPressPlanProducts() async throws -> [StoreKit.Product] {
         // TODO: get identifiers from backend
@@ -36,10 +42,12 @@ struct InAppPurchaseService {
         }
     }
 
-    func listenForTransactions() -> Task<Void, Error> {
-        Task.detached {
+    func listenForTransactions() {
+        assert(listenTask == nil, "InAppPurchaseService.listenForTransactions() called while already listening for transactions")
+
+        listenTask = Task.detached { [weak self] in
             for await result in Transaction.updates {
-                await handleCompletedTransaction(result)
+                await self?.handleCompletedTransaction(result)
             }
         }
     }

@@ -39,6 +39,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .wpcomSignup:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .inAppPurchases:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

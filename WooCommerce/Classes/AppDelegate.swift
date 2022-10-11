@@ -3,6 +3,7 @@ import CoreData
 import Storage
 import class Networking.UserAgent
 import Experiments
+import class WidgetKit.WidgetCenter
 
 import CocoaLumberjack
 import KeychainAccess
@@ -382,7 +383,10 @@ private extension AppDelegate {
     func trackWidgetTappedIfNeeded(userActivity: NSUserActivity) {
         switch userActivity.activityType {
         case WooConstants.storeInfoWidgetKind:
-            ServiceLocator.analytics.track(event: .Widgets.widgetTapped(name: .todayStats))
+            let widgetFamily = userActivity.userInfo?[WidgetCenter.UserInfoKey.family] as? String
+            ServiceLocator.analytics.track(event: .Widgets.widgetTapped(name: .todayStats, family: widgetFamily))
+        case WooConstants.appLinkWidgetKind:
+            ServiceLocator.analytics.track(event: .Widgets.widgetTapped(name: .appLink))
         default:
             break
         }

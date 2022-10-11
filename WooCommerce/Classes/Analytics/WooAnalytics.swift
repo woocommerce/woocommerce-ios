@@ -227,7 +227,9 @@ private extension WooAnalytics {
         let widgetAnalyticNames: [String] = installedWidgets.map { widgetInfo in
             switch widgetInfo.kind {
             case WooConstants.storeInfoWidgetKind:
-                return WooAnalyticsEvent.Widgets.Name.todayStats.rawValue
+                return "\(WooAnalyticsEvent.Widgets.Name.todayStats.rawValue)-\(widgetInfo.family)"
+            case WooConstants.appLinkWidgetKind:
+                return WooAnalyticsEvent.Widgets.Name.appLink.rawValue
             default:
                 DDLogWarn("⚠️ Make sure the widget: \(widgetInfo.kind), has the correct tracks name.")
                 return widgetInfo.kind

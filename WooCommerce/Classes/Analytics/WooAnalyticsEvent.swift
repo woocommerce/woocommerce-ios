@@ -1614,7 +1614,7 @@ extension WooAnalyticsEvent {
         }
 
         enum Name: String {
-            case todayStats = "today-stats"
+            case todayStats = "stats-today"
             case appLink = "app-link"
         }
 

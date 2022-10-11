@@ -2,7 +2,7 @@
 
 10.8
 -----
-
+- [***] Stats: Now you can add a Today's Stats Widget to your lock screen (iOS 16 only) to monitor your sales. [https://github.com/woocommerce/woocommerce-ios/pull/7839]
 
 10.7
 -----

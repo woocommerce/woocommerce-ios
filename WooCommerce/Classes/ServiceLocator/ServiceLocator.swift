@@ -66,7 +66,9 @@ final class ServiceLocator {
 
     /// Crash Logging Stack
     ///
-    private static var _crashLogging: CrashLoggingStack = WooCrashLoggingStack()
+    private static var _crashLogging: CrashLoggingStack = WooCrashLoggingStack(
+        featureFlagService: featureFlagService
+    )
 
     /// Support for external Card Readers
     ///

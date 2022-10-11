@@ -134,6 +134,26 @@ class WCCrashLoggingDataProvider: CrashLoggingDataProvider {
             ServiceLocator.crashLogging.setNeedsDataRefresh()
         }
     }
+
+    // MARK: – Performance Monitoring
+
+    var performanceTracking: PerformanceTracking {
+        guard featureFlagService.isFeatureFlagEnabled(.performanceMonitoring) else {
+            return .disabled
+        }
+
+        return .enabled(
+            .init(
+                // FIXME: Is there a way to control this via feature flags?
+                sampler: { 0.1 },
+                trackCoreData: featureFlagService.isFeatureFlagEnabled(.performanceMonitoringCoreData),
+                trackFileIO: featureFlagService.isFeatureFlagEnabled(.performanceMonitoringFileIO),
+                trackNetwork: featureFlagService.isFeatureFlagEnabled(.performanceMonitoringNetworking),
+                trackUserInteraction: featureFlagService.isFeatureFlagEnabled(.performanceMonitoringUserInteraction),
+                trackViewControllers: featureFlagService.isFeatureFlagEnabled(.performanceMonitoringViewController)
+            )
+        )
+    }
 }
 
 struct CrashLoggingSettings {

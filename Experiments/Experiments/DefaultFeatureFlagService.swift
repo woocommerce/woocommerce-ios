@@ -35,8 +35,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .orderCreationSearchCustomers:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .lockscreenWidgets:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .wpcomSignup:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:

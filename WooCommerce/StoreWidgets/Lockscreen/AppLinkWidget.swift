@@ -1,6 +1,5 @@
 import WidgetKit
 import SwiftUI
-import Experiments
 
 /// Static widget - app launch button
 ///

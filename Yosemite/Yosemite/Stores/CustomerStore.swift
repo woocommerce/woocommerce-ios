@@ -70,7 +70,7 @@ public final class CustomerStore: Store {
                 switch result {
                 case .success(let customers):
                     print("1 - Successfully got [WCAnalyticsCustomer] array")
-                    self.mapSearchResultsToCustomerObject(for: siteID, with: customers)
+                    self.mapSearchResultsToCustomerObject(for: siteID, with: customers, onCompletion: onCompletion)
                 case .failure(let error):
                     onCompletion(.failure(error))
                 }
@@ -109,7 +109,8 @@ public final class CustomerStore: Store {
     ///   - searchResults: A WCAnalyticsCustomer collection that represents the matches we've got from the API based in our keyword search
     ///
     private func mapSearchResultsToCustomerObject(for siteID: Int64,
-                                          with searchResults: [WCAnalyticsCustomer]) {
+                                          with searchResults: [WCAnalyticsCustomer],
+                                                  onCompletion: @escaping (Result<Void, Error>) -> Void) {
         let group = DispatchGroup()
         print("2 - For each WCAnalyticsCustomer in [WCAnalyticsCustomer]...")
         for result in searchResults {
@@ -122,6 +123,7 @@ public final class CustomerStore: Store {
         group.notify(queue: .main) {
             self.upsertSearchCustomerResults(siteID: siteID, readOnlySearchResults: searchResults, onCompletion: {})
             print("Mapping done!")
+            onCompletion(.success(()))
         }
     }
 

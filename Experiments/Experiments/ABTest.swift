@@ -24,6 +24,20 @@ public enum ABTest: String, CaseIterable {
     public var variation: Variation {
         ExPlat.shared?.experiment(rawValue) ?? .control
     }
+
+    /// Returns the context for the given experiment.
+    ///
+    /// When adding a new experiment, add it to the appropriate case depending on its context (logged-in or logged-out experience).
+    public var context: ExperimentContext {
+        switch self {
+        case .aaTest202209:
+            return .loggedIn
+        case .aaTestLoggedOut202209, .loginPrologueButtonOrder:
+            return .loggedOut
+        case .null:
+            return .none
+        }
+    }
 }
 
 public extension ABTest {
@@ -55,4 +69,10 @@ public extension Variation {
             return string.map { "treatment: \($0)" } ?? "treatment"
         }
     }
+}
+
+public enum ExperimentContext: Equatable {
+    case loggedOut
+    case loggedIn
+    case none // For the `null` experiment case
 }

@@ -52,22 +52,24 @@ public final class CustomerStore: Store {
         }
     }
 
-    /// Attempts to search Customers that match the given keyword, for a specific siteID
-    /// Returns Void upon success, or an Error
+    /// Attempts to search Customers that match the given keyword, for a specific siteID.
+    /// Returns [Customer] upon success, or an Error.
+    /// Search results are persisted in local storage.
     ///
     /// - Parameters:
-    ///   - siteID: The site for which customers should be fetched.
-    ///   - keyword: Keyword to perform the search for WCAnalyticsCustomer to be fetched.
+    ///   - siteID: The site for which the array of Customers should be fetched.
+    ///   - keyword: Keyword that we pass to the `?query={keyword}` endpoint to perform the search
     ///   - onCompletion: Invoked when the operation finishes.
     ///
     func searchCustomers(
         for siteID: Int64,
         keyword: String,
-        onCompletion: @escaping (Result<Void, Error>) -> Void) {
-            searchRemote.searchCustomers(for: siteID, name: keyword) { result in
+        onCompletion: @escaping (Result<[Customer], Error>) -> Void) {
+            searchRemote.searchCustomers(for: siteID, name: keyword) { [weak self] result in
+                guard let self else { return }
                 switch result {
-                case .success(_):
-                    onCompletion(.success(()))
+                case .success(let customers):
+                    self.mapSearchResultsToCustomerObjects(for: siteID, with: customers, onCompletion: onCompletion)
                 case .failure(let error):
                     onCompletion(.failure(error))
                 }
@@ -75,23 +77,69 @@ public final class CustomerStore: Store {
         }
 
     /// Attempts to retrieve a single Customer from a site, returning the Customer object upon success, or an Error.
+    /// The fetched Customer is persisted to the local storage.
     ///
     /// - Parameters:
     ///   - siteID: The site for which customers should be fetched.
     ///   - customerID: ID of the Customer to be fetched.
-    ///   - onCompletion: Invoked when the operation finishes.
+    ///   - onCompletion: Invoked when the operation finishes. Will upsert the Customer to Storage, or return an Error.
     ///
     func retrieveCustomer(
         for siteID: Int64,
         with customerID: Int64,
         onCompletion: @escaping (Result<Customer, Error>) -> Void) {
-            customerRemote.retrieveCustomer(for: siteID, with: customerID) { result in
+            customerRemote.retrieveCustomer(for: siteID, with: customerID) { [weak self] result in
+                guard let self else { return }
                 switch result {
+                case .success(let customer):
+                    self.upsertCustomer(siteID: siteID, readOnlyCustomer: customer, onCompletion: {})
+                    onCompletion(.success(customer))
                 case .failure(let error):
                     onCompletion(.failure(error))
-                case .success(let customer):
-                    onCompletion(.success(customer))
                 }
             }
         }
+
+    /// Maps CustomerSearchResult to Customer objects
+    ///
+    /// - Parameters:
+    ///   - siteID: The site for which customers should be fetched.
+    ///   - searchResults: A WCAnalyticsCustomer collection that represents the matches we've got from the API based in our keyword search.
+    ///   - onCompletion: Invoked when the operation finishes. Will map the result to a `[Customer]` entity.
+    ///
+    private func mapSearchResultsToCustomerObjects(for siteID: Int64,
+                                          with searchResults: [WCAnalyticsCustomer],
+                                                  onCompletion: @escaping (Result<[Customer], Error>) -> Void) {
+        var results = [Customer]()
+        let group = DispatchGroup()
+        for result in searchResults {
+            group.enter()
+            self.retrieveCustomer(for: siteID, with: result.userID, onCompletion: { result in
+                if let customer = try? result.get() {
+                    results.append(customer)
+                }
+                group.leave()
+            })
+        }
+
+        group.notify(queue: .main) {
+            self.upsertSearchCustomerResults(siteID: siteID, readOnlySearchResults: searchResults, onCompletion: {})
+            onCompletion(.success(results))
+        }
+    }
+
+    /// Inserts or updates CustomerSearchResults in Storage
+    ///
+    private func upsertSearchCustomerResults(siteID: Int64, readOnlySearchResults: [Networking.WCAnalyticsCustomer], onCompletion: @escaping () -> Void) {
+        for _ in readOnlySearchResults {
+            // Logic for inserting or updating in Storage will go here. Not implemented yet.
+            // https://github.com/woocommerce/woocommerce-ios/issues/7741
+        }
+    }
+    /// Inserts or updates Customers in Storage
+    ///
+    private func upsertCustomer(siteID: Int64, readOnlyCustomer: Networking.Customer, onCompletion: @escaping () -> Void) {
+        // Logic for inserting or updating in Storage will go here. Not implemented yet.
+        // https://github.com/woocommerce/woocommerce-ios/issues/7741
+    }
 }

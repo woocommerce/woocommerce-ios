@@ -8,12 +8,12 @@ public enum CustomerAction: Action {
     ///- `siteID`: The site for which we will perform the search.
     ///- `keyword`: Keyword to perform the search. Only searches by name.
     ///- `onCompletion`: Invoked when the operation finishes.
-    ///     - `result.success()`:  On success, the Customers found will be loaded in Core Data.
+    ///     - `result.success([Customer])`:  On success, the Customers found will be loaded in Core Data.
     ///     - `result.failure(Error)`: Error fetching data
     case searchCustomers(
         siteID: Int64,
         keyword: String,
-        onCompletion: (Result<Void, Error>) -> Void)
+        onCompletion: (Result<[Customer], Error>) -> Void)
 
     /// Retrieves a single Customer from a site
     ///

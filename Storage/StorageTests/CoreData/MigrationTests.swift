@@ -1357,6 +1357,31 @@ final class MigrationTests: XCTestCase {
 
         XCTAssertEqual(try targetContext.count(entityName: "CustomerSearchResult"), 1)
         XCTAssertEqual(migratedCustomer.value(forKey: "customerID") as? Int64, 1)
+        XCTAssertEqual(migratedCustomer.value(forKey: "email") as? String, "")
+        XCTAssertEqual(migratedCustomer.value(forKey: "firstName") as? String, "")
+        XCTAssertEqual(migratedCustomer.value(forKey: "lastName") as? String, "")
+        XCTAssertEqual(migratedCustomer.value(forKey: "billingAddress1") as? String, "")
+        XCTAssertEqual(migratedCustomer.value(forKey: "billingAddress2") as? String, "")
+        XCTAssertEqual(migratedCustomer.value(forKey: "billingCity") as? String, "")
+        XCTAssertEqual(migratedCustomer.value(forKey: "billingCompany") as? String, "")
+        XCTAssertEqual(migratedCustomer.value(forKey: "billingCountry") as? String, "")
+        XCTAssertEqual(migratedCustomer.value(forKey: "billingEmail") as? String, "")
+        XCTAssertEqual(migratedCustomer.value(forKey: "billingFirstName") as? String, "")
+        XCTAssertEqual(migratedCustomer.value(forKey: "billingLastName") as? String, "")
+        XCTAssertEqual(migratedCustomer.value(forKey: "billingPhone") as? String, "")
+        XCTAssertEqual(migratedCustomer.value(forKey: "billingPostcode") as? String, "")
+        XCTAssertEqual(migratedCustomer.value(forKey: "billingState") as? String, "")
+        XCTAssertEqual(migratedCustomer.value(forKey: "shippingAddress1") as? String, "")
+        XCTAssertEqual(migratedCustomer.value(forKey: "shippingAddress2") as? String, "")
+        XCTAssertEqual(migratedCustomer.value(forKey: "shippingCity") as? String, "")
+        XCTAssertEqual(migratedCustomer.value(forKey: "shippingCompany") as? String, "")
+        XCTAssertEqual(migratedCustomer.value(forKey: "shippingCountry") as? String, "")
+        XCTAssertEqual(migratedCustomer.value(forKey: "shippingEmail") as? String, "")
+        XCTAssertEqual(migratedCustomer.value(forKey: "shippingFirstName") as? String, "")
+        XCTAssertEqual(migratedCustomer.value(forKey: "shippingLastName") as? String, "")
+        XCTAssertEqual(migratedCustomer.value(forKey: "shippingPhone") as? String, "")
+        XCTAssertEqual(migratedCustomer.value(forKey: "shippingPostcode") as? String, "")
+        XCTAssertEqual(migratedCustomer.value(forKey: "shippingState") as? String, "")
     }
 }
 
@@ -1446,7 +1471,32 @@ private extension MigrationTests {
     @discardableResult
     func insertCustomer(to context: NSManagedObjectContext) -> NSManagedObject {
         context.insert(entityName: "Customer", properties: [
-            "customerID": 1
+            "customerID": 1,
+            "email": "",
+            "firstName": "",
+            "lastName": "",
+            "billingAddress1": "",
+            "billingAddress2": "",
+            "billingCity": "",
+            "billingCompany": "",
+            "billingCountry": "",
+            "billingEmail": "",
+            "billingFirstName": "",
+            "billingLastName": "",
+            "billingPhone": "",
+            "billingPostcode": "",
+            "billingState": "",
+            "shippingAddress1": "",
+            "shippingAddress2": "",
+            "shippingCity": "",
+            "shippingCompany": "",
+            "shippingCountry": "",
+            "shippingEmail": "",
+            "shippingFirstName": "",
+            "shippingLastName": "",
+            "shippingPhone": "",
+            "shippingPostcode": "",
+            "shippingState": ""
         ])
     }
 

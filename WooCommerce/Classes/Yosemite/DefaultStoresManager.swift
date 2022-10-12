@@ -6,6 +6,7 @@ import class Networking.UserAgent
 import class Networking.WordPressOrgNetwork
 import KeychainAccess
 import class WidgetKit.WidgetCenter
+import Experiments
 
 // MARK: - DefaultStoresManager
 //
@@ -176,6 +177,10 @@ class DefaultStoresManager: StoresManager {
         ServiceLocator.productImageUploader.reset()
 
         updateAndReloadWidgetInformation(with: nil)
+
+        Task { @MainActor in
+            await ABTest.start(for: .loggedOut)
+        }
 
         NotificationCenter.default.post(name: .logOutEventReceived, object: nil)
 

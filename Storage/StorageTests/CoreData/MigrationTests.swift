@@ -1322,6 +1322,42 @@ final class MigrationTests: XCTestCase {
         // Check `filterKey` is correctly set.
         XCTAssertEqual(migratedProductSearchResults.value(forKey: "filterKey") as? String, "sku")
     }
+
+    func test_migrating_from_73_to_74_adds_Customer_and_CustomerSearchResult_entities() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 73")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. These entities should not exist in Model 73
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "Customer", in: sourceContext))
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "CustomerSearchResult", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 74")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+
+        // This entity should exist in Model 74
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "Customer", in: targetContext))
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "CustomerSearchResult", in: targetContext))
+        XCTAssertEqual(try targetContext.count(entityName: "Customer"), 0)
+        XCTAssertEqual(try targetContext.count(entityName: "CustomerSearchResult"), 0)
+
+        // Insert a new Customer
+        let migratedCustomer = insertCustomer(to: targetContext)
+
+        XCTAssertEqual(try targetContext.count(entityName: "Customer"), 1)
+        XCTAssertEqual(migratedCustomer.value(forKey: "customerID") as? Int64, 1)
+
+        // Insert a new CustomerSearchResult
+        let migratedCustomerSearchResult = insertCustomerSearchResult(to: targetContext)
+
+        XCTAssertEqual(try targetContext.count(entityName: "CustomerSearchResult"), 1)
+        XCTAssertEqual(migratedCustomer.value(forKey: "customerID") as? Int64, 1)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -1406,6 +1442,22 @@ private extension MigrationTests {
 //
 
 private extension MigrationTests {
+    /// Inserts a `Customer` entity, providing default values for the required properties.
+    @discardableResult
+    func insertCustomer(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "Customer", properties: [
+            "customerID": 1
+        ])
+    }
+
+    /// Inserts a `CustomerSearchResult` entity, providing default values for the required properties.
+    @discardableResult
+    func insertCustomerSearchResult(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "CustomerSearchResult", properties: [
+            "customerID": 1
+        ])
+    }
+
     /// Inserts a `ProductVariation` entity, providing default values for the required properties.
     @discardableResult
     func insertProductVariation(to context: NSManagedObjectContext) -> NSManagedObject {

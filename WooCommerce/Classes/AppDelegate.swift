@@ -375,7 +375,8 @@ private extension AppDelegate {
     /// Starts the AB testing platform
     ///
     func startABTesting() async {
-        await ABTest.start()
+        let context: ExperimentContext = ServiceLocator.stores.isAuthenticated ? .loggedIn : .loggedOut
+        await ABTest.start(for: context)
     }
 
     /// Tracks if the application was opened via a widget tap.

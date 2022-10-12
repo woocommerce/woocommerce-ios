@@ -41,15 +41,17 @@ public enum ABTest: String, CaseIterable {
 }
 
 public extension ABTest {
-    /// Start the AB Testing platform if any experiment exists
+    /// Start the AB Testing platform if any experiment exists for the provided context
     ///
-    static func start() async {
+    static func start(for context: ExperimentContext) async {
+        let experiments = ABTest.allCases.filter { $0.context == context }
+
         await withCheckedContinuation { continuation in
-            guard ABTest.allCases.count > 1 else {
+            guard !experiments.isEmpty else {
                 return continuation.resume(returning: ())
             }
 
-            let experimentNames = ABTest.allCases.filter { $0 != .null }.map { $0.rawValue }
+            let experimentNames = experiments.map { $0.rawValue }
             ExPlat.shared?.register(experiments: experimentNames)
 
             ExPlat.shared?.refresh {

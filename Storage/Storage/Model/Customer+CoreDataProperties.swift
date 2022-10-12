@@ -34,27 +34,23 @@ extension Customer {
     @NSManaged public var shippingCountry: String?
     @NSManaged public var shippingPhone: String?
     @NSManaged public var shippingEmail: String?
-    @NSManaged public var id: NSSet?
+    @NSManaged public var searchResults: Set<CustomerSearchResult>?
 
 }
 
-// MARK: Generated accessors for id
+// MARK: Generated accessors for searchResults
 extension Customer {
 
-    @objc(addIdObject:)
-    @NSManaged public func addToId(_ value: CustomerSearchResult)
+    @objc(addSearchResultsObject:)
+    @NSManaged public func addToSearchResults(_ value: CustomerSearchResult)
 
-    @objc(removeIdObject:)
-    @NSManaged public func removeFromId(_ value: CustomerSearchResult)
+    @objc(removeSearchResultsObject:)
+    @NSManaged public func removeFromSearchResults(_ value: CustomerSearchResult)
 
-    @objc(addId:)
-    @NSManaged public func addToId(_ values: NSSet)
+    @objc(addSearchResults:)
+    @NSManaged public func addToSearchResults(_ values: NSSet)
 
-    @objc(removeId:)
-    @NSManaged public func removeFromId(_ values: NSSet)
-
-}
-
-extension Customer: Identifiable {
+    @objc(removeSearchResults:)
+    @NSManaged public func removeFromSearchResults(_ values: NSSet)
 
 }

@@ -9,27 +9,23 @@ extension CustomerSearchResult {
     }
 
     @NSManaged public var customerID: Int64
-    @NSManaged public var id: NSSet?
+    @NSManaged public var customers: Set<Customer>?
 
 }
 
-// MARK: Generated accessors for id
+// MARK: Generated accessors for customers
 extension CustomerSearchResult {
 
-    @objc(addIdObject:)
-    @NSManaged public func addToId(_ value: Customer)
+    @objc(addCustomersObject:)
+    @NSManaged public func addToCustomers(_ value: Customer)
 
-    @objc(removeIdObject:)
-    @NSManaged public func removeFromId(_ value: Customer)
+    @objc(removeCustomersObject:)
+    @NSManaged public func removeFromCustomers(_ value: Customer)
 
-    @objc(addId:)
-    @NSManaged public func addToId(_ values: NSSet)
+    @objc(addCustomers:)
+    @NSManaged public func addToCustomers(_ values: NSSet)
 
-    @objc(removeId:)
-    @NSManaged public func removeFromId(_ values: NSSet)
-
-}
-
-extension CustomerSearchResult: Identifiable {
+    @objc(removeCustomers:)
+    @NSManaged public func removeFromCustomers(_ values: NSSet)
 
 }

@@ -1340,48 +1340,48 @@ final class MigrationTests: XCTestCase {
         // Then
         let targetContext = targetContainer.viewContext
 
-        // This entity should exist in Model 74
+        // These entities should exist in Model 74
         XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "Customer", in: targetContext))
         XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "CustomerSearchResult", in: targetContext))
         XCTAssertEqual(try targetContext.count(entityName: "Customer"), 0)
         XCTAssertEqual(try targetContext.count(entityName: "CustomerSearchResult"), 0)
 
         // Insert a new Customer
-        let migratedCustomer = insertCustomer(to: targetContext)
+        let customer = insertCustomer(to: targetContext)
 
         XCTAssertEqual(try targetContext.count(entityName: "Customer"), 1)
-        XCTAssertEqual(migratedCustomer.value(forKey: "customerID") as? Int64, 1)
+        XCTAssertEqual(customer.value(forKey: "customerID") as? Int64, 1)
 
         // Insert a new CustomerSearchResult
-        let migratedCustomerSearchResult = insertCustomerSearchResult(to: targetContext)
+        let customerSearchResult = insertCustomerSearchResult(to: targetContext)
 
         XCTAssertEqual(try targetContext.count(entityName: "CustomerSearchResult"), 1)
-        XCTAssertEqual(migratedCustomer.value(forKey: "customerID") as? Int64, 1)
-        XCTAssertEqual(migratedCustomer.value(forKey: "email") as? String, "")
-        XCTAssertEqual(migratedCustomer.value(forKey: "firstName") as? String, "")
-        XCTAssertEqual(migratedCustomer.value(forKey: "lastName") as? String, "")
-        XCTAssertEqual(migratedCustomer.value(forKey: "billingAddress1") as? String, "")
-        XCTAssertEqual(migratedCustomer.value(forKey: "billingAddress2") as? String, "")
-        XCTAssertEqual(migratedCustomer.value(forKey: "billingCity") as? String, "")
-        XCTAssertEqual(migratedCustomer.value(forKey: "billingCompany") as? String, "")
-        XCTAssertEqual(migratedCustomer.value(forKey: "billingCountry") as? String, "")
-        XCTAssertEqual(migratedCustomer.value(forKey: "billingEmail") as? String, "")
-        XCTAssertEqual(migratedCustomer.value(forKey: "billingFirstName") as? String, "")
-        XCTAssertEqual(migratedCustomer.value(forKey: "billingLastName") as? String, "")
-        XCTAssertEqual(migratedCustomer.value(forKey: "billingPhone") as? String, "")
-        XCTAssertEqual(migratedCustomer.value(forKey: "billingPostcode") as? String, "")
-        XCTAssertEqual(migratedCustomer.value(forKey: "billingState") as? String, "")
-        XCTAssertEqual(migratedCustomer.value(forKey: "shippingAddress1") as? String, "")
-        XCTAssertEqual(migratedCustomer.value(forKey: "shippingAddress2") as? String, "")
-        XCTAssertEqual(migratedCustomer.value(forKey: "shippingCity") as? String, "")
-        XCTAssertEqual(migratedCustomer.value(forKey: "shippingCompany") as? String, "")
-        XCTAssertEqual(migratedCustomer.value(forKey: "shippingCountry") as? String, "")
-        XCTAssertEqual(migratedCustomer.value(forKey: "shippingEmail") as? String, "")
-        XCTAssertEqual(migratedCustomer.value(forKey: "shippingFirstName") as? String, "")
-        XCTAssertEqual(migratedCustomer.value(forKey: "shippingLastName") as? String, "")
-        XCTAssertEqual(migratedCustomer.value(forKey: "shippingPhone") as? String, "")
-        XCTAssertEqual(migratedCustomer.value(forKey: "shippingPostcode") as? String, "")
-        XCTAssertEqual(migratedCustomer.value(forKey: "shippingState") as? String, "")
+        XCTAssertEqual(customer.value(forKey: "customerID") as? Int64, 1)
+        XCTAssertNotNil(customer.entity.attributesByName["email"])
+        XCTAssertNotNil(customer.entity.attributesByName["firstName"])
+        XCTAssertNotNil(customer.entity.attributesByName["lastName"])
+        XCTAssertNotNil(customer.entity.attributesByName["billingAddress1"])
+        XCTAssertNotNil(customer.entity.attributesByName["billingAddress2"])
+        XCTAssertNotNil(customer.entity.attributesByName["billingCity"])
+        XCTAssertNotNil(customer.entity.attributesByName["billingCompany"])
+        XCTAssertNotNil(customer.entity.attributesByName["billingCountry"])
+        XCTAssertNotNil(customer.entity.attributesByName["billingEmail"])
+        XCTAssertNotNil(customer.entity.attributesByName["billingFirstName"])
+        XCTAssertNotNil(customer.entity.attributesByName["billingLastName"])
+        XCTAssertNotNil(customer.entity.attributesByName["billingPhone"])
+        XCTAssertNotNil(customer.entity.attributesByName["billingPostcode"])
+        XCTAssertNotNil(customer.entity.attributesByName["billingState"])
+        XCTAssertNotNil(customer.entity.attributesByName["shippingAddress1"])
+        XCTAssertNotNil(customer.entity.attributesByName["shippingAddress2"])
+        XCTAssertNotNil(customer.entity.attributesByName["shippingCity"])
+        XCTAssertNotNil(customer.entity.attributesByName["shippingCompany"])
+        XCTAssertNotNil(customer.entity.attributesByName["shippingCountry"])
+        XCTAssertNotNil(customer.entity.attributesByName["shippingEmail"])
+        XCTAssertNotNil(customer.entity.attributesByName["shippingFirstName"])
+        XCTAssertNotNil(customer.entity.attributesByName["shippingLastName"])
+        XCTAssertNotNil(customer.entity.attributesByName["shippingPhone"])
+        XCTAssertNotNil(customer.entity.attributesByName["shippingPostcode"])
+        XCTAssertNotNil(customer.entity.attributesByName["shippingState"])
     }
 }
 

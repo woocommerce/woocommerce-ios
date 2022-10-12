@@ -1322,6 +1322,67 @@ final class MigrationTests: XCTestCase {
         // Check `filterKey` is correctly set.
         XCTAssertEqual(migratedProductSearchResults.value(forKey: "filterKey") as? String, "sku")
     }
+
+    func test_migrating_from_73_to_74_adds_Customer_and_CustomerSearchResult_entities() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 73")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. These entities should not exist in Model 73
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "Customer", in: sourceContext))
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "CustomerSearchResult", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 74")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+
+        // These entities should exist in Model 74
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "Customer", in: targetContext))
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "CustomerSearchResult", in: targetContext))
+        XCTAssertEqual(try targetContext.count(entityName: "Customer"), 0)
+        XCTAssertEqual(try targetContext.count(entityName: "CustomerSearchResult"), 0)
+
+        // Insert a new Customer
+        let customer = insertCustomer(to: targetContext)
+
+        XCTAssertEqual(try targetContext.count(entityName: "Customer"), 1)
+        XCTAssertEqual(customer.value(forKey: "customerID") as? Int64, 1)
+
+        // Insert a new CustomerSearchResult
+        let customerSearchResult = insertCustomerSearchResult(to: targetContext)
+
+        XCTAssertEqual(try targetContext.count(entityName: "CustomerSearchResult"), 1)
+        XCTAssertEqual(customer.value(forKey: "customerID") as? Int64, 1)
+        XCTAssertNotNil(customer.entity.attributesByName["email"])
+        XCTAssertNotNil(customer.entity.attributesByName["firstName"])
+        XCTAssertNotNil(customer.entity.attributesByName["lastName"])
+        XCTAssertNotNil(customer.entity.attributesByName["billingAddress1"])
+        XCTAssertNotNil(customer.entity.attributesByName["billingAddress2"])
+        XCTAssertNotNil(customer.entity.attributesByName["billingCity"])
+        XCTAssertNotNil(customer.entity.attributesByName["billingCompany"])
+        XCTAssertNotNil(customer.entity.attributesByName["billingCountry"])
+        XCTAssertNotNil(customer.entity.attributesByName["billingEmail"])
+        XCTAssertNotNil(customer.entity.attributesByName["billingFirstName"])
+        XCTAssertNotNil(customer.entity.attributesByName["billingLastName"])
+        XCTAssertNotNil(customer.entity.attributesByName["billingPhone"])
+        XCTAssertNotNil(customer.entity.attributesByName["billingPostcode"])
+        XCTAssertNotNil(customer.entity.attributesByName["billingState"])
+        XCTAssertNotNil(customer.entity.attributesByName["shippingAddress1"])
+        XCTAssertNotNil(customer.entity.attributesByName["shippingAddress2"])
+        XCTAssertNotNil(customer.entity.attributesByName["shippingCity"])
+        XCTAssertNotNil(customer.entity.attributesByName["shippingCompany"])
+        XCTAssertNotNil(customer.entity.attributesByName["shippingCountry"])
+        XCTAssertNotNil(customer.entity.attributesByName["shippingEmail"])
+        XCTAssertNotNil(customer.entity.attributesByName["shippingFirstName"])
+        XCTAssertNotNil(customer.entity.attributesByName["shippingLastName"])
+        XCTAssertNotNil(customer.entity.attributesByName["shippingPhone"])
+        XCTAssertNotNil(customer.entity.attributesByName["shippingPostcode"])
+        XCTAssertNotNil(customer.entity.attributesByName["shippingState"])
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -1406,6 +1467,47 @@ private extension MigrationTests {
 //
 
 private extension MigrationTests {
+    /// Inserts a `Customer` entity, providing default values for the required properties.
+    @discardableResult
+    func insertCustomer(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "Customer", properties: [
+            "customerID": 1,
+            "email": "",
+            "firstName": "",
+            "lastName": "",
+            "billingAddress1": "",
+            "billingAddress2": "",
+            "billingCity": "",
+            "billingCompany": "",
+            "billingCountry": "",
+            "billingEmail": "",
+            "billingFirstName": "",
+            "billingLastName": "",
+            "billingPhone": "",
+            "billingPostcode": "",
+            "billingState": "",
+            "shippingAddress1": "",
+            "shippingAddress2": "",
+            "shippingCity": "",
+            "shippingCompany": "",
+            "shippingCountry": "",
+            "shippingEmail": "",
+            "shippingFirstName": "",
+            "shippingLastName": "",
+            "shippingPhone": "",
+            "shippingPostcode": "",
+            "shippingState": ""
+        ])
+    }
+
+    /// Inserts a `CustomerSearchResult` entity, providing default values for the required properties.
+    @discardableResult
+    func insertCustomerSearchResult(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "CustomerSearchResult", properties: [
+            "customerID": 1
+        ])
+    }
+
     /// Inserts a `ProductVariation` entity, providing default values for the required properties.
     @discardableResult
     func insertProductVariation(to context: NSManagedObjectContext) -> NSManagedObject {

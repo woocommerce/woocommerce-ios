@@ -30,7 +30,7 @@ class CustomerStoreTests: XCTestCase {
         )
     }
 
-    func test_retrieveCustomer_returns_Customer_upon_success() throws {
+    func test_retrieveCustomer_returns_customer_upon_success() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "", filename: "customer")
 
@@ -61,6 +61,13 @@ class CustomerStoreTests: XCTestCase {
         XCTAssertEqual(customer.billing?.phone, "(555) 555-5555" )
         XCTAssertEqual(customer.shipping?.firstName, "John" )
         XCTAssertEqual(customer.shipping?.lastName, "Doe" )
+        XCTAssertEqual(customer.shipping?.company, "" )
+        XCTAssertEqual(customer.shipping?.address1, "969 Market" )
+        XCTAssertEqual(customer.shipping?.address2, "" )
+        XCTAssertEqual(customer.shipping?.city, "San Francisco" )
+        XCTAssertEqual(customer.shipping?.state, "CA" )
+        XCTAssertEqual(customer.shipping?.postcode, "94103" )
+        XCTAssertEqual(customer.shipping?.country, "US" )
     }
 
     func test_retrieveCustomer_returns_Error_upon_failure() {
@@ -81,29 +88,24 @@ class CustomerStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, expectedError)
     }
 
-    func test_searchCustomers_completes_mapSearchResultsToCustomerObject_and_returns_success() {
+    func test_searchCustomers_when_three_results_found_then_returns_an_array_with_three_customer_entities() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "customers", filename: "wc-analytics-customers")
-        network.simulateResponse(requestUrlSuffix: "customers/25", filename: "customer")
-        var isSuccess = false
+        network.simulateResponse(requestUrlSuffix: "customers/1", filename: "customer")
+        network.simulateResponse(requestUrlSuffix: "customers/2", filename: "customer")
+        network.simulateResponse(requestUrlSuffix: "customers/3", filename: "customer")
 
-        waitForExpectation({ expectation in
-            let action = CustomerAction.searchCustomers(
-                siteID: self.dummySiteID,
-                keyword: self.dummyKeyword) { result in
-                    switch result {
-                    case .success:
-                        isSuccess = true
-                    case .failure:
-                        isSuccess = false
-                    }
-                    expectation.fulfill()
-                }
-            self.store.onAction(action)
-        })
+        // When
+        let response: Result<[Customer], Error> = waitFor { promise in
+            let action = CustomerAction.searchCustomers(siteID: self.dummySiteID, keyword: self.dummyKeyword) { result in
+                promise(result)
+            }
+            self.dispatcher.dispatch(action)
+        }
 
         // Then
-        XCTAssertTrue(isSuccess)
+        let customers = try response.get()
+        XCTAssertEqual(customers.count, 3)
     }
 
     func test_searchCustomers_returns_Error_upon_failure() {
@@ -112,7 +114,7 @@ class CustomerStoreTests: XCTestCase {
         network.simulateError(requestUrlSuffix: "", error: expectedError)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<[Customer], Error> = waitFor { promise in
             let action = CustomerAction.searchCustomers(
                 siteID: self.dummySiteID,
                 keyword: self.dummyKeyword) { result in

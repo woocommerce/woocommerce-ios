@@ -372,7 +372,7 @@ private extension AppDelegate {
         }
     }
 
-    /// Starts the AB testing platform
+    /// Starts the AB testing platform and fetches test assignments for the current context
     ///
     func startABTesting() async {
         let context: ExperimentContext = ServiceLocator.stores.isAuthenticated ? .loggedIn : .loggedOut

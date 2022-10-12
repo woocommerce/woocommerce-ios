@@ -178,6 +178,7 @@ class DefaultStoresManager: StoresManager {
 
         updateAndReloadWidgetInformation(with: nil)
 
+        // Refresh the A/B test assignments for the logged-out context
         Task { @MainActor in
             await ABTest.start(for: .loggedOut)
         }

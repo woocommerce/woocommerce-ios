@@ -174,7 +174,7 @@ extension PushNotificationsManager {
             return
         }
         let action = NotificationCountAction.reset(siteID: siteID, type: type) { [weak self] in
-            self?.loadNotificationCountAndUpdateApplicationBadgeNumberAndPostNotifications(siteID: siteID, type: type)
+            self?.loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: siteID, type: type, postNotifications: false)
         }
         stores.dispatch(action)
     }
@@ -193,7 +193,7 @@ extension PushNotificationsManager {
         guard let siteID = siteID else {
             return
         }
-        loadNotificationCountAndUpdateApplicationBadgeNumberAndPostNotifications(siteID: siteID, type: nil)
+        loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: siteID, type: nil, postNotifications: true)
     }
 
     /// Registers the Device Token agains WordPress.com backend, if there's a default account.
@@ -372,9 +372,11 @@ private extension PushNotificationsManager {
         stores.dispatch(action)
     }
 
-    func loadNotificationCountAndUpdateApplicationBadgeNumberAndPostNotifications(siteID: Int64, type: Note.Kind?) {
+    func loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: Int64, type: Note.Kind?, postNotifications: Bool) {
         loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: siteID)
-        postBadgeReloadNotifications(type: type)
+        if postNotifications {
+            postBadgeReloadNotifications(type: type)
+        }
     }
 
     func loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: Int64) {
@@ -450,7 +452,7 @@ private extension PushNotificationsManager {
            let siteID = siteID,
            let notificationSiteID = userInfo[APNSKey.siteID] as? Int64 {
             incrementNotificationCount(siteID: notificationSiteID, type: type, incrementCount: 1) { [weak self] in
-                self?.loadNotificationCountAndUpdateApplicationBadgeNumberAndPostNotifications(siteID: siteID, type: type)
+                self?.loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: siteID, type: type, postNotifications: true)
             }
         }
 

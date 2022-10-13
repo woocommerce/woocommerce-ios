@@ -48,9 +48,9 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
 
     @discardableResult
     func handleCompletionIfPossible(_ url: String) -> Bool {
-        // When the web view navigates to the site address or Jetpack plans page,
+        // When the web view navigates to Jetpack plans page,
         // we can assume that the setup has completed.
-        if url.hasPrefix(siteURL) || url.hasPrefix(Constants.plansPage) {
+        if url.hasPrefix(Constants.plansPage) {
             // Running on the main thread is necessary if this method is triggered from `decidePolicy`.
             DispatchQueue.main.async { [weak self] in
                 self?.handleSetupCompletion()

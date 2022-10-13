@@ -139,7 +139,10 @@ public final class CustomerStore: Store {
 private extension CustomerStore {
     /// Inserts or updates CustomerSearchResults in Storage
     ///
-    private func upsertSearchCustomerResults(siteID: Int64, readOnlySearchResults: [Networking.WCAnalyticsCustomer], in storage: StorageType, onCompletion: @escaping () -> Void) {
+    private func upsertSearchCustomerResults(siteID: Int64,
+                                             readOnlySearchResults: [Networking.WCAnalyticsCustomer],
+                                             in storage: StorageType,
+                                             onCompletion: @escaping () -> Void) {
         for searchResult in readOnlySearchResults {
             let storageSearchResult: Storage.CustomerSearchResult = {
                 if let storedSearchResult = storage.loadCustomerSearchResult(siteID: siteID, customerID: searchResult.userID) {

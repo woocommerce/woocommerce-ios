@@ -8,7 +8,7 @@ extension Storage.CustomerSearchResult: ReadOnlyConvertible {
     public func update(with searchResult: Yosemite.WCAnalyticsCustomer) {
         customerID = searchResult.userID
     }
-    
+
     /// Returns a ReadOnly (`Networking.WCAnalyticsCustomer`) version of the `Storage.CustomerSearchResult`
     public func toReadOnly() -> Yosemite.WCAnalyticsCustomer {
         return WCAnalyticsCustomer(userID: customerID, name: "")

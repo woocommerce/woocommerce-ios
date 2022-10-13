@@ -56,7 +56,8 @@ final class InPersonPaymentsMenuViewModel {
                                                          utmProvider: WooCommerceComUTMProvider(
                                                             campaign: Constants.utmCampaign,
                                                             source: Constants.utmSource,
-                                                            content: nil),
+                                                            content: nil,
+                                                            siteID: siteID),
                                                          onDismiss: { [weak self] in
             self?.showWebView = nil
         })

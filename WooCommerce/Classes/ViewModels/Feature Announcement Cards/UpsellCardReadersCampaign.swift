@@ -59,7 +59,8 @@ extension UpsellCardReadersCampaign {
         WooCommerceComUTMProvider(
             campaign: Constants.utmCampaign,
             source: source.rawValue,
-            content: configuration.campaign.rawValue)
+            content: configuration.campaign.rawValue,
+            siteID: ServiceLocator.stores.sessionManager.defaultStoreID)
     }
 }
 

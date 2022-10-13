@@ -454,7 +454,7 @@ private extension PushNotificationsManager {
             incrementNotificationCount(siteID: notificationSiteID, type: type, incrementCount: 1) { [weak self] in
                 self?.loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: siteID, type: type, postNotifications: true)
 
-                if let productID = userInfo[APNSKey.postID] as? Int64 {
+                if type == .comment, let productID = userInfo[APNSKey.postID] as? Int64 {
                     self?.updateProduct(productID, siteID: notificationSiteID)
                 }
             }

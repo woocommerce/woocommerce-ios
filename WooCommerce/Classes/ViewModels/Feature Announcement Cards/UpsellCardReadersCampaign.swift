@@ -55,8 +55,8 @@ extension UpsellCardReadersCampaign {
 }
 
 extension UpsellCardReadersCampaign {
-    var utmProvider: WooCommerceComUTMParametersProvider {
-        WooCommerceComUTMParametersProvider(
+    var utmProvider: WooCommerceComUTMProvider {
+        WooCommerceComUTMProvider(
             campaign: Constants.utmCampaign,
             source: source.rawValue,
             content: configuration.campaign.rawValue)

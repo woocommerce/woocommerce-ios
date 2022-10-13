@@ -53,7 +53,7 @@ final class InPersonPaymentsMenuViewModel {
     func orderCardReaderPressed() {
         analytics.track(.paymentsMenuOrderCardReaderTapped)
         showWebView = PurchaseCardReaderWebViewViewModel(configuration: cardPresentPaymentsConfiguration,
-                                                         utmProvider: WooCommerceComUTMParametersProvider(
+                                                         utmProvider: WooCommerceComUTMProvider(
                                                             campaign: Constants.utmCampaign,
                                                             source: Constants.utmSource,
                                                             content: nil),

@@ -31,9 +31,14 @@ final class AuthenticatedWebViewController: UIViewController {
     ///
     private let wporgCredentials: WordPressOrgCredentials?
 
-    init(viewModel: AuthenticatedWebViewModel, wporgCredentials: WordPressOrgCredentials? = nil) {
+    /// Cookies to be sent to the web view before loading.
+    ///
+    private let cookies: [HTTPCookie]
+
+    init(viewModel: AuthenticatedWebViewModel, wporgCredentials: WordPressOrgCredentials? = nil, cookies: [HTTPCookie] = []) {
         self.viewModel = viewModel
         self.wporgCredentials = wporgCredentials
+        self.cookies = cookies
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -72,6 +77,10 @@ private extension AuthenticatedWebViewController {
         ])
 
         extendContentUnderSafeAreas()
+
+        for cookie in cookies {
+            webView.configuration.websiteDataStore.httpCookieStore.setCookie(cookie)
+        }
     }
 
     func extendContentUnderSafeAreas() {

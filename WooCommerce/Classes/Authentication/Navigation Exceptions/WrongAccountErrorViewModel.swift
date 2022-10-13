@@ -24,6 +24,7 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
     private var siteUsername: String = ""
     private var jetpackConnectionURL: URL?
     private var siteCredentials: WordPressOrgCredentials?
+    private var network: WordPressOrgNetwork?
 
     @Published private var isSelfHostedSite = false
     @Published private var primaryButtonLoading = false
@@ -207,6 +208,9 @@ private extension WrongAccountErrorViewModel {
         let network = WordPressOrgNetwork(authenticator: authenticator)
         let action = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
         storesManager.dispatch(action)
+
+        // keeps a reference to the network to share cookies to the web view later
+        self.network = network
     }
 
     /// Fetches the URL for handling Jetpack connection in a web view
@@ -256,7 +260,7 @@ private extension WrongAccountErrorViewModel {
         let viewModel = JetpackConnectionWebViewModel(initialURL: url, siteURL: siteURL, completion: { [weak self] in
             self?.fetchJetpackUser(in: viewController)
         })
-        let pluginViewController = AuthenticatedWebViewController(viewModel: viewModel)
+        let pluginViewController = AuthenticatedWebViewController(viewModel: viewModel, cookies: network?.cookies ?? [])
         viewController.navigationController?.show(pluginViewController, sender: nil)
     }
 

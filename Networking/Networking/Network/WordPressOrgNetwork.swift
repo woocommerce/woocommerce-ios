@@ -134,3 +134,11 @@ private extension WordPressOrgNetwork {
         return sessionManager
     }
 }
+
+public extension WordPressOrgNetwork {
+    /// Retrieved cookies from authentication to be shared with a web view
+    ///
+    var cookies: [HTTPCookie] {
+        sessionManager.session.configuration.httpCookieStorage?.cookies ?? []
+    }
+}

@@ -158,6 +158,7 @@ public typealias WCPayCardPaymentDetails = Networking.WCPayCardPaymentDetails
 public typealias WCPayCardPresentReceiptDetails = Networking.WCPayCardPresentReceiptDetails
 public typealias WCPayPaymentMethodDetails = Networking.WCPayPaymentMethodDetails
 public typealias WCPayChargeStatus = Networking.WCPayChargeStatus
+public typealias WCAnalyticsCustomer = Networking.WCAnalyticsCustomer
 
 // MARK: - Exported Storage Symbols
 
@@ -166,6 +167,7 @@ public typealias StorageAccountSettings = Storage.AccountSettings
 public typealias StorageAttribute = Storage.GenericAttribute
 public typealias StorageCoupon = Storage.Coupon
 public typealias StorageCustomer = Storage.Customer
+public typealias StorageCustomerSearchResult = Storage.CustomerSearchResult
 public typealias StorageCouponSearchResult = Storage.CouponSearchResult
 public typealias StorageAddOnGroup = Storage.AddOnGroup
 public typealias StorageAnnouncement = Storage.Announcement

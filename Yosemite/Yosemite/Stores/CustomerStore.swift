@@ -129,7 +129,7 @@ public final class CustomerStore: Store {
         }
 
         group.notify(queue: .main) {
-            self.upsertSearchCustomerResults(siteID: siteID, readOnlySearchResults: searchResults, onCompletion: {})
+            self.upsertSearchCustomerResults(siteID: siteID, readOnlySearchResults: searchResults, in: self.sharedDerivedStorage, onCompletion: {})
             onCompletion(.success(results))
         }
     }
@@ -139,10 +139,17 @@ public final class CustomerStore: Store {
 private extension CustomerStore {
     /// Inserts or updates CustomerSearchResults in Storage
     ///
-    private func upsertSearchCustomerResults(siteID: Int64, readOnlySearchResults: [Networking.WCAnalyticsCustomer], onCompletion: @escaping () -> Void) {
-        for _ in readOnlySearchResults {
-            // Logic for inserting or updating in Storage will go here. Not implemented yet.
-            // https://github.com/woocommerce/woocommerce-ios/issues/7741
+    private func upsertSearchCustomerResults(siteID: Int64, readOnlySearchResults: [Networking.WCAnalyticsCustomer], in storage: StorageType, onCompletion: @escaping () -> Void) {
+        for searchResult in readOnlySearchResults {
+            let storageSearchResult: Storage.CustomerSearchResult = {
+                if let storedSearchResult = storage.loadCustomerSearchResult(siteID: siteID, customerID: searchResult.userID) {
+                    return storedSearchResult
+                } else {
+                    return storage.insertNewObject(ofType: Storage.CustomerSearchResult.self)
+                }
+            }()
+            // Update
+            storageSearchResult.update(with: searchResult)
         }
     }
 

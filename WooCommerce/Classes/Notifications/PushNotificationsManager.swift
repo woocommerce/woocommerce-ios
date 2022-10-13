@@ -453,10 +453,11 @@ private extension PushNotificationsManager {
            let notificationSiteID = userInfo[APNSKey.siteID] as? Int64 {
             incrementNotificationCount(siteID: notificationSiteID, type: type, incrementCount: 1) { [weak self] in
                 self?.loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: siteID, type: type, postNotifications: true)
+            }
 
-                if type == .comment, let productID = userInfo[APNSKey.postID] as? Int64 {
-                    self?.updateProduct(productID, siteID: notificationSiteID)
-                }
+            // Update related product when review notification is received
+            if type == .comment, let productID = userInfo[APNSKey.postID] as? Int64 {
+                updateProduct(productID, siteID: notificationSiteID)
             }
         }
 
@@ -488,7 +489,7 @@ private extension PushNotificationsManager {
         inactiveNotificationsSubject.send(notification)
     }
 
-    /// Reload related product when review notification received
+    /// Reload related product when review notification is received
     ///
     func updateProduct(_ productID: Int64, siteID: Int64) {
         let action = ProductAction.retrieveProduct(siteID: siteID,

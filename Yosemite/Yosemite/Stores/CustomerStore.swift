@@ -7,6 +7,12 @@ public final class CustomerStore: Store {
     private let customerRemote: CustomerRemote
     private let searchRemote: WCAnalyticsCustomerRemote
 
+    // 1 - We need access to Storage, and to write operations:
+    // Returns a shared derived storage instance dedicated for write operations
+    private lazy var sharedDerivedStorage: StorageType = {
+        return storageManager.writerDerivedStorage
+    }()
+
     init(dispatcher: Dispatcher,
          storageManager: StorageManagerType,
          network: Network,
@@ -127,7 +133,10 @@ public final class CustomerStore: Store {
             onCompletion(.success(results))
         }
     }
+}
 
+// MARK: Storage operations
+private extension CustomerStore {
     /// Inserts or updates CustomerSearchResults in Storage
     ///
     private func upsertSearchCustomerResults(siteID: Int64, readOnlySearchResults: [Networking.WCAnalyticsCustomer], onCompletion: @escaping () -> Void) {
@@ -136,7 +145,8 @@ public final class CustomerStore: Store {
             // https://github.com/woocommerce/woocommerce-ios/issues/7741
         }
     }
-    /// Inserts or updates Customers in Storage
+
+    /// Inserts or updates Customer entities in Storage
     ///
     private func upsertCustomer(siteID: Int64, readOnlyCustomer: Networking.Customer, onCompletion: @escaping () -> Void) {
         // Logic for inserting or updating in Storage will go here. Not implemented yet.

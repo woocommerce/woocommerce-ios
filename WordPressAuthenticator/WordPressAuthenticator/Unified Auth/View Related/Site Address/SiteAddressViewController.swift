@@ -68,7 +68,7 @@ final class SiteAddressViewController: LoginViewController {
 
         siteURLField?.text = loginFields.siteAddress
         configureSubmitButton()
-        
+
         // Nav bar could be hidden from the host app, so reshow it.
         navigationController?.setNavigationBarHidden(false, animated: animated)
     }

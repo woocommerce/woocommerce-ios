@@ -4,8 +4,8 @@ import Gridicons
 import Yosemite
 import WordPressUI
 import SafariServices
-import StoreKit
 import SwiftUI
+import WooFoundation
 
 // Used for protocol conformance of IndicatorInfoProvider only.
 import XLPagerTabStrip
@@ -418,7 +418,10 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
             self?.viewModel.dismissUpsellCardReadersBanner()
         }, callToAction: {
             let configuration = CardPresentConfigurationLoader().configuration
-            WebviewHelper.launch(configuration.purchaseCardReaderUrl(), with: self)
+            WebviewHelper.launch(
+                configuration.purchaseCardReaderUrl(
+                    utmProvider: self.viewModel.upsellCardReadersCampaign.utmProvider),
+                with: self)
         })
             .background(Color(.listForeground))
 

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		03597A9428F85686005E4A98 /* UTMParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03597A9328F85686005E4A98 /* UTMParameters.swift */; };
+		03597A9928F8799C005E4A98 /* MockUTMParameterProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03597A9728F87948005E4A98 /* MockUTMParameterProvider.swift */; };
 		265C99D828B93F04005E6117 /* ColorPalette.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 265C99D728B93F04005E6117 /* ColorPalette.xcassets */; };
 		265C99DD28B941D5005E6117 /* UIColor+Muriel-Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265C99DC28B941D5005E6117 /* UIColor+Muriel-Tests.swift */; };
 		265C99DF28B94271005E6117 /* MurielColorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265C99DE28B94271005E6117 /* MurielColorTests.swift */; };
@@ -45,6 +47,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		03597A9328F85686005E4A98 /* UTMParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTMParameters.swift; sourceTree = "<group>"; };
+		03597A9728F87948005E4A98 /* MockUTMParameterProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUTMParameterProvider.swift; sourceTree = "<group>"; };
 		265C99D728B93F04005E6117 /* ColorPalette.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = ColorPalette.xcassets; sourceTree = "<group>"; };
 		265C99DC28B941D5005E6117 /* UIColor+Muriel-Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Muriel-Tests.swift"; sourceTree = "<group>"; };
 		265C99DE28B94271005E6117 /* MurielColorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MurielColorTests.swift; sourceTree = "<group>"; };
@@ -138,6 +142,7 @@
 			isa = PBXGroup;
 			children = (
 				686BE911288EE0D300967C86 /* TypedPredicates.swift */,
+				03597A9328F85686005E4A98 /* UTMParameters.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -162,6 +167,7 @@
 		689D11D12891B7B100F6A83F /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
+				03597A9728F87948005E4A98 /* MockUTMParameterProvider.swift */,
 				689D11D22891B7D800F6A83F /* MockCrashLogger.swift */,
 			);
 			path = Mocks;
@@ -457,9 +463,11 @@
 				6874E81428998AD300074A97 /* LogErrorAndExit.swift in Sources */,
 				B9C9C65D283E71C8001B879F /* CurrencyFormatter.swift in Sources */,
 				AE948D0A28CF67CF009F3246 /* Date+StartAndEnd.swift in Sources */,
+				03597A9428F85686005E4A98 /* UTMParameters.swift in Sources */,
 				26AF1F5628B8362800937BA9 /* UIColor+SystemColors.swift in Sources */,
 				689D11D32891B7D800F6A83F /* MockCrashLogger.swift in Sources */,
 				B987B06F284540D300C53CF6 /* CurrencyCode.swift in Sources */,
+				03597A9928F8799C005E4A98 /* MockUTMParameterProvider.swift in Sources */,
 				B9C9C660283E71F4001B879F /* Double+Woo.swift in Sources */,
 				689D11D02891B3A300F6A83F /* CrashLogger.swift in Sources */,
 				26AF1F5928B9011100937BA9 /* WooStyleModifiers.swift in Sources */,

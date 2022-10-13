@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import WooFoundation
 
 final class InPersonPaymentsMenuViewModel {
     // MARK: - Dependencies
@@ -52,8 +53,17 @@ final class InPersonPaymentsMenuViewModel {
     func orderCardReaderPressed() {
         analytics.track(.paymentsMenuOrderCardReaderTapped)
         showWebView = PurchaseCardReaderWebViewViewModel(configuration: cardPresentPaymentsConfiguration,
+                                                         utmProvider: WooCommerceComUTMParametersProvider(
+                                                            campaign: Constants.utmCampaign,
+                                                            source: Constants.utmSource,
+                                                            content: nil),
                                                          onDismiss: { [weak self] in
             self?.showWebView = nil
         })
     }
+}
+
+private enum Constants {
+    static let utmCampaign = "payments_menu_item"
+    static let utmSource = "payments_menu"
 }

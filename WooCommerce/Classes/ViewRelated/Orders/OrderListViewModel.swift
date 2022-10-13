@@ -26,7 +26,7 @@ final class OrderListViewModel {
 
     /// Used to show the upsell card readers banner and discern its visibility
     /// 
-    private let upsellCardReadersCampaign = UpsellCardReadersCampaign(source: .orderList)
+    let upsellCardReadersCampaign = UpsellCardReadersCampaign(source: .orderList)
     let upsellCardReadersAnnouncementViewModel: FeatureAnnouncementCardViewModel
 
     /// Used for cancelling the observer for Remote Notifications when `self` is deallocated.

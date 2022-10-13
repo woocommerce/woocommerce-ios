@@ -73,7 +73,7 @@ class LoginPrologueViewController: LoginViewController {
         super.viewWillAppear(animated)
 
         configureButtonVC()
-        navigationController?.setNavigationBarHidden(true, animated: false)
+        navigationController?.setNavigationBarHidden(true, animated: animated)
     }
 
     override func viewDidAppear(_ animated: Bool) {

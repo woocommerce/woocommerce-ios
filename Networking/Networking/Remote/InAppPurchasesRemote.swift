@@ -16,7 +16,14 @@ public class InAppPurchasesRemote: Remote {
         appStoreCountryCode: String,
         receiptData: Data,
         completion: @escaping (Swift.Result<Int, Error>) -> Void) {
-            let dotComRequest = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: Constants.ordersPath)
+            let parameters: [String: Any] = [
+                Constants.siteIDKey: siteID,
+                Constants.priceKey: price,
+                Constants.productIDKey: productIdentifier,
+                Constants.appStoreCountryCodeKey: appStoreCountryCode,
+                Constants.receiptDataKey: receiptData.base64EncodedString()
+            ]
+            let dotComRequest = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: Constants.ordersPath, parameters: parameters)
             let request = augmentedRequestWithAppId(dotComRequest)
             let mapper = InAppPurchaseOrderResultMapper()
             enqueue(request, mapper: mapper, completion: completion)
@@ -72,5 +79,11 @@ private extension InAppPurchasesRemote {
     enum Constants {
         static let productsPath = "iap/products"
         static let ordersPath = "iap/orders"
+
+        static let siteIDKey = "site_id"
+        static let priceKey = "price"
+        static let productIDKey = "product_id"
+        static let appStoreCountryCodeKey = "appstore_country"
+        static let receiptDataKey = "apple_receipt"
     }
 }

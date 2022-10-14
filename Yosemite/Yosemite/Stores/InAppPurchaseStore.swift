@@ -62,7 +62,7 @@ private extension InAppPurchaseStore {
             do {
                 let purchaseResult = try await product.purchase(options: purchaseOptions)
                 if case .success(let result) = purchaseResult {
-                    await handleCompletedTransaction(result)
+                    try await handleCompletedTransaction(result)
                 }
                 completion(.success(purchaseResult))
             } catch {
@@ -71,11 +71,10 @@ private extension InAppPurchaseStore {
         }
     }
 
-    func handleCompletedTransaction(_ result: VerificationResult<StoreKit.Transaction>) async {
+    func handleCompletedTransaction(_ result: VerificationResult<StoreKit.Transaction>) async throws {
         switch result {
         case .verified(let transaction):
-            // TODO: notify the backend about purchase
-            print("💰 Transaction: \(transaction)")
+            try await submitTransaction(transaction)
             await transaction.finish()
         case .unverified:
             // TODO: handle errors
@@ -83,13 +82,47 @@ private extension InAppPurchaseStore {
         }
     }
 
+    func submitTransaction(_ transaction: StoreKit.Transaction) async throws {
+        guard let appAccountToken = transaction.appAccountToken else {
+            throw Errors.transactionMissingAppAccountToken
+        }
+        guard let siteID = AppAccountToken.siteIDFromToken(appAccountToken) else {
+            throw Errors.appAccountTokenMissingSiteIdentifier
+        }
+
+        let products = try await StoreKit.Product.products(for: [transaction.productID])
+        guard let product = products.first else {
+            throw Errors.transactionProductUnknown
+        }
+        let priceInCents = Int(truncating: NSDecimalNumber(decimal: product.price * 100))
+        guard let countryCode = await Storefront.current?.countryCode else {
+            throw Errors.storefrontUnknown
+        }
+        _ = try await remote.createOrder(
+            for: siteID,
+            price: priceInCents,
+            productIdentifier: product.id,
+            appStoreCountryCode: countryCode,
+            receiptData: transaction.jsonRepresentation
+        )
+    }
+
     func listenForTransactions() {
         assert(listenTask == nil, "InAppPurchaseStore.listenForTransactions() called while already listening for transactions")
 
         listenTask = Task.detached { [weak self] in
             for await result in Transaction.updates {
-                await self?.handleCompletedTransaction(result)
+                try? await self?.handleCompletedTransaction(result)
             }
         }
+    }
+}
+
+public extension InAppPurchaseStore {
+    enum Errors: Error {
+        case transactionMissingAppAccountToken
+        case appAccountTokenMissingSiteIdentifier
+        case transactionProductUnknown
+        case storefrontUnknown
     }
 }

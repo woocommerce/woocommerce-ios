@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-10-06 08:54:03+0000 */
+/* Translation-Revision-Date: 2022-10-11 14:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -1929,6 +1929,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Instruction text on the initial email address entry screen. */
 "Enter your email address to log in or create a WordPress.com account." = "Insira seu endereço de e-mail para fazer login ou criar uma conta do WordPress.com.";
+
+/* Sign in instructions on the 'log in using WordPress.com account' screen. */
+"Enter your email address to log in to manage your WooCommerce stores or create a WordPress.com account." = "Insira seu endereço de e-mail para fazer login e gerenciar suas lojas do WooCommerce ou crie uma conta do WordPress.com.";
 
 /* Button title. Takes the user to the login by site address flow. */
 "Enter your existing site address" = "Insira o endereço do seu site já existente";
@@ -6246,6 +6249,18 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Title label when the widget does not have a logged-in store. */
 "storeWidgets.notLoggedInView.notLoggedIn" = "Faça login para ver as estatísticas de hoje.";
+
+/* Title label when the widget can't fetch data. Should fit in 1 line on lock screen */
+"storeWidgets.storeInfoInlineWidget.noData" = "Receita: ⚠ Sem dados";
+
+/* Revenue title label for the store info widget. %1$@ is the revenue amount. */
+"storeWidgets.storeInfoInlineWidget.revenueTitle" = "Receita: %1$@";
+
+/* Label when the widget can't fetch data. */
+"storeWidgets.storeInfoRectangularWidget.noData" = "⚠ Sem dados";
+
+/* Revenue title label for the store info widget */
+"storeWidgets.storeInfoRectangularWidget.revenue" = "Receita";
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "Não é possível buscar as estatísticas de hoje";

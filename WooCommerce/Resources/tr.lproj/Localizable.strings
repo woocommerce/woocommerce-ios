@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-10-07 09:54:20+0000 */
+/* Translation-Revision-Date: 2022-10-12 15:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -1929,6 +1929,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Instruction text on the initial email address entry screen. */
 "Enter your email address to log in or create a WordPress.com account." = "Oturum açmak veya bir WordPress.com hesabı oluşturmak için e-posta adresinizi girin.";
+
+/* Sign in instructions on the 'log in using WordPress.com account' screen. */
+"Enter your email address to log in to manage your WooCommerce stores or create a WordPress.com account." = "WooCommerce mağazalarınızı yönetmek veya bir WordPress.com hesabı oluşturmak üzere oturum açmak için e-posta adresinizi girin.";
 
 /* Button title. Takes the user to the login by site address flow. */
 "Enter your existing site address" = "Mevcut site adresinizi girin";
@@ -6246,6 +6249,18 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Title label when the widget does not have a logged-in store. */
 "storeWidgets.notLoggedInView.notLoggedIn" = "Bugünün istatistiklerini görmek için oturum açın.";
+
+/* Title label when the widget can't fetch data. Should fit in 1 line on lock screen */
+"storeWidgets.storeInfoInlineWidget.noData" = "Gelir: ⚠ Veri Yok";
+
+/* Revenue title label for the store info widget. %1$@ is the revenue amount. */
+"storeWidgets.storeInfoInlineWidget.revenueTitle" = "Gelir: %1$@";
+
+/* Label when the widget can't fetch data. */
+"storeWidgets.storeInfoRectangularWidget.noData" = "⚠ Veri Yok";
+
+/* Revenue title label for the store info widget */
+"storeWidgets.storeInfoRectangularWidget.revenue" = "Kazanç";
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "Bugünün istatistikleri alınamıyor";

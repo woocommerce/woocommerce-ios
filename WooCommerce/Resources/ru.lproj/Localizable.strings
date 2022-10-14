@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-10-06 13:54:04+0000 */
+/* Translation-Revision-Date: 2022-10-11 14:54:03+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -1929,6 +1929,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Instruction text on the initial email address entry screen. */
 "Enter your email address to log in or create a WordPress.com account." = "Введите адрес эл. почты, чтобы войти, или создайте учетную запись WordPress.com.";
+
+/* Sign in instructions on the 'log in using WordPress.com account' screen. */
+"Enter your email address to log in to manage your WooCommerce stores or create a WordPress.com account." = "Войдите с помощью адреса электронной почты, чтобы управлять магазинами WooCommerce или создать учётную запись WordPress.com.";
 
 /* Button title. Takes the user to the login by site address flow. */
 "Enter your existing site address" = "Введите адрес вашего сайта";
@@ -6246,6 +6249,18 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Title label when the widget does not have a logged-in store. */
 "storeWidgets.notLoggedInView.notLoggedIn" = "Войдите, чтобы посмотреть статистику за сегодня.";
+
+/* Title label when the widget can't fetch data. Should fit in 1 line on lock screen */
+"storeWidgets.storeInfoInlineWidget.noData" = "Доход: ⚠ данные отсутствуют";
+
+/* Revenue title label for the store info widget. %1$@ is the revenue amount. */
+"storeWidgets.storeInfoInlineWidget.revenueTitle" = "Доход: %1$@";
+
+/* Label when the widget can't fetch data. */
+"storeWidgets.storeInfoRectangularWidget.noData" = "⚠ Данные отсутствуют";
+
+/* Revenue title label for the store info widget */
+"storeWidgets.storeInfoRectangularWidget.revenue" = "Доход";
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "Не удаётся получить статистику за сегодня";

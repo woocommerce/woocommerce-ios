@@ -39,7 +39,7 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
         }
     }
 
-    /// Switches to store with the given id if it was previously synced and stored.
+    /// Switches the to store with the given id if it was previously synced and stored.
     /// This is done to check whether the user has access to that store, avoiding undetermined states if we log out
     /// from the current one and try to switch to a store they don't have access to.
     ///

@@ -77,10 +77,6 @@ private extension AuthenticatedWebViewController {
         ])
 
         extendContentUnderSafeAreas()
-
-        for cookie in cookies {
-            webView.configuration.websiteDataStore.httpCookieStore.setCookie(cookie)
-        }
     }
 
     func extendContentUnderSafeAreas() {
@@ -137,9 +133,14 @@ private extension AuthenticatedWebViewController {
         guard let url = viewModel.initialURL else {
             return
         }
+        /// Only authenticate for WP.com automatically if no cookies are provided.
+        ///
         if let credentials = ServiceLocator.stores.sessionManager.defaultCredentials, cookies.isEmpty {
             webView.authenticateForWPComAndRedirect(to: url, credentials: credentials)
         } else {
+            for cookie in cookies {
+                webView.configuration.websiteDataStore.httpCookieStore.setCookie(cookie)
+            }
             let request = URLRequest(url: url)
             webView.load(request)
         }

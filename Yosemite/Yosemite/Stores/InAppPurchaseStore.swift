@@ -57,7 +57,7 @@ private extension InAppPurchaseStore {
             // TODO: Create order from siteID and get UUID
             let orderUUID = UUID()
             do {
-                let purchaseResult = try await product.purchase(options: [.appAccountToken(orderUUID), .custom(key: "custom-woo", value: "cha-ching")])
+                let purchaseResult = try await product.purchase(options: [.appAccountToken(orderUUID)])
                 if case .success(let result) = purchaseResult {
                     await handleCompletedTransaction(result)
                 }

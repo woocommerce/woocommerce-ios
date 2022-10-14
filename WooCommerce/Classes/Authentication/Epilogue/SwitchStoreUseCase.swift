@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import protocol Storage.StorageManagerType
 
 protocol SwitchStoreUseCaseProtocol {
     func switchStore(with storeID: Int64, onCompletion: @escaping (Bool) -> Void)
@@ -10,9 +11,19 @@ protocol SwitchStoreUseCaseProtocol {
 final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
 
     private let stores: StoresManager
+    private let storageManager: StorageManagerType
 
-    init(stores: StoresManager) {
+    private lazy var resultsController: ResultsController<StorageSite> = {
+        return ResultsController(storageManager: storageManager, sortedBy: [])
+    }()
+
+    private var wooCommerceSites: [Site] {
+        resultsController.fetchedObjects.filter { $0.isWooCommerceActive == true }
+    }
+
+    init(stores: StoresManager, storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.stores = stores
+        self.storageManager = storageManager
     }
 
     /// The async version of `switchStore` that wraps the completion block version.
@@ -36,6 +47,14 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
         guard storeID != stores.sessionManager.defaultStoreID else {
             onCompletion(false)
             return
+        }
+
+        self.refreshStoredSites()
+
+        let userCanAccessSite = self.wooCommerceSites.first(where: { $0.siteID == storeID }) != nil
+
+        guard userCanAccessSite else {
+            return onCompletion(false)
         }
 
         // This method doesn't use `[weak self]` because of this
@@ -110,5 +129,9 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
                                   ])
 
         AppDelegate.shared.authenticatorWasDismissed()
+    }
+
+    private func refreshStoredSites() {
+        try? resultsController.performFetch()
     }
 }

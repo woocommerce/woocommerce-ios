@@ -337,9 +337,10 @@ extension MainTabBarController {
             }
             let siteID = Int64(note.meta.identifier(forKey: .site) ?? Int.min)
 
-            switchToStore(with: siteID, onCompletion: {
-                presentNotificationDetails(for: note)
-
+            switchToStore(with: siteID, onCompletion: { siteChanged in
+                if siteChanged {
+                    presentNotificationDetails(for: note)
+                }
             })
         }
         ServiceLocator.stores.dispatch(action)
@@ -368,14 +369,16 @@ extension MainTabBarController {
                                                                               "already_read": note.read ])
     }
 
-    private static func switchToStore(with siteID: Int64, onCompletion: @escaping () -> Void) {
+    private static func switchToStore(with siteID: Int64, onCompletion: @escaping (Bool) -> Void) {
         SwitchStoreUseCase(stores: ServiceLocator.stores).switchStore(with: siteID) { siteChanged in
-            if siteChanged {
-                let presenter = SwitchStoreNoticePresenter(siteID: siteID)
-                presenter.presentStoreSwitchedNoticeWhenSiteIsAvailable(configuration: .switchingStores)
+            guard siteChanged else {
+                return onCompletion(false)
             }
 
-            onCompletion()
+            let presenter = SwitchStoreNoticePresenter(siteID: siteID)
+            presenter.presentStoreSwitchedNoticeWhenSiteIsAvailable(configuration: .switchingStores)
+
+            onCompletion(true)
         }
     }
 
@@ -392,8 +395,11 @@ extension MainTabBarController {
     }
 
     static func navigateToOrderDetails(with orderID: Int64, siteID: Int64) {
-        switchToStore(with: siteID, onCompletion: {
+        switchToStore(with: siteID, onCompletion: { siteChanged in
             switchToOrdersTab {
+                guard siteChanged else {
+                    return
+                }
                 // We give some time to the orders tab transition to finish, otherwise it might prevent the second navigation from happening
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                     presentDetails(for: orderID, siteID: siteID)

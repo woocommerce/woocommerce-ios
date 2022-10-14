@@ -4,6 +4,7 @@
 -----
 - [***] Stats: Now you can add a Today's Stats Widget to your lock screen (iOS 16 only) to monitor your sales. [https://github.com/woocommerce/woocommerce-ios/pull/7839]
 - [internal] In-Person Payments: add UTM parameters to card reader purchase URLs to allow attribution [https://github.com/woocommerce/woocommerce-ios/pull/7858]
+- [*] In-Person Payments: the Purchase card reader links now all open in authenticated web views, to make it easier to log in to woocommerce.com. [https://github.com/woocommerce/woocommerce-ios/pull/7862]
 
 10.7
 -----

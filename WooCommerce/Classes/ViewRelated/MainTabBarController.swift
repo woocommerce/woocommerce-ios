@@ -370,7 +370,7 @@ extension MainTabBarController {
     }
 
     private static func switchToStore(with siteID: Int64, onCompletion: @escaping (Bool) -> Void) {
-        SwitchStoreUseCase(stores: ServiceLocator.stores).switchToStoreIfPreviouslyStored(with: siteID) { siteChanged in
+        SwitchStoreUseCase(stores: ServiceLocator.stores).switchToStoreIfSiteIsStored(with: siteID) { siteChanged in
             guard siteChanged else {
                 return onCompletion(false)
             }

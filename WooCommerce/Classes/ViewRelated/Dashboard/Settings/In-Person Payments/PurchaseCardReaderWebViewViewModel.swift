@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import WebKit
+import WooFoundation
 
 struct PurchaseCardReaderWebViewViewModel: AuthenticatedWebViewModel {
     var title: String
@@ -10,9 +11,10 @@ struct PurchaseCardReaderWebViewViewModel: AuthenticatedWebViewModel {
     let onDismiss: () -> Void
 
     init(configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
+         utmProvider: UTMParametersProviding,
          onDismiss: @escaping () -> Void) {
         self.title = Localization.title
-        self.initialURL = configuration.purchaseCardReaderUrl()
+        self.initialURL = configuration.purchaseCardReaderUrl(utmProvider: utmProvider)
         self.onDismiss = onDismiss
     }
 

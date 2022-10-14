@@ -54,10 +54,13 @@ private extension InAppPurchaseStore {
 
     func purchaseProduct(siteID: Int64, product: StoreKit.Product, completion: @escaping (Result<StoreKit.Product.PurchaseResult, Error>) -> Void) {
         Task {
-            // TODO: Create order from siteID and get UUID
-            let orderUUID = UUID()
+            var purchaseOptions: Set<StoreKit.Product.PurchaseOption> = []
+            if let appAccountToken = AppAccountToken.tokenWithSiteId(siteID) {
+                purchaseOptions.insert(.appAccountToken(appAccountToken))
+            }
+
             do {
-                let purchaseResult = try await product.purchase(options: [.appAccountToken(orderUUID)])
+                let purchaseResult = try await product.purchase(options: purchaseOptions)
                 if case .success(let result) = purchaseResult {
                     await handleCompletedTransaction(result)
                 }

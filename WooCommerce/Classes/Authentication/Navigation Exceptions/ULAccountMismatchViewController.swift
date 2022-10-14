@@ -28,7 +28,7 @@ final class ULAccountMismatchViewController: UIViewController {
     @IBOutlet private weak var primaryButton: NUXButton!
     @IBOutlet private weak var secondaryButton: NUXButton!
     @IBOutlet private weak var termsLabel: UITextView!
-    
+
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var errorMessage: UILabel!
     @IBOutlet private weak var extraInfoButton: UIButton!

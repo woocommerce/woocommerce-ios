@@ -123,9 +123,9 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
                 self?.analytics.track(event: .LoginJetpackConnection.jetpackConnectionErrorShown(selfHostedSite: isSelfHosted))
             }
 
-        $primaryButtonLoading
-            .map { [weak self] isLoading -> NSMutableAttributedString in
-                guard let self, !isLoading else {
+        $isSelfHostedSite
+            .map { [weak self] isSelfHosted -> NSMutableAttributedString in
+                guard let self, isSelfHosted else {
                     return .init(string: "")
                 }
                 let content = String.localizedStringWithFormat(Localization.termsContent, Localization.termsOfService, Localization.shareDetails)
@@ -138,7 +138,7 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
                                  .foregroundColor: UIColor.secondaryLabel,
                                  .paragraphStyle: paragraph]
                 )
-                
+
                 mutableAttributedText.setAsLink(textToFind: Localization.termsOfService,
                                                 linkURL: Strings.jetpackTermsURL + self.siteURL)
                 mutableAttributedText.setAsLink(textToFind: Localization.shareDetails,

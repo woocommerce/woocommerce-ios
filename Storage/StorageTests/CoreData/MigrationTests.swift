@@ -1545,15 +1545,6 @@ private extension MigrationTests {
         return customer
     }
 
-    /// Inserts a `CustomerSearchResult` entity, providing default values for the required properties.
-    @discardableResult
-    func insertCustomerSearchResult(to context: NSManagedObjectContext) -> NSManagedObject {
-        context.insert(entityName: "CustomerSearchResult", properties: [
-            "siteID": 1,
-            "keyword": ""
-        ])
-    }
-
     /// Inserts a `ProductVariation` entity, providing default values for the required properties.
     @discardableResult
     func insertProductVariation(to context: NSManagedObjectContext) -> NSManagedObject {

@@ -28,6 +28,7 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
 
     @Published private var isSelfHostedSite = false
     @Published private var primaryButtonLoading = false
+    @Published private var termsAttributedString: NSAttributedString = .init(string: "")
 
     private var siteInfoSubscription: AnyCancellable?
 
@@ -90,6 +91,10 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
         return message
     }
 
+    var termsLabelText: AnyPublisher<NSAttributedString, Never> {
+        $termsAttributedString.eraseToAnyPublisher()
+    }
+
     let isAuxiliaryButtonHidden = false
 
     let auxiliaryButtonTitle = Localization.findYourConnectedEmail
@@ -117,6 +122,30 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
             .sink { [weak self] isSelfHosted in
                 self?.analytics.track(event: .LoginJetpackConnection.jetpackConnectionErrorShown(selfHostedSite: isSelfHosted))
             }
+
+        $primaryButtonLoading
+            .map { [weak self] isLoading -> NSMutableAttributedString in
+                guard let self, !isLoading else {
+                    return .init(string: "")
+                }
+                let content = String.localizedStringWithFormat(Localization.termsContent, Localization.termsOfService, Localization.shareDetails)
+                let paragraph = NSMutableParagraphStyle()
+                paragraph.alignment = .center
+
+                let mutableAttributedText = NSMutableAttributedString(
+                    string: content,
+                    attributes: [.font: UIFont.footnote,
+                                 .foregroundColor: UIColor.secondaryLabel,
+                                 .paragraphStyle: paragraph]
+                )
+                
+                mutableAttributedText.setAsLink(textToFind: Localization.termsOfService,
+                                                linkURL: Strings.jetpackTermsURL + self.siteURL)
+                mutableAttributedText.setAsLink(textToFind: Localization.shareDetails,
+                                                linkURL: Strings.jetpackShareDetailsURL + self.siteURL)
+                return mutableAttributedText
+            }
+            .assign(to: &$termsAttributedString)
 
         // Fetches site info if we're not sure whether the site is self-hosted.
         if siteXMLRPC.isEmpty {
@@ -382,9 +411,23 @@ private extension WrongAccountErrorViewModel {
 
         static let helpBarButtonItemTitle = NSLocalizedString("Help",
                                                        comment: "Help button on account mismatch error screen.")
+        static let termsContent = NSLocalizedString(
+            "By tapping the Connect Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com.",
+            comment: "Content of the label at the end of the Wrong Account screen. " +
+            "Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com.")
+        static let termsOfService = NSLocalizedString(
+            "Terms of Service",
+            comment: "The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen."
+        )
+        static let shareDetails = NSLocalizedString(
+            "share details",
+            comment: "The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen."
+        )
     }
 
     enum Strings {
         static let instructionsURLString = "https://docs.woocommerce.com/document/jetpack-setup-instructions-for-the-woocommerce-mobile-app/"
+        static let jetpackTermsURL = "https://jetpack.com/redirect/?source=wpcom-tos&site="
+        static let jetpackShareDetailsURL = "https://jetpack.com/redirect/?source=jetpack-support-what-data-does-jetpack-sync&site="
     }
 }

@@ -446,11 +446,11 @@ private extension PushNotificationsManager {
     func handleRemoteNotificationInAllAppStates(_ userInfo: [AnyHashable: Any]) {
         DDLogVerbose("📱 Push Notification Received: \n\(userInfo)\n")
 
-        // Badge: Update
         if let typeString = userInfo.string(forKey: APNSKey.type),
            let type = Note.Kind(rawValue: typeString),
            let siteID = siteID,
            let notificationSiteID = userInfo[APNSKey.siteID] as? Int64 {
+            // Badge: Update
             incrementNotificationCount(siteID: notificationSiteID, type: type, incrementCount: 1) { [weak self] in
                 self?.loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: siteID, type: type, postNotifications: true)
             }

@@ -17,7 +17,6 @@ final class WebviewHelper {
                 return
         }
 
-        print("WebviewHelper launch url \(url)")
         launch(url, with: sender)
     }
 

@@ -62,7 +62,6 @@ struct AuthenticatedWebView: UIViewRepresentable {
         let parameters = ["log": username,
                           "redirect_to": url.absoluteString,
                           "authorization": "Bearer " + token]
-        print("AuthenticatedWebVew postData url \(url.absoluteString)")
 
         return try URLEncoding.default.encode(request, with: parameters)
     }

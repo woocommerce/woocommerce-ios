@@ -440,7 +440,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
     }
 
     private func makeCardReaderProductPageWebView(url: URL) -> some View {
-        let nav = NavigationView {
+        return NavigationView {
             AuthenticatedWebView(isPresented: .constant(true),
                                  url: url)
             .navigationTitle(UpsellCardReadersCampaign.Localization.cardReaderWebViewTitle)
@@ -456,7 +456,6 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
             }
         }
         .wooNavigationBarStyle()
-        return nav
     }
 
     func updateUpsellCardReaderTopBannerVisibility(with newCollection: UITraitCollection) {

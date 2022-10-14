@@ -73,14 +73,12 @@ private extension TracksProvider {
                 UserDefaults.standard[.analyticsUsername] = account.username
                 tracksService.switchToAuthenticatedUser(withUsername: account.username,
                                                         userID: String(account.userID),
-                                                        anonymousID: anonymousID,
                                                         wpComToken: credentials.authToken,
                                                         skipAliasEventCreation: false)
             } else if currentAnalyticsUsername == account.username {
                 // Username did not change - just make sure Tracks client has it
                 tracksService.switchToAuthenticatedUser(withUsername: account.username,
                                                         userID: String(account.userID),
-                                                        anonymousID: anonymousID,
                                                         wpComToken: credentials.authToken,
                                                         skipAliasEventCreation: true)
             } else {
@@ -88,7 +86,6 @@ private extension TracksProvider {
                 tracksService.switchToAnonymousUser(withAnonymousID: anonymousID)
                 tracksService.switchToAuthenticatedUser(withUsername: account.username,
                                                         userID: String(account.userID),
-                                                        anonymousID: anonymousID,
                                                         wpComToken: credentials.authToken,
                                                         skipAliasEventCreation: false)
             }

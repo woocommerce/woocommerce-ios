@@ -137,7 +137,7 @@ private extension AuthenticatedWebViewController {
         guard let url = viewModel.initialURL else {
             return
         }
-        if let credentials = ServiceLocator.stores.sessionManager.defaultCredentials {
+        if let credentials = ServiceLocator.stores.sessionManager.defaultCredentials, cookies.isEmpty {
             webView.authenticateForWPComAndRedirect(to: url, credentials: credentials)
         } else {
             let request = URLRequest(url: url)

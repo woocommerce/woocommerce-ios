@@ -27,7 +27,8 @@ final class ULAccountMismatchViewController: UIViewController {
     @IBOutlet private weak var logOutButton: UIButton!
     @IBOutlet private weak var primaryButton: NUXButton!
     @IBOutlet private weak var secondaryButton: NUXButton!
-
+    @IBOutlet private weak var termsLabel: UITextView!
+    
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var errorMessage: UILabel!
     @IBOutlet private weak var extraInfoButton: UIButton!
@@ -61,6 +62,7 @@ final class ULAccountMismatchViewController: UIViewController {
         configureImageView()
         configureErrorMessage()
         configureExtraInfoButton()
+        configureTermsLabel()
 
         configurePrimaryButton()
         configureSecondaryButon()
@@ -137,6 +139,21 @@ private extension ULAccountMismatchViewController {
     func configureErrorMessage() {
         errorMessage.applyBodyStyle()
         errorMessage.attributedText = viewModel.text
+    }
+
+    func configureTermsLabel() {
+        let linkAttributes: [NSAttributedString.Key: Any] = [
+            NSAttributedString.Key.foregroundColor: UIColor.accent,
+            NSAttributedString.Key.underlineColor: UIColor.accent,
+            NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue
+        ]
+        termsLabel.linkTextAttributes = linkAttributes
+        termsLabel.isSelectable = true
+
+        viewModel.termsLabelText.sink { [weak self] text in
+            self?.termsLabel.attributedText = text
+        }
+        .store(in: &subscriptions)
     }
 
     func configureExtraInfoButton() {

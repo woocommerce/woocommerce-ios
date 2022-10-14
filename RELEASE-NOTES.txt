@@ -1,9 +1,12 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+10.9
+---
+- [***] Dropped iOS 14 support. From now we support iOS 15 and later. [https://github.com/woocommerce/woocommerce-ios/pull/7851]
+
 10.8
 -----
 - [***] Stats: Now you can add a Today's Stats Widget to your lock screen (iOS 16 only) to monitor your sales. [https://github.com/woocommerce/woocommerce-ios/pull/7839]
-- [***] Dropped iOS 14 support. From now we support iOS 15 and later. [https://github.com/woocommerce/woocommerce-ios/pull/7851]
 - [internal] In-Person Payments: add UTM parameters to card reader purchase URLs to allow attribution [https://github.com/woocommerce/woocommerce-ios/pull/7858]
 
 10.7

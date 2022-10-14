@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 10.8
+Are you loving the new stats widget in the app? Today is your lucky day! It's now possible to view your Stats Widget on your lock screen. This is available for iOS 16 only. We also improved the card reader purchase flow with better autofill so it's easier to purchase a card reader directly from the app.
+
 ## 10.7
 Exciting news! Now you can edit variation prices in bulk. All you need is to have the latest version of WooCommerce available on your store! We also focused on polishing a few things and taking care of minor bugs that our team found.
 

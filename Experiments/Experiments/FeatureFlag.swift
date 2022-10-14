@@ -74,11 +74,11 @@ public enum FeatureFlag: Int {
     ///
     case orderCreationSearchCustomers
 
-    /// Enables lock screen widgets
-    ///
-    case lockscreenWidgets
-
     /// Enables signing up for a WP.com account.
     ///
     case wpcomSignup
+
+    /// Enables In-app purchases for buying Hosted WooCommerce plans
+    ///
+    case inAppPurchases
 }

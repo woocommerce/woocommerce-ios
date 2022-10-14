@@ -105,7 +105,7 @@ final class OrdersRootViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        // Clears application icon badge and requests new reports/orders/totals data
+        // Clears application icon badge
         ServiceLocator.pushNotesManager.resetBadgeCount(type: .storeOrder)
     }
 

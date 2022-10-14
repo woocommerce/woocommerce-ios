@@ -1,5 +1,4 @@
 import Foundation
-import WooFoundation
 
 public extension Date {
     // MARK: Day

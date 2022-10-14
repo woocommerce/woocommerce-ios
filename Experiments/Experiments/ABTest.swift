@@ -10,15 +10,11 @@ public enum ABTest: String, CaseIterable {
     /// A/A test for ExPlat integration in the logged in state.
     /// Experiment ref: pbxNRc-1QS-p2
     ///
-    case aaTest202209 = "woocommerceios_explat_aa_test_logged_in_202209"
+    case aaTestLoggedIn202210 = "woocommerceios_explat_aa_test_logged_in_202210"
 
     /// A/A test to make sure there is no bias in the logged out state.
     /// Experiment ref: pbxNRc-1S0-p2
     case aaTestLoggedOut202209 = "woocommerceios_explat_aa_test_logged_out_202209"
-
-    /// A/B test for promoting linked products in Product Details.
-    /// Experiment ref: pbxNRc-1Pp-p2
-    case linkedProductsPromo = "woocommerceios_product_details_linked_products_banner"
 
     /// A/B test for the login button order on the prologues screen.
     /// Experiment ref: pbxNRc-1VA-p2
@@ -28,18 +24,34 @@ public enum ABTest: String, CaseIterable {
     public var variation: Variation {
         ExPlat.shared?.experiment(rawValue) ?? .control
     }
+
+    /// Returns the context for the given experiment.
+    ///
+    /// When adding a new experiment, add it to the appropriate case depending on its context (logged-in or logged-out experience).
+    public var context: ExperimentContext {
+        switch self {
+        case .aaTestLoggedIn202210:
+            return .loggedIn
+        case .aaTestLoggedOut202209, .loginPrologueButtonOrder:
+            return .loggedOut
+        case .null:
+            return .none
+        }
+    }
 }
 
 public extension ABTest {
-    /// Start the AB Testing platform if any experiment exists
+    /// Start the AB Testing platform if any experiment exists for the provided context
     ///
-    static func start() async {
+    static func start(for context: ExperimentContext) async {
+        let experiments = ABTest.allCases.filter { $0.context == context }
+
         await withCheckedContinuation { continuation in
-            guard ABTest.allCases.count > 1 else {
+            guard !experiments.isEmpty else {
                 return continuation.resume(returning: ())
             }
 
-            let experimentNames = ABTest.allCases.filter { $0 != .null }.map { $0.rawValue }
+            let experimentNames = experiments.map { $0.rawValue }
             ExPlat.shared?.register(experiments: experimentNames)
 
             ExPlat.shared?.refresh {
@@ -59,4 +71,12 @@ public extension Variation {
             return string.map { "treatment: \($0)" } ?? "treatment"
         }
     }
+}
+
+/// The context for an A/B testing experiment (where the experience being tested occurs).
+///
+public enum ExperimentContext: Equatable {
+    case loggedOut
+    case loggedIn
+    case none // For the `null` experiment case
 }

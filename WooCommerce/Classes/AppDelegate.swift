@@ -3,6 +3,7 @@ import CoreData
 import Storage
 import class Networking.UserAgent
 import Experiments
+import class WidgetKit.WidgetCenter
 
 import CocoaLumberjack
 import KeychainAccess
@@ -371,10 +372,11 @@ private extension AppDelegate {
         }
     }
 
-    /// Starts the AB testing platform
+    /// Starts the AB testing platform and fetches test assignments for the current context
     ///
     func startABTesting() async {
-        await ABTest.start()
+        let context: ExperimentContext = ServiceLocator.stores.isAuthenticated ? .loggedIn : .loggedOut
+        await ABTest.start(for: context)
     }
 
     /// Tracks if the application was opened via a widget tap.
@@ -382,7 +384,10 @@ private extension AppDelegate {
     func trackWidgetTappedIfNeeded(userActivity: NSUserActivity) {
         switch userActivity.activityType {
         case WooConstants.storeInfoWidgetKind:
-            ServiceLocator.analytics.track(event: .Widgets.widgetTapped(name: .todayStats))
+            let widgetFamily = userActivity.userInfo?[WidgetCenter.UserInfoKey.family] as? String
+            ServiceLocator.analytics.track(event: .Widgets.widgetTapped(name: .todayStats, family: widgetFamily))
+        case WooConstants.appLinkWidgetKind:
+            ServiceLocator.analytics.track(event: .Widgets.widgetTapped(name: .appLink))
         default:
             break
         }

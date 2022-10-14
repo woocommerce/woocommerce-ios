@@ -27,7 +27,9 @@ In the default implementation of `FeatureFlagService`, some of the feature flags
 
 To add an ExPlat experiment to the app, add a new case to the `ABTest` enum in the `Experiments` framework.
 
-Once the experiment is added to the app, define the behavior for each variation:
+Define the experiment context (`loggedOut` or `loggedIn`) in `ABTest`, depending on whether the experience being experimented on occurs in the logged-out or logged-in context. This determines whether the test assignment prioritizes the `anonid` (for logged-out experiments) or `userid` (for logged-in experiments).
+
+Once the experiment is added to the app, define the behavior for each variation (this must be in the context specified above):
 
 ```
 if ABTest.experimentName.variation == .control {

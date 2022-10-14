@@ -14,6 +14,10 @@ class InAppPurchasesRemoteTests: XCTestCase {
     ///
     let sampleSiteID: Int64 = 1234
 
+    /// Dummy Order ID
+    ///
+    let sampleOrderId: Int = 12345
+
     /// Repeat always!
     ///
     override func setUp() {
@@ -41,5 +45,31 @@ class InAppPurchasesRemoteTests: XCTestCase {
         // Then
         let identifiers = try XCTUnwrap(result?.get())
         XCTAssert(identifiers.count == 2)
+    }
+
+    func test_purchase_product_returns_created_order() throws {
+        // Given
+        let remote = InAppPurchasesRemote(network: network)
+        let receiptData = Loader.contentsOf("iap-sample-receipt")!
+
+        network.simulateResponse(requestUrlSuffix: "iap/orders", filename: "iap-order-create")
+
+        // When
+        var result: Result<Int, Error>?
+        waitForExpectation { expectation in
+            remote.createOrder(
+                for: sampleSiteID,
+                price: 2499,
+                productIdentifier: "woocommerce_entry_monthly",
+                appStoreCountryCode: "us",
+                receiptData: receiptData) { aResult in
+                    result = aResult
+                    expectation.fulfill()
+                }
+        }
+
+        // Then
+        let orderId = try XCTUnwrap(result?.get())
+        XCTAssertEqual(sampleOrderId, orderId)
     }
 }

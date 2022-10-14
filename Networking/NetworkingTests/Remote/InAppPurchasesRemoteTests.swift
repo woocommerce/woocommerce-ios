@@ -36,7 +36,7 @@ class InAppPurchasesRemoteTests: XCTestCase {
         // When
         var result: Result<[String], Error>?
         waitForExpectation { expectation in
-            remote.loadProducts(for: sampleSiteID) { aResult in
+            remote.loadProducts() { aResult in
                 result = aResult
                 expectation.fulfill()
             }

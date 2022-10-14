@@ -39,6 +39,25 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
         }
     }
 
+    /// Switches to store with the given id if it was previously synced and stored.
+    /// This is done to check whether the user has access to that store, avoiding undetermined states if we log out
+    /// from the current one and try to switch to a store they don't have access to.
+    ///
+    /// - Parameter storeID: target store ID.
+    /// - Returns: a boolean that indicates whether the site was changed.
+    ///
+    func switchToStoreIfPreviouslyStored(with storeID: Int64, onCompletion: @escaping (Bool) -> Void) {
+        self.refreshStoredSites()
+
+        let siteWasStored = self.wooCommerceSites.first(where: { $0.siteID == storeID }) != nil
+
+        guard siteWasStored else {
+            return onCompletion(false)
+        }
+
+        switchStore(with: storeID, onCompletion: onCompletion)
+    }
+
     /// A static method which allows easily to switch store. The boolean argument in `onCompletion` indicates that the site was changed.
     /// When `onCompletion` is called, the selected site ID is updated while `Site` might still not be available if the site does not exist in storage yet
     /// (e.g. a newly connected site).
@@ -47,14 +66,6 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
         guard storeID != stores.sessionManager.defaultStoreID else {
             onCompletion(false)
             return
-        }
-
-        self.refreshStoredSites()
-
-        let userCanAccessSite = self.wooCommerceSites.first(where: { $0.siteID == storeID }) != nil
-
-        guard userCanAccessSite else {
-            return onCompletion(false)
         }
 
         // This method doesn't use `[weak self]` because of this

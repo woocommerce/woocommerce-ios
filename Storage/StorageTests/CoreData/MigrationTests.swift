@@ -1401,6 +1401,18 @@ final class MigrationTests: XCTestCase {
 
         // When
         let targetContainer = try migrate(sourceContainer, to: "Model 75")
+        let targetContext = targetContainer.viewContext
+
+        // Then
+        // Check for new Customer attributes
+        let migratedCustomer = insertCustomer(to: targetContext, forModel: 75)
+        XCTAssertNotNil(migratedCustomer.entity.attributesByName["siteID"])
+
+        // Check for new CustomerSearchResult attributes
+        let migratedCustomerSearchResult = insertCustomerSearchResult(to: targetContext, forModel: 75)
+        XCTAssertNil(migratedCustomerSearchResult.entity.attributesByName["customerID"])
+        XCTAssertNotNil(migratedCustomerSearchResult.entity.attributesByName["siteID"])
+        XCTAssertNotNil(migratedCustomerSearchResult.entity.attributesByName["keyword"])
     }
 }
 
@@ -1529,17 +1541,18 @@ private extension MigrationTests {
     /// Inserts a `CustomerSearchResult` entity, providing default values for the required properties.
     @discardableResult
     func insertCustomerSearchResult(to context: NSManagedObjectContext, forModel modelVersion: Int) -> NSManagedObject {
-        let customerSearchResult = context.insert(entityName: "CustomerSearchResult", properties: [
-            "customerID": 1
-        ])
-
-        // Required since model 75
-        if modelVersion >= 75 {
-            customerSearchResult.setValue(1, forKey: "siteID")
-            customerSearchResult.setValue("", forKey: "keyword")
+        if modelVersion < 75 {
+            let customerSearchResult = context.insert(entityName: "CustomerSearchResult", properties: [
+                "customerID": 1])
+            return customerSearchResult
+        } else {
+            // Required since model 75
+            let customerSearchResult = context.insert(entityName: "CustomerSearchResult", properties: [
+                "siteID": 1,
+                "keyword": ""
+            ])
+            return customerSearchResult
         }
-
-        return customerSearchResult
     }
 
     /// Inserts a `ProductVariation` entity, providing default values for the required properties.

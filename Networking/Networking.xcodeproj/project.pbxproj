@@ -684,6 +684,7 @@
 		E18152C028F85D4A0011A0EC /* InAppPurchasesProductMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E18152BF28F85D4A0011A0EC /* InAppPurchasesProductMapper.swift */; };
 		E18152C228F85E0A0011A0EC /* iap-products.json in Resources */ = {isa = PBXBuildFile; fileRef = E18152C128F85E0A0011A0EC /* iap-products.json */; };
 		E18152C428F85E5C0011A0EC /* InAppPurchasesProductsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E18152C328F85E5C0011A0EC /* InAppPurchasesProductsMapperTests.swift */; };
+		E1A5C27228F93ED900081046 /* InAppPurchaseOrderResultMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A5C27128F93ED900081046 /* InAppPurchaseOrderResultMapperTests.swift */; };
 		EE8A86F1286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json in Resources */ = {isa = PBXBuildFile; fileRef = EE8A86F0286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json */; };
 		EECB7EE8286555180028C888 /* media-update-product-id.json in Resources */ = {isa = PBXBuildFile; fileRef = EECB7EE7286555180028C888 /* media-update-product-id.json */; };
 		FE28F6E226840DED004465C7 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6E126840DED004465C7 /* User.swift */; };
@@ -1400,6 +1401,7 @@
 		E18152BF28F85D4A0011A0EC /* InAppPurchasesProductMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchasesProductMapper.swift; sourceTree = "<group>"; };
 		E18152C128F85E0A0011A0EC /* iap-products.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "iap-products.json"; sourceTree = "<group>"; };
 		E18152C328F85E5C0011A0EC /* InAppPurchasesProductsMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchasesProductsMapperTests.swift; sourceTree = "<group>"; };
+		E1A5C27128F93ED900081046 /* InAppPurchaseOrderResultMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchaseOrderResultMapperTests.swift; sourceTree = "<group>"; };
 		EE8A86F0286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-update-product-id-in-wordpress-site.json"; sourceTree = "<group>"; };
 		EECB7EE7286555180028C888 /* media-update-product-id.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-update-product-id.json"; sourceTree = "<group>"; };
 		F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2317,6 +2319,7 @@
 				B524194221AC622500D6FC0A /* DotcomDeviceMapperTests.swift */,
 				AED8AEBB272A997500663FCC /* IgnoringResponseMapperTests.swift */,
 				E18152C328F85E5C0011A0EC /* InAppPurchasesProductsMapperTests.swift */,
+				E1A5C27128F93ED900081046 /* InAppPurchaseOrderResultMapperTests.swift */,
 				4513382527A96DB700AE5E78 /* InboxNoteMapperTests.swift */,
 				45CCFCE727A2E5020012E8CB /* InboxNoteListMapperTests.swift */,
 				B554FA922180C17200C54DFF /* NoteHashListMapperTests.swift */,
@@ -3188,6 +3191,7 @@
 				45B204BA24890A8C00FE6526 /* ProductCategoryMapperTests.swift in Sources */,
 				74749B9522413119005C4CF2 /* ProductsRemoteTests.swift in Sources */,
 				B524194321AC622500D6FC0A /* DotcomDeviceMapperTests.swift in Sources */,
+				E1A5C27228F93ED900081046 /* InAppPurchaseOrderResultMapperTests.swift in Sources */,
 				45150AA026837357006922EA /* CountryListMapperTests.swift in Sources */,
 				74D5BECE217E0F98007B0348 /* SiteSettingsRemoteTests.swift in Sources */,
 				D8FBFF1C22D51C34006E3336 /* OrderStatsRemoteV4Tests.swift in Sources */,

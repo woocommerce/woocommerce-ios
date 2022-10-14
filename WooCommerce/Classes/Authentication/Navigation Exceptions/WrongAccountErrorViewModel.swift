@@ -289,6 +289,7 @@ private extension WrongAccountErrorViewModel {
         let viewModel = JetpackConnectionWebViewModel(initialURL: url, siteURL: siteURL, completion: { [weak self] in
             self?.fetchJetpackUser(in: viewController)
         })
+        // Sends cookies from WP.org authentication to the web view to handle Jetpack connection.
         let pluginViewController = AuthenticatedWebViewController(viewModel: viewModel, cookies: network?.cookies ?? [])
         viewController.navigationController?.show(pluginViewController, sender: nil)
     }

@@ -3,9 +3,10 @@
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
 ## Model 75 (Release 10.8.0.0)
-- @iamgabrielma 2022-10-13
+- @iamgabrielma 2022-10-14
     - Added `siteID` attribute to `Customer` entity.
     - Added `siteID` attribute to `CustomerSearchResult` entity.
+    - Added `keyword` attribute to `CustomerSearchResult` entity.
     - Removed `customerID` attribute from `CustomerSearchResult` entity.
 
 ## Model 74 (Release 10.8.0.0)

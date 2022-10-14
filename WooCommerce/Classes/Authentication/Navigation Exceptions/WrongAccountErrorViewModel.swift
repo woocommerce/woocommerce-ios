@@ -125,6 +125,8 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
 
         $isSelfHostedSite
             .map { [weak self] isSelfHosted -> NSMutableAttributedString in
+                // only shows terms text if the site is self-hosted,
+                // since the user cannot handle Jetpack connection themselves on WP.com sites.
                 guard let self, isSelfHosted else {
                     return .init(string: "")
                 }

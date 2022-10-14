@@ -56,7 +56,7 @@ struct StoreInfoData {
 
 /// Type that provides data entries to the widget system.
 ///
-final class StoreInfoProvider: TimelineProvider {
+final class StoreInfoProvider: IntentTimelineProvider {
 
     /// Holds a reference to the service while a network request is being performed.
     ///
@@ -75,13 +75,13 @@ final class StoreInfoProvider: TimelineProvider {
 
     /// Quick Snapshot. Required when previewing the widget.
     ///
-    func getSnapshot(in context: Context, completion: @escaping (StoreInfoEntry) -> Void) {
+    func getSnapshot(for configuration: StoreWidgetsConfigIntent, in context: Context, completion: @escaping (StoreInfoEntry) -> Void) {
         completion(placeholder(in: context))
     }
 
     /// Real data widget.
     ///
-    func getTimeline(in context: Context, completion: @escaping (Timeline<StoreInfoEntry>) -> Void) {
+    func getTimeline(for configuration: StoreWidgetsConfigIntent, in context: Context, completion: @escaping (Timeline<StoreInfoEntry>) -> Void) {
         guard let dependencies = Self.fetchDependencies() else {
             return completion(Timeline<StoreInfoEntry>(entries: [StoreInfoEntry.notConnected], policy: .never))
         }

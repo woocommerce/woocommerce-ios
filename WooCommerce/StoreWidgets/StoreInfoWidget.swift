@@ -18,7 +18,7 @@ struct StoreInfoWidget: Widget {
     }
 
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: WooConstants.storeInfoWidgetKind, provider: StoreInfoProvider()) { entry in
+        IntentConfiguration(kind: WooConstants.storeInfoWidgetKind, intent: StoreWidgetsConfigIntent.self, provider: StoreInfoProvider()) { entry in
             StoreInfoWidgetEntryView(entry: entry)
         }
         .configurationDisplayName(Localization.title)

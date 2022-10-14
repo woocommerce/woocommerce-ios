@@ -76,7 +76,9 @@
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>To save photos from camera for Product images, or to add photos or videos to your Products or support tickets.</string>
 	<key>NSUserActivityTypes</key>
-	<array/>
+	<array>
+		<string>StoreWidgetsConfigIntent</string>
+	</array>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Noticons.ttf</string>

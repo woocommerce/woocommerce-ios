@@ -1347,16 +1347,17 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(try targetContext.count(entityName: "CustomerSearchResult"), 0)
 
         // Insert a new Customer
-        let customer = insertCustomer(to: targetContext)
-
+        let customer = insertCustomer(to: targetContext, forModel: 74)
         XCTAssertEqual(try targetContext.count(entityName: "Customer"), 1)
         XCTAssertEqual(customer.value(forKey: "customerID") as? Int64, 1)
 
         // Insert a new CustomerSearchResult
-        let customerSearchResult = insertCustomerSearchResult(to: targetContext)
-
+        let customerSearchResult = insertCustomerSearchResult(to: targetContext, forModel: 74)
         XCTAssertEqual(try targetContext.count(entityName: "CustomerSearchResult"), 1)
         XCTAssertEqual(customer.value(forKey: "customerID") as? Int64, 1)
+
+        // Check all attributes
+        XCTAssertEqual(customerSearchResult.value(forKey: "customerID") as? Int64, 1)
         XCTAssertNotNil(customer.entity.attributesByName["email"])
         XCTAssertNotNil(customer.entity.attributesByName["firstName"])
         XCTAssertNotNil(customer.entity.attributesByName["lastName"])
@@ -1382,6 +1383,24 @@ final class MigrationTests: XCTestCase {
         XCTAssertNotNil(customer.entity.attributesByName["shippingPhone"])
         XCTAssertNotNil(customer.entity.attributesByName["shippingPostcode"])
         XCTAssertNotNil(customer.entity.attributesByName["shippingState"])
+    }
+
+    func test_migrating_from_74_to_75_adds_siteID_and_keyword_attributes_to_Customer_and_CustomerSearchResult() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 74")
+        let sourceContext = sourceContainer.viewContext
+
+        let customer = insertCustomer(to: sourceContext, forModel: 74)
+        let customerSearchResult = insertCustomerSearchResult(to: sourceContext, forModel: 74)
+        try sourceContext.save()
+
+        // Confidence Check: siteID or keyword attributes should not exist in Model 74 for those entities
+        XCTAssertNil(customer.entity.attributesByName["siteID"])
+        XCTAssertNil(customerSearchResult.entity.attributesByName["siteID"])
+        XCTAssertNil(customerSearchResult.entity.attributesByName["keyword"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 75")
     }
 }
 
@@ -1469,8 +1488,8 @@ private extension MigrationTests {
 private extension MigrationTests {
     /// Inserts a `Customer` entity, providing default values for the required properties.
     @discardableResult
-    func insertCustomer(to context: NSManagedObjectContext) -> NSManagedObject {
-        context.insert(entityName: "Customer", properties: [
+    func insertCustomer(to context: NSManagedObjectContext, forModel modelVersion: Int) -> NSManagedObject {
+        let customer = context.insert(entityName: "Customer", properties: [
             "customerID": 1,
             "email": "",
             "firstName": "",
@@ -1498,14 +1517,29 @@ private extension MigrationTests {
             "shippingPostcode": "",
             "shippingState": ""
         ])
+
+        // Required since model 75
+        if modelVersion >= 75 {
+            customer.setValue(1, forKey: "siteID")
+        }
+
+        return customer
     }
 
     /// Inserts a `CustomerSearchResult` entity, providing default values for the required properties.
     @discardableResult
-    func insertCustomerSearchResult(to context: NSManagedObjectContext) -> NSManagedObject {
-        context.insert(entityName: "CustomerSearchResult", properties: [
+    func insertCustomerSearchResult(to context: NSManagedObjectContext, forModel modelVersion: Int) -> NSManagedObject {
+        let customerSearchResult = context.insert(entityName: "CustomerSearchResult", properties: [
             "customerID": 1
         ])
+
+        // Required since model 75
+        if modelVersion >= 75 {
+            customerSearchResult.setValue(1, forKey: "siteID")
+            customerSearchResult.setValue("", forKey: "keyword")
+        }
+
+        return customerSearchResult
     }
 
     /// Inserts a `ProductVariation` entity, providing default values for the required properties.

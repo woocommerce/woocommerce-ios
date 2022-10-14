@@ -8,9 +8,9 @@ extension CustomerSearchResult {
         return NSFetchRequest<CustomerSearchResult>(entityName: "CustomerSearchResult")
     }
 
-    @NSManaged public var customerID: Int64
+    @NSManaged public var siteID: Int64
+    @NSManaged public var keyword: String?
     @NSManaged public var customers: Set<Customer>?
-
 }
 
 // MARK: Generated accessors for customers
@@ -27,5 +27,4 @@ extension CustomerSearchResult {
 
     @objc(removeCustomers:)
     @NSManaged public func removeFromCustomers(_ values: NSSet)
-
 }

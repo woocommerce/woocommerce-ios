@@ -1805,7 +1805,6 @@
 		E1E649EB28461EDF0070B194 /* BetaFeaturesConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E649EA28461EDF0070B194 /* BetaFeaturesConfiguration.swift */; };
 		E1ED16E4266E10A10037B8DB /* ApplicationLogViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1ED16E3266E10A10037B8DB /* ApplicationLogViewModel.swift */; };
 		E1F52DC62668E03B00349D75 /* CardPresentModalBluetoothRequired.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F52DC52668E03B00349D75 /* CardPresentModalBluetoothRequired.swift */; };
-		E1F8379628F40764002A6C34 /* InAppPurchaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F8379528F40764002A6C34 /* InAppPurchaseService.swift */; };
 		EE0EE7A628B7415200F6061E /* CustomHelpCenterContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0EE7A528B7415200F6061E /* CustomHelpCenterContent.swift */; };
 		EE0EE7A828B74EF300F6061E /* CustomHelpCenterContentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0EE7A728B74EF300F6061E /* CustomHelpCenterContentTests.swift */; };
 		EE81B1382865BB0B0032E0D4 /* ProductImagesProductIDUpdaterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE81B1372865BB0B0032E0D4 /* ProductImagesProductIDUpdaterTests.swift */; };
@@ -3737,7 +3736,6 @@
 		E1E649EA28461EDF0070B194 /* BetaFeaturesConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BetaFeaturesConfiguration.swift; sourceTree = "<group>"; };
 		E1ED16E3266E10A10037B8DB /* ApplicationLogViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationLogViewModel.swift; sourceTree = "<group>"; };
 		E1F52DC52668E03B00349D75 /* CardPresentModalBluetoothRequired.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalBluetoothRequired.swift; sourceTree = "<group>"; };
-		E1F8379528F40764002A6C34 /* InAppPurchaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchaseService.swift; sourceTree = "<group>"; };
 		EE0EE7A528B7415200F6061E /* CustomHelpCenterContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomHelpCenterContent.swift; sourceTree = "<group>"; };
 		EE0EE7A728B74EF300F6061E /* CustomHelpCenterContentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomHelpCenterContentTests.swift; sourceTree = "<group>"; };
 		EE81B1372865BB0B0032E0D4 /* ProductImagesProductIDUpdaterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImagesProductIDUpdaterTests.swift; sourceTree = "<group>"; };
@@ -8235,7 +8233,6 @@
 			isa = PBXGroup;
 			children = (
 				D8D15F82230A17A000D48B3F /* ServiceLocator.swift */,
-				E1F8379528F40764002A6C34 /* InAppPurchaseService.swift */,
 				D8D15F84230A18AB00D48B3F /* Analytics.swift */,
 				E1C47208267A1ECC00D06DA1 /* CrashLoggingStack.swift */,
 				D8C251D8230D256F00F49782 /* NoticePresenter.swift */,
@@ -10103,7 +10100,6 @@
 				454453CA27566CDE00464AC5 /* HubMenuViewModel.swift in Sources */,
 				934CB123224EAB150005CCB9 /* main.swift in Sources */,
 				456396AE25C81D81001F1A26 /* ShippingLabelFormViewModel.swift in Sources */,
-				E1F8379628F40764002A6C34 /* InAppPurchaseService.swift in Sources */,
 				02ECD1DF24FF48D000735BE5 /* PaginationTracker.swift in Sources */,
 				02645D8627BA2DB40065DC68 /* InboxNoteRow.swift in Sources */,
 				020886572499E643001D784E /* ProductExternalLinkViewController.swift in Sources */,

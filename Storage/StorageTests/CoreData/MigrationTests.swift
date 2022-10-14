@@ -1352,7 +1352,10 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(customer.value(forKey: "customerID") as? Int64, 1)
 
         // Insert a new CustomerSearchResult
-        let customerSearchResult = insertCustomerSearchResult(to: targetContext, forModel: 74)
+        let customerSearchResult = targetContext.insert(
+            entityName: "CustomerSearchResult",
+            properties: ["customerID": 1]
+        )
         XCTAssertEqual(try targetContext.count(entityName: "CustomerSearchResult"), 1)
         XCTAssertEqual(customer.value(forKey: "customerID") as? Int64, 1)
 
@@ -1391,7 +1394,10 @@ final class MigrationTests: XCTestCase {
         let sourceContext = sourceContainer.viewContext
 
         let customer = insertCustomer(to: sourceContext, forModel: 74)
-        let customerSearchResult = insertCustomerSearchResult(to: sourceContext, forModel: 74)
+        let customerSearchResult = sourceContext.insert(
+            entityName: "CustomerSearchResult",
+            properties: ["customerID": 1]
+        )
         try sourceContext.save()
 
         // Confidence Check: siteID or keyword attributes should not exist in Model 74 for those entities
@@ -1404,15 +1410,16 @@ final class MigrationTests: XCTestCase {
         let targetContext = targetContainer.viewContext
 
         // Then
-        // Check for new Customer attributes
-        let migratedCustomer = insertCustomer(to: targetContext, forModel: 75)
+        // Check for Customer attributes after migration
+        let migratedCustomer = try XCTUnwrap(targetContext.allObjects(entityName: "Customer").first)
         XCTAssertNotNil(migratedCustomer.entity.attributesByName["siteID"])
 
-        // Check for new CustomerSearchResult attributes
-        let migratedCustomerSearchResult = insertCustomerSearchResult(to: targetContext, forModel: 75)
+        // Check for CustomerSearchResult attributes after migration
+        let migratedCustomerSearchResult = try XCTUnwrap(targetContext.allObjects(entityName: "CustomerSearchResult").first)
         XCTAssertNil(migratedCustomerSearchResult.entity.attributesByName["customerID"])
         XCTAssertNotNil(migratedCustomerSearchResult.entity.attributesByName["siteID"])
         XCTAssertNotNil(migratedCustomerSearchResult.entity.attributesByName["keyword"])
+        XCTAssertEqual(migratedCustomerSearchResult.value(forKey: "keyword") as? String, "")
     }
 }
 
@@ -1540,19 +1547,11 @@ private extension MigrationTests {
 
     /// Inserts a `CustomerSearchResult` entity, providing default values for the required properties.
     @discardableResult
-    func insertCustomerSearchResult(to context: NSManagedObjectContext, forModel modelVersion: Int) -> NSManagedObject {
-        if modelVersion < 75 {
-            let customerSearchResult = context.insert(entityName: "CustomerSearchResult", properties: [
-                "customerID": 1])
-            return customerSearchResult
-        } else {
-            // Required since model 75
-            let customerSearchResult = context.insert(entityName: "CustomerSearchResult", properties: [
-                "siteID": 1,
-                "keyword": ""
-            ])
-            return customerSearchResult
-        }
+    func insertCustomerSearchResult(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "CustomerSearchResult", properties: [
+            "siteID": 1,
+            "keyword": ""
+        ])
     }
 
     /// Inserts a `ProductVariation` entity, providing default values for the required properties.

@@ -87,7 +87,7 @@
         <relationship name="searchResults" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CustomerSearchResult" inverseName="customers" inverseEntity="CustomerSearchResult"/>
     </entity>
     <entity name="CustomerSearchResult" representedClassName="CustomerSearchResult" syncable="YES">
-        <attribute name="keyword" optional="YES" attributeType="String"/>
+        <attribute name="keyword" attributeType="String" defaultValueString=""/>
         <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="customers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Customer" inverseName="searchResults" inverseEntity="Customer"/>
     </entity>

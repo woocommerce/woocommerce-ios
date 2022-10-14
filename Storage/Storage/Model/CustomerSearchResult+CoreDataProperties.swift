@@ -8,8 +8,8 @@ extension CustomerSearchResult {
         return NSFetchRequest<CustomerSearchResult>(entityName: "CustomerSearchResult")
     }
 
+    @NSManaged public var keyword: String
     @NSManaged public var siteID: Int64
-    @NSManaged public var keyword: String?
     @NSManaged public var customers: Set<Customer>?
 }
 

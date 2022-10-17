@@ -77,8 +77,9 @@ public struct CardPresentPaymentsConfiguration {
 
     /// Given a two character country code, returns a URL where the merchant can purchase a card reader.
     ///
-    public func purchaseCardReaderUrl() -> URL {
-        URL(string: Constants.purchaseReaderForCountryUrlBase + countryCode) ?? Constants.fallbackInPersonPaymentsUrl
+    public func purchaseCardReaderUrl(utmProvider: UTMParametersProviding) -> URL {
+        let urlString = Constants.purchaseReaderForCountryUrlBase + countryCode
+        return utmProvider.urlWithUtmParams(string: urlString) ?? Constants.fallbackInPersonPaymentsUrl
     }
 }
 

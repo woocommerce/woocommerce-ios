@@ -132,6 +132,7 @@ private extension AuthenticatedWebViewController {
         guard let url = viewModel.initialURL else {
             return
         }
+
         /// Authenticate for WP.com automatically if user is logged in.
         ///
         if let credentials = ServiceLocator.stores.sessionManager.defaultCredentials {

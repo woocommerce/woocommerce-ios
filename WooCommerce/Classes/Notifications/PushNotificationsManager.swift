@@ -174,7 +174,7 @@ extension PushNotificationsManager {
             return
         }
         let action = NotificationCountAction.reset(siteID: siteID, type: type) { [weak self] in
-            self?.loadNotificationCountAndUpdateApplicationBadgeNumberAndPostNotifications(siteID: siteID, type: type)
+            self?.loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: siteID, type: type, postNotifications: false)
         }
         stores.dispatch(action)
     }
@@ -193,7 +193,7 @@ extension PushNotificationsManager {
         guard let siteID = siteID else {
             return
         }
-        loadNotificationCountAndUpdateApplicationBadgeNumberAndPostNotifications(siteID: siteID, type: nil)
+        loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: siteID, type: nil, postNotifications: true)
     }
 
     /// Registers the Device Token agains WordPress.com backend, if there's a default account.
@@ -372,9 +372,11 @@ private extension PushNotificationsManager {
         stores.dispatch(action)
     }
 
-    func loadNotificationCountAndUpdateApplicationBadgeNumberAndPostNotifications(siteID: Int64, type: Note.Kind?) {
+    func loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: Int64, type: Note.Kind?, postNotifications: Bool) {
         loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: siteID)
-        postBadgeReloadNotifications(type: type)
+        if postNotifications {
+            postBadgeReloadNotifications(type: type)
+        }
     }
 
     func loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: Int64) {
@@ -444,13 +446,18 @@ private extension PushNotificationsManager {
     func handleRemoteNotificationInAllAppStates(_ userInfo: [AnyHashable: Any]) {
         DDLogVerbose("📱 Push Notification Received: \n\(userInfo)\n")
 
-        // Badge: Update
         if let typeString = userInfo.string(forKey: APNSKey.type),
            let type = Note.Kind(rawValue: typeString),
            let siteID = siteID,
            let notificationSiteID = userInfo[APNSKey.siteID] as? Int64 {
+            // Badge: Update
             incrementNotificationCount(siteID: notificationSiteID, type: type, incrementCount: 1) { [weak self] in
-                self?.loadNotificationCountAndUpdateApplicationBadgeNumberAndPostNotifications(siteID: siteID, type: type)
+                self?.loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: siteID, type: type, postNotifications: true)
+            }
+
+            // Update related product when review notification is received
+            if type == .comment, let productID = userInfo[APNSKey.postID] as? Int64 {
+                updateProduct(productID, siteID: notificationSiteID)
             }
         }
 
@@ -480,6 +487,16 @@ private extension PushNotificationsManager {
         presentDetails(for: notification)
 
         inactiveNotificationsSubject.send(notification)
+    }
+
+    /// Reload related product when review notification is received
+    ///
+    func updateProduct(_ productID: Int64, siteID: Int64) {
+        let action = ProductAction.retrieveProduct(siteID: siteID,
+                                                   productID: productID) { _ in
+            // ResultsController<StorageProduct> will reload the Product List (ProductsViewController)
+        }
+        stores.dispatch(action)
     }
 }
 
@@ -655,6 +672,7 @@ private enum APNSKey {
     static let identifier = "note_id"
     static let type = "type"
     static let siteID = "blog"
+    static let postID = "post_id"
 }
 
 private enum AnalyticKey {

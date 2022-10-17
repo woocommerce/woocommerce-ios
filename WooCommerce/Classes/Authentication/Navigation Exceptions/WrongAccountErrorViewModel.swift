@@ -117,37 +117,9 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
 
     // MARK: - Actions
     func viewDidLoad(_ viewController: UIViewController?) {
-        siteInfoSubscription = $isSelfHostedSite
-            .dropFirst() // ignores first element
-            .sink { [weak self] isSelfHosted in
-                self?.analytics.track(event: .LoginJetpackConnection.jetpackConnectionErrorShown(selfHostedSite: isSelfHosted))
-            }
 
-        $isSelfHostedSite
-            .map { [weak self] isSelfHosted -> NSMutableAttributedString in
-                // only shows terms text if the site is self-hosted,
-                // since the user cannot handle Jetpack connection themselves on WP.com sites.
-                guard let self, isSelfHosted else {
-                    return .init(string: "")
-                }
-                let content = String.localizedStringWithFormat(Localization.termsContent, Localization.termsOfService, Localization.shareDetails)
-                let paragraph = NSMutableParagraphStyle()
-                paragraph.alignment = .center
-
-                let mutableAttributedText = NSMutableAttributedString(
-                    string: content,
-                    attributes: [.font: UIFont.footnote,
-                                 .foregroundColor: UIColor.secondaryLabel,
-                                 .paragraphStyle: paragraph]
-                )
-
-                mutableAttributedText.setAsLink(textToFind: Localization.termsOfService,
-                                                linkURL: Strings.jetpackTermsURL + self.siteURL)
-                mutableAttributedText.setAsLink(textToFind: Localization.shareDetails,
-                                                linkURL: Strings.jetpackShareDetailsURL + self.siteURL)
-                return mutableAttributedText
-            }
-            .assign(to: &$termsAttributedString)
+        trackScreenView()
+        configureTermsText()
 
         // Fetches site info if we're not sure whether the site is self-hosted.
         if siteXMLRPC.isEmpty {
@@ -205,6 +177,46 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
 
 // MARK: - Private helpers
 private extension WrongAccountErrorViewModel {
+    /// Waits for site info to log the screen view.
+    ///
+    func trackScreenView() {
+        siteInfoSubscription = $isSelfHostedSite
+            .dropFirst() // ignores first element
+            .sink { [weak self] isSelfHosted in
+                self?.analytics.track(event: .LoginJetpackConnection.jetpackConnectionErrorShown(selfHostedSite: isSelfHosted))
+            }
+    }
+
+    /// Listens to changes to the self-hosted site check to update the content of the terms text.
+    ///
+    func configureTermsText() {
+        $isSelfHostedSite
+            .map { [weak self] isSelfHosted -> NSMutableAttributedString in
+                // only shows terms text if the site is self-hosted,
+                // since the user cannot handle Jetpack connection themselves on WP.com sites.
+                guard let self, isSelfHosted else {
+                    return .init(string: "")
+                }
+                let content = String.localizedStringWithFormat(Localization.termsContent, Localization.termsOfService, Localization.shareDetails)
+                let paragraph = NSMutableParagraphStyle()
+                paragraph.alignment = .center
+
+                let mutableAttributedText = NSMutableAttributedString(
+                    string: content,
+                    attributes: [.font: UIFont.footnote,
+                                 .foregroundColor: UIColor.secondaryLabel,
+                                 .paragraphStyle: paragraph]
+                )
+
+                mutableAttributedText.setAsLink(textToFind: Localization.termsOfService,
+                                                linkURL: Strings.jetpackTermsURL + self.siteURL)
+                mutableAttributedText.setAsLink(textToFind: Localization.shareDetails,
+                                                linkURL: Strings.jetpackShareDetailsURL + self.siteURL)
+                return mutableAttributedText
+            }
+            .assign(to: &$termsAttributedString)
+    }
+
     /// Fetches the site info and show the primary button if the site is self-hosted.
     /// If the site is self-hosted, make the Connect Jetpack button visible.
     ///

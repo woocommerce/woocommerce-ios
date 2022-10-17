@@ -80,6 +80,9 @@ final class HubMenuViewModel: ObservableObject {
     ///
     func setupMenuElements() {
         menuElements = [Payments(), WoocommerceAdmin(), ViewStore(), Reviews()]
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.inAppPurchases) {
+            menuElements.append(InAppPurchases())
+        }
 
         let inboxUseCase = InboxEligibilityUseCase(stores: stores, featureFlagService: featureFlagService)
         inboxUseCase.isEligibleForInbox(siteID: siteID) { [weak self] isInboxMenuShown in
@@ -257,6 +260,17 @@ extension HubMenuViewModel {
         let badge: HubMenuBadgeType = .number(number: 0)
         let accessibilityIdentifier: String = "menu-reviews"
         let trackingOption: String = "reviews"
+    }
+
+    struct InAppPurchases: HubMenuItem {
+        static var id = "iap"
+
+        let title: String = "[Debug] IAP"
+        let icon: UIImage = UIImage(systemName: "ladybug.fill")!
+        let iconColor: UIColor = .red
+        let badge: HubMenuBadgeType = .number(number: 0)
+        let accessibilityIdentifier: String = "menu-iap"
+        let trackingOption: String = "debug-iap"
     }
 
     private enum Localization {

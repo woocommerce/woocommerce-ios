@@ -1404,22 +1404,40 @@ final class MigrationTests: XCTestCase {
         XCTAssertNil(customer.entity.attributesByName["siteID"])
         XCTAssertNil(customerSearchResult.entity.attributesByName["siteID"])
         XCTAssertNil(customerSearchResult.entity.attributesByName["keyword"])
+        // Confidence Check: These entities should exist in Model 74:
+        XCTAssertEqual(try sourceContext.count(entityName: "Customer"), 1)
+        XCTAssertEqual(try sourceContext.count(entityName: "CustomerSearchResult"), 1)
 
         // When
         let targetContainer = try migrate(sourceContainer, to: "Model 75")
         let targetContext = targetContainer.viewContext
 
         // Then
-        // Check for Customer attributes after migration
-        let migratedCustomer = try XCTUnwrap(targetContext.allObjects(entityName: "Customer").first)
-        XCTAssertNotNil(migratedCustomer.entity.attributesByName["siteID"])
+        // After migration, we're deleting the entities and regenerating them due to heavyweight migration (WooCommerceModelV74toV75) as the new ones have siteID
+        XCTAssertEqual(try sourceContext.count(entityName: "Customer"), 0)
+        XCTAssertEqual(try sourceContext.count(entityName: "CustomerSearchResult"), 0)
+        // Inserting new objects after the migration to confirm the new attributes are correct
+        let newCustomer = insertCustomer(to: targetContext, forModel: 75)
+        let newCustomerSearchResult = targetContext.insert(
+            entityName: "CustomerSearchResult",
+            properties: [
+                "siteID": 1,
+                "keyword": ""
+            ]
+        )
+        try targetContext.save()
+
+        // Check for Customer and CustomerSearchResult attributes after migration
+        XCTAssertNotNil(newCustomer.entity.attributesByName["siteID"])
+        XCTAssertNotNil(newCustomer.entity.attributesByName["customerID"])
+        XCTAssertEqual(newCustomer.value(forKey: "siteID") as? Int64, 1)
+        XCTAssertEqual(newCustomer.value(forKey: "customerID") as? Int64, 1)
 
         // Check for CustomerSearchResult attributes after migration
-        let migratedCustomerSearchResult = try XCTUnwrap(targetContext.allObjects(entityName: "CustomerSearchResult").first)
-        XCTAssertNil(migratedCustomerSearchResult.entity.attributesByName["customerID"])
-        XCTAssertNotNil(migratedCustomerSearchResult.entity.attributesByName["siteID"])
-        XCTAssertNotNil(migratedCustomerSearchResult.entity.attributesByName["keyword"])
-        XCTAssertEqual(migratedCustomerSearchResult.value(forKey: "keyword") as? String, "")
+        XCTAssertNotNil(newCustomerSearchResult.entity.attributesByName["siteID"])
+        XCTAssertNotNil(newCustomerSearchResult.entity.attributesByName["keyword"])
+        XCTAssertEqual(newCustomerSearchResult.value(forKey: "siteID") as? Int64, 1)
+        XCTAssertEqual(newCustomerSearchResult.value(forKey: "keyword") as? String, "")
     }
 }
 

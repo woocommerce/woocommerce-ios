@@ -19,6 +19,8 @@ public protocol MultipartFormData {
 ///
 public protocol Network {
 
+    var session: URLSession { get }
+
     /// Executes the specified Network Request. Upon completion, the payload will be sent back to the caller as a Data instance.
     ///
     /// - Parameters:

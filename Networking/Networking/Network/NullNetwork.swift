@@ -7,6 +7,9 @@ import Alamofire
 /// It does nothing at all.
 ///
 public final class NullNetwork: Network {
+    
+    public var session: URLSession { URLSession(configuration: .default) }
+
     public init() { }
 
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) { }

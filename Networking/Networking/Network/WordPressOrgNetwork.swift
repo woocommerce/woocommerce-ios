@@ -25,6 +25,8 @@ public final class WordPressOrgNetwork: Network {
         return sessionManager
     }()
 
+    public var session: URLSession { sessionManager.session }
+
     public init(authenticator: Authenticator? = nil, userAgent: String = UserAgent.defaultUserAgent) {
         self.authenticator = authenticator
         self.userAgent = userAgent
@@ -132,13 +134,5 @@ private extension WordPressOrgNetwork {
         sessionManager.adapter = authenticator
         sessionManager.retrier = authenticator
         return sessionManager
-    }
-}
-
-public extension WordPressOrgNetwork {
-    /// Retrieved cookies from authentication to be shared with a web view
-    ///
-    var cookies: [HTTPCookie] {
-        sessionManager.session.configuration.httpCookieStorage?.cookies ?? []
     }
 }

@@ -35,7 +35,7 @@ final class StoreInfoDataService {
     ///
     func fetchStats(for storeID: Int64, timeRange: StatsTimeRange) async throws -> Stats {
         // Prepare them to run in parallel
-        async let revenueAndOrdersRequest = fetchTodaysRevenueAndOrders(for: storeID)
+        async let revenueAndOrdersRequest = fetchRevenueAndOrders(for: storeID, timeRange: timeRange)
         async let visitorsRequest = fetchVisitors(for: storeID, timeRange: timeRange)
 
         // Wait for for response
@@ -56,15 +56,17 @@ private extension StoreInfoDataService {
 
     /// Async wrapper that fetches todays revenues & orders.
     ///
-    func fetchTodaysRevenueAndOrders(for storeID: Int64) async throws -> OrderStatsV4 {
+    func fetchRevenueAndOrders(for storeID: Int64, timeRange: StatsTimeRange) async throws -> OrderStatsV4 {
         try await withCheckedThrowingContinuation { continuation in
             // `WKWebView` is accessed internally, we are forced to dispatch the call in the main thread.
             Task { @MainActor in
+                let earliestDateToInclude = timeRange.earliestDate(latestDate: Date(), siteTimezone: .current)
+                let latestDateToInclude = timeRange.latestDate(currentDate: Date(), siteTimezone: .current)
                 orderStatsRemoteV4.loadOrderStats(for: storeID,
-                                                  unit: .hourly,
-                                                  earliestDateToInclude: Date().startOfDay(timezone: .current),
-                                                  latestDateToInclude: Date().endOfDay(timezone: .current),
-                                                  quantity: 24,
+                                                  unit: timeRange.intervalGranularity,
+                                                  earliestDateToInclude: earliestDateToInclude,
+                                                  latestDateToInclude: latestDateToInclude,
+                                                  quantity: timeRange.maxNumberOfIntervals,
                                                   forceRefresh: true) { result in
                     continuation.resume(with: result)
                 }

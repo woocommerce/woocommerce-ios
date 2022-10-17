@@ -1415,8 +1415,8 @@ final class MigrationTests: XCTestCase {
         // Then
         // After migration, we're deleting the entities and regenerating them due to heavyweight migration
         // in WooCommerceModelV74toV75, as the new ones have siteID
-        XCTAssertEqual(try sourceContext.count(entityName: "Customer"), 0)
-        XCTAssertEqual(try sourceContext.count(entityName: "CustomerSearchResult"), 0)
+        XCTAssertEqual(try targetContext.count(entityName: "Customer"), 0)
+        XCTAssertEqual(try targetContext.count(entityName: "CustomerSearchResult"), 0)
         // Inserting new objects after the migration to confirm the new attributes are correct
         let newCustomer = insertCustomer(to: targetContext, forModel: 75)
         let newCustomerSearchResult = targetContext.insert(

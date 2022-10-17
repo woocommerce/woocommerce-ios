@@ -36,7 +36,7 @@ final class StoreInfoDataService {
     func fetchStats(for storeID: Int64, timeRange: StatsTimeRange) async throws -> Stats {
         // Prepare them to run in parallel
         async let revenueAndOrdersRequest = fetchTodaysRevenueAndOrders(for: storeID)
-        async let visitorsRequest = fetchTodaysVisitors(for: storeID)
+        async let visitorsRequest = fetchVisitors(for: storeID, timeRange: timeRange)
 
         // Wait for for response
         let (revenueAndOrders, visitors) = try await (revenueAndOrdersRequest, visitorsRequest)
@@ -72,16 +72,19 @@ private extension StoreInfoDataService {
         }
     }
 
-    /// Async wrapper that fetches todays visitors.
+    /// Async wrapper that fetches visitors.
     ///
-    func fetchTodaysVisitors(for storeID: Int64) async throws -> SiteVisitStats {
+    func fetchVisitors(for storeID: Int64, timeRange: StatsTimeRange) async throws -> SiteVisitStats {
         try await withCheckedThrowingContinuation { continuation in
-            // `WKWebView` is accessed internally, we are foreced to dispatch the call in the main thread.
+            // `WKWebView` is accessed internally, we are forced to dispatch the call in the main thread.
             Task { @MainActor in
+                let latestDateToInclude = timeRange.latestDate(currentDate: Date(), siteTimezone: .current)
+                let quantity = timeRange.siteVisitStatsQuantity(date: latestDateToInclude, siteTimezone: .current)
+
                 siteVisitStatsRemote.loadSiteVisitorStats(for: storeID,
-                                                          unit: .day,
-                                                          latestDateToInclude: Date().endOfDay(timezone: .current),
-                                                          quantity: 1) { result in
+                                                          unit: timeRange.siteVisitStatsGranularity,
+                                                          latestDateToInclude: latestDateToInclude,
+                                                          quantity: quantity) { result in
                     continuation.resume(with: result)
                 }
             }

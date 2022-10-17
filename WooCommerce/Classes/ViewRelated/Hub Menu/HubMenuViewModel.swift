@@ -4,6 +4,7 @@ import SwiftUI
 import Combine
 import Experiments
 import Yosemite
+import Storage
 
 extension NSNotification.Name {
     /// Posted whenever the hub menu view did appear.
@@ -54,6 +55,7 @@ final class HubMenuViewModel: ObservableObject {
 
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
+    private let generalAppSettings: GeneralAppSettingsStorage
 
     private var productReviewFromNoteParcel: ProductReviewFromNoteParcel?
 
@@ -64,11 +66,13 @@ final class HubMenuViewModel: ObservableObject {
     init(siteID: Int64,
          navigationController: UINavigationController? = nil,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         generalAppSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings) {
         self.siteID = siteID
         self.navigationController = navigationController
         self.stores = stores
         self.featureFlagService = featureFlagService
+        self.generalAppSettings = generalAppSettings
         observeSiteForUIUpdates()
     }
 
@@ -80,7 +84,7 @@ final class HubMenuViewModel: ObservableObject {
     ///
     func setupMenuElements() {
         menuElements = [Payments(), WoocommerceAdmin(), ViewStore(), Reviews()]
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.inAppPurchases) {
+        if generalAppSettings.betaFeatureEnabled(.inAppPurchases) {
             menuElements.append(InAppPurchases())
         }
 

@@ -47,9 +47,9 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
     /// - Returns: a boolean that indicates whether the site was changed.
     ///
     func switchToStoreIfSiteIsStored(with storeID: Int64, onCompletion: @escaping (Bool) -> Void) {
-        self.refreshStoredSites()
+        refreshStoredSites()
 
-        let siteWasStored = self.wooCommerceSites.first(where: { $0.siteID == storeID }) != nil
+        let siteWasStored = wooCommerceSites.first(where: { $0.siteID == storeID }) != nil
 
         guard siteWasStored else {
             return onCompletion(false)

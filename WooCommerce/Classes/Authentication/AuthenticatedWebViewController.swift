@@ -31,14 +31,10 @@ final class AuthenticatedWebViewController: UIViewController {
     ///
     private let wporgCredentials: WordPressOrgCredentials?
 
-    /// Cookies to be sent to the web view before loading.
-    ///
-    private let cookies: [HTTPCookie]
 
-    init(viewModel: AuthenticatedWebViewModel, wporgCredentials: WordPressOrgCredentials? = nil, cookies: [HTTPCookie] = []) {
+    init(viewModel: AuthenticatedWebViewModel, wporgCredentials: WordPressOrgCredentials? = nil) {
         self.viewModel = viewModel
         self.wporgCredentials = wporgCredentials
-        self.cookies = cookies
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -128,19 +124,19 @@ private extension AuthenticatedWebViewController {
             loadContent()
         }
     }
+}
 
-    private func loadContent() {
+// MARK: - Helper methods
+private extension AuthenticatedWebViewController {
+    func loadContent() {
         guard let url = viewModel.initialURL else {
             return
         }
-        /// Only authenticate for WP.com automatically if no cookies are provided.
+        /// Authenticate for WP.com automatically if user is logged in.
         ///
-        if let credentials = ServiceLocator.stores.sessionManager.defaultCredentials, cookies.isEmpty {
+        if let credentials = ServiceLocator.stores.sessionManager.defaultCredentials {
             webView.authenticateForWPComAndRedirect(to: url, credentials: credentials)
         } else {
-            for cookie in cookies {
-                webView.configuration.websiteDataStore.httpCookieStore.setCookie(cookie)
-            }
             let request = URLRequest(url: url)
             webView.load(request)
         }

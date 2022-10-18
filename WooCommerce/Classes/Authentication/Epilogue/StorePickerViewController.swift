@@ -524,7 +524,7 @@ private extension StorePickerViewController {
             return
         }
         Task { @MainActor in
-            await ABTest.start()
+            await ABTest.start(for: .loggedIn)
         }
     }
 }

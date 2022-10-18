@@ -119,6 +119,17 @@ final class ProductCategoryViewModelBuilderTests: XCTestCase {
             _ = ProductCategoryListViewModel.CellViewModelBuilder.viewModels(from: allCategories, selectedCategories: selectedCategories)
         }
     }
+
+    func test_viewmodel_decodes_HTML_in_category_name() {
+        // Given
+        let category = ProductCategory(categoryID: 123, siteID: sampleSiteID, parentID: 0, name: "Test &amp; Test", slug: "test-test")
+
+        // When
+        let viewModels = ProductCategoryListViewModel.CellViewModelBuilder.viewModels(from: [category], selectedCategories: [])
+
+        // Then
+        XCTAssertEqual(viewModels.first?.name, "Test & Test")
+    }
 }
 
 // MARK: Helpers

@@ -147,29 +147,33 @@ final class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(coupon, storedCoupon)
     }
 
-    func test_loadCustomer_by_customerID() throws {
+    func test_loadCustomer_by_siteID_and_customerID() throws {
         // Given
         let customerID: Int64 = 123
         let customer = storage.insertNewObject(ofType: Customer.self)
+        customer.siteID = sampleSiteID
         customer.customerID = customerID
 
         // When
         let storedCustomer = try XCTUnwrap(storage.loadCustomer(siteID: sampleSiteID, customerID: customerID))
 
         // Then
+        XCTAssertEqual(storedCustomer.siteID, sampleSiteID)
         XCTAssertEqual(customer, storedCustomer)
     }
 
-    func test_loadCustomerSearchResult_by_customerID() throws {
+    func test_loadCustomerSearchResult_by_siteID_and_keyword() throws {
         // Given
-        let customerID: Int64 = 123
+        let keyword: String = "some keyword"
         let customerSearchResult = storage.insertNewObject(ofType: CustomerSearchResult.self)
-        customerSearchResult.customerID = customerID
+        customerSearchResult.siteID = sampleSiteID
+        customerSearchResult.keyword = keyword
 
         // When
-        let storedCustomerSearchResult = try XCTUnwrap(storage.loadCustomerSearchResult(siteID: sampleSiteID, customerID: customerID))
+        let storedCustomerSearchResult = try XCTUnwrap(storage.loadCustomerSearchResult(siteID: sampleSiteID, keyword: keyword ))
 
         // Then
+        XCTAssertEqual(customerSearchResult.siteID, sampleSiteID)
         XCTAssertEqual(customerSearchResult, storedCustomerSearchResult)
     }
 

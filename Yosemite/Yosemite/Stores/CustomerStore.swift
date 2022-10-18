@@ -6,12 +6,7 @@ public final class CustomerStore: Store {
 
     private let customerRemote: CustomerRemote
     private let searchRemote: WCAnalyticsCustomerRemote
-
-    // 1 - We need access to Storage, and to write operations:
-    // Returns a shared derived storage instance dedicated for write operations
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
+    private let sharedDerivedStorage: StorageType
 
     init(dispatcher: Dispatcher,
          storageManager: StorageManagerType,
@@ -20,6 +15,7 @@ public final class CustomerStore: Store {
          searchRemote: WCAnalyticsCustomerRemote) {
         self.customerRemote = customerRemote
         self.searchRemote = searchRemote
+        self.sharedDerivedStorage = storageManager.writerDerivedStorage
 
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
@@ -143,20 +139,20 @@ private extension CustomerStore {
                                              readOnlySearchResults: [Networking.WCAnalyticsCustomer],
                                              in storage: StorageType,
                                              onCompletion: @escaping () -> Void) {
-        for searchResult in readOnlySearchResults {
-            let storageSearchResult: Storage.CustomerSearchResult = {
-                if let storedSearchResult = storage.loadCustomerSearchResult(siteID: siteID, customerID: searchResult.userID) {
-                    return storedSearchResult
-                } else {
-                    return storage.insertNewObject(ofType: Storage.CustomerSearchResult.self)
-                }
-            }()
+//        for searchResult in readOnlySearchResults {
+//            let storageSearchResult: Storage.CustomerSearchResult = {
+//                if let storedSearchResult = storage.loadCustomerSearchResult(siteID: siteID, customerID: searchResult.userID) {
+//                    return storedSearchResult
+//                } else {
+//                    return storage.insertNewObject(ofType: Storage.CustomerSearchResult.self)
+//                }
+//            }()
             // Update
-            storageSearchResult.update(with: searchResult)
-        }
+//            storageSearchResult.update(with: searchResult)
+//        }
     }
 
-    /// Inserts or updates Customer entities in Storage
+    /// Inserts or updates Customer entities into Storage
     ///
     private func upsertCustomer(siteID: Int64, readOnlyCustomer: Networking.Customer, in storage: StorageType, onCompletion: @escaping () -> Void) {
 
@@ -175,8 +171,10 @@ private extension CustomerStore {
         // If doesn't, insert a new one in Storage
         let storageCustomer: Storage.Customer = {
             if let storedCustomer = storage.loadCustomer(siteID: siteID, customerID: networkingCustomer.customerID) {
+                print("Customer exists on Storage. ID: \(networkingCustomer.customerID)")
                 return storedCustomer
             } else {
+                print("Customer does not exist on Storage. ID: \(networkingCustomer.customerID). Inserting new")
                 return storage.insertNewObject(ofType: Storage.Customer.self)
             }
         }()

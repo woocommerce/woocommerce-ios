@@ -604,13 +604,13 @@ public extension StorageType {
     /// Returns a single Customer given a `CustomerID`
     ///
     func loadCustomer(siteID: Int64, customerID: Int64) -> Customer? {
-        let predicate = \Customer.customerID == customerID
+        let predicate = \Customer.siteID == siteID && \Customer.customerID == customerID
         return firstObject(ofType: Customer.self, matching: predicate)
     }
     /// Returns a CustomerSearchResult given a `CustomerID`
     ///
-    func loadCustomerSearchResult(siteID: Int64, customerID: Int64) -> CustomerSearchResult? {
-        let predicate = \CustomerSearchResult.customerID == customerID
+    func loadCustomerSearchResult(siteID: Int64, keyword: String) -> CustomerSearchResult? {
+        let predicate = \CustomerSearchResult.siteID == siteID && \CustomerSearchResult.keyword == keyword
         return firstObject(ofType: CustomerSearchResult.self, matching: predicate)
     }
 

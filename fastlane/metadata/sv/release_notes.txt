@@ -1,3 +1,3 @@
-Spännande nyheter! De är nu möjligt att söka efter en produkt genom att ange dess SKU. Allt som krävs är att du har den senaste versionen av WooCommerce för din butik. Vi har också fokuserat på att förfina ett par saker och att åtgärda några mindre fel som vårt team hittade. Vi har exempelvis gjort det enklare för dig att logga in i appen och åtgärdat ett sällsynt problem som orsakade en krasch vid val av butik i butiksväljaren.
+Spännande nyheter! Nu kan du massredigera variationer. Allt som krävs är att du har den senaste versionen av WooCommerce för din butik. Vi har också fokuserat på att förfina ett par saker och att åtgärda några mindre fel som vårt team hittade.
 
 Fortsätt att lämna feedback. Det hjälper oss att lista ut vad vi ska hitta på härnäst.

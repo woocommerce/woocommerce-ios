@@ -10,7 +10,7 @@ public enum ABTest: String, CaseIterable {
     /// A/A test for ExPlat integration in the logged in state.
     /// Experiment ref: pbxNRc-1QS-p2
     ///
-    case aaTest202209 = "woocommerceios_explat_aa_test_logged_in_202209"
+    case aaTestLoggedIn202210 = "woocommerceios_explat_aa_test_logged_in_202210"
 
     /// A/A test to make sure there is no bias in the logged out state.
     /// Experiment ref: pbxNRc-1S0-p2
@@ -30,7 +30,7 @@ public enum ABTest: String, CaseIterable {
     /// When adding a new experiment, add it to the appropriate case depending on its context (logged-in or logged-out experience).
     public var context: ExperimentContext {
         switch self {
-        case .aaTest202209:
+        case .aaTestLoggedIn202210:
             return .loggedIn
         case .aaTestLoggedOut202209, .loginPrologueButtonOrder:
             return .loggedOut

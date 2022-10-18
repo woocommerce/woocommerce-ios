@@ -41,6 +41,13 @@ ALPHA_BUNDLE_IDENTIFIERS = [
   "#{ALPHA_VERSION_BUNDLE_IDENTIFIER}.storewidgets"
 ].freeze
 
+# Shared options to use when invoking `gym` / `build_app`.
+#
+# - `manageAppVersionAndBuildNumber: false` prevents `xcodebuild` from bumping
+#   the build number when extracting an archive into an IPA file. We want to
+#   use the build number we set!
+COMMON_EXPORT_OPTIONS = { manageAppVersionAndBuildNumber: false }.freeze
+
 TEST_SCHEME = 'WooCommerce'
 
 # List of `.strings` files manually maintained by developers (as opposed to being automatically extracted from the code)
@@ -442,11 +449,13 @@ platform :ios do
 
     appstore_code_signing
 
-    gym(scheme: 'WooCommerce', workspace: './WooCommerce.xcworkspace',
-        clean: true, export_team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
-        export_options: {
-          method: 'app-store'
-        })
+    gym(
+      scheme: 'WooCommerce',
+      workspace: './WooCommerce.xcworkspace',
+      clean: true,
+      export_team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
+      export_options: { **COMMON_EXPORT_OPTIONS, method: 'app-store' }
+    )
 
     testflight(
       skip_waiting_for_build_processing: true,
@@ -511,7 +520,11 @@ platform :ios do
       clean: true,
       output_directory: 'build',
       export_team_id: ENV.fetch('INT_EXPORT_TEAM_ID'),
-      export_options: { method: 'enterprise', iCloudContainerEnvironment: 'Production' }
+      export_options: {
+        **COMMON_EXPORT_OPTIONS,
+        method: 'enterprise',
+        iCloudContainerEnvironment: 'Production'
+      }
     )
 
     appcenter_upload(

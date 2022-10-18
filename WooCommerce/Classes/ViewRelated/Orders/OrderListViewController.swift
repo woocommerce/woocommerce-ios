@@ -4,8 +4,8 @@ import Gridicons
 import Yosemite
 import WordPressUI
 import SafariServices
-import StoreKit
 import SwiftUI
+import WooFoundation
 
 // Used for protocol conformance of IndicatorInfoProvider only.
 import XLPagerTabStrip
@@ -416,9 +416,8 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
         let view = FeatureAnnouncementCardView(viewModel: viewModel.upsellCardReadersAnnouncementViewModel,
                                                dismiss: { [weak self] in
             self?.viewModel.dismissUpsellCardReadersBanner()
-        }, callToAction: {
-            let configuration = CardPresentConfigurationLoader().configuration
-            WebviewHelper.launch(configuration.purchaseCardReaderUrl(), with: self)
+        }, callToAction: { [weak self] in
+            self?.openCardReaderProductPageInWebView()
         })
             .background(Color(.listForeground))
 
@@ -430,6 +429,33 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
         topBannerView = hostingView
 
         showTopBannerView()
+    }
+
+    private func openCardReaderProductPageInWebView() {
+        let configuration = CardPresentConfigurationLoader().configuration
+        let url = configuration.purchaseCardReaderUrl(utmProvider: viewModel.upsellCardReadersCampaign.utmProvider)
+        let cardReaderWebview = makeCardReaderProductPageWebView(url: url)
+        let hostingController = UIHostingController(rootView: cardReaderWebview)
+        present(hostingController, animated: true, completion: nil)
+    }
+
+    private func makeCardReaderProductPageWebView(url: URL) -> some View {
+        return NavigationView {
+            AuthenticatedWebView(isPresented: .constant(true),
+                                 url: url)
+            .navigationTitle(UpsellCardReadersCampaign.Localization.cardReaderWebViewTitle)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(action: { [weak self] in
+                        self?.dismiss(animated: true)
+                    }, label: {
+                        Text(UpsellCardReadersCampaign.Localization.cardReaderWebViewDoneButtonTitle)
+                    })
+                }
+            }
+        }
+        .wooNavigationBarStyle()
     }
 
     func updateUpsellCardReaderTopBannerVisibility(with newCollection: UITraitCollection) {

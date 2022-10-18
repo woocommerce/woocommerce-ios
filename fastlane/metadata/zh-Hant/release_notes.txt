@@ -1,3 +1,3 @@
-Exciting news! It's now possible to search for a product by its SKU. All you need is to have the latest version of WooCommerce available on your store! We also focused on polishing a few things and taking care of minor bugs that our team found, like making it easier for you to login to the app and fixing a rare crash when selecting a store in the store picker.
+好消息！ 現在你可以大量編輯款式價格。 只要你的商店安裝最新版本的 WooCommerce 即可！ 我們也改善了一些項目，並修復團隊發現的小錯誤。
 
 歡迎提供意見回饋；這有助於我們找到接下來努力的方向。

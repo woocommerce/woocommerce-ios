@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-10-06 17:54:03+0000 */
+/* Translation-Revision-Date: 2022-10-12 15:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -1929,6 +1929,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Instruction text on the initial email address entry screen. */
 "Enter your email address to log in or create a WordPress.com account." = "이메일 주소를 입력하여 로그인하거나 워드프레스닷컴 계정을 만드세요.";
+
+/* Sign in instructions on the 'log in using WordPress.com account' screen. */
+"Enter your email address to log in to manage your WooCommerce stores or create a WordPress.com account." = "우커머스 스토어를 관리하거나 워드프레스닷컴 계정을 생성하려면 이메일 주소를 사용하여 로그인하세요.";
 
 /* Button title. Takes the user to the login by site address flow. */
 "Enter your existing site address" = "이미 있는 사이트 주소 입력";
@@ -6246,6 +6249,18 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Title label when the widget does not have a logged-in store. */
 "storeWidgets.notLoggedInView.notLoggedIn" = "로그인하여 오늘의 통계를 보세요.";
+
+/* Title label when the widget can't fetch data. Should fit in 1 line on lock screen */
+"storeWidgets.storeInfoInlineWidget.noData" = "수익: ⚠ 데이터 없음";
+
+/* Revenue title label for the store info widget. %1$@ is the revenue amount. */
+"storeWidgets.storeInfoInlineWidget.revenueTitle" = "수익: %1$@";
+
+/* Label when the widget can't fetch data. */
+"storeWidgets.storeInfoRectangularWidget.noData" = "⚠ 데이터 없음";
+
+/* Revenue title label for the store info widget */
+"storeWidgets.storeInfoRectangularWidget.revenue" = "수익";
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "오늘의 통계를 가져올 수 없음";

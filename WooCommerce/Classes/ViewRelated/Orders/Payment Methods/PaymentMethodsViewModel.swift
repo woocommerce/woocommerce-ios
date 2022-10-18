@@ -1,8 +1,8 @@
-//import Experiments
 import Foundation
 import Yosemite
 import Combine
 import UIKit
+import WooFoundation
 
 import protocol Storage.StorageManagerType
 
@@ -51,7 +51,7 @@ final class PaymentMethodsViewModel: ObservableObject {
     /// Returns the URL where the merchant can purchase a card reader based on store country code
     ///
     var purchaseCardReaderUrl: URL {
-        cardPresentPaymentsConfiguration.purchaseCardReaderUrl()
+        cardPresentPaymentsConfiguration.purchaseCardReaderUrl(utmProvider: upsellCardReadersCampaign.utmProvider)
     }
 
     /// Store's ID.
@@ -103,7 +103,7 @@ final class PaymentMethodsViewModel: ObservableObject {
 
     private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
-    private let upsellCardReadersCampaign =  UpsellCardReadersCampaign(source: .paymentMethods)
+    private let upsellCardReadersCampaign = UpsellCardReadersCampaign(source: .paymentMethods)
 
     var upsellCardReadersAnnouncementViewModel: FeatureAnnouncementCardViewModel {
         .init(analytics: analytics,

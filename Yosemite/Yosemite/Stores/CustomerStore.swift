@@ -94,8 +94,9 @@ public final class CustomerStore: Store {
                 guard let self else { return }
                 switch result {
                 case .success(let customer):
-                    self.upsertCustomer(siteID: siteID, readOnlyCustomer: customer, in: self.sharedDerivedStorage, onCompletion: {})
-                    onCompletion(.success(customer))
+                    self.upsertCustomer(siteID: siteID, readOnlyCustomer: customer, in: self.sharedDerivedStorage, onCompletion: {
+                        onCompletion(.success(customer))
+                    })
                 case .failure(let error):
                     onCompletion(.failure(error))
                 }
@@ -156,29 +157,24 @@ private extension CustomerStore {
     ///
     private func upsertCustomer(siteID: Int64, readOnlyCustomer: Networking.Customer, in storage: StorageType, onCompletion: @escaping () -> Void) {
 
-        // 2. Differentiate between immutable Customer that comes from the Networking layer, and what we upsert in Storage
-        let networkingCustomer: Networking.Customer = {
-            return Customer(
-                customerID: readOnlyCustomer.customerID,
-                email: readOnlyCustomer.email,
-                firstName: readOnlyCustomer.firstName,
-                lastName: readOnlyCustomer.lastName,
-                billing: readOnlyCustomer.billing,
-                shipping: readOnlyCustomer.shipping
-            )
-        }()
-        // If the specific customerID for that siteID already exists, return it
-        // If doesn't, insert a new one in Storage
-        let storageCustomer: Storage.Customer = {
-            if let storedCustomer = storage.loadCustomer(siteID: siteID, customerID: networkingCustomer.customerID) {
-                print("Customer exists on Storage. ID: \(networkingCustomer.customerID)")
-                return storedCustomer
-            } else {
-                print("Customer does not exist on Storage. ID: \(networkingCustomer.customerID). Inserting new")
-                return storage.insertNewObject(ofType: Storage.Customer.self)
-            }
-        }()
-        // 3. Update the entity
-        storageCustomer.update(with: readOnlyCustomer)
+        storage.perform {
+            // If the specific customerID for that siteID already exists, return it
+            // If doesn't, insert a new one in Storage
+            let storageCustomer: Storage.Customer = {
+                if let storedCustomer = storage.loadCustomer(siteID: siteID, customerID: readOnlyCustomer.customerID) {
+                    print("Customer exists on Storage. ID: \(readOnlyCustomer.customerID)")
+                    return storedCustomer
+                } else {
+                    print("Customer does not exist on Storage. ID: \(readOnlyCustomer.customerID). Inserting new")
+                    return storage.insertNewObject(ofType: Storage.Customer.self)
+                }
+            }()
+            // 3. Update the entity
+            storageCustomer.update(with: readOnlyCustomer)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: storage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
     }
 }

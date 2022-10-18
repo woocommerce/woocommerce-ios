@@ -100,6 +100,8 @@ public class ProductStore: Store {
             validateProductSKU(sku, siteID: siteID, onCompletion: onCompletion)
         case let .replaceProductLocally(product, onCompletion):
             replaceProductLocally(product: product, onCompletion: onCompletion)
+        case let .checkForProducts(siteID: siteID, onCompletion: onCompletion):
+            checkForProducts(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -386,6 +388,19 @@ private extension ProductStore {
     ///
     func replaceProductLocally(product: Product, onCompletion: @escaping () -> Void) {
         upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: product.siteID, onCompletion: onCompletion)
+    }
+
+    /// Checks if the store has at least one product
+    ///
+    func checkForProducts(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+        remote.loadProductIDs(for: siteID, pageNumber: 1, pageSize: 1) { result in
+            switch result {
+            case .success(let ids):
+                onCompletion(.success(!ids.isEmpty))
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
     }
 }
 

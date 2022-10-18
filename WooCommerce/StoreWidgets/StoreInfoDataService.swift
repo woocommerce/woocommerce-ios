@@ -17,7 +17,7 @@ final class StoreInfoDataService {
     ///
     private var orderStatsRemoteV4: OrderStatsRemoteV4
 
-    /// Visitors remoute source
+    /// Visitors remote source
     ///
     private var siteVisitStatsRemote: SiteVisitStatsRemote
 
@@ -31,9 +31,9 @@ final class StoreInfoDataService {
         siteVisitStatsRemote = SiteVisitStatsRemote(network: network)
     }
 
-    /// Async function that fetches todays stats data.
+    /// Async function that fetches stats data for given time range.
     ///
-    func fetchTodayStats(for storeID: Int64) async throws -> Stats {
+    func fetchStats(for storeID: Int64, timeRange: StatsTimeRange) async throws -> Stats {
         // Prepare them to run in parallel
         async let revenueAndOrdersRequest = fetchTodaysRevenueAndOrders(for: storeID)
         async let visitorsRequest = fetchTodaysVisitors(for: storeID)

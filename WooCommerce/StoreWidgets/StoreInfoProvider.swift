@@ -90,7 +90,7 @@ final class StoreInfoProvider: IntentTimelineProvider {
         networkService = strongService
         Task {
             do {
-                let todayStats = try await strongService.fetchTodayStats(for: dependencies.storeID)
+                let todayStats = try await strongService.fetchStats(for: dependencies.storeID, timeRange: StatsTimeRange(configuration.timeRange))
                 let entry = Self.dataEntry(for: todayStats, with: dependencies)
                 let reloadDate = Date(timeIntervalSinceNow: reloadInterval)
                 let timeline = Timeline<StoreInfoEntry>(entries: [entry], policy: .after(reloadDate))

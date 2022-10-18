@@ -716,14 +716,14 @@ private extension ProductFormViewController {
 // MARK: Navigation actions
 //
 private extension ProductFormViewController {
-    func saveProduct(status: ProductStatus? = nil) {
+    func saveProduct(status: ProductStatus? = nil, onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void = { _ in }) {
         let productStatus = status ?? product.status
         let messageType = viewModel.saveMessageType(for: productStatus)
         showSavingProgress(messageType)
-        saveProductRemotely(status: status)
+        saveProductRemotely(status: status, onCompletion: onCompletion)
     }
 
-    func saveProductRemotely(status: ProductStatus?) {
+    func saveProductRemotely(status: ProductStatus?, onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void = { _ in }) {
         viewModel.saveProductRemotely(status: status) { [weak self] result in
             switch result {
             case .failure(let error):
@@ -732,6 +732,7 @@ private extension ProductFormViewController {
                 // Dismisses the in-progress UI then presents the error alert.
                 self?.navigationController?.dismiss(animated: true) {
                     self?.displayError(error: error)
+                    onCompletion(.failure(error))
                 }
             case .success:
                 // Dismisses the in-progress UI, then presents the confirmation alert.
@@ -741,6 +742,7 @@ private extension ProductFormViewController {
                 // Show linked products promo banner after product save
                 (self?.viewModel as? ProductFormViewModel)?.isLinkedProductsPromoEnabled = true
                 self?.reloadLinkedPromoCellAnimated()
+                onCompletion(.success(()))
             }
         }
     }

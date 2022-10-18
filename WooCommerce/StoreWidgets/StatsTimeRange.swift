@@ -1,6 +1,7 @@
 import Foundation
 import WooFoundation
 import enum Networking.StatGranularity
+import enum Networking.StatsGranularityV4
 
 /// Represents the time range for an Order Stats v4 model.
 /// This is a local property and not in the remote response.
@@ -27,6 +28,34 @@ extension StatsTimeRange {
             self = .thisMonth
         case .thisYear:
             self = .thisYear
+        }
+    }
+
+    /// The maximum number of stats intervals a time range could have.
+    var maxNumberOfIntervals: Int {
+        switch self {
+        case .today:
+            return 24
+        case .thisWeek:
+            return 7
+        case .thisMonth:
+            return 31
+        case .thisYear:
+            return 12
+        }
+    }
+
+    /// Represents the period unit of the store stats using Stats v4 API given a time range.
+    var intervalGranularity: StatsGranularityV4 {
+        switch self {
+        case .today:
+            return .hourly
+        case .thisWeek:
+            return .daily
+        case .thisMonth:
+            return .daily
+        case .thisYear:
+            return .monthly
         }
     }
 

@@ -1,6 +1,6 @@
 import Networking
 
-/// Orchestrator class that fetches today store stats data.
+/// Orchestrator class that fetches store stats data.
 ///
 final class StoreInfoDataService {
 
@@ -56,7 +56,7 @@ final class StoreInfoDataService {
 ///
 private extension StoreInfoDataService {
 
-    /// Async wrapper that fetches todays revenues & orders.
+    /// Async wrapper that fetches revenues & orders.
     ///
     func fetchRevenueAndOrders(for storeID: Int64, timeRange: StatsTimeRange) async throws -> OrderStatsV4 {
         try await withCheckedThrowingContinuation { continuation in

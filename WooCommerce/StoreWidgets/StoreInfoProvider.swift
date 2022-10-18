@@ -90,14 +90,14 @@ final class StoreInfoProvider: IntentTimelineProvider {
         networkService = strongService
         Task {
             do {
-                let todayStats = try await strongService.fetchStats(for: dependencies.storeID, timeRange: StatsTimeRange(configuration.timeRange))
-                let entry = Self.dataEntry(for: todayStats, with: dependencies)
+                let stats = try await strongService.fetchStats(for: dependencies.storeID, timeRange: StatsTimeRange(configuration.timeRange))
+                let entry = Self.dataEntry(for: stats, with: dependencies)
                 let reloadDate = Date(timeIntervalSinceNow: reloadInterval)
                 let timeline = Timeline<StoreInfoEntry>(entries: [entry], policy: .after(reloadDate))
                 completion(timeline)
             } catch {
                 // WooFoundation does not expose `DDLOG` types. Should we include them?
-                print("⛔️ Error fetching today's widget stats: \(error)")
+                print("⛔️ Error fetching widget stats: \(error)")
 
                 let reloadDate = Date(timeIntervalSinceNow: reloadInterval)
                 let timeline = Timeline<StoreInfoEntry>(entries: [.error], policy: .after(reloadDate))
@@ -155,14 +155,14 @@ private extension StoreInfoProvider {
 
     /// Real data entry.
     ///
-    static func dataEntry(for todayStats: StoreInfoDataService.Stats, with dependencies: Dependencies) -> StoreInfoEntry {
-        StoreInfoEntry.data(.init(range: Localization.periodString(from: todayStats.timeRange),
+    static func dataEntry(for stats: StoreInfoDataService.Stats, with dependencies: Dependencies) -> StoreInfoEntry {
+        StoreInfoEntry.data(.init(range: Localization.periodString(from: stats.timeRange),
                                   name: dependencies.storeName,
-                                  revenue: Self.formattedAmountString(for: todayStats.revenue, with: dependencies.storeCurrencySettings),
-                                  revenueCompact: Self.formattedAmountCompactString(for: todayStats.revenue, with: dependencies.storeCurrencySettings),
-                                  visitors: "\(todayStats.totalVisitors)",
-                                  orders: "\(todayStats.totalOrders)",
-                                  conversion: Self.formattedConversionString(for: todayStats.conversion),
+                                  revenue: Self.formattedAmountString(for: stats.revenue, with: dependencies.storeCurrencySettings),
+                                  revenueCompact: Self.formattedAmountCompactString(for: stats.revenue, with: dependencies.storeCurrencySettings),
+                                  visitors: "\(stats.totalVisitors)",
+                                  orders: "\(stats.totalOrders)",
+                                  conversion: Self.formattedConversionString(for: stats.conversion),
                                   updatedTime: Self.currentFormattedTime()))
     }
 
@@ -211,25 +211,25 @@ private extension StoreInfoProvider {
             switch timeRange {
             case .today:
                 return AppLocalizedString(
-                    "storeWidgets.infoProvider.today",
+                    "storeWidgets.timeRange.today",
                     value: "Today",
                     comment: "Range title for the store info widget"
                 )
             case .thisWeek:
                 return AppLocalizedString(
-                    "storeWidgets.infoProvider.thisWeek",
+                    "storeWidgets.timeRange.thisWeek",
                     value: "This Week",
                     comment: "Range title for the store info widget"
                 )
             case .thisMonth:
                 return AppLocalizedString(
-                    "storeWidgets.infoProvider.thisMonth",
+                    "storeWidgets.timeRange.thisMonth",
                     value: "This Month",
                     comment: "Range title for the store info widget"
                 )
             case .thisYear:
                 return AppLocalizedString(
-                    "storeWidgets.infoProvider.thisYear",
+                    "storeWidgets.timeRange.thisYear",
                     value: "This Year",
                     comment: "Range title for the store info widget"
                 )

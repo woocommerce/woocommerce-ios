@@ -5,10 +5,8 @@ import Networking
 
 public class InAppPurchaseStore: Store {
     private var listenTask: Task<Void, Error>?
-//    private let remote: InAppPurchasesRemote
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
-//        self.remote = InAppPurchasesRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
         listenForTransactions()
     }
@@ -40,7 +38,6 @@ private extension InAppPurchaseStore {
         Task {
             do {
                 // TODO: use identifiers from remote
-                // let identifiers = try await remote.loadProducts()
                 let identifiers = [
                     "woocommerce_entry_monthly"
                 ]
@@ -84,30 +81,6 @@ private extension InAppPurchaseStore {
 
     func submitTransaction(_ transaction: StoreKit.Transaction) async throws {
         // TODO: actually send this to the backend
-        /*
-        guard let appAccountToken = transaction.appAccountToken else {
-            throw Errors.transactionMissingAppAccountToken
-        }
-        guard let siteID = AppAccountToken.siteIDFromToken(appAccountToken) else {
-            throw Errors.appAccountTokenMissingSiteIdentifier
-        }
-
-        let products = try await StoreKit.Product.products(for: [transaction.productID])
-        guard let product = products.first else {
-            throw Errors.transactionProductUnknown
-        }
-        let priceInCents = Int(truncating: NSDecimalNumber(decimal: product.price * 100))
-        guard let countryCode = await Storefront.current?.countryCode else {
-            throw Errors.storefrontUnknown
-        }
-         _ = try await remote.createOrder(
-            for: siteID,
-            price: priceInCents,
-            productIdentifier: product.id,
-            appStoreCountryCode: countryCode,
-            receiptData: transaction.jsonRepresentation
-        )
-        */
     }
 
     func listenForTransactions() {

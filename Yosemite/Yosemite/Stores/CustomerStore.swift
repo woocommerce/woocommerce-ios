@@ -71,7 +71,7 @@ public final class CustomerStore: Store {
                 guard let self else { return }
                 switch result {
                 case .success(let customers):
-                    self.mapSearchResultsToCustomerObjects(for: siteID, with: customers, onCompletion: onCompletion)
+                    self.mapSearchResultsToCustomerObjects(for: siteID, with: keyword, with: customers, onCompletion: onCompletion)
                 case .failure(let error):
                     onCompletion(.failure(error))
                 }
@@ -111,6 +111,7 @@ public final class CustomerStore: Store {
     ///   - onCompletion: Invoked when the operation finishes. Will map the result to a `[Customer]` entity.
     ///
     private func mapSearchResultsToCustomerObjects(for siteID: Int64,
+                                                   with keyword: String,
                                           with searchResults: [WCAnalyticsCustomer],
                                                   onCompletion: @escaping (Result<[Customer], Error>) -> Void) {
         var results = [Customer]()
@@ -126,8 +127,16 @@ public final class CustomerStore: Store {
         }
 
         group.notify(queue: .main) {
-            self.upsertSearchCustomerResults(siteID: siteID, readOnlySearchResults: searchResults, in: self.sharedDerivedStorage, onCompletion: {})
-            onCompletion(.success(results))
+            self.upsertSearchCustomerResult(
+                siteID: siteID,
+                keyword: keyword,
+                readOnlySearchResults: searchResults,
+                in: self.sharedDerivedStorage,
+                onCompletion: {
+                    onCompletion(.success(results))
+                }
+            )
+            //onCompletion(.success(results))
         }
     }
 }
@@ -136,21 +145,28 @@ public final class CustomerStore: Store {
 private extension CustomerStore {
     /// Inserts or updates CustomerSearchResults in Storage
     ///
-    private func upsertSearchCustomerResults(siteID: Int64,
-                                             readOnlySearchResults: [Networking.WCAnalyticsCustomer],
-                                             in storage: StorageType,
-                                             onCompletion: @escaping () -> Void) {
-//        for searchResult in readOnlySearchResults {
-//            let storageSearchResult: Storage.CustomerSearchResult = {
-//                if let storedSearchResult = storage.loadCustomerSearchResult(siteID: siteID, customerID: searchResult.userID) {
-//                    return storedSearchResult
-//                } else {
-//                    return storage.insertNewObject(ofType: Storage.CustomerSearchResult.self)
-//                }
-//            }()
-            // Update
-//            storageSearchResult.update(with: searchResult)
-//        }
+    private func upsertSearchCustomerResult(siteID: Int64,
+                                            keyword: String,
+                                            readOnlySearchResults: [Networking.WCAnalyticsCustomer],
+                                            in storage: StorageType,
+                                            onCompletion: @escaping () -> Void) {
+
+        storage.perform {
+            // Potential stale data, perform search every time -> override existing? So we don't insert for each search.
+            let searchResult = storage.loadCustomerSearchResult(siteID: siteID, keyword: keyword) ??
+            storage.insertNewObject(ofType: Storage.CustomerSearchResult.self)
+            searchResult.keyword = keyword
+            for customer in readOnlySearchResults {
+                guard let storedCustomer = storage.loadCustomer(siteID: siteID, customerID: customer.userID) else {
+                    continue
+                }
+                storedCustomer.addToSearchResults(searchResult)
+            }
+        }
+
+        storageManager.saveDerivedType(derivedStorage: storage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
     }
 
     /// Inserts or updates Customer entities into Storage

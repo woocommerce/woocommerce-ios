@@ -1695,6 +1695,16 @@ extension User {
         )
     }
 }
+extension WCAnalyticsCustomer {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> WCAnalyticsCustomer {
+        .init(
+            userID: .fake(),
+            name: .fake()
+        )
+    }
+}
 extension WCPayAccountStatusEnum {
     /// Returns a "ready to use" type filled with fake values.
     ///

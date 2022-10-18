@@ -1951,6 +1951,21 @@ extension TopEarnerStatsItem {
     }
 }
 
+extension WCAnalyticsCustomer {
+    public func copy(
+        userID: CopiableProp<Int64> = .copy,
+        name: NullableCopiableProp<String> = .copy
+    ) -> WCAnalyticsCustomer {
+        let userID = userID ?? self.userID
+        let name = name ?? self.name
+
+        return WCAnalyticsCustomer(
+            userID: userID,
+            name: name
+        )
+    }
+}
+
 extension WCPayCardPaymentDetails {
     public func copy(
         brand: CopiableProp<WCPayCardBrand> = .copy,

@@ -1,6 +1,7 @@
 import Foundation
+import Codegen
 
-public struct WCAnalyticsCustomer: Codable {
+public struct WCAnalyticsCustomer: Codable, GeneratedCopiable, GeneratedFakeable {
 
     /// Unique identifier for the user
     public let userID: Int64

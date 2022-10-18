@@ -1,7 +1,14 @@
 import Alamofire
 import Foundation
 
+/// In-app Purchases Endpoints
+///
 public class InAppPurchasesRemote: Remote {
+    /// Retrieves a list of product identifiers available for purchase
+    ///
+    /// - Parameters:
+    ///     - completion: Closure to be executed upon completion
+    ///
     public func loadProducts(completion: @escaping (Swift.Result<[String], Error>) -> Void) {
         let dotComRequest = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: Constants.productsPath)
         let request = augmentedRequestWithAppId(dotComRequest)
@@ -9,6 +16,15 @@ public class InAppPurchasesRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
+    /// Creates a new order for a new In-app Purchase
+    /// - Parameters:
+    ///     - siteID: Site the purchase is for
+    ///     - price: An integer representation of the price in cents (5.99 -> 599)
+    ///     - productIdentifier: The IAP sku for the product
+    ///     - appStoreCountryCode: The country of the user's App Store
+    ///     - receiptData: The transaction receipt from Apple
+    ///     - completion: Closure to be executed upon completion
+    ///
     public func createOrder(
         for siteID: Int64,
         price: Int,
@@ -33,6 +49,10 @@ public class InAppPurchasesRemote: Remote {
 // MARK: - Async methods
 
 public extension InAppPurchasesRemote {
+    /// Retrieves a list of product identifiers available for purchase
+    ///
+    /// - Returns: a list of product identifiers.
+    ///
     func loadProducts() async throws -> [String] {
         try await withCheckedThrowingContinuation { continuation in
             loadProducts { result in
@@ -41,6 +61,16 @@ public extension InAppPurchasesRemote {
         }
     }
 
+    /// Creates a new order for a new In-app Purchase
+    /// - Parameters:
+    ///     - siteID: Site the purchase is for
+    ///     - price: An integer representation of the price in cents (5.99 -> 599)
+    ///     - productIdentifier: The IAP sku for the product
+    ///     - appStoreCountryCode: The country of the user's App Store
+    ///     - receiptData: The transaction receipt from Apple
+    ///
+    /// - Returns: The ID of the created order.
+    ///
     func createOrder(
         for siteID: Int64,
         price: Int,

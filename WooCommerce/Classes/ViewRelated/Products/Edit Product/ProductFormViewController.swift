@@ -229,6 +229,20 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             }
         }
 
+        if viewModel.canSaveAsDraft() || viewModel.productModel.status == .draft {
+            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.previewProduct) { [weak self] _ in
+                if self?.viewModel.canSaveAsDraft() == true || self?.viewModel.hasUnsavedChanges() == true {
+                    self?.saveProduct(status: .draft) { result in
+                        if result.isSuccess {
+                            self?.displayProductPreview()
+                        }
+                    }
+                } else {
+                    self?.displayProductPreview()
+                }
+            }
+        }
+
         /// The "View product in store" action will be shown only if the product is published.
         if viewModel.canViewProductInStore() {
             actionSheet.addDefaultActionWithTitle(ActionSheetStrings.viewProduct) { [weak self] _ in
@@ -778,6 +792,9 @@ private extension ProductFormViewController {
         }
 
         SharingHelper.shareURL(url: url, title: product.name, from: view, in: self)
+    }
+
+    func displayProductPreview() {
     }
 
     func duplicateProduct() {
@@ -1557,6 +1574,8 @@ private enum Localization {
 private enum ActionSheetStrings {
     static let saveProductAsDraft = NSLocalizedString("Save as draft",
                                                       comment: "Button title to save a product as draft in Product More Options Action Sheet")
+    static let previewProduct = NSLocalizedString("Preview",
+                                                  comment: "Button title to open preview link for a product in Product More Options Action Sheet")
     static let viewProduct = NSLocalizedString("View Product in Store",
                                                comment: "Button title View product in store in Edit Product More Options Action Sheet")
     static let share = NSLocalizedString("Share", comment: "Button title Share in Edit Product More Options Action Sheet")

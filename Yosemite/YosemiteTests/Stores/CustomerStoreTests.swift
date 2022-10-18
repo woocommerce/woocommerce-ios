@@ -1,11 +1,13 @@
 import XCTest
 @testable import Networking
 @testable import Yosemite
+@testable import Storage
 
-class CustomerStoreTests: XCTestCase {
+final class CustomerStoreTests: XCTestCase {
 
     private var dispatcher: Dispatcher!
     private var storageManager: MockStorageManager!
+    private var viewStorage: StorageType!
     private var network: MockNetwork!
     private var customerRemote: CustomerRemote!
     private var searchRemote: WCAnalyticsCustomerRemote!
@@ -18,6 +20,7 @@ class CustomerStoreTests: XCTestCase {
         super.setUp()
         dispatcher = Dispatcher()
         storageManager = MockStorageManager()
+        viewStorage = storageManager.viewStorage
         network = MockNetwork()
         customerRemote = CustomerRemote(network: network)
         searchRemote = WCAnalyticsCustomerRemote(network: network)
@@ -35,7 +38,7 @@ class CustomerStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "", filename: "customer")
 
         // When
-        let result: Result<Customer, Error> = waitFor { promise in
+        let result: Result<Networking.Customer, Error> = waitFor { promise in
             let action = CustomerAction.retrieveCustomer(siteID: self.dummySiteID, customerID: self.dummyCustomerID) { result in
                 promise(result)
             }
@@ -76,7 +79,7 @@ class CustomerStoreTests: XCTestCase {
         network.simulateError(requestUrlSuffix: "", error: expectedError)
 
         // When
-        let result: Result<Customer, Error> = waitFor { promise in
+        let result: Result<Networking.Customer, Error> = waitFor { promise in
             let action = CustomerAction.retrieveCustomer(siteID: self.dummySiteID, customerID: self.dummyCustomerID) { result in
                 promise(result)
             }
@@ -96,7 +99,7 @@ class CustomerStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "customers/3", filename: "customer")
 
         // When
-        let response: Result<[Customer], Error> = waitFor { promise in
+        let response: Result<[Networking.Customer], Error> = waitFor { promise in
             let action = CustomerAction.searchCustomers(siteID: self.dummySiteID, keyword: self.dummyKeyword) { result in
                 promise(result)
             }
@@ -114,7 +117,7 @@ class CustomerStoreTests: XCTestCase {
         network.simulateError(requestUrlSuffix: "", error: expectedError)
 
         // When
-        let result: Result<[Customer], Error> = waitFor { promise in
+        let result: Result<[Networking.Customer], Error> = waitFor { promise in
             let action = CustomerAction.searchCustomers(
                 siteID: self.dummySiteID,
                 keyword: self.dummyKeyword) { result in
@@ -126,5 +129,29 @@ class CustomerStoreTests: XCTestCase {
         //Then
         XCTAssertTrue(result.isFailure)
         XCTAssertEqual(result.failure as? NetworkError, expectedError)
+    }
+
+    func test_retrieveCustomer_upserts_the_returned_Customer() {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "customers/25", filename: "customer")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Customer.self), 0)
+
+        // When
+        let result: Result<Networking.Customer, Error> = waitFor { promise in
+            let action = CustomerAction.retrieveCustomer(siteID: self.dummySiteID, customerID: self.dummyCustomerID) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Customer.self), 1)
+
+        let storedCustomer = viewStorage.loadCustomer(siteID: dummySiteID, customerID: dummyCustomerID)
+        XCTAssertNotNil(storedCustomer)
+        XCTAssertEqual(storedCustomer?.siteID, dummySiteID)
+        XCTAssertEqual(storedCustomer?.customerID, dummyCustomerID)
+        XCTAssertEqual(storedCustomer?.firstName, "John")
     }
 }

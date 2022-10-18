@@ -795,6 +795,15 @@ private extension ProductFormViewController {
     }
 
     func displayProductPreview() {
+        var permalink = URLComponents(string: product.permalink)
+        var updatedQueryItems = permalink?.queryItems ?? []
+        updatedQueryItems.append(.init(name: "preview", value: "true"))
+        permalink?.queryItems = updatedQueryItems
+        guard let url = permalink?.url else {
+            return
+        }
+
+        WebviewHelper.launch(url, with: self)
     }
 
     func duplicateProduct() {

@@ -7,6 +7,7 @@ final class StoreInfoDataService {
     /// Data extracted from networking types.
     ///
     struct Stats {
+        let timeRange: StatsTimeRange
         let revenue: Decimal
         let totalOrders: Int
         let totalVisitors: Int
@@ -43,7 +44,8 @@ final class StoreInfoDataService {
 
         // Assemble stats data
         let conversion = visitors.totalVisitors > 0 ? Double(revenueAndOrders.totals.totalOrders) / Double(visitors.totalVisitors) : 0
-        return Stats(revenue: revenueAndOrders.totals.grossRevenue,
+        return Stats(timeRange: timeRange,
+                     revenue: revenueAndOrders.totals.grossRevenue,
                      totalOrders: revenueAndOrders.totals.totalOrders,
                      totalVisitors: visitors.totalVisitors,
                      conversion: min(conversion, 1))

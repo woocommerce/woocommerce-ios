@@ -143,7 +143,7 @@ private extension StoreInfoProvider {
     /// Redacted entry with sample data. If dependencies are available - store name and currency settings will be used.
     ///
     static func placeholderEntry(for dependencies: Dependencies?) -> StoreInfoEntry {
-        StoreInfoEntry.data(.init(range: Localization.today,
+        StoreInfoEntry.data(.init(range: Localization.periodString(from: .today),
                                   name: dependencies?.storeName ?? Localization.myShop,
                                   revenue: Self.formattedAmountString(for: 132.234, with: dependencies?.storeCurrencySettings),
                                   revenueCompact: Self.formattedAmountCompactString(for: 132.234, with: dependencies?.storeCurrencySettings),
@@ -156,7 +156,7 @@ private extension StoreInfoProvider {
     /// Real data entry.
     ///
     static func dataEntry(for todayStats: StoreInfoDataService.Stats, with dependencies: Dependencies) -> StoreInfoEntry {
-        StoreInfoEntry.data(.init(range: Localization.today,
+        StoreInfoEntry.data(.init(range: Localization.periodString(from: todayStats.timeRange),
                                   name: dependencies.storeName,
                                   revenue: Self.formattedAmountString(for: todayStats.revenue, with: dependencies.storeCurrencySettings),
                                   revenueCompact: Self.formattedAmountCompactString(for: todayStats.revenue, with: dependencies.storeCurrencySettings),
@@ -206,10 +206,34 @@ private extension StoreInfoProvider {
             value: "My Shop",
             comment: "Generic store name for the store info widget preview"
         )
-        static let today = AppLocalizedString(
-            "storeWidgets.infoProvider.today",
-            value: "Today",
-            comment: "Range title for the today store info widget"
-        )
+
+        static func periodString(from timeRange: StatsTimeRange) -> String {
+            switch timeRange {
+            case .today:
+                return AppLocalizedString(
+                    "storeWidgets.infoProvider.today",
+                    value: "Today",
+                    comment: "Range title for the store info widget"
+                )
+            case .thisWeek:
+                return AppLocalizedString(
+                    "storeWidgets.infoProvider.thisWeek",
+                    value: "This Week",
+                    comment: "Range title for the store info widget"
+                )
+            case .thisMonth:
+                return AppLocalizedString(
+                    "storeWidgets.infoProvider.thisMonth",
+                    value: "This Month",
+                    comment: "Range title for the store info widget"
+                )
+            case .thisYear:
+                return AppLocalizedString(
+                    "storeWidgets.infoProvider.thisYear",
+                    value: "This Year",
+                    comment: "Range title for the store info widget"
+                )
+            }
+        }
     }
 }

@@ -186,6 +186,7 @@ extension Customer {
     ///
     public static func fake() -> Customer {
         .init(
+            siteID: .fake(),
             customerID: .fake(),
             email: .fake(),
             firstName: .fake(),

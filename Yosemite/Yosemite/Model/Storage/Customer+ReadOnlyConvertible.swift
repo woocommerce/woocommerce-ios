@@ -8,6 +8,7 @@ extension Storage.Customer: ReadOnlyConvertible {
     ///
     public func update(with customer: Yosemite.Customer) {
         customerID = customer.customerID
+        siteID = customer.siteID
         email = customer.email
         firstName = customer.firstName
         lastName = customer.lastName
@@ -41,6 +42,7 @@ extension Storage.Customer: ReadOnlyConvertible {
     ///
     public func toReadOnly() -> Yosemite.Customer {
         return Customer(
+            siteID: siteID,
             customerID: customerID,
             email: email ?? "",
             firstName: firstName ?? "",

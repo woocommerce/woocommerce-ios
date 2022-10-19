@@ -135,8 +135,8 @@ final class CustomerStoreTests: XCTestCase {
         // Given
         network.simulateResponse(requestUrlSuffix: "customers", filename: "wc-analytics-customers")
         network.simulateResponse(requestUrlSuffix: "customers/1", filename: "customer")
-        network.simulateResponse(requestUrlSuffix: "customers/2", filename: "customer")
-        network.simulateResponse(requestUrlSuffix: "customers/3", filename: "customer")
+        network.simulateResponse(requestUrlSuffix: "customers/2", filename: "customer-2")
+
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.CustomerSearchResult.self), 0)
 
         // When
@@ -149,16 +149,16 @@ final class CustomerStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(response.isSuccess)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Customer.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.CustomerSearchResult.self), 1)
 
         let storedCustomerSearchResults = viewStorage.loadCustomerSearchResult(siteID: dummySiteID, keyword: dummyKeyword)
-        /* Failing tests:
-         XCTAssertNotNil(storedCustomerSearchResults)
+
+        XCTAssertNotNil(storedCustomerSearchResults)
         XCTAssertEqual(storedCustomerSearchResults?.siteID, dummySiteID)
-        XCTAssertEqual(storedCustomerSearchResults?.customers?.first?.siteID, dummySiteID)
-        XCTAssertEqual(storedCustomerSearchResults?.customers?.first?.customerID, dummySiteID)
-        XCTAssertTrue(((storedCustomerSearchResults?.customers?.first?.firstName?.contains(dummyKeyword)) != nil))
-         */
+        XCTAssertEqual(storedCustomerSearchResults?.keyword, dummyKeyword)
+        XCTAssertEqual(storedCustomerSearchResults?.customers?.count, 2)
+        XCTAssertTrue(storedCustomerSearchResults?.customers?.allSatisfy { $0.firstName?.contains(dummyKeyword) == true } ?? false )
     }
 
     func test_retrieveCustomer_upserts_the_returned_Customer() {

@@ -114,13 +114,13 @@ public final class CustomerStore: Store {
                                                    with keyword: String,
                                           with searchResults: [WCAnalyticsCustomer],
                                                   onCompletion: @escaping (Result<[Customer], Error>) -> Void) {
-        var results = [Customer]()
+        var customers = [Customer]()
         let group = DispatchGroup()
         for result in searchResults {
             group.enter()
             self.retrieveCustomer(for: siteID, with: result.userID, onCompletion: { result in
                 if let customer = try? result.get() {
-                    results.append(customer)
+                    customers.append(customer)
                 }
                 group.leave()
             })
@@ -130,13 +130,12 @@ public final class CustomerStore: Store {
             self.upsertSearchCustomerResult(
                 siteID: siteID,
                 keyword: keyword,
-                readOnlySearchResults: searchResults,
+                readOnlyCustomers: customers,
                 in: self.sharedDerivedStorage,
                 onCompletion: {
-                    onCompletion(.success(results))
+                    onCompletion(.success(customers))
                 }
             )
-            //onCompletion(.success(results))
         }
     }
 }
@@ -147,23 +146,22 @@ private extension CustomerStore {
     ///
     private func upsertSearchCustomerResult(siteID: Int64,
                                             keyword: String,
-                                            readOnlySearchResults: [Networking.WCAnalyticsCustomer],
+                                            readOnlyCustomers: [Networking.Customer],
                                             in storage: StorageType,
                                             onCompletion: @escaping () -> Void) {
-
         storage.perform {
-            // Potential stale data, perform search every time -> override existing? So we don't insert for each search.
-            let searchResult = storage.loadCustomerSearchResult(siteID: siteID, keyword: keyword) ??
+            let storedSeachResult = storage.loadCustomerSearchResult(siteID: siteID, keyword: keyword) ??
             storage.insertNewObject(ofType: Storage.CustomerSearchResult.self)
-            searchResult.keyword = keyword
-            for customer in readOnlySearchResults {
-                guard let storedCustomer = storage.loadCustomer(siteID: siteID, customerID: customer.userID) else {
-                    continue
+
+            storedSeachResult.siteID = siteID
+            storedSeachResult.keyword = keyword
+
+            for result in readOnlyCustomers {
+                if let storedCustomer = storage.loadCustomer(siteID: siteID, customerID: result.customerID) {
+                    storedSeachResult.addToCustomers(storedCustomer)
                 }
-                storedCustomer.addToSearchResults(searchResult)
             }
         }
-
         storageManager.saveDerivedType(derivedStorage: storage) {
             DispatchQueue.main.async(execute: onCompletion)
         }
@@ -174,18 +172,15 @@ private extension CustomerStore {
     private func upsertCustomer(siteID: Int64, readOnlyCustomer: Networking.Customer, in storage: StorageType, onCompletion: @escaping () -> Void) {
 
         storage.perform {
-            // If the specific customerID for that siteID already exists, return it
-            // If doesn't, insert a new one in Storage
             let storageCustomer: Storage.Customer = {
+                // If the specific customerID for that siteID already exists, return it
+                // If doesn't, insert a new one in Storage
                 if let storedCustomer = storage.loadCustomer(siteID: siteID, customerID: readOnlyCustomer.customerID) {
-                    print("Customer exists on Storage. ID: \(readOnlyCustomer.customerID)")
                     return storedCustomer
                 } else {
-                    print("Customer does not exist on Storage. ID: \(readOnlyCustomer.customerID). Inserting new")
                     return storage.insertNewObject(ofType: Storage.Customer.self)
                 }
             }()
-            // 3. Update the entity
             storageCustomer.update(with: readOnlyCustomer)
         }
 

@@ -28,6 +28,16 @@ private struct StoreInfoView: View {
     // Current size category
     @Environment(\.sizeCategory) var category
 
+    var accessibilityCategory: ContentSizeCategory {
+        if #available(iOS 15.0, *) {
+            return .extraLarge
+        } else {
+            // iOS 14 has margins issue with extraLarge text size, so fallback to accessibility style earlier
+            // https://github.com/woocommerce/woocommerce-ios/issues/7797
+            return .large
+        }
+    }
+
     var body: some View {
         ZStack {
             // Background
@@ -48,7 +58,7 @@ private struct StoreInfoView: View {
                         .statRangeStyle()
                 }
 
-                if category > .extraLarge {
+                if category > accessibilityCategory {
                     AccessibilityStatsCard(entryData: entryData)
                 } else {
                     StatsCard(entryData: entryData)

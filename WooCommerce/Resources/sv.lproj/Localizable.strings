@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-10-06 13:54:04+0000 */
+/* Translation-Revision-Date: 2022-10-11 14:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -1929,6 +1929,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Instruction text on the initial email address entry screen. */
 "Enter your email address to log in or create a WordPress.com account." = "Ange din e-postadress för att logga in eller skapa ett WordPress.com-konto.";
+
+/* Sign in instructions on the 'log in using WordPress.com account' screen. */
+"Enter your email address to log in to manage your WooCommerce stores or create a WordPress.com account." = "Ange din e-postadress för att logga in och hantera din WooCommerce-butik eller skapa ett WordPress.com-konto.";
 
 /* Button title. Takes the user to the login by site address flow. */
 "Enter your existing site address" = "Ange din befintliga webbplatsadress";
@@ -6246,6 +6249,18 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Title label when the widget does not have a logged-in store. */
 "storeWidgets.notLoggedInView.notLoggedIn" = "Logga in för att se dagens statistik.";
+
+/* Title label when the widget can't fetch data. Should fit in 1 line on lock screen */
+"storeWidgets.storeInfoInlineWidget.noData" = "Intäkter: ⚠ Inga data";
+
+/* Revenue title label for the store info widget. %1$@ is the revenue amount. */
+"storeWidgets.storeInfoInlineWidget.revenueTitle" = "Intäkter: %1$@";
+
+/* Label when the widget can't fetch data. */
+"storeWidgets.storeInfoRectangularWidget.noData" = "⚠ Inga data";
+
+/* Revenue title label for the store info widget */
+"storeWidgets.storeInfoRectangularWidget.revenue" = "Intäkter";
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "Kan inte hämta dagens statistik";

@@ -1,3 +1,3 @@
-Grande nouvelle ! Il est désormais possible de rechercher un produit à partir de son UGS. Il vous suffit de disposer de la toute dernière version de WooCommerce disponible dans votre boutique. Nous avons également amélioré certaines choses et corrigé des bogues mineurs détectés par notre équipe, notamment en vous permettant de vous connecter aisément à l'application et en résolvant un incident rare survenant au moment de la sélection d'une boutique dans le sélecteur de boutique.
+Grande nouvelle ! Vous pouvez désormais modifier les variantes de prix de manière groupée. Il vous suffit de disposer de la toute dernière version de WooCommerce disponible dans votre boutique. Nous nous sommes concentrés sur l’apport d’améliorations et la résolution de bogues mineurs détectés par notre équipe.
 
 Continuez à nous faire part de vos commentaires ; ils nous aident à nous améliorer.

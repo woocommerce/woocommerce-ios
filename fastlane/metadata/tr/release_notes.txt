@@ -1,3 +1,3 @@
-Heyecan verici haberlerimiz var! Artık bir ürünü SKU'suna göre aramak mümkün. Tek ihtiyacınız olan, mağazanızda WooCommerce'in en son sürümünü kullanmak! Ayrıca uygulamada oturum açmanızı kolaylaştırmak ve mağaza seçicide mağaza seçerken nadiren oluşan bir kilitlenme sorununu gidermek gibi birkaç düzeltmeye ve ekibimizin bulduğu küçük hataları gidermeye odaklandık.
+Heyecan verici haberlerimiz var! Artık varyasyon fiyatlarını toplu olarak düzenleyebilirsiniz. Tek ihtiyacınız olan, mağazanızda WooCommerce'in en son sürümünü kullanmak! Ayrıca bu sürümde birkaç şeyi düzeltmeye ve ekibimizin bulduğu küçük hataları gidermeye odaklandık.
 
 Geri bildirimleriniz devam etsin; üzerinde çalışacağımız bir sonraki özelliği bulmamıza yardımcı oluyor.

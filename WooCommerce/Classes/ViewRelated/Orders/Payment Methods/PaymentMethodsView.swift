@@ -104,7 +104,21 @@ struct PaymentMethodsView: View {
             }
         }
         .sheet(isPresented: $showingPurchaseCardReaderView) {
-            SafariView(url: viewModel.purchaseCardReaderUrl)
+            NavigationView {
+                AuthenticatedWebView(isPresented: .constant(true),
+                                     url: viewModel.purchaseCardReaderUrl)
+                .navigationTitle(Text(UpsellCardReadersCampaign.Localization.cardReaderWebViewTitle))
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(UpsellCardReadersCampaign.Localization.cardReaderWebViewDoneButtonTitle) {
+                            showingPurchaseCardReaderView = false
+                        }
+                    }
+                }
+            }
+            .wooNavigationBarStyle()
+            .navigationViewStyle(.stack)
         }
         .shareSheet(isPresented: $sharingPaymentLink) {
             // If paymentLink is available it already contains a valid URL.

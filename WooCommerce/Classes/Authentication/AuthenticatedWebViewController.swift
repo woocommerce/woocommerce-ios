@@ -31,6 +31,7 @@ final class AuthenticatedWebViewController: UIViewController {
     ///
     private let wporgCredentials: WordPressOrgCredentials?
 
+
     init(viewModel: AuthenticatedWebViewModel, wporgCredentials: WordPressOrgCredentials? = nil) {
         self.viewModel = viewModel
         self.wporgCredentials = wporgCredentials
@@ -123,12 +124,17 @@ private extension AuthenticatedWebViewController {
             loadContent()
         }
     }
+}
 
-    private func loadContent() {
+// MARK: - Helper methods
+private extension AuthenticatedWebViewController {
+    func loadContent() {
         guard let url = viewModel.initialURL else {
             return
         }
 
+        /// Authenticate for WP.com automatically if user is logged in.
+        ///
         if let credentials = ServiceLocator.stores.sessionManager.defaultCredentials {
             webView.authenticateForWPComAndRedirect(to: url, credentials: credentials)
         } else {

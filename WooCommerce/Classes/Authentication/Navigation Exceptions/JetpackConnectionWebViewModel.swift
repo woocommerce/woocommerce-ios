@@ -50,7 +50,8 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
     func handleCompletionIfPossible(_ url: String) -> Bool {
         // When the web view navigates to the site address or Jetpack plans page,
         // we can assume that the setup has completed.
-        if url.hasPrefix(siteURL) || url.hasPrefix(Constants.plansPage) {
+        if url.hasPrefix(Constants.plansPage) ||
+            (url.hasPrefix(siteURL) && !url.contains(Constants.jetpackSiteConnectionPage)) {
             // Running on the main thread is necessary if this method is triggered from `decidePolicy`.
             DispatchQueue.main.async { [weak self] in
                 self?.handleSetupCompletion()
@@ -64,6 +65,7 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
 private extension JetpackConnectionWebViewModel {
     enum Constants {
         static let plansPage = "https://wordpress.com/jetpack/connect/plans"
+        static let jetpackSiteConnectionPage = "/wp-admin/admin.php?page=jetpack&action=register"
     }
 
     enum Localization {

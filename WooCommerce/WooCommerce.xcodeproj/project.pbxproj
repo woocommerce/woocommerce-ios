@@ -1791,6 +1791,7 @@
 		E17E3BFB266917E20009D977 /* CardPresentModalBluetoothRequiredTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17E3BFA266917E20009D977 /* CardPresentModalBluetoothRequiredTests.swift */; };
 		E1906E9A26C4126300CA6819 /* InPersonPaymentsMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1906E9926C4126300CA6819 /* InPersonPaymentsMenuViewController.swift */; };
 		E1ABAEF728479E0300F40BB2 /* InPersonPaymentsSelectPluginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1ABAEF628479E0300F40BB2 /* InPersonPaymentsSelectPluginView.swift */; };
+		E1B5641728FEDF7000FA8866 /* InAppPurchasesDebugTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1B5641628FEDF7000FA8866 /* InAppPurchasesDebugTransaction.swift */; };
 		E1BAAEA026BBECEF00F2C037 /* ButtonStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BAAE9F26BBECEF00F2C037 /* ButtonStyles.swift */; };
 		E1BE703A265E6F47006CA4D9 /* CardPresentModalScanningFailed.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BE7039265E6F47006CA4D9 /* CardPresentModalScanningFailed.swift */; };
 		E1C47209267A1ECC00D06DA1 /* CrashLoggingStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C47208267A1ECC00D06DA1 /* CrashLoggingStack.swift */; };
@@ -3723,6 +3724,7 @@
 		E1906E9926C4126300CA6819 /* InPersonPaymentsMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsMenuViewController.swift; sourceTree = "<group>"; };
 		E1ABAEF628479E0300F40BB2 /* InPersonPaymentsSelectPluginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsSelectPluginView.swift; sourceTree = "<group>"; };
 		E1B5641228FED6E100FA8866 /* WooProducts.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = WooProducts.storekit; sourceTree = "<group>"; };
+		E1B5641628FEDF7000FA8866 /* InAppPurchasesDebugTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchasesDebugTransaction.swift; sourceTree = "<group>"; };
 		E1BAAE9F26BBECEF00F2C037 /* ButtonStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonStyles.swift; sourceTree = "<group>"; };
 		E1BE7039265E6F47006CA4D9 /* CardPresentModalScanningFailed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalScanningFailed.swift; sourceTree = "<group>"; };
 		E1C47208267A1ECC00D06DA1 /* CrashLoggingStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashLoggingStack.swift; sourceTree = "<group>"; };
@@ -8499,6 +8501,7 @@
 			isa = PBXGroup;
 			children = (
 				E1325EFA28FD544E00EC9B2A /* InAppPurchasesDebugView.swift */,
+				E1B5641628FEDF7000FA8866 /* InAppPurchasesDebugTransaction.swift */,
 			);
 			path = InAppPurchases;
 			sourceTree = "<group>";
@@ -10397,6 +10400,7 @@
 				B509FED321C05121000076A9 /* SupportManagerAdapter.swift in Sources */,
 				B5AA7B3D20ED5D15004DA14F /* SessionManager.swift in Sources */,
 				B53B3F37219C75AC00DF1EB6 /* OrderLoaderViewController.swift in Sources */,
+				E1B5641728FEDF7000FA8866 /* InAppPurchasesDebugTransaction.swift in Sources */,
 				02F843DA273646A30017FE12 /* JetpackBenefitsBanner.swift in Sources */,
 				027D4A8D2526FD1800108626 /* SettingsViewController.swift in Sources */,
 				02E262C9238D0AD300B79588 /* ProductStockStatusListSelectorCommand.swift in Sources */,

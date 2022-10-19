@@ -5,6 +5,7 @@ import Yosemite
 struct InAppPurchasesDebugView: View {
     private let stores = ServiceLocator.stores
     @State var products: [StoreKit.Product] = []
+    @State var transactions: [UInt64: StoreKit.Transaction] = [:]
 
     var body: some View {
         List {
@@ -18,7 +19,18 @@ struct InAppPurchasesDebugView: View {
                     Text("No products")
                 } else {
                     ForEach(products) { product in
-                        Text(product.description)
+                        Button(product.description) {
+                            stores.dispatch(InAppPurchaseAction.purchaseProduct(siteID: 0, product: product, completion: { _ in }))
+                        }
+                    }
+                }
+            }
+            Section("Transactions") {
+                if transactions.isEmpty {
+                    Text("No transactions")
+                } else {
+                    ForEach(Array(transactions.values)) { transaction in
+                        InAppPurchasesDebugTransaction(transaction: transaction)
                     }
                 }
             }
@@ -26,6 +38,10 @@ struct InAppPurchasesDebugView: View {
         .navigationTitle("IAP Debug")
         .onAppear {
             loadProducts()
+        }
+        .task {
+            await readCurrentTransactions()
+            await listenForTransactions()
         }
     }
 
@@ -38,6 +54,26 @@ struct InAppPurchasesDebugView: View {
                 print("Error loading products: \(error)")
             }
         }))
+    }
+
+    private func listenForTransactions() async {
+        for await result in StoreKit.Transaction.updates {
+            guard case .verified(let transaction) = result else {
+                continue
+            }
+            DDLogDebug("💰 IAP Transaction Update \(transaction.id): \(transaction)")
+            self.transactions[transaction.id] = transaction
+        }
+    }
+
+    private func readCurrentTransactions() async {
+        for await result in StoreKit.Transaction.all {
+            guard case .verified(let transaction) = result else {
+                continue
+            }
+            DDLogDebug("💰 IAP Initial Transaction \(transaction.id): \(transaction)")
+            self.transactions[transaction.id] = transaction
+        }
     }
 }
 

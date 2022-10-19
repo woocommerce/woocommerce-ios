@@ -1953,13 +1953,16 @@ extension TopEarnerStatsItem {
 
 extension WCAnalyticsCustomer {
     public func copy(
+        siteID: CopiableProp<Int64> = .copy,
         userID: CopiableProp<Int64> = .copy,
         name: NullableCopiableProp<String> = .copy
     ) -> WCAnalyticsCustomer {
+        let siteID = siteID ?? self.siteID
         let userID = userID ?? self.userID
         let name = name ?? self.name
 
         return WCAnalyticsCustomer(
+            siteID: siteID,
             userID: userID,
             name: name
         )

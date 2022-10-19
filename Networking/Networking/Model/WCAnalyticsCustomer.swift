@@ -2,6 +2,8 @@ import Foundation
 import Codegen
 
 public struct WCAnalyticsCustomer: Codable, GeneratedCopiable, GeneratedFakeable {
+    /// The siteID for the WCAnalyticsCustomer
+    public let siteID: Int64
 
     /// Unique identifier for the user
     public let userID: Int64
@@ -11,7 +13,8 @@ public struct WCAnalyticsCustomer: Codable, GeneratedCopiable, GeneratedFakeable
 
     /// WCAnalyticsCustomer struct Initializer
     ///
-    public init(userID: Int64, name: String?) {
+    public init(siteID: Int64, userID: Int64, name: String?) {
+        self.siteID = siteID
         self.userID = userID
         self.name = name
     }
@@ -19,12 +22,16 @@ public struct WCAnalyticsCustomer: Codable, GeneratedCopiable, GeneratedFakeable
     /// Public initializer for WCAnalyticsCustomer
     ///
     public init(from decoder: Decoder) throws {
+        guard let siteID = decoder.userInfo[.siteID] as? Int64 else {
+            throw WCAnalyticsCustomerDecodingError.missingSiteID
+        }
+
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let userID = try container.decode(Int64.self, forKey: .userID)
         let name = try container.decode(String.self, forKey: .name)
 
-        self.init(userID: userID, name: name)
+        self.init(siteID: siteID, userID: userID, name: name)
     }
 }
 
@@ -32,5 +39,9 @@ extension WCAnalyticsCustomer {
     enum CodingKeys: String, CodingKey {
         case userID =   "user_id"
         case name   =   "name"
+    }
+
+    enum WCAnalyticsCustomerDecodingError: Error {
+        case missingSiteID
     }
 }

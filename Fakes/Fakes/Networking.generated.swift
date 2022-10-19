@@ -1700,6 +1700,7 @@ extension WCAnalyticsCustomer {
     ///
     public static func fake() -> WCAnalyticsCustomer {
         .init(
+            siteID: .fake(),
             userID: .fake(),
             name: .fake()
         )

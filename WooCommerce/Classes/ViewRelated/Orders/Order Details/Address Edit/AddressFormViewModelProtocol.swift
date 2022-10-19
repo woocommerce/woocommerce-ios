@@ -7,6 +7,10 @@ import protocol Storage.StorageManagerType
 ///
 protocol AddressFormViewModelProtocol: ObservableObject {
 
+    /// Site ID
+    /// 
+    var siteID: Int64 { get }
+
     /// Address form fields
     ///
     var fields: AddressFormFields { get set }

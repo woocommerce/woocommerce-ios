@@ -89,6 +89,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
     @ObservedObject private(set) var viewModel: ViewModel
 
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+    @State private var showingCustomerSearch: Bool = false
 
     let isSearchCustomersEnabled = DefaultFeatureFlagService().isFeatureFlagEnabled(.orderCreationSearchCustomers)
 
@@ -152,7 +153,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
             ToolbarItem(placement: .automatic) {
                 if isSearchCustomersEnabled {
                     Button(action: {
-                        viewModel.customerSearchTapped()
+                        showingCustomerSearch = true
                     }, label: {
                         Image(systemName: "magnifyingglass")
                     })
@@ -169,6 +170,9 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
             viewModel.onLoadTrigger.send()
         }
         .notice($viewModel.notice)
+        .sheet(isPresented: $showingCustomerSearch, content: {
+            OrderCustomerListView(siteID: viewModel.siteID)
+        })
     }
 
     /// Decides if the navigation trailing item should be a done button or a loading indicator.

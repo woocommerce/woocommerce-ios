@@ -5,8 +5,11 @@ import Networking
 
 public class InAppPurchaseStore: Store {
     private var listenTask: Task<Void, Error>?
+    private let remote: InAppPurchasesRemote
+    private var useBackend = true
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+        remote = InAppPurchasesRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
         listenForTransactions()
     }
@@ -37,10 +40,7 @@ private extension InAppPurchaseStore {
     func loadProducts(completion: @escaping (Result<[StoreKit.Product], Error>) -> Void) {
         Task {
             do {
-                // TODO: use identifiers from remote
-                let identifiers = [
-                    "debug.woocommerce.ecommerce.monthly"
-                ]
+                let identifiers = try await getProductIdentifiers()
                 let products = try await StoreKit.Product.products(for: identifiers)
                 completion(.success(products))
             } catch {
@@ -80,7 +80,38 @@ private extension InAppPurchaseStore {
     }
 
     func submitTransaction(_ transaction: StoreKit.Transaction) async throws {
-        // TODO: actually send this to the backend
+        guard useBackend else {
+            return
+        }
+        guard let appAccountToken = transaction.appAccountToken else {
+            throw Errors.transactionMissingAppAccountToken
+        }
+        guard let siteID = AppAccountToken.siteIDFromToken(appAccountToken) else {
+            throw Errors.appAccountTokenMissingSiteIdentifier
+        }
+
+        let products = try await StoreKit.Product.products(for: [transaction.productID])
+        guard let product = products.first else {
+            throw Errors.transactionProductUnknown
+        }
+        let priceInCents = Int(truncating: NSDecimalNumber(decimal: product.price * 100))
+        guard let countryCode = await Storefront.current?.countryCode else {
+            throw Errors.storefrontUnknown
+        }
+        _ = try await remote.createOrder(
+            for: siteID,
+            price: priceInCents,
+            productIdentifier: product.id,
+            appStoreCountryCode: countryCode,
+            receiptData: transaction.jsonRepresentation
+        )
+    }
+
+    func getProductIdentifiers() async throws -> [String] {
+        guard useBackend else {
+            return Constants.identifiers
+        }
+        return try await remote.loadProducts()
     }
 
     func listenForTransactions() {
@@ -100,5 +131,11 @@ public extension InAppPurchaseStore {
         case appAccountTokenMissingSiteIdentifier
         case transactionProductUnknown
         case storefrontUnknown
+    }
+
+    enum Constants {
+        static let identifiers = [
+            "debug.woocommerce.ecommerce.monthly"
+        ]
     }
 }

@@ -1,5 +1,5 @@
 {
-  "identifier" : "DCC433DF",
+  "identifier" : "1D566A42",
   "nonRenewingSubscriptions" : [
 
   ],
@@ -7,15 +7,17 @@
 
   ],
   "settings" : {
-
+    "_applicationInternalID" : "1389130815",
+    "_developerTeamID" : "PZYM8XX95Q",
+    "_lastSynchronizedDate" : 687869545.98738396
   },
   "subscriptionGroups" : [
     {
-      "id" : "00631319",
+      "id" : "21032762",
       "localizations" : [
 
       ],
-      "name" : "Test HostedWoo Site 1",
+      "name" : "test_subscription_group",
       "subscriptions" : [
         {
           "adHocOffers" : [
@@ -24,22 +26,22 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "24.99",
+          "displayPrice" : "59.99",
           "familyShareable" : false,
           "groupNumber" : 1,
-          "internalID" : "145D04E0",
+          "internalID" : "1650562345",
           "introductoryOffer" : null,
           "localizations" : [
             {
-              "description" : "1 Month of Hosted Woo",
-              "displayName" : "Test HostedWoo — Monthly",
+              "description" : "1 Month of Debug Woo",
+              "displayName" : "Debug Monthly",
               "locale" : "en_US"
             }
           ],
-          "productID" : "woocommerce_entry_monthly",
+          "productID" : "debug.woocommerce.ecommerce.monthly",
           "recurringSubscriptionPeriod" : "P1M",
-          "referenceName" : "Test HostedWoo — Monthly",
-          "subscriptionGroupID" : "00631319",
+          "referenceName" : "Debug Monthly",
+          "subscriptionGroupID" : "21032762",
           "type" : "RecurringSubscription"
         }
       ]

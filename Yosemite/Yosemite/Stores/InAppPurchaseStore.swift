@@ -39,7 +39,7 @@ private extension InAppPurchaseStore {
             do {
                 // TODO: use identifiers from remote
                 let identifiers = [
-                    "woocommerce_entry_monthly"
+                    "debug.woocommerce.ecommerce.monthly"
                 ]
                 let products = try await StoreKit.Product.products(for: identifiers)
                 completion(.success(products))

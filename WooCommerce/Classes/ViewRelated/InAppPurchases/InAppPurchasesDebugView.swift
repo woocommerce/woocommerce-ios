@@ -18,7 +18,9 @@ struct InAppPurchasesDebugView: View {
                     Text("No products")
                 } else {
                     ForEach(products) { product in
-                        Text(product.description)
+                        Button(product.description) {
+                            stores.dispatch(InAppPurchaseAction.purchaseProduct(siteID: 0, product: product, completion: { _ in }))
+                        }
                     }
                 }
             }

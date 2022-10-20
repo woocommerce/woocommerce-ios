@@ -1,12 +1,13 @@
 import Networking
 
-/// Orchestrator class that fetches today store stats data.
+/// Orchestrator class that fetches store stats data.
 ///
 final class StoreInfoDataService {
 
     /// Data extracted from networking types.
     ///
     struct Stats {
+        let timeRange: StatsTimeRange
         let revenue: Decimal
         let totalOrders: Int
         let totalVisitors: Int
@@ -35,15 +36,16 @@ final class StoreInfoDataService {
     ///
     func fetchStats(for storeID: Int64, timeRange: StatsTimeRange) async throws -> Stats {
         // Prepare them to run in parallel
-        async let revenueAndOrdersRequest = fetchTodaysRevenueAndOrders(for: storeID)
-        async let visitorsRequest = fetchTodaysVisitors(for: storeID)
+        async let revenueAndOrdersRequest = fetchRevenueAndOrders(for: storeID, timeRange: timeRange)
+        async let visitorsRequest = fetchVisitors(for: storeID, timeRange: timeRange)
 
         // Wait for for response
         let (revenueAndOrders, visitors) = try await (revenueAndOrdersRequest, visitorsRequest)
 
         // Assemble stats data
         let conversion = visitors.totalVisitors > 0 ? Double(revenueAndOrders.totals.totalOrders) / Double(visitors.totalVisitors) : 0
-        return Stats(revenue: revenueAndOrders.totals.grossRevenue,
+        return Stats(timeRange: timeRange,
+                     revenue: revenueAndOrders.totals.grossRevenue,
                      totalOrders: revenueAndOrders.totals.totalOrders,
                      totalVisitors: visitors.totalVisitors,
                      conversion: min(conversion, 1))
@@ -54,17 +56,19 @@ final class StoreInfoDataService {
 ///
 private extension StoreInfoDataService {
 
-    /// Async wrapper that fetches todays revenues & orders.
+    /// Async wrapper that fetches revenues & orders.
     ///
-    func fetchTodaysRevenueAndOrders(for storeID: Int64) async throws -> OrderStatsV4 {
+    func fetchRevenueAndOrders(for storeID: Int64, timeRange: StatsTimeRange) async throws -> OrderStatsV4 {
         try await withCheckedThrowingContinuation { continuation in
             // `WKWebView` is accessed internally, we are forced to dispatch the call in the main thread.
             Task { @MainActor in
+                let earliestDateToInclude = timeRange.earliestDate(latestDate: Date(), siteTimezone: .current)
+                let latestDateToInclude = timeRange.latestDate(currentDate: Date(), siteTimezone: .current)
                 orderStatsRemoteV4.loadOrderStats(for: storeID,
-                                                  unit: .hourly,
-                                                  earliestDateToInclude: Date().startOfDay(timezone: .current),
-                                                  latestDateToInclude: Date().endOfDay(timezone: .current),
-                                                  quantity: 24,
+                                                  unit: timeRange.intervalGranularity,
+                                                  earliestDateToInclude: earliestDateToInclude,
+                                                  latestDateToInclude: latestDateToInclude,
+                                                  quantity: timeRange.maxNumberOfIntervals,
                                                   forceRefresh: true) { result in
                     continuation.resume(with: result)
                 }
@@ -72,16 +76,19 @@ private extension StoreInfoDataService {
         }
     }
 
-    /// Async wrapper that fetches todays visitors.
+    /// Async wrapper that fetches visitors.
     ///
-    func fetchTodaysVisitors(for storeID: Int64) async throws -> SiteVisitStats {
+    func fetchVisitors(for storeID: Int64, timeRange: StatsTimeRange) async throws -> SiteVisitStats {
         try await withCheckedThrowingContinuation { continuation in
-            // `WKWebView` is accessed internally, we are foreced to dispatch the call in the main thread.
+            // `WKWebView` is accessed internally, we are forced to dispatch the call in the main thread.
             Task { @MainActor in
+                let latestDateToInclude = timeRange.latestDate(currentDate: Date(), siteTimezone: .current)
+                let quantity = timeRange.siteVisitStatsQuantity(date: latestDateToInclude, siteTimezone: .current)
+
                 siteVisitStatsRemote.loadSiteVisitorStats(for: storeID,
-                                                          unit: .day,
-                                                          latestDateToInclude: Date().endOfDay(timezone: .current),
-                                                          quantity: 1) { result in
+                                                          unit: timeRange.siteVisitStatsGranularity,
+                                                          latestDateToInclude: latestDateToInclude,
+                                                          quantity: quantity) { result in
                     continuation.resume(with: result)
                 }
             }

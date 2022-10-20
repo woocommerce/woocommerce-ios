@@ -61,12 +61,12 @@ private extension StoreInfoWidget {
     enum Localization {
         static let title = AppLocalizedString(
             "storeWidgets.displayName",
-            value: "Today",
+            value: "Stats",
             comment: "Widget title, displayed when selecting which widget to add"
         )
         static let description = AppLocalizedString(
             "storeWidgets.description",
-            value: "WooCommerce Stats Today",
+            value: "WooCommerce Stats",
             comment: "Widget description, displayed when selecting which widget to add"
         )
     }

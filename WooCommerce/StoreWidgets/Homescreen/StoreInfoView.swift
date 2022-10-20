@@ -225,7 +225,7 @@ private extension StoreInfoView {
         static let viewMore = AppLocalizedString(
             "storeWidgets.infoView.viewMore",
             value: "View More",
-            comment: "Title for the button indicator to display more stats in the Today's Stat widget when using accessibility fonts."
+            comment: "Title for the button indicator to display more stats in the Stat widget when using accessibility fonts."
         )
         static func updatedAt(_ updatedTime: String) -> LocalizedString {
             let format = AppLocalizedString("storeWidgets.infoView.updatedAt",
@@ -247,7 +247,7 @@ private extension NotLoggedInView {
     enum Localization {
         static let notLoggedIn = AppLocalizedString(
             "storeWidgets.notLoggedInView.notLoggedIn",
-            value: "Log in to see today’s stats.",
+            value: "Log in to see store’s stats.",
             comment: "Title label when the widget does not have a logged-in store."
         )
         static let login = AppLocalizedString(
@@ -269,7 +269,7 @@ private extension UnableToFetchView {
     enum Localization {
         static let unableToFetch = AppLocalizedString(
             "storeWidgets.unableToFetchView.unableToFetch",
-            value: "Unable to fetch today's stats",
+            value: "Unable to fetch store's stats",
             comment: "Title label when the widget can't fetch data."
         )
     }

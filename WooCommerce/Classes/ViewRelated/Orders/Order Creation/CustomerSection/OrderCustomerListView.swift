@@ -11,8 +11,7 @@ struct OrderCustomerListView: UIViewControllerRepresentable {
 
         let viewController = SearchViewController(
             storeID: siteID,
-            command: CouponSearchUICommand(siteID: siteID),
-            // TODO: replace SearchUICommand
+            command: CustomerSearchUICommand(siteID: siteID),
             cellType: TitleAndSubtitleAndStatusTableViewCell.self,
             // Must conform to SearchResultCell.
             // TODO: Proper cell for this cellType.

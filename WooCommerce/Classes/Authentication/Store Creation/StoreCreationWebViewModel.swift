@@ -26,10 +26,7 @@ final class StoreCreationWebViewModel: AuthenticatedWebViewModel {
     }
 
     func decidePolicy(for navigationURL: URL) async -> WKNavigationActionPolicy {
-        let url = navigationURL.absoluteString
-        if handleCompletionIfPossible(url) {
-            return .cancel
-        }
+        handleCompletionIfPossible(navigationURL.absoluteString)
         return .allow
     }
 }

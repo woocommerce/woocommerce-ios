@@ -93,6 +93,20 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
 
     let isSearchCustomersEnabled = DefaultFeatureFlagService().isFeatureFlagEnabled(.orderCreationSearchCustomers)
 
+    private func fillCustomerFields(customer: Customer) {
+        self.viewModel.fields.firstName = customer.firstName ?? ""
+        self.viewModel.fields.lastName = customer.lastName ?? ""
+        self.viewModel.fields.email = customer.email
+        self.viewModel.fields.phone = customer.billing?.phone ?? ""
+        self.viewModel.fields.company = customer.billing?.company ?? ""
+        self.viewModel.fields.address1 = customer.billing?.address1 ?? ""
+        self.viewModel.fields.address2 = customer.billing?.address2 ?? ""
+        self.viewModel.fields.city = customer.billing?.city ?? ""
+        self.viewModel.fields.postcode = customer.billing?.postcode ?? ""
+        self.viewModel.fields.country = customer.billing?.country ?? ""
+        self.viewModel.fields.state = customer.billing?.state ?? ""
+    }
+
     var body: some View {
         Group {
             ScrollView {
@@ -172,9 +186,8 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
         .notice($viewModel.notice)
         .sheet(isPresented: $showingCustomerSearch, content: {
             OrderCustomerListView(siteID: viewModel.siteID, onCustomerTapped: { customer in
-                // Not implemented yet.
-                print("3 - Customer Callback. Fill Order data with Customer details")
-                print("4 - Customer ID: \(customer.customerID) - Name: \(customer.firstName ?? ""))")
+                fillCustomerFields(customer: customer)
+                showingCustomerSearch = false
             })
         })
     }

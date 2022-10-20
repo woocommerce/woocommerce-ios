@@ -160,7 +160,8 @@ final class StorePickerViewController: UIViewController {
         self?.restartAuthentication()
     }
 
-    private var possibleSiteURLsFromStoreCreation: Set<String> = []
+    @Published private var possibleSiteURLsFromStoreCreation: Set<String> = []
+    private var possibleSiteURLsFromStoreCreationSubscription: AnyCancellable?
 
     private let appleIDCredentialChecker: AppleIDCredentialCheckerProtocol
     private let stores: StoresManager
@@ -195,6 +196,7 @@ final class StorePickerViewController: UIViewController {
         setupCreateStoreButton()
         refreshResults()
         observeStateChange()
+        observeSiteURLsFromStoreCreation()
 
         switch configuration {
         case .login:
@@ -314,6 +316,28 @@ private extension StorePickerViewController {
 
     func presentHelp() {
         ServiceLocator.authenticationManager.presentSupport(from: self, screen: .storePicker)
+    }
+
+    func observeSiteURLsFromStoreCreation() {
+        possibleSiteURLsFromStoreCreationSubscription = $possibleSiteURLsFromStoreCreation
+            .filter { $0.isEmpty == false }
+            .removeDuplicates()
+            // There are usually three URLs in the webview that return a site URL - two with `*.wordpress.com` and the other the final URL.
+            .debounce(for: .seconds(5), scheduler: DispatchQueue.main)
+            .asyncMap { [weak self] possibleSiteURLs -> Site? in
+                // Waits for 5 seconds before syncing sites every time.
+                try await Task.sleep(nanoseconds: 5_000_000_000)
+                return try await self?.syncSites(forSiteThatMatchesPossibleURLs: possibleSiteURLs)
+            }
+            // Retries 10 times with 5 seconds pause in between to wait for the newly created site to be available as a Jetpack site
+            // in the WPCOM `/me/sites` response.
+            .retry(10)
+            .replaceError(with: nil)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] site in
+                guard let self, let site else { return }
+                self.continueWithSelectedSite(site: site)
+            }
     }
 }
 
@@ -559,7 +583,7 @@ extension StorePickerViewController: UIViewControllerTransitioningDelegate {
 
 // MARK: - Action Handlers
 //
-extension StorePickerViewController {
+private extension StorePickerViewController {
 
     /// Proceeds with the Login Flow.
     ///
@@ -601,6 +625,67 @@ extension StorePickerViewController {
     ///
     @IBAction func secondaryActionWasPressed() {
         restartAuthentication()
+    }
+
+    func createStoreButtonPressed() {
+        // TODO-7879: analytics
+
+        let viewModel = StoreCreationWebViewModel { [weak self] result in
+            self?.handleStoreCreationResult(result)
+        }
+        possibleSiteURLsFromStoreCreation = []
+        let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
+        webViewController.addCloseNavigationBarButton(target: self, action: #selector(handleStoreCreationCloseAction))
+        let navigationController = WooNavigationController(rootViewController: webViewController)
+        // Disables interactive dismissal of the store creation modal.
+        navigationController.isModalInPresentation = true
+        present(navigationController, animated: true)
+    }
+
+    @objc func handleStoreCreationCloseAction() {
+        // TODO-7879: show a confirmation alert before closing the store creation view
+        // TODO-7879: analytics
+        dismiss(animated: true)
+    }
+
+    func handleStoreCreationResult(_ result: Result<String, Error>) {
+        switch result {
+        case .success(let siteURL):
+            // TODO-7879: analytics
+
+            // There could be multiple site URLs from the completion URL in the webview, and only one
+            // of them matches the final site URL from WPCOM `/me/sites` endpoint.
+            possibleSiteURLsFromStoreCreation.insert(siteURL)
+        case .failure(let error):
+            // TODO-7879: analytics
+            DDLogError("Store creation error: \(error)")
+        }
+    }
+
+    @MainActor
+    func syncSites(forSiteThatMatchesPossibleURLs possibleURLs: Set<String>) async throws -> Site {
+        return try await withCheckedThrowingContinuation { [weak self] continuation in
+            viewModel.refreshSites(currentlySelectedSiteID: nil) { [weak self] in
+                guard let self else { return }
+                // The newly created site often has `isJetpackThePluginInstalled=false` initially,
+                // which results in a JCP site.
+                // In this case, we want to retry sites syncing.
+                guard let site = self.viewModel.site(thatMatchesPossibleURLs: possibleURLs) else {
+                    return continuation.resume(throwing: StoreCreationError.newSiteUnavailable)
+                }
+                guard site.isJetpackConnected && site.isJetpackThePluginInstalled else {
+                    return continuation.resume(throwing: StoreCreationError.newSiteIsNotJetpackSite)
+                }
+                continuation.resume(returning: site)
+            }
+        }
+    }
+
+    func continueWithSelectedSite(site: Site) {
+        currentlySelectedSite = site
+        dismiss(animated: true) { [weak self] in
+            self?.checkRoleEligibility(for: site)
+        }
     }
 }
 

@@ -229,6 +229,9 @@ extension WooConstants {
         case wcPayCashOnDeliveryLearnMore =
                 "https://woocommerce.com/document/payments/getting-started-with-in-person-payments-with-woocommerce-payments/#add-cod-payment-method"
 
+        /// URL for creating a store.
+        case storeCreation = "https://woocommerce.com/start"
+
         /// Returns the URL version of the receiver
         ///
         func asURL() -> URL {

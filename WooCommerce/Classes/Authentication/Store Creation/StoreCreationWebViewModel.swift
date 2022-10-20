@@ -1,7 +1,7 @@
 import Foundation
 import WebKit
 
-/// View model used for the web view controller to setup Jetpack connection during the login flow.
+/// View model used for the web view controller to create a store.
 ///
 final class StoreCreationWebViewModel: AuthenticatedWebViewModel {
     // `AuthenticatedWebViewModel` protocol conformance.
@@ -39,10 +39,9 @@ enum StoreCreationError: Error {
 }
 
 private extension StoreCreationWebViewModel {
-    @discardableResult
-    func handleCompletionIfPossible(_ url: String) -> Bool {
+    func handleCompletionIfPossible(_ url: String) {
         guard url.starts(with: Constants.completionURLPrefix) else {
-            return false
+            return
         }
         do {
             // A successful URL looks like `https://wordpress.com/checkout/thank-you/{{site_url}}/.*`.
@@ -69,10 +68,8 @@ private extension StoreCreationWebViewModel {
             DispatchQueue.main.async { [weak self] in
                 self?.handleSuccess(siteURL: siteURL)
             }
-            return true
         } catch {
             handleError(error)
-            return false
         }
     }
 

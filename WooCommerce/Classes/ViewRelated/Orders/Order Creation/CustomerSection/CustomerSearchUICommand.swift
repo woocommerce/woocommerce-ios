@@ -1,17 +1,19 @@
 import Foundation
 import Yosemite
 
+/// Implementation of `SearchUICommand` for Customer search.
+///
 final class CustomerSearchUICommand: SearchUICommand {
 
     typealias Model = Customer
     typealias CellViewModel = TitleAndSubtitleAndStatusTableViewCell.ViewModel
     typealias ResultsControllerModel = StorageCustomer
 
-    var searchBarPlaceholder: String = ""
+    var searchBarPlaceholder: String = Localization.searchBarPlaceHolder
 
-    var searchBarAccessibilityIdentifier: String = ""
+    var searchBarAccessibilityIdentifier: String = "customer-search-screen-search-field"
 
-    var cancelButtonAccessibilityIdentifier: String = ""
+    var cancelButtonAccessibilityIdentifier: String = "customer-search-screen-cancel-button"
 
     var resynchronizeModels: (() -> Void) = {}
 
@@ -29,7 +31,7 @@ final class CustomerSearchUICommand: SearchUICommand {
     }
 
     func createStarterViewController() -> UIViewController? {
-        return nil
+        nil
     }
 
     func createCellViewModel(model: Customer) -> TitleAndSubtitleAndStatusTableViewCell.ViewModel {
@@ -53,5 +55,12 @@ final class CustomerSearchUICommand: SearchUICommand {
 
     func searchResultsPredicate(keyword: String) -> NSPredicate? {
         return NSPredicate(format: "ANY searchResults.keyword = %@", keyword)
+    }
+}
+
+private extension CustomerSearchUICommand {
+    enum Localization {
+        static let searchBarPlaceHolder = NSLocalizedString("Search all customers",
+                                                            comment: "Customer Search Placeholder")
     }
 }

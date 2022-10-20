@@ -17,15 +17,17 @@ final class CustomerSearchUICommand: SearchUICommand {
 
     var resynchronizeModels: (() -> Void) = {}
 
+    var onDidSelectSearchResult: ((Customer) -> Void)
+
     private let siteID: Int64
 
-    init(siteID: Int64) {
+    init(siteID: Int64, onDidSelectSearchResult: @escaping ((Customer) -> Void)) {
         self.siteID = siteID
+        self.onDidSelectSearchResult = onDidSelectSearchResult
     }
 
     func createResultsController() -> ResultsController<StorageCustomer> {
         let storageManager = ServiceLocator.storageManager
-        let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let descriptor = NSSortDescriptor(keyPath: \StorageCustomer.customerID, ascending: false)
         return ResultsController<StorageCustomer>(storageManager: storageManager, sortedBy: [descriptor])
     }
@@ -37,7 +39,7 @@ final class CustomerSearchUICommand: SearchUICommand {
     func createCellViewModel(model: Customer) -> TitleAndSubtitleAndStatusTableViewCell.ViewModel {
         return CellViewModel(
             id: "\(model.customerID)",
-            title: "\(model.firstName ?? "") \(model.lastName ?? ""))",
+            title: "\(model.firstName ?? "") \(model.lastName ?? "")",
             subtitle: model.email,
             accessibilityLabel: "",
             status: "",
@@ -59,7 +61,10 @@ final class CustomerSearchUICommand: SearchUICommand {
 
     func didSelectSearchResult(model: Customer, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void) {
         // Not implemented yet
-        print("Selected ID: \(model.customerID) - Name: \(String(describing: model.firstName))")
+        print("1 - Customer tapped")
+        print("2 - Customer ID: \(model.customerID) - Name: \(model.firstName ?? ""))")
+        // Customer data will go up to EditOrderAddressForm, via OrderCustomerListView completion handler
+        onDidSelectSearchResult(model)
     }
 
     func searchResultsPredicate(keyword: String) -> NSPredicate? {

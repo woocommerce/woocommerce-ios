@@ -171,7 +171,11 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
         }
         .notice($viewModel.notice)
         .sheet(isPresented: $showingCustomerSearch, content: {
-            OrderCustomerListView(siteID: viewModel.siteID)
+            OrderCustomerListView(siteID: viewModel.siteID, onCustomerTapped: { customer in
+                // Not implemented yet.
+                print("3 - Customer Callback. Fill Order data with Customer details")
+                print("4 - Customer ID: \(customer.customerID) - Name: \(customer.firstName ?? ""))")
+            })
         })
     }
 

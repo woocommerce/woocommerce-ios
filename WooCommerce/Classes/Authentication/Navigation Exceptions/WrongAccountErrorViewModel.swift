@@ -27,6 +27,7 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
 
     @Published private var isSelfHostedSite = false
     @Published private var primaryButtonLoading = false
+    @Published private var termsAttributedString: NSAttributedString = .init(string: "")
 
     private var siteInfoSubscription: AnyCancellable?
 
@@ -89,6 +90,10 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
         return message
     }
 
+    var termsLabelText: AnyPublisher<NSAttributedString, Never> {
+        $termsAttributedString.eraseToAnyPublisher()
+    }
+
     let isAuxiliaryButtonHidden = false
 
     let auxiliaryButtonTitle = Localization.findYourConnectedEmail
@@ -111,11 +116,9 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
 
     // MARK: - Actions
     func viewDidLoad(_ viewController: UIViewController?) {
-        siteInfoSubscription = $isSelfHostedSite
-            .dropFirst() // ignores first element
-            .sink { [weak self] isSelfHosted in
-                self?.analytics.track(event: .LoginJetpackConnection.jetpackConnectionErrorShown(selfHostedSite: isSelfHosted))
-            }
+
+        trackScreenView()
+        configureTermsText()
 
         // Fetches site info if we're not sure whether the site is self-hosted.
         if siteXMLRPC.isEmpty {
@@ -173,6 +176,46 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
 
 // MARK: - Private helpers
 private extension WrongAccountErrorViewModel {
+    /// Waits for site info to log the screen view.
+    ///
+    func trackScreenView() {
+        siteInfoSubscription = $isSelfHostedSite
+            .dropFirst() // ignores first element
+            .sink { [weak self] isSelfHosted in
+                self?.analytics.track(event: .LoginJetpackConnection.jetpackConnectionErrorShown(selfHostedSite: isSelfHosted))
+            }
+    }
+
+    /// Listens to changes to the self-hosted site check to update the content of the terms text.
+    ///
+    func configureTermsText() {
+        $isSelfHostedSite
+            .map { [weak self] isSelfHosted -> NSMutableAttributedString in
+                // only shows terms text if the site is self-hosted,
+                // since the user cannot handle Jetpack connection themselves on WP.com sites.
+                guard let self, isSelfHosted else {
+                    return .init(string: "")
+                }
+                let content = String.localizedStringWithFormat(Localization.termsContent, Localization.termsOfService, Localization.shareDetails)
+                let paragraph = NSMutableParagraphStyle()
+                paragraph.alignment = .center
+
+                let mutableAttributedText = NSMutableAttributedString(
+                    string: content,
+                    attributes: [.font: UIFont.footnote,
+                                 .foregroundColor: UIColor.secondaryLabel,
+                                 .paragraphStyle: paragraph]
+                )
+
+                mutableAttributedText.setAsLink(textToFind: Localization.termsOfService,
+                                                linkURL: Strings.jetpackTermsURL + self.siteURL)
+                mutableAttributedText.setAsLink(textToFind: Localization.shareDetails,
+                                                linkURL: Strings.jetpackShareDetailsURL + self.siteURL)
+                return mutableAttributedText
+            }
+            .assign(to: &$termsAttributedString)
+    }
+
     /// Fetches the site info and show the primary button if the site is self-hosted.
     /// If the site is self-hosted, make the Connect Jetpack button visible.
     ///
@@ -256,6 +299,7 @@ private extension WrongAccountErrorViewModel {
         let viewModel = JetpackConnectionWebViewModel(initialURL: url, siteURL: siteURL, completion: { [weak self] in
             self?.fetchJetpackUser(in: viewController)
         })
+
         let pluginViewController = AuthenticatedWebViewController(viewModel: viewModel)
         viewController.navigationController?.show(pluginViewController, sender: nil)
     }
@@ -354,7 +398,7 @@ private extension WrongAccountErrorViewModel {
                                                           comment: "Action button linking to a list of connected stores."
                                                           + "Presented when logging in with a store address that does not match the account entered")
 
-        static let primaryButtonTitle = NSLocalizedString("Connect to the site",
+        static let primaryButtonTitle = NSLocalizedString("Connect Jetpack to your account",
                                                           comment: "Action button to handle connecting the logged-in account to a given site."
                                                           + "Presented when logging in with a store address that does not match the account entered")
 
@@ -378,9 +422,23 @@ private extension WrongAccountErrorViewModel {
 
         static let helpBarButtonItemTitle = NSLocalizedString("Help",
                                                        comment: "Help button on account mismatch error screen.")
+        static let termsContent = NSLocalizedString(
+            "By tapping the Connect Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com.",
+            comment: "Content of the label at the end of the Wrong Account screen. " +
+            "Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com.")
+        static let termsOfService = NSLocalizedString(
+            "Terms of Service",
+            comment: "The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen."
+        )
+        static let shareDetails = NSLocalizedString(
+            "share details",
+            comment: "The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen."
+        )
     }
 
     enum Strings {
         static let instructionsURLString = "https://docs.woocommerce.com/document/jetpack-setup-instructions-for-the-woocommerce-mobile-app/"
+        static let jetpackTermsURL = "https://jetpack.com/redirect/?source=wpcom-tos&site="
+        static let jetpackShareDetailsURL = "https://jetpack.com/redirect/?source=jetpack-support-what-data-does-jetpack-sync&site="
     }
 }

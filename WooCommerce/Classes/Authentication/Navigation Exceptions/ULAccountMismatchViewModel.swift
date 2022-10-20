@@ -22,6 +22,10 @@ protocol ULAccountMismatchViewModel {
     /// Extended description of the error.
     var text: NSAttributedString { get }
 
+    /// A text explaining the terms when the primary button is tapped.
+    ///
+    var termsLabelText: AnyPublisher<NSAttributedString, Never> { get }
+
     /// Provides the title for an auxiliary button
     var auxiliaryButtonTitle: String { get }
 

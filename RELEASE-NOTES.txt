@@ -2,6 +2,8 @@
 
 10.9
 -----
+- [***] Dropped iOS 14 support. From now we support iOS 15 and later. [https://github.com/woocommerce/woocommerce-ios/pull/7851]
+- [*] Login: Now you can handle Jetpack site connection for your self-hosted sites from the app. [https://github.com/woocommerce/woocommerce-ios/pull/7847]
 
 
 10.8

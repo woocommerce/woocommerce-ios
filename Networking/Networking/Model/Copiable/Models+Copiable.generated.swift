@@ -170,7 +170,7 @@ extension CouponReport {
 }
 
 extension Customer {
-    func copy(
+    public func copy(
         customerID: CopiableProp<Int64> = .copy,
         email: CopiableProp<String> = .copy,
         firstName: NullableCopiableProp<String> = .copy,

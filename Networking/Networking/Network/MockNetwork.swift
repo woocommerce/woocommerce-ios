@@ -39,6 +39,7 @@ class MockNetwork: Network {
         self.useResponseQueue = useResponseQueue
     }
 
+    var session: URLSession { URLSession(configuration: .default) }
 
     /// Whenever the Request's URL matches any of the "Mocked Up Patterns", we'll return the specified response file, loaded as *Data*.
     /// Otherwise, an error will be relayed back (.notFound!).

@@ -15,6 +15,7 @@ public class AlamofireNetwork: Network {
     ///
     private let credentials: Credentials
 
+    public var session: URLSession { SessionManager.default.session }
 
     /// Public Initializer
     ///

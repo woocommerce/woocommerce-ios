@@ -4,7 +4,7 @@ import protocol Alamofire.URLRequestConvertible
 
 /// Represents a collection of Remote Endpoints
 ///
-public class Remote {
+public class Remote: NSObject {
 
     /// Networking Wrapper: Dependency Injection Mechanism, useful for Unit Testing purposes.
     ///

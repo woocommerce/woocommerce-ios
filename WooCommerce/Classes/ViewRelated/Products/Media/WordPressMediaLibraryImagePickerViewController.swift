@@ -16,7 +16,7 @@ final class WordPressMediaLibraryImagePickerViewController: UIViewController {
         options.allowCaptureOfMedia = false
         options.showSearchBar = false
         options.showActionBar = false
-        options.badgedUTTypes = [String(kUTTypeGIF)]
+        options.badgedUTTypes = [UTType.gif.identifier]
         options.allowMultipleSelection = allowsMultipleImages
         return options
     }()

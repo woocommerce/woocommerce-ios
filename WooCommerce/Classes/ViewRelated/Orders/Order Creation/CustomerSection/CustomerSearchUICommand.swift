@@ -46,7 +46,15 @@ final class CustomerSearchUICommand: SearchUICommand {
     }
 
     func synchronizeModels(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
-
+        let action = CustomerAction.searchCustomers(siteID: siteID, keyword: keyword) { result in
+            switch result {
+            case .success(_):
+                onCompletion?(result.isSuccess)
+            case .failure(let error):
+                DDLogError("Customer Search Failure \(error)")
+            }
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 
     func didSelectSearchResult(model: Customer, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void) {

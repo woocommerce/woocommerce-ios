@@ -1148,6 +1148,7 @@
 		AEA622B2274669D3002A9B57 /* AddOrderCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA622B1274669D3002A9B57 /* AddOrderCoordinator.swift */; };
 		AEA622B427466B78002A9B57 /* BottomSheetOrderType.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA622B327466B78002A9B57 /* BottomSheetOrderType.swift */; };
 		AEA622B727468790002A9B57 /* AddOrderCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA622B627468790002A9B57 /* AddOrderCoordinatorTests.swift */; };
+		AEA7840428FEE82A000485FC /* StatsTimeRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA7840328FEE82A000485FC /* StatsTimeRange.swift */; };
 		AEACCB6D2785FF4A000D01F0 /* NavigationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEACCB6C2785FF4A000D01F0 /* NavigationRow.swift */; };
 		AEB73C0C25CD734200A8454A /* AttributePickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB73C0B25CD734200A8454A /* AttributePickerViewModel.swift */; };
 		AEB73C1725CD8E5800A8454A /* AttributePickerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB73C1625CD8E5800A8454A /* AttributePickerViewModelTests.swift */; };
@@ -3046,6 +3047,7 @@
 		AEA622B1274669D3002A9B57 /* AddOrderCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOrderCoordinator.swift; sourceTree = "<group>"; };
 		AEA622B327466B78002A9B57 /* BottomSheetOrderType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetOrderType.swift; sourceTree = "<group>"; };
 		AEA622B627468790002A9B57 /* AddOrderCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOrderCoordinatorTests.swift; sourceTree = "<group>"; };
+		AEA7840328FEE82A000485FC /* StatsTimeRange.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatsTimeRange.swift; sourceTree = "<group>"; };
 		AEACCB6C2785FF4A000D01F0 /* NavigationRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationRow.swift; sourceTree = "<group>"; };
 		AEB73C0B25CD734200A8454A /* AttributePickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewModel.swift; sourceTree = "<group>"; };
 		AEB73C1625CD8E5800A8454A /* AttributePickerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewModelTests.swift; sourceTree = "<group>"; };
@@ -5378,6 +5380,7 @@
 				265C99E028B9BA43005E6117 /* StoreInfoWidget.swift */,
 				265C99E328B9C834005E6117 /* StoreInfoProvider.swift */,
 				260DE20828CA7CE2009ECD7C /* StoreInfoDataService.swift */,
+				AEA7840328FEE82A000485FC /* StatsTimeRange.swift */,
 				265C99E528B9CB8E005E6117 /* StoreInfoViewModifiers.swift */,
 				3F1FA84728B60125009E246C /* StoreWidgets.intentdefinition */,
 				3F1FA84828B60126009E246C /* Assets.xcassets */,
@@ -9395,6 +9398,7 @@
 				AED9012D28E5F517002B4572 /* AppLinkWidget.swift in Sources */,
 				2608C50728C941D600C9DFC0 /* UserDefaults+Woo.swift in Sources */,
 				265C99E628B9CB8E005E6117 /* StoreInfoViewModifiers.swift in Sources */,
+				AEA7840428FEE82A000485FC /* StatsTimeRange.swift in Sources */,
 				2608C50628C93AB700C9DFC0 /* WooConstants.swift in Sources */,
 				260DE20A28CA7CFE009ECD7C /* StoreInfoDataService.swift in Sources */,
 				AE56E73428E76CDB00A1292B /* StoreInfoInlineWidget.swift in Sources */,

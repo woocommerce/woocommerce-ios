@@ -56,7 +56,7 @@ struct StoreInfoData {
 
 /// Type that provides data entries to the widget system.
 ///
-final class StoreInfoProvider: TimelineProvider {
+final class StoreInfoProvider: IntentTimelineProvider {
 
     /// Holds a reference to the service while a network request is being performed.
     ///
@@ -75,13 +75,13 @@ final class StoreInfoProvider: TimelineProvider {
 
     /// Quick Snapshot. Required when previewing the widget.
     ///
-    func getSnapshot(in context: Context, completion: @escaping (StoreInfoEntry) -> Void) {
+    func getSnapshot(for configuration: StoreWidgetsConfigIntent, in context: Context, completion: @escaping (StoreInfoEntry) -> Void) {
         completion(placeholder(in: context))
     }
 
     /// Real data widget.
     ///
-    func getTimeline(in context: Context, completion: @escaping (Timeline<StoreInfoEntry>) -> Void) {
+    func getTimeline(for configuration: StoreWidgetsConfigIntent, in context: Context, completion: @escaping (Timeline<StoreInfoEntry>) -> Void) {
         guard let dependencies = Self.fetchDependencies() else {
             return completion(Timeline<StoreInfoEntry>(entries: [StoreInfoEntry.notConnected], policy: .never))
         }
@@ -90,7 +90,7 @@ final class StoreInfoProvider: TimelineProvider {
         networkService = strongService
         Task {
             do {
-                let todayStats = try await strongService.fetchTodayStats(for: dependencies.storeID)
+                let todayStats = try await strongService.fetchStats(for: dependencies.storeID, timeRange: StatsTimeRange(configuration.timeRange))
                 let entry = Self.dataEntry(for: todayStats, with: dependencies)
                 let reloadDate = Date(timeIntervalSinceNow: reloadInterval)
                 let timeline = Timeline<StoreInfoEntry>(entries: [entry], policy: .after(reloadDate))

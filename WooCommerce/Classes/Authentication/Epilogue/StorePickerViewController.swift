@@ -288,7 +288,7 @@ private extension StorePickerViewController {
 
     func setupCreateStoreButton() {
         createStoreButton.isHidden = isStoreCreationEnabled == false
-        createStoreButton.isPrimary = configuration != .switchingStores
+        createStoreButton.isPrimary = false
         createStoreButton.backgroundColor = .clear
         createStoreButton.titleFont = StyleManager.actionButtonTitleFont
         createStoreButton.setTitle(Localization.createStore, for: .normal)

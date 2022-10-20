@@ -13,6 +13,7 @@ public protocol AccountRemoteProtocol {
     func checkIfWooCommerceIsActive(for siteID: Int64) -> AnyPublisher<Result<Bool, Error>, Never>
     func fetchWordPressSiteSettings(for siteID: Int64) -> AnyPublisher<Result<WordPressSiteSettings, Error>, Never>
     func loadSitePlan(for siteID: Int64, completion: @escaping (Result<SitePlan, Error>) -> Void)
+    func loadUsernameSuggestions(from text: String) async -> [String]
 }
 
 /// Account: Remote Endpoints
@@ -114,6 +115,15 @@ public class AccountRemote: Remote, AccountRemoteProtocol {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    public func loadUsernameSuggestions(from text: String) async -> [String] {
+        let path = Path.usernameSuggestions
+        let parameters = [ParameterKey.name: text]
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path, parameters: parameters)
+        let result: Result<[String: [String]], Error> = await enqueue(request)
+        let suggestions = (try? result.get())?["suggestions"] ?? []
+        return suggestions
+    }
 }
 
 // MARK: - Constants
@@ -121,5 +131,15 @@ public class AccountRemote: Remote, AccountRemoteProtocol {
 private extension AccountRemote {
     enum Constants {
         static let wooCommerceSiteSettingsPath: String = "settings"
+    }
+
+    enum ParameterKey {
+        static let name = "name"
+    }
+
+    enum Path {
+        static let settings = "me/settings"
+        static let username = "me/username"
+        static let usernameSuggestions = "wpcom/v2/users/username/suggestions"
     }
 }

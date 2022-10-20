@@ -37,11 +37,11 @@ final class CustomerSearchUICommand: SearchUICommand {
     func createCellViewModel(model: Customer) -> TitleAndSubtitleAndStatusTableViewCell.ViewModel {
         return CellViewModel(
             id: "\(model.customerID)",
-            title: model.firstName ?? "",
-            subtitle: model.lastName ?? "",
+            title: "\(model.firstName ?? "") \(model.lastName ?? ""))",
+            subtitle: model.email,
             accessibilityLabel: "",
             status: "",
-            statusBackgroundColor: .accent
+            statusBackgroundColor: .clear
         )
     }
 
@@ -58,7 +58,8 @@ final class CustomerSearchUICommand: SearchUICommand {
     }
 
     func didSelectSearchResult(model: Customer, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void) {
-
+        // Not implemented yet
+        print("Selected ID: \(model.customerID) - Name: \(String(describing: model.firstName))")
     }
 
     func searchResultsPredicate(keyword: String) -> NSPredicate? {

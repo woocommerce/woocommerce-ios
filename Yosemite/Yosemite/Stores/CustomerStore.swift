@@ -107,6 +107,7 @@ public final class CustomerStore: Store {
     ///
     /// - Parameters:
     ///   - siteID: The site for which customers should be fetched.
+    ///   - keyword: The keyword used for the Customer search query.
     ///   - searchResults: A WCAnalyticsCustomer collection that represents the matches we've got from the API based in our keyword search.
     ///   - onCompletion: Invoked when the operation finishes. Will map the result to a `[Customer]` entity.
     ///
@@ -150,15 +151,15 @@ private extension CustomerStore {
                                             in storage: StorageType,
                                             onCompletion: @escaping () -> Void) {
         storage.perform {
-            let storedSeachResult = storage.loadCustomerSearchResult(siteID: siteID, keyword: keyword) ??
+            let storedSearchResult = storage.loadCustomerSearchResult(siteID: siteID, keyword: keyword) ??
             storage.insertNewObject(ofType: Storage.CustomerSearchResult.self)
 
-            storedSeachResult.siteID = siteID
-            storedSeachResult.keyword = keyword
+            storedSearchResult.siteID = siteID
+            storedSearchResult.keyword = keyword
 
             for result in readOnlyCustomers {
                 if let storedCustomer = storage.loadCustomer(siteID: siteID, customerID: result.customerID) {
-                    storedSeachResult.addToCustomers(storedCustomer)
+                    storedSearchResult.addToCustomers(storedCustomer)
                 }
             }
         }

@@ -44,7 +44,6 @@
 		0272E3FB254AABB800436277 /* order-with-line-item-attributes-before-API-support.json in Resources */ = {isa = PBXBuildFile; fileRef = 0272E3FA254AABB800436277 /* order-with-line-item-attributes-before-API-support.json */; };
 		028296F7237D588700E84012 /* ProductVariation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028296F6237D588700E84012 /* ProductVariation.swift */; };
 		0282DD91233A120A006A5FDB /* products-search-photo.json in Resources */ = {isa = PBXBuildFile; fileRef = 0282DD90233A120A006A5FDB /* products-search-photo.json */; };
-		028CB7112901899E00331C09 /* CreateAccountResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028CB7102901899E00331C09 /* CreateAccountResponse.swift */; };
 		028CB716290223CB00331C09 /* create-account-success.json in Resources */ = {isa = PBXBuildFile; fileRef = 028CB712290223CB00331C09 /* create-account-success.json */; };
 		028CB717290223CB00331C09 /* create-account-error-password.json in Resources */ = {isa = PBXBuildFile; fileRef = 028CB713290223CB00331C09 /* create-account-error-password.json */; };
 		028CB718290223CB00331C09 /* account-username-suggestions.json in Resources */ = {isa = PBXBuildFile; fileRef = 028CB714290223CB00331C09 /* account-username-suggestions.json */; };
@@ -765,7 +764,6 @@
 		0272E3FA254AABB800436277 /* order-with-line-item-attributes-before-API-support.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-with-line-item-attributes-before-API-support.json"; sourceTree = "<group>"; };
 		028296F6237D588700E84012 /* ProductVariation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariation.swift; sourceTree = "<group>"; };
 		0282DD90233A120A006A5FDB /* products-search-photo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "products-search-photo.json"; sourceTree = "<group>"; };
-		028CB7102901899E00331C09 /* CreateAccountResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAccountResponse.swift; sourceTree = "<group>"; };
 		028CB712290223CB00331C09 /* create-account-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "create-account-success.json"; sourceTree = "<group>"; };
 		028CB713290223CB00331C09 /* create-account-error-password.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "create-account-error-password.json"; sourceTree = "<group>"; };
 		028CB714290223CB00331C09 /* account-username-suggestions.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "account-username-suggestions.json"; sourceTree = "<group>"; };
@@ -1923,7 +1921,6 @@
 				DE50295A28C5F99700551736 /* DotcomUser.swift */,
 				68CB800B28D87BC800E169F8 /* Customer.swift */,
 				68F48B0828E3AF750045C15B /* WCAnalyticsCustomer.swift */,
-				028CB7102901899E00331C09 /* CreateAccountResponse.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -2899,7 +2896,6 @@
 				451A97D1260A03900059D135 /* ShippingLabelCustomPackage.swift in Sources */,
 				DE34051328BDCA5100CF0D97 /* WordPressOrgRequest.swift in Sources */,
 				D88D5A45230BC6F9007B6E01 /* ProductReviewsRemote.swift in Sources */,
-				028CB7112901899E00331C09 /* CreateAccountResponse.swift in Sources */,
 				B59325D4217E4206000B0E8E /* NoteBlock.swift in Sources */,
 				DEC51AF92769A212009F3DF4 /* SystemStatus+Settings.swift in Sources */,
 				D8C251D0230BD72700F49782 /* ProductReviewMapper.swift in Sources */,

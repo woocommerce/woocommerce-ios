@@ -26,7 +26,7 @@ public class Remote: NSObject {
     ///
     /// - Parameter request: Request that should be performed.
     /// - Returns: The result from the JSON parsed response for the expected type.
-    func enqueue<T>(_ request: URLRequestConvertible) async -> Result<T, Error> {
+    func enqueue<T: Decodable>(_ request: URLRequestConvertible) async -> Result<T, Error> {
         await withCheckedContinuation { continuation in
             network.responseData(for: request) { [weak self] result in
                 guard let self else { return }
@@ -40,9 +40,7 @@ public class Remote: NSObject {
                     }
 
                     do {
-                        guard let document = try JSONSerialization.jsonObject(with: data, options: []) as? T else {
-                            return continuation.resume(returning: .failure(RemoteError.unexpectedResponseData))
-                        }
+                        let document = try JSONDecoder().decode(T.self, from: data)
                         continuation.resume(returning: .success(document))
                     } catch {
                         continuation.resume(returning: .failure(error))

@@ -24,7 +24,11 @@ public protocol AccountRemoteProtocol {
     ///   - clientSecret: WPCOM client secret of the WooCommerce iOS app.
     ///
     /// - Returns: the auth token for the newly created account.
-    func createAccount(email: String, username: String, password: String, clientID: String, clientSecret: String) async -> Result<String, CreateAccountError>
+    func createAccount(email: String,
+                       username: String,
+                       password: String,
+                       clientID: String,
+                       clientSecret: String) async -> Result<CreateAccountData, CreateAccountError>
 }
 
 /// Account: Remote Endpoints
@@ -140,7 +144,7 @@ public class AccountRemote: Remote, AccountRemoteProtocol {
                               username: String,
                               password: String,
                               clientID: String,
-                              clientSecret: String) async -> Result<String, CreateAccountError> {
+                              clientSecret: String) async -> Result<CreateAccountData, CreateAccountError> {
         let path = Path.accountCreation
         let parameters: [String: Any] = [
             "client_id": clientID,
@@ -154,14 +158,11 @@ public class AccountRemote: Remote, AccountRemoteProtocol {
             "validate": false,
             "send_verification_email": true
         ]
-        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
-        let result: Result<[String: Any], Error> = await enqueue(request)
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)
+        let result: Result<CreateAccountData, Error> = await enqueue(request)
         switch result {
-        case .success(let response):
-            guard let authToken = response["bearer_token"] as? String else {
-                return .failure(CreateAccountError.noAuthToken)
-            }
-            return .success(authToken)
+        case .success(let data):
+            return .success(data)
         case .failure(let error):
             guard let dotcomError = error as? DotcomError else {
                 return .failure(.unknown(error: error as NSError))
@@ -185,8 +186,24 @@ private extension AccountRemote {
     enum Path {
         static let settings = "me/settings"
         static let username = "me/username"
-        static let usernameSuggestions = "wpcom/v2/users/username/suggestions"
+        static let usernameSuggestions = "users/username/suggestions"
         static let accountCreation = "users/new"
+    }
+}
+
+/// Necessary data for account credentials.
+public struct CreateAccountData: Decodable {
+    public let authToken: String
+    public let username: String
+
+    public init(authToken: String, username: String) {
+        self.authToken = authToken
+        self.username = username
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case authToken = "bearer_token"
+        case username
     }
 }
 
@@ -196,7 +213,6 @@ public enum CreateAccountError: Error, Equatable {
     case invalidUsername
     case invalidEmail
     case invalidPassword(message: String?)
-    case noAuthToken
     case unexpected(error: DotcomError)
     case unknown(error: NSError)
 

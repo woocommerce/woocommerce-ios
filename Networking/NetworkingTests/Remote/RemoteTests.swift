@@ -180,7 +180,7 @@ final class RemoteTests: XCTestCase {
         let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJetpackTimeoutError, object: nil, handler: nil)
         network.simulateResponse(requestUrlSuffix: "something", filename: "timeout_error")
 
-        let result: Result<Void, Error> = await remote.enqueue(request)
+        let result: Result<String, Error> = await remote.enqueue(request)
         XCTAssertTrue(result.isFailure)
         let error = try XCTUnwrap(result.failure as? DotcomError)
         XCTAssertEqual(error, .requestFailed)

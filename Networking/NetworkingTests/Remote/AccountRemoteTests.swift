@@ -179,8 +179,9 @@ final class AccountRemoteTests: XCTestCase {
         let result = await remote.createAccount(email: "coffee@woo.com", username: "", password: "", clientID: "", clientSecret: "")
 
         // Then
-        let authToken = try XCTUnwrap(result.get())
-        XCTAssertEqual(authToken, "🐻")
+        let data = try XCTUnwrap(result.get())
+        XCTAssertEqual(data.authToken, "🐻")
+        XCTAssertEqual(data.username, "wootest")
     }
 
     func test_createAccount_returns_emailExists_error_on_email_exists_error() async throws {

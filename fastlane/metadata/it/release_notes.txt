@@ -1,3 +1,1 @@
-Notizie straordinarie! Ora puoi modificare i prezzi delle varianti in blocco. Tutto ciò di cui hai bisogno è avere l'ultima versione di WooCommerce disponibile nel tuo negozio! Ci siamo anche concentrati sul perfezionamento di alcuni dettagli e ci siamo occupati dei piccoli bug riscontrati dal nostro team.
-
-Continua a inviarci il tuo feedback; ci aiuta a capire su cosa lavorare in futuro.
+Ti piace il nuovo widget delle statistiche nell'app? Oggi è il tuo giorno fortunato. Ora è possibile visualizzare il widget delle statistiche sulla schermata di blocco. È disponibile solamente per iOS 16. Abbiamo anche migliorato il flusso di acquisto del lettore di carte con una migliore compilazione automatica in modo che sia più facile acquistare un lettore di carte direttamente dall'app.

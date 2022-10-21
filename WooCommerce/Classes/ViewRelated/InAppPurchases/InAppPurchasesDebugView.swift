@@ -3,6 +3,7 @@ import StoreKit
 import Yosemite
 
 struct InAppPurchasesDebugView: View {
+    let siteID: Int64
     private let stores = ServiceLocator.stores
     @State var products: [StoreKit.Product] = []
 
@@ -19,7 +20,7 @@ struct InAppPurchasesDebugView: View {
                 } else {
                     ForEach(products) { product in
                         Button(product.description) {
-                            stores.dispatch(InAppPurchaseAction.purchaseProduct(siteID: 0, product: product, completion: { _ in }))
+                            stores.dispatch(InAppPurchaseAction.purchaseProduct(siteID: siteID, product: product, completion: { _ in }))
                         }
                     }
                 }
@@ -45,6 +46,6 @@ struct InAppPurchasesDebugView: View {
 
 struct InAppPurchasesDebugView_Previews: PreviewProvider {
     static var previews: some View {
-        InAppPurchasesDebugView()
+        InAppPurchasesDebugView(siteID: 0)
     }
 }

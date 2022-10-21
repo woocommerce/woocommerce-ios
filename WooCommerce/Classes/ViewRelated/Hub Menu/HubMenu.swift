@@ -113,7 +113,7 @@ struct HubMenu: View {
             NavigationLink(destination: CouponListView(siteID: viewModel.siteID), isActive: $showingCoupons) {
                 EmptyView()
             }.hidden()
-            NavigationLink(destination: InAppPurchasesDebugView(), isActive: $showingIAPDebug) {
+            NavigationLink(destination: InAppPurchasesDebugView(siteID: viewModel.siteID), isActive: $showingIAPDebug) {
                 EmptyView()
             }.hidden()
             LazyNavigationLink(destination: viewModel.getReviewDetailDestination(), isActive: $viewModel.showingReviewDetail) {

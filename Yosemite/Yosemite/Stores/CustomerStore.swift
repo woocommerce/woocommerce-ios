@@ -149,7 +149,8 @@ private extension CustomerStore {
                                             keyword: String,
                                             readOnlyCustomers: [Networking.Customer],
                                             onCompletion: @escaping () -> Void) {
-        sharedDerivedStorage.perform {
+        sharedDerivedStorage.perform { [weak self] in
+            guard let self = self else { return }
             let storedSearchResult = self.sharedDerivedStorage.loadCustomerSearchResult(siteID: siteID, keyword: keyword) ??
             self.sharedDerivedStorage.insertNewObject(ofType: Storage.CustomerSearchResult.self)
 

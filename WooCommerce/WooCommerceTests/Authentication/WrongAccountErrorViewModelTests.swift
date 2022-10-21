@@ -349,7 +349,7 @@ private extension WrongAccountErrorViewModelTests {
         static let url = "https://woocommerce.com"
         static let image = UIImage.productErrorImage
 
-        static let primaryButtonTitle = NSLocalizedString("Connect to the site",
+        static let primaryButtonTitle = NSLocalizedString("Connect Jetpack to your account",
                                                           comment: "Action button to handle connecting the logged-in account to a given site."
                                                           + "Presented when logging in with a store address that does not match the account entered")
 

@@ -85,4 +85,12 @@ extension MockAccountRemote: AccountRemoteProtocol {
     func loadUsernameSuggestions(from text: String) async -> [String] {
         []
     }
+
+    func createAccount(email: String,
+                       username: String,
+                       password: String,
+                       clientID: String,
+                       clientSecret: String) async -> Result<String, Networking.CreateAccountError> {
+        .success("someAuthToken")
+    }
 }

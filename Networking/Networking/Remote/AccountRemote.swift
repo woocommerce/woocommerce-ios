@@ -14,6 +14,17 @@ public protocol AccountRemoteProtocol {
     func fetchWordPressSiteSettings(for siteID: Int64) -> AnyPublisher<Result<WordPressSiteSettings, Error>, Never>
     func loadSitePlan(for siteID: Int64, completion: @escaping (Result<SitePlan, Error>) -> Void)
     func loadUsernameSuggestions(from text: String) async -> [String]
+
+    /// Creates a WPCOM account with the given email and password.
+    /// - Parameters:
+    ///   - email: user input email.
+    ///   - username: auto-generated username.
+    ///   - password: user input password.
+    ///   - clientID: WPCOM client ID of the WooCommerce iOS app.
+    ///   - clientSecret: WPCOM client secret of the WooCommerce iOS app.
+    ///
+    /// - Returns: the auth token for the newly created account.
+    func createAccount(email: String, username: String, password: String, clientID: String, clientSecret: String) async -> Result<String, CreateAccountError>
 }
 
 /// Account: Remote Endpoints
@@ -124,6 +135,40 @@ public class AccountRemote: Remote, AccountRemoteProtocol {
         let suggestions = (try? result.get())?["suggestions"] ?? []
         return suggestions
     }
+
+    public func createAccount(email: String,
+                              username: String,
+                              password: String,
+                              clientID: String,
+                              clientSecret: String) async -> Result<String, CreateAccountError> {
+        let path = Path.accountCreation
+        let parameters: [String: Any] = [
+            "client_id": clientID,
+            "client_secret": clientSecret,
+            "signup_flow_name": "mobile-ios",
+            "flow": "signup",
+            "scheme": "woocommerce",
+            "password": password,
+            "email": email,
+            "username": username,
+            "validate": false,
+            "send_verification_email": true
+        ]
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
+        let result: Result<[String: Any], Error> = await enqueue(request)
+        switch result {
+        case .success(let response):
+            guard let authToken = response["bearer_token"] as? String else {
+                return .failure(CreateAccountError.noAuthToken)
+            }
+            return .success(authToken)
+        case .failure(let error):
+            guard let dotcomError = error as? DotcomError else {
+                return .failure(.unknown(error: error as NSError))
+            }
+            return .failure(CreateAccountError(dotcomError: dotcomError))
+        }
+    }
 }
 
 // MARK: - Constants
@@ -141,5 +186,47 @@ private extension AccountRemote {
         static let settings = "me/settings"
         static let username = "me/username"
         static let usernameSuggestions = "wpcom/v2/users/username/suggestions"
+        static let accountCreation = "users/new"
+    }
+}
+
+/// Possible errors from WPCOM account creation.
+public enum CreateAccountError: Error, Equatable {
+    case emailExists
+    case invalidUsername
+    case invalidEmail
+    case invalidPassword(message: String?)
+    case noAuthToken
+    case unexpected(error: DotcomError)
+    case unknown(error: NSError)
+
+    /// Decodable Initializer.
+    ///
+    init(dotcomError error: DotcomError) {
+        if case let .unknown(code, message) = error {
+            switch code {
+            case Constants.emailExists:
+                self = .emailExists
+            case Constants.invalidEmail:
+                self = .invalidEmail
+            case Constants.invalidPassword:
+                self = .invalidPassword(message: message)
+            case Constants.invalidUsername:
+                self = .invalidUsername
+            default:
+                self = .unexpected(error: error)
+            }
+        } else {
+            self = .unexpected(error: error)
+        }
+    }
+
+    /// Constants for Possible Error Identifiers
+    ///
+    private enum Constants {
+        static let emailExists = "email_exists"
+        static let invalidEmail = "email_invalid"
+        static let invalidPassword = "password_invalid"
+        static let invalidUsername = "username_exists"
     }
 }

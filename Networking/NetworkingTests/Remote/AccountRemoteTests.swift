@@ -145,7 +145,7 @@ final class AccountRemoteTests: XCTestCase {
 
     // MARK: - `loadUsernameSuggestions`
 
-    func test_loadUsernameSuggestions_returns_success_when_response_is_valid() async {
+    func test_loadUsernameSuggestions_returns_suggestions_on_success() async {
         // Given
         let remote = AccountRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "username/suggestions", filename: "account-username-suggestions")
@@ -166,5 +166,73 @@ final class AccountRemoteTests: XCTestCase {
 
         // Then
         XCTAssertEqual(suggestions, [])
+    }
+
+    // MARK: - `createAccount`
+
+    func test_createAccount_returns_auth_token_on_success() async throws {
+        // Given
+        let remote = AccountRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "users/new", filename: "create-account-success")
+
+        // When
+        let result = await remote.createAccount(email: "coffee@woo.com", username: "", password: "", clientID: "", clientSecret: "")
+
+        // Then
+        let authToken = try XCTUnwrap(result.get())
+        XCTAssertEqual(authToken, "🐻")
+    }
+
+    func test_createAccount_returns_emailExists_error_on_email_exists_error() async throws {
+        // Given
+        let remote = AccountRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "users/new", filename: "create-account-error-email-exists")
+
+        // When
+        let result = await remote.createAccount(email: "coffee@woo.com", username: "", password: "", clientID: "", clientSecret: "")
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error, .emailExists)
+    }
+
+    func test_createAccount_returns_invalidEmail_error_on_invalid_email_error() async throws {
+        // Given
+        let remote = AccountRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "users/new", filename: "create-account-error-invalid-email")
+
+        // When
+        let result = await remote.createAccount(email: "coffee@woo.com", username: "", password: "", clientID: "", clientSecret: "")
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error, .invalidEmail)
+    }
+
+    func test_createAccount_returns_password_error_on_invalid_password_error() async throws {
+        // Given
+        let remote = AccountRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "users/new", filename: "create-account-error-password")
+
+        // When
+        let result = await remote.createAccount(email: "coffee@woo.com", username: "", password: "", clientID: "", clientSecret: "")
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error, .invalidPassword(message:
+                                                "Your password is too short. Please pick a password that has at least 6 characters."))
+    }
+
+    func test_createAccount_returns_invalidUsername_error_on_invalid_username_error() async throws {
+        // Given
+        let remote = AccountRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "users/new", filename: "create-account-error-username")
+
+        // When
+        let result = await remote.createAccount(email: "coffee@woo.com", username: "", password: "", clientID: "", clientSecret: "")
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error, .invalidUsername)
     }
 }

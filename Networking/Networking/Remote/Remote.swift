@@ -29,9 +29,7 @@ public class Remote: NSObject {
     func enqueue<T>(_ request: URLRequestConvertible) async -> Result<T, Error> {
         await withCheckedContinuation { continuation in
             network.responseData(for: request) { [weak self] result in
-                guard let self = self else {
-                    return
-                }
+                guard let self else { return }
 
                 switch result {
                 case .success(let data):

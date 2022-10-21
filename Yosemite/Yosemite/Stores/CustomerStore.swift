@@ -6,7 +6,9 @@ public final class CustomerStore: Store {
 
     private let customerRemote: CustomerRemote
     private let searchRemote: WCAnalyticsCustomerRemote
-    private let sharedDerivedStorage: StorageType
+    private lazy var sharedDerivedStorage: StorageType = {
+        return storageManager.writerDerivedStorage
+    }()
 
     init(dispatcher: Dispatcher,
          storageManager: StorageManagerType,
@@ -15,7 +17,6 @@ public final class CustomerStore: Store {
          searchRemote: WCAnalyticsCustomerRemote) {
         self.customerRemote = customerRemote
         self.searchRemote = searchRemote
-        self.sharedDerivedStorage = storageManager.writerDerivedStorage
 
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }

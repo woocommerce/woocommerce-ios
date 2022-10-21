@@ -1006,6 +1006,7 @@ private extension AppSettingsStoreTests {
             isViewAddOnsSwitchEnabled: false,
             isProductSKUInputScannerSwitchEnabled: false,
             isCouponManagementSwitchEnabled: false,
+            isInAppPurchasesSwitchEnabled: false,
             knownCardReaders: [],
             featureAnnouncementCampaignSettings: [:]
         )
@@ -1019,6 +1020,7 @@ private extension AppSettingsStoreTests {
             isViewAddOnsSwitchEnabled: false,
             isProductSKUInputScannerSwitchEnabled: false,
             isCouponManagementSwitchEnabled: false,
+            isInAppPurchasesSwitchEnabled: false,
             knownCardReaders: [],
             featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings
         )

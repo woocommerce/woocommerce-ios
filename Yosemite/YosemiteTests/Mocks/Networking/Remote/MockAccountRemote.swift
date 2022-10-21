@@ -81,4 +81,8 @@ extension MockAccountRemote: AccountRemoteProtocol {
     func loadSitePlan(for siteID: Int64, completion: @escaping (Result<SitePlan, Error>) -> Void) {
         // no-op
     }
+
+    func loadUsernameSuggestions(from text: String) async -> [String] {
+        []
+    }
 }

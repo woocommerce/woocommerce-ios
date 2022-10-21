@@ -133,7 +133,6 @@ public final class CustomerStore: Store {
                 siteID: siteID,
                 keyword: keyword,
                 readOnlyCustomers: customers,
-                in: self.sharedDerivedStorage,
                 onCompletion: {
                     onCompletion(.success(customers))
                 }
@@ -149,22 +148,21 @@ private extension CustomerStore {
     private func upsertSearchCustomerResult(siteID: Int64,
                                             keyword: String,
                                             readOnlyCustomers: [Networking.Customer],
-                                            in storage: StorageType,
                                             onCompletion: @escaping () -> Void) {
-        storage.perform {
-            let storedSearchResult = storage.loadCustomerSearchResult(siteID: siteID, keyword: keyword) ??
-            storage.insertNewObject(ofType: Storage.CustomerSearchResult.self)
+        sharedDerivedStorage.perform {
+            let storedSearchResult = self.sharedDerivedStorage.loadCustomerSearchResult(siteID: siteID, keyword: keyword) ??
+            self.sharedDerivedStorage.insertNewObject(ofType: Storage.CustomerSearchResult.self)
 
             storedSearchResult.siteID = siteID
             storedSearchResult.keyword = keyword
 
             for result in readOnlyCustomers {
-                if let storedCustomer = storage.loadCustomer(siteID: siteID, customerID: result.customerID) {
+                if let storedCustomer = self.sharedDerivedStorage.loadCustomer(siteID: siteID, customerID: result.customerID) {
                     storedSearchResult.addToCustomers(storedCustomer)
                 }
             }
         }
-        storageManager.saveDerivedType(derivedStorage: storage) {
+        storageManager.saveDerivedType(derivedStorage: self.sharedDerivedStorage) {
             DispatchQueue.main.async(execute: onCompletion)
         }
     }

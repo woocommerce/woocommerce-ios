@@ -3,6 +3,35 @@ import Storage
 import StoreKit
 import Networking
 
+private class RefreshRequest: NSObject, SKRequestDelegate {
+    private let completion: () -> Void
+
+    init(completion: @escaping () -> Void) {
+        self.completion = completion
+        super.init()
+        let request = SKReceiptRefreshRequest()
+        request.delegate = self
+        request.start()
+    }
+
+    func requestDidFinish(_ request: SKRequest) {
+        completion()
+    }
+
+    func dummy() {}
+
+    static func start() async {
+        var request: RefreshRequest?
+        await withCheckedContinuation { continuation in
+            request = RefreshRequest {
+                continuation.resume()
+            }
+        }
+        request?.dummy()
+        request = nil
+    }
+}
+
 public class InAppPurchaseStore: Store {
     private var listenTask: Task<Void, Error>?
     private let remote: InAppPurchasesRemote
@@ -39,11 +68,17 @@ public class InAppPurchaseStore: Store {
 private extension InAppPurchaseStore {
     func loadProducts(completion: @escaping (Result<[StoreKit.Product], Error>) -> Void) {
         Task {
+            _ = try? await getAppReceipt()
+
             do {
+                logInfo("Loading products...")
                 let identifiers = try await getProductIdentifiers()
+                logInfo("Requesting StoreKit products: \(identifiers)")
                 let products = try await StoreKit.Product.products(for: identifiers)
+                logInfo("Obtained product list from StoreKit: \(products.map({ $0.id }))")
                 completion(.success(products))
             } catch {
+                logError("Failed obtaining product list from StoreKit: \(error)")
                 completion(.failure(error))
             }
         }
@@ -51,18 +86,25 @@ private extension InAppPurchaseStore {
 
     func purchaseProduct(siteID: Int64, product: StoreKit.Product, completion: @escaping (Result<StoreKit.Product.PurchaseResult, Error>) -> Void) {
         Task {
+            logInfo("Purchasing product \(product.id) for site \(siteID)")
             var purchaseOptions: Set<StoreKit.Product.PurchaseOption> = []
             if let appAccountToken = AppAccountToken.tokenWithSiteId(siteID) {
+                logInfo("Generated appAccountToken \(appAccountToken) for site \(siteID)")
                 purchaseOptions.insert(.appAccountToken(appAccountToken))
             }
 
             do {
+                logInfo("Purchasing product \(product.id) for site \(siteID) with options \(purchaseOptions)")
                 let purchaseResult = try await product.purchase(options: purchaseOptions)
                 if case .success(let result) = purchaseResult {
+                    logInfo("Purchased product \(product.id) for site \(siteID): \(result)")
                     try await handleCompletedTransaction(result)
+                } else {
+                    logError("Ignorning unsuccessful purchase: \(purchaseResult)")
                 }
                 completion(.success(purchaseResult))
             } catch {
+                logError("Error purchasing product \(product.id) for site \(siteID): \(error)")
                 completion(.failure(error))
             }
         }
@@ -71,11 +113,15 @@ private extension InAppPurchaseStore {
     func handleCompletedTransaction(_ result: VerificationResult<StoreKit.Transaction>) async throws {
         switch result {
         case .verified(let transaction):
-            try await submitTransaction(transaction)
+            logInfo("Verified transaction \(transaction.id) (Original ID: \(transaction.originalID)) for product \(transaction.productID)")
+            logInfo("Verified transaction JWS: \(result.jwsRepresentation)")
+            // FIXME: Don't finish the transaction until it's been handled. For testing only
             await transaction.finish()
+            try await submitTransaction(transaction)
+//            await transaction.finish()
         case .unverified:
             // TODO: handle errors
-            print("Transaction unverified")
+            logError("Transaction unverified")
         }
     }
 
@@ -98,19 +144,43 @@ private extension InAppPurchaseStore {
         guard let countryCode = await Storefront.current?.countryCode else {
             throw Errors.storefrontUnknown
         }
+
+        logInfo("Transaction receipt: \(transaction.jsonRepresentation)")
+
+//        await RefreshRequest.start()
+
+        let receiptData = try await getAppReceipt()
+
+        logInfo("Sending transaction to API for site \(siteID)")
         _ = try await remote.createOrder(
             for: siteID,
             price: priceInCents,
             productIdentifier: product.id,
             appStoreCountryCode: countryCode,
-            receiptData: transaction.jsonRepresentation
+            receiptData: receiptData
         )
+    }
+
+    func getAppReceipt() async throws -> Data {
+        guard let appStoreReceiptURL = Bundle.main.appStoreReceiptURL,
+              let receiptData = try? Data(contentsOf: appStoreReceiptURL, options: .alwaysMapped) else {
+            logError("No app receipt")
+            throw Errors.missingAppReceipt
+        }
+        logInfo("App receipt: \(receiptData)")
+
+        for await result in Transaction.currentEntitlements {
+            logInfo("Current entitlement: \(result)")
+        }
+        return receiptData
     }
 
     func getProductIdentifiers() async throws -> [String] {
         guard useBackend else {
+            logInfo("Using hardcoded identifiers")
             return Constants.identifiers
         }
+        logInfo("Requesting product identifiers from the API")
         return try await remote.loadProducts()
     }
 
@@ -123,6 +193,20 @@ private extension InAppPurchaseStore {
             }
         }
     }
+
+    func logInfo(_ message: String,
+                 file: StaticString = #file,
+                 function: StaticString = #function,
+                 line: UInt = #line) {
+        DDLogInfo("[💰IAP Store] \(message)", file: file, function: function, line: line)
+    }
+
+    func logError(_ message: String,
+                 file: StaticString = #file,
+                 function: StaticString = #function,
+                 line: UInt = #line) {
+        DDLogError("[💰IAP Store] \(message)", file: file, function: function, line: line)
+    }
 }
 
 public extension InAppPurchaseStore {
@@ -131,6 +215,7 @@ public extension InAppPurchaseStore {
         case appAccountTokenMissingSiteIdentifier
         case transactionProductUnknown
         case storefrontUnknown
+        case missingAppReceipt
     }
 
     enum Constants {

@@ -42,6 +42,7 @@ public class InAppPurchasesRemote: Remote {
             let dotComRequest = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: Constants.ordersPath, parameters: parameters)
             let request = augmentedRequestWithAppId(dotComRequest)
             let mapper = InAppPurchaseOrderResultMapper()
+            print("Receipt: \(receiptData.base64EncodedString())")
             enqueue(request, mapper: mapper, completion: completion)
         }
 }
@@ -94,8 +95,8 @@ public extension InAppPurchasesRemote {
 
 private extension InAppPurchasesRemote {
     func augmentedRequestWithAppId(_ request: URLRequestConvertible) -> URLRequestConvertible {
-        guard let bundleIdentifier = Bundle.main.bundleIdentifier,
-              var augmented = try? request.asURLRequest() else {
+        let bundleIdentifier = "com.woocommerce"
+        guard var augmented = try? request.asURLRequest() else {
             return request
         }
 

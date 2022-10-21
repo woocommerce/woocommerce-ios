@@ -170,7 +170,8 @@ extension CouponReport {
 }
 
 extension Customer {
-    func copy(
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
         customerID: CopiableProp<Int64> = .copy,
         email: CopiableProp<String> = .copy,
         firstName: NullableCopiableProp<String> = .copy,
@@ -178,6 +179,7 @@ extension Customer {
         billing: NullableCopiableProp<Address> = .copy,
         shipping: NullableCopiableProp<Address> = .copy
     ) -> Customer {
+        let siteID = siteID ?? self.siteID
         let customerID = customerID ?? self.customerID
         let email = email ?? self.email
         let firstName = firstName ?? self.firstName
@@ -186,6 +188,7 @@ extension Customer {
         let shipping = shipping ?? self.shipping
 
         return Customer(
+            siteID: siteID,
             customerID: customerID,
             email: email,
             firstName: firstName,
@@ -1944,6 +1947,24 @@ extension TopEarnerStatsItem {
             total: total,
             currency: currency,
             imageUrl: imageUrl
+        )
+    }
+}
+
+extension WCAnalyticsCustomer {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        userID: CopiableProp<Int64> = .copy,
+        name: NullableCopiableProp<String> = .copy
+    ) -> WCAnalyticsCustomer {
+        let siteID = siteID ?? self.siteID
+        let userID = userID ?? self.userID
+        let name = name ?? self.name
+
+        return WCAnalyticsCustomer(
+            siteID: siteID,
+            userID: userID,
+            name: name
         )
     }
 }

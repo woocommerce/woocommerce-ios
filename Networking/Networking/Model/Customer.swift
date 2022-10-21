@@ -5,6 +5,8 @@ import Codegen
 /// https://woocommerce.github.io/woocommerce-rest-api-docs/#customer-properties
 ///
 public struct Customer: Codable, GeneratedCopiable, GeneratedFakeable {
+    /// The siteID for the customer
+    public let siteID: Int64
 
     /// Unique identifier for the customer
     public let customerID: Int64
@@ -26,12 +28,14 @@ public struct Customer: Codable, GeneratedCopiable, GeneratedFakeable {
 
     /// Customer struct initializer
     ///
-    public init(customerID: Int64,
+    public init(siteID: Int64,
+                customerID: Int64,
                 email: String,
                 firstName: String?,
                 lastName: String?,
                 billing: Address?,
                 shipping: Address?) {
+        self.siteID = siteID
         self.customerID = customerID
         self.email = email
         self.firstName = firstName
@@ -43,6 +47,10 @@ public struct Customer: Codable, GeneratedCopiable, GeneratedFakeable {
     /// Public initializer for the Customer
     ///
     public init(from decoder: Decoder) throws {
+        guard let siteID = decoder.userInfo[.siteID] as? Int64 else {
+            throw CustomerDecodingError.missingSiteID
+        }
+
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let customerID = try container.decode(Int64.self, forKey: .customerID)
@@ -52,7 +60,8 @@ public struct Customer: Codable, GeneratedCopiable, GeneratedFakeable {
         let billing = try? container.decode(Address.self, forKey: .billing)
         let shipping = try? container.decode(Address.self, forKey: .shipping)
 
-        self.init(customerID: customerID,
+        self.init(siteID: siteID,
+                  customerID: customerID,
                   email: email,
                   firstName: firstName,
                   lastName: lastName,
@@ -72,5 +81,9 @@ extension Customer {
         case lastName =         "last_name"
         case billing
         case shipping
+    }
+
+    enum CustomerDecodingError: Error {
+        case missingSiteID
     }
 }

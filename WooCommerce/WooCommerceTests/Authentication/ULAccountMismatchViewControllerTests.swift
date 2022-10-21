@@ -247,6 +247,10 @@ final class ULAccountMismatchViewControllerTests: XCTestCase {
 
 private final class MismatchViewModel: ULAccountMismatchViewModel {
 
+    var termsLabelText: AnyPublisher<NSAttributedString, Never> {
+        Just(NSAttributedString(string: termsContent)).eraseToAnyPublisher()
+    }
+
     var isPrimaryButtonLoading: AnyPublisher<Bool, Never> {
         Just(primaryButtonLoading).eraseToAnyPublisher()
     }
@@ -282,6 +286,7 @@ private final class MismatchViewModel: ULAccountMismatchViewModel {
     var auxiliaryButtonTapped: Bool = false
     var primaryButtonLoading: Bool = false
     var rightBarButtonItemTapped = false
+    var termsContent = "Test"
 
     func viewDidLoad(_ viewController: UIViewController?) {
         viewLoaded = true

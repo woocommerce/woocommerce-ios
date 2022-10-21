@@ -186,6 +186,7 @@ extension Customer {
     ///
     public static func fake() -> Customer {
         .init(
+            siteID: .fake(),
             customerID: .fake(),
             email: .fake(),
             firstName: .fake(),
@@ -1691,6 +1692,17 @@ extension User {
             lastName: .fake(),
             nickname: .fake(),
             roles: .fake()
+        )
+    }
+}
+extension WCAnalyticsCustomer {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> WCAnalyticsCustomer {
+        .init(
+            siteID: .fake(),
+            userID: .fake(),
+            name: .fake()
         )
     }
 }

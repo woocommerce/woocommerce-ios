@@ -14,6 +14,7 @@ final class AuthenticatedWebViewController: UIViewController {
         let webView = WKWebView(frame: .zero)
         webView.translatesAutoresizingMaskIntoConstraints = false
         webView.navigationDelegate = self
+        webView.uiDelegate = self
         return webView
     }()
 
@@ -30,6 +31,7 @@ final class AuthenticatedWebViewController: UIViewController {
     /// Optional credentials for authenticating with WP.org
     ///
     private let wporgCredentials: WordPressOrgCredentials?
+
 
     init(viewModel: AuthenticatedWebViewModel, wporgCredentials: WordPressOrgCredentials? = nil) {
         self.viewModel = viewModel
@@ -123,12 +125,17 @@ private extension AuthenticatedWebViewController {
             loadContent()
         }
     }
+}
 
-    private func loadContent() {
+// MARK: - Helper methods
+private extension AuthenticatedWebViewController {
+    func loadContent() {
         guard let url = viewModel.initialURL else {
             return
         }
 
+        /// Authenticate for WP.com automatically if user is logged in.
+        ///
         if let credentials = ServiceLocator.stores.sessionManager.defaultCredentials {
             webView.authenticateForWPComAndRedirect(to: url, credentials: credentials)
         } else {
@@ -148,5 +155,19 @@ extension AuthenticatedWebViewController: WKNavigationDelegate {
 
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
         progressBar.setProgress(0, animated: false)
+    }
+}
+
+extension AuthenticatedWebViewController: WKUIDelegate {
+    func webView(_ webView: WKWebView,
+                 createWebViewWith configuration: WKWebViewConfiguration,
+                 for navigationAction: WKNavigationAction,
+                 windowFeatures: WKWindowFeatures) -> WKWebView? {
+        // Allows `target=_blank` links by opening them in the same view, otherwise tapping on these links is no-op.
+        // Reference: https://stackoverflow.com/a/25853806/9185596
+        if navigationAction.targetFrame == nil {
+            webView.load(navigationAction.request)
+        }
+        return nil
     }
 }

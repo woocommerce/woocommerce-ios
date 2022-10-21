@@ -62,7 +62,7 @@ final class CameraCaptureCoordinator {
         }
 
         switch mediaType {
-        case String(kUTTypeImage):
+        case UTType.image.identifier:
             if let image = mediaInfo[UIImagePickerController.InfoKey.originalImage.rawValue] as? UIImage,
                 let metadata = mediaInfo[UIImagePickerController.InfoKey.mediaMetadata.rawValue] as? [AnyHashable: Any] {
 

@@ -53,14 +53,7 @@ private extension StoreCreationWebViewModel {
                 throw StoreCreationError.invalidCompletionPath
             }
 
-            // Extracts the site URL substring matching the named capture group `siteURL` in the regex.
-            let siteURL: String? = {
-                let matchRange = match.range(withName: "siteURL")
-                guard let substringRange = Range(matchRange, in: url) else {
-                    return nil
-                }
-                return String(url[substringRange])
-            }()
+            let siteURL = siteURL(from: match, requestURL: url)
             guard let siteURL = siteURL else {
                 throw StoreCreationError.noSiteURLInCompletionPath
             }
@@ -79,6 +72,15 @@ private extension StoreCreationWebViewModel {
 
     func handleError(_ error: Error) {
         completion(.failure(error))
+    }
+
+    /// Extracts the site URL substring matching the named capture group `siteURL` in the regex.
+    func siteURL(from match: NSTextCheckingResult, requestURL: String) -> String? {
+        let matchRange = match.range(withName: "siteURL")
+        guard let substringRange = Range(matchRange, in: requestURL) else {
+            return nil
+        }
+        return String(requestURL[substringRange])
     }
 }
 

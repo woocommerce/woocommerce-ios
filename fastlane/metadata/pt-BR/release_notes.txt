@@ -1,3 +1,1 @@
-Boa notícia! Agora você pode fazer uma edição em massa dos preços de variações. Basta ter a versão mais recente do WooCommerce, disponível na nossa loja. Focamos também em algumas melhorias e na correção de bugs irrelevantes que a nossa equipe encontrou.
-
-Continue dando feedback, ele nos ajuda a saber no que trabalhar em seguida.
+Está gostando do novo widget de estatísticas no app? Então hoje é seu dia de sorte! Agora você pode visualizar o widget de estatísticas na sua tela de bloqueio. Isso só está disponível para o iOS 16. Também otimizamos o preenchimento automático no fluxo de compra do leitor de cartão para facilitar ainda mais a compra do leitor diretamente pelo aplicativo.

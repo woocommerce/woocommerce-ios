@@ -1,3 +1,1 @@
-Berita menarik! Anda kini dapat mengedit harga variasi secara massal. Anda hanya membutuhkan versi terbaru WooCommerce yang tersedia di toko Anda. Kami juga berfokus pada penyempurnaan beberapa hal dan penanganan bug minor yang ditemukan oleh tim kami.
-
-Terus kirimkan feedback Anda untuk memberi tahu kami apa yang harus ditingkatkan selanjutnya.
+Suka dengan widget statistik di aplikasi ini? Anda pasti akan suka juga dengan yang satu ini! Sekarang Anda bisa menampilkan Widget Statistik di layar kunci. Fitur ini hanya tersedia di iOS 16. Kami juga telah menyempurnakan proses pembelian pembaca kartu dengan meningkatkan fitur isi otomatisnya, sehingga membeli pembaca kartu langsung dari aplikasi kini jadi lebih mudah.

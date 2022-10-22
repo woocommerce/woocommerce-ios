@@ -1,3 +1,1 @@
-Heyecan verici haberlerimiz var! Artık varyasyon fiyatlarını toplu olarak düzenleyebilirsiniz. Tek ihtiyacınız olan, mağazanızda WooCommerce'in en son sürümünü kullanmak! Ayrıca bu sürümde birkaç şeyi düzeltmeye ve ekibimizin bulduğu küçük hataları gidermeye odaklandık.
-
-Geri bildirimleriniz devam etsin; üzerinde çalışacağımız bir sonraki özelliği bulmamıza yardımcı oluyor.
+Uygulamadaki yeni istatistik bileşeni hoşunuza gitti mi? Bugün sizin şanslı gününüz! İstatistik Bileşeninizi kilit ekranınızda görüntülemek artık mümkün. Bu yalnızca iOS 16 için kullanılabilir. Ayrıca, otomatik doldurma işlemini daha iyi hale getirerek kart okuyucu satın alma akışını iyileştirdik, böylece doğrudan uygulamadan kart okuyucu satın almak daha kolay hale geldi.

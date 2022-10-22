@@ -1,1 +1,4 @@
-Are you loving the new stats widget in the app? Today is your lucky day! It's now possible to view your Stats Widget on your lock screen. This is available for iOS 16 only. We also improved the card reader purchase flow with better autofill so it's easier to purchase a card reader directly from the app.
+- [***] Dropped iOS 14 support. From now we support iOS 15 and later. [https://github.com/woocommerce/woocommerce-ios/pull/7851]
+- [*] Login: Now you can handle Jetpack site connection for your self-hosted sites from the app. [https://github.com/woocommerce/woocommerce-ios/pull/7847]
+
+

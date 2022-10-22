@@ -57,9 +57,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v10.8-whats-new"
+msgctxt "v10.9-whats-new"
 msgid ""
-"Are you loving the new stats widget in the app? Today is your lucky day! It's now possible to view your Stats Widget on your lock screen. This is available for iOS 16 only. We also improved the card reader purchase flow with better autofill so it's easier to purchase a card reader directly from the app.\n"
+"This release includes a lot more stability fixes to help you log in much easier. You can now connect your WordPress.com account with Jetpack and access your store that much faster. We've also updated our app to support devices with iOS 15+ only. Please update your device to iOS 15 to continue to use the app.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

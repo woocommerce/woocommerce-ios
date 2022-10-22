@@ -1,4 +1,1 @@
-- [***] Dropped iOS 14 support. From now we support iOS 15 and later. [https://github.com/woocommerce/woocommerce-ios/pull/7851]
-- [*] Login: Now you can handle Jetpack site connection for your self-hosted sites from the app. [https://github.com/woocommerce/woocommerce-ios/pull/7847]
-
-
+This release includes a lot more stability fixes to help you log in much easier. You can now connect your WordPress.com account with Jetpack and access your store that much faster. We've also updated our app to support devices with iOS 15+ only. Please update your device to iOS 15 to continue to use the app.

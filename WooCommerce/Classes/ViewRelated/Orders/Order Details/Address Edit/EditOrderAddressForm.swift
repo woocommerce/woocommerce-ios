@@ -154,6 +154,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                 if isSearchCustomersEnabled {
                     Button(action: {
                         showingCustomerSearch = true
+                        ServiceLocator.analytics.track(.orderCreationCustomerSearch)
                     }, label: {
                         Image(systemName: "magnifyingglass")
                     })
@@ -173,6 +174,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
         .sheet(isPresented: $showingCustomerSearch, content: {
             OrderCustomerListView(siteID: viewModel.siteID, onCustomerTapped: { customer in
                 // Not implemented yet.
+                ServiceLocator.analytics.track(.orderCreationCustomerAdded)
                 print("3 - Customer Callback. Fill Order data with Customer details")
                 print("4 - Customer ID: \(customer.customerID) - Name: \(customer.firstName ?? ""))")
             })

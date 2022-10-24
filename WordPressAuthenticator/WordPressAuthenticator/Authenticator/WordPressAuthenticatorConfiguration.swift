@@ -112,10 +112,15 @@ public struct WordPressAuthenticatorConfiguration {
     /// If disabled, the alternative magic link action on the password screen is shown below the reset password action.
     let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen: Bool
 
-    /// If enabled, the Get Started screen will be replaced with a simple login screen with only an email address field.
+    /// If enabled, the Prologue screen will display a simplified version of the bottom buttons.
+    /// The Get Started screen will be replaced with a simple login screen with only an email address field.
     /// No mention of WordPress.com or social logins will be included.
     ///
     let enableSimplifiedLoginI1: Bool
+
+    /// If enabled, an entry point to the site creation flow will be added to the bottom button of the prologue screen.
+    ///
+    let enableSiteCreation: Bool
 
     /// Designated Initializer
     ///
@@ -142,7 +147,8 @@ public struct WordPressAuthenticatorConfiguration {
                  isWPComLoginRequiredForSiteCredentialsLogin: Bool = false,
                  isWPComMagicLinkPreferredToPassword: Bool = false,
                  isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen: Bool = false,
-                 enableSimplifiedLoginI1: Bool = false) {
+                 enableSimplifiedLoginI1: Bool = false,
+                 enableSiteCreation: Bool = false) {
 
         self.wpcomClientId = wpcomClientId
         self.wpcomSecret = wpcomSecret
@@ -168,5 +174,6 @@ public struct WordPressAuthenticatorConfiguration {
         self.isWPComMagicLinkPreferredToPassword = isWPComMagicLinkPreferredToPassword
         self.isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen
         self.enableSimplifiedLoginI1 = enableSimplifiedLoginI1
+        self.enableSiteCreation = enableSiteCreation
     }
 }

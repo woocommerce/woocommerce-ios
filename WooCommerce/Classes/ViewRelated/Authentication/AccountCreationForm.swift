@@ -56,9 +56,7 @@ struct AccountCreationForm: View {
                                                                   isSecure: true,
                                                                   errorMessage: viewModel.passwordErrorMessage))
                     AttributedText(tosAttributedText)
-                        .onTapGesture {
-                            customOpenURL?(Constants.tosURL)
-                        }
+                        .attributedTextLinkColor(Color(.label))
                 }
 
                 // CTA to submit the form.
@@ -97,9 +95,8 @@ private extension AccountCreationForm {
             with: NSAttributedString(
                 string: Localization.tos,
                 attributes: [
-                    .underlineStyle: 1, // `NSUnderlineStyle.single` does not work.
-                    .foregroundColor: UIColor.label,
-                    .font: UIFont.body
+                    .font: UIFont.body,
+                    .link: Constants.tosURL
                 ]
             ))
         return result

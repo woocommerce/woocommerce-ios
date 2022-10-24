@@ -127,12 +127,13 @@ class GetStartedViewController: LoginViewController, NUXKeyboardResponder {
         registerTableViewCells()
         loadRows()
         setupTableFooterView()
-        configureDivider()
+
         if screenMode == .signInUsingSiteCredentials {
             configureButtonViewControllerForSiteCredentialsMode()
         } else if configuration.enableSimplifiedLoginI1 {
             configureButtonViewControllerForSimplifiedLoginI1()
         } else {
+            configureDivider()
             configureSocialButtons()
         }
     }
@@ -281,10 +282,6 @@ private extension GetStartedViewController {
     /// Style the "OR" divider.
     ///
     func configureDivider() {
-        guard screenMode == .signInUsingWordPressComOrSocialAccounts else {
-            return dividerStackView.isHidden = true
-        }
-
         let color = WordPressAuthenticator.shared.unifiedStyle?.borderColor ?? WordPressAuthenticator.shared.style.primaryNormalBorderColor
         leadingDividerLine.backgroundColor = color
         leadingDividerLineWidth.constant = WPStyleGuide.hairlineBorderWidth
@@ -470,18 +467,13 @@ private extension GetStartedViewController {
     /// Configures appearance of the submit button.
     ///
     func configureContinueButton(animating: Bool) {
-        switch screenMode {
-        case .signInUsingSiteCredentials:
+        if screenMode == .signInUsingSiteCredentials ||
+            configuration.enableSimplifiedLoginI1 {
             buttonViewController?.setTopButtonState(isLoading: animating,
                                                     isEnabled: enableSubmit(animating: animating))
-        case .signInUsingWordPressComOrSocialAccounts:
-            if configuration.enableSimplifiedLoginI1 {
-                buttonViewController?.setTopButtonState(isLoading: animating,
-                                                        isEnabled: enableSubmit(animating: animating))
-            } else {
-                continueButton.showActivityIndicator(animating)
-                continueButton.isEnabled = enableSubmit(animating: animating)
-            }
+        } else {
+            continueButton.showActivityIndicator(animating)
+            continueButton.isEnabled = enableSubmit(animating: animating)
         }
     }
 

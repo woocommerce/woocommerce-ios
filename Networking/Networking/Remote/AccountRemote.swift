@@ -13,7 +13,7 @@ public protocol AccountRemoteProtocol {
     func checkIfWooCommerceIsActive(for siteID: Int64) -> AnyPublisher<Result<Bool, Error>, Never>
     func fetchWordPressSiteSettings(for siteID: Int64) -> AnyPublisher<Result<WordPressSiteSettings, Error>, Never>
     func loadSitePlan(for siteID: Int64, completion: @escaping (Result<SitePlan, Error>) -> Void)
-    func loadUsernameSuggestions(from text: String) async -> [String]
+    func loadUsernameSuggestions(from text: String) async -> Result<[String], Error>
 
     /// Creates a WPCOM account with the given email and password.
     /// - Parameters:
@@ -131,13 +131,17 @@ public class AccountRemote: Remote, AccountRemoteProtocol {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
-    public func loadUsernameSuggestions(from text: String) async -> [String] {
+    public func loadUsernameSuggestions(from text: String) async -> Result<[String], Error> {
         let path = Path.usernameSuggestions
         let parameters = [ParameterKey.name: text]
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path, parameters: parameters)
-        let result: Result<[String: [String]], Error> = await enqueue(request)
-        let suggestions = (try? result.get())?["suggestions"] ?? []
-        return suggestions
+        do {
+            let result: [String: [String]] = try await enqueue(request)
+            let suggestions = result["suggestions"] ?? []
+            return .success(suggestions)
+        } catch {
+            return .failure(error)
+        }
     }
 
     public func createAccount(email: String,
@@ -159,11 +163,10 @@ public class AccountRemote: Remote, AccountRemoteProtocol {
             "send_verification_email": true
         ]
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)
-        let result: Result<CreateAccountResult, Error> = await enqueue(request)
-        switch result {
-        case .success(let data):
-            return .success(data)
-        case .failure(let error):
+        do {
+            let result: CreateAccountResult = try await enqueue(request)
+            return .success(result)
+        } catch {
             guard let dotcomError = error as? DotcomError else {
                 return .failure(.unknown(error: error as NSError))
             }

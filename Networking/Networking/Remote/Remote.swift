@@ -26,8 +26,8 @@ public class Remote: NSObject {
     ///
     /// - Parameter request: Request that should be performed.
     /// - Returns: The result from the JSON parsed response for the expected type.
-    func enqueue<T: Decodable>(_ request: URLRequestConvertible) async -> Result<T, Error> {
-        await withCheckedContinuation { continuation in
+    func enqueue<T: Decodable>(_ request: URLRequestConvertible) async throws -> T {
+        try await withCheckedThrowingContinuation { continuation in
             network.responseData(for: request) { [weak self] result in
                 guard let self else { return }
 
@@ -35,18 +35,18 @@ public class Remote: NSObject {
                 case .success(let data):
                     if let dotcomError = DotcomValidator.error(from: data) {
                         self.dotcomErrorWasReceived(error: dotcomError, for: request)
-                        continuation.resume(returning: .failure(dotcomError))
+                        continuation.resume(throwing: dotcomError)
                         return
                     }
 
                     do {
                         let document = try JSONDecoder().decode(T.self, from: data)
-                        continuation.resume(returning: .success(document))
+                        continuation.resume(returning: document)
                     } catch {
-                        continuation.resume(returning: .failure(error))
+                        continuation.resume(throwing: error)
                     }
                 case .failure(let error):
-                    continuation.resume(returning: .failure(error))
+                    continuation.resume(throwing: error)
                 }
             }
         }

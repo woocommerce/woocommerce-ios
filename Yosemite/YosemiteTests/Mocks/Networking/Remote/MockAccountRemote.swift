@@ -82,8 +82,8 @@ extension MockAccountRemote: AccountRemoteProtocol {
         // no-op
     }
 
-    func loadUsernameSuggestions(from text: String) async -> [String] {
-        []
+    func loadUsernameSuggestions(from text: String) async -> Result<[String], Error> {
+        .success([])
     }
 
     func createAccount(email: String,

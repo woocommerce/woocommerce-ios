@@ -158,7 +158,11 @@ class LoginPrologueViewController: LoginViewController {
             return
         }
 
-        buildUnifiedPrologueButtons(buttonViewController)
+        if configuration.enableSimplifiedLoginI1 {
+            buildSimplifiedPrologueButtonsI1(buttonViewController: buttonViewController)
+        } else {
+            buildUnifiedPrologueButtons(buttonViewController)
+        }
 
         buttonViewController.shadowLayoutGuide = view.safeAreaLayoutGuide
         buttonViewController.topButtonStyle = WordPressAuthenticator.shared.style.prologuePrimaryButtonStyle
@@ -240,6 +244,21 @@ class LoginPrologueViewController: LoginViewController {
         setButtonViewControllerBackground(buttonViewController)
     }
 
+    private func buildSimplifiedPrologueButtonsI1(buttonViewController: NUXButtonViewController) {
+        setButtonViewMargins(forWidth: view.frame.width)
+
+        let displayStrings = WordPressAuthenticator.shared.displayStrings
+        let loginTitle = displayStrings.continueWithWPButtonTitle
+        buttonViewController.setupTopButton(title: loginTitle, isPrimary: true, accessibilityIdentifier: "Prologue Continue Button", onTap: loginTapCallback())
+
+        if configuration.enableSignUp {
+            let createAccountTitle = displayStrings.createAccountButtonTitle
+            buttonViewController.setupBottomButton(title: createAccountTitle, isPrimary: false, accessibilityIdentifier: "Prologue Create Account Button", onTap: simplifiedLoginAccountCreationCallback())
+        }
+
+        setButtonViewControllerBackground(buttonViewController)
+    }
+
     private func siteAddressTapCallback() -> NUXButtonViewController.CallBackType {
         return { [weak self] in
             self?.siteAddressTapped()
@@ -254,6 +273,14 @@ class LoginPrologueViewController: LoginViewController {
 
             self.tracker.track(click: .continueWithWordPressCom)
             self.continueWithDotCom()
+        }
+    }
+
+    private func simplifiedLoginAccountCreationCallback() -> NUXButtonViewController.CallBackType {
+        { [weak self] in
+            guard let self else { return }
+            // triggers the delegate to ask the host app to handle account creation
+            WordPressAuthenticator.shared.delegate?.showAccountCreation(in: self.navigationController)
         }
     }
 

@@ -249,11 +249,11 @@ class LoginPrologueViewController: LoginViewController {
 
         let displayStrings = WordPressAuthenticator.shared.displayStrings
         let loginTitle = displayStrings.continueWithWPButtonTitle
-        buttonViewController.setupTopButton(title: loginTitle, isPrimary: true, accessibilityIdentifier: "Prologue Continue Button", onTap: loginTapCallback())
+        buttonViewController.setupTopButton(title: loginTitle, isPrimary: true, accessibilityIdentifier: "Prologue Log In Button", onTap: loginTapCallback())
 
-        if configuration.enableSignUp {
-            let createAccountTitle = displayStrings.createAccountButtonTitle
-            buttonViewController.setupBottomButton(title: createAccountTitle, isPrimary: false, accessibilityIdentifier: "Prologue Create Account Button", onTap: simplifiedLoginAccountCreationCallback())
+        if configuration.enableSiteCreation {
+            let createSiteTitle = displayStrings.siteCreationButtonTitle
+            buttonViewController.setupBottomButton(title: createSiteTitle, isPrimary: false, accessibilityIdentifier: "Prologue Create Site Button", onTap: simplifiedLoginSiteCreationCallback())
         }
 
         setButtonViewControllerBackground(buttonViewController)
@@ -276,7 +276,7 @@ class LoginPrologueViewController: LoginViewController {
         }
     }
 
-    private func simplifiedLoginAccountCreationCallback() -> NUXButtonViewController.CallBackType {
+    private func simplifiedLoginSiteCreationCallback() -> NUXButtonViewController.CallBackType {
         { [weak self] in
             guard let self else { return }
             // triggers the delegate to ask the host app to handle account creation

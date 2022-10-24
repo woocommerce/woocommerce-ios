@@ -127,13 +127,13 @@ class GetStartedViewController: LoginViewController, NUXKeyboardResponder {
         registerTableViewCells()
         loadRows()
         setupTableFooterView()
+        configureDivider()
 
         if screenMode == .signInUsingSiteCredentials {
             configureButtonViewControllerForSiteCredentialsMode()
         } else if configuration.enableSimplifiedLoginI1 {
             configureButtonViewControllerForSimplifiedLoginI1()
         } else {
-            configureDivider()
             configureSocialButtons()
         }
     }
@@ -282,6 +282,10 @@ private extension GetStartedViewController {
     /// Style the "OR" divider.
     ///
     func configureDivider() {
+        guard screenMode == .signInUsingWordPressComOrSocialAccounts,
+              configuration.enableSimplifiedLoginI1 == false else {
+            return dividerStackView.isHidden = true
+        }
         let color = WordPressAuthenticator.shared.unifiedStyle?.borderColor ?? WordPressAuthenticator.shared.style.primaryNormalBorderColor
         leadingDividerLine.backgroundColor = color
         leadingDividerLineWidth.constant = WPStyleGuide.hairlineBorderWidth

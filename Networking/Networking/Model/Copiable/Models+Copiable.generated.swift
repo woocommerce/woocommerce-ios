@@ -313,6 +313,63 @@ extension JetpackUser {
     }
 }
 
+extension JustInTimeMessage {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        messageID: CopiableProp<String> = .copy,
+        featureClass: CopiableProp<String> = .copy,
+        ttl: CopiableProp<Int64> = .copy,
+        content: CopiableProp<JustInTimeMessage.Content> = .copy,
+        cta: CopiableProp<JustInTimeMessage.CTA> = .copy
+    ) -> JustInTimeMessage {
+        let siteID = siteID ?? self.siteID
+        let messageID = messageID ?? self.messageID
+        let featureClass = featureClass ?? self.featureClass
+        let ttl = ttl ?? self.ttl
+        let content = content ?? self.content
+        let cta = cta ?? self.cta
+
+        return JustInTimeMessage(
+            siteID: siteID,
+            messageID: messageID,
+            featureClass: featureClass,
+            ttl: ttl,
+            content: content,
+            cta: cta
+        )
+    }
+}
+
+extension JustInTimeMessage.CTA {
+    public func copy(
+        message: CopiableProp<String> = .copy,
+        link: CopiableProp<String> = .copy
+    ) -> JustInTimeMessage.CTA {
+        let message = message ?? self.message
+        let link = link ?? self.link
+
+        return JustInTimeMessage.CTA(
+            message: message,
+            link: link
+        )
+    }
+}
+
+extension JustInTimeMessage.Content {
+    public func copy(
+        message: CopiableProp<String> = .copy,
+        description: CopiableProp<String> = .copy
+    ) -> JustInTimeMessage.Content {
+        let message = message ?? self.message
+        let description = description ?? self.description
+
+        return JustInTimeMessage.Content(
+            message: message,
+            description: description
+        )
+    }
+}
+
 extension Media {
     public func copy(
         mediaID: CopiableProp<Int64> = .copy,

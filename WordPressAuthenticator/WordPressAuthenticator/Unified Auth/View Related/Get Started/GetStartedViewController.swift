@@ -130,6 +130,8 @@ class GetStartedViewController: LoginViewController, NUXKeyboardResponder {
         configureDivider()
         if screenMode == .signInUsingSiteCredentials {
             configureButtonViewControllerForSiteCredentialsMode()
+        } else if configuration.enableSimplifiedLoginI1 {
+            configureButtonViewControllerForSimplifiedLoginI1()
         } else {
             configureSocialButtons()
         }
@@ -254,13 +256,14 @@ private extension GetStartedViewController {
         stackView.layoutMargins = Constants.FooterStackView.layoutMargins
         stackView.isLayoutMarginsRelativeArrangement = true
 
-        if screenMode == .signInUsingWordPressComOrSocialAccounts {
-            // Continue button will be added to `buttonViewController` along with sign in with site credentials button when `screenMode` is `signInUsingSiteCredentials`.
-            // So, adding it to stackView here ONLY for `signInUsingWordPressComOrSocialAccounts` `screenMode`
+        if screenMode == .signInUsingWordPressComOrSocialAccounts,
+           configuration.enableSimplifiedLoginI1 == false {
+            // Continue button will be added to `buttonViewController` along with sign in with site credentials button when `screenMode` is `signInUsingSiteCredentials`
+            // and simplified login flow is disabled.
             stackView.addArrangedSubview(continueButton)
         }
 
-        if WordPressAuthenticator.shared.configuration.whatIsWPComURL != nil {
+        if configuration.whatIsWPComURL != nil {
             let stackViewWithCenterAlignment = UIStackView()
             stackViewWithCenterAlignment.axis = .vertical
             stackViewWithCenterAlignment.alignment = .center
@@ -307,7 +310,7 @@ private extension GetStartedViewController {
 
     @IBAction func whatIsWPComButtonTapped(_ sender: UIButton) {
         tracker.track(click: .whatIsWPCom)
-        guard let whatIsWPCom = WordPressAuthenticator.shared.configuration.whatIsWPComURL,
+        guard let whatIsWPCom = configuration.whatIsWPComURL,
               let url = URL(string: whatIsWPCom) else {
             return
         }
@@ -471,8 +474,13 @@ private extension GetStartedViewController {
             buttonViewController?.setTopButtonState(isLoading: animating,
                                                     isEnabled: enableSubmit(animating: animating))
         case .signInUsingWordPressComOrSocialAccounts:
-            continueButton.showActivityIndicator(animating)
-            continueButton.isEnabled = enableSubmit(animating: animating)
+            if configuration.enableSimplifiedLoginI1 {
+                buttonViewController?.setTopButtonState(isLoading: animating,
+                                                        isEnabled: enableSubmit(animating: animating))
+            } else {
+                continueButton.showActivityIndicator(animating)
+                continueButton.isEnabled = enableSubmit(animating: animating)
+            }
         }
     }
 
@@ -541,7 +549,7 @@ private extension GetStartedViewController {
                                               source: source,
                                               loginFields: loginFields,
                                               tracker: tracker,
-                                              configuration: WordPressAuthenticator.shared.configuration)
+                                              configuration: configuration)
         passwordCoordinator = coordinator
         Task { @MainActor [weak self] in
             guard let self = self else { return }
@@ -556,7 +564,7 @@ private extension GetStartedViewController {
         let userInfo = (error as NSError).userInfo
         let errorCode = userInfo[WordPressComRestApi.ErrorKeyErrorCode] as? String
 
-        if WordPressAuthenticator.shared.configuration.enableSignUp, errorCode == "unknown_user" {
+        if configuration.enableSignUp, errorCode == "unknown_user" {
             self.sendEmail()
         } else if errorCode == "email_login_not_allowed" {
                 // If we get this error, we know we have a WordPress.com user but their
@@ -771,7 +779,7 @@ private extension GetStartedViewController {
 
         buttonViewController.hideShadowView()
 
-        if WordPressAuthenticator.shared.configuration.enableSignInWithApple {
+        if configuration.enableSignInWithApple {
             buttonViewController.setupTopButtonFor(socialService: .apple, onTap: appleTapped)
         }
 
@@ -802,6 +810,21 @@ private extension GetStartedViewController {
                                                isPrimary: false,
                                                accessibilityIdentifier: ButtonConfiguration.SignInWithSiteCredentials.accessibilityIdentifier,
                                                onTap: handleSiteCredentialsButtonTapped)
+    }
+
+    func configureButtonViewControllerForSimplifiedLoginI1() {
+        guard let buttonViewController = buttonViewController else {
+            return
+        }
+
+        buttonViewController.hideShadowView()
+
+        // Add a "Continue" button here as the `continueButton` at the top
+        //
+        buttonViewController.setupTopButton(title: ButtonConfiguration.Continue.title,
+                                            isPrimary: true,
+                                            accessibilityIdentifier: ButtonConfiguration.Continue.accessibilityIdentifier,
+                                            onTap: handleSubmitButtonTapped)
     }
 
     @objc func appleTapped() {

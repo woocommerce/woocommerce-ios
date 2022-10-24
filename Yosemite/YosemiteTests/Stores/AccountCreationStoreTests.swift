@@ -20,7 +20,7 @@ final class AccountCreationStoreTests: XCTestCase {
 
     func test_createAccount_returns_result_on_success() throws {
         // Given
-        remote.whenLoadingUsernameSuggestions(thenReturn: ["woo", "zoo"])
+        remote.whenLoadingUsernameSuggestions(thenReturn: .success(["woo", "zoo"]))
         remote.whenCreatingAccount(thenReturn: .success(.init(authToken: "auth", username: "voo")))
 
         // When
@@ -38,7 +38,24 @@ final class AccountCreationStoreTests: XCTestCase {
 
     func test_createAccount_returns_invalidUsername_error_when_username_suggestions_are_empty() throws {
         // Given
-        remote.whenLoadingUsernameSuggestions(thenReturn: [])
+        remote.whenLoadingUsernameSuggestions(thenReturn: .success([]))
+
+        // When
+        let result: Result<CreateAccountResult, CreateAccountError> = waitFor { promise in
+            let action = AccountCreationAction.createAccount(email: "test@woo.com", password: "wow") { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error, .invalidUsername)
+    }
+
+    func test_createAccount_returns_invalidUsername_error_when_loadUsernameSuggestions_fails() throws {
+        // Given
+        remote.whenLoadingUsernameSuggestions(thenReturn: .failure(NetworkError.notFound))
 
         // When
         let result: Result<CreateAccountResult, CreateAccountError> = waitFor { promise in
@@ -55,7 +72,7 @@ final class AccountCreationStoreTests: XCTestCase {
 
     func test_createAccount_returns_error_from_remote_on_failure() throws {
         // Given
-        remote.whenLoadingUsernameSuggestions(thenReturn: ["woo", "zoo"])
+        remote.whenLoadingUsernameSuggestions(thenReturn: .success(["woo", "zoo"]))
         remote.whenCreatingAccount(thenReturn: .failure(.emailExists))
 
         // When

@@ -44,10 +44,12 @@ private extension AccountCreationStore {
     func createAccount(email: String, password: String, completion: @escaping (Result<CreateAccountResult, CreateAccountError>) -> Void) {
         Task { @MainActor in
             // Auto-generates a username based on the email.
-            let usernameSuggestions = await remote.loadUsernameSuggestions(from: email)
-            guard let username = usernameSuggestions.first else {
+            let usernameSuggestionsResult = await remote.loadUsernameSuggestions(from: email)
+            guard case let .success(usernameSuggestions) = usernameSuggestionsResult,
+            let username = usernameSuggestions.first else {
                 return completion(.failure(.invalidUsername))
             }
+            // Creates a WPCOM account.
             let result = await remote.createAccount(email: email,
                                                     username: username,
                                                     password: password,

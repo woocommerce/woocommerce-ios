@@ -20,7 +20,7 @@ final class MockAccountRemote {
     private var fetchWordPressSiteSettingsResultsBySiteID = [Int64: Result<WordPressSiteSettings, Error>]()
 
     /// The results to return based on the given site ID in `loadUsernameSuggestions`.
-    private var loadUsernameSuggestionsResults = [String]()
+    private var loadUsernameSuggestionsResult: Result<[String], Error>?
 
     /// The results to return based on the given site ID in `createAccount`.
     private var createAccountResult: Result<CreateAccountResult, CreateAccountError>?
@@ -36,8 +36,8 @@ final class MockAccountRemote {
     }
 
     /// Returns the value when `loadUsernameSuggestions` is called.
-    func whenLoadingUsernameSuggestions(thenReturn result: [String]) {
-        loadUsernameSuggestionsResults = result
+    func whenLoadingUsernameSuggestions(thenReturn result: Result<[String], Error>) {
+        loadUsernameSuggestionsResult = result
     }
 
     /// Returns the value when `createAccount` is called.
@@ -98,8 +98,12 @@ extension MockAccountRemote: AccountRemoteProtocol {
         // no-op
     }
 
-    func loadUsernameSuggestions(from text: String) async -> [String] {
-        loadUsernameSuggestionsResults
+    func loadUsernameSuggestions(from text: String) async -> Result<[String], Error> {
+        guard let result = loadUsernameSuggestionsResult else {
+            XCTFail("Could not find result for loading username suggestions.")
+            return .failure(NetworkError.notFound)
+        }
+        return result
     }
 
     func createAccount(email: String,

@@ -41,6 +41,11 @@ def alamofire
   pod 'Alamofire', '~> 4.8'
 end
 
+def cocoalumberjack
+  pod 'CocoaLumberjack', '~> 3.7.4'
+  pod 'CocoaLumberjack/Swift', '~> 3.7.4'
+end
+
 # Main Target!
 # ============
 #
@@ -74,9 +79,8 @@ target 'WooCommerce' do
   # ==================
   #
   alamofire
+  cocoalumberjack
   keychain
-  pod 'CocoaLumberjack', '~> 3.7.4'
-  pod 'CocoaLumberjack/Swift', '~> 3.7.4'
   pod 'XLPagerTabStrip', '~> 9.0'
   pod 'ZendeskSupportSDK', '~> 5.0'
   pod 'StripeTerminal', '~> 2.7'
@@ -106,8 +110,7 @@ end
 def yosemite_pods
   alamofire
   pod 'StripeTerminal', '~> 2.7'
-  pod 'CocoaLumberjack', '~> 3.7.4'
-  pod 'CocoaLumberjack/Swift', '~> 3.7.4'
+  cocoalumberjack
 
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
   pod 'WordPressKit', '~> 4.49.0'
@@ -136,8 +139,7 @@ end
 # ===============
 #
 def woofoundation_pods
-  pod 'CocoaLumberjack', '~> 3.7.4'
-  pod 'CocoaLumberjack/Swift', '~> 3.7.4'
+  cocoalumberjack
 end
 
 # Tools Target:
@@ -161,8 +163,7 @@ end
 #
 def networking_pods
   alamofire
-  pod 'CocoaLumberjack', '~> 3.7.4'
-  pod 'CocoaLumberjack/Swift', '~> 3.7.4'
+  cocoalumberjack
 
   pod 'Sourcery', '~> 1.0.3', configuration: 'Debug'
 
@@ -197,8 +198,7 @@ end
 # ==============
 #
 def storage_pods
-  pod 'CocoaLumberjack', '~> 3.7.4'
-  pod 'CocoaLumberjack/Swift', '~> 3.7.4'
+  cocoalumberjack
 end
 
 # Storage Target:
@@ -222,8 +222,7 @@ end
 #
 def hardware_pods
   pod 'StripeTerminal', '~> 2.7'
-  pod 'CocoaLumberjack', '~> 3.7.4'
-  pod 'CocoaLumberjack/Swift', '~> 3.7.4'
+  cocoalumberjack
 end
 
 # Hardware Target:
@@ -255,8 +254,7 @@ end
 #
 def experiments_pods
   tracks
-  pod 'CocoaLumberjack', '~> 3.7.4'
-  pod 'CocoaLumberjack/Swift', '~> 3.7.4'
+  cocoalumberjack
 end
 
 # Experiments Target:

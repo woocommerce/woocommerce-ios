@@ -6,6 +6,8 @@ struct AccountCreationFormFieldViewModel {
     let header: String
     /// Placeholder of the text field.
     let placeholder: String
+    /// The type of keyboard.
+    let keyboardType: UIKeyboardType
     /// Text binding for the text field.
     let text: Binding<String>
     /// Whether the content in the text field is secure, like password.
@@ -29,9 +31,11 @@ struct AccountCreationFormFieldView: View {
             if viewModel.isSecure {
                 SecureField(viewModel.placeholder, text: viewModel.text)
                     .textFieldStyle(.roundedBorder)
+                    .keyboardType(viewModel.keyboardType)
             } else {
                 TextField(viewModel.placeholder, text: viewModel.text)
                     .textFieldStyle(.roundedBorder)
+                    .keyboardType(viewModel.keyboardType)
             }
             if let errorMessage = viewModel.errorMessage {
                 Text(errorMessage)
@@ -51,11 +55,13 @@ struct AccountCreationFormField_Previews: PreviewProvider {
     static var previews: some View {
         AccountCreationFormFieldView(viewModel: .init(header: "Your email address",
                                                       placeholder: "Email address",
+                                                      keyboardType: .emailAddress,
                                                       text: .constant(""),
                                                       isSecure: false,
                                                       errorMessage: nil))
         AccountCreationFormFieldView(viewModel: .init(header: "Choose a password",
                                                       placeholder: "Password",
+                                                      keyboardType: .default,
                                                       text: .constant("w"),
                                                       isSecure: true,
                                                       errorMessage: "Too simple"))

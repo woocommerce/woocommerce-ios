@@ -47,11 +47,13 @@ struct AccountCreationForm: View {
                 VStack(spacing: Layout.verticalSpacingBetweenFields) {
                     AccountCreationFormFieldView(viewModel: .init(header: Localization.emailFieldTitle,
                                                                   placeholder: Localization.emailFieldPlaceholder,
+                                                                  keyboardType: .emailAddress,
                                                                   text: $viewModel.email,
                                                                   isSecure: false,
                                                                   errorMessage: viewModel.emailErrorMessage))
                     AccountCreationFormFieldView(viewModel: .init(header: Localization.passwordFieldTitle,
                                                                   placeholder: Localization.passwordFieldPlaceholder,
+                                                                  keyboardType: .default,
                                                                   text: $viewModel.password,
                                                                   isSecure: true,
                                                                   errorMessage: viewModel.passwordErrorMessage))

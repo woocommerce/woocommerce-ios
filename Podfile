@@ -46,6 +46,10 @@ def cocoalumberjack
   pod 'CocoaLumberjack/Swift', '~> 3.7.4'
 end
 
+def stripeterminal
+  pod 'StripeTerminal', '~> 2.7'
+end
+
 # Main Target!
 # ============
 #
@@ -83,7 +87,7 @@ target 'WooCommerce' do
   keychain
   pod 'XLPagerTabStrip', '~> 9.0'
   pod 'ZendeskSupportSDK', '~> 5.0'
-  pod 'StripeTerminal', '~> 2.7'
+  stripeterminal
   pod 'Kingfisher', '~> 7.2.2'
   pod 'Wormholy', '~> 1.6.5', configurations: ['Debug']
 
@@ -109,7 +113,7 @@ end
 #
 def yosemite_pods
   alamofire
-  pod 'StripeTerminal', '~> 2.7'
+  stripeterminal
   cocoalumberjack
 
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
@@ -221,7 +225,7 @@ end
 # =================
 #
 def hardware_pods
-  pod 'StripeTerminal', '~> 2.7'
+  stripeterminal
   cocoalumberjack
 end
 

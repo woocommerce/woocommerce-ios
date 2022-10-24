@@ -267,8 +267,3 @@ public extension NSNotification.Name {
     ///
     static let RemoteDidReceiveJetpackTimeoutError = NSNotification.Name(rawValue: "RemoteDidReceiveJetpackTimeoutError")
 }
-
-enum RemoteError: Error {
-    /// The response data does not match the expected type.
-    case unexpectedResponseData
-}

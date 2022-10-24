@@ -522,6 +522,12 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         }
         ServiceLocator.analytics.track(wooEvent, withError: error)
     }
+
+    // Navigate to store creation
+    func showAccountCreation(in navigationController: UINavigationController?) {
+        // TODO: add tracks
+        // Navigate to store creation
+    }
 }
 
 // MARK: - Local notifications

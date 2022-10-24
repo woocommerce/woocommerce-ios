@@ -85,4 +85,8 @@ public enum FeatureFlag: Int {
     /// Store creation MVP.
     ///
     case storeCreationMVP
+
+    /// Hides products onboarding development.
+    ///
+    case productsOnboarding
 }

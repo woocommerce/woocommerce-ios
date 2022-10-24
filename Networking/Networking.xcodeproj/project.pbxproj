@@ -44,6 +44,12 @@
 		0272E3FB254AABB800436277 /* order-with-line-item-attributes-before-API-support.json in Resources */ = {isa = PBXBuildFile; fileRef = 0272E3FA254AABB800436277 /* order-with-line-item-attributes-before-API-support.json */; };
 		028296F7237D588700E84012 /* ProductVariation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028296F6237D588700E84012 /* ProductVariation.swift */; };
 		0282DD91233A120A006A5FDB /* products-search-photo.json in Resources */ = {isa = PBXBuildFile; fileRef = 0282DD90233A120A006A5FDB /* products-search-photo.json */; };
+		028CB716290223CB00331C09 /* create-account-success.json in Resources */ = {isa = PBXBuildFile; fileRef = 028CB712290223CB00331C09 /* create-account-success.json */; };
+		028CB717290223CB00331C09 /* create-account-error-password.json in Resources */ = {isa = PBXBuildFile; fileRef = 028CB713290223CB00331C09 /* create-account-error-password.json */; };
+		028CB718290223CB00331C09 /* account-username-suggestions.json in Resources */ = {isa = PBXBuildFile; fileRef = 028CB714290223CB00331C09 /* account-username-suggestions.json */; };
+		028CB71B290224D700331C09 /* create-account-error-username.json in Resources */ = {isa = PBXBuildFile; fileRef = 028CB71A290224D700331C09 /* create-account-error-username.json */; };
+		028CB71E2902589E00331C09 /* create-account-error-email-exists.json in Resources */ = {isa = PBXBuildFile; fileRef = 028CB71C2902589E00331C09 /* create-account-error-email-exists.json */; };
+		028CB71F2902589E00331C09 /* create-account-error-invalid-email.json in Resources */ = {isa = PBXBuildFile; fileRef = 028CB71D2902589E00331C09 /* create-account-error-invalid-email.json */; };
 		028FA473257E110700F88A48 /* shipping-label-refund-error.json in Resources */ = {isa = PBXBuildFile; fileRef = 028FA471257E110700F88A48 /* shipping-label-refund-error.json */; };
 		028FA474257E110700F88A48 /* shipping-label-refund-success.json in Resources */ = {isa = PBXBuildFile; fileRef = 028FA472257E110700F88A48 /* shipping-label-refund-success.json */; };
 		029BA4F0255D7282006171FD /* ShippingLabelRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029BA4EF255D7282006171FD /* ShippingLabelRemote.swift */; };
@@ -758,6 +764,12 @@
 		0272E3FA254AABB800436277 /* order-with-line-item-attributes-before-API-support.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-with-line-item-attributes-before-API-support.json"; sourceTree = "<group>"; };
 		028296F6237D588700E84012 /* ProductVariation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariation.swift; sourceTree = "<group>"; };
 		0282DD90233A120A006A5FDB /* products-search-photo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "products-search-photo.json"; sourceTree = "<group>"; };
+		028CB712290223CB00331C09 /* create-account-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "create-account-success.json"; sourceTree = "<group>"; };
+		028CB713290223CB00331C09 /* create-account-error-password.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "create-account-error-password.json"; sourceTree = "<group>"; };
+		028CB714290223CB00331C09 /* account-username-suggestions.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "account-username-suggestions.json"; sourceTree = "<group>"; };
+		028CB71A290224D700331C09 /* create-account-error-username.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "create-account-error-username.json"; sourceTree = "<group>"; };
+		028CB71C2902589E00331C09 /* create-account-error-email-exists.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "create-account-error-email-exists.json"; sourceTree = "<group>"; };
+		028CB71D2902589E00331C09 /* create-account-error-invalid-email.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "create-account-error-invalid-email.json"; sourceTree = "<group>"; };
 		028FA471257E110700F88A48 /* shipping-label-refund-error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "shipping-label-refund-error.json"; sourceTree = "<group>"; };
 		028FA472257E110700F88A48 /* shipping-label-refund-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "shipping-label-refund-success.json"; sourceTree = "<group>"; };
 		029BA4EF255D7282006171FD /* ShippingLabelRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelRemote.swift; sourceTree = "<group>"; };
@@ -1916,6 +1928,12 @@
 		B559EBA820A0B5B100836CD4 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
+				028CB714290223CB00331C09 /* account-username-suggestions.json */,
+				028CB71C2902589E00331C09 /* create-account-error-email-exists.json */,
+				028CB71D2902589E00331C09 /* create-account-error-invalid-email.json */,
+				028CB713290223CB00331C09 /* create-account-error-password.json */,
+				028CB71A290224D700331C09 /* create-account-error-username.json */,
+				028CB712290223CB00331C09 /* create-account-success.json */,
 				DE50295F28C609A300551736 /* jetpack-connected-user.json */,
 				DE34051A28BDF12C00CF0D97 /* jetpack-connection-url.json */,
 				DE50296228C609DE00551736 /* jetpack-user-not-connected.json */,
@@ -2591,7 +2609,9 @@
 				CC9A253C26442C71005DE56E /* shipping-label-eligibility-success.json in Resources */,
 				B5A24179217F98F600595DEF /* notifications-load-all.json in Resources */,
 				314EDF2927C02CC100A56B6F /* stripe-account-complete-empty-descriptor.json in Resources */,
+				028CB71F2902589E00331C09 /* create-account-error-invalid-email.json in Resources */,
 				31A451CE27863A2E00FE81AA /* stripe-account-wrong-json.json in Resources */,
+				028CB718290223CB00331C09 /* account-username-suggestions.json in Resources */,
 				0282DD91233A120A006A5FDB /* products-search-photo.json in Resources */,
 				45152825257A8B740076B03C /* product-attribute-update.json in Resources */,
 				68C87B342862D40E00A99054 /* setting-all-except-countries.json in Resources */,
@@ -2608,6 +2628,7 @@
 				DE5CA111288A3E080077BEF9 /* product-malformed-variations-and-image-alt.json in Resources */,
 				02DD6492248A3EC00082523E /* product-external.json in Resources */,
 				03DCB7522624B3BE00C8953D /* coupons-all.json in Resources */,
+				028CB716290223CB00331C09 /* create-account-success.json in Resources */,
 				45A4B85C25D2FAB500776FB4 /* shipping-label-address-validation-error.json in Resources */,
 				02A26F1C2744F5FC008E4EDB /* wp-site-settings.json in Resources */,
 				31A451D027863A2E00FE81AA /* stripe-account-live-live.json in Resources */,
@@ -2664,6 +2685,7 @@
 				B5C6FCD620A3768900A4F8E4 /* order.json in Resources */,
 				3158FE7426129D9F00E566B9 /* wcpay-account-rejected-other.json in Resources */,
 				CC0786C7267BB10700BA9AC1 /* shipping-label-status-success.json in Resources */,
+				028CB71B290224D700331C09 /* create-account-error-username.json in Resources */,
 				68F48B1328E3E5750045C15B /* wc-analytics-customers.json in Resources */,
 				D88D5A41230BC5DA007B6E01 /* reviews-all.json in Resources */,
 				74C947862193A6C70024CB60 /* comment-moderate-unapproved.json in Resources */,
@@ -2723,6 +2745,7 @@
 				31A451D427863A2E00FE81AA /* stripe-account-rejected-listed.json in Resources */,
 				74A1D265211898F000931DFA /* site-visits-month.json in Resources */,
 				31799AFC2705189200D78179 /* wcpay-location.json in Resources */,
+				028CB71E2902589E00331C09 /* create-account-error-email-exists.json in Resources */,
 				74159623224D2C86003C21CF /* settings-product.json in Resources */,
 				266C7F9225AD3C88006ED243 /* attribute-term.json in Resources */,
 				D865CE6E278CC19A002C8520 /* stripe-location.json in Resources */,
@@ -2778,6 +2801,7 @@
 				457FC68C2382B2FD00B41B02 /* product-update.json in Resources */,
 				CE19CB11222486A600E8AF7A /* order-statuses.json in Resources */,
 				02F096C22406691100C0C1D5 /* media-library.json in Resources */,
+				028CB717290223CB00331C09 /* create-account-error-password.json in Resources */,
 				D800DA0E25EFEC21001E13CE /* wcpay-connection-token.json in Resources */,
 				74159628224D63CE003C21CF /* settings-product-alt.json in Resources */,
 				45AB8B2024AB3E1F00B5B36E /* product-tags-empty.json in Resources */,

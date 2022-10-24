@@ -81,4 +81,16 @@ extension MockAccountRemote: AccountRemoteProtocol {
     func loadSitePlan(for siteID: Int64, completion: @escaping (Result<SitePlan, Error>) -> Void) {
         // no-op
     }
+
+    func loadUsernameSuggestions(from text: String) async -> Result<[String], Error> {
+        .success([])
+    }
+
+    func createAccount(email: String,
+                       username: String,
+                       password: String,
+                       clientID: String,
+                       clientSecret: String) async -> Result<CreateAccountResult, CreateAccountError> {
+        .success(.init(authToken: "someAuthToken", username: "user"))
+    }
 }

@@ -159,7 +159,8 @@ class GetStartedViewController: LoginViewController, NUXKeyboardResponder {
         hiddenPasswordField?.text = nil
         hiddenPasswordField?.isAccessibilityElement = false
 
-        if screenMode == .signInUsingSiteCredentials {
+        if screenMode == .signInUsingSiteCredentials ||
+            configuration.enableSimplifiedLoginI1 {
             registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
                                       keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
         }

@@ -28,7 +28,7 @@ public protocol AccountRemoteProtocol {
                        username: String,
                        password: String,
                        clientID: String,
-                       clientSecret: String) async -> Result<CreateAccountData, CreateAccountError>
+                       clientSecret: String) async -> Result<CreateAccountResult, CreateAccountError>
 }
 
 /// Account: Remote Endpoints
@@ -144,7 +144,7 @@ public class AccountRemote: Remote, AccountRemoteProtocol {
                               username: String,
                               password: String,
                               clientID: String,
-                              clientSecret: String) async -> Result<CreateAccountData, CreateAccountError> {
+                              clientSecret: String) async -> Result<CreateAccountResult, CreateAccountError> {
         let path = Path.accountCreation
         let parameters: [String: Any] = [
             "client_id": clientID,
@@ -159,7 +159,7 @@ public class AccountRemote: Remote, AccountRemoteProtocol {
             "send_verification_email": true
         ]
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)
-        let result: Result<CreateAccountData, Error> = await enqueue(request)
+        let result: Result<CreateAccountResult, Error> = await enqueue(request)
         switch result {
         case .success(let data):
             return .success(data)
@@ -192,7 +192,7 @@ private extension AccountRemote {
 }
 
 /// Necessary data for account credentials.
-public struct CreateAccountData: Decodable {
+public struct CreateAccountResult: Decodable {
     public let authToken: String
     public let username: String
 

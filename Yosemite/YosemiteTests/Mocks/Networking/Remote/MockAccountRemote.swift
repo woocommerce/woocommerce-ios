@@ -90,7 +90,7 @@ extension MockAccountRemote: AccountRemoteProtocol {
                        username: String,
                        password: String,
                        clientID: String,
-                       clientSecret: String) async -> Result<String, Networking.CreateAccountError> {
-        .success("someAuthToken")
+                       clientSecret: String) async -> Result<CreateAccountData, CreateAccountError> {
+        .success(.init(authToken: "someAuthToken", username: "user"))
     }
 }

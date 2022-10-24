@@ -117,6 +117,8 @@
 		03DCB786262739D200C8953D /* CouponMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03DCB785262739D200C8953D /* CouponMapper.swift */; };
 		03E6676927E0F62B00890E6F /* wcpay-charge-interac-present.json in Resources */ = {isa = PBXBuildFile; fileRef = 03E6676827E0F62B00890E6F /* wcpay-charge-interac-present.json */; };
 		03E8FEC427B40E3F00F5FC7D /* wcpay-charge-card-present-minimal.json in Resources */ = {isa = PBXBuildFile; fileRef = 03E8FEC327B40E3F00F5FC7D /* wcpay-charge-card-present-minimal.json */; };
+		03EB99882906A78400F06A39 /* JustInTimeMessagesRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EB99872906A78400F06A39 /* JustInTimeMessagesRemote.swift */; };
+		03EB998A2906AB0C00F06A39 /* JustInTimeMessagesRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EB99892906AB0C00F06A39 /* JustInTimeMessagesRemoteTests.swift */; };
 		077F39C8269F2C7E00ABEADC /* SystemPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39C7269F2C7E00ABEADC /* SystemPlugin.swift */; };
 		077F39D426A58DE700ABEADC /* SystemStatusMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39D326A58DE700ABEADC /* SystemStatusMapper.swift */; };
 		077F39D626A58E4500ABEADC /* SystemStatusRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39D526A58E4500ABEADC /* SystemStatusRemote.swift */; };
@@ -841,6 +843,8 @@
 		03DCB785262739D200C8953D /* CouponMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponMapper.swift; sourceTree = "<group>"; };
 		03E6676827E0F62B00890E6F /* wcpay-charge-interac-present.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-charge-interac-present.json"; sourceTree = "<group>"; };
 		03E8FEC327B40E3F00F5FC7D /* wcpay-charge-card-present-minimal.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-charge-card-present-minimal.json"; sourceTree = "<group>"; };
+		03EB99872906A78400F06A39 /* JustInTimeMessagesRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustInTimeMessagesRemote.swift; sourceTree = "<group>"; };
+		03EB99892906AB0C00F06A39 /* JustInTimeMessagesRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustInTimeMessagesRemoteTests.swift; sourceTree = "<group>"; };
 		077F39C7269F2C7E00ABEADC /* SystemPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemPlugin.swift; sourceTree = "<group>"; };
 		077F39D326A58DE700ABEADC /* SystemStatusMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusMapper.swift; sourceTree = "<group>"; };
 		077F39D526A58E4500ABEADC /* SystemStatusRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusRemote.swift; sourceTree = "<group>"; };
@@ -1653,6 +1657,7 @@
 				24F98C5F2502EF8200F49B68 /* FeatureFlagRemoteTests.swift */,
 				4513382127A8409000AE5E78 /* InboxNotesRemoteTests.swift */,
 				E13BAD5228F8625600217769 /* InAppPurchasesRemoteTests.swift */,
+				03EB99892906AB0C00F06A39 /* JustInTimeMessagesRemoteTests.swift */,
 				26B2F74824C55ACE0065CCC8 /* LeaderboardsRemoteTests.swift */,
 				020D07BF23D8587700FD9580 /* MediaRemoteTests.swift */,
 				B554FA8A2180B1D500C54DFF /* NotificationsRemoteTests.swift */,
@@ -1788,6 +1793,7 @@
 				24F98C512502E79800F49B68 /* FeatureFlagsRemote.swift */,
 				E18152BD28F85B5B0011A0EC /* InAppPurchasesRemote.swift */,
 				4513381F27A8227F00AE5E78 /* InboxNotesRemote.swift */,
+				03EB99872906A78400F06A39 /* JustInTimeMessagesRemote.swift */,
 				26B2F74024C1F2C10065CCC8 /* LeaderboardsRemote.swift */,
 				B5DAEFEF2180DD5A0002356A /* NotificationsRemote.swift */,
 				B557DA0120975500005962F4 /* OrdersRemote.swift */,
@@ -3135,6 +3141,7 @@
 				E16C59B528F8640B007D55BB /* InAppPurchaseOrderResultMapper.swift in Sources */,
 				026CF61A237D607A009563D4 /* ProductVariationAttribute.swift in Sources */,
 				D8FBFF1A22D4DF7A006E3336 /* OrderStatsV4.swift in Sources */,
+				03EB99882906A78400F06A39 /* JustInTimeMessagesRemote.swift in Sources */,
 				74A1D26B21189B8100931DFA /* SiteVisitStatsItem.swift in Sources */,
 				DE34051728BDEB6D00CF0D97 /* JetpackConnectionRemote.swift in Sources */,
 				B505F6EC20BEFDC200BB1B69 /* Loader.swift in Sources */,
@@ -3227,6 +3234,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				45551F142523E7FF007EF104 /* UserAgentTests.swift in Sources */,
+				03EB998A2906AB0C00F06A39 /* JustInTimeMessagesRemoteTests.swift in Sources */,
 				DE34051D28BDF1C900CF0D97 /* JetpackConnectionURLMapperTests.swift in Sources */,
 				451A9836260B9DF90059D135 /* ShippingLabelPackagesMapperTests.swift in Sources */,
 				02BDB83723EA9C4D00BCC63E /* String+HTMLTests.swift in Sources */,

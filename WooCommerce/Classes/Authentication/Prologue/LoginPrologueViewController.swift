@@ -130,15 +130,16 @@ private extension LoginPrologueViewController {
                     navigationController.popViewController(animated: true)
                 }
                 self.show(accountCreationController, sender: self)
-            } else {
-                self.analytics.track(.loginNewToWooButtonTapped)
-
-                guard let url = URL(string: Constants.newToWooCommerceURL) else {
-                    return assertionFailure("Cannot generate URL.")
-                }
-
-                WebviewHelper.launch(url, with: self)
+                return
             }
+
+            self.analytics.track(.loginNewToWooButtonTapped)
+
+            guard let url = URL(string: Constants.newToWooCommerceURL) else {
+                return assertionFailure("Cannot generate URL.")
+            }
+
+            WebviewHelper.launch(url, with: self)
         }
     }
 }

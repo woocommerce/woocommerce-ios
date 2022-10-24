@@ -159,6 +159,9 @@ public class AccountRemote: Remote, AccountRemoteProtocol {
             "password": password,
             "email": email,
             "username": username,
+            // Passing `validate=false` always creates an account (if input data is valid) and sends an email
+            // to the user that the account was created successfully.
+            // Otherwise, email validation is required before an account is created.
             "validate": false,
             "send_verification_email": true
         ]

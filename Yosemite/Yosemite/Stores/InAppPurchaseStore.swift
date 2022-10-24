@@ -3,35 +3,6 @@ import Storage
 import StoreKit
 import Networking
 
-private class RefreshRequest: NSObject, SKRequestDelegate {
-    private let completion: () -> Void
-
-    init(completion: @escaping () -> Void) {
-        self.completion = completion
-        super.init()
-        let request = SKReceiptRefreshRequest()
-        request.delegate = self
-        request.start()
-    }
-
-    func requestDidFinish(_ request: SKRequest) {
-        completion()
-    }
-
-    func dummy() {}
-
-    static func start() async {
-        var request: RefreshRequest?
-        await withCheckedContinuation { continuation in
-            request = RefreshRequest {
-                continuation.resume()
-            }
-        }
-        request?.dummy()
-        request = nil
-    }
-}
-
 public class InAppPurchaseStore: Store {
     private var listenTask: Task<Void, Error>?
     private let remote: InAppPurchasesRemote
@@ -160,10 +131,15 @@ private extension InAppPurchaseStore {
         )
     }
 
-    func getAppReceipt() async throws -> Data {
+    func getAppReceipt(refreshIfMissing: Bool = true) async throws -> Data {
         guard let appStoreReceiptURL = Bundle.main.appStoreReceiptURL,
               let receiptData = try? Data(contentsOf: appStoreReceiptURL, options: .alwaysMapped) else {
             logError("No app receipt")
+            if refreshIfMissing {
+                logInfo("Refreshing app receipt")
+                try await InAppPurchaseReceiptRefreshRequest.request()
+                return try await getAppReceipt(refreshIfMissing: false)
+            }
             throw Errors.missingAppReceipt
         }
         logInfo("App receipt: \(receiptData)")

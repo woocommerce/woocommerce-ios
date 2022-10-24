@@ -61,7 +61,7 @@ class AuthenticationManager: Authentication {
                                                                 wpcomScheme: ApiCredentials.dotcomAuthScheme,
                                                                 wpcomTermsOfServiceURL: WooConstants.URLs.termsOfService.rawValue,
                                                                 wpcomAPIBaseURL: Settings.wordpressApiBaseURL,
-                                                                whatIsWPComURL: WooConstants.URLs.whatIsWPCom.rawValue,
+                                                                whatIsWPComURL: isSimplifiedLoginI1Enabled ? nil : WooConstants.URLs.whatIsWPCom.rawValue,
                                                                 googleLoginClientId: ApiCredentials.googleClientId,
                                                                 googleLoginServerClientId: ApiCredentials.googleServerId,
                                                                 googleLoginScheme: ApiCredentials.googleAuthScheme,
@@ -112,25 +112,46 @@ class AuthenticationManager: Authentication {
                                                     LoginPrologueViewController(isFeatureCarouselShown: isFeatureCarouselShown),
                                                 statusBarStyle: .default)
 
+        let getStartedInstructions: String = {
+            if isSimplifiedLoginI1Enabled {
+                return AuthenticationConstants.getStartedInstructionsForSimplifiedLogin
+            } else if isWPComSignupEnabled {
+                return AuthenticationConstants.getStartedInstructionsWithWPComSignupEnabled
+            } else {
+                return AuthenticationConstants.getStartedInstructions
+            }
+        }()
+
+        let continueWithWPButtonTitle: String = {
+            if isSimplifiedLoginI1Enabled {
+                return AuthenticationConstants.loginButtonTitle
+            }
+            return AuthenticationConstants.continueWithWPButtonTitle
+        }()
+
+        let emailAddressPlaceholder: String = {
+            if isSimplifiedLoginI1Enabled {
+                return "name@example.com"
+            }
+            return WordPressAuthenticatorDisplayStrings.defaultStrings.emailAddressPlaceholder
+        }()
+        
         let displayStrings = WordPressAuthenticatorDisplayStrings(emailLoginInstructions: AuthenticationConstants.emailInstructions,
-                                                                  getStartedInstructions: isWPComSignupEnabled ?
-                                                                  AuthenticationConstants.getStartedInstructionsWithWPComSignupEnabled:
-                                                                    AuthenticationConstants.getStartedInstructions,
+                                                                  getStartedInstructions: getStartedInstructions,
                                                                   jetpackLoginInstructions: AuthenticationConstants.jetpackInstructions,
                                                                   siteLoginInstructions: AuthenticationConstants.siteInstructions,
                                                                   siteCredentialInstructions: AuthenticationConstants.siteCredentialInstructions,
                                                                   usernamePasswordInstructions: AuthenticationConstants.usernamePasswordInstructions,
                                                                   applePasswordInstructions: AuthenticationConstants.applePasswordInstructions,
-                                                                  continueWithWPButtonTitle: isSimplifiedLoginI1Enabled ?
-                                                                  AuthenticationConstants.loginButtonTitle :
-                                                                    AuthenticationConstants.continueWithWPButtonTitle,
+                                                                  continueWithWPButtonTitle: continueWithWPButtonTitle,
                                                                   enterYourSiteAddressButtonTitle: AuthenticationConstants.enterYourSiteAddressButtonTitle,
                                                                   signInWithSiteCredentialsButtonTitle: AuthenticationConstants.signInWithSiteCredsButtonTitle,
                                                                   findSiteButtonTitle: AuthenticationConstants.findYourStoreAddressButtonTitle,
                                                                   signupTermsOfService: AuthenticationConstants.signupTermsOfService,
                                                                   whatIsWPComLinkTitle: AuthenticationConstants.whatIsWPComLinkTitle,
                                                                   siteCreationButtonTitle: AuthenticationConstants.createSiteButtonTitle,
-                                                                  getStartedTitle: AuthenticationConstants.loginTitle)
+                                                                  getStartedTitle: AuthenticationConstants.loginTitle,
+                                                                  emailAddressPlaceholder: emailAddressPlaceholder)
 
         let unifiedStyle = WordPressAuthenticatorUnifiedStyle(borderColor: .divider,
                                                               errorColor: .error,

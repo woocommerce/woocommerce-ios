@@ -6,6 +6,7 @@
 
 11.0
 -----
+- [internal] Add support for controlling performance monitoring via Sentry. **Off by default**. [https://github.com/woocommerce/woocommerce-ios/pull/7831]
 
 
 10.9

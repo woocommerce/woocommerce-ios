@@ -132,5 +132,10 @@ private extension AccountCreationForm {
 struct AccountCreationForm_Previews: PreviewProvider {
     static var previews: some View {
         AccountCreationForm(viewModel: .init())
+            .preferredColorScheme(.light)
+
+        AccountCreationForm(viewModel: .init())
+            .preferredColorScheme(.dark)
+            .dynamicTypeSize(.xxxLarge)
     }
 }

@@ -37,6 +37,10 @@ def keychain
   pod 'KeychainAccess', '~> 4.2.2'
 end
 
+def alamofire
+  pod 'Alamofire', '~> 4.8'
+end
+
 # Main Target!
 # ============
 #
@@ -69,7 +73,7 @@ target 'WooCommerce' do
   # External Libraries
   # ==================
   #
-  pod 'Alamofire', '~> 4.8'
+  alamofire
   keychain
   pod 'CocoaLumberjack', '~> 3.7.4'
   pod 'CocoaLumberjack/Swift', '~> 3.7.4'
@@ -100,7 +104,7 @@ end
 # ===============
 #
 def yosemite_pods
-  pod 'Alamofire', '~> 4.8'
+  alamofire
   pod 'StripeTerminal', '~> 2.7'
   pod 'CocoaLumberjack', '~> 3.7.4'
   pod 'CocoaLumberjack/Swift', '~> 3.7.4'
@@ -156,7 +160,7 @@ end
 # =================
 #
 def networking_pods
-  pod 'Alamofire', '~> 4.8'
+  alamofire
   pod 'CocoaLumberjack', '~> 3.7.4'
   pod 'CocoaLumberjack/Swift', '~> 3.7.4'
 

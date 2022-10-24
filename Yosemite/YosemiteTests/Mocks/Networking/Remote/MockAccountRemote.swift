@@ -19,6 +19,12 @@ final class MockAccountRemote {
     /// The results to return based on the given site ID in `fetchWordPressSiteSettings`
     private var fetchWordPressSiteSettingsResultsBySiteID = [Int64: Result<WordPressSiteSettings, Error>]()
 
+    /// The results to return based on the given site ID in `loadUsernameSuggestions`.
+    private var loadUsernameSuggestionsResults = [String]()
+
+    /// The results to return based on the given site ID in `createAccount`.
+    private var createAccountResult: Result<CreateAccountResult, CreateAccountError>?
+
     /// Returns the value as a publisher when `checkIfWooCommerceIsActive` is called.
     func whenCheckingIfWooCommerceIsActive(siteID: Int64, thenReturn result: Result<Bool, Error>) {
         checkIfWooCommerceIsActiveResultsBySiteID[siteID] = result
@@ -27,6 +33,16 @@ final class MockAccountRemote {
     /// Returns the value as a publisher when `fetchWordPressSiteSettings` is called.
     func whenFetchingWordPressSiteSettings(siteID: Int64, thenReturn result: Result<WordPressSiteSettings, Error>) {
         fetchWordPressSiteSettingsResultsBySiteID[siteID] = result
+    }
+
+    /// Returns the value when `loadUsernameSuggestions` is called.
+    func whenLoadingUsernameSuggestions(thenReturn result: [String]) {
+        loadUsernameSuggestionsResults = result
+    }
+
+    /// Returns the value when `createAccount` is called.
+    func whenCreatingAccount(thenReturn result: Result<CreateAccountResult, CreateAccountError>) {
+        createAccountResult = result
     }
 }
 
@@ -83,7 +99,7 @@ extension MockAccountRemote: AccountRemoteProtocol {
     }
 
     func loadUsernameSuggestions(from text: String) async -> [String] {
-        []
+        loadUsernameSuggestionsResults
     }
 
     func createAccount(email: String,
@@ -91,6 +107,10 @@ extension MockAccountRemote: AccountRemoteProtocol {
                        password: String,
                        clientID: String,
                        clientSecret: String) async -> Result<CreateAccountResult, CreateAccountError> {
-        .success(.init(authToken: "someAuthToken", username: "user"))
+        guard let result = createAccountResult else {
+            XCTFail("Could not find result for creating an account.")
+            return .failure(.unexpected(error: .empty))
+        }
+        return result
     }
 }

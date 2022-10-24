@@ -192,7 +192,7 @@ private extension AccountRemote {
 }
 
 /// Necessary data for account credentials.
-public struct CreateAccountResult: Decodable {
+public struct CreateAccountResult: Decodable, Equatable {
     public let authToken: String
     public let username: String
 

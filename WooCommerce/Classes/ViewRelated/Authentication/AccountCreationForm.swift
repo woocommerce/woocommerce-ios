@@ -56,7 +56,7 @@ struct AccountCreationForm: View {
                                                                   isSecure: true,
                                                                   errorMessage: viewModel.passwordErrorMessage))
                     AttributedText(tosAttributedText)
-                        .attributedTextLinkColor(Color(.label))
+                        .attributedTextLinkColor(Color(.textLink))
                 }
 
                 // CTA to submit the form.

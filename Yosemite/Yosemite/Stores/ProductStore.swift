@@ -393,6 +393,13 @@ private extension ProductStore {
     /// Checks if the store has at least one product
     ///
     func checkForProducts(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+        // Check for locally stored products first.
+        let storage = storageManager.viewStorage
+        if let products = storage.loadProducts(siteID: siteID), !products.isEmpty {
+            return onCompletion(.success(true))
+        }
+
+        // If there are no locally stored products, then check remote.
         remote.loadProductIDs(for: siteID, pageNumber: 1, pageSize: 1) { result in
             switch result {
             case .success(let ids):

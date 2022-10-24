@@ -114,7 +114,6 @@ private extension InAppPurchaseStore {
         switch result {
         case .verified(let transaction):
             logInfo("Verified transaction \(transaction.id) (Original ID: \(transaction.originalID)) for product \(transaction.productID)")
-            logInfo("Verified transaction JWS: \(result.jwsRepresentation)")
             // FIXME: Don't finish the transaction until it's been handled. For testing only
             await transaction.finish()
             try await submitTransaction(transaction)

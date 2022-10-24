@@ -95,8 +95,8 @@ public extension InAppPurchasesRemote {
 
 private extension InAppPurchasesRemote {
     func augmentedRequestWithAppId(_ request: URLRequestConvertible) -> URLRequestConvertible {
-        let bundleIdentifier = "com.woocommerce"
-        guard var augmented = try? request.asURLRequest() else {
+        guard let bundleIdentifier = Bundle.main.bundleIdentifier,
+              var augmented = try? request.asURLRequest() else {
             return request
         }
 

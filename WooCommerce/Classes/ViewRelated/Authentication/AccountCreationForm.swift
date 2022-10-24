@@ -46,15 +46,15 @@ struct AccountCreationForm: View {
                 // Form fields.
                 VStack(spacing: Layout.verticalSpacingBetweenFields) {
                     AccountCreationFormFieldView(viewModel: .init(header: Localization.emailFieldTitle,
-                                                              placeholder: Localization.emailFieldPlaceholder,
-                                                              text: $viewModel.email,
-                                                              isSecure: false,
-                                                              errorMessage: viewModel.emailErrorMessage))
+                                                                  placeholder: Localization.emailFieldPlaceholder,
+                                                                  text: $viewModel.email,
+                                                                  isSecure: false,
+                                                                  errorMessage: viewModel.emailErrorMessage))
                     AccountCreationFormFieldView(viewModel: .init(header: Localization.passwordFieldTitle,
-                                                              placeholder: Localization.passwordFieldPlaceholder,
-                                                              text: $viewModel.password,
-                                                              isSecure: true,
-                                                              errorMessage: viewModel.passwordErrorMessage))
+                                                                  placeholder: Localization.passwordFieldPlaceholder,
+                                                                  text: $viewModel.password,
+                                                                  isSecure: true,
+                                                                  errorMessage: viewModel.passwordErrorMessage))
                     AttributedText(tosAttributedText)
                         .onTapGesture {
                             customOpenURL?(Constants.tosURL)
@@ -80,7 +80,6 @@ struct AccountCreationForm: View {
             }
             .padding(.init(top: 0, leading: Layout.horizontalSpacing, bottom: 0, trailing: Layout.horizontalSpacing))
         }
-        .ignoresSafeArea(.container, edges: [.horizontal])
     }
 }
 

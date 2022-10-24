@@ -77,7 +77,8 @@ class AuthenticationManager: Authentication {
                                                                 isWPComMagicLinkPreferredToPassword: isWPComMagicLinkPreferredToPassword,
                                                                 isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen:
                                                                     isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen,
-                                                                enableSimplifiedLoginI1: isSimplifiedLoginI1Enabled)
+                                                                enableSimplifiedLoginI1: isSimplifiedLoginI1Enabled,
+                                                                enableSiteCreation: false) // TODO: use feature flag for site creation MVP
 
         let systemGray3LightModeColor = UIColor(red: 199/255.0, green: 199/255.0, blue: 204/255.0, alpha: 1)
         let systemLabelLightModeColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)
@@ -120,7 +121,6 @@ class AuthenticationManager: Authentication {
                                                                   siteCredentialInstructions: AuthenticationConstants.siteCredentialInstructions,
                                                                   usernamePasswordInstructions: AuthenticationConstants.usernamePasswordInstructions,
                                                                   applePasswordInstructions: AuthenticationConstants.applePasswordInstructions,
-                                                                  createAccountButtonTitle: AuthenticationConstants.createAccountButtonTitle,
                                                                   continueWithWPButtonTitle: isSimplifiedLoginI1Enabled ?
                                                                   AuthenticationConstants.loginButtonTitle :
                                                                     AuthenticationConstants.continueWithWPButtonTitle,
@@ -129,6 +129,7 @@ class AuthenticationManager: Authentication {
                                                                   findSiteButtonTitle: AuthenticationConstants.findYourStoreAddressButtonTitle,
                                                                   signupTermsOfService: AuthenticationConstants.signupTermsOfService,
                                                                   whatIsWPComLinkTitle: AuthenticationConstants.whatIsWPComLinkTitle,
+                                                                  siteCreationButtonTitle: AuthenticationConstants.createSiteButtonTitle,
                                                                   getStartedTitle: AuthenticationConstants.loginTitle)
 
         let unifiedStyle = WordPressAuthenticatorUnifiedStyle(borderColor: .divider,

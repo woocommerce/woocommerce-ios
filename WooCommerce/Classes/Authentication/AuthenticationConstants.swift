@@ -116,7 +116,7 @@ struct AuthenticationConstants {
 
     /// Create a Store button in Simplified login flow
     ///
-    static let createAccountButtonTitle = NSLocalizedString(
+    static let createSiteButtonTitle = NSLocalizedString(
         "Create a Store",
         comment: "Button displayed on the prologue screen of the simplified login flow to create a new store"
     )

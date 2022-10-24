@@ -58,6 +58,13 @@ struct AuthenticationConstants {
         comment: "Sign in instructions asking user to enter WordPress.com password to proceed with sign in using Apple process"
     )
 
+    /// Simplified Log In button
+    ///
+    static let loginButtonTitle = NSLocalizedString(
+        "Log In",
+        comment: "Button title in the simplified login prologue screen. Takes the user to the login flow."
+    )
+
     /// Title of "Continue With WordPress.com" button in Login Prologue
     //
     static let continueWithWPButtonTitle = NSLocalizedString(
@@ -105,5 +112,12 @@ struct AuthenticationConstants {
     static let signupTermsOfService = NSLocalizedString(
         "If you continue with Apple and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_.",
         comment: "Legal disclaimer for signing up. The underscores _..._ denote underline."
+    )
+
+    /// Create a Store button in Simplified login flow
+    ///
+    static let createAccountButtonTitle = NSLocalizedString(
+        "Create a Store",
+        comment: "Button displayed on the prologue screen of the simplified login flow to create a new store"
     )
 }

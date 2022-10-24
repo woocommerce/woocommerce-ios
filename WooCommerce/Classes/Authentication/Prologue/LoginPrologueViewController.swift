@@ -122,13 +122,23 @@ private extension LoginPrologueViewController {
         newToWooCommerceButton.on(.touchUpInside) { [weak self] _ in
             guard let self = self else { return }
 
-            self.analytics.track(.loginNewToWooButtonTapped)
+            // TODO-7891: update prologue entry point.
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.storeCreationMVP) {
+                let accountCreationController = AccountCreationFormHostingController(viewModel: .init()) { [weak self] in
+                    guard let self, let navigationController = self.navigationController else { return }
+                    // TODO-7879 & TODO-7891: navigate to store creation after account creation.
+                    navigationController.popViewController(animated: true)
+                }
+                self.show(accountCreationController, sender: self)
+            } else {
+                self.analytics.track(.loginNewToWooButtonTapped)
 
-            guard let url = URL(string: Constants.newToWooCommerceURL) else {
-                return assertionFailure("Cannot generate URL.")
+                guard let url = URL(string: Constants.newToWooCommerceURL) else {
+                    return assertionFailure("Cannot generate URL.")
+                }
+
+                WebviewHelper.launch(url, with: self)
             }
-
-            WebviewHelper.launch(url, with: self)
         }
     }
 }

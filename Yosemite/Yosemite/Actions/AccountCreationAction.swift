@@ -1,5 +1,4 @@
 import Foundation
-import protocol Networking.Network
 
 /// Defines actions supported by `AccountCreationStore`.
 public enum AccountCreationAction: Action {

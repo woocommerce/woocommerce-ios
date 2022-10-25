@@ -123,12 +123,6 @@ private extension StoreCreationCoordinator {
             // Shows `My store` tab by default.
             MainTabBarController.switchToMyStoreTab(animated: true)
 
-            if siteChanged {
-                let presenter = SwitchStoreNoticePresenter(siteID: site.siteID)
-                // The configuration only matters when the switch store notice is shown for `switchingStores` configuration.
-                presenter.presentStoreSwitchedNoticeWhenSiteIsAvailable(configuration: .standard)
-            }
-
             self.navigationController.dismiss(animated: true)
         }
     }

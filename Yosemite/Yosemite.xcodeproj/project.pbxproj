@@ -101,6 +101,7 @@
 		031C1EAE27B1877000298699 /* WCPayCardPresentPaymentDetails+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C1EAD27B1877000298699 /* WCPayCardPresentPaymentDetails+ReadOnlyConvertible.swift */; };
 		031C1EB027B1879C00298699 /* WCPayCardPaymentDetails+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C1EAF27B1879C00298699 /* WCPayCardPaymentDetails+ReadOnlyConvertible.swift */; };
 		031FD8A026FC970400B315C7 /* RosettaTestingHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031FD89F26FC970300B315C7 /* RosettaTestingHelper.swift */; };
+		0366EADF29082B3100B51755 /* JustInTimeMessageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0366EADE29082B3100B51755 /* JustInTimeMessageStore.swift */; };
 		03EB998C2906F1D300F06A39 /* JustInTimeMessageAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EB998B2906F1D300F06A39 /* JustInTimeMessageAction.swift */; };
 		03EB99902907B97800F06A39 /* YosemiteJustInTimeMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EB998F2907B97800F06A39 /* YosemiteJustInTimeMessage.swift */; };
 		03F3AFE728097D6400E328BE /* CardPresentPaymentsPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F3AFE628097D6400E328BE /* CardPresentPaymentsPlugin.swift */; };
@@ -515,6 +516,7 @@
 		031C1EAD27B1877000298699 /* WCPayCardPresentPaymentDetails+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayCardPresentPaymentDetails+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		031C1EAF27B1879C00298699 /* WCPayCardPaymentDetails+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayCardPaymentDetails+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		031FD89F26FC970300B315C7 /* RosettaTestingHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RosettaTestingHelper.swift; sourceTree = "<group>"; };
+		0366EADE29082B3100B51755 /* JustInTimeMessageStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JustInTimeMessageStore.swift; sourceTree = "<group>"; };
 		03EB998B2906F1D300F06A39 /* JustInTimeMessageAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustInTimeMessageAction.swift; sourceTree = "<group>"; };
 		03EB998F2907B97800F06A39 /* YosemiteJustInTimeMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YosemiteJustInTimeMessage.swift; sourceTree = "<group>"; };
 		03F3AFE628097D6400E328BE /* CardPresentPaymentsPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsPlugin.swift; sourceTree = "<group>"; };
@@ -1360,6 +1362,7 @@
 				45E462132684C92D00011BF2 /* DataStore.swift */,
 				45151A9027B158A10080845F /* InboxNotesStore.swift */,
 				E16C59BA28F9393E007D55BB /* InAppPurchaseStore.swift */,
+				0366EADE29082B3100B51755 /* JustInTimeMessageStore.swift */,
 				7471401221877A8B009A11CC /* NotificationStore.swift */,
 				022F00BD24725BAF008CD97F /* NotificationCountStore.swift */,
 				74A7688B20D45EBA00F9D437 /* OrderStore.swift */,
@@ -2035,6 +2038,7 @@
 				02137903270ABDDE006430F7 /* MockAnnouncementsActionHandler.swift in Sources */,
 				247CE8342582F20100F9D9D1 /* MockAppSettingsActionHandler.swift in Sources */,
 				025CA2CA238F515600B05C81 /* ProductShippingClassStore.swift in Sources */,
+				0366EADF29082B3100B51755 /* JustInTimeMessageStore.swift in Sources */,
 				74937508224985BB007D85D1 /* ProductDimensions+ReadOnlyConvertible.swift in Sources */,
 				CC2C036C262F316600928C9C /* ShippingLabelAccountSettings+ReadOnlyConvertible.swift in Sources */,
 				45010693239A6C9F00E24722 /* TaxClassStore.swift in Sources */,

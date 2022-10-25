@@ -116,7 +116,7 @@ private extension InAppPurchaseStore {
             price: priceInCents,
             productIdentifier: product.id,
             appStoreCountryCode: countryCode,
-            receiptData: receiptData
+            receiptData: transaction.jsonRepresentation
         )
     }
 

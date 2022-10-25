@@ -28,7 +28,7 @@ struct AuthenticationConstants {
     /// Get started instructions when simplified login is enabled.
     /// 
     static let getStartedInstructionsForSimplifiedLogin = NSLocalizedString(
-        "Enter your email address to get started",
+        "Enter your email address to get started.",
         comment: "Sign in instructions on the 'log in using WordPress.com account' screen."
     )
 

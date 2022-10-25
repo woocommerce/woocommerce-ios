@@ -135,7 +135,7 @@ class AuthenticationManager: Authentication {
             }
             return WordPressAuthenticatorDisplayStrings.defaultStrings.emailAddressPlaceholder
         }()
-        
+
         let displayStrings = WordPressAuthenticatorDisplayStrings(emailLoginInstructions: AuthenticationConstants.emailInstructions,
                                                                   getStartedInstructions: getStartedInstructions,
                                                                   jetpackLoginInstructions: AuthenticationConstants.jetpackInstructions,

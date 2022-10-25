@@ -19,6 +19,12 @@ class PasswordViewController: LoginViewController {
 
     private let isMagicLinkShownAsSecondaryAction: Bool = WordPressAuthenticator.shared.configuration.isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen
 
+    private let configurations = WordPressAuthenticator.shared.configuration
+
+    private var isSiteCredentialPassword: Bool {
+        loginFields.siteAddress.isEmpty == false && configurations.enableSiteCredentialsLoginForSelfHostedSites
+    }
+
     /// Depending on where we're coming from, this screen needs to track a password challenge
     /// (if logging on with a Social account) or not (if logging in through WP.com).
     ///
@@ -338,8 +344,9 @@ private extension PasswordViewController {
     func loadRows() {
         rows = [.gravatarEmail]
 
-        // Instructions only for social accounts
-        if loginFields.meta.socialService != nil {
+        // Instructions only for social accounts and simplified WPCom login flow
+        if loginFields.meta.socialService != nil ||
+            (configurations.enableSimplifiedLoginI1 && isSiteCredentialPassword == false) {
             rows.append(.instructions)
         }
 
@@ -397,17 +404,17 @@ private extension PasswordViewController {
         }
     }
 
-    /// Configure the instruction cell.
+    /// Configure the instruction cell for social accounts or simplified login.
     ///
     func configureInstructionLabel(_ cell: TextLabelTableViewCell) {
-        // Instructions only for social accounts
-        guard let service = loginFields.meta.socialService else {
-            return
-        }
-
         let displayStrings = WordPressAuthenticator.shared.displayStrings
-        let instructions = (service == .google) ? displayStrings.googlePasswordInstructions :
-            displayStrings.applePasswordInstructions
+        let instructions: String = {
+            if let service = loginFields.meta.socialService {
+                return (service == .google) ? displayStrings.googlePasswordInstructions :
+                displayStrings.applePasswordInstructions
+            }
+            return displayStrings.wpcomPasswordInstructions
+        }()
 
         cell.configureLabel(text: instructions)
     }

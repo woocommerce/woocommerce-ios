@@ -31,12 +31,14 @@ final class AccountCreationFormViewModel: ObservableObject {
         self.stores = stores
 
         $email
+            .removeDuplicates()
             .debounce(for: .seconds(Constants.fieldDebounceDuration), scheduler: DispatchQueue.main)
             .sink { [weak self] email in
                 self?.validateEmail(email)
             }.store(in: &subscriptions)
 
         $password
+            .removeDuplicates()
             .debounce(for: .seconds(Constants.fieldDebounceDuration), scheduler: DispatchQueue.main)
             .sink { [weak self] password in
                 self?.validatePassword(password)
@@ -86,10 +88,12 @@ private extension AccountCreationFormViewModel {
 private extension AccountCreationFormViewModel {
     func validateEmail(_ email: String) {
         isEmailValid = EmailFormatValidator.validate(string: email)
+        emailErrorMessage = nil
     }
 
     func validatePassword(_ password: String) {
         isPasswordValid = password.count >= 6
+        passwordErrorMessage = nil
     }
 }
 

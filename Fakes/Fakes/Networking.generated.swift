@@ -261,6 +261,40 @@ extension JetpackUser {
         )
     }
 }
+extension JustInTimeMessage {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> JustInTimeMessage {
+        .init(
+            siteID: .fake(),
+            messageID: .fake(),
+            featureClass: .fake(),
+            ttl: .fake(),
+            content: .fake(),
+            cta: .fake()
+        )
+    }
+}
+extension JustInTimeMessage.CTA {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> JustInTimeMessage.CTA {
+        .init(
+            message: .fake(),
+            link: .fake()
+        )
+    }
+}
+extension JustInTimeMessage.Content {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> JustInTimeMessage.Content {
+        .init(
+            message: .fake(),
+            description: .fake()
+        )
+    }
+}
 extension Leaderboard {
     /// Returns a "ready to use" type filled with fake values.
     ///

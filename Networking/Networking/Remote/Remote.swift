@@ -207,6 +207,40 @@ public class Remote: NSObject {
                                             }
         }
     }
+
+    /// Enqueues the specified Network Request using Swift Concurrency.
+    ///
+    /// - Important:
+    ///     - Parsing will be performed by the Mapper.
+    ///
+    /// - Parameter request: Request that should be performed.
+    /// - Returns: The result from the JSON parsed response for the expected type.
+    func enqueue<M: Mapper>(_ request: URLRequestConvertible, mapper: M) async throws -> Result<M.Output, Error> {
+        try await withCheckedThrowingContinuation { continuation in
+            network.responseData(for: request) { [weak self] result in
+                guard let self else { return }
+
+                switch result {
+                case .success(let data):
+                    if let dotcomError = DotcomValidator.error(from: data) {
+                        self.dotcomErrorWasReceived(error: dotcomError, for: request)
+                        continuation.resume(throwing: dotcomError)
+                        return
+                    }
+
+                    do {
+                        let parsed = try mapper.map(response: data)
+                        continuation.resume(returning: .success(parsed))
+                    } catch {
+                        DDLogError("<> Mapping Error: \(error)")
+                        continuation.resume(returning: .failure(error))
+                    }
+                case .failure(let error):
+                    continuation.resume(returning: .failure(error))
+                }
+            }
+        }
+    }
 }
 
 

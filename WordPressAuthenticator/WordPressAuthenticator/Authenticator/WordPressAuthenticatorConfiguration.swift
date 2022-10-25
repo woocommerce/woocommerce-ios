@@ -118,9 +118,9 @@ public struct WordPressAuthenticatorConfiguration {
     ///
     let enableSimplifiedLoginI1: Bool
 
-    /// If enabled, an entry point to the site creation flow will be added to the bottom button of the prologue screen.
+    /// If enabled, an entry point to the site creation flow will be added to the bottom button of the prologue screen of simplified login.
     ///
-    let enableSiteCreation: Bool
+    let enableSiteCreationForSimplifiedLoginI1: Bool
 
     /// Designated Initializer
     ///
@@ -148,7 +148,7 @@ public struct WordPressAuthenticatorConfiguration {
                  isWPComMagicLinkPreferredToPassword: Bool = false,
                  isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen: Bool = false,
                  enableSimplifiedLoginI1: Bool = false,
-                 enableSiteCreation: Bool = false) {
+                 enableSiteCreationForSimplifiedLoginI1: Bool = false) {
 
         self.wpcomClientId = wpcomClientId
         self.wpcomSecret = wpcomSecret
@@ -174,6 +174,6 @@ public struct WordPressAuthenticatorConfiguration {
         self.isWPComMagicLinkPreferredToPassword = isWPComMagicLinkPreferredToPassword
         self.isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen
         self.enableSimplifiedLoginI1 = enableSimplifiedLoginI1
-        self.enableSiteCreation = enableSiteCreation
+        self.enableSiteCreationForSimplifiedLoginI1 = enableSiteCreationForSimplifiedLoginI1
     }
 }

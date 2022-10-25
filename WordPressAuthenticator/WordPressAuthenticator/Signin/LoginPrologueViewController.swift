@@ -251,7 +251,7 @@ class LoginPrologueViewController: LoginViewController {
         let loginTitle = displayStrings.continueWithWPButtonTitle
         buttonViewController.setupTopButton(title: loginTitle, isPrimary: true, accessibilityIdentifier: "Prologue Log In Button", onTap: loginTapCallback())
 
-        if configuration.enableSiteCreation {
+        if configuration.enableSiteCreationForSimplifiedLoginI1 {
             let createSiteTitle = displayStrings.siteCreationButtonTitle
             buttonViewController.setupBottomButton(title: createSiteTitle, isPrimary: false, accessibilityIdentifier: "Prologue Create Site Button", onTap: simplifiedLoginSiteCreationCallback())
         }

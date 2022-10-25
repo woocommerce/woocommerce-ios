@@ -110,15 +110,31 @@ private extension InAppPurchaseStore {
             throw Errors.storefrontUnknown
         }
 
+        let receiptData = try await getAppReceipt()
+
         logInfo("Sending transaction to API for site \(siteID)")
         let orderID = try await remote.createOrder(
             for: siteID,
             price: priceInCents,
             productIdentifier: product.id,
             appStoreCountryCode: countryCode,
-            receiptData: transaction.jsonRepresentation
+            receiptData: receiptData
         )
         logInfo("Successfully registered purchase with Order ID \(orderID)")
+
+    }
+
+    func getAppReceipt(refreshIfMissing: Bool = true) async throws -> Data {
+        guard let appStoreReceiptURL = Bundle.main.appStoreReceiptURL,
+              let receiptData = try? Data(contentsOf: appStoreReceiptURL, options: .alwaysMapped) else {
+            if refreshIfMissing {
+                logInfo("No app receipt found, refreshing")
+                try await InAppPurchaseReceiptRefreshRequest.request()
+                return try await getAppReceipt(refreshIfMissing: false)
+            }
+            throw Errors.missingAppReceipt
+        }
+        return receiptData
     }
 
     func getProductIdentifiers() async throws -> [String] {
@@ -134,7 +150,11 @@ private extension InAppPurchaseStore {
 
         listenTask = Task.detached { [weak self] in
             for await result in Transaction.updates {
-                try? await self?.handleCompletedTransaction(result)
+                do {
+                    try await self?.handleCompletedTransaction(result)
+                } catch {
+                    self?.logError("Error handling transaction update: \(error)")
+                }
             }
         }
     }
@@ -160,6 +180,7 @@ public extension InAppPurchaseStore {
         case appAccountTokenMissingSiteIdentifier
         case transactionProductUnknown
         case storefrontUnknown
+        case missingAppReceipt
     }
 
     enum Constants {

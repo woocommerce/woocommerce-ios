@@ -1153,6 +1153,13 @@
 		AEB73C1725CD8E5800A8454A /* AttributePickerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB73C1625CD8E5800A8454A /* AttributePickerViewModelTests.swift */; };
 		AEBFD13F28E7655F00F598C6 /* StoreInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBFD13E28E7655F00F598C6 /* StoreInfoView.swift */; };
 		AEC12B7A2758D55900845F97 /* OrderStatusList.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC12B792758D55900845F97 /* OrderStatusList.swift */; };
+		AEC4480E29081BB400BAA299 /* CookieJar.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC4480D29081BB400BAA299 /* CookieJar.swift */; };
+		AEC4481029081C4B00BAA299 /* AuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC4480F29081C4B00BAA299 /* AuthenticationService.swift */; };
+		AEC4481229081C9F00BAA299 /* RequestAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC4481129081C9F00BAA299 /* RequestAuthenticator.swift */; };
+		AEC4481429081EEA00BAA299 /* WebViewControllerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC4481329081EEA00BAA299 /* WebViewControllerConfiguration.swift */; };
+		AEC4481629081FE200BAA299 /* WebKitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC4481529081FE200BAA299 /* WebKitViewController.swift */; };
+		AEC448182908202500BAA299 /* WebProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC448172908202500BAA299 /* WebProgressView.swift */; };
+		AEC4481A2908204100BAA299 /* NavigationTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC448192908204100BAA299 /* NavigationTitleView.swift */; };
 		AEC95D412774C5AE001571F5 /* AddressFormViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC95D402774C5AE001571F5 /* AddressFormViewModelProtocol.swift */; };
 		AEC95D432774D07B001571F5 /* CreateOrderAddressFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC95D422774D07B001571F5 /* CreateOrderAddressFormViewModel.swift */; };
 		AECD57D226DFDF7500A3B580 /* EditOrderAddressForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECD57D126DFDF7500A3B580 /* EditOrderAddressForm.swift */; };
@@ -3051,6 +3058,13 @@
 		AEB73C1625CD8E5800A8454A /* AttributePickerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewModelTests.swift; sourceTree = "<group>"; };
 		AEBFD13E28E7655F00F598C6 /* StoreInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreInfoView.swift; sourceTree = "<group>"; };
 		AEC12B792758D55900845F97 /* OrderStatusList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusList.swift; sourceTree = "<group>"; };
+		AEC4480D29081BB400BAA299 /* CookieJar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CookieJar.swift; sourceTree = "<group>"; };
+		AEC4480F29081C4B00BAA299 /* AuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
+		AEC4481129081C9F00BAA299 /* RequestAuthenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestAuthenticator.swift; sourceTree = "<group>"; };
+		AEC4481329081EEA00BAA299 /* WebViewControllerConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewControllerConfiguration.swift; sourceTree = "<group>"; };
+		AEC4481529081FE200BAA299 /* WebKitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebKitViewController.swift; sourceTree = "<group>"; };
+		AEC448172908202500BAA299 /* WebProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebProgressView.swift; sourceTree = "<group>"; };
+		AEC448192908204100BAA299 /* NavigationTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationTitleView.swift; sourceTree = "<group>"; };
 		AEC95D402774C5AE001571F5 /* AddressFormViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressFormViewModelProtocol.swift; sourceTree = "<group>"; };
 		AEC95D422774D07B001571F5 /* CreateOrderAddressFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOrderAddressFormViewModel.swift; sourceTree = "<group>"; };
 		AECD57D126DFDF7500A3B580 /* EditOrderAddressForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditOrderAddressForm.swift; sourceTree = "<group>"; };
@@ -6489,6 +6503,20 @@
 			path = Homescreen;
 			sourceTree = "<group>";
 		};
+		AEC4480C29081B9400BAA299 /* AuthWebView */ = {
+			isa = PBXGroup;
+			children = (
+				AEC4480D29081BB400BAA299 /* CookieJar.swift */,
+				AEC4480F29081C4B00BAA299 /* AuthenticationService.swift */,
+				AEC4481129081C9F00BAA299 /* RequestAuthenticator.swift */,
+				AEC4481329081EEA00BAA299 /* WebViewControllerConfiguration.swift */,
+				AEC4481529081FE200BAA299 /* WebKitViewController.swift */,
+				AEC448172908202500BAA299 /* WebProgressView.swift */,
+				AEC448192908204100BAA299 /* NavigationTitleView.swift */,
+			);
+			path = AuthWebView;
+			sourceTree = "<group>";
+		};
 		AECD57D026DFDF3E00A3B580 /* Address Edit */ = {
 			isa = PBXGroup;
 			children = (
@@ -7876,6 +7904,7 @@
 		CED6021A20B35FBF0032C639 /* ReusableViews */ = {
 			isa = PBXGroup;
 			children = (
+				AEC4480C29081B9400BAA299 /* AuthWebView */,
 				45D875D72611EA3D00226C3F /* SwiftUI Components */,
 				57CFCD26248844A0003F51EC /* Section Headers */,
 				57448D26242E772300A56A74 /* EmptyStateViewController */,
@@ -9509,6 +9538,7 @@
 				CCE4CD282669324300E09FD4 /* ShippingLabelPaymentMethodsTopBanner.swift in Sources */,
 				02CA63DD23D1ADD100BBF148 /* MediaPickingContext.swift in Sources */,
 				31B19B67263B5E580099DAA6 /* CardReaderSettingsSearchingViewModel.swift in Sources */,
+				AEC4481A2908204100BAA299 /* NavigationTitleView.swift in Sources */,
 				265284022624937600F91BA1 /* AddOnCrossreferenceUseCase.swift in Sources */,
 				02CA63DB23D1ADD100BBF148 /* MediaPickingCoordinator.swift in Sources */,
 				028FA466257E021100F88A48 /* RefundShippingLabelViewModel.swift in Sources */,
@@ -9580,6 +9610,7 @@
 				B57C743D20F5493300EEFC87 /* AccountHeaderView.swift in Sources */,
 				31AD0B1126E9575F000B6391 /* CardPresentModalConnectingFailed.swift in Sources */,
 				576EA39425264C9B00AFC0B3 /* RefundConfirmationViewModel.swift in Sources */,
+				AEC448182908202500BAA299 /* WebProgressView.swift in Sources */,
 				DEC51B00276AEE91009F3DF4 /* SystemStatusReportViewModel.swift in Sources */,
 				CC4A4E962655273D00B75DCD /* ShippingLabelPaymentMethods.swift in Sources */,
 				45DB6D972632CF9300E83C1A /* ActivityIndicator.swift in Sources */,
@@ -9653,6 +9684,7 @@
 				024DF32123744798006658FE /* AztecFormatBarCommandCoordinator.swift in Sources */,
 				B5AA7B3F20ED81C2004DA14F /* UserDefaults+Woo.swift in Sources */,
 				318477E527A33C650058C7E9 /* CardPresentModalConnectingFailedChargeReader.swift in Sources */,
+				AEC4480E29081BB400BAA299 /* CookieJar.swift in Sources */,
 				DE46133926B2BEB8001DE59C /* ShippingLabelCountryListSelectorCommand.swift in Sources */,
 				68E952D22875A44B0095A23D /* CardReaderType+Manual.swift in Sources */,
 				0211259F2578DE310075AD2A /* ShippingLabelPrintingStepView.swift in Sources */,
@@ -9737,6 +9769,7 @@
 				02490D1A284DE664002096EF /* ProductImagesSaver.swift in Sources */,
 				0215320B24231D5A003F2BBD /* UIStackView+Subviews.swift in Sources */,
 				02F4F50B237AEB8A00E13A9C /* ProductFormTableViewDataSource.swift in Sources */,
+				AEC4481629081FE200BAA299 /* WebKitViewController.swift in Sources */,
 				B57C5C9621B80E5500FF82B2 /* Dictionary+Woo.swift in Sources */,
 				CE27257F21925AE8002B22EB /* ValueOneTableViewCell.swift in Sources */,
 				028296EC237D28B600E84012 /* TextViewViewController.swift in Sources */,
@@ -9784,6 +9817,7 @@
 				B58B4AC02108FF6100076FDD /* Array+Helpers.swift in Sources */,
 				028AFFB32484ED2800693C09 /* Dictionary+Logging.swift in Sources */,
 				45BBFBC1274FD94300213001 /* HubMenuCoordinator.swift in Sources */,
+				AEC4481429081EEA00BAA299 /* WebViewControllerConfiguration.swift in Sources */,
 				D8652E582630BFF500350F37 /* OrderDetailsPaymentAlerts.swift in Sources */,
 				B5A56BF0219F2CE90065A902 /* VerticalButton.swift in Sources */,
 				D831E2DC230E0558000037D0 /* Authentication.swift in Sources */,
@@ -9820,6 +9854,7 @@
 				CE27257C21924A8C002B22EB /* HelpAndSupportViewController.swift in Sources */,
 				025B174A237AA49D00C780B4 /* Product+ProductForm.swift in Sources */,
 				B57C744720F55BC800EEFC87 /* UIView+Helpers.swift in Sources */,
+				AEC4481229081C9F00BAA299 /* RequestAuthenticator.swift in Sources */,
 				45912FE32526642200982948 /* ProductFormViewController+Helpers.swift in Sources */,
 				B55D4C0620B6027200D7A50F /* AuthenticationManager.swift in Sources */,
 				451A04F02386F7B500E368C9 /* ProductImageCollectionViewCell.swift in Sources */,
@@ -10424,6 +10459,7 @@
 				45A0E4CB2566B56000D4E8C3 /* NumberOfLinkedProductsTableViewCell.swift in Sources */,
 				E16715CB26663B0B00326230 /* CardPresentModalSuccessWithoutEmail.swift in Sources */,
 				311F827426CD897900DF5BAD /* CardReaderSettingsAlertsProvider.swift in Sources */,
+				AEC4481029081C4B00BAA299 /* AuthenticationService.swift in Sources */,
 				CC4D1D8625E6CDDE00B6E4E7 /* RenameAttributesViewModel.swift in Sources */,
 				DEFA3D932897D8930076FAE1 /* NoWooErrorViewModel.swift in Sources */,
 				020A55F127F6C605007843F0 /* CardReaderConnectionAnalyticsTracker.swift in Sources */,

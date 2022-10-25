@@ -111,13 +111,14 @@ private extension InAppPurchaseStore {
         }
 
         logInfo("Sending transaction to API for site \(siteID)")
-        _ = try await remote.createOrder(
+        let orderID = try await remote.createOrder(
             for: siteID,
             price: priceInCents,
             productIdentifier: product.id,
             appStoreCountryCode: countryCode,
             receiptData: transaction.jsonRepresentation
         )
+        logInfo("Successfully registered purchase with Order ID \(orderID)")
     }
 
     func getProductIdentifiers() async throws -> [String] {

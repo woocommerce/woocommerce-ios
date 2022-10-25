@@ -278,7 +278,7 @@ class LoginPrologueViewController: LoginViewController {
 
     private func simplifiedLoginSiteCreationCallback() -> NUXButtonViewController.CallBackType {
         { [weak self] in
-            guard let self else { return }
+            guard let self = self else { return }
             // triggers the delegate to ask the host app to handle account creation
             WordPressAuthenticator.shared.delegate?.showAccountCreation(in: self.navigationController)
         }

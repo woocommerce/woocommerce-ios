@@ -27,7 +27,7 @@ final class LoginPrologueViewController: UIViewController {
     /// Button for users who are new to WooCommerce to learn more about WooCommerce.
     @IBOutlet private weak var newToWooCommerceButton: UIButton!
 
-    private var storeCreationCoordinator: StoreCreationCoordinator?
+    private var storePickerCoordinator: StorePickerCoordinator?
 
     // MARK: - Overridden Properties
 
@@ -145,9 +145,9 @@ private extension LoginPrologueViewController {
     }
 
     func startStoreCreation(in navigationController: UINavigationController) {
-        let coordinator = StoreCreationCoordinator(source: .prologue,
-                                                   navigationController: navigationController)
-        self.storeCreationCoordinator = coordinator
+        // Shows the store picker first, so that after dismissal of the store creation view it goes back to the store picker.
+        let coordinator = StorePickerCoordinator(navigationController, config: .storeCreationFromLoginPrologue)
+        self.storePickerCoordinator = coordinator
         coordinator.start()
     }
 }

@@ -25,6 +25,8 @@ final class StorePickerCoordinator: Coordinator {
     ///
     private let roleEligibilityUseCase = RoleEligibilityUseCase(stores: ServiceLocator.stores)
 
+    private var storeCreationCoordinator: StoreCreationCoordinator?
+
     /// Site Picker VC
     ///
     private lazy var storePicker: StorePickerViewController = {
@@ -82,6 +84,33 @@ extension StorePickerCoordinator: StorePickerViewControllerDelegate {
             self?.onDismiss?()
         }
     }
+
+    func createStore() {
+        // TODO-7879: analytics
+
+        let source: StoreCreationCoordinator.Source
+        switch selectedConfiguration {
+        case .storeCreationFromLoginPrologue:
+            source = .prologue
+        default:
+            source = .storePicker
+        }
+
+        let coordinator = StoreCreationCoordinator(source: source,
+                                                   navigationController: navigationController)
+        self.storeCreationCoordinator = coordinator
+
+        switch selectedConfiguration {
+        case .switchingStores:
+            // The store picker was presented modally in the logged-in state, and it needs to be dismissed first
+            // because only one view controller can be presented modally at a time.
+            navigationController.dismiss(animated: true) {
+                coordinator.start()
+            }
+        default:
+            coordinator.start()
+        }
+    }
 }
 
 // MARK: - Private Helpers
@@ -97,6 +126,9 @@ private extension StorePickerCoordinator {
         case .switchingStores:
             let wrapper = WooNavigationController(rootViewController: storePicker)
             navigationController.present(wrapper, animated: true)
+        case .storeCreationFromLoginPrologue:
+            navigationController.pushViewController(storePicker, animated: false)
+            createStore()
         default:
             navigationController.pushViewController(storePicker, animated: true)
         }

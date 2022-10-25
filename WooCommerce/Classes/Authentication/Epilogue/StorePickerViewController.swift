@@ -27,6 +27,9 @@ protocol StorePickerViewControllerDelegate: AnyObject {
 
     /// Notifies the delegate to dismiss the store picker and restart authentication.
     func restartAuthentication()
+
+    /// Notifies the delegate to create a store.
+    func createStore()
 }
 
 
@@ -37,6 +40,10 @@ enum StorePickerConfiguration {
     /// Setup the store picker for use in the login flow
     ///
     case login
+
+    /// Setup the store picker for use in the login flow
+    ///
+    case storeCreationFromLoginPrologue
 
     /// Setup the store picker for use in the store switching flow
     ///
@@ -604,14 +611,7 @@ private extension StorePickerViewController {
     }
 
     func createStoreButtonPressed() {
-        guard let navigationController else { return }
-
-        // TODO-7879: analytics
-
-        let coordinator = StoreCreationCoordinator(source: .storePicker,
-                                                   navigationController: navigationController)
-        self.storeCreationCoordinator = coordinator
-        coordinator.start()
+        delegate?.createStore()
     }
 }
 

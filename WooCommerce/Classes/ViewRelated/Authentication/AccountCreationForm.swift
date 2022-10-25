@@ -51,12 +51,14 @@ struct AccountCreationForm: View {
                                                                   text: $viewModel.email,
                                                                   isSecure: false,
                                                                   errorMessage: viewModel.emailErrorMessage))
+                    .disabled(isPerformingTask)
                     AccountCreationFormFieldView(viewModel: .init(header: Localization.passwordFieldTitle,
                                                                   placeholder: Localization.passwordFieldPlaceholder,
                                                                   keyboardType: .default,
                                                                   text: $viewModel.password,
                                                                   isSecure: true,
                                                                   errorMessage: viewModel.passwordErrorMessage))
+                    .disabled(isPerformingTask)
                     AttributedText(tosAttributedText)
                         .attributedTextLinkColor(Color(.textLink))
                 }
@@ -75,7 +77,7 @@ struct AccountCreationForm: View {
                         }
                     }
                 }
-                .buttonStyle(PrimaryButtonStyle())
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isPerformingTask))
                 .disabled(!(viewModel.isEmailValid && viewModel.isPasswordValid) || isPerformingTask)
             }
             .padding(.init(top: 0, leading: Layout.horizontalSpacing, bottom: 0, trailing: Layout.horizontalSpacing))

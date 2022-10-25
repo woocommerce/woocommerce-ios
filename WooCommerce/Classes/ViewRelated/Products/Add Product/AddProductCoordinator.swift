@@ -14,7 +14,7 @@ final class AddProductCoordinator: Coordinator {
     private let sourceBarButtonItem: UIBarButtonItem?
     private let sourceView: UIView?
     private let productImageUploader: ProductImageUploaderProtocol
-    private let shouldPresentProductCreationSheet : Bool
+    private let shouldPresentProductCreationSheet: Bool
 
     init(siteID: Int64,
          sourceBarButtonItem: UIBarButtonItem,

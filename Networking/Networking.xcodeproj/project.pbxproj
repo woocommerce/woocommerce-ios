@@ -119,6 +119,8 @@
 		03E8FEC427B40E3F00F5FC7D /* wcpay-charge-card-present-minimal.json in Resources */ = {isa = PBXBuildFile; fileRef = 03E8FEC327B40E3F00F5FC7D /* wcpay-charge-card-present-minimal.json */; };
 		03EB99882906A78400F06A39 /* JustInTimeMessagesRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EB99872906A78400F06A39 /* JustInTimeMessagesRemote.swift */; };
 		03EB998A2906AB0C00F06A39 /* JustInTimeMessagesRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EB99892906AB0C00F06A39 /* JustInTimeMessagesRemoteTests.swift */; };
+		03EB99962907F03000F06A39 /* empty-data-array.json in Resources */ = {isa = PBXBuildFile; fileRef = 03EB99952907F03000F06A39 /* empty-data-array.json */; };
+		03EB99982907F4AA00F06A39 /* just-in-time-message-list-multiple.json in Resources */ = {isa = PBXBuildFile; fileRef = 03EB99972907F4AA00F06A39 /* just-in-time-message-list-multiple.json */; };
 		077F39C8269F2C7E00ABEADC /* SystemPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39C7269F2C7E00ABEADC /* SystemPlugin.swift */; };
 		077F39D426A58DE700ABEADC /* SystemStatusMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39D326A58DE700ABEADC /* SystemStatusMapper.swift */; };
 		077F39D626A58E4500ABEADC /* SystemStatusRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39D526A58E4500ABEADC /* SystemStatusRemote.swift */; };
@@ -845,6 +847,8 @@
 		03E8FEC327B40E3F00F5FC7D /* wcpay-charge-card-present-minimal.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-charge-card-present-minimal.json"; sourceTree = "<group>"; };
 		03EB99872906A78400F06A39 /* JustInTimeMessagesRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustInTimeMessagesRemote.swift; sourceTree = "<group>"; };
 		03EB99892906AB0C00F06A39 /* JustInTimeMessagesRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustInTimeMessagesRemoteTests.swift; sourceTree = "<group>"; };
+		03EB99952907F03000F06A39 /* empty-data-array.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "empty-data-array.json"; sourceTree = "<group>"; };
+		03EB99972907F4AA00F06A39 /* just-in-time-message-list-multiple.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "just-in-time-message-list-multiple.json"; sourceTree = "<group>"; };
 		077F39C7269F2C7E00ABEADC /* SystemPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemPlugin.swift; sourceTree = "<group>"; };
 		077F39D326A58DE700ABEADC /* SystemStatusMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusMapper.swift; sourceTree = "<group>"; };
 		077F39D526A58E4500ABEADC /* SystemStatusRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusRemote.swift; sourceTree = "<group>"; };
@@ -2180,10 +2184,12 @@
 				4513382727A96DE700AE5E78 /* inbox-note.json */,
 				0205021B27C86B9700FB1C6B /* inbox-note-without-isRead.json */,
 				036563E029069D3500D84BFD /* just-in-time-message-list.json */,
+				03EB99972907F4AA00F06A39 /* just-in-time-message-list-multiple.json */,
 				68C87B332862D40E00A99054 /* setting-all-except-countries.json */,
 				68CB801528D8A39700E169F8 /* customer.json */,
 				68F48B1228E3E5750045C15B /* wc-analytics-customers.json */,
 				688908AD28FF920C0081A07E /* customer-2.json */,
+				03EB99952907F03000F06A39 /* empty-data-array.json */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -2679,6 +2685,7 @@
 				45150AA2268373F8006922EA /* countries.json in Resources */,
 				743E84F422172D0A00FAC9D7 /* shipment_tracking_multiple.json in Resources */,
 				02698CF624C17FC1005337C4 /* product-alternative-types.json in Resources */,
+				03EB99962907F03000F06A39 /* empty-data-array.json in Resources */,
 				57BE08D82409B63800F6DCED /* reviews-missing-avatar-urls.json in Resources */,
 				3158FE8026129EC300E566B9 /* wcpay-account-restricted-overdue.json in Resources */,
 				45AF57A924AB42CD0088E2F7 /* product-tags-extra.json in Resources */,
@@ -2801,6 +2808,7 @@
 				D865CE61278CA1AE002C8520 /* stripe-payment-intent-processing.json in Resources */,
 				743E84F222172D0A00FAC9D7 /* shipment_tracking_plugin_not_active.json in Resources */,
 				68CB801628D8A39700E169F8 /* customer.json in Resources */,
+				03EB99982907F4AA00F06A39 /* just-in-time-message-list-multiple.json in Resources */,
 				451A97DE260B59870059D135 /* shipping-label-packages-success.json in Resources */,
 				31D27C8F2602B553002EDB1D /* plugins.json in Resources */,
 				261CF1B4255AD6B30090D8D3 /* payment-gateway-list.json in Resources */,

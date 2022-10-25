@@ -189,7 +189,7 @@ public extension WordPressAuthenticatorDisplayStrings {
                                                           comment: "Instructional text shown when requesting the user's password for Google login."),
             applePasswordInstructions: NSLocalizedString("To proceed with this Apple ID, please first log in with your WordPress.com password. This will only be asked once.",
                                                          comment: "Instructional text shown when requesting the user's password for Apple login."),
-            wpcomPasswordInstructions: NSLocalizedString("Enter the password for your account",
+            wpcomPasswordInstructions: NSLocalizedString("Enter the password for your account.",
                                                          comment: "Instructional text shown when requesting the user's password for WPCom login."),
             continueButtonTitle: NSLocalizedString("Continue",
                                                    comment: "The button title text when there is a next step for logging in or signing up."),

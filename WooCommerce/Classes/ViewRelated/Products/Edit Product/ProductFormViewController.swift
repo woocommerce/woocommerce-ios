@@ -803,7 +803,17 @@ private extension ProductFormViewController {
             return
         }
 
-        WebviewHelper.launch(url, with: self)
+        let credentials = ServiceLocator.stores.sessionManager.defaultCredentials
+        guard let username = credentials?.username,
+              let token = credentials?.authToken,
+        let site = ServiceLocator.stores.sessionManager.defaultSite else {
+            return
+        }
+
+        let configuration = WebViewControllerConfiguration(url: url)
+        configuration.authenticate(site: site, username: username, token: token)
+        let vc = WebKitViewController(configuration: configuration)
+        present(vc, animated: true)
     }
 
     func duplicateProduct() {

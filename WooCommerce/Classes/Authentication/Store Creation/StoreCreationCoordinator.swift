@@ -3,7 +3,7 @@ import UIKit
 import Yosemite
 import protocol Storage.StorageManagerType
 
-/// Coordinates navigation for store creation flow.
+/// Coordinates navigation for store creation flow, with the assumption that the app is already authenticated with a WPCOM user.
 final class StoreCreationCoordinator: Coordinator {
     /// Navigation source to store creation.
     enum Source {
@@ -125,14 +125,8 @@ private extension StoreCreationCoordinator {
 
             if siteChanged {
                 let presenter = SwitchStoreNoticePresenter(siteID: site.siteID)
-                let configuration: StorePickerConfiguration
-                switch self.source {
-                case .prologue:
-                    configuration = .login
-                case .storePicker:
-                    configuration = .switchingStores
-                }
-                presenter.presentStoreSwitchedNoticeWhenSiteIsAvailable(configuration: configuration)
+                // The configuration only matters when the switch store notice is shown for `switchingStores` configuration.
+                presenter.presentStoreSwitchedNoticeWhenSiteIsAvailable(configuration: .standard)
             }
 
             self.navigationController.dismiss(animated: true)

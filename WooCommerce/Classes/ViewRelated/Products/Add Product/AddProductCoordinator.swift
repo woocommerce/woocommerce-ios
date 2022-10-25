@@ -63,9 +63,8 @@ private extension AddProductCoordinator {
                                       comment: "Message title of bottom sheet for selecting a template or manual product")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title)
         let command = ProductCreationTypeSelectorCommand { selectedCreationType in
-            //ServiceLocator.analytics.track(.addProductTypeSelected, withProperties: ["product_type": selectedBottomSheetProductType.productType.rawValue])
-            self.navigationController.dismiss(animated: true)
-            //self.presentProductForm(bottomSheetProductType: selectedBottomSheetProductType)
+            // TODO: Add analytics
+            self.presentProductTypeBottomSheet()
         }
         let productTypesListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)
         productTypesListPresenter.show(from: navigationController, sourceView: sourceView, sourceBarButtonItem: sourceBarButtonItem, arrowDirections: .any)
@@ -77,12 +76,18 @@ private extension AddProductCoordinator {
         let viewProperties = BottomSheetListSelectorViewProperties(title: title)
         let command = ProductTypeBottomSheetListSelectorCommand(selected: nil) { selectedBottomSheetProductType in
             ServiceLocator.analytics.track(.addProductTypeSelected, withProperties: ["product_type": selectedBottomSheetProductType.productType.rawValue])
-            self.navigationController.dismiss(animated: true)
-            self.presentProductForm(bottomSheetProductType: selectedBottomSheetProductType)
+            self.navigationController.dismiss(animated: true) {
+                self.presentProductForm(bottomSheetProductType: selectedBottomSheetProductType)
+            }
         }
         command.data = [.simple(isVirtual: false), .simple(isVirtual: true), .variable, .grouped, .affiliate]
         let productTypesListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)
-        productTypesListPresenter.show(from: navigationController, sourceView: sourceView, sourceBarButtonItem: sourceBarButtonItem, arrowDirections: .any)
+
+        // `topmostPresentedViewController` is used because another bottom sheet could have been presented before.
+        productTypesListPresenter.show(from: navigationController.topmostPresentedViewController,
+                                       sourceView: sourceView,
+                                       sourceBarButtonItem: sourceBarButtonItem,
+                                       arrowDirections: .any)
     }
 
     func presentProductForm(bottomSheetProductType: BottomSheetProductType) {

@@ -41,9 +41,12 @@ private extension InAppPurchaseStore {
         Task {
             do {
                 let identifiers = try await getProductIdentifiers()
+                logInfo("Requesting StoreKit products: \(identifiers)")
                 let products = try await StoreKit.Product.products(for: identifiers)
+                logInfo("Obtained product list from StoreKit: \(products.map({ $0.id }))")
                 completion(.success(products))
             } catch {
+                logError("Failed obtaining product list from StoreKit: \(error)")
                 completion(.failure(error))
             }
         }
@@ -51,18 +54,25 @@ private extension InAppPurchaseStore {
 
     func purchaseProduct(siteID: Int64, product: StoreKit.Product, completion: @escaping (Result<StoreKit.Product.PurchaseResult, Error>) -> Void) {
         Task {
+            logInfo("Purchasing product \(product.id) for site \(siteID)")
             var purchaseOptions: Set<StoreKit.Product.PurchaseOption> = []
             if let appAccountToken = AppAccountToken.tokenWithSiteId(siteID) {
+                logInfo("Generated appAccountToken \(appAccountToken) for site \(siteID)")
                 purchaseOptions.insert(.appAccountToken(appAccountToken))
             }
 
             do {
+                logInfo("Purchasing product \(product.id) for site \(siteID) with options \(purchaseOptions)")
                 let purchaseResult = try await product.purchase(options: purchaseOptions)
                 if case .success(let result) = purchaseResult {
+                    logInfo("Purchased product \(product.id) for site \(siteID): \(result)")
                     try await handleCompletedTransaction(result)
+                } else {
+                    logError("Ignorning unsuccessful purchase: \(purchaseResult)")
                 }
                 completion(.success(purchaseResult))
             } catch {
+                logError("Error purchasing product \(product.id) for site \(siteID): \(error)")
                 completion(.failure(error))
             }
         }
@@ -71,11 +81,12 @@ private extension InAppPurchaseStore {
     func handleCompletedTransaction(_ result: VerificationResult<StoreKit.Transaction>) async throws {
         switch result {
         case .verified(let transaction):
+            logInfo("Verified transaction \(transaction.id) (Original ID: \(transaction.originalID)) for product \(transaction.productID)")
             try await submitTransaction(transaction)
             await transaction.finish()
         case .unverified:
             // TODO: handle errors
-            print("Transaction unverified")
+            logError("Transaction unverified")
         }
     }
 
@@ -98,17 +109,20 @@ private extension InAppPurchaseStore {
         guard let countryCode = await Storefront.current?.countryCode else {
             throw Errors.storefrontUnknown
         }
+
+        logInfo("Sending transaction to API for site \(siteID)")
         _ = try await remote.createOrder(
             for: siteID,
             price: priceInCents,
             productIdentifier: product.id,
             appStoreCountryCode: countryCode,
-            receiptData: transaction.jsonRepresentation
+            receiptData: receiptData
         )
     }
 
     func getProductIdentifiers() async throws -> [String] {
         guard useBackend else {
+            logInfo("Using hardcoded identifiers")
             return Constants.identifiers
         }
         return try await remote.loadProducts()
@@ -122,6 +136,20 @@ private extension InAppPurchaseStore {
                 try? await self?.handleCompletedTransaction(result)
             }
         }
+    }
+
+    func logInfo(_ message: String,
+                 file: StaticString = #file,
+                 function: StaticString = #function,
+                 line: UInt = #line) {
+        DDLogInfo("[💰IAP Store] \(message)", file: file, function: function, line: line)
+    }
+
+    func logError(_ message: String,
+                 file: StaticString = #file,
+                 function: StaticString = #function,
+                 line: UInt = #line) {
+        DDLogError("[💰IAP Store] \(message)", file: file, function: function, line: line)
     }
 }
 

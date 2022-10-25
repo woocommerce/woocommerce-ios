@@ -78,7 +78,7 @@ class AuthenticationManager: Authentication {
                                                                 isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen:
                                                                     isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen,
                                                                 enableSimplifiedLoginI1: isSimplifiedLoginI1Enabled,
-                                                                enableSiteCreation: false) // TODO: use feature flag for site creation MVP
+                                                                enableSiteCreationForSimplifiedLoginI1: false) // TODO: use feature flag for site creation MVP
 
         let systemGray3LightModeColor = UIColor(red: 199/255.0, green: 199/255.0, blue: 204/255.0, alpha: 1)
         let systemLabelLightModeColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)
@@ -546,7 +546,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     }
 
     // Navigate to store creation
-    func showAccountCreation(in navigationController: UINavigationController?) {
+    func showSiteCreation(in navigationController: UINavigationController?) {
         // TODO: add tracks
         // Navigate to store creation
     }

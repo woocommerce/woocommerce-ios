@@ -31,12 +31,14 @@ final class AccountCreationFormViewModel: ObservableObject {
         self.stores = stores
 
         $email
+            .removeDuplicates()
             .debounce(for: .seconds(Constants.fieldDebounceDuration), scheduler: DispatchQueue.main)
             .sink { [weak self] email in
                 self?.validateEmail(email)
             }.store(in: &subscriptions)
 
         $password
+            .removeDuplicates()
             .debounce(for: .seconds(Constants.fieldDebounceDuration), scheduler: DispatchQueue.main)
             .sink { [weak self] password in
                 self?.validatePassword(password)
@@ -47,28 +49,36 @@ final class AccountCreationFormViewModel: ObservableObject {
     /// - Returns: async result of account creation.
     @MainActor
     func createAccount() async -> Result<Void, Error> {
-        await withCheckedContinuation { continuation in
-            let action = AccountCreationAction.createAccount(email: email, password: password) { [weak self] result in
-                guard let self else { return }
-                switch result {
-                case .success(let data):
-                    self.handleSuccess(data: data)
-                    continuation.resume(returning: .success(()))
-                case .failure(let error):
-                    self.handleFailure(error: error)
-                    continuation.resume(returning: .failure(error))
-                }
+        let result: Result<CreateAccountResult, CreateAccountError> = await withCheckedContinuation { continuation in
+            let action = AccountCreationAction.createAccount(email: email, password: password) { result in
+                continuation.resume(returning: result)
             }
             stores.dispatch(action)
+        }
+
+        switch result {
+        case .success(let data):
+            await handleSuccess(data: data)
+            return .success(())
+        case .failure(let error):
+            handleFailure(error: error)
+            return .failure(error)
         }
     }
 }
 
 private extension AccountCreationFormViewModel {
-    func handleSuccess(data: CreateAccountResult) {
-        stores.authenticate(credentials: .init(username: data.username, authToken: data.authToken))
+    @MainActor
+    func handleSuccess(data: CreateAccountResult) async {
+        await withCheckedContinuation { continuation in
+            stores.authenticate(credentials: .init(username: data.username, authToken: data.authToken))
+                .synchronizeEntities(onCompletion: {
+                    continuation.resume(returning: ())
+                })
+        }
     }
 
+    @MainActor
     func handleFailure(error: CreateAccountError) {
         switch error {
         case .emailExists:
@@ -86,10 +96,12 @@ private extension AccountCreationFormViewModel {
 private extension AccountCreationFormViewModel {
     func validateEmail(_ email: String) {
         isEmailValid = EmailFormatValidator.validate(string: email)
+        emailErrorMessage = nil
     }
 
     func validatePassword(_ password: String) {
         isPasswordValid = password.count >= 6
+        passwordErrorMessage = nil
     }
 }
 

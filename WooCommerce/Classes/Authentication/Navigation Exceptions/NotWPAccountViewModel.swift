@@ -103,9 +103,8 @@ private extension NotWPAccountViewModel {
                                                             comment: "Action button linking to instructions for enter another store."
                                                             + "Presented when logging in with an email address that is not a WordPress.com account")
 
-        static let restartLogin = NSLocalizedString("Log in with another account",
+        static let restartLogin = NSLocalizedString("Try Another Address",
                                                     comment: "Action button that will restart the login flow."
                                                     + "Presented when logging in with an email address that does not match a WordPress.com account")
-
     }
 }

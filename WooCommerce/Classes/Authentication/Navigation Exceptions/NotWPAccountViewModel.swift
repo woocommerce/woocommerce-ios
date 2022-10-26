@@ -93,11 +93,11 @@ private extension NotWPAccountViewModel {
     enum Localization {
         static let errorMessage = NSLocalizedString("Your email isn't used with a WordPress.com account",
                                                     comment: "Message explaining that an email is not associated with a WordPress.com account. "
-                                                        + "Presented when logging in with an email address that is not a WordPress.com account")
+                                                    + "Presented when logging in with an email address that is not a WordPress.com account")
 
         static let needHelpFindingEmail = NSLocalizedString("Need help finding the required email?",
-                                                     comment: "Button linking to webview that explains what Jetpack is"
-                                                        + "Presented when logging in with a site address that does not have a valid Jetpack installation")
+                                                            comment: "Button linking to webview that explains what Jetpack is"
+                                                            + "Presented when logging in with a site address that does not have a valid Jetpack installation")
 
         static let loginWithSiteAddress = NSLocalizedString("Log in with your store address",
                                                             comment: "Action button linking to instructions for enter another store."

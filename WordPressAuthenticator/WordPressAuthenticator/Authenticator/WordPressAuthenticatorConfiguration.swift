@@ -124,6 +124,10 @@ public struct WordPressAuthenticatorConfiguration {
     ///
     let enableSocialLogin: Bool
 
+    /// If enabled, there will be a border around the email label on the WPCom password screen.
+    ///
+    let emphasizeEmailForWPComPassword: Bool
+
     /// The optional instructions for WPCom password.
     ///
     let wpcomPasswordInstructions: String?
@@ -156,6 +160,7 @@ public struct WordPressAuthenticatorConfiguration {
                  enableWPComLoginOnlyInPrologue: Bool = false,
                  enableSiteCreation: Bool = false,
                  enableSocialLogin: Bool = false,
+                 emphasizeEmailForWPComPassword: Bool = false,
                  wpcomPasswordInstructions: String? = nil) {
 
         self.wpcomClientId = wpcomClientId
@@ -184,6 +189,7 @@ public struct WordPressAuthenticatorConfiguration {
         self.enableWPComLoginOnlyInPrologue = enableWPComLoginOnlyInPrologue
         self.enableSiteCreation = enableSiteCreation
         self.enableSocialLogin = enableSocialLogin
+        self.emphasizeEmailForWPComPassword = emphasizeEmailForWPComPassword
         self.wpcomPasswordInstructions = wpcomPasswordInstructions
     }
 }

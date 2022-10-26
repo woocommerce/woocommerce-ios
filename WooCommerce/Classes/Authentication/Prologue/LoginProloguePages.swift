@@ -10,6 +10,7 @@ enum LoginProloguePageType: CaseIterable {
     case products
     case reviews
     case getStarted
+    case simplifiedLoginI1Intro
 
     var title: String {
         switch self {
@@ -28,6 +29,9 @@ enum LoginProloguePageType: CaseIterable {
         case .getStarted:
             return NSLocalizedString("Let’s get started!",
                                      comment: "Caption displayed in the prologue screen shown after onboarding during the login flow.")
+        case .simplifiedLoginI1Intro:
+            return NSLocalizedString("WooCommerce is a customizable, open-source eCommerce platform built on WordPress.",
+                                     comment: "Caption displayed in the simplified prologue screen")
         }
     }
 
@@ -55,8 +59,19 @@ enum LoginProloguePageType: CaseIterable {
             return UIImage.prologueOrdersImage
         case .products:
             return UIImage.prologueProductsImage
-        case .reviews, .getStarted:
+        case .reviews, .getStarted, .simplifiedLoginI1Intro:
             return UIImage.prologueReviewsImage
+        }
+    }
+
+    var titleFont: UIFont {
+        switch self {
+        case .simplifiedLoginI1Intro:
+            return .headline
+        case .stats, .orderManagement, .products, .reviews:
+            return .font(forStyle: .title2, weight: .semibold)
+        case .getStarted:
+            return .body
         }
     }
 }
@@ -140,7 +155,7 @@ private extension LoginProloguePageTypeViewController {
         stackView.addArrangedSubview(titleLabel)
 
         // Label style & layout
-        titleLabel.font = showsSubtitle ? .font(forStyle: .title2, weight: .semibold): .body
+        titleLabel.font = pageType.titleFont
         titleLabel.adjustsFontForContentSizeCategory = true
         titleLabel.textColor = .text
         titleLabel.textAlignment = .center

@@ -103,6 +103,9 @@ private extension NotWPAccountViewModel {
                                                             comment: "Action button linking to instructions for enter another store."
                                                             + "Presented when logging in with an email address that is not a WordPress.com account")
 
+        static let createAnAccount = NSLocalizedString("Create An Account",
+                                                       comment: "Action button linking to create WooCommerce store flow."
+                                                       + "Presented when logging in with an email address that is not a WordPress.com account")
         static let tryAnotherAddress = NSLocalizedString("Try Another Address",
                                                          comment: "Action button that will restart the login flow."
                                                          + "Presented when logging in with an email address that does not match a WordPress.com account")

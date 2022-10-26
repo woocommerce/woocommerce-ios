@@ -101,7 +101,7 @@ private extension LoginPrologueViewController {
                 return [.getStarted]
             }
         }()
-        let carousel = LoginProloguePageViewController(pageTypes: pageTypes, showsSubtitle: !isFeatureCarouselShown)
+        let carousel = LoginProloguePageViewController(pageTypes: pageTypes)
         carousel.view.translatesAutoresizingMaskIntoConstraints = false
 
         addChild(carousel)

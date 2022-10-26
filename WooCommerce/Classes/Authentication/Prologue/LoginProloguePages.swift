@@ -87,12 +87,9 @@ final class LoginProloguePageTypeViewController: UIViewController {
     private let imageView = UIImageView()
 
     private let pageType: LoginProloguePageType
-    private let showsSubtitle: Bool
 
-    init(pageType: LoginProloguePageType, showsSubtitle: Bool) {
+    init(pageType: LoginProloguePageType) {
         self.pageType = pageType
-        self.showsSubtitle = showsSubtitle
-
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -107,7 +104,7 @@ final class LoginProloguePageTypeViewController: UIViewController {
         configureStackView()
         configureImage()
         configureTitle()
-        if showsSubtitle {
+        if pageType.subtitle != nil {
             configureSubtitle()
         }
     }

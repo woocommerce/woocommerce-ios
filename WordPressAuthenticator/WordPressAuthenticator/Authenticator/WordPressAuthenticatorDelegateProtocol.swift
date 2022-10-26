@@ -112,7 +112,7 @@ public protocol WordPressAuthenticatorDelegate: AnyObject {
     /// - Parameters:
     ///     - navigationController: the current navigation stack of the login flow.
     ///
-    func showSiteCreation(in navigationController: UINavigationController?)
+    func showSiteCreation(in navigationController: UINavigationController)
 
     /// Signals the Host App that a given Analytics Event has occurred.
     ///
@@ -134,7 +134,7 @@ public extension WordPressAuthenticatorDelegate {
         // No-op
     }
 
-    func showSiteCreation(in navigationController: UINavigationController?) {
+    func showSiteCreation(in navigationController: UINavigationController) {
         // No-op
     }
 }

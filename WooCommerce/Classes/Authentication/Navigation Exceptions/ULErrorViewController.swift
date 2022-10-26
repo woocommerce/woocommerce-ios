@@ -118,6 +118,9 @@ private extension ULErrorViewController {
         guard viewModel.isAuxiliaryButtonHidden == false else {
             extraInfoButton.isHidden = true
 
+            // Hide the whole stackview to avoid showing separator lines with no views inside.
+            containerStackViewWithSeparatorLines.isHidden = viewModel.auxiliaryView == nil
+
             return
         }
 

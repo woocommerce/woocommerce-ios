@@ -13,12 +13,18 @@ final class ULErrorViewController: UIViewController {
     private let viewModel: ULErrorViewModel
 
     /// Contains a vertical stack of the image, error message, and extra info button by default.
-    @IBOutlet private weak var contentStackView: UIStackView!
+
+    @IBOutlet private weak var containerStackViewWithSeparatorLines: UIStackView!
+    @IBOutlet private weak var extraButtonsStackView: UIStackView!
+    @IBOutlet private weak var extraInfoButton: UIButton!
+    @IBOutlet private weak var topSeparatorLine: UIView!
+    @IBOutlet private weak var bottomSeparatorLine: UIView!
+
     @IBOutlet private weak var primaryButton: ButtonActivityIndicator!
     @IBOutlet private weak var secondaryButton: UIButton!
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var errorMessage: UILabel!
-    @IBOutlet private weak var extraInfoButton: UIButton!
+
 
     /// Constraints on the view containing the action buttons
     /// and the stack view containing the image and error text

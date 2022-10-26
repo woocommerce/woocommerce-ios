@@ -36,7 +36,11 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .orderCreationSearchCustomers:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .wpcomSignup:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            guard isFeatureFlagEnabled(.simplifiedLoginFlowI1) else {
+                return buildConfig == .localDeveloper || buildConfig == .alpha
+            }
+            // To disable automatically sending signup link for unknown email IDs
+            return false
         case .inAppPurchases:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .storeCreationMVP:

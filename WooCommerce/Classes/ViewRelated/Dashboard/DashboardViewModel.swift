@@ -7,6 +7,8 @@ final class DashboardViewModel {
     /// Stats v4 is shown by default, then falls back to v3 if store stats are unavailable.
     @Published private(set) var statsVersion: StatsVersion = .v4
 
+    @Published private(set) var announcementViewModel: FeatureAnnouncementCardViewModel? = nil
+
     private let stores: StoresManager
 
     init(stores: StoresManager = ServiceLocator.stores) {
@@ -94,6 +96,41 @@ final class DashboardViewModel {
         })
         stores.dispatch(action)
     }
+
+    /// Checks for announcements to show on the dashboard
+    ///
+    func syncAnnouncements(for siteID: Int64) {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.justInTimeMessagesOnDashboard) {
+            let action = JustInTimeMessageAction.loadMessage(
+                siteID: siteID,
+                screen: Constants.dashboardScreenName,
+                hook: .adminNotices) { result in
+                    switch result {
+                    case let .success(.some(message)):
+                        // log analytics
+                        #warning("don't leave this as test campaign")
+                        let viewModel = FeatureAnnouncementCardViewModel.init(
+                            analytics: ServiceLocator.analytics,
+                            configuration: .init(
+                                source: .myStore,
+                                campaign: .test,
+                                title: message.title,
+                                message: message.detail,
+                                buttonTitle: message.buttonTitle,
+                                image: .paymentsFeatureBannerImage,
+                                showDismissConfirmation: false,
+                                dismissAlertTitle: "",
+                                dismissAlertMessage: "",
+                                showDividers: false,
+                                badgeType: .tip))
+                        self.announcementViewModel = viewModel
+                    default:
+                        break
+                    }
+                }
+            stores.dispatch(action)
+        }
+    }
 }
 
 // MARK: - Constants
@@ -101,5 +138,6 @@ final class DashboardViewModel {
 private extension DashboardViewModel {
     enum Constants {
         static let topEarnerStatsLimit: Int = 5
+        static let dashboardScreenName = "my_store"
     }
 }

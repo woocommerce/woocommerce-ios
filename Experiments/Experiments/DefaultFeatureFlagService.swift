@@ -41,6 +41,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .storeCreationMVP:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .justInTimeMessagesOnDashboard:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

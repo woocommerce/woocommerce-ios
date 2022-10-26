@@ -85,4 +85,8 @@ public enum FeatureFlag: Int {
     /// Store creation MVP.
     ///
     case storeCreationMVP
+
+    /// Just In Time Messages on Dashboard
+    ///
+    case justInTimeMessagesOnDashboard
 }

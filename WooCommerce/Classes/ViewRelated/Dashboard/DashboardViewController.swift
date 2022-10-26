@@ -3,6 +3,7 @@ import UIKit
 import Gridicons
 import WordPressUI
 import Yosemite
+import SwiftUI
 
 // MARK: - DashboardViewController
 //
@@ -73,6 +74,13 @@ final class DashboardViewController: UIViewController {
                                               })
     }()
 
+    private var hasAnnouncementFeatureFlag: Bool { ServiceLocator.featureFlagService.isFeatureFlagEnabled(.promptToEnableCodInIppOnboarding)
+    }
+
+    private var announcementViewHostingController: UIHostingController<FeatureAnnouncementCardView>?
+
+    private var announcementView: FeatureAnnouncementCardView?
+
     /// Bottom Jetpack benefits banner, shown when the site is connected to Jetpack without Jetpack-the-plugin.
     private lazy var bottomJetpackBenefitsBannerController = JetpackBenefitsBannerHostingController()
     private var contentBottomToJetpackBenefitsBannerConstraint: NSLayoutConstraint?
@@ -116,6 +124,7 @@ final class DashboardViewController: UIViewController {
         observeBottomJetpackBenefitsBannerVisibilityUpdates()
         observeNavigationBarHeightForStoreNameLabelVisibility()
         observeStatsVersionForDashboardUIUpdates()
+        observeAnnouncements()
         Task { @MainActor in
             await reloadDashboardUIStatsVersion(forced: true)
         }
@@ -125,6 +134,9 @@ final class DashboardViewController: UIViewController {
         super.viewWillAppear(animated)
         // Reset title to prevent it from being empty right after login
         configureTitle()
+        if hasAnnouncementFeatureFlag {
+            viewModel.syncAnnouncements(for: siteID)
+        }
     }
 
     override func viewDidLayoutSubviews() {
@@ -261,6 +273,28 @@ private extension DashboardViewController {
             dashboardUI.scrollDelegate = self
             self.onDashboardUIUpdate(forced: false, updatedDashboardUI: dashboardUI)
         }.store(in: &subscriptions)
+    }
+
+    func observeAnnouncements() {
+        viewModel.$announcementViewModel.sink { viewModel in
+            guard let viewModel = viewModel else {
+                self.announcementViewHostingController?.removeFromParent()
+                return
+            }
+            let announcementView = FeatureAnnouncementCardView(viewModel: viewModel,
+                                                               dismiss: {},
+                                                               callToAction: {})
+            self.announcementView = announcementView
+            let hostingController = UIHostingController(rootView: announcementView)
+            self.announcementViewHostingController = hostingController
+
+            self.addChild(hostingController)
+            self.headerStackView.addArrangedSubviews([hostingController.view])
+
+            hostingController.didMove(toParent: self)
+            hostingController.view.layoutIfNeeded()
+        }
+        .store(in: &subscriptions)
     }
 
     /// Display the error banner at the top of the dashboard content (below the site title)

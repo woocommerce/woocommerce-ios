@@ -55,8 +55,11 @@ final class NotWPAccountViewModel: ULErrorViewModel {
 
     // MARK: - Actions
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        let popCommand = NavigateToEnterSite()
-        popCommand.execute(from: viewController)
+        if isSimplifiedLoginI1Enabled {
+            createAnAccountButtonTapped()
+        } else {
+            loginWithSiteAddressButtonTapped()
+        }
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {

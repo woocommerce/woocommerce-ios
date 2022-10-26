@@ -91,7 +91,7 @@ private extension NotWPAccountViewModel {
 // MARK: - Private data structures
 private extension NotWPAccountViewModel {
     enum Localization {
-        static let errorMessage = NSLocalizedString("This email isn't used with a WordPress.com account.",
+        static let errorMessage = NSLocalizedString("Your email isn't used with a WordPress.com account",
                                                     comment: "Message explaining that an email is not associated with a WordPress.com account. "
                                                         + "Presented when logging in with an email address that is not a WordPress.com account")
 

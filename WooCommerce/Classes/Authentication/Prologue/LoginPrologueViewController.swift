@@ -92,7 +92,15 @@ private extension LoginPrologueViewController {
     /// This is contained in a child view so that this view's background doesn't scroll.
     ///
     func setupCarousel(isNewToWooCommerceButtonShown: Bool) {
-        let pageTypes: [LoginProloguePageType] = isFeatureCarouselShown ? [.stats, .orderManagement, .products, .reviews]: [.getStarted]
+        let pageTypes: [LoginProloguePageType] = {
+            if isFeatureCarouselShown {
+                return [.stats, .orderManagement, .products, .reviews]
+            } else if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifiedLoginFlowI1) {
+                return [.simplifiedLoginI1Intro]
+            } else {
+                return [.getStarted]
+            }
+        }()
         let carousel = LoginProloguePageViewController(pageTypes: pageTypes, showsSubtitle: !isFeatureCarouselShown)
         carousel.view.translatesAutoresizingMaskIntoConstraints = false
 

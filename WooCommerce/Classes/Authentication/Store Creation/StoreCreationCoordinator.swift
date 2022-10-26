@@ -111,7 +111,9 @@ private extension StoreCreationCoordinator {
     func syncSites(forSiteThatMatchesPossibleURLs possibleURLs: Set<String>) async throws -> Site {
         return try await withCheckedThrowingContinuation { [weak self] continuation in
             storePickerViewModel.refreshSites(currentlySelectedSiteID: nil) { [weak self] in
-                guard let self else { return }
+                guard let self else {
+                    return continuation.resume(throwing: StoreCreationCoordinatorError.selfDeallocated)
+                }
                 // The newly created site often has `isJetpackThePluginInstalled=false` initially,
                 // which results in a JCP site.
                 // In this case, we want to retry sites syncing.
@@ -135,5 +137,11 @@ private extension StoreCreationCoordinator {
 
             self.navigationController.dismiss(animated: true)
         }
+    }
+}
+
+private extension StoreCreationCoordinator {
+    enum StoreCreationCoordinatorError: Error {
+        case selfDeallocated
     }
 }

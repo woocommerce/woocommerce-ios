@@ -88,6 +88,11 @@ private extension NotWPAccountViewModel {
         fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
         viewController?.present(fancyAlert, animated: true)
     }
+
+    func loginWithSiteAddressButtonTapped() {
+        let popCommand = NavigateToEnterSite()
+        popCommand.execute(from: viewController)
+    }
 }
 
 // MARK: - Private data structures

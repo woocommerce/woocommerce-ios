@@ -107,19 +107,8 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
             siteID: siteID,
             keyword: "hello") { result in
                 switch result {
-                case .success(let customers):
-                    let storage = ServiceLocator.storageManager
-                    guard let result = storage.viewStorage.loadCustomerSearchResult(siteID: self.siteID, keyword: "hello") else {
-                        return
-                    }
-                    print("Site ID: \(result.siteID), keyword: \(result.keyword), Customers: \(result.customers?.count as Any)")
-                    for eachCustomer in customers {
-                        let output = """
-                                    Customer: \(eachCustomer.customerID),
-                                    Name: \(String(describing: eachCustomer.firstName)) \(String(describing: eachCustomer.lastName))
-                                    """
-                        print(output)
-                    }
+                case .success(_):
+                    print("Success")
                 case .failure(let error):
                     print(error)
                 }

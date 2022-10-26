@@ -9,6 +9,9 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
         case billing
     }
 
+    var siteID: Int64 {
+        order.siteID
+    }
     /// Order to be edited.
     ///
     private let order: Yosemite.Order

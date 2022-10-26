@@ -1,5 +1,7 @@
 import UIKit
 import Yosemite
+import WooFoundation
+import protocol Storage.StorageManagerType
 
 /// Controls navigation for the flow to add a product given a navigation controller.
 /// This class is not meant to be retained so that its life cycle is throughout the navigation. Example usage:
@@ -14,32 +16,46 @@ final class AddProductCoordinator: Coordinator {
     private let sourceBarButtonItem: UIBarButtonItem?
     private let sourceView: UIView?
     private let productImageUploader: ProductImageUploaderProtocol
-    private let shouldPresentProductCreationSheet: Bool
+    private let isProductCreationTypeEnabled: Bool
+    private let storage: StorageManagerType
+
+    /// ResultController to to track the current product count.
+    ///
+    private lazy var productsResultsController: ResultsController<StorageProduct> = {
+        let predicate = \StorageProduct.siteID == siteID
+        let controller = ResultsController<StorageProduct>(storageManager: storage, matching: predicate, sortedBy: [])
+        try? controller.performFetch()
+        return controller
+    }()
 
     init(siteID: Int64,
          sourceBarButtonItem: UIBarButtonItem,
          sourceNavigationController: UINavigationController,
-         shouldPresentProductCreationSheet: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productsOnboarding),
+         isProductCreationTypeEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productsOnboarding),
+         storage: StorageManagerType = ServiceLocator.storageManager,
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
         self.siteID = siteID
         self.sourceBarButtonItem = sourceBarButtonItem
         self.sourceView = nil
         self.navigationController = sourceNavigationController
         self.productImageUploader = productImageUploader
-        self.shouldPresentProductCreationSheet = shouldPresentProductCreationSheet
+        self.isProductCreationTypeEnabled = isProductCreationTypeEnabled
+        self.storage = storage
     }
 
     init(siteID: Int64,
          sourceView: UIView,
          sourceNavigationController: UINavigationController,
-         shouldPresentProductCreationSheet: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productsOnboarding),
+         isProductCreationTypeEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productsOnboarding),
+         storage: StorageManagerType = ServiceLocator.storageManager,
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
         self.siteID = siteID
         self.sourceBarButtonItem = nil
         self.sourceView = sourceView
         self.navigationController = sourceNavigationController
         self.productImageUploader = productImageUploader
-        self.shouldPresentProductCreationSheet = shouldPresentProductCreationSheet
+        self.isProductCreationTypeEnabled = isProductCreationTypeEnabled
+        self.storage = storage
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -47,7 +63,7 @@ final class AddProductCoordinator: Coordinator {
     }
 
     func start() {
-        if shouldPresentProductCreationSheet {
+        if shouldPresentProductCreationBottomSheet() {
             presentProductCreationTypeBottomSheet()
         } else {
             presentProductTypeBottomSheet()
@@ -57,6 +73,13 @@ final class AddProductCoordinator: Coordinator {
 
 // MARK: Navigation
 private extension AddProductCoordinator {
+
+    /// Defines if the product creation bottom sheet should be presented.
+    /// Currently returns `true` when the feature is enabled and the number of products is fewer than 3.
+    ///
+    func shouldPresentProductCreationBottomSheet() -> Bool {
+        isProductCreationTypeEnabled && productsResultsController.numberOfObjects < 3
+    }
 
     func presentProductCreationTypeBottomSheet() {
         let title = NSLocalizedString("How do you want to start?",

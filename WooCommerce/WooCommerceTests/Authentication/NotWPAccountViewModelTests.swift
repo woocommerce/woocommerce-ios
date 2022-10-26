@@ -126,9 +126,9 @@ final class NotWPAccountViewModelTests: XCTestCase {
 private extension NotWPAccountViewModelTests {
     private enum Expectations {
         static let image = UIImage.loginNoWordPressError
-        static let errorMessage = NSLocalizedString("This email isn't used with a WordPress.com account.",
+        static let errorMessage = NSLocalizedString("Your email isn't used with a WordPress.com account",
                                                     comment: "Message explaining that an email is not associated with a WordPress.com account. "
-                                                        + "Presented when logging in with an email address that is not a WordPress.com account")
+                                                    + "Presented when logging in with an email address that is not a WordPress.com account")
 
         static let loginWithSiteAddressTitle = NSLocalizedString("Log in with your store address",
                                                                  comment: "Action button linking to instructions for enter another store."
@@ -137,6 +137,10 @@ private extension NotWPAccountViewModelTests {
         static let restartLoginTitle = NSLocalizedString("Log in with another account",
                                                          comment: "Action button that will restart the login flow."
                                                          + "Presented when logging in with an email address that does not match a WordPress.com account")
+
+        static let createAnAccountTitle = NSLocalizedString("Create An Account",
+                                                       comment: "Action button linking to create WooCommerce store flow."
+                                                       + "Presented when logging in with an email address that is not a WordPress.com account")
     }
 }
 

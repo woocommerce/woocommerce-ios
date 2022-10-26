@@ -25,6 +25,7 @@ protocol InAppPurchasesForWPComPlansProtocol {
     func fetchProducts() async throws -> [WPComPlanProduct]
     func transactionStatusForProduct(with id: String) async -> WPComPlanProductTransactionStatus
     func purchaseProduct(with id: String, for remoteSiteId: Int64) async throws
+    func finishProductPurchase(with id: String) async throws
     func inAppPurchasesAreSupported() async -> Bool
 }
 
@@ -55,6 +56,19 @@ final class InAppPurchasesForWPComPlansManager: InAppPurchasesForWPComPlansProto
                 switch result {
                 case .success(_):
                     continuation.resume()
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }))
+        }
+    }
+
+    func finishProductPurchase(with id: String) async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(InAppPurchaseAction.loadProducts(completion: { result in
+                switch result {
+                case .success(let products):
+                    continuation.resume(returning: products)
                 case .failure(let error):
                     continuation.resume(throwing: error)
                 }

@@ -32,6 +32,15 @@ public class InAppPurchaseStore: Store {
             loadProducts(completion: completion)
         case .purchaseProduct(let siteID, let product, let completion):
             purchaseProduct(siteID: siteID, product: product, completion: completion)
+        case .handleCompletedTransaction(let verificationResult, let completion):
+            Task {
+                do {
+                    try await handleCompletedTransaction(verificationResult)
+                    completion(.success(()))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
         }
     }
 }

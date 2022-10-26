@@ -133,7 +133,7 @@ private extension ULErrorViewController {
         guard let auxiliaryView = viewModel.auxiliaryView else {
             return
         }
-        contentStackView.addArrangedSubview(auxiliaryView)
+        extraButtonsStackView.addArrangedSubview(auxiliaryView)
     }
 
     func configurePrimaryButton() {

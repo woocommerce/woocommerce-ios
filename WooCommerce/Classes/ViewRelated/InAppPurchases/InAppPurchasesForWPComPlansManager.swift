@@ -9,6 +9,10 @@ protocol WPComPlanProduct {
     var displayPrice: String { get }
 }
 
+enum InAppPurchasesForWPComPlansError: Error {
+    case productNotFound
+}
+
 extension StoreKit.Product: WPComPlanProduct {}
 
 enum WPComPlanProductTransactionStatus {
@@ -19,7 +23,8 @@ enum WPComPlanProductTransactionStatus {
 
 protocol InAppPurchasesForWPComPlansProtocol {
     func fetchProducts() async throws -> [WPComPlanProduct]
-    func purchase(product: WPComPlanProduct, for remoteSiteId: Int64) async throws
+    func transactionStatusForProduct(with id: String) async -> WPComPlanProductTransactionStatus
+    func purchaseProduct(with id: String, for remoteSiteId: Int64) async throws
     func inAppPurchasesAreSupported() async -> Bool
 }
 
@@ -29,6 +34,43 @@ final class InAppPurchasesForWPComPlansManager: InAppPurchasesForWPComPlansProto
     private let supportedCountriesCodes = ["USA"]
 
     func fetchProducts() async throws -> [WPComPlanProduct] {
+        try await fetchStoreKitProducts()
+    }
+
+    func transactionStatusForProduct(with id: String) async -> WPComPlanProductTransactionStatus {
+        guard let result = await Transaction.latest(for: id) else {
+            return .notStarted
+        }
+
+        return await Transaction.unfinished.contains(result) ? .pending : .finished
+    }
+
+    func purchaseProduct(with id: String, for remoteSiteId: Int64) async throws {
+        guard let storeKitProduct = try await fetchStoreKitProducts().first(where: { $0.id == id }) else {
+            throw InAppPurchasesForWPComPlansError.productNotFound
+        }
+
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(InAppPurchaseAction.purchaseProduct(siteID: remoteSiteId, product: storeKitProduct, completion: { result in
+                switch result {
+                case .success(_):
+                    continuation.resume()
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }))
+        }
+    }
+
+    func inAppPurchasesAreSupported() async -> Bool {
+        guard let countryCode = await Storefront.current?.countryCode else {
+            return false
+        }
+
+        return supportedCountriesCodes.contains(countryCode)
+    }
+
+    private func fetchStoreKitProducts() async throws -> [StoreKit.Product] {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(InAppPurchaseAction.loadProducts(completion: { result in
                 switch result {
@@ -39,29 +81,5 @@ final class InAppPurchasesForWPComPlansManager: InAppPurchasesForWPComPlansProto
                 }
             }))
         }
-    }
-
-    func transactionStatus(for product: WPComPlanProduct) async -> WPComPlanProductTransactionStatus {
-        guard let result = await Transaction.latest(for: product.id) else {
-            return .notStarted
-        }
-
-        return await Transaction.unfinished.contains(result) ? .pending : .finished
-    }
-
-    func purchase(product: WPComPlanProduct, for remoteSiteId: Int64) async throws {
-        guard let storeKitProduct = product as? StoreKit.Product else {
-            return
-        }
-
-        stores.dispatch(InAppPurchaseAction.purchaseProduct(siteID: remoteSiteId, product: storeKitProduct, completion: { _ in }))
-    }
-
-    func inAppPurchasesAreSupported() async -> Bool {
-        guard let countryCode = await Storefront.current?.countryCode else {
-            return false
-        }
-
-        return supportedCountriesCodes.contains(countryCode)
     }
 }

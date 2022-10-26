@@ -383,7 +383,7 @@ private extension PasswordViewController {
     /// Configure the gravatar + email cell.
     ///
     func configureGravatarEmail(_ cell: GravatarEmailTableViewCell) {
-        cell.configure(withEmail: loginFields.username)
+        cell.configure(withEmail: loginFields.username, hasBorders: configuration.emphasizeEmailForWPComPassword)
 
         cell.onChangeSelectionHandler = { [weak self] textfield in
             // The email can only be changed via a password manager.

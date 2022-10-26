@@ -8,23 +8,35 @@ class GravatarEmailTableViewCell: UITableViewCell {
     ///
     @IBOutlet private weak var gravatarImageView: UIImageView?
     @IBOutlet private weak var emailLabel: UITextField?
+    @IBOutlet private weak var containerView: UIView?
+
+    @IBOutlet private var containerViewMargins: [NSLayoutConstraint]!
+    @IBOutlet private var gravatarImageViewSizeConstraints: [NSLayoutConstraint]!
 
     private let gridiconSize = CGSize(width: 48, height: 48)
+    private let girdiconSmallSize = CGSize(width: 32, height: 32)
 
     /// Public properties
     ///
     public static let reuseIdentifier = "GravatarEmailTableViewCell"
     public var onChangeSelectionHandler: ((_ sender: UITextField) -> Void)?
 
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        containerView?.layer.cornerRadius = 8
+        containerView?.layer.borderWidth = 0
+        containerView?.layer.borderColor = UIColor.gray.cgColor
+    }
+
     /// Public Methods
     ///
-    public func configure(withEmail email: String?, andPlaceholder placeholderImage: UIImage? = nil) {
+    public func configure(withEmail email: String?, andPlaceholder placeholderImage: UIImage? = nil, hasBorders: Bool = false) {
         gravatarImageView?.tintColor = WordPressAuthenticator.shared.unifiedStyle?.borderColor ?? WordPressAuthenticator.shared.style.primaryNormalBorderColor
         emailLabel?.textColor = WordPressAuthenticator.shared.unifiedStyle?.gravatarEmailTextColor ?? WordPressAuthenticator.shared.unifiedStyle?.textSubtleColor ?? WordPressAuthenticator.shared.style.subheadlineColor
         emailLabel?.font = UIFont.preferredFont(forTextStyle: .body)
         emailLabel?.text = email
 
-        let gridicon = UIImage.gridicon(.userCircle, size: gridiconSize)
+        let gridicon: UIImage = hasBorders ? .gridicon(.userCircle, size: girdiconSmallSize) : .gridicon(.userCircle, size: gridiconSize)
 
         guard let email = email,
             email.isValidEmail() else {
@@ -33,6 +45,13 @@ class GravatarEmailTableViewCell: UITableViewCell {
         }
 
         gravatarImageView?.downloadGravatarWithEmail(email, placeholderImage: placeholderImage ?? gridicon)
+
+        let margin: CGFloat = hasBorders ? 16 : 0
+        containerViewMargins.forEach { constraint in
+            constraint.constant = margin
+        }
+
+        containerView?.layer.borderWidth = hasBorders ? 1 : 0
     }
 
     func updateEmailAddress(_ email: String?) {

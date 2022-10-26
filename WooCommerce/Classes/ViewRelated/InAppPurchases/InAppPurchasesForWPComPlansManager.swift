@@ -9,10 +9,6 @@ protocol WPComPlanProduct {
     var displayPrice: String { get }
 }
 
-enum InAppPurchasesForWPComPlansError: Error {
-    case productNotFound
-}
-
 extension StoreKit.Product: WPComPlanProduct {}
 
 enum WPComPlanProductTransactionStatus {
@@ -23,36 +19,45 @@ enum WPComPlanProductTransactionStatus {
 
 protocol InAppPurchasesForWPComPlansProtocol {
     func fetchProducts() async throws -> [WPComPlanProduct]
-    func transactionStatusForProduct(with id: String) async -> WPComPlanProductTransactionStatus
+    func userDidPurchaseProduct(with id: String) async throws -> Bool
     func purchaseProduct(with id: String, for remoteSiteId: Int64) async throws
-    func finishProductPurchase(with id: String) async throws
+    func retryWPComSyncForPurchasedProduct(with id: String) async throws
     func inAppPurchasesAreSupported() async -> Bool
 }
 
 final class InAppPurchasesForWPComPlansManager: InAppPurchasesForWPComPlansProtocol {
     private let stores = ServiceLocator.stores
-    // ISO 3166-1 Alpha-3 country code representation.
-    private let supportedCountriesCodes = ["USA"]
+
 
     func fetchProducts() async throws -> [WPComPlanProduct] {
-        try await fetchStoreKitProducts()
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(InAppPurchaseAction.loadProducts(completion: { result in
+                switch result {
+                case .success(let products):
+                    continuation.resume(returning: products)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }))
+        }
     }
 
-    func transactionStatusForProduct(with id: String) async -> WPComPlanProductTransactionStatus {
-        guard let result = await Transaction.latest(for: id) else {
-            return .notStarted
+    func userDidPurchaseProduct(with id: String) async throws -> Bool {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(InAppPurchaseAction.userDidPurchaseProduct(productID: id, completion: { result in
+                switch result {
+                case .success(let productIsPurchased):
+                    continuation.resume(returning: productIsPurchased)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }))
         }
-
-        return await Transaction.unfinished.contains(result) ? .pending : .finished
     }
 
     func purchaseProduct(with id: String, for remoteSiteId: Int64) async throws {
-        guard let storeKitProduct = try await fetchStoreKitProducts().first(where: { $0.id == id }) else {
-            throw InAppPurchasesForWPComPlansError.productNotFound
-        }
-
         try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(InAppPurchaseAction.purchaseProduct(siteID: remoteSiteId, product: storeKitProduct, completion: { result in
+            stores.dispatch(InAppPurchaseAction.purchaseProduct(siteID: remoteSiteId, productID: id, completion: { result in
                 switch result {
                 case .success(_):
                     continuation.resume()
@@ -63,9 +68,9 @@ final class InAppPurchasesForWPComPlansManager: InAppPurchasesForWPComPlansProto
         }
     }
 
-    func finishProductPurchase(with id: String) async throws {
+    func retryWPComSyncForPurchasedProduct(with id: String) async throws {
         try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(InAppPurchaseAction.loadProducts(completion: { result in
+            stores.dispatch(InAppPurchaseAction.retryWPComSyncForPurchasedProduct(productID: id, completion: { result in
                 switch result {
                 case .success(let products):
                     continuation.resume(returning: products)
@@ -77,22 +82,9 @@ final class InAppPurchasesForWPComPlansManager: InAppPurchasesForWPComPlansProto
     }
 
     func inAppPurchasesAreSupported() async -> Bool {
-        guard let countryCode = await Storefront.current?.countryCode else {
-            return false
-        }
-
-        return supportedCountriesCodes.contains(countryCode)
-    }
-
-    private func fetchStoreKitProducts() async throws -> [StoreKit.Product] {
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(InAppPurchaseAction.loadProducts(completion: { result in
-                switch result {
-                case .success(let products):
-                    continuation.resume(returning: products)
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                }
+        await withCheckedContinuation { continuation in
+            stores.dispatch(InAppPurchaseAction.inAppPurchasesAreSupported(completion: { result in
+                continuation.resume(returning: result)
             }))
         }
     }

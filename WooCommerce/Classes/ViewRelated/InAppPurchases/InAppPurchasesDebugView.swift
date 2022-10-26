@@ -20,7 +20,7 @@ struct InAppPurchasesDebugView: View {
                 } else {
                     ForEach(products) { product in
                         Button(product.description) {
-                            stores.dispatch(InAppPurchaseAction.purchaseProduct(siteID: siteID, product: product, completion: { _ in }))
+                            stores.dispatch(InAppPurchaseAction.purchaseProduct(siteID: siteID, productID: product.id, completion: { _ in }))
                         }
                     }
                 }

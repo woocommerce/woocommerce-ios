@@ -1527,6 +1527,71 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(newProduct, replacedProduct)
         XCTAssertTrue(finished)
     }
+
+    // MARK: - ProductAction.checkForProducts
+
+    /// Verifies that ProductAction.checkForProducts returns true result when remote returns an array with a product ID.
+    ///
+    func test_checkForProducts_returns_expected_result_when_remote_returns_product() throws {
+        // Given
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-ids-only")
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = ProductAction.checkForProducts(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            productStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let hasProducts = try XCTUnwrap(result.get())
+        XCTAssertTrue(hasProducts)
+    }
+
+    /// Verifies that ProductAction.checkForProducts returns true result when a product already exists in local storage.
+    ///
+    func test_checkForProducts_with_IDs_returns_expected_result_when_local_storage_has_product() throws {
+        // Given
+        storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(siteID: sampleSiteID))
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = ProductAction.checkForProducts(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            productStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let hasProducts = try XCTUnwrap(result.get())
+        XCTAssertTrue(hasProducts)
+    }
+
+    /// Verifies that ProductAction.checkForProducts returns false result for an empty array.
+    ///
+    func test_checkForProducts_returns_expected_result_when_remote_returns_empty_array() throws {
+        // Given
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-ids-only-empty")
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = ProductAction.checkForProducts(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            productStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let hasProducts = try XCTUnwrap(result.get())
+        XCTAssertFalse(hasProducts)
+    }
 }
 
 // MARK: - Private Helpers

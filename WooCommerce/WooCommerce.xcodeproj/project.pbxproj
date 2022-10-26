@@ -3722,7 +3722,6 @@
 		E1325EFA28FD544E00EC9B2A /* InAppPurchasesDebugView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchasesDebugView.swift; sourceTree = "<group>"; };
 		E138D4F3269ED9C3006EA5C6 /* InPersonPaymentsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsViewController.swift; sourceTree = "<group>"; };
 		E138D4FB269EEAFE006EA5C6 /* InPersonPaymentsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsViewModel.swift; sourceTree = "<group>"; };
-		E15AE68E29000CF7008BDD5F /* WooProducts.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = WooProducts.storekit; sourceTree = "<group>"; };
 		E15F163026C5117300D3059B /* InPersonPaymentsNoConnectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsNoConnectionView.swift; sourceTree = "<group>"; };
 		E15FC74026BC1CED00CF83E6 /* AttributedText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributedText.swift; sourceTree = "<group>"; };
 		E15FC74226BC1D2700CF83E6 /* SafariSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariSheet.swift; sourceTree = "<group>"; };
@@ -6870,7 +6869,6 @@
 				B573B19D219DC2690081C78C /* Localizable.strings */,
 				3F587028281B9C19004F7556 /* InfoPlist.strings */,
 				B56DB3D82049BFAA00D4AA8E /* Info.plist */,
-				E15AE68E29000CF7008BDD5F /* WooProducts.storekit */,
 				B56C721921B5F65E00E5E85B /* Woo-Debug.entitlements */,
 				03180BE72763AA9000B938A8 /* Woo-Debug-macOS.entitlements */,
 				B56C721A21B5F65E00E5E85B /* Woo-Release.entitlements */,

@@ -60,6 +60,7 @@ final class ULErrorViewController: UIViewController {
         configureErrorMessage()
         configureExtraInfoButton()
         configureAuxiliaryView()
+        configureSeparatorLines()
 
         configurePrimaryButton()
         configureSecondaryButton()
@@ -134,6 +135,11 @@ private extension ULErrorViewController {
             return
         }
         extraButtonsStackView.addArrangedSubview(auxiliaryView)
+    }
+
+    func configureSeparatorLines() {
+        topSeparatorLine.backgroundColor = .systemColor(.separator)
+        bottomSeparatorLine.backgroundColor = .systemColor(.separator)
     }
 
     func configurePrimaryButton() {

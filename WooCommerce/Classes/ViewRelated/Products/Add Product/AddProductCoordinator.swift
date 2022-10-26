@@ -13,29 +13,33 @@ final class AddProductCoordinator: Coordinator {
     private let siteID: Int64
     private let sourceBarButtonItem: UIBarButtonItem?
     private let sourceView: UIView?
-
     private let productImageUploader: ProductImageUploaderProtocol
+    private let shouldPresentProductCreationSheet: Bool
 
     init(siteID: Int64,
          sourceBarButtonItem: UIBarButtonItem,
          sourceNavigationController: UINavigationController,
+         shouldPresentProductCreationSheet: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productsOnboarding),
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
         self.siteID = siteID
         self.sourceBarButtonItem = sourceBarButtonItem
         self.sourceView = nil
         self.navigationController = sourceNavigationController
         self.productImageUploader = productImageUploader
+        self.shouldPresentProductCreationSheet = shouldPresentProductCreationSheet
     }
 
     init(siteID: Int64,
          sourceView: UIView,
          sourceNavigationController: UINavigationController,
+         shouldPresentProductCreationSheet: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productsOnboarding),
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
         self.siteID = siteID
         self.sourceBarButtonItem = nil
         self.sourceView = sourceView
         self.navigationController = sourceNavigationController
         self.productImageUploader = productImageUploader
+        self.shouldPresentProductCreationSheet = shouldPresentProductCreationSheet
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -43,24 +47,47 @@ final class AddProductCoordinator: Coordinator {
     }
 
     func start() {
-        presentProductTypeBottomSheet()
+        if shouldPresentProductCreationSheet {
+            presentProductCreationTypeBottomSheet()
+        } else {
+            presentProductTypeBottomSheet()
+        }
     }
 }
 
 // MARK: Navigation
 private extension AddProductCoordinator {
+
+    func presentProductCreationTypeBottomSheet() {
+        let title = NSLocalizedString("How do you want to start?",
+                                      comment: "Message title of bottom sheet for selecting a template or manual product")
+        let viewProperties = BottomSheetListSelectorViewProperties(title: title)
+        let command = ProductCreationTypeSelectorCommand { selectedCreationType in
+            // TODO: Add analytics
+            self.presentProductTypeBottomSheet()
+        }
+        let productTypesListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)
+        productTypesListPresenter.show(from: navigationController, sourceView: sourceView, sourceBarButtonItem: sourceBarButtonItem, arrowDirections: .any)
+    }
+
     func presentProductTypeBottomSheet() {
         let title = NSLocalizedString("Select a product type",
                                       comment: "Message title of bottom sheet for selecting a product type to create a product")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title)
         let command = ProductTypeBottomSheetListSelectorCommand(selected: nil) { selectedBottomSheetProductType in
             ServiceLocator.analytics.track(.addProductTypeSelected, withProperties: ["product_type": selectedBottomSheetProductType.productType.rawValue])
-            self.navigationController.dismiss(animated: true)
-            self.presentProductForm(bottomSheetProductType: selectedBottomSheetProductType)
+            self.navigationController.dismiss(animated: true) {
+                self.presentProductForm(bottomSheetProductType: selectedBottomSheetProductType)
+            }
         }
         command.data = [.simple(isVirtual: false), .simple(isVirtual: true), .variable, .grouped, .affiliate]
         let productTypesListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)
-        productTypesListPresenter.show(from: navigationController, sourceView: sourceView, sourceBarButtonItem: sourceBarButtonItem, arrowDirections: .any)
+
+        // `topmostPresentedViewController` is used because another bottom sheet could have been presented before.
+        productTypesListPresenter.show(from: navigationController.topmostPresentedViewController,
+                                       sourceView: sourceView,
+                                       sourceBarButtonItem: sourceBarButtonItem,
+                                       arrowDirections: .any)
     }
 
     func presentProductForm(bottomSheetProductType: BottomSheetProductType) {

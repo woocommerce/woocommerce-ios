@@ -29,7 +29,8 @@ final class StoreCreationCoordinator: Coordinator {
          analytics: Analytics = ServiceLocator.analytics) {
         self.source = source
         self.navigationController = navigationController
-        self.storePickerViewModel = .init(configuration: .standard, //todo
+        // Passing the `standard` configuration to include sites without WooCommerce (`isWooCommerceActive = false`).
+        self.storePickerViewModel = .init(configuration: .standard,
                                           stores: stores,
                                           storageManager: storageManager,
                                           analytics: analytics)
@@ -50,7 +51,7 @@ final class StoreCreationCoordinator: Coordinator {
         let webNavigationController = WooNavigationController(rootViewController: webViewController)
         // Disables interactive dismissal of the store creation modal.
         webNavigationController.isModalInPresentation = true
-        
+
         // If the navigation controller is already presenting another view, the view needs to be dismissed before store
         // creation view can be presented.
         if navigationController.presentedViewController != nil {

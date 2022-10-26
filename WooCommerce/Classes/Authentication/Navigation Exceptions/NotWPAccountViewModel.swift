@@ -98,8 +98,7 @@ private extension NotWPAccountViewModel {
     }
 
     func createAnAccountButtonTapped() {
-        // TODO
-        // Navigate to create store flow.
+        // TODO: 7903 - Navigate to create store flow.
     }
 }
 

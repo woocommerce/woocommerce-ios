@@ -40,6 +40,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private var tableViewDataSource: ProductFormTableViewDataSource {
         didSet {
             registerTableViewCells()
+            tableViewDataSource.viewController = self
         }
     }
 
@@ -466,7 +467,11 @@ private extension ProductFormViewController {
             case .primaryFields(let rows):
                 rows.forEach { row in
                     row.cellTypes.forEach { cellType in
-                        tableView.registerNib(for: cellType)
+                        if row.registerWithNib {
+                            tableView.registerNib(for: cellType)
+                        } else {
+                            tableView.register(cellType)
+                        }
                     }
                 }
             case .settings(let rows):

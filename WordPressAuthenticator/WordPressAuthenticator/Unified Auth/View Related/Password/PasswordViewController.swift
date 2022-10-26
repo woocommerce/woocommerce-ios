@@ -21,10 +21,6 @@ class PasswordViewController: LoginViewController {
 
     private let configuration = WordPressAuthenticator.shared.configuration
 
-    private var isSiteCredentialPassword: Bool {
-        loginFields.siteAddress.isEmpty == false && configuration.enableSiteCredentialsLoginForSelfHostedSites
-    }
-
     /// Depending on where we're coming from, this screen needs to track a password challenge
     /// (if logging on with a Social account) or not (if logging in through WP.com).
     ///
@@ -346,7 +342,7 @@ private extension PasswordViewController {
 
         // Instructions only for social accounts and simplified WPCom login flow
         if loginFields.meta.socialService != nil ||
-            (configuration.enableSimplifiedLoginI1 && isSiteCredentialPassword == false) {
+            configuration.wpcomPasswordInstructions != nil {
             rows.append(.instructions)
         }
 
@@ -408,13 +404,17 @@ private extension PasswordViewController {
     ///
     func configureInstructionLabel(_ cell: TextLabelTableViewCell) {
         let displayStrings = WordPressAuthenticator.shared.displayStrings
-        let instructions: String = {
+        let instructions: String? = {
             if let service = loginFields.meta.socialService {
                 return (service == .google) ? displayStrings.googlePasswordInstructions :
                 displayStrings.applePasswordInstructions
             }
-            return displayStrings.wpcomPasswordInstructions
+            return configuration.wpcomPasswordInstructions
         }()
+
+        guard let instructions = instructions else {
+            return
+        }
 
         cell.configureLabel(text: instructions)
     }

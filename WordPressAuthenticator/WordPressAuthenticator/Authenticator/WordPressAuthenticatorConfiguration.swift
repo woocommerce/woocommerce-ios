@@ -112,15 +112,21 @@ public struct WordPressAuthenticatorConfiguration {
     /// If disabled, the alternative magic link action on the password screen is shown below the reset password action.
     let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen: Bool
 
-    /// If enabled, the Prologue screen will display a simplified version of the bottom buttons.
-    /// The Get Started screen will be replaced with a simple login screen with only an email address field.
-    /// No mention of WordPress.com or social logins will be included.
+    /// If enabled, the Prologue screen will display only the entry point for WPCom login and no site address login.
     ///
-    let enableSimplifiedLoginI1: Bool
+    let enableWPComLoginOnlyInPrologue: Bool
 
     /// If enabled, an entry point to the site creation flow will be added to the bottom button of the prologue screen of simplified login.
     ///
-    let enableSiteCreationForSimplifiedLoginI1: Bool
+    let enableSiteCreation: Bool
+
+    /// If enabled, social login will be display at the bottom of the WPCom login screen.
+    ///
+    let enableSocialLogin: Bool
+
+    /// The optional instructions for WPCom password.
+    ///
+    let wpcomPasswordInstructions: String?
 
     /// Designated Initializer
     ///
@@ -147,8 +153,10 @@ public struct WordPressAuthenticatorConfiguration {
                  isWPComLoginRequiredForSiteCredentialsLogin: Bool = false,
                  isWPComMagicLinkPreferredToPassword: Bool = false,
                  isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen: Bool = false,
-                 enableSimplifiedLoginI1: Bool = false,
-                 enableSiteCreationForSimplifiedLoginI1: Bool = false) {
+                 enableWPComLoginOnlyInPrologue: Bool = false,
+                 enableSiteCreation: Bool = false,
+                 enableSocialLogin: Bool = false,
+                 wpcomPasswordInstructions: String? = nil) {
 
         self.wpcomClientId = wpcomClientId
         self.wpcomSecret = wpcomSecret
@@ -173,7 +181,9 @@ public struct WordPressAuthenticatorConfiguration {
         self.isWPComLoginRequiredForSiteCredentialsLogin = isWPComLoginRequiredForSiteCredentialsLogin
         self.isWPComMagicLinkPreferredToPassword = isWPComMagicLinkPreferredToPassword
         self.isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen
-        self.enableSimplifiedLoginI1 = enableSimplifiedLoginI1
-        self.enableSiteCreationForSimplifiedLoginI1 = enableSiteCreationForSimplifiedLoginI1
+        self.enableWPComLoginOnlyInPrologue = enableWPComLoginOnlyInPrologue
+        self.enableSiteCreation = enableSiteCreation
+        self.enableSocialLogin = enableSocialLogin
+        self.wpcomPasswordInstructions = wpcomPasswordInstructions
     }
 }

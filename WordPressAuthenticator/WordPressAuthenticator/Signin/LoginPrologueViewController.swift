@@ -158,8 +158,8 @@ class LoginPrologueViewController: LoginViewController {
             return
         }
 
-        if configuration.enableSimplifiedLoginI1 {
-            buildSimplifiedPrologueButtonsI1(buttonViewController: buttonViewController)
+        if configuration.enableWPComLoginOnlyInPrologue {
+            buildPrologueButtonsWithWPComAndOptionalSiteCreation(buttonViewController: buttonViewController)
         } else {
             buildUnifiedPrologueButtons(buttonViewController)
         }
@@ -244,14 +244,14 @@ class LoginPrologueViewController: LoginViewController {
         setButtonViewControllerBackground(buttonViewController)
     }
 
-    private func buildSimplifiedPrologueButtonsI1(buttonViewController: NUXButtonViewController) {
+    private func buildPrologueButtonsWithWPComAndOptionalSiteCreation(buttonViewController: NUXButtonViewController) {
         setButtonViewMargins(forWidth: view.frame.width)
 
         let displayStrings = WordPressAuthenticator.shared.displayStrings
         let loginTitle = displayStrings.continueWithWPButtonTitle
         buttonViewController.setupTopButton(title: loginTitle, isPrimary: true, accessibilityIdentifier: "Prologue Log In Button", onTap: loginTapCallback())
 
-        if configuration.enableSiteCreationForSimplifiedLoginI1 {
+        if configuration.enableSiteCreation {
             let createSiteTitle = displayStrings.siteCreationButtonTitle
             buttonViewController.setupBottomButton(title: createSiteTitle, isPrimary: false, accessibilityIdentifier: "Prologue Create Site Button", onTap: simplifiedLoginSiteCreationCallback())
         }

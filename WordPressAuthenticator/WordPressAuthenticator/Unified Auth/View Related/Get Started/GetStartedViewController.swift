@@ -111,6 +111,11 @@ class GetStartedViewController: LoginViewController, NUXKeyboardResponder {
         return button
     }()
 
+    private var showsContinueButtonAtTheBottom: Bool {
+        screenMode == .signInUsingSiteCredentials ||
+            configuration.enableSocialLogin == false
+    }
+
     override open var sourceTag: WordPressSupportSourceTag {
         get {
             return .loginEmail
@@ -131,8 +136,8 @@ class GetStartedViewController: LoginViewController, NUXKeyboardResponder {
 
         if screenMode == .signInUsingSiteCredentials {
             configureButtonViewControllerForSiteCredentialsMode()
-        } else if configuration.enableSimplifiedLoginI1 {
-            configureButtonViewControllerForSimplifiedLoginI1()
+        } else if configuration.enableSocialLogin == false {
+            configureButtonViewControllerWithoutSocialLogin()
         } else {
             configureSocialButtons()
         }
@@ -160,8 +165,7 @@ class GetStartedViewController: LoginViewController, NUXKeyboardResponder {
         hiddenPasswordField?.text = nil
         hiddenPasswordField?.isAccessibilityElement = false
 
-        if screenMode == .signInUsingSiteCredentials ||
-            configuration.enableSimplifiedLoginI1 {
+        if showsContinueButtonAtTheBottom {
             registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
                                       keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
         }
@@ -258,8 +262,7 @@ private extension GetStartedViewController {
         stackView.layoutMargins = Constants.FooterStackView.layoutMargins
         stackView.isLayoutMarginsRelativeArrangement = true
 
-        if screenMode == .signInUsingWordPressComOrSocialAccounts,
-           configuration.enableSimplifiedLoginI1 == false {
+        if showsContinueButtonAtTheBottom == false {
             // Continue button will be added to `buttonViewController` along with sign in with site credentials button when `screenMode` is `signInUsingSiteCredentials`
             // and simplified login flow is disabled.
             stackView.addArrangedSubview(continueButton)
@@ -282,8 +285,7 @@ private extension GetStartedViewController {
     /// Style the "OR" divider.
     ///
     func configureDivider() {
-        guard screenMode == .signInUsingWordPressComOrSocialAccounts,
-              configuration.enableSimplifiedLoginI1 == false else {
+        guard showsContinueButtonAtTheBottom == false else {
             return dividerStackView.isHidden = true
         }
         let color = WordPressAuthenticator.shared.unifiedStyle?.borderColor ?? WordPressAuthenticator.shared.style.primaryNormalBorderColor
@@ -472,7 +474,7 @@ private extension GetStartedViewController {
     ///
     func configureContinueButton(animating: Bool) {
         if screenMode == .signInUsingSiteCredentials ||
-            configuration.enableSimplifiedLoginI1 {
+            configuration.enableSocialLogin == false {
             buttonViewController?.setTopButtonState(isLoading: animating,
                                                     isEnabled: enableSubmit(animating: animating))
         } else {
@@ -809,14 +811,14 @@ private extension GetStartedViewController {
                                                onTap: handleSiteCredentialsButtonTapped)
     }
 
-    func configureButtonViewControllerForSimplifiedLoginI1() {
+    func configureButtonViewControllerWithoutSocialLogin() {
         guard let buttonViewController = buttonViewController else {
             return
         }
 
         buttonViewController.hideShadowView()
 
-        // Add a "Continue" button here as the `continueButton` at the top
+        // Add a "Continue" button here as the `continueButton` at the top will be hidden
         //
         buttonViewController.setupTopButton(title: ButtonConfiguration.Continue.title,
                                             isPrimary: true,

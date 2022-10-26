@@ -49,7 +49,7 @@ final class NotWPAccountViewModel: ULErrorViewModel {
             primaryButtonTitle = Localization.restartLogin
         } else {
             isSecondaryButtonHidden = false
-            primaryButtonTitle = Localization.loginWithSiteAddress
+            primaryButtonTitle = isSimplifiedLoginI1Enabled ? Localization.createAnAccount : Localization.loginWithSiteAddress
         }
     }
 

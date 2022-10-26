@@ -19,7 +19,9 @@ final class NotWPAccountViewModel: ULErrorViewModel {
 
     let primaryButtonTitle: String
 
-    let secondaryButtonTitle = Localization.restartLogin
+    var secondaryButtonTitle: String {
+        featureFlagService.isFeatureFlagEnabled(.simplifiedLoginFlowI1) ? Localization.tryAnotherAddress : Localization.restartLogin
+    }
     let isSecondaryButtonHidden: Bool
 
     private weak var viewController: UIViewController?
@@ -106,6 +108,7 @@ private extension NotWPAccountViewModel {
         static let createAnAccount = NSLocalizedString("Create An Account",
                                                        comment: "Action button linking to create WooCommerce store flow."
                                                        + "Presented when logging in with an email address that is not a WordPress.com account")
+
         static let tryAnotherAddress = NSLocalizedString("Try Another Address",
                                                          comment: "Action button that will restart the login flow."
                                                          + "Presented when logging in with an email address that does not match a WordPress.com account")

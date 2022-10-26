@@ -8,7 +8,7 @@ class GravatarEmailTableViewCell: UITableViewCell {
     ///
     @IBOutlet private weak var gravatarImageView: UIImageView?
     @IBOutlet private weak var emailLabel: UITextField?
-    @IBOutlet private weak var containerView: UIView?
+    @IBOutlet private var containerView: UIView!
 
     @IBOutlet private var containerViewMargins: [NSLayoutConstraint]!
     @IBOutlet private var gravatarImageViewSizeConstraints: [NSLayoutConstraint]!
@@ -23,9 +23,8 @@ class GravatarEmailTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        containerView?.layer.cornerRadius = 8
-        containerView?.layer.borderWidth = 0
-        containerView?.layer.borderColor = UIColor.gray.cgColor
+        containerView.layer.cornerRadius = 8
+        containerView.layer.borderColor = UIColor.gray.cgColor
     }
 
     /// Public Methods
@@ -46,12 +45,16 @@ class GravatarEmailTableViewCell: UITableViewCell {
 
         gravatarImageView?.downloadGravatarWithEmail(email, placeholderImage: placeholderImage ?? gridicon)
 
+        gravatarImageViewSizeConstraints.forEach { constraints in
+            constraints.constant = gridicon.size.width
+        }
+
         let margin: CGFloat = hasBorders ? 16 : 0
         containerViewMargins.forEach { constraint in
             constraint.constant = margin
         }
 
-        containerView?.layer.borderWidth = hasBorders ? 1 : 0
+        containerView.layer.borderWidth = hasBorders ? 1 : 0
     }
 
     func updateEmailAddress(_ email: String?) {

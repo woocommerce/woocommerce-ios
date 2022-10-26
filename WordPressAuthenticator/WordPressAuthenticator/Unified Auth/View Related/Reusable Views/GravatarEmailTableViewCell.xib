@@ -19,20 +19,21 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ciD-RW-w3b">
-                        <rect key="frame" x="16" y="12" width="286" height="50"/>
+                        <rect key="frame" x="16" y="12" width="286" height="48"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" spacing="11" translatesAutoresizingMaskIntoConstraints="NO" id="5X7-in-Ybt">
-                                <rect key="frame" x="0.0" y="0.0" width="286" height="50"/>
+                                <rect key="frame" x="0.0" y="0.0" width="286" height="48"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="odI-Gb-fXa" customClass="CircularImageView" customModule="WordPressAuthenticator">
-                                        <rect key="frame" x="0.0" y="0.0" width="48" height="50"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="48" height="48"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="48" id="BHy-vU-hNn"/>
+                                            <constraint firstAttribute="width" secondItem="odI-Gb-fXa" secondAttribute="height" multiplier="1:1" id="McZ-Z1-Yaf"/>
                                             <constraint firstAttribute="height" constant="48" id="u4Z-Cy-2ey"/>
                                         </constraints>
                                     </imageView>
                                     <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Email Label" textAlignment="natural" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="3kD-7a-MeN">
-                                        <rect key="frame" x="59" y="0.0" width="227" height="50"/>
+                                        <rect key="frame" x="59" y="0.0" width="227" height="48"/>
                                         <accessibility key="accessibilityConfiguration">
                                             <accessibilityTraits key="traits" staticText="YES"/>
                                         </accessibility>

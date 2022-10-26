@@ -19,7 +19,8 @@ final class LoginOnboardingViewController: UIViewController {
     private var selectedSurveyOption: LoginOnboardingSurveyOption?
 
     private let stackView: UIStackView = .init()
-    private lazy var pageViewController = LoginProloguePageViewController(pageTypes: [.products, .orderManagement, .stats])
+    private lazy var pageViewController = LoginProloguePageViewController(pageTypes: [.products, .orderManagement, .stats],
+                                                                          showsSubtitle: true)
     private lazy var buttonStackView: UIStackView = .init()
     private lazy var nextButton: UIButton = createNextButton()
 

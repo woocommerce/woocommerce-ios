@@ -8,8 +8,8 @@ final class LoginProloguePageViewController: UIPageViewController {
 
     private let pageControl = UIPageControl()
 
-    init(pageTypes: [LoginProloguePageType] = LoginProloguePageType.allCases) {
-        self.pages = pageTypes.map { LoginProloguePageTypeViewController(pageType: $0) }
+    init(pageTypes: [LoginProloguePageType] = LoginProloguePageType.allCases, showsSubtitle: Bool = false) {
+        self.pages = pageTypes.map { LoginProloguePageTypeViewController(pageType: $0, showsSubtitle: showsSubtitle) }
         super.init(transitionStyle: .scroll, navigationOrientation: .horizontal)
     }
 

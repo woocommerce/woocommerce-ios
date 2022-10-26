@@ -11,6 +11,7 @@ final class LoginPrologueViewController: UIViewController {
     /// The feature carousel is not shown right after finishing the onboarding.
     private let isFeatureCarouselShown: Bool
     private let analytics: Analytics
+    private let featureFlagService: FeatureFlagService
 
     /// Background View, to be placed surrounding the bottom area.
     ///
@@ -42,6 +43,7 @@ final class LoginPrologueViewController: UIViewController {
         isNewToWooCommerceButtonShown = featureFlagService.isFeatureFlagEnabled(.newToWooCommerceLinkInLoginPrologue)
         self.isFeatureCarouselShown = isFeatureCarouselShown
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -95,7 +97,7 @@ private extension LoginPrologueViewController {
         let pageTypes: [LoginProloguePageType] = {
             if isFeatureCarouselShown {
                 return [.stats, .orderManagement, .products, .reviews]
-            } else if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifiedLoginFlowI1) {
+            } else if featureFlagService.isFeatureFlagEnabled(.simplifiedLoginFlowI1) {
                 return [.simplifiedLoginI1Intro]
             } else {
                 return [.getStarted]
@@ -123,7 +125,8 @@ private extension LoginPrologueViewController {
         guard isNewToWooCommerceButtonShown else {
             return newToWooCommerceButton.isHidden = true
         }
-        newToWooCommerceButton.setTitle(Localization.newToWooCommerce, for: .normal)
+        let title = featureFlagService.isFeatureFlagEnabled(.simplifiedLoginFlowI1) ? Localization.learnMoreAboutWoo : Localization.newToWooCommerce
+        newToWooCommerceButton.setTitle(title, for: .normal)
         newToWooCommerceButton.applyLinkButtonStyle()
         newToWooCommerceButton.titleLabel?.numberOfLines = 0
         newToWooCommerceButton.titleLabel?.textAlignment = .center
@@ -150,5 +153,8 @@ private extension LoginPrologueViewController {
     enum Localization {
         static let newToWooCommerce = NSLocalizedString("New to WooCommerce?",
                                                         comment: "Title of button in the login prologue screen for users who are new to WooCommerce.")
+        static let learnMoreAboutWoo = NSLocalizedString("Learn more about WooCommerce",
+                                                         comment: "Title of button in the simplified login prologue screen " +
+                                                         "for learning more about WooCommerce.")
     }
 }

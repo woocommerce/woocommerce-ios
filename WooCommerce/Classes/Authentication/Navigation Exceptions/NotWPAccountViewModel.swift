@@ -20,7 +20,7 @@ final class NotWPAccountViewModel: ULErrorViewModel {
     let primaryButtonTitle: String
 
     var secondaryButtonTitle: String {
-        featureFlagService.isFeatureFlagEnabled(.simplifiedLoginFlowI1) ? Localization.tryAnotherAddress : Localization.restartLogin
+        isSimplifiedLoginI1Enabled ? Localization.tryAnotherAddress : Localization.restartLogin
     }
     let isSecondaryButtonHidden: Bool
 
@@ -37,11 +37,11 @@ final class NotWPAccountViewModel: ULErrorViewModel {
         return button
     }()
 
-    private let featureFlagService: FeatureFlagService
+    private let isSimplifiedLoginI1Enabled: Bool
 
     init(error: Error,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
-        self.featureFlagService = featureFlagService
+        self.isSimplifiedLoginI1Enabled = featureFlagService.isFeatureFlagEnabled(.simplifiedLoginFlowI1)
         if let error = error as? SignInError,
            case let .invalidWPComEmail(source) = error,
            source == .wpComSiteAddress {

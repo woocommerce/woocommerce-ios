@@ -90,7 +90,7 @@ public enum FeatureFlag: Int {
     /// TODO: replace with A/B testing.
     ///
     case simplifiedLoginFlowI1
- 
+
     /// Hides products onboarding development.
     ///
     case productsOnboarding

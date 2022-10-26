@@ -79,15 +79,31 @@ private extension InAppPurchaseStore {
     }
 
     func handleCompletedTransaction(_ result: VerificationResult<StoreKit.Transaction>) async throws {
-        switch result {
-        case .verified(let transaction):
-            logInfo("Verified transaction \(transaction.id) (Original ID: \(transaction.originalID)) for product \(transaction.productID)")
-            try await submitTransaction(transaction)
-            await transaction.finish()
-        case .unverified:
+        guard case .verified(let transaction) = result else {
+            // Ignore unverified transactions.
             // TODO: handle errors
             logError("Transaction unverified")
+            return
         }
+
+        if let revocationDate = transaction.revocationDate {
+            // Refunds are handled in the backend
+            logInfo("Ignoring update about revoked (\(revocationDate)) transaction \(transaction.id)")
+        } else if let expirationDate = transaction.expirationDate,
+            expirationDate < Date() {
+            // Do nothing, this subscription is expired.
+            logInfo("Ignoring update about expired (\(expirationDate)) transaction \(transaction.id)")
+        } else if transaction.isUpgraded {
+            // Do nothing, there is an active transaction
+            // for a higher level of service.
+            logInfo("Ignoring update about upgraded transaction \(transaction.id)")
+        } else {
+            // Provide access to the product
+            logInfo("Verified transaction \(transaction.id) (Original ID: \(transaction.originalID)) for product \(transaction.productID)")
+            try await submitTransaction(transaction)
+        }
+        logInfo("Marking transaction \(transaction.id) as finished")
+        await transaction.finish()
     }
 
     func submitTransaction(_ transaction: StoreKit.Transaction) async throws {

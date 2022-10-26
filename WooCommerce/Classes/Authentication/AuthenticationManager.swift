@@ -116,29 +116,17 @@ class AuthenticationManager: Authentication {
                                                     LoginPrologueViewController(isFeatureCarouselShown: isFeatureCarouselShown),
                                                 statusBarStyle: .default)
 
-        let getStartedInstructions: String = {
-            if isSimplifiedLoginI1Enabled {
-                return AuthenticationConstants.getStartedInstructionsForSimplifiedLogin
-            } else if isWPComSignupEnabled {
-                return AuthenticationConstants.getStartedInstructionsWithWPComSignupEnabled
-            } else {
-                return AuthenticationConstants.getStartedInstructions
-            }
-        }()
+        let getStartedInstructions = isSimplifiedLoginI1Enabled ?
+        AuthenticationConstants.getStartedInstructionsForSimplifiedLogin :
+        AuthenticationConstants.getStartedInstructions
 
-        let continueWithWPButtonTitle: String = {
-            if isSimplifiedLoginI1Enabled {
-                return AuthenticationConstants.loginButtonTitle
-            }
-            return AuthenticationConstants.continueWithWPButtonTitle
-        }()
+        let continueWithWPButtonTitle = isSimplifiedLoginI1Enabled ?
+        AuthenticationConstants.loginButtonTitle :
+        AuthenticationConstants.continueWithWPButtonTitle
 
-        let emailAddressPlaceholder: String = {
-            if isSimplifiedLoginI1Enabled {
-                return "name@example.com"
-            }
-            return WordPressAuthenticatorDisplayStrings.defaultStrings.emailAddressPlaceholder
-        }()
+        let emailAddressPlaceholder = isSimplifiedLoginI1Enabled ?
+        "name@example.com" :
+        WordPressAuthenticatorDisplayStrings.defaultStrings.emailAddressPlaceholder
 
         let displayStrings = WordPressAuthenticatorDisplayStrings(emailLoginInstructions: AuthenticationConstants.emailInstructions,
                                                                   getStartedInstructions: getStartedInstructions,

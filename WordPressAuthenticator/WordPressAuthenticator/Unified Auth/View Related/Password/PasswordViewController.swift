@@ -19,10 +19,10 @@ class PasswordViewController: LoginViewController {
 
     private let isMagicLinkShownAsSecondaryAction: Bool = WordPressAuthenticator.shared.configuration.isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen
 
-    private let configurations = WordPressAuthenticator.shared.configuration
+    private let configuration = WordPressAuthenticator.shared.configuration
 
     private var isSiteCredentialPassword: Bool {
-        loginFields.siteAddress.isEmpty == false && configurations.enableSiteCredentialsLoginForSelfHostedSites
+        loginFields.siteAddress.isEmpty == false && configuration.enableSiteCredentialsLoginForSelfHostedSites
     }
 
     /// Depending on where we're coming from, this screen needs to track a password challenge
@@ -346,7 +346,7 @@ private extension PasswordViewController {
 
         // Instructions only for social accounts and simplified WPCom login flow
         if loginFields.meta.socialService != nil ||
-            (configurations.enableSimplifiedLoginI1 && isSiteCredentialPassword == false) {
+            (configuration.enableSimplifiedLoginI1 && isSiteCredentialPassword == false) {
             rows.append(.instructions)
         }
 

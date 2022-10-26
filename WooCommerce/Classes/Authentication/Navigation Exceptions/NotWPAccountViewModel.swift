@@ -93,6 +93,11 @@ private extension NotWPAccountViewModel {
         let popCommand = NavigateToEnterSite()
         popCommand.execute(from: viewController)
     }
+
+    func createAnAccountButtonTapped() {
+        // TODO
+        // Navigate to create store flow.
+    }
 }
 
 // MARK: - Private data structures

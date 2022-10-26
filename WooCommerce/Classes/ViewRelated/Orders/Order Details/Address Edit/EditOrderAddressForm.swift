@@ -94,6 +94,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
     let isSearchCustomersEnabled = DefaultFeatureFlagService().isFeatureFlagEnabled(.orderCreationSearchCustomers)
 
     private func fillCustomerFields(customer: Customer) {
+        // Primary fields:
         self.viewModel.fields.firstName = customer.firstName ?? ""
         self.viewModel.fields.lastName = customer.lastName ?? ""
         self.viewModel.fields.email = customer.email
@@ -105,6 +106,19 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
         self.viewModel.fields.postcode = customer.billing?.postcode ?? ""
         self.viewModel.fields.country = customer.billing?.country ?? ""
         self.viewModel.fields.state = customer.billing?.state ?? ""
+        // Common secondary fields:
+        self.viewModel.secondaryFields.firstName = customer.firstName ?? ""
+        self.viewModel.secondaryFields.lastName = customer.lastName ?? ""
+        self.viewModel.secondaryFields.email = customer.email
+        // Secondary fields:
+        self.viewModel.secondaryFields.phone = customer.shipping?.phone ?? ""
+        self.viewModel.secondaryFields.company = customer.shipping?.company ?? ""
+        self.viewModel.secondaryFields.address1 = customer.shipping?.address1 ?? ""
+        self.viewModel.secondaryFields.address2 = customer.shipping?.address2 ?? ""
+        self.viewModel.secondaryFields.city = customer.shipping?.city ?? ""
+        self.viewModel.secondaryFields.postcode = customer.shipping?.postcode ?? ""
+        self.viewModel.secondaryFields.country = customer.shipping?.country ?? ""
+        self.viewModel.secondaryFields.state = customer.shipping?.state ?? ""
     }
 
     var body: some View {

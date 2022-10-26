@@ -116,7 +116,7 @@ final class DashboardViewController: UIViewController {
         observeBottomJetpackBenefitsBannerVisibilityUpdates()
         observeNavigationBarHeightForStoreNameLabelVisibility()
         observeStatsVersionForDashboardUIUpdates()
-        checkProductsOnboardingEligibility()
+        trackProductsOnboardingEligibility()
         Task { @MainActor in
             await reloadDashboardUIStatsVersion(forced: true)
         }
@@ -245,9 +245,9 @@ private extension DashboardViewController {
         }
     }
 
-    /// Checks if the store has any existing products, to determine whether it is eligible for products onboarding.
+    /// Tracks if the store is eligible for products onboarding (if the store has no existing products)
     ///
-    func checkProductsOnboardingEligibility() {
+    func trackProductsOnboardingEligibility() {
         let action = ProductAction.checkForProducts(siteID: siteID) { result in
             switch result {
             case .success(let hasProducts):

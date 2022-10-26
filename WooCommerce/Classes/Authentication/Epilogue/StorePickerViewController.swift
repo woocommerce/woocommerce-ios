@@ -41,7 +41,7 @@ enum StorePickerConfiguration {
     ///
     case login
 
-    /// Setup the store picker for use in the login flow
+    /// Setup the store picker for store creation initiated from login prologue
     ///
     case storeCreationFromLoginPrologue
 

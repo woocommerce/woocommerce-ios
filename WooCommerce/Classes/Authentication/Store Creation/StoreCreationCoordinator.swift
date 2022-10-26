@@ -50,7 +50,16 @@ final class StoreCreationCoordinator: Coordinator {
         let webNavigationController = WooNavigationController(rootViewController: webViewController)
         // Disables interactive dismissal of the store creation modal.
         webNavigationController.isModalInPresentation = true
-        navigationController.present(webNavigationController, animated: true)
+        
+        // If the navigation controller is already presenting another view, the view needs to be dismissed before store
+        // creation view can be presented.
+        if navigationController.presentedViewController != nil {
+            navigationController.dismiss(animated: true) { [weak self] in
+                self?.navigationController.present(webNavigationController, animated: true)
+            }
+        } else {
+            navigationController.present(webNavigationController, animated: true)
+        }
     }
 }
 

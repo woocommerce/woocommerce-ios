@@ -96,18 +96,22 @@ extension StorePickerCoordinator: StorePickerViewControllerDelegate {
             source = .storePicker
         }
 
-        let coordinator = StoreCreationCoordinator(source: source,
-                                                   navigationController: navigationController)
-        self.storeCreationCoordinator = coordinator
-
-        switch selectedConfiguration {
-        case .switchingStores:
-            // The store picker was presented modally in the logged-in state, and it needs to be dismissed first
-            // because only one view controller can be presented modally at a time.
-            navigationController.dismiss(animated: true) {
-                coordinator.start()
+        switch selectedConfiguration.presentationStyle {
+        case .fullscreen:
+            // The store picker was presented modally in fullscreen, and thus we need to present the
+            // store creation flow on top of the store picker instead of the store picker's navigation controller
+            // (invisible behind the store picker).
+            guard let presentedNavigationController = navigationController.topmostPresentedViewController as? UINavigationController else {
+                return
             }
-        default:
+            let coordinator = StoreCreationCoordinator(source: source,
+                                                       navigationController: presentedNavigationController)
+            self.storeCreationCoordinator = coordinator
+            coordinator.start()
+        case .modally, .navigationStack:
+            let coordinator = StoreCreationCoordinator(source: source,
+                                                       navigationController: navigationController)
+            self.storeCreationCoordinator = coordinator
             coordinator.start()
         }
     }
@@ -118,19 +122,26 @@ extension StorePickerCoordinator: StorePickerViewControllerDelegate {
 private extension StorePickerCoordinator {
 
     func showStorePicker() {
+        showStorePicker(presentationStyle: selectedConfiguration.presentationStyle)
         switch selectedConfiguration {
-        case .standard:
+        case .storeCreationFromLoginPrologue:
+            createStore()
+        default:
+            break
+        }
+    }
+
+    func showStorePicker(presentationStyle: PresentationStyle) {
+        switch presentationStyle {
+        case .fullscreen:
             let wrapper = WooNavigationController(rootViewController: storePicker)
             wrapper.modalPresentationStyle = .fullScreen
             navigationController.present(wrapper, animated: false)
-        case .switchingStores:
+        case .modally:
             let wrapper = WooNavigationController(rootViewController: storePicker)
             navigationController.present(wrapper, animated: true)
-        case .storeCreationFromLoginPrologue:
-            navigationController.pushViewController(storePicker, animated: false)
-            createStore()
-        default:
-            navigationController.pushViewController(storePicker, animated: true)
+        case .navigationStack(let animated):
+            navigationController.pushViewController(storePicker, animated: animated)
         }
     }
 
@@ -149,6 +160,36 @@ private extension StorePickerCoordinator {
             }
             onCompletion()
             self.onDismiss?()
+        }
+    }
+}
+
+private extension StorePickerCoordinator {
+    /// How the store picker view is presented.
+    enum PresentationStyle {
+        /// Pushed to the given navigation stack `navigationController`.
+        case navigationStack(animated: Bool)
+
+        /// Presented modally on top of the given `navigationController`.
+        case modally
+
+        /// Presented modally without animation and in fullscreen.
+        case fullscreen
+    }
+}
+
+private extension StorePickerConfiguration {
+    /// How the store picker view is presented for each configuration.
+    var presentationStyle: StorePickerCoordinator.PresentationStyle {
+        switch self {
+        case .standard:
+            return .fullscreen
+        case .switchingStores:
+            return .modally
+        case .storeCreationFromLoginPrologue:
+            return .navigationStack(animated: false)
+        default:
+            return .navigationStack(animated: true)
         }
     }
 }

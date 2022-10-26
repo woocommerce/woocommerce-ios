@@ -164,7 +164,7 @@ private extension LoginProloguePageTypeViewController {
         titleLabel.setContentHuggingPriority(.required, for: .vertical)
         titleLabel.setContentCompressionResistancePriority(.required, for: .vertical)
         NSLayoutConstraint.activate([
-            titleLabel.widthAnchor.constraint(equalToConstant: Constants.labelWidth)
+            titleLabel.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: Constants.labelLeadingMargin)
         ])
 
         // Label contents
@@ -184,7 +184,7 @@ private extension LoginProloguePageTypeViewController {
         subtitleLabel.setContentHuggingPriority(.required, for: .vertical)
         subtitleLabel.setContentCompressionResistancePriority(.required, for: .vertical)
         NSLayoutConstraint.activate([
-            subtitleLabel.widthAnchor.constraint(equalToConstant: Constants.labelWidth)
+            subtitleLabel.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: Constants.labelLeadingMargin)
         ])
 
         subtitleLabel.text = pageType.subtitle
@@ -197,6 +197,6 @@ private extension LoginProloguePageTypeViewController {
         static let stackVerticalOffset: CGFloat = 103
         static let stackBottomMargin: CGFloat = -57 // Minimum margin between stack view and login buttons, including space required for UIPageControl
         static let imageHeightMultiplier: CGFloat = 0.35
-        static let labelWidth: CGFloat = 216
+        static let labelLeadingMargin: CGFloat = 48
     }
 }

@@ -8916,7 +8916,7 @@
 				3F1CA81B26C3542600228BF2 /* XCRemoteSwiftPackageReference "XCUITestHelpers" */,
 				174CA86827D90A6200126524 /* XCRemoteSwiftPackageReference "AutomatticAbout-swift" */,
 				3FFC5EAA2851942F00563C48 /* XCRemoteSwiftPackageReference "Charts" */,
-				4598297F28574688003A9AFE /* XCRemoteSwiftPackageReference "Inject" */,
+				4598297F28574688003A9AFE /* XCRemoteSwiftPackageReference "Inject.git" */,
 				3F2C8A17285B038800B1A5BB /* XCRemoteSwiftPackageReference "test-collector-swift" */,
 			);
 			productRefGroup = B56DB3C72049BFAA00D4AA8E /* Products */;
@@ -11887,7 +11887,7 @@
 				minimumVersion = 1.0.0;
 			};
 		};
-		4598297F28574688003A9AFE /* XCRemoteSwiftPackageReference "Inject" */ = {
+		4598297F28574688003A9AFE /* XCRemoteSwiftPackageReference "Inject.git" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/krzysztofzablocki/Inject.git";
 			requirement = {
@@ -11973,7 +11973,7 @@
 		};
 		4598298028574688003A9AFE /* Inject */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 4598297F28574688003A9AFE /* XCRemoteSwiftPackageReference "Inject" */;
+			package = 4598297F28574688003A9AFE /* XCRemoteSwiftPackageReference "Inject.git" */;
 			productName = Inject;
 		};
 		57150E0E24F462C200E81611 /* TestKit */ = {

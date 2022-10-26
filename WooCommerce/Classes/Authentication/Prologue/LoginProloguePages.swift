@@ -63,17 +63,6 @@ enum LoginProloguePageType: CaseIterable {
             return UIImage.prologueReviewsImage
         }
     }
-
-    var titleFont: UIFont {
-        switch self {
-        case .simplifiedLoginI1Intro:
-            return .headline
-        case .stats, .orderManagement, .products, .reviews:
-            return .font(forStyle: .title2, weight: .semibold)
-        case .getStarted:
-            return .body
-        }
-    }
 }
 
 // MARK: - View Controller
@@ -155,7 +144,15 @@ private extension LoginProloguePageTypeViewController {
         stackView.addArrangedSubview(titleLabel)
 
         // Label style & layout
-        titleLabel.font = pageType.titleFont
+        titleLabel.font = {
+            if pageType == .simplifiedLoginI1Intro {
+                return .headline
+            } else if showsSubtitle {
+                return .font(forStyle: .title2, weight: .semibold)
+            } else {
+                return .body
+            }
+        }()
         titleLabel.adjustsFontForContentSizeCategory = true
         titleLabel.textColor = .text
         titleLabel.textAlignment = .center

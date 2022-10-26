@@ -24,7 +24,7 @@ class GravatarEmailTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         containerView.layer.cornerRadius = 8
-        containerView.layer.borderColor = UIColor.gray.cgColor
+        containerView.layer.borderColor = UIColor.systemGray3.cgColor
     }
 
     /// Public Methods
@@ -35,7 +35,7 @@ class GravatarEmailTableViewCell: UITableViewCell {
         emailLabel?.font = UIFont.preferredFont(forTextStyle: .body)
         emailLabel?.text = email
 
-        let gridicon: UIImage = hasBorders ? .gridicon(.userCircle, size: girdiconSmallSize) : .gridicon(.userCircle, size: gridiconSize)
+        let gridicon: UIImage = .gridicon(.userCircle, size: hasBorders ? girdiconSmallSize : gridiconSize)
 
         guard let email = email,
             email.isValidEmail() else {

@@ -2,7 +2,7 @@ import UIKit
 import SafariServices
 import WordPressAuthenticator
 import WordPressUI
-
+import Experiments
 
 /// Configuration and actions for an ULErrorViewController, modeling
 /// an error when user attempts to log in with an invalid WordPress.com account
@@ -35,7 +35,11 @@ final class NotWPAccountViewModel: ULErrorViewModel {
         return button
     }()
 
-    init(error: Error) {
+    private let featureFlagService: FeatureFlagService
+
+    init(error: Error,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+        self.featureFlagService = featureFlagService
         if let error = error as? SignInError,
            case let .invalidWPComEmail(source) = error,
            source == .wpComSiteAddress {

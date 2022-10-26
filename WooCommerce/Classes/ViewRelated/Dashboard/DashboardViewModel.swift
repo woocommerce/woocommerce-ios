@@ -7,7 +7,7 @@ final class DashboardViewModel {
     /// Stats v4 is shown by default, then falls back to v3 if store stats are unavailable.
     @Published private(set) var statsVersion: StatsVersion = .v4
 
-    @Published private(set) var announcementViewModel: FeatureAnnouncementCardViewModel? = nil
+    @Published private(set) var announcementViewModel: AnnouncementCardViewModelProtocol? = nil
 
     private let stores: StoresManager
 
@@ -107,22 +107,9 @@ final class DashboardViewModel {
                 hook: .adminNotices) { result in
                     switch result {
                     case let .success(.some(message)):
-                        // log analytics
-                        #warning("don't leave this as test campaign")
-                        let viewModel = FeatureAnnouncementCardViewModel.init(
-                            analytics: ServiceLocator.analytics,
-                            configuration: .init(
-                                source: .myStore,
-                                campaign: .test,
-                                title: message.title,
-                                message: message.detail,
-                                buttonTitle: message.buttonTitle,
-                                image: .paymentsFeatureBannerImage,
-                                showDismissConfirmation: false,
-                                dismissAlertTitle: "",
-                                dismissAlertMessage: "",
-                                showDividers: false,
-                                badgeType: .tip))
+                        let viewModel = JustInTimeMessageAnnouncementCardViewModel(title: message.title,
+                                                                                   message: message.detail,
+                                                                                   buttonTitle: message.buttonTitle)
                         self.announcementViewModel = viewModel
                     default:
                         break

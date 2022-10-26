@@ -17,7 +17,7 @@ struct BetaFeaturesConfiguration: View {
 
     var body: some View {
         List {
-            ForEach(BetaFeature.allCases) { feature in
+            ForEach(BetaFeature.availableFeatures) { feature in
                 Section(footer: Text(feature.description)) {
                     TitleAndToggleRow(title: feature.title, isOn: appSettings.betaFeatureEnabledBinding(feature))
                 }

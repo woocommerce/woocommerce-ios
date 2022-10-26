@@ -23,7 +23,7 @@ public struct WCAnalyticsCustomer: Codable, GeneratedCopiable, GeneratedFakeable
     ///
     public init(from decoder: Decoder) throws {
         guard let siteID = decoder.userInfo[.siteID] as? Int64 else {
-            throw WCAnalyticsCustomerDecodingError.missingSiteID
+            throw DecodingError.missingSiteID
         }
 
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -41,7 +41,7 @@ extension WCAnalyticsCustomer {
         case name   =   "name"
     }
 
-    enum WCAnalyticsCustomerDecodingError: Error {
+    enum DecodingError: Error {
         case missingSiteID
     }
 }

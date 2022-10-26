@@ -837,6 +837,9 @@ which should be translated separately and considered part of this sentence. */
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "By signing up, you agree to our _Terms of Service_.";
 
+/* Content of the label at the end of the Wrong Account screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com. */
+"By tapping the Connect Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com." = "By tapping the Connect Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com.";
+
 /* Title for the helper field describing calculated amount for given percentage */
 "Calculated amount" = "Calculated amount";
 
@@ -1136,11 +1139,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Jetpack connection web view in the login flow */
 "Connect Jetpack" = "Connect Jetpack";
 
+/* Action button to handle connecting the logged-in account to a given site.Presented when logging in with a store address that does not match the account entered */
+"Connect Jetpack to your account" = "Connect Jetpack to your account";
+
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "Connect to Reader";
-
-/* Action button to handle connecting the logged-in account to a given site.Presented when logging in with a store address that does not match the account entered */
-"Connect to the site" = "Connect to the site";
 
 /* Settings > Manage Card Reader > Prompt user to connect their first reader */
 "Connect your card reader" = "Connect your card reader";
@@ -1347,8 +1350,14 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the Action sheet option when the user wants to create full manual order */
 "Create a new manual order" = "Create a new manual order";
 
+/* Button to create a new store from the store picker */
+"Create a new store" = "Create a new store";
+
 /* Description for percentage discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a percentage discount for selected products" = "Create a percentage discount for selected products";
+
+/* Title of the store creation web view. */
+"Create a store" = "Create a store";
 
 /* The button title text for creating a new account. */
 "Create Account" = "Create Account";
@@ -2380,6 +2389,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection";
+
+/* Cell title on beta features screen to enable in-app purchases */
+"In-app purchases" = "In-app purchases";
 
 /* Message included in emailed receipts. Reads as: In-Person Payment for Order @{number} for @{store name} blog_id @{blog ID} Parameters: %1$@ - order number, %2$@ - store name, %3$@ - blog ID number */
 "In-Person Payment for Order #%1$@ for %2$@ blog_id %3$@" = "In-Person Payment for Order #%1$@ for %2$@ blog_id %3$@";
@@ -4362,6 +4374,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Button to share coupon from the Coupon Creation Success screen. */
 "Share Coupon" = "Share Coupon";
 
+/* The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
+"share details" = "share details";
+
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "Share information with our analytics tool about your use of services while logged in to your WordPress.com account.";
 
@@ -4981,8 +4996,12 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "Tell us more about %1$@...";
 
-/* Title of button that displays the App's terms of service */
+/* The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen.
+   Title of button that displays the App's terms of service */
 "Terms of Service" = "Terms of Service";
+
+/* Cell description on beta features screen to enable in-app purchases */
+"Test out in-app purchases as we get ready to launch" = "Test out in-app purchases as we get ready to launch";
 
 /* Cell description on beta features screen to enable coupon management */
 "Test out managing coupons as we get ready to launch" = "Test out managing coupons as we get ready to launch";

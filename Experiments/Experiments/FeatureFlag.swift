@@ -81,4 +81,12 @@ public enum FeatureFlag: Int {
     /// Enables In-app purchases for buying Hosted WooCommerce plans
     ///
     case inAppPurchases
+
+    /// Store creation MVP.
+    ///
+    case storeCreationMVP
+
+    /// Hides products onboarding development.
+    ///
+    case productsOnboarding
 }

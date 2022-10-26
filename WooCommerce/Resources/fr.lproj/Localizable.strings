@@ -1632,7 +1632,8 @@ which should be translated separately and considered part of this sentence. */
    Text for the done button in the edit customer provided note screen
    Text for the done button in the Fee Details screen
    Text for the done button in the Shipping Line Details screen
-   The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again. */
+   The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again.
+   Title for the Done button on the WebView opened to upsell card readers */
 "Done" = "Terminé";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
@@ -3805,7 +3806,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of the in-progress UI while updating the Product remotely */
 "Publishing your product..." = "Publication de votre produit en cours…";
 
-/* Title for the button on the feature announcement banner intended to upsell card readers */
+/* Title for the button on the feature announcement banner intended to upsell card readers
+   Title for the WebView opened to upsell card readers */
 "Purchase Card Reader" = "Lecteur de carte d’achat";
 
 /* Title of shipping label purchase date in Refund Shipping Label screen */

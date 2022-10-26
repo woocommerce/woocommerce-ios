@@ -28,8 +28,9 @@ final class CustomerSearchUICommand: SearchUICommand {
 
     func createResultsController() -> ResultsController<StorageCustomer> {
         let storageManager = ServiceLocator.storageManager
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let descriptor = NSSortDescriptor(keyPath: \StorageCustomer.customerID, ascending: false)
-        return ResultsController<StorageCustomer>(storageManager: storageManager, sortedBy: [descriptor])
+        return ResultsController<StorageCustomer>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }
 
     func createStarterViewController() -> UIViewController? {
@@ -68,7 +69,7 @@ final class CustomerSearchUICommand: SearchUICommand {
     }
 
     func searchResultsPredicate(keyword: String) -> NSPredicate? {
-        return NSPredicate(format: "ANY searchResults.keyword = %@", keyword)
+        return NSPredicate(format: "siteID == %lld AND ANY searchResults.keyword = %@", siteID, keyword)
     }
 }
 

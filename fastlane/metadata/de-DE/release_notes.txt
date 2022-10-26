@@ -1,3 +1,1 @@
-Tolle Neuigkeiten! Du kannst jetzt Variantenpreise gesammelt bearbeiten. Dafür muss lediglich die neueste Version von WooCommerce in deinem Shop verfügbar sein! Wir haben auch einige Dinge verbessert und kleinere Bugs behoben, die unser Team gefunden hat.
-
-Sende uns weiterhin Feedback! So finden wir heraus, was wir als Nächstes optimieren können.
+Magst du das neue Statistik-Widget in der App? Heute ist dein Glückstag! Ab sofort kannst du dein Statistik-Widget auch in deinem Sperrbildschirm anzeigen. Diese Funktion ist nur für iOS 16 verfügbar. Wir haben außerdem den Kaufvorgang für Kartenlesegeräte verbessert: Die automatische Ausfüllfunktion wurde optimiert, wodurch es jetzt noch leichter ist, ein Kartenlesegerät direkt über die App zu kaufen.

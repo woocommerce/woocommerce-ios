@@ -6,7 +6,9 @@ public final class CustomerStore: Store {
 
     private let customerRemote: CustomerRemote
     private let searchRemote: WCAnalyticsCustomerRemote
-    private let sharedDerivedStorage: StorageType
+    private lazy var sharedDerivedStorage: StorageType = {
+        return storageManager.writerDerivedStorage
+    }()
 
     init(dispatcher: Dispatcher,
          storageManager: StorageManagerType,
@@ -15,7 +17,6 @@ public final class CustomerStore: Store {
          searchRemote: WCAnalyticsCustomerRemote) {
         self.customerRemote = customerRemote
         self.searchRemote = searchRemote
-        self.sharedDerivedStorage = storageManager.writerDerivedStorage
 
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
@@ -107,6 +108,7 @@ public final class CustomerStore: Store {
     ///
     /// - Parameters:
     ///   - siteID: The site for which customers should be fetched.
+    ///   - keyword: The keyword used for the Customer search query.
     ///   - searchResults: A WCAnalyticsCustomer collection that represents the matches we've got from the API based in our keyword search.
     ///   - onCompletion: Invoked when the operation finishes. Will map the result to a `[Customer]` entity.
     ///
@@ -131,7 +133,6 @@ public final class CustomerStore: Store {
                 siteID: siteID,
                 keyword: keyword,
                 readOnlyCustomers: customers,
-                in: self.sharedDerivedStorage,
                 onCompletion: {
                     onCompletion(.success(customers))
                 }
@@ -147,22 +148,22 @@ private extension CustomerStore {
     private func upsertSearchCustomerResult(siteID: Int64,
                                             keyword: String,
                                             readOnlyCustomers: [Networking.Customer],
-                                            in storage: StorageType,
                                             onCompletion: @escaping () -> Void) {
-        storage.perform {
-            let storedSeachResult = storage.loadCustomerSearchResult(siteID: siteID, keyword: keyword) ??
-            storage.insertNewObject(ofType: Storage.CustomerSearchResult.self)
+        sharedDerivedStorage.perform { [weak self] in
+            guard let self = self else { return }
+            let storedSearchResult = self.sharedDerivedStorage.loadCustomerSearchResult(siteID: siteID, keyword: keyword) ??
+            self.sharedDerivedStorage.insertNewObject(ofType: Storage.CustomerSearchResult.self)
 
-            storedSeachResult.siteID = siteID
-            storedSeachResult.keyword = keyword
+            storedSearchResult.siteID = siteID
+            storedSearchResult.keyword = keyword
 
             for result in readOnlyCustomers {
-                if let storedCustomer = storage.loadCustomer(siteID: siteID, customerID: result.customerID) {
-                    storedSeachResult.addToCustomers(storedCustomer)
+                if let storedCustomer = self.sharedDerivedStorage.loadCustomer(siteID: siteID, customerID: result.customerID) {
+                    storedSearchResult.addToCustomers(storedCustomer)
                 }
             }
         }
-        storageManager.saveDerivedType(derivedStorage: storage) {
+        storageManager.saveDerivedType(derivedStorage: self.sharedDerivedStorage) {
             DispatchQueue.main.async(execute: onCompletion)
         }
     }

@@ -1,3 +1,1 @@
-¡Buenas noticias! Ahora puedes editar los precios de las variaciones en lote. Solo necesitas tener la última versión de WooCommerce disponible en tu tienda. También nos hemos centrado en mejorar algunos aspectos y solucionar pequeños errores que nuestro equipo ha detectado.
-
-Sigue compartiendo tus opiniones, ya que nos ayudan a averiguar en qué debemos trabajar.
+¿Te gusta el nuevo widget de estadísticas en la aplicación? ¡Hoy estás de suerte! Ahora es posible ver el widget de estadísticas en tu pantalla de bloqueo. Solo está disponible para iOS 16. También hemos mejorado el procedimiento de compra de lector de tarjetas con una mejor función para autocompletar con el objetivo de que sea más fácil comprar un lector de tarjetas directamente desde la aplicación.

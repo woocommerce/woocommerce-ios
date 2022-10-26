@@ -67,12 +67,15 @@
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
+                <outlet property="containerView" destination="ciD-RW-w3b" id="Cjj-in-9Su"/>
                 <outlet property="emailLabel" destination="3kD-7a-MeN" id="8Ck-Rg-3Cw"/>
                 <outlet property="gravatarImageView" destination="odI-Gb-fXa" id="eHP-78-0Fg"/>
                 <outletCollection property="containerViewMargins" destination="6Hm-zP-IsX" collectionClass="NSMutableArray" id="NPv-eW-Qzo"/>
                 <outletCollection property="containerViewMargins" destination="6zZ-zk-nOw" collectionClass="NSMutableArray" id="0Sj-gh-fsO"/>
                 <outletCollection property="containerViewMargins" destination="QKK-EA-WiY" collectionClass="NSMutableArray" id="Vg7-nB-xlI"/>
                 <outletCollection property="containerViewMargins" destination="ccQ-62-Rq6" collectionClass="NSMutableArray" id="4eH-Mi-Iif"/>
+                <outletCollection property="gravatarImageViewSizeConstraints" destination="BHy-vU-hNn" collectionClass="NSMutableArray" id="B4z-MU-OXS"/>
+                <outletCollection property="gravatarImageViewSizeConstraints" destination="u4Z-Cy-2ey" collectionClass="NSMutableArray" id="3se-X1-5CQ"/>
             </connections>
             <point key="canvasLocation" x="130.43478260869566" y="127.90178571428571"/>
         </tableViewCell>

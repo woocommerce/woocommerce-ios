@@ -56,6 +56,7 @@ class AuthenticationManager: Authentication {
         let isFeatureCarouselShown = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginPrologueOnboarding) == false
         || loggedOutAppSettings.hasFinishedOnboarding == true
         let isSimplifiedLoginI1Enabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifiedLoginFlowI1)
+        let isStoreCreationMVPEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
                                                                 wpcomScheme: ApiCredentials.dotcomAuthScheme,
@@ -77,8 +78,11 @@ class AuthenticationManager: Authentication {
                                                                 isWPComMagicLinkPreferredToPassword: isWPComMagicLinkPreferredToPassword,
                                                                 isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen:
                                                                     isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen,
-                                                                enableSimplifiedLoginI1: isSimplifiedLoginI1Enabled,
-                                                                enableSiteCreationForSimplifiedLoginI1: false) // TODO: use feature flag for site creation MVP
+                                                                enableWPComLoginOnlyInPrologue: isSimplifiedLoginI1Enabled,
+                                                                enableSiteCreation: isStoreCreationMVPEnabled,
+                                                                enableSocialLogin: !isSimplifiedLoginI1Enabled,
+                                                                emphasizeEmailForWPComPassword: isSimplifiedLoginI1Enabled,
+                                                                wpcomPasswordInstructions: AuthenticationConstants.wpcomPasswordInstructions)
 
         let systemGray3LightModeColor = UIColor(red: 199/255.0, green: 199/255.0, blue: 204/255.0, alpha: 1)
         let systemLabelLightModeColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)
@@ -546,7 +550,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     }
 
     // Navigate to store creation
-    func showSiteCreation(in navigationController: UINavigationController?) {
+    func showSiteCreation(in navigationController: UINavigationController) {
         // TODO: add tracks
         // Navigate to store creation
     }

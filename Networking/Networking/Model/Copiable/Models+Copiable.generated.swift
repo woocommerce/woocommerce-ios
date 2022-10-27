@@ -1784,6 +1784,7 @@ extension Site {
         description: CopiableProp<String> = .copy,
         url: CopiableProp<String> = .copy,
         adminURL: CopiableProp<String> = .copy,
+        loginURL: CopiableProp<String> = .copy,
         plan: CopiableProp<String> = .copy,
         isJetpackThePluginInstalled: CopiableProp<Bool> = .copy,
         isJetpackConnected: CopiableProp<Bool> = .copy,
@@ -1798,6 +1799,7 @@ extension Site {
         let description = description ?? self.description
         let url = url ?? self.url
         let adminURL = adminURL ?? self.adminURL
+        let loginURL = loginURL ?? self.loginURL
         let plan = plan ?? self.plan
         let isJetpackThePluginInstalled = isJetpackThePluginInstalled ?? self.isJetpackThePluginInstalled
         let isJetpackConnected = isJetpackConnected ?? self.isJetpackConnected
@@ -1813,6 +1815,7 @@ extension Site {
             description: description,
             url: url,
             adminURL: adminURL,
+            loginURL: loginURL,
             plan: plan,
             isJetpackThePluginInstalled: isJetpackThePluginInstalled,
             isJetpackConnected: isJetpackConnected,

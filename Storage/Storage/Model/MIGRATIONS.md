@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 76 (Release 11.0.0.0)
+- @ealeksandrov 2022-10-26
+    - Added `loginURL` attribute to `Site` entity.
+
 ## Model 75 (Release 10.9.0.0)
 - @iamgabrielma 2022-10-17
     - Added `siteID` attribute to `Customer` entity.

@@ -14,6 +14,7 @@ extension Storage.Site: ReadOnlyConvertible {
         tagline = site.description
         url = site.url
         adminURL = site.adminURL
+        loginURL = site.loginURL
 //        plan = site.plan // We're not assigning the plan here because it's not sent on the intial API request.
         isJetpackThePluginInstalled = site.isJetpackThePluginInstalled
         isJetpackConnected = site.isJetpackConnected
@@ -32,6 +33,7 @@ extension Storage.Site: ReadOnlyConvertible {
                     description: tagline ?? "",
                     url: url ?? "",
                     adminURL: adminURL ?? "",
+                    loginURL: loginURL ?? "",
                     plan: plan ?? "",
                     isJetpackThePluginInstalled: isJetpackThePluginInstalled,
                     isJetpackConnected: isJetpackConnected,

@@ -1159,6 +1159,9 @@
 		AEA622B727468790002A9B57 /* AddOrderCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA622B627468790002A9B57 /* AddOrderCoordinatorTests.swift */; };
 		AEACCB6D2785FF4A000D01F0 /* NavigationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEACCB6C2785FF4A000D01F0 /* NavigationRow.swift */; };
 		AEB4DB97290AE74B00AE4340 /* CookieJar.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB4DB96290AE74B00AE4340 /* CookieJar.swift */; };
+		AEB4DB99290AE8F300AE4340 /* MockCookieJar.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB4DB98290AE8F300AE4340 /* MockCookieJar.swift */; };
+		AEB4DB9B290AE92800AE4340 /* CookieJarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB4DB9A290AE92800AE4340 /* CookieJarTests.swift */; };
+		AEB4DB9D290AE94600AE4340 /* WKCookieJarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB4DB9C290AE94600AE4340 /* WKCookieJarTests.swift */; };
 		AEB73C0C25CD734200A8454A /* AttributePickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB73C0B25CD734200A8454A /* AttributePickerViewModel.swift */; };
 		AEB73C1725CD8E5800A8454A /* AttributePickerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB73C1625CD8E5800A8454A /* AttributePickerViewModelTests.swift */; };
 		AEBFD13F28E7655F00F598C6 /* StoreInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBFD13E28E7655F00F598C6 /* StoreInfoView.swift */; };
@@ -3069,6 +3072,9 @@
 		AEA622B627468790002A9B57 /* AddOrderCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOrderCoordinatorTests.swift; sourceTree = "<group>"; };
 		AEACCB6C2785FF4A000D01F0 /* NavigationRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationRow.swift; sourceTree = "<group>"; };
 		AEB4DB96290AE74B00AE4340 /* CookieJar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CookieJar.swift; sourceTree = "<group>"; };
+		AEB4DB98290AE8F300AE4340 /* MockCookieJar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCookieJar.swift; sourceTree = "<group>"; };
+		AEB4DB9A290AE92800AE4340 /* CookieJarTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CookieJarTests.swift; sourceTree = "<group>"; };
+		AEB4DB9C290AE94600AE4340 /* WKCookieJarTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WKCookieJarTests.swift; sourceTree = "<group>"; };
 		AEB73C0B25CD734200A8454A /* AttributePickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewModel.swift; sourceTree = "<group>"; };
 		AEB73C1625CD8E5800A8454A /* AttributePickerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewModelTests.swift; sourceTree = "<group>"; };
 		AEBFD13E28E7655F00F598C6 /* StoreInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreInfoView.swift; sourceTree = "<group>"; };
@@ -6277,6 +6283,7 @@
 				B958A7D228B52A2300823EEF /* MockRoute.swift */,
 				B958A7D728B5316A00823EEF /* MockURLOpener.swift */,
 				EE8DCA7F28BF964700F23B23 /* MockAuthentication.swift */,
+				AEB4DB98290AE8F300AE4340 /* MockCookieJar.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -6641,6 +6648,8 @@
 				4590B651261C8D1E00A6FCE0 /* WeightFormatterTests.swift */,
 				B96B536A2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift */,
 				EEADF625281A65A9001B40F1 /* DefaultShippingValueLocalizerTests.swift */,
+				AEB4DB9A290AE92800AE4340 /* CookieJarTests.swift */,
+				AEB4DB9C290AE94600AE4340 /* WKCookieJarTests.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -10795,6 +10804,7 @@
 				CCB366AF274518EC007D437A /* EditableOrderViewModelTests.swift in Sources */,
 				020BE76B23B4A380007FE54C /* AztecUnderlineFormatBarCommandTests.swift in Sources */,
 				D83F5937225B402E00626E75 /* TitleAndEditableValueTableViewCellTests.swift in Sources */,
+				AEB4DB9D290AE94600AE4340 /* WKCookieJarTests.swift in Sources */,
 				773077F3251E954300178696 /* ProductDownloadFileViewModelTests.swift in Sources */,
 				2602A64A27BDC80200B347F1 /* RemoteOrderSynchronizerTests.swift in Sources */,
 				DE4B3B2E269455D400EEF2D8 /* MockShipmentActionStoresManager.swift in Sources */,
@@ -10828,6 +10838,7 @@
 				4569D3F425DC1BFF00CDC3E2 /* ShippingLabelFormViewModelTests.swift in Sources */,
 				57F2C6CD246DECC10074063B /* SummaryTableViewCellViewModelTests.swift in Sources */,
 				03EF250028C0E9EE006A033E /* InPersonPaymentsCashOnDeliveryToggleRowViewModelTests.swift in Sources */,
+				AEB4DB99290AE8F300AE4340 /* MockCookieJar.swift in Sources */,
 				02A275C423FE5B64005C560F /* MockPHAssetImageLoader.swift in Sources */,
 				456738972743DE9A00743054 /* OrderDateRangeFilterTests.swift in Sources */,
 				A650BE872578E76600C655E0 /* MockStorageManager.swift in Sources */,
@@ -10903,6 +10914,7 @@
 				02ECD1E124FF496200735BE5 /* PaginationTrackerTests.swift in Sources */,
 				45E9A6EB24DAFC3E00A600E8 /* ProductReviewsViewModelTests.swift in Sources */,
 				268EC46426D3F9C100716F5C /* EditCustomerNoteViewModelTests.swift in Sources */,
+				AEB4DB9B290AE92800AE4340 /* CookieJarTests.swift in Sources */,
 				453770D12431FF4700AC718D /* ProductSettingsViewModelTests.swift in Sources */,
 				2619FA2C25C897930006DAFF /* AddAttributeOptionsViewModelTests.swift in Sources */,
 				020BE77523B4A7EC007FE54C /* AztecSourceCodeFormatBarCommandTests.swift in Sources */,

@@ -54,7 +54,7 @@ struct AccountCreationForm: View {
                         Text(Localization.subtitle)
                             .foregroundColor(Color(.secondaryLabel))
                             .bodyStyle()
-                        HStack {
+                        HStack(alignment: .firstTextBaseline) {
                             // Login subtitle label.
                             Text(Localization.loginSubtitle)
                                 .foregroundColor(Color(.secondaryLabel))
@@ -65,7 +65,6 @@ struct AccountCreationForm: View {
                                 loginButtonTapped()
                             }
                             .buttonStyle(TextButtonStyle())
-                            .frame(maxWidth: .infinity, alignment: .leading)
                             .disabled(isPerformingTask)
                         }
                     }

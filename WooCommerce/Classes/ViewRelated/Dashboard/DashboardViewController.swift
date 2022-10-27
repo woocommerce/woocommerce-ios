@@ -79,7 +79,7 @@ final class DashboardViewController: UIViewController {
 
     private var announcementViewHostingController: UIHostingController<FeatureAnnouncementCardView>?
 
-    private var announcementView: FeatureAnnouncementCardView?
+    private var announcementView: UIView?
 
     /// Bottom Jetpack benefits banner, shown when the site is connected to Jetpack without Jetpack-the-plugin.
     private lazy var bottomJetpackBenefitsBannerController = JetpackBenefitsBannerHostingController()
@@ -276,25 +276,45 @@ private extension DashboardViewController {
     }
 
     func observeAnnouncements() {
-        viewModel.$announcementViewModel.sink { viewModel in
+        viewModel.$announcementViewModel.sink { [weak self] viewModel in
+            guard let self = self else { return }
+            self.removeAnnouncement()
             guard let viewModel = viewModel else {
-                self.announcementViewHostingController?.removeFromParent()
                 return
             }
-            let announcementView = FeatureAnnouncementCardView(viewModel: viewModel,
+
+            let cardView = FeatureAnnouncementCardView(viewModel: viewModel,
                                                                dismiss: {},
                                                                callToAction: {})
-            self.announcementView = announcementView
-            let hostingController = UIHostingController(rootView: announcementView)
-            self.announcementViewHostingController = hostingController
-
-            self.addChild(hostingController)
-            self.headerStackView.addArrangedSubviews([hostingController.view])
-
-            hostingController.didMove(toParent: self)
-            hostingController.view.layoutIfNeeded()
+            self.showAnnouncement(cardView)
         }
         .store(in: &subscriptions)
+    }
+
+    private func removeAnnouncement() {
+        guard let announcementView = announcementView else {
+            return
+        }
+        headerStackView.removeArrangedSubview(announcementView)
+        announcementView.removeFromSuperview()
+        announcementViewHostingController?.removeFromParent()
+        announcementViewHostingController = nil
+        self.announcementView = nil
+    }
+
+    private func showAnnouncement(_ cardView: FeatureAnnouncementCardView) {
+        let hostingController = UIHostingController(rootView: cardView)
+        guard let uiView = hostingController.view else {
+            return
+        }
+        self.announcementViewHostingController = hostingController
+        self.announcementView = uiView
+
+        self.addChild(hostingController)
+        self.headerStackView.addArrangedSubviews([uiView])
+
+        hostingController.didMove(toParent: self)
+        hostingController.view.layoutIfNeeded()
     }
 
     /// Display the error banner at the top of the dashboard content (below the site title)

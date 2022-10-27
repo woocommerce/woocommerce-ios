@@ -202,7 +202,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     // MARK: Product preview action handling
 
     @objc private func saveDraftAndDisplayProductPreview() {
-        guard viewModel.canSaveAsDraft(), viewModel.hasUnsavedChanges() else {
+        guard viewModel.canSaveAsDraft() || viewModel.hasUnsavedChanges() else {
             displayProductPreview()
             return
         }

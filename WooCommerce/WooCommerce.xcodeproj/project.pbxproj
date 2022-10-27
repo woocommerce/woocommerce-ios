@@ -1164,6 +1164,7 @@
 		AEB4DB9D290AE94600AE4340 /* WKCookieJarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB4DB9C290AE94600AE4340 /* WKCookieJarTests.swift */; };
 		AEB4DB9F290AEA6100AE4340 /* AuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB4DB9E290AEA6100AE4340 /* AuthenticationService.swift */; };
 		AEB4DBA1290AEC0D00AE4340 /* RequestAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB4DBA0290AEC0D00AE4340 /* RequestAuthenticator.swift */; };
+		AEB4DBA3290AEDB900AE4340 /* RequestAuthenticatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB4DBA2290AEDB900AE4340 /* RequestAuthenticatorTests.swift */; };
 		AEB73C0C25CD734200A8454A /* AttributePickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB73C0B25CD734200A8454A /* AttributePickerViewModel.swift */; };
 		AEB73C1725CD8E5800A8454A /* AttributePickerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB73C1625CD8E5800A8454A /* AttributePickerViewModelTests.swift */; };
 		AEBFD13F28E7655F00F598C6 /* StoreInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBFD13E28E7655F00F598C6 /* StoreInfoView.swift */; };
@@ -3079,6 +3080,7 @@
 		AEB4DB9C290AE94600AE4340 /* WKCookieJarTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WKCookieJarTests.swift; sourceTree = "<group>"; };
 		AEB4DB9E290AEA6100AE4340 /* AuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
 		AEB4DBA0290AEC0D00AE4340 /* RequestAuthenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestAuthenticator.swift; sourceTree = "<group>"; };
+		AEB4DBA2290AEDB900AE4340 /* RequestAuthenticatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestAuthenticatorTests.swift; sourceTree = "<group>"; };
 		AEB73C0B25CD734200A8454A /* AttributePickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewModel.swift; sourceTree = "<group>"; };
 		AEB73C1625CD8E5800A8454A /* AttributePickerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewModelTests.swift; sourceTree = "<group>"; };
 		AEBFD13E28E7655F00F598C6 /* StoreInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreInfoView.swift; sourceTree = "<group>"; };
@@ -6656,6 +6658,7 @@
 				EEADF625281A65A9001B40F1 /* DefaultShippingValueLocalizerTests.swift */,
 				AEB4DB9A290AE92800AE4340 /* CookieJarTests.swift */,
 				AEB4DB9C290AE94600AE4340 /* WKCookieJarTests.swift */,
+				AEB4DBA2290AEDB900AE4340 /* RequestAuthenticatorTests.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -10617,6 +10620,7 @@
 				02AB40822784297C00929CF3 /* ProductTableViewCellViewModelTests.swift in Sources */,
 				02829BAA288FA8B300951E1E /* MockUserNotification.swift in Sources */,
 				D85B8336222FCDA1002168F3 /* StatusListTableViewCellTests.swift in Sources */,
+				AEB4DBA3290AEDB900AE4340 /* RequestAuthenticatorTests.swift in Sources */,
 				3198A1E82694DC7200597213 /* MockKnownReadersProvider.swift in Sources */,
 				DEC51B04276B30F6009F3DF4 /* SystemStatusReportViewModelTests.swift in Sources */,
 				26B119C224D1CD3500FED5C7 /* WooConstantsTests.swift in Sources */,

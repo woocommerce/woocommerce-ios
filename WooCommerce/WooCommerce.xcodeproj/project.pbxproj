@@ -1163,6 +1163,7 @@
 		AEB4DB9B290AE92800AE4340 /* CookieJarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB4DB9A290AE92800AE4340 /* CookieJarTests.swift */; };
 		AEB4DB9D290AE94600AE4340 /* WKCookieJarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB4DB9C290AE94600AE4340 /* WKCookieJarTests.swift */; };
 		AEB4DB9F290AEA6100AE4340 /* AuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB4DB9E290AEA6100AE4340 /* AuthenticationService.swift */; };
+		AEB4DBA1290AEC0D00AE4340 /* RequestAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB4DBA0290AEC0D00AE4340 /* RequestAuthenticator.swift */; };
 		AEB73C0C25CD734200A8454A /* AttributePickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB73C0B25CD734200A8454A /* AttributePickerViewModel.swift */; };
 		AEB73C1725CD8E5800A8454A /* AttributePickerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB73C1625CD8E5800A8454A /* AttributePickerViewModelTests.swift */; };
 		AEBFD13F28E7655F00F598C6 /* StoreInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBFD13E28E7655F00F598C6 /* StoreInfoView.swift */; };
@@ -3077,6 +3078,7 @@
 		AEB4DB9A290AE92800AE4340 /* CookieJarTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CookieJarTests.swift; sourceTree = "<group>"; };
 		AEB4DB9C290AE94600AE4340 /* WKCookieJarTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WKCookieJarTests.swift; sourceTree = "<group>"; };
 		AEB4DB9E290AEA6100AE4340 /* AuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
+		AEB4DBA0290AEC0D00AE4340 /* RequestAuthenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestAuthenticator.swift; sourceTree = "<group>"; };
 		AEB73C0B25CD734200A8454A /* AttributePickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewModel.swift; sourceTree = "<group>"; };
 		AEB73C1625CD8E5800A8454A /* AttributePickerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewModelTests.swift; sourceTree = "<group>"; };
 		AEBFD13E28E7655F00F598C6 /* StoreInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreInfoView.swift; sourceTree = "<group>"; };
@@ -6538,6 +6540,7 @@
 			children = (
 				AEB4DB96290AE74B00AE4340 /* CookieJar.swift */,
 				AEB4DB9E290AEA6100AE4340 /* AuthenticationService.swift */,
+				AEB4DBA0290AEC0D00AE4340 /* RequestAuthenticator.swift */,
 			);
 			path = WebAuth;
 			sourceTree = "<group>";
@@ -10123,6 +10126,7 @@
 				B54FBE552111F70700390F57 /* ResultsController+UIKit.swift in Sources */,
 				CE2409F1215D12D30091F887 /* WooNavigationController.swift in Sources */,
 				0294F8AB25E8A12C005B537A /* WooTabNavigationController.swift in Sources */,
+				AEB4DBA1290AEC0D00AE4340 /* RequestAuthenticator.swift in Sources */,
 				029F29FA24D93E9E004751CA /* EditableProductModel.swift in Sources */,
 				31FC8CE927B476BA004B9456 /* CardReaderSettingsResultsControllers.swift in Sources */,
 				D449C52926DFBCCC00D75B02 /* WhatsNewHostingController.swift in Sources */,

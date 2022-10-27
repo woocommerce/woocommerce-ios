@@ -181,8 +181,6 @@ final class NotWPAccountViewModelTests: XCTestCase {
 
     func test_tapping_auxiliary_button_tracks_what__is_wordpress_com_event() {
         // Given
-        let analyticsProvider = MockAnalyticsProvider()
-        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         let featureFlagService = MockFeatureFlagService(isSimplifiedLoginFlowI1Enabled: true)
         let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom),
                                               analytics: analytics,

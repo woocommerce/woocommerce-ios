@@ -125,6 +125,9 @@ final class DashboardViewController: UIViewController {
         observeNavigationBarHeightForStoreNameLabelVisibility()
         observeStatsVersionForDashboardUIUpdates()
         observeAnnouncements()
+        if hasAnnouncementFeatureFlag {
+            viewModel.syncAnnouncements(for: siteID)
+        }
         Task { @MainActor in
             await reloadDashboardUIStatsVersion(forced: true)
         }
@@ -134,9 +137,6 @@ final class DashboardViewController: UIViewController {
         super.viewWillAppear(animated)
         // Reset title to prevent it from being empty right after login
         configureTitle()
-        if hasAnnouncementFeatureFlag {
-            viewModel.syncAnnouncements(for: siteID)
-        }
     }
 
     override func viewDidLayoutSubviews() {

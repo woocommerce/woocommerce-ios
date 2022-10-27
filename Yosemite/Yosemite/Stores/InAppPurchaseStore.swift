@@ -79,15 +79,31 @@ private extension InAppPurchaseStore {
     }
 
     func handleCompletedTransaction(_ result: VerificationResult<StoreKit.Transaction>) async throws {
-        switch result {
-        case .verified(let transaction):
-            logInfo("Verified transaction \(transaction.id) (Original ID: \(transaction.originalID)) for product \(transaction.productID)")
-            try await submitTransaction(transaction)
-            await transaction.finish()
-        case .unverified:
+        guard case .verified(let transaction) = result else {
+            // Ignore unverified transactions.
             // TODO: handle errors
             logError("Transaction unverified")
+            return
         }
+
+        if let revocationDate = transaction.revocationDate {
+            // Refunds are handled in the backend
+            logInfo("Ignoring update about revoked (\(revocationDate)) transaction \(transaction.id)")
+        } else if let expirationDate = transaction.expirationDate,
+            expirationDate < Date() {
+            // Do nothing, this subscription is expired.
+            logInfo("Ignoring update about expired (\(expirationDate)) transaction \(transaction.id)")
+        } else if transaction.isUpgraded {
+            // Do nothing, there is an active transaction
+            // for a higher level of service.
+            logInfo("Ignoring update about upgraded transaction \(transaction.id)")
+        } else {
+            // Provide access to the product
+            logInfo("Verified transaction \(transaction.id) (Original ID: \(transaction.originalID)) for product \(transaction.productID)")
+            try await submitTransaction(transaction)
+        }
+        logInfo("Marking transaction \(transaction.id) as finished")
+        await transaction.finish()
     }
 
     func submitTransaction(_ transaction: StoreKit.Transaction) async throws {
@@ -110,14 +126,31 @@ private extension InAppPurchaseStore {
             throw Errors.storefrontUnknown
         }
 
+        let receiptData = try await getAppReceipt()
+
         logInfo("Sending transaction to API for site \(siteID)")
-        _ = try await remote.createOrder(
+        let orderID = try await remote.createOrder(
             for: siteID,
             price: priceInCents,
             productIdentifier: product.id,
             appStoreCountryCode: countryCode,
-            receiptData: transaction.jsonRepresentation
+            receiptData: receiptData
         )
+        logInfo("Successfully registered purchase with Order ID \(orderID)")
+
+    }
+
+    func getAppReceipt(refreshIfMissing: Bool = true) async throws -> Data {
+        guard let appStoreReceiptURL = Bundle.main.appStoreReceiptURL,
+              let receiptData = try? Data(contentsOf: appStoreReceiptURL, options: .alwaysMapped) else {
+            if refreshIfMissing {
+                logInfo("No app receipt found, refreshing")
+                try await InAppPurchaseReceiptRefreshRequest.request()
+                return try await getAppReceipt(refreshIfMissing: false)
+            }
+            throw Errors.missingAppReceipt
+        }
+        return receiptData
     }
 
     func getProductIdentifiers() async throws -> [String] {
@@ -133,7 +166,11 @@ private extension InAppPurchaseStore {
 
         listenTask = Task.detached { [weak self] in
             for await result in Transaction.updates {
-                try? await self?.handleCompletedTransaction(result)
+                do {
+                    try await self?.handleCompletedTransaction(result)
+                } catch {
+                    self?.logError("Error handling transaction update: \(error)")
+                }
             }
         }
     }
@@ -159,6 +196,7 @@ public extension InAppPurchaseStore {
         case appAccountTokenMissingSiteIdentifier
         case transactionProductUnknown
         case storefrontUnknown
+        case missingAppReceipt
     }
 
     enum Constants {

@@ -112,6 +112,26 @@ public struct WordPressAuthenticatorConfiguration {
     /// If disabled, the alternative magic link action on the password screen is shown below the reset password action.
     let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen: Bool
 
+    /// If enabled, the Prologue screen will display only the entry point for WPCom login and no site address login.
+    ///
+    let enableWPComLoginOnlyInPrologue: Bool
+
+    /// If enabled, an entry point to the site creation flow will be added to the bottom button of the prologue screen of simplified login.
+    ///
+    let enableSiteCreation: Bool
+
+    /// If enabled, social login will be display at the bottom of the WPCom login screen.
+    ///
+    let enableSocialLogin: Bool
+
+    /// If enabled, there will be a border around the email label on the WPCom password screen.
+    ///
+    let emphasizeEmailForWPComPassword: Bool
+
+    /// The optional instructions for WPCom password.
+    ///
+    let wpcomPasswordInstructions: String?
+
     /// Designated Initializer
     ///
     public init (wpcomClientId: String,
@@ -136,7 +156,12 @@ public struct WordPressAuthenticatorConfiguration {
                  enableSiteCredentialsLoginForSelfHostedSites: Bool = false,
                  isWPComLoginRequiredForSiteCredentialsLogin: Bool = false,
                  isWPComMagicLinkPreferredToPassword: Bool = false,
-                 isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen: Bool = false) {
+                 isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen: Bool = false,
+                 enableWPComLoginOnlyInPrologue: Bool = false,
+                 enableSiteCreation: Bool = false,
+                 enableSocialLogin: Bool = false,
+                 emphasizeEmailForWPComPassword: Bool = false,
+                 wpcomPasswordInstructions: String? = nil) {
 
         self.wpcomClientId = wpcomClientId
         self.wpcomSecret = wpcomSecret
@@ -161,5 +186,10 @@ public struct WordPressAuthenticatorConfiguration {
         self.isWPComLoginRequiredForSiteCredentialsLogin = isWPComLoginRequiredForSiteCredentialsLogin
         self.isWPComMagicLinkPreferredToPassword = isWPComMagicLinkPreferredToPassword
         self.isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen
+        self.enableWPComLoginOnlyInPrologue = enableWPComLoginOnlyInPrologue
+        self.enableSiteCreation = enableSiteCreation
+        self.enableSocialLogin = enableSocialLogin
+        self.emphasizeEmailForWPComPassword = emphasizeEmailForWPComPassword
+        self.wpcomPasswordInstructions = wpcomPasswordInstructions
     }
 }

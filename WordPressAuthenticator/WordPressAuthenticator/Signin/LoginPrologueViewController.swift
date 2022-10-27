@@ -158,7 +158,11 @@ class LoginPrologueViewController: LoginViewController {
             return
         }
 
-        buildUnifiedPrologueButtons(buttonViewController)
+        if configuration.enableWPComLoginOnlyInPrologue {
+            buildPrologueButtonsWithWPComAndOptionalSiteCreation(buttonViewController: buttonViewController)
+        } else {
+            buildUnifiedPrologueButtons(buttonViewController)
+        }
 
         buttonViewController.shadowLayoutGuide = view.safeAreaLayoutGuide
         buttonViewController.topButtonStyle = WordPressAuthenticator.shared.style.prologuePrimaryButtonStyle
@@ -240,6 +244,21 @@ class LoginPrologueViewController: LoginViewController {
         setButtonViewControllerBackground(buttonViewController)
     }
 
+    private func buildPrologueButtonsWithWPComAndOptionalSiteCreation(buttonViewController: NUXButtonViewController) {
+        setButtonViewMargins(forWidth: view.frame.width)
+
+        let displayStrings = WordPressAuthenticator.shared.displayStrings
+        let loginTitle = displayStrings.continueWithWPButtonTitle
+        buttonViewController.setupTopButton(title: loginTitle, isPrimary: true, accessibilityIdentifier: "Prologue Log In Button", onTap: loginTapCallback())
+
+        if configuration.enableSiteCreation {
+            let createSiteTitle = displayStrings.siteCreationButtonTitle
+            buttonViewController.setupBottomButton(title: createSiteTitle, isPrimary: false, accessibilityIdentifier: "Prologue Create Site Button", onTap: simplifiedLoginSiteCreationCallback())
+        }
+
+        setButtonViewControllerBackground(buttonViewController)
+    }
+
     private func siteAddressTapCallback() -> NUXButtonViewController.CallBackType {
         return { [weak self] in
             self?.siteAddressTapped()
@@ -254,6 +273,14 @@ class LoginPrologueViewController: LoginViewController {
 
             self.tracker.track(click: .continueWithWordPressCom)
             self.continueWithDotCom()
+        }
+    }
+
+    private func simplifiedLoginSiteCreationCallback() -> NUXButtonViewController.CallBackType {
+        { [weak self] in
+            guard let self = self, let navigationController = self.navigationController else { return }
+            // triggers the delegate to ask the host app to handle site creation
+            WordPressAuthenticator.shared.delegate?.showSiteCreation(in: navigationController)
         }
     }
 

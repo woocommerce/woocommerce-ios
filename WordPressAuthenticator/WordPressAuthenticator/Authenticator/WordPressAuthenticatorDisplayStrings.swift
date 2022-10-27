@@ -51,6 +51,7 @@ public struct WordPressAuthenticatorDisplayStrings {
     public let loginTermsOfService: String
     public let signupTermsOfService: String
     public let whatIsWPComLinkTitle: String
+    public let siteCreationButtonTitle: String
 
 	/// Placeholder text for textfields.
 	///
@@ -95,6 +96,7 @@ public struct WordPressAuthenticatorDisplayStrings {
                 loginTermsOfService: String = defaultStrings.loginTermsOfService,
                 signupTermsOfService: String = defaultStrings.signupTermsOfService,
                 whatIsWPComLinkTitle: String = defaultStrings.whatIsWPComLinkTitle,
+                siteCreationButtonTitle: String = defaultStrings.siteCreationButtonTitle,
                 getStartedTitle: String = defaultStrings.getStartedTitle,
                 logInTitle: String = defaultStrings.logInTitle,
                 signUpTitle: String = defaultStrings.signUpTitle,
@@ -137,6 +139,7 @@ public struct WordPressAuthenticatorDisplayStrings {
         self.loginTermsOfService = loginTermsOfService
         self.signupTermsOfService = signupTermsOfService
         self.whatIsWPComLinkTitle = whatIsWPComLinkTitle
+        self.siteCreationButtonTitle = siteCreationButtonTitle
         self.getStartedTitle = getStartedTitle
         self.logInTitle = logInTitle
         self.signUpTitle = signUpTitle
@@ -213,6 +216,8 @@ public extension WordPressAuthenticatorDisplayStrings {
             signupTermsOfService: NSLocalizedString("If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_.", comment: "Legal disclaimer for signing up. The underscores _..._ denote underline."),
             whatIsWPComLinkTitle: NSLocalizedString("What is WordPress.com?",
                                                      comment: "Navigates to page with details about What is WordPress.com."),
+            siteCreationButtonTitle: NSLocalizedString("Create a Site",
+                                                       comment: "Navigates to a new flow for site creation."),
             getStartedTitle: NSLocalizedString("Get Started",
                                                comment: "View title for initial auth views."),
             logInTitle: NSLocalizedString("Log In",

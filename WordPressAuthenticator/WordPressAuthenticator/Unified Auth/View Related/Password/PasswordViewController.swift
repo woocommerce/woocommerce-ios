@@ -19,6 +19,8 @@ class PasswordViewController: LoginViewController {
 
     private let isMagicLinkShownAsSecondaryAction: Bool = WordPressAuthenticator.shared.configuration.isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen
 
+    private let configuration = WordPressAuthenticator.shared.configuration
+
     /// Depending on where we're coming from, this screen needs to track a password challenge
     /// (if logging on with a Social account) or not (if logging in through WP.com).
     ///
@@ -338,8 +340,9 @@ private extension PasswordViewController {
     func loadRows() {
         rows = [.gravatarEmail]
 
-        // Instructions only for social accounts
-        if loginFields.meta.socialService != nil {
+        // Instructions only for social accounts and simplified WPCom login flow
+        if loginFields.meta.socialService != nil ||
+            configuration.wpcomPasswordInstructions != nil {
             rows.append(.instructions)
         }
 
@@ -380,7 +383,7 @@ private extension PasswordViewController {
     /// Configure the gravatar + email cell.
     ///
     func configureGravatarEmail(_ cell: GravatarEmailTableViewCell) {
-        cell.configure(withEmail: loginFields.username)
+        cell.configure(withEmail: loginFields.username, hasBorders: configuration.emphasizeEmailForWPComPassword)
 
         cell.onChangeSelectionHandler = { [weak self] textfield in
             // The email can only be changed via a password manager.
@@ -397,17 +400,21 @@ private extension PasswordViewController {
         }
     }
 
-    /// Configure the instruction cell.
+    /// Configure the instruction cell for social accounts or simplified login.
     ///
     func configureInstructionLabel(_ cell: TextLabelTableViewCell) {
-        // Instructions only for social accounts
-        guard let service = loginFields.meta.socialService else {
+        let displayStrings = WordPressAuthenticator.shared.displayStrings
+        let instructions: String? = {
+            if let service = loginFields.meta.socialService {
+                return (service == .google) ? displayStrings.googlePasswordInstructions :
+                displayStrings.applePasswordInstructions
+            }
+            return configuration.wpcomPasswordInstructions
+        }()
+
+        guard let instructions = instructions else {
             return
         }
-
-        let displayStrings = WordPressAuthenticator.shared.displayStrings
-        let instructions = (service == .google) ? displayStrings.googlePasswordInstructions :
-            displayStrings.applePasswordInstructions
 
         cell.configureLabel(text: instructions)
     }

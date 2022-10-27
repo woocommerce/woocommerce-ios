@@ -105,6 +105,15 @@ public protocol WordPressAuthenticatorDelegate: AnyObject {
     ///
     func troubleshootSite(_ siteInfo: WordPressComSiteInfo?, in navigationController: UINavigationController?)
 
+    /// Signals to the Host App to navigate to the site creation flow.
+    /// This method is currently used only in the simplified login flow
+    /// when the configs `enableSimplifiedLoginI1` and `enableSiteCreationForSimplifiedLoginI1` is enabled
+    ///
+    /// - Parameters:
+    ///     - navigationController: the current navigation stack of the login flow.
+    ///
+    func showSiteCreation(in navigationController: UINavigationController)
+
     /// Signals the Host App that a given Analytics Event has occurred.
     ///
     func track(event: WPAnalyticsStat)
@@ -122,6 +131,10 @@ public protocol WordPressAuthenticatorDelegate: AnyObject {
 ///
 public extension WordPressAuthenticatorDelegate {
     func troubleshootSite(_ siteInfo: WordPressComSiteInfo?, in navigationController: UINavigationController?) {
+        // No-op
+    }
+
+    func showSiteCreation(in navigationController: UINavigationController) {
         // No-op
     }
 }

@@ -110,7 +110,9 @@ private extension ULErrorViewController {
     }
 
     func configureErrorMessage() {
-        errorMessage.applyBodyStyle()
+        errorMessage.adjustsFontForContentSizeCategory = true
+        errorMessage.font = .title3SemiBold
+        errorMessage.textColor = .text
         errorMessage.attributedText = viewModel.text
     }
 

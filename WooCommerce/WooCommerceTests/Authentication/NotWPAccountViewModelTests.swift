@@ -211,11 +211,6 @@ final class NotWPAccountViewModelTests: XCTestCase {
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "what_is_wordpress_com_on_invalid_email_screen" }))
     }
 
-    /*
-     TODO: 7903 - Navigate to create store flow
-
-     Uncomment these tests after added create store navigation and analytics code.
-
     func test_tapping_primary_button_does_not_track_create_account_event_when_simplified_login_feature_flag_is_off() {
         // Given
         let featureFlagService = MockFeatureFlagService(isSimplifiedLoginFlowI1Enabled: false)
@@ -243,7 +238,6 @@ final class NotWPAccountViewModelTests: XCTestCase {
         // Then
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "create_account_on_invalid_email_screen" }))
     }
-    */
 }
 
 

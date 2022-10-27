@@ -3,6 +3,23 @@ import WordPressAuthenticator
 @testable import WooCommerce
 
 final class NotWPAccountViewModelTests: XCTestCase {
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
+    override func setUp() {
+        super.setUp()
+
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        initializeAuthenticator()
+    }
+
+    override func tearDown() {
+        analytics = nil
+        analyticsProvider = nil
+        // There is no known tear down for the Authenticator.
+        super.tearDown()
+    }
 
     override func setUp() {
         super.setUp()

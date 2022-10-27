@@ -1,6 +1,7 @@
 import XCTest
 import WordPressAuthenticator
 @testable import WooCommerce
+import TestKit
 
 final class NotWPAccountViewModelTests: XCTestCase {
     private var analyticsProvider: MockAnalyticsProvider!
@@ -177,6 +178,23 @@ final class NotWPAccountViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(secondaryButtonTitle, Expectations.tryAnotherAddressTitle)
+    }
+
+    // MARK: - Analytics
+
+    func test_viewModel_logs_an_event_when_viewDidLoad_is_triggered() throws {
+        // Given
+        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom),
+                                              analytics: analytics)
+
+        assertEmpty(analyticsProvider.receivedEvents)
+
+        // When
+        viewModel.viewDidLoad(nil)
+
+        // Then
+        let firstEvent = try XCTUnwrap(analyticsProvider.receivedEvents.first)
+        XCTAssertEqual(firstEvent, "login_invalid_email_screen_viewed")
     }
 
     func test_tapping_auxiliary_button_tracks_what__is_wordpress_com_event() {

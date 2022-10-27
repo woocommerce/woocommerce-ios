@@ -39,6 +39,7 @@ final class NotWPAccountViewModel: ULErrorViewModel {
 
     private let isSimplifiedLoginI1Enabled: Bool
     private let analytics: Analytics
+    private var storePickerCoordinator: StorePickerCoordinator?
 
     init(error: Error,
          analytics: Analytics = ServiceLocator.analytics,
@@ -104,6 +105,11 @@ private extension NotWPAccountViewModel {
     func createAnAccountButtonTapped() {
         // TODO: 7903 - Navigate to create store flow.
         // analytics.track(.createAccountOnInvalidEmailScreenTapped)
+    }
+
+    func startStoreCreation(in navigationController: UINavigationController) {
+        storePickerCoordinator = StorePickerCoordinator(navigationController, config: .listStores)
+        storePickerCoordinator?.start()
     }
 }
 

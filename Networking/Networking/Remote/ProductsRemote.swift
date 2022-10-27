@@ -358,7 +358,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         let parameters = [ParameterKey.templateName: template.rawValue]
         let path = Path.templateProducts
         let request = JetpackRequest(wooApiVersion: .wcAdmin, method: .get, siteID: siteID, path: path, parameters: parameters)
-        let mapper = ProductIDMapper()
+        let mapper = EntityIDMapper()
 
         enqueue(request, mapper: mapper, completion: completion)
     }

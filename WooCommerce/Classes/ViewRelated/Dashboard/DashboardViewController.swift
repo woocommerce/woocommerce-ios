@@ -148,6 +148,18 @@ final class DashboardViewController: UIViewController {
     override var shouldShowOfflineBanner: Bool {
         return true
     }
+
+    internal override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.willTransition(to: newCollection, with: coordinator)
+        updateAnnouncementCardVisibility(with: newCollection)
+    }
+
+    /// Hide the announcement card in compact (landscape phone)
+    ///
+    func updateAnnouncementCardVisibility(with newCollection: UITraitCollection) {
+        let shouldHideCard = newCollection.verticalSizeClass == .compact
+        announcementView?.isHidden = shouldHideCard
+    }
 }
 
 // MARK: - Configuration

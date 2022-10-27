@@ -82,7 +82,8 @@ class AuthenticationManager: Authentication {
                                                                 enableSiteCreation: isStoreCreationMVPEnabled,
                                                                 enableSocialLogin: !isSimplifiedLoginI1Enabled,
                                                                 emphasizeEmailForWPComPassword: isSimplifiedLoginI1Enabled,
-                                                                wpcomPasswordInstructions: AuthenticationConstants.wpcomPasswordInstructions)
+                                                                wpcomPasswordInstructions: isSimplifiedLoginI1Enabled ?
+                                                                AuthenticationConstants.wpcomPasswordInstructions : nil)
 
         let systemGray3LightModeColor = UIColor(red: 199/255.0, green: 199/255.0, blue: 204/255.0, alpha: 1)
         let systemLabelLightModeColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)

@@ -473,8 +473,7 @@ private extension GetStartedViewController {
     /// Configures appearance of the submit button.
     ///
     func configureContinueButton(animating: Bool) {
-        if screenMode == .signInUsingSiteCredentials ||
-            configuration.enableSocialLogin == false {
+        if showsContinueButtonAtTheBottom {
             buttonViewController?.setTopButtonState(isLoading: animating,
                                                     isEnabled: enableSubmit(animating: animating))
         } else {

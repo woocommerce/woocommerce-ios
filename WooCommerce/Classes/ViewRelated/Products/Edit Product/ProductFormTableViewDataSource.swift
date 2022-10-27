@@ -28,8 +28,6 @@ final class ProductFormTableViewDataSource: NSObject {
     var openLinkedProductsAction: (() -> Void)?
     var reloadLinkedPromoAction: (() -> Void)?
 
-    weak var viewController: UIViewController? = nil
-
     init(viewModel: ProductFormTableViewModel,
          productImageStatuses: [ProductImageStatus],
          productUIImageLoader: ProductUIImageLoader) {
@@ -202,25 +200,18 @@ private extension ProductFormTableViewDataSource {
     }
 
     func configureLinkedProductsPromo(cell: UITableViewCell, viewModel: FeatureAnnouncementCardViewModel) {
-        guard let cell = cell as? HostingTableViewCell<FeatureAnnouncementCardView> else {
+        guard let cell = cell as? FeatureAnnouncementCardCell else {
             fatalError()
         }
 
-        let cardView = FeatureAnnouncementCardView(
-            viewModel: viewModel,
-            dismiss: { [weak self] in
-                self?.reloadLinkedPromoAction?()
-            },
-            callToAction: { [weak self] in
-                self?.openLinkedProductsAction?()
-            }
-        )
+        cell.configure(with: viewModel)
 
-        guard let viewController = viewController else {
-            return
+        cell.dismiss = { [weak self] in
+            self?.reloadLinkedPromoAction?()
         }
-
-        cell.host(cardView, parent: viewController)
+        cell.callToAction = { [weak self] in
+            self?.openLinkedProductsAction?()
+        }
 
         cell.selectionStyle = .none
         cell.hideSeparator()

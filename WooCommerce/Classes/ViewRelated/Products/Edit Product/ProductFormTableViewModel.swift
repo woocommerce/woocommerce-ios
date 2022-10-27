@@ -20,15 +20,6 @@ enum ProductFormSection: Equatable {
         case name(name: String?, isEditable: Bool, productStatus: ProductStatus)
         case variationName(name: String)
         case description(description: String?, isEditable: Bool)
-
-        var registerWithNib: Bool {
-            switch self {
-            case .linkedProductsPromo(_):
-                return false
-            default:
-                return true
-            }
-        }
     }
 
     enum SettingsRow: Equatable {

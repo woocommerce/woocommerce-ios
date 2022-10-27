@@ -46,7 +46,7 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
         case .images:
             return ProductImagesHeaderTableViewCell.self
         case .linkedProductsPromo:
-            return HostingTableViewCell<FeatureAnnouncementCardView>.self
+            return FeatureAnnouncementCardCell.self
         case .name(_, let editable, _):
             return editable ? LabeledTextViewTableViewCell.self: BasicTableViewCell.self
         case .variationName:

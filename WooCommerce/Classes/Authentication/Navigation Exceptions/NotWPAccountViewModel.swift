@@ -60,7 +60,7 @@ final class NotWPAccountViewModel: ULErrorViewModel {
     // MARK: - Actions
     func didTapPrimaryButton(in viewController: UIViewController?) {
         if isSimplifiedLoginI1Enabled {
-            createAnAccountButtonTapped()
+            createAnAccountButtonTapped(in: viewController)
         } else {
             loginWithSiteAddressButtonTapped()
         }
@@ -102,9 +102,17 @@ private extension NotWPAccountViewModel {
         popCommand.execute(from: viewController)
     }
 
-    func createAnAccountButtonTapped() {
-        // TODO: 7903 - Navigate to create store flow.
-        // analytics.track(.createAccountOnInvalidEmailScreenTapped)
+    func createAnAccountButtonTapped(in viewController: UIViewController?) {
+        analytics.track(.createAccountOnInvalidEmailScreenTapped)
+        guard let viewController else {
+            return
+        }
+
+        let accountCreationController = AccountCreationFormHostingController(viewModel: .init()) { [weak self] in
+            guard let self, let navigationController = viewController.navigationController else { return }
+            self.startStoreCreation(in: navigationController)
+        }
+        viewController.show(accountCreationController, sender: self)
     }
 
     func startStoreCreation(in navigationController: UINavigationController) {

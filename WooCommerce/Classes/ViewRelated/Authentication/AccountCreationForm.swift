@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WordPressAuthenticator.NavigateToEnterAccount
 
 /// Hosting controller that wraps an `AccountCreationForm`.
 final class AccountCreationFormHostingController: UIHostingController<AccountCreationForm> {
@@ -8,6 +9,12 @@ final class AccountCreationFormHostingController: UIHostingController<AccountCre
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController.
         rootView.completion = {
             completion()
+        }
+
+        rootView.loginButtonTapped = { [weak self] in
+            guard let self else { return }
+            let command = NavigateToEnterAccount()
+            command.execute(from: self)
         }
     }
 
@@ -23,6 +30,9 @@ struct AccountCreationForm: View {
     /// Triggered when the account is created and the app is authenticated.
     var completion: (() -> Void) = {}
 
+    /// Triggered when the user taps on the login CTA.
+    var loginButtonTapped: (() -> Void) = {}
+
     @ObservedObject private var viewModel: AccountCreationFormViewModel
 
     @State private var isPerformingTask = false
@@ -36,11 +46,29 @@ struct AccountCreationForm: View {
             VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
                 // Header.
                 VStack(alignment: .leading, spacing: Layout.horizontalSpacing) {
+                    // Title label.
                     Text(Localization.title)
                         .largeTitleStyle()
-                    Text(Localization.subtitle)
-                        .foregroundColor(Color(.secondaryLabel))
-                        .bodyStyle()
+                    VStack(alignment: .leading, spacing: 0) {
+                        // Subtitle label.
+                        Text(Localization.subtitle)
+                            .foregroundColor(Color(.secondaryLabel))
+                            .bodyStyle()
+                        HStack {
+                            // Login subtitle label.
+                            Text(Localization.loginSubtitle)
+                                .foregroundColor(Color(.secondaryLabel))
+                                .bodyStyle()
+
+                            // Login button.
+                            Button(Localization.loginButtonTitle) {
+                                loginButtonTapped()
+                            }
+                            .buttonStyle(TextButtonStyle())
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .disabled(isPerformingTask)
+                        }
+                    }
                 }
 
                 // Form fields.
@@ -112,8 +140,9 @@ private extension AccountCreationForm {
 
     enum Localization {
         static let title = NSLocalizedString("Get started in minutes", comment: "Title for the account creation form.")
-        // TODO-7891: support login navigation.
         static let subtitle = NSLocalizedString("First, let’s create your account.", comment: "Subtitle for the account creation form.")
+        static let loginSubtitle = NSLocalizedString("Already registered?", comment: "Subtitle for the login button on the account creation form.")
+        static let loginButtonTitle = NSLocalizedString("Log in", comment: "Title of the login button on the account creation form.")
         static let emailFieldTitle = NSLocalizedString("Your email address", comment: "Title of the email field on the account creation form.")
         static let emailFieldPlaceholder = NSLocalizedString("Email address", comment: "Placeholder of the email field on the account creation form.")
         static let passwordFieldTitle = NSLocalizedString("Choose a password", comment: "Title of the password field on the account creation form.")

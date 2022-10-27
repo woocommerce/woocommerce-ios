@@ -405,8 +405,7 @@ private extension AppDelegate {
         if versionOfLastRun == nil {
             // First run after a fresh install
             ServiceLocator.analytics.track(.applicationInstalled,
-                                           withProperties: ["after_abtest_setup": true,
-                                                            "prologue_experiment_variant": ABTest.loginPrologueButtonOrder.variation.analyticsValue])
+                                           withProperties: ["after_abtest_setup": true])
         } else if versionOfLastRun != currentVersion {
             // App was upgraded
             ServiceLocator.analytics.track(.applicationUpgraded, withProperties: ["previous_version": versionOfLastRun ?? String()])

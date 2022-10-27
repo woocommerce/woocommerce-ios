@@ -19,6 +19,8 @@ final class NotWPAccountViewModel: ULErrorViewModel {
 
     let primaryButtonTitle: String
 
+    let isPrimaryButtonHidden: Bool
+
     var secondaryButtonTitle: String {
         isSimplifiedLoginI1Enabled ? Localization.tryAnotherAddress : Localization.restartLogin
     }
@@ -51,9 +53,17 @@ final class NotWPAccountViewModel: ULErrorViewModel {
            source == .wpComSiteAddress {
             isSecondaryButtonHidden = true
             primaryButtonTitle = Localization.restartLogin
+            isPrimaryButtonHidden = false
         } else {
             isSecondaryButtonHidden = false
-            primaryButtonTitle = isSimplifiedLoginI1Enabled ? Localization.createAnAccount : Localization.loginWithSiteAddress
+
+            if isSimplifiedLoginI1Enabled {
+                primaryButtonTitle = Localization.createAnAccount
+                isPrimaryButtonHidden = !featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
+            } else {
+                primaryButtonTitle = Localization.loginWithSiteAddress
+                isPrimaryButtonHidden = false
+            }
         }
     }
 

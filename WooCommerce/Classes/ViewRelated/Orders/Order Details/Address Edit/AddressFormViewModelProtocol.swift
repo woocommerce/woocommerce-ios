@@ -103,10 +103,6 @@ protocol AddressFormViewModelProtocol: ObservableObject {
     /// Creates a view model to be used when selecting a state for secondary fields
     ///
     func createSecondaryStateViewModel() -> StateSelectorViewModel
-
-    /// Callback method when the Customer Search button is tapped
-    ///
-    func customerSearchTapped()
 }
 
 /// Type to hold values from all the form fields

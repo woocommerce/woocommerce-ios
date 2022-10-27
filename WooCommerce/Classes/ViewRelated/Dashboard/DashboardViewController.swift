@@ -74,7 +74,7 @@ final class DashboardViewController: UIViewController {
                                               })
     }()
 
-    private var hasAnnouncementFeatureFlag: Bool { ServiceLocator.featureFlagService.isFeatureFlagEnabled(.promptToEnableCodInIppOnboarding)
+    private var hasAnnouncementFeatureFlag: Bool { ServiceLocator.featureFlagService.isFeatureFlagEnabled(.justInTimeMessagesOnDashboard)
     }
 
     private var announcementViewHostingController: UIHostingController<AnnouncementCardWrapper>?

@@ -11,17 +11,37 @@ protocol WPComPlanProduct {
 
 extension StoreKit.Product: WPComPlanProduct {}
 
-enum WPComPlanProductTransactionStatus {
-    case notStarted // Neither purchased through Apple nor the WPCom plan was unlocked
-    case pending // In-App purchase was successful but the WPCom plan unlock request is pending
-    case finished // In-App purchase and WPCom plan unlock succesful
-}
-
 protocol InAppPurchasesForWPComPlansProtocol {
+    /// Retrieves asynchronously all WPCom plans In-App Purchases products.
+    ///
     func fetchProducts() async throws -> [WPComPlanProduct]
+
+    /// Returns whether the user purchases the product identified with the passed id.
+    ///
+    /// - Parameters:
+    ///     - id: the id of the product whose purchase is to be verified
+    ///
     func userDidPurchaseProduct(with id: String) async throws -> Bool
+
+    /// Triggers the purchase of WPCom plan specified by the passed product id, linked to the passed site Id.
+    ///
+    /// - Parameters:
+    ///     id: the id of the product to be purchased
+    ///     remoteSiteId: the id of the site linked to the purchasing plan
+    ///
     func purchaseProduct(with id: String, for remoteSiteId: Int64) async throws
+
+    /// Retries forwarding the product purchase to our backend, so the plan can be unlocked.
+    /// This can happen when the purchase was previously successful but unlocking the WPCom plan request
+    /// failed.
+    ///
+    /// - Parameters:
+    ///     id: the id of the purchased product whose WPCom plan unlock failed
+    ///
     func retryWPComSyncForPurchasedProduct(with id: String) async throws
+
+    /// Returns whether In-App Purchases are supported for the current user configuration
+    ///
     func inAppPurchasesAreSupported() async -> Bool
 }
 

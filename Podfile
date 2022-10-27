@@ -37,6 +37,19 @@ def keychain
   pod 'KeychainAccess', '~> 4.2.2'
 end
 
+def alamofire
+  pod 'Alamofire', '~> 4.8'
+end
+
+def cocoa_lumberjack
+  pod 'CocoaLumberjack', '~> 3.7.4'
+  pod 'CocoaLumberjack/Swift', '~> 3.7.4'
+end
+
+def stripe_terminal
+  pod 'StripeTerminal', '~> 2.7'
+end
+
 # Main Target!
 # ============
 #
@@ -69,13 +82,12 @@ target 'WooCommerce' do
   # External Libraries
   # ==================
   #
-  pod 'Alamofire', '~> 4.8'
+  alamofire
+  cocoa_lumberjack
   keychain
-  pod 'CocoaLumberjack', '~> 3.7.4'
-  pod 'CocoaLumberjack/Swift', '~> 3.7.4'
   pod 'XLPagerTabStrip', '~> 9.0'
   pod 'ZendeskSupportSDK', '~> 5.0'
-  pod 'StripeTerminal', '~> 2.7'
+  stripe_terminal
   pod 'Kingfisher', '~> 7.2.2'
   pod 'Wormholy', '~> 1.6.5', configurations: ['Debug']
 
@@ -100,10 +112,9 @@ end
 # ===============
 #
 def yosemite_pods
-  pod 'Alamofire', '~> 4.8'
-  pod 'StripeTerminal', '~> 2.7'
-  pod 'CocoaLumberjack', '~> 3.7.4'
-  pod 'CocoaLumberjack/Swift', '~> 3.7.4'
+  alamofire
+  stripe_terminal
+  cocoa_lumberjack
 
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
   pod 'WordPressKit', '~> 4.49.0'
@@ -132,8 +143,7 @@ end
 # ===============
 #
 def woofoundation_pods
-  pod 'CocoaLumberjack', '~> 3.7.4'
-  pod 'CocoaLumberjack/Swift', '~> 3.7.4'
+  cocoa_lumberjack
 end
 
 # Tools Target:
@@ -156,9 +166,8 @@ end
 # =================
 #
 def networking_pods
-  pod 'Alamofire', '~> 4.8'
-  pod 'CocoaLumberjack', '~> 3.7.4'
-  pod 'CocoaLumberjack/Swift', '~> 3.7.4'
+  alamofire
+  cocoa_lumberjack
 
   pod 'Sourcery', '~> 1.0.3', configuration: 'Debug'
 
@@ -193,8 +202,7 @@ end
 # ==============
 #
 def storage_pods
-  pod 'CocoaLumberjack', '~> 3.7.4'
-  pod 'CocoaLumberjack/Swift', '~> 3.7.4'
+  cocoa_lumberjack
 end
 
 # Storage Target:
@@ -217,9 +225,8 @@ end
 # =================
 #
 def hardware_pods
-  pod 'StripeTerminal', '~> 2.7'
-  pod 'CocoaLumberjack', '~> 3.7.4'
-  pod 'CocoaLumberjack/Swift', '~> 3.7.4'
+  stripe_terminal
+  cocoa_lumberjack
 end
 
 # Hardware Target:
@@ -251,8 +258,7 @@ end
 #
 def experiments_pods
   tracks
-  pod 'CocoaLumberjack', '~> 3.7.4'
-  pod 'CocoaLumberjack/Swift', '~> 3.7.4'
+  cocoa_lumberjack
 end
 
 # Experiments Target:

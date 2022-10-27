@@ -38,9 +38,12 @@ final class NotWPAccountViewModel: ULErrorViewModel {
     }()
 
     private let isSimplifiedLoginI1Enabled: Bool
+    private let analytics: Analytics
 
     init(error: Error,
+         analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+        self.analytics = analytics
         self.isSimplifiedLoginI1Enabled = featureFlagService.isFeatureFlagEnabled(.simplifiedLoginFlowI1)
         if let error = error as? SignInError,
            case let .invalidWPComEmail(source) = error,

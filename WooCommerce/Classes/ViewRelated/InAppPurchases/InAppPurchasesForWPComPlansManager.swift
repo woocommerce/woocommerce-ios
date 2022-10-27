@@ -20,10 +20,10 @@ protocol InAppPurchasesForWPComPlansProtocol {
     ///
     func fetchProducts() async throws -> [WPComPlanProduct]
 
-    /// Returns whether the user purchases the product identified with the passed id.
+    /// Returns whether the user is entitled the product identified with the passed id.
     ///
     /// - Parameters:
-    ///     - id: the id of the product whose purchase is to be verified
+    ///     - id: the id of the product whose entitlement is to be verified
     ///
     func userIsEntitledToProduct(with id: String) async throws -> Bool
 

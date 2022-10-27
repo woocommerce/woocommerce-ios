@@ -46,14 +46,23 @@ struct InAppPurchasesDebugView: View {
         Task {
             do {
                 self.products = try await inAppPurchasesForWPComPlansManager.fetchProducts()
-                for product in self.products {
-                    if try await inAppPurchasesForWPComPlansManager.userIsEntitledToProduct(with: product.id) {
-                        self.entitledProductIDs.append(product.id)
-                    }
-                }
+                await loadUserEntitlements()
             } catch {
                 print("Error loading products: \(error)")
             }
+        }
+    }
+
+    private func loadUserEntitlements() async {
+        do {
+            for product in self.products {
+                if try await inAppPurchasesForWPComPlansManager.userIsEntitledToProduct(with: product.id) {
+                    self.entitledProductIDs.append(product.id)
+                }
+            }
+        }
+        catch {
+            print("Error loading user entitlements: \(error)")
         }
     }
 

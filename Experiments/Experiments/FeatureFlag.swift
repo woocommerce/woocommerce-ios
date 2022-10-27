@@ -89,4 +89,8 @@ public enum FeatureFlag: Int {
     /// Hides products onboarding development.
     ///
     case productsOnboarding
+
+    /// Products Onboarding subproject: Products preview.
+    ///
+    case productsPreview
 }

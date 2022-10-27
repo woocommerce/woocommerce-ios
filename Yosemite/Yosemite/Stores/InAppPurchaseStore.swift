@@ -46,10 +46,10 @@ public class InAppPurchaseStore: Store {
             Task {
                 completion(await inAppPurchasesAreSupported())
             }
-        case .userDidPurchaseProduct(productID: let productID, completion: let completion):
+        case .userIsEntitledToProduct(productID: let productID, completion: let completion):
             Task {
                 do {
-                    completion(.success(try await userDidPurchaseProduct(with: productID)))
+                    completion(.success(try await userIsEntitledToProduct(with: productID)))
                 } catch {
                     completion(.failure(error))
                 }
@@ -133,17 +133,17 @@ private extension InAppPurchaseStore {
     }
 
     func retryWPComSyncForPurchasedProduct(with id: String) async throws {
-        guard let verificationResult = await Transaction.latest(for: id) else {
-            // The user hasn't purchased this product.
+        guard let verificationResult = await Transaction.currentEntitlement(for: id) else {
+            // The user doesn't have a valid entitlement for this product
             throw Errors.transactionProductUnknown
         }
 
-        switch verificationResult {
-        case .verified(let transaction):
-            return try await submitTransaction(transaction)
-        case .unverified(_, let verificationError):
-            throw verificationError
+        guard await Transaction.unfinished.contains(verificationResult) else {
+            // The transaction is finished. Return successfully
+            return
         }
+
+        try await handleCompletedTransaction(verificationResult)
     }
 
     func submitTransaction(_ transaction: StoreKit.Transaction) async throws {
@@ -180,14 +180,14 @@ private extension InAppPurchaseStore {
 
     }
 
-    func userDidPurchaseProduct(with id: String) async throws -> Bool {
-        guard let verificationResult = await Transaction.latest(for: id) else {
+    func userIsEntitledToProduct(with id: String) async throws -> Bool {
+        guard let verificationResult = await Transaction.currentEntitlement(for: id) else {
             // The user hasn't purchased this product.
             return false
         }
 
         switch verificationResult {
-        case .verified(_):
+        case .verified(let transaction):
             return true
         case .unverified(_, let verificationError):
             throw verificationError

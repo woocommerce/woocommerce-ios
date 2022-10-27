@@ -25,7 +25,7 @@ protocol InAppPurchasesForWPComPlansProtocol {
     /// - Parameters:
     ///     - id: the id of the product whose purchase is to be verified
     ///
-    func userDidPurchaseProduct(with id: String) async throws -> Bool
+    func userIsEntitledToProduct(with id: String) async throws -> Bool
 
     /// Triggers the purchase of WPCom plan specified by the passed product id, linked to the passed site Id.
     ///
@@ -70,9 +70,9 @@ final class InAppPurchasesForWPComPlansManager: InAppPurchasesForWPComPlansProto
         }
     }
 
-    func userDidPurchaseProduct(with id: String) async throws -> Bool {
+    func userIsEntitledToProduct(with id: String) async throws -> Bool {
         try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(InAppPurchaseAction.userDidPurchaseProduct(productID: id, completion: { result in
+            stores.dispatch(InAppPurchaseAction.userIsEntitledToProduct(productID: id, completion: { result in
                 switch result {
                 case .success(let productIsPurchased):
                     continuation.resume(returning: productIsPurchased)

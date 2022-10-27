@@ -21,12 +21,6 @@ class GravatarEmailTableViewCell: UITableViewCell {
     public static let reuseIdentifier = "GravatarEmailTableViewCell"
     public var onChangeSelectionHandler: ((_ sender: UITextField) -> Void)?
 
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        containerView.layer.cornerRadius = 8
-        containerView.layer.borderColor = UIColor.systemGray3.cgColor
-    }
-
     /// Public Methods
     ///
     public func configure(withEmail email: String?, andPlaceholder placeholderImage: UIImage? = nil, hasBorders: Bool = false) {
@@ -45,8 +39,8 @@ class GravatarEmailTableViewCell: UITableViewCell {
 
         gravatarImageView?.downloadGravatarWithEmail(email, placeholderImage: placeholderImage ?? gridicon)
 
-        gravatarImageViewSizeConstraints.forEach { constraints in
-            constraints.constant = gridicon.size.width
+        gravatarImageViewSizeConstraints.forEach { constraint in
+            constraint.constant = gridicon.size.width
         }
 
         let margin: CGFloat = hasBorders ? 16 : 0
@@ -55,6 +49,8 @@ class GravatarEmailTableViewCell: UITableViewCell {
         }
 
         containerView.layer.borderWidth = hasBorders ? 1 : 0
+        containerView.layer.cornerRadius = hasBorders ? 8 : 0
+        containerView.layer.borderColor = hasBorders ? UIColor.systemGray3.cgColor : UIColor.clear.cgColor
     }
 
     func updateEmailAddress(_ email: String?) {

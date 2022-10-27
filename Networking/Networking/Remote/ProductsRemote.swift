@@ -42,6 +42,7 @@ public protocol ProductsRemoteProtocol {
     func updateProduct(product: Product, completion: @escaping (Result<Product, Error>) -> Void)
     func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage], completion: @escaping (Result<Product, Error>) -> Void)
     func loadProductIDs(for siteID: Int64, pageNumber: Int, pageSize: Int, completion: @escaping (Result<[Int64], Error>) -> Void)
+    func createTemplateProduct(for siteID: Int64, template: ProductsRemote.TemplateType, completion: @escaping (Result<Int64, Error>) -> Void)
 }
 
 extension ProductsRemoteProtocol {
@@ -348,6 +349,19 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Creates a product using the provided template.
+    /// Finishes with a completion block with the product ID.
+    /// The created product has an `auto-draft` status.
+    ///
+    public func createTemplateProduct(for siteID: Int64, template: ProductsRemote.TemplateType, completion: @escaping (Result<Int64, Error>) -> Void) {
+        let parameters = [ParameterKey.templateName: template.rawValue]
+        let path = Path.templateProducts
+        let request = JetpackRequest(wooApiVersion: .wcAdmin, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let mapper = ProductIDMapper()
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 
@@ -364,6 +378,16 @@ public extension ProductsRemote {
         case descending
     }
 
+    /// Supported types for creating a template product.
+    ///
+    enum TemplateType: String {
+        case physical
+        case digital
+        case variable
+        case external
+        case grouped
+    }
+
     enum Default {
         public static let pageSize: Int   = 25
         public static let pageNumber: Int = Remote.Default.firstPageNumber
@@ -372,6 +396,7 @@ public extension ProductsRemote {
 
     private enum Path {
         static let products   = "products"
+        static let templateProducts   = "onboarding/tasks/create_product_from_template"
     }
 
     private enum ParameterKey {
@@ -392,6 +417,7 @@ public extension ProductsRemote {
         static let fields: String     = "_fields"
         static let images: String = "images"
         static let id: String         = "id"
+        static let templateName: String = "template_name"
     }
 
     private enum ParameterValues {

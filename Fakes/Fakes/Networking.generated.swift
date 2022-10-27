@@ -1509,6 +1509,7 @@ extension Site {
             description: .fake(),
             url: .fake(),
             adminURL: .fake(),
+            loginURL: .fake(),
             plan: .fake(),
             isJetpackThePluginInstalled: .fake(),
             isJetpackConnected: .fake(),

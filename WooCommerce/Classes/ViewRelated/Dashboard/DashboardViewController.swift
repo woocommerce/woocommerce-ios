@@ -335,7 +335,6 @@ private extension DashboardViewController {
         guard let announcementView = announcementView else {
             return
         }
-        headerStackView.removeArrangedSubview(announcementView)
         announcementView.removeFromSuperview()
         announcementViewHostingController?.removeFromParent()
         announcementViewHostingController = nil

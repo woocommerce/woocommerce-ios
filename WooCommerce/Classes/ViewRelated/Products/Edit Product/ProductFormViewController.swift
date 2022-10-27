@@ -215,7 +215,16 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     }
 
     private func displayProductPreview() {
-        // TODO: Show webview
+        var permalink = URLComponents(string: product.permalink)
+        var updatedQueryItems = permalink?.queryItems ?? []
+        updatedQueryItems.append(.init(name: "preview", value: "true"))
+        permalink?.queryItems = updatedQueryItems
+        guard let url = permalink?.url else {
+            return
+        }
+
+        // TODO: Show authenticated WebView
+        WebviewHelper.launch(url, with: self)
     }
 
     // MARK: Navigation actions

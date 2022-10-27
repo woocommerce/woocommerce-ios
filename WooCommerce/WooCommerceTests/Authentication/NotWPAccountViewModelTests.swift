@@ -117,7 +117,7 @@ final class NotWPAccountViewModelTests: XCTestCase {
         XCTAssertEqual(primaryButtonTitle, Expectations.loginWithSiteAddressTitle)
     }
 
-    func test_primary_button_title_is_login_with_site_address_for_invalidWPComEmail_from_wpCom_error_when_simplified_login_feature_flag_is_on() {
+    func test_primary_button_title_is_create_an_account_for_invalidWPComEmail_from_wpCom_error_when_simplified_login_feature_flag_is_on() {
         // Given
         let featureFlagService = MockFeatureFlagService(isSimplifiedLoginFlowI1Enabled: true)
         let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom),

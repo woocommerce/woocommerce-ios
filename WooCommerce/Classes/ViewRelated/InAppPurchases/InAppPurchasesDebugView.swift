@@ -2,10 +2,11 @@ import SwiftUI
 import StoreKit
 import Yosemite
 
+@MainActor
 struct InAppPurchasesDebugView: View {
     let siteID: Int64
-    private let stores = ServiceLocator.stores
-    @State var products: [StoreKit.Product] = []
+    private let inAppPurchasesForWPComPlansManager = InAppPurchasesForWPComPlansManager()
+    @State var products: [WPComPlanProduct] = []
 
     var body: some View {
         List {
@@ -18,9 +19,11 @@ struct InAppPurchasesDebugView: View {
                 if products.isEmpty {
                     Text("No products")
                 } else {
-                    ForEach(products) { product in
+                    ForEach(products, id: \.id) { product in
                         Button(product.description) {
-                            stores.dispatch(InAppPurchaseAction.purchaseProduct(siteID: siteID, productID: product.id, completion: { _ in }))
+                            Task {
+                                try? await inAppPurchasesForWPComPlansManager.purchaseProduct(with: product.id, for: siteID)
+                            }
                         }
                     }
                 }
@@ -33,14 +36,13 @@ struct InAppPurchasesDebugView: View {
     }
 
     private func loadProducts() {
-        stores.dispatch(InAppPurchaseAction.loadProducts(completion: { result in
-            switch result {
-            case .success(let products):
-                self.products = products
-            case .failure(let error):
+        Task {
+            do {
+                self.products = try await inAppPurchasesForWPComPlansManager.fetchProducts()
+            } catch {
                 print("Error loading products: \(error)")
             }
-        }))
+        }
     }
 }
 

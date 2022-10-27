@@ -25,9 +25,13 @@ protocol InAppPurchasesForWPComPlansProtocol {
     func inAppPurchasesAreSupported() async -> Bool
 }
 
+@MainActor
 final class InAppPurchasesForWPComPlansManager: InAppPurchasesForWPComPlansProtocol {
-    private let stores = ServiceLocator.stores
+    private let stores: StoresManager
 
+    init(stores: StoresManager = ServiceLocator.stores) {
+        self.stores = stores
+    }
 
     func fetchProducts() async throws -> [WPComPlanProduct] {
         try await withCheckedThrowingContinuation { continuation in

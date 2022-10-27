@@ -37,6 +37,10 @@ class AccountHeaderView: UIView {
     ///
     @IBOutlet private weak var helpButton: UIButton!
 
+    @IBOutlet private var containerView: UIView!
+
+    @IBOutlet private var containerViewConstraints: [NSLayoutConstraint]!
+
     /// Closure to be executed whenever the help button is pressed
     ///
     var onHelpRequested: (() -> Void)?
@@ -83,6 +87,15 @@ extension AccountHeaderView {
         }
         get {
             return helpButton.isHidden
+        }
+    }
+
+    func updateContainerView(hasBorders: Bool) {
+        containerView.layer.borderWidth = hasBorders ? 1 : 0
+        containerView.layer.borderColor = hasBorders ? UIColor.border.cgColor : UIColor.clear.cgColor
+        containerView.layer.cornerRadius = hasBorders ? 8 : 0
+        containerViewConstraints.forEach { constraint in
+            constraint.constant = hasBorders ? 16 : 0
         }
     }
 

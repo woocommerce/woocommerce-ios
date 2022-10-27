@@ -77,7 +77,7 @@ final class DashboardViewController: UIViewController {
     private var hasAnnouncementFeatureFlag: Bool { ServiceLocator.featureFlagService.isFeatureFlagEnabled(.justInTimeMessagesOnDashboard)
     }
 
-    private var announcementViewHostingController: UIHostingController<AnnouncementCardWrapper>?
+    private var announcementViewHostingController: ConstraintsUpdatingHostingController<AnnouncementCardWrapper>?
 
     private var announcementView: UIView?
 
@@ -342,7 +342,7 @@ private extension DashboardViewController {
     }
 
     private func showAnnouncement(_ cardView: AnnouncementCardWrapper) {
-        let hostingController = UIHostingController(rootView: cardView)
+        let hostingController = ConstraintsUpdatingHostingController(rootView: cardView)
         guard let uiView = hostingController.view else {
             return
         }

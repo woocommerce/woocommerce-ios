@@ -77,7 +77,7 @@ final class DashboardViewController: UIViewController {
     private var hasAnnouncementFeatureFlag: Bool { ServiceLocator.featureFlagService.isFeatureFlagEnabled(.promptToEnableCodInIppOnboarding)
     }
 
-    private var announcementViewHostingController: UIHostingController<FeatureAnnouncementCardView>?
+    private var announcementViewHostingController: UIHostingController<AnnouncementCardWrapper>?
 
     private var announcementView: UIView?
 
@@ -275,6 +275,15 @@ private extension DashboardViewController {
         }.store(in: &subscriptions)
     }
 
+    // This is used so we have a specific type for the view while applying modifiers.
+    struct AnnouncementCardWrapper: View {
+        let cardView: FeatureAnnouncementCardView
+
+        var body: some View {
+            cardView.background(Color(.listForeground))
+        }
+    }
+
     func observeAnnouncements() {
         viewModel.$announcementViewModel.sink { [weak self] viewModel in
             guard let self = self else { return }
@@ -286,7 +295,8 @@ private extension DashboardViewController {
             let cardView = FeatureAnnouncementCardView(viewModel: viewModel,
                                                                dismiss: {},
                                                                callToAction: {})
-            self.showAnnouncement(cardView)
+
+            self.showAnnouncement(AnnouncementCardWrapper(cardView: cardView))
         }
         .store(in: &subscriptions)
     }
@@ -302,7 +312,7 @@ private extension DashboardViewController {
         self.announcementView = nil
     }
 
-    private func showAnnouncement(_ cardView: FeatureAnnouncementCardView) {
+    private func showAnnouncement(_ cardView: AnnouncementCardWrapper) {
         let hostingController = UIHostingController(rootView: cardView)
         guard let uiView = hostingController.view else {
             return

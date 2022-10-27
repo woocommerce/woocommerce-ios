@@ -151,6 +151,11 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
             }
         }()
 
+        // Preview existing drafts or new products, that can be saved as a draft
+        if canSaveAsDraft() || productModel.status == .draft {
+            buttons.insert(.preview, at: 0)
+        }
+
         // Add more button if needed
         if shouldShowMoreOptionsMenu() {
             buttons.append(.more)

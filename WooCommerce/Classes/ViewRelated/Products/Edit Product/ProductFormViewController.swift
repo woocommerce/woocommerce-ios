@@ -199,6 +199,25 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         saveProduct(status: .draft)
     }
 
+    // MARK: Product preview action handling
+
+    @objc private func saveDraftAndDisplayProductPreview() {
+        guard viewModel.canSaveAsDraft(), viewModel.hasUnsavedChanges() else {
+            displayProductPreview()
+            return
+        }
+
+        saveProduct(status: .draft) { [weak self] result in
+            if result.isSuccess {
+                self?.displayProductPreview()
+            }
+        }
+    }
+
+    private func displayProductPreview() {
+        // TODO: Show webview
+    }
+
     // MARK: Navigation actions
 
     @objc func closeNavigationBarButtonTapped() {
@@ -910,6 +929,8 @@ private extension ProductFormViewController {
         // Create action buttons based on view model
         let rightBarButtonItems: [UIBarButtonItem] = viewModel.actionButtons.reversed().map { buttonType in
             switch buttonType {
+            case .preview:
+                return createPreviewBarButtonItem()
             case .publish:
                 return createPublishBarButtonItem()
             case .save:
@@ -934,6 +955,10 @@ private extension ProductFormViewController {
 
     func createSaveBarButtonItem() -> UIBarButtonItem {
         return UIBarButtonItem(title: Localization.saveTitle, style: .done, target: self, action: #selector(saveProductAndLogEvent))
+    }
+
+    func createPreviewBarButtonItem() -> UIBarButtonItem {
+        return UIBarButtonItem(title: Localization.previewTitle, style: .done, target: self, action: #selector(saveDraftAndDisplayProductPreview))
     }
 
     func createMoreOptionsBarButtonItem() -> UIBarButtonItem {
@@ -1537,6 +1562,7 @@ private extension ProductFormViewController {
 private enum Localization {
     static let publishTitle = NSLocalizedString("Publish", comment: "Action for creating a new product remotely with a published status")
     static let saveTitle = NSLocalizedString("Save", comment: "Action for saving a Product remotely")
+    static let previewTitle = NSLocalizedString("Preview", comment: "Action for previewing draft Product changes in the webview")
     static let groupedProductsViewTitle = NSLocalizedString("Grouped Products",
                                                             comment: "Navigation bar title for editing linked products for a grouped product")
     static let unnamedProduct = NSLocalizedString("Unnamed product",

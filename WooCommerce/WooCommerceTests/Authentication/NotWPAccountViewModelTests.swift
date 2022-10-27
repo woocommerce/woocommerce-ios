@@ -21,17 +21,6 @@ final class NotWPAccountViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    override func setUp() {
-        super.setUp()
-
-        initializeAuthenticator()
-    }
-
-    override func tearDown() {
-        // There is no known tear down for the Authenticator.
-        super.tearDown()
-    }
-
     func test_viewmodel_provides_expected_image() {
         // Given
         let viewModel = NotWPAccountViewModel()

@@ -347,11 +347,12 @@ private extension DashboardViewController {
         guard let uiView = hostingController.view else {
             return
         }
-        self.announcementViewHostingController = hostingController
-        self.announcementView = uiView
+        announcementViewHostingController = hostingController
+        announcementView = uiView
 
-        self.addChild(hostingController)
-        self.headerStackView.addArrangedSubviews([uiView])
+        addChild(hostingController)
+        let indexAfterHeader = (headerStackView.arrangedSubviews.firstIndex(of: innerStackView) ?? -1) + 1
+        headerStackView.insertArrangedSubview(uiView, at: indexAfterHeader)
 
         hostingController.didMove(toParent: self)
         hostingController.view.layoutIfNeeded()

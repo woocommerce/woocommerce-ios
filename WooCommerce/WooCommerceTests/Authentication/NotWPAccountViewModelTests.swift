@@ -137,15 +137,29 @@ final class NotWPAccountViewModelTests: XCTestCase {
 
     // MARK: - `secondaryButtonTitle`
 
-    func test_viewmodel_provides_expected_title_for_secondary_button() {
+    func test_viewmodel_provides_expected_title_for_secondary_button_when_simplified_login_feature_flag_is_off() {
         // Given
-        let viewModel = NotWPAccountViewModel()
+        let featureFlagService = MockFeatureFlagService(isSimplifiedLoginFlowI1Enabled: false)
+        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom),
+                                               featureFlagService: featureFlagService)
 
         // When
         let secondaryButtonTitle = viewModel.secondaryButtonTitle
 
         // Then
         XCTAssertEqual(secondaryButtonTitle, Expectations.restartLoginTitle)
+    }
+
+    func test_viewmodel_provides_expected_title_for_secondary_button_when_simplified_login_feature_flag_is_on() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isSimplifiedLoginFlowI1Enabled: true)
+        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom),
+                                               featureFlagService: featureFlagService)
+        // When
+        let secondaryButtonTitle = viewModel.secondaryButtonTitle
+
+        // Then
+        XCTAssertEqual(secondaryButtonTitle, Expectations.tryAnotherAddressTitle)
     }
 }
 
@@ -168,6 +182,10 @@ private extension NotWPAccountViewModelTests {
         static let createAnAccountTitle = NSLocalizedString("Create An Account",
                                                        comment: "Action button linking to create WooCommerce store flow."
                                                        + "Presented when logging in with an email address that is not a WordPress.com account")
+
+        static let tryAnotherAddressTitle = NSLocalizedString("Try Another Address",
+                                                         comment: "Action button that will restart the login flow."
+                                                         + "Presented when logging in with an email address that does not match a WordPress.com account")
     }
 }
 

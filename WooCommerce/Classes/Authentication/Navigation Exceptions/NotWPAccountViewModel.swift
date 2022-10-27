@@ -102,6 +102,7 @@ private extension NotWPAccountViewModel {
     }
 
     func createAnAccountButtonTapped() {
+        analytics.track(.createAccountOnInvalidEmailScreenTapped)
         // TODO: 7903 - Navigate to create store flow.
     }
 }

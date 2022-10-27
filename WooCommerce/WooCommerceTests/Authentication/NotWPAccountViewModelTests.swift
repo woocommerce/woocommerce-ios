@@ -12,7 +12,7 @@ final class NotWPAccountViewModelTests: XCTestCase {
 
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        initializeAuthenticator()
+        WordPressAuthenticator.initializeAuthenticator()
     }
 
     override func tearDown() {
@@ -117,7 +117,7 @@ final class NotWPAccountViewModelTests: XCTestCase {
         XCTAssertEqual(primaryButtonTitle, Expectations.loginWithSiteAddressTitle)
     }
 
-    func test_primary_button_title_is_login_with_site_address_for_invalidWPComEmail_from_wpCom_error_when_simplified_login_feature_flag_is_on() {
+    func test_primary_button_title_is_create_an_account_for_invalidWPComEmail_from_wpCom_error_when_simplified_login_feature_flag_is_on() {
         // Given
         let featureFlagService = MockFeatureFlagService(isSimplifiedLoginFlowI1Enabled: true)
         let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom),
@@ -269,108 +269,5 @@ private extension NotWPAccountViewModelTests {
 private extension NotWPAccountViewModel {
     convenience init() {
         self.init(error: SignInError.invalidWPComEmail(source: .wpCom))
-    }
-}
-
-
-// MARK: - WordPressAuthenticator Initialization
-
-private extension NotWPAccountViewModelTests {
-    /// Initialize `WordPressAuthenticator` with dummy configuration.
-    ///
-    /// For some reason, the tests in this class fail when the `.view` is loaded because
-    /// `NUXButton` instances used within `ULErrorViewController` seem to _phone home_ and access
-    /// the `WordPressAuthenticator` instance. And since the `WordPressAuthenticator` instance
-    /// was not initialized, I get a unit test fatal error:
-    ///
-    /// ```
-    /// WordPressAuthenticator wasn't initialized
-    /// ```
-    ///
-    /// Initializing with dummy data seems to work.
-    ///
-    /// There is no known way to tear down this instance. Once initialized, it's initialized. And
-    /// I don't believe we use `WordPressAuthenticator` anywhere else. So hopefully this will not
-    /// bleed into the other unit tests. ¯\(°_o)/¯
-    func initializeAuthenticator() {
-        let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: "",
-                                                                wpcomSecret: "",
-                                                                wpcomScheme: "",
-                                                                wpcomTermsOfServiceURL: "",
-                                                                wpcomAPIBaseURL: "",
-                                                                googleLoginClientId: "",
-                                                                googleLoginServerClientId: "",
-                                                                googleLoginScheme: "",
-                                                                userAgent: "",
-                                                                showLoginOptions: true,
-                                                                enableSignUp: false,
-                                                                enableSignInWithApple: false,
-                                                                enableSignupWithGoogle: false,
-                                                                enableUnifiedAuth: true,
-                                                                continueWithSiteAddressFirst: true)
-
-        let style = WordPressAuthenticatorStyle(primaryNormalBackgroundColor: .red,
-                                                primaryNormalBorderColor: .red,
-                                                primaryHighlightBackgroundColor: .red,
-                                                primaryHighlightBorderColor: .red,
-                                                secondaryNormalBackgroundColor: .red,
-                                                secondaryNormalBorderColor: .red,
-                                                secondaryHighlightBackgroundColor: .red,
-                                                secondaryHighlightBorderColor: .red,
-                                                disabledBackgroundColor: .red,
-                                                disabledBorderColor: .red,
-                                                primaryTitleColor: .primaryButtonTitle,
-                                                secondaryTitleColor: .red,
-                                                disabledTitleColor: .red,
-                                                disabledButtonActivityIndicatorColor: .red,
-                                                textButtonColor: .red,
-                                                textButtonHighlightColor: .red,
-                                                instructionColor: .red,
-                                                subheadlineColor: .red,
-                                                placeholderColor: .red,
-                                                viewControllerBackgroundColor: .red,
-                                                textFieldBackgroundColor: .red,
-                                                buttonViewBackgroundColor: .red,
-                                                buttonViewTopShadowImage: nil,
-                                                navBarImage: UIImage(),
-                                                navBarBadgeColor: .red,
-                                                navBarBackgroundColor: .red,
-                                                prologueTopContainerChildViewController: nil,
-                                                statusBarStyle: .default)
-
-        let displayStrings = WordPressAuthenticatorDisplayStrings(emailLoginInstructions: "",
-                                                                  getStartedInstructions: "",
-                                                                  jetpackLoginInstructions: "",
-                                                                  siteLoginInstructions: "",
-                                                                  usernamePasswordInstructions: "",
-                                                                  continueWithWPButtonTitle: "",
-                                                                  enterYourSiteAddressButtonTitle: "",
-                                                                  findSiteButtonTitle: "",
-                                                                  signupTermsOfService: "",
-                                                                  getStartedTitle: "")
-
-        let unifiedStyle = WordPressAuthenticatorUnifiedStyle(borderColor: .red,
-                                                              errorColor: .red,
-                                                              textColor: .red,
-                                                              textSubtleColor: .red,
-                                                              textButtonColor: .red,
-                                                              textButtonHighlightColor: .red,
-                                                              viewControllerBackgroundColor: .red,
-                                                              prologueButtonsBackgroundColor: .red,
-                                                              prologueViewBackgroundColor: .red,
-                                                              navBarBackgroundColor: .red,
-                                                              navButtonTextColor: .red,
-                                                              navTitleTextColor: .red)
-
-        let displayImages = WordPressAuthenticatorDisplayImages(
-            magicLink: UIImage(),
-            siteAddressModalPlaceholder: UIImage()
-        )
-
-        WordPressAuthenticator.initialize(configuration: configuration,
-                                          style: style,
-                                          unifiedStyle: unifiedStyle,
-                                          displayImages: displayImages,
-                                          displayStrings: displayStrings)
     }
 }

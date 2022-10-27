@@ -135,22 +135,16 @@ final class NotWPAccountViewModelTests: XCTestCase {
         // Given
         let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpComSiteAddress))
 
-        // When
-        let isPrimaryButtonHidden = viewModel.isSecondaryButtonHidden
-
         // Then
-        XCTAssertTrue(isPrimaryButtonHidden)
+        XCTAssertTrue(viewModel.isSecondaryButtonHidden)
     }
 
     func test_secondary_button_is_not_hidden_for_invalidWPComEmail_from_wpCom_error() {
         // Given
         let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom))
 
-        // When
-        let isPrimaryButtonHidden = viewModel.isSecondaryButtonHidden
-
         // Then
-        XCTAssertFalse(isPrimaryButtonHidden)
+        XCTAssertFalse(viewModel.isSecondaryButtonHidden)
     }
 
     // MARK: - `secondaryButtonTitle`

@@ -164,6 +164,7 @@
 		2670C3FE270F4E6A002FE931 /* sites-malformed.json in Resources */ = {isa = PBXBuildFile; fileRef = 2670C3FD270F4E6A002FE931 /* sites-malformed.json */; };
 		267313312559CC930026F7EF /* PaymentGateway.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267313302559CC930026F7EF /* PaymentGateway.swift */; };
 		26731337255ACA850026F7EF /* PaymentGatewayListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26731336255ACA850026F7EF /* PaymentGatewayListMapper.swift */; };
+		2676F4CE290AE6BB00C7A15B /* EntityIDMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2676F4CD290AE6BB00C7A15B /* EntityIDMapper.swift */; };
 		2683D70E24456DB8002A1589 /* categories-empty.json in Resources */ = {isa = PBXBuildFile; fileRef = 2683D70D24456DB7002A1589 /* categories-empty.json */; };
 		2683D71024456EE4002A1589 /* categories-extra.json in Resources */ = {isa = PBXBuildFile; fileRef = 2683D70F24456EE4002A1589 /* categories-extra.json */; };
 		2685C0D2263B069500D9EE97 /* AddOnGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2685C0D1263B069500D9EE97 /* AddOnGroup.swift */; };
@@ -887,6 +888,7 @@
 		2670C3FD270F4E6A002FE931 /* sites-malformed.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "sites-malformed.json"; sourceTree = "<group>"; };
 		267313302559CC930026F7EF /* PaymentGateway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentGateway.swift; sourceTree = "<group>"; };
 		26731336255ACA850026F7EF /* PaymentGatewayListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentGatewayListMapper.swift; sourceTree = "<group>"; };
+		2676F4CD290AE6BB00C7A15B /* EntityIDMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityIDMapper.swift; sourceTree = "<group>"; };
 		2683D70D24456DB7002A1589 /* categories-empty.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "categories-empty.json"; sourceTree = "<group>"; };
 		2683D70F24456EE4002A1589 /* categories-extra.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "categories-extra.json"; sourceTree = "<group>"; };
 		2685C0D1263B069500D9EE97 /* AddOnGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOnGroup.swift; sourceTree = "<group>"; };
@@ -2215,6 +2217,7 @@
 				DE2095BE279583A100171F1C /* CouponReportListMapper.swift */,
 				45150A9D26836A57006922EA /* CountryListMapper.swift */,
 				B524193E21AC5FE400D6FC0A /* DotcomDeviceMapper.swift */,
+				2676F4CD290AE6BB00C7A15B /* EntityIDMapper.swift */,
 				24F98C572502EA8800F49B68 /* FeatureFlagMapper.swift */,
 				DE50295C28C6068B00551736 /* JetpackUserMapper.swift */,
 				AEF9458A27297FF6001DCCFB /* IgnoringResponseMapper.swift */,
@@ -3240,6 +3243,7 @@
 				029BA53B255DFABD006171FD /* ShippingLabelPrintDataMapper.swift in Sources */,
 				0359EA0D27AAC5F80048DE2D /* WCPayChargeStatus.swift in Sources */,
 				CE430674234BA6AD0073CBFF /* RefundMapper.swift in Sources */,
+				2676F4CE290AE6BB00C7A15B /* EntityIDMapper.swift in Sources */,
 				CE0A0F1B223989670075ED8D /* ProductsRemote.swift in Sources */,
 				0359EA1527AAC7460048DE2D /* WCPayCardBrand.swift in Sources */,
 				2665032E261F4FBF0079A159 /* ProductAddOnOption.swift in Sources */,

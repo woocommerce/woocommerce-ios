@@ -357,7 +357,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     public func createTemplateProduct(for siteID: Int64, template: ProductsRemote.TemplateType, completion: @escaping (Result<Int64, Error>) -> Void) {
         let parameters = [ParameterKey.templateName: template.rawValue]
         let path = Path.templateProducts
-        let request = JetpackRequest(wooApiVersion: .wcAdmin, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .wcAdmin, method: .post, siteID: siteID, path: path, parameters: parameters)
         let mapper = EntityIDMapper()
 
         enqueue(request, mapper: mapper, completion: completion)

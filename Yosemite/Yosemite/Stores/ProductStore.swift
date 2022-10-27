@@ -413,6 +413,7 @@ private extension ProductStore {
     }
 
     /// Creates a product using the provided template type.
+    /// The created product is not stored locally.
     ///
     func createTemplateProduct(siteID: Int64, template: ProductsRemote.TemplateType, onCompletion: @escaping (Result<Product, Error>) -> Void) {
         remote.createTemplateProduct(for: siteID, template: template) { [remote] result in

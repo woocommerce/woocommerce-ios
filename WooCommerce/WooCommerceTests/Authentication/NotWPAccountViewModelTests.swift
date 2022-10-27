@@ -210,6 +210,34 @@ final class NotWPAccountViewModelTests: XCTestCase {
         // Then
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "what_is_wordpress_com_on_invalid_email_screen" }))
     }
+
+    func test_tapping_primary_button_does_not_track_create_account_event_when_simplified_login_feature_flag_is_off() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isSimplifiedLoginFlowI1Enabled: false)
+        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom),
+                                              analytics: analytics,
+                                              featureFlagService: featureFlagService)
+
+        // When
+        viewModel.didTapPrimaryButton(in: nil)
+
+        // Then
+        XCTAssertNil(analyticsProvider.receivedEvents.first(where: { $0 == "create_account_on_invalid_email_screen" }))
+    }
+
+    func test_tapping_primary_button_tracks_create_account_event_when_simplified_login_feature_flag_is_on() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isSimplifiedLoginFlowI1Enabled: true)
+        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom),
+                                              analytics: analytics,
+                                              featureFlagService: featureFlagService)
+
+        // When
+        viewModel.didTapPrimaryButton(in: nil)
+
+        // Then
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "create_account_on_invalid_email_screen" }))
+    }
 }
 
 

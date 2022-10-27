@@ -49,15 +49,29 @@ final class NotWPAccountViewModelTests: XCTestCase {
         XCTAssertEqual(auxiliaryButtonTitle, AuthenticationConstants.whatIsWPComLinkTitle)
     }
 
-    func test_viewmodel_provides_expected_title_for_primary_button() {
+    func test_viewmodel_provides_expected_title_for_primary_button_when_simplified_login_feature_flag_is_off() {
         // Given
-        let viewModel = NotWPAccountViewModel()
+        let featureFlagService = MockFeatureFlagService(isSimplifiedLoginFlowI1Enabled: false)
+        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom),
+                                               featureFlagService: featureFlagService)
 
         // When
         let primaryButtonTitle = viewModel.primaryButtonTitle
 
         // Then
         XCTAssertEqual(primaryButtonTitle, Expectations.loginWithSiteAddressTitle)
+    }
+
+    func test_viewmodel_provides_expected_title_for_primary_button_when_simplified_login_feature_flag_is_on() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isSimplifiedLoginFlowI1Enabled: true)
+        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom),
+                                               featureFlagService: featureFlagService)
+        // When
+        let primaryButtonTitle = viewModel.primaryButtonTitle
+
+        // Then
+        XCTAssertEqual(primaryButtonTitle, Expectations.createAnAccountTitle)
     }
 
     // MARK: - `primaryButtonTitle`
@@ -73,15 +87,28 @@ final class NotWPAccountViewModelTests: XCTestCase {
         XCTAssertEqual(primaryButtonTitle, Expectations.restartLoginTitle)
     }
 
-    func test_primary_button_title_is_login_with_site_address_for_invalidWPComEmail_from_wpCom_error() {
+    func test_primary_button_title_is_login_with_site_address_for_invalidWPComEmail_from_wpCom_error_when_simplified_login_feature_flag_is_off() {
         // Given
-        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom))
-
+        let featureFlagService = MockFeatureFlagService(isSimplifiedLoginFlowI1Enabled: false)
+        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom),
+                                              featureFlagService: featureFlagService)
         // When
         let primaryButtonTitle = viewModel.primaryButtonTitle
 
         // Then
         XCTAssertEqual(primaryButtonTitle, Expectations.loginWithSiteAddressTitle)
+    }
+
+    func test_primary_button_title_is_login_with_site_address_for_invalidWPComEmail_from_wpCom_error_when_simplified_login_feature_flag_is_on() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isSimplifiedLoginFlowI1Enabled: true)
+        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom),
+                                              featureFlagService: featureFlagService)
+        // When
+        let primaryButtonTitle = viewModel.primaryButtonTitle
+
+        // Then
+        XCTAssertEqual(primaryButtonTitle, Expectations.createAnAccountTitle)
     }
 
     // MARK: - `isSecondaryButtonHidden`

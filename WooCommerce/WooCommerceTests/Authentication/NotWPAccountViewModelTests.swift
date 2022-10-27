@@ -158,7 +158,7 @@ final class NotWPAccountViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isPrimaryButtonHidden)
     }
 
-    func test_primary_button_is_not_hidden_for_invalidWPComEmail_from_wpCom_error_when_simplified_login_is_on_and_store_creation_is_off() {
+    func test_primary_button_is_hidden_for_invalidWPComEmail_from_wpCom_error_when_simplified_login_is_on_and_store_creation_is_off() {
         // Given
         let featureFlagService = MockFeatureFlagService(isSimplifiedLoginFlowI1Enabled: true,
                                                         isStoreCreationMVPEnabled: false)

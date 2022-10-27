@@ -34,7 +34,7 @@ final class CustomerSearchUICommand: SearchUICommand {
     }
 
     func createStarterViewController() -> UIViewController? {
-        nil
+        createEmptyStateViewController()
     }
 
     func configureEmptyStateViewControllerBeforeDisplay(viewController: EmptyStateViewController, searchKeyword: String) {

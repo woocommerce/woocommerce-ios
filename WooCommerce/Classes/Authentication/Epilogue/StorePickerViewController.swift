@@ -160,6 +160,10 @@ final class StorePickerViewController: UIViewController {
         self?.restartAuthentication()
     }
 
+    private lazy var isSimplifiedLogin: Bool = {
+        featureFlagService.isFeatureFlagEnabled(.simplifiedLoginFlowI1)
+    }()
+
     @Published private var possibleSiteURLsFromStoreCreation: Set<String> = []
     private var possibleSiteURLsFromStoreCreationSubscription: AnyCancellable?
 
@@ -209,6 +213,11 @@ final class StorePickerViewController: UIViewController {
         }
     }
 
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        tableView.updateHeaderHeight()
+    }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
@@ -246,6 +255,7 @@ private extension StorePickerViewController {
             return
         }
 
+        accountHeaderView.updateContainerView(hasBorders: isSimplifiedLogin)
         accountHeaderView.username = "@" + defaultAccount.username
         accountHeaderView.fullname = defaultAccount.displayName
         accountHeaderView.downloadGravatar(with: defaultAccount.email)

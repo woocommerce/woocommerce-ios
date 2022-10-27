@@ -110,12 +110,12 @@ private extension NotWPAccountViewModel {
 
         let accountCreationController = AccountCreationFormHostingController(viewModel: .init()) { [weak self] in
             guard let self, let navigationController = viewController.navigationController else { return }
-            self.startStoreCreation(in: navigationController)
+            self.launchStorePicker(from: navigationController)
         }
         viewController.show(accountCreationController, sender: self)
     }
 
-    func startStoreCreation(in navigationController: UINavigationController) {
+    func launchStorePicker(from navigationController: UINavigationController) {
         storePickerCoordinator = StorePickerCoordinator(navigationController, config: .listStores)
         storePickerCoordinator?.start()
     }

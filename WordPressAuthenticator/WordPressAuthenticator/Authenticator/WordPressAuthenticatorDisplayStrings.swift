@@ -80,7 +80,7 @@ public struct WordPressAuthenticatorDisplayStrings {
                 googleSignupInstructions: String = defaultStrings.googleSignupInstructions,
                 googlePasswordInstructions: String = defaultStrings.googlePasswordInstructions,
                 applePasswordInstructions: String = defaultStrings.applePasswordInstructions,
-                continueButtonTitle: String =  defaultStrings.continueButtonTitle,
+                continueButtonTitle: String = defaultStrings.continueButtonTitle,
                 magicLinkButtonTitle: String = defaultStrings.magicLinkButtonTitle,
                 openMailButtonTitle: String = defaultStrings.openMailButtonTitle,
                 createAccountButtonTitle: String = defaultStrings.createAccountButtonTitle,

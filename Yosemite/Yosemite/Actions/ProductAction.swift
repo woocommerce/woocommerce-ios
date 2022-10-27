@@ -82,4 +82,8 @@ public enum ProductAction: Action {
     /// Upserts a product in our local storage
     ///
     case replaceProductLocally(product: Product, onCompletion: () -> Void)
+
+    /// Checks if the store has at least one product
+    ///
+    case checkForProducts(siteID: Int64, onCompletion: (Result<Bool, Error>) -> Void)
 }

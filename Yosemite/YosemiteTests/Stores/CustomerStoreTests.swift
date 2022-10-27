@@ -184,4 +184,23 @@ final class CustomerStoreTests: XCTestCase {
         XCTAssertEqual(storedCustomer?.customerID, dummyCustomerID)
         XCTAssertEqual(storedCustomer?.firstName, "John")
     }
+
+    func test_searchCustomers_returns_no_customers_when_customer_is_not_registered() throws {
+        // Given
+        let customerID = 0
+        network.simulateResponse(requestUrlSuffix: "customers", filename: "wc-analytics-customers")
+        network.simulateResponse(requestUrlSuffix: "customers/\(customerID)", filename: "customer")
+
+        // When
+        let response: Result<[Networking.Customer], Error> = waitFor { promise in
+            let action = CustomerAction.searchCustomers(siteID: self.dummySiteID, keyword: self.dummyKeyword) { result in
+                promise(result)
+            }
+            self.dispatcher.dispatch(action)
+        }
+
+        // Then
+        let customers = try response.get()
+        XCTAssertEqual(customers.count, 0)
+    }
 }

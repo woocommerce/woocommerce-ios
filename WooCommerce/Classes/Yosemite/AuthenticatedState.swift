@@ -39,6 +39,7 @@ class AuthenticatedState: StoresManagerState {
             DataStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             InAppPurchaseStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             InboxNotesStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            JustInTimeMessageStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             MediaStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             NotificationCountStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: PListFileStorage()),

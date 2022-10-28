@@ -116,6 +116,7 @@ final class DashboardViewController: UIViewController {
         observeBottomJetpackBenefitsBannerVisibilityUpdates()
         observeNavigationBarHeightForStoreNameLabelVisibility()
         observeStatsVersionForDashboardUIUpdates()
+        trackProductsOnboardingEligibility()
         Task { @MainActor in
             await reloadDashboardUIStatsVersion(forced: true)
         }
@@ -242,6 +243,23 @@ private extension DashboardViewController {
 
             self?.hideJetpackBenefitsBanner()
         }
+    }
+
+    /// Tracks if the store is eligible for products onboarding (if the store has no existing products)
+    ///
+    func trackProductsOnboardingEligibility() {
+        let action = ProductAction.checkForProducts(siteID: siteID) { result in
+            switch result {
+            case .success(let hasProducts):
+                // Store is eligible for onboarding if it has no products
+                if !hasProducts {
+                    ServiceLocator.analytics.track(.productsOnboardingEligible)
+                }
+            case .failure(let error):
+                DDLogError("⛔️ Dashboard — Error checking products onboarding eligibility: \(error)")
+            }
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 
     func reloadDashboardUIStatsVersion(forced: Bool) async {

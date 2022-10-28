@@ -102,23 +102,7 @@ final class DashboardViewModel {
     func syncAnnouncements(for siteID: Int64) {
         syncProductsOnboarding(for: siteID)
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.justInTimeMessagesOnDashboard) {
-            let action = JustInTimeMessageAction.loadMessage(
-                siteID: siteID,
-                screen: Constants.dashboardScreenName,
-                hook: .adminNotices) { result in
-                    switch result {
-                    case let .success(.some(message)):
-                        let viewModel = JustInTimeMessageAnnouncementCardViewModel(title: message.title,
-                                                                                   message: message.detail,
-                                                                                   buttonTitle: message.buttonTitle)
-                        self.announcementViewModel = viewModel
-                    default:
-                        break
-                    }
-                }
-            stores.dispatch(action)
-        }
+        syncJustInTimeMessages(for: siteID)
     }
 
     /// Checks if a store is eligible for products onboarding and prepares the onboarding announcement if needed.
@@ -139,6 +123,30 @@ final class DashboardViewModel {
                 DDLogError("⛔️ Dashboard — Error checking products onboarding eligibility: \(error)")
             }
         }
+        stores.dispatch(action)
+    }
+
+    /// Checks for Just In Time Messages and prepares the announcement if needed.
+    ///
+    private func syncJustInTimeMessages(for siteID: Int64) {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.justInTimeMessagesOnDashboard) else {
+            return
+        }
+
+        let action = JustInTimeMessageAction.loadMessage(
+            siteID: siteID,
+            screen: Constants.dashboardScreenName,
+            hook: .adminNotices) { [weak self] result in
+                switch result {
+                case let .success(.some(message)):
+                    let viewModel = JustInTimeMessageAnnouncementCardViewModel(title: message.title,
+                                                                               message: message.detail,
+                                                                               buttonTitle: message.buttonTitle)
+                    self?.announcementViewModel = viewModel
+                default:
+                    break
+                }
+            }
         stores.dispatch(action)
     }
 }

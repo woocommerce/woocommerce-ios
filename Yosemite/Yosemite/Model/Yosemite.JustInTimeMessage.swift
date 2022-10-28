@@ -2,7 +2,7 @@ import Foundation
 import Networking
 import Codegen
 
-public struct YosemiteJustInTimeMessage: GeneratedFakeable, GeneratedCopiable, Equatable {
+public struct JustInTimeMessage: GeneratedFakeable, GeneratedCopiable, Equatable {
     /// Site Identifier
     ///
     public let siteID: Int64

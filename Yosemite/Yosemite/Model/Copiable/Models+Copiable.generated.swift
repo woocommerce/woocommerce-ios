@@ -5,6 +5,36 @@ import Foundation
 import Networking
 
 
+extension Yosemite.JustInTimeMessage {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        messageID: CopiableProp<String> = .copy,
+        featureClass: CopiableProp<String> = .copy,
+        title: CopiableProp<String> = .copy,
+        detail: CopiableProp<String> = .copy,
+        buttonTitle: CopiableProp<String> = .copy,
+        url: CopiableProp<String> = .copy
+    ) -> Yosemite.JustInTimeMessage {
+        let siteID = siteID ?? self.siteID
+        let messageID = messageID ?? self.messageID
+        let featureClass = featureClass ?? self.featureClass
+        let title = title ?? self.title
+        let detail = detail ?? self.detail
+        let buttonTitle = buttonTitle ?? self.buttonTitle
+        let url = url ?? self.url
+
+        return Yosemite.JustInTimeMessage(
+            siteID: siteID,
+            messageID: messageID,
+            featureClass: featureClass,
+            title: title,
+            detail: detail,
+            buttonTitle: buttonTitle,
+            url: url
+        )
+    }
+}
+
 extension Yosemite.ProductReviewFromNoteParcel {
     public func copy(
         note: CopiableProp<Note> = .copy,
@@ -19,36 +49,6 @@ extension Yosemite.ProductReviewFromNoteParcel {
             note: note,
             review: review,
             product: product
-        )
-    }
-}
-
-extension Yosemite.YosemiteJustInTimeMessage {
-    public func copy(
-        siteID: CopiableProp<Int64> = .copy,
-        messageID: CopiableProp<String> = .copy,
-        featureClass: CopiableProp<String> = .copy,
-        title: CopiableProp<String> = .copy,
-        detail: CopiableProp<String> = .copy,
-        buttonTitle: CopiableProp<String> = .copy,
-        url: CopiableProp<String> = .copy
-    ) -> Yosemite.YosemiteJustInTimeMessage {
-        let siteID = siteID ?? self.siteID
-        let messageID = messageID ?? self.messageID
-        let featureClass = featureClass ?? self.featureClass
-        let title = title ?? self.title
-        let detail = detail ?? self.detail
-        let buttonTitle = buttonTitle ?? self.buttonTitle
-        let url = url ?? self.url
-
-        return Yosemite.YosemiteJustInTimeMessage(
-            siteID: siteID,
-            messageID: messageID,
-            featureClass: featureClass,
-            title: title,
-            detail: detail,
-            buttonTitle: buttonTitle,
-            url: url
         )
     }
 }

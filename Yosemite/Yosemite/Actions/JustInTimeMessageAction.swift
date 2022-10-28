@@ -8,5 +8,5 @@ public enum JustInTimeMessageAction: Action {
     case loadMessage(siteID: Int64,
                      screen: String,
                      hook: JustInTimeMessageHook,
-                     completion: (Result<YosemiteJustInTimeMessage?, Error>) -> ())
+                     completion: (Result<JustInTimeMessage?, Error>) -> ())
 }

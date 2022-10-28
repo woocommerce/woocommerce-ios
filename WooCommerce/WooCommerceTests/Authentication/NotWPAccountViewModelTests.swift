@@ -36,7 +36,7 @@ final class NotWPAccountViewModelTests: XCTestCase {
     func test_viewmodel_provides_expected_error_message() {
         // Given
         let viewModel = NotWPAccountViewModel()
-        let expectation = NSAttributedString(string: Expectations.errorMessage)
+        let expectation = NSAttributedString(string: Expectations.errorMessage, attributes: [.font: UIFont.title3SemiBold])
 
         // When
         let errorMessage = viewModel.text

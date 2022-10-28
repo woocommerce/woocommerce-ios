@@ -103,6 +103,10 @@ protocol AddressFormViewModelProtocol: ObservableObject {
     /// Creates a view model to be used when selecting a state for secondary fields
     ///
     func createSecondaryStateViewModel() -> StateSelectorViewModel
+
+    /// Fills AddressForm fields with Customer details
+    ///
+    func fillCustomerFields(customer: Customer)
 }
 
 /// Type to hold values from all the form fields
@@ -396,6 +400,31 @@ open class AddressFormViewModel: ObservableObject {
         let primaryEmailIsValid = fields.email.isEmpty || EmailFormatValidator.validate(string: fields.email)
         let secondaryEmailIsValid = secondaryFields.email.isEmpty || EmailFormatValidator.validate(string: fields.email)
         return primaryEmailIsValid && secondaryEmailIsValid
+    }
+
+    /// Fills AddressForm fields with Customer details
+    ///
+    func fillCustomerFields(customer: Customer) {
+        fields = populate(fields: fields, with: customer, address: customer.billing)
+        secondaryFields = populate(fields: secondaryFields, with: customer, address: customer.shipping)
+    }
+
+    private func populate(fields: AddressFormFields, with customer: Customer, address: Address?) -> AddressFormFields {
+        var fields = fields
+
+        fields.firstName = customer.firstName ?? ""
+        fields.lastName = customer.lastName ?? ""
+        fields.email = customer.email
+        fields.phone = address?.phone ?? ""
+        fields.company = address?.company ?? ""
+        fields.address1 = address?.address1 ?? ""
+        fields.address2 = address?.address2 ?? ""
+        fields.city = address?.city ?? ""
+        fields.postcode = address?.postcode ?? ""
+        fields.country = address?.country ?? ""
+        fields.state = address?.state ?? ""
+
+        return fields
     }
 }
 

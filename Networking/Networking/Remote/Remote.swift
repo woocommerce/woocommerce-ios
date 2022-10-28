@@ -4,7 +4,7 @@ import protocol Alamofire.URLRequestConvertible
 
 /// Represents a collection of Remote Endpoints
 ///
-public class Remote {
+public class Remote: NSObject {
 
     /// Networking Wrapper: Dependency Injection Mechanism, useful for Unit Testing purposes.
     ///
@@ -22,34 +22,32 @@ public class Remote {
     }
 
 
-    /// Enqueues the specified Network Request.
+    /// Enqueues the specified Network Request with a generic expected result type.
     ///
-    /// - Parameters:
-    ///     - request: Request that should be performed.
-    ///     - completion: Closure to be executed upon completion. Will receive the JSON Parsed Response (if successful)
-    ///
-    func enqueue(_ request: URLRequestConvertible, completion: @escaping (Any?, Error?) -> Void) {
-        network.responseData(for: request) { [weak self] (data, networError) in
-            guard let self = self else {
-                return
-            }
+    /// - Parameter request: Request that should be performed.
+    /// - Returns: The result from the JSON parsed response for the expected type.
+    func enqueue<T: Decodable>(_ request: URLRequestConvertible) async throws -> T {
+        try await withCheckedThrowingContinuation { continuation in
+            network.responseData(for: request) { [weak self] result in
+                guard let self else { return }
 
-            guard let data = data else {
-                completion(nil, networError)
-                return
-            }
+                switch result {
+                case .success(let data):
+                    if let dotcomError = DotcomValidator.error(from: data) {
+                        self.dotcomErrorWasReceived(error: dotcomError, for: request)
+                        continuation.resume(throwing: dotcomError)
+                        return
+                    }
 
-            if let dotcomError = DotcomValidator.error(from: data) {
-                self.dotcomErrorWasReceived(error: dotcomError, for: request)
-                completion(nil, dotcomError)
-                return
-            }
-
-            do {
-                let document = try JSONSerialization.jsonObject(with: data, options: [])
-                completion(document, nil)
-            } catch {
-                completion(nil, error)
+                    do {
+                        let document = try JSONDecoder().decode(T.self, from: data)
+                        continuation.resume(returning: document)
+                    } catch {
+                        continuation.resume(throwing: error)
+                    }
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
             }
         }
     }
@@ -207,6 +205,40 @@ public class Remote {
                                                 DDLogError("<> Mapping Error: \(error)")
                                                 completion(.failure(error))
                                             }
+        }
+    }
+
+    /// Enqueues the specified Network Request using Swift Concurrency.
+    ///
+    /// - Important:
+    ///     - Parsing will be performed by the Mapper.
+    ///
+    /// - Parameter request: Request that should be performed.
+    /// - Returns: The result from the JSON parsed response for the expected type.
+    func enqueue<M: Mapper>(_ request: URLRequestConvertible, mapper: M) async throws -> Result<M.Output, Error> {
+        try await withCheckedThrowingContinuation { continuation in
+            network.responseData(for: request) { [weak self] result in
+                guard let self else { return }
+
+                switch result {
+                case .success(let data):
+                    if let dotcomError = DotcomValidator.error(from: data) {
+                        self.dotcomErrorWasReceived(error: dotcomError, for: request)
+                        continuation.resume(throwing: dotcomError)
+                        return
+                    }
+
+                    do {
+                        let parsed = try mapper.map(response: data)
+                        continuation.resume(returning: .success(parsed))
+                    } catch {
+                        DDLogError("<> Mapping Error: \(error)")
+                        continuation.resume(returning: .failure(error))
+                    }
+                case .failure(let error):
+                    continuation.resume(returning: .failure(error))
+                }
+            }
         }
     }
 }

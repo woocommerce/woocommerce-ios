@@ -1,3 +1,1 @@
-Grande nouvelle ! Vous pouvez désormais modifier les variantes de prix de manière groupée. Il vous suffit de disposer de la toute dernière version de WooCommerce disponible dans votre boutique. Nous nous sommes concentrés sur l’apport d’améliorations et la résolution de bogues mineurs détectés par notre équipe.
-
-Continuez à nous faire part de vos commentaires ; ils nous aident à nous améliorer.
+Que pensez-vous du nouveau widget de statistiques dans l’application ? Aujourd’hui, c’est votre jour de chance ! Il est maintenant possible d’afficher le widget de statistiques sur votre écran de verrouillage. Cette fonctionnalité est uniquement disponible sur iOS 16. Nous avons également amélioré la fonctionnalité de remplissage automatique du flux d’achat de lecteur de carte de manière à faciliter l’achat d’un lecteur de carte directement depuis l’application.

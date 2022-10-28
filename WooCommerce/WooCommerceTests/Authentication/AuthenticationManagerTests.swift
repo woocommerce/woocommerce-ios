@@ -182,7 +182,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(rootController is ULErrorViewController)
     }
 
-    func test_it_shows_error_upon_login_epilogue_if_the_site_has_active_jetpack_but_not_connected() {
+    func test_it_shows_account_mismatch_upon_login_epilogue_if_the_site_has_active_jetpack_but_not_connected() {
         // Given
         let manager = AuthenticationManager()
         let testSite = "http://test.com"
@@ -203,7 +203,7 @@ final class AuthenticationManagerTests: XCTestCase {
 
         // Then
         let rootController = navigationController.viewControllers.first
-        XCTAssertTrue(rootController is ULErrorViewController)
+        XCTAssertTrue(rootController is ULAccountMismatchViewController)
     }
 
     func test_it_can_display_jetpack_error_for_org_site_credentials_sign_in() {
@@ -399,7 +399,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(topController is ULErrorViewController)
     }
 
-    func test_troubleshootSite_displays_error_screen_if_site_is_self_hosted_with_jetpack_not_connected() {
+    func test_troubleshootSite_displays_account_mismatch_screen_if_site_is_self_hosted_with_jetpack_not_connected() {
         // Given
         let navigationController = UINavigationController()
         let siteInfo = siteInfo(exists: true, hasWordPress: true, isWordPressCom: false, hasJetpack: true, isJetpackActive: true, isJetpackConnected: false)
@@ -414,7 +414,7 @@ final class AuthenticationManagerTests: XCTestCase {
             navigationController.viewControllers.isNotEmpty
         }
         let topController = navigationController.topViewController
-        XCTAssertTrue(topController is ULErrorViewController)
+        XCTAssertTrue(topController is ULAccountMismatchViewController)
     }
 
     func test_troubleshootSite_displays_account_mismatch_screen_if_site_is_self_hosted_with_jetpack() {

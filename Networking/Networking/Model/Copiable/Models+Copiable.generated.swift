@@ -313,6 +313,63 @@ extension JetpackUser {
     }
 }
 
+extension JustInTimeMessage {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        messageID: CopiableProp<String> = .copy,
+        featureClass: CopiableProp<String> = .copy,
+        ttl: CopiableProp<Int64> = .copy,
+        content: CopiableProp<JustInTimeMessage.Content> = .copy,
+        cta: CopiableProp<JustInTimeMessage.CTA> = .copy
+    ) -> JustInTimeMessage {
+        let siteID = siteID ?? self.siteID
+        let messageID = messageID ?? self.messageID
+        let featureClass = featureClass ?? self.featureClass
+        let ttl = ttl ?? self.ttl
+        let content = content ?? self.content
+        let cta = cta ?? self.cta
+
+        return JustInTimeMessage(
+            siteID: siteID,
+            messageID: messageID,
+            featureClass: featureClass,
+            ttl: ttl,
+            content: content,
+            cta: cta
+        )
+    }
+}
+
+extension JustInTimeMessage.CTA {
+    public func copy(
+        message: CopiableProp<String> = .copy,
+        link: CopiableProp<String> = .copy
+    ) -> JustInTimeMessage.CTA {
+        let message = message ?? self.message
+        let link = link ?? self.link
+
+        return JustInTimeMessage.CTA(
+            message: message,
+            link: link
+        )
+    }
+}
+
+extension JustInTimeMessage.Content {
+    public func copy(
+        message: CopiableProp<String> = .copy,
+        description: CopiableProp<String> = .copy
+    ) -> JustInTimeMessage.Content {
+        let message = message ?? self.message
+        let description = description ?? self.description
+
+        return JustInTimeMessage.Content(
+            message: message,
+            description: description
+        )
+    }
+}
+
 extension Media {
     public func copy(
         mediaID: CopiableProp<Int64> = .copy,
@@ -1727,6 +1784,7 @@ extension Site {
         description: CopiableProp<String> = .copy,
         url: CopiableProp<String> = .copy,
         adminURL: CopiableProp<String> = .copy,
+        loginURL: CopiableProp<String> = .copy,
         plan: CopiableProp<String> = .copy,
         isJetpackThePluginInstalled: CopiableProp<Bool> = .copy,
         isJetpackConnected: CopiableProp<Bool> = .copy,
@@ -1741,6 +1799,7 @@ extension Site {
         let description = description ?? self.description
         let url = url ?? self.url
         let adminURL = adminURL ?? self.adminURL
+        let loginURL = loginURL ?? self.loginURL
         let plan = plan ?? self.plan
         let isJetpackThePluginInstalled = isJetpackThePluginInstalled ?? self.isJetpackThePluginInstalled
         let isJetpackConnected = isJetpackConnected ?? self.isJetpackConnected
@@ -1756,6 +1815,7 @@ extension Site {
             description: description,
             url: url,
             adminURL: adminURL,
+            loginURL: loginURL,
             plan: plan,
             isJetpackThePluginInstalled: isJetpackThePluginInstalled,
             isJetpackConnected: isJetpackConnected,

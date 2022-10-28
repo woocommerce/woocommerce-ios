@@ -393,6 +393,7 @@
 		933A272F2222344D00C2143A /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		A3821B262583F14863740A37 /* Pods-Storage.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Storage.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Storage/Pods-Storage.debug.xcconfig"; sourceTree = "<group>"; };
 		AE93BE8F272C0E9F001B55EA /* GeneralStoreSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralStoreSettings.swift; sourceTree = "<group>"; };
+		AEC4481B290853C300BAA299 /* Model 76.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 76.xcdatamodel"; sourceTree = "<group>"; };
 		B505255320EE6914008090F5 /* StorageType+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StorageType+Extensions.swift"; sourceTree = "<group>"; };
 		B505F6D820BEEA3100BB1B69 /* Account+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Account+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		B505F6D920BEEA3200BB1B69 /* Account+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Account+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -1471,7 +1472,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -1587,7 +1588,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -1646,7 +1647,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -1812,6 +1813,7 @@
 		DEC51AA4275B41BE009F3DF4 /* WooCommerce.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				AEC4481B290853C300BAA299 /* Model 76.xcdatamodel */,
 				688908A328F8EB360081A07E /* Model 75.xcdatamodel */,
 				6889088D28F668330081A07E /* Model 74.xcdatamodel */,
 				027CE79D28D167D0001B8D0E /* Model 73.xcdatamodel */,
@@ -1888,7 +1890,7 @@
 				DEC51ADE275B41BE009F3DF4 /* Model 47.xcdatamodel */,
 				DEC51ADF275B41BE009F3DF4 /* Model 19.xcdatamodel */,
 			);
-			currentVersion = 688908A328F8EB360081A07E /* Model 75.xcdatamodel */;
+			currentVersion = AEC4481B290853C300BAA299 /* Model 76.xcdatamodel */;
 			path = WooCommerce.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

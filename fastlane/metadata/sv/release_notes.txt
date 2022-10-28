@@ -1,3 +1,1 @@
-Spännande nyheter! Nu kan du massredigera variationer. Allt som krävs är att du har den senaste versionen av WooCommerce för din butik. Vi har också fokuserat på att förfina ett par saker och att åtgärda några mindre fel som vårt team hittade.
-
-Fortsätt att lämna feedback. Det hjälper oss att lista ut vad vi ska hitta på härnäst.
+Älskar du den nya statistikwidgeten i appen? Idag är din lyckodag! Det är nu möjligt att visa din statistikwidget på din låsskärm. Den här funktionen är endast tillgänglig för iOS 16. Vi har även förbättrad flödet för kortläsarköp med bättre automatisk ifyllning, vilket gör det enklare att köpa en kortläsare direkt från appen.

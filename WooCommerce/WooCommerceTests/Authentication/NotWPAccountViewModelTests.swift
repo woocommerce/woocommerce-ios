@@ -1,8 +1,26 @@
 import XCTest
-import enum WordPressAuthenticator.SignInError
+import WordPressAuthenticator
 @testable import WooCommerce
+import TestKit
 
 final class NotWPAccountViewModelTests: XCTestCase {
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
+    override func setUp() {
+        super.setUp()
+
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        WordPressAuthenticator.initializeAuthenticator()
+    }
+
+    override func tearDown() {
+        analytics = nil
+        analyticsProvider = nil
+        // There is no known tear down for the Authenticator.
+        super.tearDown()
+    }
 
     func test_viewmodel_provides_expected_image() {
         // Given
@@ -49,15 +67,29 @@ final class NotWPAccountViewModelTests: XCTestCase {
         XCTAssertEqual(auxiliaryButtonTitle, AuthenticationConstants.whatIsWPComLinkTitle)
     }
 
-    func test_viewmodel_provides_expected_title_for_primary_button() {
+    func test_viewmodel_provides_expected_title_for_primary_button_when_simplified_login_feature_flag_is_off() {
         // Given
-        let viewModel = NotWPAccountViewModel()
+        let featureFlagService = MockFeatureFlagService(isSimplifiedLoginFlowI1Enabled: false)
+        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom),
+                                               featureFlagService: featureFlagService)
 
         // When
         let primaryButtonTitle = viewModel.primaryButtonTitle
 
         // Then
         XCTAssertEqual(primaryButtonTitle, Expectations.loginWithSiteAddressTitle)
+    }
+
+    func test_viewmodel_provides_expected_title_for_primary_button_when_simplified_login_feature_flag_is_on() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isSimplifiedLoginFlowI1Enabled: true)
+        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom),
+                                               featureFlagService: featureFlagService)
+        // When
+        let primaryButtonTitle = viewModel.primaryButtonTitle
+
+        // Then
+        XCTAssertEqual(primaryButtonTitle, Expectations.createAnAccountTitle)
     }
 
     // MARK: - `primaryButtonTitle`
@@ -73,15 +105,28 @@ final class NotWPAccountViewModelTests: XCTestCase {
         XCTAssertEqual(primaryButtonTitle, Expectations.restartLoginTitle)
     }
 
-    func test_primary_button_title_is_login_with_site_address_for_invalidWPComEmail_from_wpCom_error() {
+    func test_primary_button_title_is_login_with_site_address_for_invalidWPComEmail_from_wpCom_error_when_simplified_login_feature_flag_is_off() {
         // Given
-        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom))
-
+        let featureFlagService = MockFeatureFlagService(isSimplifiedLoginFlowI1Enabled: false)
+        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom),
+                                              featureFlagService: featureFlagService)
         // When
         let primaryButtonTitle = viewModel.primaryButtonTitle
 
         // Then
         XCTAssertEqual(primaryButtonTitle, Expectations.loginWithSiteAddressTitle)
+    }
+
+    func test_primary_button_title_is_create_an_account_for_invalidWPComEmail_from_wpCom_error_when_simplified_login_feature_flag_is_on() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isSimplifiedLoginFlowI1Enabled: true)
+        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom),
+                                              featureFlagService: featureFlagService)
+        // When
+        let primaryButtonTitle = viewModel.primaryButtonTitle
+
+        // Then
+        XCTAssertEqual(primaryButtonTitle, Expectations.createAnAccountTitle)
     }
 
     // MARK: - `isSecondaryButtonHidden`
@@ -110,9 +155,11 @@ final class NotWPAccountViewModelTests: XCTestCase {
 
     // MARK: - `secondaryButtonTitle`
 
-    func test_viewmodel_provides_expected_title_for_secondary_button() {
+    func test_viewmodel_provides_expected_title_for_secondary_button_when_simplified_login_feature_flag_is_off() {
         // Given
-        let viewModel = NotWPAccountViewModel()
+        let featureFlagService = MockFeatureFlagService(isSimplifiedLoginFlowI1Enabled: false)
+        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom),
+                                               featureFlagService: featureFlagService)
 
         // When
         let secondaryButtonTitle = viewModel.secondaryButtonTitle
@@ -120,21 +167,106 @@ final class NotWPAccountViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(secondaryButtonTitle, Expectations.restartLoginTitle)
     }
+
+    func test_viewmodel_provides_expected_title_for_secondary_button_when_simplified_login_feature_flag_is_on() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isSimplifiedLoginFlowI1Enabled: true)
+        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom),
+                                               featureFlagService: featureFlagService)
+        // When
+        let secondaryButtonTitle = viewModel.secondaryButtonTitle
+
+        // Then
+        XCTAssertEqual(secondaryButtonTitle, Expectations.tryAnotherAddressTitle)
+    }
+
+    // MARK: - Analytics
+
+    func test_viewModel_logs_an_event_when_viewDidLoad_is_triggered() throws {
+        // Given
+        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom),
+                                              analytics: analytics)
+
+        assertEmpty(analyticsProvider.receivedEvents)
+
+        // When
+        viewModel.viewDidLoad(nil)
+
+        // Then
+        let firstEvent = try XCTUnwrap(analyticsProvider.receivedEvents.first)
+        XCTAssertEqual(firstEvent, "login_invalid_email_screen_viewed")
+    }
+
+    func test_tapping_auxiliary_button_tracks_what__is_wordpress_com_event() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isSimplifiedLoginFlowI1Enabled: true)
+        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom),
+                                              analytics: analytics,
+                                              featureFlagService: featureFlagService)
+
+        // When
+        viewModel.didTapAuxiliaryButton(in: nil)
+
+        // Then
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "what_is_wordpress_com_on_invalid_email_screen" }))
+    }
+
+    /*
+     TODO: 7903 - Navigate to create store flow
+
+     Uncomment these tests after added create store navigation and analytics code.
+
+    func test_tapping_primary_button_does_not_track_create_account_event_when_simplified_login_feature_flag_is_off() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isSimplifiedLoginFlowI1Enabled: false)
+        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom),
+                                              analytics: analytics,
+                                              featureFlagService: featureFlagService)
+
+        // When
+        viewModel.didTapPrimaryButton(in: nil)
+
+        // Then
+        XCTAssertNil(analyticsProvider.receivedEvents.first(where: { $0 == "create_account_on_invalid_email_screen" }))
+    }
+
+    func test_tapping_primary_button_tracks_create_account_event_when_simplified_login_feature_flag_is_on() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isSimplifiedLoginFlowI1Enabled: true)
+        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom),
+                                              analytics: analytics,
+                                              featureFlagService: featureFlagService)
+
+        // When
+        viewModel.didTapPrimaryButton(in: nil)
+
+        // Then
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "create_account_on_invalid_email_screen" }))
+    }
+    */
 }
 
 
 private extension NotWPAccountViewModelTests {
     private enum Expectations {
         static let image = UIImage.loginNoWordPressError
-        static let errorMessage = NSLocalizedString("This email isn't used with a WordPress.com account.",
+        static let errorMessage = NSLocalizedString("Your email isn't used with a WordPress.com account",
                                                     comment: "Message explaining that an email is not associated with a WordPress.com account. "
-                                                        + "Presented when logging in with an email address that is not a WordPress.com account")
+                                                    + "Presented when logging in with an email address that is not a WordPress.com account")
 
         static let loginWithSiteAddressTitle = NSLocalizedString("Log in with your store address",
                                                                  comment: "Action button linking to instructions for enter another store."
                                                                  + "Presented when logging in with an email address that is not a WordPress.com account")
 
         static let restartLoginTitle = NSLocalizedString("Log in with another account",
+                                                         comment: "Action button that will restart the login flow."
+                                                         + "Presented when logging in with an email address that does not match a WordPress.com account")
+
+        static let createAnAccountTitle = NSLocalizedString("Create An Account",
+                                                       comment: "Action button linking to create WooCommerce store flow."
+                                                       + "Presented when logging in with an email address that is not a WordPress.com account")
+
+        static let tryAnotherAddressTitle = NSLocalizedString("Try Another Address",
                                                          comment: "Action button that will restart the login flow."
                                                          + "Presented when logging in with an email address that does not match a WordPress.com account")
     }

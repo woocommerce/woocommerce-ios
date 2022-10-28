@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import class Networking.AlamofireNetwork
 
 // MARK: - DeauthenticatedState
 //
@@ -13,7 +14,15 @@ class DeauthenticatedState: StoresManagerState {
     private let services: [DeauthenticatedStore]
 
     init() {
-        services = [JetpackConnectionStore(dispatcher: dispatcher)]
+        // Used for logged-out state without a WPCOM auth token.
+        let network = AlamofireNetwork(credentials: .init(authToken: ""))
+        services = [
+            JetpackConnectionStore(dispatcher: dispatcher),
+            AccountCreationStore(dotcomClientID: ApiCredentials.dotcomAppId,
+                                 dotcomClientSecret: ApiCredentials.dotcomSecret,
+                                 network: network,
+                                 dispatcher: dispatcher)
+        ]
     }
 
     /// NO-OP: Executed when current state is activated.

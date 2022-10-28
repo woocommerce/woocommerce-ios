@@ -158,7 +158,6 @@ final class StorageTypeExtensionsTests: XCTestCase {
         let storedCustomer = try XCTUnwrap(storage.loadCustomer(siteID: sampleSiteID, customerID: customerID))
 
         // Then
-        XCTAssertEqual(storedCustomer.siteID, sampleSiteID)
         XCTAssertEqual(customer, storedCustomer)
     }
 
@@ -173,7 +172,6 @@ final class StorageTypeExtensionsTests: XCTestCase {
         let storedCustomerSearchResult = try XCTUnwrap(storage.loadCustomerSearchResult(siteID: sampleSiteID, keyword: keyword ))
 
         // Then
-        XCTAssertEqual(customerSearchResult.siteID, sampleSiteID)
         XCTAssertEqual(customerSearchResult, storedCustomerSearchResult)
     }
 

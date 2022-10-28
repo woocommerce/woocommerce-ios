@@ -81,4 +81,17 @@ public enum FeatureFlag: Int {
     /// Enables In-app purchases for buying Hosted WooCommerce plans
     ///
     case inAppPurchases
+
+    /// Store creation MVP.
+    ///
+    case storeCreationMVP
+
+    /// Temporary feature flag for the simplified login flow.
+    /// TODO: replace with A/B testing.
+    ///
+    case simplifiedLoginFlowI1
+
+    /// Hides products onboarding development.
+    ///
+    case productsOnboarding
 }

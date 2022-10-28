@@ -33,4 +33,16 @@ extension NSMutableAttributedString {
 
         replaceCharacters(in: nsRange, with: replacement)
     }
+
+    /// Sets a link to a substring in an attributed string.
+    ///
+    @discardableResult
+    func setAsLink(textToFind: String, linkURL: String) -> Bool {
+        let foundRange = mutableString.range(of: textToFind)
+        if foundRange.location != NSNotFound {
+            addAttribute(.link, value: linkURL, range: foundRange)
+            return true
+        }
+        return false
+    }
 }

@@ -4,6 +4,7 @@ enum BetaFeature: String, CaseIterable {
     case viewAddOns
     case productSKUScanner
     case couponManagement
+    case inAppPurchases
 }
 
 extension BetaFeature {
@@ -15,6 +16,8 @@ extension BetaFeature {
             return Localization.productSKUScannerTitle
         case .couponManagement:
             return Localization.couponManagementTitle
+        case .inAppPurchases:
+            return Localization.inAppPurchasesManagementTitle
         }
     }
 
@@ -26,6 +29,8 @@ extension BetaFeature {
             return Localization.productSKUScannerDescription
         case .couponManagement:
             return Localization.couponManagementDescription
+        case .inAppPurchases:
+            return Localization.inAppPurchasesManagementDescription
         }
     }
 
@@ -37,6 +42,8 @@ extension BetaFeature {
             return \.isProductSKUInputScannerSwitchEnabled
         case .couponManagement:
             return \.isCouponManagementSwitchEnabled
+        case .inAppPurchases:
+            return \.isInAppPurchasesSwitchEnabled
         }
     }
 
@@ -51,6 +58,19 @@ extension BetaFeature {
         }
     }
 
+    var isAvailable: Bool {
+        switch self {
+        case .inAppPurchases:
+            return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.inAppPurchases)
+        default:
+            return true
+        }
+    }
+
+    static var availableFeatures: [Self] {
+        allCases.filter(\.isAvailable)
+    }
+
     func analyticsProperties(toggleState enabled: Bool) -> [String: WooAnalyticsEventPropertyType] {
         var properties = ["state": enabled ? "on" : "off"]
         if analyticsStat == .settingsBetaFeatureToggled {
@@ -62,7 +82,10 @@ extension BetaFeature {
 
 extension GeneralAppSettingsStorage {
     func betaFeatureEnabled(_ feature: BetaFeature) -> Bool {
-        value(for: feature.settingsKey)
+        guard feature.isAvailable else {
+            return false
+        }
+        return value(for: feature.settingsKey)
     }
 
     func betaFeatureEnabledBinding(_ feature: BetaFeature) -> Binding<Bool> {
@@ -109,5 +132,12 @@ private extension BetaFeature {
         static let couponManagementDescription = NSLocalizedString(
             "Test out managing coupons as we get ready to launch",
             comment: "Cell description on beta features screen to enable coupon management")
+
+        static let inAppPurchasesManagementTitle = NSLocalizedString(
+            "In-app purchases",
+            comment: "Cell title on beta features screen to enable in-app purchases")
+        static let inAppPurchasesManagementDescription = NSLocalizedString(
+            "Test out in-app purchases as we get ready to launch",
+            comment: "Cell description on beta features screen to enable in-app purchases")
     }
 }

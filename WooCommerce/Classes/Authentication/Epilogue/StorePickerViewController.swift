@@ -27,6 +27,9 @@ protocol StorePickerViewControllerDelegate: AnyObject {
 
     /// Notifies the delegate to dismiss the store picker and restart authentication.
     func restartAuthentication()
+
+    /// Notifies the delegate to create a store.
+    func createStore()
 }
 
 
@@ -37,6 +40,10 @@ enum StorePickerConfiguration {
     /// Setup the store picker for use in the login flow
     ///
     case login
+
+    /// Setup the store picker for store creation initiated from login prologue
+    ///
+    case storeCreationFromLoginPrologue
 
     /// Setup the store picker for use in the store switching flow
     ///
@@ -102,6 +109,9 @@ final class StorePickerViewController: UIViewController {
         }
     }
 
+    /// Create store button.
+    @IBOutlet private weak var createStoreButton: FancyAnimatedButton!
+
     /// New To Woo button
     ///
     @IBOutlet var newToWooButton: UIButton! {
@@ -157,9 +167,12 @@ final class StorePickerViewController: UIViewController {
         self?.restartAuthentication()
     }
 
+    private var storeCreationCoordinator: StoreCreationCoordinator?
+
     private let appleIDCredentialChecker: AppleIDCredentialCheckerProtocol
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
+    private let isStoreCreationEnabled: Bool
 
     init(configuration: StorePickerConfiguration,
          appleIDCredentialChecker: AppleIDCredentialCheckerProtocol = AppleIDCredentialChecker(),
@@ -170,6 +183,7 @@ final class StorePickerViewController: UIViewController {
         self.stores = stores
         self.featureFlagService = featureFlagService
         self.viewModel = StorePickerViewModel(configuration: configuration)
+        self.isStoreCreationEnabled = featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
         super.init(nibName: Self.nibName, bundle: nil)
     }
 
@@ -185,6 +199,7 @@ final class StorePickerViewController: UIViewController {
         setupMainView()
         setupAccountHeader()
         setupTableView()
+        setupCreateStoreButton()
         refreshResults()
         observeStateChange()
 
@@ -273,6 +288,17 @@ private extension StorePickerViewController {
             setupNavigationForListOfConnectedStores()
         default:
             navigationController?.setNavigationBarHidden(true, animated: true)
+        }
+    }
+
+    func setupCreateStoreButton() {
+        createStoreButton.isHidden = isStoreCreationEnabled == false
+        createStoreButton.isPrimary = false
+        createStoreButton.backgroundColor = .clear
+        createStoreButton.titleFont = StyleManager.actionButtonTitleFont
+        createStoreButton.setTitle(Localization.createStore, for: .normal)
+        createStoreButton.on(.touchUpInside) { [weak self] _ in
+            self?.createStoreButtonPressed()
         }
     }
 
@@ -540,7 +566,7 @@ extension StorePickerViewController: UIViewControllerTransitioningDelegate {
 
 // MARK: - Action Handlers
 //
-extension StorePickerViewController {
+private extension StorePickerViewController {
 
     /// Proceeds with the Login Flow.
     ///
@@ -582,6 +608,10 @@ extension StorePickerViewController {
     ///
     @IBAction func secondaryActionWasPressed() {
         restartAuthentication()
+    }
+
+    func createStoreButtonPressed() {
+        delegate?.createStore()
     }
 }
 
@@ -759,6 +789,8 @@ private extension StorePickerViewController {
                                                         comment: "Button to input a site address in store picker when there are no stores found")
         static let newToWooCommerce = NSLocalizedString("New to WooCommerce?",
                                                         comment: "Title of button on the site picker screen for users who are new to WooCommerce.")
+        static let createStore = NSLocalizedString("Create a new store",
+                                                   comment: "Button to create a new store from the store picker")
     }
 }
 

@@ -54,7 +54,12 @@ public protocol WordPressAuthenticatorDelegate: AnyObject {
 
     /// Presents the Login Epilogue, in the specified NavigationController.
     ///
-    func presentLoginEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, onDismiss: @escaping () -> Void)
+    /// - Parameters:
+    ///   - navigationController: navigation stack for any epilogue views to be shown on.
+    ///   - credentials: WPCOM or WPORG credentials.
+    ///   - source: an optional identifier of the login flow, can be from the login prologue or provided by the host app.
+    ///   - onDismiss: called when the auth flow is dismissed.
+    func presentLoginEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, source: SignInSource?, onDismiss: @escaping () -> Void)
 
     /// Presents the Login Epilogue, in the specified NavigationController.
     ///

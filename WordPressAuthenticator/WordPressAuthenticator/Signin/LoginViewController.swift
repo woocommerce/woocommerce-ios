@@ -144,7 +144,9 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
             fatalError()
         }
 
-        authenticationDelegate.presentLoginEpilogue(in: navigationController, for: credentials) { [weak self] in
+        authenticationDelegate.presentLoginEpilogue(in: navigationController,
+                                                    for: credentials,
+                                                    source: WordPressAuthenticator.shared.signInSource) { [weak self] in
             self?.dismissBlock?(false)
         }
     }

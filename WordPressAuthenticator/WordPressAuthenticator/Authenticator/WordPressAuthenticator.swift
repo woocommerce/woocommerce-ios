@@ -19,6 +19,10 @@ import WordPressKit
     ///
     private var appleIDCredentialObserver: NSObjectProtocol?
 
+    /// Optional sign in source that could be from the login prologue or the host app to track the entry point
+    /// for customizations in the epilogue handling.
+    var signInSource: SignInSource?
+
     /// Shared Instance.
     ///
     @objc public static var shared: WordPressAuthenticator {

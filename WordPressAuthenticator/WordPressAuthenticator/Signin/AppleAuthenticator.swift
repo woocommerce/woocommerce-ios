@@ -172,7 +172,9 @@ private extension AppleAuthenticator {
             fatalError()
         }
 
-        authenticationDelegate.presentLoginEpilogue(in: navigationController, for: credentials) {}
+        authenticationDelegate.presentLoginEpilogue(in: navigationController,
+                                                    for: credentials,
+                                                    source: WordPressAuthenticator.shared.signInSource) {}
     }
 
     func signupFailed(with error: Error) {

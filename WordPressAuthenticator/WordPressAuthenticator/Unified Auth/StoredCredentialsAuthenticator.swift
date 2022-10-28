@@ -179,7 +179,10 @@ extension StoredCredentialsAuthenticator {
             return
         }
 
-        authenticationDelegate.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: {})
+        authenticationDelegate.presentLoginEpilogue(in: navigationController,
+                                                    for: credentials,
+                                                    source: WordPressAuthenticator.shared.signInSource,
+                                                    onDismiss: {})
     }
 
     /// Presents the login email screen, displaying the specified error.  This is useful

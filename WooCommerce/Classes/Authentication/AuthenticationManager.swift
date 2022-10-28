@@ -53,7 +53,8 @@ class AuthenticationManager: Authentication {
         let isWPComMagicLinkPreferredToPassword = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasis)
         let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasisM2)
         let isFeatureCarouselShown = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginPrologueOnboarding) == false
-        || loggedOutAppSettings.hasFinishedOnboarding == true
+        || (loggedOutAppSettings.hasFinishedOnboarding == true &&
+            ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifiedLoginFlowI1) == false)
         let isSimplifiedLoginI1Enabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifiedLoginFlowI1)
         let isStoreCreationMVPEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,

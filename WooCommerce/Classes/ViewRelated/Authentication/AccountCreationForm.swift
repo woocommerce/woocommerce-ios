@@ -1,9 +1,12 @@
 import SwiftUI
+import enum WordPressAuthenticator.SignInSource
 import struct WordPressAuthenticator.NavigateToEnterAccount
 
 /// Hosting controller that wraps an `AccountCreationForm`.
 final class AccountCreationFormHostingController: UIHostingController<AccountCreationForm> {
-    init(viewModel: AccountCreationFormViewModel, completion: @escaping () -> Void) {
+    init(viewModel: AccountCreationFormViewModel,
+         signInSource: SignInSource,
+         completion: @escaping () -> Void) {
         super.init(rootView: AccountCreationForm(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController.
@@ -13,7 +16,7 @@ final class AccountCreationFormHostingController: UIHostingController<AccountCre
 
         rootView.loginButtonTapped = { [weak self] in
             guard let self else { return }
-            let command = NavigateToEnterAccount()
+            let command = NavigateToEnterAccount(signInSource: signInSource)
             command.execute(from: self)
         }
     }

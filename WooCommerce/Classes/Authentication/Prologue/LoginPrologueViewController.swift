@@ -126,7 +126,10 @@ private extension LoginPrologueViewController {
 
             // TODO-7891: update prologue entry point.
             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.storeCreationMVP) {
-                let accountCreationController = AccountCreationFormHostingController(viewModel: .init()) { [weak self] in
+                let accountCreationController = AccountCreationFormHostingController(
+                    viewModel: .init(),
+                    signInSource: .custom(source: StoreCreationCoordinator.Source.prologue.rawValue)
+                ) { [weak self] in
                     guard let self, let navigationController = self.navigationController else { return }
                     self.startStoreCreation(in: navigationController)
                 }

@@ -322,7 +322,7 @@ private extension AppCoordinator {
                   let viewController = loginNavigationController.topViewController else {
                 return
             }
-            let command = NavigateToEnterAccount()
+            let command = NavigateToEnterAccount(signInSource: .wpCom)
             command.execute(from: viewController)
             analytics.track(.loginLocalNotificationTapped, withProperties: [
                 "action": "login_with_wpcom",

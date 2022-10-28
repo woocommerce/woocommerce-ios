@@ -60,12 +60,7 @@ final class InAppPurchasesForWPComPlansManager: InAppPurchasesForWPComPlansProto
     func fetchProducts() async throws -> [WPComPlanProduct] {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(InAppPurchaseAction.loadProducts(completion: { result in
-                switch result {
-                case .success(let products):
-                    continuation.resume(returning: products)
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                }
+                continuation.resume(with: result)
             }))
         }
     }
@@ -73,25 +68,15 @@ final class InAppPurchasesForWPComPlansManager: InAppPurchasesForWPComPlansProto
     func userIsEntitledToProduct(with id: String) async throws -> Bool {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(InAppPurchaseAction.userIsEntitledToProduct(productID: id, completion: { result in
-                switch result {
-                case .success(let productIsPurchased):
-                    continuation.resume(returning: productIsPurchased)
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                }
+                continuation.resume(with: result)
             }))
         }
     }
 
     func purchaseProduct(with id: String, for remoteSiteId: Int64) async throws {
-        try await withCheckedThrowingContinuation { continuation in
+        _ = try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(InAppPurchaseAction.purchaseProduct(siteID: remoteSiteId, productID: id, completion: { result in
-                switch result {
-                case .success(_):
-                    continuation.resume()
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                }
+                continuation.resume(with: result)
             }))
         }
     }
@@ -99,12 +84,7 @@ final class InAppPurchasesForWPComPlansManager: InAppPurchasesForWPComPlansProto
     func retryWPComSyncForPurchasedProduct(with id: String) async throws {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(InAppPurchaseAction.retryWPComSyncForPurchasedProduct(productID: id, completion: { result in
-                switch result {
-                case .success(let products):
-                    continuation.resume(returning: products)
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                }
+                continuation.resume(with: result)
             }))
         }
     }

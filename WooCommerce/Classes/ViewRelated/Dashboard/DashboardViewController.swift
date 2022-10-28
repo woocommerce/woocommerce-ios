@@ -74,9 +74,6 @@ final class DashboardViewController: UIViewController {
                                               })
     }()
 
-    private var hasAnnouncementFeatureFlag: Bool { ServiceLocator.featureFlagService.isFeatureFlagEnabled(.justInTimeMessagesOnDashboard)
-    }
-
     private var announcementViewHostingController: ConstraintsUpdatingHostingController<AnnouncementCardWrapper>?
 
     private var announcementView: UIView?
@@ -126,9 +123,7 @@ final class DashboardViewController: UIViewController {
         observeStatsVersionForDashboardUIUpdates()
         trackProductsOnboardingEligibility()
         observeAnnouncements()
-        if hasAnnouncementFeatureFlag {
-            viewModel.syncAnnouncements(for: siteID)
-        }
+        viewModel.syncAnnouncements(for: siteID)
         Task { @MainActor in
             await reloadDashboardUIStatsVersion(forced: true)
         }

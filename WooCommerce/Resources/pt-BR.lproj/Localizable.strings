@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-10-11 14:54:03+0000 */
+/* Translation-Revision-Date: 2022-10-24 19:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -829,6 +829,9 @@ which should be translated separately and considered part of this sentence. */
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "Ao cadastrar-se, você concorda com os nossos _Termos de serviço_.";
 
+/* Content of the label at the end of the Wrong Account screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com. */
+"By tapping the Connect Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com." = "Ao clicar no botão Conectar Jetpack, você concorda com nosso %1$@ e %2$@ com o WordPress.com.";
+
 /* Header for the Custom Packages section in Shipping Label Package listing */
 "CUSTOM PACKAGES" = "PACOTES PERSONALIZADOS";
 
@@ -1131,11 +1134,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Jetpack connection web view in the login flow */
 "Connect Jetpack" = "Conectar ao Jetpack";
 
+/* Action button to handle connecting the logged-in account to a given site.Presented when logging in with a store address that does not match the account entered */
+"Connect Jetpack to your account" = "Conecte o Jetpack à sua conta";
+
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "Conectar-se ao leitor";
-
-/* Action button to handle connecting the logged-in account to a given site.Presented when logging in with a store address that does not match the account entered */
-"Connect to the site" = "Conectar-se ao site";
 
 /* Settings > Manage Card Reader > Prompt user to connect their first reader */
 "Connect your card reader" = "Conecte seu leitor de cartão";
@@ -1353,8 +1356,14 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the Action sheet option when the user wants to create full manual order */
 "Create a new manual order" = "Crie um novo pedido manual";
 
+/* Button to create a new store from the store picker */
+"Create a new store" = "Criar uma nova loja";
+
 /* Description for percentage discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a percentage discount for selected products" = "Crie uma porcentagem de desconto para produtos selecionados";
+
+/* Title of the store creation web view. */
+"Create a store" = "Criar uma loja";
 
 /* Description of the Action sheet option when the user wants to create Simple Payments order */
 "Create an order with minimal information" = "Crie um pedido com o mínimo de informações";
@@ -2402,6 +2411,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when the merchant's payment account has been rejected. */
 "In-Person Payments isn't available for this store" = "O pagamento presencial não está disponível para esta loja";
+
+/* Cell title on beta features screen to enable in-app purchases */
+"In-app purchases" = "Compras no aplicativo";
 
 /* Application's Inactive State */
 "Inactive" = "Inativas";
@@ -4903,8 +4915,12 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "Conte um pouco mais sobre %1$@...";
 
-/* Title of button that displays the App's terms of service */
+/* The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen.
+   Title of button that displays the App's terms of service */
 "Terms of Service" = "Termos de serviço";
+
+/* Cell description on beta features screen to enable in-app purchases */
+"Test out in-app purchases as we get ready to launch" = "Experimente as compras no aplicativo enquanto nos preparamos para o lançamento";
 
 /* Cell description on beta features screen to enable coupon management */
 "Test out managing coupons as we get ready to launch" = "Teste o gerenciamento de cupons enquanto nos preparamos para lançar";
@@ -6215,6 +6231,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Format of the number of product ratings in singular form */
 "rated once" = "classificado 1 vez";
+
+/* The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
+"share details" = "compartilhar detalhes";
 
 /* Widget description, displayed when selecting which widget to add */
 "storeWidgets.description" = "Estatísticas de hoje do WooCommerce";

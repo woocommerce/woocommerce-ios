@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-10-12 11:54:03+0000 */
+/* Translation-Revision-Date: 2022-10-26 09:54:28+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -829,6 +829,9 @@ which should be translated separately and considered part of this sentence. */
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "註冊即代表你同意我們的「服務條款」。";
 
+/* Content of the label at the end of the Wrong Account screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com. */
+"By tapping the Connect Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com." = "點選「連結 Jetpack」 按鈕，即表示你同意我們的%1$@以及 WordPress.com 的%2$@。";
+
 /* Header for the Custom Packages section in Shipping Label Package listing */
 "CUSTOM PACKAGES" = "自訂包裹";
 
@@ -1131,11 +1134,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Jetpack connection web view in the login flow */
 "Connect Jetpack" = "連結 Jetpack";
 
+/* Action button to handle connecting the logged-in account to a given site.Presented when logging in with a store address that does not match the account entered */
+"Connect Jetpack to your account" = "將 Jetpack 連結至你的帳號";
+
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "連線至讀卡機";
-
-/* Action button to handle connecting the logged-in account to a given site.Presented when logging in with a store address that does not match the account entered */
-"Connect to the site" = "連結到網站";
 
 /* Settings > Manage Card Reader > Prompt user to connect their first reader */
 "Connect your card reader" = "連接讀卡機";
@@ -1353,8 +1356,14 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the Action sheet option when the user wants to create full manual order */
 "Create a new manual order" = "建立全新手動訂單";
 
+/* Button to create a new store from the store picker */
+"Create a new store" = "建立新商店";
+
 /* Description for percentage discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a percentage discount for selected products" = "為選取的產品建立百分比折扣";
+
+/* Title of the store creation web view. */
+"Create a store" = "建立商店";
 
 /* Description of the Action sheet option when the user wants to create Simple Payments order */
 "Create an order with minimal information" = "建立包含最少資訊的訂單";
@@ -2402,6 +2411,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when the merchant's payment account has been rejected. */
 "In-Person Payments isn't available for this store" = "此商店無法使用親自收款功能";
+
+/* Cell title on beta features screen to enable in-app purchases */
+"In-app purchases" = "應用程式內購買項目";
 
 /* Application's Inactive State */
 "Inactive" = "未啟用";
@@ -4903,8 +4915,12 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "告訴我們更多關於 %1$@ 的資訊…";
 
-/* Title of button that displays the App's terms of service */
+/* The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen.
+   Title of button that displays the App's terms of service */
 "Terms of Service" = "服務條款";
+
+/* Cell description on beta features screen to enable in-app purchases */
+"Test out in-app purchases as we get ready to launch" = "在準備推出前測試應用程式內購買項目";
 
 /* Cell description on beta features screen to enable coupon management */
 "Test out managing coupons as we get ready to launch" = "搶先試用優惠券管理功能";
@@ -6215,6 +6231,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Format of the number of product ratings in singular form */
 "rated once" = "已評分一次";
+
+/* The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
+"share details" = "分享詳細資訊";
 
 /* Widget description, displayed when selecting which widget to add */
 "storeWidgets.description" = "WooCommerce 今日統計資料";

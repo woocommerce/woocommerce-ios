@@ -123,9 +123,6 @@ final class StorePickerViewController: UIViewController {
     @IBOutlet private var tableView: UITableView! {
         didSet {
             tableView.tableHeaderView = accountHeaderView
-            if isSimplifiedLogin {
-                tableView.tableFooterView = addStoreFooterView
-            }
         }
     }
 
@@ -322,6 +319,7 @@ private extension StorePickerViewController {
             guard let self = self else { return }
             self.preselectStoreIfPossible()
             self.reloadInterface()
+            self.updateFooterViewIfNeeded()
         }
     }
 
@@ -440,6 +438,17 @@ private extension StorePickerViewController {
 
         tableView.separatorStyle = viewModel.separatorStyle
         tableView.reloadData()
+    }
+
+    /// Shows the Add a Store button at the end of the store list if possible
+    ///
+    func updateFooterViewIfNeeded() {
+        switch viewModel.state {
+        case .available where isSimplifiedLogin == true:
+            tableView.tableFooterView = addStoreFooterView
+        default:
+            tableView.tableFooterView = UIView()
+        }
     }
 
     /// Dismiss this VC

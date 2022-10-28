@@ -8,6 +8,7 @@ struct InAppPurchasesDebugView: View {
     private let inAppPurchasesForWPComPlansManager = InAppPurchasesForWPComPlansManager()
     @State var products: [WPComPlanProduct] = []
     @State var entitledProductIDs: [String] = []
+    @State var inAppPurchasesAreSupported = true
 
     var body: some View {
         List {
@@ -35,6 +36,13 @@ struct InAppPurchasesDebugView: View {
             Section {
                 Button("Retry WPCom Synchronization for entitled products") {
                     retryWPComSynchronizationForPurchasedProducts()
+                }.disabled(!inAppPurchasesAreSupported || entitledProductIDs.isEmpty)
+            }
+
+            if !inAppPurchasesAreSupported {
+                Section {
+                    Text("In-App Purchases are not supported for this user")
+                        .foregroundColor(.red)
                 }
             }
         }
@@ -46,6 +54,12 @@ struct InAppPurchasesDebugView: View {
 
     private func loadProducts() async {
         do {
+            inAppPurchasesAreSupported = await inAppPurchasesForWPComPlansManager.inAppPurchasesAreSupported()
+
+            guard inAppPurchasesAreSupported else {
+                return
+            }
+
             self.products = try await inAppPurchasesForWPComPlansManager.fetchProducts()
             await loadUserEntitlements()
         } catch {

@@ -3,11 +3,13 @@ import SafariServices
 import WordPressKit
 
 /// The source for the sign in flow for external tracking.
-public enum SignInSource {
+public enum SignInSource: Equatable {
     /// Initiated from the WP.com login CTA.
     case wpCom
     /// Initiated from the WP.com login flow that starts with site address.
     case wpComSiteAddress
+    /// Other source identifier from the host app.
+    case custom(source: String)
 }
 
 /// The error during the sign in flow.
@@ -66,7 +68,11 @@ class GetStartedViewController: LoginViewController, NUXKeyboardResponder {
     // This is public so it can be set from StoredCredentialsAuthenticator.
     var errorMessage: String?
 
-    var source: SignInSource?
+    var source: SignInSource? {
+        didSet {
+            WordPressAuthenticator.shared.signInSource = source
+        }
+    }
 
     private var rows = [Row]()
     private var buttonViewController: NUXButtonViewController?

@@ -353,6 +353,8 @@ private extension DashboardViewController {
         let indexAfterHeader = (headerStackView.arrangedSubviews.firstIndex(of: innerStackView) ?? -1) + 1
         headerStackView.insertArrangedSubview(uiView, at: indexAfterHeader)
 
+        updateAnnouncementCardVisibility(with: traitCollection)
+
         hostingController.didMove(toParent: self)
         hostingController.view.layoutIfNeeded()
     }

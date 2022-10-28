@@ -435,6 +435,9 @@
 		0304E35E28BDC86D00A80191 /* LearnMoreViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0304E35D28BDC86D00A80191 /* LearnMoreViewModel.swift */; };
 		0304E36428BE1EDE00A80191 /* LeftImageTitleSubtitleToggleTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0304E36328BE1EDE00A80191 /* LeftImageTitleSubtitleToggleTableViewCell.xib */; };
 		0304E36628BE1EED00A80191 /* LeftImageTitleSubtitleToggleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0304E36528BE1EED00A80191 /* LeftImageTitleSubtitleToggleTableViewCell.swift */; };
+		03076D36290C162E008EE839 /* WebViewSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03076D35290C162E008EE839 /* WebViewSheet.swift */; };
+		03076D38290C223E008EE839 /* WooNavigationSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03076D37290C223D008EE839 /* WooNavigationSheet.swift */; };
+		03076D3A290C22BE008EE839 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03076D39290C22BE008EE839 /* WebView.swift */; };
 		0313651128AB81B100EEE571 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0313651028AB81B100EEE571 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView.swift */; };
 		0313651328ABCB2D00EEE571 /* InPersonPaymentsOnboardingErrorMainContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0313651228ABCB2D00EEE571 /* InPersonPaymentsOnboardingErrorMainContentView.swift */; };
 		0313651728ACE9F400EEE571 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0313651628ACE9F400EEE571 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel.swift */; };
@@ -2362,6 +2365,9 @@
 		0304E35D28BDC86D00A80191 /* LearnMoreViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearnMoreViewModel.swift; sourceTree = "<group>"; };
 		0304E36328BE1EDE00A80191 /* LeftImageTitleSubtitleToggleTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LeftImageTitleSubtitleToggleTableViewCell.xib; sourceTree = "<group>"; };
 		0304E36528BE1EED00A80191 /* LeftImageTitleSubtitleToggleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeftImageTitleSubtitleToggleTableViewCell.swift; sourceTree = "<group>"; };
+		03076D35290C162E008EE839 /* WebViewSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewSheet.swift; sourceTree = "<group>"; };
+		03076D37290C223D008EE839 /* WooNavigationSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooNavigationSheet.swift; sourceTree = "<group>"; };
+		03076D39290C22BE008EE839 /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		0313651028AB81B100EEE571 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView.swift; sourceTree = "<group>"; };
 		0313651228ABCB2D00EEE571 /* InPersonPaymentsOnboardingErrorMainContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsOnboardingErrorMainContentView.swift; sourceTree = "<group>"; };
 		0313651628ACE9F400EEE571 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel.swift; sourceTree = "<group>"; };
@@ -5925,6 +5931,9 @@
 				B9E4364B287587D300883CFA /* FeatureAnnouncementCardView.swift */,
 				B9E4364D287589E200883CFA /* BadgeView.swift */,
 				6827140E28A3988300E6E3F6 /* DismissableNoticeView.swift */,
+				03076D39290C22BE008EE839 /* WebView.swift */,
+				03076D35290C162E008EE839 /* WebViewSheet.swift */,
+				03076D37290C223D008EE839 /* WooNavigationSheet.swift */,
 			);
 			path = "SwiftUI Components";
 			sourceTree = "<group>";
@@ -9675,6 +9684,7 @@
 				0240B3AC230A910C000A866C /* StoreStatsV4ChartAxisHelper.swift in Sources */,
 				31579028273EE2B1008CA3AF /* VersionHelpers.swift in Sources */,
 				CCD2F51C26D697860010E679 /* ShippingLabelServicePackageListViewModel.swift in Sources */,
+				03076D38290C223E008EE839 /* WooNavigationSheet.swift in Sources */,
 				E107FCE326C13A0D00BAF51B /* InPersonPaymentsSupportLink.swift in Sources */,
 				2662D90626E1571900E25611 /* ListSelector.swift in Sources */,
 				74D0A5302139CF1300E2919F /* String+Helpers.swift in Sources */,
@@ -9899,6 +9909,7 @@
 				AEACCB6D2785FF4A000D01F0 /* NavigationRow.swift in Sources */,
 				DE50294928BEF4CF00551736 /* WordPressOrgCredentials+Authenticator.swift in Sources */,
 				02E8B17E23E2C8D900A43403 /* ProductImageActionHandler.swift in Sources */,
+				03076D3A290C22BE008EE839 /* WebView.swift in Sources */,
 				023D877925EC8BCB00625963 /* UIScrollView+LargeTitleWorkaround.swift in Sources */,
 				2664210326F40FB1001FC5B4 /* View+ScrollModifiers.swift in Sources */,
 				02695770237281A9001BA0BF /* AztecTextViewAttachmentHandler.swift in Sources */,
@@ -10349,6 +10360,7 @@
 				260C32BE2527A2DE00157BC2 /* IssueRefundViewModel.swift in Sources */,
 				2678897C270E6E8B00BD249E /* SimplePaymentsAmount.swift in Sources */,
 				09F5DE5D27CF948000E5A4D2 /* BulkUpdateOptionsModel.swift in Sources */,
+				03076D36290C162E008EE839 /* WebViewSheet.swift in Sources */,
 				450C2CBA24D3127500D570DD /* ProductReviewsTableViewCell.swift in Sources */,
 				029D444922F13F8A00DEFA8A /* DashboardUI.swift in Sources */,
 				D8C2A28F231BD00500F503E9 /* ReviewsViewModel.swift in Sources */,

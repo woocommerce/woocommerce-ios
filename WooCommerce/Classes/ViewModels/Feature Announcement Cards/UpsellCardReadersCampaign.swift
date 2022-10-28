@@ -55,10 +55,6 @@ extension UpsellCardReadersCampaign {
         static let cardReaderWebViewTitle = NSLocalizedString(
             "Purchase Card Reader",
             comment: "Title for the WebView opened to upsell card readers")
-
-        static let cardReaderWebViewDoneButtonTitle = NSLocalizedString(
-            "Done",
-            comment: "Title for the Done button on the WebView opened to upsell card readers")
     }
 }
 

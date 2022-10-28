@@ -533,6 +533,121 @@ final class ProductFormViewModelTests: XCTestCase {
         let hasLinkedProducts = try XCTUnwrap(analyticsProvider.receivedProperties.first?["has_linked_products"] as? Bool)
         XCTAssertTrue(hasLinkedProducts)
     }
+
+    // MARK: Preview button tests (with enabled Product Onboarding feature flag)
+
+    func test_no_preview_button_for_new_blank_product_without_any_changes() {
+        // Given
+        let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
+        let viewModel = createViewModel(product: product, formType: .add, featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.publish, .more])
+    }
+
+    func test_preview_button_for_new_product_with_pending_changes() {
+        // Given
+        let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
+        let viewModel = createViewModel(product: product, formType: .add, featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
+        viewModel.updateName("new name")
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.preview, .publish, .more])
+    }
+
+    func test_no_preview_button_for_existing_published_product_without_any_changes() {
+        // Given
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.published.rawValue)
+        let viewModel = createViewModel(product: product, formType: .edit, featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
+        viewModel.updateName("new name")
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.save, .more])
+    }
+
+    func test_no_preview_button_for_existing_published_product_with_pending_changes() {
+        // Given
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.published.rawValue)
+        let viewModel = createViewModel(product: product, formType: .edit, featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.more])
+    }
+
+    func test_preview_button_for_existing_draft_product_without_any_changes() {
+        // Given
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.draft.rawValue)
+        let viewModel = createViewModel(product: product, formType: .edit, featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.preview, .publish, .more])
+    }
+
+    func test_preview_button_for_existing_draft_product_with_pending_changes() {
+        // Given
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.draft.rawValue)
+        let viewModel = createViewModel(product: product, formType: .edit, featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
+        viewModel.updateName("new name")
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.preview, .save, .more])
+    }
+
+    func test_no_preview_button_for_existing_product_with_other_status_and_without_any_changes() {
+        // Given
+        let product = Product.fake().copy(productID: 123, statusKey: "other")
+        let viewModel = createViewModel(product: product, formType: .edit, featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.publish, .more])
+    }
+
+    func test_no_preview_button_for_existing_product_with_other_status_and_pending_changes() {
+        // Given
+        let product = Product.fake().copy(productID: 123, statusKey: "other")
+        let viewModel = createViewModel(product: product, formType: .edit, featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
+        viewModel.updateName("new name")
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.save, .more])
+    }
+
+    func test_no_preview_button_for_any_product_in_read_only_mode() {
+        // Given
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.published.rawValue)
+        let viewModel = createViewModel(product: product, formType: .readonly, featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
+        viewModel.updateName("new name")
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.more])
+    }
 }
 
 private extension ProductFormViewModelTests {

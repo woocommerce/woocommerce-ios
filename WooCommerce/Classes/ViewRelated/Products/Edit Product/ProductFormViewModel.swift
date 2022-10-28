@@ -153,7 +153,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productsOnboarding),
             // Preview existing drafts or new products, that can be saved as a draft
-           (canSaveAsDraft() || productModel.status == .draft),
+           (canSaveAsDraft() || originalProductModel.status == .draft),
            // Do not preview new blank products without any changes
            !(formType == .add && !hasUnsavedChanges()) {
             buttons.insert(.preview, at: 0)

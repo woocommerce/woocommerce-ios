@@ -3,6 +3,7 @@ import XCTest
 @testable import WooCommerce
 import Yosemite
 import TestKit
+import protocol Experiments.FeatureFlagService
 
 final class ProductFormViewModelTests: XCTestCase {
 
@@ -538,13 +539,15 @@ private extension ProductFormViewModelTests {
     func createViewModel(product: Product,
                          formType: ProductFormType,
                          stores: StoresManager = ServiceLocator.stores,
-                         analytics: Analytics = ServiceLocator.analytics) -> ProductFormViewModel {
+                         analytics: Analytics = ServiceLocator.analytics,
+                         featureFlagService: FeatureFlagService = MockFeatureFlagService()) -> ProductFormViewModel {
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
         return ProductFormViewModel(product: model,
                                     formType: formType,
                                     productImageActionHandler: productImageActionHandler,
                                     stores: stores,
-                                    analytics: analytics)
+                                    analytics: analytics,
+                                    featureFlagService: featureFlagService)
     }
 }

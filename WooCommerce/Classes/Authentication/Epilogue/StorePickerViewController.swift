@@ -333,6 +333,12 @@ private extension StorePickerViewController {
     }
 
     func presentAddStoreActionSheet() {
+        // If store creation is disabled, navigate the user directly to site discovery
+        guard featureFlagService.isFeatureFlagEnabled(.storeCreationMVP) else {
+            // TODO: tracks maybe?
+            return presentSiteDiscovery()
+        }
+
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .black
         let createStoreAction = UIAlertAction(title: Localization.createStore, style: .default) { [weak self] _ in
@@ -345,9 +351,7 @@ private extension StorePickerViewController {
         }
         let cancelAction = UIAlertAction(title: Localization.cancel, style: .cancel)
 
-        if featureFlagService.isFeatureFlagEnabled(.storeCreationMVP) {
-            actionSheet.addAction(createStoreAction)
-        }
+        actionSheet.addAction(createStoreAction)
         actionSheet.addAction(addExistingStoreAction)
         actionSheet.addAction(cancelAction)
         present(actionSheet, animated: true)

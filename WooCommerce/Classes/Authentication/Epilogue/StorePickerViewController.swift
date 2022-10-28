@@ -136,7 +136,7 @@ final class StorePickerViewController: UIViewController {
     private lazy var addStoreFooterView: AddStoreFooterView = {
        AddStoreFooterView(addStoreHandler: { [weak self] in
            guard let self else { return }
-           // TODO: add Tracks
+           ServiceLocator.analytics.track(.sitePickerAddStoreTapped)
            self.presentAddStoreActionSheet()
        })
     }()
@@ -335,18 +335,17 @@ private extension StorePickerViewController {
     func presentAddStoreActionSheet() {
         // If store creation is disabled, navigate the user directly to site discovery
         guard featureFlagService.isFeatureFlagEnabled(.storeCreationMVP) else {
-            // TODO: tracks maybe?
             return presentSiteDiscovery()
         }
 
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .black
         let createStoreAction = UIAlertAction(title: Localization.createStore, style: .default) { [weak self] _ in
-            // TODO: add tracks
+            ServiceLocator.analytics.track(.sitePickerCreateNewStoreTapped)
             self?.createStoreButtonPressed()
         }
         let addExistingStoreAction = UIAlertAction(title: Localization.connectExistingStore, style: .default) { [weak self] _ in
-            // TODO: add tracks
+            ServiceLocator.analytics.track(.sitePickerConnectExistingStoreTapped)
             self?.presentSiteDiscovery()
         }
         let cancelAction = UIAlertAction(title: Localization.cancel, style: .cancel)
@@ -640,7 +639,7 @@ private extension StorePickerViewController {
     ///
     @IBAction private func addStoreWasPressed() {
         if isSimplifiedLogin {
-            // TODO: add tracks
+            ServiceLocator.analytics.track(.sitePickerAddStoreTapped)
             presentAddStoreActionSheet()
         } else {
             ServiceLocator.analytics.track(event: .SitePicker.enterStoreAddressTapped())

@@ -100,6 +100,8 @@ final class DashboardViewModel {
     /// Checks for announcements to show on the dashboard
     ///
     func syncAnnouncements(for siteID: Int64) {
+        syncProductsOnboarding(for: siteID)
+
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.justInTimeMessagesOnDashboard) {
             let action = JustInTimeMessageAction.loadMessage(
                 siteID: siteID,
@@ -117,6 +119,27 @@ final class DashboardViewModel {
                 }
             stores.dispatch(action)
         }
+    }
+
+    /// Checks if a store is eligible for products onboarding and prepares the onboarding announcement if needed.
+    ///
+    private func syncProductsOnboarding(for siteID: Int64) {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productsOnboarding) else {
+            return
+        }
+
+        let action = ProductAction.checkProductsOnboardingEligibility(siteID: siteID) { [weak self] result in
+            switch result {
+            case .success(let isEligible):
+                if isEligible {
+                    let viewModel = ProductsOnboardingAnnouncementCardViewModel()
+                    self?.announcementViewModel = viewModel
+                }
+            case .failure(let error):
+                DDLogError("⛔️ Dashboard — Error checking products onboarding eligibility: \(error)")
+            }
+        }
+        stores.dispatch(action)
     }
 }
 

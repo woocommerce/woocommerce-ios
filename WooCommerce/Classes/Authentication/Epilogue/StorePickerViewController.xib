@@ -11,7 +11,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="StorePickerViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
                 <outlet property="actionButton" destination="0KD-hY-YaS" id="mJR-Pi-S0z"/>
-                <outlet property="enterSiteAddressButton" destination="mXN-0a-h6C" id="AR4-GV-obp"/>
+                <outlet property="addStoreButton" destination="mXN-0a-h6C" id="AR4-GV-obp"/>
                 <outlet property="newToWooButton" destination="X1y-bd-PXx" id="Rhc-sE-XIZ"/>
                 <outlet property="secondaryActionButton" destination="Slo-h4-7qY" id="YFU-eL-sGS"/>
                 <outlet property="tableView" destination="oVs-XS-592" id="tgt-K5-nCu"/>
@@ -57,7 +57,7 @@
                                         <userDefinedRuntimeAttribute type="boolean" keyPath="isPrimary" value="YES"/>
                                     </userDefinedRuntimeAttributes>
                                     <connections>
-                                        <action selector="enterStoreAddressWasPressed" destination="-1" eventType="touchUpInside" id="ceu-IF-kAI"/>
+                                        <action selector="addStoreWasPressed" destination="-1" eventType="touchUpInside" id="ceu-IF-kAI"/>
                                     </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0KD-hY-YaS" userLabel="Action Button" customClass="FancyAnimatedButton" customModule="WooCommerce" customModuleProvider="target">

@@ -99,13 +99,14 @@ final class StorePickerViewController: UIViewController {
         }
     }
 
-    /// Enter site address Button.
+    /// Enter site address / Add Store Button.
     ///
-    @IBOutlet private var enterSiteAddressButton: FancyAnimatedButton! {
+    @IBOutlet private var addStoreButton: FancyAnimatedButton! {
         didSet {
-            enterSiteAddressButton.backgroundColor = .clear
-            enterSiteAddressButton.titleFont = StyleManager.actionButtonTitleFont
-            enterSiteAddressButton.setTitle(Localization.enterSiteAddress, for: .normal)
+            addStoreButton.backgroundColor = .clear
+            addStoreButton.titleFont = StyleManager.actionButtonTitleFont
+            let title = isSimplifiedLogin ? Localization.addStoreButton : Localization.enterSiteAddress
+            addStoreButton.setTitle(title, for: .normal)
         }
     }
 
@@ -339,7 +340,8 @@ private extension StorePickerViewController {
             self?.createStoreButtonPressed()
         }
         let addExistingStoreAction = UIAlertAction(title: Localization.connectExistingStore, style: .default) { [weak self] _ in
-            self?.enterStoreAddressWasPressed()
+            // TODO: add tracks
+            self?.presentSiteDiscovery()
         }
         let cancelAction = UIAlertAction(title: Localization.cancel, style: .cancel)
 
@@ -349,6 +351,13 @@ private extension StorePickerViewController {
         actionSheet.addAction(addExistingStoreAction)
         actionSheet.addAction(cancelAction)
         present(actionSheet, animated: true)
+    }
+
+    func presentSiteDiscovery() {
+        guard let viewController = WordPressAuthenticator.siteDiscoveryUI() else {
+            return
+        }
+        navigationController?.show(viewController, sender: nil)
     }
 }
 
@@ -426,10 +435,10 @@ private extension StorePickerViewController {
         switch viewModel.state {
         case .empty:
             updateActionButtonAndTableState(animating: false, enabled: false)
-            enterSiteAddressButton.isHidden = false
-            newToWooButton.isHidden = false
+            addStoreButton.isHidden = false
+            newToWooButton.isHidden = isSimplifiedLogin
         case .available(let sites):
-            enterSiteAddressButton.isHidden = true
+            addStoreButton.isHidden = true
             newToWooButton.isHidden = true
             if sites.allSatisfy({ $0.isWooCommerceActive == false }) {
                 updateActionButtonAndTableState(animating: false, enabled: false)
@@ -545,8 +554,8 @@ private extension StorePickerViewController {
     func updateUIForNoSitesFound(named siteName: String) {
         hideActionButton()
         displayFancyWCRequirementAlert(siteName: siteName)
-        enterSiteAddressButton.isHidden = false
-        newToWooButton.isHidden = false
+        addStoreButton.isHidden = false
+        newToWooButton.isHidden = isSimplifiedLogin
     }
 
     /// Update the UI when the user has a valid login
@@ -622,14 +631,17 @@ private extension StorePickerViewController {
         }
     }
 
-    /// Presents a screen to enter a store address to connect.
+    /// Presents a screen to enter a store address to connect,
+    /// or the add store action sheet for simplified login.
     ///
-    @IBAction private func enterStoreAddressWasPressed() {
-        ServiceLocator.analytics.track(event: .SitePicker.enterStoreAddressTapped())
-        guard let viewController = WordPressAuthenticator.siteDiscoveryUI() else {
-            return
+    @IBAction private func addStoreWasPressed() {
+        if isSimplifiedLogin {
+            // TODO: add tracks
+            presentAddStoreActionSheet()
+        } else {
+            ServiceLocator.analytics.track(event: .SitePicker.enterStoreAddressTapped())
+           presentSiteDiscovery()
         }
-        navigationController?.show(viewController, sender: nil)
     }
 
     /// Displays a web view with introduction to WooCommerce
@@ -834,6 +846,8 @@ private extension StorePickerViewController {
                                                             comment: "Button to connect to an existing store from the store picker")
         static let cancel = NSLocalizedString("Cancel",
                                               comment: "Button to dismiss the action sheet on the store picker")
+        static let addStoreButton = NSLocalizedString("Add a Store",
+                                                      comment: "Button title on the store picker for store creation")
     }
 }
 

@@ -42,7 +42,7 @@ private extension JustInTimeMessageStore {
     func loadMessage(for siteID: Int64,
                      screen: String,
                      hook: JustInTimeMessageHook,
-                     completion: @escaping (Result<Yosemite.JustInTimeMessage?, Error>) -> ()) {
+                     completion: @escaping (Result<JustInTimeMessage?, Error>) -> ()) {
         Task {
             let result = await remote.loadAllJustInTimeMessages(
                     for: siteID,
@@ -56,10 +56,10 @@ private extension JustInTimeMessageStore {
         }
     }
 
-    private func topDisplayMessage(_ messages: [Networking.JustInTimeMessage]) -> Yosemite.JustInTimeMessage? {
+    private func topDisplayMessage(_ messages: [Networking.JustInTimeMessage]) -> JustInTimeMessage? {
         guard let topMessage = messages.first else {
             return nil
         }
-        return Yosemite.JustInTimeMessage(message: topMessage)
+        return JustInTimeMessage(message: topMessage)
     }
 }

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-10-12 15:54:03+0000 */
+/* Translation-Revision-Date: 2022-10-26 13:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -829,6 +829,9 @@ which should be translated separately and considered part of this sentence. */
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "가입하려면 _서비스 약관_에 동의해야 합니다.";
 
+/* Content of the label at the end of the Wrong Account screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com. */
+"By tapping the Connect Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com." = "젯팩 연결 버튼을 클릭하면 워드프레스닷컴의 %1$@ 및 %2$@에 동의하는 것입니다.";
+
 /* Header for the Custom Packages section in Shipping Label Package listing */
 "CUSTOM PACKAGES" = "사용자 정의 패키지";
 
@@ -1131,11 +1134,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Jetpack connection web view in the login flow */
 "Connect Jetpack" = "젯팩 연결";
 
+/* Action button to handle connecting the logged-in account to a given site.Presented when logging in with a store address that does not match the account entered */
+"Connect Jetpack to your account" = "계정에 젯팩 연결";
+
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "리더에 연결";
-
-/* Action button to handle connecting the logged-in account to a given site.Presented when logging in with a store address that does not match the account entered */
-"Connect to the site" = "사이트에 연결";
 
 /* Settings > Manage Card Reader > Prompt user to connect their first reader */
 "Connect your card reader" = "카드 리더 연결";
@@ -1353,8 +1356,14 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the Action sheet option when the user wants to create full manual order */
 "Create a new manual order" = "새 수동 주문 생성";
 
+/* Button to create a new store from the store picker */
+"Create a new store" = "새 스토어 생성";
+
 /* Description for percentage discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a percentage discount for selected products" = "선택한 제품에 대해 할인율을 설정하세요.";
+
+/* Title of the store creation web view. */
+"Create a store" = "스토어 생성";
 
 /* Description of the Action sheet option when the user wants to create Simple Payments order */
 "Create an order with minimal information" = "최소 정보로 주문 생성";
@@ -2402,6 +2411,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when the merchant's payment account has been rejected. */
 "In-Person Payments isn't available for this store" = "이 스토어에서 대면 결제 사용 불가능";
+
+/* Cell title on beta features screen to enable in-app purchases */
+"In-app purchases" = "앱 내 구매";
 
 /* Application's Inactive State */
 "Inactive" = "비활성";
@@ -4903,8 +4915,12 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "%1$@에 대한 정보를 알려주세요...";
 
-/* Title of button that displays the App's terms of service */
+/* The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen.
+   Title of button that displays the App's terms of service */
 "Terms of Service" = "서비스 약관";
+
+/* Cell description on beta features screen to enable in-app purchases */
+"Test out in-app purchases as we get ready to launch" = "시작할 준비가 되었으니 앱 내 구매를 테스트해 보세요.";
 
 /* Cell description on beta features screen to enable coupon management */
 "Test out managing coupons as we get ready to launch" = "출시 준비가 끝나면 쿠폰 관리 테스트해 보기";
@@ -6215,6 +6231,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Format of the number of product ratings in singular form */
 "rated once" = "한 번 평가됨";
+
+/* The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
+"share details" = "상세 정보 공유";
 
 /* Widget description, displayed when selecting which widget to add */
 "storeWidgets.description" = "우커머스 통계 오늘";

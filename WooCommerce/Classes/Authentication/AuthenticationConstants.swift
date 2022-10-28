@@ -127,4 +127,11 @@ struct AuthenticationConstants {
         "Create a Store",
         comment: "Button displayed on the prologue screen of the simplified login flow to create a new store"
     )
+
+    /// Instructions for WPCom password
+    ///
+    static let wpcomPasswordInstructions = NSLocalizedString(
+        "Enter the password for your account.",
+        comment: "Instructional text shown when requesting the user's password for WPCom login."
+    )
 }

@@ -1440,6 +1440,34 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(newCustomerSearchResult.value(forKey: "siteID") as? Int64, 1)
         XCTAssertEqual(newCustomerSearchResult.value(forKey: "keyword") as? String, "")
     }
+
+    func test_migrating_from_75_to_76_adds_loginURL_attribute() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 75")
+        let sourceContext = sourceContainer.viewContext
+
+        let site = insertSite(to: sourceContainer.viewContext)
+        try sourceContext.save()
+
+        XCTAssertNil(site.entity.attributesByName["loginURL"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 76")
+        let targetContext = targetContainer.viewContext
+
+        let migratedSite = try XCTUnwrap(targetContext.first(entityName: "Site"))
+        let defaultLoginURL = migratedSite.value(forKey: "loginURL")
+
+        let loginURL = "https://test.blog/wp-login.php"
+        migratedSite.setValue(loginURL, forKey: "loginURL")
+
+        // Then
+        // Default value is nil.
+        XCTAssertNil(defaultLoginURL)
+
+        let newLoginURL = try XCTUnwrap(migratedSite.value(forKey: "loginURL") as? String)
+        XCTAssertEqual(newLoginURL, loginURL)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

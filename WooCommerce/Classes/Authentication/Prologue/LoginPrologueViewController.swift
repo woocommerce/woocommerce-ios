@@ -28,6 +28,8 @@ final class LoginPrologueViewController: UIViewController {
     /// Button for users who are new to WooCommerce to learn more about WooCommerce.
     @IBOutlet private weak var newToWooCommerceButton: UIButton!
 
+    private var storePickerCoordinator: StorePickerCoordinator?
+
     // MARK: - Overridden Properties
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
@@ -133,6 +135,16 @@ private extension LoginPrologueViewController {
         newToWooCommerceButton.on(.touchUpInside) { [weak self] _ in
             guard let self = self else { return }
 
+            // TODO-7891: update prologue entry point.
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.storeCreationMVP) {
+                let accountCreationController = AccountCreationFormHostingController(viewModel: .init()) { [weak self] in
+                    guard let self, let navigationController = self.navigationController else { return }
+                    self.startStoreCreation(in: navigationController)
+                }
+                self.show(accountCreationController, sender: self)
+                return
+            }
+
             self.analytics.track(.loginNewToWooButtonTapped)
 
             guard let url = URL(string: Constants.newToWooCommerceURL) else {
@@ -141,6 +153,13 @@ private extension LoginPrologueViewController {
 
             WebviewHelper.launch(url, with: self)
         }
+    }
+
+    func startStoreCreation(in navigationController: UINavigationController) {
+        // Shows the store picker first, so that after dismissal of the store creation view it goes back to the store picker.
+        let coordinator = StorePickerCoordinator(navigationController, config: .storeCreationFromLoginPrologue)
+        self.storePickerCoordinator = coordinator
+        coordinator.start()
     }
 }
 

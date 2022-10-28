@@ -25,6 +25,13 @@ struct AuthenticationConstants {
         comment: "Sign in instructions on the 'log in using WordPress.com account' screen."
     )
 
+    /// Get started instructions when simplified login is enabled.
+    /// 
+    static let getStartedInstructionsForSimplifiedLogin = NSLocalizedString(
+        "Enter your email address to get started.",
+        comment: "Sign in instructions on the 'log in using WordPress.com account' screen."
+    )
+
     /// What is WordPress.com? link (Continue with WordPress.com)
     ///
     static let whatIsWPComLinkTitle = NSLocalizedString(
@@ -56,6 +63,13 @@ struct AuthenticationConstants {
     static let applePasswordInstructions = NSLocalizedString(
         "To proceed with this account, please first log in with your WordPress.com password. This will only be asked once.",
         comment: "Sign in instructions asking user to enter WordPress.com password to proceed with sign in using Apple process"
+    )
+
+    /// Simplified Log In button
+    ///
+    static let loginButtonTitle = NSLocalizedString(
+        "Log In",
+        comment: "Button title in the simplified login prologue screen. Takes the user to the login flow."
     )
 
     /// Title of "Continue With WordPress.com" button in Login Prologue
@@ -105,5 +119,19 @@ struct AuthenticationConstants {
     static let signupTermsOfService = NSLocalizedString(
         "If you continue with Apple and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_.",
         comment: "Legal disclaimer for signing up. The underscores _..._ denote underline."
+    )
+
+    /// Create a Store button in Simplified login flow
+    ///
+    static let createSiteButtonTitle = NSLocalizedString(
+        "Create a Store",
+        comment: "Button displayed on the prologue screen of the simplified login flow to create a new store"
+    )
+
+    /// Instructions for WPCom password
+    ///
+    static let wpcomPasswordInstructions = NSLocalizedString(
+        "Enter the password for your account.",
+        comment: "Instructional text shown when requesting the user's password for WPCom login."
     )
 }

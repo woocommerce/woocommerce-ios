@@ -66,7 +66,7 @@ final class AddProductCoordinator: Coordinator {
         if shouldPresentProductCreationBottomSheet() {
             presentProductCreationTypeBottomSheet()
         } else {
-            presentProductTypeBottomSheet()
+            presentProductTypeBottomSheet(creationType: .manual)
         }
     }
 }
@@ -87,13 +87,13 @@ private extension AddProductCoordinator {
         let viewProperties = BottomSheetListSelectorViewProperties(title: title)
         let command = ProductCreationTypeSelectorCommand { selectedCreationType in
             // TODO: Add analytics
-            self.presentProductTypeBottomSheet()
+            self.presentProductTypeBottomSheet(creationType: selectedCreationType)
         }
         let productTypesListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)
         productTypesListPresenter.show(from: navigationController, sourceView: sourceView, sourceBarButtonItem: sourceBarButtonItem, arrowDirections: .any)
     }
 
-    func presentProductTypeBottomSheet() {
+    func presentProductTypeBottomSheet(creationType: ProductCreationType) {
         let title = NSLocalizedString("Select a product type",
                                       comment: "Message title of bottom sheet for selecting a product type to create a product")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title)
@@ -103,7 +103,14 @@ private extension AddProductCoordinator {
                 self.presentProductForm(bottomSheetProductType: selectedBottomSheetProductType)
             }
         }
-        command.data = [.simple(isVirtual: false), .simple(isVirtual: true), .variable, .grouped, .affiliate]
+
+        switch creationType {
+        case .template:
+            command.data = [.simple(isVirtual: false), .simple(isVirtual: true), .variable]
+        case .manual:
+            command.data = [.simple(isVirtual: false), .simple(isVirtual: true), .variable, .grouped, .affiliate]
+        }
+
         let productTypesListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)
 
         // `topmostPresentedViewController` is used because another bottom sheet could have been presented before.

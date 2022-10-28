@@ -5,17 +5,17 @@ import Foundation
 import Networking
 
 
-extension ProductReviewFromNoteParcel {
+extension Yosemite.ProductReviewFromNoteParcel {
     public func copy(
         note: CopiableProp<Note> = .copy,
         review: CopiableProp<ProductReview> = .copy,
         product: CopiableProp<Product> = .copy
-    ) -> ProductReviewFromNoteParcel {
+    ) -> Yosemite.ProductReviewFromNoteParcel {
         let note = note ?? self.note
         let review = review ?? self.review
         let product = product ?? self.product
 
-        return ProductReviewFromNoteParcel(
+        return Yosemite.ProductReviewFromNoteParcel(
             note: note,
             review: review,
             product: product
@@ -23,7 +23,7 @@ extension ProductReviewFromNoteParcel {
     }
 }
 
-extension YosemiteJustInTimeMessage {
+extension Yosemite.YosemiteJustInTimeMessage {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
         messageID: CopiableProp<String> = .copy,
@@ -32,7 +32,7 @@ extension YosemiteJustInTimeMessage {
         detail: CopiableProp<String> = .copy,
         buttonTitle: CopiableProp<String> = .copy,
         url: CopiableProp<String> = .copy
-    ) -> YosemiteJustInTimeMessage {
+    ) -> Yosemite.YosemiteJustInTimeMessage {
         let siteID = siteID ?? self.siteID
         let messageID = messageID ?? self.messageID
         let featureClass = featureClass ?? self.featureClass
@@ -41,7 +41,7 @@ extension YosemiteJustInTimeMessage {
         let buttonTitle = buttonTitle ?? self.buttonTitle
         let url = url ?? self.url
 
-        return YosemiteJustInTimeMessage(
+        return Yosemite.YosemiteJustInTimeMessage(
             siteID: siteID,
             messageID: messageID,
             featureClass: featureClass,

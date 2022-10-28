@@ -5,10 +5,10 @@ import Yosemite
 import Networking
 import Hardware
 
-extension ProductReviewFromNoteParcel {
+extension Yosemite.ProductReviewFromNoteParcel {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> ProductReviewFromNoteParcel {
+    public static func fake() -> Yosemite.ProductReviewFromNoteParcel {
         .init(
             note: .fake(),
             review: .fake(),
@@ -16,10 +16,10 @@ extension ProductReviewFromNoteParcel {
         )
     }
 }
-extension YosemiteJustInTimeMessage {
+extension Yosemite.YosemiteJustInTimeMessage {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> YosemiteJustInTimeMessage {
+    public static func fake() -> Yosemite.YosemiteJustInTimeMessage {
         .init(
             siteID: .fake(),
             messageID: .fake(),

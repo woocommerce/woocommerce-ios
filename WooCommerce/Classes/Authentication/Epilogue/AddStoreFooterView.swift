@@ -32,10 +32,10 @@ final class AddStoreFooterView: UIView {
         addSubview(divider)
 
         NSLayoutConstraint.activate([
-            addStoreButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.horizontalPadding),
-            trailingAnchor.constraint(equalTo: addStoreButton.trailingAnchor, constant: Constants.horizontalPadding),
-            addStoreButton.topAnchor.constraint(equalTo: topAnchor, constant: Constants.verticalPadding),
-            bottomAnchor.constraint(equalTo: addStoreButton.bottomAnchor, constant: Constants.verticalPadding),
+            addStoreButton.leadingAnchor.constraint(equalTo: leadingAnchor),
+            trailingAnchor.constraint(equalTo: addStoreButton.trailingAnchor),
+            addStoreButton.topAnchor.constraint(equalTo: topAnchor),
+            bottomAnchor.constraint(equalTo: addStoreButton.bottomAnchor),
             divider.leadingAnchor.constraint(equalTo: leadingAnchor),
             divider.trailingAnchor.constraint(equalTo: trailingAnchor),
             divider.bottomAnchor.constraint(equalTo: bottomAnchor),
@@ -49,9 +49,12 @@ final class AddStoreFooterView: UIView {
         addStoreButton.contentHorizontalAlignment = .leading
 
         var configuration = UIButton.Configuration.borderless()
-        configuration.image = .plusSmallImage
+        configuration.image = .plusImage
         configuration.imagePadding = 8
-        configuration.contentInsets = .zero
+        configuration.contentInsets = .init(top: Constants.verticalPadding,
+                                            leading: Constants.horizontalPadding,
+                                            bottom: Constants.verticalPadding,
+                                            trailing: Constants.horizontalPadding)
         addStoreButton.configuration = configuration
 
         addStoreButton.addAction(UIAction { [weak self] _ in

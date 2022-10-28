@@ -24,8 +24,11 @@ class InAppPurchaseReceiptRefreshRequest: NSObject, SKRequestDelegate {
     }
 
     func complete(_ result: Result<Void, Error>) {
-        DispatchQueue.main.async { [completion] in
+        DispatchQueue.main.async { [completion, refreshReceiptRequest] in
             completion(result)
+            // It's not clear why this is necessary, but iOS keeps complaining about an internal
+            // lingering Background Task if we don't explicitly cancel the request.
+            refreshReceiptRequest.cancel()
         }
     }
 

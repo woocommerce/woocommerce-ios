@@ -114,12 +114,14 @@ private extension NotWPAccountViewModel {
 
     func createAnAccountButtonTapped(in viewController: UIViewController?) {
         analytics.track(.createAccountOnInvalidEmailScreenTapped)
-        guard let viewController else {
+        guard let viewController,
+              let navigationController = viewController.navigationController else {
+            DDLogWarn("⚠️ Unable to proceed with account creation as view controller/navigation controller is nil.")
             return
         }
 
         let accountCreationController = AccountCreationFormHostingController(viewModel: .init()) { [weak self] in
-            guard let self, let navigationController = viewController.navigationController else { return }
+            guard let self else { return }
             self.launchStorePicker(from: navigationController)
         }
         viewController.show(accountCreationController, sender: self)

@@ -100,8 +100,8 @@ public class ProductStore: Store {
             validateProductSKU(sku, siteID: siteID, onCompletion: onCompletion)
         case let .replaceProductLocally(product, onCompletion):
             replaceProductLocally(product: product, onCompletion: onCompletion)
-        case let .checkForProducts(siteID: siteID, onCompletion: onCompletion):
-            checkForProducts(siteID: siteID, onCompletion: onCompletion)
+        case let .checkProductsOnboardingEligibility(siteID: siteID, onCompletion: onCompletion):
+            checkProductsOnboardingEligibility(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -390,9 +390,10 @@ private extension ProductStore {
         upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: product.siteID, onCompletion: onCompletion)
     }
 
-    /// Checks if the store has at least one product
+    /// Checks if the store is eligible for products onboarding.
+    /// Returns `true` if the store has no products.
     ///
-    func checkForProducts(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+    func checkProductsOnboardingEligibility(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         // Check for locally stored products first.
         let storage = storageManager.viewStorage
         if let products = storage.loadProducts(siteID: siteID), !products.isEmpty {
@@ -403,7 +404,7 @@ private extension ProductStore {
         remote.loadProductIDs(for: siteID, pageNumber: 1, pageSize: 1) { result in
             switch result {
             case .success(let ids):
-                onCompletion(.success(!ids.isEmpty))
+                onCompletion(.success(ids.isEmpty))
             case .failure(let error):
                 onCompletion(.failure(error))
             }

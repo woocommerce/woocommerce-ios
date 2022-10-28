@@ -272,11 +272,10 @@ private extension DashboardViewController {
     /// Tracks if the store is eligible for products onboarding (if the store has no existing products)
     ///
     func trackProductsOnboardingEligibility() {
-        let action = ProductAction.checkForProducts(siteID: siteID) { result in
+        let action = ProductAction.checkProductsOnboardingEligibility(siteID: siteID) { result in
             switch result {
-            case .success(let hasProducts):
-                // Store is eligible for onboarding if it has no products
-                if !hasProducts {
+            case .success(let isEligible):
+                if isEligible {
                     ServiceLocator.analytics.track(.productsOnboardingEligible)
                 }
             case .failure(let error):

@@ -12,8 +12,8 @@ final class EmptyStoresTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var legendLabel: UILabel! {
         didSet {
-            legendLabel.textColor = .textSubtle
-            legendLabel.font = .subheadline
+            legendLabel.textColor = .text
+            legendLabel.font = .font(forStyle: .title3, weight: .semibold)
             legendLabel.text = Localization.legend
         }
     }
@@ -44,7 +44,7 @@ private extension EmptyStoresTableViewCell {
     }
 
     func configureStackView() {
-        stackView.spacing = 10
+        stackView.spacing = 24
         stackView.alignment = .center
     }
 
@@ -68,7 +68,7 @@ private extension EmptyStoresTableViewCell {
             comment: "Link on the store picker for users who signed in with Apple to close their WordPress.com account."
         )
         static let legend =
-            NSLocalizedString("We couldn't find a WooCommerce store connected to your account.",
+            NSLocalizedString("Your account isn’t connected to any WooCommerce stores.",
                               comment: "Displayed during the Login flow, whenever the user has no woo stores associated.")
     }
 }

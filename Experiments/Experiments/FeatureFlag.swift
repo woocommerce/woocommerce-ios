@@ -86,13 +86,12 @@ public enum FeatureFlag: Int {
     ///
     case storeCreationMVP
 
-    /// Hides products onboarding development.
-    ///
-    case productsOnboarding
-
     /// Temporary feature flag for the simplified login flow.
     /// TODO: replace with A/B testing.
     ///
     case simplifiedLoginFlowI1
 
+    /// Hides products onboarding development.
+    ///
+    case productsOnboarding
 }

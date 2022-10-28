@@ -100,14 +100,18 @@ final class DashboardViewModel {
     /// Checks for announcements to show on the dashboard
     ///
     func syncAnnouncements(for siteID: Int64) {
-        syncProductsOnboarding(for: siteID)
+        syncProductsOnboarding(for: siteID) { [weak self] in
+            // For now, products onboarding takes precedence over Just In Time Messages, so we can stop if there is an onboarding announcement to display.
+            // This should be revisited when either onboarding or JITMs are expanded. See: pe5pgL-11B-p2
+            guard let self, self.announcementViewModel == nil else { return }
 
-        syncJustInTimeMessages(for: siteID)
+            self.syncJustInTimeMessages(for: siteID)
+        }
     }
 
     /// Checks if a store is eligible for products onboarding and prepares the onboarding announcement if needed.
     ///
-    private func syncProductsOnboarding(for siteID: Int64) {
+    private func syncProductsOnboarding(for siteID: Int64, onCompletion: @escaping () -> Void) {
         guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productsOnboarding) else {
             return
         }
@@ -119,8 +123,10 @@ final class DashboardViewModel {
                     let viewModel = ProductsOnboardingAnnouncementCardViewModel()
                     self?.announcementViewModel = viewModel
                 }
+                onCompletion()
             case .failure(let error):
                 DDLogError("⛔️ Dashboard — Error checking products onboarding eligibility: \(error)")
+                onCompletion()
             }
         }
         stores.dispatch(action)

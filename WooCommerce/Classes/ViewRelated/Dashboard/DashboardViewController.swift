@@ -126,6 +126,7 @@ final class DashboardViewController: UIViewController {
         observeStatsVersionForDashboardUIUpdates()
         trackProductsOnboardingEligibility()
         observeAnnouncements()
+        observeShowWebViewSheet()
         if hasAnnouncementFeatureFlag {
             viewModel.syncAnnouncements(for: siteID)
         }
@@ -305,6 +306,23 @@ private extension DashboardViewController {
         }.store(in: &subscriptions)
     }
 
+    func observeShowWebViewSheet() {
+        viewModel.$showWebViewSheet.sink { [weak self] viewModel in
+            guard let self = self else { return }
+            guard let viewModel = viewModel else { return }
+            self.openWebView(viewModel: viewModel)
+        }
+        .store(in: &subscriptions)
+    }
+
+    private func openWebView(viewModel: WebViewSheetViewModel) {
+        let cardReaderWebview = WebViewSheet(viewModel: viewModel) { [weak self] in
+            self?.dismiss(animated: true)
+        }
+        let hostingController = UIHostingController(rootView: cardReaderWebview)
+        present(hostingController, animated: true, completion: nil)
+    }
+
     // This is used so we have a specific type for the view while applying modifiers.
     struct AnnouncementCardWrapper: View {
         let cardView: FeatureAnnouncementCardView
@@ -323,8 +341,8 @@ private extension DashboardViewController {
             }
 
             let cardView = FeatureAnnouncementCardView(viewModel: viewModel,
-                                                               dismiss: {},
-                                                               callToAction: {})
+                                                       dismiss: {},
+                                                       callToAction: {})
 
             self.showAnnouncement(AnnouncementCardWrapper(cardView: cardView))
         }

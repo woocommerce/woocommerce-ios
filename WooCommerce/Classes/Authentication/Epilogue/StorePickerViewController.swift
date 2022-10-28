@@ -136,8 +136,10 @@ final class StorePickerViewController: UIViewController {
     }()
 
     private lazy var addStoreFooterView: AddStoreFooterView = {
-       AddStoreFooterView(addStoreHandler: {
-           // TODO: show bottom sheet
+       AddStoreFooterView(addStoreHandler: { [weak self] in
+           guard let self else { return }
+           // TODO: add Tracks
+           self.presentAddStoreActionSheet()
        })
     }()
 
@@ -329,6 +331,26 @@ private extension StorePickerViewController {
 
     func presentHelp() {
         ServiceLocator.authenticationManager.presentSupport(from: self, screen: .storePicker)
+    }
+
+    func presentAddStoreActionSheet() {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = .black
+        let createStoreAction = UIAlertAction(title: Localization.createStore, style: .default) { [weak self] _ in
+            // TODO: add tracks
+            self?.createStoreButtonPressed()
+        }
+        let addExistingStoreAction = UIAlertAction(title: Localization.connectExistingStore, style: .default) { [weak self] _ in
+            self?.enterStoreAddressWasPressed()
+        }
+        let cancelAction = UIAlertAction(title: Localization.cancel, style: .cancel)
+
+        if featureFlagService.isFeatureFlagEnabled(.storeCreationMVP) {
+            actionSheet.addAction(createStoreAction)
+        }
+        actionSheet.addAction(addExistingStoreAction)
+        actionSheet.addAction(cancelAction)
+        present(actionSheet, animated: true)
     }
 }
 
@@ -799,6 +821,10 @@ private extension StorePickerViewController {
                                                         comment: "Title of button on the site picker screen for users who are new to WooCommerce.")
         static let createStore = NSLocalizedString("Create a new store",
                                                    comment: "Button to create a new store from the store picker")
+        static let connectExistingStore = NSLocalizedString("Connect an existing store",
+                                                            comment: "Button to connect to an existing store from the store picker")
+        static let cancel = NSLocalizedString("Cancel",
+                                              comment: "Button to dismiss the action sheet on the store picker")
     }
 }
 

@@ -30,6 +30,7 @@ public typealias Feature = WordPressKit.Feature
 public typealias InboxNote = Networking.InboxNote
 public typealias InboxAction = Networking.InboxAction
 public typealias JetpackUser = Networking.JetpackUser
+public typealias JustInTimeMessageHook = Networking.JustInTimeMessagesRemote.MessagePath.Hook
 public typealias Leaderboard = Networking.Leaderboard
 public typealias LeaderboardRow = Networking.LeaderboardRow
 public typealias LeaderboardRowContent = Networking.LeaderboardRowContent

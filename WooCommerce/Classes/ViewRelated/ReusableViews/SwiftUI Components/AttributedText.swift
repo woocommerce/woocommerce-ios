@@ -29,7 +29,8 @@ import SwiftUI
 /// `font` and `attributedTextForegroundColor` functions do not take effect.
 /// The link color can be set with `attributedTextLinkColor`.
 struct AttributedText: View {
-    @StateObject private var textViewStore = TextViewStore()
+    private var textViewStore = TextViewStore()
+    @State private var textSize: CGSize?
 
     let attributedText: NSAttributedString
 
@@ -46,10 +47,13 @@ struct AttributedText: View {
             )
         }
         .frame(
-            idealWidth: textViewStore.intrinsicContentSize?.width,
-            idealHeight: textViewStore.intrinsicContentSize?.height
+            idealWidth: textSize?.width,
+            idealHeight: textSize?.height
         )
         .fixedSize(horizontal: false, vertical: true)
+        .onReceive(textViewStore.$intrinsicContentSize) { size in
+            textSize = size
+        }
     }
 }
 
@@ -80,7 +84,7 @@ private extension GeometryProxy {
     }
 }
 
-private final class TextViewStore: ObservableObject {
+private final class TextViewStore {
     @Published var intrinsicContentSize: CGSize?
 
     func didUpdateTextView(_ textView: TextViewWrapper.View) {

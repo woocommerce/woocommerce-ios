@@ -172,7 +172,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
         .notice($viewModel.notice)
         .sheet(isPresented: $showingCustomerSearch, content: {
             OrderCustomerListView(siteID: viewModel.siteID, onCustomerTapped: { customer in
-                viewModel.fillCustomerFields(customer: customer)
+                viewModel.customerSelectedFromSearch(customer: customer)
                 showingCustomerSearch = false
             })
         })

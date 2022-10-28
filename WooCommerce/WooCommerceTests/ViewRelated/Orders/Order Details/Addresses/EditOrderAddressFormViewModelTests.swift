@@ -717,7 +717,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         XCTAssertEqual(notice, AddressFormViewModel.NoticeFactory.createInvalidEmailNotice())
     }
 
-    func test_fillCustomerFields_updates_billing_customer_fields() {
+    func test_OrderAddressForm_billing_fields_are_updated_when_customerSelectedFromSearch() {
         // Given
         let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .billing)
         let customer = Customer.fake().copy(
@@ -729,7 +729,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         )
 
         // When
-        viewModel.fillCustomerFields(customer: customer)
+        viewModel.customerSelectedFromSearch(customer: customer)
 
         // Then
         XCTAssertEqual(viewModel.fields.email, customer.email)
@@ -745,7 +745,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.fields.phone, customer.billing?.phone)
     }
 
-    func test_fillCustomerFields_updates_shipping_customer_fields() {
+    func test_OrderAddressForm_shipping_fields_are_updated_when_customerSelectedFromSearch() {
         // Given
         let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .shipping)
         let customer = Customer.fake().copy(
@@ -757,7 +757,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         )
 
         // When
-        viewModel.fillCustomerFields(customer: customer)
+        viewModel.customerSelectedFromSearch(customer: customer)
 
         // Then
         XCTAssertEqual(viewModel.fields.email, customer.email)
@@ -771,6 +771,20 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.fields.postcode, customer.shipping?.postcode)
         XCTAssertEqual(viewModel.fields.country, customer.shipping?.country)
         XCTAssertEqual(viewModel.fields.phone, customer.shipping?.phone)
+    }
+
+    func test_OrderAddressForm_shows_different_address_form_fields_when_addresses_differ_and_customerSelectedFromSearch() {
+        // Given
+        let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .billing)
+        let billing = sampleAddressWithEmptyNullableFields()
+        let shipping = Address.fake().copy(address1: "123 different fake street")
+        let customer = Customer.fake().copy(billing: billing, shipping: shipping)
+
+        // When
+        viewModel.customerSelectedFromSearch(customer: customer)
+
+        // Then
+        XCTAssertTrue(viewModel.showDifferentAddressForm)
     }
 }
 

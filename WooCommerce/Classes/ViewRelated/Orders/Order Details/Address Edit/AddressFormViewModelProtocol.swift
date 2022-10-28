@@ -104,9 +104,9 @@ protocol AddressFormViewModelProtocol: ObservableObject {
     ///
     func createSecondaryStateViewModel() -> StateSelectorViewModel
 
-    /// Fills AddressForm fields with Customer details
+    /// Triggers the logic to fill Customer Order details when a Customer is selected
     ///
-    func fillCustomerFields(customer: Customer)
+    func customerSelectedFromSearch(customer: Customer)
 }
 
 /// Type to hold values from all the form fields
@@ -402,9 +402,15 @@ open class AddressFormViewModel: ObservableObject {
         return primaryEmailIsValid && secondaryEmailIsValid
     }
 
-    /// Fills AddressForm fields with Customer details
+    /// Fills Order AddressFormFields with Customer details
     ///
-    func fillCustomerFields(customer: Customer) {
+    func customerSelectedFromSearch(customer: Customer) {
+        fillCustomerFields(customer: customer)
+        let addressesDiffer = customer.billing != customer.shipping
+        showDifferentAddressForm = addressesDiffer
+    }
+
+    private func fillCustomerFields(customer: Customer) {
         fields = populate(fields: fields, with: customer, address: customer.billing)
         secondaryFields = populate(fields: secondaryFields, with: customer, address: customer.shipping)
     }

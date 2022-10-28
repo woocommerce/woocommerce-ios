@@ -12,6 +12,10 @@ final class LoginTests: XCTestCase {
     }
 
     func test_site_address_login_logout() throws {
+        // do not test this case for simplified login since site address login is not available
+        guard PrologueScreen.isSiteAddressLoginAvailable() else {
+            return
+        }
         try PrologueScreen()
             .selectSiteAddress()
             .proceedWith(siteUrl: TestCredentials.siteUrl)

@@ -579,6 +579,7 @@ extension WooAnalyticsEvent {
             case paymentMethods = "payment_methods"
             case productDetail = "product_detail"
             case settings
+            case myStore = "my_store"
         }
 
         /// Keys for the Feature Card properties

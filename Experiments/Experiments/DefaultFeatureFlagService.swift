@@ -47,8 +47,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .productsOnboarding:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .productsPreview:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .simplifiedLoginFlowI1:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:

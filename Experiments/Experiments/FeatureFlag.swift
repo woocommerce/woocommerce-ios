@@ -90,10 +90,6 @@ public enum FeatureFlag: Int {
     ///
     case productsOnboarding
 
-    /// Products Onboarding subproject: Products preview.
-    ///
-    case productsPreview
-
     /// Temporary feature flag for the simplified login flow.
     /// TODO: replace with A/B testing.
     ///

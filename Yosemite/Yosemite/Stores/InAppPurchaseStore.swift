@@ -187,7 +187,7 @@ private extension InAppPurchaseStore {
         }
 
         switch verificationResult {
-        case .verified(let transaction):
+        case .verified(_):
             return true
         case .unverified(_, let verificationError):
             throw verificationError

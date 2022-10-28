@@ -150,7 +150,7 @@ private extension AppCoordinator {
             guard let self = self else { return }
             self.tabBarController.removeViewControllers()
         }
-        ServiceLocator.analytics.track(.openedLogin, withProperties: ["prologue_experiment_variant": ABTest.loginPrologueButtonOrder.variation.analyticsValue])
+        ServiceLocator.analytics.track(.openedLogin)
     }
 
     /// Configures the WPAuthenticator for usage in both logged-in and logged-out states.

@@ -7,6 +7,7 @@ import Fakes
 
 /// Remote UnitTests
 ///
+@MainActor
 final class RemoteTests: XCTestCase {
 
     /// Sample Request
@@ -172,22 +173,21 @@ final class RemoteTests: XCTestCase {
     /// Verifies that `enqueue:` posts a `RemoteDidReceiveJetpackTimeoutError` Notification whenever the backend returns a
     /// Request Timeout error.
     ///
-    func testEnqueueRequestWithoutMapperPostJetpackTimeoutNotificationWhenTheResponseContainsTimeoutError() {
+    func testEnqueueRequestWithoutMapperPostJetpackTimeoutNotificationWhenTheResponseContainsTimeoutError() async throws {
         let network = MockNetwork()
         let remote = Remote(network: network)
 
         let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJetpackTimeoutError, object: nil, handler: nil)
-        let expectationForRequest = expectation(description: "Request")
-
         network.simulateResponse(requestUrlSuffix: "something", filename: "timeout_error")
 
-        remote.enqueue(request) { (payload, error) in
-            XCTAssertNil(payload)
-            XCTAssert(error is DotcomError)
-            expectationForRequest.fulfill()
+        do {
+            let _: String = try await remote.enqueue(request)
+        } catch {
+            let error = try XCTUnwrap(error as? DotcomError)
+            XCTAssertEqual(error, .requestFailed)
         }
 
-        wait(for: [expectationForNotification, expectationForRequest], timeout: Constants.expectationTimeout)
+        wait(for: [expectationForNotification], timeout: Constants.expectationTimeout)
     }
 
     /// Verifies that `enqueue:mapper:` posts a `RemoteDidReceiveJetpackTimeoutError` Notification whenever the backend returns a

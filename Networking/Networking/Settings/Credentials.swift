@@ -20,10 +20,10 @@ public struct Credentials: Equatable {
 
     /// Designated Initializer
     ///
-    public init(username: String, authToken: String, siteAddress: String) {
+    public init(username: String, authToken: String, siteAddress: String? = nil) {
         self.username = username
         self.authToken = authToken
-        self.siteAddress = siteAddress
+        self.siteAddress = siteAddress ?? Constants.placeholderSiteAddress
     }
 
     /// Convenience initializer. Assigns a UUID as a placeholder for the username.

@@ -1052,6 +1052,12 @@ extension UIImage {
     static var lockImage: UIImage {
         UIImage.gridicon(.lock, size: CGSize(width: 24, height: 24))
     }
+
+    /// Sites Image
+    ///
+    static var sitesImage: UIImage {
+        UIImage.gridicon(.site).imageFlippedForRightToLeftLayoutDirection()
+    }
 }
 
 private extension UIImage {

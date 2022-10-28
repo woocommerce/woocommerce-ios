@@ -52,15 +52,16 @@ class AuthenticationManager: Authentication {
     func initialize(loggedOutAppSettings: LoggedOutAppSettingsProtocol) {
         let isWPComMagicLinkPreferredToPassword = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasis)
         let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasisM2)
-        let continueWithSiteAddressFirst = ABTest.loginPrologueButtonOrder.variation == .control
         let isFeatureCarouselShown = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginPrologueOnboarding) == false
         || loggedOutAppSettings.hasFinishedOnboarding == true
+        let isSimplifiedLoginI1Enabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifiedLoginFlowI1)
+        let isStoreCreationMVPEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
                                                                 wpcomScheme: ApiCredentials.dotcomAuthScheme,
                                                                 wpcomTermsOfServiceURL: WooConstants.URLs.termsOfService.rawValue,
                                                                 wpcomAPIBaseURL: Settings.wordpressApiBaseURL,
-                                                                whatIsWPComURL: WooConstants.URLs.whatIsWPCom.rawValue,
+                                                                whatIsWPComURL: isSimplifiedLoginI1Enabled ? nil : WooConstants.URLs.whatIsWPCom.rawValue,
                                                                 googleLoginClientId: ApiCredentials.googleClientId,
                                                                 googleLoginServerClientId: ApiCredentials.googleServerId,
                                                                 googleLoginScheme: ApiCredentials.googleAuthScheme,
@@ -70,12 +71,18 @@ class AuthenticationManager: Authentication {
                                                                 enableSignInWithApple: true,
                                                                 enableSignupWithGoogle: false,
                                                                 enableUnifiedAuth: true,
-                                                                continueWithSiteAddressFirst: continueWithSiteAddressFirst,
+                                                                continueWithSiteAddressFirst: false,
                                                                 enableSiteCredentialsLoginForSelfHostedSites: true,
                                                                 isWPComLoginRequiredForSiteCredentialsLogin: true,
                                                                 isWPComMagicLinkPreferredToPassword: isWPComMagicLinkPreferredToPassword,
                                                                 isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen:
-                                                                    isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen)
+                                                                    isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen,
+                                                                enableWPComLoginOnlyInPrologue: isSimplifiedLoginI1Enabled,
+                                                                enableSiteCreation: isStoreCreationMVPEnabled,
+                                                                enableSocialLogin: !isSimplifiedLoginI1Enabled,
+                                                                emphasizeEmailForWPComPassword: isSimplifiedLoginI1Enabled,
+                                                                wpcomPasswordInstructions: isSimplifiedLoginI1Enabled ?
+                                                                AuthenticationConstants.wpcomPasswordInstructions : nil)
 
         let systemGray3LightModeColor = UIColor(red: 199/255.0, green: 199/255.0, blue: 204/255.0, alpha: 1)
         let systemLabelLightModeColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)
@@ -109,22 +116,34 @@ class AuthenticationManager: Authentication {
                                                     LoginPrologueViewController(isFeatureCarouselShown: isFeatureCarouselShown),
                                                 statusBarStyle: .default)
 
+        let getStartedInstructions = isSimplifiedLoginI1Enabled ?
+        AuthenticationConstants.getStartedInstructionsForSimplifiedLogin :
+        AuthenticationConstants.getStartedInstructions
+
+        let continueWithWPButtonTitle = isSimplifiedLoginI1Enabled ?
+        AuthenticationConstants.loginButtonTitle :
+        AuthenticationConstants.continueWithWPButtonTitle
+
+        let emailAddressPlaceholder = isSimplifiedLoginI1Enabled ?
+        "name@example.com" :
+        WordPressAuthenticatorDisplayStrings.defaultStrings.emailAddressPlaceholder
+
         let displayStrings = WordPressAuthenticatorDisplayStrings(emailLoginInstructions: AuthenticationConstants.emailInstructions,
-                                                                  getStartedInstructions: isWPComSignupEnabled ?
-                                                                  AuthenticationConstants.getStartedInstructionsWithWPComSignupEnabled:
-                                                                    AuthenticationConstants.getStartedInstructions,
+                                                                  getStartedInstructions: getStartedInstructions,
                                                                   jetpackLoginInstructions: AuthenticationConstants.jetpackInstructions,
                                                                   siteLoginInstructions: AuthenticationConstants.siteInstructions,
                                                                   siteCredentialInstructions: AuthenticationConstants.siteCredentialInstructions,
                                                                   usernamePasswordInstructions: AuthenticationConstants.usernamePasswordInstructions,
                                                                   applePasswordInstructions: AuthenticationConstants.applePasswordInstructions,
-                                                                  continueWithWPButtonTitle: AuthenticationConstants.continueWithWPButtonTitle,
+                                                                  continueWithWPButtonTitle: continueWithWPButtonTitle,
                                                                   enterYourSiteAddressButtonTitle: AuthenticationConstants.enterYourSiteAddressButtonTitle,
                                                                   signInWithSiteCredentialsButtonTitle: AuthenticationConstants.signInWithSiteCredsButtonTitle,
                                                                   findSiteButtonTitle: AuthenticationConstants.findYourStoreAddressButtonTitle,
                                                                   signupTermsOfService: AuthenticationConstants.signupTermsOfService,
                                                                   whatIsWPComLinkTitle: AuthenticationConstants.whatIsWPComLinkTitle,
-                                                                  getStartedTitle: AuthenticationConstants.loginTitle)
+                                                                  siteCreationButtonTitle: AuthenticationConstants.createSiteButtonTitle,
+                                                                  getStartedTitle: AuthenticationConstants.loginTitle,
+                                                                  emailAddressPlaceholder: emailAddressPlaceholder)
 
         let unifiedStyle = WordPressAuthenticatorUnifiedStyle(borderColor: .divider,
                                                               errorColor: .error,
@@ -516,6 +535,12 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             return
         }
         ServiceLocator.analytics.track(wooEvent, withError: error)
+    }
+
+    // Navigate to store creation
+    func showSiteCreation(in navigationController: UINavigationController) {
+        // TODO: add tracks
+        // Navigate to store creation
     }
 }
 

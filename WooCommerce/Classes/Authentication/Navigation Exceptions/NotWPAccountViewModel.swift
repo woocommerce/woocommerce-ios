@@ -120,7 +120,10 @@ private extension NotWPAccountViewModel {
             return
         }
 
-        let accountCreationController = AccountCreationFormHostingController(viewModel: .init()) { [weak self] in
+        let accountCreationController = AccountCreationFormHostingController(
+            viewModel: .init(),
+            signInSource: .custom(source: StoreCreationCoordinator.Source.prologue.rawValue)
+        ) { [weak self] in
             guard let self else { return }
             self.launchStorePicker(from: navigationController)
         }

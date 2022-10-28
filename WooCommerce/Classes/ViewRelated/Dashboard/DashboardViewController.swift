@@ -3,6 +3,7 @@ import UIKit
 import Gridicons
 import WordPressUI
 import Yosemite
+import SwiftUI
 
 // MARK: - DashboardViewController
 //
@@ -73,6 +74,13 @@ final class DashboardViewController: UIViewController {
                                               })
     }()
 
+    private var hasAnnouncementFeatureFlag: Bool { ServiceLocator.featureFlagService.isFeatureFlagEnabled(.justInTimeMessagesOnDashboard)
+    }
+
+    private var announcementViewHostingController: ConstraintsUpdatingHostingController<AnnouncementCardWrapper>?
+
+    private var announcementView: UIView?
+
     /// Bottom Jetpack benefits banner, shown when the site is connected to Jetpack without Jetpack-the-plugin.
     private lazy var bottomJetpackBenefitsBannerController = JetpackBenefitsBannerHostingController()
     private var contentBottomToJetpackBenefitsBannerConstraint: NSLayoutConstraint?
@@ -117,6 +125,10 @@ final class DashboardViewController: UIViewController {
         observeNavigationBarHeightForStoreNameLabelVisibility()
         observeStatsVersionForDashboardUIUpdates()
         trackProductsOnboardingEligibility()
+        observeAnnouncements()
+        if hasAnnouncementFeatureFlag {
+            viewModel.syncAnnouncements(for: siteID)
+        }
         Task { @MainActor in
             await reloadDashboardUIStatsVersion(forced: true)
         }
@@ -135,6 +147,18 @@ final class DashboardViewController: UIViewController {
 
     override var shouldShowOfflineBanner: Bool {
         return true
+    }
+
+    internal override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.willTransition(to: newCollection, with: coordinator)
+        updateAnnouncementCardVisibility(with: newCollection)
+    }
+
+    /// Hide the announcement card in compact (landscape phone)
+    ///
+    func updateAnnouncementCardVisibility(with newCollection: UITraitCollection) {
+        let shouldHideCard = newCollection.verticalSizeClass == .compact
+        announcementView?.isHidden = shouldHideCard
     }
 }
 
@@ -279,6 +303,60 @@ private extension DashboardViewController {
             dashboardUI.scrollDelegate = self
             self.onDashboardUIUpdate(forced: false, updatedDashboardUI: dashboardUI)
         }.store(in: &subscriptions)
+    }
+
+    // This is used so we have a specific type for the view while applying modifiers.
+    struct AnnouncementCardWrapper: View {
+        let cardView: FeatureAnnouncementCardView
+
+        var body: some View {
+            cardView.background(Color(.listForeground))
+        }
+    }
+
+    func observeAnnouncements() {
+        viewModel.$announcementViewModel.sink { [weak self] viewModel in
+            guard let self = self else { return }
+            self.removeAnnouncement()
+            guard let viewModel = viewModel else {
+                return
+            }
+
+            let cardView = FeatureAnnouncementCardView(viewModel: viewModel,
+                                                               dismiss: {},
+                                                               callToAction: {})
+
+            self.showAnnouncement(AnnouncementCardWrapper(cardView: cardView))
+        }
+        .store(in: &subscriptions)
+    }
+
+    private func removeAnnouncement() {
+        guard let announcementView = announcementView else {
+            return
+        }
+        announcementView.removeFromSuperview()
+        announcementViewHostingController?.removeFromParent()
+        announcementViewHostingController = nil
+        self.announcementView = nil
+    }
+
+    private func showAnnouncement(_ cardView: AnnouncementCardWrapper) {
+        let hostingController = ConstraintsUpdatingHostingController(rootView: cardView)
+        guard let uiView = hostingController.view else {
+            return
+        }
+        announcementViewHostingController = hostingController
+        announcementView = uiView
+
+        addChild(hostingController)
+        let indexAfterHeader = (headerStackView.arrangedSubviews.firstIndex(of: innerStackView) ?? -1) + 1
+        headerStackView.insertArrangedSubview(uiView, at: indexAfterHeader)
+
+        updateAnnouncementCardVisibility(with: traitCollection)
+
+        hostingController.didMove(toParent: self)
+        hostingController.view.layoutIfNeeded()
     }
 
     /// Display the error banner at the top of the dashboard content (below the site title)

@@ -91,6 +91,10 @@ public enum FeatureFlag: Int {
     ///
     case simplifiedLoginFlowI1
 
+    /// Just In Time Messages on Dashboard
+    ///
+    case justInTimeMessagesOnDashboard
+
     /// Hides products onboarding development.
     ///
     case productsOnboarding

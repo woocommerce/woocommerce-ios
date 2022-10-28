@@ -50,7 +50,9 @@ private extension JustInTimeMessageStore {
                                        screen: screen,
                                        hook: hook))
             let displayResult = result.map(topDisplayMessage(_:))
-            completion(displayResult)
+            await MainActor.run {
+                completion(displayResult)
+            }
         }
     }
 

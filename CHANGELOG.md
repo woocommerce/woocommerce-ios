@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 11.0
+Even though this release doesn’t have any surprising new features, we still put a lot of love into it! We fixed a few bugs and made several improvements to make your experience smoother. 
+
 ## 10.9
 This release includes a lot more stability fixes to help you log in much easier. You can now connect your WordPress.com account with Jetpack and access your store that much faster. We've also updated our app to support devices with iOS 15+ only. Please update your device to iOS 15 to continue to use the app.
 

@@ -172,7 +172,7 @@ final class AuthenticationManagerTests: XCTestCase {
 
         // When
         manager.shouldPresentUsernamePasswordController(for: siteInfo, onCompletion: { _ in })
-        manager.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: {})
+        manager.presentLoginEpilogue(in: navigationController, for: credentials, source: nil, onDismiss: {})
         waitUntil {
             navigationController.viewControllers.isNotEmpty
         }
@@ -199,7 +199,7 @@ final class AuthenticationManagerTests: XCTestCase {
 
         // When
         manager.shouldPresentUsernamePasswordController(for: siteInfo, onCompletion: { _ in })
-        manager.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: {})
+        manager.presentLoginEpilogue(in: navigationController, for: credentials, source: nil, onDismiss: {})
 
         // Then
         let rootController = navigationController.viewControllers.first
@@ -217,7 +217,7 @@ final class AuthenticationManagerTests: XCTestCase {
 
         // When
         manager.shouldPresentUsernamePasswordController(for: siteInfo, onCompletion: { _ in })
-        manager.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: {})
+        manager.presentLoginEpilogue(in: navigationController, for: credentials, source: nil, onDismiss: {})
 
         // Then
         let rootController = navigationController.viewControllers.first
@@ -316,7 +316,7 @@ final class AuthenticationManagerTests: XCTestCase {
         let credentials = AuthenticatorCredentials(wpcom: wpcomCredentials, wporg: nil)
 
         // When
-        manager.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: {})
+        manager.presentLoginEpilogue(in: navigationController, for: credentials, source: nil, onDismiss: {})
 
         // Then
         XCTAssertEqual(settings.errorLoginSiteAddress, testSiteURL)
@@ -339,7 +339,7 @@ final class AuthenticationManagerTests: XCTestCase {
         let credentials = AuthenticatorCredentials(wpcom: wpcomCredentials, wporg: nil)
 
         // When
-        manager.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: {})
+        manager.presentLoginEpilogue(in: navigationController, for: credentials, source: nil, onDismiss: {})
 
         // Then
         XCTAssertNil(settings.errorLoginSiteAddress)

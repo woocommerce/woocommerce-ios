@@ -363,7 +363,10 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
     /// Presents the Login Epilogue, in the specified NavigationController.
     ///
-    func presentLoginEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, onDismiss: @escaping () -> Void) {
+    func presentLoginEpilogue(in navigationController: UINavigationController,
+                              for credentials: AuthenticatorCredentials,
+                              source: SignInSource?,
+                              onDismiss: @escaping () -> Void) {
 
         guard let siteURL = credentials.wpcom?.siteURL ?? credentials.wporg?.siteURL else {
             // This should not happen since the resulting credentials should be either `wpcom` or `wporg`
@@ -392,7 +395,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         } else {
             loggedOutAppSettings?.setErrorLoginSiteAddress(nil)
             let matchedSite = matcher.matchedSite(originalURL: siteURL)
-            startStorePicker(with: matchedSite?.siteID, in: navigationController, onDismiss: onDismiss)
+            startStorePicker(with: matchedSite?.siteID, source: source, in: navigationController, onDismiss: onDismiss)
         }
     }
 
@@ -612,15 +615,26 @@ private extension AuthenticationManager {
             // Tries re-syncing to get an updated store list,
             // then attempts to present epilogue again.
             ServiceLocator.stores.synchronizeEntities { [weak self] in
-                self?.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: onDismiss)
+                self?.presentLoginEpilogue(in: navigationController, for: credentials, source: nil, onDismiss: onDismiss)
             }
         })
         let installJetpackUI = ULErrorViewController(viewModel: viewModel)
         navigationController.show(installJetpackUI, sender: nil)
     }
 
-    func startStorePicker(with siteID: Int64? = nil, in navigationController: UINavigationController, onDismiss: @escaping () -> Void = {}) {
-        storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)
+    func startStorePicker(with siteID: Int64? = nil,
+                          source: SignInSource? = nil,
+                          in navigationController: UINavigationController,
+                          onDismiss: @escaping () -> Void = {}) {
+        let config: StorePickerConfiguration = {
+            switch source {
+            case .custom(let source) where source == StoreCreationCoordinator.Source.prologue.rawValue:
+                return .storeCreationFromLoginPrologue
+            default:
+                return .login
+            }
+        }()
+        storePickerCoordinator = StorePickerCoordinator(navigationController, config: config)
         storePickerCoordinator?.onDismiss = onDismiss
         if let siteID = siteID {
             storePickerCoordinator?.didSelectStore(with: siteID, onCompletion: onDismiss)
@@ -778,14 +792,14 @@ private extension AuthenticationManager {
                 switch error {
                 case .invalidWPComEmail(let source):
                     switch source {
-                    case .wpCom:
+                    case .wpCom, .custom:
                         return .invalidEmailFromWPComLogin
                     case .wpComSiteAddress:
                         return .invalidEmailFromSiteAddressLogin
                     }
                 case .invalidWPComPassword(let source):
                     switch source {
-                    case .wpCom:
+                    case .wpCom, .custom:
                         return .invalidPasswordFromWPComLogin
                     case .wpComSiteAddress:
                         return .invalidPasswordFromSiteAddressWPComLogin

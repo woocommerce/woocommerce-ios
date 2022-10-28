@@ -109,9 +109,6 @@ final class StorePickerViewController: UIViewController {
         }
     }
 
-    /// Create store button.
-    @IBOutlet private weak var createStoreButton: FancyAnimatedButton!
-
     /// New To Woo button
     ///
     @IBOutlet var newToWooButton: UIButton! {
@@ -212,7 +209,6 @@ final class StorePickerViewController: UIViewController {
         setupMainView()
         setupAccountHeader()
         setupTableView()
-        setupCreateStoreButton()
         refreshResults()
         observeStateChange()
 
@@ -311,17 +307,6 @@ private extension StorePickerViewController {
             setupNavigationForListOfConnectedStores()
         default:
             navigationController?.setNavigationBarHidden(true, animated: true)
-        }
-    }
-
-    func setupCreateStoreButton() {
-        createStoreButton.isHidden = isStoreCreationEnabled == false
-        createStoreButton.isPrimary = false
-        createStoreButton.backgroundColor = .clear
-        createStoreButton.titleFont = StyleManager.actionButtonTitleFont
-        createStoreButton.setTitle(Localization.createStore, for: .normal)
-        createStoreButton.on(.touchUpInside) { [weak self] _ in
-            self?.createStoreButtonPressed()
         }
     }
 

@@ -119,13 +119,22 @@ final class StorePickerViewController: UIViewController {
     @IBOutlet private var tableView: UITableView! {
         didSet {
             tableView.tableHeaderView = accountHeaderView
+            if isSimplifiedLogin {
+                tableView.tableFooterView = addStoreFooterView
+            }
         }
     }
 
     /// Header View: Displays all of the Account Details
     ///
     private let accountHeaderView: AccountHeaderView = {
-        return AccountHeaderView.instantiateFromNib()
+        AccountHeaderView.instantiateFromNib()
+    }()
+
+    private lazy var addStoreFooterView: AddStoreFooterView = {
+       AddStoreFooterView(addStoreHandler: {
+           // TODO: show bottom sheet
+       })
     }()
 
     /// Site Picker's dedicated NoticePresenter (use this here instead of ServiceLocator.noticePresenter)
@@ -216,6 +225,9 @@ final class StorePickerViewController: UIViewController {
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         tableView.updateHeaderHeight()
+        if isSimplifiedLogin {
+            tableView.updateFooterHeight()
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {

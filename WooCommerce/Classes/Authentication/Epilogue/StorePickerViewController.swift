@@ -265,6 +265,7 @@ private extension StorePickerViewController {
         tableView.registerNib(for: EmptyStoresTableViewCell.self)
         tableView.registerNib(for: StoreTableViewCell.self)
         tableView.backgroundColor = backgroundColor()
+        tableView.sectionFooterHeight = 0
     }
 
     func setupAccountHeader() {
@@ -805,7 +806,7 @@ private extension StorePickerViewController {
 private extension StorePickerViewController {
     enum Localization {
         static let continueButton = NSLocalizedString("Continue", comment: "Button on the Store Picker screen to select a store")
-        static let tryAnotherAccount = NSLocalizedString("Try With Another Account",
+        static let tryAnotherAccount = NSLocalizedString("Log In With Another Account",
                                                          comment: "Button to trigger connection to another account in store picker")
         static let enterSiteAddress = NSLocalizedString("Enter Your Store Address",
                                                         comment: "Button to input a site address in store picker when there are no stores found")

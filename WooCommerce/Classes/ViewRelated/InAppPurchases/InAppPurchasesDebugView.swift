@@ -13,7 +13,9 @@ struct InAppPurchasesDebugView: View {
         List {
             Section {
                 Button("Reload products") {
-                    loadProducts()
+                    Task {
+                        await loadProducts()
+                    }
                 }
             }
             Section("Products") {
@@ -37,19 +39,17 @@ struct InAppPurchasesDebugView: View {
             }
         }
         .navigationTitle("IAP Debug")
-        .onAppear {
-            loadProducts()
+        .task {
+            await loadProducts()
         }
     }
 
-    private func loadProducts() {
-        Task {
-            do {
-                self.products = try await inAppPurchasesForWPComPlansManager.fetchProducts()
-                await loadUserEntitlements()
-            } catch {
-                print("Error loading products: \(error)")
-            }
+    private func loadProducts() async {
+        do {
+            self.products = try await inAppPurchasesForWPComPlansManager.fetchProducts()
+            await loadUserEntitlements()
+        } catch {
+            print("Error loading products: \(error)")
         }
     }
 

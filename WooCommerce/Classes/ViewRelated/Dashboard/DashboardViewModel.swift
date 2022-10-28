@@ -112,16 +112,16 @@ final class DashboardViewModel {
     /// Checks if a store is eligible for products onboarding and prepares the onboarding announcement if needed.
     ///
     private func syncProductsOnboarding(for siteID: Int64, onCompletion: @escaping () -> Void) {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productsOnboarding) else {
-            return
-        }
-
         let action = ProductAction.checkProductsOnboardingEligibility(siteID: siteID) { [weak self] result in
             switch result {
             case .success(let isEligible):
                 if isEligible {
-                    let viewModel = ProductsOnboardingAnnouncementCardViewModel()
-                    self?.announcementViewModel = viewModel
+                    ServiceLocator.analytics.track(.productsOnboardingEligible)
+
+                    if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productsOnboarding) {
+                        let viewModel = ProductsOnboardingAnnouncementCardViewModel()
+                        self?.announcementViewModel = viewModel
+                    }
                 }
                 onCompletion()
             case .failure(let error):

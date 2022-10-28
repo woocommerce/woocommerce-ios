@@ -5,15 +5,15 @@ public extension UIColor {
     /// Accent. Pink-50 (< iOS 13 and Light Mode) and Pink-30 (Dark Mode)
     ///
     static var accent: UIColor {
-        return UIColor(light: .withColorStudio(.pink, shade: .shade50),
-                       dark: .withColorStudio(.pink, shade: .shade30))
+        return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade60),
+                       dark: .withColorStudio(.wooCommercePurple, shade: .shade40))
     }
 
     /// Accent Dark. Pink-70 (< iOS 13 and Light Mode) and Pink-50 (Dark Mode)
     ///
     static var accentDark: UIColor {
-        return UIColor(light: .withColorStudio(.pink, shade: .shade70),
-                       dark: .withColorStudio(.pink, shade: .shade50))
+        return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade80),
+                       dark: .withColorStudio(.wooCommercePurple, shade: .shade60))
     }
 
     /// Brand. WooCommercePurple-60 (all versions of iOS, Light and Dark Mode)

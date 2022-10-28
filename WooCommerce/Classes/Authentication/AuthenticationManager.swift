@@ -405,7 +405,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             // A proper signup epilogue flow will be added incrementally later as part of the WP.com signup experiment:
             // Ref: pe5sF9-xP-p2
             sync(credentials: credentials) { [weak self] in
-                self?.startStorePicker(source: nil, in: navigationController)
+                self?.startStorePicker(in: navigationController)
             }
         } else {
             // NO-OP: The current WC version does not support Signup. Let SIWA through.
@@ -420,7 +420,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             //
             // This is effectively a useless screen for them other than telling them to install Jetpack.
             sync(credentials: credentials) { [weak self] in
-                self?.startStorePicker(source: nil, in: navigationController)
+                self?.startStorePicker(in: navigationController)
             }
         }
     }
@@ -622,7 +622,7 @@ private extension AuthenticationManager {
     }
 
     func startStorePicker(with siteID: Int64? = nil,
-                          source: SignInSource?,
+                          source: SignInSource? = nil,
                           in navigationController: UINavigationController,
                           onDismiss: @escaping () -> Void = {}) {
         let config: StorePickerConfiguration = {
@@ -668,7 +668,7 @@ private extension AuthenticationManager {
                                                onStorePickerDismiss: {})
                     navigationController.show(noWooUI, sender: nil)
                 } else {
-                    self.startStorePicker(with: matchedSite.siteID, source: nil, in: navigationController, onDismiss: {})
+                    self.startStorePicker(with: matchedSite.siteID, in: navigationController, onDismiss: {})
                 }
             }
         })
@@ -713,7 +713,7 @@ private extension AuthenticationManager {
             showsConnectedStores: matcher.hasConnectedStores,
             onSetupCompletion: { [weak self] siteID in
                 guard let self = self else { return }
-                self.startStorePicker(with: siteID, source: nil, in: navigationController, onDismiss: onStorePickerDismiss)
+                self.startStorePicker(with: siteID, in: navigationController, onDismiss: onStorePickerDismiss)
         })
         let noWooUI = ULErrorViewController(viewModel: viewModel)
         return noWooUI

@@ -716,6 +716,62 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(notice, AddressFormViewModel.NoticeFactory.createInvalidEmailNotice())
     }
+
+    func test_fillCustomerFields_updates_billing_customer_fields() {
+        // Given
+        let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .billing)
+        let customer = Customer.fake().copy(
+            email: "scrambled@scrambled.com",
+            firstName: "Johnny",
+            lastName: "Appleseed",
+            billing: sampleAddressWithEmptyNullableFields(),
+            shipping: sampleAddressWithEmptyNullableFields()
+        )
+
+        // When
+        viewModel.fillCustomerFields(customer: customer)
+
+        // Then
+        XCTAssertEqual(viewModel.fields.email, customer.email)
+        XCTAssertEqual(viewModel.fields.firstName, customer.firstName)
+        XCTAssertEqual(viewModel.fields.lastName, customer.lastName)
+        XCTAssertEqual(viewModel.fields.company, customer.billing?.company)
+        XCTAssertEqual(viewModel.fields.address1, customer.billing?.address1)
+        XCTAssertEqual(viewModel.fields.address2, customer.billing?.address2)
+        XCTAssertEqual(viewModel.fields.city, customer.billing?.city)
+        XCTAssertEqual(viewModel.fields.state, customer.billing?.state)
+        XCTAssertEqual(viewModel.fields.postcode, customer.billing?.postcode)
+        XCTAssertEqual(viewModel.fields.country, customer.billing?.country)
+        XCTAssertEqual(viewModel.fields.phone, customer.billing?.phone)
+    }
+
+    func test_fillCustomerFields_updates_shipping_customer_fields() {
+        // Given
+        let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .shipping)
+        let customer = Customer.fake().copy(
+            email: "scrambled@scrambled.com",
+            firstName: "Johnny",
+            lastName: "Appleseed",
+            billing: sampleAddressWithEmptyNullableFields(),
+            shipping: sampleAddressWithEmptyNullableFields()
+        )
+
+        // When
+        viewModel.fillCustomerFields(customer: customer)
+
+        // Then
+        XCTAssertEqual(viewModel.fields.email, customer.email)
+        XCTAssertEqual(viewModel.fields.firstName, customer.firstName)
+        XCTAssertEqual(viewModel.fields.lastName, customer.lastName)
+        XCTAssertEqual(viewModel.fields.company, customer.shipping?.company)
+        XCTAssertEqual(viewModel.fields.address1, customer.shipping?.address1)
+        XCTAssertEqual(viewModel.fields.address2, customer.shipping?.address2)
+        XCTAssertEqual(viewModel.fields.city, customer.shipping?.city)
+        XCTAssertEqual(viewModel.fields.state, customer.shipping?.state)
+        XCTAssertEqual(viewModel.fields.postcode, customer.shipping?.postcode)
+        XCTAssertEqual(viewModel.fields.country, customer.shipping?.country)
+        XCTAssertEqual(viewModel.fields.phone, customer.shipping?.phone)
+    }
 }
 
 private extension EditOrderAddressFormViewModelTests {

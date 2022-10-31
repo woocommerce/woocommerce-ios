@@ -642,7 +642,7 @@ private extension StorePickerViewController {
             ServiceLocator.analytics.track(.sitePickerAddStoreTapped)
             presentAddStoreActionSheet()
         } else {
-            ServiceLocator.analytics.track(event: .SitePicker.enterStoreAddressTapped())
+            ServiceLocator.analytics.track(.sitePickerConnectExistingStoreTapped)
            presentSiteDiscovery()
         }
     }

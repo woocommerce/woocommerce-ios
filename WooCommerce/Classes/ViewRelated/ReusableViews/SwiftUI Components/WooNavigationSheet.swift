@@ -34,5 +34,6 @@ struct WooNavigationSheet<Content: View>: View {
                 }
                 .wooNavigationBarStyle()
         }
+        .navigationViewStyle(StackNavigationViewStyle())
     }
 }

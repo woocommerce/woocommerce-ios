@@ -105,8 +105,7 @@ final class StorePickerViewController: UIViewController {
         didSet {
             addStoreButton.backgroundColor = .clear
             addStoreButton.titleFont = StyleManager.actionButtonTitleFont
-            let title = isSimplifiedLogin ? Localization.addStoreButton : Localization.enterSiteAddress
-            addStoreButton.setTitle(title, for: .normal)
+            addStoreButton.setTitle(Localization.addStoreButton, for: .normal)
         }
     }
 
@@ -173,10 +172,6 @@ final class StorePickerViewController: UIViewController {
         self?.restartAuthentication()
     }
 
-    private lazy var isSimplifiedLogin: Bool = {
-        featureFlagService.isFeatureFlagEnabled(.simplifiedLoginFlowI1)
-    }()
-
     private var storeCreationCoordinator: StoreCreationCoordinator?
 
     private let appleIDCredentialChecker: AppleIDCredentialCheckerProtocol
@@ -226,9 +221,7 @@ final class StorePickerViewController: UIViewController {
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         tableView.updateHeaderHeight()
-        if isSimplifiedLogin {
-            tableView.updateFooterHeight()
-        }
+        tableView.updateFooterHeight()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -332,11 +325,6 @@ private extension StorePickerViewController {
     }
 
     func presentAddStoreActionSheet() {
-        // If store creation is disabled, navigate the user directly to site discovery
-        guard featureFlagService.isFeatureFlagEnabled(.storeCreationMVP) else {
-            return presentSiteDiscovery()
-        }
-
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .black
         let createStoreAction = UIAlertAction(title: Localization.createStore, style: .default) { [weak self] _ in
@@ -438,7 +426,7 @@ private extension StorePickerViewController {
         case .empty:
             updateActionButtonAndTableState(animating: false, enabled: false)
             addStoreButton.isHidden = false
-            newToWooButton.isHidden = isSimplifiedLogin
+            newToWooButton.isHidden = true
         case .available(let sites):
             addStoreButton.isHidden = true
             newToWooButton.isHidden = true
@@ -455,9 +443,9 @@ private extension StorePickerViewController {
     ///
     func updateFooterViewIfNeeded() {
         switch viewModel.state {
-        case .available where isSimplifiedLogin == true:
+        case .available:
             tableView.tableFooterView = addStoreFooterView
-        default:
+        case .empty:
             tableView.tableFooterView = UIView()
         }
     }
@@ -557,7 +545,7 @@ private extension StorePickerViewController {
         hideActionButton()
         displayFancyWCRequirementAlert(siteName: siteName)
         addStoreButton.isHidden = false
-        newToWooButton.isHidden = isSimplifiedLogin
+        newToWooButton.isHidden = true
     }
 
     /// Update the UI when the user has a valid login
@@ -637,7 +625,7 @@ private extension StorePickerViewController {
     /// or the add store action sheet for simplified login.
     ///
     @IBAction private func addStoreWasPressed() {
-        if isSimplifiedLogin {
+        if featureFlagService.isFeatureFlagEnabled(.storeCreationMVP) {
             ServiceLocator.analytics.track(.sitePickerAddStoreTapped)
             presentAddStoreActionSheet()
         } else {
@@ -838,8 +826,6 @@ private extension StorePickerViewController {
         static let continueButton = NSLocalizedString("Continue", comment: "Button on the Store Picker screen to select a store")
         static let tryAnotherAccount = NSLocalizedString("Log In With Another Account",
                                                          comment: "Button to trigger connection to another account in store picker")
-        static let enterSiteAddress = NSLocalizedString("Enter Your Store Address",
-                                                        comment: "Button to input a site address in store picker when there are no stores found")
         static let newToWooCommerce = NSLocalizedString("New to WooCommerce?",
                                                         comment: "Title of button on the site picker screen for users who are new to WooCommerce.")
         static let createStore = NSLocalizedString("Create a new store",

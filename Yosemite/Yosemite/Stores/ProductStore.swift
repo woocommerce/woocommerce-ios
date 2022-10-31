@@ -397,7 +397,7 @@ private extension ProductStore {
         // Check for locally stored products first.
         let storage = storageManager.viewStorage
         if let products = storage.loadProducts(siteID: siteID), !products.isEmpty {
-            return onCompletion(.success(true))
+            return onCompletion(.success(false))
         }
 
         // If there are no locally stored products, then check remote.

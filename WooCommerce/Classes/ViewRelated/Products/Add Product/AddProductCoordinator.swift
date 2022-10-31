@@ -2,6 +2,7 @@ import UIKit
 import Yosemite
 import WooFoundation
 import protocol Storage.StorageManagerType
+import class Networking.ProductsRemote
 
 /// Controls navigation for the flow to add a product given a navigation controller.
 /// This class is not meant to be retained so that its life cycle is throughout the navigation. Example usage:
@@ -100,7 +101,8 @@ private extension AddProductCoordinator {
         let command = ProductTypeBottomSheetListSelectorCommand(selected: nil) { selectedBottomSheetProductType in
             ServiceLocator.analytics.track(.addProductTypeSelected, withProperties: ["product_type": selectedBottomSheetProductType.productType.rawValue])
             self.navigationController.dismiss(animated: true) {
-                self.presentProductForm(bottomSheetProductType: selectedBottomSheetProductType)
+                //self.presentProductForm(bottomSheetProductType: selectedBottomSheetProductType)
+                self.createAndPresentTemplate(productType: selectedBottomSheetProductType)
             }
         }
 
@@ -118,6 +120,21 @@ private extension AddProductCoordinator {
                                        sourceView: sourceView,
                                        sourceBarButtonItem: sourceBarButtonItem,
                                        arrowDirections: .any)
+    }
+
+    func createAndPresentTemplate(productType: BottomSheetProductType) {
+        guard let template = Self.templateType(from: productType) else {
+            return // Handle conversion failure
+        }
+
+        let action = ProductAction.createTemplateProduct(siteID: siteID, template: template) { result in
+            switch result {
+            case .success(let product):
+                print(product)
+            case .failure(let error):
+                print(error)
+            }
+        }
     }
 
     func presentProductForm(bottomSheetProductType: BottomSheetProductType) {
@@ -147,5 +164,23 @@ private extension AddProductCoordinator {
         // Since the Add Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
         viewController.hidesBottomBarWhenPushed = true
         navigationController.pushViewController(viewController, animated: true)
+    }
+
+    /// Converts a `BottomSheetProductType` type to a `ProductsRemote.TemplateType` template type.
+    /// Returns `nil` if the `BottomSheetProductType` is not suported or does not exists.
+    ///
+    static func templateType(from productType: BottomSheetProductType) -> ProductsRemote.TemplateType? {
+        switch productType {
+        case .simple(let isVirtual):
+            if isVirtual {
+                return .digital
+            } else {
+                return .physical
+            }
+        case .variable:
+            return .variable
+        default:
+            return nil
+        }
     }
 }

@@ -86,7 +86,7 @@ extension WooAnalyticsEvent.StoreCreation {
     }
 }
 
-extension CreateAccountError {
+private extension CreateAccountError {
     var analyticsValue: String {
         switch self {
         case .emailExists:

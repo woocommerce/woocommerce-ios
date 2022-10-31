@@ -1159,6 +1159,13 @@
 		AEA622B427466B78002A9B57 /* BottomSheetOrderType.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA622B327466B78002A9B57 /* BottomSheetOrderType.swift */; };
 		AEA622B727468790002A9B57 /* AddOrderCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA622B627468790002A9B57 /* AddOrderCoordinatorTests.swift */; };
 		AEACCB6D2785FF4A000D01F0 /* NavigationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEACCB6C2785FF4A000D01F0 /* NavigationRow.swift */; };
+		AEB4DB97290AE74B00AE4340 /* CookieJar.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB4DB96290AE74B00AE4340 /* CookieJar.swift */; };
+		AEB4DB99290AE8F300AE4340 /* MockCookieJar.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB4DB98290AE8F300AE4340 /* MockCookieJar.swift */; };
+		AEB4DB9B290AE92800AE4340 /* CookieJarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB4DB9A290AE92800AE4340 /* CookieJarTests.swift */; };
+		AEB4DB9D290AE94600AE4340 /* WKCookieJarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB4DB9C290AE94600AE4340 /* WKCookieJarTests.swift */; };
+		AEB4DB9F290AEA6100AE4340 /* AuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB4DB9E290AEA6100AE4340 /* AuthenticationService.swift */; };
+		AEB4DBA1290AEC0D00AE4340 /* RequestAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB4DBA0290AEC0D00AE4340 /* RequestAuthenticator.swift */; };
+		AEB4DBA3290AEDB900AE4340 /* RequestAuthenticatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB4DBA2290AEDB900AE4340 /* RequestAuthenticatorTests.swift */; };
 		AEB73C0C25CD734200A8454A /* AttributePickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB73C0B25CD734200A8454A /* AttributePickerViewModel.swift */; };
 		AEB73C1725CD8E5800A8454A /* AttributePickerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB73C1625CD8E5800A8454A /* AttributePickerViewModelTests.swift */; };
 		AEBFD13F28E7655F00F598C6 /* StoreInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBFD13E28E7655F00F598C6 /* StoreInfoView.swift */; };
@@ -3071,6 +3078,13 @@
 		AEA622B327466B78002A9B57 /* BottomSheetOrderType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetOrderType.swift; sourceTree = "<group>"; };
 		AEA622B627468790002A9B57 /* AddOrderCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOrderCoordinatorTests.swift; sourceTree = "<group>"; };
 		AEACCB6C2785FF4A000D01F0 /* NavigationRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationRow.swift; sourceTree = "<group>"; };
+		AEB4DB96290AE74B00AE4340 /* CookieJar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CookieJar.swift; sourceTree = "<group>"; };
+		AEB4DB98290AE8F300AE4340 /* MockCookieJar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCookieJar.swift; sourceTree = "<group>"; };
+		AEB4DB9A290AE92800AE4340 /* CookieJarTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CookieJarTests.swift; sourceTree = "<group>"; };
+		AEB4DB9C290AE94600AE4340 /* WKCookieJarTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WKCookieJarTests.swift; sourceTree = "<group>"; };
+		AEB4DB9E290AEA6100AE4340 /* AuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
+		AEB4DBA0290AEC0D00AE4340 /* RequestAuthenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestAuthenticator.swift; sourceTree = "<group>"; };
+		AEB4DBA2290AEDB900AE4340 /* RequestAuthenticatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestAuthenticatorTests.swift; sourceTree = "<group>"; };
 		AEB73C0B25CD734200A8454A /* AttributePickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewModel.swift; sourceTree = "<group>"; };
 		AEB73C1625CD8E5800A8454A /* AttributePickerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewModelTests.swift; sourceTree = "<group>"; };
 		AEBFD13E28E7655F00F598C6 /* StoreInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreInfoView.swift; sourceTree = "<group>"; };
@@ -6283,6 +6297,7 @@
 				B958A7D228B52A2300823EEF /* MockRoute.swift */,
 				B958A7D728B5316A00823EEF /* MockURLOpener.swift */,
 				EE8DCA7F28BF964700F23B23 /* MockAuthentication.swift */,
+				AEB4DB98290AE8F300AE4340 /* MockCookieJar.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -6530,6 +6545,16 @@
 			path = CustomerSection;
 			sourceTree = "<group>";
 		};
+		AEB4DB95290AE72D00AE4340 /* WebAuth */ = {
+			isa = PBXGroup;
+			children = (
+				AEB4DB96290AE74B00AE4340 /* CookieJar.swift */,
+				AEB4DB9E290AEA6100AE4340 /* AuthenticationService.swift */,
+				AEB4DBA0290AEC0D00AE4340 /* RequestAuthenticator.swift */,
+			);
+			path = WebAuth;
+			sourceTree = "<group>";
+		};
 		AEB73C1525CD8E3100A8454A /* Edit Product Variation */ = {
 			isa = PBXGroup;
 			children = (
@@ -6639,6 +6664,9 @@
 				4590B651261C8D1E00A6FCE0 /* WeightFormatterTests.swift */,
 				B96B536A2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift */,
 				EEADF625281A65A9001B40F1 /* DefaultShippingValueLocalizerTests.swift */,
+				AEB4DB9A290AE92800AE4340 /* CookieJarTests.swift */,
+				AEB4DB9C290AE94600AE4340 /* WKCookieJarTests.swift */,
+				AEB4DBA2290AEDB900AE4340 /* RequestAuthenticatorTests.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -6692,6 +6720,7 @@
 		B55D4C0420B6026700D7A50F /* Authentication */ = {
 			isa = PBXGroup;
 			children = (
+				AEB4DB95290AE72D00AE4340 /* WebAuth */,
 				D881A318256B5C9C00FE5605 /* Navigation Exceptions */,
 				B5A8F8AB20B88D8400D211DE /* Prologue */,
 				B5D1AFC420BC7B3000DB0E8C /* Epilogue */,
@@ -9844,6 +9873,7 @@
 				D8D15F83230A17A000D48B3F /* ServiceLocator.swift in Sources */,
 				317F679826420E9D00BA2A7A /* CardReaderSettingsViewModelsOrderedList.swift in Sources */,
 				DE279BA426E9C4DC002BA963 /* ShippingLabelPackagesForm.swift in Sources */,
+				AEB4DB9F290AEA6100AE4340 /* AuthenticationService.swift in Sources */,
 				CE583A0421076C0100D73C1C /* NewNoteViewController.swift in Sources */,
 				CECC759723D607C900486676 /* OrderItemRefund+Woo.swift in Sources */,
 				03EF250228C615A5006A033E /* InPersonPaymentsMenuViewModel.swift in Sources */,
@@ -10109,6 +10139,7 @@
 				B54FBE552111F70700390F57 /* ResultsController+UIKit.swift in Sources */,
 				CE2409F1215D12D30091F887 /* WooNavigationController.swift in Sources */,
 				0294F8AB25E8A12C005B537A /* WooTabNavigationController.swift in Sources */,
+				AEB4DBA1290AEC0D00AE4340 /* RequestAuthenticator.swift in Sources */,
 				029F29FA24D93E9E004751CA /* EditableProductModel.swift in Sources */,
 				31FC8CE927B476BA004B9456 /* CardReaderSettingsResultsControllers.swift in Sources */,
 				D449C52926DFBCCC00D75B02 /* WhatsNewHostingController.swift in Sources */,
@@ -10185,6 +10216,7 @@
 				45C8B2582313FA570002FA77 /* CustomerNoteTableViewCell.swift in Sources */,
 				02C3FACE282A93020095440A /* WooAnalyticsEvent+Dashboard.swift in Sources */,
 				DE67D46726B98FD000EFE8DB /* Publisher+WithLatestFrom.swift in Sources */,
+				AEB4DB97290AE74B00AE4340 /* CookieJar.swift in Sources */,
 				7493BB8E2149852A003071A9 /* TopPerformersHeaderView.swift in Sources */,
 				D88CA756237CE515005D2F44 /* UITabBar+Appearance.swift in Sources */,
 				45A8DA402664E40B00308FBE /* EmptyState.swift in Sources */,
@@ -10600,6 +10632,7 @@
 				02AB40822784297C00929CF3 /* ProductTableViewCellViewModelTests.swift in Sources */,
 				02829BAA288FA8B300951E1E /* MockUserNotification.swift in Sources */,
 				D85B8336222FCDA1002168F3 /* StatusListTableViewCellTests.swift in Sources */,
+				AEB4DBA3290AEDB900AE4340 /* RequestAuthenticatorTests.swift in Sources */,
 				3198A1E82694DC7200597213 /* MockKnownReadersProvider.swift in Sources */,
 				DEC51B04276B30F6009F3DF4 /* SystemStatusReportViewModelTests.swift in Sources */,
 				26B119C224D1CD3500FED5C7 /* WooConstantsTests.swift in Sources */,
@@ -10795,6 +10828,7 @@
 				CCB366AF274518EC007D437A /* EditableOrderViewModelTests.swift in Sources */,
 				020BE76B23B4A380007FE54C /* AztecUnderlineFormatBarCommandTests.swift in Sources */,
 				D83F5937225B402E00626E75 /* TitleAndEditableValueTableViewCellTests.swift in Sources */,
+				AEB4DB9D290AE94600AE4340 /* WKCookieJarTests.swift in Sources */,
 				773077F3251E954300178696 /* ProductDownloadFileViewModelTests.swift in Sources */,
 				2602A64A27BDC80200B347F1 /* RemoteOrderSynchronizerTests.swift in Sources */,
 				DE4B3B2E269455D400EEF2D8 /* MockShipmentActionStoresManager.swift in Sources */,
@@ -10828,6 +10862,7 @@
 				4569D3F425DC1BFF00CDC3E2 /* ShippingLabelFormViewModelTests.swift in Sources */,
 				57F2C6CD246DECC10074063B /* SummaryTableViewCellViewModelTests.swift in Sources */,
 				03EF250028C0E9EE006A033E /* InPersonPaymentsCashOnDeliveryToggleRowViewModelTests.swift in Sources */,
+				AEB4DB99290AE8F300AE4340 /* MockCookieJar.swift in Sources */,
 				02A275C423FE5B64005C560F /* MockPHAssetImageLoader.swift in Sources */,
 				456738972743DE9A00743054 /* OrderDateRangeFilterTests.swift in Sources */,
 				A650BE872578E76600C655E0 /* MockStorageManager.swift in Sources */,
@@ -10903,6 +10938,7 @@
 				02ECD1E124FF496200735BE5 /* PaginationTrackerTests.swift in Sources */,
 				45E9A6EB24DAFC3E00A600E8 /* ProductReviewsViewModelTests.swift in Sources */,
 				268EC46426D3F9C100716F5C /* EditCustomerNoteViewModelTests.swift in Sources */,
+				AEB4DB9B290AE92800AE4340 /* CookieJarTests.swift in Sources */,
 				453770D12431FF4700AC718D /* ProductSettingsViewModelTests.swift in Sources */,
 				2619FA2C25C897930006DAFF /* AddAttributeOptionsViewModelTests.swift in Sources */,
 				020BE77523B4A7EC007FE54C /* AztecSourceCodeFormatBarCommandTests.swift in Sources */,

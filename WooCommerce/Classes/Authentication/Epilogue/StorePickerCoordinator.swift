@@ -88,8 +88,8 @@ extension StorePickerCoordinator: StorePickerViewControllerDelegate {
     func createStore() {
         let source: StoreCreationCoordinator.Source
         switch selectedConfiguration {
-        case .storeCreationFromLoginPrologue:
-            source = .prologue
+        case .storeCreationFromLogin(let loggedOutSource):
+            source = .loggedOut(source: loggedOutSource)
         default:
             source = .storePicker
         }
@@ -122,7 +122,7 @@ private extension StorePickerCoordinator {
     func showStorePicker() {
         showStorePicker(presentationStyle: selectedConfiguration.presentationStyle)
         switch selectedConfiguration {
-        case .storeCreationFromLoginPrologue:
+        case .storeCreationFromLogin:
             createStore()
         default:
             break
@@ -184,7 +184,7 @@ private extension StorePickerConfiguration {
             return .fullscreen
         case .switchingStores:
             return .modally
-        case .storeCreationFromLoginPrologue:
+        case .storeCreationFromLogin:
             return .navigationStack(animated: false)
         default:
             return .navigationStack(animated: true)

@@ -82,6 +82,7 @@ extension WooAnalyticsEvent.StoreCreation {
     enum Source: String {
         case loginPrologue = "prologue"
         case storePicker = "store_picker"
+        case loginEmailError = "login_email_error"
     }
 }
 

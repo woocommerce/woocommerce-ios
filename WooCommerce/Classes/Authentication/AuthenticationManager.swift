@@ -18,6 +18,9 @@ class AuthenticationManager: Authentication {
     ///
     private var storePickerCoordinator: StorePickerCoordinator?
 
+    /// Store creation coordinator in the logged-out state.
+    private var loggedOutStoreCreationCoordinator: LoggedOutStoreCreationCoordinator?
+
     /// Keychain access for SIWA auth token
     ///
     private lazy var keychain = Keychain(service: WooConstants.keychainServiceName)
@@ -544,13 +547,11 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     // Navigate to store creation
     func showSiteCreation(in navigationController: UINavigationController) {
         ServiceLocator.analytics.track(event: .StoreCreation.loginPrologueCreateSiteTapped())
-        let accountCreationController = AccountCreationFormHostingController(
-            viewModel: .init(),
-            signInSource: .custom(source: StoreCreationCoordinator.Source.prologue.rawValue)
-        ) { [weak self] in
-            self?.startStoreCreation(in: navigationController)
-        }
-        navigationController.show(accountCreationController, sender: nil)
+
+        let coordinator = LoggedOutStoreCreationCoordinator(source: .prologue,
+                                                            navigationController: navigationController)
+        self.loggedOutStoreCreationCoordinator = coordinator
+        coordinator.start()
     }
 }
 
@@ -634,8 +635,12 @@ private extension AuthenticationManager {
                           onDismiss: @escaping () -> Void = {}) {
         let config: StorePickerConfiguration = {
             switch source {
-            case .custom(let source) where source == StoreCreationCoordinator.Source.prologue.rawValue:
-                return .storeCreationFromLoginPrologue
+            case .custom(let source):
+                if let loggedOutSource = LoggedOutStoreCreationCoordinator.Source(rawValue: source) {
+                    return .storeCreationFromLogin(source: loggedOutSource)
+                } else {
+                    return .login
+                }
             default:
                 return .login
             }
@@ -647,13 +652,6 @@ private extension AuthenticationManager {
         } else {
             storePickerCoordinator?.start()
         }
-    }
-
-    func startStoreCreation(in navigationController: UINavigationController) {
-        // Shows the store picker first, so that after dismissal of the store creation view it goes back to the store picker.
-        let coordinator = StorePickerCoordinator(navigationController, config: .storeCreationFromLoginPrologue)
-        storePickerCoordinator = coordinator
-        coordinator.start()
     }
 
     /// The error screen to be displayed when the user enters a site

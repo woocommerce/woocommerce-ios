@@ -35,7 +35,7 @@ protocol StorePickerViewControllerDelegate: AnyObject {
 
 /// Configuration option enum for the StorePickerViewController
 ///
-enum StorePickerConfiguration {
+enum StorePickerConfiguration: Equatable {
 
     /// Setup the store picker for use in the login flow
     ///
@@ -43,7 +43,7 @@ enum StorePickerConfiguration {
 
     /// Setup the store picker for store creation initiated from login prologue
     ///
-    case storeCreationFromLoginPrologue
+    case storeCreationFromLogin(source: LoggedOutStoreCreationCoordinator.Source)
 
     /// Setup the store picker for use in the store switching flow
     ///
@@ -617,8 +617,13 @@ private extension StorePickerViewController {
                 return .switchStores
             case .login, .standard:
                 return .login
-            case .storeCreationFromLoginPrologue:
-                return .loginPrologue
+            case .storeCreationFromLogin(let loggedOutSource):
+                switch loggedOutSource {
+                case .prologue:
+                    return .loginPrologue
+                case .loginEmailError:
+                    return .other
+                }
             default:
                 return .other
             }

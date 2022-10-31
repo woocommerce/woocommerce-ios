@@ -22,6 +22,8 @@ struct JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewModelProt
         // No-op
     }
 
+    var showDismissButton: Bool = true
+
     var showDismissConfirmation: Bool = false
 
     var dismissAlertTitle: String = ""

@@ -123,7 +123,14 @@ final class DashboardViewModel {
                     ServiceLocator.analytics.track(.productsOnboardingEligible)
 
                     if self?.featureFlagService.isFeatureFlagEnabled(.productsOnboarding) == true {
-                        let viewModel = ProductsOnboardingAnnouncementCardViewModel()
+                        let viewModel = ProductsOnboardingAnnouncementCardViewModel(onCTATapped: { [weak self] in
+                            guard let tabBarController = AppDelegate.shared.tabBarController else {
+                                return
+                            }
+
+                            self?.announcementViewModel = nil // Dismiss announcement
+                            tabBarController.navigateTo(.products)
+                        })
                         self?.announcementViewModel = viewModel
                     }
                 }

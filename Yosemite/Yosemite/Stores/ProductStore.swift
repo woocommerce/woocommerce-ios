@@ -102,6 +102,8 @@ public class ProductStore: Store {
             replaceProductLocally(product: product, onCompletion: onCompletion)
         case let .checkForProducts(siteID: siteID, onCompletion: onCompletion):
             checkForProducts(siteID: siteID, onCompletion: onCompletion)
+        case let .createTemplateProduct(siteID, template, onCompletion):
+            createTemplateProduct(siteID: siteID, template: template, onCompletion: onCompletion)
         }
     }
 }
@@ -404,6 +406,21 @@ private extension ProductStore {
             switch result {
             case .success(let ids):
                 onCompletion(.success(!ids.isEmpty))
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Creates a product using the provided template type.
+    /// The created product is not stored locally.
+    ///
+    func createTemplateProduct(siteID: Int64, template: ProductsRemote.TemplateType, onCompletion: @escaping (Result<Product, Error>) -> Void) {
+        remote.createTemplateProduct(for: siteID, template: template) { [remote] result in
+            switch result {
+            case .success(let productID):
+                remote.loadProduct(for: siteID, productID: productID, completion: onCompletion)
+
             case .failure(let error):
                 onCompletion(.failure(error))
             }

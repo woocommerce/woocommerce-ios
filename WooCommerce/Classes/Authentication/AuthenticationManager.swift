@@ -543,8 +543,13 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
     // Navigate to store creation
     func showSiteCreation(in navigationController: UINavigationController) {
-        // TODO: add tracks
-        // Navigate to store creation
+        let accountCreationController = AccountCreationFormHostingController(
+            viewModel: .init(),
+            signInSource: .custom(source: StoreCreationCoordinator.Source.prologue.rawValue)
+        ) { [weak self] in
+            self?.startStoreCreation(in: navigationController)
+        }
+        navigationController.show(accountCreationController, sender: nil)
     }
 }
 
@@ -641,6 +646,13 @@ private extension AuthenticationManager {
         } else {
             storePickerCoordinator?.start()
         }
+    }
+
+    func startStoreCreation(in navigationController: UINavigationController) {
+        // Shows the store picker first, so that after dismissal of the store creation view it goes back to the store picker.
+        let coordinator = StorePickerCoordinator(navigationController, config: .storeCreationFromLoginPrologue)
+        storePickerCoordinator = coordinator
+        coordinator.start()
     }
 
     /// The error screen to be displayed when the user enters a site

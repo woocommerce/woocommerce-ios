@@ -40,8 +40,6 @@ final class StoreCreationCoordinator: Coordinator {
     }
 
     func start() {
-        // TODO-7879: analytics
-
         observeSiteURLsFromStoreCreation()
 
         let viewModel = StoreCreationWebViewModel { [weak self] result in

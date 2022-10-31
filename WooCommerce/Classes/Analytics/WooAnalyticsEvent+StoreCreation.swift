@@ -1,9 +1,12 @@
+import enum Yosemite.CreateAccountError
+
 extension WooAnalyticsEvent {
     enum StoreCreation {
         /// Event property keys.
         private enum Key {
             static let source = "source"
             static let url = "url"
+            static let errorType = "error_type"
         }
 
         /// Tracked when the user taps on the CTA in store picker (logged in to WPCOM) to create a store.
@@ -56,10 +59,9 @@ extension WooAnalyticsEvent {
         }
 
         /// Tracked when WPCOM signup fails.
-        static func signupFailed(error: Error) -> WooAnalyticsEvent {
+        static func signupFailed(error: CreateAccountError) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .signupFailed,
-                              properties: [:],
-                              error: error)
+                              properties: [Key.errorType: error.analyticsValue])
         }
     }
 }
@@ -80,5 +82,20 @@ extension WooAnalyticsEvent.StoreCreation {
     enum Source: String {
         case loginPrologue = "prologue"
         case storePicker = "store_picker"
+    }
+}
+
+extension CreateAccountError {
+    var analyticsValue: String {
+        switch self {
+        case .emailExists:
+            return "EMAIL_EXIST"
+        case .invalidEmail:
+            return "EMAIL_INVALID"
+        case .invalidPassword:
+            return "PASSWORD_INVALID"
+        default:
+            return "\(self)"
+        }
     }
 }

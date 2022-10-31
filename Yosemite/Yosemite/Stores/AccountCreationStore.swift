@@ -56,10 +56,10 @@ private extension AccountCreationStore {
             switch result {
             case .failure(let error) where error == .invalidUsername:
                 // Because the username is automatically generated based on the email,
-                // when there is an error on the username we want to auto-generate another
-                // username using a known base so that the user is not blocked on the
-                // internal bug where `remote.loadUsernameSuggestions` returns an invalid
-                // username.
+                // when there is an error on the username (e.g. when the username contains certain
+                // keywords like `wordpress`) we want to auto-generate another username using a
+                // known base so that the user is not blocked on the internal bug where
+                // `remote.loadUsernameSuggestions` returns an invalid username.
                 guard let fallbackUsername = await generateUsername(base: Constants.fallbackUsernameBase) else {
                     return completion(.failure(.invalidUsername))
                 }

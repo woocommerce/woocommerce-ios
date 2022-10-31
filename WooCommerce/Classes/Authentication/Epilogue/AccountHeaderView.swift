@@ -39,8 +39,6 @@ class AccountHeaderView: UIView {
 
     @IBOutlet private var containerView: UIView!
 
-    @IBOutlet private var containerViewConstraints: [NSLayoutConstraint]!
-
     /// Closure to be executed whenever the help button is pressed
     ///
     var onHelpRequested: (() -> Void)?
@@ -50,6 +48,7 @@ class AccountHeaderView: UIView {
     override func awakeFromNib() {
         super.awakeFromNib()
         setupHelpButton()
+        configureContainerView()
     }
 }
 
@@ -90,15 +89,6 @@ extension AccountHeaderView {
         }
     }
 
-    func updateContainerView(hasBorders: Bool) {
-        containerView.layer.borderWidth = hasBorders ? 1 : 0
-        containerView.layer.borderColor = hasBorders ? UIColor.border.cgColor : UIColor.clear.cgColor
-        containerView.layer.cornerRadius = hasBorders ? 8 : 0
-        containerViewConstraints.forEach { constraint in
-            constraint.constant = hasBorders ? 16 : 0
-        }
-    }
-
     /// Downloads (and displays) the Gravatar associated with the specified Email.
     ///
     func downloadGravatar(with email: String) {
@@ -110,6 +100,12 @@ extension AccountHeaderView {
 // MARK: - Private Methods
 //
 private extension AccountHeaderView {
+
+    func configureContainerView() {
+        containerView.layer.borderWidth = 1
+        containerView.layer.borderColor = UIColor.border.cgColor
+        containerView.layer.cornerRadius = 8
+    }
 
     func setupHelpButton() {
         helpButton.setTitle(Strings.helpButtonTitle, for: .normal)

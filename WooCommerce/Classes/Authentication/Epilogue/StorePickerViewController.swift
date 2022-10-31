@@ -269,7 +269,6 @@ private extension StorePickerViewController {
             return
         }
 
-        accountHeaderView.updateContainerView(hasBorders: isSimplifiedLogin)
         accountHeaderView.username = "@" + defaultAccount.username
         accountHeaderView.fullname = defaultAccount.displayName
         accountHeaderView.downloadGravatar(with: defaultAccount.email)

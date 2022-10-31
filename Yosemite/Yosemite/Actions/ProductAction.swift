@@ -83,9 +83,10 @@ public enum ProductAction: Action {
     ///
     case replaceProductLocally(product: Product, onCompletion: () -> Void)
 
-    /// Checks if the store has at least one product
+    /// Checks if the store is eligible for products onboarding.
+    /// Returns `true` if the store has no products.
     ///
-    case checkForProducts(siteID: Int64, onCompletion: (Result<Bool, Error>) -> Void)
+    case checkProductsOnboardingEligibility(siteID: Int64, onCompletion: (Result<Bool, Error>) -> Void)
 
     /// Creates a product using the provided template type.
     ///

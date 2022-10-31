@@ -1539,7 +1539,7 @@ final class ProductStoreTests: XCTestCase {
 
         // When
         let result: Result<Bool, Error> = waitFor { promise in
-            let action = ProductAction.checkForProducts(siteID: self.sampleSiteID) { result in
+            let action = ProductAction.checkProductsOnboardingEligibility(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
             productStore.onAction(action)
@@ -1560,7 +1560,7 @@ final class ProductStoreTests: XCTestCase {
 
         // When
         let result: Result<Bool, Error> = waitFor { promise in
-            let action = ProductAction.checkForProducts(siteID: self.sampleSiteID) { result in
+            let action = ProductAction.checkProductsOnboardingEligibility(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
             productStore.onAction(action)
@@ -1581,7 +1581,7 @@ final class ProductStoreTests: XCTestCase {
 
         // When
         let result: Result<Bool, Error> = waitFor { promise in
-            let action = ProductAction.checkForProducts(siteID: self.sampleSiteID) { result in
+            let action = ProductAction.checkProductsOnboardingEligibility(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
             productStore.onAction(action)

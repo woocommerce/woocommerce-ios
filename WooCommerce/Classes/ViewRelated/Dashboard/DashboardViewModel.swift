@@ -1,6 +1,7 @@
 import Yosemite
 import enum Networking.DotcomError
 import enum Storage.StatsVersion
+import protocol Experiments.FeatureFlagService
 
 /// Syncs data for dashboard stats UI and determines the state of the dashboard UI based on stats version.
 final class DashboardViewModel {
@@ -10,9 +11,12 @@ final class DashboardViewModel {
     @Published private(set) var announcementViewModel: AnnouncementCardViewModelProtocol? = nil
 
     private let stores: StoresManager
+    private let featureFlagService: FeatureFlagService
 
-    init(stores: StoresManager = ServiceLocator.stores) {
+    init(stores: StoresManager = ServiceLocator.stores,
+         featureFlags: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.stores = stores
+        self.featureFlagService = featureFlags
     }
 
     /// Syncs store stats for dashboard UI.
@@ -118,7 +122,7 @@ final class DashboardViewModel {
                 if isEligible {
                     ServiceLocator.analytics.track(.productsOnboardingEligible)
 
-                    if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productsOnboarding) {
+                    if self?.featureFlagService.isFeatureFlagEnabled(.productsOnboarding) == true {
                         let viewModel = ProductsOnboardingAnnouncementCardViewModel()
                         self?.announcementViewModel = viewModel
                     }
@@ -135,7 +139,7 @@ final class DashboardViewModel {
     /// Checks for Just In Time Messages and prepares the announcement if needed.
     ///
     private func syncJustInTimeMessages(for siteID: Int64) {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.justInTimeMessagesOnDashboard) else {
+        guard featureFlagService.isFeatureFlagEnabled(.justInTimeMessagesOnDashboard) else {
             return
         }
 

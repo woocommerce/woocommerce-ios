@@ -41,7 +41,7 @@ enum StorePickerConfiguration: Equatable {
     ///
     case login
 
-    /// Setup the store picker for store creation initiated from login prologue
+    /// Setup the store picker for store creation initiated from the logged out state
     ///
     case storeCreationFromLogin(source: LoggedOutStoreCreationCoordinator.Source)
 

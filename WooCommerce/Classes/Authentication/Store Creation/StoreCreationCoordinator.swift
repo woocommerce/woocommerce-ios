@@ -7,7 +7,7 @@ import protocol Storage.StorageManagerType
 final class StoreCreationCoordinator: Coordinator {
     /// Navigation source to store creation.
     enum Source {
-        /// Initiated from the login prologue in logged-out state.
+        /// Initiated from the logged-out state.
         case loggedOut(source: LoggedOutStoreCreationCoordinator.Source)
         /// Initiated from the store picker in logged-in state.
         case storePicker

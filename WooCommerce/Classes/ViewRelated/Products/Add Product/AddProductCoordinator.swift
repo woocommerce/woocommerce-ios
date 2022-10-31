@@ -82,6 +82,8 @@ private extension AddProductCoordinator {
         isProductCreationTypeEnabled && productsResultsController.numberOfObjects < 3
     }
 
+    /// Presents a bottom sheet for users to choose if they want a create a product manually or via a template.
+    ///
     func presentProductCreationTypeBottomSheet() {
         let title = NSLocalizedString("How do you want to start?",
                                       comment: "Message title of bottom sheet for selecting a template or manual product")
@@ -94,6 +96,8 @@ private extension AddProductCoordinator {
         productTypesListPresenter.show(from: navigationController, sourceView: sourceView, sourceBarButtonItem: sourceBarButtonItem, arrowDirections: .any)
     }
 
+    /// Presents a bottom sheet for users to choose if what kind of product they want to create.
+    ///
     func presentProductTypeBottomSheet(creationType: ProductCreationType) {
         let title = NSLocalizedString("Select a product type",
                                       comment: "Message title of bottom sheet for selecting a product type to create a product")
@@ -126,6 +130,10 @@ private extension AddProductCoordinator {
                                        arrowDirections: .any)
     }
 
+    /// Creates & Fetches a template product.
+    /// If success: Navigates to the product.
+    /// If failure: Shows an error notice
+    ///
     func createAndPresentTemplate(productType: BottomSheetProductType) {
         guard let template = Self.templateType(from: productType) else {
             DDLogError("⛔️ Product Type: \(productType) not supported as a template.")
@@ -158,6 +166,8 @@ private extension AddProductCoordinator {
         self.navigationController.tabBarController?.present(inProgressViewController, animated: true, completion: nil)
     }
 
+    /// Presents a new product based on the provided bottom sheet type.
+    ///
     func presentProductForm(bottomSheetProductType: BottomSheetProductType) {
         guard let product = ProductFactory().createNewProduct(type: bottomSheetProductType.productType,
                                                               isVirtual: bottomSheetProductType.isVirtual,

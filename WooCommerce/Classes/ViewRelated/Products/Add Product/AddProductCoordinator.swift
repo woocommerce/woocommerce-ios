@@ -130,11 +130,13 @@ private extension AddProductCoordinator {
         let action = ProductAction.createTemplateProduct(siteID: siteID, template: template) { result in
             switch result {
             case .success(let product):
-                print(product)
+                self.presentProduct(product, formType: .edit) // We need to strongly capture `self` because no one is retaining `AddProductCoordinator`.
             case .failure(let error):
                 print(error)
             }
         }
+
+        ServiceLocator.stores.dispatch(action)
     }
 
     func presentProductForm(bottomSheetProductType: BottomSheetProductType) {
@@ -144,8 +146,13 @@ private extension AddProductCoordinator {
             assertionFailure("Unable to create product of type: \(bottomSheetProductType)")
             return
         }
-        let model = EditableProductModel(product: product)
+        presentProduct(product, formType: .add)
+    }
 
+    /// Presents a product onto the current navigation stack.
+    ///
+    func presentProduct(_ product: Product, formType: ProductFormType) {
+        let model = EditableProductModel(product: product)
         let currencyCode = ServiceLocator.currencySettings.currencyCode
         let currency = ServiceLocator.currencySettings.symbol(from: currencyCode)
         let productImageActionHandler = productImageUploader
@@ -154,7 +161,7 @@ private extension AddProductCoordinator {
                                       isLocalID: true),
                            originalStatuses: model.imageStatuses)
         let viewModel = ProductFormViewModel(product: model,
-                                             formType: .add,
+                                             formType: formType,
                                              productImageActionHandler: productImageActionHandler)
         let viewController = ProductFormViewController(viewModel: viewModel,
                                                        eventLogger: ProductFormEventLogger(),

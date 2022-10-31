@@ -6,7 +6,7 @@ import protocol Storage.StorageManagerType
 /// Coordinates navigation for store creation flow, with the assumption that the app is already authenticated with a WPCOM user.
 final class StoreCreationCoordinator: Coordinator {
     /// Navigation source to store creation.
-    enum Source {
+    enum Source: String {
         /// Initiated from the login prologue in logged-out state.
         case prologue
         /// Initiated from the store picker in logged-in state.

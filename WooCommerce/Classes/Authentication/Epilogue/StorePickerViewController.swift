@@ -341,7 +341,7 @@ private extension StorePickerViewController {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .black
         let createStoreAction = UIAlertAction(title: Localization.createStore, style: .default) { [weak self] _ in
-            ServiceLocator.analytics.track(.sitePickerCreateNewStoreTapped)
+            // TODO: add tracks for site creation
             self?.createStoreButtonPressed()
         }
         let addExistingStoreAction = UIAlertAction(title: Localization.connectExistingStore, style: .default) { [weak self] _ in
@@ -643,7 +643,7 @@ private extension StorePickerViewController {
             presentAddStoreActionSheet()
         } else {
             ServiceLocator.analytics.track(.sitePickerConnectExistingStoreTapped)
-           presentSiteDiscovery()
+            presentSiteDiscovery()
         }
     }
 

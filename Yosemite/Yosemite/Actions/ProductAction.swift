@@ -87,4 +87,8 @@ public enum ProductAction: Action {
     /// Returns `true` if the store has no products.
     ///
     case checkProductsOnboardingEligibility(siteID: Int64, onCompletion: (Result<Bool, Error>) -> Void)
+
+    /// Creates a product using the provided template type.
+    ///
+    case createTemplateProduct(siteID: Int64, template: ProductsRemote.TemplateType, onCompletion: (Result<Product, Error>) -> Void)
 }

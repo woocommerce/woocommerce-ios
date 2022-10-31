@@ -23,7 +23,7 @@ struct ProductsOnboardingAnnouncementCardViewModel: AnnouncementCardViewModelPro
     let onCTATapped: (() -> Void)?
 
     func ctaTapped() {
-        ServiceLocator.analytics.track(.productsOnboardingCTATapped)
+        ServiceLocator.analytics.track(event: .ProductsOnboarding.bannerCTATapped())
         onCTATapped?()
     }
 

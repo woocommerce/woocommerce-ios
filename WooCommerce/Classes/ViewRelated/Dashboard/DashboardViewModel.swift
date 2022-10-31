@@ -120,7 +120,7 @@ final class DashboardViewModel {
             switch result {
             case .success(let isEligible):
                 if isEligible {
-                    ServiceLocator.analytics.track(.productsOnboardingEligible)
+                    ServiceLocator.analytics.track(event: .ProductsOnboarding.storeIsEligible())
 
                     if self?.featureFlagService.isFeatureFlagEnabled(.productsOnboarding) == true {
                         let viewModel = ProductsOnboardingAnnouncementCardViewModel(onCTATapped: { [weak self] in

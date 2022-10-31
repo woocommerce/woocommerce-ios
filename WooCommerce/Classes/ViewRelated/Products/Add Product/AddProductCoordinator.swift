@@ -101,8 +101,12 @@ private extension AddProductCoordinator {
         let command = ProductTypeBottomSheetListSelectorCommand(selected: nil) { selectedBottomSheetProductType in
             ServiceLocator.analytics.track(.addProductTypeSelected, withProperties: ["product_type": selectedBottomSheetProductType.productType.rawValue])
             self.navigationController.dismiss(animated: true) {
-                //self.presentProductForm(bottomSheetProductType: selectedBottomSheetProductType)
-                self.createAndPresentTemplate(productType: selectedBottomSheetProductType)
+                switch creationType {
+                case .manual:
+                    self.presentProductForm(bottomSheetProductType: selectedBottomSheetProductType)
+                case .template:
+                    self.createAndPresentTemplate(productType: selectedBottomSheetProductType)
+                }
             }
         }
 

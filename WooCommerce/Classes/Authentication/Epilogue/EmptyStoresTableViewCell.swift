@@ -13,7 +13,7 @@ final class EmptyStoresTableViewCell: UITableViewCell {
     @IBOutlet private var legendLabel: UILabel! {
         didSet {
             legendLabel.textColor = .text
-            legendLabel.font = .font(forStyle: .title3, weight: .semibold)
+            legendLabel.font = .title3SemiBold
             legendLabel.text = Localization.legend
         }
     }

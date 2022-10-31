@@ -18,14 +18,12 @@ struct ProductsOnboardingAnnouncementCardViewModel: AnnouncementCardViewModelPro
         // No-op
     }
 
-    /// Opens the Products tab when the Call To Action button is tapped
-    ///
-    func ctaTapped() {
-        guard let tabBarController = AppDelegate.shared.tabBarController else {
-            return
-        }
+    // MARK: Call to Action
 
-        tabBarController.navigateTo(.products)
+    let onCTATapped: (() -> Void)?
+
+    func ctaTapped() {
+        onCTATapped?()
     }
 
     // MARK: Dismiss button (disabled)

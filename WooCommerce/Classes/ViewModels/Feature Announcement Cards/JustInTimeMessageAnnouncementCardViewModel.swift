@@ -7,6 +7,8 @@ import Combine
 final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewModelProtocol {
     private let siteID: Int64
 
+    private let analytics: Analytics
+
     // MARK: - Message properties
     let title: String
 
@@ -16,16 +18,27 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
 
     private let url: URL?
 
+    private let messageID: String
+
+    private let featureClass: String
+
+    private let screenName: String
+
     init(justInTimeMessage: YosemiteJustInTimeMessage,
          screenName: String,
-         siteID: Int64) {
+         siteID: Int64,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
+        self.analytics = analytics
         let utmProvider = WooCommerceComUTMProvider(
             campaign: "jitm_group_\(justInTimeMessage.featureClass)",
             source: screenName,
             content: "jitm_\(justInTimeMessage.messageID)",
             siteID: siteID)
         self.url = utmProvider.urlWithUtmParams(string: justInTimeMessage.url)
+        self.messageID = justInTimeMessage.messageID
+        self.featureClass = justInTimeMessage.featureClass
+        self.screenName = screenName
         self.title = justInTimeMessage.title
         self.message = justInTimeMessage.detail
         self.buttonTitle = justInTimeMessage.buttonTitle
@@ -53,6 +66,11 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
     }
 
     func ctaTapped() {
+        analytics.track(event: WooAnalyticsEvent.JustInTimeMessage.callToActionTapped(
+            source: screenName,
+            messageID: messageID,
+            featureClass: featureClass))
+
         guard let url = url else {
             return
         }

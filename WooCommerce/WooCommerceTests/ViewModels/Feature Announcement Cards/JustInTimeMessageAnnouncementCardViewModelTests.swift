@@ -9,17 +9,22 @@ import Combine
 final class JustInTimeMessageAnnouncementCardViewModelTests: XCTestCase {
     private var subscriptions = Set<AnyCancellable>()
     private var webviewPublishes: [WebViewSheetViewModel]!
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: Analytics!
     private var sut: JustInTimeMessageAnnouncementCardViewModel!
 
     override func setUp() {
         subscriptions = Set<AnyCancellable>()
         webviewPublishes = [WebViewSheetViewModel]()
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
 
     func setUp(with message: YosemiteJustInTimeMessage) {
         sut = JustInTimeMessageAnnouncementCardViewModel(justInTimeMessage: message,
-                                                             screenName: "my_store",
-                                                             siteID: 1234)
+                                                         screenName: "my_store",
+                                                         siteID: 1234,
+                                                         analytics: analytics)
 
         sut.$showWebViewSheet
             .sink { [weak self] webViewSheetViewModel in
@@ -82,5 +87,24 @@ final class JustInTimeMessageAnnouncementCardViewModelTests: XCTestCase {
         // Then
         let webViewViewModel = try XCTUnwrap(webviewPublishes.last)
         XCTAssertFalse(webViewViewModel.wpComAuthenticated)
+    }
+
+    func test_ctaTapped_tracks_jitm_cta_tapped_event() {
+        // Given
+        setUp(with: YosemiteJustInTimeMessage.fake().copy(messageID: "test-message-id", featureClass: "test-feature-class"))
+
+        // When
+        sut.ctaTapped()
+
+        // Then
+        guard let eventIndex = analyticsProvider.receivedEvents.firstIndex(of: "jitm_cta_tapped")
+        else {
+            return XCTFail("Analytics not logged")
+        }
+        let properties = analyticsProvider.receivedProperties[eventIndex] as? [String: String]
+        let expectedProperties = ["jitm_id": "test-message-id",
+                                  "jitm_group": "test-feature-class",
+                                  "source": "my_store"]
+        assertEqual(expectedProperties, properties)
     }
 }

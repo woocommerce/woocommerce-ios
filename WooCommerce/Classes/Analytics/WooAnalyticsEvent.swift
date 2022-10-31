@@ -1632,3 +1632,21 @@ extension WooAnalyticsEvent {
         }
     }
 }
+
+// MARK: - Products Onboarding
+//
+extension WooAnalyticsEvent {
+    enum ProductsOnboarding {
+        /// Tracks when a store is eligible for products onboarding
+        ///
+        static func storeIsEligible() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productsOnboardingEligible, properties: [:])
+        }
+
+        /// Tracks when the call to action is tapped on the products onboarding banner
+        ///
+        static func bannerCTATapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productsOnboardingCTATapped, properties: [:])
+        }
+    }
+}

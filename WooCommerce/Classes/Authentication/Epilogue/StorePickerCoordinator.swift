@@ -86,8 +86,6 @@ extension StorePickerCoordinator: StorePickerViewControllerDelegate {
     }
 
     func createStore() {
-        // TODO-7879: analytics
-
         let source: StoreCreationCoordinator.Source
         switch selectedConfiguration {
         case .storeCreationFromLoginPrologue:

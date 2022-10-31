@@ -18,6 +18,7 @@ final class StoreCreationCoordinator: Coordinator {
     @Published private var possibleSiteURLsFromStoreCreation: Set<String> = []
     private var possibleSiteURLsFromStoreCreationSubscription: AnyCancellable?
 
+    private let analytics: Analytics
     private let source: Source
     private let storePickerViewModel: StorePickerViewModel
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
@@ -35,6 +36,7 @@ final class StoreCreationCoordinator: Coordinator {
                                           storageManager: storageManager,
                                           analytics: analytics)
         self.switchStoreUseCase = SwitchStoreUseCase(stores: stores, storageManager: storageManager)
+        self.analytics = analytics
     }
 
     func start() {
@@ -89,20 +91,18 @@ private extension StoreCreationCoordinator {
 
     @objc func handleStoreCreationCloseAction() {
         // TODO-7879: show a confirmation alert before closing the store creation view
-        // TODO-7879: analytics
+        analytics.track(event: .StoreCreation.siteCreationDismissed(source: source.analyticsValue))
         navigationController.dismiss(animated: true)
     }
 
     func handleStoreCreationResult(_ result: Result<String, Error>) {
         switch result {
         case .success(let siteURL):
-            // TODO-7879: analytics
-
             // There could be multiple site URLs from the completion URL in the webview, and only one
             // of them matches the final site URL from WPCOM `/me/sites` endpoint.
             possibleSiteURLsFromStoreCreation.insert(siteURL)
         case .failure(let error):
-            // TODO-7879: analytics
+            analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue, error: error))
             DDLogError("Store creation error: \(error)")
         }
     }
@@ -129,6 +129,7 @@ private extension StoreCreationCoordinator {
     }
 
     func continueWithSelectedSite(site: Site) {
+        analytics.track(event: .StoreCreation.siteCreated(source: source.analyticsValue, siteURL: site.url))
         switchStoreUseCase.switchStore(with: site.siteID) { [weak self] siteChanged in
             guard let self else { return }
 
@@ -143,5 +144,16 @@ private extension StoreCreationCoordinator {
 private extension StoreCreationCoordinator {
     enum StoreCreationCoordinatorError: Error {
         case selfDeallocated
+    }
+}
+
+private extension StoreCreationCoordinator.Source {
+    var analyticsValue: WooAnalyticsEvent.StoreCreation.Source {
+        switch self {
+        case .storePicker:
+            return .storePicker
+        case .prologue:
+            return .loginPrologue
+        }
     }
 }

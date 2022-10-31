@@ -611,6 +611,20 @@ private extension StorePickerViewController {
     }
 
     func createStoreButtonPressed() {
+        let source: WooAnalyticsEvent.StoreCreation.StorePickerSource = {
+            switch configuration {
+            case .switchingStores:
+                return .switchStores
+            case .login, .standard:
+                return .login
+            case .storeCreationFromLoginPrologue:
+                return .loginPrologue
+            default:
+                return .other
+            }
+        }()
+        ServiceLocator.analytics.track(event: .StoreCreation.sitePickerCreateSiteTapped(source: source))
+
         delegate?.createStore()
     }
 }

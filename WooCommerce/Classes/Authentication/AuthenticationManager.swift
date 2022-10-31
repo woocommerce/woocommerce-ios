@@ -543,6 +543,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
     // Navigate to store creation
     func showSiteCreation(in navigationController: UINavigationController) {
+        ServiceLocator.analytics.track(event: .StoreCreation.loginPrologueCreateSiteTapped())
         let accountCreationController = AccountCreationFormHostingController(
             viewModel: .init(),
             signInSource: .custom(source: StoreCreationCoordinator.Source.prologue.rawValue)

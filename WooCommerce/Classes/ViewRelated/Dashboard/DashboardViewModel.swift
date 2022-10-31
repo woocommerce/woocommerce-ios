@@ -106,37 +106,22 @@ final class DashboardViewModel {
             let action = JustInTimeMessageAction.loadMessage(
                 siteID: siteID,
                 screen: Constants.dashboardScreenName,
-                hook: .adminNotices) { result in
+                hook: .adminNotices) { [weak self] result in
+                    guard let self = self else { return }
                     switch result {
                     case let .success(.some(message)):
                         let viewModel = JustInTimeMessageAnnouncementCardViewModel(
-                            title: message.title,
-                            message: message.detail,
-                            buttonTitle: message.buttonTitle,
-                            onCTATapped: { [weak self] in
-                                guard let self = self,
-                                      let url = URL(string: message.url)
-                                else { return }
-                                let webViewModel = WebViewSheetViewModel(
-                                    url: url,
-                                    navigationTitle: message.title,
-                                    wpComAuthenticated: self.needsAuthenticatedWebView(url: url))
-                                self.showWebViewSheet = webViewModel
-                            })
+                            justInTimeMessage: message,
+                            screenName: Constants.dashboardScreenName,
+                            siteID: siteID)
                         self.announcementViewModel = viewModel
+                        viewModel.$showWebViewSheet.assign(to: &self.$showWebViewSheet)
                     default:
                         break
                     }
                 }
             stores.dispatch(action)
         }
-    }
-
-    private func needsAuthenticatedWebView(url: URL) -> Bool {
-        guard let host = url.host else {
-            return false
-        }
-        return Constants.trustedDomains.contains(host)
     }
 }
 
@@ -146,6 +131,5 @@ private extension DashboardViewModel {
     enum Constants {
         static let topEarnerStatsLimit: Int = 5
         static let dashboardScreenName = "my_store"
-        static let trustedDomains = ["woocommerce.com", "wordpress.com"]
     }
 }

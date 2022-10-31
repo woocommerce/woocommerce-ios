@@ -131,9 +131,15 @@ private extension AddProductCoordinator {
             return // Handle conversion failure
         }
 
+        // Loading ViewController while the product is being created
+        let loadingTitle = NSLocalizedString("Creating Template Product...", comment: "Loading text while creating a product from a template")
+        let viewProperties = InProgressViewProperties(title: loadingTitle, message: "")
+        let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
+
         let action = ProductAction.createTemplateProduct(siteID: siteID, template: template) { result in
             switch result {
             case .success(let product):
+                inProgressViewController.dismiss(animated: true) // Dismiss Loader
                 self.presentProduct(product, formType: .edit) // We need to strongly capture `self` because no one is retaining `AddProductCoordinator`.
             case .failure(let error):
                 print(error)
@@ -141,6 +147,10 @@ private extension AddProductCoordinator {
         }
 
         ServiceLocator.stores.dispatch(action)
+
+        // Present loader right after the creation action is dispatched.
+        inProgressViewController.modalPresentationStyle = .overCurrentContext
+        self.navigationController.tabBarController?.present(inProgressViewController, animated: true, completion: nil)
     }
 
     func presentProductForm(bottomSheetProductType: BottomSheetProductType) {

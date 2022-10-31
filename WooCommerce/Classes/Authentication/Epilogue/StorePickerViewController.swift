@@ -109,15 +109,6 @@ final class StorePickerViewController: UIViewController {
         }
     }
 
-    /// New To Woo button
-    ///
-    @IBOutlet var newToWooButton: UIButton! {
-        didSet {
-            newToWooButton.applyLinkButtonStyle()
-            newToWooButton.setTitle(Localization.newToWooCommerce, for: .normal)
-        }
-    }
-
     /// Main tableView
     ///
     @IBOutlet private var tableView: UITableView! {
@@ -426,10 +417,8 @@ private extension StorePickerViewController {
         case .empty:
             updateActionButtonAndTableState(animating: false, enabled: false)
             addStoreButton.isHidden = false
-            newToWooButton.isHidden = true
         case .available(let sites):
             addStoreButton.isHidden = true
-            newToWooButton.isHidden = true
             if sites.allSatisfy({ $0.isWooCommerceActive == false }) {
                 updateActionButtonAndTableState(animating: false, enabled: false)
             }
@@ -545,7 +534,6 @@ private extension StorePickerViewController {
         hideActionButton()
         displayFancyWCRequirementAlert(siteName: siteName)
         addStoreButton.isHidden = false
-        newToWooButton.isHidden = true
     }
 
     /// Update the UI when the user has a valid login
@@ -632,17 +620,6 @@ private extension StorePickerViewController {
             ServiceLocator.analytics.track(.sitePickerConnectExistingStoreTapped)
             presentSiteDiscovery()
         }
-    }
-
-    /// Displays a web view with introduction to WooCommerce
-    ///
-    @IBAction private func newToWooWasPressed() {
-        ServiceLocator.analytics.track(event: .SitePicker.newToWooTapped())
-        guard let url = URL(string: StorePickerConstants.newToWooCommerceURL) else {
-            return assertionFailure("Cannot generate URL.")
-        }
-
-        WebviewHelper.launch(url, with: self)
     }
 
     /// Proceeds with the Logout Flow.
@@ -826,8 +803,6 @@ private extension StorePickerViewController {
         static let continueButton = NSLocalizedString("Continue", comment: "Button on the Store Picker screen to select a store")
         static let tryAnotherAccount = NSLocalizedString("Log In With Another Account",
                                                          comment: "Button to trigger connection to another account in store picker")
-        static let newToWooCommerce = NSLocalizedString("New to WooCommerce?",
-                                                        comment: "Title of button on the site picker screen for users who are new to WooCommerce.")
         static let createStore = NSLocalizedString("Create a new store",
                                                    comment: "Button to create a new store from the store picker")
         static let connectExistingStore = NSLocalizedString("Connect an existing store",
@@ -843,7 +818,6 @@ private extension StorePickerViewController {
 //
 private enum StorePickerConstants {
     static let estimatedRowHeight = CGFloat(50)
-    static let newToWooCommerceURL = "https://woocommerce.com/woocommerce-features"
 }
 
 

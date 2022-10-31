@@ -128,7 +128,8 @@ private extension AddProductCoordinator {
 
     func createAndPresentTemplate(productType: BottomSheetProductType) {
         guard let template = Self.templateType(from: productType) else {
-            return // Handle conversion failure
+            DDLogError("⛔️ Product Type: \(productType) not supported as a template.")
+            return presentErrorNotice()
         }
 
         // Loading ViewController while the product is being created
@@ -139,10 +140,14 @@ private extension AddProductCoordinator {
         let action = ProductAction.createTemplateProduct(siteID: siteID, template: template) { result in
             switch result {
             case .success(let product):
-                inProgressViewController.dismiss(animated: true) // Dismiss Loader
+                // Dismiss the loader and present the product.
+                inProgressViewController.dismiss(animated: true)
                 self.presentProduct(product, formType: .edit) // We need to strongly capture `self` because no one is retaining `AddProductCoordinator`.
+
             case .failure(let error):
-                print(error)
+                // Log error and inform the user
+                DDLogError("⛔️ There was an error creating the template product: \(error)")
+                self.presentErrorNotice()
             }
         }
 
@@ -203,5 +208,13 @@ private extension AddProductCoordinator {
         default:
             return nil
         }
+    }
+
+    /// Presents an general error notice using the system notice presenter.
+    ///
+    private func presentErrorNotice() {
+        let notice = Notice(title: NSLocalizedString("There was a problem creating the template product.",
+                                                     comment: "Title for the error notice when creating a template product"))
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }

@@ -233,7 +233,7 @@ public enum CreateAccountError: Error, Equatable {
                 self = .invalidEmail
             case Constants.invalidPassword:
                 self = .invalidPassword(message: message)
-            case Constants.invalidUsername:
+            case Constants.invalidUsername, Constants.usernameExists:
                 self = .invalidUsername
             default:
                 self = .unexpected(error: error)
@@ -249,6 +249,7 @@ public enum CreateAccountError: Error, Equatable {
         static let emailExists = "email_exists"
         static let invalidEmail = "email_invalid"
         static let invalidPassword = "password_invalid"
-        static let invalidUsername = "username_exists"
+        static let usernameExists = "username_exists"
+        static let invalidUsername = "username_invalid"
     }
 }

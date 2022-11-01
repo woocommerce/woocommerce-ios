@@ -104,9 +104,9 @@ protocol AddressFormViewModelProtocol: ObservableObject {
     ///
     func createSecondaryStateViewModel() -> StateSelectorViewModel
 
-    /// Callback method when the Customer Search button is tapped
+    /// Triggers the logic to fill Customer Order details when a Customer is selected
     ///
-    func customerSearchTapped()
+    func customerSelectedFromSearch(customer: Customer)
 }
 
 /// Type to hold values from all the form fields
@@ -400,6 +400,40 @@ open class AddressFormViewModel: ObservableObject {
         let primaryEmailIsValid = fields.email.isEmpty || EmailFormatValidator.validate(string: fields.email)
         let secondaryEmailIsValid = secondaryFields.email.isEmpty || EmailFormatValidator.validate(string: fields.email)
         return primaryEmailIsValid && secondaryEmailIsValid
+    }
+
+    /// Fills Order AddressFormFields with Customer details
+    ///
+    func customerSelectedFromSearch(customer: Customer) {
+        fillCustomerFields(customer: customer)
+        let addressesDiffer = customer.billing != customer.shipping
+        showDifferentAddressForm = addressesDiffer
+    }
+
+    private func fillCustomerFields(customer: Customer) {
+        fields = populate(fields: fields, with: customer.billing)
+        secondaryFields = populate(fields: secondaryFields, with: customer.shipping)
+    }
+
+    private func populate(fields: AddressFormFields, with address: Address?) -> AddressFormFields {
+        var fields = fields
+
+        fields.firstName = address?.firstName ?? ""
+        fields.lastName = address?.lastName ?? ""
+        // Email is declared optional because we're using the same property from the Address model
+        // for both Shipping and Billing details:
+        // https://github.com/woocommerce/woocommerce-ios/issues/7993
+        fields.email = address?.email ?? ""
+        fields.phone = address?.phone ?? ""
+        fields.company = address?.company ?? ""
+        fields.address1 = address?.address1 ?? ""
+        fields.address2 = address?.address2 ?? ""
+        fields.city = address?.city ?? ""
+        fields.postcode = address?.postcode ?? ""
+        fields.country = address?.country ?? ""
+        fields.state = address?.state ?? ""
+
+        return fields
     }
 }
 

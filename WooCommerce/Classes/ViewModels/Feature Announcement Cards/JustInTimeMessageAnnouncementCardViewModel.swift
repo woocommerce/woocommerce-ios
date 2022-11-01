@@ -54,6 +54,8 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
 
     let image: UIImage = .paymentsFeatureBannerImage
 
+    var showDismissButton: Bool = true
+
     let showDismissConfirmation: Bool = false
 
     let dismissAlertTitle: String = ""

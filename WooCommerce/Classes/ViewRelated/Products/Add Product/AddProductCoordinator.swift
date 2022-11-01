@@ -152,7 +152,8 @@ private extension AddProductCoordinator {
 
             switch result {
             case .success(let product):
-                self.presentProduct(product, formType: .edit) // We need to strongly capture `self` because no one is retaining `AddProductCoordinator`.
+                let newProduct = ProductFactory().newProduct(from: product) // Transforms the auto-draft product into a new product ready to be used.
+                self.presentProduct(newProduct) // We need to strongly capture `self` because no one is retaining `AddProductCoordinator`.
 
             case .failure(let error):
                 // Log error and inform the user
@@ -177,12 +178,12 @@ private extension AddProductCoordinator {
             assertionFailure("Unable to create product of type: \(bottomSheetProductType)")
             return
         }
-        presentProduct(product, formType: .add)
+        presentProduct(product)
     }
 
     /// Presents a product onto the current navigation stack.
     ///
-    func presentProduct(_ product: Product, formType: ProductFormType) {
+    func presentProduct(_ product: Product) {
         let model = EditableProductModel(product: product)
         let currencyCode = ServiceLocator.currencySettings.currencyCode
         let currency = ServiceLocator.currencySettings.symbol(from: currencyCode)
@@ -192,7 +193,7 @@ private extension AddProductCoordinator {
                                       isLocalID: true),
                            originalStatuses: model.imageStatuses)
         let viewModel = ProductFormViewModel(product: model,
-                                             formType: formType,
+                                             formType: .add,
                                              productImageActionHandler: productImageActionHandler)
         let viewController = ProductFormViewController(viewModel: viewModel,
                                                        eventLogger: ProductFormEventLogger(),

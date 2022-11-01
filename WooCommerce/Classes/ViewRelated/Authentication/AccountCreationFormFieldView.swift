@@ -27,7 +27,7 @@ struct AccountCreationFormFieldView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
             Text(viewModel.header)
-                .bodyStyle()
+                .subheadlineStyle()
             if viewModel.isSecure {
                 SecureField(viewModel.placeholder, text: viewModel.text)
                     .textFieldStyle(.roundedBorder)

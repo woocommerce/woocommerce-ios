@@ -10,6 +10,10 @@ class PasteboardTests: XCTestCase {
     }
 
     func testNominalAuthCode() throws {
+        if #available(iOS 16.0, *) {
+            throw XCTSkip("Unsupported iOS version")
+        }
+
         guard #available(iOS 14.0, *) else {
             throw XCTSkip("Unsupported iOS version")
         }
@@ -32,6 +36,10 @@ class PasteboardTests: XCTestCase {
     }
 
     func testLeadingZeroInAuthCodePreserved() throws {
+        if #available(iOS 16.0, *) {
+            throw XCTSkip("Unsupported iOS version")
+        }
+
         guard #available(iOS 14.0, *) else {
             throw XCTSkip("Unsupported iOS version")
         }
@@ -51,4 +59,6 @@ class PasteboardTests: XCTestCase {
         }
 
         waitForExpectations(timeout: timeout, handler: nil)
-    }}
+    }
+
+}

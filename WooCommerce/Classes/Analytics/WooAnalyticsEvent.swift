@@ -1632,6 +1632,15 @@ extension WooAnalyticsEvent {
 //
 extension WooAnalyticsEvent {
     enum ProductsOnboarding {
+        enum Keys: String {
+            case type
+        }
+
+        enum CreationType: String {
+            case manual
+            case template
+        }
+
         /// Tracks when a store is eligible for products onboarding
         ///
         static func storeIsEligible() -> WooAnalyticsEvent {
@@ -1642,6 +1651,12 @@ extension WooAnalyticsEvent {
         ///
         static func bannerCTATapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productsOnboardingCTATapped, properties: [:])
+        }
+
+        /// Trackas when the merchants selects a product creation type.
+        ///
+        static func productCreationTypeSelected(type: CreationType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .addProductCreationTypeSelected, properties: [Keys.type.rawValue: type.rawValue])
         }
     }
 }

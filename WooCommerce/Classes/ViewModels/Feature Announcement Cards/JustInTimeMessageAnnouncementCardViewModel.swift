@@ -75,10 +75,9 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
     }
 
     func ctaTapped() {
-        analytics.track(event: WooAnalyticsEvent.JustInTimeMessage.callToActionTapped(
-            source: screenName,
-            messageID: messageID,
-            featureClass: featureClass))
+        analytics.track(event: .JustInTimeMessage.callToActionTapped(source: screenName,
+                                                                     messageID: messageID,
+                                                                     featureClass: featureClass))
 
         guard let url = url else {
             return
@@ -98,9 +97,27 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
     }
 
     func dontShowAgainTapped() {
+        analytics.track(event: .JustInTimeMessage.dismissTapped(source: screenName,
+                                                                messageID: messageID,
+                                                                featureClass: featureClass))
         let action = JustInTimeMessageAction.dismissMessage(justInTimeMessage,
                                                             siteID: siteID,
-                                                            completion: { _ in })
+                                                            completion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(_):
+                self.analytics.track(event: .JustInTimeMessage.dismissSuccess(
+                    source: self.screenName,
+                    messageID: self.messageID,
+                    featureClass: self.featureClass))
+            case .failure(let error):
+                self.analytics.track(event: .JustInTimeMessage.dismissFailure(
+                    source: self.screenName,
+                    messageID: self.messageID,
+                    featureClass: self.featureClass,
+                    error: error))
+            }
+        })
         stores.dispatch(action)
     }
 

@@ -178,11 +178,14 @@ final class JustInTimeMessageAnnouncementCardViewModelTests: XCTestCase {
     }
 
     private func assertAnalyticEventLogged(name: String, expectedProperties: [String: String]) {
-        guard let eventIndex = analyticsProvider.receivedEvents.firstIndex(of: name)
+        guard let eventIndex = analyticsProvider.receivedEvents.firstIndex(of: name),
+              let properties = analyticsProvider.receivedProperties[eventIndex] as? [String: AnyHashable]
         else {
             return XCTFail("Analytics not logged")
         }
-        let properties = analyticsProvider.receivedProperties[eventIndex] as? [String: String]
-        assertEqual(expectedProperties, properties)
+
+        for property in expectedProperties {
+            XCTAssert(properties.contains(where: { $0 == property }))
+        }
     }
 }

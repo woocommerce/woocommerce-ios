@@ -63,6 +63,7 @@ final class CustomerSearchUICommand: SearchUICommand {
             switch result {
             case .success(_):
                 onCompletion?(result.isSuccess)
+                ServiceLocator.analytics.track(.orderCreationCustomerSearch)
             case .failure(let error):
                 DDLogError("Customer Search Failure \(error)")
             }

@@ -96,6 +96,8 @@ final class DashboardViewModelTests: XCTestCase {
             switch action {
             case let .loadMessage(_, _, _, completion):
                 completion(.success(YosemiteJustInTimeMessage.fake()))
+            default:
+                XCTFail("Received unsupported action: \(action)")
             }
         }
         let viewModel = DashboardViewModel(stores: stores)
@@ -122,6 +124,8 @@ final class DashboardViewModelTests: XCTestCase {
             switch action {
             case let .loadMessage(_, _, _, completion):
                 completion(.success(YosemiteJustInTimeMessage.fake().copy(title: "JITM Message")))
+            default:
+                XCTFail("Received unsupported action: \(action)")
             }
         }
         let viewModel = DashboardViewModel(stores: stores)
@@ -148,6 +152,8 @@ final class DashboardViewModelTests: XCTestCase {
             switch action {
             case let .loadMessage(_, _, _, completion):
                 completion(.success(nil))
+            default:
+                XCTFail("Received unsupported action: \(action)")
             }
         }
         let viewModel = DashboardViewModel(stores: stores)
@@ -174,6 +180,8 @@ final class DashboardViewModelTests: XCTestCase {
             switch action {
             case let .loadMessage(_, _, _, completion):
                 completion(.success(YosemiteJustInTimeMessage.fake()))
+            default:
+                XCTFail("Received unsupported action: \(action)")
             }
         }
         let viewModel = DashboardViewModel(stores: stores, featureFlags: MockFeatureFlagService())

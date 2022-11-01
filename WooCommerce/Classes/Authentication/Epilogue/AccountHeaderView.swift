@@ -37,6 +37,8 @@ class AccountHeaderView: UIView {
     ///
     @IBOutlet private weak var helpButton: UIButton!
 
+    @IBOutlet private var containerView: UIView!
+
     /// Closure to be executed whenever the help button is pressed
     ///
     var onHelpRequested: (() -> Void)?
@@ -46,6 +48,7 @@ class AccountHeaderView: UIView {
     override func awakeFromNib() {
         super.awakeFromNib()
         setupHelpButton()
+        configureContainerView()
     }
 }
 
@@ -97,6 +100,12 @@ extension AccountHeaderView {
 // MARK: - Private Methods
 //
 private extension AccountHeaderView {
+
+    func configureContainerView() {
+        containerView.layer.borderWidth = 1
+        containerView.layer.borderColor = UIColor.border.cgColor
+        containerView.layer.cornerRadius = 8
+    }
 
     func setupHelpButton() {
         helpButton.setTitle(Strings.helpButtonTitle, for: .normal)

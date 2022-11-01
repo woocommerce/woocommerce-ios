@@ -1556,11 +1556,6 @@ extension WooAnalyticsEvent {
             case hasValidJetpack = "has_valid_jetpack"
         }
 
-        /// Tracks when the user taps the Enter Your Store Address button
-        static func enterStoreAddressTapped() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .sitePickerEnterStoreAddressTapped, properties: [:])
-        }
-
         /// Tracks when the result for site discovery is returned
         static func siteDiscovery(hasWordPress: Bool, isWPCom: Bool, hasValidJetpack: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .sitePickerSiteDiscovery, properties: [Key.hasWordPress.rawValue: hasWordPress,

@@ -146,10 +146,12 @@ private extension AddProductCoordinator {
         let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
 
         let action = ProductAction.createTemplateProduct(siteID: siteID, template: template) { result in
+
+            // Dismiss the loader
+            inProgressViewController.dismiss(animated: true)
+
             switch result {
             case .success(let product):
-                // Dismiss the loader and present the product.
-                inProgressViewController.dismiss(animated: true)
                 self.presentProduct(product, formType: .edit) // We need to strongly capture `self` because no one is retaining `AddProductCoordinator`.
 
             case .failure(let error):

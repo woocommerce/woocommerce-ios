@@ -1136,6 +1136,7 @@
 		ABC3521A374A2355001E3CD6 /* CardReaderSettingsSearchingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABC353433EABC5F0EC796222 /* CardReaderSettingsSearchingViewController.swift */; };
 		ABC35528D2D6BE6F516E5CEF /* InPersonPaymentsOnboardingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABC35A4B736A0B2D8348DD08 /* InPersonPaymentsOnboardingError.swift */; };
 		ABC35F18E744C5576B986CB3 /* InPersonPaymentsUnavailableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABC35055F8AC8C8EB649F421 /* InPersonPaymentsUnavailableView.swift */; };
+		AE3AA889290C303B00BE422D /* WebKitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3AA888290C303B00BE422D /* WebKitViewController.swift */; };
 		AE457813275644590092F687 /* OrderStatusSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE457812275644590092F687 /* OrderStatusSection.swift */; };
 		AE56E73428E76CDB00A1292B /* StoreInfoInlineWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE56E73328E76CDB00A1292B /* StoreInfoInlineWidget.swift */; };
 		AE56E73628E7787700A1292B /* StoreInfoCircularWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE56E73528E7787700A1292B /* StoreInfoCircularWidget.swift */; };
@@ -3053,6 +3054,7 @@
 		ABC35055F8AC8C8EB649F421 /* InPersonPaymentsUnavailableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsUnavailableView.swift; sourceTree = "<group>"; };
 		ABC353433EABC5F0EC796222 /* CardReaderSettingsSearchingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsSearchingViewController.swift; sourceTree = "<group>"; };
 		ABC35A4B736A0B2D8348DD08 /* InPersonPaymentsOnboardingError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsOnboardingError.swift; sourceTree = "<group>"; };
+		AE3AA888290C303B00BE422D /* WebKitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebKitViewController.swift; sourceTree = "<group>"; };
 		AE457812275644590092F687 /* OrderStatusSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusSection.swift; sourceTree = "<group>"; };
 		AE56E73328E76CDB00A1292B /* StoreInfoInlineWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreInfoInlineWidget.swift; sourceTree = "<group>"; };
 		AE56E73528E7787700A1292B /* StoreInfoCircularWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreInfoCircularWidget.swift; sourceTree = "<group>"; };
@@ -6546,6 +6548,7 @@
 				AEB4DB96290AE74B00AE4340 /* CookieJar.swift */,
 				AEB4DB9E290AEA6100AE4340 /* AuthenticationService.swift */,
 				AEB4DBA0290AEC0D00AE4340 /* RequestAuthenticator.swift */,
+				AE3AA888290C303B00BE422D /* WebKitViewController.swift */,
 			);
 			path = WebAuth;
 			sourceTree = "<group>";
@@ -10375,6 +10378,7 @@
 				318109E825E5B8D600EE0BE7 /* NumberedListItemTableViewCell.swift in Sources */,
 				DE26B52C277DA11800A2EA0A /* CouponListView.swift in Sources */,
 				AEA622B2274669D3002A9B57 /* AddOrderCoordinator.swift in Sources */,
+				AE3AA889290C303B00BE422D /* WebKitViewController.swift in Sources */,
 				4535EE7A281ADD56004212B4 /* CouponCodeInputFormatter.swift in Sources */,
 				DEDB2D262845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift in Sources */,
 				0282DD96233C960C006A5FDB /* SearchResultCell.swift in Sources */,

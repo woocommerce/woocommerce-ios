@@ -223,8 +223,19 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             return
         }
 
-        // TODO: Show authenticated WebView
-        WebviewHelper.launch(url, with: self)
+        let credentials = ServiceLocator.stores.sessionManager.defaultCredentials
+        guard let username = credentials?.username,
+              let token = credentials?.authToken,
+              let site = ServiceLocator.stores.sessionManager.defaultSite else {
+            return
+        }
+
+        let configuration = WebViewControllerConfiguration(url: url)
+        configuration.secureInteraction = true
+        configuration.authenticate(site: site, username: username, token: token)
+        let webKitVC = WebKitViewController(configuration: configuration)
+        let nc = WooNavigationController(rootViewController: webKitVC)
+        present(nc, animated: true)
     }
 
     // MARK: Navigation actions

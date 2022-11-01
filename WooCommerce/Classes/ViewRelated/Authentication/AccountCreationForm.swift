@@ -49,6 +49,7 @@ struct AccountCreationForm: View {
     @ObservedObject private var viewModel: AccountCreationFormViewModel
 
     @State private var isPerformingTask = false
+    @State private var tosURL: URL?
 
     @FocusState private var focusedField: Field?
 
@@ -112,6 +113,10 @@ struct AccountCreationForm: View {
                     // Terms of Service link.
                     AttributedText(tosAttributedText)
                         .attributedTextLinkColor(Color(.textLink))
+                        .environment(\.customOpenURL) { url in
+                            tosURL = url
+                        }
+                        .safariSheet(url: $tosURL)
                 }
 
                 // CTA to submit the form.

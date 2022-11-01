@@ -8,7 +8,7 @@ import WordPressKit
 }
 
 
-private struct NUXButtonConfig {
+struct NUXButtonConfig {
     typealias CallBackType = () -> Void
 
     let title: String?

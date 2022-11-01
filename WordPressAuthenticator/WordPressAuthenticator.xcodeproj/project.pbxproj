@@ -613,9 +613,7 @@
 		B5609097208A4EAF00399AE4 /* NUX */ = {
 			isa = PBXGroup;
 			children = (
-				B56090C4208A4F5400399AE4 /* NUXButton.swift */,
-				B56090BC208A4F5300399AE4 /* NUXButtonView.storyboard */,
-				B56090B8208A4F5300399AE4 /* NUXButtonViewController.swift */,
+				EEC7A623290FAEED007793EE /* Button */,
 				B56090B9208A4F5300399AE4 /* NUXKeyboardResponder.swift */,
 				B56090C5208A4F5400399AE4 /* NUXLinkAuthViewController.swift */,
 				B56090BB208A4F5300399AE4 /* NUXLinkMailViewController.swift */,
@@ -932,6 +930,16 @@
 				D8611A62257622ED00A5DF27 /* NavigateBack.swift */,
 			);
 			path = Navigation;
+			sourceTree = "<group>";
+		};
+		EEC7A623290FAEED007793EE /* Button */ = {
+			isa = PBXGroup;
+			children = (
+				B56090C4208A4F5400399AE4 /* NUXButton.swift */,
+				B56090BC208A4F5300399AE4 /* NUXButtonView.storyboard */,
+				B56090B8208A4F5300399AE4 /* NUXButtonViewController.swift */,
+			);
+			path = Button;
 			sourceTree = "<group>";
 		};
 		EEEAC91028926F7D0066D419 /* VerifyEmail */ = {

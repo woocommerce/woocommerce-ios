@@ -732,7 +732,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         viewModel.customerSelectedFromSearch(customer: customer)
 
         // Then
-        XCTAssertEqual(viewModel.fields.email, customer.email)
+        XCTAssertEqual(viewModel.fields.email, customer.billing?.email)
         XCTAssertEqual(viewModel.fields.firstName, customer.firstName)
         XCTAssertEqual(viewModel.fields.lastName, customer.lastName)
         XCTAssertEqual(viewModel.fields.company, customer.billing?.company)
@@ -760,7 +760,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         viewModel.customerSelectedFromSearch(customer: customer)
 
         // Then
-        XCTAssertEqual(viewModel.fields.email, customer.email)
+        XCTAssertEqual(viewModel.fields.email, customer.shipping?.email)
         XCTAssertEqual(viewModel.fields.firstName, customer.firstName)
         XCTAssertEqual(viewModel.fields.lastName, customer.lastName)
         XCTAssertEqual(viewModel.fields.company, customer.shipping?.company)

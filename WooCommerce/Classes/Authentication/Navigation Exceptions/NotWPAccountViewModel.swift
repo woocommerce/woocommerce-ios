@@ -50,7 +50,7 @@ final class NotWPAccountViewModel: ULErrorViewModel {
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.analytics = analytics
-        self.isSimplifiedLoginI1Enabled = featureFlagService.isFeatureFlagEnabled(.simplifiedLoginFlowI1)
+        self.isSimplifiedLoginI1Enabled = ABTest.abTestLoginWithWPComOnly.variation != .control
         if let error = error as? SignInError,
            case let .invalidWPComEmail(source) = error,
            source == .wpComSiteAddress {

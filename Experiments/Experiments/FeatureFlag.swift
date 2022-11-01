@@ -86,11 +86,6 @@ public enum FeatureFlag: Int {
     ///
     case storeCreationMVP
 
-    /// Temporary feature flag for the simplified login flow.
-    /// TODO: replace with A/B testing.
-    ///
-    case simplifiedLoginFlowI1
-
     /// Just In Time Messages on Dashboard
     ///
     case justInTimeMessagesOnDashboard

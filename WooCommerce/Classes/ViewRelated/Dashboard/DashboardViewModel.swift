@@ -126,12 +126,8 @@ final class DashboardViewModel {
 
                     if self?.featureFlagService.isFeatureFlagEnabled(.productsOnboarding) == true {
                         let viewModel = ProductsOnboardingAnnouncementCardViewModel(onCTATapped: { [weak self] in
-                            guard let tabBarController = AppDelegate.shared.tabBarController else {
-                                return
-                            }
-
                             self?.announcementViewModel = nil // Dismiss announcement
-                            tabBarController.navigateTo(.products)
+                            MainTabBarController.presentAddProductFlow()
                         })
                         self?.announcementViewModel = viewModel
                     }

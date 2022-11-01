@@ -10,6 +10,7 @@ class LoginPrologueViewController: LoginViewController {
     private var buttonViewController: NUXButtonViewController?
     var showCancel = false
 
+    @IBOutlet private weak var buttonContainerView: UIView!
     /// Blur effect on button container view
     ///
     private var blurEffect: UIBlurEffect.Style {
@@ -53,6 +54,8 @@ class LoginPrologueViewController: LoginViewController {
             topContainerChildViewController.view.translatesAutoresizingMaskIntoConstraints = false
             topContainerView.pinSubviewToAllEdges(topContainerChildViewController.view)
         }
+
+        configureButtonViewController()
 
         defaultButtonViewMargin = buttonViewLeadingConstraint?.constant ?? 0
         if let backgroundImage = WordPressAuthenticator.shared.unifiedStyle?.prologueBackgroundImage {
@@ -136,16 +139,6 @@ class LoginPrologueViewController: LoginViewController {
         }
 
         storedCredentialsAuthenticator.showPicker(from: navigationController)
-    }
-
-    // MARK: - Segue
-
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        super.prepare(for: segue, sender: sender)
-
-        if let vc = segue.destination as? NUXButtonViewController {
-            buttonViewController = vc
-        }
     }
 
     private func configureButtonVC() {
@@ -518,6 +511,11 @@ class LoginPrologueViewController: LoginViewController {
         navigationController?.pushViewController(vc, animated: true)
     }
 
+    private func configureButtonViewController() {
+        let buttonViewController = NUXButtonViewController.instance()
+        self.buttonViewController = buttonViewController
+        buttonViewController.move(to: self, into: buttonContainerView)
+    }
 }
 
 // MARK: - LoginFacadeDelegate

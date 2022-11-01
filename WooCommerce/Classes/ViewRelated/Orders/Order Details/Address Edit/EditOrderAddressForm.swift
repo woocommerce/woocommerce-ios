@@ -168,7 +168,6 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
         .notice($viewModel.notice)
         .sheet(isPresented: $showingCustomerSearch, content: {
             OrderCustomerListView(siteID: viewModel.siteID, onCustomerTapped: { customer in
-                ServiceLocator.analytics.track(.orderCreationCustomerAdded)
                 viewModel.customerSelectedFromSearch(customer: customer)
                 showingCustomerSearch = false
             })

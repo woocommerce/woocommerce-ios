@@ -35,15 +35,15 @@ protocol StorePickerViewControllerDelegate: AnyObject {
 
 /// Configuration option enum for the StorePickerViewController
 ///
-enum StorePickerConfiguration {
+enum StorePickerConfiguration: Equatable {
 
     /// Setup the store picker for use in the login flow
     ///
     case login
 
-    /// Setup the store picker for store creation initiated from login prologue
+    /// Setup the store picker for store creation initiated from the logged out state
     ///
-    case storeCreationFromLoginPrologue
+    case storeCreationFromLogin(source: LoggedOutStoreCreationCoordinator.Source)
 
     /// Setup the store picker for use in the store switching flow
     ///
@@ -629,6 +629,25 @@ private extension StorePickerViewController {
     }
 
     func createStoreButtonPressed() {
+        let source: WooAnalyticsEvent.StoreCreation.StorePickerSource = {
+            switch configuration {
+            case .switchingStores:
+                return .switchStores
+            case .login, .standard:
+                return .login
+            case .storeCreationFromLogin(let loggedOutSource):
+                switch loggedOutSource {
+                case .prologue:
+                    return .loginPrologue
+                case .loginEmailError:
+                    return .other
+                }
+            default:
+                return .other
+            }
+        }()
+        ServiceLocator.analytics.track(event: .StoreCreation.sitePickerCreateSiteTapped(source: source))
+
         delegate?.createStore()
     }
 }

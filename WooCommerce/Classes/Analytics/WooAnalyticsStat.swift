@@ -127,6 +127,18 @@ public enum WooAnalyticsStat: String {
     case sitePickerAddStoreTapped = "site_picker_add_a_store_tapped"
     case sitePickerConnectExistingStoreTapped = "site_picker_connect_existing_store_tapped"
 
+    // MARK: Site creation
+    //
+    case sitePickerCreateSiteTapped = "site_picker_create_site_tapped"
+    case siteCreated = "login_woocommerce_site_created"
+    case siteCreationFailed = "site_creation_failed"
+    case siteCreationDismissed = "site_creation_dismissed"
+    case loginPrologueCreateSiteTapped = "login_prologue_create_site_tapped"
+    case signupFormLoginTapped = "signup_login_button_tapped"
+    case signupSubmitted = "signup_submitted"
+    case signupSuccess = "signup_success"
+    case signupFailed = "signup_failed"
+
     // MARK: Help & Support Events
     //
     case supportHelpCenterViewed = "support_help_center_viewed"

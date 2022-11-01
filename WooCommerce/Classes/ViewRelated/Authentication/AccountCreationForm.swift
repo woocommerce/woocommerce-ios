@@ -4,9 +4,13 @@ import struct WordPressAuthenticator.NavigateToEnterAccount
 
 /// Hosting controller that wraps an `AccountCreationForm`.
 final class AccountCreationFormHostingController: UIHostingController<AccountCreationForm> {
+    private let analytics: Analytics
+
     init(viewModel: AccountCreationFormViewModel,
          signInSource: SignInSource,
+         analytics: Analytics = ServiceLocator.analytics,
          completion: @escaping () -> Void) {
+        self.analytics = analytics
         super.init(rootView: AccountCreationForm(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController.
@@ -16,6 +20,9 @@ final class AccountCreationFormHostingController: UIHostingController<AccountCre
 
         rootView.loginButtonTapped = { [weak self] in
             guard let self else { return }
+
+            self.analytics.track(event: .StoreCreation.signupFormLoginTapped())
+
             let command = NavigateToEnterAccount(signInSource: signInSource)
             command.execute(from: self)
         }

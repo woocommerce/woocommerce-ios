@@ -35,7 +35,10 @@ final class AccountCreationFormHostingController: UIHostingController<AccountCre
 
 /// A form that allows the user to create a WPCOM account with an email and password.
 struct AccountCreationForm: View {
-    @Environment(\.customOpenURL) var customOpenURL
+    private enum Field: Hashable {
+        case email
+        case password
+    }
 
     /// Triggered when the account is created and the app is authenticated.
     var completion: (() -> Void) = {}
@@ -46,6 +49,8 @@ struct AccountCreationForm: View {
     @ObservedObject private var viewModel: AccountCreationFormViewModel
 
     @State private var isPerformingTask = false
+
+    @FocusState private var focusedField: Field?
 
     init(viewModel: AccountCreationFormViewModel) {
         self.viewModel = viewModel
@@ -82,20 +87,29 @@ struct AccountCreationForm: View {
 
                 // Form fields.
                 VStack(spacing: Layout.verticalSpacingBetweenFields) {
+                    // Email field.
                     AccountCreationFormFieldView(viewModel: .init(header: Localization.emailFieldTitle,
                                                                   placeholder: Localization.emailFieldPlaceholder,
                                                                   keyboardType: .emailAddress,
                                                                   text: $viewModel.email,
                                                                   isSecure: false,
-                                                                  errorMessage: viewModel.emailErrorMessage))
+                                                                  errorMessage: viewModel.emailErrorMessage,
+                                                                  isFocused: focusedField == .email))
+                    .focused($focusedField, equals: .email)
                     .disabled(isPerformingTask)
+
+                    // Password field.
                     AccountCreationFormFieldView(viewModel: .init(header: Localization.passwordFieldTitle,
                                                                   placeholder: Localization.passwordFieldPlaceholder,
                                                                   keyboardType: .default,
                                                                   text: $viewModel.password,
                                                                   isSecure: true,
-                                                                  errorMessage: viewModel.passwordErrorMessage))
+                                                                  errorMessage: viewModel.passwordErrorMessage,
+                                                                  isFocused: focusedField == .password))
+                    .focused($focusedField, equals: .password)
                     .disabled(isPerformingTask)
+
+                    // Terms of Service link.
                     AttributedText(tosAttributedText)
                         .attributedTextLinkColor(Color(.textLink))
                 }

@@ -14,6 +14,8 @@ struct AccountCreationFormFieldViewModel {
     let isSecure: Bool
     /// Optional error message shown below the text field.
     let errorMessage: String?
+    /// Whether the content in the text field is focused.
+    let isFocused: Bool
 }
 
 /// A field in the account creation form. Currently, there are two fields - email and password.
@@ -30,11 +32,11 @@ struct AccountCreationFormFieldView: View {
                 .subheadlineStyle()
             if viewModel.isSecure {
                 SecureField(viewModel.placeholder, text: viewModel.text)
-                    .textFieldStyle(.roundedBorder)
+                    .textFieldStyle(RoundedBorderTextFieldStyle(focused: viewModel.isFocused))
                     .keyboardType(viewModel.keyboardType)
             } else {
                 TextField(viewModel.placeholder, text: viewModel.text)
-                    .textFieldStyle(.roundedBorder)
+                    .textFieldStyle(RoundedBorderTextFieldStyle(focused: viewModel.isFocused))
                     .keyboardType(viewModel.keyboardType)
             }
             if let errorMessage = viewModel.errorMessage {
@@ -58,12 +60,14 @@ struct AccountCreationFormField_Previews: PreviewProvider {
                                                       keyboardType: .emailAddress,
                                                       text: .constant(""),
                                                       isSecure: false,
-                                                      errorMessage: nil))
+                                                      errorMessage: nil,
+                                                      isFocused: true))
         AccountCreationFormFieldView(viewModel: .init(header: "Choose a password",
                                                       placeholder: "Password",
                                                       keyboardType: .default,
                                                       text: .constant("w"),
                                                       isSecure: true,
-                                                      errorMessage: "Too simple"))
+                                                      errorMessage: "Too simple",
+                                                      isFocused: false))
     }
 }

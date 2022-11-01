@@ -292,9 +292,7 @@ class LoginPrologueViewController: LoginViewController {
             ])
             showDivider = false
         } else if configuration.enableWPComLoginOnlyInPrologue {
-            buttons.append(contentsOf: [
-                continueWithWPButton,
-            ])
+            buttons.append(continueWithWPButton)
             showDivider = false
         } else if configuration.enableSiteCreation {
             createSiteButton.stackView = .bottom

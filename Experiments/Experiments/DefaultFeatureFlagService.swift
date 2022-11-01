@@ -18,7 +18,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .shippingLabelsOnboardingM1:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .newToWooCommerceLinkInLoginPrologue:
-            return true
+            return false
         case .loginPrologueOnboarding:
             return true
         case .loginErrorNotifications:
@@ -46,7 +46,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .storeCreationMVP:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .simplifiedLoginFlowI1:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return false//buildConfig == .localDeveloper || buildConfig == .alpha
         case .justInTimeMessagesOnDashboard:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .productsOnboarding:

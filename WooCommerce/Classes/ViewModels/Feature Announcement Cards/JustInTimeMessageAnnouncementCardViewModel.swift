@@ -9,6 +9,10 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
 
     private let analytics: Analytics
 
+    private let stores: StoresManager
+
+    private let justInTimeMessage: YosemiteJustInTimeMessage
+
     // MARK: - Message properties
     let title: String
 
@@ -27,9 +31,11 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
     init(justInTimeMessage: YosemiteJustInTimeMessage,
          screenName: String,
          siteID: Int64,
+         stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.analytics = analytics
+        self.stores = stores
         let utmProvider = WooCommerceComUTMProvider(
             campaign: "jitm_group_\(justInTimeMessage.featureClass)",
             source: screenName,
@@ -38,6 +44,7 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
         self.url = utmProvider.urlWithUtmParams(string: justInTimeMessage.url)
         self.messageID = justInTimeMessage.messageID
         self.featureClass = justInTimeMessage.featureClass
+        self.justInTimeMessage = justInTimeMessage
         self.screenName = screenName
         self.title = justInTimeMessage.title
         self.message = justInTimeMessage.detail
@@ -91,7 +98,10 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
     }
 
     func dontShowAgainTapped() {
-        // No-op
+        let action = JustInTimeMessageAction.dismissMessage(justInTimeMessage,
+                                                            siteID: siteID,
+                                                            completion: { _ in })
+        stores.dispatch(action)
     }
 
     func remindLaterTapped() {

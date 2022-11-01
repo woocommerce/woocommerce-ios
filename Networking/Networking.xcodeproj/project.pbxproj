@@ -102,6 +102,7 @@
 		0359EA2127AAE58C0048DE2D /* wcpay-charge-card-present.json in Resources */ = {isa = PBXBuildFile; fileRef = 0359EA2027AAE58C0048DE2D /* wcpay-charge-card-present.json */; };
 		0359EA2527AAF7D60048DE2D /* wcpay-charge-card.json in Resources */ = {isa = PBXBuildFile; fileRef = 0359EA2427AAF7D60048DE2D /* wcpay-charge-card.json */; };
 		0359EA2927AC2AAD0048DE2D /* wcpay-charge-error.json in Resources */ = {isa = PBXBuildFile; fileRef = 0359EA2827AC2AAD0048DE2D /* wcpay-charge-error.json */; };
+		035BA3AA29113CBD0056F0AD /* DataBoolMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035BA3A929113CBD0056F0AD /* DataBoolMapper.swift */; };
 		036563DB2906938600D84BFD /* JustInTimeMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036563DA2906938600D84BFD /* JustInTimeMessage.swift */; };
 		036563DD29069BE400D84BFD /* JustInTimeMessageListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036563DC29069BE400D84BFD /* JustInTimeMessageListMapper.swift */; };
 		036563DF29069C8F00D84BFD /* JustInTimeMessageListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036563DE29069C8F00D84BFD /* JustInTimeMessageListMapperTests.swift */; };
@@ -835,6 +836,7 @@
 		0359EA2027AAE58C0048DE2D /* wcpay-charge-card-present.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-charge-card-present.json"; sourceTree = "<group>"; };
 		0359EA2427AAF7D60048DE2D /* wcpay-charge-card.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-charge-card.json"; sourceTree = "<group>"; };
 		0359EA2827AC2AAD0048DE2D /* wcpay-charge-error.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-charge-error.json"; sourceTree = "<group>"; };
+		035BA3A929113CBD0056F0AD /* DataBoolMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataBoolMapper.swift; sourceTree = "<group>"; };
 		036563DA2906938600D84BFD /* JustInTimeMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustInTimeMessage.swift; sourceTree = "<group>"; };
 		036563DC29069BE400D84BFD /* JustInTimeMessageListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustInTimeMessageListMapper.swift; sourceTree = "<group>"; };
 		036563DE29069C8F00D84BFD /* JustInTimeMessageListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustInTimeMessageListMapperTests.swift; sourceTree = "<group>"; };
@@ -2219,6 +2221,7 @@
 				03DCB785262739D200C8953D /* CouponMapper.swift */,
 				DE2095BE279583A100171F1C /* CouponReportListMapper.swift */,
 				45150A9D26836A57006922EA /* CountryListMapper.swift */,
+				035BA3A929113CBD0056F0AD /* DataBoolMapper.swift */,
 				B524193E21AC5FE400D6FC0A /* DotcomDeviceMapper.swift */,
 				2676F4CD290AE6BB00C7A15B /* EntityIDMapper.swift */,
 				24F98C572502EA8800F49B68 /* FeatureFlagMapper.swift */,
@@ -3161,6 +3164,7 @@
 				B963A5CC2853870000EFADA0 /* OrderItemRefundMetaData.swift in Sources */,
 				E18152BE28F85B5B0011A0EC /* InAppPurchasesRemote.swift in Sources */,
 				0329CF9B27A82E19008AFF91 /* WCPayCharge.swift in Sources */,
+				035BA3AA29113CBD0056F0AD /* DataBoolMapper.swift in Sources */,
 				74749B97224134FF005C4CF2 /* ProductMapper.swift in Sources */,
 				26455E2A25F669F0008A1D32 /* ProductAttributeTermMapper.swift in Sources */,
 				0359EA1127AAC6740048DE2D /* WCPayPaymentMethodType.swift in Sources */,

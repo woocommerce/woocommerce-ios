@@ -142,7 +142,10 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
                 return NSLocalizedString("To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once.", comment: "")
             }
 
-            return NSLocalizedString("Please enter the password for your WordPress.com account to log in with your Apple ID.", comment: "")
+            return NSLocalizedString(
+                "Please enter the password for your WordPress.com account to log in with your Apple ID.",
+                comment: "Instructional text shown when requesting the user's password for a login initiated via Sign In with Apple"
+            )
         }()
 
         passwordField?.placeholder = NSLocalizedString("Password", comment: "Password placeholder")

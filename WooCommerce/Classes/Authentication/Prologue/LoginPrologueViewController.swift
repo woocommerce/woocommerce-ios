@@ -12,6 +12,7 @@ final class LoginPrologueViewController: UIViewController {
     private let isFeatureCarouselShown: Bool
     private let analytics: Analytics
     private let featureFlagService: FeatureFlagService
+    private let isSimplifiedLogin: Bool
 
     /// Background View, to be placed surrounding the bottom area.
     ///
@@ -44,6 +45,7 @@ final class LoginPrologueViewController: UIViewController {
         self.isFeatureCarouselShown = isFeatureCarouselShown
         self.analytics = analytics
         self.featureFlagService = featureFlagService
+        self.isSimplifiedLogin = ABTest.abTestLoginWithWPComOnly.variation != .control
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -97,7 +99,7 @@ private extension LoginPrologueViewController {
         let pageTypes: [LoginProloguePageType] = {
             if isFeatureCarouselShown {
                 return [.stats, .orderManagement, .products, .reviews]
-            } else if featureFlagService.isFeatureFlagEnabled(.simplifiedLoginFlowI1) {
+            } else if isSimplifiedLogin {
                 return [.simplifiedLoginI1Intro]
             } else {
                 return [.getStarted]
@@ -125,7 +127,7 @@ private extension LoginPrologueViewController {
         guard isNewToWooCommerceButtonShown else {
             return newToWooCommerceButton.isHidden = true
         }
-        let title = featureFlagService.isFeatureFlagEnabled(.simplifiedLoginFlowI1) ? Localization.learnMoreAboutWoo : Localization.newToWooCommerce
+        let title = isSimplifiedLogin ? Localization.learnMoreAboutWoo : Localization.newToWooCommerce
         newToWooCommerceButton.setTitle(title, for: .normal)
         newToWooCommerceButton.applyLinkButtonStyle()
         newToWooCommerceButton.titleLabel?.numberOfLines = 0

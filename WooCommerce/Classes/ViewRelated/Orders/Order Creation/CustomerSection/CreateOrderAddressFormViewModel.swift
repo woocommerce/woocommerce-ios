@@ -97,24 +97,6 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
     override func trackOnLoad() { }
 
     func userDidCancelFlow() { }
-
-    /// Dispatches the searchCustomers action when the Search button is tapped.
-    /// The hardcoded `keyword` is temporary until we implement the rest of the feature:
-    /// https://github.com/woocommerce/woocommerce-ios/issues/7741
-    ///
-    func customerSearchTapped() {
-        let action = CustomerAction.searchCustomers(
-            siteID: siteID,
-            keyword: "hello") { result in
-                switch result {
-                case .success(_):
-                    print("Success")
-                case .failure(let error):
-                    print(error)
-                }
-            }
-        stores.dispatch(action)
-    }
 }
 
 private extension CreateOrderAddressFormViewModel {

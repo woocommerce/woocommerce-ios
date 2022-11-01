@@ -34,7 +34,17 @@ final class CustomerSearchUICommand: SearchUICommand {
     }
 
     func createStarterViewController() -> UIViewController? {
-        nil
+        createEmptyStateViewController()
+    }
+
+    func configureEmptyStateViewControllerBeforeDisplay(viewController: EmptyStateViewController, searchKeyword: String) {
+        let boldSearchKeyword = NSAttributedString(string: searchKeyword,
+                                                   attributes: [.font: EmptyStateViewController.Config.messageFont.bold])
+        let format = Localization.emptySearchResults
+        let message = NSMutableAttributedString(string: format)
+
+        message.replaceFirstOccurrence(of: "%@", with: boldSearchKeyword)
+        viewController.configure(.simple(message: message, image: .emptySearchResultsImage))
     }
 
     func createCellViewModel(model: Customer) -> TitleAndSubtitleAndStatusTableViewCell.ViewModel {
@@ -61,10 +71,6 @@ final class CustomerSearchUICommand: SearchUICommand {
     }
 
     func didSelectSearchResult(model: Customer, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void) {
-        // Not implemented yet
-        print("1 - Customer tapped")
-        print("2 - Customer ID: \(model.customerID) - Name: \(model.firstName ?? ""))")
-        // Customer data will go up to EditOrderAddressForm, via OrderCustomerListView completion handler
         onDidSelectSearchResult(model)
     }
 
@@ -75,7 +81,11 @@ final class CustomerSearchUICommand: SearchUICommand {
 
 private extension CustomerSearchUICommand {
     enum Localization {
-        static let searchBarPlaceHolder = NSLocalizedString("Search all customers",
-                                                            comment: "Customer Search Placeholder")
+        static let searchBarPlaceHolder = NSLocalizedString(
+            "Search all customers",
+            comment: "Customer Search Placeholder")
+        static let emptySearchResults = NSLocalizedString(
+            "We're sorry, we couldn't find results for “%@”",
+            comment: "Message for empty Customers search results. %@ is a placeholder for the text entered by the user.")
     }
 }

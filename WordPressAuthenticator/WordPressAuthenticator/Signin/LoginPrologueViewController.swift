@@ -8,6 +8,7 @@ class LoginPrologueViewController: LoginViewController {
     @IBOutlet private weak var topContainerView: UIView!
     @IBOutlet private weak var buttonBlurEffectView: UIVisualEffectView!
     private var buttonViewController: NUXButtonViewController?
+    private var stackedButtonsViewController: NUXStackedButtonsViewController?
     var showCancel = false
 
     @IBOutlet private weak var buttonContainerView: UIView!
@@ -521,9 +522,15 @@ class LoginPrologueViewController: LoginViewController {
     }
 
     private func configureButtonViewController() {
-        let buttonViewController = NUXButtonViewController.instance()
-        self.buttonViewController = buttonViewController
-        buttonViewController.move(to: self, into: buttonContainerView)
+        if configuration.enableWPComLoginOnlyInPrologue || configuration.enableSiteCreation {
+            let stackedButtonsViewController = NUXStackedButtonsViewController.instance()
+            self.stackedButtonsViewController = stackedButtonsViewController
+            stackedButtonsViewController.move(to: self, into: buttonContainerView)
+        } else {
+            let buttonViewController = NUXButtonViewController.instance()
+            self.buttonViewController = buttonViewController
+            buttonViewController.move(to: self, into: buttonContainerView)
+        }
     }
 }
 

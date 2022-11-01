@@ -144,7 +144,7 @@ private extension LoginProloguePageTypeViewController {
 
         // Label style & layout
         titleLabel.font = {
-            if pageType == .simplifiedLoginI1Intro {
+            if pageType == .simplifiedLoginI1Intro || pageType == .getStarted {
                 return .headline
             } else if showsSubtitle {
                 return .font(forStyle: .title2, weight: .semibold)

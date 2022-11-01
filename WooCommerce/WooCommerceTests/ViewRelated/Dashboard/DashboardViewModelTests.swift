@@ -158,30 +158,4 @@ final class DashboardViewModelTests: XCTestCase {
         // Then
         XCTAssertNil(viewModel.announcementViewModel)
     }
-
-    func test_no_announcement_synced_when_feature_flags_disabled() {
-        // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case let .checkProductsOnboardingEligibility(_, completion):
-                completion(.success(true))
-            default:
-                XCTFail("Received unsupported action: \(action)")
-            }
-        }
-        stores.whenReceivingAction(ofType: JustInTimeMessageAction.self) { action in
-            switch action {
-            case let .loadMessage(_, _, _, completion):
-                completion(.success(YosemiteJustInTimeMessage.fake()))
-            }
-        }
-        let viewModel = DashboardViewModel(stores: stores, featureFlags: MockFeatureFlagService())
-
-        // When
-        viewModel.syncAnnouncements(for: sampleSiteID)
-
-        // Then
-        XCTAssertNil(viewModel.announcementViewModel)
-    }
 }

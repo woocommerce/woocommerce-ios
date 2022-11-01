@@ -5,14 +5,6 @@ import Yosemite
 final class CustomerSearchUICommandTests: XCTestCase {
     private let sampleSiteID: Int64 = 123
 
-    override func setUp() {
-        super.setUp()
-    }
-
-    override func tearDown() {
-        super.tearDown()
-    }
-
     func test_searchResultsPredicate_includes_siteID_and_keyword_when_keyword() {
         // Given
         let command = CustomerSearchUICommand(siteID: sampleSiteID) { _ in }

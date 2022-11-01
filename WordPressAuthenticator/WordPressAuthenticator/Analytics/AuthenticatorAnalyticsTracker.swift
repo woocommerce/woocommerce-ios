@@ -83,7 +83,7 @@ public class AuthenticatorAnalyticsTracker {
         ///
         case loginWithSiteAddress = "login_site_address"
 
-        /// This flow starts when the user wants to troubleshoot their site by inputting its address 
+        /// This flow starts when the user wants to troubleshoot their site by inputting its address
         ///
         case siteDiscovery = "site_discovery"
 

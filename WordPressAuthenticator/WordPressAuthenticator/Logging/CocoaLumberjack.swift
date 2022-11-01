@@ -2,7 +2,7 @@ import Foundation
 import CocoaLumberjack
 
 // June 14 2017 - @astralbodies
-// Taken from CocoaLumberjack repository - reproduced to prevent issue with 
+// Taken from CocoaLumberjack repository - reproduced to prevent issue with
 // CocoaPods and some weird bug with frameworks
 
 // Software License Agreement (BSD License)

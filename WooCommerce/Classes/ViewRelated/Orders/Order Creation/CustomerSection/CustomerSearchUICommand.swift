@@ -59,11 +59,11 @@ final class CustomerSearchUICommand: SearchUICommand {
     }
 
     func synchronizeModels(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
+        ServiceLocator.analytics.track(.orderCreationCustomerSearch)
         let action = CustomerAction.searchCustomers(siteID: siteID, keyword: keyword) { result in
             switch result {
             case .success(_):
                 onCompletion?(result.isSuccess)
-                ServiceLocator.analytics.track(.orderCreationCustomerSearch)
             case .failure(let error):
                 DDLogError("Customer Search Failure \(error)")
             }

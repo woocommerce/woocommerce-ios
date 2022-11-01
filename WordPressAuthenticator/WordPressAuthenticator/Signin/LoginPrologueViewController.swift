@@ -264,8 +264,7 @@ class LoginPrologueViewController: LoginViewController {
 
         setButtonViewMargins(forWidth: view.frame.width)
         let displayStrings = WordPressAuthenticator.shared.displayStrings
-        var buttons = [StackedButton]()
-        var showDivider = false
+        let buttons: [StackedButton]
 
         let continueWithWPButton = StackedButton(title: displayStrings.continueWithWPButtonTitle,
                                                  isPrimary: true,
@@ -285,24 +284,23 @@ class LoginPrologueViewController: LoginViewController {
                                              accessibilityIdentifier: "Prologue Create Site Button",
                                              style: secondaryButtonStyle,
                                              onTap: simplifiedLoginSiteCreationCallback())
+
         if configuration.enableWPComLoginOnlyInPrologue && configuration.enableSiteCreation {
-            buttons.append(contentsOf: [
-                continueWithWPButton,
-                createSiteButton
-            ])
-            showDivider = false
+            buttons = [continueWithWPButton,
+                       createSiteButton]
         } else if configuration.enableWPComLoginOnlyInPrologue {
-            buttons.append(continueWithWPButton)
-            showDivider = false
+            buttons = [continueWithWPButton]
         } else if configuration.enableSiteCreation {
             createSiteButton.stackView = .bottom
-            buttons.append(contentsOf: [
-                continueWithWPButton,
-                enterYourSiteAddressButton,
-                createSiteButton
-            ])
-            showDivider = true
+            buttons = [continueWithWPButton,
+                       enterYourSiteAddressButton,
+                       createSiteButton]
+        } else {
+            DDLogError("Failed to create `StackedButton`s in login progue screen.")
+            buttons = []
         }
+
+        let showDivider = configuration.enableWPComLoginOnlyInPrologue == false && configuration.enableSiteCreation == true
         stackedButtonsViewController.setuUpButtons(using: buttons, showDivider: showDivider)
         setButtonViewControllerBackground()
     }

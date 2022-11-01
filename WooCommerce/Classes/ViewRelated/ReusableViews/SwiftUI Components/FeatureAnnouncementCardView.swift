@@ -1,13 +1,13 @@
 import SwiftUI
 
 struct FeatureAnnouncementCardView: View {
-    private let viewModel: FeatureAnnouncementCardViewModel
+    private let viewModel: AnnouncementCardViewModelProtocol
     @State private var showingDismissActionSheet = false
 
     let dismiss: (() -> Void)?
     let callToAction: (() -> Void)?
 
-    init(viewModel: FeatureAnnouncementCardViewModel,
+    init(viewModel: AnnouncementCardViewModelProtocol,
          dismiss: (() -> Void)? = nil,
          callToAction: (() -> Void)? = nil) {
         self.viewModel = viewModel
@@ -30,7 +30,7 @@ struct FeatureAnnouncementCardView: View {
                 BadgeView(type: viewModel.badgeType)
                     .padding(.leading, Layout.padding)
                 Spacer()
-                if let dismiss = dismiss {
+                if viewModel.showDismissButton, let dismiss = dismiss {
                     Button(action: {
                         if viewModel.showDismissConfirmation {
                             showingDismissActionSheet = true

@@ -1,16 +1,24 @@
 import Yosemite
 import enum Networking.DotcomError
 import enum Storage.StatsVersion
+import protocol Experiments.FeatureFlagService
 
 /// Syncs data for dashboard stats UI and determines the state of the dashboard UI based on stats version.
 final class DashboardViewModel {
     /// Stats v4 is shown by default, then falls back to v3 if store stats are unavailable.
     @Published private(set) var statsVersion: StatsVersion = .v4
 
-    private let stores: StoresManager
+    @Published private(set) var announcementViewModel: AnnouncementCardViewModelProtocol? = nil
 
-    init(stores: StoresManager = ServiceLocator.stores) {
+    @Published private(set) var showWebViewSheet: WebViewSheetViewModel? = nil
+
+    private let stores: StoresManager
+    private let featureFlagService: FeatureFlagService
+
+    init(stores: StoresManager = ServiceLocator.stores,
+         featureFlags: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.stores = stores
+        self.featureFlagService = featureFlags
     }
 
     /// Syncs store stats for dashboard UI.
@@ -94,6 +102,91 @@ final class DashboardViewModel {
         })
         stores.dispatch(action)
     }
+
+    /// Checks for announcements to show on the dashboard
+    ///
+    func syncAnnouncements(for siteID: Int64) {
+        syncProductsOnboarding(for: siteID) { [weak self] in
+            // For now, products onboarding takes precedence over Just In Time Messages, so we can stop if there is an onboarding announcement to display.
+            // This should be revisited when either onboarding or JITMs are expanded. See: pe5pgL-11B-p2
+            guard let self, self.announcementViewModel == nil else { return }
+
+            self.syncJustInTimeMessages(for: siteID)
+        }
+    }
+
+    /// Checks if a store is eligible for products onboarding and prepares the onboarding announcement if needed.
+    ///
+    private func syncProductsOnboarding(for siteID: Int64, onCompletion: @escaping () -> Void) {
+        let action = ProductAction.checkProductsOnboardingEligibility(siteID: siteID) { [weak self] result in
+            switch result {
+            case .success(let isEligible):
+                if isEligible {
+                    ServiceLocator.analytics.track(event: .ProductsOnboarding.storeIsEligible())
+
+                    if self?.featureFlagService.isFeatureFlagEnabled(.productsOnboarding) == true {
+                        let viewModel = ProductsOnboardingAnnouncementCardViewModel(onCTATapped: { [weak self] in
+                            guard let tabBarController = AppDelegate.shared.tabBarController else {
+                                return
+                            }
+
+                            self?.announcementViewModel = nil // Dismiss announcement
+                            tabBarController.navigateTo(.products)
+                        })
+                        self?.announcementViewModel = viewModel
+                    }
+                }
+                onCompletion()
+            case .failure(let error):
+                DDLogError("⛔️ Dashboard — Error checking products onboarding eligibility: \(error)")
+                onCompletion()
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    /// Checks for Just In Time Messages and prepares the announcement if needed.
+    ///
+    private func syncJustInTimeMessages(for siteID: Int64) {
+        guard featureFlagService.isFeatureFlagEnabled(.justInTimeMessagesOnDashboard) else {
+            return
+        }
+
+        let action = JustInTimeMessageAction.loadMessage(
+            siteID: siteID,
+            screen: Constants.dashboardScreenName,
+            hook: .adminNotices) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case let .success(.some(message)):
+                    let viewModel = JustInTimeMessageAnnouncementCardViewModel(
+                        title: message.title,
+                        message: message.detail,
+                        buttonTitle: message.buttonTitle,
+                        onCTATapped: { [weak self] in
+                            guard let self = self,
+                                  let url = URL(string: message.url)
+                            else { return }
+                            let webViewModel = WebViewSheetViewModel(
+                                url: url,
+                                navigationTitle: message.title,
+                                wpComAuthenticated: self.needsAuthenticatedWebView(url: url))
+                            self.showWebViewSheet = webViewModel
+                        })
+                    self.announcementViewModel = viewModel
+                default:
+                    break
+                }
+            }
+        stores.dispatch(action)
+    }
+
+    private func needsAuthenticatedWebView(url: URL) -> Bool {
+        guard let host = url.host else {
+            return false
+        }
+        return Constants.trustedDomains.contains(host)
+    }
 }
 
 // MARK: - Constants
@@ -101,5 +194,7 @@ final class DashboardViewModel {
 private extension DashboardViewModel {
     enum Constants {
         static let topEarnerStatsLimit: Int = 5
+        static let dashboardScreenName = "my_store"
+        static let trustedDomains = ["woocommerce.com", "wordpress.com"]
     }
 }

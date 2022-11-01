@@ -4,6 +4,8 @@ import StoreKit
 import Networking
 
 public class InAppPurchaseStore: Store {
+    // ISO 3166-1 Alpha-3 country code representation.
+    private let supportedCountriesCodes = ["USA"]
     private var listenTask: Task<Void, Error>?
     private let remote: InAppPurchasesRemote
     private var useBackend = true
@@ -30,8 +32,28 @@ public class InAppPurchaseStore: Store {
         switch action {
         case .loadProducts(let completion):
             loadProducts(completion: completion)
-        case .purchaseProduct(let siteID, let product, let completion):
-            purchaseProduct(siteID: siteID, product: product, completion: completion)
+        case .purchaseProduct(let siteID, let productID, let completion):
+            purchaseProduct(siteID: siteID, productID: productID, completion: completion)
+        case .retryWPComSyncForPurchasedProduct(let productID, let completion):
+            Task {
+                do {
+                    completion(.success(try await retryWPComSyncForPurchasedProduct(with: productID)))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+        case .inAppPurchasesAreSupported(completion: let completion):
+            Task {
+                completion(await inAppPurchasesAreSupported())
+            }
+        case .userIsEntitledToProduct(productID: let productID, completion: let completion):
+            Task {
+                do {
+                    completion(.success(try await userIsEntitledToProduct(with: productID)))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
         }
     }
 }
@@ -40,6 +62,7 @@ private extension InAppPurchaseStore {
     func loadProducts(completion: @escaping (Result<[StoreKit.Product], Error>) -> Void) {
         Task {
             do {
+                try await assertInAppPurchasesAreSupported()
                 let identifiers = try await getProductIdentifiers()
                 logInfo("Requesting StoreKit products: \(identifiers)")
                 let products = try await StoreKit.Product.products(for: identifiers)
@@ -52,16 +75,23 @@ private extension InAppPurchaseStore {
         }
     }
 
-    func purchaseProduct(siteID: Int64, product: StoreKit.Product, completion: @escaping (Result<StoreKit.Product.PurchaseResult, Error>) -> Void) {
+    func purchaseProduct(siteID: Int64, productID: String, completion: @escaping (Result<StoreKit.Product.PurchaseResult, Error>) -> Void) {
         Task {
-            logInfo("Purchasing product \(product.id) for site \(siteID)")
-            var purchaseOptions: Set<StoreKit.Product.PurchaseOption> = []
-            if let appAccountToken = AppAccountToken.tokenWithSiteId(siteID) {
-                logInfo("Generated appAccountToken \(appAccountToken) for site \(siteID)")
-                purchaseOptions.insert(.appAccountToken(appAccountToken))
-            }
-
             do {
+                try await assertInAppPurchasesAreSupported()
+
+                guard let product = try await StoreKit.Product.products(for: [productID]).first else {
+                    return completion(.failure(Errors.transactionProductUnknown))
+                }
+
+                logInfo("Purchasing product \(product.id) for site \(siteID)")
+                var purchaseOptions: Set<StoreKit.Product.PurchaseOption> = []
+                if let appAccountToken = AppAccountToken.tokenWithSiteId(siteID) {
+                    logInfo("Generated appAccountToken \(appAccountToken) for site \(siteID)")
+                    purchaseOptions.insert(.appAccountToken(appAccountToken))
+                }
+
+
                 logInfo("Purchasing product \(product.id) for site \(siteID) with options \(purchaseOptions)")
                 let purchaseResult = try await product.purchase(options: purchaseOptions)
                 if case .success(let result) = purchaseResult {
@@ -72,7 +102,7 @@ private extension InAppPurchaseStore {
                 }
                 completion(.success(purchaseResult))
             } catch {
-                logError("Error purchasing product \(product.id) for site \(siteID): \(error)")
+                logError("Error purchasing product \(productID) for site \(siteID): \(error)")
                 completion(.failure(error))
             }
         }
@@ -104,6 +134,28 @@ private extension InAppPurchaseStore {
         }
         logInfo("Marking transaction \(transaction.id) as finished")
         await transaction.finish()
+    }
+
+    func retryWPComSyncForPurchasedProduct(with id: String) async throws {
+        try await assertInAppPurchasesAreSupported()
+
+        guard let verificationResult = await Transaction.currentEntitlement(for: id) else {
+            // The user doesn't have a valid entitlement for this product
+            throw Errors.transactionProductUnknown
+        }
+
+        guard await Transaction.unfinished.contains(verificationResult) else {
+            // The transaction is finished. Return successfully
+            return
+        }
+
+        try await handleCompletedTransaction(verificationResult)
+    }
+
+    func assertInAppPurchasesAreSupported() async throws {
+        guard await inAppPurchasesAreSupported() else {
+            throw Errors.inAppPurchasesNotSupported
+        }
     }
 
     func submitTransaction(_ transaction: StoreKit.Transaction) async throws {
@@ -140,6 +192,20 @@ private extension InAppPurchaseStore {
 
     }
 
+    func userIsEntitledToProduct(with id: String) async throws -> Bool {
+        guard let verificationResult = await Transaction.currentEntitlement(for: id) else {
+            // The user hasn't purchased this product.
+            return false
+        }
+
+        switch verificationResult {
+        case .verified(_):
+            return true
+        case .unverified(_, let verificationError):
+            throw verificationError
+        }
+    }
+
     func getAppReceipt(refreshIfMissing: Bool = true) async throws -> Data {
         guard let appStoreReceiptURL = Bundle.main.appStoreReceiptURL,
               let receiptData = try? Data(contentsOf: appStoreReceiptURL, options: .alwaysMapped) else {
@@ -159,6 +225,14 @@ private extension InAppPurchaseStore {
             return Constants.identifiers
         }
         return try await remote.loadProducts()
+    }
+
+    func inAppPurchasesAreSupported() async -> Bool {
+        guard let countryCode = await Storefront.current?.countryCode else {
+            return false
+        }
+
+        return supportedCountriesCodes.contains(countryCode)
     }
 
     func listenForTransactions() {
@@ -197,6 +271,7 @@ public extension InAppPurchaseStore {
         case transactionProductUnknown
         case storefrontUnknown
         case missingAppReceipt
+        case inAppPurchasesNotSupported
     }
 
     enum Constants {

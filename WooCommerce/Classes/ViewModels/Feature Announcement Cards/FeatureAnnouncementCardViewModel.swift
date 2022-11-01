@@ -5,7 +5,27 @@ import WooFoundation
 
 private typealias FeatureCardEvent = WooAnalyticsEvent.FeatureCard
 
-class FeatureAnnouncementCardViewModel {
+protocol AnnouncementCardViewModelProtocol {
+    var showDividers: Bool { get }
+    var badgeType: BadgeView.BadgeType { get }
+
+    var title: String { get }
+    var message: String { get }
+    var buttonTitle: String? { get }
+    var image: UIImage { get }
+
+    func onAppear()
+    func ctaTapped()
+
+    var showDismissButton: Bool { get }
+    var showDismissConfirmation: Bool { get }
+    var dismissAlertTitle: String { get }
+    var dismissAlertMessage: String { get }
+    func dontShowAgainTapped()
+    func remindLaterTapped()
+}
+
+class FeatureAnnouncementCardViewModel: AnnouncementCardViewModelProtocol {
     private let analytics: Analytics
     private let config: Configuration
     private let stores: StoresManager
@@ -25,6 +45,8 @@ class FeatureAnnouncementCardViewModel {
     var image: UIImage {
         config.image
     }
+
+    var showDismissButton: Bool = true
 
     var showDismissConfirmation: Bool {
         config.showDismissConfirmation

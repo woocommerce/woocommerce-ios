@@ -119,6 +119,12 @@ public final class CustomerStore: Store {
         var customers = [Customer]()
         let group = DispatchGroup()
         for result in searchResults {
+            // At the moment, we're not searching through non-registered customers
+            // As we only search by customer ID, calls to /wc/v3/customers/0 will always fail
+            // https://github.com/woocommerce/woocommerce-ios/issues/7741
+            if result.userID == 0 {
+                continue
+            }
             group.enter()
             self.retrieveCustomer(for: siteID, with: result.userID, onCompletion: { result in
                 if let customer = try? result.get() {

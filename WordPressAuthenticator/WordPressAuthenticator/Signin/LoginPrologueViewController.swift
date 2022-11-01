@@ -266,68 +266,42 @@ class LoginPrologueViewController: LoginViewController {
         let displayStrings = WordPressAuthenticator.shared.displayStrings
         var buttons = [StackedButton]()
         var showDivider = false
-        let loginTitle = displayStrings.continueWithWPButtonTitle
-        let siteAddressTitle = displayStrings.enterYourSiteAddressButtonTitle
-        let createSiteTitle = displayStrings.siteCreationButtonTitle
 
+        let continueWithWPButton = StackedButton(title: displayStrings.continueWithWPButtonTitle,
+                                                 isPrimary: true,
+                                                 configureBodyFontForTitle: true,
+                                                 accessibilityIdentifier: "Prologue Continue Button",
+                                                 style: primaryButtonStyle,
+                                                 onTap: loginTapCallback())
+        let enterYourSiteAddressButton = StackedButton(title: displayStrings.enterYourSiteAddressButtonTitle,
+                                                       isPrimary: false,
+                                                       configureBodyFontForTitle: true,
+                                                       accessibilityIdentifier: "Prologue Self Hosted Button",
+                                                       style: secondaryButtonStyle,
+                                                       onTap: siteAddressTapCallback())
+        var createSiteButton = StackedButton(title: displayStrings.siteCreationButtonTitle,
+                                             isPrimary: false,
+                                             configureBodyFontForTitle: true,
+                                             accessibilityIdentifier: "Prologue Create Site Button",
+                                             style: secondaryButtonStyle,
+                                             onTap: simplifiedLoginSiteCreationCallback())
         if configuration.enableWPComLoginOnlyInPrologue && configuration.enableSiteCreation {
             buttons.append(contentsOf: [
-                StackedButton(stackView: .top,
-                              title: loginTitle,
-                              isPrimary: true,
-                              configureBodyFontForTitle: true,
-                              accessibilityIdentifier: "Prologue Continue Button",
-                              style: primaryButtonStyle,
-                              onTap: loginTapCallback()
-                             ),
-                StackedButton(stackView: .top,
-                              title: createSiteTitle,
-                              isPrimary: false,
-                              configureBodyFontForTitle: true,
-                              accessibilityIdentifier: "Prologue Create Site Button",
-                              style: secondaryButtonStyle,
-                              onTap: simplifiedLoginSiteCreationCallback()
-                             )
+                continueWithWPButton,
+                createSiteButton
             ])
             showDivider = false
         } else if configuration.enableWPComLoginOnlyInPrologue {
             buttons.append(contentsOf: [
-                StackedButton(stackView: .top,
-                              title: loginTitle,
-                              isPrimary: true,
-                              configureBodyFontForTitle: true,
-                              accessibilityIdentifier: "Prologue Continue Button",
-                              style: primaryButtonStyle,
-                              onTap: loginTapCallback()
-                             ),
+                continueWithWPButton,
             ])
             showDivider = false
         } else if configuration.enableSiteCreation {
+            createSiteButton.stackView = .bottom
             buttons.append(contentsOf: [
-                StackedButton(stackView: .top,
-                              title: loginTitle,
-                              isPrimary: true,
-                              configureBodyFontForTitle: true,
-                              accessibilityIdentifier: "Prologue Continue Button",
-                              style: primaryButtonStyle,
-                              onTap: loginTapCallback()
-                             ),
-                StackedButton(stackView: .top,
-                              title: siteAddressTitle,
-                              isPrimary: false,
-                              configureBodyFontForTitle: true,
-                              accessibilityIdentifier: "Prologue Self Hosted Button",
-                              style: secondaryButtonStyle,
-                              onTap: siteAddressTapCallback()
-                             ),
-                StackedButton(stackView: .bottom,
-                              title: createSiteTitle,
-                              isPrimary: false,
-                              configureBodyFontForTitle: true,
-                              accessibilityIdentifier: "Prologue Create Site Button",
-                              style: secondaryButtonStyle,
-                              onTap: simplifiedLoginSiteCreationCallback()
-                             )
+                continueWithWPButton,
+                enterYourSiteAddressButton,
+                createSiteButton
             ])
             showDivider = true
         }

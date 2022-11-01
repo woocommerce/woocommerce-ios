@@ -142,30 +142,32 @@ class LoginPrologueViewController: LoginViewController {
     }
 
     private func configureButtonVC() {
-        guard let buttonViewController = buttonViewController else {
-            return
-        }
-
         guard configuration.enableUnifiedAuth else {
-            buildPrologueButtons(buttonViewController)
+            buildPrologueButtons()
             return
         }
 
         if configuration.enableWPComLoginOnlyInPrologue {
-            buildPrologueButtonsWithWPComAndOptionalSiteCreation(buttonViewController: buttonViewController)
+            buildPrologueButtonsWithWPComAndOptionalSiteCreation()
         } else {
-            buildUnifiedPrologueButtons(buttonViewController)
+            buildUnifiedPrologueButtons()
         }
 
-        buttonViewController.shadowLayoutGuide = view.safeAreaLayoutGuide
-        buttonViewController.topButtonStyle = WordPressAuthenticator.shared.style.prologuePrimaryButtonStyle
-        buttonViewController.bottomButtonStyle = WordPressAuthenticator.shared.style.prologueSecondaryButtonStyle
-        buttonViewController.tertiaryButtonStyle = WordPressAuthenticator.shared.style.prologueSecondaryButtonStyle
+        if let buttonViewController = buttonViewController {
+            buttonViewController.shadowLayoutGuide = view.safeAreaLayoutGuide
+            buttonViewController.topButtonStyle = WordPressAuthenticator.shared.style.prologuePrimaryButtonStyle
+            buttonViewController.bottomButtonStyle = WordPressAuthenticator.shared.style.prologueSecondaryButtonStyle
+            buttonViewController.tertiaryButtonStyle = WordPressAuthenticator.shared.style.prologueSecondaryButtonStyle
+        }
     }
 
     /// Displays the old UI prologue buttons.
     ///
-    private func buildPrologueButtons(_ buttonViewController: NUXButtonViewController) {
+    private func buildPrologueButtons() {
+        guard let buttonViewController = buttonViewController else {
+            return
+        }
+
         let loginTitle = NSLocalizedString("Log In", comment: "Button title.  Tapping takes the user to the login form.")
         let createTitle = NSLocalizedString("Sign up for WordPress.com", comment: "Button title. Tapping begins the process of creating a WordPress.com account.")
 
@@ -193,7 +195,11 @@ class LoginPrologueViewController: LoginViewController {
 
     /// Displays the Unified prologue buttons.
     ///
-    private func buildUnifiedPrologueButtons(_ buttonViewController: NUXButtonViewController) {
+    private func buildUnifiedPrologueButtons() {
+        guard let buttonViewController = buttonViewController else {
+            return
+        }
+
         let displayStrings = WordPressAuthenticator.shared.displayStrings
         let loginTitle = displayStrings.continueWithWPButtonTitle
         let siteAddressTitle = displayStrings.enterYourSiteAddressButtonTitle
@@ -218,7 +224,7 @@ class LoginPrologueViewController: LoginViewController {
 
         showCancelIfNeccessary(buttonViewController)
 
-        setButtonViewControllerBackground(buttonViewController)
+        setButtonViewControllerBackground()
     }
 
     private func buildUnifiedPrologueButtonsWithSiteAddressFirst(_ buttonViewController: NUXButtonViewController, loginTitle: String, siteAddressTitle: String) {
@@ -234,10 +240,13 @@ class LoginPrologueViewController: LoginViewController {
 
         showCancelIfNeccessary(buttonViewController)
 
-        setButtonViewControllerBackground(buttonViewController)
+        setButtonViewControllerBackground()
     }
 
-    private func buildPrologueButtonsWithWPComAndOptionalSiteCreation(buttonViewController: NUXButtonViewController) {
+    private func buildPrologueButtonsWithWPComAndOptionalSiteCreation() {
+        guard let buttonViewController = buttonViewController else {
+            return
+        }
         setButtonViewMargins(forWidth: view.frame.width)
 
         let displayStrings = WordPressAuthenticator.shared.displayStrings
@@ -249,7 +258,7 @@ class LoginPrologueViewController: LoginViewController {
             buttonViewController.setupBottomButton(title: createSiteTitle, isPrimary: false, accessibilityIdentifier: "Prologue Create Site Button", onTap: simplifiedLoginSiteCreationCallback())
         }
 
-        setButtonViewControllerBackground(buttonViewController)
+        setButtonViewControllerBackground()
     }
 
     private func siteAddressTapCallback() -> NUXButtonViewController.CallBackType {
@@ -286,10 +295,10 @@ class LoginPrologueViewController: LoginViewController {
         }
     }
 
-    private func setButtonViewControllerBackground(_ buttonViewController: NUXButtonViewController) {
+    private func setButtonViewControllerBackground() {
         // Fallback to setting the button background color to clear so the blur effect blurs the Prologue background color.
         let buttonsBackgroundColor = WordPressAuthenticator.shared.unifiedStyle?.prologueButtonsBackgroundColor ?? .clear
-        buttonViewController.backgroundColor = buttonsBackgroundColor
+        buttonViewController?.backgroundColor = buttonsBackgroundColor
 
         /// If host apps provide a background color for the prologue buttons:
         /// 1. Hide the blur effect

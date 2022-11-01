@@ -16,6 +16,10 @@ public enum ABTest: String, CaseIterable {
     /// Experiment ref: pbxNRc-1S0-p2
     case aaTestLoggedOut = "woocommerceios_explat_aa_test_logged_out_202211"
 
+    /// A/B test to measure the sign-in success rate when only WPCom login is enabled.
+    ///
+    case abTestLoginWithWPComOnly = "woocommerceios_login_wpcom_only"
+
     /// Returns a variation for the given experiment
     public var variation: Variation {
         ExPlat.shared?.experiment(rawValue) ?? .control
@@ -28,7 +32,7 @@ public enum ABTest: String, CaseIterable {
         switch self {
         case .aaTestLoggedIn202210:
             return .loggedIn
-        case .aaTestLoggedOut:
+        case .aaTestLoggedOut, .abTestLoginWithWPComOnly:
             return .loggedOut
         case .null:
             return .none

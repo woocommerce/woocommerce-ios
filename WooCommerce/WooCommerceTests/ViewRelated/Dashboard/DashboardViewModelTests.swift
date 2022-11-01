@@ -83,6 +83,7 @@ final class DashboardViewModelTests: XCTestCase {
 
     func test_products_onboarding_announcements_take_precedence() {
         // Given
+        MockABTesting.setVariation(.treatment(nil), for: .productsOnboardingBanner)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {

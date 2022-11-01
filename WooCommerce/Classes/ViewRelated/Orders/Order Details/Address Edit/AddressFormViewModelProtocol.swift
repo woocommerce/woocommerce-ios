@@ -411,16 +411,19 @@ open class AddressFormViewModel: ObservableObject {
     }
 
     private func fillCustomerFields(customer: Customer) {
-        fields = populate(fields: fields, with: customer, address: customer.billing)
-        secondaryFields = populate(fields: secondaryFields, with: customer, address: customer.shipping)
+        fields = populate(fields: fields, with: customer.billing)
+        secondaryFields = populate(fields: secondaryFields, with: customer.shipping)
     }
 
-    private func populate(fields: AddressFormFields, with customer: Customer, address: Address?) -> AddressFormFields {
+    private func populate(fields: AddressFormFields, with address: Address?) -> AddressFormFields {
         var fields = fields
 
-        fields.firstName = customer.firstName ?? ""
-        fields.lastName = customer.lastName ?? ""
-        fields.email = customer.email
+        fields.firstName = address?.firstName ?? ""
+        fields.lastName = address?.lastName ?? ""
+        // Email is declared optional because we're using the same property from the Address model
+        // for both Shipping and Billing details:
+        // https://github.com/woocommerce/woocommerce-ios/issues/7993
+        fields.email = address?.email ?? ""
         fields.phone = address?.phone ?? ""
         fields.company = address?.company ?? ""
         fields.address1 = address?.address1 ?? ""

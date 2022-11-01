@@ -148,7 +148,7 @@ class LoginPrologueViewController: LoginViewController {
             return
         }
 
-        if configuration.enableWPComLoginOnlyInPrologue {
+        if configuration.enableWPComLoginOnlyInPrologue || configuration.enableSiteCreation {
             buildPrologueButtonsWithWPComAndOptionalSiteCreation()
         } else {
             buildUnifiedPrologueButtons()
@@ -159,6 +159,8 @@ class LoginPrologueViewController: LoginViewController {
             buttonViewController.topButtonStyle = WordPressAuthenticator.shared.style.prologuePrimaryButtonStyle
             buttonViewController.bottomButtonStyle = WordPressAuthenticator.shared.style.prologueSecondaryButtonStyle
             buttonViewController.tertiaryButtonStyle = WordPressAuthenticator.shared.style.prologueSecondaryButtonStyle
+        } else if let stackedButtonsViewController = stackedButtonsViewController {
+            stackedButtonsViewController.shadowLayoutGuide = view.safeAreaLayoutGuide
         }
     }
 
@@ -245,20 +247,83 @@ class LoginPrologueViewController: LoginViewController {
     }
 
     private func buildPrologueButtonsWithWPComAndOptionalSiteCreation() {
-        guard let buttonViewController = buttonViewController else {
+        guard let stackedButtonsViewController = stackedButtonsViewController else {
             return
         }
+
+        let primaryButtonStyle = WordPressAuthenticator.shared.style.prologuePrimaryButtonStyle
+        let secondaryButtonStyle = WordPressAuthenticator.shared.style.prologueSecondaryButtonStyle
+
         setButtonViewMargins(forWidth: view.frame.width)
-
         let displayStrings = WordPressAuthenticator.shared.displayStrings
+        var buttons = [StackedButton]()
+        var showDivider = false
         let loginTitle = displayStrings.continueWithWPButtonTitle
-        buttonViewController.setupTopButton(title: loginTitle, isPrimary: true, accessibilityIdentifier: "Prologue Log In Button", onTap: loginTapCallback())
+        let siteAddressTitle = displayStrings.enterYourSiteAddressButtonTitle
+        let createSiteTitle = displayStrings.siteCreationButtonTitle
 
-        if configuration.enableSiteCreation {
-            let createSiteTitle = displayStrings.siteCreationButtonTitle
-            buttonViewController.setupBottomButton(title: createSiteTitle, isPrimary: false, accessibilityIdentifier: "Prologue Create Site Button", onTap: simplifiedLoginSiteCreationCallback())
+        if configuration.enableWPComLoginOnlyInPrologue && configuration.enableSiteCreation {
+            buttons.append(contentsOf: [
+                StackedButton(stackView: .top,
+                              title: loginTitle,
+                              isPrimary: true,
+                              configureBodyFontForTitle: true,
+                              accessibilityIdentifier: "Prologue Continue Button",
+                              style: primaryButtonStyle,
+                              onTap: loginTapCallback()
+                             ),
+                StackedButton(stackView: .top,
+                              title: createSiteTitle,
+                              isPrimary: false,
+                              configureBodyFontForTitle: true,
+                              accessibilityIdentifier: "Prologue Create Site Button",
+                              style: secondaryButtonStyle,
+                              onTap: simplifiedLoginSiteCreationCallback()
+                             )
+            ])
+            showDivider = false
+        } else if configuration.enableWPComLoginOnlyInPrologue {
+            buttons.append(contentsOf: [
+                StackedButton(stackView: .top,
+                              title: loginTitle,
+                              isPrimary: true,
+                              configureBodyFontForTitle: true,
+                              accessibilityIdentifier: "Prologue Continue Button",
+                              style: primaryButtonStyle,
+                              onTap: loginTapCallback()
+                             ),
+            ])
+            showDivider = false
+        } else if configuration.enableSiteCreation {
+            buttons.append(contentsOf: [
+                StackedButton(stackView: .top,
+                              title: loginTitle,
+                              isPrimary: true,
+                              configureBodyFontForTitle: true,
+                              accessibilityIdentifier: "Prologue Continue Button",
+                              style: primaryButtonStyle,
+                              onTap: loginTapCallback()
+                             ),
+                StackedButton(stackView: .top,
+                              title: siteAddressTitle,
+                              isPrimary: false,
+                              configureBodyFontForTitle: true,
+                              accessibilityIdentifier: "Prologue Self Hosted Button",
+                              style: secondaryButtonStyle,
+                              onTap: siteAddressTapCallback()
+                             ),
+                StackedButton(stackView: .bottom,
+                              title: createSiteTitle,
+                              isPrimary: false,
+                              configureBodyFontForTitle: true,
+                              accessibilityIdentifier: "Prologue Create Site Button",
+                              style: secondaryButtonStyle,
+                              onTap: simplifiedLoginSiteCreationCallback()
+                             )
+            ])
+            showDivider = true
         }
-
+        stackedButtonsViewController.setuUpButtons(using: buttons, showDivider: showDivider)
         setButtonViewControllerBackground()
     }
 
@@ -300,6 +365,7 @@ class LoginPrologueViewController: LoginViewController {
         // Fallback to setting the button background color to clear so the blur effect blurs the Prologue background color.
         let buttonsBackgroundColor = WordPressAuthenticator.shared.unifiedStyle?.prologueButtonsBackgroundColor ?? .clear
         buttonViewController?.backgroundColor = buttonsBackgroundColor
+        stackedButtonsViewController?.backgroundColor = buttonsBackgroundColor
 
         /// If host apps provide a background color for the prologue buttons:
         /// 1. Hide the blur effect

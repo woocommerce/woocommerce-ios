@@ -7,7 +7,7 @@ struct StackedButton {
         case bottom
     }
 
-    let stackView: StackView
+    var stackView = StackView.top
     let title: String
     var isPrimary = false
     var configureBodyFontForTitle = false

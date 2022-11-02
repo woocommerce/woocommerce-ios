@@ -648,6 +648,26 @@ final class ProductFormViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(actionButtons, [.more])
     }
+
+    func test_no_preview_button_for_existing_draft_product_on_self_hosted_store() {
+        // Given
+        let sessionManager = SessionManager.testingInstance
+        let stores = MockStoresManager(sessionManager: sessionManager)
+        let site = Site.fake()
+        sessionManager.defaultSite = site
+
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.draft.rawValue)
+        let viewModel = createViewModel(product: product,
+                                        formType: .edit,
+                                        stores: stores,
+                                        featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.publish, .more])
+    }
 }
 
 private extension ProductFormViewModelTests {

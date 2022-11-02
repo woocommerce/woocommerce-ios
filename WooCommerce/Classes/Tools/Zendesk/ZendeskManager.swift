@@ -139,12 +139,14 @@ struct ZendeskProvider {
 ///
 #if !targetEnvironment(macCatalyst)
 final class ZendeskManager: NSObject, ZendeskManagerProtocol {
-    // WIP. Like PluginListViewModel
+
     private let storageManager: StorageManagerType = ServiceLocator.storageManager
+
     private lazy var resultsController: ResultsController<StorageSitePlugin> = {
         let siteID = ServiceLocator.stores.sessionManager.defaultSite?.siteID
         let predicate = NSPredicate(format: "siteID = %ld", String(siteID ?? 0))
         let statusDescriptor = NSSortDescriptor(keyPath: \StorageSitePlugin.status, ascending: true)
+
         let resultsController = ResultsController<StorageSitePlugin>(
             storageManager: storageManager, sortedBy: [statusDescriptor])
         do {
@@ -156,9 +158,16 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     }()
 
     func observePlugins(onDataChanged: @escaping () -> Void) {
+        let stripePluginSlug = "woocommerce-gateway-stripe/woocommerce-gateway-stripe"
+        let wcPayPluginSlug = "woocommerce-payments/woocommerce-payments"
+
         resultsController.onDidResetContent = onDataChanged
-        let foundIt = resultsController.fetchedObjects.first(where: { $0.plugin == "woocommerce/woocommerce" } )
-        print("Found it: \(foundIt?.name ?? "Not Found")")
+        if let _ = resultsController.fetchedObjects.first(where: { $0.plugin == stripePluginSlug } ) {
+            ippTags.append(stripePluginSlug)
+        }
+        if let _ = resultsController.fetchedObjects.first(where: { $0.plugin == wcPayPluginSlug } ) {
+            ippTags.append(wcPayPluginSlug)
+        }
     }
 
     func showNewRequestIfPossible(from controller: UIViewController) {
@@ -195,6 +204,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     private var userEmail: String?
     private var haveUserIdentity = false
     private var alertNameField: UITextField?
+    private var ippTags: [String] = [""]
 
     private weak var presentInController: UIViewController?
 
@@ -363,66 +373,12 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         return decorateTags(tags: tags, supportSourceTag: supportSourceTag)
     }
 
-    func experimentObservingChangesOnStorage() {
-        observePlugins(onDataChanged: { })
-    }
-
-    private func checkFor(plugin: Yosemite.SitePlugin) -> String {
-        var tag = ""
-        let pluginList = [
-            "woocommerce-gateway-stripe/woocommerce-gateway-stripe",
-            "woocommerce-payments/woocommerce-payments"
-        ]
-        // Stripe
-        if plugin.plugin == pluginList[0] {
-            if plugin.status == .inactive {
-                tag = Constants.woo_mobile_stripe_installed_and_not_activated
-            } else if plugin.status == .active {
-                tag = Constants.woo_mobile_stripe_installed_and_activated
-            } else {
-                tag = Constants.woo_mobile_stripe_not_installed
-            }
-        }
-        // WCPay
-        if plugin.plugin == pluginList[1] {
-            if plugin.status == .inactive {
-                tag = Constants.woo_mobile_wcpay_installed_and_not_activated
-            } else if plugin.status == .active {
-                tag = Constants.woo_mobile_wcpay_installed_and_activated
-            } else {
-                tag = Constants.woo_mobile_wcpay_not_installed
-            }
-        }
-        return tag
-    }
-
-    /// Add tags for IPP plugins
-    ///
-    func decorateWithIPPTags(onCompletion: @escaping ([String]) -> ()) {
-        // Get Site ID
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultSite?.siteID else {
-            return
-        }
-        var ippTags = [String]()
-        let pluginList = [
-            "woocommerce-gateway-stripe/woocommerce-gateway-stripe",
-            "woocommerce-payments/woocommerce-payments"
-        ]
-        // Dispatch action:
-        for pluginName in pluginList {
-            let action = SitePluginAction.getPluginDetails(siteID: siteID, pluginName: pluginName) { result in
-                switch result {
-                case .success(let plugin):
-                    let checkedPlugin = self.checkFor(plugin: plugin)
-                    ippTags.append(checkedPlugin)
-                case .failure(let error):
-                    DDLogError("Unable to fetch plugin \(pluginName). Error: \(error)")
-                    break
-                }
-                onCompletion(ippTags)
-            }
-            ServiceLocator.stores.dispatch(action)
-        }
+    func appendIPPstatusTagsIfNeeded(decoratedTags: [String]) -> [String] {
+        var tags = decoratedTags
+        observePlugins(onDataChanged: {
+            tags.append(contentsOf: self.ippTags)
+        })
+        return tags
     }
 
     func decorateTags(tags: [String], supportSourceTag: String?) -> [String] {
@@ -443,15 +399,11 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         if let sourceTagOrigin = supportSourceTag, sourceTagOrigin.isEmpty == false {
             decoratedTags.append(sourceTagOrigin)
         }
+
+        // Adds specific plugin status tags for Stripe and WCPay:
+        decoratedTags = appendIPPstatusTagsIfNeeded(decoratedTags: decoratedTags)
         
-        // Testing via Actions:
-        decorateWithIPPTags(onCompletion: { ippTags in
-            print("decorateWithIPPTags callback completed: \(ippTags)")
-        })
-        // Testing via Storage:
-        experimentObservingChangesOnStorage()
-        
-        // TODO: Inject decorateWithIPPTags here.
+        print("Tags: \(decoratedTags)")
         return decoratedTags
     }
 }

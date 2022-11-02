@@ -25,7 +25,7 @@ struct StackedButton {
 ///
 /// Created as a replacement for NUXButtonViewController
 ///
-final class NUXStackedButtonsViewController: UIViewController {
+open class NUXStackedButtonsViewController: UIViewController {
     // MARK: - Properties
     @IBOutlet private weak var buttonHolder: UIView?
 

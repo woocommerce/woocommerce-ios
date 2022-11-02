@@ -2,6 +2,7 @@ import Yosemite
 import enum Networking.DotcomError
 import enum Storage.StatsVersion
 import protocol Experiments.FeatureFlagService
+import enum Experiments.ABTest
 
 /// Syncs data for dashboard stats UI and determines the state of the dashboard UI based on stats version.
 final class DashboardViewModel {
@@ -124,7 +125,7 @@ final class DashboardViewModel {
                 if isEligible {
                     ServiceLocator.analytics.track(event: .ProductsOnboarding.storeIsEligible())
 
-                    if self?.featureFlagService.isFeatureFlagEnabled(.productsOnboarding) == true {
+                    if ABTest.productsOnboardingBanner.variation == .treatment(nil) {
                         let viewModel = ProductsOnboardingAnnouncementCardViewModel(onCTATapped: { [weak self] in
                             self?.announcementViewModel = nil // Dismiss announcement
                             MainTabBarController.presentAddProductFlow()

@@ -64,7 +64,7 @@ struct AccountCreationFormFieldView: View {
                         showsSecureInput.toggle()
                     }) {
                         Image(systemName: showsSecureInput ? "eye.slash" : "eye")
-                            .accentColor(.gray)
+                            .accentColor(Color(.textSubtle))
                             .frame(width: Layout.secureFieldRevealButtonDimension * scale,
                                    height: Layout.secureFieldRevealButtonDimension * scale)
                             .padding(.leading, Layout.secureFieldRevealButtonHorizontalPadding)

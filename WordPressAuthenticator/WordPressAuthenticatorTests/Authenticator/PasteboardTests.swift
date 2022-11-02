@@ -60,5 +60,4 @@ class PasteboardTests: XCTestCase {
 
         waitForExpectations(timeout: timeout, handler: nil)
     }
-
 }

@@ -89,7 +89,7 @@ private extension AddProductCoordinator {
                                       comment: "Message title of bottom sheet for selecting a template or manual product")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title)
         let command = ProductCreationTypeSelectorCommand { selectedCreationType in
-            // TODO: Add analytics
+            self.trackProductCreationType(selectedCreationType)
             self.presentProductTypeBottomSheet(creationType: selectedCreationType)
         }
         let productTypesListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)
@@ -225,9 +225,23 @@ private extension AddProductCoordinator {
 
     /// Presents an general error notice using the system notice presenter.
     ///
-    private func presentErrorNotice() {
+    func presentErrorNotice() {
         let notice = Notice(title: NSLocalizedString("There was a problem creating the template product.",
                                                      comment: "Title for the error notice when creating a template product"))
         ServiceLocator.noticePresenter.enqueue(notice: notice)
+    }
+
+    /// Tracks the selected product creation type.
+    ///
+    func trackProductCreationType(_ type: ProductCreationType) {
+        let analyticsType: WooAnalyticsEvent.ProductsOnboarding.CreationType = {
+            switch type {
+            case .template:
+                return .template
+            case .manual:
+                return .manual
+            }
+        }()
+        ServiceLocator.analytics.track(event: .ProductsOnboarding.productCreationTypeSelected(type: analyticsType))
     }
 }

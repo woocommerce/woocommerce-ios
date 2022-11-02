@@ -188,7 +188,7 @@ extension NUXStackedButtonsViewController {
 
 private extension NUXButton {
     func configure(withConfig buttonConfig: NUXButtonConfig?, and style: NUXButtonStyle?) {
-        guard let buttonConfig else {
+        guard let buttonConfig = buttonConfig else {
             isHidden = true
             return
         }

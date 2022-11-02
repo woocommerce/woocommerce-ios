@@ -127,7 +127,7 @@ final class StorePickerViewController: UIViewController {
        AddStoreFooterView(addStoreHandler: { [weak self] in
            guard let self else { return }
            ServiceLocator.analytics.track(.sitePickerAddStoreTapped)
-           self.presentAddStoreActionSheet()
+           self.presentAddStoreActionSheet(from: self.addStoreFooterView)
        })
     }()
 
@@ -315,7 +315,7 @@ private extension StorePickerViewController {
         ServiceLocator.authenticationManager.presentSupport(from: self, screen: .storePicker)
     }
 
-    func presentAddStoreActionSheet() {
+    func presentAddStoreActionSheet(from view: UIView) {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
         let createStoreAction = UIAlertAction(title: Localization.createStore, style: .default) { [weak self] _ in
@@ -331,6 +331,12 @@ private extension StorePickerViewController {
         actionSheet.addAction(createStoreAction)
         actionSheet.addAction(addExistingStoreAction)
         actionSheet.addAction(cancelAction)
+
+        if let popoverController = actionSheet.popoverPresentationController {
+            popoverController.sourceView = view
+            popoverController.sourceRect = view.bounds
+        }
+
         present(actionSheet, animated: true)
     }
 
@@ -615,7 +621,7 @@ private extension StorePickerViewController {
     @IBAction private func addStoreWasPressed() {
         if featureFlagService.isFeatureFlagEnabled(.storeCreationMVP) {
             ServiceLocator.analytics.track(.sitePickerAddStoreTapped)
-            presentAddStoreActionSheet()
+            presentAddStoreActionSheet(from: addStoreButton)
         } else {
             ServiceLocator.analytics.track(.sitePickerConnectExistingStoreTapped)
             presentSiteDiscovery()

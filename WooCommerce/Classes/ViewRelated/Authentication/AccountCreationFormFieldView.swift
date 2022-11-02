@@ -29,6 +29,7 @@ struct AccountCreationFormFieldView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
             Text(viewModel.header)
+                .foregroundColor(Color(.label))
                 .subheadlineStyle()
             if viewModel.isSecure {
                 SecureField(viewModel.placeholder, text: viewModel.text)

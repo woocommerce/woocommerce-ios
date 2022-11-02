@@ -111,8 +111,8 @@ struct AccountCreationForm: View {
                     .disabled(isPerformingTask)
 
                     // Terms of Service link.
-                    AttributedText(tosAttributedText)
-                        .attributedTextLinkColor(Color(.textLink))
+                    AttributedText(tosAttributedText, enablesLinkUnderline: true)
+                        .attributedTextLinkColor(Color(.secondaryLabel))
                         .environment(\.customOpenURL) { url in
                             tosURL = url
                         }
@@ -146,8 +146,8 @@ private extension AccountCreationForm {
         let result = NSMutableAttributedString(
             string: .localizedStringWithFormat(Localization.tosFormat, Localization.tos),
             attributes: [
-                .foregroundColor: UIColor.label,
-                .font: UIFont.body
+                .foregroundColor: UIColor.secondaryLabel,
+                .font: UIFont.caption1
             ]
         )
         result.replaceFirstOccurrence(
@@ -155,8 +155,9 @@ private extension AccountCreationForm {
             with: NSAttributedString(
                 string: Localization.tos,
                 attributes: [
-                    .font: UIFont.body,
-                    .link: Constants.tosURL
+                    .font: UIFont.caption1,
+                    .link: Constants.tosURL,
+                    .underlineStyle: NSUnderlineStyle.single.rawValue
                 ]
             ))
         return result

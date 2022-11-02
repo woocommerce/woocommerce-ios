@@ -499,6 +499,7 @@ private extension DashboardViewController {
 
     func pullToRefresh() async {
         ServiceLocator.analytics.track(.dashboardPulledToRefresh)
+        viewModel.syncAnnouncements(for: siteID)
         await reloadDashboardUIStatsVersion(forced: true)
     }
 }

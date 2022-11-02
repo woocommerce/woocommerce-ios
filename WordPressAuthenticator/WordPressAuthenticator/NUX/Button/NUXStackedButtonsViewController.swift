@@ -62,7 +62,7 @@ final class NUXStackedButtonsViewController: UIViewController {
     private var buttonConfigs = [StackedButton]()
 
     // MARK: - View
-    override func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
         view.translatesAutoresizingMaskIntoConstraints = false
 
@@ -70,7 +70,7 @@ final class NUXStackedButtonsViewController: UIViewController {
         configureDivider()
     }
 
-    override func viewWillAppear(_ animated: Bool) {
+    override open func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
         reloadViews()
@@ -151,7 +151,7 @@ private extension NUXStackedButtonsViewController {
 }
 
 extension NUXStackedButtonsViewController {
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+    override open func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         if previousTraitCollection?.preferredContentSizeCategory != traitCollection.preferredContentSizeCategory {
             didChangePreferredContentSize()

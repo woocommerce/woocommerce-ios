@@ -11,7 +11,7 @@ class PasteboardTests: XCTestCase {
 
     func testNominalAuthCode() throws {
         if #available(iOS 16.0, *) {
-            throw XCTSkip("Unsupported iOS version")
+            throw XCTSkip("UIPasteboard doesn't work in iOS 16.0.") // Check https://github.com/wordpress-mobile/WordPressAuthenticator-iOS/issues/696
         }
 
         guard #available(iOS 14.0, *) else {
@@ -37,7 +37,7 @@ class PasteboardTests: XCTestCase {
 
     func testLeadingZeroInAuthCodePreserved() throws {
         if #available(iOS 16.0, *) {
-            throw XCTSkip("Unsupported iOS version")
+            throw XCTSkip("UIPasteboard doesn't work in iOS 16.0.") // Check https://github.com/wordpress-mobile/WordPressAuthenticator-iOS/issues/696
         }
 
         guard #available(iOS 14.0, *) else {

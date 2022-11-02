@@ -157,11 +157,14 @@ final class DashboardViewModel {
             hook: .adminNotices) { [weak self] result in
                 guard let self = self else { return }
                 switch result {
-                case let .success(.some(message)):
+                case let .success(messages):
+                    guard let message = messages.first else {
+                        return
+                    }
                     self.analytics.track(event:
                             .JustInTimeMessage.fetchSuccess(source: Constants.dashboardScreenName,
                                                             messageID: message.messageID,
-                                                            count: 1))
+                                                            count: Int64(messages.count)))
                     let viewModel = JustInTimeMessageAnnouncementCardViewModel(
                         justInTimeMessage: message,
                         screenName: Constants.dashboardScreenName,
@@ -172,8 +175,6 @@ final class DashboardViewModel {
                     self.analytics.track(event:
                             .JustInTimeMessage.fetchFailure(source: Constants.dashboardScreenName,
                                                             error: error))
-                case .success(.none):
-                    break
                 }
             }
         stores.dispatch(action)

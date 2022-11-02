@@ -101,7 +101,7 @@ final class DashboardViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: JustInTimeMessageAction.self) { action in
             switch action {
             case let .loadMessage(_, _, _, completion):
-                completion(.success(Yosemite.JustInTimeMessage.fake()))
+                completion(.success([Yosemite.JustInTimeMessage.fake()]))
             default:
                 XCTFail("Received unsupported action: \(action)")
             }
@@ -118,7 +118,7 @@ final class DashboardViewModelTests: XCTestCase {
     func test_view_model_syncs_just_in_time_messages_when_ineligible_for_products_onboarding() {
         // Given
         let message = Yosemite.JustInTimeMessage.fake().copy(title: "JITM Message")
-        prepareStoresToShowJustInTimeMessage(.success(message))
+        prepareStoresToShowJustInTimeMessage(.success([message]))
         let viewModel = DashboardViewModel(stores: stores)
 
         // When
@@ -128,7 +128,7 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.announcementViewModel?.title, "JITM Message")
     }
 
-    func prepareStoresToShowJustInTimeMessage(_ response: Result<Yosemite.JustInTimeMessage?, Error>) {
+    func prepareStoresToShowJustInTimeMessage(_ response: Result<[Yosemite.JustInTimeMessage], Error>) {
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .checkProductsOnboardingEligibility(_, completion):
@@ -160,7 +160,7 @@ final class DashboardViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: JustInTimeMessageAction.self) { action in
             switch action {
             case let .loadMessage(_, _, _, completion):
-                completion(.success(nil))
+                completion(.success([]))
             default:
                 XCTFail("Received unsupported action: \(action)")
             }
@@ -188,7 +188,7 @@ final class DashboardViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: JustInTimeMessageAction.self) { action in
             switch action {
             case let .loadMessage(_, _, _, completion):
-                completion(.success(Yosemite.JustInTimeMessage.fake()))
+                completion(.success([Yosemite.JustInTimeMessage.fake()]))
             default:
                 XCTFail("Received unsupported action: \(action)")
             }
@@ -202,11 +202,14 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.announcementViewModel)
     }
 
-    func test_fetch_success_analytics_logged_when_just_in_time_message_retrieved() {
+    func test_fetch_success_analytics_logged_when_just_in_time_messages_retrieved() {
         // Given
         let message = Yosemite.JustInTimeMessage.fake().copy(messageID: "test-message-id",
                                                              featureClass: "test-feature-class")
-        prepareStoresToShowJustInTimeMessage(.success(message))
+
+        let secondMessage = Yosemite.JustInTimeMessage.fake().copy(messageID: "test-message-id-2",
+                                                                   featureClass: "test-feature-class-2")
+        prepareStoresToShowJustInTimeMessage(.success([message, secondMessage]))
         let viewModel = DashboardViewModel(stores: stores, analytics: analytics)
 
         // When
@@ -221,7 +224,22 @@ final class DashboardViewModelTests: XCTestCase {
 
         assertEqual("my_store", properties["source"] as? String)
         assertEqual("test-message-id", properties["jitm"] as? String)
-        assertEqual(1, properties["count"] as? Int64)
+        assertEqual(2, properties["count"] as? Int64)
+    }
+
+    func test_when_two_messages_are_received_only_the_first_is_displayed() {
+        // Given
+        let message = Yosemite.JustInTimeMessage.fake().copy(title: "Higher priority JITM")
+
+        let secondMessage = Yosemite.JustInTimeMessage.fake().copy(title: "Lower priority JITM")
+        prepareStoresToShowJustInTimeMessage(.success([message, secondMessage]))
+        let viewModel = DashboardViewModel(stores: stores, analytics: analytics)
+
+        // When
+        viewModel.syncAnnouncements(for: sampleSiteID)
+
+        // Then
+        XCTAssertEqual(viewModel.announcementViewModel?.title, "Higher priority JITM")
     }
 
     func test_fetch_failure_analytics_logged_when_just_in_time_message_errors() {

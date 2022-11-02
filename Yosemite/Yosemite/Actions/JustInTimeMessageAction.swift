@@ -8,7 +8,7 @@ public enum JustInTimeMessageAction: Action {
     case loadMessage(siteID: Int64,
                      screen: String,
                      hook: JustInTimeMessageHook,
-                     completion: (Result<JustInTimeMessage?, Error>) -> ())
+                     completion: (Result<[JustInTimeMessage], Error>) -> ())
 
     /// Dismisses a `JustInTimeMessage` and others for the same `featureClass`
     ///

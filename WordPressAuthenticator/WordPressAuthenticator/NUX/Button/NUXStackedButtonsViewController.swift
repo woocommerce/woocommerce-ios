@@ -79,7 +79,7 @@ open class NUXStackedButtonsViewController: UIViewController {
     }
 
     // MARK: public API
-    func setuUpButtons(using config: [StackedButton], showDivider: Bool) {
+    func setUpButtons(using config: [StackedButton], showDivider: Bool) {
         self.buttonConfigs = config
         self.showDivider = showDivider
         createButtons()

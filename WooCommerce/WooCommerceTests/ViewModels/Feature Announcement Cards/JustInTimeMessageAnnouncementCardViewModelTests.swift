@@ -159,6 +159,17 @@ final class JustInTimeMessageAnnouncementCardViewModelTests: XCTestCase {
         assertAnalyticEventLogged(name: "jitm_dismiss_failure", message: message, error: expectedError)
     }
 
+    func test_onAppear_tracks_just_in_time_message_displayed_analytic_event() {
+        let message = Yosemite.JustInTimeMessage.fake().copy(messageID: "test-message-id", featureClass: "test-feature-class")
+        setUp(with: message)
+
+        // When
+        sut.onAppear()
+
+        // Then
+        assertAnalyticEventLogged(name: "jitm_displayed", message: message)
+    }
+
     private func assertAnalyticEventLogged(name: String, message: Yosemite.JustInTimeMessage) {
         let expectedProperties = ["jitm_id": message.messageID,
                                   "jitm_group": message.featureClass,

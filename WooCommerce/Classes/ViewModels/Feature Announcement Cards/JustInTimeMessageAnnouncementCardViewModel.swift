@@ -71,7 +71,9 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
 
     // MARK: - AnnouncementCardViewModelProtocol methods
     func onAppear() {
-        // No-op
+        analytics.track(event: .JustInTimeMessage.messageDisplayed(source: screenName,
+                                                                   messageID: messageID,
+                                                                   featureClass: featureClass))
     }
 
     func ctaTapped() {

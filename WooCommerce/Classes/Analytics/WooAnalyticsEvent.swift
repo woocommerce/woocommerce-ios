@@ -649,6 +649,17 @@ extension WooAnalyticsEvent {
                               error: error)
         }
 
+        static func messageDisplayed(source: String,
+                                     messageID: String,
+                                     featureClass: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .justInTimeMessageDisplayed,
+                              properties: [
+                                Keys.source: source,
+                                Keys.justInTimeMessageID: messageID,
+                                Keys.justInTimeMessageGroup: featureClass
+                              ])
+        }
+
         static func callToActionTapped(source: String,
                                        messageID: String,
                                        featureClass: String) -> WooAnalyticsEvent {

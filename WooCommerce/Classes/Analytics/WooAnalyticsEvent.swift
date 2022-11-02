@@ -619,6 +619,29 @@ extension WooAnalyticsEvent {
     }
 }
 
+// MARK: - Just In Time Messages
+//
+extension WooAnalyticsEvent {
+    enum JustInTimeMessage {
+        private enum Keys {
+            static let source = "source"
+            static let justInTimeMessageID = "jitm_id"
+            static let justInTimeMessageGroup = "jitm_group"
+        }
+
+        static func callToActionTapped(source: String,
+                                       messageID: String,
+                                       featureClass: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .justInTimeMessageCallToActionTapped,
+                              properties: [
+                                Keys.source: source,
+                                Keys.justInTimeMessageID: messageID,
+                                Keys.justInTimeMessageGroup: featureClass
+                              ])
+        }
+    }
+}
+
 // MARK: - Simple Payments
 //
 extension WooAnalyticsEvent {

@@ -101,6 +101,9 @@ private extension NUXStackedButtonsViewController {
     }
 
     func createButtons() {
+        buttons = []
+        topStackView?.arrangedSubviews.forEach({ $0.removeFromSuperview() })
+        bottomStackView?.arrangedSubviews.forEach({ $0.removeFromSuperview() })
         for config in buttonConfigs {
             let button = NUXButton()
             switch config.stackView {

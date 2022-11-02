@@ -299,6 +299,7 @@ private extension DashboardViewController {
             self.viewModel.syncAnnouncements(for: self.siteID)
         }
         let hostingController = UIHostingController(rootView: webViewSheet)
+        hostingController.presentationController?.delegate = self
         present(hostingController, animated: true, completion: nil)
     }
 
@@ -385,9 +386,18 @@ private extension DashboardViewController {
     }
 }
 
+// MARK: - Delegate conformance
 extension DashboardViewController: DashboardUIScrollDelegate {
     func dashboardUIScrollViewDidScroll(_ scrollView: UIScrollView) {
         hiddenScrollView.updateFromScrollViewDidScrollEventForLargeTitleWorkaround(scrollView)
+    }
+}
+
+extension DashboardViewController: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        if presentationController.presentedViewController is UIHostingController<WebViewSheet> {
+            viewModel.syncAnnouncements(for: siteID)
+        }
     }
 }
 

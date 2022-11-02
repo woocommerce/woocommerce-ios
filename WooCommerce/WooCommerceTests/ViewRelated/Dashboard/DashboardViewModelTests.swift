@@ -3,7 +3,7 @@ import enum Networking.DotcomError
 import enum Yosemite.StatsActionV4
 import enum Yosemite.ProductAction
 import enum Yosemite.JustInTimeMessageAction
-import struct Yosemite.YosemiteJustInTimeMessage
+import struct Yosemite.JustInTimeMessage
 @testable import WooCommerce
 
 final class DashboardViewModelTests: XCTestCase {
@@ -95,7 +95,7 @@ final class DashboardViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: JustInTimeMessageAction.self) { action in
             switch action {
             case let .loadMessage(_, _, _, completion):
-                completion(.success(YosemiteJustInTimeMessage.fake()))
+                completion(.success(Yosemite.JustInTimeMessage.fake()))
             default:
                 XCTFail("Received unsupported action: \(action)")
             }
@@ -123,7 +123,7 @@ final class DashboardViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: JustInTimeMessageAction.self) { action in
             switch action {
             case let .loadMessage(_, _, _, completion):
-                completion(.success(YosemiteJustInTimeMessage.fake().copy(title: "JITM Message")))
+                completion(.success(Yosemite.JustInTimeMessage.fake().copy(title: "JITM Message")))
             default:
                 XCTFail("Received unsupported action: \(action)")
             }
@@ -179,7 +179,7 @@ final class DashboardViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: JustInTimeMessageAction.self) { action in
             switch action {
             case let .loadMessage(_, _, _, completion):
-                completion(.success(YosemiteJustInTimeMessage.fake()))
+                completion(.success(Yosemite.JustInTimeMessage.fake()))
             default:
                 XCTFail("Received unsupported action: \(action)")
             }

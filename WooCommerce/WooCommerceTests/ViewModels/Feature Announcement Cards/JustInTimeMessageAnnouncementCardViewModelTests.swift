@@ -23,7 +23,7 @@ final class JustInTimeMessageAnnouncementCardViewModelTests: XCTestCase {
         stores = MockStoresManager(sessionManager: .makeForTesting())
     }
 
-    func setUp(with message: YosemiteJustInTimeMessage) {
+    func setUp(with message: Yosemite.JustInTimeMessage) {
         sut = JustInTimeMessageAnnouncementCardViewModel(justInTimeMessage: message,
                                                          screenName: "my_store",
                                                          siteID: 1234,
@@ -41,9 +41,9 @@ final class JustInTimeMessageAnnouncementCardViewModelTests: XCTestCase {
 
     func test_ctaTapped_presents_a_webview_with_the_url_adding_correct_utm_parameters() throws {
         // Given
-        setUp(with: YosemiteJustInTimeMessage.fake().copy(messageID: "message_id",
-                                                          featureClass: "feature_class",
-                                                          url: "https://woocommerce.com/take-action"))
+        setUp(with: Yosemite.JustInTimeMessage.fake().copy(messageID: "message_id",
+                                                           featureClass: "feature_class",
+                                                           url: "https://woocommerce.com/take-action"))
 
         // When
         sut.ctaTapped()
@@ -59,7 +59,7 @@ final class JustInTimeMessageAnnouncementCardViewModelTests: XCTestCase {
 
     func test_ctaTapped_presents_an_authenticated_webview_for_woocommerce() throws {
         // Given
-        setUp(with: YosemiteJustInTimeMessage.fake().copy(url: "https://woocommerce.com/take-action"))
+        setUp(with: Yosemite.JustInTimeMessage.fake().copy(url: "https://woocommerce.com/take-action"))
 
         // When
         sut.ctaTapped()
@@ -71,7 +71,7 @@ final class JustInTimeMessageAnnouncementCardViewModelTests: XCTestCase {
 
     func test_ctaTapped_presents_an_authenticated_webview_for_wordpress() throws {
         // Given
-        setUp(with: YosemiteJustInTimeMessage.fake().copy(url: "https://wordpress.com/take-action"))
+        setUp(with: Yosemite.JustInTimeMessage.fake().copy(url: "https://wordpress.com/take-action"))
 
         // When
         sut.ctaTapped()
@@ -83,7 +83,7 @@ final class JustInTimeMessageAnnouncementCardViewModelTests: XCTestCase {
 
     func test_ctaTapped_presents_an_unauthenticated_webview_for_other_url() throws {
         // Given
-        setUp(with: YosemiteJustInTimeMessage.fake().copy(url: "https://example.com/take-action"))
+        setUp(with: Yosemite.JustInTimeMessage.fake().copy(url: "https://example.com/take-action"))
 
         // When
         sut.ctaTapped()
@@ -94,7 +94,7 @@ final class JustInTimeMessageAnnouncementCardViewModelTests: XCTestCase {
     }
 
     func test_ctaTapped_tracks_jitm_cta_tapped_event() {
-        let message = YosemiteJustInTimeMessage.fake().copy(messageID: "test-message-id", featureClass: "test-feature-class")
+        let message = Yosemite.JustInTimeMessage.fake().copy(messageID: "test-message-id", featureClass: "test-feature-class")
         setUp(with: message)
 
         // When
@@ -106,7 +106,7 @@ final class JustInTimeMessageAnnouncementCardViewModelTests: XCTestCase {
 
     func test_dismiss_tracks_jitm_dismissed_event() {
         // Given
-        let message = YosemiteJustInTimeMessage.fake().copy(messageID: "test-message-id", featureClass: "test-feature-class")
+        let message = Yosemite.JustInTimeMessage.fake().copy(messageID: "test-message-id", featureClass: "test-feature-class")
         setUp(with: message)
 
         // When
@@ -118,7 +118,7 @@ final class JustInTimeMessageAnnouncementCardViewModelTests: XCTestCase {
 
     func test_success_response_on_dismissal_tracks_jitm_dismiss_success_event() {
         // Given
-        let message = YosemiteJustInTimeMessage.fake().copy(messageID: "test-message-id", featureClass: "test-feature-class")
+        let message = Yosemite.JustInTimeMessage.fake().copy(messageID: "test-message-id", featureClass: "test-feature-class")
         setUp(with: message)
 
         stores.whenReceivingAction(ofType: JustInTimeMessageAction.self) { action in
@@ -139,7 +139,7 @@ final class JustInTimeMessageAnnouncementCardViewModelTests: XCTestCase {
 
     func test_failed_response_on_dismissal_tracks_jitm_dismiss_failed_event() {
         // Given
-        let message = YosemiteJustInTimeMessage.fake().copy(messageID: "test-message-id", featureClass: "test-feature-class")
+        let message = Yosemite.JustInTimeMessage.fake().copy(messageID: "test-message-id", featureClass: "test-feature-class")
         setUp(with: message)
         let expectedError = DotcomError.resourceDoesNotExist as NSError
 
@@ -159,14 +159,14 @@ final class JustInTimeMessageAnnouncementCardViewModelTests: XCTestCase {
         assertAnalyticEventLogged(name: "jitm_dismiss_failure", message: message, error: expectedError)
     }
 
-    private func assertAnalyticEventLogged(name: String, message: YosemiteJustInTimeMessage) {
+    private func assertAnalyticEventLogged(name: String, message: Yosemite.JustInTimeMessage) {
         let expectedProperties = ["jitm_id": message.messageID,
                                   "jitm_group": message.featureClass,
                                   "source": "my_store"]
         assertAnalyticEventLogged(name: name, expectedProperties: expectedProperties)
     }
 
-    private func assertAnalyticEventLogged(name: String, message: YosemiteJustInTimeMessage, error: Error) {
+    private func assertAnalyticEventLogged(name: String, message: Yosemite.JustInTimeMessage, error: Error) {
         let error = error as NSError
         let expectedProperties = ["jitm_id": message.messageID,
                                   "jitm_group": message.featureClass,

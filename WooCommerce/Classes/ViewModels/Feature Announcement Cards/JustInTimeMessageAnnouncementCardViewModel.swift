@@ -11,7 +11,7 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
 
     private let stores: StoresManager
 
-    private let justInTimeMessage: YosemiteJustInTimeMessage
+    private let justInTimeMessage: JustInTimeMessage
 
     // MARK: - Message properties
     let title: String
@@ -28,7 +28,7 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
 
     private let screenName: String
 
-    init(justInTimeMessage: YosemiteJustInTimeMessage,
+    init(justInTimeMessage: JustInTimeMessage,
          screenName: String,
          siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,

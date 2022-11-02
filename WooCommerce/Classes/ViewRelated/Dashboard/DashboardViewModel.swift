@@ -129,8 +129,10 @@ final class DashboardViewModel {
                             MainTabBarController.presentAddProductFlow()
                         })
                         self?.announcementViewModel = viewModel
-                        // For now, products onboarding takes precedence over Just In Time Messages, so we can stop if there is an onboarding announcement to display.
-                        // This should be revisited when either onboarding or JITMs are expanded. See: pe5pgL-11B-p2
+                        // For now, products onboarding takes precedence over Just In Time Messages,
+                        // so we can stop if there is an onboarding announcement to display.
+                        // This should be revisited when either onboarding or JITMs are expanded. See:
+                        // pe5pgL-11B-p2
                         return
                     }
                 }

@@ -1,4 +1,5 @@
 import Combine
+import protocol Experiments.FeatureFlagService
 import Yosemite
 
 import protocol Storage.StorageManagerType
@@ -151,6 +152,14 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
             }
         }()
 
+        if featureFlagService.isFeatureFlagEnabled(.productsOnboarding),
+            // Preview existing drafts or new products, that can be saved as a draft
+           (canSaveAsDraft() || originalProductModel.status == .draft),
+           // Do not preview new blank products without any changes
+           !(formType == .add && !hasUnsavedChanges()) {
+            buttons.insert(.preview, at: 0)
+        }
+
         // Add more button if needed
         if shouldShowMoreOptionsMenu() {
             buttons.append(.more)
@@ -170,13 +179,16 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     private let analytics: Analytics
 
+    private let featureFlagService: FeatureFlagService
+
     init(product: EditableProductModel,
          formType: ProductFormType,
          productImageActionHandler: ProductImageActionHandler,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          productImagesUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.formType = formType
         self.productImageActionHandler = productImageActionHandler
         self.originalProduct = product
@@ -186,6 +198,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.storageManager = storageManager
         self.productImagesUploader = productImagesUploader
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
 
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
             guard let self = self else { return }

@@ -4,9 +4,13 @@ import struct WordPressAuthenticator.NavigateToEnterAccount
 
 /// Hosting controller that wraps an `AccountCreationForm`.
 final class AccountCreationFormHostingController: UIHostingController<AccountCreationForm> {
+    private let analytics: Analytics
+
     init(viewModel: AccountCreationFormViewModel,
          signInSource: SignInSource,
+         analytics: Analytics = ServiceLocator.analytics,
          completion: @escaping () -> Void) {
+        self.analytics = analytics
         super.init(rootView: AccountCreationForm(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController.
@@ -16,6 +20,9 @@ final class AccountCreationFormHostingController: UIHostingController<AccountCre
 
         rootView.loginButtonTapped = { [weak self] in
             guard let self else { return }
+
+            self.analytics.track(event: .StoreCreation.signupFormLoginTapped())
+
             let command = NavigateToEnterAccount(signInSource: signInSource)
             command.execute(from: self)
         }
@@ -28,7 +35,10 @@ final class AccountCreationFormHostingController: UIHostingController<AccountCre
 
 /// A form that allows the user to create a WPCOM account with an email and password.
 struct AccountCreationForm: View {
-    @Environment(\.customOpenURL) var customOpenURL
+    private enum Field: Hashable {
+        case email
+        case password
+    }
 
     /// Triggered when the account is created and the app is authenticated.
     var completion: (() -> Void) = {}
@@ -39,6 +49,9 @@ struct AccountCreationForm: View {
     @ObservedObject private var viewModel: AccountCreationFormViewModel
 
     @State private var isPerformingTask = false
+    @State private var tosURL: URL?
+
+    @FocusState private var focusedField: Field?
 
     init(viewModel: AccountCreationFormViewModel) {
         self.viewModel = viewModel
@@ -75,22 +88,35 @@ struct AccountCreationForm: View {
 
                 // Form fields.
                 VStack(spacing: Layout.verticalSpacingBetweenFields) {
+                    // Email field.
                     AccountCreationFormFieldView(viewModel: .init(header: Localization.emailFieldTitle,
                                                                   placeholder: Localization.emailFieldPlaceholder,
                                                                   keyboardType: .emailAddress,
                                                                   text: $viewModel.email,
                                                                   isSecure: false,
-                                                                  errorMessage: viewModel.emailErrorMessage))
+                                                                  errorMessage: viewModel.emailErrorMessage,
+                                                                  isFocused: focusedField == .email))
+                    .focused($focusedField, equals: .email)
                     .disabled(isPerformingTask)
+
+                    // Password field.
                     AccountCreationFormFieldView(viewModel: .init(header: Localization.passwordFieldTitle,
                                                                   placeholder: Localization.passwordFieldPlaceholder,
                                                                   keyboardType: .default,
                                                                   text: $viewModel.password,
                                                                   isSecure: true,
-                                                                  errorMessage: viewModel.passwordErrorMessage))
+                                                                  errorMessage: viewModel.passwordErrorMessage,
+                                                                  isFocused: focusedField == .password))
+                    .focused($focusedField, equals: .password)
                     .disabled(isPerformingTask)
-                    AttributedText(tosAttributedText)
-                        .attributedTextLinkColor(Color(.textLink))
+
+                    // Terms of Service link.
+                    AttributedText(tosAttributedText, enablesLinkUnderline: true)
+                        .attributedTextLinkColor(Color(.secondaryLabel))
+                        .environment(\.customOpenURL) { url in
+                            tosURL = url
+                        }
+                        .safariSheet(url: $tosURL)
                 }
 
                 // CTA to submit the form.
@@ -120,8 +146,8 @@ private extension AccountCreationForm {
         let result = NSMutableAttributedString(
             string: .localizedStringWithFormat(Localization.tosFormat, Localization.tos),
             attributes: [
-                .foregroundColor: UIColor.label,
-                .font: UIFont.body
+                .foregroundColor: UIColor.secondaryLabel,
+                .font: UIFont.caption1
             ]
         )
         result.replaceFirstOccurrence(
@@ -129,8 +155,9 @@ private extension AccountCreationForm {
             with: NSAttributedString(
                 string: Localization.tos,
                 attributes: [
-                    .font: UIFont.body,
-                    .link: Constants.tosURL
+                    .font: UIFont.caption1,
+                    .link: Constants.tosURL,
+                    .underlineStyle: NSUnderlineStyle.single.rawValue
                 ]
             ))
         return result

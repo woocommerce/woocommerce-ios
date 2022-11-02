@@ -11,7 +11,7 @@ final class NotWPAccountViewModel: ULErrorViewModel {
     // MARK: - Data and configuration
     let image: UIImage = .loginNoWordPressError
 
-    let text: NSAttributedString = .init(string: Localization.errorMessage)
+    let text: NSAttributedString = .init(string: Localization.errorMessage, attributes: [.font: UIFont.title3SemiBold])
 
     let isAuxiliaryButtonHidden = false
 
@@ -19,12 +19,17 @@ final class NotWPAccountViewModel: ULErrorViewModel {
 
     let primaryButtonTitle: String
 
+    let isPrimaryButtonHidden: Bool
+
     var secondaryButtonTitle: String {
         isSimplifiedLoginI1Enabled ? Localization.tryAnotherAddress : Localization.restartLogin
     }
     let isSecondaryButtonHidden: Bool
 
     private weak var viewController: UIViewController?
+
+    /// Store creation coordinator in the logged-out state.
+    private var loggedOutStoreCreationCoordinator: LoggedOutStoreCreationCoordinator?
 
     private(set) lazy var auxiliaryView: UIView? = {
         let button = UIButton(type: .custom)
@@ -39,6 +44,7 @@ final class NotWPAccountViewModel: ULErrorViewModel {
 
     private let isSimplifiedLoginI1Enabled: Bool
     private let analytics: Analytics
+    private var storePickerCoordinator: StorePickerCoordinator?
 
     init(error: Error,
          analytics: Analytics = ServiceLocator.analytics,
@@ -50,16 +56,24 @@ final class NotWPAccountViewModel: ULErrorViewModel {
            source == .wpComSiteAddress {
             isSecondaryButtonHidden = true
             primaryButtonTitle = Localization.restartLogin
+            isPrimaryButtonHidden = false
         } else {
             isSecondaryButtonHidden = false
-            primaryButtonTitle = isSimplifiedLoginI1Enabled ? Localization.createAnAccount : Localization.loginWithSiteAddress
+
+            if isSimplifiedLoginI1Enabled {
+                primaryButtonTitle = Localization.createAnAccount
+                isPrimaryButtonHidden = !featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
+            } else {
+                primaryButtonTitle = Localization.loginWithSiteAddress
+                isPrimaryButtonHidden = false
+            }
         }
     }
 
     // MARK: - Actions
     func didTapPrimaryButton(in viewController: UIViewController?) {
         if isSimplifiedLoginI1Enabled {
-            createAnAccountButtonTapped()
+            createAnAccountButtonTapped(in: viewController)
         } else {
             loginWithSiteAddressButtonTapped()
         }
@@ -101,9 +115,18 @@ private extension NotWPAccountViewModel {
         popCommand.execute(from: viewController)
     }
 
-    func createAnAccountButtonTapped() {
-        // TODO: 7903 - Navigate to create store flow.
-        // analytics.track(.createAccountOnInvalidEmailScreenTapped)
+    func createAnAccountButtonTapped(in viewController: UIViewController?) {
+        analytics.track(.createAccountOnInvalidEmailScreenTapped)
+        guard let viewController,
+              let navigationController = viewController.navigationController else {
+            DDLogWarn("⚠️ Unable to proceed with account creation as view controller/navigation controller is nil.")
+            return
+        }
+
+        let coordinator = LoggedOutStoreCreationCoordinator(source: .loginEmailError,
+                                                            navigationController: navigationController)
+        self.loggedOutStoreCreationCoordinator = coordinator
+        coordinator.start()
     }
 }
 

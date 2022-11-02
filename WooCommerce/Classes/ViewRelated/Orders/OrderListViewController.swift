@@ -434,28 +434,16 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
     private func openCardReaderProductPageInWebView() {
         let configuration = CardPresentConfigurationLoader().configuration
         let url = configuration.purchaseCardReaderUrl(utmProvider: viewModel.upsellCardReadersCampaign.utmProvider)
-        let cardReaderWebview = makeCardReaderProductPageWebView(url: url)
+        let cardReaderWebview = WebViewSheet(
+            viewModel: WebViewSheetViewModel(
+                url: url,
+                navigationTitle: UpsellCardReadersCampaign.Localization.cardReaderWebViewTitle,
+                wpComAuthenticated: true),
+            done: { [weak self] in
+                self?.dismiss(animated: true)
+            })
         let hostingController = UIHostingController(rootView: cardReaderWebview)
         present(hostingController, animated: true, completion: nil)
-    }
-
-    private func makeCardReaderProductPageWebView(url: URL) -> some View {
-        return NavigationView {
-            AuthenticatedWebView(isPresented: .constant(true),
-                                 url: url)
-            .navigationTitle(UpsellCardReadersCampaign.Localization.cardReaderWebViewTitle)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(action: { [weak self] in
-                        self?.dismiss(animated: true)
-                    }, label: {
-                        Text(UpsellCardReadersCampaign.Localization.cardReaderWebViewDoneButtonTitle)
-                    })
-                }
-            }
-        }
-        .wooNavigationBarStyle()
     }
 
     func updateUpsellCardReaderTopBannerVisibility(with newCollection: UITraitCollection) {

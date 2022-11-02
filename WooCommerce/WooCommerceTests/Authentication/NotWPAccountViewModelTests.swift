@@ -36,7 +36,7 @@ final class NotWPAccountViewModelTests: XCTestCase {
     func test_viewmodel_provides_expected_error_message() {
         // Given
         let viewModel = NotWPAccountViewModel()
-        let expectation = NSAttributedString(string: Expectations.errorMessage)
+        let expectation = NSAttributedString(string: Expectations.errorMessage, attributes: [.font: UIFont.title3SemiBold])
 
         // When
         let errorMessage = viewModel.text
@@ -129,28 +129,61 @@ final class NotWPAccountViewModelTests: XCTestCase {
         XCTAssertEqual(primaryButtonTitle, Expectations.createAnAccountTitle)
     }
 
+    // MARK: - `isPrimaryButtonHidden`
+
+    func test_primary_button_is_not_hidden_for_invalidWPComEmail_from_site_address_error() {
+        // Given
+        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpComSiteAddress))
+
+        // Then
+        XCTAssertFalse(viewModel.isPrimaryButtonHidden)
+    }
+
+    func test_primary_button_is_not_hidden_for_invalidWPComEmail_from_wpCom_error_when_simplified_login_feature_flag_is_off() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isSimplifiedLoginFlowI1Enabled: false)
+        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom),
+                                              featureFlagService: featureFlagService)
+        // Then
+        XCTAssertFalse(viewModel.isPrimaryButtonHidden)
+    }
+
+    func test_primary_button_is_not_hidden_for_invalidWPComEmail_from_wpCom_error_when_simplified_login_is_on_and_store_creation_is_on() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isSimplifiedLoginFlowI1Enabled: true,
+                                                        isStoreCreationMVPEnabled: true)
+        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom),
+                                              featureFlagService: featureFlagService)
+        // Then
+        XCTAssertFalse(viewModel.isPrimaryButtonHidden)
+    }
+
+    func test_primary_button_is_hidden_for_invalidWPComEmail_from_wpCom_error_when_simplified_login_is_on_and_store_creation_is_off() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isSimplifiedLoginFlowI1Enabled: true,
+                                                        isStoreCreationMVPEnabled: false)
+        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom),
+                                              featureFlagService: featureFlagService)
+        // Then
+        XCTAssertTrue(viewModel.isPrimaryButtonHidden)
+    }
+
     // MARK: - `isSecondaryButtonHidden`
 
     func test_secondary_button_is_hidden_for_invalidWPComEmail_from_site_address_error() {
         // Given
         let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpComSiteAddress))
 
-        // When
-        let isPrimaryButtonHidden = viewModel.isSecondaryButtonHidden
-
         // Then
-        XCTAssertTrue(isPrimaryButtonHidden)
+        XCTAssertTrue(viewModel.isSecondaryButtonHidden)
     }
 
     func test_secondary_button_is_not_hidden_for_invalidWPComEmail_from_wpCom_error() {
         // Given
         let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom))
 
-        // When
-        let isPrimaryButtonHidden = viewModel.isSecondaryButtonHidden
-
         // Then
-        XCTAssertFalse(isPrimaryButtonHidden)
+        XCTAssertFalse(viewModel.isSecondaryButtonHidden)
     }
 
     // MARK: - `secondaryButtonTitle`
@@ -211,11 +244,6 @@ final class NotWPAccountViewModelTests: XCTestCase {
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "what_is_wordpress_com_on_invalid_email_screen" }))
     }
 
-    /*
-     TODO: 7903 - Navigate to create store flow
-
-     Uncomment these tests after added create store navigation and analytics code.
-
     func test_tapping_primary_button_does_not_track_create_account_event_when_simplified_login_feature_flag_is_off() {
         // Given
         let featureFlagService = MockFeatureFlagService(isSimplifiedLoginFlowI1Enabled: false)
@@ -243,7 +271,6 @@ final class NotWPAccountViewModelTests: XCTestCase {
         // Then
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "create_account_on_invalid_email_screen" }))
     }
-    */
 }
 
 

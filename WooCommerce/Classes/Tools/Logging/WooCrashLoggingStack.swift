@@ -12,14 +12,15 @@ struct WooCrashLoggingStack: CrashLoggingStack {
     let crashLogging: AutomatticTracks.CrashLogging
     let eventLogging: EventLogging
 
-    private let crashLoggingDataProvider = WCCrashLoggingDataProvider()
+    private let crashLoggingDataProvider: WCCrashLoggingDataProvider
     private let eventLoggingDataProvider = WCEventLoggingDataSource()
     private let eventLoggingDelegate = WCEventLoggingDelegate()
 
-    init() {
+    init(featureFlagService: FeatureFlagService) {
         let eventLogging = EventLogging(dataSource: eventLoggingDataProvider, delegate: eventLoggingDelegate)
 
         self.eventLogging = eventLogging
+        self.crashLoggingDataProvider = WCCrashLoggingDataProvider(featureFlagService: featureFlagService)
         self.crashLogging = AutomatticTracks.CrashLogging(dataProvider: crashLoggingDataProvider, eventLogging: eventLogging)
 
         /// Upload any remaining files any time the app becomes active
@@ -87,7 +88,11 @@ class WCCrashLoggingDataProvider: CrashLoggingDataProvider {
     /// Indicates that app is in an inconsistent state and we don't want to start asking it for metadata
     fileprivate var appIsCrashing = false
 
-    init() {
+    let featureFlagService: FeatureFlagService
+
+    init(featureFlagService: FeatureFlagService) {
+        self.featureFlagService = featureFlagService
+
         NotificationCenter.default.addObserver(self, selector: #selector(updateCrashLoggingSystem(_:)), name: .defaultAccountWasUpdated, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(updateCrashLoggingSystem(_:)), name: .logOutEventReceived, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(updateCrashLoggingSystem(_:)), name: .StoresManagerDidUpdateDefaultSite, object: nil)
@@ -128,6 +133,26 @@ class WCCrashLoggingDataProvider: CrashLoggingDataProvider {
         DispatchQueue.main.async {
             ServiceLocator.crashLogging.setNeedsDataRefresh()
         }
+    }
+
+    // MARK: – Performance Monitoring
+
+    var performanceTracking: PerformanceTracking {
+        guard featureFlagService.isFeatureFlagEnabled(.performanceMonitoring) else {
+            return .disabled
+        }
+
+        return .enabled(
+            .init(
+                // FIXME: Is there a way to control this via feature flags?
+                sampler: { 0.1 },
+                trackCoreData: featureFlagService.isFeatureFlagEnabled(.performanceMonitoringCoreData),
+                trackFileIO: featureFlagService.isFeatureFlagEnabled(.performanceMonitoringFileIO),
+                trackNetwork: featureFlagService.isFeatureFlagEnabled(.performanceMonitoringNetworking),
+                trackUserInteraction: featureFlagService.isFeatureFlagEnabled(.performanceMonitoringUserInteraction),
+                trackViewControllers: featureFlagService.isFeatureFlagEnabled(.performanceMonitoringViewController)
+            )
+        )
     }
 }
 

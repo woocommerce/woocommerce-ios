@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-10-12 09:54:04+0000 */
+/* Translation-Revision-Date: 2022-10-26 11:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -829,6 +829,9 @@ which should be translated separately and considered part of this sentence. */
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "登録することで、利用規約に合意したことになります。";
 
+/* Content of the label at the end of the Wrong Account screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com. */
+"By tapping the Connect Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com." = "「Jetpack に連携」ボタンをタップすると、当社の%1$@および WordPress.com に%2$@ことに同意したものとみなされます。";
+
 /* Header for the Custom Packages section in Shipping Label Package listing */
 "CUSTOM PACKAGES" = "カスタム荷物";
 
@@ -1131,11 +1134,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Jetpack connection web view in the login flow */
 "Connect Jetpack" = "Jetpack を接続";
 
+/* Action button to handle connecting the logged-in account to a given site.Presented when logging in with a store address that does not match the account entered */
+"Connect Jetpack to your account" = "Jetpack をアカウントに接続する";
+
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "Reader に接続";
-
-/* Action button to handle connecting the logged-in account to a given site.Presented when logging in with a store address that does not match the account entered */
-"Connect to the site" = "サイトと連携";
 
 /* Settings > Manage Card Reader > Prompt user to connect their first reader */
 "Connect your card reader" = "カードリーダーを接続";
@@ -1353,8 +1356,14 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the Action sheet option when the user wants to create full manual order */
 "Create a new manual order" = "手動で新しい注文を作成します";
 
+/* Button to create a new store from the store picker */
+"Create a new store" = "新しいストアを作成する";
+
 /* Description for percentage discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a percentage discount for selected products" = "選択した商品の割引率を作成します";
+
+/* Title of the store creation web view. */
+"Create a store" = "ストアを作成する";
 
 /* Description of the Action sheet option when the user wants to create Simple Payments order */
 "Create an order with minimal information" = "最小限の情報で注文を作成します";
@@ -2402,6 +2411,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when the merchant's payment account has been rejected. */
 "In-Person Payments isn't available for this store" = "このストアではオフラインでの支払いを使用できません";
+
+/* Cell title on beta features screen to enable in-app purchases */
+"In-app purchases" = "アプリ内購入";
 
 /* Application's Inactive State */
 "Inactive" = "停止中";
@@ -4903,8 +4915,12 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "%1$@ についてもう少しお聞かせください...";
 
-/* Title of button that displays the App's terms of service */
+/* The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen.
+   Title of button that displays the App's terms of service */
 "Terms of Service" = "利用規約";
+
+/* Cell description on beta features screen to enable in-app purchases */
+"Test out in-app purchases as we get ready to launch" = "リリースに向けてアプリ内購入をテストする";
 
 /* Cell description on beta features screen to enable coupon management */
 "Test out managing coupons as we get ready to launch" = "起動の準備ができたら、クーポンの管理をテストします";
@@ -6215,6 +6231,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Format of the number of product ratings in singular form */
 "rated once" = "評価回数1回";
+
+/* The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
+"share details" = "詳細情報を共有する";
 
 /* Widget description, displayed when selecting which widget to add */
 "storeWidgets.description" = "WooCommerce Stats Today";

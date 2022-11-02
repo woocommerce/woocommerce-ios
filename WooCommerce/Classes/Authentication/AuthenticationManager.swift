@@ -18,6 +18,9 @@ class AuthenticationManager: Authentication {
     ///
     private var storePickerCoordinator: StorePickerCoordinator?
 
+    /// Store creation coordinator in the logged-out state.
+    private var loggedOutStoreCreationCoordinator: LoggedOutStoreCreationCoordinator?
+
     /// Keychain access for SIWA auth token
     ///
     private lazy var keychain = Keychain(service: WooConstants.keychainServiceName)
@@ -543,8 +546,12 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
     // Navigate to store creation
     func showSiteCreation(in navigationController: UINavigationController) {
-        // TODO: add tracks
-        // Navigate to store creation
+        ServiceLocator.analytics.track(event: .StoreCreation.loginPrologueCreateSiteTapped())
+
+        let coordinator = LoggedOutStoreCreationCoordinator(source: .prologue,
+                                                            navigationController: navigationController)
+        self.loggedOutStoreCreationCoordinator = coordinator
+        coordinator.start()
     }
 }
 
@@ -628,8 +635,12 @@ private extension AuthenticationManager {
                           onDismiss: @escaping () -> Void = {}) {
         let config: StorePickerConfiguration = {
             switch source {
-            case .custom(let source) where source == StoreCreationCoordinator.Source.prologue.rawValue:
-                return .storeCreationFromLoginPrologue
+            case .custom(let source):
+                if let loggedOutSource = LoggedOutStoreCreationCoordinator.Source(rawValue: source) {
+                    return .storeCreationFromLogin(source: loggedOutSource)
+                } else {
+                    return .login
+                }
             default:
                 return .login
             }

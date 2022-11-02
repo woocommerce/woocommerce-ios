@@ -3,6 +3,7 @@ import TestKit
 import Fakes
 import Yosemite
 import Combine
+import Networking
 
 @testable import WooCommerce
 
@@ -11,6 +12,7 @@ final class JustInTimeMessageAnnouncementCardViewModelTests: XCTestCase {
     private var webviewPublishes: [WebViewSheetViewModel]!
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: Analytics!
+    private var stores: MockStoresManager!
     private var sut: JustInTimeMessageAnnouncementCardViewModel!
 
     override func setUp() {
@@ -18,12 +20,14 @@ final class JustInTimeMessageAnnouncementCardViewModelTests: XCTestCase {
         webviewPublishes = [WebViewSheetViewModel]()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        stores = MockStoresManager(sessionManager: .makeForTesting())
     }
 
     func setUp(with message: YosemiteJustInTimeMessage) {
         sut = JustInTimeMessageAnnouncementCardViewModel(justInTimeMessage: message,
                                                          screenName: "my_store",
                                                          siteID: 1234,
+                                                         stores: stores,
                                                          analytics: analytics)
 
         sut.$showWebViewSheet
@@ -90,21 +94,98 @@ final class JustInTimeMessageAnnouncementCardViewModelTests: XCTestCase {
     }
 
     func test_ctaTapped_tracks_jitm_cta_tapped_event() {
-        // Given
-        setUp(with: YosemiteJustInTimeMessage.fake().copy(messageID: "test-message-id", featureClass: "test-feature-class"))
+        let message = YosemiteJustInTimeMessage.fake().copy(messageID: "test-message-id", featureClass: "test-feature-class")
+        setUp(with: message)
 
         // When
         sut.ctaTapped()
 
         // Then
-        guard let eventIndex = analyticsProvider.receivedEvents.firstIndex(of: "jitm_cta_tapped")
+        assertAnalyticEventLogged(name: "jitm_cta_tapped", message: message)
+    }
+
+    func test_dismiss_tracks_jitm_dismissed_event() {
+        // Given
+        let message = YosemiteJustInTimeMessage.fake().copy(messageID: "test-message-id", featureClass: "test-feature-class")
+        setUp(with: message)
+
+        // When
+        sut.dontShowAgainTapped()
+
+        // Then
+        assertAnalyticEventLogged(name: "jitm_dismissed", message: message)
+    }
+
+    func test_success_response_on_dismissal_tracks_jitm_dismiss_success_event() {
+        // Given
+        let message = YosemiteJustInTimeMessage.fake().copy(messageID: "test-message-id", featureClass: "test-feature-class")
+        setUp(with: message)
+
+        stores.whenReceivingAction(ofType: JustInTimeMessageAction.self) { action in
+            switch action {
+            case .dismissMessage(_, _, let completion):
+                completion(Result.success(true))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+
+        // When
+        sut.dontShowAgainTapped()
+
+        // Then
+        assertAnalyticEventLogged(name: "jitm_dismiss_success", message: message)
+    }
+
+    func test_failed_response_on_dismissal_tracks_jitm_dismiss_failed_event() {
+        // Given
+        let message = YosemiteJustInTimeMessage.fake().copy(messageID: "test-message-id", featureClass: "test-feature-class")
+        setUp(with: message)
+        let expectedError = DotcomError.resourceDoesNotExist as NSError
+
+        stores.whenReceivingAction(ofType: JustInTimeMessageAction.self) { action in
+            switch action {
+            case .dismissMessage(_, _, let completion):
+                completion(Result.failure(expectedError))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+
+        // When
+        sut.dontShowAgainTapped()
+
+        // Then
+        assertAnalyticEventLogged(name: "jitm_dismiss_failure", message: message, error: expectedError)
+    }
+
+    private func assertAnalyticEventLogged(name: String, message: YosemiteJustInTimeMessage) {
+        let expectedProperties = ["jitm_id": message.messageID,
+                                  "jitm_group": message.featureClass,
+                                  "source": "my_store"]
+        assertAnalyticEventLogged(name: name, expectedProperties: expectedProperties)
+    }
+
+    private func assertAnalyticEventLogged(name: String, message: YosemiteJustInTimeMessage, error: Error) {
+        let error = error as NSError
+        let expectedProperties = ["jitm_id": message.messageID,
+                                  "jitm_group": message.featureClass,
+                                  "source": "my_store",
+                                  "error_domain": String(error.domain),
+                                  "error_description": error.debugDescription,
+                                  "error_code": String(error.code)]
+        assertAnalyticEventLogged(name: name, expectedProperties: expectedProperties)
+    }
+
+    private func assertAnalyticEventLogged(name: String, expectedProperties: [String: String]) {
+        guard let eventIndex = analyticsProvider.receivedEvents.firstIndex(of: name),
+              let properties = analyticsProvider.receivedProperties[eventIndex] as? [String: AnyHashable]
         else {
             return XCTFail("Analytics not logged")
         }
-        let properties = analyticsProvider.receivedProperties[eventIndex] as? [String: String]
-        let expectedProperties = ["jitm_id": "test-message-id",
-                                  "jitm_group": "test-feature-class",
-                                  "source": "my_store"]
-        assertEqual(expectedProperties, properties)
+
+        for property in expectedProperties {
+            XCTAssert(properties.contains(where: { $0 == property }))
+        }
     }
 }

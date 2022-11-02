@@ -9,6 +9,10 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
 
     private let analytics: Analytics
 
+    private let stores: StoresManager
+
+    private let justInTimeMessage: YosemiteJustInTimeMessage
+
     // MARK: - Message properties
     let title: String
 
@@ -27,9 +31,11 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
     init(justInTimeMessage: YosemiteJustInTimeMessage,
          screenName: String,
          siteID: Int64,
+         stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.analytics = analytics
+        self.stores = stores
         let utmProvider = WooCommerceComUTMProvider(
             campaign: "jitm_group_\(justInTimeMessage.featureClass)",
             source: screenName,
@@ -38,6 +44,7 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
         self.url = utmProvider.urlWithUtmParams(string: justInTimeMessage.url)
         self.messageID = justInTimeMessage.messageID
         self.featureClass = justInTimeMessage.featureClass
+        self.justInTimeMessage = justInTimeMessage
         self.screenName = screenName
         self.title = justInTimeMessage.title
         self.message = justInTimeMessage.detail
@@ -68,10 +75,9 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
     }
 
     func ctaTapped() {
-        analytics.track(event: WooAnalyticsEvent.JustInTimeMessage.callToActionTapped(
-            source: screenName,
-            messageID: messageID,
-            featureClass: featureClass))
+        analytics.track(event: .JustInTimeMessage.callToActionTapped(source: screenName,
+                                                                     messageID: messageID,
+                                                                     featureClass: featureClass))
 
         guard let url = url else {
             return
@@ -91,7 +97,30 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
     }
 
     func dontShowAgainTapped() {
-        // No-op
+        analytics.track(event: .JustInTimeMessage.dismissTapped(source: screenName,
+                                                                messageID: messageID,
+                                                                featureClass: featureClass))
+        let action = JustInTimeMessageAction.dismissMessage(justInTimeMessage,
+                                                            siteID: siteID,
+                                                            completion: { result in
+            // We deliberately strongly capture self here: the owning reference to the VM may have been
+            // set to nil by now, in order to stop displaying the Just In Time Message.
+            // [weak self] will result in these two analytics never being logged.
+            switch result {
+            case .success(_):
+                self.analytics.track(event: .JustInTimeMessage.dismissSuccess(
+                    source: self.screenName,
+                    messageID: self.messageID,
+                    featureClass: self.featureClass))
+            case .failure(let error):
+                self.analytics.track(event: .JustInTimeMessage.dismissFailure(
+                    source: self.screenName,
+                    messageID: self.messageID,
+                    featureClass: self.featureClass,
+                    error: error))
+            }
+        })
+        stores.dispatch(action)
     }
 
     func remindLaterTapped() {

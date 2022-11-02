@@ -30,6 +30,8 @@ public class JustInTimeMessageStore: Store {
         switch action {
         case .loadMessage(let siteID, let screen, let hook, let completion):
             loadMessage(for: siteID, screen: screen, hook: hook, completion: completion)
+        case .dismissMessage(let message, let siteID, let completion):
+            dismissMessage(message, for: siteID, completion: completion)
         }
     }
 }
@@ -56,10 +58,23 @@ private extension JustInTimeMessageStore {
         }
     }
 
-    private func topDisplayMessage(_ messages: [Networking.JustInTimeMessage]) -> YosemiteJustInTimeMessage? {
+    func topDisplayMessage(_ messages: [Networking.JustInTimeMessage]) -> YosemiteJustInTimeMessage? {
         guard let topMessage = messages.first else {
             return nil
         }
         return YosemiteJustInTimeMessage(message: topMessage)
+    }
+
+    func dismissMessage(_ message: YosemiteJustInTimeMessage,
+                        for siteID: Int64,
+                        completion: @escaping (Result<Bool, Error>) -> ()) {
+        Task {
+            let result = await remote.dismissJustInTimeMessage(for: siteID,
+                                                               messageID: message.messageID,
+                                                               featureClass: message.featureClass)
+            await MainActor.run {
+                completion(result)
+            }
+        }
     }
 }

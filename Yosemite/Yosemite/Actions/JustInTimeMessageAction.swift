@@ -9,4 +9,10 @@ public enum JustInTimeMessageAction: Action {
                      screen: String,
                      hook: JustInTimeMessageHook,
                      completion: (Result<YosemiteJustInTimeMessage?, Error>) -> ())
+
+    /// Dismisses a `JustInTimeMessage` and others for the same `featureClass`
+    ///
+    case dismissMessage(_ message: YosemiteJustInTimeMessage,
+                        siteID: Int64,
+                        completion: (Result<Bool, Error>) -> ())
 }

@@ -3,6 +3,9 @@ import Foundation
 public protocol JustInTimeMessagesRemoteProtocol {
     func loadAllJustInTimeMessages(for siteID: Int64,
                                    messagePath: JustInTimeMessagesRemote.MessagePath) async -> Result<[JustInTimeMessage], Error>
+    func dismissJustInTimeMessage(for siteID: Int64,
+                                  messageID: String,
+                                  featureClass: String) async -> Result<Bool, Error>
 }
 
 /// Just In Time Messages: Remote endpoints
@@ -15,7 +18,8 @@ public final class JustInTimeMessagesRemote: Remote, JustInTimeMessagesRemotePro
     /// - Parameters:
     ///     - siteID: The site for which we'll fetch JustInTimeMessages.
     ///     - messagePath: The location for JITMs to be displayed
-    ///     - completion: Closure to be executed upon completion.
+    /// - Returns:
+    ///     Async result with an array of `[JustInTimeMessage]` (usually contains one element) or an error
     ///
     public func loadAllJustInTimeMessages(for siteID: Int64,
                                           messagePath: JustInTimeMessagesRemote.MessagePath) async -> Result<[JustInTimeMessage], Error> {
@@ -34,6 +38,36 @@ public final class JustInTimeMessagesRemote: Remote, JustInTimeMessagesRemotePro
             return .failure(error)
         }
     }
+
+    /// Dismisses a `JustInTimeMessage` using the API.
+    ///
+    /// - Parameters:
+    ///     - siteID: The site for which we'll dismiss a JustInTimeMessage
+    ///     - messageID: The ID of the JustInTimeMessage that was dismissed
+    ///     - featureClass: The featureClass of the JustInTimeMessages that should be dismissed
+    /// - Returns:
+    ///     Async result with a `Bool` indicating whether dismissal was successful, or an error
+    ///
+    public func dismissJustInTimeMessage(for siteID: Int64,
+                                         messageID: String,
+                                         featureClass: String) async -> Result<Bool, Error> {
+
+        let parameters = [ParameterKey.featureClass: featureClass,
+                          ParameterKey.messageID: messageID]
+
+        let request = JetpackRequest(wooApiVersion: .none,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: Path.jitm,
+                                     parameters: parameters)
+
+        do {
+            let result = try await enqueue(request, mapper: DataBoolMapper())
+            return result
+        } catch {
+            return .failure(error)
+        }
+    }
 }
 
 // MARK: - Constants
@@ -45,6 +79,8 @@ public extension JustInTimeMessagesRemote {
 
     private enum ParameterKey {
         static let messagePath = "message_path"
+        static let featureClass = "feature_class"
+        static let messageID = "id"
     }
 
     /// Message Path parameter

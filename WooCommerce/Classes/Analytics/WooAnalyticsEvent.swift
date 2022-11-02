@@ -639,6 +639,40 @@ extension WooAnalyticsEvent {
                                 Keys.justInTimeMessageGroup: featureClass
                               ])
         }
+
+        static func dismissTapped(source: String,
+                                  messageID: String,
+                                  featureClass: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .justInTimeMessageDismissTapped,
+                              properties: [
+                                Keys.source: source,
+                                Keys.justInTimeMessageID: messageID,
+                                Keys.justInTimeMessageGroup: featureClass
+                              ])
+        }
+
+        static func dismissSuccess(source: String,
+                                  messageID: String,
+                                  featureClass: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .justInTimeMessageDismissSuccess, properties: [
+                Keys.source: source,
+                Keys.justInTimeMessageID: messageID,
+                Keys.justInTimeMessageGroup: featureClass
+              ])
+        }
+
+        static func dismissFailure(source: String,
+                                   messageID: String,
+                                   featureClass: String,
+                                   error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .justInTimeMessageDismissFailure,
+                              properties: [
+                                Keys.source: source,
+                                Keys.justInTimeMessageID: messageID,
+                                Keys.justInTimeMessageGroup: featureClass
+                              ],
+                              error: error)
+        }
     }
 }
 

@@ -8,7 +8,7 @@ final class DashboardViewModel {
     /// Stats v4 is shown by default, then falls back to v3 if store stats are unavailable.
     @Published private(set) var statsVersion: StatsVersion = .v4
 
-    @Published private(set) var announcementViewModel: AnnouncementCardViewModelProtocol? = nil
+    @Published var announcementViewModel: AnnouncementCardViewModelProtocol? = nil
 
     @Published private(set) var showWebViewSheet: WebViewSheetViewModel? = nil
 

@@ -340,6 +340,42 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         return decorateTags(tags: tags, supportSourceTag: supportSourceTag)
     }
 
+    /// Add tags for IPP plugins
+    ///
+    func decorateWithIPPTags(onCompletion: @escaping ([String]) -> ()) {
+        // Get Site ID
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultSite?.siteID else {
+            return
+        }
+        // Using WooCommerce for testing:
+        var ippTags: [String] = []
+        let pluginList = [
+            "woocommerce/woocommerce",
+            "woocommerce-gateway-stripe/woocommerce-gateway-stripe",
+            "woocommerce-payments/woocommerce-payments"
+        ]
+        // Dispatch action:
+        for pluginName in pluginList {
+            let action = SitePluginAction.getPluginDetails(siteID: siteID, pluginName: pluginName) { result in
+                switch result {
+                case .success(let plugin):
+                    if plugin.status == .inactive {
+                        ippTags.append(Constants.woo_mobile_stripe_installed_and_not_activated)
+                    } else if plugin.status == .active {
+                        ippTags.append(Constants.woo_mobile_stripe_installed_and_activated)
+                    } else {
+                        ippTags.append(Constants.woo_mobile_stripe_not_installed)
+                    }
+                case .failure(let error):
+                    DDLogError("Unable to fetch plugin \(pluginName). Error: \(error)")
+                    break
+                }
+                onCompletion(ippTags)
+            }
+            ServiceLocator.stores.dispatch(action)
+        }
+    }
+
     func decorateTags(tags: [String], supportSourceTag: String?) -> [String] {
         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
             return tags
@@ -358,24 +394,11 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         if let sourceTagOrigin = supportSourceTag, sourceTagOrigin.isEmpty == false {
             decoratedTags.append(sourceTagOrigin)
         }
-        // WIP
-        let action = SitePluginAction.getPluginDetails(siteID: site.siteID, pluginName: "WooCommerce Stripe Gateway") { result in
-            switch result {
-            case .success(let plugin):
-                if plugin.status == .inactive {
-                    decoratedTags.append(Constants.woo_mobile_stripe_installed_and_not_activated)
-                } else if plugin.status == .active {
-                    decoratedTags.append(Constants.woo_mobile_stripe_installed_and_activated)
-                } else {
-                    decoratedTags.append(Constants.woo_mobile_stripe_not_installed)
-                }
-            case .failure(let error):
-                DDLogError("Unable to fetch plugin details: \(error)")
-                break
-            }
-        }
-        ServiceLocator.stores.dispatch(action)
 
+        decorateWithIPPTags(onCompletion: { ippTags in
+            print("decorateWithIPPTags callback completed: \(ippTags)")
+        })
+        // TODO: Inject decorateWithIPPTags here.
         return decoratedTags
     }
 }

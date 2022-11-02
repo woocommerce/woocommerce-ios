@@ -51,6 +51,14 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .productsOnboarding:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .performanceMonitoring,
+                .performanceMonitoringCoreData,
+                .performanceMonitoringFileIO,
+                .performanceMonitoringNetworking,
+                .performanceMonitoringViewController,
+                .performanceMonitoringUserInteraction:
+            // Disabled by default to avoid costs spikes, unless in internal testing builds.
+            return buildConfig == .alpha
         default:
             return true
         }

@@ -74,9 +74,6 @@ final class DashboardViewController: UIViewController {
                                               })
     }()
 
-    private var hasAnnouncementFeatureFlag: Bool { ServiceLocator.featureFlagService.isFeatureFlagEnabled(.justInTimeMessagesOnDashboard)
-    }
-
     private var announcementViewHostingController: ConstraintsUpdatingHostingController<AnnouncementCardWrapper>?
 
     private var announcementView: UIView?
@@ -124,11 +121,9 @@ final class DashboardViewController: UIViewController {
         observeBottomJetpackBenefitsBannerVisibilityUpdates()
         observeNavigationBarHeightForStoreNameLabelVisibility()
         observeStatsVersionForDashboardUIUpdates()
-        trackProductsOnboardingEligibility()
         observeAnnouncements()
-        if hasAnnouncementFeatureFlag {
-            viewModel.syncAnnouncements(for: siteID)
-        }
+        observeShowWebViewSheet()
+        viewModel.syncAnnouncements(for: siteID)
         Task { @MainActor in
             await reloadDashboardUIStatsVersion(forced: true)
         }
@@ -269,23 +264,6 @@ private extension DashboardViewController {
         }
     }
 
-    /// Tracks if the store is eligible for products onboarding (if the store has no existing products)
-    ///
-    func trackProductsOnboardingEligibility() {
-        let action = ProductAction.checkForProducts(siteID: siteID) { result in
-            switch result {
-            case .success(let hasProducts):
-                // Store is eligible for onboarding if it has no products
-                if !hasProducts {
-                    ServiceLocator.analytics.track(.productsOnboardingEligible)
-                }
-            case .failure(let error):
-                DDLogError("⛔️ Dashboard — Error checking products onboarding eligibility: \(error)")
-            }
-        }
-        ServiceLocator.stores.dispatch(action)
-    }
-
     func reloadDashboardUIStatsVersion(forced: Bool) async {
         await storeStatsAndTopPerformersViewController.reloadData(forced: forced)
     }
@@ -303,6 +281,23 @@ private extension DashboardViewController {
             dashboardUI.scrollDelegate = self
             self.onDashboardUIUpdate(forced: false, updatedDashboardUI: dashboardUI)
         }.store(in: &subscriptions)
+    }
+
+    func observeShowWebViewSheet() {
+        viewModel.$showWebViewSheet.sink { [weak self] viewModel in
+            guard let self = self else { return }
+            guard let viewModel = viewModel else { return }
+            self.openWebView(viewModel: viewModel)
+        }
+        .store(in: &subscriptions)
+    }
+
+    private func openWebView(viewModel: WebViewSheetViewModel) {
+        let cardReaderWebview = WebViewSheet(viewModel: viewModel) { [weak self] in
+            self?.dismiss(animated: true)
+        }
+        let hostingController = UIHostingController(rootView: cardReaderWebview)
+        present(hostingController, animated: true, completion: nil)
     }
 
     // This is used so we have a specific type for the view while applying modifiers.
@@ -323,8 +318,8 @@ private extension DashboardViewController {
             }
 
             let cardView = FeatureAnnouncementCardView(viewModel: viewModel,
-                                                               dismiss: {},
-                                                               callToAction: {})
+                                                       dismiss: {},
+                                                       callToAction: {})
 
             self.showAnnouncement(AnnouncementCardWrapper(cardView: cardView))
         }

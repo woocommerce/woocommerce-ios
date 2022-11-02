@@ -18,9 +18,13 @@ struct JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewModelProt
         // No-op
     }
 
+    let onCTATapped: (() -> Void)?
+
     func ctaTapped() {
-        // No-op
+        onCTATapped?()
     }
+
+    var showDismissButton: Bool = true
 
     var showDismissConfirmation: Bool = false
 

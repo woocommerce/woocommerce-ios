@@ -28,6 +28,9 @@ final class NotWPAccountViewModel: ULErrorViewModel {
 
     private weak var viewController: UIViewController?
 
+    /// Store creation coordinator in the logged-out state.
+    private var loggedOutStoreCreationCoordinator: LoggedOutStoreCreationCoordinator?
+
     private(set) lazy var auxiliaryView: UIView? = {
         let button = UIButton(type: .custom)
         button.applyLinkButtonStyle(enableMultipleLines: true)
@@ -120,19 +123,10 @@ private extension NotWPAccountViewModel {
             return
         }
 
-        let accountCreationController = AccountCreationFormHostingController(
-            viewModel: .init(),
-            signInSource: .custom(source: StoreCreationCoordinator.Source.prologue.rawValue)
-        ) { [weak self] in
-            guard let self else { return }
-            self.launchStorePicker(from: navigationController)
-        }
-        viewController.show(accountCreationController, sender: self)
-    }
-
-    func launchStorePicker(from navigationController: UINavigationController) {
-        storePickerCoordinator = StorePickerCoordinator(navigationController, config: .listStores)
-        storePickerCoordinator?.start()
+        let coordinator = LoggedOutStoreCreationCoordinator(source: .loginEmailError,
+                                                            navigationController: navigationController)
+        self.loggedOutStoreCreationCoordinator = coordinator
+        coordinator.start()
     }
 }
 

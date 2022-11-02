@@ -111,9 +111,10 @@ public enum WooAnalyticsStat: String {
     case dashboardNewStatsRevertedBannerLearnMoreTapped = "dashboard_new_stats_reverted_banner_learn_more_tapped"
     case usedAnalytics = "used_analytics"
 
-    // MARK: Onboarding Events
+    // MARK: Products Onboarding Events
     //
     case productsOnboardingEligible = "products_onboarding_store_is_eligible"
+    case productsOnboardingCTATapped = "products_onboarding_cta_tapped"
 
     // MARK: Site picker. Can be triggered by login epilogue or settings.
     //
@@ -121,9 +122,22 @@ public enum WooAnalyticsStat: String {
     case sitePickerStoresShown = "site_picker_stores_shown"
     case sitePickerHelpButtonTapped = "site_picker_help_button_tapped"
     case sitePickerNonWooSiteTapped = "site_picker_non_woo_site_tapped"
-    case sitePickerEnterStoreAddressTapped = "site_picker_enter_store_address_tapped"
     case sitePickerSiteDiscovery = "site_picker_site_discovery"
     case sitePickerNewToWooTapped = "site_picker_new_to_woo_tapped"
+    case sitePickerAddStoreTapped = "site_picker_add_a_store_tapped"
+    case sitePickerConnectExistingStoreTapped = "site_picker_connect_existing_store_tapped"
+
+    // MARK: Site creation
+    //
+    case sitePickerCreateSiteTapped = "site_picker_create_site_tapped"
+    case siteCreated = "login_woocommerce_site_created"
+    case siteCreationFailed = "site_creation_failed"
+    case siteCreationDismissed = "site_creation_dismissed"
+    case loginPrologueCreateSiteTapped = "login_prologue_create_site_tapped"
+    case signupFormLoginTapped = "signup_login_button_tapped"
+    case signupSubmitted = "signup_submitted"
+    case signupSuccess = "signup_success"
+    case signupFailed = "signup_failed"
 
     // MARK: Help & Support Events
     //

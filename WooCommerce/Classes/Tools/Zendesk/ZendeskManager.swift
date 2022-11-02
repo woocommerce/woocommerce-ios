@@ -358,6 +358,23 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         if let sourceTagOrigin = supportSourceTag, sourceTagOrigin.isEmpty == false {
             decoratedTags.append(sourceTagOrigin)
         }
+        // WIP
+        let action = SitePluginAction.getPluginDetails(siteID: site.siteID, pluginName: "WooCommerce Stripe Gateway") { result in
+            switch result {
+            case .success(let plugin):
+                if plugin.status == .inactive {
+                    decoratedTags.append(Constants.woo_mobile_stripe_installed_and_not_activated)
+                } else if plugin.status == .active {
+                    decoratedTags.append(Constants.woo_mobile_stripe_installed_and_activated)
+                } else {
+                    decoratedTags.append(Constants.woo_mobile_stripe_not_installed)
+                }
+            case .failure(let error):
+                DDLogError("Unable to fetch plugin details: \(error)")
+                break
+            }
+        }
+        ServiceLocator.stores.dispatch(action)
 
         return decoratedTags
     }
@@ -1012,6 +1029,16 @@ private extension ZendeskManager {
         static let paymentsSubcategory = "payment"
         static let paymentsProduct = "woocommerce_payments"
         static let paymentsProductArea = "product_area_woo_payment_gateway"
+        // WIP
+        static let stripePluginName = "WooCommerce Stripe Gateway"
+        static let wcPayPluginName = "WooCommerce Payments"
+        static let woo_mobile_stripe_not_installed = "woo_mobile_stripe_not_installed"
+        static let woo_mobile_stripe_installed_and_not_activated = "woo_mobile_stripe_installed_and_not_activated"
+        static let woo_mobile_stripe_installed_and_activated = "woo_mobile_stripe_installed_and_activated"
+        static let woo_mobile_wcpay_not_installed = "woo_mobile_wcpay_not_installed"
+        static let woo_mobile_wcpay_installed_and_not_activated = "woo_mobile_wcpay_installed_and_not_activated"
+        static let woo_mobile_wcpay_installed_and_activated = "woo_mobile_wcpay_installed_and_activated"
+        static let woo_mobile_site_plugins_fetching_error = "woo_mobile_site_plugins_fetching_error"
     }
 
     // Zendesk expects these as NSNumber. However, they are defined as UInt64 to satisfy 32-bit devices (ex: iPhone 5).

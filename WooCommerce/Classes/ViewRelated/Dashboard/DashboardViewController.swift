@@ -293,10 +293,12 @@ private extension DashboardViewController {
     }
 
     private func openWebView(viewModel: WebViewSheetViewModel) {
-        let cardReaderWebview = WebViewSheet(viewModel: viewModel) { [weak self] in
-            self?.dismiss(animated: true)
+        let webViewSheet = WebViewSheet(viewModel: viewModel) { [weak self] in
+            guard let self = self else { return }
+            self.dismiss(animated: true)
+            self.viewModel.syncAnnouncements(for: self.siteID)
         }
-        let hostingController = UIHostingController(rootView: cardReaderWebview)
+        let hostingController = UIHostingController(rootView: webViewSheet)
         present(hostingController, animated: true, completion: nil)
     }
 

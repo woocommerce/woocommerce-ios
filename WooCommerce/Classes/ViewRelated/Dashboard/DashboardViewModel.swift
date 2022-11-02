@@ -110,11 +110,7 @@ final class DashboardViewModel {
     ///
     func syncAnnouncements(for siteID: Int64) {
         syncProductsOnboarding(for: siteID) { [weak self] in
-            // For now, products onboarding takes precedence over Just In Time Messages, so we can stop if there is an onboarding announcement to display.
-            // This should be revisited when either onboarding or JITMs are expanded. See: pe5pgL-11B-p2
-            guard let self, self.announcementViewModel == nil else { return }
-
-            self.syncJustInTimeMessages(for: siteID)
+            self?.syncJustInTimeMessages(for: siteID)
         }
     }
 
@@ -133,6 +129,9 @@ final class DashboardViewModel {
                             MainTabBarController.presentAddProductFlow()
                         })
                         self?.announcementViewModel = viewModel
+                        // For now, products onboarding takes precedence over Just In Time Messages, so we can stop if there is an onboarding announcement to display.
+                        // This should be revisited when either onboarding or JITMs are expanded. See: pe5pgL-11B-p2
+                        return
                     }
                 }
                 onCompletion()
@@ -159,6 +158,7 @@ final class DashboardViewModel {
                 switch result {
                 case let .success(messages):
                     guard let message = messages.first else {
+                        self.announcementViewModel = nil
                         return
                     }
                     self.analytics.track(event:

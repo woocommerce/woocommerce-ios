@@ -627,6 +627,12 @@ public enum WooAnalyticsStat: String {
     case featureCardDismissed = "feature_card_dismissed"
     case featureCardCtaTapped = "feature_card_cta_tapped"
 
+    // MARK: Just In Time Messages events
+    case justInTimeMessageCallToActionTapped = "jitm_cta_tapped"
+    case justInTimeMessageDismissTapped = "jitm_dismissed"
+    case justInTimeMessageDismissSuccess = "jitm_dismiss_success"
+    case justInTimeMessageDismissFailure = "jitm_dismiss_failure"
+
     // MARK: Simple Payments events
     //
     case simplePaymentsFlowStarted = "simple_payments_flow_started"

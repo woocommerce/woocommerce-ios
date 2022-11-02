@@ -47,6 +47,18 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         return stackView
     }()
 
+    /// The button in the navigation bar to add a product
+    ///
+    private lazy var addProductButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(image: .plusBarButtonItemImage,
+                                     style: .plain,
+                                     target: self,
+                                     action: #selector(addProduct(_:)))
+        button.accessibilityTraits = .button
+        button.accessibilityLabel = NSLocalizedString("Add a product", comment: "The action to add a product")
+        button.accessibilityIdentifier = "product-add-button"
+        return button
+    }()
 
     /// Top toolbar that shows the sort and filter CTAs.
     ///
@@ -208,6 +220,16 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     }
 }
 
+// MARK: - Public API
+//
+extension ProductsViewController {
+    /// Adds a new product using the "Add Product" navigation bar button as the source
+    ///
+    func addProduct() {
+        addProduct(addProductButton)
+    }
+}
+
 // MARK: - Navigation Bar Actions
 //
 private extension ProductsViewController {
@@ -271,17 +293,7 @@ private extension ProductsViewController {
 
     func configureNavigationBarRightButtonItems() {
         var rightBarButtonItems = [UIBarButtonItem]()
-        let buttonItem: UIBarButtonItem = {
-            let button = UIBarButtonItem(image: .plusBarButtonItemImage,
-                                         style: .plain,
-                                         target: self,
-                                         action: #selector(addProduct(_:)))
-            button.accessibilityTraits = .button
-            button.accessibilityLabel = NSLocalizedString("Add a product", comment: "The action to add a product")
-            button.accessibilityIdentifier = "product-add-button"
-            return button
-        }()
-        rightBarButtonItems.append(buttonItem)
+        rightBarButtonItems.append(addProductButton)
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.barcodeScanner) && UIImagePickerController.isSourceTypeAvailable(.camera) {
             let buttonItem: UIBarButtonItem = {

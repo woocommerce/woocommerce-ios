@@ -9,7 +9,7 @@ final class DashboardViewModel {
     /// Stats v4 is shown by default, then falls back to v3 if store stats are unavailable.
     @Published private(set) var statsVersion: StatsVersion = .v4
 
-    @Published private(set) var announcementViewModel: AnnouncementCardViewModelProtocol? = nil
+    @Published var announcementViewModel: AnnouncementCardViewModelProtocol? = nil
 
     @Published private(set) var showWebViewSheet: WebViewSheetViewModel? = nil
 
@@ -127,12 +127,8 @@ final class DashboardViewModel {
 
                     if ABTest.productsOnboardingBanner.variation == .treatment(nil) {
                         let viewModel = ProductsOnboardingAnnouncementCardViewModel(onCTATapped: { [weak self] in
-                            guard let tabBarController = AppDelegate.shared.tabBarController else {
-                                return
-                            }
-
                             self?.announcementViewModel = nil // Dismiss announcement
-                            tabBarController.navigateTo(.products)
+                            MainTabBarController.presentAddProductFlow()
                         })
                         self?.announcementViewModel = viewModel
                     }
@@ -161,32 +157,16 @@ final class DashboardViewModel {
                 switch result {
                 case let .success(.some(message)):
                     let viewModel = JustInTimeMessageAnnouncementCardViewModel(
-                        title: message.title,
-                        message: message.detail,
-                        buttonTitle: message.buttonTitle,
-                        onCTATapped: { [weak self] in
-                            guard let self = self,
-                                  let url = URL(string: message.url)
-                            else { return }
-                            let webViewModel = WebViewSheetViewModel(
-                                url: url,
-                                navigationTitle: message.title,
-                                wpComAuthenticated: self.needsAuthenticatedWebView(url: url))
-                            self.showWebViewSheet = webViewModel
-                        })
+                        justInTimeMessage: message,
+                        screenName: Constants.dashboardScreenName,
+                        siteID: siteID)
                     self.announcementViewModel = viewModel
+                    viewModel.$showWebViewSheet.assign(to: &self.$showWebViewSheet)
                 default:
                     break
                 }
             }
         stores.dispatch(action)
-    }
-
-    private func needsAuthenticatedWebView(url: URL) -> Bool {
-        guard let host = url.host else {
-            return false
-        }
-        return Constants.trustedDomains.contains(host)
     }
 }
 
@@ -196,6 +176,5 @@ private extension DashboardViewModel {
     enum Constants {
         static let topEarnerStatsLimit: Int = 5
         static let dashboardScreenName = "my_store"
-        static let trustedDomains = ["woocommerce.com", "wordpress.com"]
     }
 }

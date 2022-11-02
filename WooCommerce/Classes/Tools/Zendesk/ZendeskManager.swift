@@ -162,11 +162,24 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         let wcPayPluginSlug = "woocommerce-payments/woocommerce-payments"
 
         resultsController.onDidResetContent = onDataChanged
-        if let _ = resultsController.fetchedObjects.first(where: { $0.plugin == stripePluginSlug } ) {
-            ippTags.append(stripePluginSlug)
+
+        if let stripe = resultsController.fetchedObjects.first(where: { $0.plugin == stripePluginSlug } ) {
+            if stripe.status == .inactive {
+                ippTags.append(Constants.woo_mobile_stripe_installed_and_not_activated)
+            } else if stripe.status == .active {
+                ippTags.append(Constants.woo_mobile_stripe_installed_and_activated)
+            } else {
+                ippTags.append(Constants.woo_mobile_stripe_not_installed)
+            }
         }
-        if let _ = resultsController.fetchedObjects.first(where: { $0.plugin == wcPayPluginSlug } ) {
-            ippTags.append(wcPayPluginSlug)
+        if let wcPay = resultsController.fetchedObjects.first(where: { $0.plugin == wcPayPluginSlug } ) {
+            if wcPay.status == .inactive {
+                ippTags.append(Constants.woo_mobile_wcpay_installed_and_not_activated)
+            } else if wcPay.status == .active {
+                ippTags.append(Constants.woo_mobile_wcpay_installed_and_activated)
+            } else {
+                ippTags.append(Constants.woo_mobile_wcpay_not_installed)
+            }
         }
     }
 
@@ -400,10 +413,9 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
             decoratedTags.append(sourceTagOrigin)
         }
 
-        // Adds specific plugin status tags for Stripe and WCPay:
         decoratedTags = appendIPPstatusTagsIfNeeded(decoratedTags: decoratedTags)
         
-        print("Tags: \(decoratedTags)")
+        print("All tags: \(decoratedTags)")
         return decoratedTags
     }
 }

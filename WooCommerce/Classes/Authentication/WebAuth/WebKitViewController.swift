@@ -87,14 +87,6 @@ class WebKitViewController: UIViewController, WebKitAuthenticatable {
     private var stackViewBottomAnchor: NSLayoutConstraint?
     private var onClose: (() -> Void)?
 
-    private var barButtonTintColor: UIColor {
-        .listIcon
-    }
-
-    private var navBarTitleColor: UIColor {
-        .text
-    }
-
 
     private struct WebViewErrors {
         static let frameLoadInterrupted = 102
@@ -241,7 +233,7 @@ class WebKitViewController: UIViewController, WebKitAuthenticatable {
     private func setupNavBarTitleView() {
         titleView.titleLabel.text = NSLocalizedString("Loading...", comment: "Loading. Verb")
 
-        titleView.titleLabel.textColor = navBarTitleColor
+        titleView.titleLabel.textColor = .text
         titleView.subtitleLabel.textColor = .neutral(.shade30)
 
         if let title = customTitle {
@@ -350,7 +342,7 @@ class WebKitViewController: UIViewController, WebKitAuthenticatable {
     }
 
     private func styleBarButton(_ button: UIBarButtonItem) {
-        button.tintColor = barButtonTintColor
+        button.tintColor = .listIcon
     }
 
     private func styleToolBarButton(_ button: UIBarButtonItem) {

@@ -632,6 +632,8 @@ public enum WooAnalyticsStat: String {
     case justInTimeMessageDismissTapped = "jitm_dismissed"
     case justInTimeMessageDismissSuccess = "jitm_dismiss_success"
     case justInTimeMessageDismissFailure = "jitm_dismiss_failure"
+    case justInTimeMessageFetchSuccess = "jitm_fetch_success"
+    case justInTimeMessageFetchFailure = "jitm_fetch_failure"
 
     // MARK: Simple Payments events
     //

@@ -14,11 +14,14 @@ final class DashboardViewModel {
 
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
+    private let analytics: Analytics
 
     init(stores: StoresManager = ServiceLocator.stores,
-         featureFlags: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.stores = stores
         self.featureFlagService = featureFlags
+        self.analytics = analytics
     }
 
     /// Syncs store stats for dashboard UI.
@@ -155,13 +158,21 @@ final class DashboardViewModel {
                 guard let self = self else { return }
                 switch result {
                 case let .success(.some(message)):
+                    self.analytics.track(event:
+                            .JustInTimeMessage.fetchSuccess(source: Constants.dashboardScreenName,
+                                                            messageID: message.messageID,
+                                                            count: 1))
                     let viewModel = JustInTimeMessageAnnouncementCardViewModel(
                         justInTimeMessage: message,
                         screenName: Constants.dashboardScreenName,
                         siteID: siteID)
                     self.announcementViewModel = viewModel
                     viewModel.$showWebViewSheet.assign(to: &self.$showWebViewSheet)
-                default:
+                case let .failure(error):
+                    self.analytics.track(event:
+                            .JustInTimeMessage.fetchFailure(source: Constants.dashboardScreenName,
+                                                            error: error))
+                case .success(.none):
                     break
                 }
             }

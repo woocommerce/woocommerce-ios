@@ -625,8 +625,28 @@ extension WooAnalyticsEvent {
     enum JustInTimeMessage {
         private enum Keys {
             static let source = "source"
+            static let justInTimeMessage = "jitm"
             static let justInTimeMessageID = "jitm_id"
             static let justInTimeMessageGroup = "jitm_group"
+            static let count = "count"
+        }
+
+        static func fetchSuccess(source: String,
+                                 messageID: String,
+                                 count: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .justInTimeMessageFetchSuccess,
+                              properties: [
+                                Keys.source: source,
+                                Keys.justInTimeMessage: messageID,
+                                Keys.count: count
+                              ])
+        }
+
+        static func fetchFailure(source: String,
+                                 error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .justInTimeMessageFetchFailure,
+                              properties: [Keys.source: source],
+                              error: error)
         }
 
         static func callToActionTapped(source: String,

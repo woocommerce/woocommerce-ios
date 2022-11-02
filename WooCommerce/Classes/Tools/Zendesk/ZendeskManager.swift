@@ -8,6 +8,7 @@ import WordPressShared
 import CoreTelephony
 import SafariServices
 import Yosemite
+import Storage
 
 
 extension NSNotification.Name {
@@ -138,6 +139,28 @@ struct ZendeskProvider {
 ///
 #if !targetEnvironment(macCatalyst)
 final class ZendeskManager: NSObject, ZendeskManagerProtocol {
+    // WIP. Like PluginListViewModel
+    private let storageManager: StorageManagerType = ServiceLocator.storageManager
+    private lazy var resultsController: ResultsController<StorageSitePlugin> = {
+        let siteID = ServiceLocator.stores.sessionManager.defaultSite?.siteID
+        let predicate = NSPredicate(format: "siteID = %ld", String(siteID ?? 0))
+        let statusDescriptor = NSSortDescriptor(keyPath: \StorageSitePlugin.status, ascending: true)
+        let resultsController = ResultsController<StorageSitePlugin>(
+            storageManager: storageManager, sortedBy: [statusDescriptor])
+        do {
+            try resultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Error fetching plugin list!")
+        }
+        return resultsController
+    }()
+
+    func observePlugins(onDataChanged: @escaping () -> Void) {
+        resultsController.onDidResetContent = onDataChanged
+        let foundIt = resultsController.fetchedObjects.first(where: { $0.plugin == "woocommerce/woocommerce" } )
+        print("Found it: \(foundIt?.name ?? "Not Found")")
+    }
+
     func showNewRequestIfPossible(from controller: UIViewController) {
         showNewRequestIfPossible(from: controller, with: nil)
     }
@@ -340,6 +363,39 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         return decorateTags(tags: tags, supportSourceTag: supportSourceTag)
     }
 
+    func experimentObservingChangesOnStorage() {
+        observePlugins(onDataChanged: { })
+    }
+
+    private func checkFor(plugin: Yosemite.SitePlugin) -> String {
+        var tag = ""
+        let pluginList = [
+            "woocommerce-gateway-stripe/woocommerce-gateway-stripe",
+            "woocommerce-payments/woocommerce-payments"
+        ]
+        // Stripe
+        if plugin.plugin == pluginList[0] {
+            if plugin.status == .inactive {
+                tag = Constants.woo_mobile_stripe_installed_and_not_activated
+            } else if plugin.status == .active {
+                tag = Constants.woo_mobile_stripe_installed_and_activated
+            } else {
+                tag = Constants.woo_mobile_stripe_not_installed
+            }
+        }
+        // WCPay
+        if plugin.plugin == pluginList[1] {
+            if plugin.status == .inactive {
+                tag = Constants.woo_mobile_wcpay_installed_and_not_activated
+            } else if plugin.status == .active {
+                tag = Constants.woo_mobile_wcpay_installed_and_activated
+            } else {
+                tag = Constants.woo_mobile_wcpay_not_installed
+            }
+        }
+        return tag
+    }
+
     /// Add tags for IPP plugins
     ///
     func decorateWithIPPTags(onCompletion: @escaping ([String]) -> ()) {
@@ -347,10 +403,8 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultSite?.siteID else {
             return
         }
-        // Using WooCommerce for testing:
-        var ippTags: [String] = []
+        var ippTags = [String]()
         let pluginList = [
-            "woocommerce/woocommerce",
             "woocommerce-gateway-stripe/woocommerce-gateway-stripe",
             "woocommerce-payments/woocommerce-payments"
         ]
@@ -359,13 +413,8 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
             let action = SitePluginAction.getPluginDetails(siteID: siteID, pluginName: pluginName) { result in
                 switch result {
                 case .success(let plugin):
-                    if plugin.status == .inactive {
-                        ippTags.append(Constants.woo_mobile_stripe_installed_and_not_activated)
-                    } else if plugin.status == .active {
-                        ippTags.append(Constants.woo_mobile_stripe_installed_and_activated)
-                    } else {
-                        ippTags.append(Constants.woo_mobile_stripe_not_installed)
-                    }
+                    let checkedPlugin = self.checkFor(plugin: plugin)
+                    ippTags.append(checkedPlugin)
                 case .failure(let error):
                     DDLogError("Unable to fetch plugin \(pluginName). Error: \(error)")
                     break
@@ -394,10 +443,14 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         if let sourceTagOrigin = supportSourceTag, sourceTagOrigin.isEmpty == false {
             decoratedTags.append(sourceTagOrigin)
         }
-
+        
+        // Testing via Actions:
         decorateWithIPPTags(onCompletion: { ippTags in
             print("decorateWithIPPTags callback completed: \(ippTags)")
         })
+        // Testing via Storage:
+        experimentObservingChangesOnStorage()
+        
         // TODO: Inject decorateWithIPPTags here.
         return decoratedTags
     }

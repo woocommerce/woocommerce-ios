@@ -55,8 +55,9 @@ struct AccountCreationFormFieldView: View {
                         insets: .init(top: RoundedBorderTextFieldStyle.Defaults.insets.top,
                                       leading: RoundedBorderTextFieldStyle.Defaults.insets.leading,
                                       bottom: RoundedBorderTextFieldStyle.Defaults.insets.bottom,
-                                      trailing: Layout.secureFieldRevealButtonHorizontalPadding * 2 + Layout.secureFieldRevealButtonDimension * scale))
-                    )
+                                      trailing: Layout.secureFieldRevealButtonHorizontalPadding * 2 + Layout.secureFieldRevealButtonDimension * scale),
+                        height: 44 * scale
+                    ))
                     .keyboardType(viewModel.keyboardType)
 
                     // Button to show/hide the text field content.
@@ -101,13 +102,24 @@ struct AccountCreationFormField_Previews: PreviewProvider {
                                                       isSecure: false,
                                                       errorMessage: nil,
                                                       isFocused: true))
-        AccountCreationFormFieldView(viewModel: .init(header: "Choose a password",
-                                                      placeholder: "Password",
-                                                      keyboardType: .default,
-                                                      text: .constant("wwwwwwwwwwwwwwwwwwwwwwww"),
-                                                      isSecure: true,
-                                                      errorMessage: "Too simple",
-                                                      isFocused: false))
-        .environment(\.sizeCategory, .extraExtraExtraLarge)
+        VStack {
+            AccountCreationFormFieldView(viewModel: .init(header: "Choose a password",
+                                                          placeholder: "Password",
+                                                          keyboardType: .default,
+                                                          text: .constant("wwwwwwwwwwwwwwwwwwwwwwww"),
+                                                          isSecure: true,
+                                                          errorMessage: "Too simple",
+                                                          isFocused: false))
+            .environment(\.sizeCategory, .medium)
+
+            AccountCreationFormFieldView(viewModel: .init(header: "Choose a password",
+                                                          placeholder: "Password",
+                                                          keyboardType: .default,
+                                                          text: .constant("wwwwwwwwwwwwwwwwwwwwwwww"),
+                                                          isSecure: true,
+                                                          errorMessage: "Too simple",
+                                                          isFocused: false))
+            .environment(\.sizeCategory, .extraExtraExtraLarge)
+        }
     }
 }

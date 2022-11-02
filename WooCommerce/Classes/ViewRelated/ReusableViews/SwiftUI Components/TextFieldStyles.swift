@@ -6,15 +6,24 @@ struct RoundedBorderTextFieldStyle: TextFieldStyle {
     private let focusedBorderColor: Color
     private let unfocusedBorderColor: Color
     private let insets: EdgeInsets
+    private let height: CGFloat?
 
+    /// - Parameters:
+    ///   - focused: Whether the field is focused or not.
+    ///   - focusedBorderColor: The border color when the field is focused.
+    ///   - unfocusedBorderColor: The border color when the field is not focused.
+    ///   - insets: The insets between the background border and the text input.
+    ///   - height: An optional fixed height for the field.
     init(focused: Bool,
          focusedBorderColor: Color = Defaults.focusedBorderColor,
          unfocusedBorderColor: Color = Defaults.unfocusedBorderColor,
-         insets: EdgeInsets = Defaults.insets) {
+         insets: EdgeInsets = Defaults.insets,
+         height: CGFloat? = nil) {
         self.focused = focused
         self.focusedBorderColor = focusedBorderColor
         self.unfocusedBorderColor = unfocusedBorderColor
         self.insets = insets
+        self.height = height
     }
 
     func _body(configuration: TextField<Self._Label>) -> some View {
@@ -24,7 +33,9 @@ struct RoundedBorderTextFieldStyle: TextFieldStyle {
                 RoundedRectangle(cornerRadius: 8, style: .continuous)
                     .stroke(focused ? focusedBorderColor: unfocusedBorderColor,
                             lineWidth: focused ? 2: 1)
+                    .frame(height: height)
             )
+            .frame(height: height)
     }
 }
 
@@ -51,6 +62,20 @@ struct TextFieldStyles_Previews: PreviewProvider {
             TextField("placeholder", text: .constant("custom insets"))
                 .textFieldStyle(RoundedBorderTextFieldStyle(focused: false, insets: .init(top: 20, leading: 0, bottom: 10, trailing: 50)))
                 .frame(width: 150)
+            HStack {
+                TextField("placeholder", text: .constant("text field"))
+                    .textFieldStyle(RoundedBorderTextFieldStyle(focused: true))
+                SecureField("placeholder", text: .constant("secure"))
+                    .textFieldStyle(RoundedBorderTextFieldStyle(focused: true))
+            }
+            .environment(\.sizeCategory, .extraExtraExtraLarge)
+            HStack {
+                TextField("placeholder", text: .constant("text field"))
+                    .textFieldStyle(RoundedBorderTextFieldStyle(focused: true, height: 100))
+                SecureField("placeholder", text: .constant("secure"))
+                    .textFieldStyle(RoundedBorderTextFieldStyle(focused: true))
+            }
+            .environment(\.sizeCategory, .extraExtraExtraLarge)
         }
         .preferredColorScheme(.dark)
     }

@@ -24,14 +24,14 @@ struct AccountCreationFormFieldView: View {
 
     /// Whether the text field is *shown* as secure.
     /// When the field is secure, there is a button to show/hide the text field input.
-    @State private var isTextFieldSecure: Bool = true
+    @State private var showsSecureInput: Bool = true
 
     // Tracks the scale of the view due to accessibility changes.
     @ScaledMetric private var scale: CGFloat = 1.0
 
     init(viewModel: AccountCreationFormFieldViewModel) {
         self.viewModel = viewModel
-        self.isTextFieldSecure = viewModel.isSecure
+        self.showsSecureInput = viewModel.isSecure
     }
 
     var body: some View {
@@ -42,7 +42,7 @@ struct AccountCreationFormFieldView: View {
                 ZStack(alignment: .trailing) {
                     // Text field based on the `isTextFieldSecure` state.
                     Group {
-                        if isTextFieldSecure {
+                        if showsSecureInput {
                             SecureField(viewModel.placeholder, text: viewModel.text)
                         } else {
                             TextField(viewModel.placeholder, text: viewModel.text)
@@ -61,9 +61,9 @@ struct AccountCreationFormFieldView: View {
 
                     // Button to show/hide the text field content.
                     Button(action: {
-                        isTextFieldSecure.toggle()
+                        showsSecureInput.toggle()
                     }) {
-                        Image(systemName: isTextFieldSecure ? "eye.slash" : "eye")
+                        Image(systemName: showsSecureInput ? "eye.slash" : "eye")
                             .accentColor(.gray)
                             .frame(width: Layout.secureFieldRevealButtonDimension * scale,
                                    height: Layout.secureFieldRevealButtonDimension * scale)

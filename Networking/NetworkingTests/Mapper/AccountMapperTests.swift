@@ -51,7 +51,7 @@ final class AccountMapperTests: XCTestCase {
         XCTAssertEqual(second.description, "Your Favorite Blog")
         XCTAssertEqual(second.url, "https://thoughts.testing.blog")
         XCTAssertEqual(second.adminURL, "https://thoughts.testing.blog/wp-admin/")
-        XCTAssertEqual(first.loginURL, "https://some-testing-url.here/wp-login.php")
+        XCTAssertEqual(second.loginURL, "https://thoughts.testing.blog/wp-login.php")
         XCTAssertTrue(second.isJetpackCPConnected)
         XCTAssertTrue(second.isJetpackConnected)
         XCTAssertFalse(second.isJetpackThePluginInstalled)

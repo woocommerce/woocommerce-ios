@@ -93,9 +93,19 @@ open class NUXStackedButtonsViewController: UIViewController {
 // MARK: Helpers
 //
 private extension NUXStackedButtonsViewController {
+    @objc func handleTap(_ sender: NUXButton) {
+        guard let index = buttons.firstIndex(of: sender),
+              let callback = buttonConfigs[index].config.callback else {
+            return
+        }
+
+        callback()
+    }
+
     func reloadViews() {
         for (index, button) in buttons.enumerated() {
             button.configure(withConfig: buttonConfigs[index].config, and: buttonConfigs[index].style)
+            button.addTarget(self, action: #selector(handleTap), for: .touchUpInside)
         }
         dividerStackView.isHidden = !showDivider
     }

@@ -21,6 +21,10 @@ struct StackedButton {
     }
 }
 
+/// Used to create two stack views of NUXButtons optionally divided by a OR divider
+///
+/// Created as a replacement for NUXButtonViewController
+///
 final class NUXStackedButtonsViewController: UIViewController {
     // MARK: - Properties
     @IBOutlet private weak var buttonHolder: UIView?

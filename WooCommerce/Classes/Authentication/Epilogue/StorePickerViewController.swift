@@ -317,7 +317,7 @@ private extension StorePickerViewController {
 
     func presentAddStoreActionSheet() {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = .black
+        actionSheet.view.tintColor = .text
         let createStoreAction = UIAlertAction(title: Localization.createStore, style: .default) { [weak self] _ in
             // TODO: add tracks for site creation
             self?.createStoreButtonPressed()

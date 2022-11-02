@@ -45,9 +45,9 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
     ///
     public let isWooCommerceActive: Bool
 
-    /// Indicates if this site hosts a WordPress Store.
+    /// Indicates if this site is hosted on WordPress.com.
     ///
-    public let isWordPressStore: Bool
+    public let isWordPressComStore: Bool
 
     /// For Jetpack CP sites (connected to Jetpack with Jetpack Connection Package instead of Jetpack-the-plugin), this property contains
     /// a list of active plugins with Jetpack Connection Package (e.g. WooCommerce Payments, Jetpack Backup).
@@ -75,7 +75,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
         let isJetpackConnected = try siteContainer.decode(Bool.self, forKey: .isJetpackConnected)
 
         let optionsContainer = try siteContainer.nestedContainer(keyedBy: OptionKeys.self, forKey: .options)
-        let isWordPressStore = try optionsContainer.decode(Bool.self, forKey: .isWordPressStore)
+        let isWordPressComStore = try optionsContainer.decode(Bool.self, forKey: .isWordPressComStore)
         let isWooCommerceActive = try optionsContainer.decode(Bool.self, forKey: .isWooCommerceActive)
         let jetpackConnectionActivePlugins = try optionsContainer.decodeIfPresent([String].self, forKey: .jetpackConnectionActivePlugins) ?? []
         let timezone = try optionsContainer.decode(String.self, forKey: .timezone)
@@ -93,7 +93,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
                   isJetpackThePluginInstalled: isJetpackThePluginInstalled,
                   isJetpackConnected: isJetpackConnected,
                   isWooCommerceActive: isWooCommerceActive,
-                  isWordPressStore: isWordPressStore,
+                  isWordPressComStore: isWordPressComStore,
                   jetpackConnectionActivePlugins: jetpackConnectionActivePlugins,
                   timezone: timezone,
                   gmtOffset: gmtOffset)
@@ -111,7 +111,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
                 isJetpackThePluginInstalled: Bool,
                 isJetpackConnected: Bool,
                 isWooCommerceActive: Bool,
-                isWordPressStore: Bool,
+                isWordPressComStore: Bool,
                 jetpackConnectionActivePlugins: [String],
                 timezone: String,
                 gmtOffset: Double) {
@@ -124,7 +124,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
         self.plan = plan
         self.isJetpackThePluginInstalled = isJetpackThePluginInstalled
         self.isJetpackConnected = isJetpackConnected
-        self.isWordPressStore = isWordPressStore
+        self.isWordPressComStore = isWordPressComStore
         self.isWooCommerceActive = isWooCommerceActive
         self.jetpackConnectionActivePlugins = jetpackConnectionActivePlugins
         self.timezone = timezone
@@ -156,7 +156,7 @@ private extension Site {
     }
 
     enum OptionKeys: String, CodingKey {
-        case isWordPressStore = "is_wpcom_store"
+        case isWordPressComStore = "is_wpcom_store"
         case isWooCommerceActive = "woocommerce_is_active"
         case timezone = "timezone"
         case gmtOffset = "gmt_offset"

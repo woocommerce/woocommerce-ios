@@ -347,7 +347,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
 
         var decoratedTags = tags
 
-        if site.isWordPressStore == true {
+        if site.isWordPressComStore == true {
             decoratedTags.append(Constants.wpComTag)
         }
 

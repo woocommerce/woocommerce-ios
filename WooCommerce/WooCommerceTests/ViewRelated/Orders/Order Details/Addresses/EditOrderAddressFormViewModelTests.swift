@@ -717,7 +717,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         viewModel.customerSelectedFromSearch(customer: customer)
 
         // Then
-        assertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.orderCreationCustomerAdded.rawValue])
+        XCTAssert(analyticsProvider.receivedEvents.contains("order_creation_customer_added"))
     }
 
     func test_view_model_fires_error_notice_when_providing_an_invalid_email() {

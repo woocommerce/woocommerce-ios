@@ -2,7 +2,9 @@ import Foundation
 
 public protocol JustInTimeMessagesRemoteProtocol {
     func loadAllJustInTimeMessages(for siteID: Int64,
-                                   messagePath: JustInTimeMessagesRemote.MessagePath) async -> Result<[JustInTimeMessage], Error>
+                                   messagePath: JustInTimeMessagesRemote.MessagePath,
+                                   query: [String: String?]?,
+                                   locale: String?) async -> Result<[JustInTimeMessage], Error>
     func dismissJustInTimeMessage(for siteID: Int64,
                                   messageID: String,
                                   featureClass: String) async -> Result<Bool, Error>
@@ -18,16 +20,22 @@ public final class JustInTimeMessagesRemote: Remote, JustInTimeMessagesRemotePro
     /// - Parameters:
     ///     - siteID: The site for which we'll fetch JustInTimeMessages.
     ///     - messagePath: The location for JITMs to be displayed
+    ///     - query: A dictionary of "query parameters" to include in the JITM request payload
+    ///     - locale: the locale identifier (language and region only, e.g. en_US) for the current device.
     /// - Returns:
     ///     Async result with an array of `[JustInTimeMessage]` (usually contains one element) or an error
     ///
     public func loadAllJustInTimeMessages(for siteID: Int64,
-                                          messagePath: JustInTimeMessagesRemote.MessagePath) async -> Result<[JustInTimeMessage], Error> {
+                                          messagePath: JustInTimeMessagesRemote.MessagePath,
+                                          query: [String: String?]?,
+                                          locale: String?) async -> Result<[JustInTimeMessage], Error> {
         let request = JetpackRequest(wooApiVersion: .none,
                                      method: .get,
                                      siteID: siteID,
+                                     locale: locale,
                                      path: Path.jitm,
-                                     parameters: [ParameterKey.messagePath: messagePath.requestValue])
+                                     parameters: getParameters(messagePath: messagePath,
+                                                               query: query))
 
         let mapper = JustInTimeMessageListMapper(siteID: siteID)
 
@@ -37,6 +45,25 @@ public final class JustInTimeMessagesRemote: Remote, JustInTimeMessagesRemotePro
         } catch {
             return .failure(error)
         }
+    }
+
+    private func getParameters(messagePath: JustInTimeMessagesRemote.MessagePath,
+                                    query: [String: String?]?) -> [String: String] {
+        var parameters = [ParameterKey.messagePath: messagePath.requestValue]
+        if let query = query,
+           let queryString = justInTimeMessageQuery(from: query) {
+            parameters[ParameterKey.query] = queryString
+        }
+        return parameters
+    }
+
+    private func justInTimeMessageQuery(from parameters: [String: String?]) -> String? {
+        let queryItems = parameters.map { (key: String, value: String?) in
+            URLQueryItem(name: key, value: value)
+        }
+        var components = URLComponents()
+        components.queryItems = queryItems
+        return components.query
     }
 
     /// Dismisses a `JustInTimeMessage` using the API.
@@ -81,6 +108,7 @@ public extension JustInTimeMessagesRemote {
         static let messagePath = "message_path"
         static let featureClass = "feature_class"
         static let messageID = "id"
+        static let query = "query"
     }
 
     /// Message Path parameter

@@ -50,7 +50,9 @@ private extension JustInTimeMessageStore {
                     for: siteID,
                     messagePath: .init(app: .wooMobile,
                                        screen: screen,
-                                       hook: hook))
+                                       hook: hook),
+                    query: nil,
+                    locale: "")
             let displayResult = result.map(displayMessages(_:))
             await MainActor.run {
                 completion(displayResult)

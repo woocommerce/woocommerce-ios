@@ -531,6 +531,7 @@
 		B5C6FCD620A3768900A4F8E4 /* order.json in Resources */ = {isa = PBXBuildFile; fileRef = B5C6FCD520A3768900A4F8E4 /* order.json */; };
 		B5DAEFF02180DD5A0002356A /* NotificationsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5DAEFEF2180DD5A0002356A /* NotificationsRemote.swift */; };
 		B963A5CC2853870000EFADA0 /* OrderItemRefundMetaData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B963A5CB2853870000EFADA0 /* OrderItemRefundMetaData.swift */; };
+		B99CFA6B291409F100B85A3F /* SettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99CFA6A291409F100B85A3F /* SettingsTests.swift */; };
 		BAB373722795A1FB00837B4A /* OrderTaxLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAB373712795A1FB00837B4A /* OrderTaxLine.swift */; };
 		CC07865F267799EE00BA9AC1 /* ShippingLabelPurchase.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC07865E267799EE00BA9AC1 /* ShippingLabelPurchase.swift */; };
 		CC0786612677B2DA00BA9AC1 /* ShippingLabelPurchaseMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0786602677B2DA00BA9AC1 /* ShippingLabelPurchaseMapper.swift */; };
@@ -1267,6 +1268,7 @@
 		B5C6FCD520A3768900A4F8E4 /* order.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = order.json; sourceTree = "<group>"; };
 		B5DAEFEF2180DD5A0002356A /* NotificationsRemote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationsRemote.swift; sourceTree = "<group>"; };
 		B963A5CB2853870000EFADA0 /* OrderItemRefundMetaData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderItemRefundMetaData.swift; sourceTree = "<group>"; };
+		B99CFA6A291409F100B85A3F /* SettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTests.swift; sourceTree = "<group>"; };
 		BAB373712795A1FB00837B4A /* OrderTaxLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderTaxLine.swift; sourceTree = "<group>"; };
 		BD9439D9B8F2C1ED2EADAA51 /* Pods-NetworkingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C8F9A8CC6F90A8C9B5EF2EE2 /* Pods-Networking.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.release.xcconfig"; sourceTree = "<group>"; };
@@ -1715,6 +1717,7 @@
 			children = (
 				45551F132523E7FF007EF104 /* UserAgentTests.swift */,
 				B518663320A0A2E800037A38 /* Constants.swift */,
+				B99CFA6A291409F100B85A3F /* SettingsTests.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -3363,6 +3366,7 @@
 				2685C102263B6A1000D9EE97 /* AddOnGroupRemoteTests.swift in Sources */,
 				B57B1E6721C916850046E764 /* NetworkErrorTests.swift in Sources */,
 				D8FBFF0F22D3B25E006E3336 /* WooAPIVersionTests.swift in Sources */,
+				B99CFA6B291409F100B85A3F /* SettingsTests.swift in Sources */,
 				45152831257A8E1A0076B03C /* ProductAttributeMapperTests.swift in Sources */,
 				26B2F74924C55ACE0065CCC8 /* LeaderboardsRemoteTests.swift in Sources */,
 				45CCFCE827A2E5020012E8CB /* InboxNoteListMapperTests.swift in Sources */,

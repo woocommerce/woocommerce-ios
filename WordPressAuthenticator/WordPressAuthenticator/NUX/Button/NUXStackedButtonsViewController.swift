@@ -37,7 +37,7 @@ struct StackedButton {
         self.onTap = onTap
     }
 
-    // MARK:Initializers
+    // MARK: Initializers
 
     /// Initializes a new StackedButton instance using the properties from the provided `StackedButton` and the provided `stackView`
     ///

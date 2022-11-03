@@ -90,6 +90,7 @@ final class DashboardViewModelTests: XCTestCase {
 
     func test_products_onboarding_announcements_take_precedence() {
         // Given
+        MockABTesting.setVariation(.treatment(nil), for: .productsOnboardingBanner)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .checkProductsOnboardingEligibility(_, completion):
@@ -166,34 +167,6 @@ final class DashboardViewModelTests: XCTestCase {
             }
         }
         let viewModel = DashboardViewModel(stores: stores)
-
-        // When
-        viewModel.syncAnnouncements(for: sampleSiteID)
-
-        // Then
-        XCTAssertNil(viewModel.announcementViewModel)
-    }
-
-    func test_no_announcement_synced_when_feature_flags_disabled() {
-        // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case let .checkProductsOnboardingEligibility(_, completion):
-                completion(.success(true))
-            default:
-                XCTFail("Received unsupported action: \(action)")
-            }
-        }
-        stores.whenReceivingAction(ofType: JustInTimeMessageAction.self) { action in
-            switch action {
-            case let .loadMessage(_, _, _, completion):
-                completion(.success([Yosemite.JustInTimeMessage.fake()]))
-            default:
-                XCTFail("Received unsupported action: \(action)")
-            }
-        }
-        let viewModel = DashboardViewModel(stores: stores, featureFlags: MockFeatureFlagService())
 
         // When
         viewModel.syncAnnouncements(for: sampleSiteID)

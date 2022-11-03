@@ -1,4 +1,6 @@
 import XCTest
+import Fakes
+import Networking
 @testable import WooCommerce
 
 final class ProductFactoryTests: XCTestCase {
@@ -39,5 +41,24 @@ final class ProductFactoryTests: XCTestCase {
     func test_creating_a_non_core_product_returns_nil() {
         let product = ProductFactory().createNewProduct(type: .custom("any"), isVirtual: false, siteID: siteID)
         XCTAssertNil(product)
+    }
+
+    func test_creating_new_product_removes_expected_fields() {
+        // Given
+        let product = Product.fake().copy(siteID: 123, productID: 1234, name: "Test Product", statusKey: ProductStatus.autoDraft.rawValue, price: "20.00")
+
+        // When
+        let newProduct = ProductFactory().newProduct(from: product)
+
+        // Then
+
+        // Stay the same
+        XCTAssertEqual(newProduct.siteID, product.siteID)
+        XCTAssertEqual(newProduct.price, product.price)
+
+        // Changes
+        XCTAssertEqual(newProduct.productID, 0)
+        XCTAssertEqual(newProduct.name, "")
+        XCTAssertEqual(newProduct.statusKey, ProductStatus.published.rawValue)
     }
 }

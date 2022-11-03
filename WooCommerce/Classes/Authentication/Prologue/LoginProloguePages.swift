@@ -26,10 +26,7 @@ enum LoginProloguePageType: CaseIterable {
         case .reviews:
             return NSLocalizedString("Monitor and approve your product reviews",
                                      comment: "Caption displayed in promotional screens shown during the login flow.")
-        case .getStarted:
-            return NSLocalizedString("Let’s get started!",
-                                     comment: "Caption displayed in the prologue screen shown after onboarding during the login flow.")
-        case .simplifiedLoginI1Intro:
+        case .getStarted, .simplifiedLoginI1Intro:
             return NSLocalizedString("WooCommerce is a customizable, open-source eCommerce platform built on WordPress.",
                                      comment: "Caption displayed in the simplified prologue screen")
         }
@@ -145,7 +142,7 @@ private extension LoginProloguePageTypeViewController {
 
         // Label style & layout
         titleLabel.font = {
-            if pageType == .simplifiedLoginI1Intro {
+            if pageType == .simplifiedLoginI1Intro || pageType == .getStarted {
                 return .headline
             } else if showsSubtitle {
                 return .font(forStyle: .title2, weight: .semibold)

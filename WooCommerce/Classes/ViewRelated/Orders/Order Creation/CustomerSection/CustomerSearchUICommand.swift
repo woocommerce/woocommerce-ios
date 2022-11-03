@@ -21,8 +21,13 @@ final class CustomerSearchUICommand: SearchUICommand {
 
     private let siteID: Int64
 
-    init(siteID: Int64, onDidSelectSearchResult: @escaping ((Customer) -> Void)) {
+    private let analytics: Analytics
+
+    init(siteID: Int64,
+         analytics: Analytics = ServiceLocator.analytics,
+         onDidSelectSearchResult: @escaping ((Customer) -> Void)) {
         self.siteID = siteID
+        self.analytics = analytics
         self.onDidSelectSearchResult = onDidSelectSearchResult
     }
 
@@ -59,6 +64,7 @@ final class CustomerSearchUICommand: SearchUICommand {
     }
 
     func synchronizeModels(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
+        analytics.track(.orderCreationCustomerSearch)
         let action = CustomerAction.searchCustomers(siteID: siteID, keyword: keyword) { result in
             switch result {
             case .success(_):

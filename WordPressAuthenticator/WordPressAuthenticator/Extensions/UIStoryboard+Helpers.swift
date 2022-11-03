@@ -14,6 +14,7 @@ enum Storyboard: String {
     case twoFA = "TwoFA"
     case password = "Password"
     case verifyEmail = "VerifyEmail"
+    case nuxButtonView = "NUXButtonView"
 
     var instance: UIStoryboard {
         return UIStoryboard(name: self.rawValue, bundle: WordPressAuthenticator.bundle)

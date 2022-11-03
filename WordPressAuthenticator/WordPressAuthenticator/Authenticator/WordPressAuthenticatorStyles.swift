@@ -116,6 +116,18 @@ public struct WordPressAuthenticatorStyle {
     ///
     public let statusBarStyle: UIStatusBarStyle
 
+    /// Style: OR divider separator color
+    ///
+    /// Used in `NUXStackedButtonsViewController`
+    ///
+    public let orDividerSeparatorColor: UIColor
+
+    /// Style: OR divider text color
+    ///
+    /// Used in `NUXStackedButtonsViewController`
+    ///
+    public let orDividerTextColor: UIColor
+
     /// Designated initializer
     ///
     public init(primaryNormalBackgroundColor: UIColor,
@@ -152,7 +164,9 @@ public struct WordPressAuthenticatorStyle {
                 prologuePrimaryButtonStyle: NUXButtonStyle? = nil,
                 prologueSecondaryButtonStyle: NUXButtonStyle? = nil,
                 prologueTopContainerChildViewController: @autoclosure @escaping () -> UIViewController? = nil,
-                statusBarStyle: UIStatusBarStyle = .lightContent) {
+                statusBarStyle: UIStatusBarStyle = .lightContent,
+                orDividerSeparatorColor: UIColor = .tertiaryLabel,
+                orDividerTextColor: UIColor = .secondaryLabel) {
         self.primaryNormalBackgroundColor = primaryNormalBackgroundColor
         self.primaryNormalBorderColor = primaryNormalBorderColor
         self.primaryHighlightBackgroundColor = primaryHighlightBackgroundColor
@@ -188,6 +202,8 @@ public struct WordPressAuthenticatorStyle {
         self.prologueSecondaryButtonStyle = prologueSecondaryButtonStyle
         self.prologueTopContainerChildViewController = prologueTopContainerChildViewController
         self.statusBarStyle = statusBarStyle
+        self.orDividerSeparatorColor = orDividerSeparatorColor
+        self.orDividerTextColor = orDividerTextColor
     }
 }
 

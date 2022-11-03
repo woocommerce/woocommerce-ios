@@ -245,11 +245,11 @@ private extension NUXButton {
 
         if let attributedTitle = buttonConfig.attributedTitle {
             setAttributedTitle(attributedTitle, for: .normal)
-            socialService = buttonConfig.socialService
         } else {
             setTitle(buttonConfig.title, for: .normal)
         }
 
+        socialService = buttonConfig.socialService
         accessibilityIdentifier = buttonConfig.accessibilityIdentifier ?? "\(buttonConfig.title ?? "") Button"
         isPrimary = buttonConfig.isPrimary
 

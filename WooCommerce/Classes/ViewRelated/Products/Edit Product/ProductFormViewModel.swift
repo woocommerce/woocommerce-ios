@@ -154,7 +154,10 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
         if featureFlagService.isFeatureFlagEnabled(.productsOnboarding),
            // The store is hosted on WP.com
-           stores.sessionManager.defaultSite?.isWordPressComStore == true,
+           let site = stores.sessionManager.defaultSite,
+           site.isWordPressComStore,
+           // In some edge cases loginURL can be empty preventing successful login flow
+           site.loginURL.isNotEmpty,
             // Preview existing drafts or new products, that can be saved as a draft
            (canSaveAsDraft() || originalProductModel.status == .draft),
            // Do not preview new blank products without any changes

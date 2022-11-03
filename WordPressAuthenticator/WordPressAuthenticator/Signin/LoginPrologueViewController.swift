@@ -41,11 +41,11 @@ class LoginPrologueViewController: LoginViewController {
     ///
     private var prologueFlowTracked = false
 
-    /// Returns `true` is a configurable OR divider is needed for the list of prologue buttons
+    /// Returns `true` when a configurable OR divider is needed for the list of prologue buttons
     ///
     /// `NUXStackedButtonsViewController` is used for creating buttons when this is `true`
     ///
-    private var orDividerNeededInPrologueButtons: Bool {
+    private var useStackedButtonsViewController: Bool {
         configuration.enableWPComLoginOnlyInPrologue || configuration.enableSiteCreation
     }
 
@@ -156,7 +156,7 @@ class LoginPrologueViewController: LoginViewController {
             return
         }
 
-        if orDividerNeededInPrologueButtons {
+        if useStackedButtonsViewController {
             buildPrologueButtonsUsingStackedButtonsViewController()
         } else {
             buildUnifiedPrologueButtons()
@@ -567,7 +567,7 @@ class LoginPrologueViewController: LoginViewController {
     }
 
     private func configureButtonViewController() {
-        if orDividerNeededInPrologueButtons {
+        if useStackedButtonsViewController {
             let stackedButtonsViewController = NUXStackedButtonsViewController.instance()
             self.stackedButtonsViewController = stackedButtonsViewController
             stackedButtonsViewController.move(to: self, into: buttonContainerView)

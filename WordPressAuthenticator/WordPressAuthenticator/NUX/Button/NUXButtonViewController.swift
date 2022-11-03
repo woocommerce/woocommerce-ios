@@ -46,7 +46,7 @@ open class NUXButtonViewController: UIViewController {
 
     /// Used to constrain the shadow view outside of the
     /// bounds of this view controller.
-    weak var shadowLayoutGuide: UILayoutGuide? {
+    var shadowLayoutGuide: UILayoutGuide? {
         didSet {
             updateShadowViewEdgeConstraints()
         }

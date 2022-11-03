@@ -64,7 +64,7 @@ class LoginPrologueViewController: LoginViewController {
             topContainerView.pinSubviewToAllEdges(topContainerChildViewController.view)
         }
 
-        configureButtonViewController()
+        createButtonViewController()
 
         defaultButtonViewMargin = buttonViewLeadingConstraint?.constant ?? 0
         if let backgroundImage = WordPressAuthenticator.shared.unifiedStyle?.prologueBackgroundImage {
@@ -566,7 +566,7 @@ class LoginPrologueViewController: LoginViewController {
         navigationController?.pushViewController(vc, animated: true)
     }
 
-    private func configureButtonViewController() {
+    private func createButtonViewController() {
         if useStackedButtonsViewController {
             let stackedButtonsViewController = NUXStackedButtonsViewController.instance()
             self.stackedButtonsViewController = stackedButtonsViewController

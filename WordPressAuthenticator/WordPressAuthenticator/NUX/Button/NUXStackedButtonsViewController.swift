@@ -7,17 +7,54 @@ struct StackedButton {
         case bottom
     }
 
-    var stackView = StackView.top
-    let title: String
-    var isPrimary = false
-    var configureBodyFontForTitle = false
-    var accessibilityIdentifier: String? = nil
+    let stackView: StackView
     let style: NUXButtonStyle?
-
-    let onTap: NUXButtonConfig.CallBackType
 
     var config: NUXButtonConfig {
         NUXButtonConfig(title: title, isPrimary: isPrimary, configureBodyFontForTitle: configureBodyFontForTitle, accessibilityIdentifier: accessibilityIdentifier, callback: onTap)
+    }
+
+    // MARK: Private properties
+    private let title: String
+    private let isPrimary: Bool
+    private let configureBodyFontForTitle: Bool
+    private let accessibilityIdentifier: String?
+    private let onTap: NUXButtonConfig.CallBackType
+
+    init(stackView: StackView = .top,
+         title: String,
+         isPrimary: Bool = false,
+         configureBodyFontForTitle: Bool = false,
+         accessibilityIdentifier: String? = nil,
+         style: NUXButtonStyle?,
+         onTap: @escaping NUXButtonConfig.CallBackType) {
+        self.stackView = stackView
+        self.title = title
+        self.isPrimary = isPrimary
+        self.configureBodyFontForTitle = configureBodyFontForTitle
+        self.accessibilityIdentifier = accessibilityIdentifier
+        self.style = style
+        self.onTap = onTap
+    }
+
+    // MARK:Initializers
+
+    /// Initializes a new StackedButton instance using the properties from the provided `StackedButton` and the provided `stackView`
+    ///
+    ///  Used to copy properties of a StackedButton and just change the stackView placement
+    ///
+    /// - Parameters:
+    ///   - using: StackedButton to be copied. (Except the `stackView` property)
+    ///   - stackView: StackView placement of the new StackedButton
+    init(using: StackedButton,
+         stackView: StackView) {
+        self.init(stackView: stackView,
+                  title: using.title,
+                  isPrimary: using.isPrimary,
+                  configureBodyFontForTitle: using.configureBodyFontForTitle,
+                  accessibilityIdentifier: using.accessibilityIdentifier,
+                  style: using.style,
+                  onTap: using.onTap)
     }
 }
 

@@ -278,7 +278,7 @@ class LoginPrologueViewController: LoginViewController {
                                                        accessibilityIdentifier: "Prologue Self Hosted Button",
                                                        style: secondaryButtonStyle,
                                                        onTap: siteAddressTapCallback())
-        var createSiteButton = StackedButton(title: displayStrings.siteCreationButtonTitle,
+        let createSiteButton = StackedButton(title: displayStrings.siteCreationButtonTitle,
                                              isPrimary: false,
                                              configureBodyFontForTitle: true,
                                              accessibilityIdentifier: "Prologue Create Site Button",
@@ -291,10 +291,11 @@ class LoginPrologueViewController: LoginViewController {
         } else if configuration.enableWPComLoginOnlyInPrologue {
             buttons = [continueWithWPButton]
         } else if configuration.enableSiteCreation {
-            createSiteButton.stackView = .bottom
+            let createSiteButtonForBottomStackView = StackedButton(using: createSiteButton,
+                                                                   stackView: .bottom)
             buttons = [continueWithWPButton,
                        enterYourSiteAddressButton,
-                       createSiteButton]
+                       createSiteButtonForBottomStackView]
         } else {
             DDLogError("Failed to create `StackedButton`s in login progue screen.")
             buttons = []

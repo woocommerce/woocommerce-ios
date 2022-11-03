@@ -59,9 +59,6 @@ final class CustomerSearchUICommandTests: XCTestCase {
         )
 
         // Then
-        guard let eventIndex = analyticsProvider.receivedEvents.firstIndex(of: "order_creation_customer_search") else {
-            return XCTFail("Analytics not logged")
-        }
-        XCTAssertNotNil(eventIndex)
+        XCTAssert(analyticsProvider.receivedEvents.contains("order_creation_customer_search"))
     }
 }

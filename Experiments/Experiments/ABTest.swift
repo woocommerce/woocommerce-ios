@@ -17,6 +17,7 @@ public enum ABTest: String, CaseIterable {
     case aaTestLoggedOut = "woocommerceios_explat_aa_test_logged_out_202211"
 
     /// A/B test to measure the sign-in success rate when only WPCom login is enabled.
+    /// Experiment ref: pbxNRc-27s-p2
     ///
     case abTestLoginWithWPComOnly = "woocommerceios_login_wpcom_only"
 

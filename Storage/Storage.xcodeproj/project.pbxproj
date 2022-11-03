@@ -1506,6 +1506,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woo.Storage;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = ALPHA;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "$(inherited)";

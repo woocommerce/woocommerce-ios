@@ -132,7 +132,6 @@
 		09EA564B27C75FCE00407D40 /* ProductVariationsBulkUpdateMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09EA564A27C75FCE00407D40 /* ProductVariationsBulkUpdateMapper.swift */; };
 		21DB5B99C4107CF69C0A57EC /* Pods_NetworkingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69314EDE650855CAF927057E /* Pods_NetworkingTests.framework */; };
 		24F98C522502E79800F49B68 /* FeatureFlagsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F98C512502E79800F49B68 /* FeatureFlagsRemote.swift */; };
-		24F98C542502E8DD00F49B68 /* Bundle+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F98C532502E8DD00F49B68 /* Bundle+Woo.swift */; };
 		24F98C562502EA4800F49B68 /* FeatureFlag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F98C552502EA4800F49B68 /* FeatureFlag.swift */; };
 		24F98C582502EA8800F49B68 /* FeatureFlagMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F98C572502EA8800F49B68 /* FeatureFlagMapper.swift */; };
 		24F98C5E2502EDCF00F49B68 /* BundleWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F98C5D2502EDCF00F49B68 /* BundleWooTests.swift */; };
@@ -865,7 +864,6 @@
 		09885C7F27C3FFD200910A62 /* product-variations-bulk-update.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-variations-bulk-update.json"; sourceTree = "<group>"; };
 		09EA564A27C75FCE00407D40 /* ProductVariationsBulkUpdateMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationsBulkUpdateMapper.swift; sourceTree = "<group>"; };
 		24F98C512502E79800F49B68 /* FeatureFlagsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagsRemote.swift; sourceTree = "<group>"; };
-		24F98C532502E8DD00F49B68 /* Bundle+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Bundle+Woo.swift"; path = "../../../WooFoundation/WooFoundation/Extensions/Bundle+Woo.swift"; sourceTree = "<group>"; };
 		24F98C552502EA4800F49B68 /* FeatureFlag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlag.swift; sourceTree = "<group>"; };
 		24F98C572502EA8800F49B68 /* FeatureFlagMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagMapper.swift; sourceTree = "<group>"; };
 		24F98C5D2502EDCF00F49B68 /* BundleWooTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundleWooTests.swift; sourceTree = "<group>"; };
@@ -2346,7 +2344,6 @@
 				021C7BF623863D1800A3BCBD /* Encodable+Serialization.swift */,
 				02BDB83423EA98C800BCC63E /* String+HTML.swift */,
 				57E8FED2246616AC0057CD68 /* Result+Extensions.swift */,
-				24F98C532502E8DD00F49B68 /* Bundle+Woo.swift */,
 				265EFBDB285257950033BD33 /* Order+Fallbacks.swift */,
 			);
 			path = Extensions;
@@ -3011,7 +3008,6 @@
 				D88E229025AC990A0023F3B1 /* OrderFeeLine.swift in Sources */,
 				74046E1F217A6B70007DD7BF /* SiteSettingsMapper.swift in Sources */,
 				26B2F74524C5573F0065CCC8 /* LeaderboardListMapper.swift in Sources */,
-				24F98C542502E8DD00F49B68 /* Bundle+Woo.swift in Sources */,
 				31D27C812602889C002EDB1D /* SitePluginsRemote.swift in Sources */,
 				02BE0A7B274B695F001176D2 /* WordPressMediaMapper.swift in Sources */,
 				45150A9A268340D2006922EA /* Country.swift in Sources */,
@@ -3484,6 +3480,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woo.Networking;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = ALPHA;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "$(inherited)";

@@ -228,7 +228,11 @@ private extension InAppPurchaseStore {
     }
 
     func inAppPurchasesAreSupported() async -> Bool {
-        guard let countryCode = await Storefront.current?.countryCode else {
+        let countryCode = await Storefront.current?.countryCode
+
+        debugPrint("Storefront country code", countryCode ?? "nil")
+
+        guard let countryCode = countryCode else {
             return false
         }
 

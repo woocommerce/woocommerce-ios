@@ -89,7 +89,7 @@ private extension JustInTimeMessageStore {
     }
 
     func buildType() -> String? {
-        #if DEBUG
+        #if DEBUG || ALPHA
         return "developer"
         #else
         return nil

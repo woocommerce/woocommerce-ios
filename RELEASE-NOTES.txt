@@ -2,7 +2,7 @@
 
 11.1
 -----
-
+- [**] Relevant Just In Time Messages will be displayed on the My Store screen [https://github.com/woocommerce/woocommerce-ios/issues/7853]
 
 11.0
 -----

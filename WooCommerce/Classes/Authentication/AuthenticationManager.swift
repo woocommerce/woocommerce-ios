@@ -55,7 +55,6 @@ class AuthenticationManager: Authentication {
     func initialize(loggedOutAppSettings: LoggedOutAppSettingsProtocol) {
         let isWPComMagicLinkPreferredToPassword = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasis)
         let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasisM2)
-        let isFeatureCarouselShown = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginPrologueOnboarding) == false
         let isSimplifiedLoginI1Enabled = ABTest.abTestLoginWithWPComOnly.variation != .control
         let isStoreCreationMVPEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
@@ -115,7 +114,7 @@ class AuthenticationManager: Authentication {
                                                 navBarBadgeColor: .primary,
                                                 navBarBackgroundColor: .appBar,
                                                 prologueTopContainerChildViewController:
-                                                    LoginPrologueViewController(isFeatureCarouselShown: isFeatureCarouselShown),
+                                                    LoginPrologueViewController(isFeatureCarouselShown: false),
                                                 statusBarStyle: .default)
 
         let getStartedInstructions = isSimplifiedLoginI1Enabled ?

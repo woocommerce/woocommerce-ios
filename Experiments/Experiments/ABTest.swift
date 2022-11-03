@@ -20,6 +20,10 @@ public enum ABTest: String, CaseIterable {
     ///
     case abTestLoginWithWPComOnly = "woocommerceios_login_wpcom_only"
 
+    /// A/B test for the Products Onboarding banner on the My Store dashboard.
+    /// Experiment ref: pbxNRc-26F-p2
+    case productsOnboardingBanner = "woocommerceios_products_onboarding_first_product_banner"
+
     /// Returns a variation for the given experiment
     public var variation: Variation {
         ExPlat.shared?.experiment(rawValue) ?? .control
@@ -30,7 +34,7 @@ public enum ABTest: String, CaseIterable {
     /// When adding a new experiment, add it to the appropriate case depending on its context (logged-in or logged-out experience).
     public var context: ExperimentContext {
         switch self {
-        case .aaTestLoggedIn202210:
+        case .aaTestLoggedIn202210, .productsOnboardingBanner:
             return .loggedIn
         case .aaTestLoggedOut, .abTestLoginWithWPComOnly:
             return .loggedOut

@@ -3,7 +3,7 @@ import enum Networking.DotcomError
 import enum Yosemite.StatsActionV4
 import enum Yosemite.ProductAction
 import enum Yosemite.JustInTimeMessageAction
-import struct Yosemite.YosemiteJustInTimeMessage
+import struct Yosemite.JustInTimeMessage
 @testable import WooCommerce
 
 final class DashboardViewModelTests: XCTestCase {
@@ -83,6 +83,7 @@ final class DashboardViewModelTests: XCTestCase {
 
     func test_products_onboarding_announcements_take_precedence() {
         // Given
+        MockABTesting.setVariation(.treatment(nil), for: .productsOnboardingBanner)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
@@ -95,7 +96,9 @@ final class DashboardViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: JustInTimeMessageAction.self) { action in
             switch action {
             case let .loadMessage(_, _, _, completion):
-                completion(.success(YosemiteJustInTimeMessage.fake()))
+                completion(.success(Yosemite.JustInTimeMessage.fake()))
+            default:
+                XCTFail("Received unsupported action: \(action)")
             }
         }
         let viewModel = DashboardViewModel(stores: stores)
@@ -121,7 +124,9 @@ final class DashboardViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: JustInTimeMessageAction.self) { action in
             switch action {
             case let .loadMessage(_, _, _, completion):
-                completion(.success(YosemiteJustInTimeMessage.fake().copy(title: "JITM Message")))
+                completion(.success(Yosemite.JustInTimeMessage.fake().copy(title: "JITM Message")))
+            default:
+                XCTFail("Received unsupported action: \(action)")
             }
         }
         let viewModel = DashboardViewModel(stores: stores)
@@ -148,35 +153,11 @@ final class DashboardViewModelTests: XCTestCase {
             switch action {
             case let .loadMessage(_, _, _, completion):
                 completion(.success(nil))
-            }
-        }
-        let viewModel = DashboardViewModel(stores: stores)
-
-        // When
-        viewModel.syncAnnouncements(for: sampleSiteID)
-
-        // Then
-        XCTAssertNil(viewModel.announcementViewModel)
-    }
-
-    func test_no_announcement_synced_when_feature_flags_disabled() {
-        // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case let .checkProductsOnboardingEligibility(_, completion):
-                completion(.success(true))
             default:
                 XCTFail("Received unsupported action: \(action)")
             }
         }
-        stores.whenReceivingAction(ofType: JustInTimeMessageAction.self) { action in
-            switch action {
-            case let .loadMessage(_, _, _, completion):
-                completion(.success(YosemiteJustInTimeMessage.fake()))
-            }
-        }
-        let viewModel = DashboardViewModel(stores: stores, featureFlags: MockFeatureFlagService())
+        let viewModel = DashboardViewModel(stores: stores)
 
         // When
         viewModel.syncAnnouncements(for: sampleSiteID)

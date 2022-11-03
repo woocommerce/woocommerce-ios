@@ -44,9 +44,7 @@ private extension AccountCreationStore {
     func createAccount(email: String, password: String, completion: @escaping (Result<CreateAccountResult, CreateAccountError>) -> Void) {
         Task { @MainActor in
             // Auto-generates a username based on the email.
-            let usernameSuggestionsResult = await remote.loadUsernameSuggestions(from: email)
-            guard case let .success(usernameSuggestions) = usernameSuggestionsResult,
-            let username = usernameSuggestions.first else {
+            guard let username = await generateUsername(base: email) else {
                 return completion(.failure(.invalidUsername))
             }
             // Creates a WPCOM account.
@@ -55,7 +53,41 @@ private extension AccountCreationStore {
                                                     password: password,
                                                     clientID: dotcomClientID,
                                                     clientSecret: dotcomClientSecret)
-            completion(result)
+            switch result {
+            case .failure(let error) where error == .invalidUsername:
+                // Because the username is automatically generated based on the email,
+                // when there is an error on the username (e.g. when the username contains certain
+                // keywords like `wordpress`) we want to auto-generate another username using a
+                // known base so that the user is not blocked on the internal bug where
+                // `remote.loadUsernameSuggestions` returns an invalid username.
+                guard let fallbackUsername = await generateUsername(base: Constants.fallbackUsernameBase) else {
+                    return completion(.failure(.invalidUsername))
+                }
+                // Creates a WPCOM account with the fallback username.
+                let result = await remote.createAccount(email: email,
+                                                        username: fallbackUsername,
+                                                        password: password,
+                                                        clientID: dotcomClientID,
+                                                        clientSecret: dotcomClientSecret)
+                completion(result)
+            default:
+                completion(result)
+            }
         }
+    }
+
+    func generateUsername(base: String) async -> String? {
+        let usernameSuggestionsResult = await remote.loadUsernameSuggestions(from: base)
+        guard case let .success(usernameSuggestions) = usernameSuggestionsResult,
+              let username = usernameSuggestions.first else {
+            return nil
+        }
+        return username
+    }
+}
+
+private extension AccountCreationStore {
+    enum Constants {
+        static let fallbackUsernameBase = "woomerchant"
     }
 }

@@ -405,6 +405,7 @@ open class AddressFormViewModel: ObservableObject {
     /// Fills Order AddressFormFields with Customer details
     ///
     func customerSelectedFromSearch(customer: Customer) {
+        analytics.track(.orderCreationCustomerAdded)
         fillCustomerFields(customer: customer)
         let addressesDiffer = customer.billing != customer.shipping
         showDifferentAddressForm = addressesDiffer

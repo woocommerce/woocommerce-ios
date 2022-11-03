@@ -317,9 +317,12 @@ private extension DashboardViewController {
                 return
             }
 
-            let cardView = FeatureAnnouncementCardView(viewModel: viewModel,
-                                                       dismiss: {},
-                                                       callToAction: {})
+            let cardView = FeatureAnnouncementCardView(
+                viewModel: viewModel,
+                dismiss: { [weak self] in
+                    self?.viewModel.announcementViewModel = nil
+                },
+                callToAction: {})
 
             self.showAnnouncement(AnnouncementCardWrapper(cardView: cardView))
         }

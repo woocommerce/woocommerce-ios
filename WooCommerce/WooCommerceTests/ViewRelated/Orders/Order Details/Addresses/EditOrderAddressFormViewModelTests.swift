@@ -701,6 +701,25 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         assertEqual(analyticsProvider.receivedProperties.first?["subject"] as? String, "billing_address")
     }
 
+    func test_view_model_when_customerSelectedFromSearch_then_tracks_orderCreationCustomerAdded() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .billing, analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+        let customer = Customer.fake().copy(
+            email: "scrambled@scrambled.com",
+            firstName: "Johnny",
+            lastName: "Appleseed",
+            billing: sampleAddressWithEmptyNullableFields(),
+            shipping: sampleAddressWithEmptyNullableFields()
+        )
+
+        // When
+        viewModel.customerSelectedFromSearch(customer: customer)
+
+        // Then
+        XCTAssert(analyticsProvider.receivedEvents.contains("order_creation_customer_added"))
+    }
+
     func test_view_model_fires_error_notice_when_providing_an_invalid_email() {
         // Given
         let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .billing)

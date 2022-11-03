@@ -70,10 +70,6 @@ public enum FeatureFlag: Int {
     ///
     case searchProductsBySKU
 
-    /// Enables the Search Customers functionality in the Order Creation screen
-    ///
-    case orderCreationSearchCustomers
-
     /// Enables signing up for a WP.com account.
     ///
     case wpcomSignup
@@ -93,4 +89,39 @@ public enum FeatureFlag: Int {
     /// Hides products onboarding development.
     ///
     case productsOnboarding
+
+    // MARK: - Performance Monitoring
+    //
+    // These flags are not transient. That is, they are not here to help us rollout a feature,
+    // but to serve a safety switches to granularly turn off performance monitoring if it looks
+    // like we are consuming too many events.
+
+    /// Whether to enable performance monitoring.
+    ///
+    case performanceMonitoring
+
+    /// Whether to enable performance monitoring for Core Data operations.
+    ///
+    /// - Note: The app will ignore this if `performanceMonitoring` is `false`
+    case performanceMonitoringCoreData
+
+    /// Whether to enable performance monitoring for file IO operations.
+    ///
+    /// - Note: The app will ignore this if `performanceMonitoring` is `false`
+    case performanceMonitoringFileIO
+
+    /// Whether to enable performance monitoring for networking operations.
+    ///
+    /// - Note: The app will ignore this if `performanceMonitoring` is `false`
+    case performanceMonitoringNetworking
+
+    /// Whether to enable performance monitoring for user interaction events.
+    ///
+    /// - Note: The app will ignore this if `performanceMonitoring` is `false`
+    case performanceMonitoringUserInteraction
+
+    /// Whether to enable performance monitoring for `UIViewController` life-cycle events.
+    ///
+    /// - Note: The app will ignore this if `performanceMonitoring` is `false`.
+    case performanceMonitoringViewController
 }

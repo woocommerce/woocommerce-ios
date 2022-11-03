@@ -168,7 +168,8 @@ private extension NUXStackedButtonsViewController {
         guard showDivider else {
             return dividerStackView.isHidden = true
         }
-        let color = WordPressAuthenticator.shared.unifiedStyle?.borderColor ?? WordPressAuthenticator.shared.style.primaryNormalBorderColor
+
+        let color = WordPressAuthenticator.shared.unifiedStyle?.borderColor ?? style.primaryNormalBorderColor
         leadingDividerLine.backgroundColor = color
         leadingDividerLineHeight.constant = WPStyleGuide.hairlineBorderWidth
         trailingDividerLine.backgroundColor = color

@@ -149,12 +149,6 @@ private extension StoreCreationCoordinator {
 
         alert.addCancelActionWithTitle(Localization.DiscardChangesAlert.cancelActionTitle) { _ in }
 
-        if let popoverController = alert.popoverPresentationController {
-            popoverController.sourceView = navigationController.view
-            popoverController.sourceRect = navigationController.view.bounds
-            popoverController.permittedArrowDirections = []
-        }
-
         // Presents the alert with the presented webview.
         navigationController.presentedViewController?.present(alert, animated: true)
     }

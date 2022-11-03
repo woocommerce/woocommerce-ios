@@ -26,9 +26,7 @@ enum LoginProloguePageType: CaseIterable {
         case .reviews:
             return NSLocalizedString("Monitor and approve your product reviews",
                                      comment: "Caption displayed in promotional screens shown during the login flow.")
-        case .getStarted:
-            return LoginProloguePageType.simplifiedLoginI1Intro.title
-        case .simplifiedLoginI1Intro:
+        case .getStarted, .simplifiedLoginI1Intro:
             return NSLocalizedString("WooCommerce is a customizable, open-source eCommerce platform built on WordPress.",
                                      comment: "Caption displayed in the simplified prologue screen")
         }

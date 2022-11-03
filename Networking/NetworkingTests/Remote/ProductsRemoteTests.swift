@@ -620,6 +620,23 @@ final class ProductsRemoteTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
     }
+
+    func test_create_template_product_returns_product_id() throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "onboarding/tasks/create_product_from_template", filename: "product-id-only")
+
+        // When
+        let result = waitFor { promise in
+            remote.createTemplateProduct(for: self.sampleSiteID, template: .physical) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let productID = try XCTUnwrap(result.get())
+        XCTAssertEqual(productID, 3946)
+    }
 }
 
 // MARK: - Private Helpers

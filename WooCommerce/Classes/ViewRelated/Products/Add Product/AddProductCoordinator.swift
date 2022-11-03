@@ -2,6 +2,7 @@ import UIKit
 import Yosemite
 import WooFoundation
 import protocol Storage.StorageManagerType
+import class Networking.ProductsRemote
 
 /// Controls navigation for the flow to add a product given a navigation controller.
 /// This class is not meant to be retained so that its life cycle is throughout the navigation. Example usage:
@@ -81,18 +82,22 @@ private extension AddProductCoordinator {
         isProductCreationTypeEnabled && productsResultsController.numberOfObjects < 3
     }
 
+    /// Presents a bottom sheet for users to choose if they want a create a product manually or via a template.
+    ///
     func presentProductCreationTypeBottomSheet() {
         let title = NSLocalizedString("How do you want to start?",
                                       comment: "Message title of bottom sheet for selecting a template or manual product")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title)
         let command = ProductCreationTypeSelectorCommand { selectedCreationType in
-            // TODO: Add analytics
+            self.trackProductCreationType(selectedCreationType)
             self.presentProductTypeBottomSheet(creationType: selectedCreationType)
         }
         let productTypesListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)
         productTypesListPresenter.show(from: navigationController, sourceView: sourceView, sourceBarButtonItem: sourceBarButtonItem, arrowDirections: .any)
     }
 
+    /// Presents a bottom sheet for users to choose if what kind of product they want to create.
+    ///
     func presentProductTypeBottomSheet(creationType: ProductCreationType) {
         let title = NSLocalizedString("Select a product type",
                                       comment: "Message title of bottom sheet for selecting a product type to create a product")
@@ -100,7 +105,12 @@ private extension AddProductCoordinator {
         let command = ProductTypeBottomSheetListSelectorCommand(selected: nil) { selectedBottomSheetProductType in
             ServiceLocator.analytics.track(.addProductTypeSelected, withProperties: ["product_type": selectedBottomSheetProductType.productType.rawValue])
             self.navigationController.dismiss(animated: true) {
-                self.presentProductForm(bottomSheetProductType: selectedBottomSheetProductType)
+                switch creationType {
+                case .manual:
+                    self.presentProductForm(bottomSheetProductType: selectedBottomSheetProductType)
+                case .template:
+                    self.createAndPresentTemplate(productType: selectedBottomSheetProductType)
+                }
             }
         }
 
@@ -120,6 +130,47 @@ private extension AddProductCoordinator {
                                        arrowDirections: .any)
     }
 
+    /// Creates & Fetches a template product.
+    /// If success: Navigates to the product.
+    /// If failure: Shows an error notice
+    ///
+    func createAndPresentTemplate(productType: BottomSheetProductType) {
+        guard let template = Self.templateType(from: productType) else {
+            DDLogError("⛔️ Product Type: \(productType) not supported as a template.")
+            return presentErrorNotice()
+        }
+
+        // Loading ViewController while the product is being created
+        let loadingTitle = NSLocalizedString("Creating Template Product...", comment: "Loading text while creating a product from a template")
+        let viewProperties = InProgressViewProperties(title: loadingTitle, message: "")
+        let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
+
+        let action = ProductAction.createTemplateProduct(siteID: siteID, template: template) { result in
+
+            // Dismiss the loader
+            inProgressViewController.dismiss(animated: true)
+
+            switch result {
+            case .success(let product):
+                let newProduct = ProductFactory().newProduct(from: product) // Transforms the auto-draft product into a new product ready to be used.
+                self.presentProduct(newProduct) // We need to strongly capture `self` because no one is retaining `AddProductCoordinator`.
+
+            case .failure(let error):
+                // Log error and inform the user
+                DDLogError("⛔️ There was an error creating the template product: \(error)")
+                self.presentErrorNotice()
+            }
+        }
+
+        ServiceLocator.stores.dispatch(action)
+
+        // Present loader right after the creation action is dispatched.
+        inProgressViewController.modalPresentationStyle = .overCurrentContext
+        self.navigationController.tabBarController?.present(inProgressViewController, animated: true, completion: nil)
+    }
+
+    /// Presents a new product based on the provided bottom sheet type.
+    ///
     func presentProductForm(bottomSheetProductType: BottomSheetProductType) {
         guard let product = ProductFactory().createNewProduct(type: bottomSheetProductType.productType,
                                                               isVirtual: bottomSheetProductType.isVirtual,
@@ -127,8 +178,13 @@ private extension AddProductCoordinator {
             assertionFailure("Unable to create product of type: \(bottomSheetProductType)")
             return
         }
-        let model = EditableProductModel(product: product)
+        presentProduct(product)
+    }
 
+    /// Presents a product onto the current navigation stack.
+    ///
+    func presentProduct(_ product: Product) {
+        let model = EditableProductModel(product: product)
         let currencyCode = ServiceLocator.currencySettings.currencyCode
         let currency = ServiceLocator.currencySettings.symbol(from: currencyCode)
         let productImageActionHandler = productImageUploader
@@ -147,5 +203,45 @@ private extension AddProductCoordinator {
         // Since the Add Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
         viewController.hidesBottomBarWhenPushed = true
         navigationController.pushViewController(viewController, animated: true)
+    }
+
+    /// Converts a `BottomSheetProductType` type to a `ProductsRemote.TemplateType` template type.
+    /// Returns `nil` if the `BottomSheetProductType` is not suported or does not exists.
+    ///
+    static func templateType(from productType: BottomSheetProductType) -> ProductsRemote.TemplateType? {
+        switch productType {
+        case .simple(let isVirtual):
+            if isVirtual {
+                return .digital
+            } else {
+                return .physical
+            }
+        case .variable:
+            return .variable
+        default:
+            return nil
+        }
+    }
+
+    /// Presents an general error notice using the system notice presenter.
+    ///
+    func presentErrorNotice() {
+        let notice = Notice(title: NSLocalizedString("There was a problem creating the template product.",
+                                                     comment: "Title for the error notice when creating a template product"))
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
+    }
+
+    /// Tracks the selected product creation type.
+    ///
+    func trackProductCreationType(_ type: ProductCreationType) {
+        let analyticsType: WooAnalyticsEvent.ProductsOnboarding.CreationType = {
+            switch type {
+            case .template:
+                return .template
+            case .manual:
+                return .manual
+            }
+        }()
+        ServiceLocator.analytics.track(event: .ProductsOnboarding.productCreationTypeSelected(type: analyticsType))
     }
 }

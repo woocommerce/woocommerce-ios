@@ -1,9 +1,14 @@
 import XCTest
 import enum Networking.DotcomError
 import enum Yosemite.StatsActionV4
+import enum Yosemite.ProductAction
+import enum Yosemite.JustInTimeMessageAction
+import struct Yosemite.JustInTimeMessage
 @testable import WooCommerce
 
 final class DashboardViewModelTests: XCTestCase {
+    private let sampleSiteID: Int64 = 122
+
     func test_default_statsVersion_is_v4() {
         // Given
         let viewModel = DashboardViewModel()
@@ -24,7 +29,7 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.statsVersion, .v4)
 
         // When
-        viewModel.syncStats(for: 122, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init(), forceRefresh: false)
+        viewModel.syncStats(for: sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init(), forceRefresh: false)
 
         // Then
         XCTAssertEqual(viewModel.statsVersion, .v3)
@@ -46,9 +51,9 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.statsVersion, .v4)
 
         // When
-        viewModel.syncStats(for: 122, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init(), forceRefresh: false)
-        viewModel.syncSiteVisitStats(for: 122, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init())
-        viewModel.syncTopEarnersStats(for: 122, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init(), forceRefresh: false)
+        viewModel.syncStats(for: sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init(), forceRefresh: false)
+        viewModel.syncSiteVisitStats(for: sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init())
+        viewModel.syncTopEarnersStats(for: sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init(), forceRefresh: false)
 
         // Then
         XCTAssertEqual(viewModel.statsVersion, .v4)
@@ -65,14 +70,99 @@ final class DashboardViewModelTests: XCTestCase {
             }
         }
         let viewModel = DashboardViewModel(stores: stores)
-        viewModel.syncStats(for: 122, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init(), forceRefresh: false)
+        viewModel.syncStats(for: sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init(), forceRefresh: false)
         XCTAssertEqual(viewModel.statsVersion, .v3)
 
         // When
         storeStatsResult = .success(())
-        viewModel.syncStats(for: 122, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init(), forceRefresh: false)
+        viewModel.syncStats(for: sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init(), forceRefresh: false)
 
         // Then
         XCTAssertEqual(viewModel.statsVersion, .v4)
+    }
+
+    func test_products_onboarding_announcements_take_precedence() {
+        // Given
+        MockABTesting.setVariation(.treatment(nil), for: .productsOnboardingBanner)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .checkProductsOnboardingEligibility(_, completion):
+                completion(.success(true))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+        stores.whenReceivingAction(ofType: JustInTimeMessageAction.self) { action in
+            switch action {
+            case let .loadMessage(_, _, _, completion):
+                completion(.success(Yosemite.JustInTimeMessage.fake()))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+        let viewModel = DashboardViewModel(stores: stores)
+
+        // When
+        viewModel.syncAnnouncements(for: sampleSiteID)
+
+        // Then (check announcement image because it is unique and not localized)
+        XCTAssertEqual(viewModel.announcementViewModel?.image, .emptyProductsImage)
+    }
+
+    func test_view_model_syncs_just_in_time_messages_when_ineligible_for_products_onboarding() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .checkProductsOnboardingEligibility(_, completion):
+                completion(.success(false))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+        stores.whenReceivingAction(ofType: JustInTimeMessageAction.self) { action in
+            switch action {
+            case let .loadMessage(_, _, _, completion):
+                completion(.success(Yosemite.JustInTimeMessage.fake().copy(title: "JITM Message")))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+        let viewModel = DashboardViewModel(stores: stores)
+
+        // When
+        viewModel.syncAnnouncements(for: sampleSiteID)
+
+        // Then
+        XCTAssertEqual(viewModel.announcementViewModel?.title, "JITM Message")
+    }
+
+    func test_no_announcement_to_display_when_no_announcements_are_synced() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .checkProductsOnboardingEligibility(_, completion):
+                completion(.success(false))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+        stores.whenReceivingAction(ofType: JustInTimeMessageAction.self) { action in
+            switch action {
+            case let .loadMessage(_, _, _, completion):
+                completion(.success(nil))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+        let viewModel = DashboardViewModel(stores: stores)
+
+        // When
+        viewModel.syncAnnouncements(for: sampleSiteID)
+
+        // Then
+        XCTAssertNil(viewModel.announcementViewModel)
     }
 }

@@ -1,7 +1,12 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+11.1
+-----
+- [**] You can now search customers when creating or editing an order. [https://github.com/woocommerce/woocommerce-ios/issues/7741]
+
 11.0
 -----
+- [internal] Add support for controlling performance monitoring via Sentry. **Off by default**. [https://github.com/woocommerce/woocommerce-ios/pull/7831]
 
 
 10.9

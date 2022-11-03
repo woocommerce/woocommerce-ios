@@ -35,15 +35,15 @@ protocol StorePickerViewControllerDelegate: AnyObject {
 
 /// Configuration option enum for the StorePickerViewController
 ///
-enum StorePickerConfiguration {
+enum StorePickerConfiguration: Equatable {
 
     /// Setup the store picker for use in the login flow
     ///
     case login
 
-    /// Setup the store picker for store creation initiated from login prologue
+    /// Setup the store picker for store creation initiated from the logged out state
     ///
-    case storeCreationFromLoginPrologue
+    case storeCreationFromLogin(source: LoggedOutStoreCreationCoordinator.Source)
 
     /// Setup the store picker for use in the store switching flow
     ///
@@ -99,25 +99,13 @@ final class StorePickerViewController: UIViewController {
         }
     }
 
-    /// Enter site address Button.
+    /// Enter site address / Add Store Button.
     ///
-    @IBOutlet private var enterSiteAddressButton: FancyAnimatedButton! {
+    @IBOutlet private var addStoreButton: FancyAnimatedButton! {
         didSet {
-            enterSiteAddressButton.backgroundColor = .clear
-            enterSiteAddressButton.titleFont = StyleManager.actionButtonTitleFont
-            enterSiteAddressButton.setTitle(Localization.enterSiteAddress, for: .normal)
-        }
-    }
-
-    /// Create store button.
-    @IBOutlet private weak var createStoreButton: FancyAnimatedButton!
-
-    /// New To Woo button
-    ///
-    @IBOutlet var newToWooButton: UIButton! {
-        didSet {
-            newToWooButton.applyLinkButtonStyle()
-            newToWooButton.setTitle(Localization.newToWooCommerce, for: .normal)
+            addStoreButton.backgroundColor = .clear
+            addStoreButton.titleFont = StyleManager.actionButtonTitleFont
+            addStoreButton.setTitle(Localization.addStoreButton, for: .normal)
         }
     }
 
@@ -132,7 +120,15 @@ final class StorePickerViewController: UIViewController {
     /// Header View: Displays all of the Account Details
     ///
     private let accountHeaderView: AccountHeaderView = {
-        return AccountHeaderView.instantiateFromNib()
+        AccountHeaderView.instantiateFromNib()
+    }()
+
+    private lazy var addStoreFooterView: AddStoreFooterView = {
+       AddStoreFooterView(addStoreHandler: { [weak self] in
+           guard let self else { return }
+           ServiceLocator.analytics.track(.sitePickerAddStoreTapped)
+           self.presentAddStoreActionSheet(from: self.addStoreFooterView)
+       })
     }()
 
     /// Site Picker's dedicated NoticePresenter (use this here instead of ServiceLocator.noticePresenter)
@@ -199,7 +195,6 @@ final class StorePickerViewController: UIViewController {
         setupMainView()
         setupAccountHeader()
         setupTableView()
-        setupCreateStoreButton()
         refreshResults()
         observeStateChange()
 
@@ -212,6 +207,12 @@ final class StorePickerViewController: UIViewController {
         default:
             break
         }
+    }
+
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        tableView.updateHeaderHeight()
+        tableView.updateFooterHeight()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -244,6 +245,7 @@ private extension StorePickerViewController {
         tableView.registerNib(for: EmptyStoresTableViewCell.self)
         tableView.registerNib(for: StoreTableViewCell.self)
         tableView.backgroundColor = backgroundColor()
+        tableView.sectionFooterHeight = 0
     }
 
     func setupAccountHeader() {
@@ -291,17 +293,6 @@ private extension StorePickerViewController {
         }
     }
 
-    func setupCreateStoreButton() {
-        createStoreButton.isHidden = isStoreCreationEnabled == false
-        createStoreButton.isPrimary = false
-        createStoreButton.backgroundColor = .clear
-        createStoreButton.titleFont = StyleManager.actionButtonTitleFont
-        createStoreButton.setTitle(Localization.createStore, for: .normal)
-        createStoreButton.on(.touchUpInside) { [weak self] _ in
-            self?.createStoreButtonPressed()
-        }
-    }
-
     func refreshResults() {
         viewModel.refreshSites(currentlySelectedSiteID: currentlySelectedSite?.siteID)
         viewModel.trackScreenView()
@@ -312,6 +303,7 @@ private extension StorePickerViewController {
             guard let self = self else { return }
             self.preselectStoreIfPossible()
             self.reloadInterface()
+            self.updateFooterViewIfNeeded()
         }
     }
 
@@ -321,6 +313,38 @@ private extension StorePickerViewController {
 
     func presentHelp() {
         ServiceLocator.authenticationManager.presentSupport(from: self, screen: .storePicker)
+    }
+
+    func presentAddStoreActionSheet(from view: UIView) {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = .text
+        let createStoreAction = UIAlertAction(title: Localization.createStore, style: .default) { [weak self] _ in
+            // TODO: add tracks for site creation
+            self?.createStoreButtonPressed()
+        }
+        let addExistingStoreAction = UIAlertAction(title: Localization.connectExistingStore, style: .default) { [weak self] _ in
+            ServiceLocator.analytics.track(.sitePickerConnectExistingStoreTapped)
+            self?.presentSiteDiscovery()
+        }
+        let cancelAction = UIAlertAction(title: Localization.cancel, style: .cancel)
+
+        actionSheet.addAction(createStoreAction)
+        actionSheet.addAction(addExistingStoreAction)
+        actionSheet.addAction(cancelAction)
+
+        if let popoverController = actionSheet.popoverPresentationController {
+            popoverController.sourceView = view
+            popoverController.sourceRect = view.bounds
+        }
+
+        present(actionSheet, animated: true)
+    }
+
+    func presentSiteDiscovery() {
+        guard let viewController = WordPressAuthenticator.siteDiscoveryUI() else {
+            return
+        }
+        navigationController?.show(viewController, sender: nil)
     }
 }
 
@@ -398,11 +422,9 @@ private extension StorePickerViewController {
         switch viewModel.state {
         case .empty:
             updateActionButtonAndTableState(animating: false, enabled: false)
-            enterSiteAddressButton.isHidden = false
-            newToWooButton.isHidden = false
+            addStoreButton.isHidden = false
         case .available(let sites):
-            enterSiteAddressButton.isHidden = true
-            newToWooButton.isHidden = true
+            addStoreButton.isHidden = true
             if sites.allSatisfy({ $0.isWooCommerceActive == false }) {
                 updateActionButtonAndTableState(animating: false, enabled: false)
             }
@@ -410,6 +432,17 @@ private extension StorePickerViewController {
 
         tableView.separatorStyle = viewModel.separatorStyle
         tableView.reloadData()
+    }
+
+    /// Shows the Add a Store button at the end of the store list if possible
+    ///
+    func updateFooterViewIfNeeded() {
+        switch viewModel.state {
+        case .available:
+            tableView.tableFooterView = addStoreFooterView
+        case .empty:
+            tableView.tableFooterView = UIView()
+        }
     }
 
     /// Dismiss this VC
@@ -506,8 +539,7 @@ private extension StorePickerViewController {
     func updateUIForNoSitesFound(named siteName: String) {
         hideActionButton()
         displayFancyWCRequirementAlert(siteName: siteName)
-        enterSiteAddressButton.isHidden = false
-        newToWooButton.isHidden = false
+        addStoreButton.isHidden = false
     }
 
     /// Update the UI when the user has a valid login
@@ -583,25 +615,17 @@ private extension StorePickerViewController {
         }
     }
 
-    /// Presents a screen to enter a store address to connect.
+    /// Presents a screen to enter a store address to connect,
+    /// or the add store action sheet for simplified login.
     ///
-    @IBAction private func enterStoreAddressWasPressed() {
-        ServiceLocator.analytics.track(event: .SitePicker.enterStoreAddressTapped())
-        guard let viewController = WordPressAuthenticator.siteDiscoveryUI() else {
-            return
+    @IBAction private func addStoreWasPressed() {
+        if featureFlagService.isFeatureFlagEnabled(.storeCreationMVP) {
+            ServiceLocator.analytics.track(.sitePickerAddStoreTapped)
+            presentAddStoreActionSheet(from: addStoreButton)
+        } else {
+            ServiceLocator.analytics.track(.sitePickerConnectExistingStoreTapped)
+            presentSiteDiscovery()
         }
-        navigationController?.show(viewController, sender: nil)
-    }
-
-    /// Displays a web view with introduction to WooCommerce
-    ///
-    @IBAction private func newToWooWasPressed() {
-        ServiceLocator.analytics.track(event: .SitePicker.newToWooTapped())
-        guard let url = URL(string: StorePickerConstants.newToWooCommerceURL) else {
-            return assertionFailure("Cannot generate URL.")
-        }
-
-        WebviewHelper.launch(url, with: self)
     }
 
     /// Proceeds with the Logout Flow.
@@ -611,6 +635,25 @@ private extension StorePickerViewController {
     }
 
     func createStoreButtonPressed() {
+        let source: WooAnalyticsEvent.StoreCreation.StorePickerSource = {
+            switch configuration {
+            case .switchingStores:
+                return .switchStores
+            case .login, .standard:
+                return .login
+            case .storeCreationFromLogin(let loggedOutSource):
+                switch loggedOutSource {
+                case .prologue:
+                    return .loginPrologue
+                case .loginEmailError:
+                    return .other
+                }
+            default:
+                return .other
+            }
+        }()
+        ServiceLocator.analytics.track(event: .StoreCreation.sitePickerCreateSiteTapped(source: source))
+
         delegate?.createStore()
     }
 }
@@ -783,14 +826,16 @@ private extension StorePickerViewController {
 private extension StorePickerViewController {
     enum Localization {
         static let continueButton = NSLocalizedString("Continue", comment: "Button on the Store Picker screen to select a store")
-        static let tryAnotherAccount = NSLocalizedString("Try With Another Account",
+        static let tryAnotherAccount = NSLocalizedString("Log In With Another Account",
                                                          comment: "Button to trigger connection to another account in store picker")
-        static let enterSiteAddress = NSLocalizedString("Enter Your Store Address",
-                                                        comment: "Button to input a site address in store picker when there are no stores found")
-        static let newToWooCommerce = NSLocalizedString("New to WooCommerce?",
-                                                        comment: "Title of button on the site picker screen for users who are new to WooCommerce.")
         static let createStore = NSLocalizedString("Create a new store",
                                                    comment: "Button to create a new store from the store picker")
+        static let connectExistingStore = NSLocalizedString("Connect an existing store",
+                                                            comment: "Button to connect to an existing store from the store picker")
+        static let cancel = NSLocalizedString("Cancel",
+                                              comment: "Button to dismiss the action sheet on the store picker")
+        static let addStoreButton = NSLocalizedString("Add a Store",
+                                                      comment: "Button title on the store picker for store creation")
     }
 }
 
@@ -798,7 +843,6 @@ private extension StorePickerViewController {
 //
 private enum StorePickerConstants {
     static let estimatedRowHeight = CGFloat(50)
-    static let newToWooCommerceURL = "https://woocommerce.com/woocommerce-features"
 }
 
 

@@ -619,6 +619,63 @@ extension WooAnalyticsEvent {
     }
 }
 
+// MARK: - Just In Time Messages
+//
+extension WooAnalyticsEvent {
+    enum JustInTimeMessage {
+        private enum Keys {
+            static let source = "source"
+            static let justInTimeMessageID = "jitm_id"
+            static let justInTimeMessageGroup = "jitm_group"
+        }
+
+        static func callToActionTapped(source: String,
+                                       messageID: String,
+                                       featureClass: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .justInTimeMessageCallToActionTapped,
+                              properties: [
+                                Keys.source: source,
+                                Keys.justInTimeMessageID: messageID,
+                                Keys.justInTimeMessageGroup: featureClass
+                              ])
+        }
+
+        static func dismissTapped(source: String,
+                                  messageID: String,
+                                  featureClass: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .justInTimeMessageDismissTapped,
+                              properties: [
+                                Keys.source: source,
+                                Keys.justInTimeMessageID: messageID,
+                                Keys.justInTimeMessageGroup: featureClass
+                              ])
+        }
+
+        static func dismissSuccess(source: String,
+                                  messageID: String,
+                                  featureClass: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .justInTimeMessageDismissSuccess, properties: [
+                Keys.source: source,
+                Keys.justInTimeMessageID: messageID,
+                Keys.justInTimeMessageGroup: featureClass
+              ])
+        }
+
+        static func dismissFailure(source: String,
+                                   messageID: String,
+                                   featureClass: String,
+                                   error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .justInTimeMessageDismissFailure,
+                              properties: [
+                                Keys.source: source,
+                                Keys.justInTimeMessageID: messageID,
+                                Keys.justInTimeMessageGroup: featureClass
+                              ],
+                              error: error)
+        }
+    }
+}
+
 // MARK: - Simple Payments
 //
 extension WooAnalyticsEvent {
@@ -1556,11 +1613,6 @@ extension WooAnalyticsEvent {
             case hasValidJetpack = "has_valid_jetpack"
         }
 
-        /// Tracks when the user taps the Enter Your Store Address button
-        static func enterStoreAddressTapped() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .sitePickerEnterStoreAddressTapped, properties: [:])
-        }
-
         /// Tracks when the result for site discovery is returned
         static func siteDiscovery(hasWordPress: Bool, isWPCom: Bool, hasValidJetpack: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .sitePickerSiteDiscovery, properties: [Key.hasWordPress.rawValue: hasWordPress,
@@ -1629,6 +1681,39 @@ extension WooAnalyticsEvent {
                 properties = [Key.name.rawValue: name.rawValue]
             }
             return WooAnalyticsEvent(statName: .widgetTapped, properties: properties)
+        }
+    }
+}
+
+// MARK: - Products Onboarding
+//
+extension WooAnalyticsEvent {
+    enum ProductsOnboarding {
+        enum Keys: String {
+            case type
+        }
+
+        enum CreationType: String {
+            case manual
+            case template
+        }
+
+        /// Tracks when a store is eligible for products onboarding
+        ///
+        static func storeIsEligible() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productsOnboardingEligible, properties: [:])
+        }
+
+        /// Tracks when the call to action is tapped on the products onboarding banner
+        ///
+        static func bannerCTATapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productsOnboardingCTATapped, properties: [:])
+        }
+
+        /// Trackas when the merchants selects a product creation type.
+        ///
+        static func productCreationTypeSelected(type: CreationType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .addProductCreationTypeSelected, properties: [Keys.type.rawValue: type.rawValue])
         }
     }
 }

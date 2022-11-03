@@ -405,7 +405,7 @@ open class AddressFormViewModel: ObservableObject {
     /// Fills Order AddressFormFields with Customer details
     ///
     func customerSelectedFromSearch(customer: Customer) {
-        analytics.analyticsProvider.track(WooAnalyticsStat.orderCreationCustomerAdded.rawValue)
+        analytics.track(.orderCreationCustomerAdded)
         fillCustomerFields(customer: customer)
         let addressesDiffer = customer.billing != customer.shipping
         showDifferentAddressForm = addressesDiffer

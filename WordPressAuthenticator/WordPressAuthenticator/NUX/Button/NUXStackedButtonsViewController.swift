@@ -169,12 +169,11 @@ private extension NUXStackedButtonsViewController {
             return dividerStackView.isHidden = true
         }
 
-        let color = WordPressAuthenticator.shared.unifiedStyle?.borderColor ?? style.primaryNormalBorderColor
-        leadingDividerLine.backgroundColor = color
+        leadingDividerLine.backgroundColor = style.orDividerSeparatorColor
         leadingDividerLineHeight.constant = WPStyleGuide.hairlineBorderWidth
-        trailingDividerLine.backgroundColor = color
+        trailingDividerLine.backgroundColor = style.orDividerSeparatorColor
         trailingDividerLineHeight.constant = WPStyleGuide.hairlineBorderWidth
-        dividerLabel.textColor = color
+        dividerLabel.textColor = style.orDividerTextColor
         dividerLabel.text = NSLocalizedString("Or", comment: "Divider on initial auth view separating auth options.").localizedUppercase
     }
 

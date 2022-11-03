@@ -31,6 +31,7 @@ public class InAppPurchasesRemote: Remote {
         productIdentifier: String,
         appStoreCountryCode: String,
         receiptData: Data,
+        wpComSandboxUsername: String? = nil,
         completion: @escaping (Swift.Result<Int, Error>) -> Void) {
             let parameters: [String: Any] = [
                 Constants.siteIDKey: siteID,
@@ -39,8 +40,13 @@ public class InAppPurchasesRemote: Remote {
                 Constants.appStoreCountryCodeKey: appStoreCountryCode,
                 Constants.receiptDataKey: receiptData.base64EncodedString()
             ]
-            let dotComRequest = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: Constants.ordersPath, parameters: parameters)
+            let dotComRequest = DotcomRequest(wordpressApiVersion: .wpcomMark2,
+                                              method: .post,
+                                              path: Constants.ordersPath,
+                                              parameters: parameters,
+                                              wpComSandboxUsername: wpComSandboxUsername)
             let request = augmentedRequestWithAppId(dotComRequest)
+            debugPrint("request", try? request.asURLRequest().url)
             let mapper = InAppPurchaseOrderResultMapper()
             enqueue(request, mapper: mapper, completion: completion)
         }
@@ -76,7 +82,8 @@ public extension InAppPurchasesRemote {
         price: Int,
         productIdentifier: String,
         appStoreCountryCode: String,
-        receiptData: Data
+        receiptData: Data,
+        wpComSandboxUsername: String? = nil
     ) async throws -> Int {
         try await withCheckedThrowingContinuation { continuation in
             createOrder(
@@ -84,7 +91,8 @@ public extension InAppPurchasesRemote {
                 price: price,
                 productIdentifier: productIdentifier,
                 appStoreCountryCode: appStoreCountryCode,
-                receiptData: receiptData
+                receiptData: receiptData,
+                wpComSandboxUsername: wpComSandboxUsername
             ) { result in
                 continuation.resume(with: result)
             }

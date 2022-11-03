@@ -28,7 +28,7 @@ public class AccountStore: Store {
         let remote = AccountRemote(network: network)
         let dotcomAPI = WordPressComRestApi(oAuthToken: dotcomAuthToken,
                                             userAgent: UserAgent.defaultUserAgent,
-                                            baseUrlString: Settings.wordpressApiBaseURL)
+                                            baseUrlString: Settings.wordpressApiBaseURL())
         let dotcomRemote = AccountSettingsRemote(wordPressComRestApi: dotcomAPI)
         self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote, dotcomRemote: dotcomRemote)
     }

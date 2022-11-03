@@ -19,7 +19,8 @@ struct InAppPurchasesDebugView: View {
                     }
                 }
             }
-            Section("Products") {
+            Section(header: Text("Products"), footer: Text("Be sure that you have an updated WPCOM sandbox linked to the" +
+                                                           " WPCOM username you used to authenticate in the app and a session started via ssh")) {
                 if products.isEmpty {
                     Text("No products")
                 } else {

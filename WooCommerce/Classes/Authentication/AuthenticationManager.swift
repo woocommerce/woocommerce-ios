@@ -61,7 +61,7 @@ class AuthenticationManager: Authentication {
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
                                                                 wpcomScheme: ApiCredentials.dotcomAuthScheme,
                                                                 wpcomTermsOfServiceURL: WooConstants.URLs.termsOfService.rawValue,
-                                                                wpcomAPIBaseURL: Settings.wordpressApiBaseURL,
+                                                                wpcomAPIBaseURL: Settings.wordpressApiBaseURL(),
                                                                 whatIsWPComURL: isSimplifiedLoginI1Enabled ? nil : WooConstants.URLs.whatIsWPCom.rawValue,
                                                                 googleLoginClientId: ApiCredentials.googleClientId,
                                                                 googleLoginServerClientId: ApiCredentials.googleServerId,

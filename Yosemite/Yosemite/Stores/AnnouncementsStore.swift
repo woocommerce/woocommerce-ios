@@ -13,7 +13,7 @@ public protocol AnnouncementsRemoteProtocol {
 
 extension AnnouncementServiceRemote: AnnouncementsRemoteProtocol {
     public override convenience init() {
-        self.init(wordPressComRestApi: WordPressComRestApi(baseUrlString: Settings.wordpressApiBaseURL))
+        self.init(wordPressComRestApi: WordPressComRestApi(baseUrlString: Settings.wordpressApiBaseURL()))
     }
 }
 

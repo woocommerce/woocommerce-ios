@@ -9,9 +9,11 @@ public class InAppPurchaseStore: Store {
     private var listenTask: Task<Void, Error>?
     private let remote: InAppPurchasesRemote
     private var useBackend = true
+    private let wpComUsername: String
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, wpComUsername: String) {
         remote = InAppPurchasesRemote(network: network)
+        self.wpComUsername = wpComUsername
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
         listenForTransactions()
     }
@@ -181,6 +183,18 @@ private extension InAppPurchaseStore {
         let receiptData = try await getAppReceipt()
 
         logInfo("Sending transaction to API for site \(siteID)")
+        #if DEBUG
+        // In debug use WPCOM Sandbox, as we have to enable the billing system sandbox-mode
+        // https://taptopayp2.wordpress.com/2022/10/25/iap-testing-caveats/
+        let orderID = try await remote.createOrder(
+            for: siteID,
+            price: priceInCents,
+            productIdentifier: product.id,
+            appStoreCountryCode: countryCode,
+            receiptData: receiptData,
+            wpComSandboxUsername: wpComUsername
+        )
+        #else
         let orderID = try await remote.createOrder(
             for: siteID,
             price: priceInCents,
@@ -188,6 +202,8 @@ private extension InAppPurchaseStore {
             appStoreCountryCode: countryCode,
             receiptData: receiptData
         )
+        #endif
+
         logInfo("Successfully registered purchase with Order ID \(orderID)")
 
     }

@@ -716,6 +716,23 @@ final class ProductFormViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(actionButtons, [.publish, .more])
     }
+
+    func test_no_preview_button_for_existing_draft_product_on_site_with_no_preview_url() {
+        // Given
+        sessionManager.defaultSite = Site.fake().copy(loginURL: "", isWordPressComStore: true)
+
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.draft.rawValue)
+        let viewModel = createViewModel(product: product,
+                                        formType: .edit,
+                                        stores: stores,
+                                        featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.publish, .more])
+    }
 }
 
 private extension ProductFormViewModelTests {

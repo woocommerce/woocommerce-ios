@@ -41,9 +41,7 @@ class LoginPrologueViewController: LoginViewController {
     ///
     private var prologueFlowTracked = false
 
-    /// Returns `true` when a configurable OR divider is needed for the list of prologue buttons
-    ///
-    /// `NUXStackedButtonsViewController` is used for creating buttons when this is `true`
+    /// Return`true` to use new `NUXStackedButtonsViewController` instead of `NUXButtonViewController` to create buttons
     ///
     private var useStackedButtonsViewController: Bool {
         configuration.enableWPComLoginOnlyInPrologue || configuration.enableSiteCreation

@@ -217,7 +217,8 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     private var userEmail: String?
     private var haveUserIdentity = false
     private var alertNameField: UITextField?
-    private var ippTags: [String] = [""]
+    private var supportRequestTags = [String]()
+    private var ippTags = [String]()
 
     private weak var presentInController: UIViewController?
 
@@ -372,7 +373,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     func getTags(supportSourceTag: String?) -> [String] {
         let tags = [Constants.platformTag, Constants.sdkTag, Constants.jetpackTag]
 
-        return decorateTags(tags: tags, supportSourceTag: supportSourceTag)
+        return decorateTags(supportSourceTag: supportSourceTag)
     }
 
     func getWCPayTags(supportSourceTag: String?) -> [String] {
@@ -383,7 +384,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
                     Constants.paymentsSubcategory,
                     Constants.paymentsProductArea]
 
-        return decorateTags(tags: tags, supportSourceTag: supportSourceTag)
+        return decorateTags(supportSourceTag: supportSourceTag)
     }
 
     func appendIPPstatusTagsIfNeeded(decoratedTags: [String]) -> [String] {
@@ -394,29 +395,25 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         return tags
     }
 
-    func decorateTags(tags: [String], supportSourceTag: String?) -> [String] {
+    func decorateTags(supportSourceTag: String?) -> [String] {
         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
-            return tags
+            return supportRequestTags
         }
 
-        var decoratedTags = tags
-
         if site.isWordPressStore == true {
-            decoratedTags.append(Constants.wpComTag)
+            supportRequestTags.append(Constants.wpComTag)
         }
 
         if site.plan.isEmpty == false {
-            decoratedTags.append(site.plan)
+            supportRequestTags.append(site.plan)
         }
 
         if let sourceTagOrigin = supportSourceTag, sourceTagOrigin.isEmpty == false {
-            decoratedTags.append(sourceTagOrigin)
+            supportRequestTags.append(sourceTagOrigin)
         }
 
-        decoratedTags = appendIPPstatusTagsIfNeeded(decoratedTags: decoratedTags)
-        
-        print("All tags: \(decoratedTags)")
-        return decoratedTags
+        print("All tags: \(supportRequestTags)")
+        return supportRequestTags
     }
 }
 
@@ -646,7 +643,20 @@ private extension ZendeskManager {
         return createRequest(supportSourceTag: supportSourceTag,
                              formID: TicketFieldIDs.form,
                              ticketFields: ticketFields,
-                             tags: getTags(supportSourceTag: supportSourceTag))
+                             tags: asyncGetTags(completion: { _ in }))
+    }
+
+    func asyncGetTags(supportSourceTag: String? = nil, completion: @escaping ([String]) -> ()) {
+        // 1 - getTags code:
+        supportRequestTags = [Constants.platformTag, Constants.sdkTag, Constants.jetpackTag]
+        // 2 - decorateTags code:
+        supportRequestTags = decorateTags(supportSourceTag: supportSourceTag)
+        // 3 - add IPP ones if needed:
+        observePlugins(onDataChanged: { [weak self] in
+            guard let self = self else { return }
+            self.supportRequestTags.append(contentsOf: self.ippTags)
+            completion(self.supportRequestTags)
+        })
     }
 
     func createWCPayRequest(supportSourceTag: String?) -> RequestUiConfiguration {
@@ -667,10 +677,10 @@ private extension ZendeskManager {
         return createRequest(supportSourceTag: supportSourceTag,
                              formID: TicketFieldIDs.paymentsForm,
                              ticketFields: ticketFields,
-                             tags: getWCPayTags(supportSourceTag: supportSourceTag))
+                             tags: asyncGetTags(completion: { _ in }))
     }
 
-    func createRequest(supportSourceTag: String?, formID: Int64, ticketFields: [CustomField], tags: [String]) -> RequestUiConfiguration {
+    func createRequest(supportSourceTag: String?, formID: Int64, ticketFields: [CustomField], tags: ()) -> RequestUiConfiguration {
         let requestConfig = RequestUiConfiguration()
 
         // Set Zendesk ticket form to use
@@ -679,7 +689,7 @@ private extension ZendeskManager {
         requestConfig.customFields = ticketFields
 
         // Set tags
-        requestConfig.tags = tags
+        requestConfig.tags = self.supportRequestTags
 
         // Set the ticket subject
         requestConfig.subject = Constants.ticketSubject

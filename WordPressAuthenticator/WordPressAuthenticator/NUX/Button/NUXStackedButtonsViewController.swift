@@ -228,9 +228,8 @@ extension NUXStackedButtonsViewController {
     /// Returns a new NUXButtonViewController Instance
     ///
     public class func instance() -> NUXStackedButtonsViewController {
-        let storyboard = UIStoryboard(name: "NUXButtonView", bundle: WordPressAuthenticator.bundle)
-        guard let buttonViewController = storyboard.instantiateViewController(withIdentifier: "NUXStackedButtonsViewController") as? NUXStackedButtonsViewController else {
-            fatalError()
+        guard let buttonViewController = Storyboard.nuxButtonView.instantiateViewController(ofClass: NUXStackedButtonsViewController.self) else {
+            fatalError("Cannot instantiate initial NUXStackedButtonsViewController from NUXButtonView.storyboard")
         }
 
         return buttonViewController

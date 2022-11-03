@@ -61,7 +61,7 @@ final class JustInTimeMessageStoreTests: XCTestCase {
             self.sut.onAction(action)
         }
 
-        let expectedJustInTimeMessage = YosemiteJustInTimeMessage(
+        let expectedJustInTimeMessage = JustInTimeMessage(
             siteID: sampleSiteID,
             messageID: "woomobile_ipp_barcode_users",
             featureClass: "woomobile_ipp",
@@ -91,7 +91,7 @@ final class JustInTimeMessageStoreTests: XCTestCase {
             self.sut.onAction(action)
         }
 
-        let expectedJustInTimeMessage = YosemiteJustInTimeMessage(
+        let expectedJustInTimeMessage = JustInTimeMessage(
             siteID: sampleSiteID,
             messageID: "woomobile_onboarding_add_product",
             featureClass: "woomobile_onboarding_products",

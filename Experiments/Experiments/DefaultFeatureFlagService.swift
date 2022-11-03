@@ -33,8 +33,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .searchProductsBySKU:
             return true
-        case .orderCreationSearchCustomers:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .wpcomSignup:
             guard isFeatureFlagEnabled(.simplifiedLoginFlowI1) else {
                 return buildConfig == .localDeveloper || buildConfig == .alpha

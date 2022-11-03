@@ -265,6 +265,8 @@ public enum WooAnalyticsStat: String {
     case orderCreateButtonTapped = "order_create_button_tapped"
     case orderCreationSuccess = "order_creation_success"
     case orderCreationFailed = "order_creation_failed"
+    case orderCreationCustomerAdded = "order_creation_customer_added"
+    case orderCreationCustomerSearch = "order_creation_customer_search"
     case orderContactAction = "order_contact_action"
     case orderCustomerAdd = "order_customer_add"
     case orderEditButtonTapped = "order_edit_button_tapped"
@@ -424,6 +426,7 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Add Product Events
     //
+    case addProductCreationTypeSelected = "add_product_creation_type_selected"
     case addProductTypeSelected = "add_product_product_type_selected"
     case addProductPublishTapped = "add_product_publish_tapped"
     case addProductSaveAsDraftTapped = "add_product_save_as_draft_tapped"
@@ -626,6 +629,12 @@ public enum WooAnalyticsStat: String {
     case featureCardShown = "feature_card_shown"
     case featureCardDismissed = "feature_card_dismissed"
     case featureCardCtaTapped = "feature_card_cta_tapped"
+
+    // MARK: Just In Time Messages events
+    case justInTimeMessageCallToActionTapped = "jitm_cta_tapped"
+    case justInTimeMessageDismissTapped = "jitm_dismissed"
+    case justInTimeMessageDismissSuccess = "jitm_dismiss_success"
+    case justInTimeMessageDismissFailure = "jitm_dismiss_failure"
 
     // MARK: Simple Payments events
     //

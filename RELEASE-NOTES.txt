@@ -2,7 +2,7 @@
 
 11.1
 -----
-
+- [**] You can now search customers when creating or editing an order. [https://github.com/woocommerce/woocommerce-ios/issues/7741]
 
 11.0
 -----

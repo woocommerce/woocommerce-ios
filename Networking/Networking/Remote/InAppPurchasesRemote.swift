@@ -46,7 +46,6 @@ public class InAppPurchasesRemote: Remote {
                                               parameters: parameters,
                                               wpComSandboxUsername: wpComSandboxUsername)
             let request = augmentedRequestWithAppId(dotComRequest)
-            debugPrint("request", try? request.asURLRequest().url)
             let mapper = InAppPurchaseOrderResultMapper()
             enqueue(request, mapper: mapper, completion: completion)
         }

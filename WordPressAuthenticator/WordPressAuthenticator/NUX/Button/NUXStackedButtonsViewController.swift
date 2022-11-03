@@ -78,7 +78,7 @@ open class NUXStackedButtonsViewController: UIViewController {
     @IBOutlet private weak var trailingDividerLine: UIView!
     @IBOutlet private weak var trailingDividerLineHeight: NSLayoutConstraint!
 
-    // Shaow
+    // Shadow
     @IBOutlet private weak var shadowView: UIImageView?
     @IBOutlet private var shadowViewEdgeConstraints: [NSLayoutConstraint]!
 

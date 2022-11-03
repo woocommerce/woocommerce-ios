@@ -88,9 +88,8 @@ private extension StoreCreationCoordinator {
     }
 
     @objc func handleStoreCreationCloseAction() {
-        // TODO-7879: show a confirmation alert before closing the store creation view
         analytics.track(event: .StoreCreation.siteCreationDismissed(source: source.analyticsValue))
-        navigationController.dismiss(animated: true)
+        showDiscardChangesAlert()
     }
 
     func handleStoreCreationResult(_ result: Result<String, Error>) {
@@ -137,11 +136,40 @@ private extension StoreCreationCoordinator {
             self.navigationController.dismiss(animated: true)
         }
     }
+
+    func showDiscardChangesAlert() {
+        let alert = UIAlertController(title: Localization.DiscardChangesAlert.title,
+                                      message: Localization.DiscardChangesAlert.message,
+                                      preferredStyle: .alert)
+        alert.view.tintColor = .text
+
+        alert.addDestructiveActionWithTitle(Localization.DiscardChangesAlert.confirmActionTitle) { [weak self] _ in
+            self?.navigationController.dismiss(animated: true)
+        }
+
+        alert.addCancelActionWithTitle(Localization.DiscardChangesAlert.cancelActionTitle) { _ in }
+
+        // Presents the alert with the presented webview.
+        navigationController.presentedViewController?.present(alert, animated: true)
+    }
 }
 
 private extension StoreCreationCoordinator {
     enum StoreCreationCoordinatorError: Error {
         case selfDeallocated
+    }
+
+    enum Localization {
+        enum DiscardChangesAlert {
+            static let title = NSLocalizedString("Do you want to leave?",
+                                                 comment: "Title of the alert when the user dismisses the store creation flow.")
+            static let message = NSLocalizedString("You will lose all your store information.",
+                                                   comment: "Message of the alert when the user dismisses the store creation flow.")
+            static let confirmActionTitle = NSLocalizedString("Confirm and leave",
+                                                              comment: "Button title Discard Changes in Discard Changes Action Sheet")
+            static let cancelActionTitle = NSLocalizedString("Cancel",
+                                                             comment: "Button title Cancel in Discard Changes Action Sheet")
+        }
     }
 }
 

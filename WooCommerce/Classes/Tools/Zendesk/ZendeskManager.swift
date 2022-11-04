@@ -152,18 +152,16 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         do {
             try resultsController.performFetch()
         } catch {
+            ippTags.append(Constants.woo_mobile_site_plugins_fetching_error)
             DDLogError("⛔️ Error fetching plugin list!")
         }
         return resultsController
     }()
 
     func observePlugins(onDataChanged: @escaping () -> Void) {
-        let stripePluginSlug = "woocommerce-gateway-stripe/woocommerce-gateway-stripe"
-        let wcPayPluginSlug = "woocommerce-payments/woocommerce-payments"
-
         resultsController.onDidResetContent = onDataChanged
 
-        if let stripe = resultsController.fetchedObjects.first(where: { $0.plugin == stripePluginSlug } ) {
+        if let stripe = resultsController.fetchedObjects.first(where: { $0.plugin == Constants.stripe_plugin_slug } ) {
             if stripe.status == .inactive {
                 ippTags.append(Constants.woo_mobile_stripe_installed_and_not_activated)
             } else if stripe.status == .active {
@@ -172,7 +170,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
                 ippTags.append(Constants.woo_mobile_stripe_not_installed)
             }
         }
-        if let wcPay = resultsController.fetchedObjects.first(where: { $0.plugin == wcPayPluginSlug } ) {
+        if let wcPay = resultsController.fetchedObjects.first(where: { $0.plugin == Constants.wcpay_plugin_slug } ) {
             if wcPay.status == .inactive {
                 ippTags.append(Constants.woo_mobile_wcpay_installed_and_not_activated)
             } else if wcPay.status == .active {
@@ -1073,6 +1071,8 @@ private extension ZendeskManager {
         static let paymentsSubcategory = "payment"
         static let paymentsProduct = "woocommerce_payments"
         static let paymentsProductArea = "product_area_woo_payment_gateway"
+        static let stripe_plugin_slug = "woocommerce-gateway-stripe/woocommerce-gateway-stripe"
+        static let wcpay_plugin_slug = "woocommerce-payments/woocommerce-payments"
         static let woo_mobile_stripe_not_installed = "woo_mobile_stripe_not_installed"
         static let woo_mobile_stripe_installed_and_not_activated = "woo_mobile_stripe_installed_and_not_activated"
         static let woo_mobile_stripe_installed_and_activated = "woo_mobile_stripe_installed_and_activated"

@@ -124,18 +124,14 @@ final class DashboardViewModel {
                 if isEligible {
                     ServiceLocator.analytics.track(event: .ProductsOnboarding.storeIsEligible())
 
-                    if ABTest.productsOnboardingBanner.variation == .treatment(nil) {
-                        let viewModel = ProductsOnboardingAnnouncementCardViewModel(onCTATapped: { [weak self] in
-                            self?.announcementViewModel = nil // Dismiss announcement
-                            MainTabBarController.presentAddProductFlow()
-                        })
-                        self?.announcementViewModel = viewModel
-                        // For now, products onboarding takes precedence over Just In Time Messages,
-                        // so we can stop if there is an onboarding announcement to display.
-                        // This should be revisited when either onboarding or JITMs are expanded. See:
-                        // pe5pgL-11B-p2
-                        return
-                    }
+                    self?.setProductsOnboardingBannerIfNeeded()
+                }
+
+                // For now, products onboarding takes precedence over Just In Time Messages,
+                // so we can stop if there is an onboarding announcement to display.
+                // This should be revisited when either onboarding or JITMs are expanded. See: pe5pgL-11B-p2
+                if self?.announcementViewModel is ProductsOnboardingAnnouncementCardViewModel {
+                    return
                 }
                 onCompletion()
             case .failure(let error):
@@ -144,6 +140,27 @@ final class DashboardViewModel {
             }
         }
         stores.dispatch(action)
+    }
+
+    /// Sets the view model for the products onboarding banner if the user hasn't dismissed it before,
+    /// and if the user is part of the treatment group for the products onboarding A/B test.
+    ///
+    private func setProductsOnboardingBannerIfNeeded() {
+        guard ABTest.productsOnboardingBanner.variation == .treatment(nil) else {
+            return
+        }
+
+        let getVisibility = AppSettingsAction.getFeatureAnnouncementVisibility(campaign: .productsOnboarding) { [weak self] result in
+            guard let self else { return }
+            if case let .success(isVisible) = result, isVisible {
+                let viewModel = ProductsOnboardingAnnouncementCardViewModel(onCTATapped: { [weak self] in
+                    self?.announcementViewModel = nil // Dismiss announcement
+                    MainTabBarController.presentAddProductFlow()
+                })
+                self.announcementViewModel = viewModel
+            }
+        }
+        stores.dispatch(getVisibility)
     }
 
     /// Checks for Just In Time Messages and prepares the announcement if needed.

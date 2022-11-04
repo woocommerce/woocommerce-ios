@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import enum Yosemite.AppSettingsAction
 
 struct ProductsOnboardingAnnouncementCardViewModel: AnnouncementCardViewModelProtocol {
     var showDividers: Bool = true
@@ -27,6 +28,17 @@ struct ProductsOnboardingAnnouncementCardViewModel: AnnouncementCardViewModelPro
         onCTATapped?()
     }
 
+    // MARK: Dismiss button
+
+    /// Ensures the banner isn't shown again after the user manually dismisses it.
+    ///
+    func dontShowAgainTapped() {
+        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .productsOnboarding,
+                                                                       remindLater: false,
+                                                                       onCompletion: nil)
+        ServiceLocator.stores.dispatch(action)
+    }
+
     // MARK: Dismiss confirmation alert (disabled)
 
     var showDismissConfirmation: Bool = false
@@ -34,10 +46,6 @@ struct ProductsOnboardingAnnouncementCardViewModel: AnnouncementCardViewModelPro
     var dismissAlertTitle: String = ""
 
     var dismissAlertMessage: String = ""
-
-    func dontShowAgainTapped() {
-        // No-op
-    }
 
     func remindLaterTapped() {
         // No-op

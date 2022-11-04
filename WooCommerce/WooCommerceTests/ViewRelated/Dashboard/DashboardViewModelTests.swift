@@ -2,6 +2,7 @@ import XCTest
 import enum Networking.DotcomError
 import enum Yosemite.StatsActionV4
 import enum Yosemite.ProductAction
+import enum Yosemite.AppSettingsAction
 import enum Yosemite.JustInTimeMessageAction
 import struct Yosemite.JustInTimeMessage
 @testable import WooCommerce
@@ -99,6 +100,14 @@ final class DashboardViewModelTests: XCTestCase {
                 XCTFail("Received unsupported action: \(action)")
             }
         }
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .getFeatureAnnouncementVisibility(_, completion):
+                completion(.success(true))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
         stores.whenReceivingAction(ofType: JustInTimeMessageAction.self) { action in
             switch action {
             case let .loadMessage(_, _, _, completion):
@@ -114,6 +123,34 @@ final class DashboardViewModelTests: XCTestCase {
 
         // Then (check announcement image because it is unique and not localized)
         XCTAssertEqual(viewModel.announcementViewModel?.image, .emptyProductsImage)
+    }
+
+    func test_onboarding_announcement_not_displayed_when_previously_dismissed() {
+        // Given
+        MockABTesting.setVariation(.treatment(nil), for: .productsOnboardingBanner)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .checkProductsOnboardingEligibility(_, completion):
+                completion(.success(true))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .getFeatureAnnouncementVisibility(_, completion):
+                completion(.success(false))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+        let viewModel = DashboardViewModel(stores: stores)
+
+        // When
+        viewModel.syncAnnouncements(for: sampleSiteID)
+
+        // Then
+        XCTAssertNil(viewModel.announcementViewModel)
     }
 
     func test_view_model_syncs_just_in_time_messages_when_ineligible_for_products_onboarding() {

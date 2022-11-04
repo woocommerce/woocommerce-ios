@@ -162,7 +162,6 @@ private extension StorePickerCoordinator {
     }
 }
 
-// TODO Add tests
 private extension StorePickerCoordinator {
     /// How the store picker view is presented.
     enum PresentationStyle {

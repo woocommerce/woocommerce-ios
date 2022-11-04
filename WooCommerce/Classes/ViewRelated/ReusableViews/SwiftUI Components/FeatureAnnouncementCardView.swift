@@ -30,7 +30,7 @@ struct FeatureAnnouncementCardView: View {
                 BadgeView(type: viewModel.badgeType)
                     .padding(.leading, Layout.padding)
                 Spacer()
-                if viewModel.showDismissButton, let dismiss = dismiss {
+                if let dismiss = dismiss {
                     Button(action: {
                         if viewModel.showDismissConfirmation {
                             showingDismissActionSheet = true

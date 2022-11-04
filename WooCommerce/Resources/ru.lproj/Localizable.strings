@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-10-25 09:54:03+0000 */
+/* Translation-Revision-Date: 2022-11-03 14:54:05+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -428,6 +428,9 @@ which should be translated separately and considered part of this sentence. */
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Добавить изображение продукта";
 
+/* Description for the option to create product manually */
+"Add a product manually." = "Добавьте товар вручную.";
+
 /* Placeholder text in Product Purchase Note screen */
 "Add a purchase note..." = "Добавьте сообщению покупателю...";
 
@@ -448,6 +451,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press enter" = "Добавьте каждую опцию и нажмите \"Ввод\".";
+
+/* Title for the option to create product manually */
+"Add manually" = "Добавить вручную";
 
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
@@ -565,6 +571,9 @@ which should be translated separately and considered part of this sentence. */
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "Почти готово! Введите проверочный код из приложения Authenticator.";
 
+/* Subtitle for the login button on the account creation form. */
+"Already registered?" = "Уже зарегистрированы?";
+
 /* Instruction text to explain to help users type their password instead of using magic link login option. */
 "Alternatively, you may enter the password for this account." = "В качестве альтернативы можно ввести пароль для этой учётной записи.";
 
@@ -596,6 +605,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* A failure reason for when an error HTTP status code was returned from the site. */
 "An HTTP error code was returned." = "Получен статус ошибки HTTP.";
+
+/* Account creation error when the email is already associated with an existing WP.com account. */
+"An account with this email already exists." = "Учётная запись с этим адресом эл. почты уже существует.";
 
 /* Default error message displayed when unable to close user account. */
 "An error occured while closing account." = "При закрытии учётной записи произошла ошибка.";
@@ -823,6 +835,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of one of the elements in the CTA View for installing WCShip extension */
 "Buy postage when you need it" = "Оплачивайте почтовые сборы по мере необходимости";
 
+/* Terms of service format on the account creation form. */
+"By continuing, you agree to our %1$@." = "Продолжая, вы принимаете %1$@.";
+
 /* Legal disclaimer for logging in. The underscores _..._ denote underline. */
 "By continuing, you agree to our _Terms of Service_." = "Продолжая, вы принимаете _Условия предоставления услуг_.";
 
@@ -1032,6 +1047,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation title on the shipping label states of a country selector screen */
 "Choose a State" = "Выберите штат";
+
+/* Title of the password field on the account creation form. */
+"Choose a password" = "Выберите пароль";
 
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "Выбрать с устройства";
@@ -1339,6 +1357,9 @@ which should be translated separately and considered part of this sentence. */
 /* The button title text for creating a new account. */
 "Create Account" = "Создать учетную запись";
 
+/* Action button linking to create WooCommerce store flow.Presented when logging in with an email address that is not a WordPress.com account */
+"Create An Account" = "Создать учётную запись";
+
 /* Title of the create coupon button on the coupon list screen when it's empty */
 "Create Coupon" = "Создать купон";
 
@@ -1346,6 +1367,12 @@ which should be translated separately and considered part of this sentence. */
    Option to create new shipping label from the action sheet on Products section of Order Details screen
    Text on the button that starts shipping label creation */
 "Create Shipping Label" = "Создание транспортной этикетки";
+
+/* Navigates to a new flow for site creation. */
+"Create a Site" = "Создать сайт";
+
+/* Button displayed on the prologue screen of the simplified login flow to create a new store */
+"Create a Store" = "Создать магазин";
 
 /* Description for fixed product discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a fixed total discount for selected products" = "Создайте фиксированную скидку на выбранные товары";
@@ -1787,7 +1814,8 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the email address text field.
    Placeholder for a textfield. The user may enter their email address.
-   Placeholder for the email address textfield. */
+   Placeholder for the email address textfield.
+   Placeholder of the email field on the account creation form. */
 "Email address" = "Адрес e-mail";
 
 /* Label for yes/no switch - emailing the note to customer. */
@@ -1928,6 +1956,9 @@ which should be translated separately and considered part of this sentence. */
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "Введите пароль вашей учетной записи WordPress.com.";
 
+/* Instructional text shown when requesting the user's password for WPCom login. */
+"Enter the password for your account." = "Введите пароль для учётной записи.";
+
 /* Add custom shipping carrier. Placeholder of cell presenting carrier link */
 "Enter tracking link" = "Введите ссылку на отслеживание";
 
@@ -1936,6 +1967,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Enter your account information for {site url}. Asks the user to enter a username and password for their self-hosted site. */
 "Enter your account information for %@." = "Введите данные своей учетной записи для %@.";
+
+/* Sign in instructions on the 'log in using WordPress.com account' screen. */
+"Enter your email address to get started." = "Введите адрес эл. почты, чтобы начать работу.";
 
 /* Instruction text on the initial email address entry screen. */
 "Enter your email address to log in or create a WordPress.com account." = "Введите адрес эл. почты, чтобы войти, или создайте учетную запись WordPress.com.";
@@ -2152,6 +2186,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text field name in Edit Address Form */
 "First name" = "Имя";
 
+/* Subtitle for the account creation form. */
+"First, let’s create your account." = "Сначала создадим вам учётную запись.";
+
 /* Name of fixed cart discount type */
 "Fixed Cart Discount" = "Фиксированная скидка на сумму корзины";
 
@@ -2206,6 +2243,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Local notification body when the user encounters an error logging in with site address. */
 "Get some help!" = "Обратитесь за помощью!";
+
+/* Title of the submit button on the account creation form. */
+"Get started" = "Начало работы";
+
+/* Title for the account creation form. */
+"Get started in minutes" = "Приступайте к работе за считанные минуты";
 
 /* Title of the Jetpack benefits banner. */
 "Get the full experience with Jetpack" = "Все возможности с Jetpack";
@@ -2343,6 +2386,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "Что можно улучшить?";
+
+/* Message title of bottom sheet for selecting a template or manual product */
+"How do you want to start?" = "С чего начнём?";
 
 /* The title of the button for giving a positive feedback for the app. */
 "I Like It" = "Мне нравится";
@@ -2662,6 +2708,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
 "Learn more about Jetpack" = "Дополнительные сведения о Jetpack";
 
+/* Title of button in the simplified login prologue screen for learning more about WooCommerce. */
+"Learn more about WooCommerce" = "Подробнее о WooCommerce";
+
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
 "Learn more about creating labels with your mobile device" = "Узнать больше о распечатке этикеток с вашего мобильного устройства";
 
@@ -2740,7 +2789,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Accessibility label for placeholder rows while products are loading */
 "Loading products" = "Загрузка товаров";
 
-/* Button title.  Tapping takes the user to the login form.
+/* Button title in the simplified login prologue screen. Takes the user to the login flow.
+   Button title.  Tapping takes the user to the login form.
    Log In button label.
    View title during the log in process. */
 "Log In" = "Войти";
@@ -2758,6 +2808,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Explains that the files are sorted by LIFO date: most recent day listed first. */
 "Log files by created date" = "Файлы журнала по дате создания";
+
+/* Title of the login button on the account creation form. */
+"Log in" = "Войти";
 
 /* A generic error message for a failed log in. */
 "Log in failed. Please try again." = "Не удалось выполнить вход. Повторите попытку.";
@@ -3377,11 +3430,15 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Login dialog password placeholder
    Password field title in Product Visibility
    Password placeholder
-   Placeholder for the password textfield. */
+   Placeholder for the password textfield.
+   Placeholder of the password field on the account creation form. */
 "Password" = "Пароль";
 
 /* One of the possible options in Product Visibility */
 "Password Protected" = "Защищен паролем";
+
+/* Account creation error when the password is invalid. */
+"Password must be at least 6 characters." = "Пароль должен содержать не менее шести символов.";
 
 /* Paste without Formatting Menu Item */
 "Paste without Formatting" = "Вставить без форматирования";
@@ -3578,7 +3635,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Body text for the default store picker error screen */
 "Please try again or reach out to us and we'll be happy to assist you!" = "Повторите попытку или обратитесь к нам.";
 
-/* The message of the alert when there is an error uploading an image */
+/* Account creation error when an unexpected error occurs.
+   The message of the alert when there is an error uploading an image */
 "Please try again." = "Повторите попытку.";
 
 /* Error message when Jetpack activation fails */
@@ -4227,6 +4285,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Coupons Search Placeholder */
 "Search all coupons" = "Поиск всех купонов";
 
+/* Customer Search Placeholder */
+"Search all customers" = "Поиск по всем клиентам";
+
 /* Orders Search Placeholder */
 "Search all orders" = "Поиск по всем заказам";
 
@@ -4673,6 +4734,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The details on the placeholder overlay when there are no products on the Products tab */
 "Start selling today by adding your first product to the store." = "Добавьте в магазин первый продукт, чтобы уже сегодня приступить к продаже товаров.";
 
+/* Title for the option to create a template product */
+"Start with a template" = "Начните с шаблона";
+
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %@, ending period %@" = "Период начала — %1$@, период окончания — %2$@";
 
@@ -4915,7 +4979,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "Расскажите нам о %1$@...";
 
-/* The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen.
+/* Terms of service link on the account creation form.
+   The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen.
    Title of button that displays the App's terms of service */
 "Terms of Service" = "Условия предоставления услуг";
 
@@ -5242,9 +5307,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "Этот адрес электронной почты не зарегистрирован на WordPress.com.";
 
-/* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
-"This email isn't used with a WordPress.com account." = "Этот адрес эл. почты не используется с учётной записью WordPress.com.";
-
 /* Error for missing package details on the Add New Custom Package screen in Shipping Label flow */
 "This field is required" = "Обязательное поле";
 
@@ -5419,6 +5481,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Button to try to refund a payment again. Presented to users after refunding a payment fails
    Try Again button on the error alert when fetching system status report fails */
 "Try Again" = "Попробуйте еще раз.";
+
+/* Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
+"Try Another Address" = "Использовать другой адрес";
 
 /* Message from the in-person payment card reader prompting user to retry a payment using a different card */
 "Try Another Card" = "Попробуйте другую карту";
@@ -5765,6 +5830,12 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Action to use the address in Shipping Label Suggested screen as suggested */
 "Use Suggested Address" = "Использовать предложенный адрес";
 
+/* Description for the option to create a template product */
+"Use a template to create physical, virtual, and variable products." = "Используйте готовый шаблон для создания физических, цифровых и вариативных товаров.";
+
+/* Account creation error when the email is invalid. */
+"Use a working email address, so you can receive our messages." = "Чтобы получать наши сообщения, укажите действующий адрес электронной почты.";
+
 /* Title for the Use as Billing Address switch in the Address form */
 "Use as Billing Address" = "Это платёжный адрес";
 
@@ -6091,6 +6162,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Subject of new Zendesk ticket. */
 "WooCommerce for iOS Support" = "Поддержка WooCommerce для iOS";
 
+/* Caption displayed in the simplified prologue screen */
+"WooCommerce is a customizable, open-source eCommerce platform built on WordPress." = "WooCommerce — это настраиваемая платформа электронной торговли с отрытым исходным кодом, созданная на WordPress.";
+
 /* Menu option for selecting media from the site's media library.
    Navigation bar title for WordPress Media Library image picker */
 "WordPress Media Library" = "Библиотека медиафайлов WordPress";
@@ -6164,6 +6238,12 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "Для сбора платежей требуется обновить ваш платёжный терминал. Отмена приведёт к блокировке подключения терминала.";
+
+/* Title of the email field on the account creation form. */
+"Your email address" = "Ваш адрес электронной почты";
+
+/* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
+"Your email isn't used with a WordPress.com account" = "Адрес эл. почты не используется с учётной записью WordPress.com";
 
 /* Message displayed when a coupon was successfully created */
 "Your new coupon was created!" = "Новый купон создан.";

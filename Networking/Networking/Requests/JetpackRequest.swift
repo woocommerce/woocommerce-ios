@@ -4,7 +4,7 @@ import Alamofire
 
 /// Represents a Jetpack-Tunneled WordPress.com Endpoint
 ///
-struct JetpackRequest: URLRequestConvertible {
+struct JetpackRequest: Request {
 
     /// WordPress.com API Version: By Default, we'll go thru Mark 1.1.
     ///
@@ -59,6 +59,10 @@ struct JetpackRequest: URLRequestConvertible {
         let dotcomRequest = try dotcomEndpoint.asURLRequest()
 
         return try dotcomEncoder.encode(dotcomRequest, with: dotcomParams)
+    }
+
+    func responseDataValidator() -> ResponseDataValidator {
+        return DotcomValidator()
     }
 }
 

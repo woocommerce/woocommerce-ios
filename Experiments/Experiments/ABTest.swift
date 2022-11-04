@@ -7,11 +7,6 @@ public enum ABTest: String, CaseIterable {
     /// `An enum with no cases cannot declare a raw type`
     case null
 
-    /// A/A test for ExPlat integration in the logged in state.
-    /// Experiment ref: pbxNRc-1QS-p2
-    ///
-    case aaTestLoggedIn202210 = "woocommerceios_explat_aa_test_logged_in_202210"
-
     /// A/A test to make sure there is no bias in the logged out state.
     /// Experiment ref: pbxNRc-1S0-p2
     case aaTestLoggedOut = "woocommerceios_explat_aa_test_logged_out_202211"
@@ -35,7 +30,7 @@ public enum ABTest: String, CaseIterable {
     /// When adding a new experiment, add it to the appropriate case depending on its context (logged-in or logged-out experience).
     public var context: ExperimentContext {
         switch self {
-        case .aaTestLoggedIn202210, .productsOnboardingBanner:
+        case .productsOnboardingBanner:
             return .loggedIn
         case .aaTestLoggedOut, .abTestLoginWithWPComOnly:
             return .loggedOut

@@ -15,11 +15,14 @@ final class DashboardViewModel {
 
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
+    private let analytics: Analytics
 
     init(stores: StoresManager = ServiceLocator.stores,
-         featureFlags: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.stores = stores
         self.featureFlagService = featureFlags
+        self.analytics = analytics
     }
 
     /// Syncs store stats for dashboard UI.
@@ -155,15 +158,24 @@ final class DashboardViewModel {
             hook: .adminNotices) { [weak self] result in
                 guard let self = self else { return }
                 switch result {
-                case let .success(.some(message)):
+                case let .success(messages):
+                    guard let message = messages.first else {
+                        return
+                    }
+                    self.analytics.track(event:
+                            .JustInTimeMessage.fetchSuccess(source: Constants.dashboardScreenName,
+                                                            messageID: message.messageID,
+                                                            count: Int64(messages.count)))
                     let viewModel = JustInTimeMessageAnnouncementCardViewModel(
                         justInTimeMessage: message,
                         screenName: Constants.dashboardScreenName,
                         siteID: siteID)
                     self.announcementViewModel = viewModel
                     viewModel.$showWebViewSheet.assign(to: &self.$showWebViewSheet)
-                default:
-                    break
+                case let .failure(error):
+                    self.analytics.track(event:
+                            .JustInTimeMessage.fetchFailure(source: Constants.dashboardScreenName,
+                                                            error: error))
                 }
             }
         stores.dispatch(action)

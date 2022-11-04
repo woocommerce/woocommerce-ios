@@ -44,25 +44,22 @@ private extension JustInTimeMessageStore {
     func loadMessage(for siteID: Int64,
                      screen: String,
                      hook: JustInTimeMessageHook,
-                     completion: @escaping (Result<JustInTimeMessage?, Error>) -> ()) {
+                     completion: @escaping (Result<[JustInTimeMessage], Error>) -> ()) {
         Task {
             let result = await remote.loadAllJustInTimeMessages(
                     for: siteID,
                     messagePath: .init(app: .wooMobile,
                                        screen: screen,
                                        hook: hook))
-            let displayResult = result.map(topDisplayMessage(_:))
+            let displayResult = result.map(displayMessages(_:))
             await MainActor.run {
                 completion(displayResult)
             }
         }
     }
 
-    func topDisplayMessage(_ messages: [Networking.JustInTimeMessage]) -> JustInTimeMessage? {
-        guard let topMessage = messages.first else {
-            return nil
-        }
-        return JustInTimeMessage(message: topMessage)
+    func displayMessages(_ messages: [Networking.JustInTimeMessage]) -> [JustInTimeMessage] {
+        return messages.map { JustInTimeMessage(message: $0) }
     }
 
     func dismissMessage(_ message: JustInTimeMessage,

@@ -3,6 +3,8 @@
 11.1
 -----
 - [**] You can now search customers when creating or editing an order. [https://github.com/woocommerce/woocommerce-ios/issues/7741]
+- [internal] Store creation is available from the login prologue, login email error screen, and store picker. [https://github.com/woocommerce/woocommerce-ios/pull/8023]
+- [internal] The login flow is simplified with only the option to log in with WordPress.com. This flow is presented in parallel with the existing flow in an A/B test experiment. [https://github.com/woocommerce/woocommerce-ios/pull/7996]
 
 11.0
 -----

@@ -697,6 +697,7 @@
 		DEC51AFB2769C66B009F3DF4 /* SystemStatusMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51AFA2769C66B009F3DF4 /* SystemStatusMapperTests.swift */; };
 		DEC51B02276AFB35009F3DF4 /* SystemStatus+DropinMustUsePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51B01276AFB34009F3DF4 /* SystemStatus+DropinMustUsePlugin.swift */; };
 		E12552C526385B05001CEE70 /* ShippingLabelAddressValidationSuccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12552C426385B05001CEE70 /* ShippingLabelAddressValidationSuccess.swift */; };
+		E137619929151C7400FD098F /* error-wp-rest-forbidden.json in Resources */ = {isa = PBXBuildFile; fileRef = E137619829151C7400FD098F /* error-wp-rest-forbidden.json */; };
 		E13BAD5328F8625600217769 /* InAppPurchasesRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E13BAD5228F8625600217769 /* InAppPurchasesRemoteTests.swift */; };
 		E16C59B528F8640B007D55BB /* InAppPurchaseOrderResultMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16C59B428F8640B007D55BB /* InAppPurchaseOrderResultMapper.swift */; };
 		E16C59B728F92782007D55BB /* iap-sample-receipt.json in Resources */ = {isa = PBXBuildFile; fileRef = E16C59B628F92782007D55BB /* iap-sample-receipt.json */; };
@@ -1439,6 +1440,7 @@
 		DEC51AFA2769C66B009F3DF4 /* SystemStatusMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusMapperTests.swift; sourceTree = "<group>"; };
 		DEC51B01276AFB34009F3DF4 /* SystemStatus+DropinMustUsePlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemStatus+DropinMustUsePlugin.swift"; sourceTree = "<group>"; };
 		E12552C426385B05001CEE70 /* ShippingLabelAddressValidationSuccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddressValidationSuccess.swift; sourceTree = "<group>"; };
+		E137619829151C7400FD098F /* error-wp-rest-forbidden.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "error-wp-rest-forbidden.json"; sourceTree = "<group>"; };
 		E13BAD5228F8625600217769 /* InAppPurchasesRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchasesRemoteTests.swift; sourceTree = "<group>"; };
 		E16C59B428F8640B007D55BB /* InAppPurchaseOrderResultMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchaseOrderResultMapper.swift; sourceTree = "<group>"; };
 		E16C59B628F92782007D55BB /* iap-sample-receipt.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "iap-sample-receipt.json"; sourceTree = "<group>"; };
@@ -2217,6 +2219,7 @@
 				68F48B1228E3E5750045C15B /* wc-analytics-customers.json */,
 				688908AD28FF920C0081A07E /* customer-2.json */,
 				03EB99952907F03000F06A39 /* empty-data-array.json */,
+				E137619829151C7400FD098F /* error-wp-rest-forbidden.json */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -2665,6 +2668,7 @@
 				B5A24179217F98F600595DEF /* notifications-load-all.json in Resources */,
 				314EDF2927C02CC100A56B6F /* stripe-account-complete-empty-descriptor.json in Resources */,
 				028CB71F2902589E00331C09 /* create-account-error-invalid-email.json in Resources */,
+				E137619929151C7400FD098F /* error-wp-rest-forbidden.json in Resources */,
 				31A451CE27863A2E00FE81AA /* stripe-account-wrong-json.json in Resources */,
 				028CB718290223CB00331C09 /* account-username-suggestions.json in Resources */,
 				0282DD91233A120A006A5FDB /* products-search-photo.json in Resources */,

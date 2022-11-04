@@ -201,8 +201,8 @@ public class Remote: NSObject {
     ///
     /// - Parameter request: Request that should be performed.
     /// - Returns: The result from the JSON parsed response for the expected type.
-    func enqueue<M: Mapper>(_ request: Request, mapper: M) async throws -> Result<M.Output, Error> {
-        try await withCheckedThrowingContinuation { continuation in
+    func enqueue<M: Mapper>(_ request: Request, mapper: M) async -> Result<M.Output, Error> {
+        await withCheckedContinuation { continuation in
             network.responseData(for: request) { [weak self] result in
                 guard let self else { return }
 

@@ -337,10 +337,8 @@ extension MainTabBarController {
             }
             let siteID = Int64(note.meta.identifier(forKey: .site) ?? Int.min)
 
-            switchToStore(with: siteID, onCompletion: { siteChanged in
-                if siteChanged {
-                    presentNotificationDetails(for: note)
-                }
+            switchToStore(with: siteID, onCompletion: { _ in
+                presentNotificationDetails(for: note)
             })
         }
         ServiceLocator.stores.dispatch(action)

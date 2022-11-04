@@ -21,7 +21,7 @@ public enum ABTest: String, CaseIterable {
     case productsOnboardingBanner = "woocommerceios_products_onboarding_first_product_banner"
 
     /// A/B test for the Products Onboarding product creation type bottom sheet after tapping the "Add Product" CTA.
-    /// Experiment ref: TODO: Fill exp URL
+    /// Experiment ref: pbxNRc-28r-p2
     case productsOnboardingTemplateProducts = "woocommerceios_products_onboarding_template_products"
 
     /// Returns a variation for the given experiment

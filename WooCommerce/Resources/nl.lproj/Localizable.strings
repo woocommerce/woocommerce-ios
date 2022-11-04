@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-11-03 16:54:04+0000 */
+/* Translation-Revision-Date: 2022-11-04 04:19:56+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -836,7 +836,7 @@ which should be translated separately and considered part of this sentence. */
 "Buy postage when you need it" = "Koop posttarief wanneer je het nodig hebt";
 
 /* Terms of service format on the account creation form. */
-"By continuing, you agree to our %1$@." = "Door verder te gaan, ga je akkoord met onze % $1@.";
+"By continuing, you agree to our %1$@." = "Door verder te gaan, ga je akkoord met onze %1$@.";
 
 /* Legal disclaimer for logging in. The underscores _..._ denote underline. */
 "By continuing, you agree to our _Terms of Service_." = "Door verder te gaan, ga je akkoord met onze _Servicevoorwaarden_.";

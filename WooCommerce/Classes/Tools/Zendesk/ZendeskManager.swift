@@ -217,7 +217,6 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     private var userEmail: String?
     private var haveUserIdentity = false
     private var alertNameField: UITextField?
-    private var supportRequestTags = [String]()
     private var ippTags = [String]()
     private var getSitePlugins: ()
 
@@ -683,7 +682,6 @@ private extension ZendeskManager {
         var defaultTags = getTags(supportSourceTag: supportSourceTag)
         let ippTags = self.ippTags
         var allTags = defaultTags + ippTags
-        print(allTags)
 
         requestConfig.tags = allTags
 
@@ -1075,9 +1073,6 @@ private extension ZendeskManager {
         static let paymentsSubcategory = "payment"
         static let paymentsProduct = "woocommerce_payments"
         static let paymentsProductArea = "product_area_woo_payment_gateway"
-        // WIP
-        static let stripePluginName = "WooCommerce Stripe Gateway"
-        static let wcPayPluginName = "WooCommerce Payments"
         static let woo_mobile_stripe_not_installed = "woo_mobile_stripe_not_installed"
         static let woo_mobile_stripe_installed_and_not_activated = "woo_mobile_stripe_installed_and_not_activated"
         static let woo_mobile_stripe_installed_and_activated = "woo_mobile_stripe_installed_and_activated"

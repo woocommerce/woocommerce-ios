@@ -3,6 +3,7 @@
 11.1
 -----
 - [**] You can now search customers when creating or editing an order. [https://github.com/woocommerce/woocommerce-ios/issues/7741]
+- [internal] Store creation is available from the login prologue, login email error screen, and store picker. [https://github.com/woocommerce/woocommerce-ios/pull/8023]
 
 11.0
 -----

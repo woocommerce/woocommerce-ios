@@ -293,10 +293,13 @@ private extension DashboardViewController {
     }
 
     private func openWebView(viewModel: WebViewSheetViewModel) {
-        let cardReaderWebview = WebViewSheet(viewModel: viewModel) { [weak self] in
-            self?.dismiss(animated: true)
+        let webViewSheet = WebViewSheet(viewModel: viewModel) { [weak self] in
+            guard let self = self else { return }
+            self.dismiss(animated: true)
+            self.viewModel.syncAnnouncements(for: self.siteID)
         }
-        let hostingController = UIHostingController(rootView: cardReaderWebview)
+        let hostingController = UIHostingController(rootView: webViewSheet)
+        hostingController.presentationController?.delegate = self
         present(hostingController, animated: true, completion: nil)
     }
 
@@ -383,9 +386,18 @@ private extension DashboardViewController {
     }
 }
 
+// MARK: - Delegate conformance
 extension DashboardViewController: DashboardUIScrollDelegate {
     func dashboardUIScrollViewDidScroll(_ scrollView: UIScrollView) {
         hiddenScrollView.updateFromScrollViewDidScrollEventForLargeTitleWorkaround(scrollView)
+    }
+}
+
+extension DashboardViewController: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        if presentationController.presentedViewController is UIHostingController<WebViewSheet> {
+            viewModel.syncAnnouncements(for: siteID)
+        }
     }
 }
 
@@ -497,6 +509,7 @@ private extension DashboardViewController {
 
     func pullToRefresh() async {
         ServiceLocator.analytics.track(.dashboardPulledToRefresh)
+        viewModel.syncAnnouncements(for: siteID)
         await reloadDashboardUIStatsVersion(forced: true)
     }
 }

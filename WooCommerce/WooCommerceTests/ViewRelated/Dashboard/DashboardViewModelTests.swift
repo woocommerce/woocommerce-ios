@@ -235,4 +235,21 @@ final class DashboardViewModelTests: XCTestCase {
         assertEqual("Networking.DotcomError", properties["error_domain"] as? String)
         assertEqual("Dotcom Invalid REST Route", properties["error_description"] as? String)
     }
+
+    func test_when_no_messages_are_received_existing_messages_are_removed() {
+        // Given
+        prepareStoresToShowJustInTimeMessage(.success([]))
+
+        let viewModel = DashboardViewModel(stores: stores, analytics: analytics)
+        viewModel.announcementViewModel = JustInTimeMessageAnnouncementCardViewModel(
+            justInTimeMessage: .fake(),
+            screenName: "my_store",
+            siteID: sampleSiteID)
+
+        // When
+        viewModel.syncAnnouncements(for: sampleSiteID)
+
+        // Then
+        XCTAssertNil(viewModel.announcementViewModel)
+    }
 }

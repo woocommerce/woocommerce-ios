@@ -76,4 +76,30 @@ final class StorePickerCoordinatorTests: XCTestCase {
         let storePickerNavigationController = try XCTUnwrap(navigationController.presentedViewController as? UINavigationController)
         assertThat(storePickerNavigationController.topViewController, isAnInstanceOf: StorePickerViewController.self)
     }
+
+    func test_login_configuration_shows_storePicker() throws {
+        // Given
+        let coordinator = StorePickerCoordinator(navigationController, config: .login)
+
+        // When
+        coordinator.start()
+
+        // Then
+        waitUntil {
+            self.navigationController.topViewController is StorePickerViewController
+        }
+    }
+
+    func test_listStores_configuration_shows_storePicker() throws {
+        // Given
+        let coordinator = StorePickerCoordinator(navigationController, config: .listStores)
+
+        // When
+        coordinator.start()
+
+        // Then
+        waitUntil {
+            self.navigationController.topViewController is StorePickerViewController
+        }
+    }
 }

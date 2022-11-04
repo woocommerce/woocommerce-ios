@@ -40,7 +40,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .storeCreationMVP:
             return true
         case .justInTimeMessagesOnDashboard:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .productsOnboarding:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .performanceMonitoring,

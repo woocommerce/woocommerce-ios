@@ -158,7 +158,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         return resultsController
     }()
 
-    func observePlugins(onDataChanged: @escaping () -> Void) {
+    private func observePlugins(onDataChanged: @escaping () -> Void) {
         resultsController.onDidResetContent = onDataChanged
 
         if let stripe = resultsController.fetchedObjects.first(where: { $0.plugin == Constants.stripe_plugin_slug } ) {
@@ -375,7 +375,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         return decorateTags(tags: tags, supportSourceTag: supportSourceTag)
     }
 
-    func getWCPayTags(supportSourceTag: String?) -> [String] {
+    private func getWCPayTags(supportSourceTag: String?) -> [String] {
         let tags = [Constants.platformTag,
                     Constants.sdkTag,
                     Constants.paymentsProduct,
@@ -386,7 +386,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         return decorateTags(tags: tags, supportSourceTag: supportSourceTag)
     }
 
-    func appendIPPstatusTagsIfNeeded(decoratedTags: [String]) -> [String] {
+    private func appendIPPstatusTagsIfNeeded(decoratedTags: [String]) -> [String] {
         var tags = decoratedTags
         observePlugins(onDataChanged: {
             tags.append(contentsOf: self.ippTags)
@@ -394,7 +394,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         return tags
     }
 
-    func decorateTags(tags: [String], supportSourceTag: String?) -> [String] {
+    private func decorateTags(tags: [String], supportSourceTag: String?) -> [String] {
         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
             return tags
         }

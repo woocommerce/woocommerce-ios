@@ -3,6 +3,7 @@ import Yosemite
 import WooFoundation
 import protocol Storage.StorageManagerType
 import class Networking.ProductsRemote
+import enum Experiments.ABTest
 
 /// Controls navigation for the flow to add a product given a navigation controller.
 /// This class is not meant to be retained so that its life cycle is throughout the navigation. Example usage:
@@ -32,7 +33,7 @@ final class AddProductCoordinator: Coordinator {
     init(siteID: Int64,
          sourceBarButtonItem: UIBarButtonItem,
          sourceNavigationController: UINavigationController,
-         isProductCreationTypeEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productsOnboarding),
+         isProductCreationTypeEnabled: Bool = ABTest.productsOnboardingTemplateProducts.variation == .treatment(nil),
          storage: StorageManagerType = ServiceLocator.storageManager,
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
         self.siteID = siteID
@@ -47,7 +48,7 @@ final class AddProductCoordinator: Coordinator {
     init(siteID: Int64,
          sourceView: UIView,
          sourceNavigationController: UINavigationController,
-         isProductCreationTypeEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productsOnboarding),
+         isProductCreationTypeEnabled: Bool = ABTest.productsOnboardingTemplateProducts.variation == .treatment(nil),
          storage: StorageManagerType = ServiceLocator.storageManager,
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
         self.siteID = siteID

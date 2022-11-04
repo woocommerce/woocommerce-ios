@@ -28,21 +28,22 @@ final class AccountCreationFormViewModel: ObservableObject {
     private let analytics: Analytics
     private var subscriptions: Set<AnyCancellable> = []
 
-    init(stores: StoresManager = ServiceLocator.stores,
+    init(debounceDuration: Double = Constants.fieldDebounceDuration,
+         stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.stores = stores
         self.analytics = analytics
 
         $email
             .removeDuplicates()
-            .debounce(for: .seconds(Constants.fieldDebounceDuration), scheduler: DispatchQueue.main)
+            .debounce(for: .seconds(debounceDuration), scheduler: DispatchQueue.main)
             .sink { [weak self] email in
                 self?.validateEmail(email)
             }.store(in: &subscriptions)
 
         $password
             .removeDuplicates()
-            .debounce(for: .seconds(Constants.fieldDebounceDuration), scheduler: DispatchQueue.main)
+            .debounce(for: .seconds(debounceDuration), scheduler: DispatchQueue.main)
             .sink { [weak self] password in
                 self?.validatePassword(password)
             }.store(in: &subscriptions)

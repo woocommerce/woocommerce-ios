@@ -91,8 +91,6 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
     @State private var showingCustomerSearch: Bool = false
 
-    let isSearchCustomersEnabled = DefaultFeatureFlagService().isFeatureFlagEnabled(.orderCreationSearchCustomers)
-
     var body: some View {
         Group {
             ScrollView {
@@ -151,13 +149,11 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                 })
             }
             ToolbarItem(placement: .automatic) {
-                if isSearchCustomersEnabled {
-                    Button(action: {
-                        showingCustomerSearch = true
-                    }, label: {
-                        Image(systemName: "magnifyingglass")
-                    })
-                }
+                Button(action: {
+                    showingCustomerSearch = true
+                }, label: {
+                    Image(systemName: "magnifyingglass")
+                })
             }
             ToolbarItem(placement: .confirmationAction) {
                 navigationBarTrailingItem()

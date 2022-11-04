@@ -70,10 +70,6 @@ public enum FeatureFlag: Int {
     ///
     case searchProductsBySKU
 
-    /// Enables the Search Customers functionality in the Order Creation screen
-    ///
-    case orderCreationSearchCustomers
-
     /// Enables signing up for a WP.com account.
     ///
     case wpcomSignup
@@ -85,11 +81,6 @@ public enum FeatureFlag: Int {
     /// Store creation MVP.
     ///
     case storeCreationMVP
-
-    /// Temporary feature flag for the simplified login flow.
-    /// TODO: replace with A/B testing.
-    ///
-    case simplifiedLoginFlowI1
 
     /// Just In Time Messages on Dashboard
     ///

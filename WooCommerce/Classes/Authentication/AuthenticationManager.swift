@@ -55,10 +55,7 @@ class AuthenticationManager: Authentication {
     func initialize(loggedOutAppSettings: LoggedOutAppSettingsProtocol) {
         let isWPComMagicLinkPreferredToPassword = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasis)
         let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasisM2)
-        let isFeatureCarouselShown = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginPrologueOnboarding) == false
-        || (loggedOutAppSettings.hasFinishedOnboarding == true &&
-            ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifiedLoginFlowI1) == false)
-        let isSimplifiedLoginI1Enabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifiedLoginFlowI1)
+        let isSimplifiedLoginI1Enabled = ABTest.abTestLoginWithWPComOnly.variation != .control
         let isStoreCreationMVPEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
@@ -84,9 +81,9 @@ class AuthenticationManager: Authentication {
                                                                 enableWPComLoginOnlyInPrologue: isSimplifiedLoginI1Enabled,
                                                                 enableSiteCreation: isStoreCreationMVPEnabled,
                                                                 enableSocialLogin: !isSimplifiedLoginI1Enabled,
-                                                                emphasizeEmailForWPComPassword: isSimplifiedLoginI1Enabled,
-                                                                wpcomPasswordInstructions: isSimplifiedLoginI1Enabled ?
-                                                                AuthenticationConstants.wpcomPasswordInstructions : nil)
+                                                                emphasizeEmailForWPComPassword: true,
+                                                                wpcomPasswordInstructions:
+                                                                AuthenticationConstants.wpcomPasswordInstructions)
 
         let systemGray3LightModeColor = UIColor(red: 199/255.0, green: 199/255.0, blue: 204/255.0, alpha: 1)
         let systemLabelLightModeColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)
@@ -117,7 +114,7 @@ class AuthenticationManager: Authentication {
                                                 navBarBadgeColor: .primary,
                                                 navBarBackgroundColor: .appBar,
                                                 prologueTopContainerChildViewController:
-                                                    LoginPrologueViewController(isFeatureCarouselShown: isFeatureCarouselShown),
+                                                    LoginPrologueViewController(isFeatureCarouselShown: false),
                                                 statusBarStyle: .default)
 
         let getStartedInstructions = isSimplifiedLoginI1Enabled ?

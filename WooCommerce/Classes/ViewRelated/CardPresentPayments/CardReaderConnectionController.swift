@@ -703,7 +703,7 @@ private extension CardReaderConnectionController {
                                       retrySearch: @escaping () -> Void) -> ((UIViewController) -> Void)? {
         if let adminUrl = adminUrl {
             if let site = stores.sessionManager.defaultSite,
-               site.isWordPressStore {
+               site.isWordPressComStore {
                 return { [weak self] viewController in
                     self?.openWCSettingsInWebview(url: adminUrl, from: viewController, retrySearch: retrySearch)
                 }

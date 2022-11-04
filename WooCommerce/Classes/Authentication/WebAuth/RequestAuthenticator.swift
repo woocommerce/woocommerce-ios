@@ -43,7 +43,7 @@ class RequestAuthenticator: NSObject {
     convenience init?(site: Site, username: String, token: String) {
         var authenticationType: DotComAuthenticationType = .regular
 
-        if site.isWordPressStore {
+        if site.isWordPressComStore {
             authenticationType = .atomic(loginURL: site.loginURL)
             // TODO: consider private atomic case
         }

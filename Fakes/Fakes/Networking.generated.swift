@@ -1514,7 +1514,7 @@ extension Networking.Site {
             isJetpackThePluginInstalled: .fake(),
             isJetpackConnected: .fake(),
             isWooCommerceActive: .fake(),
-            isWordPressStore: .fake(),
+            isWordPressComStore: .fake(),
             jetpackConnectionActivePlugins: .fake(),
             timezone: .fake(),
             gmtOffset: .fake()

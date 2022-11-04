@@ -18,7 +18,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .shippingLabelsOnboardingM1:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .newToWooCommerceLinkInLoginPrologue:
-            return true
+            return false
         case .loginPrologueOnboarding:
             return true
         case .loginErrorNotifications:
@@ -33,20 +33,12 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .searchProductsBySKU:
             return true
-        case .orderCreationSearchCustomers:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .wpcomSignup:
-            guard isFeatureFlagEnabled(.simplifiedLoginFlowI1) else {
-                return buildConfig == .localDeveloper || buildConfig == .alpha
-            }
-            // To disable automatically sending signup link for unknown email IDs
             return false
         case .inAppPurchases:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .storeCreationMVP:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .simplifiedLoginFlowI1:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .justInTimeMessagesOnDashboard:
             return true
         case .productsOnboarding:

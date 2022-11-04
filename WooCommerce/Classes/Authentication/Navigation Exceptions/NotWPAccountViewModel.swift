@@ -21,9 +21,7 @@ final class NotWPAccountViewModel: ULErrorViewModel {
 
     let isPrimaryButtonHidden: Bool
 
-    var secondaryButtonTitle: String {
-        isSimplifiedLoginI1Enabled ? Localization.tryAnotherAddress : Localization.restartLogin
-    }
+    let secondaryButtonTitle = Localization.tryAnotherAddress
     let isSecondaryButtonHidden: Bool
 
     private weak var viewController: UIViewController?
@@ -42,7 +40,6 @@ final class NotWPAccountViewModel: ULErrorViewModel {
         return button
     }()
 
-    private let isSimplifiedLoginI1Enabled: Bool
     private let analytics: Analytics
     private var storePickerCoordinator: StorePickerCoordinator?
 
@@ -50,7 +47,6 @@ final class NotWPAccountViewModel: ULErrorViewModel {
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.analytics = analytics
-        self.isSimplifiedLoginI1Enabled = featureFlagService.isFeatureFlagEnabled(.simplifiedLoginFlowI1)
         if let error = error as? SignInError,
            case let .invalidWPComEmail(source) = error,
            source == .wpComSiteAddress {
@@ -60,23 +56,14 @@ final class NotWPAccountViewModel: ULErrorViewModel {
         } else {
             isSecondaryButtonHidden = false
 
-            if isSimplifiedLoginI1Enabled {
-                primaryButtonTitle = Localization.createAnAccount
-                isPrimaryButtonHidden = !featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
-            } else {
-                primaryButtonTitle = Localization.loginWithSiteAddress
-                isPrimaryButtonHidden = false
-            }
+            primaryButtonTitle = Localization.createAnAccount
+            isPrimaryButtonHidden = !featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
         }
     }
 
     // MARK: - Actions
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        if isSimplifiedLoginI1Enabled {
-            createAnAccountButtonTapped(in: viewController)
-        } else {
-            loginWithSiteAddressButtonTapped()
-        }
+        createAnAccountButtonTapped(in: viewController)
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
@@ -110,11 +97,6 @@ private extension NotWPAccountViewModel {
         viewController?.present(fancyAlert, animated: true)
     }
 
-    func loginWithSiteAddressButtonTapped() {
-        let popCommand = NavigateToEnterSite()
-        popCommand.execute(from: viewController)
-    }
-
     func createAnAccountButtonTapped(in viewController: UIViewController?) {
         analytics.track(.createAccountOnInvalidEmailScreenTapped)
         guard let viewController,
@@ -140,10 +122,6 @@ private extension NotWPAccountViewModel {
         static let needHelpFindingEmail = NSLocalizedString("Need help finding the required email?",
                                                             comment: "Button linking to webview that explains what Jetpack is"
                                                             + "Presented when logging in with a site address that does not have a valid Jetpack installation")
-
-        static let loginWithSiteAddress = NSLocalizedString("Log in with your store address",
-                                                            comment: "Action button linking to instructions for enter another store."
-                                                            + "Presented when logging in with an email address that is not a WordPress.com account")
 
         static let createAnAccount = NSLocalizedString("Create An Account",
                                                        comment: "Action button linking to create WooCommerce store flow."

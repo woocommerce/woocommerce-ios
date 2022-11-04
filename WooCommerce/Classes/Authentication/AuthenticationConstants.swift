@@ -121,10 +121,10 @@ struct AuthenticationConstants {
         comment: "Legal disclaimer for signing up. The underscores _..._ denote underline."
     )
 
-    /// Create a Store button in Simplified login flow
+    /// Get Started button in Simplified login flow
     ///
     static let createSiteButtonTitle = NSLocalizedString(
-        "Create a Store",
+        "Get Started",
         comment: "Button displayed on the prologue screen of the simplified login flow to create a new store"
     )
 

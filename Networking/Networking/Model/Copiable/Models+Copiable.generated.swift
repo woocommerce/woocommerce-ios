@@ -1789,7 +1789,7 @@ extension Networking.Site {
         isJetpackThePluginInstalled: CopiableProp<Bool> = .copy,
         isJetpackConnected: CopiableProp<Bool> = .copy,
         isWooCommerceActive: CopiableProp<Bool> = .copy,
-        isWordPressStore: CopiableProp<Bool> = .copy,
+        isWordPressComStore: CopiableProp<Bool> = .copy,
         jetpackConnectionActivePlugins: CopiableProp<[String]> = .copy,
         timezone: CopiableProp<String> = .copy,
         gmtOffset: CopiableProp<Double> = .copy
@@ -1804,7 +1804,7 @@ extension Networking.Site {
         let isJetpackThePluginInstalled = isJetpackThePluginInstalled ?? self.isJetpackThePluginInstalled
         let isJetpackConnected = isJetpackConnected ?? self.isJetpackConnected
         let isWooCommerceActive = isWooCommerceActive ?? self.isWooCommerceActive
-        let isWordPressStore = isWordPressStore ?? self.isWordPressStore
+        let isWordPressComStore = isWordPressComStore ?? self.isWordPressComStore
         let jetpackConnectionActivePlugins = jetpackConnectionActivePlugins ?? self.jetpackConnectionActivePlugins
         let timezone = timezone ?? self.timezone
         let gmtOffset = gmtOffset ?? self.gmtOffset
@@ -1820,7 +1820,7 @@ extension Networking.Site {
             isJetpackThePluginInstalled: isJetpackThePluginInstalled,
             isJetpackConnected: isJetpackConnected,
             isWooCommerceActive: isWooCommerceActive,
-            isWordPressStore: isWordPressStore,
+            isWordPressComStore: isWordPressComStore,
             jetpackConnectionActivePlugins: jetpackConnectionActivePlugins,
             timezone: timezone,
             gmtOffset: gmtOffset

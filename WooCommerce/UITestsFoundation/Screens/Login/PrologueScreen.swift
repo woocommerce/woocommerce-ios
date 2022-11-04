@@ -30,13 +30,7 @@ public final class PrologueScreen: ScreenObject {
 
 extension PrologueScreen {
     static func findContinueButton(in app: XCUIApplication) -> XCUIElement {
-        let continueButton = app.buttons["Prologue Continue Button"]
-        if continueButton.waitForExistence(timeout: 1) {
-            return continueButton
-        } else {
-            // On simplified login flow, the button has different identifier
-            return app.buttons["Prologue Log In Button"]
-        }
+        app.buttons["Prologue Continue Button"]
     }
 
     public static func isSiteAddressLoginAvailable(in app: XCUIApplication = .init()) -> Bool {

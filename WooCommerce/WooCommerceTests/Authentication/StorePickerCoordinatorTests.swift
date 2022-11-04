@@ -1,5 +1,5 @@
-import WordPressAuthenticator
 import TestKit
+import WordPressAuthenticator
 import XCTest
 @testable import WooCommerce
 

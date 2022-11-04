@@ -3,17 +3,11 @@ import XCTest
 @testable import WooCommerce
 
 final class StoreCreationCoordinatorTests: XCTestCase {
-    private var stores: MockStoresManager!
-    private var analyticsProvider: MockAnalyticsProvider!
-    private var analytics: WooAnalytics!
     private var navigationController: UINavigationController!
     private let window = UIWindow(frame: UIScreen.main.bounds)
 
     override func setUp() {
         super.setUp()
-        stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
-        analyticsProvider = MockAnalyticsProvider()
-        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
 
         window.makeKeyAndVisible()
         navigationController = .init()
@@ -24,9 +18,7 @@ final class StoreCreationCoordinatorTests: XCTestCase {
         navigationController = nil
         window.resignKey()
         window.rootViewController = nil
-        analytics = nil
-        analyticsProvider = nil
-        stores = nil
+
         super.tearDown()
     }
 

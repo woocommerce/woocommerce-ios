@@ -1,1 +1,1 @@
-Bu sürümde daha kolay oturum açmanıza yardımcı olacak daha fazla tutarlılık düzeltmesi yapıldı. Artık WordPress.com hesabınızı Jetpack ile bağlayabilir ve mağazanıza çok daha hızlı erişebilirsiniz. Ayrıca uygulamamızı yalnızca iOS 15+ yüklü cihazları destekleyecek şekilde güncelledik. Uygulamayı kullanmaya devam etmek için lütfen cihazınızı iOS 15'e güncelleyin.
+Bu sürümde şaşırtıcı yeni özellikler bulunmasa da, yine de ona çok fazla sevgi katıyoruz! Birkaç hatayı düzelttik ve deneyiminizi daha sorunsuz hale getirmek için birkaç iyileştirme yaptık.

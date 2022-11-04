@@ -7,7 +7,7 @@ import Yosemite
 ///
 final class StorePickerCoordinator: Coordinator {
 
-    unowned var navigationController: UINavigationController
+    unowned private(set) var navigationController: UINavigationController
 
     /// Determines how the store picker should initialized
     ///
@@ -162,6 +162,7 @@ private extension StorePickerCoordinator {
     }
 }
 
+// TODO Add tests
 private extension StorePickerCoordinator {
     /// How the store picker view is presented.
     enum PresentationStyle {

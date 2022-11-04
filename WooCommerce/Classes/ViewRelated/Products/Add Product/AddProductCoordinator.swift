@@ -11,7 +11,7 @@ import class Networking.ProductsRemote
 /// coordinator.start()
 ///
 final class AddProductCoordinator: Coordinator {
-    var navigationController: UINavigationController
+    let navigationController: UINavigationController
 
     private let siteID: Int64
     private let sourceBarButtonItem: UIBarButtonItem?

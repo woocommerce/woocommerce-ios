@@ -42,4 +42,38 @@ final class StorePickerCoordinatorTests: XCTestCase {
         let storeCreationNavigationController = try XCTUnwrap(navigationController.presentedViewController as? UINavigationController)
         assertThat(storeCreationNavigationController.topViewController, isAnInstanceOf: AuthenticatedWebViewController.self)
     }
+
+    func test_standard_configuration_presents_storePicker() throws {
+        // Given
+        let coordinator = StorePickerCoordinator(navigationController, config: .standard)
+
+        // When
+        coordinator.start()
+
+        // Then
+        waitUntil {
+            self.navigationController.presentedViewController is WooNavigationController
+        }
+        XCTAssertNil(navigationController.topViewController)
+
+        let storePickerNavigationController = try XCTUnwrap(navigationController.presentedViewController as? UINavigationController)
+        assertThat(storePickerNavigationController.topViewController, isAnInstanceOf: StorePickerViewController.self)
+    }
+
+    func test_switchingStores_configuration_presents_storePicker() throws {
+        // Given
+        let coordinator = StorePickerCoordinator(navigationController, config: .switchingStores)
+
+        // When
+        coordinator.start()
+
+        // Then
+        waitUntil {
+            self.navigationController.presentedViewController is WooNavigationController
+        }
+        XCTAssertNil(navigationController.topViewController)
+
+        let storePickerNavigationController = try XCTUnwrap(navigationController.presentedViewController as? UINavigationController)
+        assertThat(storePickerNavigationController.topViewController, isAnInstanceOf: StorePickerViewController.self)
+    }
 }

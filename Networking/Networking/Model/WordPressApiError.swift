@@ -2,7 +2,7 @@ import Foundation
 
 /// WordPress API Request Error
 ///
-public enum WordPressApiError: Error, Decodable {
+public enum WordPressApiError: Error, Decodable, Equatable {
 
     /// Unknown: Represents an unmapped remote error.
     ///

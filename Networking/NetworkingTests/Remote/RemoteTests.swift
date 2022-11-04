@@ -32,10 +32,10 @@ final class RemoteTests: XCTestCase {
 
         remote.enqueue(request, mapper: mapper) { (payload, error) in
             guard case NetworkError.notFound? = error,
-                let receivedRequest = network.requestsForResponseData.first as? JetpackRequest
-                else {
-                    XCTFail()
-                    return
+                  let receivedRequest = network.requestsForResponseData.first as? JetpackRequest
+            else {
+                XCTFail()
+                return
             }
 
             XCTAssertNil(payload)
@@ -95,10 +95,10 @@ final class RemoteTests: XCTestCase {
         // Then
         let error = try XCTUnwrap(result.failure)
         guard case NetworkError.notFound = error,
-            let receivedRequest = network.requestsForResponseData.first as? JetpackRequest
-            else {
-                XCTFail()
-                return
+              let receivedRequest = network.requestsForResponseData.first as? JetpackRequest
+        else {
+            XCTFail()
+            return
         }
 
         XCTAssertEqual(network.requestsForResponseData.count, 1)
@@ -262,6 +262,228 @@ final class RemoteTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
         XCTAssertEqual(result.failure as? DotcomError, DotcomError.requestFailed)
+    }
+
+    /// Verifies that dotcom v1.1 request parses DotcomError
+    ///
+    func test_dotcom_request_v1_1_parses_dotcom_error() async throws {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: "mock")
+
+        network.simulateResponse(requestUrlSuffix: "mock", filename: "timeout_error")
+
+        // When
+        let result = await remote.enqueue(request, mapper: mapper)
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssert(error is DotcomError)
+    }
+
+    /// Verifies that dotcom v1.1 request doesn't parse WordPressApiError
+    ///
+    func test_dotcom_request_v1_1_does_not_parse_wordpress_api_error() async throws {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: "mock")
+
+        network.simulateResponse(requestUrlSuffix: "mock", filename: "error-wp-rest-forbidden")
+
+        // When
+        let result = await remote.enqueue(request, mapper: mapper)
+
+        // Then
+        XCTAssert(result.isSuccess)
+    }
+
+    /// Verifies that dotcom v1.2 request parses DotcomError
+    ///
+    func test_dotcom_request_v1_2_parses_dotcom_error() async throws {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+        let request = DotcomRequest(wordpressApiVersion: .mark1_2, method: .get, path: "mock")
+
+        network.simulateResponse(requestUrlSuffix: "mock", filename: "timeout_error")
+
+        // When
+        let result = await remote.enqueue(request, mapper: mapper)
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssert(error is DotcomError)
+    }
+
+    /// Verifies that dotcom v1.2 request doesn't parse WordPressApiError
+    ///
+    func test_dotcom_request_v1_2_does_not_parse_wordpress_api_error() async throws {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+        let request = DotcomRequest(wordpressApiVersion: .mark1_2, method: .get, path: "mock")
+
+        network.simulateResponse(requestUrlSuffix: "mock", filename: "error-wp-rest-forbidden")
+
+        // When
+        let result = await remote.enqueue(request, mapper: mapper)
+
+        // Then
+        XCTAssert(result.isSuccess)
+    }
+
+    /// Verifies that dotcom wpcom v2 request parses WordPressApiError
+    ///
+    func test_dotcom_request_wpcom_v2_parses_wordpress_api_error() async throws {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: "mock")
+
+        network.simulateResponse(requestUrlSuffix: "mock", filename: "error-wp-rest-forbidden")
+
+        // When
+        let result = await remote.enqueue(request, mapper: mapper)
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssert(error is WordPressApiError)
+    }
+
+    /// Verifies that dotcom wpcom v2 request doesn't parse DotcomError
+    ///
+    func test_dotcom_request_wpcom_v2_does_not_parse_dotcom_error() async throws {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: "mock")
+
+        network.simulateResponse(requestUrlSuffix: "mock", filename: "timeout_error")
+
+        // When
+        let result = await remote.enqueue(request, mapper: mapper)
+
+        // Then
+        XCTAssert(result.isSuccess)
+    }
+
+    /// Verifies that dotcom wp v2 request parses WordPressApiError
+    ///
+    func test_dotcom_request_wp_v2_parses_wordpress_api_error() async throws {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+        let request = DotcomRequest(wordpressApiVersion: .wpMark2, method: .get, path: "mock")
+
+        network.simulateResponse(requestUrlSuffix: "mock", filename: "error-wp-rest-forbidden")
+
+        // When
+        let result = await remote.enqueue(request, mapper: mapper)
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssert(error is WordPressApiError)
+    }
+
+    /// Verifies that dotcom wp v2 request doesn't parse DotcomError
+    ///
+    func test_dotcom_request_wp_v2_does_not_parse_dotcom_error() async throws {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+        let request = DotcomRequest(wordpressApiVersion: .wpMark2, method: .get, path: "mock")
+
+        network.simulateResponse(requestUrlSuffix: "mock", filename: "timeout_error")
+
+        // When
+        let result = await remote.enqueue(request, mapper: mapper)
+
+        // Then
+        XCTAssert(result.isSuccess)
+    }
+
+    /// Verifies that Jetpack request parses DotcomError
+    ///
+    func test_jetpack_request_parses_dotcom_error() async throws {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: 123, path: "mock", parameters: [:])
+
+        network.simulateResponse(requestUrlSuffix: "mock", filename: "timeout_error")
+
+        // When
+        let result = await remote.enqueue(request, mapper: mapper)
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssert(error is DotcomError)
+    }
+
+    /// Verifies that Jetpack request doesn't parse WordPressApiError
+    ///
+    func test_jetpack_request_does_not_parse_wordpress_api_error() async throws {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: 123, path: "mock", parameters: [:])
+
+        network.simulateResponse(requestUrlSuffix: "mock", filename: "error-wp-rest-forbidden")
+
+        // When
+        let result = await remote.enqueue(request, mapper: mapper)
+
+        // Then
+        XCTAssert(result.isSuccess)
+    }
+
+    /// Verifies that WordPressOrg request parses WordPressApiError
+    ///
+    func test_wordpress_org_request_parses_wordpress_api_error() async throws {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+        let request = WordPressOrgRequest(baseURL: "https://example.com", method: .get, path: "mock")
+
+        network.simulateResponse(requestUrlSuffix: "mock", filename: "error-wp-rest-forbidden")
+
+        // When
+        let result = await remote.enqueue(request, mapper: mapper)
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssert(error is WordPressApiError)
+    }
+
+    /// Verifies that WordPressOrg request doesn't parse DotcomError
+    ///
+    func test_wordpress_org_request_does_not_parse_dotcom_error() async throws {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+        let request = WordPressOrgRequest(baseURL: "https://example.com", method: .get, path: "mock")
+
+        network.simulateResponse(requestUrlSuffix: "mock", filename: "timeout_error")
+
+        // When
+        let result = await remote.enqueue(request, mapper: mapper)
+
+        // Then
+        XCTAssert(result.isSuccess)
     }
 }
 

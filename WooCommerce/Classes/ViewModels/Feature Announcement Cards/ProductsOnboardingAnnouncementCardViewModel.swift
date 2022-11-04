@@ -2,7 +2,7 @@ import Foundation
 import UIKit
 
 struct ProductsOnboardingAnnouncementCardViewModel: AnnouncementCardViewModelProtocol {
-    var showDividers: Bool = false
+    var showDividers: Bool = true
 
     var badgeType: BadgeView.BadgeType = .tip
 

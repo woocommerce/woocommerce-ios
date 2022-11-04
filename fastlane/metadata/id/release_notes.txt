@@ -1,1 +1,1 @@
-Rilis ini menyertakan perbaikan stabilitas lebih lanjut untuk mempermudah login. Anda sekarang dapat menghubungkan akun WordPress.com dengan Jetpack, dan mengakses toko Anda lebih cepat. Kami juga memperbarui aplikasi agar hanya mendukung perangkat dengan iOS 15+. Perbarui perangkat Anda ke iOS 15 agar terus dapat menggunakan aplikasi.
+Meski tanpa kejutan fitur baru dalam rilis ini, kami tetap berupaya keras. Kami memperbaiki beberapa bug dan menerapkan perbaikan untuk memperlancar pengalaman Anda.

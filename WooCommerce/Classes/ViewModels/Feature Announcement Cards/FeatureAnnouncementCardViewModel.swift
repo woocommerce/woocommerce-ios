@@ -17,7 +17,6 @@ protocol AnnouncementCardViewModelProtocol {
     func onAppear()
     func ctaTapped()
 
-    var showDismissButton: Bool { get }
     var showDismissConfirmation: Bool { get }
     var dismissAlertTitle: String { get }
     var dismissAlertMessage: String { get }
@@ -45,8 +44,6 @@ class FeatureAnnouncementCardViewModel: AnnouncementCardViewModelProtocol {
     var image: UIImage {
         config.image
     }
-
-    var showDismissButton: Bool = true
 
     var showDismissConfirmation: Bool {
         config.showDismissConfirmation

@@ -27,14 +27,6 @@ struct ProductsOnboardingAnnouncementCardViewModel: AnnouncementCardViewModelPro
         onCTATapped?()
     }
 
-    // MARK: Dismiss button (disabled)
-
-    var showDismissButton: Bool = false
-
-    func dontShowAgainTapped() {
-        // No-op
-    }
-
     // MARK: Dismiss confirmation alert (disabled)
 
     var showDismissConfirmation: Bool = false
@@ -42,6 +34,10 @@ struct ProductsOnboardingAnnouncementCardViewModel: AnnouncementCardViewModelPro
     var dismissAlertTitle: String = ""
 
     var dismissAlertMessage: String = ""
+
+    func dontShowAgainTapped() {
+        // No-op
+    }
 
     func remindLaterTapped() {
         // No-op

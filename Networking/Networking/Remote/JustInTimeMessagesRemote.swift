@@ -62,7 +62,23 @@ public final class JustInTimeMessagesRemote: Remote, JustInTimeMessagesRemotePro
             URLQueryItem(name: key, value: value)
         }
         var components = URLComponents()
-        components.queryItems = queryItems
+        /// This is a workaround for a backend bug where only the first param can be used for targeting JITMs.
+        /// `build_type` is the most important, but absent in release builds. In release builds, `platform` is the most important
+        /// This can be removed when the backend bug is fixed, order should not matter here.
+        components.queryItems = queryItems.sorted(by: { lhs, rhs in
+            switch (lhs.name, rhs.name) {
+            case (_, "build_type"):
+                return false
+            case ("build_type", "platform"):
+                return true
+            case (_, "platform"):
+                return false
+            case ("platform", _):
+                return true
+            default:
+                return lhs.name < rhs.name
+            }
+        })
         return components.query
     }
 

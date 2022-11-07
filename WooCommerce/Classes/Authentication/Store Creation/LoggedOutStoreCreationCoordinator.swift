@@ -10,8 +10,7 @@ final class LoggedOutStoreCreationCoordinator: Coordinator {
         case loginEmailError
     }
 
-    /// Mutable to conform to `Coordinator` protocol.
-    var navigationController: UINavigationController
+    let navigationController: UINavigationController
 
     private var storePickerCoordinator: StorePickerCoordinator?
 

@@ -1468,6 +1468,34 @@ final class MigrationTests: XCTestCase {
         let newLoginURL = try XCTUnwrap(migratedSite.value(forKey: "loginURL") as? String)
         XCTAssertEqual(newLoginURL, loginURL)
     }
+
+    func test_migrating_from_75_to_76_adds_frameNonce_attribute() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 76")
+        let sourceContext = sourceContainer.viewContext
+
+        let site = insertSite(to: sourceContainer.viewContext)
+        try sourceContext.save()
+
+        XCTAssertNil(site.entity.attributesByName["frameNonce"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 77")
+        let targetContext = targetContainer.viewContext
+
+        let migratedSite = try XCTUnwrap(targetContext.first(entityName: "Site"))
+        let defaultFrameNonce = migratedSite.value(forKey: "frameNonce")
+
+        let frameNonce = "e7bfd785f0"
+        migratedSite.setValue(frameNonce, forKey: "frameNonce")
+
+        // Then
+        // Default value is nil.
+        XCTAssertNil(defaultFrameNonce)
+
+        let newFrameNonce = try XCTUnwrap(migratedSite.value(forKey: "frameNonce") as? String)
+        XCTAssertEqual(newFrameNonce, frameNonce)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

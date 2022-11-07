@@ -34,6 +34,7 @@ extension Storage.Site: ReadOnlyConvertible {
                     url: url ?? "",
                     adminURL: adminURL ?? "",
                     loginURL: loginURL ?? "",
+                    frameNonce: "",
                     plan: plan ?? "",
                     isJetpackThePluginInstalled: isJetpackThePluginInstalled,
                     isJetpackConnected: isJetpackConnected,

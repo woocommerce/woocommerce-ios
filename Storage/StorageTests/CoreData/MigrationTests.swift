@@ -1469,7 +1469,7 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(newLoginURL, loginURL)
     }
 
-    func test_migrating_from_75_to_76_adds_frameNonce_attribute() throws {
+    func test_migrating_from_76_to_77_adds_frameNonce_attribute() throws {
         // Given
         let sourceContainer = try startPersistentContainer("Model 76")
         let sourceContext = sourceContainer.viewContext

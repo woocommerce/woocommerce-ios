@@ -477,6 +477,7 @@ private extension PushNotificationsManager {
     /// Handles a remote notification while the app is inactive.
     ///
     /// - Parameter notification: Push notification content from a remote notification.
+    @MainActor
     func handleInactiveRemoteNotification(notification: PushNotification) async {
         guard applicationState == .inactive else {
             return

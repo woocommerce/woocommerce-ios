@@ -7,7 +7,7 @@ import WordPressUI
 /// Manages the different navigation flows that start from the Orders main tab
 ///
 final class AddOrderCoordinator: Coordinator {
-    var navigationController: UINavigationController
+    let navigationController: UINavigationController
 
     private let siteID: Int64
     private let sourceBarButtonItem: UIBarButtonItem?

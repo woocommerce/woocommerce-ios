@@ -7,7 +7,7 @@ import Yosemite
 ///
 final class StorePickerCoordinator: Coordinator {
 
-    unowned var navigationController: UINavigationController
+    unowned private(set) var navigationController: UINavigationController
 
     /// Determines how the store picker should initialized
     ///

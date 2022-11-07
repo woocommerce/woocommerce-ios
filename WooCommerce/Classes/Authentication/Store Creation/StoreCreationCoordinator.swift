@@ -13,7 +13,7 @@ final class StoreCreationCoordinator: Coordinator {
         case storePicker
     }
 
-    var navigationController: UINavigationController
+    let navigationController: UINavigationController
 
     @Published private var possibleSiteURLsFromStoreCreation: Set<String> = []
     private var possibleSiteURLsFromStoreCreationSubscription: AnyCancellable?

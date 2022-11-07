@@ -10,7 +10,7 @@ import protocol Yosemite.StoresManager
 /// Coordinator for the HubMenu tab.
 ///
 final class HubMenuCoordinator: Coordinator {
-    var navigationController: UINavigationController
+    let navigationController: UINavigationController
     var hubMenuController: HubMenuViewController?
 
     private let pushNotificationsManager: PushNotesManager

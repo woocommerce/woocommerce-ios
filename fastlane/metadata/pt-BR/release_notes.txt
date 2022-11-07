@@ -1,1 +1,1 @@
-Esta versão inclui muito mais correções de estabilidade para ajudá-lo a fazer login com muito mais facilidade. Agora você pode conectar sua conta do WordPress.com ao Jetpack e acessar sua loja muito mais rápido. Também atualizamos nosso aplicativo para oferecer suporte apenas a dispositivos com iOS 15+. Atualize seu dispositivo para iOS 15 para continuar usando o aplicativo.
+Ainda que esta versão não tenha nenhuma funcionalidade surpreendente, nós a fizemos com muito amor. Corrigimos alguns bugs e fizemos várias melhorias para tornar sua experiência mais suave.

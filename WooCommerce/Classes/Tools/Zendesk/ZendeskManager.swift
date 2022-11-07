@@ -157,7 +157,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         }
     }
 
-    private lazy var settingsVM = SettingsViewModel()
+    private lazy var settingsViewModel = SettingsViewModel()
 
     private var unreadNotificationsCount = 0
 
@@ -326,7 +326,9 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     ///
     func getTags(supportSourceTag: String?) -> [String] {
         var tags = [Constants.platformTag, Constants.sdkTag, Constants.jetpackTag]
-        if let ippTags = settingsVM.ippPluginTags {
+
+        // Get IPP plugin statuses
+        if let ippTags = settingsViewModel.ippPluginstatuses {
             tags.append(contentsOf: ippTags)
         }
 

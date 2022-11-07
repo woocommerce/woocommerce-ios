@@ -94,13 +94,13 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     ///
     private let sitesResultsController: ResultsController<StorageSite>
 
+    /// Loads Plugins from the Storage Layer.
     ///
-    ///
-    private let ippResultsController: ResultsController<StorageSitePlugin>
+    private let pluginResultsController: ResultsController<StorageSitePlugin>
 
+    /// IPP plugin statuses
     ///
-    ///
-    private(set) var ippPluginTags: [String]?
+    private(set) var ippPluginstatuses: [String]?
 
     /// Payment Gateway Accounts Results Controller: Loads Payment Gateway Accounts from the Storage Layer
     /// e.g. WooCommerce Payments, but eventually other in-person payment accounts too
@@ -133,11 +133,11 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
                                                    matching: NSPredicate(format: "isWooCommerceActive == YES"),
                                                    sortedBy: [NSSortDescriptor(key: "name", ascending: true)])
 
+        /// Initialize Plugins Results Controller
         ///
-        ///
-        let ippStatusDescriptor = [NSSortDescriptor(keyPath: \StorageSitePlugin.status, ascending: true)]
-        ippResultsController = ResultsController(storageManager: storageManager,
-                                                 sortedBy: ippStatusDescriptor)
+        let pluginStatusDescriptor = [NSSortDescriptor(keyPath: \StorageSitePlugin.status, ascending: true)]
+        pluginResultsController = ResultsController(storageManager: storageManager,
+                                                 sortedBy: pluginStatusDescriptor)
 
         /// Initialize Payment Gateway Accounts Results Controller
         ///
@@ -158,30 +158,30 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
 
         ///
         ///
-        ippPluginTags = {
-            var out = [String]()
-
-            if let stripe = ippResultsController.fetchedObjects.first(where: { $0.plugin == IPPPluginStatus.stripe_plugin_slug }) {
-                if stripe.status == .inactive {
-                    out.append("stripe .inactive")
-                } else if stripe.status == .active {
-                    out.append("stripe .active")
+        ippPluginstatuses = {
+            var ippTags = [String]()
+            // Check Stripe plugin status
+            if let stripe = pluginResultsController.fetchedObjects.first(where: { $0.plugin == IPPPluginStatus.stripe_plugin_slug }) {
+                if stripe.status == .active {
+                    ippTags.append(IPPPluginStatus.woo_mobile_stripe_installed_and_activated)
+                } else if stripe.status == .inactive {
+                    ippTags.append(IPPPluginStatus.woo_mobile_stripe_installed_and_not_activated)
                 }
             } else {
-                out.append("stripe .not installed")
+                ippTags.append(IPPPluginStatus.woo_mobile_stripe_not_installed)
             }
-
-            if let wcpay = ippResultsController.fetchedObjects.first(where: { $0.plugin == IPPPluginStatus.wcpay_plugin_slug }) {
-                if wcpay.status == .inactive {
-                    out.append("wcpay .inactive")
-                } else if wcpay.status == .active {
-                    out.append("wcpay .active")
+            // Check WCPay plugin status
+            if let wcpay = pluginResultsController.fetchedObjects.first(where: { $0.plugin == IPPPluginStatus.wcpay_plugin_slug }) {
+                if wcpay.status == .active {
+                    ippTags.append(IPPPluginStatus.woo_mobile_wcpay_installed_and_activated)
+                } else if wcpay.status == .inactive {
+                    ippTags.append(IPPPluginStatus.woo_mobile_wcpay_installed_and_not_activated)
                 }
             }
             else {
-                out.append("wcpay .not installed")
+                ippTags.append(IPPPluginStatus.woo_mobile_wcpay_not_installed)
             }
-            return out
+            return ippTags
         }()
     }
 

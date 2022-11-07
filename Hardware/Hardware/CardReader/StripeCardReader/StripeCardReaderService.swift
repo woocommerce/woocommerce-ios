@@ -85,7 +85,7 @@ extension StripeCardReaderService: CardReaderService {
         }
 
         let config = DiscoveryConfiguration(
-            discoveryMethod: .bluetoothScan,
+            discoveryMethod: .localMobile,
             simulated: shouldUseSimulatedCardReader
         )
 
@@ -311,7 +311,7 @@ extension StripeCardReaderService: CardReaderService {
             }.eraseToAnyPublisher()
         }
 
-        return getBluetoothConfiguration(stripeReader).flatMap { configuration in
+        return getLocalMobileConfiguration(stripeReader).flatMap { configuration in
             self.connect(stripeReader, configuration: configuration)
         }.eraseToAnyPublisher()
     }
@@ -337,7 +337,28 @@ extension StripeCardReaderService: CardReaderService {
         }
     }
 
-    public func connect(_ reader: StripeTerminal.Reader, configuration: BluetoothConnectionConfiguration) -> Future <CardReader, Error> {
+    private func getLocalMobileConfiguration(_ reader: StripeTerminal.Reader) -> Future<LocalMobileConnectionConfiguration, Error> {
+        return Future() { [weak self] promise in
+            guard let self = self else {
+                promise(.failure(CardReaderServiceError.connection()))
+                return
+            }
+
+            // TODO - If we've recently connected to this reader, use the cached locationId from the
+            // Terminal SDK instead of making this fetch. See #5116 and #5087
+            self.readerLocationProvider?.fetchDefaultLocationID { result in
+                switch result {
+                case .success(let locationId):
+                    return promise(.success(LocalMobileConnectionConfiguration(locationId: locationId)))
+                case .failure(let error):
+                    let underlyingError = UnderlyingError(with: error)
+                    return promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
+                }
+            }
+        }
+    }
+
+    public func connect(_ reader: StripeTerminal.Reader, configuration: LocalMobileConnectionConfiguration) -> Future <CardReader, Error> {
         // Keep a copy of the battery level in case the connection fails due to low battery
         // If that happens, the reader object won't be accessible anymore, and we want to show
         // the current charge percentage if possible
@@ -349,7 +370,7 @@ extension StripeCardReaderService: CardReaderService {
                 return
             }
 
-            Terminal.shared.connectBluetoothReader(reader, delegate: self, connectionConfig: configuration) { [weak self] (reader, error) in
+            Terminal.shared.connectLocalMobileReader(reader, delegate: self, connectionConfig: configuration) { [weak self] (reader, error) in
                 guard let self = self else {
                     promise(.failure(CardReaderServiceError.connection()))
                     return
@@ -693,6 +714,20 @@ extension StripeCardReaderService: BluetoothReaderDelegate {
         )
 
         connectedReadersSubject.send([connectedReaderWithUpdatedBatteryLevel])
+    }
+}
+
+extension StripeCardReaderService: LocalMobileReaderDelegate {
+    public func localMobileReader(_ reader: Reader, didStartInstallingUpdate update: ReaderSoftwareUpdate, cancelable: Cancelable?) {
+        //noop
+    }
+
+    public func localMobileReader(_ reader: Reader, didReportReaderSoftwareUpdateProgress progress: Float) {
+        //noop
+    }
+
+    public func localMobileReader(_ reader: Reader, didFinishInstallingUpdate update: ReaderSoftwareUpdate?, error: Error?) {
+        //noop
     }
 }
 

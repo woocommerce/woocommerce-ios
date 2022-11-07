@@ -544,7 +544,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_no_preview_button_for_new_blank_product_without_any_changes() {
         // Given
-        sessionManager.defaultSite = Site.fake().copy(loginURL: "http://test.com/wp-login.php", isWordPressComStore: true)
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
 
         let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
         let viewModel = createViewModel(product: product,
@@ -561,7 +561,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_preview_button_for_new_product_with_pending_changes() {
         // Given
-        sessionManager.defaultSite = Site.fake().copy(loginURL: "http://test.com/wp-login.php", isWordPressComStore: true)
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
 
         let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
         let viewModel = createViewModel(product: product,
@@ -579,7 +579,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_no_preview_button_for_existing_published_product_without_any_changes() {
         // Given
-        sessionManager.defaultSite = Site.fake().copy(loginURL: "http://test.com/wp-login.php", isWordPressComStore: true)
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
 
         let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.published.rawValue)
         let viewModel = createViewModel(product: product,
@@ -597,7 +597,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_no_preview_button_for_existing_published_product_with_pending_changes() {
         // Given
-        sessionManager.defaultSite = Site.fake().copy(loginURL: "http://test.com/wp-login.php", isWordPressComStore: true)
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
 
         let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.published.rawValue)
         let viewModel = createViewModel(product: product,
@@ -614,7 +614,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_preview_button_for_existing_draft_product_without_any_changes() {
         // Given
-        sessionManager.defaultSite = Site.fake().copy(loginURL: "http://test.com/wp-login.php", isWordPressComStore: true)
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
 
         let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.draft.rawValue)
         let viewModel = createViewModel(product: product,
@@ -631,7 +631,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_preview_button_for_existing_draft_product_with_pending_changes() {
         // Given
-        sessionManager.defaultSite = Site.fake().copy(loginURL: "http://test.com/wp-login.php", isWordPressComStore: true)
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
 
         let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.draft.rawValue)
         let viewModel = createViewModel(product: product,
@@ -649,7 +649,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_no_preview_button_for_existing_product_with_other_status_and_without_any_changes() {
         // Given
-        sessionManager.defaultSite = Site.fake().copy(loginURL: "http://test.com/wp-login.php", isWordPressComStore: true)
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
 
         let product = Product.fake().copy(productID: 123, statusKey: "other")
         let viewModel = createViewModel(product: product,
@@ -666,7 +666,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_no_preview_button_for_existing_product_with_other_status_and_pending_changes() {
         // Given
-        sessionManager.defaultSite = Site.fake().copy(loginURL: "http://test.com/wp-login.php", isWordPressComStore: true)
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
 
         let product = Product.fake().copy(productID: 123, statusKey: "other")
         let viewModel = createViewModel(product: product,
@@ -684,7 +684,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_no_preview_button_for_any_product_in_read_only_mode() {
         // Given
-        sessionManager.defaultSite = Site.fake().copy(loginURL: "http://test.com/wp-login.php", isWordPressComStore: true)
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
 
         let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.published.rawValue)
         let viewModel = createViewModel(product: product,
@@ -700,26 +700,9 @@ final class ProductFormViewModelTests: XCTestCase {
         XCTAssertEqual(actionButtons, [.more])
     }
 
-    func test_no_preview_button_for_existing_draft_product_on_self_hosted_store() {
+    func test_no_preview_button_for_existing_draft_product_on_site_with_no_frame_nonce() {
         // Given
-        sessionManager.defaultSite = Site.fake().copy(loginURL: "http://test.com/wp-login.php", isWordPressComStore: false)
-
-        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.draft.rawValue)
-        let viewModel = createViewModel(product: product,
-                                        formType: .edit,
-                                        stores: stores,
-                                        featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
-
-        // When
-        let actionButtons = viewModel.actionButtons
-
-        // Then
-        XCTAssertEqual(actionButtons, [.publish, .more])
-    }
-
-    func test_no_preview_button_for_existing_draft_product_on_site_with_no_preview_url() {
-        // Given
-        sessionManager.defaultSite = Site.fake().copy(loginURL: "", isWordPressComStore: true)
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "")
 
         let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.draft.rawValue)
         let viewModel = createViewModel(product: product,

@@ -215,24 +215,17 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     }
 
     private func displayProductPreview() {
-        var permalink = URLComponents(string: product.permalink)
-        var updatedQueryItems = permalink?.queryItems ?? []
+        guard var permalink = URLComponents(string: product.permalink),
+              let nonce = ServiceLocator.stores.sessionManager.defaultSite?.frameNonce else {
+            return
+        }
+
+        var updatedQueryItems = permalink.queryItems ?? []
         updatedQueryItems.append(.init(name: "preview", value: "true"))
-        permalink?.queryItems = updatedQueryItems
-        guard let url = permalink?.url else {
-            return
-        }
+        updatedQueryItems.append(.init(name: "frame-nonce", value: nonce))
+        permalink.queryItems = updatedQueryItems
 
-        let credentials = ServiceLocator.stores.sessionManager.defaultCredentials
-        guard let username = credentials?.username,
-              let token = credentials?.authToken,
-              let site = ServiceLocator.stores.sessionManager.defaultSite else {
-            return
-        }
-
-        let configuration = WebViewControllerConfiguration(url: url)
-        configuration.secureInteraction = true
-        configuration.authenticate(site: site, username: username, token: token)
+        let configuration = WebViewControllerConfiguration(url: permalink.url)
         let webKitVC = WebKitViewController(configuration: configuration)
         let nc = WooNavigationController(rootViewController: webKitVC)
         present(nc, animated: true)

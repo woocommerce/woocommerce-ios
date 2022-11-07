@@ -43,6 +43,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .productsOnboarding:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .checkXMLRPCOnlyIfSigningInUsingSiteCredentials:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .performanceMonitoring,
                 .performanceMonitoringCoreData,
                 .performanceMonitoringFileIO,

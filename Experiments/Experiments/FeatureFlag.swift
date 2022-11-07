@@ -90,6 +90,10 @@ public enum FeatureFlag: Int {
     ///
     case productsOnboarding
 
+    /// Performs XMLRPC only when user opts for signing in using .org site credentials
+    ///
+    case checkXMLRPCOnlyIfSigningInUsingSiteCredentials
+
     // MARK: - Performance Monitoring
     //
     // These flags are not transient. That is, they are not here to help us rollout a feature,

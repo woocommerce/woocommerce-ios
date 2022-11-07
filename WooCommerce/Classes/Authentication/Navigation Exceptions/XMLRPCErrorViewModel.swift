@@ -55,7 +55,7 @@ struct XMLRPCErrorViewModel: ULErrorViewModel {
     }
 
     func viewDidLoad(_ viewController: UIViewController?) {
-        // NO-OP
+        analytics.track(.loginXMLRPCErrorShown)
     }
 }
 

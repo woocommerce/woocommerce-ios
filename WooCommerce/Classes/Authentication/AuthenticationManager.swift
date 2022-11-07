@@ -766,6 +766,10 @@ private extension AuthenticationManager {
 extension AuthenticationManager {
     /// This is only exposed for testing.
     func viewModel(_ error: Error) -> ULErrorViewModel? {
+        if case XMLRPCError.xmlrpcError(let siteAddress) = error {
+            return XMLRPCErrorViewModel(siteAddress: siteAddress)
+        }
+
         let wooAuthError = AuthenticationError.make(with: error)
 
         switch wooAuthError {
@@ -844,6 +848,10 @@ private extension AuthenticationManager {
     }
 
     func isSupportedError(_ error: Error) -> Bool {
+        if case XMLRPCError.xmlrpcError = error {
+            return true
+        }
+
         let wooAuthError = AuthenticationError.make(with: error)
         return wooAuthError != .unknown
     }

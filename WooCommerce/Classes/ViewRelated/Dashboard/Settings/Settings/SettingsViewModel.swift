@@ -94,6 +94,14 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     ///
     private let sitesResultsController: ResultsController<StorageSite>
 
+    ///
+    ///
+    private let ippResultsController: ResultsController<StorageSitePlugin>
+
+    ///
+    ///
+    private(set) var ippPluginTags: [String]?
+
     /// Payment Gateway Accounts Results Controller: Loads Payment Gateway Accounts from the Storage Layer
     /// e.g. WooCommerce Payments, but eventually other in-person payment accounts too
     ///
@@ -125,6 +133,12 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
                                                    matching: NSPredicate(format: "isWooCommerceActive == YES"),
                                                    sortedBy: [NSSortDescriptor(key: "name", ascending: true)])
 
+        ///
+        ///
+        let ippStatusDescriptor = [NSSortDescriptor(keyPath: \StorageSitePlugin.status, ascending: true)]
+        ippResultsController = ResultsController(storageManager: storageManager,
+                                                 sortedBy: ippStatusDescriptor)
+
         /// Initialize Payment Gateway Accounts Results Controller
         ///
         if let siteID = stores.sessionManager.defaultSite?.siteID {
@@ -141,6 +155,34 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
             let action = SystemStatusAction.synchronizeSystemPlugins(siteID: siteID, onCompletion: { _ in })
             stores.dispatch(action)
         }
+
+        ///
+        ///
+        ippPluginTags = {
+            var out = [String]()
+
+            if let stripe = ippResultsController.fetchedObjects.first(where: { $0.plugin == IPPPluginStatus.stripe_plugin_slug }) {
+                if stripe.status == .inactive {
+                    out.append("stripe .inactive")
+                } else if stripe.status == .active {
+                    out.append("stripe .active")
+                }
+            } else {
+                out.append("stripe .not installed")
+            }
+
+            if let wcpay = ippResultsController.fetchedObjects.first(where: { $0.plugin == IPPPluginStatus.wcpay_plugin_slug }) {
+                if wcpay.status == .inactive {
+                    out.append("wcpay .inactive")
+                } else if wcpay.status == .active {
+                    out.append("wcpay .active")
+                }
+            }
+            else {
+                out.append("wcpay .not installed")
+            }
+            return out
+        }()
     }
 
     /// Sets up the view model and loads the settings.
@@ -361,6 +403,17 @@ private extension SettingsViewModel {
 // MARK: - Localizations
 //
 private extension SettingsViewModel {
+    enum IPPPluginStatus {
+        static let stripe_plugin_slug = "woocommerce-gateway-stripe/woocommerce-gateway-stripe"
+        static let wcpay_plugin_slug = "woocommerce-payments/woocommerce-payments"
+        static let woo_mobile_stripe_not_installed = "woo_mobile_stripe_not_installed"
+        static let woo_mobile_stripe_installed_and_not_activated = "woo_mobile_stripe_installed_and_not_activated"
+        static let woo_mobile_stripe_installed_and_activated = "woo_mobile_stripe_installed_and_activated"
+        static let woo_mobile_wcpay_not_installed = "woo_mobile_wcpay_not_installed"
+        static let woo_mobile_wcpay_installed_and_not_activated = "woo_mobile_wcpay_installed_and_not_activated"
+        static let woo_mobile_wcpay_installed_and_activated = "woo_mobile_wcpay_installed_and_activated"
+        static let woo_mobile_site_plugins_fetching_error = "woo_mobile_site_plugins_fetching_error"
+    }
     enum Localization {
         static let pluginsTitle = NSLocalizedString(
             "Plugins",

@@ -8,8 +8,6 @@ import WordPressShared
 import CoreTelephony
 import SafariServices
 import Yosemite
-import Storage
-
 
 extension NSNotification.Name {
     static let ZDPNReceived = NSNotification.Name(rawValue: "ZDPNReceived")
@@ -139,48 +137,6 @@ struct ZendeskProvider {
 ///
 #if !targetEnvironment(macCatalyst)
 final class ZendeskManager: NSObject, ZendeskManagerProtocol {
-
-    private let storageManager: StorageManagerType = ServiceLocator.storageManager
-
-    private lazy var resultsController: ResultsController<StorageSitePlugin> = {
-        let siteID = ServiceLocator.stores.sessionManager.defaultSite?.siteID
-        let predicate = NSPredicate(format: "siteID = %ld", String(siteID ?? 0))
-        let statusDescriptor = NSSortDescriptor(keyPath: \StorageSitePlugin.status, ascending: true)
-
-        let resultsController = ResultsController<StorageSitePlugin>(
-            storageManager: storageManager, sortedBy: [statusDescriptor])
-        do {
-            try resultsController.performFetch()
-        } catch {
-            ippTags.append(Constants.woo_mobile_site_plugins_fetching_error)
-            DDLogError("⛔️ Error fetching plugin list!")
-        }
-        return resultsController
-    }()
-
-    private func observePlugins(onDataChanged: @escaping () -> Void) {
-        resultsController.onDidResetContent = onDataChanged
-
-        if let stripe = resultsController.fetchedObjects.first(where: { $0.plugin == Constants.stripe_plugin_slug } ) {
-            if stripe.status == .inactive {
-                ippTags.append(Constants.woo_mobile_stripe_installed_and_not_activated)
-            } else if stripe.status == .active {
-                ippTags.append(Constants.woo_mobile_stripe_installed_and_activated)
-            } else {
-                ippTags.append(Constants.woo_mobile_stripe_not_installed)
-            }
-        }
-        if let wcPay = resultsController.fetchedObjects.first(where: { $0.plugin == Constants.wcpay_plugin_slug } ) {
-            if wcPay.status == .inactive {
-                ippTags.append(Constants.woo_mobile_wcpay_installed_and_not_activated)
-            } else if wcPay.status == .active {
-                ippTags.append(Constants.woo_mobile_wcpay_installed_and_activated)
-            } else {
-                ippTags.append(Constants.woo_mobile_wcpay_not_installed)
-            }
-        }
-    }
-
     func showNewRequestIfPossible(from controller: UIViewController) {
         showNewRequestIfPossible(from: controller, with: nil)
     }
@@ -201,6 +157,8 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         }
     }
 
+    private lazy var settingsVM = SettingsViewModel()
+
     private var unreadNotificationsCount = 0
 
     var showSupportNotificationIndicator: Bool {
@@ -215,8 +173,6 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     private var userEmail: String?
     private var haveUserIdentity = false
     private var alertNameField: UITextField?
-    private var ippTags = [String]()
-    private var getSitePlugins: ()
 
     private weak var presentInController: UIViewController?
 
@@ -236,7 +192,6 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     fileprivate override init() {
         super.init()
         observeZendeskNotifications()
-        getSitePlugins = observePlugins(onDataChanged: {})
     }
 
 
@@ -370,12 +325,15 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     /// The SDK tag is used in a trigger and displays tickets in Woo > Mobile Apps New.
     ///
     func getTags(supportSourceTag: String?) -> [String] {
-        let tags = [Constants.platformTag, Constants.sdkTag, Constants.jetpackTag]
+        var tags = [Constants.platformTag, Constants.sdkTag, Constants.jetpackTag]
+        if let ippTags = settingsVM.ippPluginTags {
+            tags.append(contentsOf: ippTags)
+        }
 
         return decorateTags(tags: tags, supportSourceTag: supportSourceTag)
     }
 
-    private func getWCPayTags(supportSourceTag: String?) -> [String] {
+    func getWCPayTags(supportSourceTag: String?) -> [String] {
         let tags = [Constants.platformTag,
                     Constants.sdkTag,
                     Constants.paymentsProduct,
@@ -386,15 +344,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         return decorateTags(tags: tags, supportSourceTag: supportSourceTag)
     }
 
-    private func appendIPPstatusTagsIfNeeded(decoratedTags: [String]) -> [String] {
-        var tags = decoratedTags
-        observePlugins(onDataChanged: {
-            tags.append(contentsOf: self.ippTags)
-        })
-        return tags
-    }
-
-    private func decorateTags(tags: [String], supportSourceTag: String?) -> [String] {
+    func decorateTags(tags: [String], supportSourceTag: String?) -> [String] {
         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
             return tags
         }
@@ -413,7 +363,6 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
             decoratedTags.append(sourceTagOrigin)
         }
 
-        print("All decorated tags: \(decoratedTags)")
         return decoratedTags
     }
 }
@@ -644,7 +593,7 @@ private extension ZendeskManager {
         return createRequest(supportSourceTag: supportSourceTag,
                              formID: TicketFieldIDs.form,
                              ticketFields: ticketFields,
-                             tags: getSitePlugins )
+                             tags: getTags(supportSourceTag: supportSourceTag))
     }
 
     func createWCPayRequest(supportSourceTag: String?) -> RequestUiConfiguration {
@@ -665,10 +614,10 @@ private extension ZendeskManager {
         return createRequest(supportSourceTag: supportSourceTag,
                              formID: TicketFieldIDs.paymentsForm,
                              ticketFields: ticketFields,
-                             tags: getSitePlugins )
+                             tags: getWCPayTags(supportSourceTag: supportSourceTag))
     }
 
-    func createRequest(supportSourceTag: String?, formID: Int64, ticketFields: [CustomField], tags: ()) -> RequestUiConfiguration {
+    func createRequest(supportSourceTag: String?, formID: Int64, ticketFields: [CustomField], tags: [String]) -> RequestUiConfiguration {
         let requestConfig = RequestUiConfiguration()
 
         // Set Zendesk ticket form to use
@@ -677,11 +626,7 @@ private extension ZendeskManager {
         requestConfig.customFields = ticketFields
 
         // Set tags
-        var defaultTags = getTags(supportSourceTag: supportSourceTag)
-        let ippTags = self.ippTags
-        var allTags = defaultTags + ippTags
-
-        requestConfig.tags = allTags
+        requestConfig.tags = tags
 
         // Set the ticket subject
         requestConfig.subject = Constants.ticketSubject
@@ -1071,15 +1016,6 @@ private extension ZendeskManager {
         static let paymentsSubcategory = "payment"
         static let paymentsProduct = "woocommerce_payments"
         static let paymentsProductArea = "product_area_woo_payment_gateway"
-        static let stripe_plugin_slug = "woocommerce-gateway-stripe/woocommerce-gateway-stripe"
-        static let wcpay_plugin_slug = "woocommerce-payments/woocommerce-payments"
-        static let woo_mobile_stripe_not_installed = "woo_mobile_stripe_not_installed"
-        static let woo_mobile_stripe_installed_and_not_activated = "woo_mobile_stripe_installed_and_not_activated"
-        static let woo_mobile_stripe_installed_and_activated = "woo_mobile_stripe_installed_and_activated"
-        static let woo_mobile_wcpay_not_installed = "woo_mobile_wcpay_not_installed"
-        static let woo_mobile_wcpay_installed_and_not_activated = "woo_mobile_wcpay_installed_and_not_activated"
-        static let woo_mobile_wcpay_installed_and_activated = "woo_mobile_wcpay_installed_and_activated"
-        static let woo_mobile_site_plugins_fetching_error = "woo_mobile_site_plugins_fetching_error"
     }
 
     // Zendesk expects these as NSNumber. However, they are defined as UInt64 to satisfy 32-bit devices (ex: iPhone 5).

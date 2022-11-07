@@ -145,7 +145,9 @@ class PasswordViewController: LoginViewController {
             // is the actual error string. So check for "password" in the error string, and show the custom
             // error message. Otherwise, show the actual response error.
             var displayMessage: String {
+                // swiftlint:disable localization_comment
                 if nsError.localizedDescription.contains(NSLocalizedString("password", comment: "")) {
+                // swiftlint:enable localization_comment
                     return NSLocalizedString("It seems like you've entered an incorrect password. Want to give it another try?", comment: "An error message shown when a wpcom user provides the wrong password.")
                 }
                 return nsError.localizedDescription

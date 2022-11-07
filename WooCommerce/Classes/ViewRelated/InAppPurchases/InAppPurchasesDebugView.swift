@@ -9,6 +9,7 @@ struct InAppPurchasesDebugView: View {
     @State var products: [WPComPlanProduct] = []
     @State var entitledProductIDs: [String] = []
     @State var inAppPurchasesAreSupported = true
+    @State var isPurchasing = false
 
     var body: some View {
         List {
@@ -22,11 +23,15 @@ struct InAppPurchasesDebugView: View {
             Section("Products") {
                 if products.isEmpty {
                     Text("No products")
+                } else if isPurchasing {
+                    ActivityIndicator(isAnimating: .constant(true), style: .medium)
                 } else {
                     ForEach(products, id: \.id) { product in
                         Button(entitledProductIDs.contains(product.id) ? "Entitled: \(product.description)" : product.description) {
                             Task {
+                                isPurchasing = true
                                 try? await inAppPurchasesForWPComPlansManager.purchaseProduct(with: product.id, for: siteID)
+                                isPurchasing = false
                             }
                         }
                     }

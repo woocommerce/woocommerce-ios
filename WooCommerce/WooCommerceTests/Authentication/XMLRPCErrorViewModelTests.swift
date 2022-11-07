@@ -10,7 +10,7 @@ final class XMLRPCErrorViewModelTests: XCTestCase {
         super.setUp()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        sut = XMLRPCErrorViewModel(siteAddress: "http://test.com")
+        sut = XMLRPCErrorViewModel(siteAddress: "http://test.com", analytics: analytics)
     }
 
     override func tearDown() {
@@ -53,6 +53,14 @@ final class XMLRPCErrorViewModelTests: XCTestCase {
     func test_viewmodel_provides_expected_title_for_secondary_button() {
         XCTAssertEqual(sut.secondaryButtonTitle, "")
 
+    }
+
+    func test_xmlrpc_error_screen_is_tracked_when_the_view_is_loaded() {
+        // When
+        sut.viewDidLoad(nil)
+
+        // Then
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_xmlrpc_error_shown" }))
     }
 }
 

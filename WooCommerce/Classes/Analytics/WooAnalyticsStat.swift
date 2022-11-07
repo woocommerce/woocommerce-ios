@@ -699,6 +699,9 @@ public enum WooAnalyticsStat: String {
     case closeAccountSuccess = "close_account_success"
     case closeAccountFailed = "close_account_failed"
 
+    // MARK: Login XMLRPC
+    case loginXMLRPCErrorShown = "login_xmlrpc_error_shown"
+
     // MARK: Login Jetpack setup
     case loginJetpackSetupButtonTapped = "login_jetpack_setup_button_tapped"
     case loginJetpackSetupDismissed = "login_jetpack_setup_dismissed"

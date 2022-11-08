@@ -3,22 +3,29 @@ import XCTest
 @testable import WooCommerce
 import Yosemite
 import TestKit
+import protocol Experiments.FeatureFlagService
 
 final class ProductFormViewModelTests: XCTestCase {
 
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
+    private var sessionManager: SessionManager!
+    private var stores: StoresManager!
 
     override func setUp() {
         super.setUp()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        sessionManager = SessionManager.testingInstance
+        stores = MockStoresManager(sessionManager: sessionManager)
     }
 
     override func tearDown() {
         super.tearDown()
         analytics = nil
         analyticsProvider = nil
+        sessionManager = nil
+        stores = nil
     }
 
     // MARK: `canViewProductInStore`
@@ -228,7 +235,7 @@ final class ProductFormViewModelTests: XCTestCase {
     func test_update_variations_fires_replace_product_action() throws {
         // Given
         let product = Product.fake()
-        let mockStores = MockStoresManager(sessionManager: SessionManager.testingInstance)
+        let mockStores = MockStoresManager(sessionManager: sessionManager)
         let viewModel = createViewModel(product: product, formType: .edit, stores: mockStores)
 
         // When
@@ -532,19 +539,215 @@ final class ProductFormViewModelTests: XCTestCase {
         let hasLinkedProducts = try XCTUnwrap(analyticsProvider.receivedProperties.first?["has_linked_products"] as? Bool)
         XCTAssertTrue(hasLinkedProducts)
     }
+
+    // MARK: Preview button tests (with enabled Product Onboarding feature flag)
+
+    func test_no_preview_button_for_new_blank_product_without_any_changes() {
+        // Given
+        sessionManager.defaultSite = Site.fake().copy(loginURL: "http://test.com/wp-login.php", isWordPressComStore: true)
+
+        let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
+        let viewModel = createViewModel(product: product,
+                                        formType: .add,
+                                        stores: stores,
+                                        featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.publish, .more])
+    }
+
+    func test_preview_button_for_new_product_with_pending_changes() {
+        // Given
+        sessionManager.defaultSite = Site.fake().copy(loginURL: "http://test.com/wp-login.php", isWordPressComStore: true)
+
+        let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
+        let viewModel = createViewModel(product: product,
+                                        formType: .add,
+                                        stores: stores,
+                                        featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
+        viewModel.updateName("new name")
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.preview, .publish, .more])
+    }
+
+    func test_no_preview_button_for_existing_published_product_without_any_changes() {
+        // Given
+        sessionManager.defaultSite = Site.fake().copy(loginURL: "http://test.com/wp-login.php", isWordPressComStore: true)
+
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.published.rawValue)
+        let viewModel = createViewModel(product: product,
+                                        formType: .edit,
+                                        stores: stores,
+                                        featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
+        viewModel.updateName("new name")
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.save, .more])
+    }
+
+    func test_no_preview_button_for_existing_published_product_with_pending_changes() {
+        // Given
+        sessionManager.defaultSite = Site.fake().copy(loginURL: "http://test.com/wp-login.php", isWordPressComStore: true)
+
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.published.rawValue)
+        let viewModel = createViewModel(product: product,
+                                        formType: .edit,
+                                        stores: stores,
+                                        featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.more])
+    }
+
+    func test_preview_button_for_existing_draft_product_without_any_changes() {
+        // Given
+        sessionManager.defaultSite = Site.fake().copy(loginURL: "http://test.com/wp-login.php", isWordPressComStore: true)
+
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.draft.rawValue)
+        let viewModel = createViewModel(product: product,
+                                        formType: .edit,
+                                        stores: stores,
+                                        featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.preview, .publish, .more])
+    }
+
+    func test_preview_button_for_existing_draft_product_with_pending_changes() {
+        // Given
+        sessionManager.defaultSite = Site.fake().copy(loginURL: "http://test.com/wp-login.php", isWordPressComStore: true)
+
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.draft.rawValue)
+        let viewModel = createViewModel(product: product,
+                                        formType: .edit,
+                                        stores: stores,
+                                        featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
+        viewModel.updateName("new name")
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.preview, .save, .more])
+    }
+
+    func test_no_preview_button_for_existing_product_with_other_status_and_without_any_changes() {
+        // Given
+        sessionManager.defaultSite = Site.fake().copy(loginURL: "http://test.com/wp-login.php", isWordPressComStore: true)
+
+        let product = Product.fake().copy(productID: 123, statusKey: "other")
+        let viewModel = createViewModel(product: product,
+                                        formType: .edit,
+                                        stores: stores,
+                                        featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.publish, .more])
+    }
+
+    func test_no_preview_button_for_existing_product_with_other_status_and_pending_changes() {
+        // Given
+        sessionManager.defaultSite = Site.fake().copy(loginURL: "http://test.com/wp-login.php", isWordPressComStore: true)
+
+        let product = Product.fake().copy(productID: 123, statusKey: "other")
+        let viewModel = createViewModel(product: product,
+                                        formType: .edit,
+                                        stores: stores,
+                                        featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
+        viewModel.updateName("new name")
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.save, .more])
+    }
+
+    func test_no_preview_button_for_any_product_in_read_only_mode() {
+        // Given
+        sessionManager.defaultSite = Site.fake().copy(loginURL: "http://test.com/wp-login.php", isWordPressComStore: true)
+
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.published.rawValue)
+        let viewModel = createViewModel(product: product,
+                                        formType: .readonly,
+                                        stores: stores,
+                                        featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
+        viewModel.updateName("new name")
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.more])
+    }
+
+    func test_no_preview_button_for_existing_draft_product_on_self_hosted_store() {
+        // Given
+        sessionManager.defaultSite = Site.fake().copy(loginURL: "http://test.com/wp-login.php", isWordPressComStore: false)
+
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.draft.rawValue)
+        let viewModel = createViewModel(product: product,
+                                        formType: .edit,
+                                        stores: stores,
+                                        featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.publish, .more])
+    }
+
+    func test_no_preview_button_for_existing_draft_product_on_site_with_no_preview_url() {
+        // Given
+        sessionManager.defaultSite = Site.fake().copy(loginURL: "", isWordPressComStore: true)
+
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.draft.rawValue)
+        let viewModel = createViewModel(product: product,
+                                        formType: .edit,
+                                        stores: stores,
+                                        featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.publish, .more])
+    }
 }
 
 private extension ProductFormViewModelTests {
     func createViewModel(product: Product,
                          formType: ProductFormType,
                          stores: StoresManager = ServiceLocator.stores,
-                         analytics: Analytics = ServiceLocator.analytics) -> ProductFormViewModel {
+                         analytics: Analytics = ServiceLocator.analytics,
+                         featureFlagService: FeatureFlagService = MockFeatureFlagService()) -> ProductFormViewModel {
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
         return ProductFormViewModel(product: model,
                                     formType: formType,
                                     productImageActionHandler: productImageActionHandler,
                                     stores: stores,
-                                    analytics: analytics)
+                                    analytics: analytics,
+                                    featureFlagService: featureFlagService)
     }
 }

@@ -199,6 +199,45 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         saveProduct(status: .draft)
     }
 
+    // MARK: Product preview action handling
+
+    @objc private func saveDraftAndDisplayProductPreview() {
+        guard viewModel.canSaveAsDraft() || viewModel.hasUnsavedChanges() else {
+            displayProductPreview()
+            return
+        }
+
+        saveProduct(status: .draft) { [weak self] result in
+            if result.isSuccess {
+                self?.displayProductPreview()
+            }
+        }
+    }
+
+    private func displayProductPreview() {
+        var permalink = URLComponents(string: product.permalink)
+        var updatedQueryItems = permalink?.queryItems ?? []
+        updatedQueryItems.append(.init(name: "preview", value: "true"))
+        permalink?.queryItems = updatedQueryItems
+        guard let url = permalink?.url else {
+            return
+        }
+
+        let credentials = ServiceLocator.stores.sessionManager.defaultCredentials
+        guard let username = credentials?.username,
+              let token = credentials?.authToken,
+              let site = ServiceLocator.stores.sessionManager.defaultSite else {
+            return
+        }
+
+        let configuration = WebViewControllerConfiguration(url: url)
+        configuration.secureInteraction = true
+        configuration.authenticate(site: site, username: username, token: token)
+        let webKitVC = WebKitViewController(configuration: configuration)
+        let nc = WooNavigationController(rootViewController: webKitVC)
+        present(nc, animated: true)
+    }
+
     // MARK: Navigation actions
 
     @objc func closeNavigationBarButtonTapped() {
@@ -716,14 +755,14 @@ private extension ProductFormViewController {
 // MARK: Navigation actions
 //
 private extension ProductFormViewController {
-    func saveProduct(status: ProductStatus? = nil) {
+    func saveProduct(status: ProductStatus? = nil, onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void = { _ in }) {
         let productStatus = status ?? product.status
         let messageType = viewModel.saveMessageType(for: productStatus)
         showSavingProgress(messageType)
-        saveProductRemotely(status: status)
+        saveProductRemotely(status: status, onCompletion: onCompletion)
     }
 
-    func saveProductRemotely(status: ProductStatus?) {
+    func saveProductRemotely(status: ProductStatus?, onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void = { _ in }) {
         viewModel.saveProductRemotely(status: status) { [weak self] result in
             switch result {
             case .failure(let error):
@@ -732,6 +771,7 @@ private extension ProductFormViewController {
                 // Dismisses the in-progress UI then presents the error alert.
                 self?.navigationController?.dismiss(animated: true) {
                     self?.displayError(error: error)
+                    onCompletion(.failure(error))
                 }
             case .success:
                 // Dismisses the in-progress UI, then presents the confirmation alert.
@@ -741,6 +781,7 @@ private extension ProductFormViewController {
                 // Show linked products promo banner after product save
                 (self?.viewModel as? ProductFormViewModel)?.isLinkedProductsPromoEnabled = true
                 self?.reloadLinkedPromoCellAnimated()
+                onCompletion(.success(()))
             }
         }
     }
@@ -908,6 +949,8 @@ private extension ProductFormViewController {
         // Create action buttons based on view model
         let rightBarButtonItems: [UIBarButtonItem] = viewModel.actionButtons.reversed().map { buttonType in
             switch buttonType {
+            case .preview:
+                return createPreviewBarButtonItem()
             case .publish:
                 return createPublishBarButtonItem()
             case .save:
@@ -932,6 +975,10 @@ private extension ProductFormViewController {
 
     func createSaveBarButtonItem() -> UIBarButtonItem {
         return UIBarButtonItem(title: Localization.saveTitle, style: .done, target: self, action: #selector(saveProductAndLogEvent))
+    }
+
+    func createPreviewBarButtonItem() -> UIBarButtonItem {
+        return UIBarButtonItem(title: Localization.previewTitle, style: .done, target: self, action: #selector(saveDraftAndDisplayProductPreview))
     }
 
     func createMoreOptionsBarButtonItem() -> UIBarButtonItem {
@@ -1535,6 +1582,7 @@ private extension ProductFormViewController {
 private enum Localization {
     static let publishTitle = NSLocalizedString("Publish", comment: "Action for creating a new product remotely with a published status")
     static let saveTitle = NSLocalizedString("Save", comment: "Action for saving a Product remotely")
+    static let previewTitle = NSLocalizedString("Preview", comment: "Action for previewing draft Product changes in the webview")
     static let groupedProductsViewTitle = NSLocalizedString("Grouped Products",
                                                             comment: "Navigation bar title for editing linked products for a grouped product")
     static let unnamedProduct = NSLocalizedString("Unnamed product",

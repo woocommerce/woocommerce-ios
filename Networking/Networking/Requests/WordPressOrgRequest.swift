@@ -3,7 +3,7 @@ import Alamofire
 
 /// Represents a WordPress.org REST API Endpoint
 ///
-struct WordPressOrgRequest: URLRequestConvertible {
+struct WordPressOrgRequest: Request {
 
     /// Base URL for the endpoint
     ///
@@ -29,6 +29,10 @@ struct WordPressOrgRequest: URLRequestConvertible {
         let request = try URLRequest(url: url, method: method, headers: nil)
 
         return try URLEncoding.default.encode(request, with: parameters)
+    }
+
+    func responseDataValidator() -> ResponseDataValidator {
+        return WordPressApiValidator()
     }
 }
 

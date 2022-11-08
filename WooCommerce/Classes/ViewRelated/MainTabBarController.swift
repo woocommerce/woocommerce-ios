@@ -337,10 +337,8 @@ extension MainTabBarController {
             }
             let siteID = Int64(note.meta.identifier(forKey: .site) ?? Int.min)
 
-            switchToStore(with: siteID, onCompletion: { siteChanged in
-                if siteChanged {
-                    presentNotificationDetails(for: note)
-                }
+            switchToStore(with: siteID, onCompletion: { _ in
+                presentNotificationDetails(for: note)
             })
         }
         ServiceLocator.stores.dispatch(action)
@@ -413,6 +411,19 @@ extension MainTabBarController {
             (childViewController() as? OrdersSplitViewWrapperController)?.presentDetails(for: orderID, siteID: siteID)
         } else {
             (childViewController() as? OrdersRootViewController)?.presentDetails(for: orderID, siteID: siteID)
+        }
+    }
+
+    static func presentAddProductFlow() {
+        navigateTo(.products)
+
+        guard let productsViewController: ProductsViewController = childViewController() else {
+            return
+        }
+
+        // We give some time for the products tab transition to finish, so the add product button is present to start the flow
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            productsViewController.addProduct()
         }
     }
 

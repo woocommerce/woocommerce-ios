@@ -111,9 +111,10 @@ public enum WooAnalyticsStat: String {
     case dashboardNewStatsRevertedBannerLearnMoreTapped = "dashboard_new_stats_reverted_banner_learn_more_tapped"
     case usedAnalytics = "used_analytics"
 
-    // MARK: Onboarding Events
+    // MARK: Products Onboarding Events
     //
     case productsOnboardingEligible = "products_onboarding_store_is_eligible"
+    case productsOnboardingCTATapped = "products_onboarding_cta_tapped"
 
     // MARK: Site picker. Can be triggered by login epilogue or settings.
     //
@@ -121,9 +122,22 @@ public enum WooAnalyticsStat: String {
     case sitePickerStoresShown = "site_picker_stores_shown"
     case sitePickerHelpButtonTapped = "site_picker_help_button_tapped"
     case sitePickerNonWooSiteTapped = "site_picker_non_woo_site_tapped"
-    case sitePickerEnterStoreAddressTapped = "site_picker_enter_store_address_tapped"
     case sitePickerSiteDiscovery = "site_picker_site_discovery"
     case sitePickerNewToWooTapped = "site_picker_new_to_woo_tapped"
+    case sitePickerAddStoreTapped = "site_picker_add_a_store_tapped"
+    case sitePickerConnectExistingStoreTapped = "site_picker_connect_existing_store_tapped"
+
+    // MARK: Site creation
+    //
+    case sitePickerCreateSiteTapped = "site_picker_create_site_tapped"
+    case siteCreated = "login_woocommerce_site_created"
+    case siteCreationFailed = "site_creation_failed"
+    case siteCreationDismissed = "site_creation_dismissed"
+    case loginPrologueCreateSiteTapped = "login_prologue_create_site_tapped"
+    case signupFormLoginTapped = "signup_login_button_tapped"
+    case signupSubmitted = "signup_submitted"
+    case signupSuccess = "signup_success"
+    case signupFailed = "signup_failed"
 
     // MARK: Help & Support Events
     //
@@ -251,6 +265,8 @@ public enum WooAnalyticsStat: String {
     case orderCreateButtonTapped = "order_create_button_tapped"
     case orderCreationSuccess = "order_creation_success"
     case orderCreationFailed = "order_creation_failed"
+    case orderCreationCustomerAdded = "order_creation_customer_added"
+    case orderCreationCustomerSearch = "order_creation_customer_search"
     case orderContactAction = "order_contact_action"
     case orderCustomerAdd = "order_customer_add"
     case orderEditButtonTapped = "order_edit_button_tapped"
@@ -410,6 +426,7 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Add Product Events
     //
+    case addProductCreationTypeSelected = "add_product_creation_type_selected"
     case addProductTypeSelected = "add_product_product_type_selected"
     case addProductPublishTapped = "add_product_publish_tapped"
     case addProductSaveAsDraftTapped = "add_product_save_as_draft_tapped"
@@ -612,6 +629,15 @@ public enum WooAnalyticsStat: String {
     case featureCardShown = "feature_card_shown"
     case featureCardDismissed = "feature_card_dismissed"
     case featureCardCtaTapped = "feature_card_cta_tapped"
+
+    // MARK: Just In Time Messages events
+    case justInTimeMessageCallToActionTapped = "jitm_cta_tapped"
+    case justInTimeMessageDismissTapped = "jitm_dismissed"
+    case justInTimeMessageDismissSuccess = "jitm_dismiss_success"
+    case justInTimeMessageDismissFailure = "jitm_dismiss_failure"
+    case justInTimeMessageFetchSuccess = "jitm_fetch_success"
+    case justInTimeMessageFetchFailure = "jitm_fetch_failure"
+    case justInTimeMessageDisplayed = "jitm_displayed"
 
     // MARK: Simple Payments events
     //

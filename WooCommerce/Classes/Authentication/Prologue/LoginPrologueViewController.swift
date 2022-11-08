@@ -12,6 +12,7 @@ final class LoginPrologueViewController: UIViewController {
     private let isFeatureCarouselShown: Bool
     private let analytics: Analytics
     private let featureFlagService: FeatureFlagService
+    private let isSimplifiedLogin: Bool
 
     /// Background View, to be placed surrounding the bottom area.
     ///
@@ -27,8 +28,6 @@ final class LoginPrologueViewController: UIViewController {
 
     /// Button for users who are new to WooCommerce to learn more about WooCommerce.
     @IBOutlet private weak var newToWooCommerceButton: UIButton!
-
-    private var storePickerCoordinator: StorePickerCoordinator?
 
     // MARK: - Overridden Properties
 
@@ -46,6 +45,7 @@ final class LoginPrologueViewController: UIViewController {
         self.isFeatureCarouselShown = isFeatureCarouselShown
         self.analytics = analytics
         self.featureFlagService = featureFlagService
+        self.isSimplifiedLogin = ABTest.abTestLoginWithWPComOnly.variation != .control
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -99,7 +99,7 @@ private extension LoginPrologueViewController {
         let pageTypes: [LoginProloguePageType] = {
             if isFeatureCarouselShown {
                 return [.stats, .orderManagement, .products, .reviews]
-            } else if featureFlagService.isFeatureFlagEnabled(.simplifiedLoginFlowI1) {
+            } else if isSimplifiedLogin {
                 return [.simplifiedLoginI1Intro]
             } else {
                 return [.getStarted]
@@ -127,26 +127,13 @@ private extension LoginPrologueViewController {
         guard isNewToWooCommerceButtonShown else {
             return newToWooCommerceButton.isHidden = true
         }
-        let title = featureFlagService.isFeatureFlagEnabled(.simplifiedLoginFlowI1) ? Localization.learnMoreAboutWoo : Localization.newToWooCommerce
+        let title = isSimplifiedLogin ? Localization.learnMoreAboutWoo : Localization.newToWooCommerce
         newToWooCommerceButton.setTitle(title, for: .normal)
         newToWooCommerceButton.applyLinkButtonStyle()
         newToWooCommerceButton.titleLabel?.numberOfLines = 0
         newToWooCommerceButton.titleLabel?.textAlignment = .center
         newToWooCommerceButton.on(.touchUpInside) { [weak self] _ in
             guard let self = self else { return }
-
-            // TODO-7891: update prologue entry point.
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.storeCreationMVP) {
-                let accountCreationController = AccountCreationFormHostingController(
-                    viewModel: .init(),
-                    signInSource: .custom(source: StoreCreationCoordinator.Source.prologue.rawValue)
-                ) { [weak self] in
-                    guard let self, let navigationController = self.navigationController else { return }
-                    self.startStoreCreation(in: navigationController)
-                }
-                self.show(accountCreationController, sender: self)
-                return
-            }
 
             self.analytics.track(.loginNewToWooButtonTapped)
 
@@ -156,13 +143,6 @@ private extension LoginPrologueViewController {
 
             WebviewHelper.launch(url, with: self)
         }
-    }
-
-    func startStoreCreation(in navigationController: UINavigationController) {
-        // Shows the store picker first, so that after dismissal of the store creation view it goes back to the store picker.
-        let coordinator = StorePickerCoordinator(navigationController, config: .storeCreationFromLoginPrologue)
-        self.storePickerCoordinator = coordinator
-        coordinator.start()
     }
 }
 

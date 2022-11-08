@@ -6,14 +6,6 @@ import XCTest
 
 final class WooCommerceComUTMProviderTests: XCTestCase {
 
-    func test_init_sets_utm_medium_to_woo_ios() {
-        // Given, When
-        let sut = WooCommerceComUTMProvider(campaign: "", source: "", content: nil, siteID: nil)
-
-        // Then
-        assertEqual("woo_ios", sut.parameters[.medium])
-    }
-
     func test_query_string_has_all_passed_utm_parameters() throws {
         // Given
         let sut = WooCommerceComUTMProvider(campaign: "campaign_name",
@@ -35,57 +27,19 @@ final class WooCommerceComUTMProviderTests: XCTestCase {
         assertThat(query, contains: "utm_term=12345")
     }
 
-    func test_query_string_excludes_nils_passed_in_utm_parameters() throws {
+    func test_urlWithUtmParams_does_not_add_params_to_urls_other_than_woocommerce_com() throws {
         // Given
         let sut = WooCommerceComUTMProvider(campaign: "campaign_name",
                                             source: "source_name",
                                             content: nil,
                                             siteID: nil)
 
-        let urlString = "https://woocommerce.com"
+        let urlString = "https://wordpress.com"
 
         // When
         let url = try XCTUnwrap(sut.urlWithUtmParams(string: urlString))
-        let query = try XCTUnwrap(url.query)
 
         // Then
-        XCTAssertFalse(query.contains("utm_content"))
-        XCTAssertFalse(query.contains("utm_term"))
+        XCTAssertNil(url.query)
     }
-
-    func test_query_string_overwrites_using_passed_in_utm_parameters() throws {
-        // Given
-        let sut = WooCommerceComUTMProvider(campaign: "campaign_name",
-                                            source: "source_name",
-                                            content: nil,
-                                            siteID: nil)
-
-        let urlString = "https://woocommerce.com?utm_campaign=existing_campaign"
-
-        // When
-        let url = try XCTUnwrap(sut.urlWithUtmParams(string: urlString))
-        let query = try XCTUnwrap(url.query)
-
-        // Then
-        assertThat(query, contains: "utm_campaign=campaign_name")
-        XCTAssertFalse(query.contains("utm_campaign=existing_campaign"))
-    }
-
-    func test_query_string_preserves_existing_when_nil_is_passed_in_utm_parameters() throws {
-        // Given
-        let sut = WooCommerceComUTMProvider(campaign: "campaign_name",
-                                            source: "source_name",
-                                            content: nil,
-                                            siteID: nil)
-
-        let urlString = "https://woocommerce.com?utm_term=keyword"
-
-        // When
-        let url = try XCTUnwrap(sut.urlWithUtmParams(string: urlString))
-        let query = try XCTUnwrap(url.query)
-
-        // Then
-        assertThat(query, contains: "utm_term=keyword")
-    }
-
 }

@@ -6,9 +6,9 @@ import protocol Storage.StorageManagerType
 /// Coordinates navigation for store creation flow, with the assumption that the app is already authenticated with a WPCOM user.
 final class StoreCreationCoordinator: Coordinator {
     /// Navigation source to store creation.
-    enum Source: String {
-        /// Initiated from the login prologue in logged-out state.
-        case prologue
+    enum Source {
+        /// Initiated from the logged-out state.
+        case loggedOut(source: LoggedOutStoreCreationCoordinator.Source)
         /// Initiated from the store picker in logged-in state.
         case storePicker
     }
@@ -18,6 +18,7 @@ final class StoreCreationCoordinator: Coordinator {
     @Published private var possibleSiteURLsFromStoreCreation: Set<String> = []
     private var possibleSiteURLsFromStoreCreationSubscription: AnyCancellable?
 
+    private let analytics: Analytics
     private let source: Source
     private let storePickerViewModel: StorePickerViewModel
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
@@ -35,11 +36,10 @@ final class StoreCreationCoordinator: Coordinator {
                                           storageManager: storageManager,
                                           analytics: analytics)
         self.switchStoreUseCase = SwitchStoreUseCase(stores: stores, storageManager: storageManager)
+        self.analytics = analytics
     }
 
     func start() {
-        // TODO-7879: analytics
-
         observeSiteURLsFromStoreCreation()
 
         let viewModel = StoreCreationWebViewModel { [weak self] result in
@@ -88,21 +88,18 @@ private extension StoreCreationCoordinator {
     }
 
     @objc func handleStoreCreationCloseAction() {
-        // TODO-7879: show a confirmation alert before closing the store creation view
-        // TODO-7879: analytics
-        navigationController.dismiss(animated: true)
+        analytics.track(event: .StoreCreation.siteCreationDismissed(source: source.analyticsValue))
+        showDiscardChangesAlert()
     }
 
     func handleStoreCreationResult(_ result: Result<String, Error>) {
         switch result {
         case .success(let siteURL):
-            // TODO-7879: analytics
-
             // There could be multiple site URLs from the completion URL in the webview, and only one
             // of them matches the final site URL from WPCOM `/me/sites` endpoint.
             possibleSiteURLsFromStoreCreation.insert(siteURL)
         case .failure(let error):
-            // TODO-7879: analytics
+            analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue, error: error))
             DDLogError("Store creation error: \(error)")
         }
     }
@@ -129,6 +126,7 @@ private extension StoreCreationCoordinator {
     }
 
     func continueWithSelectedSite(site: Site) {
+        analytics.track(event: .StoreCreation.siteCreated(source: source.analyticsValue, siteURL: site.url))
         switchStoreUseCase.switchStore(with: site.siteID) { [weak self] siteChanged in
             guard let self else { return }
 
@@ -138,10 +136,55 @@ private extension StoreCreationCoordinator {
             self.navigationController.dismiss(animated: true)
         }
     }
+
+    func showDiscardChangesAlert() {
+        let alert = UIAlertController(title: Localization.DiscardChangesAlert.title,
+                                      message: Localization.DiscardChangesAlert.message,
+                                      preferredStyle: .alert)
+        alert.view.tintColor = .text
+
+        alert.addDestructiveActionWithTitle(Localization.DiscardChangesAlert.confirmActionTitle) { [weak self] _ in
+            self?.navigationController.dismiss(animated: true)
+        }
+
+        alert.addCancelActionWithTitle(Localization.DiscardChangesAlert.cancelActionTitle) { _ in }
+
+        // Presents the alert with the presented webview.
+        navigationController.presentedViewController?.present(alert, animated: true)
+    }
 }
 
 private extension StoreCreationCoordinator {
     enum StoreCreationCoordinatorError: Error {
         case selfDeallocated
+    }
+
+    enum Localization {
+        enum DiscardChangesAlert {
+            static let title = NSLocalizedString("Do you want to leave?",
+                                                 comment: "Title of the alert when the user dismisses the store creation flow.")
+            static let message = NSLocalizedString("You will lose all your store information.",
+                                                   comment: "Message of the alert when the user dismisses the store creation flow.")
+            static let confirmActionTitle = NSLocalizedString("Confirm and leave",
+                                                              comment: "Button title Discard Changes in Discard Changes Action Sheet")
+            static let cancelActionTitle = NSLocalizedString("Cancel",
+                                                             comment: "Button title Cancel in Discard Changes Action Sheet")
+        }
+    }
+}
+
+private extension StoreCreationCoordinator.Source {
+    var analyticsValue: WooAnalyticsEvent.StoreCreation.Source {
+        switch self {
+        case .storePicker:
+            return .storePicker
+        case .loggedOut(let source):
+            switch source {
+            case .prologue:
+                return .loginPrologue
+            case .loginEmailError:
+                return .loginEmailError
+            }
+        }
     }
 }

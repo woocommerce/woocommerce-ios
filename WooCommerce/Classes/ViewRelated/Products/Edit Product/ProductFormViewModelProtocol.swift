@@ -10,6 +10,7 @@ enum ProductFormType {
 
 /// The type of action that can be performed in the product.
 enum ActionButtonType {
+    case preview
     case publish
     case save
     case more

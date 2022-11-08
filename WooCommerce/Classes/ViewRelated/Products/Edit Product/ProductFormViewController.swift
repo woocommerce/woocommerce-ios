@@ -971,7 +971,9 @@ private extension ProductFormViewController {
     }
 
     func createPreviewBarButtonItem() -> UIBarButtonItem {
-        return UIBarButtonItem(title: Localization.previewTitle, style: .done, target: self, action: #selector(saveDraftAndDisplayProductPreview))
+        let previewButton = UIBarButtonItem(title: Localization.previewTitle, style: .done, target: self, action: #selector(saveDraftAndDisplayProductPreview))
+        previewButton.isEnabled = viewModel.shouldEnablePreviewButton()
+        return previewButton
     }
 
     func createMoreOptionsBarButtonItem() -> UIBarButtonItem {

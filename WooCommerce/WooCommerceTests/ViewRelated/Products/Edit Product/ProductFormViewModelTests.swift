@@ -542,7 +542,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     // MARK: Preview button tests (with enabled Product Onboarding feature flag)
 
-    func test_no_preview_button_for_new_blank_product_without_any_changes() {
+    func test_disabled_preview_button_for_new_blank_product_without_any_changes() {
         // Given
         sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
 
@@ -556,10 +556,11 @@ final class ProductFormViewModelTests: XCTestCase {
         let actionButtons = viewModel.actionButtons
 
         // Then
-        XCTAssertEqual(actionButtons, [.publish, .more])
+        XCTAssertEqual(actionButtons, [.preview, .publish, .more])
+        XCTAssertFalse(viewModel.shouldEnablePreviewButton())
     }
 
-    func test_preview_button_for_new_product_with_pending_changes() {
+    func test_enabled_preview_button_for_new_product_with_pending_changes() {
         // Given
         sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
 
@@ -575,6 +576,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(actionButtons, [.preview, .publish, .more])
+        XCTAssertTrue(viewModel.shouldEnablePreviewButton())
     }
 
     func test_no_preview_button_for_existing_published_product_without_any_changes() {

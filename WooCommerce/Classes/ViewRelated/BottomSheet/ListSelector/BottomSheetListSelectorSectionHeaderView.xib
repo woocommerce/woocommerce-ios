@@ -16,7 +16,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yNN-dG-kuA">
-                    <rect key="frame" x="16" y="23" width="42" height="21"/>
+                    <rect key="frame" x="16" y="27" width="382" height="21"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
@@ -34,14 +34,15 @@
                 <constraint firstItem="MUy-0K-UzK" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="16" id="GnY-De-657"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="MUy-0K-UzK" secondAttribute="trailing" priority="999" constant="16" id="MnQ-Ob-Wp4"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="MUy-0K-UzK" secondAttribute="bottom" constant="12" id="WDE-us-ZdJ"/>
-                <constraint firstItem="MUy-0K-UzK" firstAttribute="top" secondItem="yNN-dG-kuA" secondAttribute="bottom" constant="16" id="nHE-te-rHP"/>
+                <constraint firstItem="MUy-0K-UzK" firstAttribute="top" secondItem="yNN-dG-kuA" secondAttribute="bottom" constant="12" id="nHE-te-rHP"/>
                 <constraint firstItem="MUy-0K-UzK" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="12" id="nmY-jt-bfb"/>
+                <constraint firstItem="yNN-dG-kuA" firstAttribute="trailing" secondItem="MUy-0K-UzK" secondAttribute="trailing" id="o6t-QX-No4"/>
                 <constraint firstItem="yNN-dG-kuA" firstAttribute="leading" secondItem="MUy-0K-UzK" secondAttribute="leading" id="wb7-Ze-GOP"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
-                <outlet property="subtitle" destination="yNN-dG-kuA" id="ztZ-PR-aGH"/>
-                <outlet property="title" destination="MUy-0K-UzK" id="Par-ou-0ia"/>
+                <outlet property="subtitle" destination="MUy-0K-UzK" id="L6u-fg-l9X"/>
+                <outlet property="title" destination="yNN-dG-kuA" id="hOy-NU-gAA"/>
             </connections>
             <point key="canvasLocation" x="139" y="109"/>
         </view>

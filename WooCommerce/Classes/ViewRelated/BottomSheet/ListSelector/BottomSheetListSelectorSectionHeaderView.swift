@@ -26,7 +26,7 @@ private extension BottomSheetListSelectorSectionHeaderView {
     }
 
     func configureTitle() {
-        title.applyTitleStyle()
+        title.applyHeadlineStyle()
         title.textColor = .systemColor(.label)
     }
 

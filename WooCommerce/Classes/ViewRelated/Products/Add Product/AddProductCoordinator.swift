@@ -86,9 +86,11 @@ private extension AddProductCoordinator {
     /// Presents a bottom sheet for users to choose if they want a create a product manually or via a template.
     ///
     func presentProductCreationTypeBottomSheet() {
-        let title = NSLocalizedString("How do you want to start?",
+        let title = NSLocalizedString("Add a product",
                                       comment: "Message title of bottom sheet for selecting a template or manual product")
-        let viewProperties = BottomSheetListSelectorViewProperties(subtitle: title)
+        let subtitle = NSLocalizedString("How do you want to start?",
+                                         comment: "Message subtitle of bottom sheet for selecting a template or manual product")
+        let viewProperties = BottomSheetListSelectorViewProperties(title: title, subtitle: subtitle)
         let command = ProductCreationTypeSelectorCommand { selectedCreationType in
             self.trackProductCreationType(selectedCreationType)
             self.presentProductTypeBottomSheet(creationType: selectedCreationType)
@@ -100,9 +102,13 @@ private extension AddProductCoordinator {
     /// Presents a bottom sheet for users to choose if what kind of product they want to create.
     ///
     func presentProductTypeBottomSheet(creationType: ProductCreationType) {
-        let title = NSLocalizedString("Select a product type",
-                                      comment: "Message title of bottom sheet for selecting a product type to create a product")
-        let viewProperties = BottomSheetListSelectorViewProperties(subtitle: title)
+        let title: String? = {
+            guard creationType == .template else { return nil }
+            return NSLocalizedString("Choose a template", comment: "Message title of bottom sheet for selecting a template or manual product")
+        }()
+        let subtitle = NSLocalizedString("Select a product type",
+                                         comment: "Message subtitle of bottom sheet for selecting a product type to create a product")
+        let viewProperties = BottomSheetListSelectorViewProperties(title: title, subtitle: subtitle)
         let command = ProductTypeBottomSheetListSelectorCommand(selected: nil) { selectedBottomSheetProductType in
             ServiceLocator.analytics.track(.addProductTypeSelected, withProperties: ["product_type": selectedBottomSheetProductType.productType.rawValue])
             self.navigationController.dismiss(animated: true) {

@@ -33,6 +33,12 @@ def tracks
   # pod 'Automattic-Tracks-iOS', :path => '../Automattic-Tracks-iOS'
 end
 
+def wordpress_kit
+  # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
+  pod 'WordPressKit', '~> 4.49.0'
+  # pod 'WordPressKit', :git => 'https://github.com/wordpress-mobile/WordPressKit-iOS.git', :branch => ''
+end
+
 def keychain
   pod 'KeychainAccess', '~> 4.2.2'
 end
@@ -115,10 +121,7 @@ def yosemite_pods
   alamofire
   stripe_terminal
   cocoa_lumberjack
-
-  # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
-  pod 'WordPressKit', '~> 4.49.0'
-  # pod 'WordPressKit', :git => 'https://github.com/wordpress-mobile/WordPressKit-iOS.git', :branch => ''
+  wordpress_kit
 
   aztec
 end
@@ -174,9 +177,7 @@ def networking_pods
   # Used for HTML parsing
   aztec
 
-  # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
-  pod 'WordPressKit', '~> 4.49.0'
-  # pod 'WordPressKit', :git => 'https://github.com/wordpress-mobile/WordPressKit-iOS.git', :branch => ''
+  wordpress_kit
 end
 
 # Networking Target:

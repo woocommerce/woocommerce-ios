@@ -47,7 +47,7 @@ def cocoa_lumberjack
 end
 
 def stripe_terminal
-  pod 'StripeTerminal', '~> 2.7'
+  pod 'StripeTerminal', '~> 2.14'
 end
 
 # Main Target!

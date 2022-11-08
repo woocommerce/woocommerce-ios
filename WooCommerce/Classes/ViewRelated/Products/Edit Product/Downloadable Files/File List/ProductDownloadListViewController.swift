@@ -161,7 +161,7 @@ extension ProductDownloadListViewController {
 
     @objc private func addButtonTapped(_ sender: UIButton) {
         let title = Localization.bottomSheetTitle
-        let viewProperties = BottomSheetListSelectorViewProperties(title: title)
+        let viewProperties = BottomSheetListSelectorViewProperties(subtitle: title)
         let actions = viewModel.bottomSheetActions
         let dataSource = DownloadableFileBottomSheetListSelectorCommand(actions: actions) { [weak self] action in
             self?.dismiss(animated: true) { [weak self] in

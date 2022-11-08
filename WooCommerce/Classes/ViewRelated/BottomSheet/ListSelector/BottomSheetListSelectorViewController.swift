@@ -93,7 +93,7 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
             as? BottomSheetListSelectorSectionHeaderView else {
                 fatalError()
         }
-        header.configure(text: viewProperties.title)
+        header.configure(title: viewProperties.title, subtitle: viewProperties.subtitle)
         return header
     }
 }

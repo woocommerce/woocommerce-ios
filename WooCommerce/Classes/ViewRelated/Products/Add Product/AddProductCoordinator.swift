@@ -88,7 +88,7 @@ private extension AddProductCoordinator {
     func presentProductCreationTypeBottomSheet() {
         let title = NSLocalizedString("How do you want to start?",
                                       comment: "Message title of bottom sheet for selecting a template or manual product")
-        let viewProperties = BottomSheetListSelectorViewProperties(title: title)
+        let viewProperties = BottomSheetListSelectorViewProperties(subtitle: title)
         let command = ProductCreationTypeSelectorCommand { selectedCreationType in
             self.trackProductCreationType(selectedCreationType)
             self.presentProductTypeBottomSheet(creationType: selectedCreationType)
@@ -102,7 +102,7 @@ private extension AddProductCoordinator {
     func presentProductTypeBottomSheet(creationType: ProductCreationType) {
         let title = NSLocalizedString("Select a product type",
                                       comment: "Message title of bottom sheet for selecting a product type to create a product")
-        let viewProperties = BottomSheetListSelectorViewProperties(title: title)
+        let viewProperties = BottomSheetListSelectorViewProperties(subtitle: title)
         let command = ProductTypeBottomSheetListSelectorCommand(selected: nil) { selectedBottomSheetProductType in
             ServiceLocator.analytics.track(.addProductTypeSelected, withProperties: ["product_type": selectedBottomSheetProductType.productType.rawValue])
             self.navigationController.dismiss(animated: true) {

@@ -45,6 +45,7 @@ At the moment, we provide four implementations of `URLRequestConvertible`:
 * [`JetpackRequest`](../Networking/Networking/Requests/JetpackRequest.swift) represents a Jetpack-Tunneled WordPress.com 
 * [`AuthenticatedRequest`](../Networking/Networking/Requests/AuthenticatedRequest.swift) Wraps up a `URLRequestConvertible` instance, and injects credentials (username and token) when required
 * [`WordPressOrgRequest`](../Networking/Networking/Requests/WordPressOrgRequest.swift) model requests to the WordPress.org REST API.
+* [`UnauthenticatedRequest`](../Networking/Networking/Requests/UnauthenticatedRequest.swift) Wraps up a `URLRequestConvertible` instance, and injects a custom user-agent header
 
 ## [`Mapper`](../Networking/Networking/Mapper/Mapper.swift)
 A protocol that abstracts the different parsers.

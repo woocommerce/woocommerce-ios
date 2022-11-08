@@ -41,13 +41,9 @@ class AuthenticationManager: Authentication {
     ///
     private let storageManager: StorageManagerType
 
-    /// Whether WP.com signup is enabled in the authentication flow based on the feature flag.
-    private let isWPComSignupEnabled: Bool
-
     init(storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.storageManager = storageManager
-        self.isWPComSignupEnabled = featureFlagService.isFeatureFlagEnabled(.wpcomSignup)
     }
 
     /// Initializes the WordPress Authenticator.
@@ -69,7 +65,7 @@ class AuthenticationManager: Authentication {
                                                                 googleLoginScheme: ApiCredentials.googleAuthScheme,
                                                                 userAgent: UserAgent.defaultUserAgent,
                                                                 showLoginOptions: true,
-                                                                enableSignUp: isWPComSignupEnabled,
+                                                                enableSignUp: false,
                                                                 enableSignInWithApple: true,
                                                                 enableSignupWithGoogle: false,
                                                                 enableUnifiedAuth: true,
@@ -404,27 +400,19 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Presents the Signup Epilogue, in the specified NavigationController.
     ///
     func presentSignupEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, service: SocialService?) {
-        if isWPComSignupEnabled {
-            // A proper signup epilogue flow will be added incrementally later as part of the WP.com signup experiment:
-            // Ref: pe5sF9-xP-p2
-            sync(credentials: credentials) { [weak self] in
-                self?.startStorePicker(in: navigationController)
-            }
-        } else {
-            // NO-OP: The current WC version does not support Signup. Let SIWA through.
-            guard case .apple = service else {
-                return
-            }
+        // NO-OP: The current WC version does not support Signup. Let SIWA through.
+        guard case .apple = service else {
+            return
+        }
 
-            // For SIWA, signups are treating like signing in for now.
-            // Signup code in Authenticator normally synchronizes the auth credentials but
-            // since we're hacking in SIWA, that's never called in the pod. Call here so the
-            // person's name and user ID show up on the picker screen.
-            //
-            // This is effectively a useless screen for them other than telling them to install Jetpack.
-            sync(credentials: credentials) { [weak self] in
-                self?.startStorePicker(in: navigationController)
-            }
+        // For SIWA, signups are treating like signing in for now.
+        // Signup code in Authenticator normally synchronizes the auth credentials but
+        // since we're hacking in SIWA, that's never called in the pod. Call here so the
+        // person's name and user ID show up on the picker screen.
+        //
+        // This is effectively a useless screen for them other than telling them to install Jetpack.
+        sync(credentials: credentials) { [weak self] in
+            self?.startStorePicker(in: navigationController)
         }
     }
 
@@ -482,7 +470,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Note: As of now, this is a NO-OP, we're not supporting any signup flows.
     ///
     func shouldPresentSignupEpilogue() -> Bool {
-        isWPComSignupEnabled
+        false
     }
 
     /// Synchronizes the specified WordPress Account.

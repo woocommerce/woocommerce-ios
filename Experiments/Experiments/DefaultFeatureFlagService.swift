@@ -33,8 +33,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .searchProductsBySKU:
             return true
-        case .wpcomSignup:
-            return false
         case .inAppPurchases:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .storeCreationMVP:

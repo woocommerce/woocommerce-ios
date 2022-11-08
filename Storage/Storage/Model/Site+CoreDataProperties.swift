@@ -13,6 +13,7 @@ extension Site {
     @NSManaged public var url: String?
     @NSManaged public var adminURL: String?
     @NSManaged public var loginURL: String?
+    @NSManaged public var frameNonce: String?
     @NSManaged public var plan: String?
     @NSManaged public var isWooCommerceActive: NSNumber?
     @NSManaged public var isWordPressStore: NSNumber?

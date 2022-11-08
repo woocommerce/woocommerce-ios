@@ -35,6 +35,20 @@ public final class StripeCardReaderService: NSObject {
 }
 
 
+public enum CardReaderDiscoveryMethod {
+    case localMobile
+    case bluetoothProximity
+
+    func toStripe() -> DiscoveryMethod {
+        switch self {
+        case .localMobile:
+            return .localMobile
+        case .bluetoothProximity:
+            return .bluetoothProximity
+        }
+    }
+}
+
 // MARK: - CardReaderService conformance.
 extension StripeCardReaderService: CardReaderService {
 
@@ -58,7 +72,8 @@ extension StripeCardReaderService: CardReaderService {
 
     // MARK: - CardReaderService conformance. Commands
 
-    public func start(_ configProvider: CardReaderConfigProvider) throws {
+    public func start(_ configProvider: CardReaderConfigProvider,
+                      discoveryMethod: CardReaderDiscoveryMethod) throws {
         setConfigProvider(configProvider)
 
         Terminal.setLogListener {  message in
@@ -85,7 +100,7 @@ extension StripeCardReaderService: CardReaderService {
         }
 
         let config = DiscoveryConfiguration(
-            discoveryMethod: .localMobile,
+            discoveryMethod: discoveryMethod.toStripe(),
             simulated: shouldUseSimulatedCardReader
         )
 
@@ -311,9 +326,22 @@ extension StripeCardReaderService: CardReaderService {
             }.eraseToAnyPublisher()
         }
 
-        return getLocalMobileConfiguration(stripeReader).flatMap { configuration in
-            self.connect(stripeReader, configuration: configuration)
-        }.eraseToAnyPublisher()
+        switch stripeReader.deviceType {
+        case .appleBuiltIn:
+            return getLocalMobileConfiguration(stripeReader).flatMap { configuration in
+                self.connect(stripeReader, configuration: configuration)
+            }
+            .share()
+            .print("💸 localReader getLocalMobileConfiguration")
+            .eraseToAnyPublisher()
+        default:
+            return getBluetoothConfiguration(stripeReader).flatMap { configuration in
+                self.connect(stripeReader, configuration: configuration)
+            }
+            .share()
+            .print("💸 bluetoothReader getBluetoothConfiguration")
+            .eraseToAnyPublisher()
+        }
     }
 
     private func getBluetoothConfiguration(_ reader: StripeTerminal.Reader) -> Future<BluetoothConnectionConfiguration, Error> {
@@ -339,6 +367,7 @@ extension StripeCardReaderService: CardReaderService {
 
     private func getLocalMobileConfiguration(_ reader: StripeTerminal.Reader) -> Future<LocalMobileConnectionConfiguration, Error> {
         return Future() { [weak self] promise in
+            DDLogInfo("💸 localReader getLocalMobileConfiguration completion")
             guard let self = self else {
                 promise(.failure(CardReaderServiceError.connection()))
                 return
@@ -358,7 +387,7 @@ extension StripeCardReaderService: CardReaderService {
         }
     }
 
-    public func connect(_ reader: StripeTerminal.Reader, configuration: LocalMobileConnectionConfiguration) -> Future <CardReader, Error> {
+    public func connect(_ reader: StripeTerminal.Reader, configuration: BluetoothConnectionConfiguration) -> Future <CardReader, Error> {
         // Keep a copy of the battery level in case the connection fails due to low battery
         // If that happens, the reader object won't be accessible anymore, and we want to show
         // the current charge percentage if possible
@@ -370,7 +399,8 @@ extension StripeCardReaderService: CardReaderService {
                 return
             }
 
-            Terminal.shared.connectLocalMobileReader(reader, delegate: self, connectionConfig: configuration) { [weak self] (reader, error) in
+            Terminal.shared.connectBluetoothReader(reader, delegate: self, connectionConfig: configuration) { [weak self] (reader, error) in
+                DDLogInfo("💸 bluetoothReader connectBluetoothReader completion")
                 guard let self = self else {
                     promise(.failure(CardReaderServiceError.connection()))
                     return
@@ -391,6 +421,48 @@ extension StripeCardReaderService: CardReaderService {
                 if let reader = reader {
                     self.connectedReadersSubject.send([CardReader(reader: reader)])
                     self.switchStatusToIdle()
+                    DDLogInfo("💸 connectReader Bluetooth Success recieved")
+                    promise(.success(CardReader(reader: reader)))
+                }
+            }
+        }
+    }
+
+    public func connect(_ reader: StripeTerminal.Reader, configuration: LocalMobileConnectionConfiguration) -> Future <CardReader, Error> {
+        // Keep a copy of the battery level in case the connection fails due to low battery
+        // If that happens, the reader object won't be accessible anymore, and we want to show
+        // the current charge percentage if possible
+        let batteryLevel = reader.batteryLevel?.doubleValue
+
+        return Future { [weak self] promise in
+            guard let self = self else {
+                promise(.failure(CardReaderServiceError.connection()))
+                return
+            }
+
+            Terminal.shared.connectLocalMobileReader(reader, delegate: self, connectionConfig: configuration) { [weak self] (reader, error) in
+                DDLogInfo("💸 localReader connectLocalMobileReader completion")
+                guard let self = self else {
+                    promise(.failure(CardReaderServiceError.connection()))
+                    return
+                }
+                // Clear cached readers, as per Stripe's documentation.
+                self.discoveredStripeReadersCache.clear()
+
+                if let error = error {
+                    let underlyingError = UnderlyingError(with: error)
+                    // Starting with StripeTerminal 2.0, required software updates happen transparently on connection
+                    // Any error related to that will be reported here, but we don't want to treat it as a connection error
+                    let serviceError: CardReaderServiceError = underlyingError.isSoftwareUpdateError ?
+                        .softwareUpdate(underlyingError: underlyingError, batteryLevel: batteryLevel) :
+                        .connection(underlyingError: underlyingError)
+                    promise(.failure(serviceError))
+                }
+
+                if let reader = reader {
+                    self.connectedReadersSubject.send([CardReader(reader: reader)])
+                    self.switchStatusToIdle()
+                    DDLogInfo("💸 connectReader Local Success recieved")
                     promise(.success(CardReader(reader: reader)))
                 }
             }
@@ -417,6 +489,7 @@ private extension StripeCardReaderService {
 
     func createPaymentIntent(_ parameters: PaymentIntentParameters) -> Future<StripeTerminal.PaymentIntent, Error> {
         return Future() { [weak self] promise in
+            DDLogInfo("💸 createPaymentMethod recieved")
             // Shortcircuit if we have an inconsistent set of parameters
             guard let parameters = parameters.toStripe() else {
                 promise(.failure(CardReaderServiceError.intentCreation()))
@@ -464,6 +537,7 @@ private extension StripeCardReaderService {
 
                     if underlyingError == .commandCancelled {
                         DDLogWarn("💳 Warning: collect payment error cancelled. We actively ignore this error \(error)")
+                        promise(.failure(CardReaderServiceError.paymentCancellation(underlyingError: underlyingError)))
                     }
 
                 }
@@ -718,15 +792,28 @@ extension StripeCardReaderService: BluetoothReaderDelegate {
 }
 
 extension StripeCardReaderService: LocalMobileReaderDelegate {
+    public func localMobileReader(_ reader: Reader, didRequestReaderInput inputOptions: ReaderInputOptions = []) {
+        DDLogInfo("💸 localReader didRequestReaderInput \(Terminal.stringFromReaderInputOptions(inputOptions))")
+        //noop
+    }
+
+    public func localMobileReader(_ reader: Reader, didRequestReaderDisplayMessage displayMessage: ReaderDisplayMessage) {
+        DDLogInfo("💸 localReader didRequestReaderDisplayMessage \(displayMessage)")
+        //noop
+    }
+
     public func localMobileReader(_ reader: Reader, didStartInstallingUpdate update: ReaderSoftwareUpdate, cancelable: Cancelable?) {
+        DDLogInfo("💸 localReader didStartInstallingUpdate")
         //noop
     }
 
     public func localMobileReader(_ reader: Reader, didReportReaderSoftwareUpdateProgress progress: Float) {
+        DDLogInfo("💸 localReader didReportReaderSoftwareUpdateProgress")
         //noop
     }
 
     public func localMobileReader(_ reader: Reader, didFinishInstallingUpdate update: ReaderSoftwareUpdate?, error: Error?) {
+        DDLogInfo("💸 localReader didFinishInstallingUpdate")
         //noop
     }
 }

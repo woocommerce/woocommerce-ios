@@ -4,6 +4,9 @@ import UIKit
 import Storage
 import SwiftUI
 import Yosemite
+#if !targetEnvironment(simulator)
+import ProximityReader
+#endif
 
 /// Facilitates connecting to a card reader
 ///
@@ -21,9 +24,13 @@ final class CardReaderConnectionController {
         ///
         case preparingForSearch
 
+        /// Choose between different search types, e.g. `bluetoothProximity` or `localMobile`
+        ///
+        case selectSearchType
+
         /// Begin search for card readers
         ///
-        case beginSearch
+        case beginSearch(CardReaderDiscoveryMethod)
 
         /// Searching for a card reader
         ///
@@ -116,6 +123,8 @@ final class CardReaderConnectionController {
     /// even if the number of found readers drops to less than 2
     private var showSeveralFoundReaders: Bool = false
 
+    private var cardReaderConnectionType: CardReaderDiscoveryMethod? = nil
+
     private var softwareUpdateCancelable: FallibleCancelable? = nil
 
     private var subscriptions = Set<AnyCancellable>()
@@ -197,8 +206,10 @@ private extension CardReaderConnectionController {
             onInitialization()
         case .preparingForSearch:
             onPreparingForSearch()
-        case .beginSearch:
-            onBeginSearch()
+        case .selectSearchType:
+            onSelectSearchType()
+        case .beginSearch(let discoveryMethod):
+            onBeginSearch(type: discoveryMethod)
         case .searching:
             onSearching()
         case .foundReader:
@@ -292,6 +303,7 @@ private extension CardReaderConnectionController {
         skippedReaderIDs = []
         candidateReader = nil
         showSeveralFoundReaders = false
+        cardReaderConnectionType = nil
 
         /// Fetch the list of known readers - i.e. readers we should automatically connect to when we see them
         ///
@@ -304,9 +316,38 @@ private extension CardReaderConnectionController {
 
             /// Only kick off search if we received a known reader update
             if case .preparingForSearch = self.state {
-                self.state = .beginSearch
+                if self.localMobileReaderSupported() {
+                    self.state = .selectSearchType
+                } else {
+                    self.state = .beginSearch(.bluetoothProximity)
+                }
             }
         }).store(in: &subscriptions)
+    }
+
+    func localMobileReaderSupported() -> Bool {
+        #if !targetEnvironment(simulator)
+        if #available(iOS 15.4, *) {
+            let reader = PaymentCardReader()
+            DDLogInfo("💸 Payment card reader: \(reader)")
+            return PaymentCardReader.isSupported
+        }
+        #endif
+        return false
+    }
+
+    func onSelectSearchType() {
+        guard let from = fromController else {
+            return
+        }
+        alerts.selectSearchType(from: from, options: [
+            .localMobile: { [weak self] in
+                self?.state = .beginSearch(.localMobile)
+            },
+            .bluetoothProximity: { [weak self] in
+                self?.state = .beginSearch(.bluetoothProximity)
+            }
+        ])
     }
 
     /// Begins the search for a card reader
@@ -317,12 +358,13 @@ private extension CardReaderConnectionController {
     /// `.foundMultipleReaders` if two or more readers are found,
     /// or  to `.connectToReader` if one known reader is found
     ///
-    func onBeginSearch() {
-        self.state = .searching
+    func onBeginSearch(type: CardReaderDiscoveryMethod) {
+        cardReaderConnectionType = type
+        state = .searching
         var didAutoAdvance = false
 
         let action = CardPresentPaymentAction.startCardReaderDiscovery(
-            siteID: siteID,
+            siteID: siteID, type: type,
             onReaderDiscovered: { [weak self] cardReaders in
                 guard let self = self else {
                     return
@@ -524,7 +566,7 @@ private extension CardReaderConnectionController {
     func onRetry() {
         alerts.dismiss()
         let action = CardPresentPaymentAction.cancelCardReaderDiscovery() { [weak self] _ in
-            self?.state = .beginSearch
+            self?.state = .beginSearch(self?.cardReaderConnectionType ?? .bluetoothProximity)
         }
         stores.dispatch(action)
     }

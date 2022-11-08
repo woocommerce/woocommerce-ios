@@ -17,6 +17,10 @@ final class CardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         setViewModelAndPresent(from: from, viewModel: scanningFailed(error: error, close: close))
     }
 
+    func selectSearchType(from: UIViewController, options: [CardReaderDiscoveryMethod: (() -> Void)]) {
+        setViewModelAndPresent(from: from, viewModel: selectSearchType(options: options))
+    }
+
     func connectingToReader(from: UIViewController) {
         setViewModelAndPresent(from: from, viewModel: connectingToReader())
     }
@@ -178,6 +182,10 @@ private extension CardReaderSettingsAlerts {
         default:
             return CardPresentModalScanningFailed(error: error, primaryAction: close)
         }
+    }
+
+    func selectSearchType(options: [CardReaderDiscoveryMethod: (() -> Void)]) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalSelectSearchType(options: options)
     }
 
     func connectingToReader() -> CardPresentPaymentsModalViewModel {

@@ -15,6 +15,8 @@ protocol CardReaderSettingsAlertsProvider {
     ///
     func scanningFailed(from: UIViewController, error: Error, close: @escaping () -> Void)
 
+    func selectSearchType(from: UIViewController, options: [CardReaderDiscoveryMethod: (() -> Void)])
+
     /// Defines an interactive alert indicating a reader has been found. The user must
     /// choose to connect to that reader or continue searching
     ///

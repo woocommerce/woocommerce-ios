@@ -50,10 +50,6 @@ public enum FeatureFlag: Int {
     ///
     case loginErrorNotifications
 
-    /// Whether to show a survey at the end of the login onboarding screen after feature carousel
-    ///
-    case loginPrologueOnboardingSurvey
-
     /// Whether to prefer magic link to password in the login flow
     ///
     case loginMagicLinkEmphasis

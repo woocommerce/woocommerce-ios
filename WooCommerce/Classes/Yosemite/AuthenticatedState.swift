@@ -37,6 +37,7 @@ class AuthenticatedState: StoresManagerState {
             CouponStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             CustomerStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             DataStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            DomainStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             InAppPurchaseStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             InboxNotesStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             JustInTimeMessageStore(dispatcher: dispatcher, storageManager: storageManager, network: network),

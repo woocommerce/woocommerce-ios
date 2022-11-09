@@ -10,8 +10,6 @@ final class LoginOnboardingViewController: UIViewController {
         case skip
     }
 
-    private var selectedSurveyOption: LoginOnboardingSurveyOption?
-
     private let stackView: UIStackView = .init()
     private lazy var pageViewController = LoginProloguePageViewController(pageTypes: [.products, .orderManagement, .stats],
                                                                           showsSubtitle: true)

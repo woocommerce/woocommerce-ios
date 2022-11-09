@@ -180,4 +180,11 @@ extension ProductFormViewModelProtocol {
             }
         }
     }
+
+    /// Whether the Preview button should be enabled, when it's available in the navigation bar.
+    /// Returns `false` when it's a new blank product without any changes.
+    ///
+    func shouldEnablePreviewButton() -> Bool {
+        !(formType == .add && !hasUnsavedChanges())
+    }
 }

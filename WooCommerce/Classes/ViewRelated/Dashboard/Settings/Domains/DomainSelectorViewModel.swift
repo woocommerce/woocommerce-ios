@@ -8,8 +8,8 @@ final class DomainSelectorViewModel: ObservableObject {
     /// Each update will trigger a remote call for domain suggestions.
     @Published var searchTerm: String = ""
 
-    /// View models for each domain row after domain suggestions are loaded remotely.
-    @Published private(set) var domainRows: [DomainRowViewModel] = []
+    /// Domain names after domain suggestions are loaded remotely.
+    @Published private(set) var domains: [String] = []
 
     /// Subscription for search query changes for domain search.
     private var searchQuerySubscription: AnyCancellable?
@@ -57,10 +57,10 @@ private extension DomainSelectorViewModel {
 
     @MainActor
     func handleFreeDomainSuggestions(_ suggestions: [FreeDomainSuggestion], query: String) {
-        domainRows = suggestions
+        domains = suggestions
             .filter { $0.isFree }
             .map {
-                DomainRowViewModel(domainName: $0.name, searchQuery: query)
+                $0.name
             }
     }
 

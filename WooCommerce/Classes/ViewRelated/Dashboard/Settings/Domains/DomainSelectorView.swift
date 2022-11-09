@@ -30,8 +30,18 @@ final class DomainSelectorHostingController: UIHostingController<DomainSelectorV
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        navigationItem.rightBarButtonItem = .init(title: Localization.skipButtonTitle, style: .plain, target: self, action: #selector(skipButtonTapped))
+        configureSkipButton()
+        configureNavigationBarAppearance()
+    }
+}
 
+private extension DomainSelectorHostingController {
+    func configureSkipButton() {
+        navigationItem.rightBarButtonItem = .init(title: Localization.skipButtonTitle, style: .plain, target: self, action: #selector(skipButtonTapped))
+    }
+
+    /// Shows a transparent navigation bar without a bottom border.
+    func configureNavigationBarAppearance() {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithTransparentBackground()
         appearance.backgroundColor = UIColor.clear
@@ -88,14 +98,13 @@ struct DomainSelectorView: View {
                 .bodyStyle()
                 .padding(.horizontal, Layout.defaultHorizontalPadding)
 
-            List {
-                ForEach(viewModel.domainRows) { rowViewModel in
-                    Button {
-                        selectedDomainName = rowViewModel.name
-                    } label: {
-                        DomainRowView(viewModel: rowViewModel,
-                                      isSelected: rowViewModel.name == selectedDomainName)
-                    }
+            List(viewModel.domains, id: \.self) { domain in
+                Button {
+                    selectedDomainName = domain
+                } label: {
+                    DomainRowView(viewModel: .init(domainName: domain,
+                                                   searchQuery: viewModel.searchTerm,
+                                                   isSelected: domain == selectedDomainName))
                 }
             }.listStyle(.inset)
 

@@ -29,7 +29,7 @@ final class DomainSelectorViewModelTests: XCTestCase {
         viewModel.searchTerm = ""
 
         // Then
-        XCTAssertEqual(viewModel.domainRows, [])
+        XCTAssertEqual(viewModel.domains, [])
         XCTAssertTrue(stores.receivedActions.isEmpty)
     }
 
@@ -45,9 +45,9 @@ final class DomainSelectorViewModelTests: XCTestCase {
 
         // Then
         waitUntil {
-            self.viewModel.domainRows.isNotEmpty
+            self.viewModel.domains.isNotEmpty
         }
-        XCTAssertEqual(viewModel.domainRows, [.init(domainName: "free.com", searchQuery: "woo")])
+        XCTAssertEqual(viewModel.domains, ["free.com"])
     }
 
     func test_domain_suggestions_failure_does_not_update_domain_rows() {
@@ -58,7 +58,7 @@ final class DomainSelectorViewModelTests: XCTestCase {
         viewModel.searchTerm = "woo"
 
         // Then
-        XCTAssertEqual(viewModel.domainRows, [])
+        XCTAssertEqual(viewModel.domains, [])
     }
 }
 

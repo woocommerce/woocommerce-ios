@@ -493,9 +493,9 @@ private extension SiteAddressViewController {
                 // It's not guaranteed to be included in the error object depending on the error.
                 DDLogInfo("Error attempting to connect to site address: \(self.loginFields.siteAddress)")
                 DDLogError(error.localizedDescription)
-                // TODO: - Tracks.
-                // WordPressAuthenticator.track(.loginFailedToGuessXMLRPC, error: error)
-                // WordPressAuthenticator.track(.loginFailed, error: error)
+
+                self.tracker.track(failure: .loginFailedToGuessXMLRPC)
+
                 self.configureViewLoading(false)
 
                 guard self.isSiteDiscovery == false else {

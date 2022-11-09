@@ -22,6 +22,8 @@ extension NSNotification.Name {
 protocol ZendeskManagerProtocol: SupportManagerAdapter {
     typealias onUserInformationCompletion = (_ success: Bool, _ email: String?) -> Void
 
+    func test_listenToSiteSwitchChanges()
+
     /// Displays the Zendesk New Request view from the given controller, for users to submit new tickets.
     ///
     func showNewRequestIfPossible(from controller: UIViewController, with sourceTag: String?)
@@ -44,6 +46,10 @@ protocol ZendeskManagerProtocol: SupportManagerAdapter {
 }
 
 struct NoZendeskManager: ZendeskManagerProtocol {
+    func test_listenToSiteSwitchChanges() {
+        // no-op
+    }
+
     func showNewRequestIfPossible(from controller: UIViewController) {
         // no-op
     }
@@ -155,6 +161,15 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         return ResultsController(storageManager: storageManager,
                                  matching: sitePredicate,
                                  sortedBy: pluginStatusDescriptor)
+    }
+
+    func test_listenToSiteSwitchChanges() {
+        print("Changed! SiteID: ")
+        do {
+            try pluginResultsController.performFetch()
+        } catch {
+            DDLogError(":(")
+        }
     }
 
     /// IPP plugin statuses
@@ -368,7 +383,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     /// The SDK tag is used in a trigger and displays tickets in Woo > Mobile Apps New.
     ///
     func getTags(supportSourceTag: String?) -> [String] {
-        var tags = [Constants.platformTag, Constants.sdkTag, Constants.jetpackTag] + ippPluginstatuses
+        let tags = [Constants.platformTag, Constants.sdkTag, Constants.jetpackTag] + ippPluginstatuses
         return decorateTags(tags: tags, supportSourceTag: supportSourceTag)
     }
 

@@ -1,11 +1,7 @@
 import SwiftUI
 
 /// View model for a row in a list of domain suggestions.
-struct DomainRowViewModel: Identifiable, Equatable {
-    var id: String {
-        name
-    }
-
+struct DomainRowViewModel {
     /// The domain name is used for the selected state.
     let name: String
     /// Attributed name to be displayed in the row.

@@ -1,4 +1,5 @@
 import Combine
+import protocol Experiments.FeatureFlagService
 import Yosemite
 
 import protocol Storage.StorageManagerType
@@ -57,6 +58,15 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     /// Assigning this value will recreate the `actionsFactory` property.
     ///
     private var isAddOnsFeatureEnabled: Bool = false {
+        didSet {
+            updateActionsFactory()
+        }
+    }
+
+    /// Returns `true` if the `linkedProductsPromo` banner should be displayed. `False` otherwise.
+    /// Assigning this value will recreate the `actionsFactory` property.
+    ///
+    var isLinkedProductsPromoEnabled: Bool = false {
         didSet {
             updateActionsFactory()
         }
@@ -142,6 +152,19 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
             }
         }()
 
+        if featureFlagService.isFeatureFlagEnabled(.productsOnboarding),
+           // The store is hosted on WP.com
+           let site = stores.sessionManager.defaultSite,
+           site.isWordPressComStore,
+           // In some edge cases loginURL can be empty preventing successful login flow
+           site.loginURL.isNotEmpty,
+            // Preview existing drafts or new products, that can be saved as a draft
+           (canSaveAsDraft() || originalProductModel.status == .draft),
+           // Do not preview new blank products without any changes
+           !(formType == .add && !hasUnsavedChanges()) {
+            buttons.insert(.preview, at: 0)
+        }
+
         // Add more button if needed
         if shouldShowMoreOptionsMenu() {
             buttons.append(.more)
@@ -159,9 +182,9 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     private let storageManager: StorageManagerType
 
-    private let isBackgroundImageUploadEnabled: Bool
-
     private let analytics: Analytics
+
+    private let featureFlagService: FeatureFlagService
 
     init(product: EditableProductModel,
          formType: ProductFormType,
@@ -169,8 +192,8 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          productImagesUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
-         isBackgroundImageUploadEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload),
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.formType = formType
         self.productImageActionHandler = productImageActionHandler
         self.originalProduct = product
@@ -179,17 +202,11 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.stores = stores
         self.storageManager = storageManager
         self.productImagesUploader = productImagesUploader
-        self.isBackgroundImageUploadEnabled = isBackgroundImageUploadEnabled
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
 
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
             guard let self = self else { return }
-            guard self.isBackgroundImageUploadEnabled else {
-                if allStatuses.productImageStatuses.hasPendingUpload {
-                    self.isUpdateEnabledSubject.send(true)
-                }
-                return
-            }
             self.isUpdateEnabledSubject.send(self.hasUnsavedChanges())
         }
 
@@ -202,9 +219,6 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     }
 
     func hasUnsavedChanges() -> Bool {
-        guard isBackgroundImageUploadEnabled else {
-            return product != originalProduct || productImageActionHandler.productImageStatuses.hasPendingUpload || password != originalPassword
-        }
         let hasProductChangesExcludingImages = product.product.copy(images: []) != originalProduct.product.copy(images: [])
         let hasImageChanges = productImagesUploader
             .hasUnsavedChangesOnImages(key: .init(siteID: product.siteID,
@@ -248,6 +262,10 @@ extension ProductFormViewModel {
     }
 
     func canDeleteProduct() -> Bool {
+        formType == .edit
+    }
+
+    func canDuplicateProduct() -> Bool {
         formType == .edit
     }
 }
@@ -434,10 +452,8 @@ extension ProductFormViewModel {
                     self.resetProduct(data.product)
                     self.resetPassword(data.password)
                     onCompletion(.success(data.product))
-                    if self.isBackgroundImageUploadEnabled {
-                        self.replaceProductID(productIDBeforeSave: productIDBeforeSave)
-                        self.saveProductImagesWhenNoneIsPendingUploadAnymore()
-                    }
+                    self.replaceProductID(productIDBeforeSave: productIDBeforeSave)
+                    self.saveProductImagesWhenNoneIsPendingUploadAnymore()
                 }
             }
         case .edit:
@@ -453,15 +469,29 @@ extension ProductFormViewModel {
                                                     self.resetProduct(data.product)
                                                     self.resetPassword(data.password)
                                                     onCompletion(.success(data.product))
-                                                    if self.isBackgroundImageUploadEnabled {
-                                                        self.saveProductImagesWhenNoneIsPendingUploadAnymore()
-                                                    }
+                                                    self.saveProductImagesWhenNoneIsPendingUploadAnymore()
                                                 case .failure(let error):
                                                     onCompletion(.failure(error))
                                                 }
             }
         case .readonly:
             assertionFailure("Trying to save a product remotely in readonly mode")
+        }
+    }
+
+    func duplicateProduct(onCompletion: @escaping (Result<ProductModel, ProductUpdateError>) -> Void) {
+        let remoteActionUseCase = ProductFormRemoteActionUseCase()
+        remoteActionUseCase.duplicateProduct(originalProduct: product,
+                                             password: password) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(error))
+            case .success(let data):
+                self.resetProduct(data.product)
+                self.resetPassword(data.password)
+                onCompletion(.success(data.product))
+            }
         }
     }
 
@@ -617,6 +647,7 @@ private extension ProductFormViewModel {
         actionsFactory = ProductFormActionsFactory(product: product,
                                                    formType: formType,
                                                    addOnsFeatureEnabled: isAddOnsFeatureEnabled,
+                                                   isLinkedProductsPromoEnabled: isLinkedProductsPromoEnabled,
                                                    variationsPrice: calculateVariationPriceState())
     }
 }

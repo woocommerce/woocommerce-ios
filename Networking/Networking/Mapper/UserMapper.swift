@@ -16,6 +16,19 @@ struct UserMapper: Mapper {
             .siteID: siteID
         ]
 
-        return try decoder.decode(User.self, from: response)
+        return try decoder.decode(UserEnvelope.self, from: response).user
+    }
+}
+
+/// UserEnvelope Disposable Entity
+///
+/// `Load User` endpoint returns the requested objects in the `data` key. This entity
+/// allows us to parse all the things with JSONDecoder.
+///
+private struct UserEnvelope: Decodable {
+    let user: User
+
+    private enum CodingKeys: String, CodingKey {
+        case user = "data"
     }
 }

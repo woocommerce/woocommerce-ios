@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -19,9 +19,11 @@
                 <outlet property="imageView" destination="Osv-Wo-lxW" id="yIN-vL-DOA"/>
                 <outlet property="logOutButton" destination="s2i-wr-qJf" id="yxc-ia-1rX"/>
                 <outlet property="primaryButton" destination="ZHa-is-GJK" id="wzn-TJ-1Sm"/>
+                <outlet property="secondaryButton" destination="0ZR-ma-6pq" id="W3d-H4-h81"/>
                 <outlet property="singedInAsLabel" destination="emS-Tp-OXA" id="ajb-UO-YDy"/>
                 <outlet property="stackViewLeadingConstraint" destination="jMe-jj-6Bt" id="JnU-my-QgI"/>
                 <outlet property="stackViewTrailingConstraint" destination="Z7E-hC-lbB" id="RHp-Ac-R58"/>
+                <outlet property="termsLabel" destination="SnK-co-nTB" id="qqV-xa-bMc"/>
                 <outlet property="userNameLabel" destination="iWC-nR-Ao9" id="ooC-C0-xay"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
                 <outlet property="wrongAccountLabel" destination="gb2-Fe-8kd" id="ikk-a9-gTF"/>
@@ -33,10 +35,10 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="10Z-y1-ZQ6" userLabel="Action Background View">
-                    <rect key="frame" x="0.0" y="772" width="414" height="90"/>
+                    <rect key="frame" x="0.0" y="649" width="414" height="213"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="mhI-fa-Yzw">
-                            <rect key="frame" x="20" y="20" width="374" height="50"/>
+                            <rect key="frame" x="20" y="20" width="374" height="173"/>
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZHa-is-GJK" userLabel="secondary action button" customClass="NUXButton" customModule="WordPressAuthenticator">
                                     <rect key="frame" x="0.0" y="0.0" width="374" height="50"/>
@@ -47,10 +49,24 @@
                                     <state key="normal" title="Primary Action Button">
                                         <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </state>
-                                    <userDefinedRuntimeAttributes>
-                                        <userDefinedRuntimeAttribute type="boolean" keyPath="isPrimary" value="YES"/>
-                                    </userDefinedRuntimeAttributes>
                                 </button>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0ZR-ma-6pq" userLabel="secondary action button" customClass="NUXButton" customModule="WordPressAuthenticator">
+                                    <rect key="frame" x="0.0" y="70" width="374" height="50"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="50" id="BTA-bw-h4s"/>
+                                    </constraints>
+                                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
+                                    <state key="normal" title="Primary Action Button">
+                                        <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </state>
+                                </button>
+                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="Label" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="SnK-co-nTB">
+                                    <rect key="frame" x="0.0" y="140" width="374" height="33"/>
+                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                    <color key="textColor" systemColor="labelColor"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                </textView>
                             </subviews>
                         </stackView>
                     </subviews>
@@ -62,7 +78,7 @@
                     </constraints>
                 </view>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="32" translatesAutoresizingMaskIntoConstraints="NO" id="jIt-xb-rrN">
-                    <rect key="frame" x="34" y="190" width="346" height="486"/>
+                    <rect key="frame" x="34" y="163" width="346" height="486"/>
                     <subviews>
                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Np4-PU-IRZ" customClass="CircularImageView" customModule="WooCommerce" customModuleProvider="target">
                             <rect key="frame" x="143" y="0.0" width="60" height="60"/>
@@ -131,18 +147,21 @@
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="10Z-y1-ZQ6" secondAttribute="trailing" id="3Fe-tr-bmb"/>
-                <constraint firstItem="jIt-xb-rrN" firstAttribute="top" relation="greaterThanOrEqual" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="8" id="4vu-ll-3S2"/>
                 <constraint firstAttribute="trailing" secondItem="jIt-xb-rrN" secondAttribute="trailing" constant="34" id="Z7E-hC-lbB"/>
-                <constraint firstItem="jIt-xb-rrN" firstAttribute="centerY" secondItem="fnl-2z-Ty3" secondAttribute="centerY" constant="-20" id="ZZg-jd-e4d"/>
                 <constraint firstItem="jIt-xb-rrN" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="34" id="jMe-jj-6Bt"/>
                 <constraint firstItem="10Z-y1-ZQ6" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="r9Z-y5-j3W"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="10Z-y1-ZQ6" secondAttribute="bottom" id="rPP-rT-zVR"/>
+                <constraint firstItem="10Z-y1-ZQ6" firstAttribute="top" relation="greaterThanOrEqual" secondItem="jIt-xb-rrN" secondAttribute="bottom" id="yet-32-SBz"/>
+                <constraint firstItem="jIt-xb-rrN" firstAttribute="centerY" secondItem="fnl-2z-Ty3" secondAttribute="centerY" priority="250" constant="-20" id="z5R-69-jBg"/>
             </constraints>
             <point key="canvasLocation" x="137.68115942028987" y="86.383928571428569"/>
         </view>
     </objects>
     <resources>
         <image name="woo-no-jetpack-error" width="236" height="206"/>
+        <systemColor name="labelColor">
+            <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
         <systemColor name="secondaryLabelColor">
             <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>

@@ -106,6 +106,20 @@ final class JetpackRequestTests: XCTestCase {
         XCTAssertEqual(output.httpMethod?.uppercased(), "POST")
         XCTAssertTrue(generatedBody.contains("%26_method%3Dput"))
     }
+
+    /// Verifies that a JetpackRequest with `locale` encodes `&locale=fr_FR` query string parameter.
+    ///
+    func test_request_with_locale_includes_locale_parameter() {
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: sampleSiteID,
+                                     locale: "fr_FR",
+                                     path: sampleRPC,
+                                     parameters: sampleParameters)
+
+        let output = try! request.asURLRequest()
+        XCTAssertTrue((output.url?.absoluteString.contains("locale=fr_FR"))!)
+    }
 }
 
 

@@ -48,6 +48,7 @@ public class ProductStore: Store {
             retrieveProducts(siteID: siteID, productIDs: productIDs, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case let .searchProducts(siteID,
                                  keyword,
+                                 filter,
                                  pageNumber,
                                  pageSize,
                                  stockStatus,
@@ -58,6 +59,7 @@ public class ProductStore: Store {
                                  onCompletion):
             searchProducts(siteID: siteID,
                            keyword: keyword,
+                           filter: filter,
                            pageNumber: pageNumber,
                            pageSize: pageSize,
                            stockStatus: stockStatus,
@@ -98,6 +100,10 @@ public class ProductStore: Store {
             validateProductSKU(sku, siteID: siteID, onCompletion: onCompletion)
         case let .replaceProductLocally(product, onCompletion):
             replaceProductLocally(product: product, onCompletion: onCompletion)
+        case let .checkProductsOnboardingEligibility(siteID: siteID, onCompletion: onCompletion):
+            checkProductsOnboardingEligibility(siteID: siteID, onCompletion: onCompletion)
+        case let .createTemplateProduct(siteID, template, onCompletion):
+            createTemplateProduct(siteID: siteID, template: template, onCompletion: onCompletion)
         }
     }
 }
@@ -122,6 +128,7 @@ private extension ProductStore {
     ///
     func searchProducts(siteID: Int64,
                         keyword: String,
+                        filter: ProductSearchFilter,
                         pageNumber: Int,
                         pageSize: Int,
                         stockStatus: ProductStockStatus?,
@@ -130,26 +137,33 @@ private extension ProductStore {
                         productCategory: ProductCategory?,
                         excludedProductIDs: [Int64],
                         onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        remote.searchProducts(for: siteID,
-                                 keyword: keyword,
-                                 pageNumber: pageNumber,
-                                 pageSize: pageSize,
-                                 stockStatus: stockStatus,
-                                 productStatus: productStatus,
-                                 productType: productType,
-                                 productCategory: productCategory,
-                                 excludedProductIDs: excludedProductIDs) { [weak self] result in
-            switch result {
-            case .success(let products):
-                let shouldDeleteExistingProducts = pageNumber == Default.firstPageNumber
-                self?.upsertSearchResultsInBackground(siteID: siteID,
-                                                      keyword: keyword,
-                                                      readOnlyProducts: products,
-                                                      shouldDeleteExistingProducts: shouldDeleteExistingProducts) {
-                    onCompletion(.success(()))
-                }
-            case .failure(let error):
-                onCompletion(.failure(error))
+        switch filter {
+        case .all:
+            remote.searchProducts(for: siteID,
+                                  keyword: keyword,
+                                  pageNumber: pageNumber,
+                                  pageSize: pageSize,
+                                  stockStatus: stockStatus,
+                                  productStatus: productStatus,
+                                  productType: productType,
+                                  productCategory: productCategory,
+                                  excludedProductIDs: excludedProductIDs) { [weak self] result in
+                self?.handleSearchResults(siteID: siteID,
+                                          keyword: keyword,
+                                          filter: filter,
+                                          result: result,
+                                          onCompletion: onCompletion)
+            }
+        case .sku:
+            remote.searchProductsBySKU(for: siteID,
+                                       keyword: keyword,
+                                       pageNumber: pageNumber,
+                                       pageSize: pageSize) { [weak self] result in
+                self?.handleSearchResults(siteID: siteID,
+                                          keyword: keyword,
+                                          filter: filter,
+                                          result: result,
+                                          onCompletion: onCompletion)
             }
         }
     }
@@ -376,6 +390,42 @@ private extension ProductStore {
     ///
     func replaceProductLocally(product: Product, onCompletion: @escaping () -> Void) {
         upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: product.siteID, onCompletion: onCompletion)
+    }
+
+    /// Checks if the store is eligible for products onboarding.
+    /// Returns `true` if the store has no products.
+    ///
+    func checkProductsOnboardingEligibility(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+        // Check for locally stored products first.
+        let storage = storageManager.viewStorage
+        if let products = storage.loadProducts(siteID: siteID), !products.isEmpty {
+            return onCompletion(.success(false))
+        }
+
+        // If there are no locally stored products, then check remote.
+        remote.loadProductIDs(for: siteID, pageNumber: 1, pageSize: 1) { result in
+            switch result {
+            case .success(let ids):
+                onCompletion(.success(ids.isEmpty))
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Creates a product using the provided template type.
+    /// The created product is not stored locally.
+    ///
+    func createTemplateProduct(siteID: Int64, template: ProductsRemote.TemplateType, onCompletion: @escaping (Result<Product, Error>) -> Void) {
+        remote.createTemplateProduct(for: siteID, template: template) { [remote] result in
+            switch result {
+            case .success(let productID):
+                remote.loadProduct(for: siteID, productID: productID, completion: onCompletion)
+
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
     }
 }
 
@@ -667,21 +717,35 @@ private extension ProductStore {
 // MARK: - Storage: Search Results
 //
 private extension ProductStore {
+    func handleSearchResults(siteID: Int64,
+                             keyword: String,
+                             filter: ProductSearchFilter,
+                             result: Result<[Product], Error>,
+                             onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        switch result {
+        case .success(let products):
+            upsertSearchResultsInBackground(siteID: siteID,
+                                            keyword: keyword,
+                                            filter: filter,
+                                            readOnlyProducts: products) {
+                onCompletion(.success(()))
+            }
+        case .failure(let error):
+            onCompletion(.failure(error))
+        }
+    }
 
     /// Upserts the Products, and associates them to the SearchResults Entity (in Background)
     ///
     private func upsertSearchResultsInBackground(siteID: Int64,
                                                  keyword: String,
+                                                 filter: ProductSearchFilter,
                                                  readOnlyProducts: [Networking.Product],
-                                                 shouldDeleteExistingProducts: Bool = false,
                                                  onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform { [weak self] in
-            if shouldDeleteExistingProducts {
-                derivedStorage.deleteProducts(siteID: siteID)
-            }
             self?.upsertStoredProducts(readOnlyProducts: readOnlyProducts, in: derivedStorage)
-            self?.upsertStoredResults(siteID: siteID, keyword: keyword, readOnlyProducts: readOnlyProducts, in: derivedStorage)
+            self?.upsertStoredResults(siteID: siteID, keyword: keyword, filter: filter, readOnlyProducts: readOnlyProducts, in: derivedStorage)
         }
 
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {
@@ -691,9 +755,15 @@ private extension ProductStore {
 
     /// Upserts the Products, and associates them to the Search Results Entity (in the specified Storage)
     ///
-    private func upsertStoredResults(siteID: Int64, keyword: String, readOnlyProducts: [Networking.Product], in storage: StorageType) {
-        let searchResults = storage.loadProductSearchResults(keyword: keyword) ?? storage.insertNewObject(ofType: Storage.ProductSearchResults.self)
+    private func upsertStoredResults(siteID: Int64,
+                                     keyword: String,
+                                     filter: ProductSearchFilter,
+                                     readOnlyProducts: [Networking.Product],
+                                     in storage: StorageType) {
+        let searchResults = storage.loadProductSearchResults(keyword: keyword, filterKey: filter.rawValue) ??
+        storage.insertNewObject(ofType: Storage.ProductSearchResults.self)
         searchResults.keyword = keyword
+        searchResults.filterKey = filter.rawValue
 
         for readOnlyProduct in readOnlyProducts {
             guard let storedProduct = storage.loadProduct(siteID: siteID, productID: readOnlyProduct.productID) else {

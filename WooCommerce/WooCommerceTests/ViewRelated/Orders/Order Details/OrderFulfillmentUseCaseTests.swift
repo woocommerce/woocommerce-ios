@@ -27,7 +27,7 @@ final class OrderFulfillmentUseCaseTests: XCTestCase {
     func test_fulfill_dispatches_an_Action_to_change_the_status_to_completed() throws {
         // Given
         let order = MockOrders().empty().copy(siteID: 1_900, orderID: 981, status: .processing)
-        let useCase = OrderFulfillmentUseCase(order: order, stores: stores)
+        let useCase = OrderFulfillmentUseCase(order: order, stores: stores, flow: .editing)
 
         // When
         let process = useCase.fulfill()
@@ -42,7 +42,7 @@ final class OrderFulfillmentUseCaseTests: XCTestCase {
     func test_undo_dispatches_an_Action_to_change_the_status_back() throws {
         // Given
         let order = MockOrders().empty().copy(siteID: 98, orderID: 12, status: .failed)
-        let useCase = OrderFulfillmentUseCase(order: order, stores: stores)
+        let useCase = OrderFulfillmentUseCase(order: order, stores: stores, flow: .editing)
 
         let process = useCase.fulfill()
 
@@ -60,7 +60,7 @@ final class OrderFulfillmentUseCaseTests: XCTestCase {
     func test_retry_dispatches_an_Action_to_change_the_status_to_completed() throws {
         // Given
         let order = MockOrders().empty().copy(siteID: 498, orderID: 29, status: .pending)
-        let useCase = OrderFulfillmentUseCase(order: order, stores: stores)
+        let useCase = OrderFulfillmentUseCase(order: order, stores: stores, flow: .editing)
 
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             guard case let .updateOrderStatus(siteID: _, orderID: _, status: status, onCompletion: onCompletion) = action else {
@@ -104,7 +104,7 @@ final class OrderFulfillmentUseCaseTests: XCTestCase {
     func test_fulfill_returns_an_Error_if_the_Action_fails() throws {
         // Given
         let order = MockOrders().empty().copy(siteID: 500, orderID: 1, status: .pending)
-        let useCase = OrderFulfillmentUseCase(order: order, stores: stores)
+        let useCase = OrderFulfillmentUseCase(order: order, stores: stores, flow: .editing)
 
         mockUpdateOrderAction(from: stores, toCompleteWithError: SampleError.first)
 
@@ -131,7 +131,7 @@ final class OrderFulfillmentUseCaseTests: XCTestCase {
     func test_fulfill_finishes_with_no_Error_if_the_Action_succeeds() throws {
         // Given
         let order = MockOrders().empty().copy(siteID: 500, orderID: 1, status: .pending)
-        let useCase = OrderFulfillmentUseCase(order: order, stores: stores)
+        let useCase = OrderFulfillmentUseCase(order: order, stores: stores, flow: .editing)
 
         mockUpdateOrderAction(from: stores, toCompleteWithError: nil)
 

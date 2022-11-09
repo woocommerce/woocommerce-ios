@@ -74,6 +74,10 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
         Localization.differentAddressToggleTitle
     }
 
+    var siteID: Int64 {
+        stores.sessionManager.defaultStoreID ?? Int64.min
+    }
+
     func saveAddress(onFinish: @escaping (Bool) -> Void) {
         guard validateEmail() else {
             notice = AddressFormViewModel.NoticeFactory.createInvalidEmailNotice()

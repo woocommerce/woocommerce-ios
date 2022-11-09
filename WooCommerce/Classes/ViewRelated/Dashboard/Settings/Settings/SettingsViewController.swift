@@ -17,6 +17,10 @@ final class SettingsViewController: UIViewController {
 
     private let viewModel: ViewModel
 
+    private lazy var woocommercePluginViewModel: PluginDetailsViewModel = PluginDetailsViewModel(
+        siteID: stores.sessionManager.defaultStoreID ?? 0,
+        pluginName: "WooCommerce")
+
     /// Main TableView
     ///
     @IBOutlet private weak var tableView: UITableView!
@@ -128,10 +132,10 @@ private extension SettingsViewController {
             configureSwitchStore(cell: cell)
         case let cell as BasicTableViewCell where row == .plugins:
             configurePlugins(cell: cell)
+        case let cell as HostingTableViewCell<PluginDetailsRowView> where row == .woocommerceDetails:
+            configureWooCommmerceDetails(cell: cell)
         case let cell as HostingTableViewCell<FeatureAnnouncementCardView> where row == .upsellCardReadersFeatureAnnouncement:
             configureUpsellCardReadersFeatureAnnouncement(cell: cell)
-        case let cell as BasicTableViewCell where row == .inPersonPayments:
-            configureInPersonPayments(cell: cell)
         case let cell as BasicTableViewCell where row == .installJetpack:
             configureInstallJetpack(cell: cell)
         case let cell as BasicTableViewCell where row == .support:
@@ -175,6 +179,12 @@ private extension SettingsViewController {
         cell.textLabel?.text = Localization.plugins
     }
 
+    func configureWooCommmerceDetails(cell: HostingTableViewCell<PluginDetailsRowView>) {
+        let view = PluginDetailsRowView.init(viewModel: woocommercePluginViewModel)
+        cell.host(view, parent: self)
+        cell.selectionStyle = .none
+    }
+
     func configureSupport(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
@@ -188,12 +198,6 @@ private extension SettingsViewController {
         })
         cell.host(view, parent: self)
         cell.selectionStyle = .none
-    }
-
-    func configureInPersonPayments(cell: BasicTableViewCell) {
-        cell.accessoryType = .disclosureIndicator
-        cell.selectionStyle = .default
-        cell.textLabel?.text = Localization.inPersonPayments
     }
 
     func configureInstallJetpack(cell: BasicTableViewCell) {
@@ -339,13 +343,6 @@ private extension SettingsViewController {
         show(viewController, sender: self)
     }
 
-    func inPersonPaymentsWasPressed() {
-        let viewModel = InPersonPaymentsViewModel()
-        viewModel.refresh()
-        let viewController = InPersonPaymentsViewController(viewModel: viewModel)
-        show(viewController, sender: self)
-    }
-
     func installJetpackWasPressed() {
         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
             return
@@ -383,7 +380,7 @@ private extension SettingsViewController {
 
     func betaFeaturesWasPressed() {
         ServiceLocator.analytics.track(.settingsBetaFeaturesButtonTapped)
-        let betaFeaturesViewController = BetaFeaturesViewController()
+        let betaFeaturesViewController = BetaFeaturesConfigurationViewController()
         navigationController?.pushViewController(betaFeaturesViewController, animated: true)
     }
 
@@ -529,8 +526,6 @@ extension SettingsViewController: UITableViewDelegate {
             sitePluginsWasPressed()
         case .support:
             supportWasPressed()
-        case .inPersonPayments:
-            inPersonPaymentsWasPressed()
         case .installJetpack:
             installJetpackWasPressed()
         case .privacy:
@@ -603,10 +598,10 @@ extension SettingsViewController {
 
         // Plugins
         case plugins
+        case woocommerceDetails
 
         // Store settings
         case upsellCardReadersFeatureAnnouncement
-        case inPersonPayments
         case installJetpack
 
         // Help & Feedback
@@ -633,7 +628,7 @@ extension SettingsViewController {
 
         fileprivate var registerWithNib: Bool {
             switch self {
-            case .upsellCardReadersFeatureAnnouncement:
+            case .upsellCardReadersFeatureAnnouncement, .woocommerceDetails:
                 return false
             default:
                 return true
@@ -648,12 +643,12 @@ extension SettingsViewController {
                 return BasicTableViewCell.self
             case .plugins:
                 return BasicTableViewCell.self
+            case .woocommerceDetails:
+                return HostingTableViewCell<PluginDetailsRowView>.self
             case .support:
                 return BasicTableViewCell.self
             case .upsellCardReadersFeatureAnnouncement:
                 return HostingTableViewCell<FeatureAnnouncementCardView>.self
-            case .inPersonPayments:
-                return BasicTableViewCell.self
             case .installJetpack:
                 return BasicTableViewCell.self
             case .logout, .removeAppleIDAccess:

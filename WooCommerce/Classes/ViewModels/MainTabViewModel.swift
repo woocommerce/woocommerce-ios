@@ -83,7 +83,6 @@ final class MainTabViewModel {
     func startObservingOrdersCount() {
         observeBadgeRefreshNotifications()
         updateBadgeFromCache()
-        requestBadgeCount()
     }
 
     /// Loads the the hub Menu tab badge and listens to any change to update it
@@ -94,10 +93,8 @@ final class MainTabViewModel {
         listenToReviewsBadgeReloadRequired()
         retrieveShouldShowReviewsBadgeOnHubMenuTabValue()
 
-        if featureFlagService.isFeatureFlagEnabled(.paymentsHubMenuSection) {
-            listenToNewFeatureBadgeReloadRequired()
-            retrieveShouldShowNewFeatureBadgeOnHubMenuTabValue()
-        }
+        listenToNewFeatureBadgeReloadRequired()
+        retrieveShouldShowNewFeatureBadgeOnHubMenuTabValue()
     }
 }
 

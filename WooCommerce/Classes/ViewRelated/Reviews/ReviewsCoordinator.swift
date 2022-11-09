@@ -10,7 +10,7 @@ import protocol Yosemite.StoresManager
 /// Coordinator for the Reviews tab.
 ///
 final class ReviewsCoordinator: Coordinator {
-    var navigationController: UINavigationController
+    let navigationController: UINavigationController
 
     private let pushNotificationsManager: PushNotesManager
     private let storesManager: StoresManager
@@ -90,6 +90,7 @@ final class ReviewsCoordinator: Coordinator {
                         return
                     }
 
+                    ServiceLocator.analytics.track(.reviewOpen)
                     self.willPresentReviewDetailsFromPushNotification()
                     self.pushReviewDetailsViewController(using: parcel)
 

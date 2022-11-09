@@ -10,6 +10,7 @@ enum ProductFormType {
 
 /// The type of action that can be performed in the product.
 enum ActionButtonType {
+    case preview
     case publish
     case save
     case more
@@ -20,6 +21,7 @@ enum SaveMessageType {
     case publish
     case save
     case saveVariation
+    case duplicate
 }
 
 
@@ -79,6 +81,8 @@ protocol ProductFormViewModelProtocol {
 
     func canDeleteProduct() -> Bool
 
+    func canDuplicateProduct() -> Bool
+
     // Update actions
 
     func updateName(_ name: String)
@@ -136,6 +140,8 @@ protocol ProductFormViewModelProtocol {
     func saveProductRemotely(status: ProductStatus?, onCompletion: @escaping (Result<ProductModel, ProductUpdateError>) -> Void)
 
     func deleteProductRemotely(onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void)
+
+    func duplicateProduct(onCompletion: @escaping (Result<ProductModel, ProductUpdateError>) -> Void)
 
     // Reset action
 

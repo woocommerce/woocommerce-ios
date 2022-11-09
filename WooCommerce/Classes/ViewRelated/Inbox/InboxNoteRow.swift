@@ -99,7 +99,7 @@ struct InboxNoteRow: View {
 
     @ViewBuilder
     private func webView(url: URL) -> some View {
-        let isWPComStore = ServiceLocator.stores.sessionManager.defaultSite?.isWordPressStore ?? false
+        let isWPComStore = ServiceLocator.stores.sessionManager.defaultSite?.isWordPressComStore ?? false
 
         if isWPComStore {
         NavigationView {

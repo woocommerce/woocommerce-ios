@@ -167,6 +167,14 @@ extension MockProductsRemote: ProductsRemoteProtocol {
         searchProductWithProductCategory = productCategory
     }
 
+    func searchProductsBySKU(for siteID: Int64,
+                             keyword: String,
+                             pageNumber: Int,
+                             pageSize: Int,
+                             completion: @escaping (Result<[Product], Error>) -> Void) {
+        // no-op
+    }
+
     func searchSku(for siteID: Int64, sku: String, completion: @escaping (Result<String, Error>) -> Void) {
         // no-op
     }
@@ -186,5 +194,13 @@ extension MockProductsRemote: ProductsRemoteProtocol {
                 XCTFail("\(String(describing: self)) Could not find Result for \(key)")
             }
         }
+    }
+
+    func loadProductIDs(for siteID: Int64, pageNumber: Int, pageSize: Int, completion: @escaping (Result<[Int64], Error>) -> Void) {
+        // no-op
+    }
+
+    func createTemplateProduct(for siteID: Int64, template: ProductsRemote.TemplateType, completion: @escaping (Result<Int64, Error>) -> Void) {
+        // no-op
     }
 }

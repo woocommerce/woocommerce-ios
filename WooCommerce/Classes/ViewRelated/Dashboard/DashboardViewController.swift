@@ -3,6 +3,7 @@ import UIKit
 import Gridicons
 import WordPressUI
 import Yosemite
+import SwiftUI
 
 // MARK: - DashboardViewController
 //
@@ -73,6 +74,10 @@ final class DashboardViewController: UIViewController {
                                               })
     }()
 
+    private var announcementViewHostingController: ConstraintsUpdatingHostingController<AnnouncementCardWrapper>?
+
+    private var announcementView: UIView?
+
     /// Bottom Jetpack benefits banner, shown when the site is connected to Jetpack without Jetpack-the-plugin.
     private lazy var bottomJetpackBenefitsBannerController = JetpackBenefitsBannerHostingController()
     private var contentBottomToJetpackBenefitsBannerConstraint: NSLayoutConstraint?
@@ -116,6 +121,9 @@ final class DashboardViewController: UIViewController {
         observeBottomJetpackBenefitsBannerVisibilityUpdates()
         observeNavigationBarHeightForStoreNameLabelVisibility()
         observeStatsVersionForDashboardUIUpdates()
+        observeAnnouncements()
+        observeShowWebViewSheet()
+        viewModel.syncAnnouncements(for: siteID)
         Task { @MainActor in
             await reloadDashboardUIStatsVersion(forced: true)
         }
@@ -135,6 +143,18 @@ final class DashboardViewController: UIViewController {
     override var shouldShowOfflineBanner: Bool {
         return true
     }
+
+    internal override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.willTransition(to: newCollection, with: coordinator)
+        updateAnnouncementCardVisibility(with: newCollection)
+    }
+
+    /// Hide the announcement card in compact (landscape phone)
+    ///
+    func updateAnnouncementCardVisibility(with newCollection: UITraitCollection) {
+        let shouldHideCard = newCollection.verticalSizeClass == .compact
+        announcementView?.isHidden = shouldHideCard
+    }
 }
 
 // MARK: - Configuration
@@ -148,7 +168,6 @@ private extension DashboardViewController {
     func configureNavigation() {
         configureTitle()
         configureHeaderStackView()
-        configureNavigationItem()
     }
 
     func configureTabBarItem() {
@@ -194,23 +213,6 @@ private extension DashboardViewController {
             contentView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
         ])
         contentBottomToContainerConstraint = contentView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
-    }
-
-    private func configureNavigationItem() {
-        if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.hubMenu) {
-            let rightBarButton = UIBarButtonItem(image: .gearBarButtonItemImage,
-                                                 style: .plain,
-                                                 target: self,
-                                                 action: #selector(settingsTapped))
-            rightBarButton.accessibilityLabel = NSLocalizedString("Settings", comment: "Accessibility label for the Settings button.")
-            rightBarButton.accessibilityTraits = .button
-            rightBarButton.accessibilityHint = NSLocalizedString(
-                "Navigates to Settings.",
-                comment: "VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen."
-            )
-            rightBarButton.accessibilityIdentifier = "dashboard-settings-button"
-            navigationItem.setRightBarButton(rightBarButton, animated: false)
-        }
     }
 
     func configureDashboardUIContainer() {
@@ -281,6 +283,83 @@ private extension DashboardViewController {
         }.store(in: &subscriptions)
     }
 
+    func observeShowWebViewSheet() {
+        viewModel.$showWebViewSheet.sink { [weak self] viewModel in
+            guard let self = self else { return }
+            guard let viewModel = viewModel else { return }
+            self.openWebView(viewModel: viewModel)
+        }
+        .store(in: &subscriptions)
+    }
+
+    private func openWebView(viewModel: WebViewSheetViewModel) {
+        let webViewSheet = WebViewSheet(viewModel: viewModel) { [weak self] in
+            guard let self = self else { return }
+            self.dismiss(animated: true)
+            self.viewModel.syncAnnouncements(for: self.siteID)
+        }
+        let hostingController = UIHostingController(rootView: webViewSheet)
+        hostingController.presentationController?.delegate = self
+        present(hostingController, animated: true, completion: nil)
+    }
+
+    // This is used so we have a specific type for the view while applying modifiers.
+    struct AnnouncementCardWrapper: View {
+        let cardView: FeatureAnnouncementCardView
+
+        var body: some View {
+            cardView.background(Color(.listForeground))
+        }
+    }
+
+    func observeAnnouncements() {
+        viewModel.$announcementViewModel.sink { [weak self] viewModel in
+            guard let self = self else { return }
+            self.removeAnnouncement()
+            guard let viewModel = viewModel else {
+                return
+            }
+
+            let cardView = FeatureAnnouncementCardView(
+                viewModel: viewModel,
+                dismiss: { [weak self] in
+                    self?.viewModel.announcementViewModel = nil
+                },
+                callToAction: {})
+
+            self.showAnnouncement(AnnouncementCardWrapper(cardView: cardView))
+        }
+        .store(in: &subscriptions)
+    }
+
+    private func removeAnnouncement() {
+        guard let announcementView = announcementView else {
+            return
+        }
+        announcementView.removeFromSuperview()
+        announcementViewHostingController?.removeFromParent()
+        announcementViewHostingController = nil
+        self.announcementView = nil
+    }
+
+    private func showAnnouncement(_ cardView: AnnouncementCardWrapper) {
+        let hostingController = ConstraintsUpdatingHostingController(rootView: cardView)
+        guard let uiView = hostingController.view else {
+            return
+        }
+        announcementViewHostingController = hostingController
+        announcementView = uiView
+
+        addChild(hostingController)
+        let indexAfterHeader = (headerStackView.arrangedSubviews.firstIndex(of: innerStackView) ?? -1) + 1
+        headerStackView.insertArrangedSubview(uiView, at: indexAfterHeader)
+
+        updateAnnouncementCardVisibility(with: traitCollection)
+
+        hostingController.didMove(toParent: self)
+        hostingController.view.layoutIfNeeded()
+    }
+
     /// Display the error banner at the top of the dashboard content (below the site title)
     ///
     func showTopBannerView() {
@@ -307,9 +386,18 @@ private extension DashboardViewController {
     }
 }
 
+// MARK: - Delegate conformance
 extension DashboardViewController: DashboardUIScrollDelegate {
     func dashboardUIScrollViewDidScroll(_ scrollView: UIScrollView) {
         hiddenScrollView.updateFromScrollViewDidScrollEventForLargeTitleWorkaround(scrollView)
+    }
+}
+
+extension DashboardViewController: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        if presentationController.presentedViewController is UIHostingController<WebViewSheet> {
+            viewModel.syncAnnouncements(for: siteID)
+        }
     }
 }
 
@@ -421,6 +509,7 @@ private extension DashboardViewController {
 
     func pullToRefresh() async {
         ServiceLocator.analytics.track(.dashboardPulledToRefresh)
+        viewModel.syncAnnouncements(for: siteID)
         await reloadDashboardUIStatsVersion(forced: true)
     }
 }
@@ -464,9 +553,7 @@ private extension DashboardViewController {
                                                                                    calendar: .current) { [weak self] isVisibleFromAppSettings in
                     guard let self = self else { return }
 
-                    let shouldShowJetpackBenefitsBanner = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport)
-                    && site?.isJetpackCPConnected == true
-                    && isVisibleFromAppSettings
+                    let shouldShowJetpackBenefitsBanner = site?.isJetpackCPConnected == true && isVisibleFromAppSettings
 
                     self.updateJetpackBenefitsBannerVisibility(isBannerVisible: shouldShowJetpackBenefitsBanner, contentView: contentView)
                 }

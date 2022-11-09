@@ -10,6 +10,7 @@ enum LoginProloguePageType: CaseIterable {
     case products
     case reviews
     case getStarted
+    case simplifiedLoginI1Intro
 
     var title: String {
         switch self {
@@ -25,9 +26,9 @@ enum LoginProloguePageType: CaseIterable {
         case .reviews:
             return NSLocalizedString("Monitor and approve your product reviews",
                                      comment: "Caption displayed in promotional screens shown during the login flow.")
-        case .getStarted:
-            return NSLocalizedString("Let’s get started!",
-                                     comment: "Caption displayed in the prologue screen shown after onboarding during the login flow.")
+        case .getStarted, .simplifiedLoginI1Intro:
+            return NSLocalizedString("WooCommerce is a customizable, open-source eCommerce platform built on WordPress.",
+                                     comment: "Caption displayed in the simplified prologue screen")
         }
     }
 
@@ -55,7 +56,7 @@ enum LoginProloguePageType: CaseIterable {
             return UIImage.prologueOrdersImage
         case .products:
             return UIImage.prologueProductsImage
-        case .reviews, .getStarted:
+        case .reviews, .getStarted, .simplifiedLoginI1Intro:
             return UIImage.prologueReviewsImage
         }
     }
@@ -140,7 +141,15 @@ private extension LoginProloguePageTypeViewController {
         stackView.addArrangedSubview(titleLabel)
 
         // Label style & layout
-        titleLabel.font = showsSubtitle ? .font(forStyle: .title2, weight: .semibold): .body
+        titleLabel.font = {
+            if pageType == .simplifiedLoginI1Intro || pageType == .getStarted {
+                return .headline
+            } else if showsSubtitle {
+                return .font(forStyle: .title2, weight: .semibold)
+            } else {
+                return .body
+            }
+        }()
         titleLabel.adjustsFontForContentSizeCategory = true
         titleLabel.textColor = .text
         titleLabel.textAlignment = .center
@@ -149,7 +158,7 @@ private extension LoginProloguePageTypeViewController {
         titleLabel.setContentHuggingPriority(.required, for: .vertical)
         titleLabel.setContentCompressionResistancePriority(.required, for: .vertical)
         NSLayoutConstraint.activate([
-            titleLabel.widthAnchor.constraint(equalToConstant: Constants.labelWidth)
+            titleLabel.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: Constants.labelLeadingMargin)
         ])
 
         // Label contents
@@ -169,7 +178,7 @@ private extension LoginProloguePageTypeViewController {
         subtitleLabel.setContentHuggingPriority(.required, for: .vertical)
         subtitleLabel.setContentCompressionResistancePriority(.required, for: .vertical)
         NSLayoutConstraint.activate([
-            subtitleLabel.widthAnchor.constraint(equalToConstant: Constants.labelWidth)
+            subtitleLabel.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: Constants.labelLeadingMargin)
         ])
 
         subtitleLabel.text = pageType.subtitle
@@ -182,6 +191,6 @@ private extension LoginProloguePageTypeViewController {
         static let stackVerticalOffset: CGFloat = 103
         static let stackBottomMargin: CGFloat = -57 // Minimum margin between stack view and login buttons, including space required for UIPageControl
         static let imageHeightMultiplier: CGFloat = 0.35
-        static let labelWidth: CGFloat = 216
+        static let labelLeadingMargin: CGFloat = 48
     }
 }

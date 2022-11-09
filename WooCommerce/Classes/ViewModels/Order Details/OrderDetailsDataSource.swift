@@ -47,7 +47,7 @@ final class OrderDetailsDataSource: NSObject {
     /// Whether the order is eligible for card present payment.
     ///
     var isEligibleForPayment: Bool {
-        order.needsPayment
+        return order.datePaid == nil
     }
 
     var isEligibleForRefund: Bool {
@@ -65,12 +65,6 @@ final class OrderDetailsDataSource: NSObject {
     var shouldShowShippingLabelCreation: Bool {
         return isEligibleForShippingLabelCreation && shippingLabels.nonRefunded.isEmpty &&
             !isEligibleForPayment
-    }
-
-    /// Whether the row for amount paid should be visible.
-    ///
-    private var shouldShowCustomerPaidRow: Bool {
-        order.datePaid != nil
     }
 
     /// Whether the option to re-create shipping labels should be visible.
@@ -474,12 +468,6 @@ private extension OrderDetailsDataSource {
             }
         }
 
-        // TODO: Before releasing the feature, please the delete closures assignation above.
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing) {
-            cell.onEditTapped = nil
-            cell.onAddTapped = nil
-        }
-
         cell.addButtonTitle = NSLocalizedString("Add Customer Note", comment: "Title for the button to add the Customer Provided Note in Order Details")
         cell.editButtonAccessibilityLabel = NSLocalizedString(
             "Update Note",
@@ -603,7 +591,7 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureRefund(cell: TwoColumnHeadlineFootnoteTableViewCell, at indexPath: IndexPath) {
-        let index = indexPath.row - Constants.paymentCell - Constants.paidByCustomerCell(isDisplayed: shouldShowCustomerPaidRow)
+        let index = indexPath.row - Constants.paymentCell - Constants.paidByCustomerCell
         let condensedRefund = condensedRefunds[index]
         let refund = lookUpRefund(by: condensedRefund.refundID)
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order, refund: refund)
@@ -916,12 +904,6 @@ private extension OrderDetailsDataSource {
             }
         }
 
-        // TODO: Before releasing the feature, please the delete closures assignation above.
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing) {
-            cell.onEditTapped = nil
-            cell.onAddTapped = nil
-        }
-
         cell.addButtonTitle = NSLocalizedString("Add Shipping Address", comment: "Title for the button to add the Shipping Address in Order Details")
         cell.editButtonAccessibilityLabel = NSLocalizedString(
             "Update Address",
@@ -1025,17 +1007,17 @@ extension OrderDetailsDataSource {
 
             var rows: [Row] = Array(repeating: .aggregateOrderItem, count: aggregateOrderItemCount)
 
-            switch (shouldShowShippingLabelCreation, isProcessingStatus, isRefundedStatus) {
-            case (true, false, false):
+            switch (shouldShowShippingLabelCreation, isProcessingStatus, isRefundedStatus, isEligibleForPayment) {
+            case (true, false, false, false):
                 // Order completed and eligible for shipping label creation:
                 rows.append(.shippingLabelCreateButton)
                 rows.append(.shippingLabelCreationInfo(showsSeparator: false))
-            case (true, true, false):
+            case (true, true, false, false):
                 // Order processing shippable:
                 rows.append(.shippingLabelCreateButton)
                 rows.append(.markCompleteButton(style: .secondary, showsBottomSpacing: false))
                 rows.append(.shippingLabelCreationInfo(showsSeparator: false))
-            case (false, true, false):
+            case (false, true, false, false):
                 // Order processing digital:
                 rows.append(.markCompleteButton(style: .primary, showsBottomSpacing: true))
             default:
@@ -1120,34 +1102,19 @@ extension OrderDetailsDataSource {
         let customerInformation: Section? = {
             var rows: [Row] = []
 
-            let isUnifiedEditingEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing)
-
             /// Customer Note
-            if isUnifiedEditingEnabled {
-                if order.customerNote?.isNotEmpty == true {
-                    /// When inside `.unifiedOrderEditing` only show the note if there is content for it.
-                    rows.append(.customerNote)
-                }
-            } else {
-                /// Always visible to allow editing.
-                rows.append(.customerNote)
-            }
+            /// Always visible to allow adding & editing.
+            rows.append(.customerNote)
 
+            /// Shipping Address
+            /// Almost always visible to allow editing.
             let orderContainsOnlyVirtualProducts = self.products.filter { (product) -> Bool in
                 return items.first(where: { $0.productID == product.productID}) != nil
             }.allSatisfy { $0.virtual == true }
 
-            /// Shipping Address
-            if isUnifiedEditingEnabled {
-                /// When inside `.unifiedOrderEditing` only show the billing address if there is content for it.
-                if order.shippingAddress?.isEmpty == false {
-                    rows.append(.shippingAddress)
-                }
-            } else {
-                /// Almost always visible to allow editing.
-                if order.shippingAddress != nil && orderContainsOnlyVirtualProducts == false {
-                    rows.append(.shippingAddress)
-                }
+
+            if order.shippingAddress != nil && orderContainsOnlyVirtualProducts == false {
+                rows.append(.shippingAddress)
             }
 
             /// Shipping Lines
@@ -1156,15 +1123,8 @@ extension OrderDetailsDataSource {
             }
 
             /// Billing Address
-            if isUnifiedEditingEnabled {
-                /// When inside `.unifiedOrderEditing` only show the billing address if there is content for it.
-                if order.billingAddress?.isEmpty == false {
-                    rows.append(.billingDetail)
-                }
-            } else {
-                /// Always visible to allow editing.
-                rows.append(.billingDetail)
-            }
+            /// Always visible to allow editing.
+            rows.append(.billingDetail)
 
             /// Return `nil` if there is no rows to display.
             guard rows.isNotEmpty else {
@@ -1241,10 +1201,10 @@ extension OrderDetailsDataSource {
                      shippingNotice,
                      products,
                      customFields,
-                     installWCShipSection] +
+                     installWCShipSection,
+                     refundedProducts] +
                     shippingLabelSections +
-                    [refundedProducts,
-                     payment,
+                    [payment,
                      customerInformation,
                      tracking,
                      addTracking,
@@ -1254,7 +1214,7 @@ extension OrderDetailsDataSource {
     }
 
     func refund(at indexPath: IndexPath) -> Refund? {
-        let index = indexPath.row - Constants.paymentCell - Constants.paidByCustomerCell(isDisplayed: shouldShowCustomerPaidRow)
+        let index = indexPath.row - Constants.paymentCell - Constants.paidByCustomerCell
         let condensedRefund = condensedRefunds[index]
         let refund = refunds.first { $0.refundID == condensedRefund.refundID }
 
@@ -1658,12 +1618,7 @@ extension OrderDetailsDataSource {
     enum Constants {
         static let addOrderCell = 1
         static let paymentCell = 1
-
-        /// Input value required because cell is displayed conditionally
-        ///
-        static func paidByCustomerCell(isDisplayed: Bool) -> Int {
-            isDisplayed ? 1 : 0
-        }
+        static let paidByCustomerCell = 1
     }
 }
 

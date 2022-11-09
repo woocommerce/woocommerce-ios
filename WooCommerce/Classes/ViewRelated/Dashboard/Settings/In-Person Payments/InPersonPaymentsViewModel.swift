@@ -6,8 +6,6 @@ final class InPersonPaymentsViewModel: ObservableObject {
     @Published var state: CardPresentPaymentOnboardingState
     var userIsAdministrator: Bool
     var learnMoreURL: URL? = nil
-    let showMenuOnCompletion: Bool
-    let gatewaySelectionAvailable: Bool
     private let useCase: CardPresentPaymentsOnboardingUseCase
     let stores: StoresManager
 
@@ -15,12 +13,9 @@ final class InPersonPaymentsViewModel: ObservableObject {
     ///
     init(stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         useCase: CardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase(),
-         showMenuOnCompletion: Bool = true) {
+         useCase: CardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase()) {
         self.stores = stores
         self.useCase = useCase
-        self.showMenuOnCompletion = showMenuOnCompletion
-        gatewaySelectionAvailable = featureFlagService.isFeatureFlagEnabled(.inPersonPaymentGatewaySelection)
         state = useCase.state
         userIsAdministrator = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator)
 
@@ -41,11 +36,8 @@ final class InPersonPaymentsViewModel: ObservableObject {
     init(
         fixedState: CardPresentPaymentOnboardingState,
         fixedUserIsAdministrator: Bool = false,
-        stores: StoresManager = ServiceLocator.stores,
-        featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+        stores: StoresManager = ServiceLocator.stores) {
             self.stores = stores
-            self.showMenuOnCompletion = false
-            gatewaySelectionAvailable = featureFlagService.isFeatureFlagEnabled(.inPersonPaymentGatewaySelection)
             state = fixedState
             useCase = CardPresentPaymentsOnboardingUseCase()
             userIsAdministrator = fixedUserIsAdministrator
@@ -56,6 +48,13 @@ final class InPersonPaymentsViewModel: ObservableObject {
     ///
     func refresh() {
         useCase.refresh()
+    }
+
+    /// Skips the Pending Requirements step when the user taps `Skip`
+    ///
+    func skipPendingRequirements() {
+        trackSkipped(state: useCase.state, remindLater: true)
+        useCase.skipPendingRequirements()
     }
 
     /// Selects the plugin to use as a payment gateway when there are multiple available
@@ -97,17 +96,29 @@ final class InPersonPaymentsViewModel: ObservableObject {
 }
 
 private extension InPersonPaymentsViewModel {
+    var countryCode: String {
+        useCase.configurationLoader.configuration.countryCode
+    }
+
     func trackState(_ state: CardPresentPaymentOnboardingState) {
-        // When we remove this feature flag, we can switch reason to let and remove the state.isSelectPlugin block
-        guard var reason = state.reasonForAnalytics else {
+        guard state.shouldTrackOnboardingStepEvents else {
             return
-        }
-        if state.isSelectPlugin && !gatewaySelectionAvailable {
-            reason = "multiple_plugins_installed"
         }
         ServiceLocator.analytics
             .track(event: .InPersonPayments
-                    .cardPresentOnboardingNotCompleted(reason: reason,
-                                                       countryCode: useCase.configurationLoader.configuration.countryCode))
+                .cardPresentOnboardingNotCompleted(reason: state.reasonForAnalytics,
+                                                   countryCode: countryCode))
+    }
+
+    func trackSkipped(state: CardPresentPaymentOnboardingState, remindLater: Bool) {
+        guard state.shouldTrackOnboardingStepEvents else {
+            return
+        }
+
+        ServiceLocator.analytics.track(
+            event: .InPersonPayments.cardPresentOnboardingStepSkipped(
+                reason: state.reasonForAnalytics,
+                remindLater: remindLater,
+                countryCode: countryCode))
     }
 }

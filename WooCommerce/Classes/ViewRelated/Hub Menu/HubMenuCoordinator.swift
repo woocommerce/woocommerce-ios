@@ -10,7 +10,7 @@ import protocol Yosemite.StoresManager
 /// Coordinator for the HubMenu tab.
 ///
 final class HubMenuCoordinator: Coordinator {
-    var navigationController: UINavigationController
+    let navigationController: UINavigationController
     var hubMenuController: HubMenuViewController?
 
     private let pushNotificationsManager: PushNotesManager
@@ -95,6 +95,7 @@ final class HubMenuCoordinator: Coordinator {
                     }
 
                     Task { @MainActor in
+                        ServiceLocator.analytics.track(.reviewOpen)
                         await self.willPresentReviewDetailsFromPushNotification()
                         self.pushReviewDetailsViewController(using: parcel)
 

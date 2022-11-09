@@ -44,6 +44,13 @@ class Product_ProductFormTests: XCTestCase {
         XCTAssertEqual(product.categoriesDescription(using: usLocale), expectedDescription)
     }
 
+    func test_category_description_decodes_HTML_in_category_name() {
+        let category = sampleCategory(name: "Test &amp; Test")
+        let product = sampleProduct(categories: [category])
+        let expectedDescription = "Test & Test"
+        XCTAssertEqual(product.categoriesDescription(), expectedDescription)
+    }
+
     // MARK: image related
 
     func testProductAllowsMultipleImages() {

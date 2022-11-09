@@ -461,6 +461,9 @@ private extension CardReaderConnectionController {
                 self.candidateReader = nil
                 self.pruneSkippedReaders()
                 self.state = .searching
+            },
+            cancelSearch: { [weak self] in
+                self?.state = .cancel
             })
     }
 
@@ -529,7 +532,6 @@ private extension CardReaderConnectionController {
     /// End the search for a card reader
     ///
     func onCancel() {
-        alerts.dismiss()
         let action = CardPresentPaymentAction.cancelCardReaderDiscovery() { [weak self] _ in
             self?.returnSuccess(result: .canceled)
         }
@@ -701,7 +703,7 @@ private extension CardReaderConnectionController {
                                       retrySearch: @escaping () -> Void) -> ((UIViewController) -> Void)? {
         if let adminUrl = adminUrl {
             if let site = stores.sessionManager.defaultSite,
-               site.isWordPressStore {
+               site.isWordPressComStore {
                 return { [weak self] viewController in
                     self?.openWCSettingsInWebview(url: adminUrl, from: viewController, retrySearch: retrySearch)
                 }
@@ -761,8 +763,8 @@ private extension CardReaderConnectionController {
     /// Calls the completion with a success result
     ///
     private func returnSuccess(result: ConnectionResult) {
-        alerts.dismiss()
         onCompletion?(.success(result))
+        alerts.dismiss()
         state = .idle
     }
 

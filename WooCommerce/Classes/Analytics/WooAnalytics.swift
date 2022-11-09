@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import WordPressShared
+import WidgetKit
 
 public class WooAnalytics: Analytics {
 
@@ -180,7 +181,10 @@ private extension WooAnalytics {
     }
 
     @objc func trackApplicationOpened() {
-        track(.applicationOpened)
+        WidgetCenter.shared.getCurrentConfigurations { [weak self] configurationResult in
+            guard let self = self else { return }
+            self.track(.applicationOpened, withProperties: self.applicationOpenedProperties(configurationResult))
+        }
         applicationOpenedTime = Date()
     }
 
@@ -208,8 +212,31 @@ private extension WooAnalytics {
         var updatedProperties = properties ?? [:]
         let site = ServiceLocator.stores.sessionManager.defaultSite
         updatedProperties[PropertyKeys.blogIDKey] = site?.siteID
-        updatedProperties[PropertyKeys.wpcomStoreKey] = site?.isWordPressStore
+        updatedProperties[PropertyKeys.wpcomStoreKey] = site?.isWordPressComStore
         return updatedProperties
+    }
+
+    /// Builds the necesary properties for the `application_opened` event.
+    ///
+    func applicationOpenedProperties(_ configurationResult: Result<[WidgetInfo], Error>) -> [String: String] {
+        guard let installedWidgets = try? configurationResult.get() else {
+            return ["widgets": ""]
+        }
+
+        // Translate the widget kind into a name recognized by tracks.
+        let widgetAnalyticNames: [String] = installedWidgets.map { widgetInfo in
+            switch widgetInfo.kind {
+            case WooConstants.storeInfoWidgetKind:
+                return "\(WooAnalyticsEvent.Widgets.Name.todayStats.rawValue)-\(widgetInfo.family)"
+            case WooConstants.appLinkWidgetKind:
+                return WooAnalyticsEvent.Widgets.Name.appLink.rawValue
+            default:
+                DDLogWarn("⚠️ Make sure the widget: \(widgetInfo.kind), has the correct tracks name.")
+                return widgetInfo.kind
+            }
+        }
+
+        return ["widgets": widgetAnalyticNames.joined(separator: ",")]
     }
 }
 

@@ -1,3 +1,5 @@
+import Experiments
+import SwiftUI
 import UIKit
 
 /// Contains a feature carousel with buttons that end up on the login prologue screen.
@@ -11,11 +13,18 @@ final class LoginOnboardingViewController: UIViewController {
     private let stackView: UIStackView = .init()
     private lazy var pageViewController = LoginProloguePageViewController(pageTypes: [.products, .orderManagement, .stats],
                                                                           showsSubtitle: true)
+    private lazy var buttonStackView: UIStackView = .init()
+    private lazy var nextButton: UIButton = createNextButton()
+
     private let analytics: Analytics
+    private let featureFlagService: FeatureFlagService
     private let onDismiss: (DismissAction) -> Void
 
-    init(analytics: Analytics = ServiceLocator.analytics, onDismiss: @escaping (DismissAction) -> Void) {
+    init(analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         onDismiss: @escaping (DismissAction) -> Void) {
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
         self.onDismiss = onDismiss
         super.init(nibName: nil, bundle: nil)
     }
@@ -92,14 +101,10 @@ private extension LoginOnboardingViewController {
     func configureStackViewSubviews() {
         let carousel = createFeatureCarousel()
 
-        let nextButton = createNextButton()
         let skipButton = createSkipButton()
-        let buttonStackView: UIStackView = {
-            let stackView = UIStackView(arrangedSubviews: [nextButton, skipButton])
-            stackView.spacing = Constants.buttonStackViewSpacing
-            stackView.axis = .vertical
-            return stackView
-        }()
+        buttonStackView.addArrangedSubviews([nextButton, skipButton])
+        buttonStackView.spacing = Constants.buttonStackViewSpacing
+        buttonStackView.axis = .vertical
 
         stackView.addArrangedSubviews([carousel, buttonStackView])
     }
@@ -118,6 +123,7 @@ private extension LoginOnboardingViewController {
         button.setTitle(Localization.continueButtonTitle, for: .normal)
         button.on(.touchUpInside) { [weak self] _ in
             guard let self = self else { return }
+
             guard self.pageViewController.goToNextPageIfPossible() else {
                 return self.onDismiss(.next)
             }

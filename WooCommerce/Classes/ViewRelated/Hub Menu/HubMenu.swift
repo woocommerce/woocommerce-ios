@@ -9,11 +9,14 @@ struct HubMenu: View {
     @ObservedObject private var iO = Inject.observer
 
     @ObservedObject private var viewModel: HubMenuViewModel
+
+    @State private var showingPayments = false
     @State private var showingWooCommerceAdmin = false
     @State private var showingViewStore = false
     @State private var showingInbox = false
     @State private var showingReviews = false
     @State private var showingCoupons = false
+    @State private var showingIAPDebug = false
 
     /// State to disable multiple taps on menu items
     /// Make sure to reset the value to false after dismissing sub-flows
@@ -40,7 +43,7 @@ struct HubMenu: View {
                 let gridItemLayout = [GridItem(.adaptive(minimum: Constants.itemSize), spacing: Constants.itemSpacing)]
 
                 LazyVGrid(columns: gridItemLayout, spacing: Constants.itemSpacing) {
-                    ForEach(viewModel.menuElements, id: \.self) { menu in
+                    ForEach(viewModel.menuElements, id: \.id) { menu in
                         // Currently the badge is always zero, because we are not handling push notifications count
                         // correctly due to the first behavior described here p91TBi-66O:
                         // AppDelegate’s `application(_:didReceiveRemoteNotification:fetchCompletionHandler:)`
@@ -49,25 +52,32 @@ struct HubMenu: View {
                         HubMenuElement(image: menu.icon,
                                        imageColor: menu.iconColor,
                                        text: menu.title,
-                                       badge: 0,
+                                       badge: menu.badge,
                                        isDisabled: $shouldDisableItemTaps,
                                        onTapGesture: {
-                            switch menu {
-                            case .woocommerceAdmin:
-                                ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "admin_menu"])
+                            ServiceLocator.analytics.track(.hubMenuOptionTapped,
+                                                           withProperties: [
+                                                            Constants.trackingOptionKey: menu.trackingOption,
+                                                            Constants.trackingBadgeVisibleKey: menu.badge.shouldBeRendered
+                                                           ])
+                            switch type(of: menu).id {
+                            case HubMenuViewModel.Payments.id:
+                                viewModel.paymentsScreenWasOpened()
+                                showingPayments = true
+                            case HubMenuViewModel.WoocommerceAdmin.id:
                                 showingWooCommerceAdmin = true
-                            case .viewStore:
-                                ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "view_store"])
+                            case HubMenuViewModel.ViewStore.id:
                                 showingViewStore = true
-                            case .inbox:
-                                ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "inbox"])
+                            case HubMenuViewModel.Inbox.id:
                                 showingInbox = true
-                            case .reviews:
-                                ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "reviews"])
+                            case HubMenuViewModel.Reviews.id:
                                 showingReviews = true
-                            case .coupons:
-                                ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "coupons"])
+                            case HubMenuViewModel.Coupons.id:
                                 showingCoupons = true
+                            case HubMenuViewModel.InAppPurchases.id:
+                                showingIAPDebug = true
+                            default:
+                                break
                             }
                         }).accessibilityIdentifier(menu.accessibilityIdentifier)
                     }
@@ -85,6 +95,12 @@ struct HubMenu: View {
                          url: viewModel.storeURL,
                          onDismiss: enableMenuItemTaps)
             NavigationLink(destination:
+                            InPersonPaymentsMenu()
+                            .navigationTitle(InPersonPaymentsView.Localization.title),
+                           isActive: $showingPayments) {
+                EmptyView()
+            }.hidden()
+            NavigationLink(destination:
                             Inbox(viewModel: .init(siteID: viewModel.siteID)),
                            isActive: $showingInbox) {
                 EmptyView()
@@ -95,6 +111,9 @@ struct HubMenu: View {
                 EmptyView()
             }.hidden()
             NavigationLink(destination: CouponListView(siteID: viewModel.siteID), isActive: $showingCoupons) {
+                EmptyView()
+            }.hidden()
+            NavigationLink(destination: InAppPurchasesDebugView(siteID: viewModel.siteID), isActive: $showingIAPDebug) {
                 EmptyView()
             }.hidden()
             LazyNavigationLink(destination: viewModel.getReviewDetailDestination(), isActive: $viewModel.showingReviewDetail) {
@@ -147,15 +166,18 @@ struct HubMenu: View {
                     Text(storeTitle)
                         .headlineStyle()
                         .lineLimit(1)
+                        .accessibilityIdentifier("store-title")
                     if let storeURL = storeURL {
                         Text(storeURL)
                             .subheadlineStyle()
                             .lineLimit(1)
+                            .accessibilityIdentifier("store-url")
                     }
                     Button(Localization.switchStore) {
                         switchStoreHandler?()
                     }
                     .linkStyle()
+                    .accessibilityIdentifier("switch-store-button")
                 }
                 Spacer()
                 VStack {
@@ -200,7 +222,8 @@ struct HubMenu: View {
         static let padding: CGFloat = 16
         static let topBarSpacing: CGFloat = 2
         static let avatarSize: CGFloat = 40
-        static let option = "option"
+        static let trackingOptionKey = "option"
+        static let trackingBadgeVisibleKey = "badge_visible"
     }
 
     private enum Localization {

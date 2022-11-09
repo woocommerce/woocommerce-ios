@@ -14,12 +14,6 @@ public enum CardPresentPaymentOnboardingState: Equatable {
     /// 
     case selectPlugin(pluginSelectionWasCleared: Bool)
 
-    /// The passed plugin should be deactivated. E.g. this state can happen when WCPay and Stripe
-    /// are both installed and activated in a country that doesn't support Stripe. In that case
-    /// Stripe should be deactivated.
-    ///
-    case pluginShouldBeDeactivated(plugin: CardPresentPaymentsPlugin)
-
     /// Store is not located in one of the supported countries.
     ///
     case countryNotSupported(countryCode: String)
@@ -67,6 +61,11 @@ public enum CardPresentPaymentOnboardingState: Equatable {
     ///
     case stripeAccountRejected(plugin: CardPresentPaymentsPlugin)
 
+    /// The Cash on Delivery payment gateway is missing or disabled
+    /// Enabling Cash on Delivery is not essential for Card Present Payments, but allows web store customers to place orders and pay by card in person.
+    ///
+    case codPaymentGatewayNotSetUp(plugin: CardPresentPaymentsPlugin)
+
     /// Generic error - for example, one of the requests failed.
     ///
     case genericError
@@ -77,16 +76,14 @@ public enum CardPresentPaymentOnboardingState: Equatable {
 }
 
 extension CardPresentPaymentOnboardingState {
-    public var reasonForAnalytics: String? {
+    public var reasonForAnalytics: String {
         switch self {
         case .loading:
-            return nil
+            return "loading"
         case .completed:
-            return nil
+            return "completed"
         case .selectPlugin:
             return "multiple_payment_providers_conflict"
-        case .pluginShouldBeDeactivated:
-            return "plugin_should_be_deactivated"
         case .countryNotSupported(countryCode: _):
             return "country_not_supported"
         case .countryNotSupportedStripe(countryCode: _):
@@ -109,10 +106,21 @@ extension CardPresentPaymentOnboardingState {
             return "account_overdue_requirements"
         case .stripeAccountRejected:
             return "account_rejected"
+        case .codPaymentGatewayNotSetUp:
+            return "cash_on_delivery_disabled"
         case .genericError:
             return "generic_error"
         case .noConnectionError:
             return "no_connection_error"
+        }
+    }
+
+    public var shouldTrackOnboardingStepEvents: Bool {
+        switch self {
+        case .completed(_), .loading:
+            return false
+        default:
+            return true
         }
     }
 
@@ -126,6 +134,14 @@ extension CardPresentPaymentOnboardingState {
 
     public var isSelectPlugin: Bool {
         if case .selectPlugin = self {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    public var isCountryNotSupported: Bool {
+        if case .countryNotSupported(_) = self {
             return true
         } else {
             return false

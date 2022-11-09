@@ -33,11 +33,13 @@ class AuthenticatedState: StoresManagerState {
                              fileStorage: PListFileStorage(),
                              generalAppSettings: ServiceLocator.generalAppSettings),
             AddOnGroupStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            AvailabilityStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             CouponStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            CustomerStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             DataStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            InAppPurchaseStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             InboxNotesStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            JustInTimeMessageStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             MediaStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             NotificationCountStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: PListFileStorage()),
@@ -77,7 +79,8 @@ class AuthenticatedState: StoresManagerState {
             AnnouncementsStore(dispatcher: dispatcher,
                                storageManager: storageManager,
                                network: network,
-                               fileStorage: PListFileStorage())
+                               fileStorage: PListFileStorage()),
+            JetpackConnectionStore(dispatcher: dispatcher)
         ]
 
         startListeningToNotifications()

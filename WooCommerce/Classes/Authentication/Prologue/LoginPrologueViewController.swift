@@ -8,8 +8,11 @@ import Experiments
 ///
 final class LoginPrologueViewController: UIViewController {
     private let isNewToWooCommerceButtonShown: Bool
-    private let isOnboardingFeatureShown: Bool
+    /// The feature carousel is not shown right after finishing the onboarding.
+    private let isFeatureCarouselShown: Bool
     private let analytics: Analytics
+    private let featureFlagService: FeatureFlagService
+    private let isSimplifiedLogin: Bool
 
     /// Background View, to be placed surrounding the bottom area.
     ///
@@ -36,11 +39,13 @@ final class LoginPrologueViewController: UIViewController {
     // MARK: - Overridden Methods
 
     init(analytics: Analytics = ServiceLocator.analytics,
-         loggedOutAppSettings: LoggedOutAppSettingsProtocol = LoggedOutAppSettings(userDefaults: .standard),
+         isFeatureCarouselShown: Bool,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         isNewToWooCommerceButtonShown = featureFlagService.isFeatureFlagEnabled(.newToWooCommerceLinkInLoginPrologue)
-        isOnboardingFeatureShown = featureFlagService.isFeatureFlagEnabled(.loginPrologueOnboarding) && loggedOutAppSettings.hasFinishedOnboarding == false
+        self.isFeatureCarouselShown = isFeatureCarouselShown
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
+        self.isSimplifiedLogin = ABTest.abTestLoginWithWPComOnly.variation != .control
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -91,8 +96,16 @@ private extension LoginPrologueViewController {
     /// This is contained in a child view so that this view's background doesn't scroll.
     ///
     func setupCarousel(isNewToWooCommerceButtonShown: Bool) {
-        let pageTypes: [LoginProloguePageType] = isOnboardingFeatureShown ? [.getStarted] : [.stats, .orderManagement, .products, .reviews]
-        let carousel = LoginProloguePageViewController(pageTypes: pageTypes, showsSubtitle: isOnboardingFeatureShown)
+        let pageTypes: [LoginProloguePageType] = {
+            if isFeatureCarouselShown {
+                return [.stats, .orderManagement, .products, .reviews]
+            } else if isSimplifiedLogin {
+                return [.simplifiedLoginI1Intro]
+            } else {
+                return [.getStarted]
+            }
+        }()
+        let carousel = LoginProloguePageViewController(pageTypes: pageTypes, showsSubtitle: !isFeatureCarouselShown)
         carousel.view.translatesAutoresizingMaskIntoConstraints = false
 
         addChild(carousel)
@@ -114,7 +127,8 @@ private extension LoginPrologueViewController {
         guard isNewToWooCommerceButtonShown else {
             return newToWooCommerceButton.isHidden = true
         }
-        newToWooCommerceButton.setTitle(Localization.newToWooCommerce, for: .normal)
+        let title = isSimplifiedLogin ? Localization.learnMoreAboutWoo : Localization.newToWooCommerce
+        newToWooCommerceButton.setTitle(title, for: .normal)
         newToWooCommerceButton.applyLinkButtonStyle()
         newToWooCommerceButton.titleLabel?.numberOfLines = 0
         newToWooCommerceButton.titleLabel?.textAlignment = .center
@@ -135,11 +149,14 @@ private extension LoginPrologueViewController {
 private extension LoginPrologueViewController {
     enum Constants {
         static let spacingBetweenCarouselAndNewToWooCommerceButton: CGFloat = 20
-        static let newToWooCommerceURL = "https://woocommerce.com/document/woocommerce-features"
+        static let newToWooCommerceURL = "https://woocommerce.com/woocommerce-features"
     }
 
     enum Localization {
         static let newToWooCommerce = NSLocalizedString("New to WooCommerce?",
                                                         comment: "Title of button in the login prologue screen for users who are new to WooCommerce.")
+        static let learnMoreAboutWoo = NSLocalizedString("Learn more about WooCommerce",
+                                                         comment: "Title of button in the simplified login prologue screen " +
+                                                         "for learning more about WooCommerce.")
     }
 }

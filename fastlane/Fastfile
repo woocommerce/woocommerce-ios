@@ -10,6 +10,8 @@ USER_ENV_FILE_PATH = File.join(Dir.home, '.wcios-env.default')
 SECRETS_DIR = File.join(Dir.home, '.configure', 'woocommerce-ios', 'secrets')
 PROJECT_ENV_FILE_PATH = File.join(SECRETS_DIR, 'project.env')
 
+GHHELPER_REPO = 'woocommerce/woocommerce-ios'
+
 # Constants
 PROJECT_ROOT_FOLDER = File.dirname(File.expand_path(__dir__))
 RESOURCES_FOLDER = File.join(PROJECT_ROOT_FOLDER, 'WooCommerce', 'Resources')
@@ -25,8 +27,28 @@ SCREENSHOT_DEVICES = [
   'iPad Pro (12.9-inch) (3rd generation)'
 ].freeze
 
-MAIN_BUNDLE_IDENTIFIERS = %w[com.automattic.woocommerce].freeze        # Registered in our main account, for development and AppStore
-ALPHA_BUNDLE_IDENTIFIERS = %w[com.automattic.alpha.woocommerce].freeze # Registered in our Enterprise account, for App Center / Installable Builds
+APP_STORE_VERSION_BUNDLE_IDENTIFIER = 'com.automattic.woocommerce'
+# Registered in our main account, for development and App Store
+MAIN_BUNDLE_IDENTIFIERS = [
+  APP_STORE_VERSION_BUNDLE_IDENTIFIER,
+  "#{APP_STORE_VERSION_BUNDLE_IDENTIFIER}.storewidgets"
+].freeze
+
+ALPHA_VERSION_BUNDLE_IDENTIFIER = 'com.automattic.alpha.woocommerce'
+# Registered in our Enterprise account, for App Center / Installable Builds
+ALPHA_BUNDLE_IDENTIFIERS = [
+  ALPHA_VERSION_BUNDLE_IDENTIFIER,
+  "#{ALPHA_VERSION_BUNDLE_IDENTIFIER}.storewidgets"
+].freeze
+
+# Shared options to use when invoking `gym` / `build_app`.
+#
+# - `manageAppVersionAndBuildNumber: false` prevents `xcodebuild` from bumping
+#   the build number when extracting an archive into an IPA file. We want to
+#   use the build number we set!
+COMMON_EXPORT_OPTIONS = { manageAppVersionAndBuildNumber: false }.freeze
+
+TEST_SCHEME = 'WooCommerce'
 
 # List of `.strings` files manually maintained by developers (as opposed to being automatically extracted from the code)
 # which we will merge into the main `Localizable.strings` file imported by GlotPress, then extract back once we download the translations.
@@ -87,7 +109,7 @@ GLOTPRESS_TO_ASC_METADATA_LOCALE_CODES = {
   'sv' => 'sv',
   'tr' => 'tr',
   'zh-cn' => 'zh-Hans',
-  'zh-tw' => 'zh-Hant',
+  'zh-tw' => 'zh-Hant'
 }.freeze
 
 ASC_KEY_PATH = File.join(SECRETS_DIR, 'app_store_connect_fastlane_api_key.json')
@@ -98,7 +120,7 @@ def get_required_env(key)
   unless ENV.key?(key)
     UI.user_error!("Environment variable '#{key}' is not set. Have you setup #{USER_ENV_FILE_PATH} correctly?")
   end
-  ENV[key]
+  ENV.fetch(key)
 end
 
 before_all do |lane|
@@ -125,16 +147,11 @@ platform :ios do
   ########################################################################
   Dotenv.load(USER_ENV_FILE_PATH)
   Dotenv.load(PROJECT_ENV_FILE_PATH)
-  ENV[GHHELPER_REPO = 'woocommerce/woocommerce-iOS']
   ENV['PROJECT_NAME'] = 'WooCommerce'
   ENV['PUBLIC_CONFIG_FILE'] = 'config/Version.Public.xcconfig'
   ENV['PROJECT_ROOT_FOLDER'] = './'
   ENV['APP_STORE_STRINGS_FILE_NAME'] = 'AppStoreStrings.pot'
   ENV['FL_RELEASE_TOOLKIT_DEFAULT_BRANCH'] = 'trunk'
-
-  # Other defines used across multiple lanes
-  REPOSITORY_NAME = 'woocommerce-ios'
-  GH_ORG_NAME = 'woocommerce'
 
   ########################################################################
   # Release Lanes
@@ -332,7 +349,7 @@ platform :ios do
     version = ios_get_app_version
     removebranchprotection(repository: GHHELPER_REPO, branch: "release/#{version}")
     setfrozentag(repository: GHHELPER_REPO, milestone: version, freeze: false)
-    create_new_milestone(repository: GHHELPER_REPO)
+    create_new_milestone(repository: GHHELPER_REPO, need_appstore_submission: true, milestone_duration: 7, number_of_days_from_code_freeze_to_release: 10)
     close_milestone(repository: GHHELPER_REPO, milestone: version)
 
     # Start the build
@@ -432,11 +449,13 @@ platform :ios do
 
     appstore_code_signing
 
-    gym(scheme: 'WooCommerce', workspace: './WooCommerce.xcworkspace',
-        clean: true, export_team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
-        export_options: {
-          method: 'app-store'
-        })
+    gym(
+      scheme: 'WooCommerce',
+      workspace: './WooCommerce.xcworkspace',
+      clean: true,
+      export_team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
+      export_options: { **COMMON_EXPORT_OPTIONS, method: 'app-store' }
+    )
 
     testflight(
       skip_waiting_for_build_processing: true,
@@ -500,8 +519,12 @@ platform :ios do
       export_method: 'enterprise',
       clean: true,
       output_directory: 'build',
-      export_team_id: ENV['INT_EXPORT_TEAM_ID'],
-      export_options: { method: 'enterprise', iCloudContainerEnvironment: 'Production' }
+      export_team_id: ENV.fetch('INT_EXPORT_TEAM_ID'),
+      export_options: {
+        **COMMON_EXPORT_OPTIONS,
+        method: 'enterprise',
+        iCloudContainerEnvironment: 'Production'
+      }
     )
 
     appcenter_upload(
@@ -538,7 +561,7 @@ platform :ios do
 
     comment_on_pr(
       project: 'woocommerce/woocommerce-ios',
-      pr_number: Integer(ENV['BUILDKITE_PULL_REQUEST']),
+      pr_number: Integer(ENV.fetch('BUILDKITE_PULL_REQUEST')),
       reuse_identifier: 'installable-build-link',
       body: comment_body
     )
@@ -556,7 +579,7 @@ platform :ios do
   lane :build_for_testing do |options|
     run_tests(
       workspace: 'WooCommerce.xcworkspace',
-      scheme: 'WooCommerce',
+      scheme: TEST_SCHEME,
       derived_data_path: 'DerivedData',
       build_for_testing: true,
       device: options[:device],
@@ -593,6 +616,17 @@ platform :ios do
         api_key_path: ASC_KEY_PATH
       )
     end
+
+    # We're about to use `add_development_certificates_to_provisioning_profiles` and `add_all_devices_to_provisioning_profiles`.
+    # These actions use Developer Portal APIs that don't yet support authentication via API key (-.-').
+    # Let's preemptively ask for and set the email here to avoid being asked twice for it if not set.
+
+    require 'credentials_manager'
+
+    # If Fastlane cannot instantiate a user, it will ask the caller for the email.
+    # Once we have it, we can set it as `FASTLANE_USER` in the environment (which has lifecycle limited to this call) so that the next commands will already have access to it.
+    # Note that if the user is already available to `AccountManager`, setting it in the environment is redundant, but Fastlane doesn't provide a way to check it so we have to do it anyway.
+    ENV['FASTLANE_USER'] = CredentialsManager::AccountManager.new.user
 
     # Add all development certificates to the provisioning profiles (just in case – this is an easy step to miss)
     add_development_certificates_to_provisioning_profiles(
@@ -714,7 +748,7 @@ platform :ios do
       runtime = SimCtl.runtime(name: "iOS #{SIMULATOR_VERSION}")
       devicetype = SimCtl.devicetype(name: device)
 
-      device = SimCtl.create_device device, devicetype, runtime
+      SimCtl.create_device(device, devicetype, runtime)
     end
   end
 
@@ -780,11 +814,11 @@ platform :ios do
     # FIXME: Replace this with a call to the future replacement of `gp_downloadmetadata` once it's implemented in the release-toolkit (see paaHJt-31O-p2).
     locales_map = GLOTPRESS_TO_ASC_METADATA_LOCALE_CODES
     target_files = {
-      "v#{ios_get_app_version}-whats-new": { desc: "release_notes.txt", max_size: 4000 },
-      app_store_name: { desc: "name.txt", max_size: 30 },
-      app_store_subtitle: { desc: "subtitle.txt", max_size: 30 },
-      app_store_desc: { desc: "description.txt", max_size: 4000 },
-      app_store_keywords: { desc: "keywords.txt", max_size: 100 },
+      "v#{ios_get_app_version}-whats-new": { desc: 'release_notes.txt', max_size: 4000 },
+      app_store_name: { desc: 'name.txt', max_size: 30 },
+      app_store_subtitle: { desc: 'subtitle.txt', max_size: 30 },
+      app_store_desc: { desc: 'description.txt', max_size: 4000 },
+      app_store_keywords: { desc: 'keywords.txt', max_size: 100 }
     }
 
     gp_downloadmetadata(
@@ -798,14 +832,17 @@ platform :ios do
     # Ensure that none of the `.txt` files in `en-US` would accidentally override our originals in `default`
     target_files.values.map { |h| h[:desc] }.each do |file|
       en_file_path = File.join(metadata_directory, 'en-US', file)
-      UI.user_error!("File `#{en_file_path}` would override the same one in `#{metadata_directory}/default`, but `default/` is the source of truth. " \
-                     + "Delete the `#{en_file_path}` file, ensure the `default/` one has the expected original copy, and try again.") if File.exist?(en_file_path)
+      if File.exist?(en_file_path)
+        UI.user_error!("File `#{en_file_path}` would override the same one in `#{metadata_directory}/default`, but `default/` is the source of truth. " \
+                       + "Delete the `#{en_file_path}` file, ensure the `default/` one has the expected original copy, and try again.")
+      end
     end
 
     # Ensure even empty locale folders have an empty `.gitkeep` file (in case we don't have any translation at all ready for some locales)
-    locales_map.values.each do |locale|
+    locales_map.each_value do |locale|
       gitkeep = File.join(metadata_directory, locale, '.gitkeep')
       next if File.exist?(gitkeep)
+
       FileUtils.mkdir_p(File.dirname(gitkeep))
       FileUtils.touch(gitkeep)
       files_to_commit.append(gitkeep)
@@ -919,8 +956,8 @@ platform :ios do
     match(
       type: 'enterprise',
       team_id: get_required_env('INT_EXPORT_TEAM_ID'),
-      readonly: true,
-      app_identifier: ALPHA_BUNDLE_IDENTIFIERS
+      app_identifier: ALPHA_BUNDLE_IDENTIFIERS,
+      readonly: true
     )
   end
 
@@ -928,9 +965,8 @@ platform :ios do
     match(
       type: 'appstore',
       team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
-      readonly: false,
       app_identifier: MAIN_BUNDLE_IDENTIFIERS,
-      template_name: 'Apple Pay Pass Suppression'
+      readonly: true
     )
   end
 
@@ -953,12 +989,14 @@ platform :ios do
         'Pods/WordPress*/',
         'Storage/Storage/',
         'Networking/Networking/',
-        'Hardware/Hardware/',
+        'Hardware/Hardware/'
       ],
       exclude: [
         '*Vendor*',
-        'WooCommerce/WooCommerceTests/**', # Some unit tests include localized strings, but we don't want to crowd GlotPress with them
+        '**/AppLocalizedString.swift',
+        'WooCommerce/WooCommerceTests/**' # Some unit tests include localized strings, but we don't want to crowd GlotPress with them
       ],
+      routines: ['AppLocalizedString'],
       output_dir: en_lproj_path
     )
 
@@ -1042,13 +1080,16 @@ lane :test_without_building do |options|
     e.include?(options[:name])
   end.first
 
-  UI.user_error!('Unable to find .xctestrun file') unless !xctestrun_path.nil? && File.exist?((xctestrun_path))
+  unless !xctestrun_path.nil? && File.exist?((xctestrun_path))
+    UI.user_error!("Unable to find .xctestrun file at #{xctestrun_path}")
+  end
+
+  inject_buildkite_analytics_environment(xctestrun_path: xctestrun_path) if buildkite_ci?
 
   run_tests(
     workspace: 'WooCommerce.xcworkspace',
-    scheme: 'WooCommerce',
+    scheme: TEST_SCHEME,
     device: options[:device],
-    deployment_target_version: options[:ios_version],
     test_without_building: true,
     xctestrun: xctestrun_path,
     result_bundle: true,
@@ -1064,10 +1105,10 @@ end
 # Generates Installable Build Version Numbers in a Buildkite-specific way
 # -----------------------------------------------------------------------------------
 def generate_installable_build_number
-  if ENV['BUILDKITE']
-    commit = ENV['BUILDKITE_COMMIT'][0, 7]
-    branch = ENV['BUILDKITE_BRANCH']
-    pr_num = ENV['BUILDKITE_PULL_REQUEST']
+  if ENV.key?('BUILDKITE')
+    commit = ENV.fetch('BUILDKITE_COMMIT')[0, 7]
+    branch = ENV.fetch('BUILDKITE_BRANCH')
+    pr_num = ENV.fetch('BUILDKITE_PULL_REQUEST')
 
     pr_num == 'false' ? "#{branch}-#{commit}" : "pr#{pr_num}-#{commit}"
   else
@@ -1101,3 +1142,37 @@ def trigger_buildkite_release_build(branch:, beta:)
     pipeline_file: 'release-builds.yml'
   )
 end
+
+def inject_buildkite_analytics_environment(xctestrun_path:)
+  require 'plist'
+
+  xctestrun = Plist.parse_xml(xctestrun_path)
+  xctestrun['TestConfigurations'].each do |configuration|
+    configuration['TestTargets'].each do |target|
+      TEST_ANALYTICS_ENVIRONMENT.each do |key|
+        value = ENV.fetch(key)
+        next if value.nil?
+
+        target['EnvironmentVariables'][key] = value
+      end
+    end
+  end
+
+  File.write(xctestrun_path, Plist::Emit.dump(xctestrun))
+end
+
+def buildkite_ci?
+  ENV.fetch('BUILDKITE', false)
+end
+
+# https://buildkite.com/docs/test-analytics/ci-environments
+TEST_ANALYTICS_ENVIRONMENT = %w[
+  BUILDKITE_ANALYTICS_TOKEN
+  BUILDKITE_BUILD_ID
+  BUILDKITE_BUILD_NUMBER
+  BUILDKITE_JOB_ID
+  BUILDKITE_BRANCH
+  BUILDKITE_COMMIT
+  BUILDKITE_MESSAGE
+  BUILDKITE_BUILD_URL
+].freeze

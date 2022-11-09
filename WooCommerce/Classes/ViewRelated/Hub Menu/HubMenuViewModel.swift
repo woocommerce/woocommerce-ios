@@ -4,6 +4,7 @@ import SwiftUI
 import Combine
 import Experiments
 import Yosemite
+import Storage
 
 extension NSNotification.Name {
     /// Posted whenever the hub menu view did appear.
@@ -48,12 +49,13 @@ final class HubMenuViewModel: ObservableObject {
 
     /// Child items
     ///
-    @Published private(set) var menuElements: [Menu] = []
+    @Published private(set) var menuElements: [HubMenuItem] = []
 
     @Published var showingReviewDetail = false
 
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
+    private let generalAppSettings: GeneralAppSettingsStorage
 
     private var productReviewFromNoteParcel: ProductReviewFromNoteParcel?
 
@@ -64,11 +66,13 @@ final class HubMenuViewModel: ObservableObject {
     init(siteID: Int64,
          navigationController: UINavigationController? = nil,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         generalAppSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings) {
         self.siteID = siteID
         self.navigationController = navigationController
         self.stores = stores
         self.featureFlagService = featureFlagService
+        self.generalAppSettings = generalAppSettings
         observeSiteForUIUpdates()
     }
 
@@ -79,13 +83,18 @@ final class HubMenuViewModel: ObservableObject {
     /// Resets the menu elements displayed on the menu.
     ///
     func setupMenuElements() {
-        menuElements = [.woocommerceAdmin, .viewStore, .reviews]
+        menuElements = [Payments(), WoocommerceAdmin(), ViewStore(), Reviews()]
+        if generalAppSettings.betaFeatureEnabled(.inAppPurchases) {
+            menuElements.append(InAppPurchases())
+        }
 
         let inboxUseCase = InboxEligibilityUseCase(stores: stores, featureFlagService: featureFlagService)
         inboxUseCase.isEligibleForInbox(siteID: siteID) { [weak self] isInboxMenuShown in
             guard let self = self else { return }
-            if let index = self.menuElements.firstIndex(of: .viewStore), isInboxMenuShown {
-                self.menuElements.insert(.inbox, at: index + 1)
+            if let index = self.menuElements.firstIndex(where: { item in
+                type(of: item).id == ViewStore.id
+            }), isInboxMenuShown {
+                self.menuElements.insert(Inbox(), at: index + 1)
             }
         }
 
@@ -94,13 +103,43 @@ final class HubMenuViewModel: ObservableObject {
             guard case let .success(enabled) = result, enabled else {
                 return
             }
-            if let index = self.menuElements.firstIndex(of: .reviews) {
-                self.menuElements.insert(.coupons, at: index)
+            if let index = self.menuElements.firstIndex(where: { item in
+                type(of: item).id == Reviews.id
+            }) {
+                self.menuElements.insert(Coupons(), at: index)
             } else {
-                self.menuElements.append(.coupons)
+                self.menuElements.append(Coupons())
             }
         }
+
         stores.dispatch(action)
+
+        setupPaymentsBadge()
+    }
+
+    private func setupPaymentsBadge() {
+        let featureAnnouncementVisibilityAction = AppSettingsAction.getFeatureAnnouncementVisibility(campaign: .paymentsInHubMenuButton) {
+            [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let visible):
+                    if visible {
+                        self.updatePaymentsBadge(type: .newFeature)
+                    }
+                default:
+                    break
+                }
+        }
+
+        stores.dispatch(featureAnnouncementVisibilityAction)
+    }
+
+    private func updatePaymentsBadge(type badge: HubMenuBadgeType) {
+        if let paymentsMenuItemIndex = self.menuElements.firstIndex(where: { item in
+            type(of: item).id == Payments.id
+        }) {
+            self.menuElements[paymentsMenuItemIndex] = Payments(badge: badge)
+        }
     }
 
     /// Present the `StorePickerViewController` using the `StorePickerCoordinator`, passing the navigation controller from the entry point.
@@ -118,6 +157,15 @@ final class HubMenuViewModel: ObservableObject {
         showingReviewDetail = true
     }
 
+    func paymentsScreenWasOpened() {
+        updatePaymentsBadge(type: .number(number: 0))
+
+        let featureAnnouncementVisibilityAction = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .paymentsInHubMenuButton,
+                                                                                                    remindLater: false,
+                                                                                                    onCompletion: nil)
+        stores.dispatch(featureAnnouncementVisibilityAction)
+    }
+
     func getReviewDetailDestination() -> ReviewDetailView? {
         guard let parcel = productReviewFromNoteParcel else {
             return nil
@@ -133,77 +181,105 @@ final class HubMenuViewModel: ObservableObject {
     }
 }
 
+protocol HubMenuItem {
+    static var id: String { get }
+    var title: String { get }
+    var icon: UIImage { get }
+    var iconColor: UIColor { get }
+    var badge: HubMenuBadgeType { get }
+    var accessibilityIdentifier: String { get }
+    var trackingOption: String { get }
+}
+
+extension HubMenuItem {
+    var id: String {
+        type(of: self).id
+    }
+}
+
 extension HubMenuViewModel {
-    enum Menu: CaseIterable {
-        case woocommerceAdmin
-        case viewStore
-        case inbox
-        case coupons
-        case reviews
+    struct Payments: HubMenuItem {
 
-        var title: String {
-            switch self {
-            case .woocommerceAdmin:
-                return Localization.woocommerceAdmin
-            case .viewStore:
-                return Localization.viewStore
-            case .inbox:
-                return Localization.inbox
-            case .coupons:
-                return Localization.coupon
-            case .reviews:
-                return Localization.reviews
-            }
-        }
+        static var id = "payments"
 
-        var icon: UIImage {
-            switch self {
-            case .woocommerceAdmin:
-                return .wordPressLogoImage
-            case .viewStore:
-                return .storeImage
-            case .inbox:
-                return .mailboxImage
-            case .coupons:
-                return .couponImage
-            case .reviews:
-                return .starImage(size: 24.0)
-            }
-        }
+        let title: String = Localization.payments
+        let icon: UIImage = .walletImage
+        let iconColor: UIColor = .withColorStudio(.orange)
+        var badge: HubMenuBadgeType = .number(number: 0)
+        let accessibilityIdentifier: String = "menu-payments"
+        let trackingOption: String = "payments"
+    }
 
-        var iconColor: UIColor {
-            switch self {
-            case .woocommerceAdmin:
-                return .blue
-            case .viewStore:
-                return .accent
-            case .inbox:
-                return .withColorStudio(.blue, shade: .shade40)
-            case .coupons:
-                return UIColor(light: .withColorStudio(.green, shade: .shade30),
-                               dark: .withColorStudio(.green, shade: .shade50))
-            case .reviews:
-                return .primary
-            }
-        }
+    struct WoocommerceAdmin: HubMenuItem {
+        static var id = "woocommerceAdmin"
 
-        var accessibilityIdentifier: String {
-            switch self {
-            case .woocommerceAdmin:
-                return "menu-woocommerce-admin"
-            case .viewStore:
-                return "menu-view-store"
-            case .inbox:
-                return "menu-inbox"
-            case .coupons:
-                return "menu-coupons"
-            case .reviews:
-                return "menu-reviews"
-            }
-        }
+        let title: String = Localization.woocommerceAdmin
+        let icon: UIImage = .wordPressLogoImage
+        let iconColor: UIColor = .wooBlue
+        let badge: HubMenuBadgeType = .number(number: 0)
+        let accessibilityIdentifier: String = "menu-woocommerce-admin"
+        let trackingOption: String = "admin_menu"
+    }
+
+    struct ViewStore: HubMenuItem {
+        static var id = "viewStore"
+
+        let title: String = Localization.viewStore
+        let icon: UIImage = .storeImage
+        let iconColor: UIColor = .accent
+        let badge: HubMenuBadgeType = .number(number: 0)
+        let accessibilityIdentifier: String = "menu-view-store"
+        let trackingOption: String = "view_store"
+    }
+
+    struct Inbox: HubMenuItem {
+        static var id = "inbox"
+
+        let title: String = Localization.inbox
+        let icon: UIImage = .mailboxImage
+        let iconColor: UIColor = .withColorStudio(.blue, shade: .shade40)
+        let badge: HubMenuBadgeType = .number(number: 0)
+        let accessibilityIdentifier: String = "menu-inbox"
+        let trackingOption: String = "inbox"
+    }
+
+    struct Coupons: HubMenuItem {
+        static var id = "coupons"
+
+        let title: String = Localization.coupon
+        let icon: UIImage = .couponImage
+        let iconColor: UIColor = UIColor(light: .withColorStudio(.green, shade: .shade30),
+                                         dark: .withColorStudio(.green, shade: .shade50))
+        let badge: HubMenuBadgeType = .number(number: 0)
+        let accessibilityIdentifier: String = "menu-coupons"
+        let trackingOption: String = "coupons"
+    }
+
+    struct Reviews: HubMenuItem {
+        static var id = "reviews"
+
+        let title: String = Localization.reviews
+        let icon: UIImage = .starImage(size: 24.0)
+        let iconColor: UIColor = .primary
+        let badge: HubMenuBadgeType = .number(number: 0)
+        let accessibilityIdentifier: String = "menu-reviews"
+        let trackingOption: String = "reviews"
+    }
+
+    struct InAppPurchases: HubMenuItem {
+        static var id = "iap"
+
+        let title: String = "[Debug] IAP"
+        let icon: UIImage = UIImage(systemName: "ladybug.fill")!
+        let iconColor: UIColor = .red
+        let badge: HubMenuBadgeType = .number(number: 0)
+        let accessibilityIdentifier: String = "menu-iap"
+        let trackingOption: String = "debug-iap"
     }
 
     private enum Localization {
+        static let payments = NSLocalizedString("Payments",
+                                                comment: "Title of the hub menu payments button")
         static let myStore = NSLocalizedString("My Store",
                                                comment: "Title of the hub menu view in case there is no title for the store")
         static let woocommerceAdmin = NSLocalizedString("WooCommerce Admin",

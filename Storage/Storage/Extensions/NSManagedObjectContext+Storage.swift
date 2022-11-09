@@ -1,5 +1,6 @@
 import Foundation
 import CoreData
+import WooFoundation
 
 /// NSManagedObjectContext Storage Conformance
 ///
@@ -60,7 +61,7 @@ extension NSManagedObjectContext: StorageType {
     ///
     public func deleteObject<T: Object>(_ object: T) {
         guard let object = object as? NSManagedObject else {
-            fatalError("Invalid Object Kind")
+            logErrorAndExit("Invalid Object Kind")
         }
 
         delete(object)
@@ -114,7 +115,7 @@ extension NSManagedObjectContext: StorageType {
     ///
     public func loadObject<T: Object>(ofType type: T.Type, with objectID: T.ObjectID) -> T? {
         guard let objectID = objectID as? NSManagedObjectID else {
-            fatalError("Invalid ObjectID Kind")
+            logErrorAndExit("Invalid ObjectID Kind")
         }
 
         do {
@@ -137,7 +138,7 @@ extension NSManagedObjectContext: StorageType {
             try save()
         } catch {
             let nserror = error as NSError
-            fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+            logErrorAndExit("Unresolved error \(nserror), \(nserror.userInfo)")
         }
     }
 

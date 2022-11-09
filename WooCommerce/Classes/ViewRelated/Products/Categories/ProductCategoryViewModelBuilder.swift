@@ -98,7 +98,7 @@ extension ProductCategoryListViewModel {
                                       indentationLevel: Int) -> ProductCategoryCellViewModel {
             let isSelected = selectedCategories.contains(category)
             return ProductCategoryCellViewModel(categoryID: category.categoryID,
-                                                name: category.name,
+                                                name: category.name.strippedHTML,
                                                 isSelected: isSelected,
                                                 indentationLevel: indentationLevel)
         }

@@ -1,3 +1,1 @@
-Uygulamada kupon oluşturabilmek istediğinizi bildirmiştiniz. Test etmemize yardımcı olmak isterseniz, söz konusu işlevselliği deneyebileceğinizi söylemekten memnuniyet duyuyoruz! Uygulamadaki ayarlara gidin ve Kuponlar için deneme özelliğini açın.
-
-Ayrıca tüm ödenmemiş siparişler için ödemeleri nakit, kart veya ödeme bağlantısı yoluyla tahsil etme seçeneği de dahil olmak üzere, ürün görseli yüklemelerinde ve şahsen ödemelerde çeşitli iyileştirmeler yaptık.  Lütfen bize geri bildirim göndermeye devam edin, sizi dinliyoruz.
+Bu sürümde şaşırtıcı yeni özellikler bulunmasa da, yine de ona çok fazla sevgi katıyoruz! Birkaç hatayı düzelttik ve deneyiminizi daha sorunsuz hale getirmek için birkaç iyileştirme yaptık.

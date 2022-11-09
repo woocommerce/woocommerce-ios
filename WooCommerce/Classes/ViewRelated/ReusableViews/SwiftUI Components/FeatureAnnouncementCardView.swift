@@ -1,13 +1,13 @@
 import SwiftUI
 
 struct FeatureAnnouncementCardView: View {
-    private let viewModel: FeatureAnnouncementCardViewModel
+    private let viewModel: AnnouncementCardViewModelProtocol
     @State private var showingDismissActionSheet = false
 
     let dismiss: (() -> Void)?
     let callToAction: (() -> Void)?
 
-    init(viewModel: FeatureAnnouncementCardViewModel,
+    init(viewModel: AnnouncementCardViewModelProtocol,
          dismiss: (() -> Void)? = nil,
          callToAction: (() -> Void)? = nil) {
         self.viewModel = viewModel
@@ -76,6 +76,7 @@ struct FeatureAnnouncementCardView: View {
                             .bodyStyle()
                             .padding(.bottom, viewModel.buttonTitle == nil ? Layout.bottomNoButtonPadding : Layout.largeSpacing)
                     }
+                    .fixedSize(horizontal: false, vertical: true)
                     .accessibilityElement(children: .combine)
                     if let buttonTitle = viewModel.buttonTitle {
                         Button(buttonTitle) {

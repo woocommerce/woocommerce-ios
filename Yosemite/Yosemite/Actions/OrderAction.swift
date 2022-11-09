@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Networking
 
@@ -98,4 +99,8 @@ public enum OrderAction: Action {
     /// Deletes a given order.
     ///
     case deleteOrder(siteID: Int64, order: Order, deletePermanently: Bool, onCompletion: (Result<Order, Error>) -> Void)
+
+    /// Returns a publisher that emits inserted orders on the view storage context.
+    ///
+    case observeInsertedOrders(siteID: Int64, completion: (AnyPublisher<[Order], Never>) -> Void)
 }

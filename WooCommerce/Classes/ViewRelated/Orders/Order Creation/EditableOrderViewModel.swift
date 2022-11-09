@@ -171,9 +171,9 @@ final class EditableOrderViewModel: ObservableObject {
         ProductSelectorViewModel(siteID: siteID, purchasableItemsOnly: true, storageManager: storageManager, stores: stores) { [weak self] product in
             guard let self = self else { return }
             self.addProductToOrder(product)
-        } onVariationSelected: { [weak self] variation in
+        } onVariationSelected: { [weak self] variation, parentProduct in
             guard let self = self else { return }
-            self.addProductVariationToOrder(variation)
+            self.addProductVariationToOrder(variation, parent: parentProduct)
         }
     }()
 
@@ -654,6 +654,7 @@ private extension EditableOrderViewModel {
     /// Adds a selected product (from the product list) to the order.
     ///
     func addProductToOrder(_ product: Product) {
+        // Needed because `allProducts` is only updated at start, so product from new pages are not synced.
         if !allProducts.contains(product) {
             allProducts.append(product)
         }
@@ -666,7 +667,12 @@ private extension EditableOrderViewModel {
 
     /// Adds a selected product variation (from the product list) to the order.
     ///
-    func addProductVariationToOrder(_ variation: ProductVariation) {
+    func addProductVariationToOrder(_ variation: ProductVariation, parent product: Product) {
+        // Needed because `allProducts` is only updated at start, so product from new pages are not synced.
+        if !allProducts.contains(product) {
+            allProducts.append(product)
+        }
+
         if !allProductVariations.contains(variation) {
             allProductVariations.append(variation)
         }

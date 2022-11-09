@@ -53,7 +53,8 @@ final class StatsStoreV4Tests: XCTestCase {
                                                      timeRange: .thisYear,
                                                      earliestDateToInclude: DateFormatter.dateFromString(with: "2018-06-23T17:06:55"),
                                                      latestDateToInclude: DateFormatter.dateFromString(with: "2018-06-23T17:06:55"),
-                                                     quantity: 2) { result in
+                                                     quantity: 2,
+                                                     forceRefresh: false) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -80,7 +81,8 @@ final class StatsStoreV4Tests: XCTestCase {
                                                      timeRange: .thisYear,
                                                      earliestDateToInclude: DateFormatter.dateFromString(with: "2018-06-23T17:06:55"),
                                                      latestDateToInclude: DateFormatter.dateFromString(with: "2018-06-23T17:06:55"),
-                                                     quantity: 2) { result in
+                                                     quantity: 2,
+                                                     forceRefresh: false) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -102,7 +104,8 @@ final class StatsStoreV4Tests: XCTestCase {
                                                      timeRange: .thisYear,
                                                      earliestDateToInclude: DateFormatter.dateFromString(with: "2018-06-23T17:06:55"),
                                                      latestDateToInclude: DateFormatter.dateFromString(with: "2018-06-23T17:06:55"),
-                                                     quantity: 2) { result in
+                                                     quantity: 2,
+                                                     forceRefresh: false) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -256,7 +259,7 @@ final class StatsStoreV4Tests: XCTestCase {
     func test_retrieveTopEarnerStats_effectively_persists_retrieved_stats() {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        network.simulateResponse(requestUrlSuffix: "leaderboards", filename: "leaderboards-year")
+        network.simulateResponse(requestUrlSuffix: "leaderboards/products", filename: "leaderboards-year")
         network.simulateResponse(requestUrlSuffix: "products", filename: "leaderboards-products")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 0)
 
@@ -266,7 +269,8 @@ final class StatsStoreV4Tests: XCTestCase {
                                                               timeRange: .thisYear,
                                                               earliestDateToInclude: DateFormatter.dateFromString(with: "2020-01-01T00:00:00"),
                                                               latestDateToInclude: DateFormatter.dateFromString(with: "2020-07-22T12:00:00"),
-                                                              quantity: 3) { result in
+                                                              quantity: 3,
+                                                              forceRefresh: false) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -289,16 +293,69 @@ final class StatsStoreV4Tests: XCTestCase {
 
         // When
         let quantity = 6
-        let action = StatsActionV4.retrieveTopEarnerStats(siteID: self.sampleSiteID,
-                                                          timeRange: .thisYear,
-                                                          earliestDateToInclude: DateFormatter.dateFromString(with: "2020-01-01T00:00:00"),
-                                                          latestDateToInclude: DateFormatter.dateFromString(with: "2020-07-22T12:00:00"),
-                                                          quantity: quantity) { _ in }
-        store.onAction(action)
+        let _: Void = waitFor { promise in
+            let action = StatsActionV4.retrieveTopEarnerStats(siteID: self.sampleSiteID,
+                                                              timeRange: .thisYear,
+                                                              earliestDateToInclude: DateFormatter.dateFromString(with: "2020-01-01T00:00:00"),
+                                                              latestDateToInclude: DateFormatter.dateFromString(with: "2020-07-22T12:00:00"),
+                                                              quantity: quantity,
+                                                              forceRefresh: false) { _ in
+                promise(())
+            }
+            store.onAction(action)
+        }
 
         // Then
         let expectedQuantityParam = "per_page=\(quantity)"
         XCTAssertEqual(network.queryParameters?.contains(expectedQuantityParam), true)
+    }
+
+    /// Verifies that `StatsActionV4.retrieveTopEarnerStats` makes a network request with the given `force_cache_refresh` parameter.
+    ///
+    func test_retrieveTopEarnerStats_makes_network_request_with_given_force_cache_rerefresh_parameter() {
+        // Given
+        let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let _: Void = waitFor { promise in
+            let action = StatsActionV4.retrieveTopEarnerStats(siteID: self.sampleSiteID,
+                                                              timeRange: .thisYear,
+                                                              earliestDateToInclude: DateFormatter.dateFromString(with: "2020-01-01T00:00:00"),
+                                                              latestDateToInclude: DateFormatter.dateFromString(with: "2020-07-22T12:00:00"),
+                                                              quantity: 1,
+                                                              forceRefresh: true) { _ in
+                promise(())
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let expectedParam = "force_cache_refresh=1"
+        XCTAssertEqual(network.queryParameters?.contains(expectedParam), true)
+    }
+
+    /// Verifies that `StatsActionV4.retrieveStats` makes a network request with the given `force_cache_refresh` parameter.
+    ///
+    func test_retrieveStats_makes_network_request_with_given_force_cache_rerefresh_parameter() {
+        // Given
+        let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let _: Void = waitFor { promise in
+            let action = StatsActionV4.retrieveStats(siteID: self.sampleSiteID,
+                                                     timeRange: .thisMonth,
+                                                     earliestDateToInclude: .init(),
+                                                     latestDateToInclude: .init(),
+                                                     quantity: 1,
+                                                     forceRefresh: false) { _ in
+                promise(())
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let expectedParam = "force_cache_refresh=0"
+        XCTAssertEqual(network.queryParameters?.contains(expectedParam), true)
     }
 
     /// Verifies that `StatsActionV4.retrieveTopEarnerStats` effectively persists any updated TopEarnerStatsItems.
@@ -306,7 +363,7 @@ final class StatsStoreV4Tests: XCTestCase {
     func test_retrieveTopEarnerStats_effectively_persists_updated_items() {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        network.simulateResponse(requestUrlSuffix: "leaderboards", filename: "leaderboards-year-alt")
+        network.simulateResponse(requestUrlSuffix: "leaderboards/products", filename: "leaderboards-year-alt")
         network.simulateResponse(requestUrlSuffix: "products", filename: "leaderboards-products")
         store.upsertStoredTopEarnerStats(readOnlyStats: sampleTopEarnerStats())
 
@@ -316,7 +373,8 @@ final class StatsStoreV4Tests: XCTestCase {
                                                               timeRange: .thisYear,
                                                               earliestDateToInclude: DateFormatter.dateFromString(with: "2020-01-01T00:00:00"),
                                                               latestDateToInclude: DateFormatter.dateFromString(with: "2020-07-22T12:00:00"),
-                                                              quantity: 3) { result in
+                                                              quantity: 3,
+                                                              forceRefresh: false) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -329,6 +387,36 @@ final class StatsStoreV4Tests: XCTestCase {
 
         let readOnlyTopEarnerStats = viewStorage.firstObject(ofType: Storage.TopEarnerStats.self)?.toReadOnly()
         XCTAssertEqual(readOnlyTopEarnerStats, sampleTopEarnerStatsMutated())
+    }
+
+    func test_retrieveTopEarnerStats_calls_deprecated_leaderboards_api_and_persits_stats_on_leaderboards_restnoroute_error() {
+        // Given
+        let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateError(requestUrlSuffix: "leaderboards/products", error: DotcomError.noRestRoute)
+        network.simulateResponse(requestUrlSuffix: "leaderboards", filename: "leaderboards-year")
+        network.simulateResponse(requestUrlSuffix: "products", filename: "leaderboards-products")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 0)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = StatsActionV4.retrieveTopEarnerStats(siteID: self.sampleSiteID,
+                                                              timeRange: .thisYear,
+                                                              earliestDateToInclude: DateFormatter.dateFromString(with: "2020-01-01T00:00:00"),
+                                                              latestDateToInclude: DateFormatter.dateFromString(with: "2020-07-22T12:00:00"),
+                                                              quantity: 3,
+                                                              forceRefresh: false) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStatsItem.self), 2)
+
+        let readOnlyTopEarnerStats = viewStorage.firstObject(ofType: Storage.TopEarnerStats.self)?.toReadOnly()
+        XCTAssertEqual(readOnlyTopEarnerStats, sampleTopEarnerStats())
     }
 
     /// Verifies that `StatsActionV4.retrieveTopEarnerStats` returns an error whenever there is an error response from the backend.
@@ -344,7 +432,8 @@ final class StatsStoreV4Tests: XCTestCase {
                                                               timeRange: .thisMonth,
                                                               earliestDateToInclude: Date(),
                                                               latestDateToInclude: Date(),
-                                                              quantity: 3) { result in
+                                                              quantity: 3,
+                                                              forceRefresh: false) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -366,7 +455,8 @@ final class StatsStoreV4Tests: XCTestCase {
                                                               timeRange: .thisMonth,
                                                               earliestDateToInclude: Date(),
                                                               latestDateToInclude: Date(),
-                                                              quantity: 3) { result in
+                                                              quantity: 3,
+                                                              forceRefresh: false) { result in
                 promise(result)
             }
             store.onAction(action)

@@ -4,6 +4,7 @@ import UIKit
 import WordPressAuthenticator
 import Yosemite
 import class AutomatticTracks.CrashLogging
+import protocol Storage.StorageManagerType
 
 /// Coordinates app navigation based on authentication state: tab bar UI is shown when the app is logged in, and authentication UI is shown
 /// when the app is logged out.
@@ -13,6 +14,7 @@ final class AppCoordinator {
 
     private let window: UIWindow
     private let stores: StoresManager
+    private let storageManager: StorageManagerType
     private let authenticationManager: Authentication
     private let roleEligibilityUseCase: RoleEligibilityUseCaseProtocol
     private let analytics: Analytics
@@ -25,8 +27,13 @@ final class AppCoordinator {
     private var localNotificationResponsesSubscription: AnyCancellable?
     private var isLoggedIn: Bool = false
 
+    /// Checks on whether the Apple ID credential is valid when the app is logged in and becomes active.
+    ///
+    private lazy var appleIDCredentialChecker = AppleIDCredentialChecker()
+
     init(window: UIWindow,
          stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
          authenticationManager: Authentication = ServiceLocator.authenticationManager,
          roleEligibilityUseCase: RoleEligibilityUseCaseProtocol = RoleEligibilityUseCase(),
          analytics: Analytics = ServiceLocator.analytics,
@@ -42,12 +49,15 @@ final class AppCoordinator {
             return tabBarController
         }()
         self.stores = stores
+        self.storageManager = storageManager
         self.authenticationManager = authenticationManager
         self.roleEligibilityUseCase = roleEligibilityUseCase
         self.analytics = analytics
         self.loggedOutAppSettings = loggedOutAppSettings
         self.pushNotesManager = pushNotesManager
         self.featureFlagService = featureFlagService
+
+        authenticationManager.setLoggedOutAppSettings(loggedOutAppSettings)
     }
 
     func start() {
@@ -58,11 +68,12 @@ final class AppCoordinator {
                 // More details about the UI states: https://github.com/woocommerce/woocommerce-ios/pull/3498
                 switch (isLoggedIn, needsDefaultStore) {
                 case (false, true), (false, false):
-                    self.displayAuthenticator()
+                    self.displayAuthenticatorWithOnboardingIfNeeded()
                 case (true, true):
-                    self.displayStorePicker()
+                    self.displayLoggedInStateWithoutDefaultStore()
                 case (true, false):
                     self.validateRoleEligibility {
+                        self.configureAuthenticator()
                         self.displayLoggedInUI()
                         self.synchronizeAndShowWhatsNew()
                     }
@@ -115,34 +126,63 @@ private extension AppCoordinator {
 
     /// Displays the WordPress.com Authentication UI.
     ///
-    func displayAuthenticator() {
+    func displayAuthenticatorWithOnboardingIfNeeded() {
+        if canPresentLoginOnboarding() {
+            // Sets a placeholder view controller as the window's root view as it is required
+            // at the end of app launch.
+            setWindowRootViewControllerAndAnimateIfNeeded(.init())
+            presentLoginOnboarding { [weak self] in
+                guard let self = self else { return }
+                // Only displays the authenticator when dismissing onboarding to allow time for A/B test setup.
+                self.configureAndDisplayAuthenticator()
+            }
+        } else {
+            configureAndDisplayAuthenticator()
+        }
+    }
+
+    /// Configures the WPAuthenticator and sets the authenticator UI as the window's root view.
+    func configureAndDisplayAuthenticator() {
+        configureAuthenticator()
+
         let authenticationUI = authenticationManager.authenticationUI()
         setWindowRootViewControllerAndAnimateIfNeeded(authenticationUI) { [weak self] _ in
             guard let self = self else { return }
             self.tabBarController.removeViewControllers()
-
-            self.presentLoginOnboarding()
         }
         ServiceLocator.analytics.track(.openedLogin)
     }
 
-    /// Presents onboarding on top of the authentication UI under certain criteria.
-    func presentLoginOnboarding() {
+    /// Configures the WPAuthenticator for usage in both logged-in and logged-out states.
+    func configureAuthenticator() {
+        authenticationManager.initialize(loggedOutAppSettings: loggedOutAppSettings)
+        appleIDCredentialChecker.observeLoggedInStateForAppleIDObservations()
+    }
+
+    /// Determines whether the login onboarding should be shown.
+    func canPresentLoginOnboarding() -> Bool {
         // Since we cannot control the user defaults in the simulator where UI tests are run on,
         // login onboarding is not shown in UI tests for now.
         // If we want to add UI tests for the login onboarding, we can add another launch argument
         // so that we can show/hide the onboarding screen consistently.
         let isUITesting: Bool = CommandLine.arguments.contains("-ui_testing")
         guard isUITesting == false else {
-            return
+            return false
         }
 
         guard featureFlagService.isFeatureFlagEnabled(.loginPrologueOnboarding),
-        loggedOutAppSettings.hasFinishedOnboarding == false else {
-            return
+              loggedOutAppSettings.hasFinishedOnboarding == false else {
+            return false
         }
+        return true
+    }
+
+    /// Presents onboarding on top of the authentication UI under certain criteria.
+    /// - Parameter onDismiss: invoked when the onboarding is dismissed.
+    func presentLoginOnboarding(onDismiss: @escaping () -> Void) {
         let onboardingViewController = LoginOnboardingViewController { [weak self] action in
             guard let self = self else { return }
+            onDismiss()
             self.loggedOutAppSettings.setHasFinishedOnboarding(true)
             self.window.rootViewController?.dismiss(animated: true)
 
@@ -166,24 +206,47 @@ private extension AppCoordinator {
         setWindowRootViewControllerAndAnimateIfNeeded(tabBarController)
     }
 
-    /// If the app is authenticated but there is no default store ID on launch: Let's display the Store Picker.
+    /// If the app is authenticated but there is no default store ID on launch,
+    /// check for errors and display store picker if none exists.
     ///
-    func displayStorePicker() {
+    func displayLoggedInStateWithoutDefaultStore() {
         // Store picker is only displayed by `AppCoordinator` on launch, when the window's root is uninitialized.
         // In other cases when the app is authenticated but there is no default store ID, the store picker is shown by authentication UI.
         guard window.rootViewController == nil else {
             return
         }
 
-        DDLogInfo("💬 Authenticated user does not have a Woo store selected — launching store picker.")
+        configureAuthenticator()
+
+        let matcher = ULAccountMatcher(storageManager: storageManager)
+        matcher.refreshStoredSites()
+
+        // Show error for the current site URL if exists.
+        if let siteURL = loggedOutAppSettings.errorLoginSiteAddress {
+            if let authenticationUI = authenticationManager.authenticationUI() as? UINavigationController,
+               let errorController = authenticationManager.errorViewController(for: siteURL,
+                                                                               with: matcher,
+                                                                               credentials: nil,
+                                                                               navigationController: authenticationUI,
+                                                                               onStorePickerDismiss: {}) {
+                window.rootViewController = authenticationUI
+                // don't let user navigate back to the login screen unless they tap log out.
+                errorController.navigationItem.hidesBackButton = true
+                authenticationUI.show(errorController, sender: nil)
+                return
+            }
+        }
+
+        // All good, show store picker
         let navigationController = WooNavigationController()
         setWindowRootViewControllerAndAnimateIfNeeded(navigationController)
+        DDLogInfo("💬 Authenticated user does not have a Woo store selected — launching store picker.")
         storePickerCoordinator = StorePickerCoordinator(navigationController, config: .standard)
         storePickerCoordinator?.start()
         storePickerCoordinator?.onDismiss = { [weak self] in
             guard let self = self else { return }
             if self.isLoggedIn == false {
-                self.displayAuthenticator()
+                self.displayAuthenticatorWithOnboardingIfNeeded()
             }
         }
     }
@@ -259,10 +322,21 @@ private extension AppCoordinator {
                   let viewController = loginNavigationController.topViewController else {
                 return
             }
-            let command = NavigateToEnterAccount()
+            let command = NavigateToEnterAccount(signInSource: .wpCom)
             command.execute(from: viewController)
             analytics.track(.loginLocalNotificationTapped, withProperties: [
                 "action": "login_with_wpcom",
+                "type": response.notification.request.identifier
+            ])
+        case LocalNotification.Action.resetPassword.rawValue:
+            let loginFields: LoginFields = {
+                let fields = LoginFields()
+                fields.meta.userIsDotCom = true
+                return fields
+            }()
+            WordPressAuthenticator.openForgotPasswordURL(loginFields)
+            analytics.track(.loginLocalNotificationTapped, withProperties: [
+                "action": "reset_password",
                 "type": response.notification.request.identifier
             ])
         case UNNotificationDefaultActionIdentifier:

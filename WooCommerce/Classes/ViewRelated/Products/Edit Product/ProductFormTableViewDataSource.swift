@@ -25,8 +25,8 @@ final class ProductFormTableViewDataSource: NSObject {
     private let productImageStatuses: [ProductImageStatus]
     private let productUIImageLoader: ProductUIImageLoader
 
-    var parentVC: UIViewController?
     var openLinkedProductsAction: (() -> Void)?
+    var reloadLinkedPromoAction: (() -> Void)?
 
     init(viewModel: ProductFormTableViewModel,
          productImageStatuses: [ProductImageStatus],
@@ -200,21 +200,19 @@ private extension ProductFormTableViewDataSource {
     }
 
     func configureLinkedProductsPromo(cell: UITableViewCell, viewModel: FeatureAnnouncementCardViewModel) {
-        guard let cell = cell as? HostingTableViewCell<FeatureAnnouncementCardView> else {
+        guard let cell = cell as? FeatureAnnouncementCardCell else {
             fatalError()
         }
 
-        let view = FeatureAnnouncementCardView(viewModel: viewModel,
-                                               dismiss: {
-            // TODO: dismiss banner with animation
-        },
-                                               callToAction: { [weak self] in
-            self?.openLinkedProductsAction?()
-        })
+        cell.configure(with: viewModel)
 
-        if let parentVC = parentVC {
-            cell.host(view, parent: parentVC)
+        cell.dismiss = { [weak self] in
+            self?.reloadLinkedPromoAction?()
         }
+        cell.callToAction = { [weak self] in
+            self?.openLinkedProductsAction?()
+        }
+
         cell.selectionStyle = .none
         cell.hideSeparator()
     }

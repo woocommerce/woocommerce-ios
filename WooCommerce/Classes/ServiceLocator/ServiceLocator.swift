@@ -38,8 +38,7 @@ final class ServiceLocator {
 
     /// Product image uploader
     ///
-    private static var _productImageUploader: ProductImageUploaderProtocol =
-    featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) ? ProductImageUploader(): LegacyProductImageUploader()
+    private static var _productImageUploader: ProductImageUploaderProtocol = ProductImageUploader()
 
     /// Push Notifications Manager
     ///
@@ -67,7 +66,9 @@ final class ServiceLocator {
 
     /// Crash Logging Stack
     ///
-    private static var _crashLogging: CrashLoggingStack = WooCrashLoggingStack()
+    private static var _crashLogging: CrashLoggingStack = WooCrashLoggingStack(
+        featureFlagService: featureFlagService
+    )
 
     /// Support for external Card Readers
     ///

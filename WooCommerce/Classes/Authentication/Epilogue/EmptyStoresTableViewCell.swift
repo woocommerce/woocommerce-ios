@@ -6,23 +6,20 @@ import UIKit
 ///
 final class EmptyStoresTableViewCell: UITableViewCell {
 
-    var onJetpackSetupButtonTapped: (() -> Void)?
-
     var onCloseAccountButtonTapped: (() -> Void)?
 
     /// LegendLabel: To be displayed below the ImageView.
     ///
     @IBOutlet private var legendLabel: UILabel! {
         didSet {
-            legendLabel.textColor = .textSubtle
-            legendLabel.font = .subheadline
+            legendLabel.textColor = .text
+            legendLabel.font = .title3SemiBold
             legendLabel.text = Localization.legend
         }
     }
 
     @IBOutlet private weak var stackView: UIStackView!
     @IBOutlet private weak var emptyStoresImageView: UIImageView!
-    @IBOutlet private weak var actionButton: UIButton!
     @IBOutlet private weak var removeAppleIDAccessButton: UIButton!
 
     override func awakeFromNib() {
@@ -31,7 +28,6 @@ final class EmptyStoresTableViewCell: UITableViewCell {
         configureBackground()
         configureStackView()
         configureImageView()
-        configureActionButton()
         configureRemoveAppleIDAccessButton()
         updateRemoveAppleIDAccessButtonVisibility(isVisible: false)
     }
@@ -48,20 +44,12 @@ private extension EmptyStoresTableViewCell {
     }
 
     func configureStackView() {
-        stackView.spacing = 10
+        stackView.spacing = 24
         stackView.alignment = .center
     }
 
     func configureImageView() {
         emptyStoresImageView.contentMode = .scaleAspectFit
-    }
-
-    func configureActionButton() {
-        actionButton.applyPrimaryButtonStyle()
-        actionButton.setTitle(Localization.actionTitle, for: .normal)
-        actionButton.on(.touchUpInside) { [weak self] _ in
-            self?.onJetpackSetupButtonTapped?()
-        }
     }
 
     func configureRemoveAppleIDAccessButton() {
@@ -75,14 +63,12 @@ private extension EmptyStoresTableViewCell {
 
 private extension EmptyStoresTableViewCell {
     enum Localization {
-        static let actionTitle = NSLocalizedString("Connect your store with Jetpack",
-                                                   comment: "Link on the store picker when there are no stores available. Opens a webview about Jetpack setup.")
         static let closeAccountTitle = NSLocalizedString(
             "Close Account",
             comment: "Link on the store picker for users who signed in with Apple to close their WordPress.com account."
         )
         static let legend =
-            NSLocalizedString("If you already have a store, you’ll need to install the free Jetpack plugin and connect it to your WordPress.com account.",
+            NSLocalizedString("Your account isn’t connected to any WooCommerce stores.",
                               comment: "Displayed during the Login flow, whenever the user has no woo stores associated.")
     }
 }

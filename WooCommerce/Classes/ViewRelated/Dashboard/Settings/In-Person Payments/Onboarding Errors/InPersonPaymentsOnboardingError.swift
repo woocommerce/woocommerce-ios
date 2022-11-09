@@ -4,26 +4,17 @@ import Yosemite
 struct InPersonPaymentsOnboardingError: View {
     let title: String
     let message: String
-    let image: ImageInfo
+    let image: InPersonPaymentsOnboardingErrorMainContentView.ImageInfo
     let supportLink: Bool
     let learnMore: Bool
-    var button: ButtonInfo? = nil
-
-    struct ButtonInfo {
-        let text: String
-        let action: () -> Void
-    }
-
-    struct ImageInfo {
-        let image: UIImage
-        let height: CGFloat
-    }
+    let analyticReason: String
+    var buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel? = nil
 
     var body: some View {
         VStack {
             Spacer()
 
-            MainContent(
+            InPersonPaymentsOnboardingErrorMainContentView(
                 title: title,
                 message: message,
                 image: image,
@@ -32,50 +23,15 @@ struct InPersonPaymentsOnboardingError: View {
 
             Spacer()
 
-            if button != nil {
-                Button(button!.text, action: button!.action)
+            if let buttonViewModel = buttonViewModel {
+                Button(buttonViewModel.text, action: buttonViewModel.action)
                     .buttonStyle(PrimaryButtonStyle())
                     .padding(.bottom, 24.0)
             }
             if learnMore {
-                InPersonPaymentsLearnMore()
+                InPersonPaymentsLearnMore(viewModel: LearnMoreViewModel(tappedAnalyticEvent: learnMoreAnalyticEvent))
             }
         }.padding()
-    }
-
-    struct MainContent: View {
-        let title: String
-        let message: String
-        let image: ImageInfo
-        let supportLink: Bool
-
-        @Environment(\.verticalSizeClass) var verticalSizeClass
-
-        var isCompact: Bool {
-            get {
-                verticalSizeClass == .compact
-            }
-        }
-
-        var body: some View {
-            VStack(alignment: .center) {
-                Text(title)
-                    .font(.headline)
-                    .padding(.bottom, isCompact ? 16 : 32)
-                Image(uiImage: image.image)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: isCompact ? image.height / 3 : image.height)
-                    .padding(.bottom, isCompact ? 16 : 32)
-                Text(message)
-                    .font(.callout)
-                    .padding(.bottom, isCompact ? 12 : 24)
-                if supportLink {
-                    InPersonPaymentsSupportLink()
-                }
-            }.multilineTextAlignment(.center)
-            .frame(maxWidth: 500)
-        }
     }
 }
 
@@ -87,5 +43,12 @@ extension CardPresentPaymentsPlugin {
         case .stripe:
             return .stripePlugin
         }
+    }
+}
+
+private extension InPersonPaymentsOnboardingError {
+    var learnMoreAnalyticEvent: WooAnalyticsEvent? {
+        WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingLearnMoreTapped(reason: analyticReason,
+                                                                                countryCode: CardPresentConfigurationLoader().configuration.countryCode)
     }
 }

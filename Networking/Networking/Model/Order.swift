@@ -75,7 +75,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                 paymentMethodTitle: String,
                 paymentURL: URL?,
                 chargeID: String?,
-                items: [OrderItem]?,
+                items: [OrderItem],
                 billingAddress: Address?,
                 shippingAddress: Address?,
                 shippingLines: [ShippingLine],
@@ -114,7 +114,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         self.paymentURL = paymentURL
         self.chargeID = chargeID
 
-        self.items = items ?? []
+        self.items = items
         self.billingAddress = billingAddress
         self.shippingAddress = shippingAddress
         self.shippingLines = shippingLines
@@ -166,7 +166,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         var chargeID: String? = nil
         chargeID = allOrderMetaData?.first(where: { $0.key == "_charge_id" })?.value
 
-        let items = try? container.decodeIfPresent([OrderItem].self, forKey: .items) ?? []
+        let items = try container.decode([OrderItem].self, forKey: .items)
 
         var shippingAddress = try? container.decode(Address.self, forKey: .shippingAddress)
         // In WooCommerce <5.6.0, the shipping phone number can be stored in the order metadata

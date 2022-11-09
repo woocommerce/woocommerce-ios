@@ -668,4 +668,12 @@ final class IconsTests: XCTestCase {
     func test_lock_icon_is_not_nil() {
         XCTAssertNotNil(UIImage.lockImage)
     }
+
+    func test_reply_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.replyImage)
+    }
+
+    func test_sites_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.sitesImage)
+    }
 }

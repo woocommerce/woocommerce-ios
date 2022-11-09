@@ -64,6 +64,7 @@ public extension TracksProvider {
 private extension TracksProvider {
     func switchTracksUsersIfNeeded() {
         let currentAnalyticsUsername = UserDefaults.standard[.analyticsUsername] as? String ?? ""
+        let anonymousID = ServiceLocator.stores.sessionManager.anonymousUserID
         if ServiceLocator.stores.isAuthenticated,
             let account = ServiceLocator.stores.sessionManager.defaultAccount,
             let credentials = ServiceLocator.stores.sessionManager.defaultCredentials {
@@ -82,7 +83,7 @@ private extension TracksProvider {
                                                         skipAliasEventCreation: true)
             } else {
                 // Username changed for some reason - switch back to anonymous first
-                tracksService.switchToAnonymousUser(withAnonymousID: ServiceLocator.stores.sessionManager.anonymousUserID)
+                tracksService.switchToAnonymousUser(withAnonymousID: anonymousID)
                 tracksService.switchToAuthenticatedUser(withUsername: account.username,
                                                         userID: String(account.userID),
                                                         wpComToken: credentials.authToken,
@@ -90,7 +91,7 @@ private extension TracksProvider {
             }
         } else {
             UserDefaults.standard[.analyticsUsername] = nil
-            tracksService.switchToAnonymousUser(withAnonymousID: ServiceLocator.stores.sessionManager.anonymousUserID)
+            tracksService.switchToAnonymousUser(withAnonymousID: anonymousID)
         }
     }
 

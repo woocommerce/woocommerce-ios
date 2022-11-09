@@ -457,6 +457,10 @@ extension UIImage {
         return UIImage(named: "woo-payments-card")!
     }
 
+    static var walletImage: UIImage {
+        return UIImage(named: "woo-payments-wallet")!
+    }
+
     /// Searching for Card Reader, Card Reader with radio waves
     ///
     static var cardReaderScanning: UIImage {
@@ -553,6 +557,13 @@ extension UIImage {
         return UIImage(named: "credit-card-give")!
             .withRenderingMode(.alwaysTemplate)
             .imageFlippedForRightToLeftLayoutDirection()
+    }
+
+    /// Cash give icon
+    ///
+    static var moneyIcon: UIImage {
+        return UIImage(named: "icon-money")!
+            .withRenderingMode(.alwaysTemplate)
     }
 
     /// Files Download Icon
@@ -791,6 +802,12 @@ extension UIImage {
     static var rectangleOnRectangleAngled: UIImage {
         return UIImage(systemName: "rectangle.on.rectangle.angled", withConfiguration: Configurations.barButtonItemSymbol)!
             .imageFlippedForRightToLeftLayoutDirection()
+    }
+
+    /// Reply Icon
+    ///
+    static var replyImage: UIImage {
+        return UIImage.gridicon(.reply)
     }
 
     /// Search Icon - used in `UIBarButtonItem`
@@ -1034,6 +1051,12 @@ extension UIImage {
     ///
     static var lockImage: UIImage {
         UIImage.gridicon(.lock, size: CGSize(width: 24, height: 24))
+    }
+
+    /// Sites Image
+    ///
+    static var sitesImage: UIImage {
+        UIImage.gridicon(.site).imageFlippedForRightToLeftLayoutDirection()
     }
 }
 

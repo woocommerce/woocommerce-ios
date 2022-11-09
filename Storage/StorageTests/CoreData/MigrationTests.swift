@@ -1203,6 +1203,27 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(migratedOrder.value(forKey: "needsProcessing") as? Bool, false)
     }
 
+    func test_migrating_from_69_to_70_adds_refundedItemID_property_to_OrderItemRefund() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 69")
+        let sourceContext = sourceContainer.viewContext
+
+        let orderItemRefund = insertOrderItemRefund(to: sourceContext)
+
+        // Confidence check:
+        // The `itemID` property already exists on Model 69, but the `refundedItemID` does not
+        XCTAssertNotNil(orderItemRefund.entity.attributesByName["itemID"])
+        XCTAssertNil(orderItemRefund.entity.attributesByName["refundedItemID"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 70")
+        let targetContext = targetContainer.viewContext
+        let migratedOrderItemRefund = insertOrderItemRefund(to: targetContext)
+
+        // Confirms the `refundedItemID` property now exists on Model 70
+        XCTAssertNotNil(migratedOrderItemRefund.entity.attributesByName["refundedItemID"])
+    }
+
     func test_migrating_from_70_to_71_adds_custom_fields_property_to_order() throws {
         // Given
         let sourceContainer = try startPersistentContainer("Model 70")
@@ -1241,6 +1262,239 @@ final class MigrationTests: XCTestCase {
 
         // The OrderMetaData.order inverse relationship should be updated.
         XCTAssertEqual(customField.value(forKey: "order") as? NSManagedObject, migratedOrder)
+    }
+
+    func test_migrating_from_71_to_72_adds_instructions_attribute_to_PaymentGateway() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 71")
+        let sourceContext = sourceContainer.viewContext
+
+        let paymentGateway = insertPaymentGateway(to: sourceContext)
+        try sourceContext.save()
+
+        // `instructions` should not be present before migration
+        XCTAssertNil(paymentGateway.entity.relationshipsByName["instructions"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 72")
+        let targetContext = targetContainer.viewContext
+
+        // Confidence check
+        XCTAssertEqual(try targetContext.count(entityName: "PaymentGateway"), 1)
+
+        let migratedPaymentGateway = try XCTUnwrap(targetContext.first(entityName: "PaymentGateway"))
+
+        // The instructions should be nil after migration: it's an optional field.
+        XCTAssertNil(migratedPaymentGateway.value(forKey: "instructions"))
+
+        // Set a test instructions
+        migratedPaymentGateway.setValue("payment gateway instructions", forKey: "instructions")
+
+        // Check instructions are correctly set.
+        assertEqual("payment gateway instructions", migratedPaymentGateway.value(forKey: "instructions") as? String)
+    }
+
+    func test_migrating_from_72_to_73_adds_filterKey_attribute_to_ProductSearchResults() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 72")
+        let sourceContext = sourceContainer.viewContext
+
+        let productSearchResults = insertProductSearchResults(to: sourceContext)
+        try sourceContext.save()
+
+        // `filterKey` should not be present before migration.
+        XCTAssertNil(productSearchResults.entity.attributesByName["filterKey"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 73")
+        let targetContext = targetContainer.viewContext
+
+        XCTAssertEqual(try targetContext.count(entityName: "ProductSearchResults"), 1)
+        let migratedProductSearchResults = try XCTUnwrap(targetContext.first(entityName: "ProductSearchResults"))
+
+        // Checks for nil URL value.
+        XCTAssertNil(migratedProductSearchResults.value(forKey: "filterKey"))
+
+        // Sets a random `filterKey`.
+        migratedProductSearchResults.setValue("sku", forKey: "filterKey")
+        targetContext.saveIfNeeded()
+
+        // Check `filterKey` is correctly set.
+        XCTAssertEqual(migratedProductSearchResults.value(forKey: "filterKey") as? String, "sku")
+    }
+
+    func test_migrating_from_73_to_74_adds_Customer_and_CustomerSearchResult_entities() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 73")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. These entities should not exist in Model 73
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "Customer", in: sourceContext))
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "CustomerSearchResult", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 74")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+
+        // These entities should exist in Model 74
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "Customer", in: targetContext))
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "CustomerSearchResult", in: targetContext))
+        XCTAssertEqual(try targetContext.count(entityName: "Customer"), 0)
+        XCTAssertEqual(try targetContext.count(entityName: "CustomerSearchResult"), 0)
+
+        // Insert a new Customer
+        let customer = insertCustomer(to: targetContext, forModel: 74)
+        XCTAssertEqual(try targetContext.count(entityName: "Customer"), 1)
+        XCTAssertEqual(customer.value(forKey: "customerID") as? Int64, 1)
+
+        // Insert a new CustomerSearchResult
+        let customerSearchResult = targetContext.insert(
+            entityName: "CustomerSearchResult",
+            properties: ["customerID": 1]
+        )
+        XCTAssertEqual(try targetContext.count(entityName: "CustomerSearchResult"), 1)
+        XCTAssertEqual(customer.value(forKey: "customerID") as? Int64, 1)
+
+        // Check all attributes
+        XCTAssertEqual(customerSearchResult.value(forKey: "customerID") as? Int64, 1)
+        XCTAssertNotNil(customer.entity.attributesByName["email"])
+        XCTAssertNotNil(customer.entity.attributesByName["firstName"])
+        XCTAssertNotNil(customer.entity.attributesByName["lastName"])
+        XCTAssertNotNil(customer.entity.attributesByName["billingAddress1"])
+        XCTAssertNotNil(customer.entity.attributesByName["billingAddress2"])
+        XCTAssertNotNil(customer.entity.attributesByName["billingCity"])
+        XCTAssertNotNil(customer.entity.attributesByName["billingCompany"])
+        XCTAssertNotNil(customer.entity.attributesByName["billingCountry"])
+        XCTAssertNotNil(customer.entity.attributesByName["billingEmail"])
+        XCTAssertNotNil(customer.entity.attributesByName["billingFirstName"])
+        XCTAssertNotNil(customer.entity.attributesByName["billingLastName"])
+        XCTAssertNotNil(customer.entity.attributesByName["billingPhone"])
+        XCTAssertNotNil(customer.entity.attributesByName["billingPostcode"])
+        XCTAssertNotNil(customer.entity.attributesByName["billingState"])
+        XCTAssertNotNil(customer.entity.attributesByName["shippingAddress1"])
+        XCTAssertNotNil(customer.entity.attributesByName["shippingAddress2"])
+        XCTAssertNotNil(customer.entity.attributesByName["shippingCity"])
+        XCTAssertNotNil(customer.entity.attributesByName["shippingCompany"])
+        XCTAssertNotNil(customer.entity.attributesByName["shippingCountry"])
+        XCTAssertNotNil(customer.entity.attributesByName["shippingEmail"])
+        XCTAssertNotNil(customer.entity.attributesByName["shippingFirstName"])
+        XCTAssertNotNil(customer.entity.attributesByName["shippingLastName"])
+        XCTAssertNotNil(customer.entity.attributesByName["shippingPhone"])
+        XCTAssertNotNil(customer.entity.attributesByName["shippingPostcode"])
+        XCTAssertNotNil(customer.entity.attributesByName["shippingState"])
+    }
+
+    func test_migrating_from_74_to_75_adds_siteID_and_keyword_attributes_to_Customer_and_CustomerSearchResult() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 74")
+        let sourceContext = sourceContainer.viewContext
+
+        let customer = insertCustomer(to: sourceContext, forModel: 74)
+        let customerSearchResult = sourceContext.insert(
+            entityName: "CustomerSearchResult",
+            properties: ["customerID": 1]
+        )
+        try sourceContext.save()
+
+        // Confidence Check: siteID or keyword attributes should not exist in Model 74 for those entities
+        XCTAssertNil(customer.entity.attributesByName["siteID"])
+        XCTAssertNil(customerSearchResult.entity.attributesByName["siteID"])
+        XCTAssertNil(customerSearchResult.entity.attributesByName["keyword"])
+        // Confidence Check: These entities should exist in Model 74:
+        XCTAssertEqual(try sourceContext.count(entityName: "Customer"), 1)
+        XCTAssertEqual(try sourceContext.count(entityName: "CustomerSearchResult"), 1)
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 75")
+        let targetContext = targetContainer.viewContext
+
+        // Then
+        // After migration, we're deleting the entities and regenerating them due to heavyweight migration
+        // in WooCommerceModelV74toV75, as the new ones have siteID
+        XCTAssertEqual(try targetContext.count(entityName: "Customer"), 0)
+        XCTAssertEqual(try targetContext.count(entityName: "CustomerSearchResult"), 0)
+        // Inserting new objects after the migration to confirm the new attributes are correct
+        let newCustomer = insertCustomer(to: targetContext, forModel: 75)
+        let newCustomerSearchResult = targetContext.insert(
+            entityName: "CustomerSearchResult",
+            properties: [
+                "siteID": 1,
+                "keyword": ""
+            ]
+        )
+        try targetContext.save()
+
+        // Check for Customer and CustomerSearchResult attributes after migration
+        XCTAssertNotNil(newCustomer.entity.attributesByName["siteID"])
+        XCTAssertNotNil(newCustomer.entity.attributesByName["customerID"])
+        XCTAssertEqual(newCustomer.value(forKey: "siteID") as? Int64, 1)
+        XCTAssertEqual(newCustomer.value(forKey: "customerID") as? Int64, 1)
+
+        // Check for CustomerSearchResult attributes after migration
+        XCTAssertNotNil(newCustomerSearchResult.entity.attributesByName["siteID"])
+        XCTAssertNotNil(newCustomerSearchResult.entity.attributesByName["keyword"])
+        XCTAssertEqual(newCustomerSearchResult.value(forKey: "siteID") as? Int64, 1)
+        XCTAssertEqual(newCustomerSearchResult.value(forKey: "keyword") as? String, "")
+    }
+
+    func test_migrating_from_75_to_76_adds_loginURL_attribute() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 75")
+        let sourceContext = sourceContainer.viewContext
+
+        let site = insertSite(to: sourceContainer.viewContext)
+        try sourceContext.save()
+
+        XCTAssertNil(site.entity.attributesByName["loginURL"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 76")
+        let targetContext = targetContainer.viewContext
+
+        let migratedSite = try XCTUnwrap(targetContext.first(entityName: "Site"))
+        let defaultLoginURL = migratedSite.value(forKey: "loginURL")
+
+        let loginURL = "https://test.blog/wp-login.php"
+        migratedSite.setValue(loginURL, forKey: "loginURL")
+
+        // Then
+        // Default value is nil.
+        XCTAssertNil(defaultLoginURL)
+
+        let newLoginURL = try XCTUnwrap(migratedSite.value(forKey: "loginURL") as? String)
+        XCTAssertEqual(newLoginURL, loginURL)
+    }
+
+    func test_migrating_from_76_to_77_adds_frameNonce_attribute() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 76")
+        let sourceContext = sourceContainer.viewContext
+
+        let site = insertSite(to: sourceContainer.viewContext)
+        try sourceContext.save()
+
+        XCTAssertNil(site.entity.attributesByName["frameNonce"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 77")
+        let targetContext = targetContainer.viewContext
+
+        let migratedSite = try XCTUnwrap(targetContext.first(entityName: "Site"))
+        let defaultFrameNonce = migratedSite.value(forKey: "frameNonce")
+
+        let frameNonce = "e7bfd785f0"
+        migratedSite.setValue(frameNonce, forKey: "frameNonce")
+
+        // Then
+        // Default value is nil.
+        XCTAssertNil(defaultFrameNonce)
+
+        let newFrameNonce = try XCTUnwrap(migratedSite.value(forKey: "frameNonce") as? String)
+        XCTAssertEqual(newFrameNonce, frameNonce)
     }
 }
 
@@ -1326,6 +1580,46 @@ private extension MigrationTests {
 //
 
 private extension MigrationTests {
+    /// Inserts a `Customer` entity, providing default values for the required properties.
+    @discardableResult
+    func insertCustomer(to context: NSManagedObjectContext, forModel modelVersion: Int) -> NSManagedObject {
+        let customer = context.insert(entityName: "Customer", properties: [
+            "customerID": 1,
+            "email": "",
+            "firstName": "",
+            "lastName": "",
+            "billingAddress1": "",
+            "billingAddress2": "",
+            "billingCity": "",
+            "billingCompany": "",
+            "billingCountry": "",
+            "billingEmail": "",
+            "billingFirstName": "",
+            "billingLastName": "",
+            "billingPhone": "",
+            "billingPostcode": "",
+            "billingState": "",
+            "shippingAddress1": "",
+            "shippingAddress2": "",
+            "shippingCity": "",
+            "shippingCompany": "",
+            "shippingCountry": "",
+            "shippingEmail": "",
+            "shippingFirstName": "",
+            "shippingLastName": "",
+            "shippingPhone": "",
+            "shippingPostcode": "",
+            "shippingState": ""
+        ])
+
+        // Required since model 75
+        if modelVersion >= 75 {
+            customer.setValue(1, forKey: "siteID")
+        }
+
+        return customer
+    }
+
     /// Inserts a `ProductVariation` entity, providing default values for the required properties.
     @discardableResult
     func insertProductVariation(to context: NSManagedObjectContext) -> NSManagedObject {
@@ -1465,6 +1759,13 @@ private extension MigrationTests {
             "byUserID": 456,
             "isAutomated": false,
             "createAutomated": false
+        ])
+    }
+
+    @discardableResult
+    func insertOrderItemRefund(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "OrderItemRefund", properties: [
+            "itemID": 123
         ])
     }
 
@@ -1636,6 +1937,18 @@ private extension MigrationTests {
     }
 
     @discardableResult
+    func insertPaymentGateway(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "PaymentGateway", properties: [
+            "siteID": 1372,
+            "gatewayID": "woocommerce-payments",
+            "title": "WooCommerce Payments",
+            "gatewayDescription": "WooCommerce Payments - easy payments by Woo",
+            "enabled": true,
+            "features": []
+        ])
+    }
+
+    @discardableResult
     func insertPaymentGatewayAccount(to context: NSManagedObjectContext) -> NSManagedObject {
         context.insert(entityName: "PaymentGatewayAccount", properties: [
             "siteID": 1372,
@@ -1757,6 +2070,13 @@ private extension MigrationTests {
             "metadataID": 18148,
             "key": "Viewed Currency",
             "value": "USD"
+        ])
+    }
+
+    @discardableResult
+    func insertProductSearchResults(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "ProductSearchResults", properties: [
+            "keyword": "soul"
         ])
     }
 }

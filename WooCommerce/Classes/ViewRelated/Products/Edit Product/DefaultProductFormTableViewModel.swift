@@ -19,7 +19,7 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
 
     // Timezone of the website
     //
-    var siteTimezone: TimeZone = TimeZone.siteTimezone
+    private let siteTimezone: TimeZone = TimeZone.siteTimezone
 
     init(product: ProductFormDataModel,
          actionsFactory: ProductFormActionsFactoryProtocol,

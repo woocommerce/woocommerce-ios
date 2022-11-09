@@ -1,3 +1,1 @@
-Banyak permintaan untuk dapat membuat kupon melalui aplikasi. Dengan senang hati, kami sampaikan bahwa kami telah menyiapkan bocoran jika Anda ingin membantu kami mengujinya! Buka pengaturan pada aplikasi, lalu aktifkan fitur eksperimental untuk Kupon.
-
-Kami juga telah membuat beberapa peningkatan pada pengunggahan gambar produk dan pembayaran secara langsung, termasuk pilihan untuk menerima pembayaran melalui tunai, kartu, atau tautan pembayaran, untuk semua pesanan yang belum dibayar. Mohon terus berikan feedback – kami siap mendengarkan!
+Meski tanpa kejutan fitur baru dalam rilis ini, kami tetap berupaya keras. Kami memperbaiki beberapa bug dan menerapkan perbaikan untuk memperlancar pengalaman Anda.

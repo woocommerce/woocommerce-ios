@@ -1,6 +1,6 @@
 /// Card reader type. Indicates if a reader is meant to be used
 /// handheld or as a countertop device
-public enum CardReaderType {
+public enum CardReaderType: CaseIterable {
     /// Chipper
     case chipper
     /// Stripe M2

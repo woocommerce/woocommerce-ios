@@ -18,9 +18,26 @@ struct SecondaryButtonStyle: ButtonStyle {
     }
 }
 
+/// A selectable button with border style similar to secondary button style with differences on the colors and a selected state.
+struct SelectableSecondaryButtonStyle: ButtonStyle {
+    /// Whether the button is selected.
+    let isSelected: Bool
+    let labelFont: Font = .headline
+    func makeBody(configuration: Configuration) -> some View {
+        SelectableSecondaryButton(isSelected: isSelected, configuration: configuration, labelFont: labelFont)
+    }
+}
+
 struct LinkButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         LinkButton(configuration: configuration)
+    }
+}
+
+/// Button that looks like text without the default padding and size assumption.
+struct TextButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        TextButton(configuration: configuration)
     }
 }
 
@@ -185,6 +202,59 @@ private struct SecondaryButton: View {
     }
 }
 
+private struct SelectableSecondaryButton: View {
+    @Environment(\.isEnabled) var isEnabled
+
+    let isSelected: Bool
+    let configuration: ButtonStyleConfiguration
+    let labelFont: Font
+
+    var body: some View {
+        BaseButton(configuration: configuration)
+            .foregroundColor(Color(.selectableSecondaryButtonTitle))
+            .font(labelFont)
+            .background(
+                RoundedRectangle(cornerRadius: Style.defaultCornerRadius)
+                    .fill(Color(backgroundColor))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: Style.defaultCornerRadius)
+                    .strokeBorder(
+                        Color(borderColor),
+                        lineWidth: Style.defaultBorderWidth
+                    )
+            )
+    }
+
+    var foregroundColor: UIColor {
+        isEnabled ? .secondaryButtonTitle : .buttonDisabledTitle
+    }
+
+    var backgroundColor: UIColor {
+        if isEnabled {
+            if configuration.isPressed || isSelected {
+                return .selectableSecondaryButtonSelectedBackground
+            } else {
+                return .selectableSecondaryButtonBackground
+            }
+        } else {
+            return .buttonDisabledBackground
+        }
+    }
+
+    var borderColor: UIColor {
+        if isEnabled {
+            if configuration.isPressed || isSelected {
+                return .selectableSecondaryButtonSelectedBorder
+            } else {
+                return .selectableSecondaryButtonBorder
+            }
+        } else {
+            return .buttonDisabledBorder
+        }
+    }
+}
+
 private struct LinkButton: View {
     @Environment(\.isEnabled) var isEnabled
 
@@ -192,6 +262,27 @@ private struct LinkButton: View {
 
     var body: some View {
         BaseButton(configuration: configuration)
+            .foregroundColor(Color(foregroundColor))
+            .background(Color(.clear))
+    }
+
+    var foregroundColor: UIColor {
+        if isEnabled {
+            return configuration.isPressed ? .accentDark : .accent
+        } else {
+            return .buttonDisabledTitle
+        }
+    }
+}
+
+private struct TextButton: View {
+    @Environment(\.isEnabled) var isEnabled
+
+    let configuration: ButtonStyleConfiguration
+
+    var body: some View {
+        configuration.label
+            .contentShape(Rectangle())
             .foregroundColor(Color(foregroundColor))
             .background(Color(.clear))
     }
@@ -256,6 +347,12 @@ struct PrimaryButton_Previews: PreviewProvider {
                 .buttonStyle(SecondaryButtonStyle())
                 .disabled(true)
 
+            Button("Selectable secondary button (selected)") {}
+                .buttonStyle(SelectableSecondaryButtonStyle(isSelected: true))
+
+            Button("Selectable secondary button") {}
+                .buttonStyle(SelectableSecondaryButtonStyle(isSelected: false))
+
             Button("Link button") {}
                 .buttonStyle(LinkButtonStyle())
 
@@ -270,6 +367,64 @@ struct PrimaryButton_Previews: PreviewProvider {
             .buttonStyle(PlusButtonStyle())
             .disabled(true)
         }
+        .preferredColorScheme(.light)
+        .padding()
+
+        VStack(spacing: 20) {
+            Group {
+                Button("Primary button") {}
+                    .buttonStyle(PrimaryButtonStyle())
+
+                Button("Primary button (disabled)") {}
+                    .buttonStyle(PrimaryButtonStyle())
+                    .disabled(true)
+            }
+
+            Group {
+                Button("Secondary button") {}
+                    .buttonStyle(SecondaryButtonStyle())
+
+                Button("Secondary button (disabled)") {}
+                    .buttonStyle(SecondaryButtonStyle())
+                    .disabled(true)
+            }
+
+            Group {
+                Button("Selectable secondary button (selected)") {}
+                    .buttonStyle(SelectableSecondaryButtonStyle(isSelected: true))
+
+                Button("Selectable secondary button") {}
+                    .buttonStyle(SelectableSecondaryButtonStyle(isSelected: false))
+            }
+
+            Group {
+                Button("Link button") {}
+                    .buttonStyle(LinkButtonStyle())
+
+                Button("Link button (Disabled)") {}
+                    .buttonStyle(LinkButtonStyle())
+                    .disabled(true)
+            }
+
+            Group {
+                Button("Text button") {}
+                    .buttonStyle(TextButtonStyle())
+
+                Button("Text button (disabled)") {}
+                    .buttonStyle(TextButtonStyle())
+                    .disabled(true)
+            }
+
+            Group {
+                Button("Plus button") {}
+                    .buttonStyle(PlusButtonStyle())
+
+                Button("Plus button (disabled)") {}
+                    .buttonStyle(PlusButtonStyle())
+                    .disabled(true)
+            }
+        }
+        .preferredColorScheme(.dark)
         .padding()
     }
 }

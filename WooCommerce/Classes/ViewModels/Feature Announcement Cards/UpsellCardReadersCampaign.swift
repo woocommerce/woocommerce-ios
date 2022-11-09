@@ -1,4 +1,5 @@
 import Foundation
+import WooFoundation
 
 struct UpsellCardReadersCampaign {
     let source: WooAnalyticsEvent.FeatureCard.Source
@@ -50,5 +51,23 @@ extension UpsellCardReadersCampaign {
         static let dismissMessage = NSLocalizedString(
             "No worries! You can always get started with In-Person Payments in Settings",
             comment: "Message for a dismissal alert on the upsell card reader feature announcement banner")
+
+        static let cardReaderWebViewTitle = NSLocalizedString(
+            "Purchase Card Reader",
+            comment: "Title for the WebView opened to upsell card readers")
     }
+}
+
+extension UpsellCardReadersCampaign {
+    var utmProvider: WooCommerceComUTMProvider {
+        WooCommerceComUTMProvider(
+            campaign: Constants.utmCampaign,
+            source: source.rawValue,
+            content: configuration.campaign.rawValue,
+            siteID: ServiceLocator.stores.sessionManager.defaultStoreID)
+    }
+}
+
+private enum Constants {
+    static let utmCampaign = "feature_announcement_card"
 }

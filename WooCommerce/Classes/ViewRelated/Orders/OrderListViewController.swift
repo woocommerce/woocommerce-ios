@@ -4,8 +4,8 @@ import Gridicons
 import Yosemite
 import WordPressUI
 import SafariServices
-import StoreKit
 import SwiftUI
+import WooFoundation
 
 // Used for protocol conformance of IndicatorInfoProvider only.
 import XLPagerTabStrip
@@ -161,8 +161,6 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        viewModel.syncOrderStatuses()
-
         syncingCoordinator.resynchronize(reason: SyncReason.viewWillAppear.rawValue)
 
         // Fix any incomplete animation of the refresh control
@@ -304,7 +302,7 @@ extension OrderListViewController {
     @objc func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.ordersListPulledToRefresh)
         delegate?.orderListViewControllerWillSynchronizeOrders(self)
-        viewModel.syncOrderStatuses()
+        NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
         syncingCoordinator.resynchronize(reason: SyncReason.pullToRefresh.rawValue) {
             sender.endRefreshing()
         }
@@ -315,7 +313,7 @@ extension OrderListViewController {
             return DDLogError("⛔️ ViewModel for resultID: \(resultID) not found")
         }
         /// Actions that performs the mark completed request remotely.
-        let fulfillmentProcess = orderDetailsViewModel.markCompleted()
+        let fulfillmentProcess = orderDetailsViewModel.markCompleted(flow: .list)
 
         /// Messages configuration
         let noticeConfiguration = OrderFulfillmentNoticePresenter.NoticeConfiguration(
@@ -418,9 +416,8 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
         let view = FeatureAnnouncementCardView(viewModel: viewModel.upsellCardReadersAnnouncementViewModel,
                                                dismiss: { [weak self] in
             self?.viewModel.dismissUpsellCardReadersBanner()
-        }, callToAction: {
-            let configuration = CardPresentConfigurationLoader().configuration
-            WebviewHelper.launch(configuration.purchaseCardReaderUrl(), with: self)
+        }, callToAction: { [weak self] in
+            self?.openCardReaderProductPageInWebView()
         })
             .background(Color(.listForeground))
 
@@ -432,6 +429,21 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
         topBannerView = hostingView
 
         showTopBannerView()
+    }
+
+    private func openCardReaderProductPageInWebView() {
+        let configuration = CardPresentConfigurationLoader().configuration
+        let url = configuration.purchaseCardReaderUrl(utmProvider: viewModel.upsellCardReadersCampaign.utmProvider)
+        let cardReaderWebview = WebViewSheet(
+            viewModel: WebViewSheetViewModel(
+                url: url,
+                navigationTitle: UpsellCardReadersCampaign.Localization.cardReaderWebViewTitle,
+                wpComAuthenticated: true),
+            done: { [weak self] in
+                self?.dismiss(animated: true)
+            })
+        let hostingController = UIHostingController(rootView: cardReaderWebview)
+        present(hostingController, animated: true, completion: nil)
     }
 
     func updateUpsellCardReaderTopBannerVisibility(with newCollection: UITraitCollection) {

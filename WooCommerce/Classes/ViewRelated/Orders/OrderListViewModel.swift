@@ -26,7 +26,7 @@ final class OrderListViewModel {
 
     /// Used to show the upsell card readers banner and discern its visibility
     /// 
-    private let upsellCardReadersCampaign = UpsellCardReadersCampaign(source: .orderList)
+    let upsellCardReadersCampaign = UpsellCardReadersCampaign(source: .orderList)
     let upsellCardReadersAnnouncementViewModel: FeatureAnnouncementCardViewModel
 
     /// Used for cancelling the observer for Remote Notifications when `self` is deallocated.
@@ -240,18 +240,6 @@ final class OrderListViewModel {
         )
     }
 
-    /// Fetch all `OrderStatus` from the API
-    ///
-    func syncOrderStatuses() {
-        let action = OrderStatusAction.retrieveOrderStatuses(siteID: siteID) { result in
-            if case let .failure(error) = result {
-                DDLogError("⛔️ Order List — Error synchronizing order statuses: \(error)")
-            }
-        }
-
-        stores.dispatch(action)
-    }
-
     func updateFilters(filters: FilterOrderListViewModel.Filters?) {
         self.filters = filters
     }
@@ -305,18 +293,21 @@ extension OrderListViewModel {
     ///
     private func bindTopBannerState() {
         let errorState = $hasErrorLoadingData.removeDuplicates()
-        Publishers.CombineLatest3(errorState, $hideOrdersBanners, upsellCardReadersAnnouncementViewModel.$shouldBeVisible)
-            .map { hasError, hasDismissedOrdersBanners, upsellCardReadersBannerShouldBeVisible  -> TopBanner in
+        let cppConfiguration = CardPresentConfigurationLoader(stores: stores).configuration
+        let isSupportedCountryForCPP = cppConfiguration.isSupportedCountry
 
-                guard !hasError else {
+        Publishers.CombineLatest3(errorState, $hideOrdersBanners, upsellCardReadersAnnouncementViewModel.$shouldBeVisible)
+            .map { hasError, hasDismissedOrdersBanners, upsellCardReadersBannerAvailable  -> TopBanner in
+
+                if hasError {
                     return .error
                 }
 
-                guard !upsellCardReadersBannerShouldBeVisible else {
+                if upsellCardReadersBannerAvailable && isSupportedCountryForCPP {
                     return .upsellCardReaders
                 }
 
-                guard !hasDismissedOrdersBanners else {
+                if hasDismissedOrdersBanners {
                     return .none
                 }
 

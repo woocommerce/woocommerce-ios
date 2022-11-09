@@ -1,4 +1,5 @@
 import Foundation
+import WooFoundation
 
 extension OrderStatsV4Interval {
     /// Returns the interval start date by parsing the `dateStart` string.

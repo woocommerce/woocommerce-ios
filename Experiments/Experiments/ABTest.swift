@@ -7,23 +7,80 @@ public enum ABTest: String, CaseIterable {
     /// `An enum with no cases cannot declare a raw type`
     case null
 
+    /// A/A test to make sure there is no bias in the logged out state.
+    /// Experiment ref: pbxNRc-1S0-p2
+    case aaTestLoggedOut = "woocommerceios_explat_aa_test_logged_out_202211"
+
+    /// A/B test to measure the sign-in success rate when only WPCom login is enabled.
+    /// Experiment ref: pbxNRc-27s-p2
+    ///
+    case abTestLoginWithWPComOnly = "woocommerceios_login_wpcom_only"
+
+    /// A/B test for the Products Onboarding banner on the My Store dashboard.
+    /// Experiment ref: pbxNRc-26F-p2
+    case productsOnboardingBanner = "woocommerceios_products_onboarding_first_product_banner"
+
+    /// A/B test for the Products Onboarding product creation type bottom sheet after tapping the "Add Product" CTA.
+    /// Experiment ref: pbxNRc-28r-p2
+    case productsOnboardingTemplateProducts = "woocommerceios_products_onboarding_template_products"
+
     /// Returns a variation for the given experiment
-    var variation: Variation {
-        return ExPlat.shared?.experiment(self.rawValue) ?? .control
+    public var variation: Variation {
+        ExPlat.shared?.experiment(rawValue) ?? .control
+    }
+
+    /// Returns the context for the given experiment.
+    ///
+    /// When adding a new experiment, add it to the appropriate case depending on its context (logged-in or logged-out experience).
+    public var context: ExperimentContext {
+        switch self {
+        case .productsOnboardingBanner, .productsOnboardingTemplateProducts:
+            return .loggedIn
+        case .aaTestLoggedOut, .abTestLoginWithWPComOnly:
+            return .loggedOut
+        case .null:
+            return .none
+        }
     }
 }
 
 public extension ABTest {
-    /// Start the AB Testing platform if any experiment exists
+    /// Start the AB Testing platform if any experiment exists for the provided context
     ///
-    static func start() {
-        guard ABTest.allCases.count > 1 else {
-            return
-        }
+    static func start(for context: ExperimentContext) async {
+        let experiments = ABTest.allCases.filter { $0.context == context }
 
-        let experimentNames = ABTest.allCases.filter { $0 != .null }.map { $0.rawValue }
-        ExPlat.shared?.register(experiments: experimentNames)
+        await withCheckedContinuation { continuation in
+            guard !experiments.isEmpty else {
+                return continuation.resume(returning: ())
+            }
 
-        ExPlat.shared?.refresh()
+            let experimentNames = experiments.map { $0.rawValue }
+            ExPlat.shared?.register(experiments: experimentNames)
+
+            ExPlat.shared?.refresh {
+                continuation.resume(returning: ())
+            }
+        } as Void
     }
+}
+
+public extension Variation {
+    /// Used in an analytics event property value.
+    var analyticsValue: String {
+        switch self {
+        case .control:
+            return "control"
+        case .treatment(let string):
+            return string.map { "treatment: \($0)" } ?? "treatment"
+        }
+    }
+}
+
+/// The context for an A/B testing experiment (where the experience being tested occurs).
+///
+public enum ExperimentContext: Equatable {
+    case loggedOut
+    case loggedIn
+    case none // For the `null` experiment case
 }

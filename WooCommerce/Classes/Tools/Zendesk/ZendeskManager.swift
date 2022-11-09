@@ -168,7 +168,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         else {
             ippTags.append(.wcpayNotInstalled)
         }
-        return ippTags.map{ $0.rawValue }
+        return ippTags.map { $0.rawValue }
     }
 
     func showNewRequestIfPossible(from controller: UIViewController) {

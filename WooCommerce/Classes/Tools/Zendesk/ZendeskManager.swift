@@ -147,7 +147,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
 
     /// IPP plugin statuses
     ///
-    private var ippPluginstatuses: [String]? {
+    private var ippPluginstatuses: [String] {
         var ippTags = [PluginStatus]()
         if let stripe = pluginResultsController.fetchedObjects.first(where: { $0.plugin == PluginSlug.stripe }) {
             if stripe.status == .active {
@@ -371,11 +371,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     /// The SDK tag is used in a trigger and displays tickets in Woo > Mobile Apps New.
     ///
     func getTags(supportSourceTag: String?) -> [String] {
-        var tags = [Constants.platformTag, Constants.sdkTag, Constants.jetpackTag]
-
-        // Get IPP plugin statuses
-        tags.append(contentsOf: ippPluginstatuses ?? [])
-
+        var tags = [Constants.platformTag, Constants.sdkTag, Constants.jetpackTag] + ippPluginstatuses
         return decorateTags(tags: tags, supportSourceTag: supportSourceTag)
     }
 

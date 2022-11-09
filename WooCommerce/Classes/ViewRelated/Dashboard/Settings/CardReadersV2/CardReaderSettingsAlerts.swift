@@ -6,6 +6,10 @@ import WordPressUI
 /// presented to provide user-facing feedback as we discover, connect and manage card readers
 ///
 final class CardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
+    func preparingLocalReader(from: UIViewController, cancel: @escaping () -> Void) {
+        setViewModelAndPresent(from: from, viewModel: preparingLocalReader(cancel: cancel))
+    }
+
     private var modalController: CardPresentPaymentsModalViewController?
     private var severalFoundController: SeveralReadersFoundViewController?
 
@@ -23,6 +27,10 @@ final class CardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
 
     func connectingToReader(from: UIViewController) {
         setViewModelAndPresent(from: from, viewModel: connectingToReader())
+    }
+
+    func connectingToLocalReader(from: UIViewController) {
+        setViewModelAndPresent(from: from, viewModel: connectingToLocalReader())
     }
 
     func connectingFailed(from: UIViewController, continueSearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) {
@@ -171,6 +179,10 @@ private extension CardReaderSettingsAlerts {
         from.present(present, animated: animated)
     }
 
+    func preparingLocalReader(cancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalPreparingLocalReader(cancel: cancel)
+    }
+
     func scanningForReader(cancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalScanningForReader(cancel: cancel)
     }
@@ -190,6 +202,10 @@ private extension CardReaderSettingsAlerts {
 
     func connectingToReader() -> CardPresentPaymentsModalViewModel {
         CardPresentModalConnectingToReader()
+    }
+
+    func connectingToLocalReader() -> CardPresentPaymentsModalViewModel {
+        CardPresentModalConnectingToLocalReader()
     }
 
     func connectingFailed(continueSearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {

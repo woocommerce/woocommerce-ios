@@ -34,26 +34,26 @@ final class CardReaderConnectionController {
 
         /// Searching for a card reader
         ///
-        case searching
+        case searching(CardReaderDiscoveryMethod)
 
         /// Found one card reader
         ///
-        case foundReader
+        case foundReader(CardReaderDiscoveryMethod)
 
         /// Found two or more card readers
         ///
-        case foundSeveralReaders
+        case foundSeveralReaders(CardReaderDiscoveryMethod)
 
         /// Attempting to connect to a card reader. The completion passed to `searchAndConnect`
         /// will be called with a `success` `Bool` `True` result if successful, after which the view controller
         /// passed to `searchAndConnect` will be dereferenced and the state set to `idle`
         ///
-        case connectToReader
+        case connectToReader(CardReaderDiscoveryMethod)
 
         /// A failure occurred while connecting. The search may continue or be canceled. At this time we
         /// do not present the detailed error from the service.
         ///
-        case connectingFailed(Error)
+        case connectingFailed(Error, CardReaderDiscoveryMethod)
 
         /// A mandatory update is being installed
         ///
@@ -209,21 +209,21 @@ private extension CardReaderConnectionController {
         case .selectSearchType:
             onSelectSearchType()
         case .beginSearch(let discoveryMethod):
-            onBeginSearch(type: discoveryMethod)
-        case .searching:
-            onSearching()
-        case .foundReader:
-            onFoundReader()
-        case .foundSeveralReaders:
-            onFoundSeveralReaders()
+            onBeginSearch(discoveryMethod: discoveryMethod)
+        case .searching(let discoveryMethod):
+            onSearching(discoveryMethod: discoveryMethod)
+        case .foundReader(let discoveryMethod):
+            onFoundReader(discoveryMethod: discoveryMethod)
+        case .foundSeveralReaders(let discoveryMethod):
+            onFoundSeveralReaders(discoveryMethod: discoveryMethod)
         case .retry:
             onRetry()
         case .cancel:
             onCancel()
-        case .connectToReader:
-            onConnectToReader()
-        case .connectingFailed(let error):
-            onConnectingFailed(error: error)
+        case .connectToReader(let discoveryMethod):
+            onConnectToReader(discoveryMethod: discoveryMethod)
+        case .connectingFailed(let error, let discoveryMethod):
+            onConnectingFailed(error: error, discoveryMethod: discoveryMethod)
         case .discoveryFailed(let error):
             onDiscoveryFailed(error: error)
         case .updating(progress: let progress):
@@ -358,13 +358,14 @@ private extension CardReaderConnectionController {
     /// `.foundMultipleReaders` if two or more readers are found,
     /// or  to `.connectToReader` if one known reader is found
     ///
-    func onBeginSearch(type: CardReaderDiscoveryMethod) {
-        cardReaderConnectionType = type
-        state = .searching
+    func onBeginSearch(discoveryMethod: CardReaderDiscoveryMethod) {
+        cardReaderConnectionType = discoveryMethod
+        state = .searching(discoveryMethod)
         var didAutoAdvance = false
 
         let action = CardPresentPaymentAction.startCardReaderDiscovery(
-            siteID: siteID, type: type,
+            siteID: siteID,
+            type: discoveryMethod,
             onReaderDiscovered: { [weak self] cardReaders in
                 guard let self = self else {
                     return
@@ -403,7 +404,7 @@ private extension CardReaderConnectionController {
                     if !didAutoAdvance {
                         didAutoAdvance = true
                         self.candidateReader = foundKnownReader
-                        self.state = .connectToReader
+                        self.state = .connectToReader(discoveryMethod)
                         return
                     }
                 }
@@ -411,7 +412,7 @@ private extension CardReaderConnectionController {
                 /// If we have found multiple readers, advance to foundMultipleReaders
                 ///
                 if self.showSeveralFoundReaders {
-                    self.state = .foundSeveralReaders
+                    self.state = .foundSeveralReaders(discoveryMethod)
                     return
                 }
 
@@ -419,7 +420,12 @@ private extension CardReaderConnectionController {
                 ///
                 if self.foundReaders.isNotEmpty {
                     self.candidateReader = self.foundReaders.first
-                    self.state = .foundReader
+                    switch discoveryMethod {
+                    case .localMobile:
+                        self.state = .connectToReader(discoveryMethod)
+                    case .bluetoothProximity:
+                        self.state = .foundReader(discoveryMethod)
+                    }
                     return
                 }
             },
@@ -440,7 +446,7 @@ private extension CardReaderConnectionController {
     /// Opens the scanning for reader modal
     /// If the user cancels the modal will trigger a transition to `.endSearch`
     ///
-    func onSearching() {
+    func onSearching(discoveryMethod: CardReaderDiscoveryMethod) {
         guard let from = fromController else {
             return
         }
@@ -451,7 +457,7 @@ private extension CardReaderConnectionController {
         /// (unknown) reader, auto-connect to that known reader
         if let foundKnownReader = self.getFoundKnownReader() {
             self.candidateReader = foundKnownReader
-            self.state = .connectToReader
+            self.state = .connectToReader(discoveryMethod)
             return
         }
 
@@ -459,7 +465,7 @@ private extension CardReaderConnectionController {
         /// display the list view if so enabled, or...
         ///
         if showSeveralFoundReaders {
-            self.state = .foundSeveralReaders
+            self.state = .foundSeveralReaders(discoveryMethod)
             return
         }
 
@@ -468,22 +474,34 @@ private extension CardReaderConnectionController {
         ///
         if foundReaders.isNotEmpty {
             self.candidateReader = foundReaders.first
-            self.state = .foundReader
+            switch discoveryMethod {
+            case .localMobile:
+                self.state = .connectToReader(discoveryMethod)
+            case .bluetoothProximity:
+                self.state = .foundReader(discoveryMethod)
+            }
             return
         }
 
-        /// If all else fails, display the "scanning" modal and
+        /// If all else fails, display the "scanning" or "preparing" modal and
         /// stay in this state
         ///
-        alerts.scanningForReader(from: from, cancel: {
-            self.state = .cancel
-        })
+        switch discoveryMethod {
+        case .localMobile:
+            alerts.preparingLocalReader(from: from) {
+                self.state = .cancel
+            }
+        case .bluetoothProximity:
+            alerts.scanningForReader(from: from, cancel: {
+                self.state = .cancel
+            })
+        }
     }
 
     /// A (unknown) reader has been found
     /// Opens a confirmation modal for the user to accept the candidate reader (or keep searching)
     ///
-    func onFoundReader() {
+    func onFoundReader(discoveryMethod: CardReaderDiscoveryMethod) {
         guard let candidateReader = candidateReader else {
             return
         }
@@ -496,13 +514,13 @@ private extension CardReaderConnectionController {
             from: from,
             name: candidateReader.id,
             connect: {
-                self.state = .connectToReader
+                self.state = .connectToReader(discoveryMethod)
             },
             continueSearch: {
                 self.skippedReaderIDs.append(candidateReader.id)
                 self.candidateReader = nil
                 self.pruneSkippedReaders()
-                self.state = .searching
+                self.state = .searching(discoveryMethod)
             },
             cancelSearch: { [weak self] in
                 self?.state = .cancel
@@ -512,7 +530,7 @@ private extension CardReaderConnectionController {
     /// Several readers have been found
     /// Opens a continually updating list modal for the user to pick one (or cancel the search)
     ///
-    func onFoundSeveralReaders() {
+    func onFoundSeveralReaders(discoveryMethod: CardReaderDiscoveryMethod) {
         guard let from = fromController else {
             return
         }
@@ -525,7 +543,7 @@ private extension CardReaderConnectionController {
                     return
                 }
                 self.candidateReader = self.getFoundReaderByID(readerID: readerID)
-                self.state = .connectToReader
+                self.state = .connectToReader(discoveryMethod)
             },
             cancelSearch: { [weak self] in
                 self?.state = .cancel
@@ -582,7 +600,7 @@ private extension CardReaderConnectionController {
 
     /// Connect to the candidate card reader
     ///
-    func onConnectToReader() {
+    func onConnectToReader(discoveryMethod: CardReaderDiscoveryMethod) {
         guard let candidateReader = candidateReader else {
             return
         }
@@ -650,17 +668,23 @@ private extension CardReaderConnectionController {
                                                                                          countryCode: self.configuration.countryCode,
                                                                                          cardReaderModel: candidateReader.readerType.model)
                 )
-                self.state = .connectingFailed(error)
+                self.state = .connectingFailed(error, discoveryMethod)
             }
         }
         stores.dispatch(action)
 
-        alerts.connectingToReader(from: from)
+        switch discoveryMethod {
+        case .localMobile:
+            alerts.connectingToLocalReader(from: from)
+        case .bluetoothProximity:
+            alerts.connectingToReader(from: from)
+        }
+
     }
 
     /// An error occurred while connecting
     ///
-    private func onConnectingFailed(error: Error) {
+    private func onConnectingFailed(error: Error, discoveryMethod: CardReaderDiscoveryMethod) {
         /// Clear our copy of found readers to avoid connecting to a reader that isn't
         /// there while we wait for `onReaderDiscovered` to receive an update.
         /// See also https://github.com/stripe/stripe-terminal-ios/issues/104#issuecomment-916285167
@@ -669,12 +693,12 @@ private extension CardReaderConnectionController {
 
         if case CardReaderServiceError.softwareUpdate(underlyingError: let underlyingError, batteryLevel: _) = error,
            underlyingError.isSoftwareUpdateError {
-            return onUpdateFailed(error: error)
+            return onUpdateFailed(error: error, discoveryMethod: discoveryMethod)
         }
-        showConnectionFailed(error: error)
+        showConnectionFailed(error: error, discoveryMethod: discoveryMethod)
     }
 
-    private func onUpdateFailed(error: Error) {
+    private func onUpdateFailed(error: Error, discoveryMethod: CardReaderDiscoveryMethod) {
         guard let from = fromController,
               case CardReaderServiceError.softwareUpdate(underlyingError: let underlyingError, batteryLevel: let batteryLevel) = error else {
             return
@@ -689,7 +713,7 @@ private extension CardReaderConnectionController {
                 from: from,
                 batteryLevel: batteryLevel,
                 close: {
-                    self.state = .searching
+                    self.state = .searching(discoveryMethod)
                 }
             )
         default:
@@ -697,12 +721,12 @@ private extension CardReaderConnectionController {
                 from: from,
                 tryAgain: nil,
                 close: {
-                    self.state = .searching
+                    self.state = .searching(discoveryMethod)
                 })
         }
     }
 
-    private func showConnectionFailed(error: Error) {
+    private func showConnectionFailed(error: Error, discoveryMethod: CardReaderDiscoveryMethod) {
         guard let from = fromController else {
             return
         }
@@ -712,7 +736,7 @@ private extension CardReaderConnectionController {
         }
 
         let continueSearch = {
-            self.state = .searching
+            self.state = .searching(discoveryMethod)
         }
 
         let cancelSearch = {
@@ -726,9 +750,11 @@ private extension CardReaderConnectionController {
         switch underlyingError {
         case .incompleteStoreAddress(let adminUrl):
             alerts.connectingFailedIncompleteAddress(from: from,
-                                                     openWCSettings: openWCSettingsAction(adminUrl: adminUrl,
-                                                                                          from: from,
-                                                                                          retrySearch: retrySearch),
+                                                     openWCSettings: openWCSettingsAction(
+                                                        adminUrl: adminUrl,
+                                                        from: from,
+                                                        discoveryMethod: discoveryMethod,
+                                                        retrySearch: retrySearch),
                                                      retrySearch: retrySearch,
                                                      cancelSearch: cancelSearch)
         case .invalidPostalCode:
@@ -742,6 +768,7 @@ private extension CardReaderConnectionController {
 
     private func openWCSettingsAction(adminUrl: URL?,
                                       from viewController: UIViewController,
+                                      discoveryMethod: CardReaderDiscoveryMethod,
                                       retrySearch: @escaping () -> Void) -> ((UIViewController) -> Void)? {
         if let adminUrl = adminUrl {
             if let site = stores.sessionManager.defaultSite,
@@ -752,7 +779,7 @@ private extension CardReaderConnectionController {
             } else {
                 return { [weak self] _ in
                     UIApplication.shared.open(adminUrl)
-                    self?.showIncompleteAddressErrorWithRefreshButton()
+                    self?.showIncompleteAddressErrorWithRefreshButton(discoveryMethod: discoveryMethod)
                 }
             }
         }
@@ -785,8 +812,8 @@ private extension CardReaderConnectionController {
         viewController.present(hostingController, animated: true, completion: nil)
     }
 
-    private func showIncompleteAddressErrorWithRefreshButton() {
-        showConnectionFailed(error: CardReaderServiceError.connection(underlyingError: .incompleteStoreAddress(adminUrl: nil)))
+    private func showIncompleteAddressErrorWithRefreshButton(discoveryMethod: CardReaderDiscoveryMethod) {
+        showConnectionFailed(error: CardReaderServiceError.connection(underlyingError: .incompleteStoreAddress(adminUrl: nil)), discoveryMethod: discoveryMethod)
     }
 
     /// An error occurred during discovery

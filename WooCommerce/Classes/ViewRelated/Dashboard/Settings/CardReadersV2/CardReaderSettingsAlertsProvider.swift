@@ -11,6 +11,8 @@ protocol CardReaderSettingsAlertsProvider {
     ///
     func scanningForReader(from: UIViewController, cancel: @escaping () -> Void)
 
+    func preparingLocalReader(from: UIViewController, cancel: @escaping () -> Void)
+
     /// Defines a cancellable (closeable) alert indicating the search failed
     ///
     func scanningFailed(from: UIViewController, error: Error, close: @escaping () -> Void)
@@ -41,6 +43,10 @@ protocol CardReaderSettingsAlertsProvider {
     /// Defines a non-interactive alert indicating a connection is in progress to a particular reader
     ///
     func connectingToReader(from: UIViewController)
+
+    /// Defines a non-interactive alert indicating a connection is in progress to a particular reader
+    ///
+    func connectingToLocalReader(from: UIViewController)
 
     /// Defines an alert indicating connecting failed. The user may continue the search
     /// or cancel

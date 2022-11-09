@@ -137,6 +137,40 @@ struct ZendeskProvider {
 ///
 #if !targetEnvironment(macCatalyst)
 final class ZendeskManager: NSObject, ZendeskManagerProtocol {
+    /// Loads Plugins from the Storage Layer.
+    ///
+    private let pluginResultsController: ResultsController<StorageSitePlugin>
+
+    private let stores = ServiceLocator.stores
+
+    private let storageManager = ServiceLocator.storageManager
+
+    /// IPP plugin statuses
+    ///
+    private var ippPluginstatuses: [String]? {
+        var ippTags = [String]()
+        if let stripe = pluginResultsController.fetchedObjects.first(where: { $0.plugin == IPPPluginStatus.stripe_plugin_slug }) {
+            if stripe.status == .active {
+                ippTags.append(IPPPluginStatus.woo_mobile_stripe_installed_and_activated)
+            } else if stripe.status == .inactive {
+                ippTags.append(IPPPluginStatus.woo_mobile_stripe_installed_and_not_activated)
+            }
+        } else {
+            ippTags.append(IPPPluginStatus.woo_mobile_stripe_not_installed)
+        }
+        if let wcpay = pluginResultsController.fetchedObjects.first(where: { $0.plugin == IPPPluginStatus.wcpay_plugin_slug }) {
+            if wcpay.status == .active {
+                ippTags.append(IPPPluginStatus.woo_mobile_wcpay_installed_and_activated)
+            } else if wcpay.status == .inactive {
+                ippTags.append(IPPPluginStatus.woo_mobile_wcpay_installed_and_not_activated)
+            }
+        }
+        else {
+            ippTags.append(IPPPluginStatus.woo_mobile_wcpay_not_installed)
+        }
+        return ippTags
+    }
+
     func showNewRequestIfPossible(from controller: UIViewController) {
         showNewRequestIfPossible(from: controller, with: nil)
     }
@@ -186,10 +220,24 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         return ZDKPushProvider(zendesk: zendesk)
     }
 
-
     /// Designated Initialier
     ///
     fileprivate override init() {
+        /// Initialize Plugins Results Controller
+        let sitePredicate: NSPredicate?
+        let pluginStatusDescriptor = [NSSortDescriptor(keyPath: \StorageSitePlugin.status, ascending: true)]
+
+        if let siteID = stores.sessionManager.defaultSite?.siteID {
+            sitePredicate = NSPredicate(format: "siteID == %lld", siteID)
+        } else {
+            sitePredicate = nil
+            DDLogError("ZendeskManager: No siteID found when attempting to initialize Plugins Results predicate.")
+        }
+        pluginResultsController = ResultsController(storageManager: storageManager,
+                                                    matching: sitePredicate,
+                                                    sortedBy: pluginStatusDescriptor)
+
+
         super.init()
         observeZendeskNotifications()
     }
@@ -328,9 +376,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         var tags = [Constants.platformTag, Constants.sdkTag, Constants.jetpackTag]
 
         // Get IPP plugin statuses
-        if let ippTags = settingsViewModel.ippPluginstatuses {
-            tags.append(contentsOf: ippTags)
-        }
+        tags.append(contentsOf: ippPluginstatuses ?? [])
 
         return decorateTags(tags: tags, supportSourceTag: supportSourceTag)
     }
@@ -1072,6 +1118,19 @@ private extension ZendeskManager {
     }
 }
 
+private extension ZendeskManager {
+    enum IPPPluginStatus {
+        static let stripe_plugin_slug = "woocommerce-gateway-stripe/woocommerce-gateway-stripe"
+        static let wcpay_plugin_slug = "woocommerce-payments/woocommerce-payments"
+        static let woo_mobile_stripe_not_installed = "woo_mobile_stripe_not_installed"
+        static let woo_mobile_stripe_installed_and_not_activated = "woo_mobile_stripe_installed_and_not_activated"
+        static let woo_mobile_stripe_installed_and_activated = "woo_mobile_stripe_installed_and_activated"
+        static let woo_mobile_wcpay_not_installed = "woo_mobile_wcpay_not_installed"
+        static let woo_mobile_wcpay_installed_and_not_activated = "woo_mobile_wcpay_installed_and_not_activated"
+        static let woo_mobile_wcpay_installed_and_activated = "woo_mobile_wcpay_installed_and_activated"
+        static let woo_mobile_site_plugins_fetching_error = "woo_mobile_site_plugins_fetching_error"
+    }
+}
 
 // MARK: - UITextFieldDelegate
 //

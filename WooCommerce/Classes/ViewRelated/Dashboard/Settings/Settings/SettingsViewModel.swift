@@ -94,14 +94,6 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     ///
     private let sitesResultsController: ResultsController<StorageSite>
 
-    /// Loads Plugins from the Storage Layer.
-    ///
-    private let pluginResultsController: ResultsController<StorageSitePlugin>
-
-    /// IPP plugin statuses
-    ///
-    private(set) var ippPluginstatuses: [String]?
-
     /// Payment Gateway Accounts Results Controller: Loads Payment Gateway Accounts from the Storage Layer
     /// e.g. WooCommerce Payments, but eventually other in-person payment accounts too
     ///
@@ -133,12 +125,6 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
                                                    matching: NSPredicate(format: "isWooCommerceActive == YES"),
                                                    sortedBy: [NSSortDescriptor(key: "name", ascending: true)])
 
-        /// Initialize Plugins Results Controller
-        ///
-        let pluginStatusDescriptor = [NSSortDescriptor(keyPath: \StorageSitePlugin.status, ascending: true)]
-        pluginResultsController = ResultsController(storageManager: storageManager,
-                                                 sortedBy: pluginStatusDescriptor)
-
         /// Initialize Payment Gateway Accounts Results Controller
         ///
         if let siteID = stores.sessionManager.defaultSite?.siteID {
@@ -155,34 +141,6 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
             let action = SystemStatusAction.synchronizeSystemPlugins(siteID: siteID, onCompletion: { _ in })
             stores.dispatch(action)
         }
-
-        ///
-        ///
-        ippPluginstatuses = {
-            var ippTags = [String]()
-            // Check Stripe plugin status
-            if let stripe = pluginResultsController.fetchedObjects.first(where: { $0.plugin == IPPPluginStatus.stripe_plugin_slug }) {
-                if stripe.status == .active {
-                    ippTags.append(IPPPluginStatus.woo_mobile_stripe_installed_and_activated)
-                } else if stripe.status == .inactive {
-                    ippTags.append(IPPPluginStatus.woo_mobile_stripe_installed_and_not_activated)
-                }
-            } else {
-                ippTags.append(IPPPluginStatus.woo_mobile_stripe_not_installed)
-            }
-            // Check WCPay plugin status
-            if let wcpay = pluginResultsController.fetchedObjects.first(where: { $0.plugin == IPPPluginStatus.wcpay_plugin_slug }) {
-                if wcpay.status == .active {
-                    ippTags.append(IPPPluginStatus.woo_mobile_wcpay_installed_and_activated)
-                } else if wcpay.status == .inactive {
-                    ippTags.append(IPPPluginStatus.woo_mobile_wcpay_installed_and_not_activated)
-                }
-            }
-            else {
-                ippTags.append(IPPPluginStatus.woo_mobile_wcpay_not_installed)
-            }
-            return ippTags
-        }()
     }
 
     /// Sets up the view model and loads the settings.

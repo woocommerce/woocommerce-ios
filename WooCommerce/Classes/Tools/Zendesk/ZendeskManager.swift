@@ -148,27 +148,27 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     /// IPP plugin statuses
     ///
     private var ippPluginstatuses: [String]? {
-        var ippTags = [String]()
-        if let stripe = pluginResultsController.fetchedObjects.first(where: { $0.plugin == IPPPluginStatus.stripe_plugin_slug }) {
+        var ippTags = [PluginStatus]()
+        if let stripe = pluginResultsController.fetchedObjects.first(where: { $0.plugin == PluginSlug.stripe }) {
             if stripe.status == .active {
-                ippTags.append(IPPPluginStatus.woo_mobile_stripe_installed_and_activated)
+                ippTags.append(.stripeInstalledAndActivated)
             } else if stripe.status == .inactive {
-                ippTags.append(IPPPluginStatus.woo_mobile_stripe_installed_and_not_activated)
+                ippTags.append(.stripeInstalledButNotActivated)
             }
         } else {
-            ippTags.append(IPPPluginStatus.woo_mobile_stripe_not_installed)
+            ippTags.append(.stripeNotInstalled)
         }
-        if let wcpay = pluginResultsController.fetchedObjects.first(where: { $0.plugin == IPPPluginStatus.wcpay_plugin_slug }) {
+        if let wcpay = pluginResultsController.fetchedObjects.first(where: { $0.plugin == PluginSlug.wcpay }) {
             if wcpay.status == .active {
-                ippTags.append(IPPPluginStatus.woo_mobile_wcpay_installed_and_activated)
+                ippTags.append(.wcpayInstalledAndActivated)
             } else if wcpay.status == .inactive {
-                ippTags.append(IPPPluginStatus.woo_mobile_wcpay_installed_and_not_activated)
+                ippTags.append(.wcpayInstalledButNotActivated)
             }
         }
         else {
-            ippTags.append(IPPPluginStatus.woo_mobile_wcpay_not_installed)
+            ippTags.append(.wcpayNotInstalled)
         }
-        return ippTags
+        return ippTags.map{ $0.rawValue }
     }
 
     func showNewRequestIfPossible(from controller: UIViewController) {
@@ -1117,16 +1117,17 @@ private extension ZendeskManager {
 }
 
 private extension ZendeskManager {
-    enum IPPPluginStatus {
-        static let stripe_plugin_slug = "woocommerce-gateway-stripe/woocommerce-gateway-stripe"
-        static let wcpay_plugin_slug = "woocommerce-payments/woocommerce-payments"
-        static let woo_mobile_stripe_not_installed = "woo_mobile_stripe_not_installed"
-        static let woo_mobile_stripe_installed_and_not_activated = "woo_mobile_stripe_installed_and_not_activated"
-        static let woo_mobile_stripe_installed_and_activated = "woo_mobile_stripe_installed_and_activated"
-        static let woo_mobile_wcpay_not_installed = "woo_mobile_wcpay_not_installed"
-        static let woo_mobile_wcpay_installed_and_not_activated = "woo_mobile_wcpay_installed_and_not_activated"
-        static let woo_mobile_wcpay_installed_and_activated = "woo_mobile_wcpay_installed_and_activated"
-        static let woo_mobile_site_plugins_fetching_error = "woo_mobile_site_plugins_fetching_error"
+    enum PluginSlug {
+        static let stripe = "woocommerce-gateway-stripe/woocommerce-gateway-stripe"
+        static let wcpay = "woocommerce-payments/woocommerce-payments"
+    }
+    enum PluginStatus: String {
+        case stripeNotInstalled = "woo_mobile_stripe_not_installed"
+        case stripeInstalledAndActivated = "woo_mobile_stripe_installed_and_activated"
+        case stripeInstalledButNotActivated = "woo_mobile_stripe_installed_and_not_activated"
+        case wcpayNotInstalled = "woo_mobile_wcpay_not_installed"
+        case wcpayInstalledAndActivated = "woo_mobile_wcpay_installed_and_activated"
+        case wcpayInstalledButNotActivated = "woo_mobile_wcpay_installed_and_not_activated"
     }
 }
 

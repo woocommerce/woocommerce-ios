@@ -137,13 +137,25 @@ struct ZendeskProvider {
 ///
 #if !targetEnvironment(macCatalyst)
 final class ZendeskManager: NSObject, ZendeskManagerProtocol {
+    private let stores = ServiceLocator.stores
+    private let storageManager = ServiceLocator.storageManager
+
     /// Loads Plugins from the Storage Layer.
     ///
-    private let pluginResultsController: ResultsController<StorageSitePlugin>
+    private var pluginResultsController: ResultsController<StorageSitePlugin> {
+        var sitePredicate: NSPredicate? = nil
+        if let siteID = stores.sessionManager.defaultSite?.siteID {
+            sitePredicate = NSPredicate(format: "siteID == %lld", siteID)
+        } else {
+            DDLogError("ZendeskManager: No siteID found when attempting to initialize Plugins Results predicate.")
+        }
 
-    private let stores = ServiceLocator.stores
+        let pluginStatusDescriptor = [NSSortDescriptor(keyPath: \StorageSitePlugin.status, ascending: true)]
 
-    private let storageManager = ServiceLocator.storageManager
+        return ResultsController(storageManager: storageManager,
+                                 matching: sitePredicate,
+                                 sortedBy: pluginStatusDescriptor)
+    }
 
     /// IPP plugin statuses
     ///
@@ -221,21 +233,6 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     /// Designated Initialier
     ///
     fileprivate override init() {
-        /// Initialize Plugins Results Controller
-        let sitePredicate: NSPredicate?
-        let pluginStatusDescriptor = [NSSortDescriptor(keyPath: \StorageSitePlugin.status, ascending: true)]
-
-        if let siteID = stores.sessionManager.defaultSite?.siteID {
-            sitePredicate = NSPredicate(format: "siteID == %lld", siteID)
-        } else {
-            sitePredicate = nil
-            DDLogError("ZendeskManager: No siteID found when attempting to initialize Plugins Results predicate.")
-        }
-        pluginResultsController = ResultsController(storageManager: storageManager,
-                                                    matching: sitePredicate,
-                                                    sortedBy: pluginStatusDescriptor)
-
-
         super.init()
         observeZendeskNotifications()
     }

@@ -78,6 +78,10 @@ public enum FeatureFlag: Int {
     ///
     case storeCreationMVP
 
+    /// Store creation milestone 2. https://wp.me/pe5sF9-I3
+    ///
+    case storeCreationM2
+
     /// Just In Time Messages on Dashboard
     ///
     case justInTimeMessagesOnDashboard

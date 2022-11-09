@@ -215,6 +215,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     }
 
     private func displayProductPreview() {
+        ServiceLocator.analytics.track(event: .ProductDetail.previewTapped())
+
         var permalink = URLComponents(string: product.permalink)
         var updatedQueryItems = permalink?.queryItems ?? []
         updatedQueryItems.append(.init(name: "preview", value: "true"))

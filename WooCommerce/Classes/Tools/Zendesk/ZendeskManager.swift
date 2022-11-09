@@ -191,8 +191,6 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         }
     }
 
-    private lazy var settingsViewModel = SettingsViewModel()
-
     private var unreadNotificationsCount = 0
 
     var showSupportNotificationIndicator: Bool {

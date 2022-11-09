@@ -53,7 +53,7 @@ final class AddOrderCoordinator: Coordinator {
 // MARK: Navigation
 private extension AddOrderCoordinator {
     func presentOrderTypeBottomSheet() {
-        let viewProperties = BottomSheetListSelectorViewProperties(title: nil)
+        let viewProperties = BottomSheetListSelectorViewProperties(subtitle: nil)
         let command = OrderTypeBottomSheetListSelectorCommand() { selectedBottomSheetOrderType in
             self.navigationController.dismiss(animated: true)
             self.presentOrderCreationFlow(bottomSheetOrderType: selectedBottomSheetOrderType)

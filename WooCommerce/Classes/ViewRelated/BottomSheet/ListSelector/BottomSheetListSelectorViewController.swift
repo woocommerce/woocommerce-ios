@@ -86,14 +86,14 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard viewProperties.title != nil else {
+        guard viewProperties.title != nil || viewProperties.subtitle != nil else {
             return nil
         }
         guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: BottomSheetListSelectorSectionHeaderView.reuseIdentifier)
             as? BottomSheetListSelectorSectionHeaderView else {
                 fatalError()
         }
-        header.configure(text: viewProperties.title)
+        header.configure(title: viewProperties.title, subtitle: viewProperties.subtitle)
         return header
     }
 }
@@ -111,7 +111,7 @@ private extension BottomSheetListSelectorViewController {
         tableView.dataSource = self
 
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedSectionHeaderHeight = viewProperties.title != nil ? estimatedSectionHeight : .zero
+        tableView.estimatedSectionHeaderHeight = (viewProperties.title != nil || viewProperties.subtitle != nil) ? estimatedSectionHeight : .zero
         tableView.sectionHeaderHeight = UITableView.automaticDimension
 
         tableView.backgroundColor = .listForeground

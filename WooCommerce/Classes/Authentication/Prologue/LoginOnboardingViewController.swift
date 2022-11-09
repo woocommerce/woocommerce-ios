@@ -10,12 +10,6 @@ final class LoginOnboardingViewController: UIViewController {
         case skip
     }
 
-    /// The content that is shown above the buttons container.
-    private enum Content {
-        case features
-        case survey
-    }
-    private var content: Content = .features
     private var selectedSurveyOption: LoginOnboardingSurveyOption?
 
     private let stackView: UIStackView = .init()
@@ -132,21 +126,10 @@ private extension LoginOnboardingViewController {
         button.on(.touchUpInside) { [weak self] _ in
             guard let self = self else { return }
 
-            switch self.content {
-            case .features:
-                guard self.pageViewController.goToNextPageIfPossible() else {
-                    guard self.featureFlagService.isFeatureFlagEnabled(.loginPrologueOnboardingSurvey) else {
-                        return self.onDismiss(.next)
-                    }
-                    return self.showSurvey()
-                }
-                self.analytics.track(event: .LoginOnboarding.loginOnboardingNextButtonTapped(isFinalPage: false))
-            case .survey:
-                if let selectedSurveyOption = self.selectedSurveyOption {
-                    self.analytics.track(event: .LoginOnboarding.loginOnboardingSurveySubmitted(option: selectedSurveyOption))
-                }
-                self.onDismiss(.next)
+            guard self.pageViewController.goToNextPageIfPossible() else {
+                return self.onDismiss(.next)
             }
+            self.analytics.track(event: .LoginOnboarding.loginOnboardingNextButtonTapped(isFinalPage: false))
         }
         return button
     }
@@ -160,38 +143,6 @@ private extension LoginOnboardingViewController {
             self?.onDismiss(.skip)
         }
         return button
-    }
-}
-
-// MARK: - Survey
-
-private extension LoginOnboardingViewController {
-    @MainActor
-    func showSurvey() {
-        content = .survey
-        nextButton.isEnabled = false
-
-        analytics.track(event: .LoginOnboarding.loginOnboardingSurveyShown())
-
-        let surveyView = LoginOnboardingSurveyView(onSelection: { [weak self] option in
-            self?.selectedSurveyOption = option
-            self?.nextButton.isEnabled = true
-        })
-        let surveyController = UIHostingController(rootView: surveyView)
-        surveyController.view.backgroundColor = .authPrologueBottomBackgroundColor
-        view.backgroundColor = .authPrologueBottomBackgroundColor
-
-        addChild(surveyController)
-        surveyController.didMove(toParent: self)
-
-        view.addSubview(surveyController.view)
-        surveyController.view.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            surveyController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            surveyController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            surveyController.view.topAnchor.constraint(equalTo: view.safeTopAnchor),
-            surveyController.view.bottomAnchor.constraint(equalTo: buttonStackView.topAnchor)
-        ])
     }
 }
 

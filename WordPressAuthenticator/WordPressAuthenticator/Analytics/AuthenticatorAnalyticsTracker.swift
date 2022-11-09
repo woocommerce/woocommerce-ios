@@ -264,6 +264,12 @@ public class AuthenticatorAnalyticsTracker {
         case loginWithAccountPassword = "login_with_password"
     }
 
+    public enum Failure: String {
+        /// Failure to guess XMLRPC URL
+        ///
+        case loginFailedToGuessXMLRPC = "login_failed_to_guess_xmlrpc_url"
+    }
+
     /// Shared Instance.
     ///
     public static var shared: AuthenticatorAnalyticsTracker = {
@@ -352,6 +358,12 @@ public class AuthenticatorAnalyticsTracker {
         }
 
         track(event(click: click))
+    }
+
+    /// Track a predefined failure enum.
+    ///
+    public func track(failure: Failure) {
+        track(failure: failure.rawValue)
     }
 
     /// Track a failure.

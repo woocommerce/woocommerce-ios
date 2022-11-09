@@ -226,6 +226,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         permalink.queryItems = updatedQueryItems
 
         let configuration = WebViewControllerConfiguration(url: permalink.url)
+        configuration.secureInteraction = true
         let webKitVC = WebKitViewController(configuration: configuration)
         let nc = WooNavigationController(rootViewController: webKitVC)
         present(nc, animated: true)

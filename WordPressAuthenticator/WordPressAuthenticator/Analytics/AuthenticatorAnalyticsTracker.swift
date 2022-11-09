@@ -264,6 +264,12 @@ public class AuthenticatorAnalyticsTracker {
         case loginWithAccountPassword = "login_with_password"
     }
 
+    public enum Failure: String {
+        /// Failure to guess XMLRPC URL
+        ///
+        case loginFailedToGuessXMLRPC = "login_failed_to_guess_xmlrpc_url"
+    }
+
     /// Shared Instance.
     ///
     public static var shared: AuthenticatorAnalyticsTracker = {

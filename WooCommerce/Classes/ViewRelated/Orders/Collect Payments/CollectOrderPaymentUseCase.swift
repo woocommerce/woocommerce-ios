@@ -271,14 +271,16 @@ private extension CollectOrderPaymentUseCase {
             return
         }
 
+#warning("We're not really ready until the intent is created. Replace this with a 'preparing for payment' message")
         // Show reader ready alert
-        alerts.readerIsReady(title: Localization.collectPaymentTitle(username: order.billingAddress?.firstName),
-                             amount: formattedAmount,
-                             onCancel: { [weak self] in
-            self?.cancelPayment {
-                onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
-            }
-        })
+//        alerts.readerIsReady(title: Localization.collectPaymentTitle(username: order.billingAddress?.firstName),
+//                             amount: formattedAmount,
+//                             onCancel: { [weak self] in
+//            self?.cancelPayment {
+//                onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
+//            }
+//        })
+
 
         // Start collect payment process
         paymentOrchestrator.collectPayment(

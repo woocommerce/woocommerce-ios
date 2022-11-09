@@ -520,7 +520,10 @@ private extension StripeCardReaderService {
         return Future() { [weak self] promise in
             /// Collect Payment method returns a cancellable
             /// Because we are chaining promises, we need to retain a reference
-            /// to this cancellable if we want to cancel 
+            /// to this cancellable if we want to cancel
+#warning("This (collectPaymentMethod received) is where we are actually ready to read a card")
+            DDLogInfo("💸 collectPaymentMethod received: ready to take payment")
+//            self?.sendReaderEvent(CardReaderEvent.waitingForInput("Ready for card"))
             self?.paymentCancellable = Terminal.shared.collectPaymentMethod(intent) { (intent, error) in
                 self?.paymentCancellable = nil
 

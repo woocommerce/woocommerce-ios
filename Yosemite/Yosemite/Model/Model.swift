@@ -27,6 +27,7 @@ public typealias Customer = Networking.Customer
 public typealias DotcomDevice = Networking.DotcomDevice
 public typealias DotcomUser = Networking.DotcomUser
 public typealias Feature = WordPressKit.Feature
+public typealias FreeDomainSuggestion = Networking.FreeDomainSuggestion
 public typealias InboxNote = Networking.InboxNote
 public typealias InboxAction = Networking.InboxAction
 public typealias JetpackUser = Networking.JetpackUser

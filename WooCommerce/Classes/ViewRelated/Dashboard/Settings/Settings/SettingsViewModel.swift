@@ -361,17 +361,6 @@ private extension SettingsViewModel {
 // MARK: - Localizations
 //
 private extension SettingsViewModel {
-    enum IPPPluginStatus {
-        static let stripe_plugin_slug = "woocommerce-gateway-stripe/woocommerce-gateway-stripe"
-        static let wcpay_plugin_slug = "woocommerce-payments/woocommerce-payments"
-        static let woo_mobile_stripe_not_installed = "woo_mobile_stripe_not_installed"
-        static let woo_mobile_stripe_installed_and_not_activated = "woo_mobile_stripe_installed_and_not_activated"
-        static let woo_mobile_stripe_installed_and_activated = "woo_mobile_stripe_installed_and_activated"
-        static let woo_mobile_wcpay_not_installed = "woo_mobile_wcpay_not_installed"
-        static let woo_mobile_wcpay_installed_and_not_activated = "woo_mobile_wcpay_installed_and_not_activated"
-        static let woo_mobile_wcpay_installed_and_activated = "woo_mobile_wcpay_installed_and_activated"
-        static let woo_mobile_site_plugins_fetching_error = "woo_mobile_site_plugins_fetching_error"
-    }
     enum Localization {
         static let pluginsTitle = NSLocalizedString(
             "Plugins",

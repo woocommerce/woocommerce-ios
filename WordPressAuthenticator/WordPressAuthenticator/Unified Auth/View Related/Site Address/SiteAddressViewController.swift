@@ -505,27 +505,41 @@ private extension SiteAddressViewController {
 
                 let err = self.originalErrorOrError(error: error as NSError)
 
+                let errorMessage: String? = {
+                    if let xmlrpcValidatorError = err as? WordPressOrgXMLRPCValidatorError {
+                        return xmlrpcValidatorError.localizedDescription
+                    } else if (err.domain == NSURLErrorDomain && err.code == NSURLErrorCannotFindHost) ||
+                                (err.domain == NSURLErrorDomain && err.code == NSURLErrorNetworkConnectionLost) {
+                        // NSURLErrorNetworkConnectionLost can be returned when an invalid URL is entered.
+                        let msg = NSLocalizedString(
+                            "The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress.",
+                            comment: "Error message shown a URL does not point to an existing site.")
+                        return msg
+                    } else {
+                        return nil
+                    }
+                }()
+
                 /// Check if the host app wants to provide custom UI to handle the error.
                 /// If it does, insert the custom UI provided by the host app and exit early
                 if self.authenticationDelegate.shouldHandleError(err) {
+
+                    // Send the error to the host app
                     self.authenticationDelegate.handleError(err) { customUI in
                         self.pushCustomUI(customUI)
                     }
 
+                    // Track error message as failure
+                    if let message = errorMessage {
+                        self.tracker.track(failure: message)
+                    }
+
+                    // Return as the error has been handled by the host app.
                     return
                 }
 
-                if let xmlrpcValidatorError = err as? WordPressOrgXMLRPCValidatorError {
-                    self.displayError(message: xmlrpcValidatorError.localizedDescription, moveVoiceOverFocus: true)
-
-                } else if (err.domain == NSURLErrorDomain && err.code == NSURLErrorCannotFindHost) ||
-                    (err.domain == NSURLErrorDomain && err.code == NSURLErrorNetworkConnectionLost) {
-                    // NSURLErrorNetworkConnectionLost can be returned when an invalid URL is entered.
-                    let msg = NSLocalizedString(
-                        "The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress.",
-                        comment: "Error message shown a URL does not point to an existing site.")
-                    self.displayError(message: msg, moveVoiceOverFocus: true)
-
+                if let message = errorMessage {
+                    self.displayError(message: message, moveVoiceOverFocus: true)
                 } else {
                     self.displayError(error as NSError, sourceTag: self.sourceTag)
                 }

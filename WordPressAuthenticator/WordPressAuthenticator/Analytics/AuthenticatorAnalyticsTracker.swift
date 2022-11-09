@@ -360,6 +360,12 @@ public class AuthenticatorAnalyticsTracker {
         track(event(click: click))
     }
 
+    /// Track a predefined failure enum.
+    ///
+    public func track(failure: Failure) {
+        track(failure: failure.rawValue)
+    }
+
     /// Track a failure.
     ///
     public func track(failure: String) {

@@ -217,24 +217,18 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private func displayProductPreview() {
         ServiceLocator.analytics.track(event: .ProductDetail.previewTapped())
 
-        var permalink = URLComponents(string: product.permalink)
-        var updatedQueryItems = permalink?.queryItems ?? []
+        guard var permalink = URLComponents(string: product.permalink),
+              let nonce = ServiceLocator.stores.sessionManager.defaultSite?.frameNonce else {
+            return
+        }
+
+        var updatedQueryItems = permalink.queryItems ?? []
         updatedQueryItems.append(.init(name: "preview", value: "true"))
-        permalink?.queryItems = updatedQueryItems
-        guard let url = permalink?.url else {
-            return
-        }
+        updatedQueryItems.append(.init(name: "frame-nonce", value: nonce))
+        permalink.queryItems = updatedQueryItems
 
-        let credentials = ServiceLocator.stores.sessionManager.defaultCredentials
-        guard let username = credentials?.username,
-              let token = credentials?.authToken,
-              let site = ServiceLocator.stores.sessionManager.defaultSite else {
-            return
-        }
-
-        let configuration = WebViewControllerConfiguration(url: url)
+        let configuration = WebViewControllerConfiguration(url: permalink.url)
         configuration.secureInteraction = true
-        configuration.authenticate(site: site, username: username, token: token)
         let webKitVC = WebKitViewController(configuration: configuration)
         let nc = WooNavigationController(rootViewController: webKitVC)
         present(nc, animated: true)
@@ -715,7 +709,7 @@ private extension ProductFormViewController {
     func moreDetailsButtonTapped(button: UIButton) {
         let title = NSLocalizedString("Add more details",
                                       comment: "Title of the bottom sheet from the product form to add more product details.")
-        let viewProperties = BottomSheetListSelectorViewProperties(title: title)
+        let viewProperties = BottomSheetListSelectorViewProperties(subtitle: title)
         let actions = viewModel.actionsFactory.bottomSheetActions()
         let dataSource = ProductFormBottomSheetListSelectorCommand(actions: actions) { [weak self] action in
                                                                     self?.dismiss(animated: true) { [weak self] in
@@ -980,7 +974,9 @@ private extension ProductFormViewController {
     }
 
     func createPreviewBarButtonItem() -> UIBarButtonItem {
-        return UIBarButtonItem(title: Localization.previewTitle, style: .done, target: self, action: #selector(saveDraftAndDisplayProductPreview))
+        let previewButton = UIBarButtonItem(title: Localization.previewTitle, style: .done, target: self, action: #selector(saveDraftAndDisplayProductPreview))
+        previewButton.isEnabled = viewModel.shouldEnablePreviewButton()
+        return previewButton
     }
 
     func createMoreOptionsBarButtonItem() -> UIBarButtonItem {
@@ -1153,7 +1149,7 @@ private extension ProductFormViewController {
     func editProductType(cell: UITableViewCell?) {
         let title = NSLocalizedString("Change product type",
                                       comment: "Message title of bottom sheet for selecting a product type")
-        let viewProperties = BottomSheetListSelectorViewProperties(title: title)
+        let viewProperties = BottomSheetListSelectorViewProperties(subtitle: title)
         let productType = BottomSheetProductType(productType: viewModel.productModel.productType, isVirtual: viewModel.productModel.virtual)
         let command = ProductTypeBottomSheetListSelectorCommand(selected: productType) { [weak self] (selectedProductType) in
             self?.dismiss(animated: true, completion: nil)

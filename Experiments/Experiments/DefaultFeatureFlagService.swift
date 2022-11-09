@@ -23,8 +23,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .loginErrorNotifications:
             return true
-        case .loginPrologueOnboardingSurvey:
-            return true
         case .loginMagicLinkEmphasis:
             return true
         case .loginMagicLinkEmphasisM2:

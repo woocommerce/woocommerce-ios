@@ -24,11 +24,6 @@ final class OrderListViewModel {
     private let pushNotificationsManager: PushNotesManager
     private let notificationCenter: NotificationCenter
 
-    /// Used to show the upsell card readers banner and discern its visibility
-    /// 
-    let upsellCardReadersCampaign = UpsellCardReadersCampaign(source: .orderList)
-    let upsellCardReadersAnnouncementViewModel: FeatureAnnouncementCardViewModel
-
     /// Used for cancelling the observer for Remote Notifications when `self` is deallocated.
     ///
     private var foregroundNotificationsSubscription: AnyCancellable?
@@ -107,11 +102,6 @@ final class OrderListViewModel {
         self.pushNotificationsManager = pushNotificationsManager
         self.notificationCenter = notificationCenter
         self.filters = filters
-        self.upsellCardReadersAnnouncementViewModel =
-            .init(analytics: ServiceLocator.analytics,
-                  configuration: upsellCardReadersCampaign.configuration,
-                  stores: stores)
-
     }
 
     deinit {
@@ -135,10 +125,6 @@ final class OrderListViewModel {
         observeForegroundRemoteNotifications()
         bindTopBannerState()
         loadOrdersBannerVisibility()
-    }
-
-    func dismissUpsellCardReadersBanner() {
-        bindTopBannerState()
     }
 
     func dismissOrdersBanner() {
@@ -293,18 +279,12 @@ extension OrderListViewModel {
     ///
     private func bindTopBannerState() {
         let errorState = $hasErrorLoadingData.removeDuplicates()
-        let cppConfiguration = CardPresentConfigurationLoader(stores: stores).configuration
-        let isSupportedCountryForCPP = cppConfiguration.isSupportedCountry
 
-        Publishers.CombineLatest3(errorState, $hideOrdersBanners, upsellCardReadersAnnouncementViewModel.$shouldBeVisible)
-            .map { hasError, hasDismissedOrdersBanners, upsellCardReadersBannerAvailable  -> TopBanner in
+        Publishers.CombineLatest(errorState, $hideOrdersBanners)
+            .map { hasError, hasDismissedOrdersBanners  -> TopBanner in
 
                 if hasError {
                     return .error
-                }
-
-                if upsellCardReadersBannerAvailable && isSupportedCountryForCPP {
-                    return .upsellCardReaders
                 }
 
                 if hasDismissedOrdersBanners {
@@ -353,7 +333,6 @@ extension OrderListViewModel {
     ///
     enum TopBanner {
         case error
-        case upsellCardReaders
         case orderCreation
         case none
     }

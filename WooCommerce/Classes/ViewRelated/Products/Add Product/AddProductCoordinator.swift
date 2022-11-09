@@ -65,6 +65,9 @@ final class AddProductCoordinator: Coordinator {
     }
 
     func start() {
+
+        ServiceLocator.analytics.track(event: .ProductsOnboarding.productListAddProductButtonTapped(templateEligible: isTemplateOptionsEligible()))
+
         if shouldPresentProductCreationBottomSheet() {
             presentProductCreationTypeBottomSheet()
         } else {
@@ -77,10 +80,16 @@ final class AddProductCoordinator: Coordinator {
 private extension AddProductCoordinator {
 
     /// Defines if the product creation bottom sheet should be presented.
-    /// Currently returns `true` when the feature is enabled and the number of products is fewer than 3.
+    /// Currently returns `true` when the feature is enabled and the store is eligible for displaying template options.
     ///
     func shouldPresentProductCreationBottomSheet() -> Bool {
-        isProductCreationTypeEnabled && productsResultsController.numberOfObjects < 3
+        isProductCreationTypeEnabled && isTemplateOptionsEligible()
+    }
+
+    /// Returns `true` when the number of products is fewer than 3.
+    ///
+    func isTemplateOptionsEligible() -> Bool {
+        productsResultsController.numberOfObjects < 3
     }
 
     /// Presents a bottom sheet for users to choose if they want a create a product manually or via a template.

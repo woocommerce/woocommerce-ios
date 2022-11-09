@@ -2,7 +2,7 @@
 
 11.2
 -----
-
+- [*] The survey at the end of the login onboarding flow is no longer available. [https://github.com/woocommerce/woocommerce-ios/pull/8062]
 
 11.1
 -----

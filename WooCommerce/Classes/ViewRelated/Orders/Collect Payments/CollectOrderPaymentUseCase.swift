@@ -298,6 +298,7 @@ private extension CollectOrderPaymentUseCase {
                    })
 
             }, onProcessingMessage: { [weak self] in
+                #warning("Don't trust this. onProcessingCompletion gets called first, or at least this doesn't get called in time after card read completes")
                 // Waiting message
                 self?.alerts.processingPayment()
             }, onDisplayMessage: { [weak self] message in

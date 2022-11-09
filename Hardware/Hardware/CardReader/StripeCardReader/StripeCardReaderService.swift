@@ -524,7 +524,10 @@ private extension StripeCardReaderService {
 #warning("This (collectPaymentMethod received) is where we are actually ready to read a card")
             DDLogInfo("💸 collectPaymentMethod received: ready to take payment")
 //            self?.sendReaderEvent(CardReaderEvent.waitingForInput("Ready for card"))
+            #warning("The completion here is where the Apple screen gets dismissed, added `processing payment` via this cardRemoved hack")
             self?.paymentCancellable = Terminal.shared.collectPaymentMethod(intent) { (intent, error) in
+                DDLogInfo("💸 CollectPaymentMethod completed")
+                self?.sendReaderEvent(CardReaderEvent.cardRemovedAfterClientSidePaymentCapture)
                 self?.paymentCancellable = nil
 
                 if let error = error {

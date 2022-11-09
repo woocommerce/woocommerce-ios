@@ -22,7 +22,7 @@ extension NSNotification.Name {
 protocol ZendeskManagerProtocol: SupportManagerAdapter {
     typealias onUserInformationCompletion = (_ success: Bool, _ email: String?) -> Void
 
-    func test_listenToSiteSwitchChanges()
+    func observeStoreSwitch()
 
     /// Displays the Zendesk New Request view from the given controller, for users to submit new tickets.
     ///
@@ -46,7 +46,7 @@ protocol ZendeskManagerProtocol: SupportManagerAdapter {
 }
 
 struct NoZendeskManager: ZendeskManagerProtocol {
-    func test_listenToSiteSwitchChanges() {
+    func observeStoreSwitch() {
         // no-op
     }
 
@@ -148,7 +148,9 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
 
     /// Loads Plugins from the Storage Layer.
     ///
-    private var pluginResultsController: ResultsController<StorageSitePlugin> {
+    private lazy var pluginResultsController: ResultsController<StorageSitePlugin> = updatePluginResultsController()
+
+    private func updatePluginResultsController() -> ResultsController<StorageSitePlugin> {
         var sitePredicate: NSPredicate? = nil
         if let siteID = stores.sessionManager.defaultSite?.siteID {
             sitePredicate = NSPredicate(format: "siteID == %lld", siteID)
@@ -163,12 +165,12 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
                                  sortedBy: pluginStatusDescriptor)
     }
 
-    func test_listenToSiteSwitchChanges() {
-        print("Changed! SiteID: ")
+    func observeStoreSwitch() {
+        pluginResultsController = updatePluginResultsController()
         do {
             try pluginResultsController.performFetch()
         } catch {
-            DDLogError(":(")
+            DDLogError("ZendeskManager: Unable to update plugin results")
         }
     }
 
@@ -249,6 +251,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     ///
     fileprivate override init() {
         super.init()
+        try? pluginResultsController.performFetch()
         observeZendeskNotifications()
     }
 

@@ -12,7 +12,7 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
 
     private let stores: StoresManager
     private let storageManager: StorageManagerType
-    private let ZendeskShared: ZendeskManagerProtocol = ZendeskProvider.shared
+    private let zendeskShared: ZendeskManagerProtocol = ZendeskProvider.shared
 
     private lazy var resultsController: ResultsController<StorageSite> = {
         return ResultsController(storageManager: storageManager, sortedBy: [])
@@ -73,9 +73,9 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
         // https://github.com/woocommerce/woocommerce-ios/pull/2013#discussion_r454620804
         logOutOfCurrentStore {
             self.finalizeStoreSelection(storeID)
-            // Inform ZD that the site has changed
+            // Inform the Zendesk shared instance that the Store has been switched
             // https://github.com/woocommerce/woocommerce-ios/pull/8008/
-            self.ZendeskShared.test_listenToSiteSwitchChanges()
+            self.zendeskShared.observeStoreSwitch()
             onCompletion(true)
         }
     }

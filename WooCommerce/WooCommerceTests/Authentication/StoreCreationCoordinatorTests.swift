@@ -22,11 +22,14 @@ final class StoreCreationCoordinatorTests: XCTestCase {
         super.tearDown()
     }
 
-    // MARK: - Presentation in different states
+    // MARK: - Presentation in different states for store creation M1
 
-    func test_AuthenticatedWebViewController_is_presented_when_navigationController_is_presenting_another_view() throws {
+    func test_AuthenticatedWebViewController_is_presented_when_navigationController_is_presenting_another_view_with_storeCreationM2_disabled() throws {
         // Given
-        let coordinator = StoreCreationCoordinator(source: .storePicker, navigationController: navigationController)
+        let featureFlagService = MockFeatureFlagService(isStoreCreationM2Enabled: false)
+        let coordinator = StoreCreationCoordinator(source: .storePicker,
+                                                   navigationController: navigationController,
+                                                   featureFlagService: featureFlagService)
         waitFor { promise in
             self.navigationController.present(.init(), animated: false) {
                 promise(())
@@ -45,10 +48,13 @@ final class StoreCreationCoordinatorTests: XCTestCase {
         assertThat(storeCreationNavigationController.topViewController, isAnInstanceOf: AuthenticatedWebViewController.self)
     }
 
-    func test_AuthenticatedWebViewController_is_presented_when_navigationController_is_showing_another_view() throws {
+    func test_AuthenticatedWebViewController_is_presented_when_navigationController_is_showing_another_view_with_storeCreationM2_disabled() throws {
         // Given
         navigationController.show(.init(), sender: nil)
-        let coordinator = StoreCreationCoordinator(source: .loggedOut(source: .loginEmailError), navigationController: navigationController)
+        let featureFlagService = MockFeatureFlagService(isStoreCreationM2Enabled: false)
+        let coordinator = StoreCreationCoordinator(source: .loggedOut(source: .loginEmailError),
+                                                   navigationController: navigationController,
+                                                   featureFlagService: featureFlagService)
         XCTAssertNotNil(navigationController.topViewController)
         XCTAssertNil(navigationController.presentedViewController)
 
@@ -61,5 +67,52 @@ final class StoreCreationCoordinatorTests: XCTestCase {
         }
         let storeCreationNavigationController = try XCTUnwrap(navigationController.presentedViewController as? UINavigationController)
         assertThat(storeCreationNavigationController.topViewController, isAnInstanceOf: AuthenticatedWebViewController.self)
+    }
+
+    // MARK: - Presentation in different states for store creation M2
+
+    func test_AuthenticatedWebViewController_is_presented_when_navigationController_is_presenting_another_view() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isStoreCreationM2Enabled: true)
+        let coordinator = StoreCreationCoordinator(source: .storePicker,
+                                                   navigationController: navigationController,
+                                                   featureFlagService: featureFlagService)
+        waitFor { promise in
+            self.navigationController.present(.init(), animated: false) {
+                promise(())
+            }
+        }
+        XCTAssertNotNil(navigationController.presentedViewController)
+
+        // When
+        coordinator.start()
+
+        // Then
+        waitUntil {
+            self.navigationController.presentedViewController is UINavigationController
+        }
+        let storeCreationNavigationController = try XCTUnwrap(navigationController.presentedViewController as? UINavigationController)
+        assertThat(storeCreationNavigationController.topViewController, isAnInstanceOf: DomainSelectorHostingController.self)
+    }
+
+    func test_AuthenticatedWebViewController_is_presented_when_navigationController_is_showing_another_view() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isStoreCreationM2Enabled: true)
+        navigationController.show(.init(), sender: nil)
+        let coordinator = StoreCreationCoordinator(source: .loggedOut(source: .loginEmailError),
+                                                   navigationController: navigationController,
+                                                   featureFlagService: featureFlagService)
+        XCTAssertNotNil(navigationController.topViewController)
+        XCTAssertNil(navigationController.presentedViewController)
+
+        // When
+        coordinator.start()
+
+        // Then
+        waitUntil {
+            self.navigationController.presentedViewController is UINavigationController
+        }
+        let storeCreationNavigationController = try XCTUnwrap(navigationController.presentedViewController as? UINavigationController)
+        assertThat(storeCreationNavigationController.topViewController, isAnInstanceOf: DomainSelectorHostingController.self)
     }
 }

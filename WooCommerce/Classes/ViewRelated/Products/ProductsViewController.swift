@@ -258,8 +258,6 @@ private extension ProductsViewController {
             return
         }
 
-        ServiceLocator.analytics.track(.productListAddProductTapped)
-
         let coordinatingController: AddProductCoordinator
         if let sourceBarButtonItem = sourceBarButtonItem {
             coordinatingController = AddProductCoordinator(siteID: siteID,

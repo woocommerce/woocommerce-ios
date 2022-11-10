@@ -128,6 +128,10 @@ final class IconsTests: XCTestCase {
         XCTAssertEqual(deleteCellImage.size, CGSize(width: 22, height: 22))
     }
 
+    func test_domainSearchPlaceholderImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.domainSearchPlaceholderImage)
+    }
+
     func testEllipsisImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.ellipsisImage)
     }

@@ -226,6 +226,12 @@ extension UIImage {
         return UIImage.gridicon(.cross, size: CGSize(width: 22, height: 22))
     }
 
+    /// Domain search placeholder image.
+    ///
+    static var domainSearchPlaceholderImage: UIImage {
+        return UIImage(named: "domain-search-placeholder")!
+    }
+
     /// Ellipsis Icon
     ///
     static var ellipsisImage: UIImage {

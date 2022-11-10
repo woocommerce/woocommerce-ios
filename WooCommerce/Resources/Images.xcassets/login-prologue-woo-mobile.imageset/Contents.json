@@ -1,7 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "login-prologue-woo-mobile.pdf",
+      "filename" : "Prologue Image Light.pdf",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "Prologue Image Dark.pdf",
       "idiom" : "universal"
     }
   ],

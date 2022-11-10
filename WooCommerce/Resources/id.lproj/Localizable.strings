@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-11-02 10:54:04+0000 */
+/* Translation-Revision-Date: 2022-11-07 18:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -409,6 +409,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title on empty state button when the product has attributes but no variations */
 "Add Variation" = "Tambahkan Variasi";
 
+/* Title for the button on the Products onboarding banner */
+"Add a Product" = "Tambahkan Produk";
+
+/* Button title on the store picker for store creation */
+"Add a Store" = "Tambahkan Toko";
+
 /* Title for the Add a Different Address switch in the Address form */
 "Add a different shipping address" = "Tambahkan alamat pengiriman lain";
 
@@ -464,6 +470,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "Tambahkan tautan produk";
+
+/* Title for the Products onboarding banner */
+"Add products to sell" = "Tambahkan produk untuk dijual";
 
 /* Title for adding grouped products row on Product main screen for a grouped product */
 "Add products to the group" = "Tambahkan produk ke grup";
@@ -768,7 +777,8 @@ which should be translated separately and considered part of this sentence. */
 "BILLING ADDRESS" = "ALAMAT PENAGIHAN";
 
 /* Accessibility label for Back button in the navigation bar
-   Alert button title - dismisses alert, which cancels the log out attempt */
+   Alert button title - dismisses alert, which cancels the log out attempt
+   Previous web page */
 "Back" = "Kembali";
 
 /* Accessibility announcement message when device goes back online */
@@ -821,6 +831,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Box package type, used to create a custom package in the Shipping Label flow */
 "Box" = "Kotak";
+
+/* Message for the Products onboarding banner */
+"Build your catalog by adding what you want to sell." = "Buat katalog dengan menambahkan produk yang ingin Anda jual.";
 
 /* Button title in the action sheet of product variatiosns that shows the bulk update
    Title that appears on top of the bulk update of product variations screen */
@@ -888,6 +901,7 @@ which should be translated separately and considered part of this sentence. */
    Button to cancel an in-person payment or refund
    Button to cancel the creation of an order on the New Order screen
    Button to dismiss Select Categories screen
+   Button to dismiss the action sheet on the store picker
    Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching.
    Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching.
    Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching.
@@ -1137,6 +1151,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to confirm the preferred provider for In-Person Payments */
 "Confirm Payment Method" = "Konfirmasi Metode Pembayaran";
 
+/* Button title Discard Changes in Discard Changes Action Sheet */
+"Confirm and leave" = "Konfirmasi lalu keluar";
+
 /* Title displayed if there are no inbox notes in the inbox screen. */
 "Congrats, you’ve read everything!" = "Selamat, Anda telah membaca semuanya!";
 
@@ -1154,6 +1171,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action button to handle connecting the logged-in account to a given site.Presented when logging in with a store address that does not match the account entered */
 "Connect Jetpack to your account" = "Hubungkan Jetpack ke akun Anda";
+
+/* Button to connect to an existing store from the store picker */
+"Connect an existing store" = "Sambungkan toko yang sudah ada";
 
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "Hubungkan ke Pembaca";
@@ -1371,9 +1391,6 @@ which should be translated separately and considered part of this sentence. */
 /* Navigates to a new flow for site creation. */
 "Create a Site" = "Buat Situs";
 
-/* Button displayed on the prologue screen of the simplified login flow to create a new store */
-"Create a Store" = "Buat Toko";
-
 /* Description for fixed product discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a fixed total discount for selected products" = "Buat diskon total tetap untuk produk yang dipilih";
 
@@ -1418,6 +1435,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "Buat variasi pertama Anda";
+
+/* Loading text while creating a product from a template */
+"Creating Template Product..." = "Membuat Produk Templat...";
 
 /* Credit card payment method for shipping label. */
 "Credit card" = "Kartu Kredit";
@@ -1634,6 +1654,9 @@ which should be translated separately and considered part of this sentence. */
 /* Dialog title that displays the name of a found card reader */
 "Do you want to connect to reader %1$@?" = "Anda ingin menghubungkan ke pembaca kartu %1$@?";
 
+/* Title of the alert when the user dismisses the store creation flow. */
+"Do you want to leave?" = "Ingin keluar?";
+
 /* Body of the alert when a user is moving a product to the trash */
 "Do you want to move this product to the Trash?" = "Ingin memindahkan produk ini ke Tempat Sampah?";
 
@@ -1669,7 +1692,7 @@ which should be translated separately and considered part of this sentence. */
    Text for the done button in the Fee Details screen
    Text for the done button in the Shipping Line Details screen
    The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again.
-   Title for the Done button on the WebView opened to upsell card readers */
+   Title for the Done button on a WebView modal sheet */
 "Done" = "Selesai";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
@@ -1915,8 +1938,7 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "Masukkan URL";
 
-/* Button title. Takes the user to the login by store address flow.
-   Button to input a site address in store picker when there are no stores found */
+/* Button title. Takes the user to the login by store address flow. */
 "Enter Your Store Address" = "Masukkan Alamat Toko Anda";
 
 /* Text field coupon code placeholder in the view for adding or editing a coupon. */
@@ -2198,6 +2220,9 @@ which should be translated separately and considered part of this sentence. */
 /* User role badge */
 "Follower" = "Pengikut";
 
+/* Next web page */
+"Forward" = "Teruskan";
+
 /* Title of the cell in Product Price Settings > Schedule sale from a certain date */
 "From" = "Dari";
 
@@ -2222,7 +2247,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "Membuat Variasi";
 
-/* Title of install action in the Jetpack Install view.
+/* Button displayed on the prologue screen of the simplified login flow to create a new store
+   Title of install action in the Jetpack Install view.
    View title for initial auth views. */
 "Get Started" = "Memulai";
 
@@ -2730,9 +2756,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "Letter (8,5 x 11 inci)";
 
-/* Caption displayed in the prologue screen shown after onboarding during the login flow. */
-"Let’s get started!" = "Mari kita mulai!";
-
 /* Title for the limit usage to X items row in coupon usage restrictions screen. */
 "Limit Usage to X Items" = "Batasi Penggunaan hingga X Barang";
 
@@ -2789,6 +2812,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Accessibility label for placeholder rows while products are loading */
 "Loading products" = "Memuat produk";
 
+/* Loading. Verb */
+"Loading..." = "Memuat...";
+
 /* Button title in the simplified login prologue screen. Takes the user to the login flow.
    Button title.  Tapping takes the user to the login form.
    Log In button label.
@@ -2798,7 +2824,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Action button that will restart the login flow.Presented when logging in with a site address that appears to be invalid.
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
    Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
-   Action button that will restart the login flow.Presented when the user tries to log in to the app with a simple WP.com site. */
+   Action button that will restart the login flow.Presented when the user tries to log in to the app with a simple WP.com site.
+   Button to trigger connection to another account in store picker */
 "Log In With Another Account" = "Login Dengan Akun Lain";
 
 /* Action button triggering a Log Out.Presented when logging in with a store address that does not match the account entered
@@ -2837,9 +2864,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Instructions on the WordPress.com username / password log in form. */
 "Log in with your WordPress.com username and password." = "Login dengan nama pengguna dan kata sandi WordPress.com Anda.";
-
-/* Action button linking to instructions for enter another store.Presented when logging in with an email address that is not a WordPress.com account */
-"Log in with your store address" = "Login dengan alamat toko Anda";
 
 /* Local notification action to log in with WordPress.com. */
 "Login with WordPress.com" = "Login dengan WordPress.com";
@@ -3061,8 +3085,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Message for the mocked order notification needed for the AppStore listing screenshot. 'Your WooCommerce Store' is the name of the mocked store. */
 "New order for $13.98 on Your WooCommerce Store" = "Pesanan baru senilai $13,98 di Toko WooCommerce Anda";
 
-/* Title of button in the login prologue screen for users who are new to WooCommerce.
-   Title of button on the site picker screen for users who are new to WooCommerce. */
+/* Title of button in the login prologue screen for users who are new to WooCommerce. */
 "New to WooCommerce?" = "Baru menggunakan WooCommerce?";
 
 /* Action navigate to the variation creation screen
@@ -3281,6 +3304,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Accessibility hint for selecting a product in an order form */
 "Opens product detail." = "Membuka detail produk.";
+
+/* Accessibility hint to open web page in Safari */
+"Opens the web page in Safari" = "Buka halaman web di Safari";
 
 /* Placeholder of cell presenting the title of the new attribute option. */
 "Option name" = "Nama pilihan";
@@ -3703,6 +3729,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of in-progress modal when preparing for printing customs invoice */
 "Preparing document" = "Menyiapkan dokumen";
 
+/* Action for previewing draft Product changes in the webview */
+"Preview" = "Pratampil";
+
 /* A label representing the amount that was previously refunded for the order. */
 "Previously Refunded" = "Sebelumnya sudah Dikembalikan";
 
@@ -3954,6 +3983,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of receipt. Reads like Receipt from WooCommerce, Inc. */
 "Receipt from %1$@" = "Tanda terima dari %1$@";
 
+/* Button label to refresh a web page */
+"Refresh" = "Muat ulang";
+
 /* Button to reload plugin data after activating a Card Present Payments extension */
 "Refresh After Activating" = "Segarkan Setelah Mengaktifkan";
 
@@ -4199,6 +4231,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS Terkirim";
 
+/* Button label to open web page in Safari */
+"Safari" = "Safari";
+
 /* Format of the sale period on the Price Settings row */
 "Sale dates: %@" = "Tanggal obral: %@";
 
@@ -4424,7 +4459,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of a modal presenting a list of readers to choose from. */
 "Several readers found" = "Ditemukan beberapa pembaca";
 
-/* Button title Share in Edit Product More Options Action Sheet */
+/* Button label to share a web page
+   Button title Share in Edit Product More Options Action Sheet */
 "Share" = "Bagikan";
 
 /* Action title for sharing coupon from the Coupon Details screen
@@ -5239,6 +5275,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* A general error message shown to the user when there was an API communication failure. */
 "There was a problem communicating with the site." = "Ada kendala saat berkomunikasi dengan situs.";
 
+/* Title for the error notice when creating a template product */
+"There was a problem creating the template product." = "Terjadi masalah saat membuat produk templat.";
+
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "Terjadi masalah saat menghapus blokir untuk situs tertentu.";
 
@@ -5359,7 +5398,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of the badge shown when promoting an existing feature */
 "Tip" = "Tips";
 
-/* Add Product Category. Placeholder of cell presenting the title of the category.
+/* Accessibility label for web page preview title
+   Add Product Category. Placeholder of cell presenting the title of the category.
    Placeholder in the Product Title row on Product form screen. */
 "Title" = "Judul";
 
@@ -5493,9 +5533,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Button to try to collect a payment again. Presented to users after collecting a payment fails */
 "Try Collecting Again" = "Coba Ulangi Pengumpulan";
-
-/* Button to trigger connection to another account in store picker */
-"Try With Another Account" = "Coba dengan Akun Lain";
 
 /* Action to resync on the placeholder overlay when there is issue syncing site plugins
    Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
@@ -5831,7 +5868,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "Use Suggested Address" = "Gunakan Alamat yang Disarankan";
 
 /* Description for the option to create a template product */
-"Use a template to create physical, virtual, and variable products." = "Gunakan templat untuk membuat produk berwujud fisik, virtual, dan yang memiliki variasi.";
+"Use a template to create physical, virtual, and variable products. You can edit it as you go." = "Gunakan templat untuk membuat produk berwujud fisik, virtual, dan yang memiliki variasi. Anda juga dapat mengeditnya nanti.";
 
 /* Account creation error when the email is invalid. */
 "Use a working email address, so you can receive our messages." = "Gunakan alamat email yang aktif agar Anda bisa menerima pesan-pesan kami.";
@@ -5990,9 +6027,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Title of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
 "We couldn't connect your reader" = "Tidak dapat menyambungkan pembaca";
 
-/* Displayed during the Login flow, whenever the user has no woo stores associated. */
-"We couldn't find a WooCommerce store connected to your account." = "Kami tidak menemukan toko WooCommerce yang terhubung ke akun Anda.";
-
 /* The title of the Error Loading Data banner */
 "We couldn't load your data" = "Data Anda tidak dapat dimuat";
 
@@ -6066,6 +6100,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "We're sorry, we couldn't find any order that match %@" = "Maaf, kami tidak dapat menemukan pesanan yang cocok dengan %@";
 
 /* Message for empty Coupons search results. The %@ is a placeholder for the text entered by the user.
+   Message for empty Customers search results. %@ is a placeholder for the text entered by the user.
    Message for empty Orders search results. The %@ is a placeholder for the text entered by the user.
    Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */
 "We're sorry, we couldn't find results for “%@”" = "Maaf, kami tidak menemukan apa pun untuk pencarian “%@”";
@@ -6165,6 +6200,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Caption displayed in the simplified prologue screen */
 "WooCommerce is a customizable, open-source eCommerce platform built on WordPress." = "WooCommerce adalah platform eCommerce open-source yang dapat disesuaikan dan dibuat berdasarkan WordPress.";
 
+/* WordPress API (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
+"WordPress API Error: [%1$@] %2$@" = "Error API WordPress: [%1$@] %2$@";
+
 /* Menu option for selecting media from the site's media library.
    Navigation bar title for WordPress Media Library image picker */
 "WordPress Media Library" = "Pustaka Media WordPress";
@@ -6230,11 +6268,17 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "Tampaknya Anda telah menginstal plugin seluler dari DudaMobile yang membuat aplikasi tidak dapat tersambung ke blog Anda";
 
+/* Message of the alert when the user dismisses the store creation flow. */
+"You will lose all your store information." = "Semua data terkait toko akan terhapus.";
+
 /* Error message when the merchant's payment account is under review */
 "You'll be able to accept In-Person Payments as soon as we finish reviewing your account." = "Anda akan dapat menerima Pembayaran Langsung segera setelah kami selesai meninjau akun Anda.";
 
 /* Error message displayed when unable to close user account due to being unauthorized. */
 "You're not authorized to close the account." = "Anda tidak berwenang untuk menutup akun.";
+
+/* Displayed during the Login flow, whenever the user has no woo stores associated. */
+"Your account isn’t connected to any WooCommerce stores." = "Akun Anda tidak terhubung ke toko WooCommerce mana pun.";
 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "Perangkat lunak pembaca kartu Anda perlu diperbarui untuk menerima pembayaran. Pembatalan akan memblok sambungan pembaca Anda.";
@@ -6374,6 +6418,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Used when the response doesn't have a valid url to display */
 "unknown url" = "url tidak diketahui";
+
+/* Verb. Dismiss the web view screen. */
+"webKit.button.dismiss" = "Tutup";
 
 /* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need...
    Placeholder for site url, if the url is unknown.Presented when logging in with a store address that does not match the account entered. */

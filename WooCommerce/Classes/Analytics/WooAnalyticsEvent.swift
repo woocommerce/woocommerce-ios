@@ -1722,6 +1722,7 @@ extension WooAnalyticsEvent {
     enum ProductsOnboarding {
         enum Keys: String {
             case type
+            case templateEligible = "template_eligible"
         }
 
         enum CreationType: String {
@@ -1745,6 +1746,10 @@ extension WooAnalyticsEvent {
         ///
         static func productCreationTypeSelected(type: CreationType) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .addProductCreationTypeSelected, properties: [Keys.type.rawValue: type.rawValue])
+        }
+
+        static func productListAddProductButtonTapped(templateEligible: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productListAddProductTapped, properties: [Keys.templateEligible.rawValue: templateEligible])
         }
     }
 }

@@ -1,1 +1,1 @@
-Den här versionen kanske inte innehåller några spännande nya funktioner, men vi har ändå lagt ner mycket jobb på den. Vi har korrigerat ett par buggar och gjort en rad olika förbättringar för att göra din upplevelse smidigare.
+Har du provat att skapa eller uppdatera en beställning i appen? Nu är det möjligt att söka efter kunder när du gör det. Kolla in det och dela din feedback.

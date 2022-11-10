@@ -15,7 +15,7 @@ final class InAppPurchaseStoreTests: XCTestCase {
     ///
     private var storageManager: MockStorageManager!
 
-    private var storeKitSession = try! SKTestSession(configurationFileNamed: "WooCommerce")
+    private var storeKitSession = try! SKTestSession(configurationFileNamed: "WooCommerceTest")
 
     /// Testing SiteID
     ///

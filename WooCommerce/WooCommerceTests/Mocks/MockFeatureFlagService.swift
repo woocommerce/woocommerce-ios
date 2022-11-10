@@ -8,6 +8,7 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let shippingLabelsOnboardingM1: Bool
     private let isLoginPrologueOnboardingEnabled: Bool
     private let isStoreCreationMVPEnabled: Bool
+    private let isStoreCreationM2Enabled: Bool
     private let isProductsOnboardingEnabled: Bool
 
     init(isInboxOn: Bool = false,
@@ -15,7 +16,8 @@ struct MockFeatureFlagService: FeatureFlagService {
          isUpdateOrderOptimisticallyOn: Bool = false,
          shippingLabelsOnboardingM1: Bool = false,
          isLoginPrologueOnboardingEnabled: Bool = false,
-         isStoreCreationMVPEnabled: Bool = false,
+         isStoreCreationMVPEnabled: Bool = true,
+         isStoreCreationM2Enabled: Bool = false,
          isProductsOnboardingEnabled: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isSplitViewInOrdersTabOn = isSplitViewInOrdersTabOn
@@ -23,6 +25,7 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.shippingLabelsOnboardingM1 = shippingLabelsOnboardingM1
         self.isLoginPrologueOnboardingEnabled = isLoginPrologueOnboardingEnabled
         self.isStoreCreationMVPEnabled = isStoreCreationMVPEnabled
+        self.isStoreCreationM2Enabled = isStoreCreationM2Enabled
         self.isProductsOnboardingEnabled = isProductsOnboardingEnabled
     }
 
@@ -40,6 +43,8 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isLoginPrologueOnboardingEnabled
         case .storeCreationMVP:
             return isStoreCreationMVPEnabled
+        case .storeCreationM2:
+            return isStoreCreationM2Enabled
         case .productsOnboarding:
             return isProductsOnboardingEnabled
         default:

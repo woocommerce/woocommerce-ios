@@ -181,6 +181,16 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
     var existsRemotely: Bool {
         product.existsRemotely
     }
+
+    /// Helper to determine if a product model is empty.
+    /// We consider it as empty if its underlying product matches the `ProductFactory.createNewProduct` output.
+    ///
+    func isEmpty() -> Bool {
+        guard let emptyProduct = ProductFactory().createNewProduct(type: productType, isVirtual: virtual, siteID: siteID) else {
+            return false
+        }
+        return emptyProduct == product
+    }
 }
 
 extension EditableProductModel: Equatable {

@@ -3,6 +3,7 @@
 11.2
 -----
 - [*] The survey at the end of the login onboarding flow is no longer available. [https://github.com/woocommerce/woocommerce-ios/pull/8062]
+- [*] The Accept Payments Easily banner has been removed from the order list [https://github.com/woocommerce/woocommerce-ios/pull/8078]
 
 11.1
 -----

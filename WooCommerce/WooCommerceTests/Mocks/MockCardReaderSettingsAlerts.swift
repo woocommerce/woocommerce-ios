@@ -151,4 +151,22 @@ extension MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
     func dismiss() {
         // GNDN
     }
+
+    func preparingLocalReader(from: UIViewController, cancel: @escaping () -> Void) {
+        if mode == .cancelScanning {
+            cancel()
+        }
+    }
+
+    func selectSearchType(from: UIViewController, options: [Yosemite.CardReaderDiscoveryMethod : (() -> Void)]) {
+        guard let bluetoothScanTapped = options[.bluetoothProximity] else {
+            return
+        }
+        bluetoothScanTapped()
+    }
+
+    func connectingToLocalReader(from: UIViewController) {
+        // GNDN
+    }
+
 }

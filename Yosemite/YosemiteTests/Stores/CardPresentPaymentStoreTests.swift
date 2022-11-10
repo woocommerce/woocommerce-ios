@@ -87,7 +87,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                                        network: network,
                                                        cardReaderService: mockCardReaderService)
 
-        let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: sampleSiteID, onReaderDiscovered: { _ in }, onError: { _ in })
+        let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: sampleSiteID, type: .bluetoothProximity, onReaderDiscovered: { _ in }, onError: { _ in })
 
         cardPresentStore.onAction(action)
 
@@ -104,6 +104,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
         let action = CardPresentPaymentAction.startCardReaderDiscovery(
             siteID: sampleSiteID,
+            type: .bluetoothProximity,
             onReaderDiscovered: { _ in
                 expectation.fulfill()
             },
@@ -121,7 +122,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                                        network: network,
                                                        cardReaderService: mockCardReaderService)
 
-        let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: sampleSiteID, onReaderDiscovered: { _ in }, onError: { _ in })
+        let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: sampleSiteID, type: .bluetoothProximity, onReaderDiscovered: { _ in }, onError: { _ in })
 
         cardPresentStore.onAction(action)
 
@@ -147,6 +148,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
         let action = CardPresentPaymentAction.startCardReaderDiscovery(
             siteID: sampleSiteID,
+            type: .bluetoothProximity,
             onReaderDiscovered: { discoveredReaders in
                 XCTAssertTrue(self.mockCardReaderService.didReceiveAConfigurationProvider)
                 if discoveredReaders.count == 0 {
@@ -205,7 +207,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
         let expectation = self.expectation(description: "Cancelling discovery changes discoveryStatus to idle")
 
-        let startDiscoveryAction = CardPresentPaymentAction.startCardReaderDiscovery(siteID: sampleSiteID, onReaderDiscovered: { _ in }, onError: { _ in })
+        let startDiscoveryAction = CardPresentPaymentAction.startCardReaderDiscovery(siteID: sampleSiteID, type: .bluetoothProximity, onReaderDiscovered: { _ in }, onError: { _ in })
 
         cardPresentStore.onAction(startDiscoveryAction)
 

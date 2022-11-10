@@ -1,6 +1,7 @@
 import Combine
 import UIKit
 import Yosemite
+import protocol Experiments.FeatureFlagService
 import protocol Storage.StorageManagerType
 
 /// Coordinates navigation for store creation flow, with the assumption that the app is already authenticated with a WPCOM user.
@@ -13,7 +14,7 @@ final class StoreCreationCoordinator: Coordinator {
         case storePicker
     }
 
-    var navigationController: UINavigationController
+    let navigationController: UINavigationController
 
     @Published private var possibleSiteURLsFromStoreCreation: Set<String> = []
     private var possibleSiteURLsFromStoreCreationSubscription: AnyCancellable?
@@ -22,12 +23,14 @@ final class StoreCreationCoordinator: Coordinator {
     private let source: Source
     private let storePickerViewModel: StorePickerViewModel
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
+    private let featureFlagService: FeatureFlagService
 
     init(source: Source,
          navigationController: UINavigationController,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.source = source
         self.navigationController = navigationController
         // Passing the `standard` configuration to include sites without WooCommerce (`isWooCommerceActive = false`).
@@ -37,9 +40,17 @@ final class StoreCreationCoordinator: Coordinator {
                                           analytics: analytics)
         self.switchStoreUseCase = SwitchStoreUseCase(stores: stores, storageManager: storageManager)
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
     }
 
     func start() {
+        featureFlagService.isFeatureFlagEnabled(.storeCreationM2) ?
+        startStoreCreationM2(): startStoreCreationM1()
+    }
+}
+
+private extension StoreCreationCoordinator {
+    func startStoreCreationM1() {
         observeSiteURLsFromStoreCreation()
 
         let viewModel = StoreCreationWebViewModel { [weak self] result in
@@ -52,14 +63,29 @@ final class StoreCreationCoordinator: Coordinator {
         // Disables interactive dismissal of the store creation modal.
         webNavigationController.isModalInPresentation = true
 
+        presentStoreCreation(viewController: webNavigationController)
+    }
+
+    func startStoreCreationM2() {
+        let domainSelector = DomainSelectorHostingController(viewModel: .init(),
+                                                             onDomainSelection: { domain in
+            // TODO-8045: navigate to the next step of store creation.
+        }, onSkip: {
+            // TODO-8045: skip to the next step of store creation with an auto-generated domain.
+        })
+        let storeCreationNavigationController = UINavigationController(rootViewController: domainSelector)
+        presentStoreCreation(viewController: storeCreationNavigationController)
+    }
+
+    func presentStoreCreation(viewController: UIViewController) {
         // If the navigation controller is already presenting another view, the view needs to be dismissed before store
         // creation view can be presented.
         if navigationController.presentedViewController != nil {
             navigationController.dismiss(animated: true) { [weak self] in
-                self?.navigationController.present(webNavigationController, animated: true)
+                self?.navigationController.present(viewController, animated: true)
             }
         } else {
-            navigationController.present(webNavigationController, animated: true)
+            navigationController.present(viewController, animated: true)
         }
     }
 }

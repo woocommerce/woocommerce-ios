@@ -7,8 +7,9 @@ struct InAppPurchasesDebugView: View {
     let siteID: Int64
     private let inAppPurchasesForWPComPlansManager = InAppPurchasesForWPComPlansManager()
     @State var products: [WPComPlanProduct] = []
-    @State var entitledProductIDs: [String] = []
+    @State var entitledProductIDs: Set<String> = []
     @State var inAppPurchasesAreSupported = true
+    @State var isPurchasing = false
 
     var body: some View {
         List {
@@ -22,11 +23,16 @@ struct InAppPurchasesDebugView: View {
             Section("Products") {
                 if products.isEmpty {
                     Text("No products")
+                } else if isPurchasing {
+                    ActivityIndicator(isAnimating: .constant(true), style: .medium)
                 } else {
                     ForEach(products, id: \.id) { product in
                         Button(entitledProductIDs.contains(product.id) ? "Entitled: \(product.description)" : product.description) {
                             Task {
+                                isPurchasing = true
                                 try? await inAppPurchasesForWPComPlansManager.purchaseProduct(with: product.id, for: siteID)
+                                await loadUserEntitlements()
+                                isPurchasing = false
                             }
                         }
                     }
@@ -50,6 +56,11 @@ struct InAppPurchasesDebugView: View {
         .task {
             await loadProducts()
         }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+            Task {
+                await loadUserEntitlements()
+            }
+        }
     }
 
     private func loadProducts() async {
@@ -71,7 +82,9 @@ struct InAppPurchasesDebugView: View {
         do {
             for product in self.products {
                 if try await inAppPurchasesForWPComPlansManager.userIsEntitledToProduct(with: product.id) {
-                    self.entitledProductIDs.append(product.id)
+                    self.entitledProductIDs.insert(product.id)
+                } else {
+                    self.entitledProductIDs.remove(product.id)
                 }
             }
         }

@@ -625,8 +625,39 @@ extension WooAnalyticsEvent {
     enum JustInTimeMessage {
         private enum Keys {
             static let source = "source"
+            static let justInTimeMessage = "jitm"
             static let justInTimeMessageID = "jitm_id"
             static let justInTimeMessageGroup = "jitm_group"
+            static let count = "count"
+        }
+
+        static func fetchSuccess(source: String,
+                                 messageID: String,
+                                 count: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .justInTimeMessageFetchSuccess,
+                              properties: [
+                                Keys.source: source,
+                                Keys.justInTimeMessage: messageID,
+                                Keys.count: count
+                              ])
+        }
+
+        static func fetchFailure(source: String,
+                                 error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .justInTimeMessageFetchFailure,
+                              properties: [Keys.source: source],
+                              error: error)
+        }
+
+        static func messageDisplayed(source: String,
+                                     messageID: String,
+                                     featureClass: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .justInTimeMessageDisplayed,
+                              properties: [
+                                Keys.source: source,
+                                Keys.justInTimeMessageID: messageID,
+                                Keys.justInTimeMessageGroup: featureClass
+                              ])
         }
 
         static func callToActionTapped(source: String,
@@ -1691,6 +1722,7 @@ extension WooAnalyticsEvent {
     enum ProductsOnboarding {
         enum Keys: String {
             case type
+            case templateEligible = "template_eligible"
         }
 
         enum CreationType: String {
@@ -1714,6 +1746,10 @@ extension WooAnalyticsEvent {
         ///
         static func productCreationTypeSelected(type: CreationType) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .addProductCreationTypeSelected, properties: [Keys.type.rawValue: type.rawValue])
+        }
+
+        static func productListAddProductButtonTapped(templateEligible: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productListAddProductTapped, properties: [Keys.templateEligible.rawValue: templateEligible])
         }
     }
 }

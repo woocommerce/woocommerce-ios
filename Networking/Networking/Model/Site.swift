@@ -29,6 +29,8 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
     ///
     public let loginURL: String
 
+    public let frameNonce: String
+
     /// Short name for site's plan.
     ///
     public let plan: String
@@ -82,6 +84,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
         let gmtOffset = try optionsContainer.decode(Double.self, forKey: .gmtOffset)
         let adminURL = try optionsContainer.decode(String.self, forKey: .adminURL)
         let loginURL = try optionsContainer.decode(String.self, forKey: .loginURL)
+        let frameNonce = try optionsContainer.decode(String.self, forKey: .frameNonce)
 
         self.init(siteID: siteID,
                   name: name,
@@ -89,6 +92,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
                   url: url,
                   adminURL: adminURL,
                   loginURL: loginURL,
+                  frameNonce: frameNonce,
                   plan: String(), // Not created on init. Added in supplementary API request.
                   isJetpackThePluginInstalled: isJetpackThePluginInstalled,
                   isJetpackConnected: isJetpackConnected,
@@ -107,6 +111,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
                 url: String,
                 adminURL: String,
                 loginURL: String,
+                frameNonce: String,
                 plan: String,
                 isJetpackThePluginInstalled: Bool,
                 isJetpackConnected: Bool,
@@ -121,6 +126,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
         self.url = url
         self.adminURL = adminURL
         self.loginURL = loginURL
+        self.frameNonce = frameNonce
         self.plan = plan
         self.isJetpackThePluginInstalled = isJetpackThePluginInstalled
         self.isJetpackConnected = isJetpackConnected
@@ -163,6 +169,7 @@ private extension Site {
         case jetpackConnectionActivePlugins = "jetpack_connection_active_plugins"
         case adminURL = "admin_url"
         case loginURL = "login_url"
+        case frameNonce = "frame_nonce"
     }
 
     enum PlanKeys: String, CodingKey {

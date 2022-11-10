@@ -4,7 +4,7 @@ import Alamofire
 
 /// Represents a Jetpack-Tunneled WordPress.com Endpoint
 ///
-struct JetpackRequest: URLRequestConvertible {
+struct JetpackRequest: Request {
 
     /// WordPress.com API Version: By Default, we'll go thru Mark 1.1.
     ///
@@ -21,6 +21,10 @@ struct JetpackRequest: URLRequestConvertible {
     /// Jetpack-Tunneled Site ID
     ///
     let siteID: Int64
+
+    /// Locale identifier, simplified as `language_Region` e.g. `en_US`
+    ///
+    let locale: String?
 
     /// Jetpack-Tunneled RPC
     ///
@@ -40,13 +44,14 @@ struct JetpackRequest: URLRequestConvertible {
     ///     - path: RPC that should be called.
     ///     - parameters: Collection of Key/Value parameters, to be forwarded to the Jetpack Connected site.
     ///
-    init(wooApiVersion: WooAPIVersion, method: HTTPMethod, siteID: Int64, path: String, parameters: [String: Any]? = nil) {
+    init(wooApiVersion: WooAPIVersion, method: HTTPMethod, siteID: Int64, locale: String? = nil, path: String, parameters: [String: Any]? = nil) {
         if [.mark1, .mark2].contains(wooApiVersion) {
             DDLogWarn("⚠️ You are using an older version of the Woo REST API: \(wooApiVersion.rawValue), for path: \(path)")
         }
         self.wooApiVersion = wooApiVersion
         self.method = method
         self.siteID = siteID
+        self.locale = locale
         self.path = path
         self.parameters = parameters ?? [:]
     }
@@ -59,6 +64,10 @@ struct JetpackRequest: URLRequestConvertible {
         let dotcomRequest = try dotcomEndpoint.asURLRequest()
 
         return try dotcomEncoder.encode(dotcomRequest, with: dotcomParams)
+    }
+
+    func responseDataValidator() -> ResponseDataValidator {
+        return DotcomValidator()
     }
 }
 
@@ -101,6 +110,10 @@ private extension JetpackRequest {
             "json": "true",
             "path": jetpackPath + "&_method=" + method.rawValue.lowercased()
         ]
+
+        if let locale = locale {
+            output["locale"] = locale
+        }
 
         if let jetpackQueryParams = jetpackQueryParams {
             output["query"] = jetpackQueryParams

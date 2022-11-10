@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-10-26 11:54:03+0000 */
+/* Translation-Revision-Date: 2022-11-06 02:10:08+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -428,6 +428,9 @@ which should be translated separately and considered part of this sentence. */
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "商品画像を追加";
 
+/* Description for the option to create product manually */
+"Add a product manually." = "手動で商品を追加します。";
+
 /* Placeholder text in Product Purchase Note screen */
 "Add a purchase note..." = "注意事項を追加…";
 
@@ -448,6 +451,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press enter" = "各オプションを追加して Enter を押します";
+
+/* Title for the option to create product manually */
+"Add manually" = "手動で追加";
 
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
@@ -565,6 +571,9 @@ which should be translated separately and considered part of this sentence. */
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "もう少しで完了です。認証アプリから認証コードを入力してください。";
 
+/* Subtitle for the login button on the account creation form. */
+"Already registered?" = "すでに登録されていますか ?";
+
 /* Instruction text to explain to help users type their password instead of using magic link login option. */
 "Alternatively, you may enter the password for this account." = "または、このアカウントのパスワードを入力することもできます。";
 
@@ -596,6 +605,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* A failure reason for when an error HTTP status code was returned from the site. */
 "An HTTP error code was returned." = "HTTP エラーコードが返されました。";
+
+/* Account creation error when the email is already associated with an existing WP.com account. */
+"An account with this email already exists." = "このメールアドレスのアカウントはすでにあります。";
 
 /* Default error message displayed when unable to close user account. */
 "An error occured while closing account." = "アカウントの閉鎖中にエラーが発生しました。";
@@ -756,7 +768,8 @@ which should be translated separately and considered part of this sentence. */
 "BILLING ADDRESS" = "請求先住所";
 
 /* Accessibility label for Back button in the navigation bar
-   Alert button title - dismisses alert, which cancels the log out attempt */
+   Alert button title - dismisses alert, which cancels the log out attempt
+   Previous web page */
 "Back" = "戻る";
 
 /* Accessibility announcement message when device goes back online */
@@ -823,6 +836,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of one of the elements in the CTA View for installing WCShip extension */
 "Buy postage when you need it" = "送料は必要なときに購入";
 
+/* Terms of service format on the account creation form. */
+"By continuing, you agree to our %1$@." = "続行すると、%1$@に同意したことになります。";
+
 /* Legal disclaimer for logging in. The underscores _..._ denote underline. */
 "By continuing, you agree to our _Terms of Service_." = "継続すると、_利用規約_ に合意したことになります。";
 
@@ -873,6 +889,7 @@ which should be translated separately and considered part of this sentence. */
    Button to cancel an in-person payment or refund
    Button to cancel the creation of an order on the New Order screen
    Button to dismiss Select Categories screen
+   Button to dismiss the action sheet on the store picker
    Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching.
    Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching.
    Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching.
@@ -1032,6 +1049,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation title on the shipping label states of a country selector screen */
 "Choose a State" = "都道府県を選択する";
+
+/* Title of the password field on the account creation form. */
+"Choose a password" = "パスワードを選択";
 
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "デバイスから選択";
@@ -1339,6 +1359,9 @@ which should be translated separately and considered part of this sentence. */
 /* The button title text for creating a new account. */
 "Create Account" = "アカウントを作成";
 
+/* Action button linking to create WooCommerce store flow.Presented when logging in with an email address that is not a WordPress.com account */
+"Create An Account" = "アカウントを作成";
+
 /* Title of the create coupon button on the coupon list screen when it's empty */
 "Create Coupon" = "クーポンを作成";
 
@@ -1346,6 +1369,9 @@ which should be translated separately and considered part of this sentence. */
    Option to create new shipping label from the action sheet on Products section of Order Details screen
    Text on the button that starts shipping label creation */
 "Create Shipping Label" = "配送ラベルを作成";
+
+/* Navigates to a new flow for site creation. */
+"Create a Site" = "サイトを作成";
 
 /* Description for fixed product discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a fixed total discount for selected products" = "選択した商品の割引合計金額を作成します";
@@ -1642,7 +1668,7 @@ which should be translated separately and considered part of this sentence. */
    Text for the done button in the Fee Details screen
    Text for the done button in the Shipping Line Details screen
    The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again.
-   Title for the Done button on the WebView opened to upsell card readers */
+   Title for the Done button on a WebView modal sheet */
 "Done" = "完了";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
@@ -1787,7 +1813,8 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the email address text field.
    Placeholder for a textfield. The user may enter their email address.
-   Placeholder for the email address textfield. */
+   Placeholder for the email address textfield.
+   Placeholder of the email field on the account creation form. */
 "Email address" = "メールアドレス";
 
 /* Label for yes/no switch - emailing the note to customer. */
@@ -1887,8 +1914,7 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "URL を入力";
 
-/* Button title. Takes the user to the login by store address flow.
-   Button to input a site address in store picker when there are no stores found */
+/* Button title. Takes the user to the login by store address flow. */
 "Enter Your Store Address" = "ストアの住所を入力";
 
 /* Text field coupon code placeholder in the view for adding or editing a coupon. */
@@ -1928,6 +1954,9 @@ which should be translated separately and considered part of this sentence. */
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "WordPress.com アカウント用のパスワードを入力します。";
 
+/* Instructional text shown when requesting the user's password for WPCom login. */
+"Enter the password for your account." = "アカウント用のパスワードを入力します。";
+
 /* Add custom shipping carrier. Placeholder of cell presenting carrier link */
 "Enter tracking link" = "追跡リンクを入力";
 
@@ -1936,6 +1965,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Enter your account information for {site url}. Asks the user to enter a username and password for their self-hosted site. */
 "Enter your account information for %@." = "%@ のアカウント情報を入力してください。";
+
+/* Sign in instructions on the 'log in using WordPress.com account' screen. */
+"Enter your email address to get started." = "メールアドレスを入力して開始します。";
 
 /* Instruction text on the initial email address entry screen. */
 "Enter your email address to log in or create a WordPress.com account." = "メールアドレスを入力してログインするか、WordPress.com アカウントを作成します。";
@@ -2152,6 +2184,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text field name in Edit Address Form */
 "First name" = "名";
 
+/* Subtitle for the account creation form. */
+"First, let’s create your account." = "最初に、アカウントを作成しましょう。";
+
 /* Name of fixed cart discount type */
 "Fixed Cart Discount" = "お買い物カゴごとに割引";
 
@@ -2160,6 +2195,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* User role badge */
 "Follower" = "フォロワー";
+
+/* Next web page */
+"Forward" = "前へ";
 
 /* Title of the cell in Product Price Settings > Schedule sale from a certain date */
 "From" = "送信元";
@@ -2185,7 +2223,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "バリエーションを生成しています";
 
-/* Title of install action in the Jetpack Install view.
+/* Button displayed on the prologue screen of the simplified login flow to create a new store
+   Title of install action in the Jetpack Install view.
    View title for initial auth views. */
 "Get Started" = "今すぐ始める";
 
@@ -2206,6 +2245,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Local notification body when the user encounters an error logging in with site address. */
 "Get some help!" = "サポートを利用する";
+
+/* Title of the submit button on the account creation form. */
+"Get started" = "新規登録";
+
+/* Title for the account creation form. */
+"Get started in minutes" = "すぐに始められます";
 
 /* Title of the Jetpack benefits banner. */
 "Get the full experience with Jetpack" = "Jetpack でフル機能を利用";
@@ -2343,6 +2388,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "改善すべき点をお聞かせください";
+
+/* Message title of bottom sheet for selecting a template or manual product */
+"How do you want to start?" = "どのように始めますか ?";
 
 /* The title of the button for giving a positive feedback for the app. */
 "I Like It" = "満足している";
@@ -2662,6 +2710,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
 "Learn more about Jetpack" = "Jetpack についてさらに詳しく";
 
+/* Title of button in the simplified login prologue screen for learning more about WooCommerce. */
+"Learn more about WooCommerce" = "WooCommerce の詳細";
+
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
 "Learn more about creating labels with your mobile device" = "モバイルデバイスでのラベル作成に関する詳細はこちら";
 
@@ -2680,9 +2731,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "レター (8.5 x 11インチ)";
-
-/* Caption displayed in the prologue screen shown after onboarding during the login flow. */
-"Let’s get started!" = "では、始めましょう。";
 
 /* Title for the limit usage to X items row in coupon usage restrictions screen. */
 "Limit Usage to X Items" = "X個に利用を制限";
@@ -2740,7 +2788,11 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Accessibility label for placeholder rows while products are loading */
 "Loading products" = "商品を読み込み中";
 
-/* Button title.  Tapping takes the user to the login form.
+/* Loading. Verb */
+"Loading..." = "読み込み中…";
+
+/* Button title in the simplified login prologue screen. Takes the user to the login flow.
+   Button title.  Tapping takes the user to the login form.
    Log In button label.
    View title during the log in process. */
 "Log In" = "ログイン";
@@ -2748,7 +2800,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Action button that will restart the login flow.Presented when logging in with a site address that appears to be invalid.
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
    Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
-   Action button that will restart the login flow.Presented when the user tries to log in to the app with a simple WP.com site. */
+   Action button that will restart the login flow.Presented when the user tries to log in to the app with a simple WP.com site.
+   Button to trigger connection to another account in store picker */
 "Log In With Another Account" = "別のアカウントでログイン";
 
 /* Action button triggering a Log Out.Presented when logging in with a store address that does not match the account entered
@@ -2758,6 +2811,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Explains that the files are sorted by LIFO date: most recent day listed first. */
 "Log files by created date" = "ログファイル (作成日順)";
+
+/* Title of the login button on the account creation form. */
+"Log in" = "ログイン";
 
 /* A generic error message for a failed log in. */
 "Log in failed. Please try again." = "ログインに失敗しました。もう一度お試しください。";
@@ -2784,9 +2840,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Instructions on the WordPress.com username / password log in form. */
 "Log in with your WordPress.com username and password." = "WordPress.com のユーザー名とパスワードでログインしてください。";
-
-/* Action button linking to instructions for enter another store.Presented when logging in with an email address that is not a WordPress.com account */
-"Log in with your store address" = "ストアアドレスでログイン";
 
 /* Local notification action to log in with WordPress.com. */
 "Login with WordPress.com" = "WordPress.com にログイン";
@@ -3008,8 +3061,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Message for the mocked order notification needed for the AppStore listing screenshot. 'Your WooCommerce Store' is the name of the mocked store. */
 "New order for $13.98 on Your WooCommerce Store" = "WooCommerce ストアに $13.98の新しい注文があります";
 
-/* Title of button in the login prologue screen for users who are new to WooCommerce.
-   Title of button on the site picker screen for users who are new to WooCommerce. */
+/* Title of button in the login prologue screen for users who are new to WooCommerce. */
 "New to WooCommerce?" = "初めて WooCommerce をお使いになる場合";
 
 /* Action navigate to the variation creation screen
@@ -3229,6 +3281,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Accessibility hint for selecting a product in an order form */
 "Opens product detail." = "商品の詳細を開きます。";
 
+/* Accessibility hint to open web page in Safari */
+"Opens the web page in Safari" = "Safari で Web ページを開く";
+
 /* Placeholder of cell presenting the title of the new attribute option. */
 "Option name" = "オプション名";
 
@@ -3377,11 +3432,15 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Login dialog password placeholder
    Password field title in Product Visibility
    Password placeholder
-   Placeholder for the password textfield. */
+   Placeholder for the password textfield.
+   Placeholder of the password field on the account creation form. */
 "Password" = "パスワード";
 
 /* One of the possible options in Product Visibility */
 "Password Protected" = "パスワード保護";
+
+/* Account creation error when the password is invalid. */
+"Password must be at least 6 characters." = "6文字以上のパスワードを選んでください。";
 
 /* Paste without Formatting Menu Item */
 "Paste without Formatting" = "書式を解除して貼り付け";
@@ -3578,7 +3637,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Body text for the default store picker error screen */
 "Please try again or reach out to us and we'll be happy to assist you!" = "再度お試しいただくか、サポートをご依頼ください。";
 
-/* The message of the alert when there is an error uploading an image */
+/* Account creation error when an unexpected error occurs.
+   The message of the alert when there is an error uploading an image */
 "Please try again." = "もう一度お試しください。";
 
 /* Error message when Jetpack activation fails */
@@ -3644,6 +3704,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Title of in-progress modal when preparing for printing customs invoice */
 "Preparing document" = "Document を準備中";
+
+/* Action for previewing draft Product changes in the webview */
+"Preview" = "プレビュー";
 
 /* A label representing the amount that was previously refunded for the order. */
 "Previously Refunded" = "過去に返金済み";
@@ -3896,6 +3959,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of receipt. Reads like Receipt from WooCommerce, Inc. */
 "Receipt from %1$@" = "%1$@からのレシート";
 
+/* Button label to refresh a web page */
+"Refresh" = "更新";
+
 /* Button to reload plugin data after activating a Card Present Payments extension */
 "Refresh After Activating" = "アクティベート後に再度読み込む";
 
@@ -4141,6 +4207,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS 送信完了";
 
+/* Button label to open web page in Safari */
+"Safari" = "Safari";
+
 /* Format of the sale period on the Price Settings row */
 "Sale dates: %@" = "セール期間 :%@";
 
@@ -4226,6 +4295,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Coupons Search Placeholder */
 "Search all coupons" = "すべてのクーポンを検索";
+
+/* Customer Search Placeholder */
+"Search all customers" = "すべてのお客様を検索";
 
 /* Orders Search Placeholder */
 "Search all orders" = "すべての注文を検索";
@@ -4363,7 +4435,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of a modal presenting a list of readers to choose from. */
 "Several readers found" = "複数の Reader が見つかりました";
 
-/* Button title Share in Edit Product More Options Action Sheet */
+/* Button label to share a web page
+   Button title Share in Edit Product More Options Action Sheet */
 "Share" = "共有";
 
 /* Action title for sharing coupon from the Coupon Details screen
@@ -4673,6 +4746,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The details on the placeholder overlay when there are no products on the Products tab */
 "Start selling today by adding your first product to the store." = "今すぐ販売を開始するには、最初の商品をストアに追加してください。";
 
+/* Title for the option to create a template product */
+"Start with a template" = "テンプレートで開始";
+
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %@, ending period %@" = "開始期間%1$@、終了期間%2$@";
 
@@ -4915,7 +4991,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "%1$@ についてもう少しお聞かせください...";
 
-/* The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen.
+/* Terms of service link on the account creation form.
+   The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen.
    Title of button that displays the App's terms of service */
 "Terms of Service" = "利用規約";
 
@@ -5242,9 +5319,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "このメールアドレスは WordPress.com に登録されていません。";
 
-/* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
-"This email isn't used with a WordPress.com account." = "このメールアドレス  は WordPress.com アカウントで使用されていません。";
-
 /* Error for missing package details on the Add New Custom Package screen in Shipping Label flow */
 "This field is required" = "このフィールドは必須です";
 
@@ -5297,7 +5371,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of the badge shown when promoting an existing feature */
 "Tip" = "ヒント";
 
-/* Add Product Category. Placeholder of cell presenting the title of the category.
+/* Accessibility label for web page preview title
+   Add Product Category. Placeholder of cell presenting the title of the category.
    Placeholder in the Product Title row on Product form screen. */
 "Title" = "タイトル";
 
@@ -5420,6 +5495,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Try Again button on the error alert when fetching system status report fails */
 "Try Again" = "もう一度お試しください";
 
+/* Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
+"Try Another Address" = "別のアドレスを試す";
+
 /* Message from the in-person payment card reader prompting user to retry a payment using a different card */
 "Try Another Card" = "別のカードでお試しください";
 
@@ -5428,9 +5506,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Button to try to collect a payment again. Presented to users after collecting a payment fails */
 "Try Collecting Again" = "もう一度受け取りを試みる";
-
-/* Button to trigger connection to another account in store picker */
-"Try With Another Account" = "別のアカウントで試行";
 
 /* Action to resync on the placeholder overlay when there is issue syncing site plugins
    Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
@@ -5765,6 +5840,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Action to use the address in Shipping Label Suggested screen as suggested */
 "Use Suggested Address" = "提案された住所を使用";
 
+/* Account creation error when the email is invalid. */
+"Use a working email address, so you can receive our messages." = "メッセージが受け取れるよう、有効なメールアドレスを使ってください。";
+
 /* Title for the Use as Billing Address switch in the Address form */
 "Use as Billing Address" = "請求先住所として使用";
 
@@ -5919,9 +5997,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Title of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
 "We couldn't connect your reader" = "Reader に接続できませんでした";
 
-/* Displayed during the Login flow, whenever the user has no woo stores associated. */
-"We couldn't find a WooCommerce store connected to your account." = "お使いのアカウントに連携している WooCommerce ストアが見つかりませんでした。";
-
 /* The title of the Error Loading Data banner */
 "We couldn't load your data" = "データを読み込めませんでした";
 
@@ -5995,6 +6070,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "We're sorry, we couldn't find any order that match %@" = "「%@」に一致する注文が見つかりませんでした。";
 
 /* Message for empty Coupons search results. The %@ is a placeholder for the text entered by the user.
+   Message for empty Customers search results. %@ is a placeholder for the text entered by the user.
    Message for empty Orders search results. The %@ is a placeholder for the text entered by the user.
    Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */
 "We're sorry, we couldn't find results for “%@”" = "「%@」の検索結果が見つかりませんでした。";
@@ -6091,6 +6167,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Subject of new Zendesk ticket. */
 "WooCommerce for iOS Support" = "iOS 対応 WooCommerce サポート";
 
+/* Caption displayed in the simplified prologue screen */
+"WooCommerce is a customizable, open-source eCommerce platform built on WordPress." = "WooCommerce は WordPress に構築された、カスタマイズ可能かつオープンソースの eコマースプラットフォームです。";
+
 /* Menu option for selecting media from the site's media library.
    Navigation bar title for WordPress Media Library image picker */
 "WordPress Media Library" = "WordPress メディアライブラリ";
@@ -6164,6 +6243,12 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "支払いを受け取るには、カードリーダーのソフトウェアを更新する必要があります。 キャンセルするとリーダーの接続がブロックされます。";
+
+/* Title of the email field on the account creation form. */
+"Your email address" = "あなたのメールアドレス";
+
+/* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
+"Your email isn't used with a WordPress.com account" = "メールアドレスは WordPress.com アカウントで使用されていません。";
 
 /* Message displayed when a coupon was successfully created */
 "Your new coupon was created!" = "新しいクーポンが作成されました。";
@@ -6294,6 +6379,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Used when the response doesn't have a valid url to display */
 "unknown url" = "不明な URL";
+
+/* Verb. Dismiss the web view screen. */
+"webKit.button.dismiss" = "削除";
 
 /* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need...
    Placeholder for site url, if the url is unknown.Presented when logging in with a store address that does not match the account entered. */

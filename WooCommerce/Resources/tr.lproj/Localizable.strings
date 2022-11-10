@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-10-26 15:54:03+0000 */
+/* Translation-Revision-Date: 2022-11-09 14:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -409,6 +409,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title on empty state button when the product has attributes but no variations */
 "Add Variation" = "Varyasyon Ekle";
 
+/* Title for the button on the Products onboarding banner */
+"Add a Product" = "Ürün Ekle";
+
+/* Button title on the store picker for store creation */
+"Add a Store" = "Mağaza Ekle";
+
 /* Title for the Add a Different Address switch in the Address form */
 "Add a different shipping address" = "Farklı bir gönderim adresi ekle";
 
@@ -427,6 +433,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Bir ürün görseli ekle";
+
+/* Description for the option to create product manually */
+"Add a product manually." = "Bir ürünü elle ekleyin.";
 
 /* Placeholder text in Product Purchase Note screen */
 "Add a purchase note..." = "Satın alma notu ekleyin...";
@@ -449,6 +458,9 @@ which should be translated separately and considered part of this sentence. */
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press enter" = "Her seçeneği ekleyin ve enter tuşuna basın ";
 
+/* Title for the option to create product manually */
+"Add manually" = "El ile ekle";
+
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
 "Add more details" = "Diğer ayrıntıları ekleme";
@@ -458,6 +470,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "Ürün bağlantısı ekle";
+
+/* Title for the Products onboarding banner */
+"Add products to sell" = "Satılacak ürünleri ekleyin";
 
 /* Title for adding grouped products row on Product main screen for a grouped product */
 "Add products to the group" = "Gruba ürün ekle";
@@ -565,6 +580,9 @@ which should be translated separately and considered part of this sentence. */
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "Neredeyse bitiyor! Lütfen doğrulama uygulamanızdan edindiğiniz doğrulama kodunu girin.";
 
+/* Subtitle for the login button on the account creation form. */
+"Already registered?" = "Zaten kayıtlı mısınız?";
+
 /* Instruction text to explain to help users type their password instead of using magic link login option. */
 "Alternatively, you may enter the password for this account." = "Alternatif olarak, bu hesabın şifresini girebilirsiniz.";
 
@@ -596,6 +614,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* A failure reason for when an error HTTP status code was returned from the site. */
 "An HTTP error code was returned." = "Bir HTTP hata kodu döndürüldü.";
+
+/* Account creation error when the email is already associated with an existing WP.com account. */
+"An account with this email already exists." = "Bu e-postayla kayıtlı bir hesap zaten var";
 
 /* Default error message displayed when unable to close user account. */
 "An error occured while closing account." = "Hesap kapatılırken bir hata oluştu.";
@@ -756,7 +777,8 @@ which should be translated separately and considered part of this sentence. */
 "BILLING ADDRESS" = "FATURA ADRESİ";
 
 /* Accessibility label for Back button in the navigation bar
-   Alert button title - dismisses alert, which cancels the log out attempt */
+   Alert button title - dismisses alert, which cancels the log out attempt
+   Previous web page */
 "Back" = "Geri";
 
 /* Accessibility announcement message when device goes back online */
@@ -810,6 +832,9 @@ which should be translated separately and considered part of this sentence. */
 /* Box package type, used to create a custom package in the Shipping Label flow */
 "Box" = "Kutu";
 
+/* Message for the Products onboarding banner */
+"Build your catalog by adding what you want to sell." = "Satmak istediklerinizi ekleyerek kataloğunuzu oluşturun.";
+
 /* Button title in the action sheet of product variatiosns that shows the bulk update
    Title that appears on top of the bulk update of product variations screen */
 "Bulk Update" = "Toplu Güncelleme";
@@ -822,6 +847,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of one of the elements in the CTA View for installing WCShip extension */
 "Buy postage when you need it" = "İhtiyacınız olduğunda posta ücreti satın alın";
+
+/* Terms of service format on the account creation form. */
+"By continuing, you agree to our %1$@." = "Devam ederek %1$@ hükümlerimizi kabul etmiş olursunuz.";
 
 /* Legal disclaimer for logging in. The underscores _..._ denote underline. */
 "By continuing, you agree to our _Terms of Service_." = "Devam ederek Hizmet Şartlarımızı kabul etmiş olursunuz.";
@@ -873,6 +901,7 @@ which should be translated separately and considered part of this sentence. */
    Button to cancel an in-person payment or refund
    Button to cancel the creation of an order on the New Order screen
    Button to dismiss Select Categories screen
+   Button to dismiss the action sheet on the store picker
    Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching.
    Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching.
    Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching.
@@ -1033,6 +1062,9 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title on the shipping label states of a country selector screen */
 "Choose a State" = "Bir Eyalet Seçin";
 
+/* Title of the password field on the account creation form. */
+"Choose a password" = "Bir şifre seçin";
+
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "Cihazdan seç";
 
@@ -1119,6 +1151,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to confirm the preferred provider for In-Person Payments */
 "Confirm Payment Method" = "Ödeme Yöntemini onaylayın";
 
+/* Button title Discard Changes in Discard Changes Action Sheet */
+"Confirm and leave" = "Onaylayın ve çıkın";
+
 /* Title displayed if there are no inbox notes in the inbox screen. */
 "Congrats, you’ve read everything!" = "Tebrikler, her şeyi okudunuz!";
 
@@ -1136,6 +1171,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action button to handle connecting the logged-in account to a given site.Presented when logging in with a store address that does not match the account entered */
 "Connect Jetpack to your account" = "Jetpack'i hesabınıza bağlayın";
+
+/* Button to connect to an existing store from the store picker */
+"Connect an existing store" = "Mevcut bir mağazayı bağla";
 
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "Okuyucuya Bağlan";
@@ -1339,6 +1377,9 @@ which should be translated separately and considered part of this sentence. */
 /* The button title text for creating a new account. */
 "Create Account" = "Hesap Oluştur";
 
+/* Action button linking to create WooCommerce store flow.Presented when logging in with an email address that is not a WordPress.com account */
+"Create An Account" = "Bir Hesap Oluşturun";
+
 /* Title of the create coupon button on the coupon list screen when it's empty */
 "Create Coupon" = "Kupon Oluştur";
 
@@ -1346,6 +1387,9 @@ which should be translated separately and considered part of this sentence. */
    Option to create new shipping label from the action sheet on Products section of Order Details screen
    Text on the button that starts shipping label creation */
 "Create Shipping Label" = "Gönderi Etiketi Oluşturun";
+
+/* Navigates to a new flow for site creation. */
+"Create a Site" = "Site Oluşturun";
 
 /* Description for fixed product discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a fixed total discount for selected products" = "Seçilen ürünler için sabit bir toplam indirim oluşturun";
@@ -1391,6 +1435,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "İlk varyasyonunuzu oluşturun";
+
+/* Loading text while creating a product from a template */
+"Creating Template Product..." = "Şablon Ürün Oluşturuluyor...";
 
 /* Credit card payment method for shipping label. */
 "Credit card" = "Kredi kartı";
@@ -1607,6 +1654,9 @@ which should be translated separately and considered part of this sentence. */
 /* Dialog title that displays the name of a found card reader */
 "Do you want to connect to reader %1$@?" = "%1$@ okuyucusuna bağlanmak istiyor musunuz?";
 
+/* Title of the alert when the user dismisses the store creation flow. */
+"Do you want to leave?" = "Çıkmak istiyor musunuz?";
+
 /* Body of the alert when a user is moving a product to the trash */
 "Do you want to move this product to the Trash?" = "Bu ürünü Çöp Kutusu'na taşımak istiyor musunuz?";
 
@@ -1642,7 +1692,7 @@ which should be translated separately and considered part of this sentence. */
    Text for the done button in the Fee Details screen
    Text for the done button in the Shipping Line Details screen
    The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again.
-   Title for the Done button on the WebView opened to upsell card readers */
+   Title for the Done button on a WebView modal sheet */
 "Done" = "Bitti";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
@@ -1787,7 +1837,8 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the email address text field.
    Placeholder for a textfield. The user may enter their email address.
-   Placeholder for the email address textfield. */
+   Placeholder for the email address textfield.
+   Placeholder of the email field on the account creation form. */
 "Email address" = "E-posta adresi";
 
 /* Label for yes/no switch - emailing the note to customer. */
@@ -1887,8 +1938,7 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "URL gir";
 
-/* Button title. Takes the user to the login by store address flow.
-   Button to input a site address in store picker when there are no stores found */
+/* Button title. Takes the user to the login by store address flow. */
 "Enter Your Store Address" = "Mağaza adresinizi girin";
 
 /* Text field coupon code placeholder in the view for adding or editing a coupon. */
@@ -1928,6 +1978,9 @@ which should be translated separately and considered part of this sentence. */
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "WordPress.com hesabınız için parola girin.";
 
+/* Instructional text shown when requesting the user's password for WPCom login. */
+"Enter the password for your account." = "Hesabınızın şifresini girin.";
+
 /* Add custom shipping carrier. Placeholder of cell presenting carrier link */
 "Enter tracking link" = "Takip bağlantısını girin";
 
@@ -1936,6 +1989,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Enter your account information for {site url}. Asks the user to enter a username and password for their self-hosted site. */
 "Enter your account information for %@." = "%@ ile igili hesap bilgilerinizi girin.";
+
+/* Sign in instructions on the 'log in using WordPress.com account' screen. */
+"Enter your email address to get started." = "İşe koyulmak için e-posta adresinizi girin.";
 
 /* Instruction text on the initial email address entry screen. */
 "Enter your email address to log in or create a WordPress.com account." = "Oturum açmak veya bir WordPress.com hesabı oluşturmak için e-posta adresinizi girin.";
@@ -2152,6 +2208,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text field name in Edit Address Form */
 "First name" = "İsim";
 
+/* Subtitle for the account creation form. */
+"First, let’s create your account." = " likle hesabınızı oluşturalım.";
+
 /* Name of fixed cart discount type */
 "Fixed Cart Discount" = "Sabit Sepet İndirimi";
 
@@ -2160,6 +2219,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* User role badge */
 "Follower" = "Takipçi";
+
+/* Next web page */
+"Forward" = "Yönlendir";
 
 /* Title of the cell in Product Price Settings > Schedule sale from a certain date */
 "From" = "Kimden";
@@ -2185,7 +2247,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "Varyasyon Oluşturma";
 
-/* Title of install action in the Jetpack Install view.
+/* Button displayed on the prologue screen of the simplified login flow to create a new store
+   Title of install action in the Jetpack Install view.
    View title for initial auth views. */
 "Get Started" = "Başlangıç";
 
@@ -2206,6 +2269,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Local notification body when the user encounters an error logging in with site address. */
 "Get some help!" = "Yardım alın!";
+
+/* Title of the submit button on the account creation form. */
+"Get started" = "Hemen başlayın";
+
+/* Title for the account creation form. */
+"Get started in minutes" = "Dakikalar içinde başlayın";
 
 /* Title of the Jetpack benefits banner. */
 "Get the full experience with Jetpack" = "Jetpack ile tam deneyimi yaşayın";
@@ -2343,6 +2412,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "Nasıl iyileştirebiliriz?";
+
+/* Message title of bottom sheet for selecting a template or manual product */
+"How do you want to start?" = "Nasıl başlamak istiyorsunuz?";
 
 /* The title of the button for giving a positive feedback for the app. */
 "I Like It" = "Beğendim";
@@ -2662,6 +2734,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
 "Learn more about Jetpack" = "Jetpack hakkında daha fazlasını öğrenin";
 
+/* Title of button in the simplified login prologue screen for learning more about WooCommerce. */
+"Learn more about WooCommerce" = "WooCommerce hakkında daha fazla bilgi edinin";
+
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
 "Learn more about creating labels with your mobile device" = "Mobil cihazınızla etiket oluşturma hakkında daha fazla bilgi edinin";
 
@@ -2680,9 +2755,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "Letter (8,5 x 11 inç)";
-
-/* Caption displayed in the prologue screen shown after onboarding during the login flow. */
-"Let’s get started!" = "Artık başlayalım!";
 
 /* Title for the limit usage to X items row in coupon usage restrictions screen. */
 "Limit Usage to X Items" = "Kullanımı X Öğe ile Sınırla";
@@ -2740,7 +2812,11 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Accessibility label for placeholder rows while products are loading */
 "Loading products" = "Ürünler yükleniyor";
 
-/* Button title.  Tapping takes the user to the login form.
+/* Loading. Verb */
+"Loading..." = "Yükleniyor...";
+
+/* Button title in the simplified login prologue screen. Takes the user to the login flow.
+   Button title.  Tapping takes the user to the login form.
    Log In button label.
    View title during the log in process. */
 "Log In" = "Giriş yap";
@@ -2748,7 +2824,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Action button that will restart the login flow.Presented when logging in with a site address that appears to be invalid.
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
    Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
-   Action button that will restart the login flow.Presented when the user tries to log in to the app with a simple WP.com site. */
+   Action button that will restart the login flow.Presented when the user tries to log in to the app with a simple WP.com site.
+   Button to trigger connection to another account in store picker */
 "Log In With Another Account" = "Başka Bir Hesapla Oturum Açın";
 
 /* Action button triggering a Log Out.Presented when logging in with a store address that does not match the account entered
@@ -2758,6 +2835,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Explains that the files are sorted by LIFO date: most recent day listed first. */
 "Log files by created date" = "Oluşturma tarihine göre günlük dosyaları";
+
+/* Title of the login button on the account creation form. */
+"Log in" = "Giriş yap";
 
 /* A generic error message for a failed log in. */
 "Log in failed. Please try again." = "Giriş başarısız. Lütfen tekrar deneyin.";
@@ -2784,9 +2864,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Instructions on the WordPress.com username / password log in form. */
 "Log in with your WordPress.com username and password." = "WordPress.com kullanıcı adı ve şifreniz ile oturum açın.";
-
-/* Action button linking to instructions for enter another store.Presented when logging in with an email address that is not a WordPress.com account */
-"Log in with your store address" = "Mağaza adresinizle oturum açın";
 
 /* Local notification action to log in with WordPress.com. */
 "Login with WordPress.com" = "WordPress.com ile oturum açın";
@@ -3008,8 +3085,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Message for the mocked order notification needed for the AppStore listing screenshot. 'Your WooCommerce Store' is the name of the mocked store. */
 "New order for $13.98 on Your WooCommerce Store" = "WooCommerce Mağazanızda 13.98 ABD doları tutarında yeni sipariş";
 
-/* Title of button in the login prologue screen for users who are new to WooCommerce.
-   Title of button on the site picker screen for users who are new to WooCommerce. */
+/* Title of button in the login prologue screen for users who are new to WooCommerce. */
 "New to WooCommerce?" = "WooCommerce'te yeni misiniz?";
 
 /* Action navigate to the variation creation screen
@@ -3229,6 +3305,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Accessibility hint for selecting a product in an order form */
 "Opens product detail." = "Ürün detayını açar.";
 
+/* Accessibility hint to open web page in Safari */
+"Opens the web page in Safari" = "Web sayfasını Safari'de açar";
+
 /* Placeholder of cell presenting the title of the new attribute option. */
 "Option name" = "Seçenek adı";
 
@@ -3377,11 +3456,15 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Login dialog password placeholder
    Password field title in Product Visibility
    Password placeholder
-   Placeholder for the password textfield. */
+   Placeholder for the password textfield.
+   Placeholder of the password field on the account creation form. */
 "Password" = "Parola";
 
 /* One of the possible options in Product Visibility */
 "Password Protected" = "Parola Korumalı";
+
+/* Account creation error when the password is invalid. */
+"Password must be at least 6 characters." = "Şifre en az 6 karakter olmalıdır.";
 
 /* Paste without Formatting Menu Item */
 "Paste without Formatting" = "Biçimlendirmeden Yapıştır";
@@ -3578,7 +3661,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Body text for the default store picker error screen */
 "Please try again or reach out to us and we'll be happy to assist you!" = "Lütfen tekrar deneyin veya bize ulaşın, size yardımcı olmaktan memnuniyet duyarız!";
 
-/* The message of the alert when there is an error uploading an image */
+/* Account creation error when an unexpected error occurs.
+   The message of the alert when there is an error uploading an image */
 "Please try again." = "Lütfen yeniden deneyin.";
 
 /* Error message when Jetpack activation fails */
@@ -3644,6 +3728,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Title of in-progress modal when preparing for printing customs invoice */
 "Preparing document" = "Belge hazırlanıyor";
+
+/* Action for previewing draft Product changes in the webview */
+"Preview" = "Önizleme";
 
 /* A label representing the amount that was previously refunded for the order. */
 "Previously Refunded" = "Daha Önce Para İadesi Yapıldı";
@@ -3896,6 +3983,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of receipt. Reads like Receipt from WooCommerce, Inc. */
 "Receipt from %1$@" = "%1$@ kaynağından makbuz";
 
+/* Button label to refresh a web page */
+"Refresh" = "Yenile";
+
 /* Button to reload plugin data after activating a Card Present Payments extension */
 "Refresh After Activating" = "Etkinleştirdikten sonra yenileyin";
 
@@ -4141,6 +4231,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS Gönderildi";
 
+/* Button label to open web page in Safari */
+"Safari" = "Safari";
+
 /* Format of the sale period on the Price Settings row */
 "Sale dates: %@" = "İndirim tarihleri: %@";
 
@@ -4226,6 +4319,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Coupons Search Placeholder */
 "Search all coupons" = "Tüm kuponlarda ara";
+
+/* Customer Search Placeholder */
+"Search all customers" = "Tüm müşterileri arayın";
 
 /* Orders Search Placeholder */
 "Search all orders" = "Tüm siparişleri ara";
@@ -4363,7 +4459,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of a modal presenting a list of readers to choose from. */
 "Several readers found" = "Birkaç okuyucu bulundu";
 
-/* Button title Share in Edit Product More Options Action Sheet */
+/* Button label to share a web page
+   Button title Share in Edit Product More Options Action Sheet */
 "Share" = "Paylaş";
 
 /* Action title for sharing coupon from the Coupon Details screen
@@ -4673,6 +4770,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The details on the placeholder overlay when there are no products on the Products tab */
 "Start selling today by adding your first product to the store." = "Mağazanıza ilk ürünü ekleyerek hemen bugün satışa başlayın.";
 
+/* Title for the option to create a template product */
+"Start with a template" = "Bir şablonla başlayın";
+
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %@, ending period %@" = "%1$@ başlangıç süreci, %2$@ bitiş süreci";
 
@@ -4915,7 +5015,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "Bize %1$@ ile ilgili daha fazla bilgi verin...";
 
-/* The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen.
+/* Terms of service link on the account creation form.
+   The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen.
    Title of button that displays the App's terms of service */
 "Terms of Service" = "Hizmet Koşulları";
 
@@ -5174,6 +5275,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* A general error message shown to the user when there was an API communication failure. */
 "There was a problem communicating with the site." = "Siteyle iletişimde bir sorun oluştu.";
 
+/* Title for the error notice when creating a template product */
+"There was a problem creating the template product." = "Şablon ürün oluşturulurken bir sorun oluştu.";
+
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "Belirtilen sitenin engeli kaldırılırken hata oluştu.";
 
@@ -5242,9 +5346,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "Bu e-posta adresi WordPress.com üzerinde kayıtlı değil.";
 
-/* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
-"This email isn't used with a WordPress.com account." = "Bu e-posta bir WordPress.com hesabıyla kullanılmıyor.";
-
 /* Error for missing package details on the Add New Custom Package screen in Shipping Label flow */
 "This field is required" = "Bu alan zorunludur";
 
@@ -5297,7 +5398,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of the badge shown when promoting an existing feature */
 "Tip" = "İpucu";
 
-/* Add Product Category. Placeholder of cell presenting the title of the category.
+/* Accessibility label for web page preview title
+   Add Product Category. Placeholder of cell presenting the title of the category.
    Placeholder in the Product Title row on Product form screen. */
 "Title" = "Başlık";
 
@@ -5420,6 +5522,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Try Again button on the error alert when fetching system status report fails */
 "Try Again" = "Tekrar deneyin";
 
+/* Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
+"Try Another Address" = "Başka Bir Adres Deneyin";
+
 /* Message from the in-person payment card reader prompting user to retry a payment using a different card */
 "Try Another Card" = "Başka Bir Kart Deneyin";
 
@@ -5428,9 +5533,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Button to try to collect a payment again. Presented to users after collecting a payment fails */
 "Try Collecting Again" = "Tekrar Almayı Deneyin";
-
-/* Button to trigger connection to another account in store picker */
-"Try With Another Account" = "Başka Bir Hesapla Deneyin";
 
 /* Action to resync on the placeholder overlay when there is issue syncing site plugins
    Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
@@ -5765,6 +5867,12 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Action to use the address in Shipping Label Suggested screen as suggested */
 "Use Suggested Address" = "Önerilen Adresi Kullan";
 
+/* Description for the option to create a template product */
+"Use a template to create physical, virtual, and variable products. You can edit it as you go." = "Fiziksel, dijital, sanal ve değişken ürünler eklemek için bir şablon kullanın. Devam ederken düzenleyebilirsiniz.";
+
+/* Account creation error when the email is invalid. */
+"Use a working email address, so you can receive our messages." = "İletilerimizi alabilmek için çalışan bir e-posta adresi kullanın.";
+
 /* Title for the Use as Billing Address switch in the Address form */
 "Use as Billing Address" = "Fatura Adresi olarak kullan";
 
@@ -5919,9 +6027,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Title of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
 "We couldn't connect your reader" = "Okuyucunuza bağlanılamadı";
 
-/* Displayed during the Login flow, whenever the user has no woo stores associated. */
-"We couldn't find a WooCommerce store connected to your account." = "Hesabınıza bağlı bir WooCommerce mağazası bulamadık.";
-
 /* The title of the Error Loading Data banner */
 "We couldn't load your data" = "Verileriniz yüklenemedi";
 
@@ -5995,6 +6100,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "We're sorry, we couldn't find any order that match %@" = "Üzgünüz, %@ ile eşleşen herhangi bir sipariş bulamadık";
 
 /* Message for empty Coupons search results. The %@ is a placeholder for the text entered by the user.
+   Message for empty Customers search results. %@ is a placeholder for the text entered by the user.
    Message for empty Orders search results. The %@ is a placeholder for the text entered by the user.
    Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */
 "We're sorry, we couldn't find results for “%@”" = "Üzgünüz, \"%@\" için sonuç bulamadık";
@@ -6091,6 +6197,12 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Subject of new Zendesk ticket. */
 "WooCommerce for iOS Support" = "iOS Desteği için WooCommerce";
 
+/* Caption displayed in the simplified prologue screen */
+"WooCommerce is a customizable, open-source eCommerce platform built on WordPress." = "WooCommerce; WordPress için oluşturulmuş özelleştirilebilir, açık kaynaklı bir e-ticaret platformudur.";
+
+/* WordPress API (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
+"WordPress API Error: [%1$@] %2$@" = "WordPress API Hatası: [%1$@] %2$@";
+
 /* Menu option for selecting media from the site's media library.
    Navigation bar title for WordPress Media Library image picker */
 "WordPress Media Library" = "WordPress Ortam Kitaplığı";
@@ -6156,14 +6268,26 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "DudaMobilden uygulamanın bloğunuza bağlanmasını engelleyen bir eklenti yüklemiş görünüyorsunuz ";
 
+/* Message of the alert when the user dismisses the store creation flow. */
+"You will lose all your store information." = "Tüm mağaza bilgilerinizi kaybedersiniz.";
+
 /* Error message when the merchant's payment account is under review */
 "You'll be able to accept In-Person Payments as soon as we finish reviewing your account." = "Hesabınızın incelenmesi biter bitirmez Şahsen Ödemeleri kabul edebileceksiniz.";
 
 /* Error message displayed when unable to close user account due to being unauthorized. */
 "You're not authorized to close the account." = "Hesabı kapatma yetkiniz yok.";
 
+/* Displayed during the Login flow, whenever the user has no woo stores associated. */
+"Your account isn’t connected to any WooCommerce stores." = "Hesabınız herhangi bir WooCommerce mağazasına bağlı değil.";
+
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "Ödeme almak için kart okuyucu yazılımınızın güncellenmesi gerekiyor.  İptal ederseniz okuyucu bağlantınız engellenir.";
+
+/* Title of the email field on the account creation form. */
+"Your email address" = "E-posta adresiniz";
+
+/* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
+"Your email isn't used with a WordPress.com account" = "E-postanız bir WordPress.com hesabıyla kullanılmaz";
 
 /* Message displayed when a coupon was successfully created */
 "Your new coupon was created!" = "Yeni kuponunuz oluşturuldu!";
@@ -6294,6 +6418,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Used when the response doesn't have a valid url to display */
 "unknown url" = "bilinmeyen url";
+
+/* Verb. Dismiss the web view screen. */
+"webKit.button.dismiss" = "Kapat";
 
 /* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need...
    Placeholder for site url, if the url is unknown.Presented when logging in with a store address that does not match the account entered. */

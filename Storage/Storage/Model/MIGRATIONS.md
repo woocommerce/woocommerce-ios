@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 77 (Release 11.2.0.0)
+- @ealeksandrov 2022-11-07
+    - Added `frameNonce` attribute to `Site` entity.
+
 ## Model 76 (Release 11.0.0.0)
 - @ealeksandrov 2022-10-26
     - Added `loginURL` attribute to `Site` entity.

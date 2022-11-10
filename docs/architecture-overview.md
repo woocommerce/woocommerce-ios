@@ -171,10 +171,12 @@ of performing this task for us:
 
 3.  **AuthenticatedRequest**
 
-        Injects a set of Credentials into anything that conforms to the URLConvertible protocol. Usually wraps up
+        Injects a set of Credentials and a custom user-agent header into anything that conforms to the URLConvertible protocol. Usually wraps up
         a DotcomRequest (OR) JetpackRequest.
 
+4. **UnauthenticatedRequest**
 
+        Wraps up a `URLConvertible` with a custom user-agent header. Used when the request does not require WordPress.com authentication.
 
 ### Remote Endpoints
 

@@ -1,1 +1,1 @@
-Den här versionen innehåller många fler stabilitetskorrigeringar som gör det mycket lättare för dig att logga in. Du kan nu ansluta ditt WordPress.com-konto till Jetpack och komma åt din butik mycket snabbare. Vi har även uppdaterat appen så att den endast stöder enheter med iOS 15 och senare. Uppdatera din enhet till iOS 15 för att fortsätta använda appen.
+Har du provat att skapa eller uppdatera en beställning i appen? Nu är det möjligt att söka efter kunder när du gör det. Kolla in det och dela din feedback.

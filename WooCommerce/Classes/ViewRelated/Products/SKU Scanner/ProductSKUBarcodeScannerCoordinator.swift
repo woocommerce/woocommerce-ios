@@ -3,7 +3,7 @@ import UIKit
 
 /// Coordinates navigation for product SKU barcode scanner based on camera permission.
 final class ProductSKUBarcodeScannerCoordinator: Coordinator {
-    var navigationController: UINavigationController
+    let navigationController: UINavigationController
     private let permissionChecker: CaptureDevicePermissionChecker
     private let onSKUBarcodeScanned: (_ barcode: String) -> Void
 

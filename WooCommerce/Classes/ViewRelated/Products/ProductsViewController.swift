@@ -258,8 +258,6 @@ private extension ProductsViewController {
             return
         }
 
-        ServiceLocator.analytics.track(.productListAddProductTapped)
-
         let coordinatingController: AddProductCoordinator
         if let sourceBarButtonItem = sourceBarButtonItem {
             coordinatingController = AddProductCoordinator(siteID: siteID,
@@ -665,7 +663,7 @@ private extension ProductsViewController {
         ServiceLocator.analytics.track(.productListViewSortingOptionsTapped)
         let title = NSLocalizedString("Sort by",
                                       comment: "Message title for sort products action bottom sheet")
-        let viewProperties = BottomSheetListSelectorViewProperties(title: title)
+        let viewProperties = BottomSheetListSelectorViewProperties(subtitle: title)
         let command = ProductsSortOrderBottomSheetListSelectorCommand(selected: sortOrder) { [weak self] selectedSortOrder in
             self?.dismiss(animated: true, completion: nil)
             guard let selectedSortOrder = selectedSortOrder as ProductsSortOrder? else {

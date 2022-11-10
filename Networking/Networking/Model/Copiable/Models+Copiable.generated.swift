@@ -1785,6 +1785,7 @@ extension Networking.Site {
         url: CopiableProp<String> = .copy,
         adminURL: CopiableProp<String> = .copy,
         loginURL: CopiableProp<String> = .copy,
+        frameNonce: CopiableProp<String> = .copy,
         plan: CopiableProp<String> = .copy,
         isJetpackThePluginInstalled: CopiableProp<Bool> = .copy,
         isJetpackConnected: CopiableProp<Bool> = .copy,
@@ -1800,6 +1801,7 @@ extension Networking.Site {
         let url = url ?? self.url
         let adminURL = adminURL ?? self.adminURL
         let loginURL = loginURL ?? self.loginURL
+        let frameNonce = frameNonce ?? self.frameNonce
         let plan = plan ?? self.plan
         let isJetpackThePluginInstalled = isJetpackThePluginInstalled ?? self.isJetpackThePluginInstalled
         let isJetpackConnected = isJetpackConnected ?? self.isJetpackConnected
@@ -1816,6 +1818,7 @@ extension Networking.Site {
             url: url,
             adminURL: adminURL,
             loginURL: loginURL,
+            frameNonce: frameNonce,
             plan: plan,
             isJetpackThePluginInstalled: isJetpackThePluginInstalled,
             isJetpackConnected: isJetpackConnected,

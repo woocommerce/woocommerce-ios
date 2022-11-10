@@ -15,11 +15,14 @@ final class DashboardViewModel {
 
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
+    private let analytics: Analytics
 
     init(stores: StoresManager = ServiceLocator.stores,
-         featureFlags: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.stores = stores
         self.featureFlagService = featureFlags
+        self.analytics = analytics
     }
 
     /// Syncs store stats for dashboard UI.
@@ -108,11 +111,7 @@ final class DashboardViewModel {
     ///
     func syncAnnouncements(for siteID: Int64) {
         syncProductsOnboarding(for: siteID) { [weak self] in
-            // For now, products onboarding takes precedence over Just In Time Messages, so we can stop if there is an onboarding announcement to display.
-            // This should be revisited when either onboarding or JITMs are expanded. See: pe5pgL-11B-p2
-            guard let self, self.announcementViewModel == nil else { return }
-
-            self.syncJustInTimeMessages(for: siteID)
+            self?.syncJustInTimeMessages(for: siteID)
         }
     }
 
@@ -125,13 +124,14 @@ final class DashboardViewModel {
                 if isEligible {
                     ServiceLocator.analytics.track(event: .ProductsOnboarding.storeIsEligible())
 
-                    if ABTest.productsOnboardingBanner.variation == .treatment(nil) {
-                        let viewModel = ProductsOnboardingAnnouncementCardViewModel(onCTATapped: { [weak self] in
-                            self?.announcementViewModel = nil // Dismiss announcement
-                            MainTabBarController.presentAddProductFlow()
-                        })
-                        self?.announcementViewModel = viewModel
-                    }
+                    self?.setProductsOnboardingBannerIfNeeded()
+                }
+
+                // For now, products onboarding takes precedence over Just In Time Messages,
+                // so we can stop if there is an onboarding announcement to display.
+                // This should be revisited when either onboarding or JITMs are expanded. See: pe5pgL-11B-p2
+                if self?.announcementViewModel is ProductsOnboardingAnnouncementCardViewModel {
+                    return
                 }
                 onCompletion()
             case .failure(let error):
@@ -140,6 +140,27 @@ final class DashboardViewModel {
             }
         }
         stores.dispatch(action)
+    }
+
+    /// Sets the view model for the products onboarding banner if the user hasn't dismissed it before,
+    /// and if the user is part of the treatment group for the products onboarding A/B test.
+    ///
+    private func setProductsOnboardingBannerIfNeeded() {
+        guard ABTest.productsOnboardingBanner.variation == .treatment(nil) else {
+            return
+        }
+
+        let getVisibility = AppSettingsAction.getFeatureAnnouncementVisibility(campaign: .productsOnboarding) { [weak self] result in
+            guard let self else { return }
+            if case let .success(isVisible) = result, isVisible {
+                let viewModel = ProductsOnboardingAnnouncementCardViewModel(onCTATapped: { [weak self] in
+                    self?.announcementViewModel = nil // Dismiss announcement
+                    MainTabBarController.presentAddProductFlow()
+                })
+                self.announcementViewModel = viewModel
+            }
+        }
+        stores.dispatch(getVisibility)
     }
 
     /// Checks for Just In Time Messages and prepares the announcement if needed.
@@ -155,15 +176,25 @@ final class DashboardViewModel {
             hook: .adminNotices) { [weak self] result in
                 guard let self = self else { return }
                 switch result {
-                case let .success(.some(message)):
+                case let .success(messages):
+                    guard let message = messages.first else {
+                        self.announcementViewModel = nil
+                        return
+                    }
+                    self.analytics.track(event:
+                            .JustInTimeMessage.fetchSuccess(source: Constants.dashboardScreenName,
+                                                            messageID: message.messageID,
+                                                            count: Int64(messages.count)))
                     let viewModel = JustInTimeMessageAnnouncementCardViewModel(
                         justInTimeMessage: message,
                         screenName: Constants.dashboardScreenName,
                         siteID: siteID)
                     self.announcementViewModel = viewModel
                     viewModel.$showWebViewSheet.assign(to: &self.$showWebViewSheet)
-                default:
-                    break
+                case let .failure(error):
+                    self.analytics.track(event:
+                            .JustInTimeMessage.fetchFailure(source: Constants.dashboardScreenName,
+                                                            error: error))
                 }
             }
         stores.dispatch(action)

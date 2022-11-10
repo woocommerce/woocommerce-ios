@@ -3,6 +3,7 @@ import Yosemite
 import WooFoundation
 import protocol Storage.StorageManagerType
 import class Networking.ProductsRemote
+import enum Experiments.ABTest
 
 /// Controls navigation for the flow to add a product given a navigation controller.
 /// This class is not meant to be retained so that its life cycle is throughout the navigation. Example usage:
@@ -11,7 +12,7 @@ import class Networking.ProductsRemote
 /// coordinator.start()
 ///
 final class AddProductCoordinator: Coordinator {
-    var navigationController: UINavigationController
+    let navigationController: UINavigationController
 
     private let siteID: Int64
     private let sourceBarButtonItem: UIBarButtonItem?
@@ -32,7 +33,7 @@ final class AddProductCoordinator: Coordinator {
     init(siteID: Int64,
          sourceBarButtonItem: UIBarButtonItem,
          sourceNavigationController: UINavigationController,
-         isProductCreationTypeEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productsOnboarding),
+         isProductCreationTypeEnabled: Bool = ABTest.productsOnboardingTemplateProducts.variation == .treatment(nil),
          storage: StorageManagerType = ServiceLocator.storageManager,
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
         self.siteID = siteID
@@ -47,7 +48,7 @@ final class AddProductCoordinator: Coordinator {
     init(siteID: Int64,
          sourceView: UIView,
          sourceNavigationController: UINavigationController,
-         isProductCreationTypeEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productsOnboarding),
+         isProductCreationTypeEnabled: Bool = ABTest.productsOnboardingTemplateProducts.variation == .treatment(nil),
          storage: StorageManagerType = ServiceLocator.storageManager,
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
         self.siteID = siteID
@@ -64,6 +65,9 @@ final class AddProductCoordinator: Coordinator {
     }
 
     func start() {
+
+        ServiceLocator.analytics.track(event: .ProductsOnboarding.productListAddProductButtonTapped(templateEligible: isTemplateOptionsEligible()))
+
         if shouldPresentProductCreationBottomSheet() {
             presentProductCreationTypeBottomSheet()
         } else {
@@ -76,18 +80,26 @@ final class AddProductCoordinator: Coordinator {
 private extension AddProductCoordinator {
 
     /// Defines if the product creation bottom sheet should be presented.
-    /// Currently returns `true` when the feature is enabled and the number of products is fewer than 3.
+    /// Currently returns `true` when the feature is enabled and the store is eligible for displaying template options.
     ///
     func shouldPresentProductCreationBottomSheet() -> Bool {
-        isProductCreationTypeEnabled && productsResultsController.numberOfObjects < 3
+        isProductCreationTypeEnabled && isTemplateOptionsEligible()
+    }
+
+    /// Returns `true` when the number of products is fewer than 3.
+    ///
+    func isTemplateOptionsEligible() -> Bool {
+        productsResultsController.numberOfObjects < 3
     }
 
     /// Presents a bottom sheet for users to choose if they want a create a product manually or via a template.
     ///
     func presentProductCreationTypeBottomSheet() {
-        let title = NSLocalizedString("How do you want to start?",
+        let title = NSLocalizedString("Add a product",
                                       comment: "Message title of bottom sheet for selecting a template or manual product")
-        let viewProperties = BottomSheetListSelectorViewProperties(title: title)
+        let subtitle = NSLocalizedString("How do you want to start?",
+                                         comment: "Message subtitle of bottom sheet for selecting a template or manual product")
+        let viewProperties = BottomSheetListSelectorViewProperties(title: title, subtitle: subtitle)
         let command = ProductCreationTypeSelectorCommand { selectedCreationType in
             self.trackProductCreationType(selectedCreationType)
             self.presentProductTypeBottomSheet(creationType: selectedCreationType)
@@ -99,9 +111,13 @@ private extension AddProductCoordinator {
     /// Presents a bottom sheet for users to choose if what kind of product they want to create.
     ///
     func presentProductTypeBottomSheet(creationType: ProductCreationType) {
-        let title = NSLocalizedString("Select a product type",
-                                      comment: "Message title of bottom sheet for selecting a product type to create a product")
-        let viewProperties = BottomSheetListSelectorViewProperties(title: title)
+        let title: String? = {
+            guard creationType == .template else { return nil }
+            return NSLocalizedString("Choose a template", comment: "Message title of bottom sheet for selecting a template or manual product")
+        }()
+        let subtitle = NSLocalizedString("Select a product type",
+                                         comment: "Message subtitle of bottom sheet for selecting a product type to create a product")
+        let viewProperties = BottomSheetListSelectorViewProperties(title: title, subtitle: subtitle)
         let command = ProductTypeBottomSheetListSelectorCommand(selected: nil) { selectedBottomSheetProductType in
             ServiceLocator.analytics.track(.addProductTypeSelected, withProperties: ["product_type": selectedBottomSheetProductType.productType.rawValue])
             self.navigationController.dismiss(animated: true) {

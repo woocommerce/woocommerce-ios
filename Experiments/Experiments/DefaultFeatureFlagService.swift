@@ -23,8 +23,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .loginErrorNotifications:
             return true
-        case .loginPrologueOnboardingSurvey:
-            return true
         case .loginMagicLinkEmphasis:
             return true
         case .loginMagicLinkEmphasisM2:
@@ -33,14 +31,14 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .searchProductsBySKU:
             return true
-        case .wpcomSignup:
-            return false
         case .inAppPurchases:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .storeCreationMVP:
             return true
-        case .justInTimeMessagesOnDashboard:
+        case .storeCreationM2:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .justInTimeMessagesOnDashboard:
+            return true
         case .productsOnboarding:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .performanceMonitoring,

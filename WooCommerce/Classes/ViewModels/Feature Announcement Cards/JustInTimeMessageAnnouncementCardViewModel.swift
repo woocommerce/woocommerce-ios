@@ -61,9 +61,7 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
 
     let image: UIImage = .paymentsFeatureBannerImage
 
-    var showDismissButton: Bool = true
-
-    let showDismissConfirmation: Bool = false
+    var showDismissConfirmation: Bool = false
 
     let dismissAlertTitle: String = ""
 
@@ -71,7 +69,9 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
 
     // MARK: - AnnouncementCardViewModelProtocol methods
     func onAppear() {
-        // No-op
+        analytics.track(event: .JustInTimeMessage.messageDisplayed(source: screenName,
+                                                                   messageID: messageID,
+                                                                   featureClass: featureClass))
     }
 
     func ctaTapped() {

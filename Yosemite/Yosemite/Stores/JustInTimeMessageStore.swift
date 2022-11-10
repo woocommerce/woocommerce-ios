@@ -44,25 +44,70 @@ private extension JustInTimeMessageStore {
     func loadMessage(for siteID: Int64,
                      screen: String,
                      hook: JustInTimeMessageHook,
-                     completion: @escaping (Result<JustInTimeMessage?, Error>) -> ()) {
+                     completion: @escaping (Result<[JustInTimeMessage], Error>) -> ()) {
         Task {
             let result = await remote.loadAllJustInTimeMessages(
                     for: siteID,
                     messagePath: .init(app: .wooMobile,
                                        screen: screen,
-                                       hook: hook))
-            let displayResult = result.map(topDisplayMessage(_:))
+                                       hook: hook),
+                    query: justInTimeMessageQuery(),
+                    locale: localeLanguageRegionIdentifier())
+            let displayResult = result.map(displayMessages(_:))
             await MainActor.run {
                 completion(displayResult)
             }
         }
     }
 
-    func topDisplayMessage(_ messages: [Networking.JustInTimeMessage]) -> JustInTimeMessage? {
-        guard let topMessage = messages.first else {
+    func justInTimeMessageQuery() -> [String: String] {
+        var queryItems = [
+            "platform": "ios",
+            "version": Bundle.main.marketingVersion
+        ]
+
+        if let device = deviceIdiomName() {
+            queryItems["device"] = device
+        }
+
+        if let buildType = buildType() {
+            queryItems["build_type"] = buildType
+        }
+
+        return queryItems
+    }
+
+    func deviceIdiomName() -> String? {
+        switch UIDevice.current.userInterfaceIdiom {
+        case .phone:
+            return "phone"
+        case .pad:
+            return "pad"
+        default:
             return nil
         }
-        return JustInTimeMessage(message: topMessage)
+    }
+
+    func buildType() -> String? {
+        #if DEBUG || ALPHA
+        return "developer"
+        #else
+        return nil
+        #endif
+    }
+
+    func localeLanguageRegionIdentifier() -> String? {
+        guard let languageCode = Locale.current.languageCode else {
+            return nil
+        }
+        guard let regionCode = Locale.current.regionCode else {
+            return languageCode
+        }
+        return "\(languageCode)_\(regionCode)"
+    }
+
+    func displayMessages(_ messages: [Networking.JustInTimeMessage]) -> [JustInTimeMessage] {
+        return messages.map { JustInTimeMessage(message: $0) }
     }
 
     func dismissMessage(_ message: JustInTimeMessage,

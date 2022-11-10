@@ -1,1 +1,1 @@
-This release includes a lot more stability fixes to help you log in much easier. You can now connect your WordPress.com account with Jetpack and access your store that much faster. We've also updated our app to support devices with iOS 15+ only. Please update your device to iOS 15 to continue to use the app.
+Have you tried to create or update an order from the app? It's now possible to search for customers when you do! Check it out and please share your feedback!

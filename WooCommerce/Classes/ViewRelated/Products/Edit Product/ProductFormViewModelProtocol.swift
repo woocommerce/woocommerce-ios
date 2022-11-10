@@ -185,6 +185,11 @@ extension ProductFormViewModelProtocol {
     /// Returns `false` when it's a new blank product without any changes.
     ///
     func shouldEnablePreviewButton() -> Bool {
-        !(formType == .add && !hasUnsavedChanges())
+        switch formType {
+        case .add:
+            return hasUnsavedChanges()
+        case .edit, .readonly:
+            return true
+        }
     }
 }

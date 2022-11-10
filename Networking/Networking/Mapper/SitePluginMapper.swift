@@ -7,7 +7,14 @@ struct SitePluginMapper: Mapper {
     /// Site Identifier associated to the plugin that will be parsed.
     /// We're injecting this field via `JSONDecoder.userInfo` because the remote endpoints don't return the SiteID in the plugin endpoint.
     ///
-    let siteID: Int64
+    private let siteID: Int64
+
+    private let withDataEnvelope: Bool
+
+    init(siteID: Int64 = -1, withDataEnvelope: Bool = true) {
+        self.siteID = siteID
+        self.withDataEnvelope = withDataEnvelope
+    }
 
     /// (Attempts) to convert a dictionary into SitePlugin.
     ///
@@ -17,7 +24,11 @@ struct SitePluginMapper: Mapper {
             .siteID: siteID
         ]
 
-        return try decoder.decode(SitePluginEnvelope.self, from: response).plugin
+        if withDataEnvelope {
+            return try decoder.decode(SitePluginEnvelope.self, from: response).plugin
+        }
+
+        return try decoder.decode(SitePlugin.self, from: response)
     }
 }
 

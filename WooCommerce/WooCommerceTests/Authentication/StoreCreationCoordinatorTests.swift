@@ -71,7 +71,7 @@ final class StoreCreationCoordinatorTests: XCTestCase {
 
     // MARK: - Presentation in different states for store creation M2
 
-    func test_AuthenticatedWebViewController_is_presented_when_navigationController_is_presenting_another_view() throws {
+    func test_DomainSelectorHostingController_is_presented_when_navigationController_is_presenting_another_view() throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isStoreCreationM2Enabled: true)
         let coordinator = StoreCreationCoordinator(source: .storePicker,

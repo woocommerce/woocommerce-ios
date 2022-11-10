@@ -1,3 +1,4 @@
+import Combine
 import XCTest
 import Yosemite
 import enum Networking.DotcomError
@@ -6,6 +7,7 @@ import enum Networking.DotcomError
 final class DomainSelectorViewModelTests: XCTestCase {
     private var stores: MockStoresManager!
     private var viewModel: DomainSelectorViewModel!
+    private var subscriptions: Set<AnyCancellable> = []
 
     override func setUp() {
         super.setUp()
@@ -62,7 +64,9 @@ final class DomainSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.domains, [])
     }
 
-    func test_domain_suggestions_failure_sets_default_error_message() {
+    // MARK: - `errorMessage`
+
+    func test_domain_suggestions_failure_with_non_DotcomError_sets_default_error_message() {
         // Given
         mockDomainSuggestionsFailure(error: SampleError.first)
 
@@ -113,7 +117,9 @@ final class DomainSelectorViewModelTests: XCTestCase {
 
     func test_placeholderImage_is_not_nil_when_searchTerm_is_empty_initially() {
         // Then
-        XCTAssertNotNil(viewModel.placeholderImage)
+        waitUntil {
+            self.viewModel.placeholderImage != nil
+        }
     }
 
     func test_placeholderImage_is_nil_when_searchTerm_is_not_empty() {
@@ -121,13 +127,36 @@ final class DomainSelectorViewModelTests: XCTestCase {
         viewModel.searchTerm = "woo"
 
         // Then placeholder image is nil
-        XCTAssertNil(viewModel.placeholderImage)
+        waitUntil {
+            self.viewModel.placeholderImage == nil
+        }
 
         // When setting the search term to empty spaces
         viewModel.searchTerm = "  "
 
         // Then placeholder image is not nil
-        XCTAssertNotNil(viewModel.placeholderImage)
+        waitUntil {
+            self.viewModel.placeholderImage != nil
+        }
+    }
+
+    // MARK: `isLoadingDomainSuggestions`
+
+    func test_isLoadingDomainSuggestions_is_toggled_when_loading_suggestions() {
+        var loadingValues: [Bool] = []
+        viewModel.$isLoadingDomainSuggestions.sink { value in
+            loadingValues.append(value)
+        }.store(in: &subscriptions)
+
+        mockDomainSuggestionsFailure(error: SampleError.first)
+
+        // When
+        viewModel.searchTerm = "Woo"
+
+        // Then
+        waitUntil {
+            loadingValues == [false, true, false]
+        }
     }
 }
 

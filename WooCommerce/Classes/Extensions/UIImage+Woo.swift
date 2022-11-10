@@ -407,6 +407,13 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Login prologue Woo Mobile
+    ///
+    static var prologueWooMobileImage: UIImage {
+        UIImage(named: "login-prologue-woo-mobile")!
+            .imageFlippedForRightToLeftLayoutDirection()
+    }
+
     /// Inventory Icon
     ///
     static var inventoryImage: UIImage {

@@ -146,11 +146,13 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     private let stores = ServiceLocator.stores
     private let storageManager = ServiceLocator.storageManager
 
-    /// Loads Plugins from the Storage Layer.
+    /// Controller for fetching site plugins from Storage
     ///
-    private lazy var pluginResultsController: ResultsController<StorageSitePlugin> = updatePluginResultsController()
-
-    private func updatePluginResultsController() -> ResultsController<StorageSitePlugin> {
+    private lazy var pluginResultsController: ResultsController<StorageSitePlugin> = createPluginResultsController()
+    
+    /// Returns a `pluginResultsController` using the latest selected site ID for predicate
+    ///
+    private func createPluginResultsController() -> ResultsController<StorageSitePlugin> {
         var sitePredicate: NSPredicate? = nil
         if let siteID = stores.sessionManager.defaultSite?.siteID {
             sitePredicate = NSPredicate(format: "siteID == %lld", siteID)
@@ -166,7 +168,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     }
 
     func observeStoreSwitch() {
-        pluginResultsController = updatePluginResultsController()
+        pluginResultsController = createPluginResultsController()
         do {
             try pluginResultsController.performFetch()
         } catch {
@@ -174,9 +176,9 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         }
     }
 
-    /// IPP plugin statuses
+    /// List of tags that reflect Stripe and WCPay plugin statuses
     ///
-    private var ippPluginstatuses: [String] {
+    private var ippPluginStatuses: [String] {
         var ippTags = [PluginStatus]()
         if let stripe = pluginResultsController.fetchedObjects.first(where: { $0.plugin == PluginSlug.stripe }) {
             if stripe.status == .active {
@@ -386,7 +388,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     /// The SDK tag is used in a trigger and displays tickets in Woo > Mobile Apps New.
     ///
     func getTags(supportSourceTag: String?) -> [String] {
-        let tags = [Constants.platformTag, Constants.sdkTag, Constants.jetpackTag] + ippPluginstatuses
+        let tags = [Constants.platformTag, Constants.sdkTag, Constants.jetpackTag] + ippPluginStatuses
         return decorateTags(tags: tags, supportSourceTag: supportSourceTag)
     }
 

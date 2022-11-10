@@ -45,6 +45,13 @@ struct DomainRowView: View {
                     .foregroundColor(Color(.brand))
             }
         }
+        .padding(Layout.insets)
+    }
+}
+
+private extension DomainRowView {
+    enum Layout {
+        static let insets: EdgeInsets = .init(top: 10, leading: 16, bottom: 10, trailing: 16)
     }
 }
 

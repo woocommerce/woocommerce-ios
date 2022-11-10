@@ -1,15 +1,22 @@
 import Combine
 import SwiftUI
 import Yosemite
+import enum Networking.DotcomError
 
 /// View model for `DomainSelectorView`.
 final class DomainSelectorViewModel: ObservableObject {
     /// Current search term entered by the user.
     /// Each update will trigger a remote call for domain suggestions.
-    @Published var searchTerm: String = ""
+    @Published var searchTerm: String
 
     /// Domain names after domain suggestions are loaded remotely.
     @Published private(set) var domains: [String] = []
+
+    /// Error message from loading domain suggestions.
+    @Published private(set) var errorMessage: String?
+
+    /// Error message from loading domain suggestions.
+    @Published private(set) var isLoadingDomainSuggestions: Bool = false
 
     /// Subscription for search query changes for domain search.
     private var searchQuerySubscription: AnyCancellable?
@@ -17,8 +24,10 @@ final class DomainSelectorViewModel: ObservableObject {
     private let stores: StoresManager
     private let debounceDuration: Double
 
-    init(stores: StoresManager = ServiceLocator.stores,
+    init(initialSearchTerm: String = "",
+         stores: StoresManager = ServiceLocator.stores,
          debounceDuration: Double = Constants.fieldDebounceDuration) {
+        self.searchTerm = initialSearchTerm
         self.stores = stores
         self.debounceDuration = debounceDuration
         observeDomainQuery()
@@ -28,13 +37,18 @@ final class DomainSelectorViewModel: ObservableObject {
 private extension DomainSelectorViewModel {
     func observeDomainQuery() {
         searchQuerySubscription = $searchTerm
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { $0.isNotEmpty }
             .removeDuplicates()
             .debounce(for: .seconds(debounceDuration), scheduler: DispatchQueue.main)
             .sink { [weak self] searchTerm in
                 guard let self = self else { return }
                 Task { @MainActor in
+                    self.errorMessage = nil
+                    self.isLoadingDomainSuggestions = true
                     let result = await self.loadFreeDomainSuggestions(query: searchTerm)
+                    self.isLoadingDomainSuggestions = false
+
                     switch result {
                     case .success(let suggestions):
                         self.handleFreeDomainSuggestions(suggestions, query: searchTerm)
@@ -66,13 +80,26 @@ private extension DomainSelectorViewModel {
 
     @MainActor
     func handleError(_ error: Error) {
-        // TODO-8045: error handling - maybe show an error message.
-        DDLogError("Cannot load domain suggestions for \(searchTerm)")
+        if let dotcomError = error as? DotcomError,
+            case let .unknown(_, message) = dotcomError {
+            errorMessage = message
+        } else {
+            errorMessage = Localization.defaultErrorMessage
+        }
+        DDLogError("Cannot load domain suggestions for \(searchTerm): \(error)")
     }
 }
 
 private extension DomainSelectorViewModel {
     enum Constants {
         static let fieldDebounceDuration = 0.3
+    }
+}
+
+extension DomainSelectorViewModel {
+    enum Localization {
+        static let defaultErrorMessage =
+        NSLocalizedString("Please try another query.",
+                          comment: "Default message when there is an unexpected error loading domain suggestions on the domain selector.")
     }
 }

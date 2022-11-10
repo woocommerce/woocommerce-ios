@@ -1,5 +1,6 @@
 import XCTest
 import Yosemite
+import enum Networking.DotcomError
 @testable import WooCommerce
 
 final class DomainSelectorViewModelTests: XCTestCase {
@@ -59,6 +60,53 @@ final class DomainSelectorViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.domains, [])
+    }
+
+    func test_domain_suggestions_failure_sets_default_error_message() {
+        // Given
+        mockDomainSuggestionsFailure(error: SampleError.first)
+
+        // When
+        viewModel.searchTerm = "woo"
+
+        // Then
+        waitUntil {
+            self.viewModel.errorMessage?.isNotEmpty == true
+        }
+        XCTAssertEqual(viewModel.errorMessage, DomainSelectorViewModel.Localization.defaultErrorMessage)
+    }
+
+    func test_domain_suggestions_failure_with_DotcomError_unknown_error_sets_error_message() {
+        // Given
+        mockDomainSuggestionsFailure(error: DotcomError.unknown(code: "", message: "error message"))
+
+        // When
+        viewModel.searchTerm = "woo"
+
+        // Then
+        waitUntil {
+            self.viewModel.errorMessage?.isNotEmpty == true
+        }
+        XCTAssertEqual(viewModel.errorMessage, "error message")
+    }
+
+    func test_domain_suggestions_error_message_is_reset_when_loading_domain_suggestions() {
+        // Given
+        mockDomainSuggestionsFailure(error: SampleError.first)
+
+        // When
+        viewModel.searchTerm = "woo"
+        waitUntil {
+            self.viewModel.errorMessage?.isNotEmpty == true
+        }
+
+        mockDomainSuggestionsSuccess(suggestions: [])
+        viewModel.searchTerm = "wooo"
+
+        // Then
+        waitUntil {
+            self.viewModel.errorMessage == nil
+        }
     }
 }
 

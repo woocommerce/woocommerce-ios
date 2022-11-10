@@ -67,6 +67,10 @@ final class MockZendeskManager: ZendeskManagerProtocol {
     func reset() {
         // no-op
     }
+
+    func observeStoreSwitch() {
+        // no-op
+    }
 }
 
 extension MockZendeskManager: SupportManagerAdapter {

@@ -9,7 +9,6 @@ import CoreTelephony
 import SafariServices
 import Yosemite
 
-
 extension NSNotification.Name {
     static let ZDPNReceived = NSNotification.Name(rawValue: "ZDPNReceived")
     static let ZDPNCleared = NSNotification.Name(rawValue: "ZDPNCleared")
@@ -22,6 +21,8 @@ extension NSNotification.Name {
 ///
 protocol ZendeskManagerProtocol: SupportManagerAdapter {
     typealias onUserInformationCompletion = (_ success: Bool, _ email: String?) -> Void
+
+    func observeStoreSwitch()
 
     /// Displays the Zendesk New Request view from the given controller, for users to submit new tickets.
     ///
@@ -45,6 +46,10 @@ protocol ZendeskManagerProtocol: SupportManagerAdapter {
 }
 
 struct NoZendeskManager: ZendeskManagerProtocol {
+    func observeStoreSwitch() {
+        // no-op
+    }
+
     func showNewRequestIfPossible(from controller: UIViewController) {
         // no-op
     }
@@ -138,6 +143,65 @@ struct ZendeskProvider {
 ///
 #if !targetEnvironment(macCatalyst)
 final class ZendeskManager: NSObject, ZendeskManagerProtocol {
+    private let stores = ServiceLocator.stores
+    private let storageManager = ServiceLocator.storageManager
+
+    /// Controller for fetching site plugins from Storage
+    ///
+    private lazy var pluginResultsController: ResultsController<StorageSitePlugin> = createPluginResultsController()
+
+    /// Returns a `pluginResultsController` using the latest selected site ID for predicate
+    ///
+    private func createPluginResultsController() -> ResultsController<StorageSitePlugin> {
+        var sitePredicate: NSPredicate? = nil
+        if let siteID = stores.sessionManager.defaultSite?.siteID {
+            sitePredicate = NSPredicate(format: "siteID == %lld", siteID)
+        } else {
+            DDLogError("ZendeskManager: No siteID found when attempting to initialize Plugins Results predicate.")
+        }
+
+        let pluginStatusDescriptor = [NSSortDescriptor(keyPath: \StorageSitePlugin.status, ascending: true)]
+
+        return ResultsController(storageManager: storageManager,
+                                 matching: sitePredicate,
+                                 sortedBy: pluginStatusDescriptor)
+    }
+
+    func observeStoreSwitch() {
+        pluginResultsController = createPluginResultsController()
+        do {
+            try pluginResultsController.performFetch()
+        } catch {
+            DDLogError("ZendeskManager: Unable to update plugin results")
+        }
+    }
+
+    /// List of tags that reflect Stripe and WCPay plugin statuses
+    ///
+    private var ippPluginStatuses: [String] {
+        var ippTags = [PluginStatus]()
+        if let stripe = pluginResultsController.fetchedObjects.first(where: { $0.plugin == PluginSlug.stripe }) {
+            if stripe.status == .active {
+                ippTags.append(.stripeInstalledAndActivated)
+            } else if stripe.status == .inactive {
+                ippTags.append(.stripeInstalledButNotActivated)
+            }
+        } else {
+            ippTags.append(.stripeNotInstalled)
+        }
+        if let wcpay = pluginResultsController.fetchedObjects.first(where: { $0.plugin == PluginSlug.wcpay }) {
+            if wcpay.status == .active {
+                ippTags.append(.wcpayInstalledAndActivated)
+            } else if wcpay.status == .inactive {
+                ippTags.append(.wcpayInstalledButNotActivated)
+            }
+        }
+        else {
+            ippTags.append(.wcpayNotInstalled)
+        }
+        return ippTags.map { $0.rawValue }
+    }
+
     func showNewRequestIfPossible(from controller: UIViewController) {
         showNewRequestIfPossible(from: controller, with: nil)
     }
@@ -185,11 +249,11 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         return ZDKPushProvider(zendesk: zendesk)
     }
 
-
     /// Designated Initialier
     ///
     fileprivate override init() {
         super.init()
+        try? pluginResultsController.performFetch()
         observeZendeskNotifications()
     }
 
@@ -324,8 +388,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     /// The SDK tag is used in a trigger and displays tickets in Woo > Mobile Apps New.
     ///
     func getTags(supportSourceTag: String?) -> [String] {
-        let tags = [Constants.platformTag, Constants.sdkTag, Constants.jetpackTag]
-
+        let tags = [Constants.platformTag, Constants.sdkTag, Constants.jetpackTag] + ippPluginStatuses
         return decorateTags(tags: tags, supportSourceTag: supportSourceTag)
     }
 
@@ -1066,6 +1129,20 @@ private extension ZendeskManager {
     }
 }
 
+private extension ZendeskManager {
+    enum PluginSlug {
+        static let stripe = "woocommerce-gateway-stripe/woocommerce-gateway-stripe"
+        static let wcpay = "woocommerce-payments/woocommerce-payments"
+    }
+    enum PluginStatus: String {
+        case stripeNotInstalled = "woo_mobile_stripe_not_installed"
+        case stripeInstalledAndActivated = "woo_mobile_stripe_installed_and_activated"
+        case stripeInstalledButNotActivated = "woo_mobile_stripe_installed_and_not_activated"
+        case wcpayNotInstalled = "woo_mobile_wcpay_not_installed"
+        case wcpayInstalledAndActivated = "woo_mobile_wcpay_installed_and_activated"
+        case wcpayInstalledButNotActivated = "woo_mobile_wcpay_installed_and_not_activated"
+    }
+}
 
 // MARK: - UITextFieldDelegate
 //

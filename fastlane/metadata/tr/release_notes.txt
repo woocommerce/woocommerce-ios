@@ -1,1 +1,1 @@
-Bu sürümde şaşırtıcı yeni özellikler bulunmasa da, yine de ona çok fazla sevgi katıyoruz! Birkaç hatayı düzelttik ve deneyiminizi daha sorunsuz hale getirmek için birkaç iyileştirme yaptık.
+Uygulamadan bir sipariş oluşturmayı veya güncellemeyi denediniz mi? Artık bun uyaparken müşterileri aramak mümkün! Kontrol edin ve lütfen geri bildiriminizi paylaşın!

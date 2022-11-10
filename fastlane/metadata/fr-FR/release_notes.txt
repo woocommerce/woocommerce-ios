@@ -1,1 +1,1 @@
-Cette version n’a pas beaucoup de nouveautés sensationnelles à offrir, mais nous y avons mis tout notre cœur. Nous avons corrigé certains bugs et avons apporté des améliorations pour optimiser votre expérience.
+Avez-vous déjà créé ou mis à jour une commande depuis l’application ? Il est maintenant possible de rechercher des clients lorsque vous le faites. Découvrez cette nouvelle fonctionnalité et donnez-nous votre avis !

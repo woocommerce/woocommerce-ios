@@ -91,9 +91,12 @@ struct DomainSelectorView: View {
                         .padding(.horizontal, Layout.defaultHorizontalPadding)
 
                     // Search text field.
-                    SearchHeader(filterText: $viewModel.searchTerm,
-                                 filterPlaceholder: Localization.searchPlaceholder)
-                    .padding(.horizontal, Layout.defaultHorizontalPadding)
+                    SearchHeader(text: $viewModel.searchTerm,
+                                 placeholder: Localization.searchPlaceholder,
+                                 customizations: .init(backgroundColor: .clear,
+                                                       borderColor: .separator,
+                                                       internalHorizontalPadding: 21,
+                                                       internalVerticalPadding: 12))
 
                     // Results header.
                     Text(Localization.suggestionsHeader)
@@ -101,19 +104,27 @@ struct DomainSelectorView: View {
                         .bodyStyle()
                         .padding(.horizontal, Layout.defaultHorizontalPadding)
 
-                    // Domain suggestions.
+                    // Domain results.
                     if let placeholderImage = viewModel.placeholderImage {
-                        Image(uiImage: placeholderImage)
+                        // Placeholder image when search query is empty.
+                        HStack {
+                            Spacer()
+                            Image(uiImage: placeholderImage)
+                            Spacer()
+                        }
                     } else if viewModel.isLoadingDomainSuggestions {
+                        // Progress indicator when loading domain suggestions.
                         HStack {
                             Spacer()
                             ProgressView()
                             Spacer()
                         }
                     } else if let errorMessage = viewModel.errorMessage {
+                        // Error message when there is an error loading domain suggestions.
                         Text(errorMessage)
                             .padding(Layout.defaultPadding)
                     } else {
+                        // Domain suggestions.
                         LazyVStack {
                             ForEach(viewModel.domains, id: \.self) { domain in
                                 Button {
@@ -147,6 +158,7 @@ struct DomainSelectorView: View {
             }
         }
         .onChange(of: viewModel.isLoadingDomainSuggestions) { isLoadingDomainSuggestions in
+            // Resets selected domain when loading domain suggestions.
             if isLoadingDomainSuggestions {
                 selectedDomainName = nil
             }
@@ -177,7 +189,8 @@ private extension DomainSelectorView {
 import Yosemite
 import enum Networking.DotcomError
 
-final class DomainSelectorStores: DefaultStoresManager {
+/// StoresManager that specifically handles `DomainAction` for `DomainSelectorView` previews.
+final class DomainSelectorViewStores: DefaultStoresManager {
     private let result: Result<[FreeDomainSuggestion], Error>?
 
     init(result: Result<[FreeDomainSuggestion], Error>?) {
@@ -202,11 +215,11 @@ struct DomainSelectorView_Previews: PreviewProvider {
             // Empty query state.
             DomainSelectorView(viewModel:
                     .init(initialSearchTerm: "",
-                          stores: DomainSelectorStores(result: nil)))
+                          stores: DomainSelectorViewStores(result: nil)))
             // Results state.
             DomainSelectorView(viewModel:
                     .init(initialSearchTerm: "Fruit smoothie",
-                          stores: DomainSelectorStores(result: .success([
+                          stores: DomainSelectorViewStores(result: .success([
                             .init(name: "grapefruitsmoothie.com", isFree: true),
                             .init(name: "fruitsmoothie.com", isFree: true),
                             .init(name: "grapefruitsmoothiee.com", isFree: true),
@@ -217,14 +230,14 @@ struct DomainSelectorView_Previews: PreviewProvider {
             // Error state.
             DomainSelectorView(viewModel:
                     .init(initialSearchTerm: "test",
-                          stores: DomainSelectorStores(result: .failure(
+                          stores: DomainSelectorViewStores(result: .failure(
                             DotcomError.unknown(code: "invalid_query",
                                                 message: "Domain searches must contain a word with the following characters.")
                           ))))
             // Loading state.
             DomainSelectorView(viewModel:
                     .init(initialSearchTerm: "test",
-                          stores: DomainSelectorStores(result: nil)))
+                          stores: DomainSelectorViewStores(result: nil)))
         }
     }
 }

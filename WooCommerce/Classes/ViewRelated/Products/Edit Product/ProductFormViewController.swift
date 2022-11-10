@@ -215,6 +215,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     }
 
     private func displayProductPreview() {
+        ServiceLocator.analytics.track(event: .ProductDetail.previewTapped())
+
         guard var permalink = URLComponents(string: product.permalink),
               let nonce = ServiceLocator.stores.sessionManager.defaultSite?.frameNonce else {
             return

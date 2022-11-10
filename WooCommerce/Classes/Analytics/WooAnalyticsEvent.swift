@@ -343,6 +343,12 @@ extension WooAnalyticsEvent {
         static func loaded(hasLinkedProducts: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDetailLoaded, properties: ["has_linked_products": hasLinkedProducts])
         }
+
+        /// Tracks when the merchant previews a product draft.
+        ///
+        static func previewTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productDetailPreviewTapped, properties: [:])
+        }
     }
 }
 

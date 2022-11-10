@@ -73,12 +73,16 @@ struct DomainSelectorView: View {
     var onDomainSelection: ((String) -> Void) = { _ in }
 
     /// View model to drive the view.
-    @ObservedObject private(set) var viewModel: DomainSelectorViewModel
+    @ObservedObject private var viewModel: DomainSelectorViewModel
 
     /// Currently selected domain name.
     /// If this property is kept in the view model, a SwiftUI error appears `Publishing changes from within view updates`
     /// when a domain row is selected.
     @State private var selectedDomainName: String?
+
+    init(viewModel: DomainSelectorViewModel) {
+        self.viewModel = viewModel
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {

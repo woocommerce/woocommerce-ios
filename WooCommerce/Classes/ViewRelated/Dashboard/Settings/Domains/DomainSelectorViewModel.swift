@@ -15,7 +15,7 @@ final class DomainSelectorViewModel: ObservableObject {
     /// Error message from loading domain suggestions.
     @Published private(set) var errorMessage: String?
 
-    /// Error message from loading domain suggestions.
+    /// Whether domain suggestions are being loaded.
     @Published private(set) var isLoadingDomainSuggestions: Bool = false
 
     /// Placeholder image is set when the search term is empty. Otherwise, the placeholder image is `nil`.
@@ -36,7 +36,7 @@ final class DomainSelectorViewModel: ObservableObject {
         // Sets the initial search term after related subscriptions are set up
         // so that the initial value is always emitted.
         // In `observeDomainQuery`, `share()` transforms the publisher to `PassthroughSubject`
-        // and thus the initial value isn't emitted in `observeDomainQuery`.
+        // and thus the initial value isn't emitted in `observeDomainQuery` until setting the value afterward.
         observeDomainQuery()
         self.searchTerm = initialSearchTerm
     }

@@ -7,7 +7,7 @@ import enum Networking.DotcomError
 final class DomainSelectorViewModel: ObservableObject {
     /// Current search term entered by the user.
     /// Each update will trigger a remote call for domain suggestions.
-    @Published var searchTerm: String
+    @Published var searchTerm: String = ""
 
     /// Domain names after domain suggestions are loaded remotely.
     @Published private(set) var domains: [String] = []
@@ -18,6 +18,9 @@ final class DomainSelectorViewModel: ObservableObject {
     /// Error message from loading domain suggestions.
     @Published private(set) var isLoadingDomainSuggestions: Bool = false
 
+    /// Placeholder image is set when the search term is empty. Otherwise, the placeholder image is `nil`.
+    @Published private(set) var placeholderImage: UIImage?
+
     /// Subscription for search query changes for domain search.
     private var searchQuerySubscription: AnyCancellable?
 
@@ -27,24 +30,33 @@ final class DomainSelectorViewModel: ObservableObject {
     init(initialSearchTerm: String = "",
          stores: StoresManager = ServiceLocator.stores,
          debounceDuration: Double = Constants.fieldDebounceDuration) {
-        self.searchTerm = initialSearchTerm
         self.stores = stores
         self.debounceDuration = debounceDuration
+
+        // Sets the initial search term after related subscriptions are set up
+        // so that the initial value is always emitted.
+        // In `observeDomainQuery`, `share()` transforms the publisher to `PassthroughSubject`
+        // and thus the initial value isn't emitted in `observeDomainQuery`.
         observeDomainQuery()
+        self.searchTerm = initialSearchTerm
     }
 }
 
 private extension DomainSelectorViewModel {
     func observeDomainQuery() {
-        searchQuerySubscription = $searchTerm
+        let searchTermPublisher = $searchTerm
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .debounce(for: .seconds(debounceDuration), scheduler: DispatchQueue.main)
+            .share()
+
+        searchQuerySubscription = searchTermPublisher
             .filter { $0.isNotEmpty }
             .removeDuplicates()
-            .debounce(for: .seconds(debounceDuration), scheduler: DispatchQueue.main)
             .sink { [weak self] searchTerm in
                 guard let self = self else { return }
                 Task { @MainActor in
                     self.errorMessage = nil
+                    self.placeholderImage = nil
                     self.isLoadingDomainSuggestions = true
                     let result = await self.loadFreeDomainSuggestions(query: searchTerm)
                     self.isLoadingDomainSuggestions = false
@@ -57,6 +69,12 @@ private extension DomainSelectorViewModel {
                     }
                 }
             }
+
+        searchTermPublisher
+            .map {
+                $0.isEmpty ? UIImage.domainSearchPlaceholderImage: nil
+            }
+            .assign(to: &$placeholderImage)
     }
 
     @MainActor

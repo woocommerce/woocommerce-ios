@@ -108,6 +108,27 @@ final class DomainSelectorViewModelTests: XCTestCase {
             self.viewModel.errorMessage == nil
         }
     }
+
+    // MARK: - `placeholderImage`
+
+    func test_placeholderImage_is_not_nil_when_searchTerm_is_empty_initially() {
+        // Then
+        XCTAssertNotNil(viewModel.placeholderImage)
+    }
+
+    func test_placeholderImage_is_nil_when_searchTerm_is_not_empty() {
+        // When the search term is not empty
+        viewModel.searchTerm = "woo"
+
+        // Then placeholder image is nil
+        XCTAssertNil(viewModel.placeholderImage)
+
+        // When setting the search term to empty spaces
+        viewModel.searchTerm = "  "
+
+        // Then placeholder image is not nil
+        XCTAssertNotNil(viewModel.placeholderImage)
+    }
 }
 
 private extension DomainSelectorViewModelTests {

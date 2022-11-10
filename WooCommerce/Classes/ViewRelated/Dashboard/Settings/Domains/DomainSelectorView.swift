@@ -102,7 +102,9 @@ struct DomainSelectorView: View {
                         .padding(.horizontal, Layout.defaultHorizontalPadding)
 
                     // Domain suggestions.
-                    if viewModel.isLoadingDomainSuggestions {
+                    if let placeholderImage = viewModel.placeholderImage {
+                        Image(uiImage: placeholderImage)
+                    } else if viewModel.isLoadingDomainSuggestions {
                         HStack {
                             Spacer()
                             ProgressView()
@@ -197,6 +199,11 @@ final class DomainSelectorStores: DefaultStoresManager {
 struct DomainSelectorView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
+            // Empty query state.
+            DomainSelectorView(viewModel:
+                    .init(initialSearchTerm: "",
+                          stores: DomainSelectorStores(result: nil)))
+            // Results state.
             DomainSelectorView(viewModel:
                     .init(initialSearchTerm: "Fruit smoothie",
                           stores: DomainSelectorStores(result: .success([
@@ -207,12 +214,14 @@ struct DomainSelectorView_Previews: PreviewProvider {
                             .init(name: "greatfruitsmoothie1.com", isFree: true),
                             .init(name: "tropicalsmoothie.com", isFree: true)
                           ]))))
+            // Error state.
             DomainSelectorView(viewModel:
                     .init(initialSearchTerm: "test",
                           stores: DomainSelectorStores(result: .failure(
                             DotcomError.unknown(code: "invalid_query",
                                                 message: "Domain searches must contain a word with the following characters.")
                           ))))
+            // Loading state.
             DomainSelectorView(viewModel:
                     .init(initialSearchTerm: "test",
                           stores: DomainSelectorStores(result: nil)))

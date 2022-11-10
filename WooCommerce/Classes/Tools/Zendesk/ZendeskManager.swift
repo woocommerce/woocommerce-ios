@@ -149,7 +149,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     /// Controller for fetching site plugins from Storage
     ///
     private lazy var pluginResultsController: ResultsController<StorageSitePlugin> = createPluginResultsController()
-    
+
     /// Returns a `pluginResultsController` using the latest selected site ID for predicate
     ///
     private func createPluginResultsController() -> ResultsController<StorageSitePlugin> {

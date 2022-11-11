@@ -13,6 +13,34 @@ public final class JetpackConnectionRemote: Remote {
         super.init(network: network)
     }
 
+    /// Retrieves the information about Jetpack the plugin for the current site.
+    ///
+    public func retrieveJetpackPluginDetails(completion: @escaping (Result<SitePlugin, Error>) -> Void) {
+        let path = "\(Path.plugins)/\(Constants.jetpackPluginName)"
+        let request = WordPressOrgRequest(baseURL: siteURL, method: .get, path: path)
+        let mapper = SitePluginMapper(withDataEnvelope: false)
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    /// Installs Jetpack the plugin to the current site.
+    ///
+    public func installJetpackPlugin(completion: @escaping (Result<SitePlugin, Error>) -> Void) {
+        let parameters: [String: Any] = [Field.slug.rawValue: Constants.jetpackPluginSlug]
+        let request = WordPressOrgRequest(baseURL: siteURL, method: .post, path: Path.plugins, parameters: parameters)
+        let mapper = SitePluginMapper(withDataEnvelope: false)
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    /// Activates Jetpack the plugin to the current site
+    ///
+    public func activateJetpackPlugin(completion: @escaping (Result<SitePlugin, Error>) -> Void) {
+        let path = "\(Path.plugins)/\(Constants.jetpackPluginName)"
+        let parameters: [String: Any] = [Field.status.rawValue: Constants.activeStatus]
+        let request = WordPressOrgRequest(baseURL: siteURL, method: .put, path: path, parameters: parameters)
+        let mapper = SitePluginMapper(withDataEnvelope: false)
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
     /// Fetches the URL for setting up Jetpack connection.
     ///
     public func fetchJetpackConnectionURL(completion: @escaping (Result<URL, Error>) -> Void) {
@@ -95,9 +123,18 @@ private extension JetpackConnectionRemote {
     enum Path {
         static let jetpackConnectionURL = "/jetpack/v4/connection/url"
         static let jetpackConnectionUser = "/jetpack/v4/connection/data"
+        static let plugins = "/wp/v2/plugins"
+    }
+
+    enum Field: String {
+        case slug
+        case status
     }
 
     enum Constants {
         static let jetpackAccountConnectionURL = "https://jetpack.wordpress.com/jetpack.authorize"
+        static let jetpackPluginName = "jetpack/jetpack"
+        static let jetpackPluginSlug = "jetpack"
+        static let activeStatus = "active"
     }
 }

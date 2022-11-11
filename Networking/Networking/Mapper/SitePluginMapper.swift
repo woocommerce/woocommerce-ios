@@ -11,6 +11,11 @@ struct SitePluginMapper: Mapper {
 
     private let withDataEnvelope: Bool
 
+    /// Initialized a mapper to serialize site plugins.
+    /// - Parameters:
+    ///   - siteID: Identifier for the site. Only required in authenticated state.
+    ///   - withDataEnvelope: Whether site plugin details are wrapped inside a `data` field.
+    ///
     init(siteID: Int64 = -1, withDataEnvelope: Bool = true) {
         self.siteID = siteID
         self.withDataEnvelope = withDataEnvelope

@@ -40,8 +40,8 @@ extension UIButton {
     ///
     func applySecondaryButtonStyle() {
         configuration = UIButton.Configuration.plain()
-        backgroundColor = .secondaryButtonBackground
         configuration?.contentInsets = Style.defaultInsets
+        backgroundColor = .secondaryButtonBackground
         layer.borderColor = UIColor.secondaryButtonBorder.cgColor
         layer.borderWidth = Style.defaultBorderWidth
         layer.cornerRadius = Style.defaultCornerRadius
@@ -74,8 +74,8 @@ extension UIButton {
     ///
     func applyLinkButtonStyle(enableMultipleLines: Bool = false) {
         configuration = UIButton.Configuration.plain()
-        backgroundColor = .clear
         configuration?.contentInsets = Style.defaultInsets
+        backgroundColor = .clear
         tintColor = .accent
         titleLabel?.applyBodyStyle()
         titleLabel?.textAlignment = .natural
@@ -98,13 +98,14 @@ extension UIButton {
     }
 
     func applyPaymentsModalCancelButtonStyle() {
+        configuration = UIButton.Configuration.plain()
+        configuration?.contentInsets = Style.defaultInsets
         backgroundColor = .tertiarySystemBackground
-        contentEdgeInsets = Style.defaultEdgeInsets
         layer.borderColor = UIColor.secondaryButtonBorder.cgColor
         layer.borderWidth = Style.defaultBorderWidth
         layer.cornerRadius = Style.defaultCornerRadius
         titleLabel?.applyHeadlineStyle()
-        enableMultipleLines()
+        //enableMultipleLines()
         titleLabel?.textAlignment = .center
 
         setTitleColor(.secondaryButtonTitle, for: .normal)

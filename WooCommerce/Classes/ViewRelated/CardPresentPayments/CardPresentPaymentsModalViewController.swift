@@ -153,6 +153,11 @@ private extension CardPresentPaymentsModalViewController {
 
     func styleSecondaryButton() {
         secondaryButton.applyPaymentsModalCancelButtonStyle()
+        // Testing: Remove before submitting for review
+        secondaryButton.backgroundColor = .yellow
+        secondaryButton.layer.borderColor = CGColor(red: 1, green: 0, blue: 0, alpha: 1)
+        secondaryButton.layer.borderWidth = 2.0
+        //
         secondaryButton.titleLabel?.adjustsFontSizeToFitWidth = true
         secondaryButton.titleLabel?.minimumScaleFactor = 0.5
     }

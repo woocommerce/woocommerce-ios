@@ -71,8 +71,9 @@ extension UIButton {
     /// Applies the Link Button Style: Clear BG / Brand Text Color
     ///
     func applyLinkButtonStyle(enableMultipleLines: Bool = false) {
+        configuration = UIButton.Configuration.plain()
         backgroundColor = .clear
-        contentEdgeInsets = Style.defaultEdgeInsets
+        configuration?.contentInsets = Style.defaultInsets
         tintColor = .accent
         titleLabel?.applyBodyStyle()
         titleLabel?.textAlignment = .natural
@@ -161,5 +162,6 @@ private extension UIButton {
         static let defaultCornerRadius = CGFloat(8.0)
         static let defaultBorderWidth = CGFloat(1.0)
         static let defaultEdgeInsets = UIEdgeInsets(top: 12, left: 22, bottom: 12, right: 22)
+        static let defaultInsets = NSDirectionalEdgeInsets(top: 12, leading: 22, bottom: 12, trailing: 22)
     }
 }

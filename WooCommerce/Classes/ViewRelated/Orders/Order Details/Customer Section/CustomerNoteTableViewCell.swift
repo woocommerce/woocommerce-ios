@@ -128,8 +128,6 @@ private extension CustomerNoteTableViewCell {
         addButton.setImage(.plusImage, for: .normal)
         addButton.contentHorizontalAlignment = .leading
         addButton.contentVerticalAlignment = .bottom
-        // Usage of Configuration.contentInsets:
-        addButton.configuration = UIButton.Configuration.plain()
         addButton.configuration?.contentInsets = .zero
         // Testing: Remove before submitting for review
         addButton.backgroundColor = .yellow

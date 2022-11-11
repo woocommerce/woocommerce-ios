@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 11.2
+For this release, we focused on polishing a few things and taking care of minor bugs that our team found. Don’t be fooled – we are working on some pretty cool stuff for you all! Keep sharing feedback 💜
+
 ## 11.1
 Have you tried to create or update an order from the app? It's now possible to search for customers when you do! Check it out and please share your feedback! 
 

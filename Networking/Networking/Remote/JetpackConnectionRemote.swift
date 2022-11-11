@@ -16,7 +16,7 @@ public final class JetpackConnectionRemote: Remote {
     /// Retrieves the information about Jetpack the plugin for the current site.
     ///
     public func retrieveJetpackPluginDetails(completion: @escaping (Result<SitePlugin, Error>) -> Void) {
-        let path = String(format: "%@/%@", Path.plugins, Constants.jetpackPluginName)
+        let path = "\(Path.plugins)/\(Constants.jetpackPluginName)"
         let request = WordPressOrgRequest(baseURL: siteURL, method: .get, path: path)
         let mapper = SitePluginMapper(withDataEnvelope: false)
         enqueue(request, mapper: mapper, completion: completion)
@@ -34,7 +34,7 @@ public final class JetpackConnectionRemote: Remote {
     /// Activates Jetpack the plugin to the current site
     ///
     public func activateJetpackPlugin(completion: @escaping (Result<SitePlugin, Error>) -> Void) {
-        let path = String(format: "%@/%@", Path.plugins, Constants.jetpackPluginName)
+        let path = "\(Path.plugins)/\(Constants.jetpackPluginName)"
         let parameters: [String: Any] = [Field.status.rawValue: Constants.activeStatus]
         let request = WordPressOrgRequest(baseURL: siteURL, method: .put, path: path, parameters: parameters)
         let mapper = SitePluginMapper(withDataEnvelope: false)

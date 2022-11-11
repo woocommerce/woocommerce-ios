@@ -152,11 +152,10 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
             }
         }()
 
-        if featureFlagService.isFeatureFlagEnabled(.productsOnboarding),
-           // The `frame_nonce` value must be stored for the preview to be displayed
-           let site = stores.sessionManager.defaultSite,
+        // The `frame_nonce` value must be stored for the preview to be displayed
+        if let site = stores.sessionManager.defaultSite,
            site.frameNonce.isNotEmpty,
-            // Preview existing drafts or new products, that can be saved as a draft
+            // Preview existing drafts or new products that can be saved as a draft
            (canSaveAsDraft() || originalProductModel.status == .draft) {
             buttons.insert(.preview, at: 0)
         }

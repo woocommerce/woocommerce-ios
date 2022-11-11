@@ -274,35 +274,54 @@ final class ProductFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.formType, .edit)
     }
 
-    func test_action_buttons_for_new_product_with_published_status_and_pending_changes() {
+    func test_action_buttons_for_new_product_and_pending_changes() throws {
         // Given
-        let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
-        let viewModel = createViewModel(product: product, formType: .add)
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
+        let product = try XCTUnwrap(ProductFactory().createNewProduct(type: .simple, isVirtual: false, siteID: 123))
+        let viewModel = createViewModel(product: product, formType: .add, stores: stores)
         viewModel.updateName("new name")
 
         // When
         let actionButtons = viewModel.actionButtons
 
         // Then
-        XCTAssertEqual(actionButtons, [.publish, .more])
+        XCTAssertEqual(actionButtons, [.preview, .publish, .more])
     }
 
-    func test_action_buttons_for_new_product_with_published_status_and_no_pending_changes() {
+    func test_action_buttons_for_new_product_and_no_pending_changes() throws {
         // Given
-        let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
-        let viewModel = createViewModel(product: product, formType: .add)
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
+        let product = try XCTUnwrap(ProductFactory().createNewProduct(type: .simple, isVirtual: false, siteID: 123))
+        let viewModel = createViewModel(product: product, formType: .add, stores: stores)
 
         // When
         let actionButtons = viewModel.actionButtons
 
         // Then
-        XCTAssertEqual(actionButtons, [.publish, .more])
+        XCTAssertEqual(actionButtons, [.preview, .publish, .more])
+    }
+
+    func test_action_buttons_for_new_template_product() throws {
+        // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
+
+        // Adding some value to simulate a template product
+        let product = try XCTUnwrap(ProductFactory().createNewProduct(type: .simple, isVirtual: false, siteID: 123)?.copy(price: "10.00"))
+        let viewModel = createViewModel(product: product, formType: .add, stores: stores)
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.preview, .publish, .more])
+        XCTAssertTrue(viewModel.shouldEnablePreviewButton())
     }
 
     func test_action_buttons_for_new_product_with_different_status() {
         // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
         let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
-        let viewModel = createViewModel(product: product, formType: .add)
+        let viewModel = createViewModel(product: product, formType: .add, stores: stores)
 
         let updatedProduct = product.copy(statusKey: ProductStatus.draft.rawValue)
         let settings = ProductSettings(from: updatedProduct, password: nil)
@@ -317,8 +336,9 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_action_buttons_for_existing_published_product_and_pending_changes() {
         // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
         let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.published.rawValue)
-        let viewModel = createViewModel(product: product, formType: .edit)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
         viewModel.updateName("new name")
 
         // When
@@ -330,8 +350,9 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_action_buttons_for_existing_published_product_and_no_pending_changes() {
         // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
         let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.published.rawValue)
-        let viewModel = createViewModel(product: product, formType: .edit)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
 
         // When
         let actionButtons = viewModel.actionButtons
@@ -342,33 +363,36 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_action_buttons_for_existing_draft_product_and_pending_changes() {
         // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
         let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.draft.rawValue)
-        let viewModel = createViewModel(product: product, formType: .edit)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
         viewModel.updateName("new name")
 
         // When
         let actionButtons = viewModel.actionButtons
 
         // Then
-        XCTAssertEqual(actionButtons, [.save, .more])
+        XCTAssertEqual(actionButtons, [.preview, .save, .more])
     }
 
     func test_action_buttons_for_existing_draft_product_and_no_pending_changes() {
         // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
         let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.draft.rawValue)
-        let viewModel = createViewModel(product: product, formType: .edit)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
 
         // When
         let actionButtons = viewModel.actionButtons
 
         // Then
-        XCTAssertEqual(actionButtons, [.publish, .more])
+        XCTAssertEqual(actionButtons, [.preview, .publish, .more])
     }
 
     func test_action_buttons_for_existing_product_with_other_status_and_peding_changes() {
         // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
         let product = Product.fake().copy(productID: 123, statusKey: "other")
-        let viewModel = createViewModel(product: product, formType: .edit)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
         viewModel.updateName("new name")
 
         // When
@@ -380,8 +404,9 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_action_buttons_for_existing_product_with_other_status_and_no_peding_changes() {
         // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
         let product = Product.fake().copy(productID: 123, statusKey: "other")
-        let viewModel = createViewModel(product: product, formType: .edit)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
 
         // When
         let actionButtons = viewModel.actionButtons
@@ -392,8 +417,9 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_action_buttons_for_any_product_in_read_only_mode() {
         // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
         let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.published.rawValue)
-        let viewModel = createViewModel(product: product, formType: .readonly)
+        let viewModel = createViewModel(product: product, formType: .readonly, stores: stores)
         viewModel.updateName("new name")
 
         // When
@@ -401,6 +427,20 @@ final class ProductFormViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(actionButtons, [.more])
+    }
+
+    func test_no_preview_button_for_existing_draft_product_on_site_with_no_frame_nonce() {
+        // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "")
+
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.draft.rawValue)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.publish, .more])
     }
 
     func test_canPublishOption_is_true_when_creating_new_product_with_different_status() {
@@ -538,204 +578,6 @@ final class ProductFormViewModelTests: XCTestCase {
 
         let hasLinkedProducts = try XCTUnwrap(analyticsProvider.receivedProperties.first?["has_linked_products"] as? Bool)
         XCTAssertTrue(hasLinkedProducts)
-    }
-
-    // MARK: Preview button tests (with enabled Product Onboarding feature flag)
-
-    func test_disabled_preview_button_for_new_blank_product_without_any_changes() throws {
-        // Given
-        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
-
-        let product = try XCTUnwrap(ProductFactory().createNewProduct(type: .simple, isVirtual: false, siteID: 123))
-        let viewModel = createViewModel(product: product,
-                                        formType: .add,
-                                        stores: stores,
-                                        featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
-
-        // When
-        let actionButtons = viewModel.actionButtons
-
-        // Then
-        XCTAssertEqual(actionButtons, [.preview, .publish, .more])
-        XCTAssertFalse(viewModel.shouldEnablePreviewButton())
-    }
-
-    func test_enabled_preview_button_for_new_template_product() throws {
-        // Given
-        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
-
-        // Adding some value to simulate a template product
-        let product = try XCTUnwrap(ProductFactory().createNewProduct(type: .simple, isVirtual: false, siteID: 123)?.copy(price: "10.00"))
-        let viewModel = createViewModel(product: product,
-                                        formType: .add,
-                                        stores: stores,
-                                        featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
-
-        // When
-        let actionButtons = viewModel.actionButtons
-
-        // Then
-        XCTAssertEqual(actionButtons, [.preview, .publish, .more])
-        XCTAssertTrue(viewModel.shouldEnablePreviewButton())
-    }
-
-    func test_enabled_preview_button_for_new_product_with_pending_changes() {
-        // Given
-        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
-
-        let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
-        let viewModel = createViewModel(product: product,
-                                        formType: .add,
-                                        stores: stores,
-                                        featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
-        viewModel.updateName("new name")
-
-        // When
-        let actionButtons = viewModel.actionButtons
-
-        // Then
-        XCTAssertEqual(actionButtons, [.preview, .publish, .more])
-        XCTAssertTrue(viewModel.shouldEnablePreviewButton())
-    }
-
-    func test_no_preview_button_for_existing_published_product_without_any_changes() {
-        // Given
-        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
-
-        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.published.rawValue)
-        let viewModel = createViewModel(product: product,
-                                        formType: .edit,
-                                        stores: stores,
-                                        featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
-        viewModel.updateName("new name")
-
-        // When
-        let actionButtons = viewModel.actionButtons
-
-        // Then
-        XCTAssertEqual(actionButtons, [.save, .more])
-    }
-
-    func test_no_preview_button_for_existing_published_product_with_pending_changes() {
-        // Given
-        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
-
-        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.published.rawValue)
-        let viewModel = createViewModel(product: product,
-                                        formType: .edit,
-                                        stores: stores,
-                                        featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
-
-        // When
-        let actionButtons = viewModel.actionButtons
-
-        // Then
-        XCTAssertEqual(actionButtons, [.more])
-    }
-
-    func test_preview_button_for_existing_draft_product_without_any_changes() {
-        // Given
-        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
-
-        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.draft.rawValue)
-        let viewModel = createViewModel(product: product,
-                                        formType: .edit,
-                                        stores: stores,
-                                        featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
-
-        // When
-        let actionButtons = viewModel.actionButtons
-
-        // Then
-        XCTAssertEqual(actionButtons, [.preview, .publish, .more])
-    }
-
-    func test_preview_button_for_existing_draft_product_with_pending_changes() {
-        // Given
-        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
-
-        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.draft.rawValue)
-        let viewModel = createViewModel(product: product,
-                                        formType: .edit,
-                                        stores: stores,
-                                        featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
-        viewModel.updateName("new name")
-
-        // When
-        let actionButtons = viewModel.actionButtons
-
-        // Then
-        XCTAssertEqual(actionButtons, [.preview, .save, .more])
-    }
-
-    func test_no_preview_button_for_existing_product_with_other_status_and_without_any_changes() {
-        // Given
-        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
-
-        let product = Product.fake().copy(productID: 123, statusKey: "other")
-        let viewModel = createViewModel(product: product,
-                                        formType: .edit,
-                                        stores: stores,
-                                        featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
-
-        // When
-        let actionButtons = viewModel.actionButtons
-
-        // Then
-        XCTAssertEqual(actionButtons, [.publish, .more])
-    }
-
-    func test_no_preview_button_for_existing_product_with_other_status_and_pending_changes() {
-        // Given
-        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
-
-        let product = Product.fake().copy(productID: 123, statusKey: "other")
-        let viewModel = createViewModel(product: product,
-                                        formType: .edit,
-                                        stores: stores,
-                                        featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
-        viewModel.updateName("new name")
-
-        // When
-        let actionButtons = viewModel.actionButtons
-
-        // Then
-        XCTAssertEqual(actionButtons, [.save, .more])
-    }
-
-    func test_no_preview_button_for_any_product_in_read_only_mode() {
-        // Given
-        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
-
-        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.published.rawValue)
-        let viewModel = createViewModel(product: product,
-                                        formType: .readonly,
-                                        stores: stores,
-                                        featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
-        viewModel.updateName("new name")
-
-        // When
-        let actionButtons = viewModel.actionButtons
-
-        // Then
-        XCTAssertEqual(actionButtons, [.more])
-    }
-
-    func test_no_preview_button_for_existing_draft_product_on_site_with_no_frame_nonce() {
-        // Given
-        sessionManager.defaultSite = Site.fake().copy(frameNonce: "")
-
-        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.draft.rawValue)
-        let viewModel = createViewModel(product: product,
-                                        formType: .edit,
-                                        stores: stores,
-                                        featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
-
-        // When
-        let actionButtons = viewModel.actionButtons
-
-        // Then
-        XCTAssertEqual(actionButtons, [.publish, .more])
     }
 }
 

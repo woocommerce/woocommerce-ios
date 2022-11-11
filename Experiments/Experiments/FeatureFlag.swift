@@ -82,10 +82,6 @@ public enum FeatureFlag: Int {
     ///
     case justInTimeMessagesOnDashboard
 
-    /// Hides products onboarding development.
-    ///
-    case productsOnboarding
-
     // MARK: - Performance Monitoring
     //
     // These flags are not transient. That is, they are not here to help us rollout a feature,

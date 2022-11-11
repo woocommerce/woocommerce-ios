@@ -30,6 +30,11 @@ private extension IssueRefundTableViewCell {
 
     func configureIssueRefundButton() {
         issueRefundButton.applySecondaryButtonStyle()
+        // Testing: Remove before submitting for review
+        issueRefundButton.backgroundColor = .yellow
+        issueRefundButton.layer.borderColor = CGColor(red: 1, green: 0, blue: 0, alpha: 1)
+        issueRefundButton.layer.borderWidth = 2.0
+        //
         issueRefundButton.setTitle(Localization.buttonTitle, for: .normal)
     }
 }

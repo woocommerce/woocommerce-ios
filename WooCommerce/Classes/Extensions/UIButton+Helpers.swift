@@ -39,13 +39,15 @@ extension UIButton {
     /// Applies the Secondary Button Style: Clear BG / Bordered Outline
     ///
     func applySecondaryButtonStyle() {
+        configuration = UIButton.Configuration.plain()
         backgroundColor = .secondaryButtonBackground
-        contentEdgeInsets = Style.defaultEdgeInsets
+        configuration?.contentInsets = Style.defaultInsets
         layer.borderColor = UIColor.secondaryButtonBorder.cgColor
         layer.borderWidth = Style.defaultBorderWidth
         layer.cornerRadius = Style.defaultCornerRadius
         titleLabel?.applyHeadlineStyle()
-        enableMultipleLines()
+        // If we call enableMultipleLines(), now crashes.
+        //enableMultipleLines()
         titleLabel?.textAlignment = .center
 
         setTitleColor(.secondaryButtonTitle, for: .normal)

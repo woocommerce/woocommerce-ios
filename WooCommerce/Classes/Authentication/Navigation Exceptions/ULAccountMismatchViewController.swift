@@ -116,11 +116,13 @@ private extension ULAccountMismatchViewController {
     func configureSignedInAsLabel() {
         singedInAsLabel.applySecondaryBodyStyle()
         singedInAsLabel.text = viewModel.signedInText
+        singedInAsLabel.numberOfLines = 0
     }
 
     func configureWrongAccountLabel() {
         wrongAccountLabel.applySecondaryBodyStyle()
         wrongAccountLabel.text = viewModel.logOutTitle
+        wrongAccountLabel.numberOfLines = 0
     }
 
     func configureLogOutButton() {
@@ -160,6 +162,7 @@ private extension ULAccountMismatchViewController {
         extraInfoButton.applyLinkButtonStyle()
         extraInfoButton.contentEdgeInsets = Constants.extraInfoCustomInsets
         extraInfoButton.setTitle(viewModel.auxiliaryButtonTitle, for: .normal)
+        extraInfoButton.titleLabel?.numberOfLines = 0
         extraInfoButton.on(.touchUpInside) { [weak self] _ in
             self?.didTapAuxiliaryButton()
         }
@@ -183,6 +186,7 @@ private extension ULAccountMismatchViewController {
         secondaryButton.isPrimary = false
         secondaryButton.isHidden = viewModel.isSecondaryButtonHidden
         secondaryButton.setTitle(viewModel.secondaryButtonTitle, for: .normal)
+        secondaryButton.titleLabel?.numberOfLines = 0
         secondaryButton.on(.touchUpInside) { [weak self] _ in
             self?.didTapSecondaryButton()
         }

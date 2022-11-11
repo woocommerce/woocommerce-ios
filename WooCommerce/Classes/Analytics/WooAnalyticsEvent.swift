@@ -353,7 +353,7 @@ extension WooAnalyticsEvent {
         /// Tracks when the product preview fails due to a HTTP error.
         ///
         static func previewFailed(statusCode: Int) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .productDetailPreviewFailed, properties: ["status_code": String(statusCode)])
+            WooAnalyticsEvent(statName: .productDetailPreviewFailed, properties: ["status_code": Int64(statusCode)])
         }
     }
 }

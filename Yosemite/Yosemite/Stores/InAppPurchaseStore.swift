@@ -94,11 +94,26 @@ private extension InAppPurchaseStore {
 
                 logInfo("Purchasing product \(product.id) for site \(siteID) with options \(purchaseOptions)")
                 let purchaseResult = try await product.purchase(options: purchaseOptions)
-                if case .success(let result) = purchaseResult {
-                    logInfo("Purchased product \(product.id) for site \(siteID): \(result)")
-                    try await handleCompletedTransaction(result)
-                } else {
-                    logError("Ignorning unsuccessful purchase: \(purchaseResult)")
+                switch purchaseResult {
+                case .success(let result):
+                    guard case .verified(let transaction) = result else {
+                        // Ignore unverified transactions.
+                        logError("Transaction unverified: \(result)")
+                        throw Errors.unverifiedTransaction
+                    }
+                    logInfo("Purchased product \(product.id) for site \(siteID): \(transaction)")
+
+                    try await submitTransaction(transaction)
+                    await transaction.finish()
+                case .userCancelled:
+                    logInfo("User cancelled the purchase flow")
+                    throw Errors.userCancelled
+                case .pending:
+                    logError("Purchase returned in a pending state, it might succeed in the future")
+                    throw Errors.pending
+                @unknown default:
+                    logError("Unknown result for purchase: \(purchaseResult)")
+                    throw Errors.unknownResult
                 }
                 completion(.success(purchaseResult))
             } catch {
@@ -265,12 +280,45 @@ private extension InAppPurchaseStore {
 }
 
 public extension InAppPurchaseStore {
-    enum Errors: Error {
+    enum Errors: String, Error {
+        /// The user canceled the IAP flow
+        case userCancelled
+
+        /// The purchase is pending some user action.
+        ///
+        /// These purchases may succeed in the future, and the resulting `Transaction` will be
+        /// delivered via `Transaction.updates`
+        case pending
+
+        /// The purchase returned a PurchaseResult value that didn't exist when this was developed
+        case unknownResult
+
+        /// The purchase was successful but the transaction was unverified
+        ///
+        case unverifiedTransaction
+
+        /// The purchase was successful but it's not associated to an account
+        ///
         case transactionMissingAppAccountToken
+
+        /// The transaction has an associated account but it can't be translated to a site
+        ///
         case appAccountTokenMissingSiteIdentifier
+
+        /// The transaction is associated with an unknown product
+        ///
         case transactionProductUnknown
+
+        /// The storefront for the user is unknown, and so we can't know their country code
+        ///
         case storefrontUnknown
+
+        /// App receipt was missing, even after a refresh
+        ///
         case missingAppReceipt
+
+        /// In-app purchases are not supported for this user
+        ///
         case inAppPurchasesNotSupported
     }
 

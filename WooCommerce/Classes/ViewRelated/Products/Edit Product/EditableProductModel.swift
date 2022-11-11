@@ -184,12 +184,16 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
 
     /// Helper to determine if a product model is empty.
     /// We consider it as empty if its underlying product matches the `ProductFactory.createNewProduct` output.
+    /// Additionally we don't take dates into consideration as we don't control their value when creating a product.
     ///
     func isEmpty() -> Bool {
         guard let emptyProduct = ProductFactory().createNewProduct(type: productType, isVirtual: virtual, siteID: siteID) else {
             return false
         }
-        return emptyProduct == product
+
+        let commonDate = Date()
+        return emptyProduct.copy(date: commonDate, dateCreated: commonDate, dateModified: commonDate, dateOnSaleStart: commonDate, dateOnSaleEnd: commonDate) ==
+               product.copy(date: commonDate, dateCreated: commonDate, dateModified: commonDate, dateOnSaleStart: commonDate, dateOnSaleEnd: commonDate)
     }
 }
 

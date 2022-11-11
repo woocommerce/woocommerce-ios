@@ -542,11 +542,11 @@ final class ProductFormViewModelTests: XCTestCase {
 
     // MARK: Preview button tests (with enabled Product Onboarding feature flag)
 
-    func test_disabled_preview_button_for_new_blank_product_without_any_changes() {
+    func test_disabled_preview_button_for_new_blank_product_without_any_changes() throws {
         // Given
         sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
 
-        let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
+        let product = try XCTUnwrap(ProductFactory().createNewProduct(type: .simple, isVirtual: false, siteID: 123))
         let viewModel = createViewModel(product: product,
                                         formType: .add,
                                         stores: stores,

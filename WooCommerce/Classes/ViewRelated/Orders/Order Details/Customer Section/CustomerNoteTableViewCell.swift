@@ -128,7 +128,14 @@ private extension CustomerNoteTableViewCell {
         addButton.setImage(.plusImage, for: .normal)
         addButton.contentHorizontalAlignment = .leading
         addButton.contentVerticalAlignment = .bottom
-        addButton.contentEdgeInsets = .zero
+        // Usage of Configuration.contentInsets:
+        addButton.configuration = UIButton.Configuration.plain()
+        addButton.configuration?.contentInsets = .zero
+        // Testing: Remove before submitting for review
+        addButton.backgroundColor = .yellow
+        addButton.layer.borderColor = CGColor(red: 1, green: 0, blue: 0, alpha: 1)
+        addButton.layer.borderWidth = 2.0
+        //
         addButton.distributeTitleAndImage(spacing: Constants.buttonTitleAndImageSpacing)
         addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
     }

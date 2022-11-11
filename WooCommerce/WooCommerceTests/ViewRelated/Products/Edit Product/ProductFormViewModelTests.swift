@@ -560,6 +560,25 @@ final class ProductFormViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldEnablePreviewButton())
     }
 
+    func test_enabled_preview_button_for_new_template_product() throws {
+        // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
+
+        // Adding some value to simulate a template product
+        let product = try XCTUnwrap(ProductFactory().createNewProduct(type: .simple, isVirtual: false, siteID: 123)?.copy(price: "10.00"))
+        let viewModel = createViewModel(product: product,
+                                        formType: .add,
+                                        stores: stores,
+                                        featureFlagService: MockFeatureFlagService(isProductsOnboardingEnabled: true))
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.preview, .publish, .more])
+        XCTAssertTrue(viewModel.shouldEnablePreviewButton())
+    }
+
     func test_enabled_preview_button_for_new_product_with_pending_changes() {
         // Given
         sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")

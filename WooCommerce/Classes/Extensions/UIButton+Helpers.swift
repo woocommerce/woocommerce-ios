@@ -46,8 +46,7 @@ extension UIButton {
         layer.borderWidth = Style.defaultBorderWidth
         layer.cornerRadius = Style.defaultCornerRadius
         titleLabel?.applyHeadlineStyle()
-        // If we call enableMultipleLines(), now crashes.
-        //enableMultipleLines()
+        enableMultipleLines()
         titleLabel?.textAlignment = .center
 
         setTitleColor(.secondaryButtonTitle, for: .normal)
@@ -105,7 +104,7 @@ extension UIButton {
         layer.borderWidth = Style.defaultBorderWidth
         layer.cornerRadius = Style.defaultCornerRadius
         titleLabel?.applyHeadlineStyle()
-        //enableMultipleLines()
+        enableMultipleLines()
         titleLabel?.textAlignment = .center
 
         setTitleColor(.secondaryButtonTitle, for: .normal)
@@ -150,9 +149,10 @@ extension UIButton {
     /// Supports title of multiple lines, either from longer text than allocated width or text with line breaks.
     private func enableMultipleLines() {
         titleLabel?.lineBreakMode = .byWordWrapping
-        if let label = titleLabel {
-            pinSubviewToAllEdgeMargins(label)
-        }
+// This bit makes the app crash now that we use UIButton.Configuration
+//        if let label = titleLabel {
+//            pinSubviewToAllEdgeMargins(label)
+//        }
     }
 }
 

@@ -4,6 +4,8 @@ import XCTest
 
 final class JetpackConnectionStoreTests: XCTestCase {
 
+    private let siteURL = "http://test.com"
+
     /// Mock Dispatcher
     ///
     private var dispatcher: Dispatcher!
@@ -18,9 +20,144 @@ final class JetpackConnectionStoreTests: XCTestCase {
         dispatcher = Dispatcher()
     }
 
+    func test_retrieveJetpackPluginDetails_returns_correct_plugin() throws {
+        // Given
+        let urlSuffix = "/wp/v2/plugins/jetpack/jetpack"
+        network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "site-plugin-without-envelope")
+        let store = JetpackConnectionStore(dispatcher: dispatcher)
+
+        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
+        store.onAction(setupAction)
+
+        // When
+        let result: Result<SitePlugin, Error> = waitFor { promise in
+            let action = JetpackConnectionAction.retrieveJetpackPluginDetails { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let plugin = try XCTUnwrap(result.get())
+        assertEqual(plugin.plugin, "jetpack/jetpack")
+        assertEqual(plugin.status, .active)
+        assertEqual(plugin.name, "Jetpack")
+    }
+
+    func test_retrieveJetpackPluginDetails_properly_relays_errors() {
+        // Given
+        let urlSuffix = "/wp/v2/plugins/jetpack/jetpack"
+        let error = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: urlSuffix, error: error)
+        let store = JetpackConnectionStore(dispatcher: dispatcher)
+
+        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
+        store.onAction(setupAction)
+
+        // When
+        let result: Result<SitePlugin, Error> = waitFor { promise in
+            let action = JetpackConnectionAction.retrieveJetpackPluginDetails { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, error)
+    }
+
+    func test_installJetpackPlugin_completes_successfully_when_the_installation_succeeds() throws {
+        // Given
+        let urlSuffix = "/wp/v2/plugins"
+        network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "site-plugin-without-envelope")
+        let store = JetpackConnectionStore(dispatcher: dispatcher)
+
+        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
+        store.onAction(setupAction)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = JetpackConnectionAction.installJetpackPlugin { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_installJetpackPlugin_properly_relays_errors() {
+        // Given
+        let urlSuffix = "/wp/v2/plugins"
+        let error = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: urlSuffix, error: error)
+        let store = JetpackConnectionStore(dispatcher: dispatcher)
+
+        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
+        store.onAction(setupAction)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = JetpackConnectionAction.installJetpackPlugin { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, error)
+    }
+
+    func test_activateJetpackPlugin_completes_successfully_when_the_activation_succeeds() throws {
+        // Given
+        let urlSuffix = "/wp/v2/plugins/jetpack/jetpack"
+        network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "site-plugin-without-envelope")
+        let store = JetpackConnectionStore(dispatcher: dispatcher)
+
+        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
+        store.onAction(setupAction)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = JetpackConnectionAction.activateJetpackPlugin { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_activateJetpackPlugin_properly_relays_errors() {
+        // Given
+        let urlSuffix = "/wp/v2/plugins/jetpack/jetpack"
+        let error = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: urlSuffix, error: error)
+        let store = JetpackConnectionStore(dispatcher: dispatcher)
+
+        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
+        store.onAction(setupAction)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = JetpackConnectionAction.activateJetpackPlugin { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, error)
+    }
+
     func test_fetchJetpackConnectionURL_returns_correct_url() throws {
         // Given
-        let siteURL = "http://test.com"
         let urlSuffix = "/jetpack/v4/connection/url"
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connection-url")
         let store = JetpackConnectionStore(dispatcher: dispatcher)
@@ -45,7 +182,6 @@ final class JetpackConnectionStoreTests: XCTestCase {
 
     func test_fetchJetpackConnectionURL_properly_relays_errors() {
         // Given
-        let siteURL = "http://test.com"
         let urlSuffix = "/jetpack/v4/connection/url"
         let error = NetworkError.unacceptableStatusCode(statusCode: 500)
         network.simulateError(requestUrlSuffix: urlSuffix, error: error)
@@ -69,7 +205,6 @@ final class JetpackConnectionStoreTests: XCTestCase {
 
     func test_fetchJetpackUser_correctly_returns_parsed_user() throws {
         // Given
-        let siteURL = "http://test.com"
         let urlSuffix = "/jetpack/v4/connection/data"
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connected-user")
         let store = JetpackConnectionStore(dispatcher: dispatcher)

@@ -343,6 +343,12 @@ extension WooAnalyticsEvent {
         static func loaded(hasLinkedProducts: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDetailLoaded, properties: ["has_linked_products": hasLinkedProducts])
         }
+
+        /// Tracks when the merchant previews a product draft.
+        ///
+        static func previewTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productDetailPreviewTapped, properties: [:])
+        }
     }
 }
 
@@ -1722,6 +1728,7 @@ extension WooAnalyticsEvent {
     enum ProductsOnboarding {
         enum Keys: String {
             case type
+            case templateEligible = "template_eligible"
         }
 
         enum CreationType: String {
@@ -1745,6 +1752,10 @@ extension WooAnalyticsEvent {
         ///
         static func productCreationTypeSelected(type: CreationType) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .addProductCreationTypeSelected, properties: [Keys.type.rawValue: type.rawValue])
+        }
+
+        static func productListAddProductButtonTapped(templateEligible: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productListAddProductTapped, properties: [Keys.templateEligible.rawValue: templateEligible])
         }
     }
 }

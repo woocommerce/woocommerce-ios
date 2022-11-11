@@ -56,8 +56,10 @@ enum LoginProloguePageType: CaseIterable {
             return UIImage.prologueOrdersImage
         case .products:
             return UIImage.prologueProductsImage
-        case .reviews, .getStarted, .simplifiedLoginI1Intro:
+        case .reviews:
             return UIImage.prologueReviewsImage
+        case .getStarted, .simplifiedLoginI1Intro:
+            return UIImage.prologueWooMobileImage
         }
     }
 }

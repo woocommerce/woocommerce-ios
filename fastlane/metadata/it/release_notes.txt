@@ -1,1 +1,1 @@
-Anche se questo rilascio non ha alcuna sorprendente nuova funzionalità, ci abbiamo messo comunque tanto amore. Abbiamo corretto alcuni bug e apportato diversi miglioramenti per rendere la tua esperienza più fluida.
+Hai prova a creare o aggiornare un ordine dall'app? Quando lo fai, ora è possibile cercare per cliente. Prova questa opzione e condividi il tuo feedback.

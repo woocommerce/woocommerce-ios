@@ -1,0 +1,52 @@
+{
+  "identifier" : "28D2E099",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+
+  ],
+  "settings" : {
+
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "21032762",
+      "localizations" : [
+
+      ],
+      "name" : "test_subscription_group",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "69.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "1650562345",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "1 Month of Debug Woo",
+              "displayName" : "Debug Monthly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "debug.woocommerce.ecommerce.monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Debug Monthly",
+          "subscriptionGroupID" : "21032762",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 2,
+    "minor" : 0
+  }
+}

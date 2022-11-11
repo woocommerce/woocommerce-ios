@@ -44,7 +44,7 @@ class InAppPurchasesRemoteTests: XCTestCase {
 
         // Then
         let identifiers = try XCTUnwrap(result?.get())
-        XCTAssert(identifiers.count == 2)
+        XCTAssert(identifiers.count == 1)
     }
 
     func test_purchase_product_returns_created_order() throws {

@@ -605,6 +605,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.prologueReviewsImage)
     }
 
+    func test_prologueWooMobileImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.prologueWooMobileImage)
+    }
+
     func test_cloudOutlineImage_is_not_nil() {
         XCTAssertNotNil(UIImage.cloudOutlineImage)
     }

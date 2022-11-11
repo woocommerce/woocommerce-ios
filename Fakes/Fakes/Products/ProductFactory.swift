@@ -24,7 +24,8 @@ public enum ProductFactory {
     /// Returns a fake product filled with data can be edited by the merchants
     ///
     public static func productWithEditableDataFilled() -> Product {
-        Product.fake().copy(name: "name",
+        Product.fake().copy(productID: 123,
+                            name: "name",
                             dateOnSaleStart: Date(),
                             dateOnSaleEnd: Date(),
                             fullDescription: "description",

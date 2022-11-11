@@ -276,8 +276,9 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_action_buttons_for_new_product_and_pending_changes() throws {
         // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
         let product = try XCTUnwrap(ProductFactory().createNewProduct(type: .simple, isVirtual: false, siteID: 123))
-        let viewModel = createViewModel(product: product, formType: .add)
+        let viewModel = createViewModel(product: product, formType: .add, stores: stores)
         viewModel.updateName("new name")
 
         // When
@@ -289,8 +290,9 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_action_buttons_for_new_product_and_no_pending_changes() throws {
         // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
         let product = try XCTUnwrap(ProductFactory().createNewProduct(type: .simple, isVirtual: false, siteID: 123))
-        let viewModel = createViewModel(product: product, formType: .add)
+        let viewModel = createViewModel(product: product, formType: .add, stores: stores)
 
         // When
         let actionButtons = viewModel.actionButtons
@@ -305,9 +307,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
         // Adding some value to simulate a template product
         let product = try XCTUnwrap(ProductFactory().createNewProduct(type: .simple, isVirtual: false, siteID: 123)?.copy(price: "10.00"))
-        let viewModel = createViewModel(product: product,
-                                        formType: .add,
-                                        stores: stores)
+        let viewModel = createViewModel(product: product, formType: .add, stores: stores)
 
         // When
         let actionButtons = viewModel.actionButtons
@@ -319,8 +319,9 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_action_buttons_for_new_product_with_different_status() {
         // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
         let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
-        let viewModel = createViewModel(product: product, formType: .add)
+        let viewModel = createViewModel(product: product, formType: .add, stores: stores)
 
         let updatedProduct = product.copy(statusKey: ProductStatus.draft.rawValue)
         let settings = ProductSettings(from: updatedProduct, password: nil)
@@ -335,8 +336,9 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_action_buttons_for_existing_published_product_and_pending_changes() {
         // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
         let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.published.rawValue)
-        let viewModel = createViewModel(product: product, formType: .edit)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
         viewModel.updateName("new name")
 
         // When
@@ -348,8 +350,9 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_action_buttons_for_existing_published_product_and_no_pending_changes() {
         // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
         let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.published.rawValue)
-        let viewModel = createViewModel(product: product, formType: .edit)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
 
         // When
         let actionButtons = viewModel.actionButtons
@@ -360,8 +363,9 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_action_buttons_for_existing_draft_product_and_pending_changes() {
         // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
         let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.draft.rawValue)
-        let viewModel = createViewModel(product: product, formType: .edit)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
         viewModel.updateName("new name")
 
         // When
@@ -373,8 +377,9 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_action_buttons_for_existing_draft_product_and_no_pending_changes() {
         // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
         let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.draft.rawValue)
-        let viewModel = createViewModel(product: product, formType: .edit)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
 
         // When
         let actionButtons = viewModel.actionButtons
@@ -385,8 +390,9 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_action_buttons_for_existing_product_with_other_status_and_peding_changes() {
         // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
         let product = Product.fake().copy(productID: 123, statusKey: "other")
-        let viewModel = createViewModel(product: product, formType: .edit)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
         viewModel.updateName("new name")
 
         // When
@@ -398,8 +404,9 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_action_buttons_for_existing_product_with_other_status_and_no_peding_changes() {
         // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
         let product = Product.fake().copy(productID: 123, statusKey: "other")
-        let viewModel = createViewModel(product: product, formType: .edit)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
 
         // When
         let actionButtons = viewModel.actionButtons
@@ -410,8 +417,9 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_action_buttons_for_any_product_in_read_only_mode() {
         // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
         let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.published.rawValue)
-        let viewModel = createViewModel(product: product, formType: .readonly)
+        let viewModel = createViewModel(product: product, formType: .readonly, stores: stores)
         viewModel.updateName("new name")
 
         // When
@@ -426,9 +434,7 @@ final class ProductFormViewModelTests: XCTestCase {
         sessionManager.defaultSite = Site.fake().copy(frameNonce: "")
 
         let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.draft.rawValue)
-        let viewModel = createViewModel(product: product,
-                                        formType: .edit,
-                                        stores: stores)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
 
         // When
         let actionButtons = viewModel.actionButtons

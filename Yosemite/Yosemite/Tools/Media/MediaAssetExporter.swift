@@ -112,7 +112,7 @@ private extension MediaAssetExporter {
                 return nil
         }
         guard allowableFileExtensions.contains(fileExtensionForType) else {
-            return kUTTypeJPEG as String
+            return UTType.jpeg.identifier as String
         }
         return uti
     }

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-11-06 02:10:08+0000 */
+/* Translation-Revision-Date: 2022-11-10 11:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -409,6 +409,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title on empty state button when the product has attributes but no variations */
 "Add Variation" = "バリエーションを追加";
 
+/* Title for the button on the Products onboarding banner */
+"Add a Product" = "商品を追加";
+
+/* Button title on the store picker for store creation */
+"Add a Store" = "ストアを追加";
+
 /* Title for the Add a Different Address switch in the Address form */
 "Add a different shipping address" = "別の配送先住所を追加";
 
@@ -464,6 +470,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "商品へのリンクを追加";
+
+/* Title for the Products onboarding banner */
+"Add products to sell" = "販売商品を追加";
 
 /* Title for adding grouped products row on Product main screen for a grouped product */
 "Add products to the group" = "商品をグループに追加";
@@ -823,6 +832,9 @@ which should be translated separately and considered part of this sentence. */
 /* Box package type, used to create a custom package in the Shipping Label flow */
 "Box" = "ボックス";
 
+/* Message for the Products onboarding banner */
+"Build your catalog by adding what you want to sell." = "販売する商品を追加してカタログを作成しましょう。";
+
 /* Button title in the action sheet of product variatiosns that shows the bulk update
    Title that appears on top of the bulk update of product variations screen */
 "Bulk Update" = "一括更新";
@@ -1139,6 +1151,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to confirm the preferred provider for In-Person Payments */
 "Confirm Payment Method" = "決済方法を確認";
 
+/* Button title Discard Changes in Discard Changes Action Sheet */
+"Confirm and leave" = "確認してページを離れる";
+
 /* Title displayed if there are no inbox notes in the inbox screen. */
 "Congrats, you’ve read everything!" = "すべて読み終えました !";
 
@@ -1156,6 +1171,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action button to handle connecting the logged-in account to a given site.Presented when logging in with a store address that does not match the account entered */
 "Connect Jetpack to your account" = "Jetpack をアカウントに接続する";
+
+/* Button to connect to an existing store from the store picker */
+"Connect an existing store" = "既存のストアを連携";
 
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "Reader に接続";
@@ -1418,6 +1436,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "最初のバリエーションを作成";
 
+/* Loading text while creating a product from a template */
+"Creating Template Product..." = "テンプレート商品を作成しています...";
+
 /* Credit card payment method for shipping label. */
 "Credit card" = "クレジットカード";
 
@@ -1632,6 +1653,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Dialog title that displays the name of a found card reader */
 "Do you want to connect to reader %1$@?" = "リーダー %1$@ に接続しますか ?";
+
+/* Title of the alert when the user dismisses the store creation flow. */
+"Do you want to leave?" = "ページを離れますか ?";
 
 /* Body of the alert when a user is moving a product to the trash */
 "Do you want to move this product to the Trash?" = "この商品をゴミ箱に移動しますか ?";
@@ -5251,6 +5275,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* A general error message shown to the user when there was an API communication failure. */
 "There was a problem communicating with the site." = "サイトとの通信中に問題が発生しました。";
 
+/* Title for the error notice when creating a template product */
+"There was a problem creating the template product." = "テンプレート商品の作成中に問題が発生しました。";
+
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "指定したサイトのブロックを解除する際に問題が発生しました。";
 
@@ -5840,6 +5867,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Action to use the address in Shipping Label Suggested screen as suggested */
 "Use Suggested Address" = "提案された住所を使用";
 
+/* Description for the option to create a template product */
+"Use a template to create physical, virtual, and variable products. You can edit it as you go." = "テンプレートを使用して、物理的な商品、仮想商品、バリエーションのある商品を作成します。 途中で編集できます。";
+
 /* Account creation error when the email is invalid. */
 "Use a working email address, so you can receive our messages." = "メッセージが受け取れるよう、有効なメールアドレスを使ってください。";
 
@@ -6170,6 +6200,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Caption displayed in the simplified prologue screen */
 "WooCommerce is a customizable, open-source eCommerce platform built on WordPress." = "WooCommerce は WordPress に構築された、カスタマイズ可能かつオープンソースの eコマースプラットフォームです。";
 
+/* WordPress API (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
+"WordPress API Error: [%1$@] %2$@" = "WordPress API エラー: [%1$@] %2$@";
+
 /* Menu option for selecting media from the site's media library.
    Navigation bar title for WordPress Media Library image picker */
 "WordPress Media Library" = "WordPress メディアライブラリ";
@@ -6235,11 +6268,17 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "アプリがブログに接続するのを防止するモバイルプラグインが DudaMobile からインストールされたようです。";
 
+/* Message of the alert when the user dismisses the store creation flow. */
+"You will lose all your store information." = "ストアの情報がすべて失われます。";
+
 /* Error message when the merchant's payment account is under review */
 "You'll be able to accept In-Person Payments as soon as we finish reviewing your account." = "アカウントのレビューが完了すると、すぐにオフラインでの支払いを受け取れるようになります。";
 
 /* Error message displayed when unable to close user account due to being unauthorized. */
 "You're not authorized to close the account." = "アカウントを閉鎖する権限がありません。";
+
+/* Displayed during the Login flow, whenever the user has no woo stores associated. */
+"Your account isn’t connected to any WooCommerce stores." = "アカウントが WooCommerce ストアと連携されていません。";
 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "支払いを受け取るには、カードリーダーのソフトウェアを更新する必要があります。 キャンセルするとリーダーの接続がブロックされます。";

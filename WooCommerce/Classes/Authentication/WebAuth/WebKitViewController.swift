@@ -452,6 +452,11 @@ extension WebKitViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView,
                  decidePolicyFor navigationResponse: WKNavigationResponse,
                  decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
+        // Log HTTP error when the status code is outside of the predefined range (200-400)
+        if let response = navigationResponse.response as? HTTPURLResponse, !(200..<400).contains(response.statusCode) {
+            ServiceLocator.analytics.track(event: .ProductDetail.previewFailed(statusCode: response.statusCode))
+        }
+
         guard navigationResponse.isForMainFrame, let authenticator = authenticator, !hasAttemptedAuthRecovery else {
             decisionHandler(.allow)
             return

@@ -1,8 +1,15 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+11.3
+-----
+
+
 11.2
 -----
+- [***] You can now preview draft products before publishing. [https://github.com/woocommerce/woocommerce-ios/pull/8102]
 - [*] The survey at the end of the login onboarding flow is no longer available. [https://github.com/woocommerce/woocommerce-ios/pull/8062]
+- [*] Fixed layout issues on the Account Mismatch error screen. [https://github.com/woocommerce/woocommerce-ios/pull/8074]
+- [*] The Accept Payments Easily banner has been removed from the order list [https://github.com/woocommerce/woocommerce-ios/pull/8078]
 
 11.1
 -----

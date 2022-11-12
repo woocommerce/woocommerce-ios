@@ -152,11 +152,10 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
             }
         }()
 
-        if featureFlagService.isFeatureFlagEnabled(.productsOnboarding),
-           // The `frame_nonce` value must be stored for the preview to be displayed
-           let site = stores.sessionManager.defaultSite,
+        // The `frame_nonce` value must be stored for the preview to be displayed
+        if let site = stores.sessionManager.defaultSite,
            site.frameNonce.isNotEmpty,
-            // Preview existing drafts or new products, that can be saved as a draft
+            // Preview existing drafts or new products that can be saved as a draft
            (canSaveAsDraft() || originalProductModel.status == .draft) {
             buttons.insert(.preview, at: 0)
         }
@@ -221,7 +220,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
                                                   productOrVariationID: .product(id: product.productID),
                                                   isLocalID: !product.existsRemotely),
                                        originalImages: originalProduct.images)
-        return hasProductChangesExcludingImages || hasImageChanges || password != originalPassword
+        return hasProductChangesExcludingImages || hasImageChanges || password != originalPassword || isNewTemplateProduct()
     }
 }
 
@@ -619,6 +618,15 @@ private extension ProductFormViewModel {
         }
 
         return controller
+    }
+
+    /// Helper to determine if the added/editted product comes as a new template product.
+    /// We assume that a new template product is a product that:
+    ///  - Doesn't have an `id` - has not been saved remotely
+    ///  - Is not empty.
+    ///
+    private func isNewTemplateProduct() -> Bool {
+        originalProduct.productID == .zero && !originalProduct.isEmpty()
     }
 }
 

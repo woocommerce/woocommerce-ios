@@ -465,6 +465,7 @@ public enum WooAnalyticsStat: String {
     case productInventorySettingsSKUScannerButtonTapped = "product_inventory_settings_sku_scanner_button_tapped"
     case productInventorySettingsSKUScanned = "product_inventory_settings_sku_scanned"
     case productDetailPreviewTapped = "product_detail_preview_tapped"
+    case productDetailPreviewFailed = "product_detail_preview_failed"
 
     // MARK: Edit Product Variation Events
     //

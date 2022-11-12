@@ -159,7 +159,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
 
     func testObservablesFromUpdatingProductPasswordRemotely() {
         // Arrange
-        let product = Product.fake()
+        let product = Product.fake().copy(productID: 123)
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,

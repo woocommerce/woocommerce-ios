@@ -202,6 +202,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     // MARK: Product preview action handling
 
     @objc private func saveDraftAndDisplayProductPreview() {
+        if viewModel.formType == .add {
+            ServiceLocator.analytics.track(.addProductSaveAsDraftTapped, withProperties: ["product_type": product.productType.rawValue])
+        }
+
         guard viewModel.canSaveAsDraft() || viewModel.hasUnsavedChanges() else {
             displayProductPreview()
             return

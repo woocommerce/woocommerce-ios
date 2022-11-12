@@ -108,12 +108,11 @@ struct DomainSelectorView: View {
                         .bodyStyle()
                         .padding(.horizontal, Layout.defaultHorizontalPadding)
 
-                    // Domain results.
-                    if let placeholderImage = viewModel.placeholderImage {
+                    if viewModel.searchTerm.isEmpty {
                         // Placeholder image when search query is empty.
                         HStack {
                             Spacer()
-                            Image(uiImage: placeholderImage)
+                            Image(uiImage: .domainSearchPlaceholderImage)
                             Spacer()
                         }
                     } else if viewModel.isLoadingDomainSuggestions {

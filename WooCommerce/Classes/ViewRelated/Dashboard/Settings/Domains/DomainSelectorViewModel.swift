@@ -18,9 +18,6 @@ final class DomainSelectorViewModel: ObservableObject {
     /// Whether domain suggestions are being loaded.
     @Published private(set) var isLoadingDomainSuggestions: Bool = false
 
-    /// Placeholder image is set when the search term is empty. Otherwise, the placeholder image is `nil`.
-    @Published private(set) var placeholderImage: UIImage?
-
     /// Subscription for search query changes for domain search.
     private var searchQuerySubscription: AnyCancellable?
 
@@ -44,19 +41,15 @@ final class DomainSelectorViewModel: ObservableObject {
 
 private extension DomainSelectorViewModel {
     func observeDomainQuery() {
-        let searchTermPublisher = $searchTerm
+        searchQuerySubscription = $searchTerm
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             .debounce(for: .seconds(debounceDuration), scheduler: DispatchQueue.main)
-            .share()
-
-        searchQuerySubscription = searchTermPublisher
             .filter { $0.isNotEmpty }
             .removeDuplicates()
             .sink { [weak self] searchTerm in
                 guard let self = self else { return }
                 Task { @MainActor in
                     self.errorMessage = nil
-                    self.placeholderImage = nil
                     self.isLoadingDomainSuggestions = true
                     let result = await self.loadFreeDomainSuggestions(query: searchTerm)
                     self.isLoadingDomainSuggestions = false
@@ -69,12 +62,6 @@ private extension DomainSelectorViewModel {
                     }
                 }
             }
-
-        searchTermPublisher
-            .map {
-                $0.isEmpty ? UIImage.domainSearchPlaceholderImage: nil
-            }
-            .assign(to: &$placeholderImage)
     }
 
     @MainActor

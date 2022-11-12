@@ -113,33 +113,6 @@ final class DomainSelectorViewModelTests: XCTestCase {
         }
     }
 
-    // MARK: - `placeholderImage`
-
-    func test_placeholderImage_is_not_nil_when_searchTerm_is_empty_initially() {
-        // Then
-        waitUntil {
-            self.viewModel.placeholderImage != nil
-        }
-    }
-
-    func test_placeholderImage_is_nil_when_searchTerm_is_not_empty() {
-        // When the search term is not empty
-        viewModel.searchTerm = "woo"
-
-        // Then placeholder image is nil
-        waitUntil {
-            self.viewModel.placeholderImage == nil
-        }
-
-        // When setting the search term to empty spaces
-        viewModel.searchTerm = "  "
-
-        // Then placeholder image is not nil
-        waitUntil {
-            self.viewModel.placeholderImage != nil
-        }
-    }
-
     // MARK: `isLoadingDomainSuggestions`
 
     func test_isLoadingDomainSuggestions_is_toggled_when_loading_suggestions() {

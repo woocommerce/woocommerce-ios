@@ -39,12 +39,7 @@ public final class JustInTimeMessagesRemote: Remote, JustInTimeMessagesRemotePro
 
         let mapper = JustInTimeMessageListMapper(siteID: siteID)
 
-        do {
-            let result = try await enqueue(request, mapper: mapper)
-            return result
-        } catch {
-            return .failure(error)
-        }
+        return await enqueue(request, mapper: mapper)
     }
 
     private func getParameters(messagePath: JustInTimeMessagesRemote.MessagePath,
@@ -104,12 +99,7 @@ public final class JustInTimeMessagesRemote: Remote, JustInTimeMessagesRemotePro
                                      path: Path.jitm,
                                      parameters: parameters)
 
-        do {
-            let result = try await enqueue(request, mapper: DataBoolMapper())
-            return result
-        } catch {
-            return .failure(error)
-        }
+        return await enqueue(request, mapper: DataBoolMapper())
     }
 }
 

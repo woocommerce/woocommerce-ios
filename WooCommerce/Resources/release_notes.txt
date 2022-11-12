@@ -1,5 +1,1 @@
-- [***] You can now preview draft products before publishing. [https://github.com/woocommerce/woocommerce-ios/pull/8102]
-- [*] The survey at the end of the login onboarding flow is no longer available. [https://github.com/woocommerce/woocommerce-ios/pull/8062]
-- [*] Fixed layout issues on the Account Mismatch error screen. [https://github.com/woocommerce/woocommerce-ios/pull/8074]
-- [*] The Accept Payments Easily banner has been removed from the order list [https://github.com/woocommerce/woocommerce-ios/pull/8078]
-
+For this release, we focused on polishing a few things and taking care of minor bugs that our team found, including the option to preview your products before publishing them. Don’t be fooled – we are working on some pretty cool stuff for you all! Keep sharing feedback 💜

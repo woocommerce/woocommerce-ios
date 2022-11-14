@@ -459,6 +459,7 @@
 		035F2308275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035F2307275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift */; };
 		0366EAE12909A37800B51755 /* JustInTimeMessageAnnouncementCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0366EAE02909A37800B51755 /* JustInTimeMessageAnnouncementCardViewModel.swift */; };
 		036CA6F129229C9E00E4DF4F /* IndefiniteCircularProgressViewStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036CA6F029229C9E00E4DF4F /* IndefiniteCircularProgressViewStyle.swift */; };
+		036CA6B9291E8D4B00E4DF4F /* CardPresentModalPreparingReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036CA6B8291E8D4B00E4DF4F /* CardPresentModalPreparingReader.swift */; };
 		036F6EA6281847D5006D84F8 /* PaymentCaptureOrchestratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036F6EA5281847D5006D84F8 /* PaymentCaptureOrchestratorTests.swift */; };
 		0371C3682875E47B00277E2C /* FeatureAnnouncementCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0371C3672875E47B00277E2C /* FeatureAnnouncementCardViewModel.swift */; };
 		0371C36A2876DBCA00277E2C /* FeatureAnnouncementCardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0371C3692876DBCA00277E2C /* FeatureAnnouncementCardViewModelTests.swift */; };
@@ -2423,6 +2424,7 @@
 		035F2307275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalConnectingFailedUpdatePostalCode.swift; sourceTree = "<group>"; };
 		0366EAE02909A37800B51755 /* JustInTimeMessageAnnouncementCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustInTimeMessageAnnouncementCardViewModel.swift; sourceTree = "<group>"; };
 		036CA6F029229C9E00E4DF4F /* IndefiniteCircularProgressViewStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndefiniteCircularProgressViewStyle.swift; sourceTree = "<group>"; };
+		036CA6B8291E8D4B00E4DF4F /* CardPresentModalPreparingReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalPreparingReader.swift; sourceTree = "<group>"; };
 		036F6EA5281847D5006D84F8 /* PaymentCaptureOrchestratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentCaptureOrchestratorTests.swift; sourceTree = "<group>"; };
 		0371C3672875E47B00277E2C /* FeatureAnnouncementCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureAnnouncementCardViewModel.swift; sourceTree = "<group>"; };
 		0371C3692876DBCA00277E2C /* FeatureAnnouncementCardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureAnnouncementCardViewModelTests.swift; sourceTree = "<group>"; };
@@ -8394,6 +8396,7 @@
 				035F2307275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift */,
 				318477E427A33C650058C7E9 /* CardPresentModalConnectingFailedChargeReader.swift */,
 				031B10E2274FE2AE007390BA /* CardPresentModalConnectionFailedUpdateAddress.swift */,
+				036CA6B8291E8D4B00E4DF4F /* CardPresentModalPreparingReader.swift */,
 				D8EE9697264D3CCB0033B2F9 /* ReceiptViewModel.swift */,
 				D8752EF6265E60F4008ACC80 /* PaymentCaptureCelebration.swift */,
 				03AA165D2719B7EF005CCB7B /* ReceiptActionCoordinator.swift */,
@@ -10034,6 +10037,7 @@
 				7E7C5F7A2719A8F900315B61 /* EditProductCategoryListViewController.swift in Sources */,
 				77E53EC82510FE07003D385F /* ProductDownloadsEditableData.swift in Sources */,
 				0235595B24496E88004BE2B8 /* BottomSheetListSelectorViewController+DrawerPresentable.swift in Sources */,
+				036CA6B9291E8D4B00E4DF4F /* CardPresentModalPreparingReader.swift in Sources */,
 				0227958D237A51F300787C63 /* OptionsTableViewController+Styles.swift in Sources */,
 				B541B226218A412C008FE7C1 /* UIFont+Woo.swift in Sources */,
 				4580BA7723F19D4A00B5F764 /* ProductSettingsViewModel.swift in Sources */,

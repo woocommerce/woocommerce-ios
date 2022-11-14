@@ -39,16 +39,16 @@ final class URL_MediaTests: XCTestCase {
 
     func testFileExtensionForJPEGType() {
         let expectedFileExtension = "jpeg"
-        XCTAssertEqual(URL.fileExtensionForUTType(UTType.jpeg.identifier as String), expectedFileExtension)
+        XCTAssertEqual(URL.fileExtensionForUTType(UTType.jpeg.identifier), expectedFileExtension)
     }
 
     func testFileExtensionForGIFType() {
         let expectedFileExtension = "gif"
-        XCTAssertEqual(URL.fileExtensionForUTType(UTType.gif.identifier as String), expectedFileExtension)
+        XCTAssertEqual(URL.fileExtensionForUTType(UTType.gif.identifier), expectedFileExtension)
     }
 
     func testFileExtensionForPNGType() {
         let expectedFileExtension = "png"
-        XCTAssertEqual(URL.fileExtensionForUTType(UTType.png.identifier as String), expectedFileExtension)
+        XCTAssertEqual(URL.fileExtensionForUTType(UTType.png.identifier), expectedFileExtension)
     }
 }

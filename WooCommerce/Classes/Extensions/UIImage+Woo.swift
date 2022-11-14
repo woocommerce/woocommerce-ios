@@ -373,6 +373,12 @@ extension UIImage {
         UIImage(named: "icon-store")!
     }
 
+    /// Store summary image used in the store creation flow.
+    ///
+    static var storeSummaryImage: UIImage {
+        return UIImage(named: "store-summary")!
+    }
+
     /// Cog Image
     ///
     static var cogImage: UIImage {

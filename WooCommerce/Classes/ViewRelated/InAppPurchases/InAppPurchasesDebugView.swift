@@ -37,7 +37,7 @@ struct InAppPurchasesDebugView: View {
                         }
                     }
                 } else {
-                    Text("Couldn't retrieve site id to purchase product. " +
+                    Text("No valid site id could be retrieved to purchase product. " +
                          "Please set your Int64 test site id to the Xcode environment variable with name \(Constants.siteIdEnvironmentVariableName).")
                         .foregroundColor(.red)
                 }

@@ -82,6 +82,7 @@
 		0217399E2772FB7E0084CD89 /* StoreStatsAndTopPerformersPeriodViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0217399D2772FB7E0084CD89 /* StoreStatsAndTopPerformersPeriodViewController.swift */; };
 		021739A02773F5F60084CD89 /* StoreStatsChartCircleMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0217399F2773F5F50084CD89 /* StoreStatsChartCircleMarker.swift */; };
 		0218B4EC242E06F00083A847 /* MediaType+WPMediaType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0218B4EB242E06F00083A847 /* MediaType+WPMediaType.swift */; };
+		021940E8291FDBF90090354E /* StoreCreationSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021940E7291FDBF90090354E /* StoreCreationSummaryView.swift */; };
 		0219B03723964527007DCD5E /* PaginatedProductShippingClassListSelectorDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0219B03623964527007DCD5E /* PaginatedProductShippingClassListSelectorDataSource.swift */; };
 		021A84E0257DFC2A00BC71D1 /* RefundShippingLabelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021A84DE257DFC2A00BC71D1 /* RefundShippingLabelViewController.swift */; };
 		021A84E1257DFC2A00BC71D1 /* RefundShippingLabelViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 021A84DF257DFC2A00BC71D1 /* RefundShippingLabelViewController.xib */; };
@@ -2042,6 +2043,7 @@
 		0217399D2772FB7E0084CD89 /* StoreStatsAndTopPerformersPeriodViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreStatsAndTopPerformersPeriodViewController.swift; sourceTree = "<group>"; };
 		0217399F2773F5F50084CD89 /* StoreStatsChartCircleMarker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsChartCircleMarker.swift; sourceTree = "<group>"; };
 		0218B4EB242E06F00083A847 /* MediaType+WPMediaType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MediaType+WPMediaType.swift"; sourceTree = "<group>"; };
+		021940E7291FDBF90090354E /* StoreCreationSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCreationSummaryView.swift; sourceTree = "<group>"; };
 		0219B03623964527007DCD5E /* PaginatedProductShippingClassListSelectorDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedProductShippingClassListSelectorDataSource.swift; sourceTree = "<group>"; };
 		021A84DE257DFC2A00BC71D1 /* RefundShippingLabelViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundShippingLabelViewController.swift; sourceTree = "<group>"; };
 		021A84DF257DFC2A00BC71D1 /* RefundShippingLabelViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RefundShippingLabelViewController.xib; sourceTree = "<group>"; };
@@ -4528,6 +4530,7 @@
 				02759B9028FFA09600918176 /* StoreCreationWebViewModel.swift */,
 				02E3B63029066858007E0F13 /* StoreCreationCoordinator.swift */,
 				02EAA4C7290F992B00918DAB /* LoggedOutStoreCreationCoordinator.swift */,
+				021940E7291FDBF90090354E /* StoreCreationSummaryView.swift */,
 			);
 			path = "Store Creation";
 			sourceTree = "<group>";
@@ -10447,6 +10450,7 @@
 				4515262E2577D56C0076B03C /* AddAttributeViewController.swift in Sources */,
 				57EBC92024EEE61800C1D45B /* WooAnalyticsEvent.swift in Sources */,
 				57CDABB9252E9BEB00BED88C /* ButtonTableFooterView.swift in Sources */,
+				021940E8291FDBF90090354E /* StoreCreationSummaryView.swift in Sources */,
 				02E4FD7E2306A8180049610C /* StatsTimeRangeBarViewModel.swift in Sources */,
 				45D875D22611EA2100226C3F /* ListHeaderView.swift in Sources */,
 				026B3C57249A046E00F7823C /* TextFieldTextAlignment.swift in Sources */,

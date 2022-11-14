@@ -67,14 +67,24 @@ private extension StoreCreationCoordinator {
     }
 
     func startStoreCreationM2() {
+        let storeCreationNavigationController = UINavigationController()
+        storeCreationNavigationController.navigationBar.prefersLargeTitles = true
+
         let domainSelector = DomainSelectorHostingController(viewModel: .init(),
-                                                             onDomainSelection: { domain in
-            // TODO-8045: navigate to the next step of store creation.
+                                                             onDomainSelection: { [weak self] domain in
+            guard let self else { return }
+            // TODO: add a store name screen before the domain selector screen.
+            let result = await self.createStore(name: "Test store", domain: domain)
+            switch result {
+            case .success(let siteResult):
+                await self.showStoreSummary(from: storeCreationNavigationController, result: siteResult)
+            case .failure(let error):
+                self.showStoreCreationErrorAlert(error: error)
+            }
         }, onSkip: {
             // TODO-8045: skip to the next step of store creation with an auto-generated domain.
         })
-        let storeCreationNavigationController = UINavigationController(rootViewController: domainSelector)
-        storeCreationNavigationController.navigationBar.prefersLargeTitles = true
+        storeCreationNavigationController.pushViewController(domainSelector, animated: false)
         presentStoreCreation(viewController: storeCreationNavigationController)
     }
 
@@ -90,6 +100,8 @@ private extension StoreCreationCoordinator {
         }
     }
 }
+
+// MARK: - Store creation M1
 
 private extension StoreCreationCoordinator {
     func observeSiteURLsFromStoreCreation() {
@@ -181,6 +193,43 @@ private extension StoreCreationCoordinator {
     }
 }
 
+// MARK: - Store creation M2
+
+private extension StoreCreationCoordinator {
+    @MainActor
+    func createStore(name: String, domain: String) async -> Result<SiteCreationResult, SiteCreationError> {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(SiteAction.createSite(name: name, domain: domain) { result in
+                continuation.resume(returning: result)
+            })
+        }
+    }
+
+    @MainActor
+    func showStoreSummary(from navigationController: UINavigationController, result: SiteCreationResult) {
+        let viewModel = StoreCreationSummaryViewModel(storeName: result.name, storeSlug: result.siteSlug)
+        let storeSummary = StoreCreationSummaryHostingController(viewModel: viewModel) {
+            // TODO: 8108 - integrate IAP.
+        }
+        navigationController.pushViewController(storeSummary, animated: true)
+    }
+
+    @MainActor
+    func showStoreCreationErrorAlert(error: SiteCreationError) {
+        let message: String = {
+            switch error {
+            case .invalidDomain, .domainExists:
+                return Localization.StoreCreationErrorAlert.domainErrorMessage
+            default:
+                return Localization.StoreCreationErrorAlert.defaultErrorMessage
+            }
+        }()
+        let alertController = UIAlertController(title: Localization.StoreCreationErrorAlert.title,
+                                                message: message,
+                                                preferredStyle: .alert)
+    }
+}
+
 private extension StoreCreationCoordinator {
     enum StoreCreationCoordinatorError: Error {
         case selfDeallocated
@@ -196,6 +245,15 @@ private extension StoreCreationCoordinator {
                                                               comment: "Button title Discard Changes in Discard Changes Action Sheet")
             static let cancelActionTitle = NSLocalizedString("Cancel",
                                                              comment: "Button title Cancel in Discard Changes Action Sheet")
+        }
+
+        enum StoreCreationErrorAlert {
+            static let title = NSLocalizedString("Cannot create store",
+                                                 comment: "Title of the alert when the store cannot be created in the store creation flow.")
+            static let domainErrorMessage = NSLocalizedString("Please try a different domain.",
+                                                 comment: "Message of the alert when the store cannot be created due to the domain in the store creation flow.")
+            static let defaultErrorMessage = NSLocalizedString("Please try again.",
+                                                              comment: "Message of the alert when the store cannot be created in the store creation flow.")
         }
     }
 }

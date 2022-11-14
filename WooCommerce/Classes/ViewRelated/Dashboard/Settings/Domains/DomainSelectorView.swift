@@ -3,7 +3,7 @@ import SwiftUI
 /// Hosting controller that wraps the `DomainSelectorView` view.
 final class DomainSelectorHostingController: UIHostingController<DomainSelectorView> {
     private let viewModel: DomainSelectorViewModel
-    private let onDomainSelection: (String) -> Void
+    private let onDomainSelection: (String) async -> Void
     private let onSkip: () -> Void
 
     /// - Parameters:
@@ -11,7 +11,7 @@ final class DomainSelectorHostingController: UIHostingController<DomainSelectorV
     ///   - onDomainSelection: Called when the user continues with a selected domain name.
     ///   - onSkip: Called when the user taps to skip domain selection.
     init(viewModel: DomainSelectorViewModel,
-         onDomainSelection: @escaping (String) -> Void,
+         onDomainSelection: @escaping (String) async -> Void,
          onSkip: @escaping () -> Void) {
         self.viewModel = viewModel
         self.onDomainSelection = onDomainSelection
@@ -19,7 +19,7 @@ final class DomainSelectorHostingController: UIHostingController<DomainSelectorV
         super.init(rootView: DomainSelectorView(viewModel: viewModel))
 
         rootView.onDomainSelection = { [weak self] domain in
-            self?.onDomainSelection(domain)
+            await self?.onDomainSelection(domain)
         }
     }
 
@@ -70,7 +70,7 @@ private extension DomainSelectorHostingController {
 /// Allows the user to search for a domain and then select one to continue.
 struct DomainSelectorView: View {
     /// Set in the hosting controller.
-    var onDomainSelection: ((String) -> Void) = { _ in }
+    var onDomainSelection: ((String) async -> Void) = { _ in }
 
     /// View model to drive the view.
     @ObservedObject private var viewModel: DomainSelectorViewModel
@@ -79,6 +79,8 @@ struct DomainSelectorView: View {
     /// If this property is kept in the view model, a SwiftUI error appears `Publishing changes from within view updates`
     /// when a domain row is selected.
     @State private var selectedDomainName: String?
+
+    @State private var isWaitingForDomainSelectionCompletion: Bool = false
 
     init(viewModel: DomainSelectorViewModel) {
         self.viewModel = viewModel
@@ -154,9 +156,13 @@ struct DomainSelectorView: View {
                     .frame(height: Layout.dividerHeight)
                     .foregroundColor(Color(.separator))
                 Button(Localization.continueButtonTitle) {
-                    onDomainSelection(selectedDomainName)
+                    Task { @MainActor in
+                        isWaitingForDomainSelectionCompletion = true
+                        await onDomainSelection(selectedDomainName)
+                        isWaitingForDomainSelectionCompletion = false
+                    }
                 }
-                .buttonStyle(PrimaryButtonStyle())
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isWaitingForDomainSelectionCompletion))
                 .padding(Layout.defaultPadding)
             }
         }

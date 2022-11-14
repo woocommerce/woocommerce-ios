@@ -458,6 +458,7 @@
 		035C6DEB273EA12D00F70406 /* SoftwareUpdateTypeProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035C6DEA273EA12D00F70406 /* SoftwareUpdateTypeProperty.swift */; };
 		035F2308275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035F2307275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift */; };
 		0366EAE12909A37800B51755 /* JustInTimeMessageAnnouncementCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0366EAE02909A37800B51755 /* JustInTimeMessageAnnouncementCardViewModel.swift */; };
+		036CA6F129229C9E00E4DF4F /* IndefiniteCircularProgressViewStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036CA6F029229C9E00E4DF4F /* IndefiniteCircularProgressViewStyle.swift */; };
 		036F6EA6281847D5006D84F8 /* PaymentCaptureOrchestratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036F6EA5281847D5006D84F8 /* PaymentCaptureOrchestratorTests.swift */; };
 		0371C3682875E47B00277E2C /* FeatureAnnouncementCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0371C3672875E47B00277E2C /* FeatureAnnouncementCardViewModel.swift */; };
 		0371C36A2876DBCA00277E2C /* FeatureAnnouncementCardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0371C3692876DBCA00277E2C /* FeatureAnnouncementCardViewModelTests.swift */; };
@@ -2421,6 +2422,7 @@
 		035C6DEA273EA12D00F70406 /* SoftwareUpdateTypeProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoftwareUpdateTypeProperty.swift; sourceTree = "<group>"; };
 		035F2307275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalConnectingFailedUpdatePostalCode.swift; sourceTree = "<group>"; };
 		0366EAE02909A37800B51755 /* JustInTimeMessageAnnouncementCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustInTimeMessageAnnouncementCardViewModel.swift; sourceTree = "<group>"; };
+		036CA6F029229C9E00E4DF4F /* IndefiniteCircularProgressViewStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndefiniteCircularProgressViewStyle.swift; sourceTree = "<group>"; };
 		036F6EA5281847D5006D84F8 /* PaymentCaptureOrchestratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentCaptureOrchestratorTests.swift; sourceTree = "<group>"; };
 		0371C3672875E47B00277E2C /* FeatureAnnouncementCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureAnnouncementCardViewModel.swift; sourceTree = "<group>"; };
 		0371C3692876DBCA00277E2C /* FeatureAnnouncementCardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureAnnouncementCardViewModelTests.swift; sourceTree = "<group>"; };
@@ -6024,6 +6026,7 @@
 				03076D35290C162E008EE839 /* WebViewSheet.swift */,
 				03076D37290C223D008EE839 /* WooNavigationSheet.swift */,
 				02EAA4C92911004B00918DAB /* TextFieldStyles.swift */,
+				036CA6F029229C9E00E4DF4F /* IndefiniteCircularProgressViewStyle.swift */,
 			);
 			path = "SwiftUI Components";
 			sourceTree = "<group>";
@@ -9725,6 +9728,7 @@
 				B59D49CD219B587E006BF0AD /* UILabel+OrderStatus.swift in Sources */,
 				265BCA0C2430E741004E53EE /* ProductCategoryTableViewCell.swift in Sources */,
 				02ACD25A2852E11700EC928E /* RemoveAppleIDAccessCoordinator.swift in Sources */,
+				036CA6F129229C9E00E4DF4F /* IndefiniteCircularProgressViewStyle.swift in Sources */,
 				451A9973260E39270059D135 /* ShippingLabelPackageNumberRow.swift in Sources */,
 				AEE2610F26E664CE00B142A0 /* EditOrderAddressFormViewModel.swift in Sources */,
 				0371C36E2876E92D00277E2C /* UpsellCardReadersCampaign.swift in Sources */,

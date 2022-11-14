@@ -74,16 +74,20 @@ struct StoreCreationSummaryView: View {
 
                     // Store info.
                     VStack(alignment: .leading, spacing: 0) {
+                        // Image.
                         HStack {
                             Spacer()
                             Image(uiImage: .storeSummaryImage)
                             Spacer()
                         }
                         .background(Color(.systemColor(.systemGray6)))
+                        
                         VStack {
                             VStack(alignment: .leading, spacing: Layout.spacingBetweenStoreNameAndDomain) {
+                                // Store name.
                                 Text(viewModel.storeName)
                                     .headlineStyle()
+                                // Store URL slug.
                                 Text(viewModel.storeSlug)
                                     .foregroundColor(Color(.secondaryLabel))
                                     .bodyStyle()
@@ -100,7 +104,7 @@ struct StoreCreationSummaryView: View {
                 .padding(Layout.defaultPadding)
             }
 
-            // Continue button when a domain is selected.
+            // Continue button.
             Group {
                 Divider()
                     .frame(height: Layout.dividerHeight)

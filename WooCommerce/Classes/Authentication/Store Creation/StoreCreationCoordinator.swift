@@ -192,12 +192,12 @@ private extension StoreCreationCoordinator {
 private extension StoreCreationCoordinator {
     @MainActor
     func createStoreAndContinueToStoreSummary(from navigationController: UINavigationController, name: String, domain: String) async {
-        let result = await createStore(name: name, domain: "$$$")
+        let result = await createStore(name: name, domain: domain)
         switch result {
         case .success(let siteResult):
             showStoreSummary(from: navigationController, result: siteResult)
         case .failure(let error):
-            showStoreCreationErrorAlert(error: error)
+            showStoreCreationErrorAlert(from: navigationController, error: error)
         }
     }
 
@@ -220,7 +220,7 @@ private extension StoreCreationCoordinator {
     }
 
     @MainActor
-    func showStoreCreationErrorAlert(error: SiteCreationError) {
+    func showStoreCreationErrorAlert(from navigationController: UINavigationController, error: SiteCreationError) {
         let message: String = {
             switch error {
             case .invalidDomain, .domainExists:
@@ -232,6 +232,9 @@ private extension StoreCreationCoordinator {
         let alertController = UIAlertController(title: Localization.StoreCreationErrorAlert.title,
                                                 message: message,
                                                 preferredStyle: .alert)
+        alertController.view.tintColor = .text
+        _ = alertController.addCancelActionWithTitle(Localization.StoreCreationErrorAlert.cancelActionTitle) { _ in }
+        navigationController.present(alertController, animated: true)
     }
 }
 
@@ -259,6 +262,10 @@ private extension StoreCreationCoordinator {
                                                  comment: "Message of the alert when the store cannot be created due to the domain in the store creation flow.")
             static let defaultErrorMessage = NSLocalizedString("Please try again.",
                                                               comment: "Message of the alert when the store cannot be created in the store creation flow.")
+            static let cancelActionTitle = NSLocalizedString(
+                "OK",
+                comment: "Button title to dismiss the alert when the store cannot be created in the store creation flow."
+            )
         }
     }
 }

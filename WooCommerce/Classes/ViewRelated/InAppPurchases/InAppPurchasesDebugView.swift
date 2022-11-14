@@ -119,7 +119,11 @@ private struct PurchaseError: LocalizedError {
     let error: Error
 
     var errorDescription: String? {
-        error.localizedDescription
+        if let error = error as? LocalizedError {
+            return error.errorDescription
+        } else {
+            return error.localizedDescription
+        }
     }
 }
 

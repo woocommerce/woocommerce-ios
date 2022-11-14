@@ -280,7 +280,7 @@ private extension InAppPurchaseStore {
 }
 
 public extension InAppPurchaseStore {
-    enum Errors: String, Error {
+    enum Errors: Error, LocalizedError {
         /// The user canceled the IAP flow
         case userCancelled
 
@@ -320,6 +320,51 @@ public extension InAppPurchaseStore {
         /// In-app purchases are not supported for this user
         ///
         case inAppPurchasesNotSupported
+
+        public var errorDescription: String? {
+            switch self {
+            case .userCancelled:
+                return NSLocalizedString(
+                    "Purchase cancelled by user",
+                    comment: "Error message used when the user cancelled an In-app purchase flow")
+            case .pending:
+                return NSLocalizedString(
+                    "Purchase pending",
+                    comment: "Error message used when the purchase is pending some user action")
+            case .unknownResult:
+                return NSLocalizedString(
+                    "Unexpected purchase result",
+                    comment: "Error message used when a purchase returned something unexpected that we don't know how to handle")
+            case .unverifiedTransaction:
+                return NSLocalizedString(
+                    "The purchase transaction couldn't be verified",
+                    comment: "Error message used when a purchase was successful but its transaction was unverified")
+            case .transactionMissingAppAccountToken:
+                return NSLocalizedString(
+                    "Purchase transaction missing account information",
+                    comment: "Error message used when the purchase transaction doesn't have the right metadata to associate to a specific site")
+            case .appAccountTokenMissingSiteIdentifier:
+                return NSLocalizedString(
+                    "Purchase transaction can't be associated to a site",
+                    comment: "Error message used when the purchase transaction doesn't have the right metadata to associate to a specific site")
+            case .transactionProductUnknown:
+                return NSLocalizedString(
+                    "Purchase transaction received for an unknown product",
+                    comment: "Error message used when we received a transaction for an unknown product")
+            case .storefrontUnknown:
+                return NSLocalizedString(
+                    "Couldn't determine App Stoure country",
+                    comment: "Error message used when we can't determine the user's App Store country")
+            case .missingAppReceipt:
+                return NSLocalizedString(
+                    "Couldn't retrieve app receipt",
+                    comment: "Error message used when we can't read the app receipt")
+            case .inAppPurchasesNotSupported:
+                return NSLocalizedString(
+                    "In-app purchases are not supported for this user yet",
+                    comment: "Error message used when In-app purchases are not supported for this user/site")
+            }
+        }
     }
 
     enum Constants {

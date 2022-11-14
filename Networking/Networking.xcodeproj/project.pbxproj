@@ -36,7 +36,7 @@
 		025CA2C6238F4F3500B05C81 /* ProductShippingClassRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025CA2C5238F4F3500B05C81 /* ProductShippingClassRemoteTests.swift */; };
 		025CA2C8238F4FF400B05C81 /* product-shipping-classes-load-all.json in Resources */ = {isa = PBXBuildFile; fileRef = 025CA2C7238F4FF400B05C81 /* product-shipping-classes-load-all.json */; };
 		02616F8C292132800095BC00 /* SiteRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02616F8B292132800095BC00 /* SiteRemoteTests.swift */; };
-		02616F8F2921336C0095BC00 /* site-creation-error.json in Resources */ = {isa = PBXBuildFile; fileRef = 02616F8D2921336C0095BC00 /* site-creation-error.json */; };
+		02616F8F2921336C0095BC00 /* site-creation-domain-error.json in Resources */ = {isa = PBXBuildFile; fileRef = 02616F8D2921336C0095BC00 /* site-creation-domain-error.json */; };
 		02616F902921336C0095BC00 /* site-creation-success.json in Resources */ = {isa = PBXBuildFile; fileRef = 02616F8E2921336C0095BC00 /* site-creation-success.json */; };
 		0261F5A928D4641500B7AC72 /* products-sku-search.json in Resources */ = {isa = PBXBuildFile; fileRef = 0261F5A828D4641500B7AC72 /* products-sku-search.json */; };
 		02698CF624C17FC1005337C4 /* product-alternative-types.json in Resources */ = {isa = PBXBuildFile; fileRef = 02698CF524C17FC1005337C4 /* product-alternative-types.json */; };
@@ -785,7 +785,7 @@
 		025CA2C5238F4F3500B05C81 /* ProductShippingClassRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductShippingClassRemoteTests.swift; sourceTree = "<group>"; };
 		025CA2C7238F4FF400B05C81 /* product-shipping-classes-load-all.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-shipping-classes-load-all.json"; sourceTree = "<group>"; };
 		02616F8B292132800095BC00 /* SiteRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteRemoteTests.swift; sourceTree = "<group>"; };
-		02616F8D2921336C0095BC00 /* site-creation-error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-creation-error.json"; sourceTree = "<group>"; };
+		02616F8D2921336C0095BC00 /* site-creation-domain-error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-creation-domain-error.json"; sourceTree = "<group>"; };
 		02616F8E2921336C0095BC00 /* site-creation-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-creation-success.json"; sourceTree = "<group>"; };
 		0261F5A828D4641500B7AC72 /* products-sku-search.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "products-sku-search.json"; sourceTree = "<group>"; };
 		02698CF524C17FC1005337C4 /* product-alternative-types.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-alternative-types.json"; sourceTree = "<group>"; };
@@ -2181,7 +2181,7 @@
 				2670C3FD270F4E6A002FE931 /* sites-malformed.json */,
 				7426CA1221AF34A3004E9FFC /* site-api.json */,
 				74AB5B4E21AF3F0D00859C12 /* site-api-no-woo.json */,
-				02616F8D2921336C0095BC00 /* site-creation-error.json */,
+				02616F8D2921336C0095BC00 /* site-creation-domain-error.json */,
 				02616F8E2921336C0095BC00 /* site-creation-success.json */,
 				CE50346621B5DCBE007573C6 /* site-plan.json */,
 				453305EC2459E1AA00264E50 /* site-post.json */,
@@ -2900,7 +2900,7 @@
 				028CB717290223CB00331C09 /* create-account-error-password.json in Resources */,
 				D800DA0E25EFEC21001E13CE /* wcpay-connection-token.json in Resources */,
 				74159628224D63CE003C21CF /* settings-product-alt.json in Resources */,
-				02616F8F2921336C0095BC00 /* site-creation-error.json in Resources */,
+				02616F8F2921336C0095BC00 /* site-creation-domain-error.json in Resources */,
 				45AB8B2024AB3E1F00B5B36E /* product-tags-empty.json in Resources */,
 				0359EA2127AAE58C0048DE2D /* wcpay-charge-card-present.json in Resources */,
 				451274A625276C82009911FF /* product-variation.json in Resources */,

@@ -36,9 +36,18 @@ final class SiteRemoteTests: XCTestCase {
                                             siteSlug: "wapuu.store"))
     }
 
-    func test_createSite_returns_failure_on_error() async throws {
+    func test_createSite_returns_invalidDomain_error_when_domain_is_empty() async throws {
+        // When
+        let result = await remote.createSite(name: "Wapuu swags", domain: "")
+
+        // Then
+        let error = try XCTUnwrap(result.failure as? SiteCreationError)
+        XCTAssertEqual(error, .invalidDomain)
+    }
+
+    func test_createSite_returns_DotcomError_failure_on_domain_error() async throws {
         // Given
-        network.simulateResponse(requestUrlSuffix: "sites/new", filename: "site-creation-error")
+        network.simulateResponse(requestUrlSuffix: "sites/new", filename: "site-creation-domain-error")
 
         // When
         let result = await remote.createSite(name: "Wapuu swags", domain: "wapuu.store")

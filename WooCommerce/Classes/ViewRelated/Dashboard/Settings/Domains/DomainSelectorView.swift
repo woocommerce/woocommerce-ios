@@ -42,9 +42,11 @@ private extension DomainSelectorHostingController {
 
     /// Shows a transparent navigation bar without a bottom border.
     func configureNavigationBarAppearance() {
+        navigationItem.title = Localization.title
+
         let appearance = UINavigationBarAppearance()
         appearance.configureWithTransparentBackground()
-        appearance.backgroundColor = UIColor.clear
+        appearance.backgroundColor = .systemBackground
 
         navigationItem.standardAppearance = appearance
         navigationItem.scrollEdgeAppearance = appearance
@@ -60,6 +62,7 @@ private extension DomainSelectorHostingController {
 
 private extension DomainSelectorHostingController {
     enum Localization {
+        static let title = NSLocalizedString("Choose a domain", comment: "Title of the domain selector.")
         static let skipButtonTitle = NSLocalizedString("Skip", comment: "Navigation bar button on the domain selector screen to skip domain selection.")
     }
 }
@@ -70,49 +73,97 @@ struct DomainSelectorView: View {
     var onDomainSelection: ((String) -> Void) = { _ in }
 
     /// View model to drive the view.
-    @ObservedObject var viewModel: DomainSelectorViewModel
+    @ObservedObject private var viewModel: DomainSelectorViewModel
 
     /// Currently selected domain name.
     /// If this property is kept in the view model, a SwiftUI error appears `Publishing changes from within view updates`
     /// when a domain row is selected.
-    @State var selectedDomainName: String?
+    @State private var selectedDomainName: String?
+
+    init(viewModel: DomainSelectorViewModel) {
+        self.viewModel = viewModel
+    }
 
     var body: some View {
-        ScrollableVStack(alignment: .leading) {
-            // Header labels.
-            VStack(alignment: .leading, spacing: Layout.spacingBetweenTitleAndSubtitle) {
-                Text(Localization.title)
-                    .titleStyle()
-                Text(Localization.subtitle)
-                    .foregroundColor(Color(.secondaryLabel))
-                    .bodyStyle()
-            }
-            .padding(.horizontal, Layout.defaultHorizontalPadding)
+        VStack(alignment: .leading, spacing: 0) {
+            ScrollView {
+                VStack(alignment: .leading) {
+                    // Header label.
+                    Text(Localization.subtitle)
+                        .foregroundColor(Color(.secondaryLabel))
+                        .bodyStyle()
+                        .padding(.horizontal, Layout.defaultHorizontalPadding)
 
-            SearchHeader(filterText: $viewModel.searchTerm,
-                         filterPlaceholder: Localization.searchPlaceholder)
-            .padding(.horizontal, Layout.defaultHorizontalPadding)
+                    // Search text field.
+                    SearchHeader(text: $viewModel.searchTerm,
+                                 placeholder: Localization.searchPlaceholder,
+                                 customizations: .init(backgroundColor: .clear,
+                                                       borderColor: .separator,
+                                                       internalHorizontalPadding: 21,
+                                                       internalVerticalPadding: 12))
 
-            Text(Localization.suggestionsHeader)
-                .foregroundColor(Color(.secondaryLabel))
-                .bodyStyle()
-                .padding(.horizontal, Layout.defaultHorizontalPadding)
+                    // Results header.
+                    Text(Localization.suggestionsHeader)
+                        .foregroundColor(Color(.secondaryLabel))
+                        .bodyStyle()
+                        .padding(.horizontal, Layout.defaultHorizontalPadding)
 
-            List(viewModel.domains, id: \.self) { domain in
-                Button {
-                    selectedDomainName = domain
-                } label: {
-                    DomainRowView(viewModel: .init(domainName: domain,
-                                                   searchQuery: viewModel.searchTerm,
-                                                   isSelected: domain == selectedDomainName))
+                    if viewModel.searchTerm.isEmpty {
+                        // Placeholder image when search query is empty.
+                        HStack {
+                            Spacer()
+                            Image(uiImage: .domainSearchPlaceholderImage)
+                            Spacer()
+                        }
+                    } else if viewModel.isLoadingDomainSuggestions {
+                        // Progress indicator when loading domain suggestions.
+                        HStack {
+                            Spacer()
+                            ProgressView()
+                            Spacer()
+                        }
+                    } else if let errorMessage = viewModel.errorMessage {
+                        // Error message when there is an error loading domain suggestions.
+                        Text(errorMessage)
+                            .padding(Layout.defaultPadding)
+                    } else {
+                        // Domain suggestions.
+                        LazyVStack {
+                            ForEach(viewModel.domains, id: \.self) { domain in
+                                Button {
+                                    selectedDomainName = domain
+                                } label: {
+                                    VStack(alignment: .leading) {
+                                        DomainRowView(viewModel: .init(domainName: domain,
+                                                                       searchQuery: viewModel.searchTerm,
+                                                                       isSelected: domain == selectedDomainName))
+                                        Divider()
+                                            .frame(height: Layout.dividerHeight)
+                                            .padding(.leading, Layout.defaultHorizontalPadding)
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
-            }.listStyle(.inset)
+            }
 
+            // Continue button when a domain is selected.
             if let selectedDomainName {
+                Divider()
+                    .frame(height: Layout.dividerHeight)
+                    .foregroundColor(Color(.separator))
                 Button(Localization.continueButtonTitle) {
                     onDomainSelection(selectedDomainName)
                 }
                 .buttonStyle(PrimaryButtonStyle())
+                .padding(Layout.defaultPadding)
+            }
+        }
+        .onChange(of: viewModel.isLoadingDomainSuggestions) { isLoadingDomainSuggestions in
+            // Resets selected domain when loading domain suggestions.
+            if isLoadingDomainSuggestions {
+                selectedDomainName = nil
             }
         }
     }
@@ -122,10 +173,11 @@ private extension DomainSelectorView {
     enum Layout {
         static let spacingBetweenTitleAndSubtitle: CGFloat = 16
         static let defaultHorizontalPadding: CGFloat = 16
+        static let dividerHeight: CGFloat = 1
+        static let defaultPadding: EdgeInsets = .init(top: 10, leading: 16, bottom: 10, trailing: 16)
     }
 
     enum Localization {
-        static let title = NSLocalizedString("Choose a domain", comment: "Title of the domain selector.")
         static let subtitle = NSLocalizedString(
             "This is where people will find you on the Internet. Don't worry, you can change it later.",
             comment: "Subtitle of the domain selector.")
@@ -135,8 +187,62 @@ private extension DomainSelectorView {
     }
 }
 
-struct DomainSelectorView_Previews: PreviewProvider {
-    static var previews: some View {
-        DomainSelectorView(viewModel: .init())
+#if DEBUG
+
+import Yosemite
+import enum Networking.DotcomError
+
+/// StoresManager that specifically handles `DomainAction` for `DomainSelectorView` previews.
+final class DomainSelectorViewStores: DefaultStoresManager {
+    private let result: Result<[FreeDomainSuggestion], Error>?
+
+    init(result: Result<[FreeDomainSuggestion], Error>?) {
+        self.result = result
+        super.init(sessionManager: ServiceLocator.stores.sessionManager)
+    }
+
+    override func dispatch(_ action: Action) {
+        if let action = action as? DomainAction {
+            if case let .loadFreeDomainSuggestions(_, completion) = action {
+                if let result {
+                    completion(result)
+                }
+            }
+        }
     }
 }
+
+struct DomainSelectorView_Previews: PreviewProvider {
+    static var previews: some View {
+        Group {
+            // Empty query state.
+            DomainSelectorView(viewModel:
+                    .init(initialSearchTerm: "",
+                          stores: DomainSelectorViewStores(result: nil)))
+            // Results state.
+            DomainSelectorView(viewModel:
+                    .init(initialSearchTerm: "Fruit smoothie",
+                          stores: DomainSelectorViewStores(result: .success([
+                            .init(name: "grapefruitsmoothie.com", isFree: true),
+                            .init(name: "fruitsmoothie.com", isFree: true),
+                            .init(name: "grapefruitsmoothiee.com", isFree: true),
+                            .init(name: "freesmoothieeee.com", isFree: true),
+                            .init(name: "greatfruitsmoothie1.com", isFree: true),
+                            .init(name: "tropicalsmoothie.com", isFree: true)
+                          ]))))
+            // Error state.
+            DomainSelectorView(viewModel:
+                    .init(initialSearchTerm: "test",
+                          stores: DomainSelectorViewStores(result: .failure(
+                            DotcomError.unknown(code: "invalid_query",
+                                                message: "Domain searches must contain a word with the following characters.")
+                          ))))
+            // Loading state.
+            DomainSelectorView(viewModel:
+                    .init(initialSearchTerm: "test",
+                          stores: DomainSelectorViewStores(result: nil)))
+        }
+    }
+}
+
+#endif

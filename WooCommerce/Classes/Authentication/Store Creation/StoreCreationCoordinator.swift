@@ -74,6 +74,7 @@ private extension StoreCreationCoordinator {
             // TODO-8045: skip to the next step of store creation with an auto-generated domain.
         })
         let storeCreationNavigationController = UINavigationController(rootViewController: domainSelector)
+        storeCreationNavigationController.navigationBar.prefersLargeTitles = true
         presentStoreCreation(viewController: storeCreationNavigationController)
     }
 

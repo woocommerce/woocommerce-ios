@@ -26,6 +26,12 @@ public final class JetpackConnectionStore: DeauthenticatedStore {
         switch action {
         case .authenticate(let siteURL, let network):
             updateRemote(with: siteURL, network: network)
+        case .retrieveJetpackPluginDetails(let completion):
+            retrieveJetpackPluginDetails(completion: completion)
+        case .installJetpackPlugin(let completion):
+            installJetpackPlugin(completion: completion)
+        case .activateJetpackPlugin(let completion):
+            activateJetpackPlugin(completion: completion)
         case .fetchJetpackConnectionURL(let completion):
             fetchJetpackConnectionURL(completion: completion)
         case .fetchJetpackUser(let completion):
@@ -37,6 +43,32 @@ public final class JetpackConnectionStore: DeauthenticatedStore {
 private extension JetpackConnectionStore {
     func updateRemote(with siteURL: String, network: Network) {
         self.remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
+    }
+
+    func retrieveJetpackPluginDetails(completion: @escaping (Result<SitePlugin, Error>) -> Void) {
+        remote?.retrieveJetpackPluginDetails(completion: completion)
+    }
+
+    func installJetpackPlugin(completion: @escaping (Result<Void, Error>) -> Void) {
+        remote?.installJetpackPlugin(completion: { result in
+            switch result {
+            case .success:
+                completion(.success(()))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        })
+    }
+
+    func activateJetpackPlugin(completion: @escaping (Result<Void, Error>) -> Void) {
+        remote?.activateJetpackPlugin(completion: { result in
+            switch result {
+            case .success:
+                completion(.success(()))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        })
     }
 
     func fetchJetpackConnectionURL(completion: @escaping (Result<URL, Error>) -> Void) {

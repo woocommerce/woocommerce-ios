@@ -295,9 +295,7 @@ private extension RefundSubmissionUseCase {
                                   paymentGatewayAccount: PaymentGatewayAccount,
                                   onCompletion: @escaping (Result<Void, Error>) -> ()) {
         // Shows reader ready alert.
-        alerts.readerIsReady(title: Localization.refundPaymentTitle(username: order.billingAddress?.firstName),
-                             amount: formattedAmount,
-                             onCancel: { [weak self] in
+        alerts.preparingReader(onCancel: { [weak self] in
             self?.cancelRefund(charge: charge, paymentGatewayAccount: paymentGatewayAccount, onCompletion: onCompletion)
         })
 
@@ -307,7 +305,10 @@ private extension RefundSubmissionUseCase {
                                              paymentGatewayAccount: paymentGatewayAccount,
                                              onWaitingForInput: { [weak self] in
             // Requests card input.
-            self?.alerts.tapOrInsertCard(onCancel: { [weak self] in
+            guard let self = self else { return }
+            self.alerts.readerIsReady(title: Localization.refundPaymentTitle(username: self.order.billingAddress?.firstName),
+                                      amount: self.formattedAmount,
+                                      onCancel: { [weak self] in
                 self?.cancelRefund(charge: charge, paymentGatewayAccount: paymentGatewayAccount, onCompletion: onCompletion)
             })
         }, onProcessingMessage: { [weak self] in

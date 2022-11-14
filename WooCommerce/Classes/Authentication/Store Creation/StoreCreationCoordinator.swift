@@ -19,6 +19,7 @@ final class StoreCreationCoordinator: Coordinator {
     @Published private var possibleSiteURLsFromStoreCreation: Set<String> = []
     private var possibleSiteURLsFromStoreCreationSubscription: AnyCancellable?
 
+    private let stores: StoresManager
     private let analytics: Analytics
     private let source: Source
     private let storePickerViewModel: StorePickerViewModel
@@ -39,6 +40,7 @@ final class StoreCreationCoordinator: Coordinator {
                                           storageManager: storageManager,
                                           analytics: analytics)
         self.switchStoreUseCase = SwitchStoreUseCase(stores: stores, storageManager: storageManager)
+        self.stores = stores
         self.analytics = analytics
         self.featureFlagService = featureFlagService
     }

@@ -81,7 +81,7 @@ struct StoreCreationSummaryView: View {
                             Spacer()
                         }
                         .background(Color(.systemColor(.systemGray6)))
-                        
+
                         VStack {
                             VStack(alignment: .leading, spacing: Layout.spacingBetweenStoreNameAndDomain) {
                                 // Store name.

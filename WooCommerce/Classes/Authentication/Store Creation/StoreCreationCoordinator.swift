@@ -74,13 +74,7 @@ private extension StoreCreationCoordinator {
                                                              onDomainSelection: { [weak self] domain in
             guard let self else { return }
             // TODO: add a store name screen before the domain selector screen.
-            let result = await self.createStore(name: "Test store", domain: domain)
-            switch result {
-            case .success(let siteResult):
-                await self.showStoreSummary(from: storeCreationNavigationController, result: siteResult)
-            case .failure(let error):
-                self.showStoreCreationErrorAlert(error: error)
-            }
+            await self.createStoreAndContinueToStoreSummary(from: storeCreationNavigationController, name: "Test store", domain: domain)
         }, onSkip: {
             // TODO-8045: skip to the next step of store creation with an auto-generated domain.
         })
@@ -196,6 +190,17 @@ private extension StoreCreationCoordinator {
 // MARK: - Store creation M2
 
 private extension StoreCreationCoordinator {
+    @MainActor
+    func createStoreAndContinueToStoreSummary(from navigationController: UINavigationController, name: String, domain: String) async {
+        let result = await createStore(name: name, domain: "$$$")
+        switch result {
+        case .success(let siteResult):
+            showStoreSummary(from: navigationController, result: siteResult)
+        case .failure(let error):
+            showStoreCreationErrorAlert(error: error)
+        }
+    }
+
     @MainActor
     func createStore(name: String, domain: String) async -> Result<SiteCreationResult, SiteCreationError> {
         await withCheckedContinuation { continuation in

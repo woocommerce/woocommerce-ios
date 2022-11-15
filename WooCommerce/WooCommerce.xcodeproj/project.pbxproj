@@ -1714,6 +1714,7 @@
 		DE279BAF26EA03EA002BA963 /* ShippingLabelSinglePackageViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE279BAE26EA03EA002BA963 /* ShippingLabelSinglePackageViewModelTests.swift */; };
 		DE279BB126EA184A002BA963 /* ShippingLabelPackageListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE279BB026EA184A002BA963 /* ShippingLabelPackageListViewModel.swift */; };
 		DE2BF4FD2846192B00FBE68A /* CouponAllowedEmailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2BF4FC2846192B00FBE68A /* CouponAllowedEmailsViewModelTests.swift */; };
+		DE2FE5812923729A0018040A /* JetpackSetupRequiredViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2FE5802923729A0018040A /* JetpackSetupRequiredViewModel.swift */; };
 		DE3404E828B4B96800CF0D97 /* NonAtomicSiteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3404E728B4B96800CF0D97 /* NonAtomicSiteViewModel.swift */; };
 		DE3404EA28B4C1D000CF0D97 /* NonAtomicSiteViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3404E928B4C1D000CF0D97 /* NonAtomicSiteViewModelTests.swift */; };
 		DE34771327F174C8009CA300 /* StatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE34771227F174C8009CA300 /* StatusView.swift */; };
@@ -3689,6 +3690,7 @@
 		DE279BAE26EA03EA002BA963 /* ShippingLabelSinglePackageViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelSinglePackageViewModelTests.swift; sourceTree = "<group>"; };
 		DE279BB026EA184A002BA963 /* ShippingLabelPackageListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackageListViewModel.swift; sourceTree = "<group>"; };
 		DE2BF4FC2846192B00FBE68A /* CouponAllowedEmailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponAllowedEmailsViewModelTests.swift; sourceTree = "<group>"; };
+		DE2FE5802923729A0018040A /* JetpackSetupRequiredViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackSetupRequiredViewModel.swift; sourceTree = "<group>"; };
 		DE3404E728B4B96800CF0D97 /* NonAtomicSiteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NonAtomicSiteViewModel.swift; sourceTree = "<group>"; };
 		DE3404E928B4C1D000CF0D97 /* NonAtomicSiteViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NonAtomicSiteViewModelTests.swift; sourceTree = "<group>"; };
 		DE34771227F174C8009CA300 /* StatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusView.swift; sourceTree = "<group>"; };
@@ -8421,6 +8423,7 @@
 				DEFB3010289904E300A620B3 /* WooSetupWebViewModel.swift */,
 				DE3404E728B4B96800CF0D97 /* NonAtomicSiteViewModel.swift */,
 				DE50294C28BEF8F100551736 /* JetpackConnectionWebViewModel.swift */,
+				DE2FE5802923729A0018040A /* JetpackSetupRequiredViewModel.swift */,
 			);
 			path = "Navigation Exceptions";
 			sourceTree = "<group>";
@@ -10346,6 +10349,7 @@
 				B958A7C928B3D47B00823EEF /* Route.swift in Sources */,
 				CC53FB3A275697B000C4CA4F /* ProductRowViewModel.swift in Sources */,
 				AEE1D4F525D14F88006A490B /* AttributeOptionListSelectorCommand.swift in Sources */,
+				DE2FE5812923729A0018040A /* JetpackSetupRequiredViewModel.swift in Sources */,
 				020DD48A23229495005822B1 /* ProductsTabProductTableViewCell.swift in Sources */,
 				74AAF6A5212A04A900C612B0 /* ChartMarker.swift in Sources */,
 				CE32B11520BF8779006FBCF4 /* ButtonTableViewCell.swift in Sources */,

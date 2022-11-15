@@ -55,7 +55,8 @@ private extension FilteredOrdersHeaderBar {
         String.localizedStringWithFormat(Localization.buttonWithActiveFilters, numberOfFilters)
 
         filterButton.setTitle(title, for: .normal)
-        filterButton.contentEdgeInsets = .zero
+        var configuration = UIButton.Configuration.filled()
+        configuration.contentInsets = .init(.zero)
         filterButton.accessibilityIdentifier = "orders-filter-button"
     }
 

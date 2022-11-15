@@ -70,3 +70,11 @@ extension WordPressApiError: CustomStringConvertible {
         }
     }
 }
+
+// MARK: - LocalizedError Conformance
+//
+extension WordPressApiError: LocalizedError {
+    public var errorDescription: String? {
+        description
+    }
+}

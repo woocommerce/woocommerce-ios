@@ -102,7 +102,6 @@ public final class UnifiedOrderScreen: ScreenObject {
 
     /// Opens the Order Status screen (to set a new order status).
     /// - Returns: Order Status screen object.
-    @discardableResult
     private func openOrderStatusScreen() throws -> OrderStatusScreen {
         orderStatusEditButton.tap()
         return try OrderStatusScreen()
@@ -110,7 +109,6 @@ public final class UnifiedOrderScreen: ScreenObject {
 
     /// Opens the Add Product screen (to add a new product).
     /// - Returns: Add Product screen object.
-    @discardableResult
     private func openAddProductScreen() throws -> AddProductScreen {
         addProductButton.tap()
         return try AddProductScreen()
@@ -118,7 +116,6 @@ public final class UnifiedOrderScreen: ScreenObject {
 
     /// Opens the Customer Details screen.
     /// - Returns: Customer Details screen object.
-    @discardableResult
     public func openCustomerDetailsScreen() throws -> CustomerDetailsScreen {
         addCustomerDetailsButton.tap()
         return try CustomerDetailsScreen()
@@ -126,7 +123,6 @@ public final class UnifiedOrderScreen: ScreenObject {
 
     /// Opens the Add Shipping screen.
     /// - Returns: Add Shipping screen object.
-    @discardableResult
     public func openAddShippingScreen() throws -> AddShippingScreen {
         addShippingButton.tap()
         return try AddShippingScreen()
@@ -134,7 +130,6 @@ public final class UnifiedOrderScreen: ScreenObject {
 
     /// Opens the Add Fee screen.
     /// - Returns: Add Fee screen object.
-    @discardableResult
     public func openAddFeeScreen() throws -> AddFeeScreen {
         addFeeButton.tap()
         return try AddFeeScreen()
@@ -142,7 +137,6 @@ public final class UnifiedOrderScreen: ScreenObject {
 
     /// Opens the Customer Note screen.
     /// - Returns: Customer Note screen object.
-    @discardableResult
     public func openCustomerNoteScreen() throws -> CustomerNoteScreen {
         addNoteButton.tap()
         return try CustomerNoteScreen()
@@ -152,7 +146,6 @@ public final class UnifiedOrderScreen: ScreenObject {
 
     /// Creates a remote order with all of the entered order data.
     /// - Returns: Single Order Detail screen object.
-    @discardableResult
     public func createOrder() throws -> SingleOrderScreen {
         createButton.tap()
         return try SingleOrderScreen()
@@ -160,7 +153,6 @@ public final class UnifiedOrderScreen: ScreenObject {
 
     /// Changes the new order status to the second status in the Order Status list.
     /// - Returns: Unified Order screen object.
-    @discardableResult
     public func editOrderStatus() throws -> UnifiedOrderScreen {
       return try openOrderStatusScreen()
             .selectOrderStatus(atIndex: 1)
@@ -168,7 +160,6 @@ public final class UnifiedOrderScreen: ScreenObject {
 
     /// Select the first product from the addProductScreen
     /// - Returns: Unified Order screen object.
-    @discardableResult
     public func addProduct(byName name: String) throws -> UnifiedOrderScreen {
         return try openAddProductScreen()
             .selectProduct(byName: name)
@@ -214,7 +205,6 @@ public final class UnifiedOrderScreen: ScreenObject {
 
     /// Cancels Order Creation process
     /// - Returns: Orders Screen object.
-    @discardableResult
     public func cancelOrderCreation() throws -> OrdersScreen {
         // This cancel button exists only if the feature flag `.splitViewInOrdersTab` is on.
         // For taking app store screenshot, the beta feature is turned off so we should pop to get out of this screen.
@@ -240,6 +230,7 @@ public final class UnifiedOrderScreen: ScreenObject {
     /// Checks the screen for existence of all products, checking each name.
     /// - Parameter productNames: Array of product names to check.
     /// - Returns: Unified Order screen object.
+    @discardableResult
     public func checkForExistingProducts(byName productNames: [String]) throws -> UnifiedOrderScreen {
         for productName in productNames {
             let productNamePredicate = NSPredicate(format: "label MATCHES %@", productName)

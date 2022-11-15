@@ -32,6 +32,8 @@ public struct MockSessionManager: SessionManagerProtocol {
 
     public var defaultCredentials: Credentials?
 
+    public var wooRestAPICredentials: WooRestAPICredentials?
+
     public var anonymousUserID: String? = nil
 
     public func reset() {

@@ -39,6 +39,8 @@ public protocol SessionManagerProtocol {
     ///
     var defaultCredentials: Credentials? { get set}
 
+    var wooRestAPICredentials: WooRestAPICredentials? { get set}
+
     /// Nukes all of the known Session's properties.
     ///
     func reset()

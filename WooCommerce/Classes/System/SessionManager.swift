@@ -65,6 +65,8 @@ final class SessionManager: SessionManagerProtocol {
         }
     }
 
+    var wooRestAPICredentials: WooRestAPICredentials?
+
     /// Ephemeral: Default Account.
     ///
     var defaultAccount: Yosemite.Account? {

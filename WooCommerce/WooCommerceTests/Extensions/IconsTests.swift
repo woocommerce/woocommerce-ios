@@ -684,4 +684,16 @@ final class IconsTests: XCTestCase {
     func test_sites_icon_is_not_nil() {
         XCTAssertNotNil(UIImage.sitesImage)
     }
+
+    func test_emptyStorePickerImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.emptyStorePickerImage)
+    }
+
+    func test_jetpackSetupImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.jetpackSetupImage)
+    }
+
+    func test_jetpackConnectionImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.jetpackConnectionImage)
+    }
 }

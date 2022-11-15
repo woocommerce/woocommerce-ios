@@ -1074,7 +1074,7 @@ extension UIImage {
 
     /// Image on the empty store picker screen
     ///
-    static var emptyStorePickerUIImage: UIImage {
+    static var emptyStorePickerImage: UIImage {
         UIImage(named: "woo-empty-store-picker")!
     }
 

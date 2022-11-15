@@ -116,4 +116,9 @@ public enum FeatureFlag: Int {
     ///
     /// - Note: The app will ignore this if `performanceMonitoring` is `false`.
     case performanceMonitoringViewController
+
+    /// Temporary feature flag for the native Jetpack setup flow.
+    /// TODO-8075: replace this with A/B test.
+    ///
+    case nativeJetpackSetupFlow
 }

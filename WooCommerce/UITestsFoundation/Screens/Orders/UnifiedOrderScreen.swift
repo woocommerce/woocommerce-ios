@@ -240,7 +240,6 @@ public final class UnifiedOrderScreen: ScreenObject {
     /// Checks the screen for existence of all products, checking each name.
     /// - Parameter productNames: Array of product names to check.
     /// - Returns: Unified Order screen object.
-    @discardableResult
     public func checkForExistingProducts(byName productNames: [String]) throws -> UnifiedOrderScreen {
         for productName in productNames {
             let productNamePredicate = NSPredicate(format: "label MATCHES %@", productName)
@@ -252,7 +251,6 @@ public final class UnifiedOrderScreen: ScreenObject {
 
     /// Finishes Order Editing process
     /// - Returns: Single Order Screen object.
-    @discardableResult
     public func closeEditingFlow() throws -> SingleOrderScreen {
         doneButton.tap()
 

@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Storage
 import StoreKit
@@ -9,6 +10,7 @@ public class InAppPurchaseStore: Store {
     private var listenTask: Task<Void, Error>?
     private let remote: InAppPurchasesRemote
     private var useBackend = true
+    private var pauseTransactionListener = CurrentValueSubject<Bool, Never>(false)
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         remote = InAppPurchasesRemote(network: network)
@@ -93,6 +95,12 @@ private extension InAppPurchaseStore {
 
 
                 logInfo("Purchasing product \(product.id) for site \(siteID) with options \(purchaseOptions)")
+                logInfo("Pausing transaction listener")
+                pauseTransactionListener.send(true)
+                defer {
+                    logInfo("Resuming transaction listener")
+                    pauseTransactionListener.send(false)
+                }
                 let purchaseResult = try await product.purchase(options: purchaseOptions)
                 switch purchaseResult {
                 case .success(let result):
@@ -251,11 +259,16 @@ private extension InAppPurchaseStore {
         assert(listenTask == nil, "InAppPurchaseStore.listenForTransactions() called while already listening for transactions")
 
         listenTask = Task.detached { [weak self] in
+            guard let self else {
+                return
+            }
             for await result in Transaction.updates {
                 do {
-                    try await self?.handleCompletedTransaction(result)
+                    // Wait until the purchase finishes
+                    _ = await self.pauseTransactionListener.values.contains(false)
+                    try await self.handleCompletedTransaction(result)
                 } catch {
-                    self?.logError("Error handling transaction update: \(error)")
+                    self.logError("Error handling transaction update: \(error)")
                 }
             }
         }

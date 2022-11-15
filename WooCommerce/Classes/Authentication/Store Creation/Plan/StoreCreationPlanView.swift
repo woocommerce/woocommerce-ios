@@ -154,7 +154,7 @@ struct StoreCreationPlanView: View {
         }
         .background(Color(.withColorStudio(.wooCommercePurple, shade: .shade90)))
         // This screen is using the dark theme for both light and dark modes.
-        .preferredColorScheme(.dark)
+        .environment(\.colorScheme, .dark)
     }
 }
 

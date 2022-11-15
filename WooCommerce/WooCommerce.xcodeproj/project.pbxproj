@@ -1858,6 +1858,10 @@
 		EEADF626281A65A9001B40F1 /* DefaultShippingValueLocalizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEADF625281A65A9001B40F1 /* DefaultShippingValueLocalizerTests.swift */; };
 		EECB7EE02862115C0028C888 /* MockProductImageUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECB7EDF2862115C0028C888 /* MockProductImageUploader.swift */; };
 		EECB7EE62864647F0028C888 /* ProductImagesProductIDUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECB7EE52864647F0028C888 /* ProductImagesProductIDUpdater.swift */; };
+		EED277FA29233B4E00F4B544 /* WooRestAPIAuthenticationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED277F929233B4E00F4B544 /* WooRestAPIAuthenticationCoordinator.swift */; };
+		EED277FD29233BD300F4B544 /* WooRestAPIAuthenticationForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED277FC29233BD300F4B544 /* WooRestAPIAuthenticationForm.swift */; };
+		EED277FF29233C3700F4B544 /* WooRestAPIAuthenticationFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED277FE29233C3700F4B544 /* WooRestAPIAuthenticationFormViewModel.swift */; };
+		EED2780129234B5E00F4B544 /* WooRestAPIAuthenticationWebViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED2780029234B5E00F4B544 /* WooRestAPIAuthenticationWebViewModel.swift */; };
 		EEEA41F22869A5F400AEFC4B /* MockProductImagesProductIDUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEA41F12869A5F400AEFC4B /* MockProductImagesProductIDUpdater.swift */; };
 		EEEDA916290A799E004B001D /* WordPressAuthenticator+Internal.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEDA915290A799E004B001D /* WordPressAuthenticator+Internal.swift */; };
 		F997170523DBB97500592D8E /* WooCommerceScreenshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997170423DBB97500592D8E /* WooCommerceScreenshots.swift */; };
@@ -3833,6 +3837,10 @@
 		EEADF625281A65A9001B40F1 /* DefaultShippingValueLocalizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultShippingValueLocalizerTests.swift; sourceTree = "<group>"; };
 		EECB7EDF2862115C0028C888 /* MockProductImageUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductImageUploader.swift; sourceTree = "<group>"; };
 		EECB7EE52864647F0028C888 /* ProductImagesProductIDUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImagesProductIDUpdater.swift; sourceTree = "<group>"; };
+		EED277F929233B4E00F4B544 /* WooRestAPIAuthenticationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooRestAPIAuthenticationCoordinator.swift; sourceTree = "<group>"; };
+		EED277FC29233BD300F4B544 /* WooRestAPIAuthenticationForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooRestAPIAuthenticationForm.swift; sourceTree = "<group>"; };
+		EED277FE29233C3700F4B544 /* WooRestAPIAuthenticationFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooRestAPIAuthenticationFormViewModel.swift; sourceTree = "<group>"; };
+		EED2780029234B5E00F4B544 /* WooRestAPIAuthenticationWebViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooRestAPIAuthenticationWebViewModel.swift; sourceTree = "<group>"; };
 		EEEA41F12869A5F400AEFC4B /* MockProductImagesProductIDUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductImagesProductIDUpdater.swift; sourceTree = "<group>"; };
 		EEEDA915290A799E004B001D /* WordPressAuthenticator+Internal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WordPressAuthenticator+Internal.swift"; sourceTree = "<group>"; };
 		F93E8E5124087FDA0057FF21 /* BetaFeaturesScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BetaFeaturesScreen.swift; sourceTree = "<group>"; };
@@ -4897,6 +4905,7 @@
 		02E3B62629026C83007E0F13 /* Authentication */ = {
 			isa = PBXGroup;
 			children = (
+				EED277FB29233BB900F4B544 /* WooRestAPI */,
 				02E3B62729026C8F007E0F13 /* AccountCreationForm.swift */,
 				02E3B62E2906322B007E0F13 /* AccountCreationFormFieldView.swift */,
 			);
@@ -4907,6 +4916,7 @@
 			isa = PBXGroup;
 			children = (
 				02E3B62C290631B3007E0F13 /* AccountCreationFormViewModel.swift */,
+				EED277FE29233C3700F4B544 /* WooRestAPIAuthenticationFormViewModel.swift */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
@@ -6821,6 +6831,7 @@
 		B55D4C0420B6026700D7A50F /* Authentication */ = {
 			isa = PBXGroup;
 			children = (
+				EED277F829233B1700F4B544 /* WooRestAPI */,
 				AEB4DB95290AE72D00AE4340 /* WebAuth */,
 				D881A318256B5C9C00FE5605 /* Navigation Exceptions */,
 				B5A8F8AB20B88D8400D211DE /* Prologue */,
@@ -8751,6 +8762,23 @@
 			path = ShippingValueLocalizer;
 			sourceTree = "<group>";
 		};
+		EED277F829233B1700F4B544 /* WooRestAPI */ = {
+			isa = PBXGroup;
+			children = (
+				EED277F929233B4E00F4B544 /* WooRestAPIAuthenticationCoordinator.swift */,
+				EED2780029234B5E00F4B544 /* WooRestAPIAuthenticationWebViewModel.swift */,
+			);
+			path = WooRestAPI;
+			sourceTree = "<group>";
+		};
+		EED277FB29233BB900F4B544 /* WooRestAPI */ = {
+			isa = PBXGroup;
+			children = (
+				EED277FC29233BD300F4B544 /* WooRestAPIAuthenticationForm.swift */,
+			);
+			path = WooRestAPI;
+			sourceTree = "<group>";
+		};
 		F4B77A83B2A3D94EA331691B /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -10052,6 +10080,7 @@
 				26771A14256FFA8700EE030E /* IssueRefundCoordinatingController.swift in Sources */,
 				027A2E162513356100DA6ACB /* AppleIDCredentialChecker.swift in Sources */,
 				26B98758273C5BE30090E8CA /* EditCustomerNoteViewModelProtocol.swift in Sources */,
+				EED277FA29233B4E00F4B544 /* WooRestAPIAuthenticationCoordinator.swift in Sources */,
 				4524CD9E242D01FD00B2F20A /* ProductStatusSettingListSelectorCommand.swift in Sources */,
 				6827141528A671B900E6E3F6 /* NewSimplePaymentsLocationNoticeViewController.swift in Sources */,
 				02F6800325807C9B00C3BAD2 /* ShippingLabelPaperSizeOptionListView.swift in Sources */,
@@ -10153,6 +10182,7 @@
 				02564A8C246CE38E00D6DB2A /* SwappableSubviewContainerView.swift in Sources */,
 				EE0EE7A628B7415200F6061E /* CustomHelpCenterContent.swift in Sources */,
 				023453F22579DA1A00A6BB20 /* ShippingLabelPrintingInstructionsViewController.swift in Sources */,
+				EED277FD29233BD300F4B544 /* WooRestAPIAuthenticationForm.swift in Sources */,
 				024DF31223742B18006658FE /* AztecItalicFormatBarCommand.swift in Sources */,
 				02AAD54525023A8300BA1E26 /* ProductFormRemoteActionUseCase.swift in Sources */,
 				D83F5933225B2EB900626E75 /* ManualTrackingViewController.swift in Sources */,
@@ -10239,6 +10269,7 @@
 				024DF31923742C3F006658FE /* AztecFormatBarFactory.swift in Sources */,
 				02291737270BEFF200449FA0 /* ProcessConfiguration.swift in Sources */,
 				45CE2D322625AA9A00E3CA00 /* ShippingLabelPackageList.swift in Sources */,
+				EED2780129234B5E00F4B544 /* WooRestAPIAuthenticationWebViewModel.swift in Sources */,
 				02535CBB25823F7A00E137BB /* ShippingLabelPaperSize+UI.swift in Sources */,
 				CCD2E67E25DD4DC900BD975D /* ProductVariationsViewModel.swift in Sources */,
 				02C2756824F4E77F00286C04 /* ProductShippingSettingsViewModel.swift in Sources */,
@@ -10341,6 +10372,7 @@
 				0272C00322EE9C3200D7CA2C /* AsyncDictionary.swift in Sources */,
 				028BAC3D22F2DECE008BB4AF /* StoreStatsAndTopPerformersViewController.swift in Sources */,
 				DE74F2A527E41D740002FE59 /* EnableAnalyticsView.swift in Sources */,
+				EED277FF29233C3700F4B544 /* WooRestAPIAuthenticationFormViewModel.swift in Sources */,
 				D85A3C5626C1911600C0E026 /* InPersonPaymentsPluginNotInstalledView.swift in Sources */,
 				B59D1EDF219072CC009D1978 /* ProductReviewTableViewCell.swift in Sources */,
 				B958A7C928B3D47B00823EEF /* Route.swift in Sources */,

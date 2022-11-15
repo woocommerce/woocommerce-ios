@@ -719,6 +719,9 @@
 		E1BAB2C72913FB5800C3982B /* WordPressApiError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BAB2C62913FB5800C3982B /* WordPressApiError.swift */; };
 		EE8A86F1286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json in Resources */ = {isa = PBXBuildFile; fileRef = EE8A86F0286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json */; };
 		EECB7EE8286555180028C888 /* media-update-product-id.json in Resources */ = {isa = PBXBuildFile; fileRef = EECB7EE7286555180028C888 /* media-update-product-id.json */; };
+		EED277F32923220E00F4B544 /* WpOrgCredentialsCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED277F22923220E00F4B544 /* WpOrgCredentialsCredentials.swift */; };
+		EED277F52923227F00F4B544 /* WooRESTKeyAuthenticatedRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED277F42923227F00F4B544 /* WooRESTKeyAuthenticatedRequest.swift */; };
+		EED277F72923236E00F4B544 /* WooRestApiRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED277F62923236E00F4B544 /* WooRestApiRequest.swift */; };
 		FE28F6E226840DED004465C7 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6E126840DED004465C7 /* User.swift */; };
 		FE28F6E426842848004465C7 /* UserMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6E326842848004465C7 /* UserMapper.swift */; };
 		FE28F6E6268429B6004465C7 /* UserRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6E5268429B6004465C7 /* UserRemote.swift */; };
@@ -1468,6 +1471,9 @@
 		E1BAB2C62913FB5800C3982B /* WordPressApiError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressApiError.swift; sourceTree = "<group>"; };
 		EE8A86F0286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-update-product-id-in-wordpress-site.json"; sourceTree = "<group>"; };
 		EECB7EE7286555180028C888 /* media-update-product-id.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-update-product-id.json"; sourceTree = "<group>"; };
+		EED277F22923220E00F4B544 /* WpOrgCredentialsCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WpOrgCredentialsCredentials.swift; sourceTree = "<group>"; };
+		EED277F42923227F00F4B544 /* WooRESTKeyAuthenticatedRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooRESTKeyAuthenticatedRequest.swift; sourceTree = "<group>"; };
+		EED277F62923236E00F4B544 /* WooRestApiRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooRestApiRequest.swift; sourceTree = "<group>"; };
 		F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6CEE1CA2AD376C0C28AE9F6 /* Pods-NetworkingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.release.xcconfig"; sourceTree = "<group>"; };
 		FE28F6E126840DED004465C7 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -1882,6 +1888,8 @@
 				B557D9FF209754FF005962F4 /* JetpackRequest.swift */,
 				DE34051228BDCA5100CF0D97 /* WordPressOrgRequest.swift */,
 				029C9E5B291507A40013E5EE /* UnauthenticatedRequest.swift */,
+				EED277F42923227F00F4B544 /* WooRESTKeyAuthenticatedRequest.swift */,
+				EED277F62923236E00F4B544 /* WooRestApiRequest.swift */,
 			);
 			path = Requests;
 			sourceTree = "<group>";
@@ -1894,6 +1902,7 @@
 				45551F112523E7F1007EF104 /* UserAgent.swift */,
 				B557DA0A20975D7E005962F4 /* WooAPIVersion.swift */,
 				B557DA0C20975DB1005962F4 /* WordPressAPIVersion.swift */,
+				EED277F22923220E00F4B544 /* WpOrgCredentialsCredentials.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -3086,6 +3095,7 @@
 				B5C151BB217EC34100C7BDC1 /* KeyedDecodingContainer+Woo.swift in Sources */,
 				933A2732222234F800C2143A /* Logging.swift in Sources */,
 				CE50346021B5799F007573C6 /* SitePlan.swift in Sources */,
+				EED277F72923236E00F4B544 /* WooRestApiRequest.swift in Sources */,
 				B59325CC217E2B4C000B0E8E /* NoteListMapper.swift in Sources */,
 				B505F6CD20BEE37E00BB1B69 /* AccountMapper.swift in Sources */,
 				B554FA8F2180BC7000C54DFF /* NoteHashListMapper.swift in Sources */,
@@ -3147,6 +3157,7 @@
 				CE0A0F1522396BF00075ED8D /* ProductAttribute.swift in Sources */,
 				026CF620237D69D6009563D4 /* ProductVariationsRemote.swift in Sources */,
 				03DCB7402624AD7D00C8953D /* CouponListMapper.swift in Sources */,
+				EED277F52923227F00F4B544 /* WooRESTKeyAuthenticatedRequest.swift in Sources */,
 				077F39D626A58E4500ABEADC /* SystemStatusRemote.swift in Sources */,
 				4599FC5E24A62AA70056157A /* ProductTagsRemote.swift in Sources */,
 				DEC51AE7276848A9009F3DF4 /* SystemStatus+Environment.swift in Sources */,
@@ -3251,6 +3262,7 @@
 				CE17C6B1229462C000AACE1C /* ProductStockStatus.swift in Sources */,
 				B557DA0420975500005962F4 /* OrdersRemote.swift in Sources */,
 				CE43066C2347C5F90073CBFF /* OrderItemRefund.swift in Sources */,
+				EED277F32923220E00F4B544 /* WpOrgCredentialsCredentials.swift in Sources */,
 				45CCFCE427A2DC270012E8CB /* InboxAction.swift in Sources */,
 				B5C6FCD420A373BB00A4F8E4 /* OrderMapper.swift in Sources */,
 				D88D5A49230BC8C7007B6E01 /* ProductReviewStatus.swift in Sources */,

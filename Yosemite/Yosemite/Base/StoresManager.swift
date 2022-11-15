@@ -22,6 +22,9 @@ public protocol StoresManager {
     @discardableResult
     func authenticate(credentials: Credentials) -> StoresManager
 
+    @discardableResult
+    func authenticate(wooRestAPICredentials: WooRestAPICredentials) -> StoresManager
+
     /// Switches the state to a Deauthenticated one.
     ///
     @discardableResult

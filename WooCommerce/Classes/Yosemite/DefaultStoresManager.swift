@@ -126,6 +126,14 @@ class DefaultStoresManager: StoresManager {
         return self
     }
 
+    @discardableResult
+    func authenticate(wooRestAPICredentials: WooRestAPICredentials) -> StoresManager {
+        state = AuthenticatedState(wooRestAPICredentials: wooRestAPICredentials)
+        sessionManager.wooRestAPICredentials = wooRestAPICredentials
+
+        return self
+    }
+
     /// Synchronizes all of the Session's Entities.
     ///
     @discardableResult

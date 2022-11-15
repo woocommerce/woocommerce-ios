@@ -31,6 +31,7 @@ final class StoreCreationPlanHostingController: UIHostingController<StoreCreatio
     /// Shows a transparent navigation bar without a bottom border and with a close button to dismiss.
     func configureNavigationBarAppearance() {
         addCloseNavigationBarButton(target: self, action: #selector(closeButtonTapped))
+        navigationItem.hidesBackButton = true
 
         let appearance = UINavigationBarAppearance()
         appearance.configureWithTransparentBackground()

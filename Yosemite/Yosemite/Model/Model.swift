@@ -22,6 +22,7 @@ public typealias Country = Networking.Country
 public typealias CreateAccountResult = Networking.CreateAccountResult
 public typealias CreateAccountError = Networking.CreateAccountError
 public typealias Credentials = Networking.Credentials
+public typealias WooRestAPICredentials = Networking.WooRestAPICredentials
 public typealias CreateProductVariation = Networking.CreateProductVariation
 public typealias Customer = Networking.Customer
 public typealias DotcomDevice = Networking.DotcomDevice

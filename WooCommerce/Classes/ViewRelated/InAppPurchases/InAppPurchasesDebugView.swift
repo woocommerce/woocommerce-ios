@@ -11,10 +11,11 @@ struct InAppPurchasesDebugView: View {
     @State var isPurchasing = false
     @State private var purchaseError: PurchaseError? {
         didSet {
-            presentAlert = purchaseError != nil
+            presentErrorAlert = purchaseError != nil
         }
     }
-    @State var presentAlert = false
+    @State var presentErrorAlert = false
+    @State var presentPurchaseProductAlert = false
 
     var body: some View {
         List {
@@ -34,18 +35,24 @@ struct InAppPurchasesDebugView: View {
                           let siteID = Int64(stringSiteID) {
                     ForEach(products, id: \.id) { product in
                         Button(entitledProductIDs.contains(product.id) ? "Entitled: \(product.description)" : product.description) {
-                            Task {
-                                isPurchasing = true
-                                do {
-                                    try await inAppPurchasesForWPComPlansManager.purchaseProduct(with: product.id, for: siteID)
-                                } catch {
-                                    purchaseError = PurchaseError(error: error)
-                                }
-                                await loadUserEntitlements()
-                                isPurchasing = false
-                            }
+                            presentPurchaseProductAlert = true
                         }
-                        .alert(isPresented: $presentAlert, error: purchaseError, actions: {})
+                        .alert("Did you setup your sandbox environment?", isPresented: $presentPurchaseProductAlert) {
+                            Button("Yes") {
+                                Task {
+                                    isPurchasing = true
+                                    do {
+                                        try await inAppPurchasesForWPComPlansManager.purchaseProduct(with: product.id, for: siteID)
+                                    } catch {
+                                        purchaseError = PurchaseError(error: error)
+                                    }
+                                    await loadUserEntitlements()
+                                    isPurchasing = false
+                                }
+                            }
+                            Button("No") {}
+                        }
+                        .alert(isPresented: $presentErrorAlert, error: purchaseError, actions: {})
                     }
                 } else {
                     Text("No valid site id could be retrieved to purchase product. " +
@@ -65,6 +72,12 @@ struct InAppPurchasesDebugView: View {
                     Text("In-App Purchases are not supported for this user")
                         .foregroundColor(.red)
                 }
+            }
+
+            Section ("Warning") {
+                Text("⚠️ Please make sure before testing a purchase that the IAP requests are pointing " +
+                     "to your WPCOM sandbox environment and you have the billing system sandbox-mode enabled.")
+                .foregroundColor(Color(.accent))
             }
         }
         .navigationTitle("IAP Debug")

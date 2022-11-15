@@ -42,7 +42,7 @@ final class OrdersTests: XCTestCase {
             .goBackToOrdersScreen()
     }
 
-    func test_edit_existing_order_loads_correct_data() throws {
+    func test_load_existing_order() throws {
         let orders = try GetMocks.readOrdersData()
 
         try TabNavComponent().goToOrdersScreen()

@@ -1,6 +1,6 @@
 import Foundation
 
-public struct WpOrgCredentialsCredentials: Equatable {
+public struct WooRestAPICredentials: Equatable {
 
     public let consumer_key: String
 

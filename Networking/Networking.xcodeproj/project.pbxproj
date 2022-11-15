@@ -719,7 +719,7 @@
 		E1BAB2C72913FB5800C3982B /* WordPressApiError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BAB2C62913FB5800C3982B /* WordPressApiError.swift */; };
 		EE8A86F1286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json in Resources */ = {isa = PBXBuildFile; fileRef = EE8A86F0286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json */; };
 		EECB7EE8286555180028C888 /* media-update-product-id.json in Resources */ = {isa = PBXBuildFile; fileRef = EECB7EE7286555180028C888 /* media-update-product-id.json */; };
-		EED277F32923220E00F4B544 /* WpOrgCredentialsCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED277F22923220E00F4B544 /* WpOrgCredentialsCredentials.swift */; };
+		EED277F32923220E00F4B544 /* WooRestAPICredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED277F22923220E00F4B544 /* WooRestAPICredentials.swift */; };
 		EED277F52923227F00F4B544 /* WooRESTKeyAuthenticatedRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED277F42923227F00F4B544 /* WooRESTKeyAuthenticatedRequest.swift */; };
 		EED277F72923236E00F4B544 /* WooRestApiRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED277F62923236E00F4B544 /* WooRestApiRequest.swift */; };
 		FE28F6E226840DED004465C7 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6E126840DED004465C7 /* User.swift */; };
@@ -1471,7 +1471,7 @@
 		E1BAB2C62913FB5800C3982B /* WordPressApiError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressApiError.swift; sourceTree = "<group>"; };
 		EE8A86F0286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-update-product-id-in-wordpress-site.json"; sourceTree = "<group>"; };
 		EECB7EE7286555180028C888 /* media-update-product-id.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-update-product-id.json"; sourceTree = "<group>"; };
-		EED277F22923220E00F4B544 /* WpOrgCredentialsCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WpOrgCredentialsCredentials.swift; sourceTree = "<group>"; };
+		EED277F22923220E00F4B544 /* WooRestAPICredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooRestAPICredentials.swift; sourceTree = "<group>"; };
 		EED277F42923227F00F4B544 /* WooRESTKeyAuthenticatedRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooRESTKeyAuthenticatedRequest.swift; sourceTree = "<group>"; };
 		EED277F62923236E00F4B544 /* WooRestApiRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooRestApiRequest.swift; sourceTree = "<group>"; };
 		F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1902,7 +1902,7 @@
 				45551F112523E7F1007EF104 /* UserAgent.swift */,
 				B557DA0A20975D7E005962F4 /* WooAPIVersion.swift */,
 				B557DA0C20975DB1005962F4 /* WordPressAPIVersion.swift */,
-				EED277F22923220E00F4B544 /* WpOrgCredentialsCredentials.swift */,
+				EED277F22923220E00F4B544 /* WooRestAPICredentials.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -3262,7 +3262,7 @@
 				CE17C6B1229462C000AACE1C /* ProductStockStatus.swift in Sources */,
 				B557DA0420975500005962F4 /* OrdersRemote.swift in Sources */,
 				CE43066C2347C5F90073CBFF /* OrderItemRefund.swift in Sources */,
-				EED277F32923220E00F4B544 /* WpOrgCredentialsCredentials.swift in Sources */,
+				EED277F32923220E00F4B544 /* WooRestAPICredentials.swift in Sources */,
 				45CCFCE427A2DC270012E8CB /* InboxAction.swift in Sources */,
 				B5C6FCD420A373BB00A4F8E4 /* OrderMapper.swift in Sources */,
 				D88D5A49230BC8C7007B6E01 /* ProductReviewStatus.swift in Sources */,

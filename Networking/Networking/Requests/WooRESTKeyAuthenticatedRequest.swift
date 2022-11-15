@@ -9,7 +9,7 @@ struct WooRESTKeyAuthenticatedRequest: URLRequestConvertible {
 
     /// WordPress.com Credentials.
     ///
-    let credentials: WpOrgCredentialsCredentials
+    let credentials: WooRestAPICredentials
 
     /// Request that does not require WPCOM authentication.
     ///

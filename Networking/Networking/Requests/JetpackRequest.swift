@@ -56,7 +56,6 @@ struct JetpackRequest: Request {
         self.parameters = parameters ?? [:]
     }
 
-
     /// Returns a URLRequest instance reprensenting the current Jetpack Request.
     ///
     func asURLRequest() throws -> URLRequest {
@@ -68,6 +67,10 @@ struct JetpackRequest: Request {
 
     func responseDataValidator() -> ResponseDataValidator {
         return DotcomValidator()
+    }
+
+    func wooRequest(siteURL: String) -> WooRestApiRequest {
+        WooRestApiRequest(baseURL: siteURL, path: path, wooApiVersion: wooApiVersion, method: method, parameters: parameters)
     }
 }
 

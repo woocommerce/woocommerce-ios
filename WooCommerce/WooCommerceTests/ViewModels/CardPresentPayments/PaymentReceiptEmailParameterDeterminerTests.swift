@@ -4,47 +4,18 @@ import TestKit
 @testable import Yosemite
 
 final class PaymentReceiptEmailParameterDeterminerTests: XCTestCase {
-    private var stores: MockStoresManager!
-
-    override func setUp() {
-        super.setUp()
-
-        stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
-        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
-            guard case let .synchronizeSystemPlugins(_, onCompletion) = action else {
-                return
-            }
-
-            onCompletion(.success(()))
-        }
-    }
-
-    override func tearDown() {
-        stores = nil
-        super.tearDown()
-    }
-
     func test_when_only_WCPay_is_active_and_version_is_higher_than_minimum_that_sends_email_then_returns_nil() {
         // Given
         let order = Order.fake()
         let wcPayPlugin = SystemPlugin.fake().copy(version: "4.3.4")
         let cardPresentPluginsDataProvider = MockCardPresentPluginsDataProvider(wcPayPlugin: wcPayPlugin,
                                                                                 paymentPluginsInstalledAndActiveStatus: .onlyWCPayIsInstalledAndActive)
-        let sut = PaymentReceiptEmailParameterDeterminer(cardPresentPluginsDataProvider: cardPresentPluginsDataProvider, stores: stores)
+        let sut = PaymentReceiptEmailParameterDeterminer(cardPresentPluginsDataProvider: cardPresentPluginsDataProvider)
 
         // When
-        let result: Result<String?, Error> = waitFor { promise in
-            sut.receiptEmail(from: order) { result in
-                promise(result)
-            }
-        }
+        let email = sut.receiptEmail(from: order)
 
         // Then
-        guard case let .success(email) = result else {
-            XCTFail()
-            return
-        }
-
         XCTAssertNil(email)
     }
 
@@ -55,21 +26,12 @@ final class PaymentReceiptEmailParameterDeterminerTests: XCTestCase {
         let wcPayPlugin = SystemPlugin.fake().copy(version: "4.0.0")
         let cardPresentPluginsDataProvider = MockCardPresentPluginsDataProvider(wcPayPlugin: wcPayPlugin,
                                                                                 paymentPluginsInstalledAndActiveStatus: .onlyWCPayIsInstalledAndActive)
-        let sut = PaymentReceiptEmailParameterDeterminer(cardPresentPluginsDataProvider: cardPresentPluginsDataProvider, stores: stores)
+        let sut = PaymentReceiptEmailParameterDeterminer(cardPresentPluginsDataProvider: cardPresentPluginsDataProvider)
 
         // When
-        let result: Result<String?, Error> = waitFor { promise in
-            sut.receiptEmail(from: Order.fake().copy(billingAddress: billingAddress)) { result in
-                promise(result)
-            }
-        }
+        let email = sut.receiptEmail(from: Order.fake().copy(billingAddress: billingAddress))
 
         // Then
-        guard case let .success(email) = result else {
-            XCTFail()
-            return
-        }
-
         XCTAssertNil(email)
     }
 
@@ -80,21 +42,12 @@ final class PaymentReceiptEmailParameterDeterminerTests: XCTestCase {
         let wcPayPlugin = SystemPlugin.fake().copy(version: "3.9.9")
         let cardPresentPluginsDataProvider = MockCardPresentPluginsDataProvider(wcPayPlugin: wcPayPlugin,
                                                                                 paymentPluginsInstalledAndActiveStatus: .onlyWCPayIsInstalledAndActive)
-        let sut = PaymentReceiptEmailParameterDeterminer(cardPresentPluginsDataProvider: cardPresentPluginsDataProvider, stores: stores)
+        let sut = PaymentReceiptEmailParameterDeterminer(cardPresentPluginsDataProvider: cardPresentPluginsDataProvider)
 
         // When
-        let result: Result<String?, Error> = waitFor { promise in
-            sut.receiptEmail(from: Order.fake().copy(billingAddress: billingAddress)) { result in
-                promise(result)
-            }
-        }
+        let returnedEmail = sut.receiptEmail(from: Order.fake().copy(billingAddress: billingAddress))
 
         // Then
-        guard case let .success(returnedEmail) = result else {
-            XCTFail()
-            return
-        }
-
         XCTAssertEqual(returnedEmail, receiptEmail)
     }
 
@@ -103,21 +56,12 @@ final class PaymentReceiptEmailParameterDeterminerTests: XCTestCase {
         let receiptEmail = "test@test.com"
         let billingAddress = Address.fake().copy(email: receiptEmail)
         let cardPresentPluginsDataProvider = MockCardPresentPluginsDataProvider(paymentPluginsInstalledAndActiveStatus: .bothAreInstalledAndActive)
-        let sut = PaymentReceiptEmailParameterDeterminer(cardPresentPluginsDataProvider: cardPresentPluginsDataProvider, stores: stores)
+        let sut = PaymentReceiptEmailParameterDeterminer(cardPresentPluginsDataProvider: cardPresentPluginsDataProvider)
 
         // When
-        let result: Result<String?, Error> = waitFor { promise in
-            sut.receiptEmail(from: Order.fake().copy(billingAddress: billingAddress)) { result in
-                promise(result)
-            }
-        }
+        let email = sut.receiptEmail(from: Order.fake().copy(billingAddress: billingAddress))
 
         // Then
-        guard case let .success(email) = result else {
-            XCTFail()
-            return
-        }
-
         XCTAssertNil(email)
     }
 
@@ -126,21 +70,12 @@ final class PaymentReceiptEmailParameterDeterminerTests: XCTestCase {
         let receiptEmail = "test@test.com"
         let billingAddress = Address.fake().copy(email: receiptEmail)
         let cardPresentPluginsDataProvider = MockCardPresentPluginsDataProvider(paymentPluginsInstalledAndActiveStatus: .onlyStripeIsInstalledAndActive)
-        let sut = PaymentReceiptEmailParameterDeterminer(cardPresentPluginsDataProvider: cardPresentPluginsDataProvider, stores: stores)
+        let sut = PaymentReceiptEmailParameterDeterminer(cardPresentPluginsDataProvider: cardPresentPluginsDataProvider)
 
         // When
-        let result: Result<String?, Error> = waitFor { promise in
-            sut.receiptEmail(from: Order.fake().copy(billingAddress: billingAddress)) { result in
-                promise(result)
-            }
-        }
+        let returnedEmail = sut.receiptEmail(from: Order.fake().copy(billingAddress: billingAddress))
 
         // Then
-        guard case let .success(returnedEmail) = result else {
-            XCTFail()
-            return
-        }
-
         XCTAssertEqual(returnedEmail, receiptEmail)
     }
 }

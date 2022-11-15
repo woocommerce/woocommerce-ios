@@ -1,4 +1,5 @@
 import UIKit
+import SwiftUI
 import WordPressAuthenticator
 import SafariServices
 
@@ -32,7 +33,7 @@ final class CardPresentPaymentsModalViewController: UIViewController, CardReader
     @IBOutlet weak var heightConstraint: NSLayoutConstraint!
     @IBOutlet weak var widthConstraint: NSLayoutConstraint!
 
-
+    private var loadingView: UIView?
 
     init(viewModel: CardPresentPaymentsModalViewModel) {
         self.viewModel = viewModel
@@ -46,6 +47,7 @@ final class CardPresentPaymentsModalViewController: UIViewController, CardReader
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        createViews()
         initializeContent()
         setBackgroundColor()
         setButtonsActions()
@@ -93,6 +95,24 @@ final class CardPresentPaymentsModalViewController: UIViewController, CardReader
 private extension CardPresentPaymentsModalViewController {
     func setBackgroundColor() {
         containerView.backgroundColor = .tertiarySystemBackground
+    }
+
+    func createViews() {
+        createLoadingIndicator()
+    }
+
+    func createLoadingIndicator() {
+        let loadingIndicator = ProgressView()
+            .progressViewStyle(IndefiniteCircularProgressViewStyle(size: 96.0))
+            .background(Color(.tertiarySystemBackground))
+        let host = ConstraintsUpdatingHostingController(rootView: loadingIndicator)
+        add(host)
+
+        guard let index = mainStackView.arrangedSubviews.firstIndex(of: imageView) else {
+            return
+        }
+        mainStackView.insertArrangedSubview(host.view, at: index)
+        loadingView = host.view
     }
 
     func styleContent() {
@@ -182,6 +202,8 @@ private extension CardPresentPaymentsModalViewController {
 
         configureImageView()
 
+        configureLoadingIndicator()
+
         if shouldShowActionButtons() {
             configureActionButtonsView()
             styleActionButtons()
@@ -226,6 +248,11 @@ private extension CardPresentPaymentsModalViewController {
 
     func configureImageView() {
         imageView.image = viewModel.image
+        imageView.isHidden = viewModel.showLoadingIndicator
+    }
+
+    func configureLoadingIndicator() {
+        loadingView?.isHidden = !viewModel.showLoadingIndicator
     }
 
     func setButtonsActions() {

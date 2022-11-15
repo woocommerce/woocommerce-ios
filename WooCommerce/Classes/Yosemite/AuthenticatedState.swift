@@ -19,9 +19,6 @@ class AuthenticatedState: StoresManagerState {
     ///
     private var errorObserverToken: NSObjectProtocol?
 
-
-    /// Designated Initializer
-    ///
     init(credentials: Credentials) {
         let storageManager = ServiceLocator.storageManager
         let network = AlamofireNetwork(credentials: credentials)
@@ -87,14 +84,80 @@ class AuthenticatedState: StoresManagerState {
         startListeningToNotifications()
     }
 
+    init(wooRestAPICredentials: WooRestAPICredentials) {
+        let storageManager = ServiceLocator.storageManager
+        let network = AlamofireNetwork(wooRestAPICredentials: wooRestAPICredentials)
+
+        services = [
+            AppSettingsStore(dispatcher: dispatcher,
+                             storageManager: storageManager,
+                             fileStorage: PListFileStorage(),
+                             generalAppSettings: ServiceLocator.generalAppSettings),
+            AddOnGroupStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            CouponStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            CustomerStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            DataStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            DomainStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            InAppPurchaseStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            InboxNotesStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            JustInTimeMessageStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            MediaStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            NotificationCountStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: PListFileStorage()),
+            OrderCardPresentPaymentEligibilityStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            PaymentGatewayStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            ProductAttributeStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            ProductAttributeTermStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            ProductReviewStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            ProductCategoryStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            ProductShippingClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            ProductTagStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            SitePluginStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            SitePostStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            TaxClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            TelemetryStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            UserStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            CardPresentPaymentStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network,
+                                    cardReaderService: ServiceLocator.cardReaderService),
+            ReceiptStore(dispatcher: dispatcher,
+                         storageManager: storageManager,
+                         network: network,
+                         receiptPrinterService: ServiceLocator.receiptPrinterService,
+                         fileStorage: PListFileStorage()),
+            AnnouncementsStore(dispatcher: dispatcher,
+                               storageManager: storageManager,
+                               network: network,
+                               fileStorage: PListFileStorage()),
+            JetpackConnectionStore(dispatcher: dispatcher)
+        ]
+
+        startListeningToNotifications()
+    }
+
     /// Convenience Initializer
     ///
     convenience init?(sessionManager: SessionManagerProtocol) {
-        guard let credentials = sessionManager.defaultCredentials else {
+        if let credentials = sessionManager.defaultCredentials {
+            self.init(credentials: credentials)
+        } else if let wooRestAPICredentials = sessionManager.wooRestAPICredentials {
+            self.init(wooRestAPICredentials: wooRestAPICredentials)
+        } else {
             return nil
         }
-
-        self.init(credentials: credentials)
     }
 
     /// Executed before the current state is deactivated.

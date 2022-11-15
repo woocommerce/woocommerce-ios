@@ -2,7 +2,7 @@
 
 11.3
 -----
-- [*] Show spinner while preparing reader for payment, instead of saying it's ready before it is. [https://github.com/woocommerce/woocommerce-ios/pull/8115]
+- [*] In-Person Payments: Show spinner while preparing reader for payment, instead of saying it's ready before it is. [https://github.com/woocommerce/woocommerce-ios/pull/8115]
 
 11.2
 -----

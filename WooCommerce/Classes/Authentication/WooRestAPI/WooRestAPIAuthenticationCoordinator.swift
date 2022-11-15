@@ -5,6 +5,8 @@ import Yosemite
 final class WooRestAPIAuthenticationCoordinator: Coordinator {
     let navigationController: UINavigationController
 
+    private var storePickerCoordinator: StorePickerCoordinator?
+
     private let analytics: Analytics
 
     init(navigationController: UINavigationController,
@@ -19,6 +21,7 @@ final class WooRestAPIAuthenticationCoordinator: Coordinator {
             analytics: analytics
         ) { [weak self] credentials in
             guard let self else { return }
+            //self.generateCredentials(siteURL: "https://horrible-raven.jurassic.ninja/")
             self.handleCredentials(credentials)
         }
         navigationController.show(accountCreationController, sender: self)
@@ -29,6 +32,11 @@ private extension WooRestAPIAuthenticationCoordinator {
 
     func handleCredentials(_ credentials: WooRestAPICredentials) {
         ServiceLocator.stores.authenticate(wooRestAPICredentials: credentials)
+
+        let onDismiss = {}
+        storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)
+        storePickerCoordinator?.onDismiss = onDismiss
+        storePickerCoordinator?.didSelectStore(with: 0, onCompletion: onDismiss)
     }
 }
 
@@ -36,7 +44,7 @@ private extension WooRestAPIAuthenticationCoordinator {
 
 private extension WooRestAPIAuthenticationCoordinator {
     func generateCredentials(siteURL: String) {
-        guard let viewModel = try? WooRestAPIAuthenticationWebViewModel(siteURL: "https://horrible-raven.jurassic.ninja/", completion: { [weak self] in
+        guard let viewModel = try? WooRestAPIAuthenticationWebViewModel(siteURL: siteURL, completion: { [weak self] in
             //self?.fetchJetpackUser(in: viewController)
         }) else {
             return

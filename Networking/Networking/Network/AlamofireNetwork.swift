@@ -69,7 +69,20 @@ public class AlamofireNetwork: Network {
     ///     - request: Request that should be performed.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func responseData(for request: URLRequestConvertible, completion: @escaping (Swift.Result<Data, Error>) -> Void) {
+    public func responseData(for request: URLRequestConvertible,
+                             completion: @escaping (Swift.Result<Data, Error>) -> Void) {
+
+        func createRequest(wrapping request: URLRequestConvertible) -> URLRequestConvertible {
+            if let credentials {
+                return AuthenticatedRequest(credentials: credentials, request: request)
+            } else if let wooRestAPICredentials, let jpRequest = request as? JetpackRequest {
+                let wooRequest = jpRequest.wooRequest(siteURL: wooRestAPICredentials.siteAddress)
+                return WooRESTKeyAuthenticatedRequest(credentials: wooRestAPICredentials, request: wooRequest)
+            } else {
+                return UnauthenticatedRequest(request: request)
+            }
+        }
+
         let request = createRequest(wrapping: request)
 
         Alamofire.request(request).responseData { response in

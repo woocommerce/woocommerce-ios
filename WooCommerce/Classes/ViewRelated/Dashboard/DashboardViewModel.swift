@@ -1,4 +1,5 @@
 import Yosemite
+import Combine
 import enum Networking.DotcomError
 import enum Storage.StatsVersion
 import protocol Experiments.FeatureFlagService
@@ -12,6 +13,10 @@ final class DashboardViewModel {
     @Published var announcementViewModel: AnnouncementCardViewModelProtocol? = nil
 
     @Published private(set) var showWebViewSheet: WebViewSheetViewModel? = nil
+
+    /// Trigger to start the Add Product flow
+    ///
+    let addProductTrigger = PassthroughSubject<Void, Never>()
 
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
@@ -154,8 +159,7 @@ final class DashboardViewModel {
             guard let self else { return }
             if case let .success(isVisible) = result, isVisible {
                 let viewModel = ProductsOnboardingAnnouncementCardViewModel(onCTATapped: { [weak self] in
-                    self?.announcementViewModel = nil // Dismiss announcement
-                    MainTabBarController.presentAddProductFlow()
+                    self?.addProductTrigger.send()
                 })
                 self.announcementViewModel = viewModel
             }

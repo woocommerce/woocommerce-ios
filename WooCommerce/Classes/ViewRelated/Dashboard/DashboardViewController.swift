@@ -123,6 +123,7 @@ final class DashboardViewController: UIViewController {
         observeStatsVersionForDashboardUIUpdates()
         observeAnnouncements()
         observeShowWebViewSheet()
+        observeAddProductTrigger()
         viewModel.syncAnnouncements(for: siteID)
         Task { @MainActor in
             await reloadDashboardUIStatsVersion(forced: true)
@@ -301,6 +302,23 @@ private extension DashboardViewController {
         let hostingController = UIHostingController(rootView: webViewSheet)
         hostingController.presentationController?.delegate = self
         present(hostingController, animated: true, completion: nil)
+    }
+
+    /// Subscribes to the trigger to start the Add Product flow for products onboarding
+    ///
+    private func observeAddProductTrigger() {
+        viewModel.addProductTrigger.sink { [weak self] _ in
+            self?.startAddProductFlow()
+        }
+        .store(in: &subscriptions)
+    }
+
+    /// Starts the Add Product flow (without switching tabs)
+    ///
+    private func startAddProductFlow() {
+        guard let announcementView, let navigationController else { return }
+        let coordinator = AddProductCoordinator(siteID: siteID, sourceView: announcementView, sourceNavigationController: navigationController)
+        coordinator.start()
     }
 
     // This is used so we have a specific type for the view while applying modifiers.

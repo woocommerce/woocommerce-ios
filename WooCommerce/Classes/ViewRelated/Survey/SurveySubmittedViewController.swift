@@ -93,7 +93,9 @@ private extension SurveySubmittedViewController {
 
         contactUsButton.applyLinkButtonStyle()
         contactUsButton.titleLabel?.applyCalloutStyle()
-        contactUsButton.contentEdgeInsets = .zero
+        var contactUsconfiguration = UIButton.Configuration.plain()
+        contactUsconfiguration.contentInsets = .init(.zero)
+        contactUsButton.configuration = contactUsconfiguration
     }
 
     /// Apply the correspondent localized texts to each component

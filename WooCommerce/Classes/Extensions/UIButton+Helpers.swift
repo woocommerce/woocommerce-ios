@@ -8,7 +8,13 @@ extension UIButton {
     /// Applies the Primary Button Style: Solid BG!
     ///
     func applyPrimaryButtonStyle() {
-        contentEdgeInsets = Style.defaultEdgeInsets
+        var configuration = UIButton.Configuration.filled()
+        configuration.contentInsets = .init(
+            top: Style.defaultInsets.top,
+            leading: Style.defaultInsets.leading,
+            bottom: Style.defaultInsets.bottom,
+            trailing: Style.defaultInsets.trailing
+        )
         layer.borderColor = UIColor.primaryButtonBorder.cgColor
         layer.borderWidth = Style.defaultBorderWidth
         layer.cornerRadius = Style.defaultCornerRadius
@@ -39,8 +45,13 @@ extension UIButton {
     /// Applies the Secondary Button Style: Clear BG / Bordered Outline
     ///
     func applySecondaryButtonStyle() {
-        configuration = UIButton.Configuration.plain()
-        configuration?.contentInsets = Style.defaultInsets
+        var configuration = UIButton.Configuration.filled()
+        configuration.contentInsets = .init(
+            top: Style.defaultInsets.top,
+            leading: Style.defaultInsets.leading,
+            bottom: Style.defaultInsets.bottom,
+            trailing: Style.defaultInsets.trailing
+        )
         backgroundColor = .secondaryButtonBackground
         layer.borderColor = UIColor.secondaryButtonBorder.cgColor
         layer.borderWidth = Style.defaultBorderWidth

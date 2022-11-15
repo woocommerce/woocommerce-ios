@@ -113,5 +113,5 @@ struct InAppPurchasesDebugView_Previews: PreviewProvider {
 }
 
 private enum Constants {
-    static let siteIdEnvironmentVariableName = "iap-debug-site-id-purchase-param"
+    static let siteIdEnvironmentVariableName = "iap-debug-site-id"
 }

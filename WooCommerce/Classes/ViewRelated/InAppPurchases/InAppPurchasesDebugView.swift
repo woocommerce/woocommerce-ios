@@ -4,7 +4,6 @@ import Yosemite
 
 @MainActor
 struct InAppPurchasesDebugView: View {
-    let siteID: Int64
     private let inAppPurchasesForWPComPlansManager = InAppPurchasesForWPComPlansManager()
     @State var products: [WPComPlanProduct] = []
     @State var entitledProductIDs: Set<String> = []
@@ -31,7 +30,8 @@ struct InAppPurchasesDebugView: View {
                     Text("No products")
                 } else if isPurchasing {
                     ActivityIndicator(isAnimating: .constant(true), style: .medium)
-                } else {
+                } else if let stringSiteID = ProcessInfo.processInfo.environment[Constants.siteIdEnvironmentVariableName],
+                          let siteID = Int64(stringSiteID) {
                     ForEach(products, id: \.id) { product in
                         Button(entitledProductIDs.contains(product.id) ? "Entitled: \(product.description)" : product.description) {
                             Task {
@@ -47,6 +47,10 @@ struct InAppPurchasesDebugView: View {
                         }
                         .alert(isPresented: $presentAlert, error: purchaseError, actions: {})
                     }
+                } else {
+                    Text("No valid site id could be retrieved to purchase product. " +
+                         "Please set your Int64 test site id to the Xcode environment variable with name \(Constants.siteIdEnvironmentVariableName).")
+                        .foregroundColor(.red)
                 }
             }
 
@@ -129,6 +133,10 @@ private struct PurchaseError: LocalizedError {
 
 struct InAppPurchasesDebugView_Previews: PreviewProvider {
     static var previews: some View {
-        InAppPurchasesDebugView(siteID: 0)
+        InAppPurchasesDebugView()
     }
+}
+
+private enum Constants {
+    static let siteIdEnvironmentVariableName = "iap-debug-site-id"
 }

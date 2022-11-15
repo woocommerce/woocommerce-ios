@@ -1071,6 +1071,24 @@ extension UIImage {
     static var sitesImage: UIImage {
         UIImage.gridicon(.site).imageFlippedForRightToLeftLayoutDirection()
     }
+
+    /// Image on the empty store picker screen
+    ///
+    static var emptyStorePickerUIImage: UIImage {
+        UIImage(named: "woo-empty-store-picker")!
+    }
+
+    /// Image on the Jetpack required screen
+    ///
+    static var jetpackSetupImage: UIImage {
+        UIImage(named: "woo-jetpack-setup")!
+    }
+
+    /// Image on the Jetpack required screen when a Jetpack connection is missing
+    ///
+    static var jetpackConnectionImage: UIImage {
+        UIImage(named: "woo-jetpack-connection")!
+    }
 }
 
 private extension UIImage {

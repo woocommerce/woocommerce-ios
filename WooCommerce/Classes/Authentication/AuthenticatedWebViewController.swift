@@ -108,7 +108,7 @@ private extension AuthenticatedWebViewController {
         webView.publisher(for: \.url)
             .sink { [weak self] url in
                 guard let self else { return }
-                let initialURL = self.viewModel.initialURL
+                let initialURL = self.viewModel.initialURL ?? self.viewModel.initialURLRequest?.url
                 // avoids infinite loop if the initial url happens to be the nonce retrieval path.
                 if url?.absoluteString.contains(WKWebView.wporgNoncePath) == true,
                    initialURL?.absoluteString.contains(WKWebView.wporgNoncePath) != true {
@@ -121,6 +121,8 @@ private extension AuthenticatedWebViewController {
 
         if let wporgCredentials, let request = try? webView.authenticateForWPOrg(with: wporgCredentials) {
             webView.load(request)
+        } else if let urlRequest = viewModel.initialURLRequest {
+            loadURLRequest(urlRequest)
         } else {
             loadContent()
         }
@@ -129,6 +131,10 @@ private extension AuthenticatedWebViewController {
 
 // MARK: - Helper methods
 private extension AuthenticatedWebViewController {
+    func loadURLRequest(_ urlRequest: URLRequest) {
+        webView.load(urlRequest)
+    }
+
     func loadContent() {
         guard let url = viewModel.initialURL else {
             return

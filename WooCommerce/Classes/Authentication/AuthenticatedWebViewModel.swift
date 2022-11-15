@@ -11,6 +11,9 @@ protocol AuthenticatedWebViewModel {
     /// Initial URL to be loaded on the web view
     var initialURL: URL? { get }
 
+    /// Initial URL to be loaded on the web view
+    var initialURLRequest: URLRequest? { get }
+
     /// Triggered when the web view is dismissed
     func handleDismissal()
 
@@ -19,4 +22,8 @@ protocol AuthenticatedWebViewModel {
 
     /// Handler for a navigation URL
     func decidePolicy(for navigationURL: URL) async -> WKNavigationActionPolicy
+}
+
+extension AuthenticatedWebViewModel {
+    var initialURLRequest: URLRequest? { nil }
 }

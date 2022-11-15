@@ -24,8 +24,9 @@ final class WooRestAPIAuthenticationFormHostingController: UIHostingController<W
 
 struct WooRestAPIAuthenticationForm: View {
     private enum Field: Hashable {
-        case email
-        case password
+        case siteURL
+        case consumerKey
+        case consumerSecret
     }
 
     var completion: ((_ siteURL: String) -> Void) = { _ in }
@@ -50,15 +51,35 @@ struct WooRestAPIAuthenticationForm: View {
 
                 // Form fields.
                 VStack(spacing: Layout.verticalSpacingBetweenFields) {
-                    // Email field.
+                    // Site URL field.
                     AccountCreationFormFieldView(viewModel: .init(header: Localization.emailFieldTitle,
                                                                   placeholder: Localization.emailFieldPlaceholder,
                                                                   keyboardType: .emailAddress,
                                                                   text: $viewModel.siteAddress,
                                                                   isSecure: false,
                                                                   errorMessage: viewModel.siteAddressErrorMessage,
-                                                                  isFocused: focusedField == .email))
-                    .focused($focusedField, equals: .email)
+                                                                  isFocused: focusedField == .siteURL))
+                    .focused($focusedField, equals: .siteURL)
+
+                    // Consumer Key field.
+                    AccountCreationFormFieldView(viewModel: .init(header: Localization.emailFieldTitle,
+                                                                  placeholder: Localization.emailFieldPlaceholder,
+                                                                  keyboardType: .emailAddress,
+                                                                  text: $viewModel.siteAddress,
+                                                                  isSecure: false,
+                                                                  errorMessage: viewModel.siteAddressErrorMessage,
+                                                                  isFocused: focusedField == .consumerKey))
+                    .focused($focusedField, equals: .consumerKey)
+
+                    // Consumer Secret field.
+                    AccountCreationFormFieldView(viewModel: .init(header: Localization.emailFieldTitle,
+                                                                  placeholder: Localization.emailFieldPlaceholder,
+                                                                  keyboardType: .emailAddress,
+                                                                  text: $viewModel.siteAddress,
+                                                                  isSecure: false,
+                                                                  errorMessage: viewModel.siteAddressErrorMessage,
+                                                                  isFocused: focusedField == .consumerSecret))
+                    .focused($focusedField, equals: .consumerSecret)
                 }
 
                 // CTA to submit the form.

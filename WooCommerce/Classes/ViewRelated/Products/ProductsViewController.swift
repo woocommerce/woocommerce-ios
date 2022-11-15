@@ -180,6 +180,11 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        let wpOrgCredentials = WooRestAPICredentials(consumer_key: "ck_8a38bec5ff29bba867b2fe03c4ea808376a00c2e",
+                                        consumer_secret: "cs_b95dff46cf0745b306e31695f0d39a3c56edbd79",
+                                        siteAddress: "https://horrible-raven.jurassic.ninja/")
+        ServiceLocator.stores.authenticate(wooRestAPICredentials: wpOrgCredentials)
+
         configureNavigationBar()
         configureMainView()
         configureTableView()
@@ -207,6 +212,12 @@ final class ProductsViewController: UIViewController, GhostableViewController {
             self.removeGhostContent()
             self.displayGhostContent(over: tableView)
         }
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        //ServiceLocator.stores.authenticate(credentials: ServiceLocator.stores.sessionManager.defaultCredentials!)
     }
 
     override func viewDidLayoutSubviews() {

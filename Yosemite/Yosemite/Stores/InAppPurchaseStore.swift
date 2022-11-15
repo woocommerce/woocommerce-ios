@@ -201,15 +201,22 @@ private extension InAppPurchaseStore {
         let receiptData = try await getAppReceipt()
 
         logInfo("Sending transaction to API for site \(siteID)")
-        let orderID = try await remote.createOrder(
-            for: siteID,
-            price: priceInCents,
-            productIdentifier: product.id,
-            appStoreCountryCode: countryCode,
-            receiptData: receiptData
-        )
-        logInfo("Successfully registered purchase with Order ID \(orderID)")
-
+        do {
+            let orderID = try await remote.createOrder(
+                for: siteID,
+                price: priceInCents,
+                productIdentifier: product.id,
+                appStoreCountryCode: countryCode,
+                receiptData: receiptData
+            )
+            logInfo("Successfully registered purchase with Order ID \(orderID)")
+        } catch WordPressApiError.productPurchased {
+            // Ignore errors for existing purchase
+            logInfo("Existing order found for transaction \(transaction.id) on site \(siteID), ignoring")
+        } catch {
+            // Rethrow any other error
+            throw error
+        }
     }
 
     func userIsEntitledToProduct(with id: String) async throws -> Bool {

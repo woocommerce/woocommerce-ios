@@ -8,6 +8,10 @@ public enum WordPressApiError: Error, Decodable, Equatable {
     ///
     case unknown(code: String, message: String)
 
+    /// An order already exists for this IAP receipt
+    ///
+    case productPurchased
+
     /// Decodable Initializer.
     ///
     public init(from decoder: Decoder) throws {
@@ -16,6 +20,8 @@ public enum WordPressApiError: Error, Decodable, Equatable {
         let message = try container.decode(String.self, forKey: .message)
 
         switch code {
+        case Constants.productPurchased:
+            self = .productPurchased
         default:
             self = .unknown(code: code, message: message)
         }
@@ -25,6 +31,7 @@ public enum WordPressApiError: Error, Decodable, Equatable {
     /// Constants for Possible Error Identifiers
     ///
     private enum Constants {
+        static let productPurchased = "product_purchased"
     }
 
     /// Coding Keys
@@ -50,6 +57,10 @@ extension WordPressApiError: CustomStringConvertible {
 
     public var description: String {
         switch self {
+        case .productPurchased:
+            return NSLocalizedString(
+                "An order aready exists for this receipt",
+                comment: "Error message when an order already exists in the backend for a given receipt")
         case .unknown(let code, let message):
             let messageFormat = NSLocalizedString(
                 "WordPress API Error: [%1$@] %2$@",

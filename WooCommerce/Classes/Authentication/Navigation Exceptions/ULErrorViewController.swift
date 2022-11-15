@@ -24,7 +24,7 @@ final class ULErrorViewController: UIViewController {
     @IBOutlet private weak var secondaryButton: UIButton!
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var errorMessage: UILabel!
-
+    @IBOutlet private weak var termsLabel: UITextView!
 
     /// Constraints on the view containing the action buttons
     /// and the stack view containing the image and error text
@@ -35,6 +35,7 @@ final class ULErrorViewController: UIViewController {
     @IBOutlet private weak var stackViewTrailingConstraint: NSLayoutConstraint!
 
     private var primaryButtonSubscription: AnyCancellable?
+    private var termsLabelSubscription: AnyCancellable?
 
     private let viewDidAppearSubject = PassthroughSubject<Void, Never>()
 
@@ -64,6 +65,7 @@ final class ULErrorViewController: UIViewController {
 
         configurePrimaryButton()
         configureSecondaryButton()
+        configureTermsLabel()
 
         configureButtonLabels()
 
@@ -131,6 +133,21 @@ private extension ULErrorViewController {
         extraInfoButton.on(.touchUpInside) { [weak self] _ in
             self?.didTapAuxiliaryButton()
         }
+    }
+
+    func configureTermsLabel() {
+        let linkAttributes: [NSAttributedString.Key: Any] = [
+            NSAttributedString.Key.foregroundColor: UIColor.accent,
+            NSAttributedString.Key.underlineColor: UIColor.accent,
+            NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue
+        ]
+        termsLabel.linkTextAttributes = linkAttributes
+        termsLabel.isSelectable = true
+
+        termsLabelSubscription = viewModel.termsLabelText
+            .sink { [weak self] text in
+                self?.termsLabel.attributedText = text
+            }
     }
 
     func configureAuxiliaryView() {

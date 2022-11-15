@@ -37,6 +37,10 @@ protocol ULErrorViewModel {
     /// Additional view to the bottom of the vertical stack view that contains the image, text, and auxiliary button.
     var auxiliaryView: UIView? { get }
 
+    /// A text explaining the terms when the primary button is tapped.
+    ///
+    var termsLabelText: AnyPublisher<NSAttributedString, Never> { get }
+
     /// Executed by the view controller when its view was loaded.
     /// - Parameter viewController: the view controller that loads the view.
     func viewDidLoad(_ viewController: UIViewController?)
@@ -84,6 +88,10 @@ extension ULErrorViewModel {
 //
 extension ULErrorViewModel {
     var rightBarButtonItemTitle: String? { nil }
+
+    var termsLabelText: AnyPublisher<NSAttributedString, Never> {
+        Just(NSAttributedString(string: "")).eraseToAnyPublisher()
+    }
 
     func didTapRightBarButtonItem(in viewController: UIViewController?) {
         // NO-OP

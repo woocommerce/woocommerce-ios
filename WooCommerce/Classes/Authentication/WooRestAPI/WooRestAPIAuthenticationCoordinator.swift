@@ -1,4 +1,6 @@
 import UIKit
+import struct WordPressAuthenticator.WordPressOrgCredentials
+import Yosemite
 
 final class WooRestAPIAuthenticationCoordinator: Coordinator {
     let navigationController: UINavigationController
@@ -15,24 +17,33 @@ final class WooRestAPIAuthenticationCoordinator: Coordinator {
         let accountCreationController = WooRestAPIAuthenticationFormHostingController(
             viewModel: .init(),
             analytics: analytics
-        ) { [weak self] siteURL in
+        ) { [weak self] credentials in
             guard let self else { return }
-            self.generateCredentials(siteURL: siteURL)
+            self.handleCredentials(credentials)
         }
         navigationController.show(accountCreationController, sender: self)
     }
 }
 
 private extension WooRestAPIAuthenticationCoordinator {
+
+    func handleCredentials(_ credentials: WooRestAPICredentials) {
+        ServiceLocator.stores.authenticate(wooRestAPICredentials: credentials)
+    }
+}
+
+// MARK: - Webview based authentication
+
+private extension WooRestAPIAuthenticationCoordinator {
     func generateCredentials(siteURL: String) {
-        guard let viewModel = try? WooRestAPIAuthenticationWebViewModel(siteURL: siteURL, completion: { [weak self] in
+        guard let viewModel = try? WooRestAPIAuthenticationWebViewModel(siteURL: "https://horrible-raven.jurassic.ninja/", completion: { [weak self] in
             //self?.fetchJetpackUser(in: viewController)
         }) else {
             return
         }
 
         let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
-        webViewController.addCloseNavigationBarButton(target: self, action: #selector(handleStoreCreationCloseAction))
+        webViewController.addCloseNavigationBarButton(target: self, action: #selector(handleCloseAction))
         let webNavigationController = WooNavigationController(rootViewController: webViewController)
         // Disables interactive dismissal of the store creation modal.
         webNavigationController.isModalInPresentation = true
@@ -40,7 +51,7 @@ private extension WooRestAPIAuthenticationCoordinator {
         presentAuthenticationFlow(viewController: webNavigationController)
     }
 
-    @objc func handleStoreCreationCloseAction() {
+    @objc func handleCloseAction() {
         navigationController.dismiss(animated: true)    }
 
     func presentAuthenticationFlow(viewController: UIViewController) {

@@ -83,7 +83,7 @@ extension UIButton {
     /// Applies the Link Button Style: Clear BG / Brand Text Color
     ///
     func applyLinkButtonStyle(enableMultipleLines: Bool = false) {
-        var configuration = UIButton.Configuration.filled()
+        var configuration = UIButton.Configuration.plain()
         configuration.contentInsets = .init(
             top: Style.defaultInsets.top,
             leading: Style.defaultInsets.leading,
@@ -166,6 +166,7 @@ extension UIButton {
     private func enableMultipleLines() {
         titleLabel?.lineBreakMode = .byWordWrapping
         if let label = titleLabel {
+            self.addSubview(label)
             pinSubviewToAllEdgeMargins(label)
         }
     }

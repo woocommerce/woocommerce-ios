@@ -18,6 +18,14 @@ final class EmptyStoresTableViewCell: UITableViewCell {
         }
     }
 
+    @IBOutlet private var subtitleLabel: UILabel! {
+        didSet {
+            subtitleLabel.textColor = .secondaryLabel
+            subtitleLabel.font = .body
+            subtitleLabel.text = Localization.subtitle
+        }
+    }
+
     @IBOutlet private weak var stackView: UIStackView!
     @IBOutlet private weak var emptyStoresImageView: UIImageView!
     @IBOutlet private weak var removeAppleIDAccessButton: UIButton!
@@ -50,6 +58,7 @@ private extension EmptyStoresTableViewCell {
 
     func configureImageView() {
         emptyStoresImageView.contentMode = .scaleAspectFit
+        emptyStoresImageView.image = .emptyStorePickerImage
     }
 
     func configureRemoveAppleIDAccessButton() {
@@ -68,7 +77,9 @@ private extension EmptyStoresTableViewCell {
             comment: "Link on the store picker for users who signed in with Apple to close their WordPress.com account."
         )
         static let legend =
-            NSLocalizedString("Your account isn’t connected to any WooCommerce stores.",
+            NSLocalizedString("Create your first store.",
                               comment: "Displayed during the Login flow, whenever the user has no woo stores associated.")
+        static let subtitle = NSLocalizedString("Quickly get up and selling with a beautiful online store.",
+                                                comment: "Subtitle displayed during the Login flow, whenever the user has no woo stores associated.")
     }
 }

@@ -2,18 +2,18 @@ import SwiftUI
 
 /// Hosting controller that wraps the `StoreCreationPlanView`.
 final class StoreCreationPlanHostingController: UIHostingController<StoreCreationPlanView> {
-    private let onPurchase: () -> Void
+    private let onPurchase: () async -> Void
     private let onClose: () -> Void
 
     init(viewModel: StoreCreationPlanViewModel,
-         onPurchase: @escaping () -> Void,
+         onPurchase: @escaping () async -> Void,
          onClose: @escaping () -> Void) {
         self.onPurchase = onPurchase
         self.onClose = onClose
         super.init(rootView: StoreCreationPlanView(viewModel: viewModel))
 
         rootView.onPurchase = { [weak self] in
-            self?.onPurchase()
+            await self?.onPurchase()
         }
     }
 
@@ -50,9 +50,11 @@ final class StoreCreationPlanHostingController: UIHostingController<StoreCreatio
 /// Displays the WPCOM eCommerce plan for purchase during the store creation flow.
 struct StoreCreationPlanView: View {
     /// Set in the hosting controller.
-    var onPurchase: (() -> Void) = {}
+    var onPurchase: (() async -> Void) = {}
 
     let viewModel: StoreCreationPlanViewModel
+
+    @State private var isPurchaseInProgress: Bool = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -127,7 +129,11 @@ struct StoreCreationPlanView: View {
 
                 // Continue button.
                 Button(String(format: Localization.continueButtonTitleFormat, viewModel.plan.displayPrice)) {
-                    onPurchase()
+                    Task { @MainActor in
+                        isPurchaseInProgress = true
+                        await onPurchase()
+                        isPurchaseInProgress = false
+                    }
                 }
                 .buttonStyle(PrimaryButtonStyle())
                 .padding(Layout.defaultButtonPadding)

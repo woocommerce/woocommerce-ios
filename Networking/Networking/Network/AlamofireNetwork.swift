@@ -15,18 +15,25 @@ public class AlamofireNetwork: Network {
     ///
     private let credentials: Credentials?
 
+    private let wooRestAPICredentials: WooRestAPICredentials?
+
     public var session: URLSession { SessionManager.default.session }
 
     /// Public Initializer
     ///
-    public required init(credentials: Credentials?) {
+    public required init(credentials: Credentials?, wooRestAPICredentials: WooRestAPICredentials? = nil) {
         self.credentials = credentials
+        self.wooRestAPICredentials = wooRestAPICredentials
 
         // A unique ID is included in the background session identifier so that the session does not get invalidated when the initializer is called multiple
         // times (e.g. when logging in).
         let uniqueID = UUID().uuidString
         let configuration = URLSessionConfiguration.background(withIdentifier: "com.automattic.woocommerce.backgroundsession.\(uniqueID)")
         self.backgroundSessionManager = Alamofire.SessionManager(configuration: configuration)
+    }
+
+    public convenience init(wooRestAPICredentials: WooRestAPICredentials) {
+        self.init(credentials: nil, wooRestAPICredentials: wooRestAPICredentials)
     }
 
     /// Executes the specified Network Request. Upon completion, the payload will be sent back to the caller as a Data instance.

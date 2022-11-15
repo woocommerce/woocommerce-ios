@@ -83,8 +83,13 @@ extension UIButton {
     /// Applies the Link Button Style: Clear BG / Brand Text Color
     ///
     func applyLinkButtonStyle(enableMultipleLines: Bool = false) {
-        configuration = UIButton.Configuration.plain()
-        configuration?.contentInsets = Style.defaultInsets
+        var configuration = UIButton.Configuration.filled()
+        configuration.contentInsets = .init(
+            top: Style.defaultInsets.top,
+            leading: Style.defaultInsets.leading,
+            bottom: Style.defaultInsets.bottom,
+            trailing: Style.defaultInsets.trailing
+        )
         backgroundColor = .clear
         tintColor = .accent
         titleLabel?.applyBodyStyle()
@@ -160,10 +165,9 @@ extension UIButton {
     /// Supports title of multiple lines, either from longer text than allocated width or text with line breaks.
     private func enableMultipleLines() {
         titleLabel?.lineBreakMode = .byWordWrapping
-// This bit makes the app crash now that we use UIButton.Configuration
-//        if let label = titleLabel {
-//            pinSubviewToAllEdgeMargins(label)
-//        }
+        if let label = titleLabel {
+            pinSubviewToAllEdgeMargins(label)
+        }
     }
 }
 

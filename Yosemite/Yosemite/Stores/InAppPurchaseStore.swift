@@ -107,13 +107,10 @@ private extension InAppPurchaseStore {
                     await transaction.finish()
                 case .userCancelled:
                     logInfo("User cancelled the purchase flow")
-                    throw Errors.userCancelled
                 case .pending:
                     logError("Purchase returned in a pending state, it might succeed in the future")
-                    throw Errors.pending
                 @unknown default:
                     logError("Unknown result for purchase: \(purchaseResult)")
-                    throw Errors.unknownResult
                 }
                 completion(.success(purchaseResult))
             } catch {
@@ -281,18 +278,6 @@ private extension InAppPurchaseStore {
 
 public extension InAppPurchaseStore {
     enum Errors: Error, LocalizedError {
-        /// The user canceled the IAP flow
-        case userCancelled
-
-        /// The purchase is pending some user action.
-        ///
-        /// These purchases may succeed in the future, and the resulting `Transaction` will be
-        /// delivered via `Transaction.updates`
-        case pending
-
-        /// The purchase returned a PurchaseResult value that didn't exist when this was developed
-        case unknownResult
-
         /// The purchase was successful but the transaction was unverified
         ///
         case unverifiedTransaction
@@ -323,18 +308,6 @@ public extension InAppPurchaseStore {
 
         public var errorDescription: String? {
             switch self {
-            case .userCancelled:
-                return NSLocalizedString(
-                    "Purchase cancelled by user",
-                    comment: "Error message used when the user cancelled an In-app purchase flow")
-            case .pending:
-                return NSLocalizedString(
-                    "Purchase pending",
-                    comment: "Error message used when the purchase is pending some user action")
-            case .unknownResult:
-                return NSLocalizedString(
-                    "Unexpected purchase result",
-                    comment: "Error message used when a purchase returned something unexpected that we don't know how to handle")
             case .unverifiedTransaction:
                 return NSLocalizedString(
                     "The purchase transaction couldn't be verified",

@@ -21,6 +21,8 @@ class AuthenticationManager: Authentication {
     /// Store creation coordinator in the logged-out state.
     private var loggedOutStoreCreationCoordinator: LoggedOutStoreCreationCoordinator?
 
+    private var wooRestAuthenticationCoordinator: WooRestAPIAuthenticationCoordinator?
+
     /// Keychain access for SIWA auth token
     ///
     private lazy var keychain = Keychain(service: WooConstants.keychainServiceName)
@@ -531,11 +533,8 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
     // Navigate to store creation
     func showSiteCreation(in navigationController: UINavigationController) {
-        ServiceLocator.analytics.track(event: .StoreCreation.loginPrologueCreateSiteTapped())
-
-        let coordinator = LoggedOutStoreCreationCoordinator(source: .prologue,
-                                                            navigationController: navigationController)
-        self.loggedOutStoreCreationCoordinator = coordinator
+        let coordinator = WooRestAPIAuthenticationCoordinator(navigationController: navigationController)
+        self.wooRestAuthenticationCoordinator = coordinator
         coordinator.start()
     }
 }

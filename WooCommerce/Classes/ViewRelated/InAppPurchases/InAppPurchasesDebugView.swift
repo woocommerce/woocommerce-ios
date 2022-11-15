@@ -10,6 +10,12 @@ struct InAppPurchasesDebugView: View {
     @State var entitledProductIDs: Set<String> = []
     @State var inAppPurchasesAreSupported = true
     @State var isPurchasing = false
+    @State private var purchaseError: PurchaseError? {
+        didSet {
+            presentAlert = purchaseError != nil
+        }
+    }
+    @State var presentAlert = false
 
     var body: some View {
         List {
@@ -30,11 +36,16 @@ struct InAppPurchasesDebugView: View {
                         Button(entitledProductIDs.contains(product.id) ? "Entitled: \(product.description)" : product.description) {
                             Task {
                                 isPurchasing = true
-                                try? await inAppPurchasesForWPComPlansManager.purchaseProduct(with: product.id, for: siteID)
+                                do {
+                                    try await inAppPurchasesForWPComPlansManager.purchaseProduct(with: product.id, for: siteID)
+                                } catch {
+                                    purchaseError = PurchaseError(error: error)
+                                }
                                 await loadUserEntitlements()
                                 isPurchasing = false
                             }
                         }
+                        .alert(isPresented: $presentAlert, error: purchaseError, actions: {})
                     }
                 }
             }
@@ -98,6 +109,20 @@ struct InAppPurchasesDebugView: View {
             for id in entitledProductIDs {
                 try await inAppPurchasesForWPComPlansManager.retryWPComSyncForPurchasedProduct(with: id)
             }
+        }
+    }
+}
+
+/// Just a silly little wrapper because SwiftUI's `alert(isPresented:error:actions:)` wants a `LocalizedError`
+/// but we only have an `Error` coming from `purchaseProduct`.
+private struct PurchaseError: LocalizedError {
+    let error: Error
+
+    var errorDescription: String? {
+        if let error = error as? LocalizedError {
+            return error.errorDescription
+        } else {
+            return error.localizedDescription
         }
     }
 }

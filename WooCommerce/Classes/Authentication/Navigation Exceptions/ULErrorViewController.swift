@@ -279,4 +279,8 @@ extension ULErrorViewController {
     func secondaryActionButton() -> UIButton {
         return secondaryButton
     }
+
+    func getTermsLabel() -> UITextView {
+        return termsLabel
+    }
 }

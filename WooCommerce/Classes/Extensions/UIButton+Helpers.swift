@@ -10,10 +10,10 @@ extension UIButton {
     func applyPrimaryButtonStyle() {
         var configuration = UIButton.Configuration.filled()
         configuration.contentInsets = .init(
-            top: Style.defaultInsets.top,
-            leading: Style.defaultInsets.leading,
-            bottom: Style.defaultInsets.bottom,
-            trailing: Style.defaultInsets.trailing
+            top: Style.defaultVerticalInsets,
+            leading: Style.defaultHorizontalInsets,
+            bottom: Style.defaultVerticalInsets,
+            trailing: Style.defaultHorizontalInsets
         )
         layer.borderColor = UIColor.primaryButtonBorder.cgColor
         layer.borderWidth = Style.defaultBorderWidth
@@ -47,10 +47,10 @@ extension UIButton {
     func applySecondaryButtonStyle() {
         var configuration = UIButton.Configuration.filled()
         configuration.contentInsets = .init(
-            top: Style.defaultInsets.top,
-            leading: Style.defaultInsets.leading,
-            bottom: Style.defaultInsets.bottom,
-            trailing: Style.defaultInsets.trailing
+            top: Style.defaultVerticalInsets,
+            leading: Style.defaultHorizontalInsets,
+            bottom: Style.defaultVerticalInsets,
+            trailing: Style.defaultHorizontalInsets
         )
         backgroundColor = .secondaryButtonBackground
         layer.borderColor = UIColor.secondaryButtonBorder.cgColor
@@ -85,10 +85,10 @@ extension UIButton {
     func applyLinkButtonStyle(enableMultipleLines: Bool = false) {
         var configuration = UIButton.Configuration.plain()
         configuration.contentInsets = .init(
-            top: Style.defaultInsets.top,
-            leading: Style.defaultInsets.leading,
-            bottom: Style.defaultInsets.bottom,
-            trailing: Style.defaultInsets.trailing
+            top: Style.defaultVerticalInsets,
+            leading: Style.defaultHorizontalInsets,
+            bottom: Style.defaultVerticalInsets,
+            trailing: Style.defaultHorizontalInsets
         )
         backgroundColor = .clear
         tintColor = .accent
@@ -113,8 +113,13 @@ extension UIButton {
     }
 
     func applyPaymentsModalCancelButtonStyle() {
-        configuration = UIButton.Configuration.plain()
-        configuration?.contentInsets = Style.defaultInsets
+        var configuration = UIButton.Configuration.plain()
+        configuration.contentInsets = .init(
+            top: Style.defaultVerticalInsets,
+            leading: Style.defaultHorizontalInsets,
+            bottom: Style.defaultVerticalInsets,
+            trailing: Style.defaultHorizontalInsets
+        )
         backgroundColor = .tertiarySystemBackground
         layer.borderColor = UIColor.secondaryButtonBorder.cgColor
         layer.borderWidth = Style.defaultBorderWidth
@@ -166,8 +171,16 @@ extension UIButton {
     private func enableMultipleLines() {
         titleLabel?.lineBreakMode = .byWordWrapping
         if let label = titleLabel {
-            self.addSubview(label)
-            pinSubviewToAllEdgeMargins(label)
+            if self.subviews.contains(where: { $0 == label }) {
+                pinSubviewToAllEdgeMargins(label)
+            } else {
+                DDLogWarn("""
+                    Failed attempt to pin button's title to the edges.
+                    This is likely because the custom button title label was not added to its view hierarchy
+                    See ButtonActivityIndicator as an example
+                    """
+                )
+            }
         }
     }
 }
@@ -180,6 +193,7 @@ private extension UIButton {
     struct Style {
         static let defaultCornerRadius = CGFloat(8.0)
         static let defaultBorderWidth = CGFloat(1.0)
-        static let defaultEdgeInsets = UIEdgeInsets(top: 12, left: 22, bottom: 12, right: 22)
+        static let defaultVerticalInsets = CGFloat(12)
+        static let defaultHorizontalInsets = CGFloat(22)
     }
 }

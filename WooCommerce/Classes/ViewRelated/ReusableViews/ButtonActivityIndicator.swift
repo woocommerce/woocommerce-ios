@@ -6,6 +6,24 @@ final class ButtonActivityIndicator: UIButton {
 
     private let indicator: UIActivityIndicatorView = UIActivityIndicatorView(style: .medium)
 
+    // We're adding the UILabel as subview in order to avoid a crash when
+    // using large system fonts for accessibility. Trying to adapt the label
+    // to its container will fail as these do not share ancestor
+    // https://github.com/woocommerce/woocommerce-ios/pull/8094
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        if let titleLabel {
+            addSubview(titleLabel)
+        }
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        if let titleLabel {
+            addSubview(titleLabel)
+        }
+    }
+
     override func layoutSubviews() {
         super.layoutSubviews()
 

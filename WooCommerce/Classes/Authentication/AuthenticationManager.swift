@@ -375,14 +375,6 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         let matcher = ULAccountMatcher(storageManager: storageManager)
         matcher.refreshStoredSites()
 
-        /// Shows the native Jetpack flow and returns early if needed.
-        if navigateToNativeJetpackFlowIfNeeded(for: siteURL,
-                                               credentials: credentials,
-                                               matcher: matcher,
-                                               in: navigationController) {
-            return
-        }
-
         /// Jetpack is required. Present an error if we don't detect a valid installation for a self-hosted site.
         if isJetpackInvalidForSelfHostedSite(url: siteURL) {
             return presentJetpackError(for: siteURL, with: credentials, in: navigationController, onDismiss: onDismiss)
@@ -593,35 +585,6 @@ private extension AuthenticationManager {
             return true
         }
         return false
-    }
-
-    /// Navigates to the native Jetpack flow from the site address login flow.
-    ///
-    func navigateToNativeJetpackFlowIfNeeded(for siteURL: String,
-                                             credentials: AuthenticatorCredentials,
-                                             matcher: ULAccountMatcher,
-                                             in navigationController: UINavigationController) -> Bool {
-        // TODO-8075: replace the feature flag with A/B test.
-        guard featureFlagService.isFeatureFlagEnabled(.nativeJetpackSetupFlow) else {
-            return false
-        }
-
-        // Checks if the user is trying to log in to a self-hosted site with a WP.com account.
-        guard let site = currentSelfHostedSite, site.url == siteURL,
-              credentials.wpcom != nil else {
-            return false
-        }
-
-        // Checks if the site doesn't have Jetpack connection or the account is mismatched
-        guard site.isJetpackConnected == false || matcher.match(originalURL: siteURL) == false else {
-            return false
-        }
-
-        let errorUI = jetpackSetupUI(for: siteURL,
-                                     connectionMissingOnly: site.hasJetpack && site.isJetpackConnected,
-                                     in: navigationController)
-        navigationController.show(errorUI, sender: self)
-        return true
     }
 
     /// Presents an error if the user tries to log in to a site without Jetpack.

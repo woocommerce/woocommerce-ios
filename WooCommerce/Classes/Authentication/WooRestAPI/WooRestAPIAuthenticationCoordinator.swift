@@ -21,8 +21,13 @@ final class WooRestAPIAuthenticationCoordinator: Coordinator {
             analytics: analytics
         ) { [weak self] credentials in
             guard let self else { return }
-            //self.generateCredentials(siteURL: "https://horrible-raven.jurassic.ninja/")
             self.handleCredentials(credentials)
+
+            // Generating site credentials isn't working at the moment
+            // The callback URL with the credentials isn't being fired.
+            // Need to debug this.
+            //
+            //self.generateCredentials(siteURL: "https://horrible-raven.jurassic.ninja/")
         }
         navigationController.show(accountCreationController, sender: self)
     }

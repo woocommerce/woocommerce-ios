@@ -41,9 +41,12 @@ class AuthenticationManager: Authentication {
     ///
     private let storageManager: StorageManagerType
 
+    private let featureFlagService: FeatureFlagService
+
     init(storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.storageManager = storageManager
+        self.featureFlagService = featureFlagService
     }
 
     /// Initializes the WordPress Authenticator.
@@ -369,6 +372,11 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             return DDLogError("⛔️ No site URL found to present Login Epilogue.")
         }
 
+        /// Shows the native Jetpack flow and returns early if needed.
+        if navigateToNativeJetpackFlowIfNeeded(for: siteURL, credentials: credentials, in: navigationController) {
+            return
+        }
+
         /// Jetpack is required. Present an error if we don't detect a valid installation for a self-hosted site.
         if isJetpackInvalidForSelfHostedSite(url: siteURL) {
             return presentJetpackError(for: siteURL, with: credentials, in: navigationController, onDismiss: onDismiss)
@@ -584,12 +592,38 @@ private extension AuthenticationManager {
         return false
     }
 
+    /// Navigates to the native Jetpack flow if:
+    /// - the user is trying to log in to a self-hosted site with a WP.com account;
+    /// - the site doesn't have valid Jetpack
+    /// - native Jetpack setup flow is enabled.
+    ///
+    func navigateToNativeJetpackFlowIfNeeded(for siteURL: String,
+                                             credentials: AuthenticatorCredentials,
+                                             in navigationController: UINavigationController) -> Bool {
+        // TODO-8075: replace the feature flag with A/B test.
+        guard featureFlagService.isFeatureFlagEnabled(.nativeJetpackSetupFlow) else {
+            return false
+        }
+
+        guard let site = currentSelfHostedSite, site.url == siteURL,
+              site.isJetpackConnected == false, credentials.wpcom != nil else {
+            return false
+        }
+
+        let errorUI = jetpackSetupUI(for: siteURL,
+                                     connectionMissingOnly: site.hasJetpack && site.isJetpackConnected,
+                                     in: navigationController)
+        navigationController.show(errorUI, sender: self)
+        return true
+    }
+
     /// Presents an error if the user tries to log in to a site without Jetpack.
     ///
     func presentJetpackError(for siteURL: String,
                              with credentials: AuthenticatorCredentials,
                              in navigationController: UINavigationController,
                              onDismiss: @escaping () -> Void) {
+
         let viewModel = JetpackErrorViewModel(siteURL: siteURL,
                                               siteCredentials: credentials.wporg,
                                               onJetpackSetupCompletion: { [weak self] authorizedEmailAddress in
@@ -723,6 +757,18 @@ private extension AuthenticationManager {
         return ULErrorViewController(viewModel: viewModel)
     }
 
+    /// The error screen to be displayed when Jetpack setup for a site is required.
+    /// This is the entry point to the native Jetpack setup flow.
+    ///
+    func jetpackSetupUI(for siteURL: String,
+                        connectionMissingOnly: Bool,
+                        in navigationController: UINavigationController) -> UIViewController {
+        let viewModel = JetpackSetupRequiredViewModel(siteURL: siteURL,
+                                                      connectionOnly: connectionMissingOnly)
+        let jetpackSetupUI = ULErrorViewController(viewModel: viewModel)
+        return jetpackSetupUI
+    }
+
     /// Appropriate error to display for a site when entered from the site discovery flow.
     /// More about this flow: pe5sF9-mz-p2
     ///
@@ -737,6 +783,14 @@ private extension AuthenticationManager {
         guard !site.isWPCom else {
             // The site doesn't belong to the current account since it was not included in the site picker.
             return accountMismatchUI(for: site.url, siteCredentials: nil, with: matcher, in: navigationController)
+        }
+
+        // Shows the native Jetpack flow during the site discovery flow.
+        // TODO-8075: replace feature flag with A/B testing
+        if featureFlagService.isFeatureFlagEnabled(.nativeJetpackSetupFlow) {
+            return jetpackSetupUI(for: site.url,
+                                  connectionMissingOnly: site.hasJetpack && site.isJetpackActive,
+                                  in: navigationController)
         }
 
         /// Jetpack is required. Present an error if we don't detect a valid installation.

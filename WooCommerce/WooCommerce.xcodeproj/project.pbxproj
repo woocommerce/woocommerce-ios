@@ -9491,10 +9491,11 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/check-for-nested-frameworks.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = "/bin/sh -euo pipefail";
-			shellScript = "${PROJECT_DIR}/../Scripts/check-nested-frameworks.sh\n";
+			shellScript = "${PROJECT_DIR}/../Scripts/check-nested-frameworks.sh\n\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		3F50FE4528CAEE9F00C89201 /* Enforce AppLocalizedString usages */ = {

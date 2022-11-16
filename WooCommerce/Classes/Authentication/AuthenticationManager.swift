@@ -372,9 +372,6 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             return DDLogError("⛔️ No site URL found to present Login Epilogue.")
         }
 
-        let matcher = ULAccountMatcher(storageManager: storageManager)
-        matcher.refreshStoredSites()
-
         /// Jetpack is required. Present an error if we don't detect a valid installation for a self-hosted site.
         if isJetpackInvalidForSelfHostedSite(url: siteURL) {
             return presentJetpackError(for: siteURL, with: credentials, in: navigationController, onDismiss: onDismiss)
@@ -383,6 +380,9 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginErrorNotifications) {
             ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: LocalNotification.Scenario.allCases)
         }
+
+        let matcher = ULAccountMatcher(storageManager: storageManager)
+        matcher.refreshStoredSites()
 
         if let vc = errorViewController(for: siteURL,
                                         with: matcher,
@@ -593,7 +593,6 @@ private extension AuthenticationManager {
                              with credentials: AuthenticatorCredentials,
                              in navigationController: UINavigationController,
                              onDismiss: @escaping () -> Void) {
-
         let viewModel = JetpackErrorViewModel(siteURL: siteURL,
                                               siteCredentials: credentials.wporg,
                                               onJetpackSetupCompletion: { [weak self] authorizedEmailAddress in

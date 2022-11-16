@@ -124,7 +124,7 @@ struct AuthenticationConstants {
     /// Get Started button in Simplified login flow
     ///
     static let createSiteButtonTitle = NSLocalizedString(
-        "Get Started",
+        "Login using REST API keys",
         comment: "Button displayed on the prologue screen of the simplified login flow to create a new store"
     )
 

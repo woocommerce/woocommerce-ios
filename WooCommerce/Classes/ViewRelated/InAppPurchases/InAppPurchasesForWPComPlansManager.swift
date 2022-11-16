@@ -15,6 +15,8 @@ protocol WPComPlanProduct {
 
 extension StoreKit.Product: WPComPlanProduct {}
 
+typealias InAppPurchaseResult = StoreKit.Product.PurchaseResult
+
 protocol InAppPurchasesForWPComPlansProtocol {
     /// Retrieves asynchronously all WPCom plans In-App Purchases products.
     ///
@@ -33,7 +35,7 @@ protocol InAppPurchasesForWPComPlansProtocol {
     ///     id: the id of the product to be purchased
     ///     remoteSiteId: the id of the site linked to the purchasing plan
     ///
-    func purchaseProduct(with id: String, for remoteSiteId: Int64) async throws -> StoreKit.Product.PurchaseResult
+    func purchaseProduct(with id: String, for remoteSiteId: Int64) async throws -> InAppPurchaseResult
 
     /// Retries forwarding the product purchase to our backend, so the plan can be unlocked.
     /// This can happen when the purchase was previously successful but unlocking the WPCom plan request
@@ -73,7 +75,7 @@ final class InAppPurchasesForWPComPlansManager: InAppPurchasesForWPComPlansProto
         }
     }
 
-    func purchaseProduct(with id: String, for remoteSiteId: Int64) async throws -> StoreKit.Product.PurchaseResult {
+    func purchaseProduct(with id: String, for remoteSiteId: Int64) async throws -> InAppPurchaseResult {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(InAppPurchaseAction.purchaseProduct(siteID: remoteSiteId, productID: id, completion: { result in
                 continuation.resume(with: result)

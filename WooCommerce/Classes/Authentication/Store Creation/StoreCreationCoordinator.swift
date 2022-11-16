@@ -61,9 +61,12 @@ final class StoreCreationCoordinator: Coordinator {
         guard featureFlagService.isFeatureFlagEnabled(.storeCreationM2) else {
             return startStoreCreationM1()
         }
-        // TODO: 8108 - show in-progress UI while fetching IAP status
         Task { @MainActor in
             do {
+                // TODO: 8108 - update in-progress UI while fetching IAP status
+                showInProgressView(from: navigationController.presentedViewController as? UINavigationController ?? navigationController,
+                                   viewProperties: .init(title: "Just checking a few things",
+                                                         message: "Waiting for in-app purchase eligibility"))
                 guard await iapManager.inAppPurchasesAreSupported() else {
                     throw PlanPurchaseError.iapNotSupported
                 }
@@ -75,6 +78,8 @@ final class StoreCreationCoordinator: Coordinator {
                 guard try await iapManager.userIsEntitledToProduct(with: product.id) == false else {
                     throw PlanPurchaseError.productNotEligible
                 }
+                // TODO: 8108 - update in-progress UI while fetching IAP status
+                _ = navigationController.popViewController(animated: false)
                 startStoreCreationM2(planToPurchase: product)
             } catch {
                 startStoreCreationM1()
@@ -307,7 +312,13 @@ private extension StoreCreationCoordinator {
     func showInProgressViewWhileWaitingForJetpackSite(from navigationController: UINavigationController,
                                                       siteID: Int64) {
         waitForSiteToBecomeJetpackSite(siteID: siteID)
-        let inProgressView = InProgressViewController(viewProperties: .init(title: Localization.WaitingForJetpackSite.title, message: ""))
+        showInProgressView(from: navigationController, viewProperties: .init(title: Localization.WaitingForJetpackSite.title, message: ""))
+    }
+
+    @MainActor
+    func showInProgressView(from navigationController: UINavigationController,
+                            viewProperties: InProgressViewProperties) {
+        let inProgressView = InProgressViewController(viewProperties: viewProperties)
         navigationController.isNavigationBarHidden = true
         navigationController.pushViewController(inProgressView, animated: true)
     }

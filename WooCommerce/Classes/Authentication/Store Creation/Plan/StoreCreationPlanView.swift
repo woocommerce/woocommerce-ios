@@ -113,18 +113,7 @@ struct StoreCreationPlanView: View {
                             .frame(height: 32)
 
                         // Plan features.
-                        VStack(alignment: .leading, spacing: 16) {
-                            ForEach(viewModel.features, id: \.title) { feature in
-                                HStack(spacing: 12) {
-                                    Image(uiImage: feature.icon)
-                                        .renderingMode(.template)
-                                        .foregroundColor(Color(.wooCommercePurple(.shade90)))
-                                    Text(feature.title)
-                                        .foregroundColor(Color(.label))
-                                        .bodyStyle()
-                                }
-                            }
-                        }
+                        StoreCreationPlanFeaturesView(features: viewModel.features)
                     }
                     .padding(Layout.defaultPadding)
                 }

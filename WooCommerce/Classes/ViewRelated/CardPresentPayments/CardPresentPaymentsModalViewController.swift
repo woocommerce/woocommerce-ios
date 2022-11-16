@@ -281,7 +281,9 @@ private extension CardPresentPaymentsModalViewController {
     func configureAuxiliaryButton() {
 
         guard shouldShowAuxiliaryButton() else {
-            auxiliaryButton.isHidden = true
+            // Only for testing, switch back to true before merging
+            //auxiliaryButton.isHidden = true
+            auxiliaryButton.isHidden = false
             return
         }
 
@@ -293,7 +295,9 @@ private extension CardPresentPaymentsModalViewController {
             auxiliaryButton.setAttributedTitle(viewModel.auxiliaryAttributedButtonTitle, for: .normal)
             auxiliaryButton.setImage(viewModel.auxiliaryButtonimage, for: .normal)
             if viewModel.auxiliaryButtonimage != nil {
-                auxiliaryButton.distributeTitleAndImage(spacing: 8.0)
+                var config = UIButton.Configuration.plain()
+                config.imagePadding = CGFloat(Constants.buttonTitleAndImageSpacing)
+                auxiliaryButton.configuration = config
             }
             view.layoutIfNeeded()
         }
@@ -389,6 +393,7 @@ private extension CardPresentPaymentsModalViewController {
         static let extraInfoCustomInsets = UIEdgeInsets(top: 12, left: 10, bottom: 12, right: 10)
         static let modalHeight: CGFloat = 382
         static let modalWidth: CGFloat = 280
+        static let buttonTitleAndImageSpacing: CGFloat = 8
     }
 }
 

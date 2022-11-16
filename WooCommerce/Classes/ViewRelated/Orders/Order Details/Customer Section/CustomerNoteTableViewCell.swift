@@ -130,8 +130,8 @@ private extension CustomerNoteTableViewCell {
         addButton.contentVerticalAlignment = .bottom
         var configuration = UIButton.Configuration.plain()
         configuration.contentInsets = .init(.zero)
+        configuration.imagePadding = CGFloat(Constants.buttonTitleAndImageSpacing)
         addButton.configuration = configuration
-        addButton.distributeTitleAndImage(spacing: Constants.buttonTitleAndImageSpacing)
         addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
     }
 

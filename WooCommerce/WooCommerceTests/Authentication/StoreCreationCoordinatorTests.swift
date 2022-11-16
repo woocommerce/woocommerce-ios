@@ -71,7 +71,7 @@ final class StoreCreationCoordinatorTests: XCTestCase {
 
     // MARK: - Presentation in different states for store creation M2
 
-    func test_DomainSelectorHostingController_is_presented_when_navigationController_is_presenting_another_view() throws {
+    func test_StoreNameFormHostingController_is_presented_when_navigationController_is_presenting_another_view() throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isStoreCreationM2Enabled: true)
         let coordinator = StoreCreationCoordinator(source: .storePicker,
@@ -92,10 +92,10 @@ final class StoreCreationCoordinatorTests: XCTestCase {
             self.navigationController.presentedViewController is UINavigationController
         }
         let storeCreationNavigationController = try XCTUnwrap(navigationController.presentedViewController as? UINavigationController)
-        assertThat(storeCreationNavigationController.topViewController, isAnInstanceOf: DomainSelectorHostingController.self)
+        assertThat(storeCreationNavigationController.topViewController, isAnInstanceOf: StoreNameFormHostingController.self)
     }
 
-    func test_AuthenticatedWebViewController_is_presented_when_navigationController_is_showing_another_view() throws {
+    func test_StoreNameFormHostingController_is_presented_when_navigationController_is_showing_another_view() throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isStoreCreationM2Enabled: true)
         navigationController.show(.init(), sender: nil)
@@ -113,6 +113,6 @@ final class StoreCreationCoordinatorTests: XCTestCase {
             self.navigationController.presentedViewController is UINavigationController
         }
         let storeCreationNavigationController = try XCTUnwrap(navigationController.presentedViewController as? UINavigationController)
-        assertThat(storeCreationNavigationController.topViewController, isAnInstanceOf: DomainSelectorHostingController.self)
+        assertThat(storeCreationNavigationController.topViewController, isAnInstanceOf: StoreNameFormHostingController.self)
     }
 }

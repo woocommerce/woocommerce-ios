@@ -17,7 +17,10 @@ final class OrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
         if let controller = _modalController {
             return controller
         } else {
-            let controller = CardPresentPaymentsModalViewController(viewModel: readerIsReady(onCancel: {}))
+            let controller = CardPresentPaymentsModalViewController(
+                viewModel: CardPresentModalPreparingReader(cancelAction: { [weak self] in
+                    self?.presentingController?.dismiss(animated: true)
+                }))
             _modalController = controller
             return controller
         }
@@ -41,6 +44,10 @@ final class OrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
             controller.prepareForCardReaderModalFlow()
             presentingController?.present(controller, animated: true)
         }
+    }
+
+    func preparingReader(onCancel: @escaping () -> Void) {
+        presentViewModel(viewModel: CardPresentModalPreparingReader(cancelAction: onCancel))
     }
 
     func readerIsReady(title: String, amount: String, onCancel: @escaping () -> Void) {

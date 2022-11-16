@@ -4,6 +4,8 @@ import UIKit
 protocol OrderDetailsPaymentAlertsProtocol {
     func presentViewModel(viewModel: CardPresentPaymentsModalViewModel)
 
+    func preparingReader(onCancel: @escaping () -> Void)
+
     func readerIsReady(title: String, amount: String, onCancel: @escaping () -> Void)
 
     func tapOrInsertCard(onCancel: @escaping () -> Void)

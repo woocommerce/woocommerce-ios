@@ -1,5 +1,4 @@
 import SwiftUI
-import StoreKit
 import Yosemite
 
 @MainActor
@@ -32,6 +31,7 @@ struct InAppPurchasesDebugView: View {
                         }
                     }
                 }
+            
                 Section("Products") {
                     if products.isEmpty {
                         Text("No products")
@@ -44,7 +44,8 @@ struct InAppPurchasesDebugView: View {
                                 Task {
                                     isPurchasing = true
                                     do {
-                                        try await inAppPurchasesForWPComPlansManager.purchaseProduct(with: product.id, for: siteID)
+                                        let result = try await inAppPurchasesForWPComPlansManager.purchaseProduct(with: product.id, for: siteID)
+                                        print("[IAP Debug] Purchase result: \(result)")
                                     } catch {
                                         purchaseError = PurchaseError(error: error)
                                     }
@@ -57,7 +58,7 @@ struct InAppPurchasesDebugView: View {
                     } else {
                         Text("No valid site id could be retrieved to purchase product. " +
                              "Please set your Int64 test site id to the Xcode environment variable with name \(Constants.siteIdEnvironmentVariableName).")
-                            .foregroundColor(.red)
+                        .foregroundColor(.red)
                     }
                 }
 

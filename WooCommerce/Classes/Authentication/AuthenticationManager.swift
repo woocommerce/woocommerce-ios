@@ -372,8 +372,14 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             return DDLogError("⛔️ No site URL found to present Login Epilogue.")
         }
 
+        let matcher = ULAccountMatcher(storageManager: storageManager)
+        matcher.refreshStoredSites()
+
         /// Shows the native Jetpack flow and returns early if needed.
-        if navigateToNativeJetpackFlowIfNeeded(for: siteURL, credentials: credentials, in: navigationController) {
+        if navigateToNativeJetpackFlowIfNeeded(for: siteURL,
+                                               credentials: credentials,
+                                               matcher: matcher,
+                                               in: navigationController) {
             return
         }
 
@@ -385,9 +391,6 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginErrorNotifications) {
             ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: LocalNotification.Scenario.allCases)
         }
-
-        let matcher = ULAccountMatcher(storageManager: storageManager)
-        matcher.refreshStoredSites()
 
         if let vc = errorViewController(for: siteURL,
                                         with: matcher,
@@ -592,21 +595,25 @@ private extension AuthenticationManager {
         return false
     }
 
-    /// Navigates to the native Jetpack flow if:
-    /// - the user is trying to log in to a self-hosted site with a WP.com account;
-    /// - the site doesn't have valid Jetpack
-    /// - native Jetpack setup flow is enabled.
+    /// Navigates to the native Jetpack flow from the site address login flow.
     ///
     func navigateToNativeJetpackFlowIfNeeded(for siteURL: String,
                                              credentials: AuthenticatorCredentials,
+                                             matcher: ULAccountMatcher,
                                              in navigationController: UINavigationController) -> Bool {
         // TODO-8075: replace the feature flag with A/B test.
         guard featureFlagService.isFeatureFlagEnabled(.nativeJetpackSetupFlow) else {
             return false
         }
 
+        // Checks if the user is trying to log in to a self-hosted site with a WP.com account.
         guard let site = currentSelfHostedSite, site.url == siteURL,
-              site.isJetpackConnected == false, credentials.wpcom != nil else {
+              credentials.wpcom != nil else {
+            return false
+        }
+
+        // Checks if the site doesn't have Jetpack connection or the account is mismatched
+        guard site.isJetpackConnected == false || matcher.match(originalURL: siteURL) == false else {
             return false
         }
 

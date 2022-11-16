@@ -65,7 +65,24 @@ final class SessionManager: SessionManagerProtocol {
         }
     }
 
-    var wooRestAPICredentials: WooRestAPICredentials?
+    var wooRestAPICredentials: WooRestAPICredentials? {
+        get {
+            return loadWooRESTAPICredentials()
+        }
+        set {
+            guard newValue != wooRestAPICredentials else {
+                return
+            }
+
+            removeWooRESTAPICredentials()
+
+            guard let credentials = newValue else {
+                return
+            }
+
+            saveWooRESTAPICredentials(credentials)
+        }
+    }
 
     /// Ephemeral: Default Account.
     ///
@@ -191,5 +208,32 @@ private extension SessionManager {
 
         keychain[username] = nil
         defaults[.defaultUsername] = nil
+    }
+
+    func loadWooRESTAPICredentials() -> WooRestAPICredentials? {
+        guard let consumerKey = keychain[Key.consumerKey.rawValue],
+              let consumerSecret = keychain[Key.consumerSecret.rawValue],
+              let siteAddress = defaults[.defaultSiteAddress] as? String else {
+            return nil
+        }
+
+        return WooRestAPICredentials(consumer_key: consumerKey, consumer_secret: consumerSecret, siteAddress: siteAddress)
+    }
+
+    func saveWooRESTAPICredentials(_ credentials: WooRestAPICredentials) {
+        defaults[.defaultSiteAddress] = credentials.siteAddress
+        keychain[Key.consumerKey.rawValue] = credentials.consumer_key
+        keychain[Key.consumerSecret.rawValue] = credentials.consumer_secret
+    }
+
+    func removeWooRESTAPICredentials() {
+        keychain[Key.consumerKey.rawValue] = nil
+        keychain[Key.consumerSecret.rawValue] = nil
+        defaults[.defaultSiteAddress] = nil
+    }
+
+    enum Key: String {
+        case consumerSecret
+        case consumerKey
     }
 }

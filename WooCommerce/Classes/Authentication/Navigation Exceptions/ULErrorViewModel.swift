@@ -39,7 +39,7 @@ protocol ULErrorViewModel {
 
     /// A text explaining the terms when the primary button is tapped.
     ///
-    var termsLabelText: AnyPublisher<NSAttributedString, Never> { get }
+    var termsLabelText: NSAttributedString? { get }
 
     /// Executed by the view controller when its view was loaded.
     /// - Parameter viewController: the view controller that loads the view.
@@ -89,9 +89,7 @@ extension ULErrorViewModel {
 extension ULErrorViewModel {
     var rightBarButtonItemTitle: String? { nil }
 
-    var termsLabelText: AnyPublisher<NSAttributedString, Never> {
-        Just(NSAttributedString(string: "")).eraseToAnyPublisher()
-    }
+    var termsLabelText: NSAttributedString? { nil }
 
     func didTapRightBarButtonItem(in viewController: UIViewController?) {
         // NO-OP

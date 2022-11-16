@@ -228,6 +228,8 @@ private final class ErrorViewModel: ULErrorViewModel {
 
     var rightBarButtonItemTitle: String?
 
+    var termsLabelText: NSAttributedString?
+
     var primaryButtonTapped: Bool = false
     var secondaryButtonTapped: Bool = false
     var auxiliaryButtonTapped: Bool = false

@@ -35,7 +35,6 @@ final class ULErrorViewController: UIViewController {
     @IBOutlet private weak var stackViewTrailingConstraint: NSLayoutConstraint!
 
     private var primaryButtonSubscription: AnyCancellable?
-    private var termsLabelSubscription: AnyCancellable?
 
     private let viewDidAppearSubject = PassthroughSubject<Void, Never>()
 
@@ -143,12 +142,10 @@ private extension ULErrorViewController {
         ]
         termsLabel.linkTextAttributes = linkAttributes
         termsLabel.isSelectable = true
-
-        termsLabelSubscription = viewModel.termsLabelText
-            .sink { [weak self] text in
-                self?.termsLabel.attributedText = text
-                self?.termsLabel.isHidden = text.string.isEmpty
-            }
+        termsLabel.isHidden = viewModel.termsLabelText == nil
+        if let text = viewModel.termsLabelText {
+            termsLabel.attributedText = text
+        }
     }
 
     func configureAuxiliaryView() {

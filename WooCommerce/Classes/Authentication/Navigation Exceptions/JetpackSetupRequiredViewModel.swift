@@ -1,4 +1,3 @@
-import Combine
 import UIKit
 
 /// Configuration and actions for an ULErrorViewController,
@@ -61,7 +60,7 @@ struct JetpackSetupRequiredViewModel: ULErrorViewModel {
     // Configures `Help` button title
     let rightBarButtonItemTitle: String? = Localization.helpBarButtonItemTitle
 
-    var termsLabelText: AnyPublisher<NSAttributedString, Never> {
+    var termsLabelText: NSAttributedString? {
         let content = String.localizedStringWithFormat(Localization.termsContent, Localization.termsOfService, Localization.shareDetails)
         let paragraph = NSMutableParagraphStyle()
         paragraph.alignment = .center
@@ -77,7 +76,7 @@ struct JetpackSetupRequiredViewModel: ULErrorViewModel {
                                         linkURL: Strings.jetpackTermsURL + self.siteURL)
         mutableAttributedText.setAsLink(textToFind: Localization.shareDetails,
                                         linkURL: Strings.jetpackShareDetailsURL + self.siteURL)
-        return Just(mutableAttributedText).eraseToAnyPublisher()
+        return mutableAttributedText
     }
 
     func viewDidLoad(_ viewController: UIViewController?) {

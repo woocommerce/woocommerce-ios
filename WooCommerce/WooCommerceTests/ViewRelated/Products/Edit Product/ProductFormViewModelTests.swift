@@ -579,6 +579,30 @@ final class ProductFormViewModelTests: XCTestCase {
         let hasLinkedProducts = try XCTUnwrap(analyticsProvider.receivedProperties.first?["has_linked_products"] as? Bool)
         XCTAssertTrue(hasLinkedProducts)
     }
+
+    func test_onProductCreated_called_when_new_product_saved_remotely() {
+        // Given
+        var isCallbackCalled = false
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = createViewModel(product: Product.fake(), formType: .add, stores: stores)
+        viewModel.onProductCreated = {
+            isCallbackCalled = true
+        }
+
+        // When
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .addProduct(product, onCompletion):
+                onCompletion(.success(product))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+        viewModel.saveProductRemotely(status: .draft) { _ in }
+
+        // Then
+        XCTAssertTrue(isCallbackCalled)
+    }
 }
 
 private extension ProductFormViewModelTests {

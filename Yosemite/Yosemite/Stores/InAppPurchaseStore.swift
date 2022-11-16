@@ -94,11 +94,23 @@ private extension InAppPurchaseStore {
 
                 logInfo("Purchasing product \(product.id) for site \(siteID) with options \(purchaseOptions)")
                 let purchaseResult = try await product.purchase(options: purchaseOptions)
-                if case .success(let result) = purchaseResult {
-                    logInfo("Purchased product \(product.id) for site \(siteID): \(result)")
-                    try await handleCompletedTransaction(result)
-                } else {
-                    logError("Ignorning unsuccessful purchase: \(purchaseResult)")
+                switch purchaseResult {
+                case .success(let result):
+                    guard case .verified(let transaction) = result else {
+                        // Ignore unverified transactions.
+                        logError("Transaction unverified: \(result)")
+                        throw Errors.unverifiedTransaction
+                    }
+                    logInfo("Purchased product \(product.id) for site \(siteID): \(transaction)")
+
+                    try await submitTransaction(transaction)
+                    await transaction.finish()
+                case .userCancelled:
+                    logInfo("User cancelled the purchase flow")
+                case .pending:
+                    logError("Purchase returned in a pending state, it might succeed in the future")
+                @unknown default:
+                    logError("Unknown result for purchase: \(purchaseResult)")
                 }
                 completion(.success(purchaseResult))
             } catch {
@@ -265,13 +277,67 @@ private extension InAppPurchaseStore {
 }
 
 public extension InAppPurchaseStore {
-    enum Errors: Error {
+    enum Errors: Error, LocalizedError {
+        /// The purchase was successful but the transaction was unverified
+        ///
+        case unverifiedTransaction
+
+        /// The purchase was successful but it's not associated to an account
+        ///
         case transactionMissingAppAccountToken
+
+        /// The transaction has an associated account but it can't be translated to a site
+        ///
         case appAccountTokenMissingSiteIdentifier
+
+        /// The transaction is associated with an unknown product
+        ///
         case transactionProductUnknown
+
+        /// The storefront for the user is unknown, and so we can't know their country code
+        ///
         case storefrontUnknown
+
+        /// App receipt was missing, even after a refresh
+        ///
         case missingAppReceipt
+
+        /// In-app purchases are not supported for this user
+        ///
         case inAppPurchasesNotSupported
+
+        public var errorDescription: String? {
+            switch self {
+            case .unverifiedTransaction:
+                return NSLocalizedString(
+                    "The purchase transaction couldn't be verified",
+                    comment: "Error message used when a purchase was successful but its transaction was unverified")
+            case .transactionMissingAppAccountToken:
+                return NSLocalizedString(
+                    "Purchase transaction missing account information",
+                    comment: "Error message used when the purchase transaction doesn't have the right metadata to associate to a specific site")
+            case .appAccountTokenMissingSiteIdentifier:
+                return NSLocalizedString(
+                    "Purchase transaction can't be associated to a site",
+                    comment: "Error message used when the purchase transaction doesn't have the right metadata to associate to a specific site")
+            case .transactionProductUnknown:
+                return NSLocalizedString(
+                    "Purchase transaction received for an unknown product",
+                    comment: "Error message used when we received a transaction for an unknown product")
+            case .storefrontUnknown:
+                return NSLocalizedString(
+                    "Couldn't determine App Stoure country",
+                    comment: "Error message used when we can't determine the user's App Store country")
+            case .missingAppReceipt:
+                return NSLocalizedString(
+                    "Couldn't retrieve app receipt",
+                    comment: "Error message used when we can't read the app receipt")
+            case .inAppPurchasesNotSupported:
+                return NSLocalizedString(
+                    "In-app purchases are not supported for this user yet",
+                    comment: "Error message used when In-app purchases are not supported for this user/site")
+            }
+        }
     }
 
     enum Constants {

@@ -367,6 +367,12 @@ extension UIImage {
         return UIImage(named: "icon-mailbox")!
     }
 
+    /// Store plan image used in the store creation flow.
+    ///
+    static var storeCreationPlanImage: UIImage {
+        UIImage(named: "store-creation-plan")!
+    }
+
     /// Store Image
     ///
     static var storeImage: UIImage {
@@ -1076,6 +1082,12 @@ extension UIImage {
     ///
     static var sitesImage: UIImage {
         UIImage.gridicon(.site).imageFlippedForRightToLeftLayoutDirection()
+    }
+
+    /// WordPress.com logo image.
+    ///
+    static var wpcomLogoImage: UIImage {
+        UIImage(named: "wpcom-logo")!
     }
 }
 

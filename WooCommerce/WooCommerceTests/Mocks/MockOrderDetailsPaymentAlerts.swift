@@ -6,6 +6,8 @@ final class MockOrderDetailsPaymentAlerts {
     // Public closures to mock alert actions and properties for assertions.
     var cancelReaderIsReadyAlert: (() -> Void)?
 
+    var cancelPreparingReaderAlert: (() -> Void)?
+
     var cancelTapOrInsertCardAlert: (() -> Void)?
 
     var error: Error?
@@ -19,6 +21,10 @@ final class MockOrderDetailsPaymentAlerts {
 }
 
 extension MockOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
+    func preparingReader(onCancel: @escaping () -> Void) {
+        cancelPreparingReaderAlert = onCancel
+    }
+
     func presentViewModel(viewModel: CardPresentPaymentsModalViewModel) {
         // no-op
     }

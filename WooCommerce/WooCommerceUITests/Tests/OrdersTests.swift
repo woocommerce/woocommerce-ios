@@ -40,15 +40,19 @@ final class OrdersTests: XCTestCase {
             .createOrder()
             .verifySingleOrderScreenLoaded()
             .goBackToOrdersScreen()
+            .verifyOrdersScreenLoaded()
     }
 
-    func test_edit_existing_order() throws {
+    func test_load_existing_order() throws {
         let orders = try GetMocks.readOrdersData()
 
         try TabNavComponent().goToOrdersScreen()
             .selectOrder(byOrderNumber: orders[0].number)
             .tapEditOrderButton()
             .checkForExistingOrderTitle(byOrderNumber: orders[0].number)
+            .checkForExistingProducts(byName: orders[0].line_items.map { $0.name })
+            .closeEditingFlow()
+            .verifySingleOrderScreenLoaded()
     }
 
     func test_cancel_order_creation() throws {

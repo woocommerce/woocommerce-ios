@@ -294,7 +294,8 @@ private extension StoreCreationCoordinator {
     func showInProgressViewWhileWaitingForJetpackSite(from navigationController: UINavigationController,
                                                       siteID: Int64) {
         waitForSiteToBecomeJetpackSite(siteID: siteID)
-        let inProgressView = InProgressViewController(viewProperties: .init(title: Localization.PlanPurchaseErrorAlert.title, message: ""))
+        let inProgressView = InProgressViewController(viewProperties: .init(title: Localization.WaitingForJetpackSite.title, message: ""))
+        navigationController.isNavigationBarHidden = true
         navigationController.pushViewController(inProgressView, animated: true)
     }
 

@@ -104,18 +104,15 @@ private extension StoreCreationCoordinator {
         let storeCreationNavigationController = UINavigationController()
         storeCreationNavigationController.navigationBar.prefersLargeTitles = true
 
-        let domainSelector = DomainSelectorHostingController(viewModel: .init(),
-                                                             onDomainSelection: { [weak self] domain in
-            guard let self else { return }
-            // TODO: add a store name screen before the domain selector screen.
-            await self.createStoreAndContinueToStoreSummary(from: storeCreationNavigationController,
-                                                            name: "Test store",
-                                                            domain: domain,
-                                                            planToPurchase: planToPurchase)
-        }, onSkip: {
-            // TODO-8045: skip to the next step of store creation with an auto-generated domain.
-        })
-        storeCreationNavigationController.pushViewController(domainSelector, animated: false)
+        let storeNameForm = StoreNameFormHostingController { [weak self] storeName in
+            self?.showDomainSelector(from: storeCreationNavigationController,
+                                     storeName: storeName,
+                                     planToPurchase: planToPurchase)
+        } onClose: { [weak self] in
+            self?.showDiscardChangesAlert()
+        }
+        storeCreationNavigationController.pushViewController(storeNameForm, animated: false)
+
         presentStoreCreation(viewController: storeCreationNavigationController)
     }
 
@@ -227,6 +224,22 @@ private extension StoreCreationCoordinator {
 // MARK: - Store creation M2
 
 private extension StoreCreationCoordinator {
+    func showDomainSelector(from navigationController: UINavigationController,
+                            storeName: String,
+                            planToPurchase: WPComPlanProduct) {
+        let domainSelector = DomainSelectorHostingController(viewModel: .init(initialSearchTerm: storeName),
+                                                             onDomainSelection: { [weak self] domain in
+            guard let self else { return }
+            await self.createStoreAndContinueToStoreSummary(from: navigationController,
+                                                            name: storeName,
+                                                            domain: domain,
+                                                            planToPurchase: planToPurchase)
+        }, onSkip: {
+            // TODO-8045: skip to the next step of store creation with an auto-generated domain.
+        })
+        navigationController.pushViewController(domainSelector, animated: false)
+    }
+
     @MainActor
     func createStoreAndContinueToStoreSummary(from navigationController: UINavigationController,
                                               name: String,

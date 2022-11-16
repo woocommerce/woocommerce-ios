@@ -43,7 +43,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_cancelling_readerIsReady_alert_triggers_onCancel_and_tracks_collectPaymentCanceled_event_and_dispatches_cancel_action() throws {
+    func test_cancelling_preparingReader_alert_triggers_onCancel_and_tracks_collectPaymentCanceled_event_and_dispatches_cancel_action() throws {
         // Given
         assertEmpty(stores.receivedActions)
 
@@ -53,7 +53,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
             self.useCase.collectPayment(onCollect: { _ in }, onCancel: {
                 promise(())
             }, onCompleted: {})
-            self.alerts.cancelReaderIsReadyAlert?()
+            self.alerts.cancelPreparingReaderAlert?()
         }
 
         // Then
@@ -243,6 +243,17 @@ private extension CollectOrderPaymentUseCaseTests {
                 completion([MockCardReader.wisePad3()])
             } else if case let .cancelPayment(completion) = action {
                 completion?(.success(()))
+            } else if case let .collectPayment(_, _, _, onCardReaderMessage, _, _) = action {
+                onCardReaderMessage(.waitingForInput(""))
+            }
+        }
+
+        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+            switch action {
+            case .synchronizeSystemPlugins(_, let completion):
+                completion(.success(()))
+            default:
+                break
             }
         }
     }

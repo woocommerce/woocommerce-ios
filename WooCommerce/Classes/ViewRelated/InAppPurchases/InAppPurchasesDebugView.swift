@@ -31,7 +31,6 @@ struct InAppPurchasesDebugView: View {
                         }
                     }
                 }
-            
                 Section("Products") {
                     if products.isEmpty {
                         Text("No products")

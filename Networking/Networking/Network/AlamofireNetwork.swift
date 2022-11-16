@@ -71,18 +71,6 @@ public class AlamofireNetwork: Network {
     ///
     public func responseData(for request: URLRequestConvertible,
                              completion: @escaping (Swift.Result<Data, Error>) -> Void) {
-
-        func createRequest(wrapping request: URLRequestConvertible) -> URLRequestConvertible {
-            if let credentials {
-                return AuthenticatedRequest(credentials: credentials, request: request)
-            } else if let wooRestAPICredentials, let jpRequest = request as? JetpackRequest {
-                let wooRequest = jpRequest.wooRequest(siteURL: wooRestAPICredentials.siteAddress)
-                return WooRESTKeyAuthenticatedRequest(credentials: wooRestAPICredentials, request: wooRequest)
-            } else {
-                return UnauthenticatedRequest(request: request)
-            }
-        }
-
         let request = createRequest(wrapping: request)
 
         Alamofire.request(request).responseData { response in
@@ -129,8 +117,14 @@ public class AlamofireNetwork: Network {
 
 private extension AlamofireNetwork {
     func createRequest(wrapping request: URLRequestConvertible) -> URLRequestConvertible {
-        credentials.map { AuthenticatedRequest(credentials: $0, request: request) } ??
-        UnauthenticatedRequest(request: request)
+        if let credentials {
+            return AuthenticatedRequest(credentials: credentials, request: request)
+        } else if let wooRestAPICredentials, let jpRequest = request as? JetpackRequest {
+            let wooRequest = jpRequest.wooRequest(siteURL: wooRestAPICredentials.siteAddress)
+            return WooRESTKeyAuthenticatedRequest(credentials: wooRestAPICredentials, request: wooRequest)
+        } else {
+            return UnauthenticatedRequest(request: request)
+        }
     }
 }
 

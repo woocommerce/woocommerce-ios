@@ -4,12 +4,17 @@ import Yosemite
 
 @MainActor
 struct InAppPurchasesDebugView: View {
-    let siteID: Int64
     private let inAppPurchasesForWPComPlansManager = InAppPurchasesForWPComPlansManager()
     @State var products: [WPComPlanProduct] = []
     @State var entitledProductIDs: Set<String> = []
     @State var inAppPurchasesAreSupported = true
     @State var isPurchasing = false
+    @State private var purchaseError: PurchaseError? {
+        didSet {
+            presentAlert = purchaseError != nil
+        }
+    }
+    @State var presentAlert = false
 
     var body: some View {
         List {
@@ -25,17 +30,27 @@ struct InAppPurchasesDebugView: View {
                     Text("No products")
                 } else if isPurchasing {
                     ActivityIndicator(isAnimating: .constant(true), style: .medium)
-                } else {
+                } else if let stringSiteID = ProcessInfo.processInfo.environment[Constants.siteIdEnvironmentVariableName],
+                          let siteID = Int64(stringSiteID) {
                     ForEach(products, id: \.id) { product in
                         Button(entitledProductIDs.contains(product.id) ? "Entitled: \(product.description)" : product.description) {
                             Task {
                                 isPurchasing = true
-                                try? await inAppPurchasesForWPComPlansManager.purchaseProduct(with: product.id, for: siteID)
+                                do {
+                                    try await inAppPurchasesForWPComPlansManager.purchaseProduct(with: product.id, for: siteID)
+                                } catch {
+                                    purchaseError = PurchaseError(error: error)
+                                }
                                 await loadUserEntitlements()
                                 isPurchasing = false
                             }
                         }
+                        .alert(isPresented: $presentAlert, error: purchaseError, actions: {})
                     }
+                } else {
+                    Text("No valid site id could be retrieved to purchase product. " +
+                         "Please set your Int64 test site id to the Xcode environment variable with name \(Constants.siteIdEnvironmentVariableName).")
+                        .foregroundColor(.red)
                 }
             }
 
@@ -102,8 +117,26 @@ struct InAppPurchasesDebugView: View {
     }
 }
 
+/// Just a silly little wrapper because SwiftUI's `alert(isPresented:error:actions:)` wants a `LocalizedError`
+/// but we only have an `Error` coming from `purchaseProduct`.
+private struct PurchaseError: LocalizedError {
+    let error: Error
+
+    var errorDescription: String? {
+        if let error = error as? LocalizedError {
+            return error.errorDescription
+        } else {
+            return error.localizedDescription
+        }
+    }
+}
+
 struct InAppPurchasesDebugView_Previews: PreviewProvider {
     static var previews: some View {
-        InAppPurchasesDebugView(siteID: 0)
+        InAppPurchasesDebugView()
     }
+}
+
+private enum Constants {
+    static let siteIdEnvironmentVariableName = "iap-debug-site-id"
 }

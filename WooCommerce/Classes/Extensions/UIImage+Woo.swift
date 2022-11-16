@@ -367,10 +367,22 @@ extension UIImage {
         return UIImage(named: "icon-mailbox")!
     }
 
+    /// Store plan image used in the store creation flow.
+    ///
+    static var storeCreationPlanImage: UIImage {
+        UIImage(named: "store-creation-plan")!
+    }
+
     /// Store Image
     ///
     static var storeImage: UIImage {
         UIImage(named: "icon-store")!
+    }
+
+    /// Store summary image used in the store creation flow.
+    ///
+    static var storeSummaryImage: UIImage {
+        return UIImage(named: "store-summary")!
     }
 
     /// Cog Image
@@ -1088,6 +1100,12 @@ extension UIImage {
     ///
     static var jetpackConnectionImage: UIImage {
         UIImage(named: "woo-jetpack-connection")!
+    }
+
+    /// WordPress.com logo image.
+    ///
+    static var wpcomLogoImage: UIImage {
+        UIImage(named: "wpcom-logo")!
     }
 }
 

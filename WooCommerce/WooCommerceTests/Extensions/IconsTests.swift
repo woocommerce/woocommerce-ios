@@ -212,8 +212,16 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.mailboxImage)
     }
 
+    func test_storeCreationPlanImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.storeCreationPlanImage)
+    }
+
     func testStoreImageIsNotNil() {
         XCTAssertNotNil(UIImage.storeImage)
+    }
+
+    func test_storeSummaryImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.storeSummaryImage)
     }
 
     func testCotImageIsNotNil() {
@@ -695,5 +703,10 @@ final class IconsTests: XCTestCase {
 
     func test_jetpackConnectionImage_is_not_nil() {
         XCTAssertNotNil(UIImage.jetpackConnectionImage)
+    }
+
+    func test_wpcomLogoImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.wpcomLogoImage)
+
     }
 }

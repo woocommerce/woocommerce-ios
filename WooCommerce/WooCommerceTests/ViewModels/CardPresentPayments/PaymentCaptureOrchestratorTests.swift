@@ -94,7 +94,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
 }
 
 struct MockReceiptEmailParameterDeterminer: ReceiptEmailParameterDeterminer {
-    func receiptEmail(from order: Order, onCompletion: @escaping ((Result<String?, Error>) -> Void)) {
-        onCompletion(.success(nil))
+    func receiptEmail(from order: Order) -> String? {
+        return nil
     }
 }

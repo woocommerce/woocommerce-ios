@@ -356,7 +356,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayID)
     }
 
-    func test_canceling_readerIsReady_alert_tracks_interacRefundCanceled_event_when_payment_method_is_interac() throws {
+    func test_canceling_preparingReader_alert_tracks_interacRefundCanceled_event_when_payment_method_is_interac() throws {
         // Given
         let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
                                                    charge: .fake().copy(paymentMethodDetails: .interacPresent(
@@ -376,42 +376,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
             useCase.submitRefund(.fake(), showInProgressUI: {}, onCompletion: { result in
                 promise(result)
             })
-            self.alerts.cancelReaderIsReadyAlert?()
-        }
-
-        // Then
-        XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(result.failure as? RefundSubmissionUseCase.RefundSubmissionError, .canceledByUser)
-
-        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "interac_refund_cancelled"}))
-        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
-        XCTAssertEqual(eventProperties["card_reader_model"] as? String, Mocks.cardReaderModel)
-        XCTAssertEqual(eventProperties["country"] as? String, "US")
-        XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayID)
-    }
-
-    func test_canceling_tapOrInsertCard_alert_tracks_interacRefundCanceled_event_when_payment_method_is_interac() throws {
-        // Given
-        let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
-                                                   charge: .fake().copy(paymentMethodDetails: .interacPresent(
-                                                    details: .init(brand: .visa,
-                                                                   last4: "9969",
-                                                                   funding: .credit,
-                                                                   receipt: .init(accountType: .credit,
-                                                                                  applicationPreferredName: "Stripe Credit",
-                                                                                  dedicatedFileName: "A000000003101001")))),
-                                                   amount: "2.28",
-                                                   paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID)))
-        mockCardPresentPaymentActions(clientSideRefundResult: .failure(RefundSubmissionUseCase.RefundSubmissionError.cardReaderDisconnected),
-                                      cancelRefundResult: .success(()),
-                                      returnCardReaderMessage: .waitingForInput(""))
-
-        // When
-        let result: Result<Void, Error> = waitFor { promise in
-            useCase.submitRefund(.fake(), showInProgressUI: {}, onCompletion: { result in
-                promise(result)
-            })
-            self.alerts.cancelTapOrInsertCardAlert?()
+            self.alerts.cancelPreparingReaderAlert?()
         }
 
         // Then

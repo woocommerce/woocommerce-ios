@@ -21,7 +21,11 @@ struct ProductReviewMapper: Mapper {
             .siteID: siteID
         ]
 
-        return try decoder.decode(ProductReviewEnvelope.self, from: response).productReview
+        do {
+            return try decoder.decode(ProductReviewEnvelope.self, from: response).productReview
+        } catch {
+            return try decoder.decode(ProductReview.self, from: response)
+        }
     }
 }
 

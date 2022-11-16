@@ -66,6 +66,8 @@ private extension BottomButtonContainerView {
         button.setTitle(viewModel.title, for: .normal)
         button.addTarget(self, action: #selector(buttonTapped(sender:)), for: .touchUpInside)
         button.titleLabel?.lineBreakMode = .byTruncatingTail
+        var configuration = UIButton.Configuration.plain()
+        configuration.contentInsets = .init(.zero)
 
         switch viewModel.style {
         case .primary:
@@ -73,13 +75,13 @@ private extension BottomButtonContainerView {
         case .link:
             button.applyLinkButtonStyle()
             button.contentHorizontalAlignment = .leading
-            button.contentEdgeInsets = .zero
         }
 
         if let image = viewModel.image {
             button.setImage(image, for: .normal)
-            button.distributeTitleAndImage(spacing: Constants.buttonTitleAndImageSpacing)
+            configuration.imagePadding = CGFloat(Constants.buttonTitleAndImageSpacing)
         }
+        button.configuration = configuration
     }
 
     @objc func buttonTapped(sender: UIButton) {

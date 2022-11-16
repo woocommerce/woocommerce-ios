@@ -1,5 +1,4 @@
 import SwiftUI
-import StoreKit
 import Yosemite
 
 @MainActor
@@ -37,7 +36,8 @@ struct InAppPurchasesDebugView: View {
                             Task {
                                 isPurchasing = true
                                 do {
-                                    try await inAppPurchasesForWPComPlansManager.purchaseProduct(with: product.id, for: siteID)
+                                    let result = try await inAppPurchasesForWPComPlansManager.purchaseProduct(with: product.id, for: siteID)
+                                    print("[IAP Debug] Purchase result: \(result)")
                                 } catch {
                                     purchaseError = PurchaseError(error: error)
                                 }

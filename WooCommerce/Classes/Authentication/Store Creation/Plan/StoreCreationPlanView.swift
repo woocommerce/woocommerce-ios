@@ -135,7 +135,7 @@ struct StoreCreationPlanView: View {
                         isPurchaseInProgress = false
                     }
                 }
-                .buttonStyle(PrimaryButtonStyle())
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isPurchaseInProgress))
                 .padding(Layout.defaultButtonPadding)
 
                 // Refund information.

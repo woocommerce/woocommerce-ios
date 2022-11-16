@@ -77,7 +77,6 @@ final class StoreCreationCoordinator: Coordinator {
                 }
                 startStoreCreationM2(planToPurchase: product)
             } catch {
-                print("...\(error)")
                 startStoreCreationM1()
             }
         }
@@ -271,7 +270,7 @@ private extension StoreCreationCoordinator {
                        siteID: Int64) {
         let storeSummary = StoreCreationPlanHostingController(viewModel: .init(plan: planToPurchase)) { [weak self] in
             guard let self else { return }
-            self.purchasePlan(from: navigationController, siteID: siteID, planToPurchase: planToPurchase)
+            await self.purchasePlan(from: navigationController, siteID: siteID, planToPurchase: planToPurchase)
         } onClose: { [weak self] in
             guard let self else { return }
             self.showDiscardChangesAlert()
@@ -282,14 +281,12 @@ private extension StoreCreationCoordinator {
     @MainActor
     func purchasePlan(from navigationController: UINavigationController,
                       siteID: Int64,
-                      planToPurchase: WPComPlanProduct) {
-        Task { @MainActor in
-            do {
-                try await iapManager.purchaseProduct(with: planToPurchase.id, for: siteID)
-                showInProgressViewWhileWaitingForJetpackSite(from: navigationController, siteID: siteID)
-            } catch {
-                showPlanPurchaseErrorAlert(from: navigationController, error: error)
-            }
+                      planToPurchase: WPComPlanProduct) async {
+        do {
+            try await iapManager.purchaseProduct(with: planToPurchase.id, for: siteID)
+            showInProgressViewWhileWaitingForJetpackSite(from: navigationController, siteID: siteID)
+        } catch {
+            showPlanPurchaseErrorAlert(from: navigationController, error: error)
         }
     }
 

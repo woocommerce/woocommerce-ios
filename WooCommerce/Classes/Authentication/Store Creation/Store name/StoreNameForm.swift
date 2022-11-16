@@ -87,7 +87,7 @@ struct StoreNameForm: View {
                             .bodyStyle()
 
                         // Store name text field.
-                        TextField("", text: $name)
+                        TextField(Localization.textFieldPlaceholder, text: $name)
                             .font(.body)
                             .textFieldStyle(RoundedBorderTextFieldStyle(focused: false))
                             .focused()
@@ -135,6 +135,10 @@ private extension StoreNameForm {
         static let textFieldPrompt = NSLocalizedString(
             "Store name",
             comment: "Text field prompt on the store name form in the store creation flow."
+        )
+        static let textFieldPlaceholder = NSLocalizedString(
+            "Type a name for your store",
+            comment: "Text field placeholder on the store name form in the store creation flow."
         )
         static let continueButtonTitle = NSLocalizedString(
             "Continue",

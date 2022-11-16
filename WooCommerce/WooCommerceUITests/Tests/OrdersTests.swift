@@ -40,6 +40,7 @@ final class OrdersTests: XCTestCase {
             .createOrder()
             .verifySingleOrderScreenLoaded()
             .goBackToOrdersScreen()
+            .verifyOrdersScreenLoaded()
     }
 
     func test_load_existing_order() throws {

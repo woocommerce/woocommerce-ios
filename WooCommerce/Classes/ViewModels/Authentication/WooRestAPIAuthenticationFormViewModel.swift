@@ -18,9 +18,9 @@ final class WooRestAPIAuthenticationFormViewModel: ObservableObject {
         guard siteAddress.isNotEmpty, consumerKey.isNotEmpty, consumerSecret.isNotEmpty else {
             return nil
         }
-
+        
         return WooRestAPICredentials(consumer_key: consumerKey,
-                              consumer_secret: consumerSecret,
-                              siteAddress: siteAddress)
+                                     consumer_secret: consumerSecret,
+                                     siteAddress: siteAddress)
     }
 }

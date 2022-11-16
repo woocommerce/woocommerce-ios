@@ -67,7 +67,7 @@ extension UIImage {
     static var cameraImage: UIImage {
         return UIImage.gridicon(.camera)
             .imageFlippedForRightToLeftLayoutDirection()
-            .applyTintColor(.placeholderImage)!
+            .withTintColor(.placeholderImage)
     }
 
     /// Product categories Icon
@@ -329,7 +329,7 @@ extension UIImage {
     static var giftWithTopRightRedDotImage: UIImage {
         guard let image = UIImage.gridicon(.gift, size: CGSize(width: 24, height: 24))
             // Applies a constant gray color that looks fine in both Light/Dark modes, since we are generating an image with multiple colors.
-            .applyTintColor(.gray(.shade30))?
+            .withTintColor(.gray(.shade30))
             .imageWithTopRightDot(imageOrigin: CGPoint(x: 0, y: 2),
                                   finalSize: CGSize(width: 26, height: 26)) else {
                                     fatalError()

@@ -288,7 +288,7 @@ private extension CollectOrderPaymentUseCase {
             stripeSmallestCurrencyUnitMultiplier: configuration.stripeSmallestCurrencyUnitMultiplier,
             onWaitingForInput: { [weak self] in
                 guard let self = self else { return }
-                self.alerts.readerIsReady(title: Localization.collectPaymentTitle(username: self.order.billingAddress?.firstName),
+                self.alerts.tapOrInsertCard(title: Localization.collectPaymentTitle(username: self.order.billingAddress?.firstName),
                                      amount: self.formattedAmount,
                                      onCancel: { [weak self] in
                     self?.cancelPayment {

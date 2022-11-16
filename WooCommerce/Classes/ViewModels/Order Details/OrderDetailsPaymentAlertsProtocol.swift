@@ -6,9 +6,7 @@ protocol OrderDetailsPaymentAlertsProtocol {
 
     func preparingReader(onCancel: @escaping () -> Void)
 
-    func readerIsReady(title: String, amount: String, onCancel: @escaping () -> Void)
-
-    func tapOrInsertCard(onCancel: @escaping () -> Void)
+    func tapOrInsertCard(title: String, amount: String, onCancel: @escaping () -> Void)
 
     func displayReaderMessage(message: String)
 

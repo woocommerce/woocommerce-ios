@@ -306,9 +306,9 @@ private extension RefundSubmissionUseCase {
                                              onWaitingForInput: { [weak self] in
             // Requests card input.
             guard let self = self else { return }
-            self.alerts.readerIsReady(title: Localization.refundPaymentTitle(username: self.order.billingAddress?.firstName),
-                                      amount: self.formattedAmount,
-                                      onCancel: { [weak self] in
+            self.alerts.tapOrInsertCard(title: Localization.refundPaymentTitle(username: self.order.billingAddress?.firstName),
+                                        amount: self.formattedAmount,
+                                        onCancel: { [weak self] in
                 self?.cancelRefund(charge: charge, paymentGatewayAccount: paymentGatewayAccount, onCompletion: onCompletion)
             })
         }, onProcessingMessage: { [weak self] in

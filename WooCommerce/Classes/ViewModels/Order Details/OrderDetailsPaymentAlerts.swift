@@ -50,17 +50,12 @@ final class OrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
         presentViewModel(viewModel: CardPresentModalPreparingReader(cancelAction: onCancel))
     }
 
-    func readerIsReady(title: String, amount: String, onCancel: @escaping () -> Void) {
+    func tapOrInsertCard(title: String, amount: String, onCancel: @escaping () -> Void) {
         self.name = title
         self.amount = amount
 
         // Initial presentation of the modal view controller. We need to provide
         // a customer name and an amount.
-        let viewModel = readerIsReady(onCancel: onCancel)
-        presentViewModel(viewModel: viewModel)
-    }
-
-    func tapOrInsertCard(onCancel: @escaping () -> Void) {
         let viewModel = tapOrInsert(onCancel: onCancel)
         presentViewModel(viewModel: viewModel)
     }
@@ -99,13 +94,6 @@ final class OrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
 }
 
 private extension OrderDetailsPaymentAlerts {
-    func readerIsReady(onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalReaderIsReady(name: name,
-                                      amount: amount,
-                                      transactionType: transactionType,
-                                      cancelAction: onCancel)
-    }
-
     func tapOrInsert(onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalTapCard(name: name, amount: amount, transactionType: transactionType, onCancel: onCancel)
     }

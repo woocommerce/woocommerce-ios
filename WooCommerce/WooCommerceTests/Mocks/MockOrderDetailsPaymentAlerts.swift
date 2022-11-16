@@ -4,8 +4,6 @@ import UIKit
 /// Mock for `OrderDetailsPaymentAlertsProtocol`.
 final class MockOrderDetailsPaymentAlerts {
     // Public closures to mock alert actions and properties for assertions.
-    var cancelReaderIsReadyAlert: (() -> Void)?
-
     var cancelPreparingReaderAlert: (() -> Void)?
 
     var cancelTapOrInsertCardAlert: (() -> Void)?
@@ -27,10 +25,6 @@ extension MockOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
 
     func presentViewModel(viewModel: CardPresentPaymentsModalViewModel) {
         // no-op
-    }
-
-    func readerIsReady(title: String, amount: String, onCancel: @escaping () -> Void) {
-        cancelReaderIsReadyAlert = onCancel
     }
 
     func tapOrInsertCard(onCancel: @escaping () -> Void) {

@@ -1,19 +1,28 @@
 import UIKit
 
 /// Configuration and actions for an ULErrorViewController,
-/// modelling an error when Jetpack is not installed or is not connected
+/// modeling an error when Jetpack is not installed or is not connected
 /// Displayed as an entry point to the native Jetpack setup flow.
 /// 
 struct JetpackSetupRequiredViewModel: ULErrorViewModel {
     private let siteURL: String
     private let connectionOnly: Bool
+    private let authentication: Authentication
+    private let analytics: Analytics
 
-    init(siteURL: String, connectionOnly: Bool) {
+    init(siteURL: String,
+         connectionOnly: Bool,
+         authentication: Authentication = ServiceLocator.authenticationManager,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.connectionOnly = connectionOnly
         self.siteURL = siteURL
+        self.authentication = authentication
+        self.analytics = analytics
     }
 
     // MARK: - Data and configuration
+    let title: String? = Localization.title
+
     var image: UIImage {
         connectionOnly ? .jetpackConnectionImage : .jetpackSetupImage
     }
@@ -43,6 +52,11 @@ struct JetpackSetupRequiredViewModel: ULErrorViewModel {
 
     let isSecondaryButtonHidden = true
 
+    // Configures `Help` button title
+    var rightBarButtonItemTitle: String? {
+        Localization.helpBarButtonItemTitle
+    }
+
     func viewDidLoad(_ viewController: UIViewController?) {
         // TODO: add tracks
     }
@@ -59,10 +73,17 @@ struct JetpackSetupRequiredViewModel: ULErrorViewModel {
         // no-op
     }
 
+    func didTapRightBarButtonItem(in viewController: UIViewController?) {
+        guard let viewController = viewController else {
+            return
+        }
+        authentication.presentSupport(from: viewController, screen: .jetpackRequired)
+    }
 }
 
 extension JetpackSetupRequiredViewModel {
     enum Localization {
+        static let title = NSLocalizedString("Connect Store", comment: "Title of the Jetpack setup required screen")
         static let installJetpack = NSLocalizedString(
             "Install Jetpack",
             comment: "Button to install Jetpack from the Jetpack setup required screen"
@@ -79,5 +100,6 @@ extension JetpackSetupRequiredViewModel {
             "To use this app for %@ you'll need to connect your store to Jetpack.",
             comment: "Error message on the Jetpack setup required screen when Jetpack connection is missing." +
             "Reads like: To use this app for test.com you'll need...")
+        static let helpBarButtonItemTitle = NSLocalizedString("Help", comment: "Help button on Jetpack setup required screen.")
     }
 }

@@ -102,16 +102,16 @@ private extension WooRestAPIAuthenticationForm {
 
     enum Localization {
         static let title = NSLocalizedString("Login using REST API keys", comment: "Title for the account creation form.")
-        static let siteAddressFieldTitle = NSLocalizedString("Your site address", comment: "Title of the email field on the account creation form.")
-        static let siteAddressFieldPlaceholder = NSLocalizedString("Site address", comment: "Placeholder of the email field on the account creation form.")
+        static let siteAddressFieldTitle = NSLocalizedString("Your site address", comment: "Title of the email field")
+        static let siteAddressFieldPlaceholder = NSLocalizedString("Site address", comment: "Placeholder of the email field")
 
-        static let consumerKeyFieldTitle = NSLocalizedString("Consumer key", comment: "Title of the Consumer key field on the account creation form.")
-        static let consumerKeyFieldPlaceholder = NSLocalizedString("Consumer key", comment: "Placeholder of the Consumer key field on the account creation form.")
+        static let consumerKeyFieldTitle = NSLocalizedString("Consumer key", comment: "Title of the Consumer key field")
+        static let consumerKeyFieldPlaceholder = NSLocalizedString("Consumer key", comment: "Placeholder of the Consumer key field")
 
-        static let consumerSecretFieldTitle = NSLocalizedString("Consumer secret", comment: "Title of the Consumer secret field on the account creation form.")
-        static let consumerSecretFieldPlaceholder = NSLocalizedString("Consumer secret", comment: "Placeholder of the Consumer secret field on the account creation form.")
+        static let consumerSecretFieldTitle = NSLocalizedString("Consumer secret", comment: "Title of the Consumer secret field")
+        static let consumerSecretFieldPlaceholder = NSLocalizedString("Consumer secret", comment: "Placeholder of the Consumer secret field")
 
-        static let submitButtonTitle = NSLocalizedString("Login", comment: "Title of the submit button on the account creation form.")
+        static let submitButtonTitle = NSLocalizedString("Login", comment: "Title of the submit button")
     }
 
     enum Layout {

@@ -147,6 +147,7 @@ private extension ULErrorViewController {
         termsLabelSubscription = viewModel.termsLabelText
             .sink { [weak self] text in
                 self?.termsLabel.attributedText = text
+                self?.termsLabel.isHidden = text.string.isEmpty
             }
     }
 

@@ -1,6 +1,7 @@
 import MessageUI
 import UIKit
 import WordPressUI
+import Yosemite
 import enum Hardware.CardReaderServiceError
 import enum Hardware.UnderlyingError
 
@@ -50,13 +51,16 @@ final class OrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
         presentViewModel(viewModel: CardPresentModalPreparingReader(cancelAction: onCancel))
     }
 
-    func tapOrInsertCard(title: String, amount: String, onCancel: @escaping () -> Void) {
+    func tapOrInsertCard(title: String,
+                         amount: String,
+                         inputMethods: CardReaderInput,
+                         onCancel: @escaping () -> Void) {
         self.name = title
         self.amount = amount
 
         // Initial presentation of the modal view controller. We need to provide
         // a customer name and an amount.
-        let viewModel = tapOrInsert(onCancel: onCancel)
+        let viewModel = tapOrInsert(readerInputMethods: inputMethods, onCancel: onCancel)
         presentViewModel(viewModel: viewModel)
     }
 
@@ -94,8 +98,12 @@ final class OrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
 }
 
 private extension OrderDetailsPaymentAlerts {
-    func tapOrInsert(onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalTapCard(name: name, amount: amount, transactionType: transactionType, onCancel: onCancel)
+    func tapOrInsert(readerInputMethods: CardReaderInput, onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalTapCard(name: name,
+                                amount: amount,
+                                transactionType: transactionType,
+                                inputMethods: readerInputMethods,
+                                onCancel: onCancel)
     }
 
     func displayMessage(message: String) -> CardPresentPaymentsModalViewModel {

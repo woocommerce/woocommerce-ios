@@ -244,7 +244,7 @@ private extension CollectOrderPaymentUseCaseTests {
             } else if case let .cancelPayment(completion) = action {
                 completion?(.success(()))
             } else if case let .collectPayment(_, _, _, onCardReaderMessage, _, _) = action {
-                onCardReaderMessage(.waitingForInput(""))
+                onCardReaderMessage(.waitingForInput([]))
             }
         }
 

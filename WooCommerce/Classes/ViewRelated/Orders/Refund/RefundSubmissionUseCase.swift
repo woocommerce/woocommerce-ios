@@ -303,11 +303,12 @@ private extension RefundSubmissionUseCase {
         cardPresentRefundOrchestrator.refund(amount: refundAmount,
                                              charge: charge,
                                              paymentGatewayAccount: paymentGatewayAccount,
-                                             onWaitingForInput: { [weak self] in
+                                             onWaitingForInput: { [weak self] inputMethods in
             // Requests card input.
             guard let self = self else { return }
             self.alerts.tapOrInsertCard(title: Localization.refundPaymentTitle(username: self.order.billingAddress?.firstName),
                                         amount: self.formattedAmount,
+                                        inputMethods: inputMethods,
                                         onCancel: { [weak self] in
                 self?.cancelRefund(charge: charge, paymentGatewayAccount: paymentGatewayAccount, onCompletion: onCompletion)
             })

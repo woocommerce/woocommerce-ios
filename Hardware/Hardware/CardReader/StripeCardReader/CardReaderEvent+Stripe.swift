@@ -4,8 +4,9 @@ import StripeTerminal
 extension CardReaderEvent {
     /// Factory method
     /// - Parameter readerInputOptions: An instance of a StripeTerminal.ReaderInputOptions
-    static func make(readerInputOptions: ReaderInputOptions) -> Self {
-        .waitingForInput(Terminal.stringFromReaderInputOptions(readerInputOptions))
+    static func make(stripeReaderInputOptions: ReaderInputOptions) -> Self {
+        let inputOptions = CardReaderInput(stripeReaderInputOptions: stripeReaderInputOptions)
+        return .waitingForInput(inputOptions)
     }
 
     /// Factory method

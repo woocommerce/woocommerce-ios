@@ -1,4 +1,5 @@
 @testable import WooCommerce
+import Yosemite
 import UIKit
 
 /// Mock for `OrderDetailsPaymentAlertsProtocol`.
@@ -27,7 +28,7 @@ extension MockOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
         // no-op
     }
 
-    func tapOrInsertCard(onCancel: @escaping () -> Void) {
+    func tapOrInsertCard(title: String, amount: String, inputMethods: Yosemite.CardReaderInput, onCancel: @escaping () -> Void) {
         cancelTapOrInsertCardAlert = onCancel
     }
 

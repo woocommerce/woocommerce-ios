@@ -52,7 +52,7 @@ extension SiteCredentialLoginViewModel: LoginFacadeDelegate {
         isLoggingIn = false
 
         let err = error as NSError
-        errorMessage = err.code == 3 ? Localization.wrongCredentials : Localization.loginFailed
+        errorMessage = err.code == 3 ? Localization.wrongCredentials : Localization.genericFailure
         shouldShowErrorAlert = true
     }
 
@@ -63,12 +63,12 @@ extension SiteCredentialLoginViewModel: LoginFacadeDelegate {
     }
 }
 
-private extension SiteCredentialLoginViewModel {
+extension SiteCredentialLoginViewModel {
     enum Localization {
         static let wrongCredentials = NSLocalizedString(
             "It looks like this username/password isn't associated with this site.",
             comment: "An error message shown during login when the username or password is incorrect."
         )
-        static let loginFailed = NSLocalizedString("Login failed. Please try again.", comment: "A generic error during site credential login")
+        static let genericFailure = NSLocalizedString("Login failed. Please try again.", comment: "A generic error during site credential login")
     }
 }

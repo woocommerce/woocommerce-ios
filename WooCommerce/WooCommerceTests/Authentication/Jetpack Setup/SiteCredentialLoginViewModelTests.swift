@@ -1,7 +1,20 @@
 import XCTest
 @testable import WooCommerce
+import WordPressAuthenticator
 
 final class SiteCredentialLoginViewModelTests: XCTestCase {
+
+    override func setUp() {
+        super.setUp()
+
+        WordPressAuthenticator.initializeAuthenticator()
+    }
+
+    override func tearDown() {
+        // There is no known tear down for the Authenticator. So this method intentionally does
+        // nothing.
+        super.tearDown()
+    }
 
     func test_primary_button_is_disabled_appropriately() {
         // Given

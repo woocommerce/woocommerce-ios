@@ -1,5 +1,4 @@
 import SwiftUI
-import StoreKit
 import Yosemite
 
 @MainActor
@@ -17,63 +16,72 @@ struct InAppPurchasesDebugView: View {
     @State var presentAlert = false
 
     var body: some View {
-        List {
-            Section {
-                Button("Reload products") {
-                    Task {
-                        await loadProducts()
-                    }
-                }
-            }
-            Section("Products") {
-                if products.isEmpty {
-                    Text("No products")
-                } else if isPurchasing {
-                    ActivityIndicator(isAnimating: .constant(true), style: .medium)
-                } else if let stringSiteID = ProcessInfo.processInfo.environment[Constants.siteIdEnvironmentVariableName],
-                          let siteID = Int64(stringSiteID) {
-                    ForEach(products, id: \.id) { product in
-                        Button(entitledProductIDs.contains(product.id) ? "Entitled: \(product.description)" : product.description) {
-                            Task {
-                                isPurchasing = true
-                                do {
-                                    try await inAppPurchasesForWPComPlansManager.purchaseProduct(with: product.id, for: siteID)
-                                } catch {
-                                    purchaseError = PurchaseError(error: error)
-                                }
-                                await loadUserEntitlements()
-                                isPurchasing = false
-                            }
-                        }
-                        .alert(isPresented: $presentAlert, error: purchaseError, actions: {})
-                    }
-                } else {
-                    Text("No valid site id could be retrieved to purchase product. " +
-                         "Please set your Int64 test site id to the Xcode environment variable with name \(Constants.siteIdEnvironmentVariableName).")
-                        .foregroundColor(.red)
-                }
-            }
-
-            Section {
-                Button("Retry WPCom Synchronization for entitled products") {
-                    retryWPComSynchronizationForPurchasedProducts()
-                }.disabled(!inAppPurchasesAreSupported || entitledProductIDs.isEmpty)
-            }
-
-            if !inAppPurchasesAreSupported {
+        if ProcessInfo.processInfo.environment["wpcom-api-base-url"] == nil {
+            Text("⚠️ Your WPCOM Sandbox URL is not setup")
+                .headlineStyle()
+            Text("To test In-App Purchases please make sure that the WPCOM requests are pointing " +
+                 "to your sandbox environment and you have the billing system sandbox-mode enabled there.")
+            .padding()
+        } else {
+            List {
                 Section {
-                    Text("In-App Purchases are not supported for this user")
+                    Button("Reload products") {
+                        Task {
+                            await loadProducts()
+                        }
+                    }
+                }
+                Section("Products") {
+                    if products.isEmpty {
+                        Text("No products")
+                    } else if isPurchasing {
+                        ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                    } else if let stringSiteID = ProcessInfo.processInfo.environment[Constants.siteIdEnvironmentVariableName],
+                              let siteID = Int64(stringSiteID) {
+                        ForEach(products, id: \.id) { product in
+                            Button(entitledProductIDs.contains(product.id) ? "Entitled: \(product.description)" : product.description) {
+                                Task {
+                                    isPurchasing = true
+                                    do {
+                                        let result = try await inAppPurchasesForWPComPlansManager.purchaseProduct(with: product.id, for: siteID)
+                                        print("[IAP Debug] Purchase result: \(result)")
+                                    } catch {
+                                        purchaseError = PurchaseError(error: error)
+                                    }
+                                    await loadUserEntitlements()
+                                    isPurchasing = false
+                                }
+                            }
+                            .alert(isPresented: $presentAlert, error: purchaseError, actions: {})
+                        }
+                    } else {
+                        Text("No valid site id could be retrieved to purchase product. " +
+                             "Please set your Int64 test site id to the Xcode environment variable with name \(Constants.siteIdEnvironmentVariableName).")
                         .foregroundColor(.red)
+                    }
+                }
+
+                Section {
+                    Button("Retry WPCom Synchronization for entitled products") {
+                        retryWPComSynchronizationForPurchasedProducts()
+                    }.disabled(!inAppPurchasesAreSupported || entitledProductIDs.isEmpty)
+                }
+
+                if !inAppPurchasesAreSupported {
+                    Section {
+                        Text("In-App Purchases are not supported for this user")
+                            .foregroundColor(.red)
+                    }
                 }
             }
-        }
-        .navigationTitle("IAP Debug")
-        .task {
-            await loadProducts()
-        }
-        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
-            Task {
-                await loadUserEntitlements()
+            .navigationTitle("IAP Debug")
+            .task {
+                await loadProducts()
+            }
+            .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+                Task {
+                    await loadUserEntitlements()
+                }
             }
         }
     }

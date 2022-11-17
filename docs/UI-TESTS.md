@@ -33,6 +33,13 @@ The following flows are covered/planned to be covered by UI tests. Tests that ar
      - [x] With shipping
      - [x] With a fee
      - [x] With a customer note
+   - [x] Edit an existing order:
+     - [x] Open edit flow
+     - [x] Check existing order number
+     - [x] Check existing product 
+     - [ ] Edit products
+     - [ ] Edit customer details
+     - [x] Order Edit flow can be dismissed
    - [x] Order Creation flow can be dismissed
 4. [Products](../WooCommerce/WooCommerceUITests/Tests/ProductsTests.swift)
     - [x] Products list and single product screens load

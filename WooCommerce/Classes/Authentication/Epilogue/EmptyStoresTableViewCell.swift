@@ -33,7 +33,6 @@ final class EmptyStoresTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
-        configureBackground()
         configureStackView()
         configureImageView()
         configureRemoveAppleIDAccessButton()
@@ -47,9 +46,6 @@ final class EmptyStoresTableViewCell: UITableViewCell {
 
 
 private extension EmptyStoresTableViewCell {
-    func configureBackground() {
-        applyDefaultBackgroundStyle()
-    }
 
     func configureStackView() {
         stackView.spacing = 24

@@ -18,7 +18,7 @@ final class SiteCredentialLoginHostingViewController: UIHostingController<SiteCr
     }
 
     /// Shows a transparent navigation bar without a bottom border.
-    func configureNavigationBarAppearance() {
+    private func configureNavigationBarAppearance() {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithTransparentBackground()
         appearance.backgroundColor = .systemBackground
@@ -26,6 +26,14 @@ final class SiteCredentialLoginHostingViewController: UIHostingController<SiteCr
         navigationItem.standardAppearance = appearance
         navigationItem.scrollEdgeAppearance = appearance
         navigationItem.compactAppearance = appearance
+
+        let title = NSLocalizedString("Cancel", comment: "Button to dismiss the site credential login screen")
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: title, style: .plain, target: self, action: #selector(dismissView))
+    }
+
+    @objc
+    private func dismissView() {
+        dismiss(animated: true)
     }
 }
 
@@ -38,7 +46,7 @@ struct SiteCredentialLoginView: View {
 
     @State private var username = ""
     @State private var password = ""
-    @State private var showsSecureInput: Bool = true
+    @State private var showsSecureInput: Bool = false
 
     // Tracks the scale of the view due to accessibility changes.
     @ScaledMetric private var scale: CGFloat = 1.0

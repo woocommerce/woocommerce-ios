@@ -89,7 +89,9 @@ final class JetpackSetupRequiredViewModel: ULErrorViewModel {
         guard let navigationController = viewController?.navigationController else {
             return
         }
-        let coordinator = LoginJetpackSetupCoordinator(siteURL: siteURL, navigationController: navigationController)
+        let coordinator = LoginJetpackSetupCoordinator(siteURL: siteURL,
+                                                       connectionOnly: connectionOnly,
+                                                       navigationController: navigationController)
         self.coordinator = coordinator
         coordinator.start()
     }

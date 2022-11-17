@@ -693,7 +693,20 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.sitesImage)
     }
 
+    func test_emptyStorePickerImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.emptyStorePickerImage)
+    }
+
+    func test_jetpackSetupImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.jetpackSetupImage)
+    }
+
+    func test_jetpackConnectionImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.jetpackConnectionImage)
+    }
+
     func test_wpcomLogoImage_is_not_nil() {
         XCTAssertNotNil(UIImage.wpcomLogoImage)
+
     }
 }

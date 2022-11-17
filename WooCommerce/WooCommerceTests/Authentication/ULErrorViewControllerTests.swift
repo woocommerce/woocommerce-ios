@@ -208,6 +208,19 @@ final class ULErrorViewControllerTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.viewDidLoadTriggered)
     }
+
+    func test_terms_label_is_hidden_if_terms_text_is_nil() throws {
+        // Given
+        let viewModel = ErrorViewModel()
+        let viewController = ULErrorViewController(viewModel: viewModel)
+
+        // When
+        _ = try XCTUnwrap(viewController.view)
+        let termsLabel = viewController.getTermsLabel()
+
+        // Then
+        XCTAssertTrue(termsLabel.isHidden)
+    }
 }
 
 
@@ -227,6 +240,8 @@ private final class ErrorViewModel: ULErrorViewModel {
     let secondaryButtonTitle: String = "Secondary"
 
     var rightBarButtonItemTitle: String?
+
+    var termsLabelText: NSAttributedString?
 
     var primaryButtonTapped: Bool = false
     var secondaryButtonTapped: Bool = false

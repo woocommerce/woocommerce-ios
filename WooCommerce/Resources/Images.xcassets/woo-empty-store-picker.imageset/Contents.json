@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "woo-empty-store-picker.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

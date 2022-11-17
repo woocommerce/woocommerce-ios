@@ -144,7 +144,7 @@ struct SiteCredentialLoginView: View {
             }
             .buttonStyle(PrimaryButtonStyle())
             .disabled(viewModel.primaryButtonDisabled)
-
+            .background(Color(UIColor.systemBackground))
         })
         .padding()
     }

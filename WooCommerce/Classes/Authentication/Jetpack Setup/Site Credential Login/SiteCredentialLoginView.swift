@@ -3,7 +3,8 @@ import SwiftUI
 /// Hosting controller that wraps the `SiteCredentialLoginView`.
 final class SiteCredentialLoginHostingViewController: UIHostingController<SiteCredentialLoginView> {
     init(siteURL: String, connectionOnly: Bool) {
-        super.init(rootView: SiteCredentialLoginView(siteURL: siteURL, connectionOnly: connectionOnly))
+        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL)
+        super.init(rootView: SiteCredentialLoginView(connectionOnly: connectionOnly, viewModel: viewModel))
     }
 
     @available(*, unavailable)
@@ -41,21 +42,25 @@ final class SiteCredentialLoginHostingViewController: UIHostingController<SiteCr
 ///
 struct SiteCredentialLoginView: View {
 
-    let siteURL: String
-    let connectionOnly: Bool
+    private let connectionOnly: Bool
 
-    @State private var username = ""
-    @State private var password = ""
+    @ObservedObject private var viewModel: SiteCredentialLoginViewModel
+
     @State private var showsSecureInput: Bool = false
 
     // Tracks the scale of the view due to accessibility changes.
     @ScaledMetric private var scale: CGFloat = 1.0
 
+    init(connectionOnly: Bool, viewModel: SiteCredentialLoginViewModel) {
+        self.connectionOnly = connectionOnly
+        self.viewModel = viewModel
+    }
+
     /// Attributed string for the description text
     private var descriptionAttributedString: NSAttributedString {
         let font: UIFont = .body
         let boldFont: UIFont = font.bold
-        let siteName = siteURL.trimHTTPScheme()
+        let siteName = viewModel.siteURL.trimHTTPScheme()
         let description = connectionOnly ? Localization.connectDescription : Localization.installDescription
 
         let attributedString = NSMutableAttributedString(
@@ -84,7 +89,7 @@ struct SiteCredentialLoginView: View {
                 // text fields
                 VStack(alignment: .leading, spacing: Constants.contentVerticalSpacing) {
                     VStack(alignment: .leading, spacing: Constants.fieldVerticalSpacing) {
-                        TextField(Localization.enterUsername, text: $username)
+                        TextField(Localization.enterUsername, text: $viewModel.username)
                             .textFieldStyle(.plain)
                         Divider()
                     }
@@ -92,10 +97,10 @@ struct SiteCredentialLoginView: View {
 
                     VStack(alignment: .leading, spacing: Constants.fieldVerticalSpacing) {
                         if showsSecureInput {
-                            TextField(Localization.enterPassword, text: $password)
+                            TextField(Localization.enterPassword, text: $viewModel.password)
                                 .textFieldStyle(.plain)
                         } else {
-                            SecureField(Localization.enterPassword, text: $password)
+                            SecureField(Localization.enterPassword, text: $viewModel.password)
                         }
                         Divider()
                     }
@@ -132,6 +137,7 @@ struct SiteCredentialLoginView: View {
                 Text(connectionOnly ? Localization.connectJetpack : Localization.installJetpack)
             }
             .buttonStyle(PrimaryButtonStyle())
+            .disabled(viewModel.primaryButtonDisabled)
 
         })
         .padding()
@@ -173,7 +179,8 @@ private extension SiteCredentialLoginView {
 
 struct SiteCredentialLoginView_Previews: PreviewProvider {
     static var previews: some View {
-        SiteCredentialLoginView(siteURL: "https://test.com", connectionOnly: true)
-        SiteCredentialLoginView(siteURL: "https://test.com", connectionOnly: false)
+        let viewModel = SiteCredentialLoginViewModel(siteURL: "https://test.com")
+        SiteCredentialLoginView(connectionOnly: true, viewModel: viewModel)
+        SiteCredentialLoginView(connectionOnly: false, viewModel: viewModel)
     }
 }

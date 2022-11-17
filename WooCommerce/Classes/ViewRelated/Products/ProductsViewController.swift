@@ -220,16 +220,6 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     }
 }
 
-// MARK: - Public API
-//
-extension ProductsViewController {
-    /// Adds a new product using the "Add Product" navigation bar button as the source
-    ///
-    func addProduct() {
-        addProduct(addProductButton)
-    }
-}
-
 // MARK: - Navigation Bar Actions
 //
 private extension ProductsViewController {

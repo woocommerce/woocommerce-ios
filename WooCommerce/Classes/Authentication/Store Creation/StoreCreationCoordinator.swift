@@ -329,7 +329,7 @@ private extension StoreCreationCoordinator {
     @MainActor
     func showInProgressViewWhileWaitingForJetpackSite(from navigationController: UINavigationController,
                                                       siteID: Int64) {
-        waitForSiteToBecomeJetpackSite(siteID: siteID)
+        waitForSiteToBecomeJetpackSite(from: navigationController, siteID: siteID)
         showInProgressView(from: navigationController, viewProperties: .init(title: Localization.WaitingForJetpackSite.title, message: ""))
     }
 
@@ -360,7 +360,7 @@ private extension StoreCreationCoordinator {
     }
 
     @MainActor
-    func waitForSiteToBecomeJetpackSite(siteID: Int64) {
+    func waitForSiteToBecomeJetpackSite(from navigationController: UINavigationController, siteID: Int64) {
         siteIDFromStoreCreation = siteID
 
         jetpackSiteSubscription = $siteIDFromStoreCreation
@@ -378,7 +378,7 @@ private extension StoreCreationCoordinator {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] site in
                 guard let self, let site else { return }
-                self.continueWithSelectedSite(site: site)
+                self.showSuccessView(from: navigationController, site: site)
             }
     }
 
@@ -415,6 +415,17 @@ private extension StoreCreationCoordinator {
         alertController.view.tintColor = .text
         _ = alertController.addCancelActionWithTitle(Localization.StoreCreationErrorAlert.cancelActionTitle) { _ in }
         navigationController.present(alertController, animated: true)
+    }
+
+    @MainActor
+    func showSuccessView(from navigationController: UINavigationController, site: Site) {
+        guard let url = URL(string: site.url) else {
+            return continueWithSelectedSite(site: site)
+        }
+        let successView = StoreCreationSuccessHostingController(siteURL: url) { [weak self] in
+            self?.continueWithSelectedSite(site: site)
+        }
+        navigationController.pushViewController(successView, animated: true)
     }
 }
 

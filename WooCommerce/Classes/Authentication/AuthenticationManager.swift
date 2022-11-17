@@ -41,9 +41,12 @@ class AuthenticationManager: Authentication {
     ///
     private let storageManager: StorageManagerType
 
+    private let featureFlagService: FeatureFlagService
+
     init(storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.storageManager = storageManager
+        self.featureFlagService = featureFlagService
     }
 
     /// Initializes the WordPress Authenticator.
@@ -723,6 +726,18 @@ private extension AuthenticationManager {
         return ULErrorViewController(viewModel: viewModel)
     }
 
+    /// The error screen to be displayed when Jetpack setup for a site is required.
+    /// This is the entry point to the native Jetpack setup flow.
+    ///
+    func jetpackSetupUI(for siteURL: String,
+                        connectionMissingOnly: Bool,
+                        in navigationController: UINavigationController) -> UIViewController {
+        let viewModel = JetpackSetupRequiredViewModel(siteURL: siteURL,
+                                                      connectionOnly: connectionMissingOnly)
+        let jetpackSetupUI = ULErrorViewController(viewModel: viewModel)
+        return jetpackSetupUI
+    }
+
     /// Appropriate error to display for a site when entered from the site discovery flow.
     /// More about this flow: pe5sF9-mz-p2
     ///
@@ -737,6 +752,14 @@ private extension AuthenticationManager {
         guard !site.isWPCom else {
             // The site doesn't belong to the current account since it was not included in the site picker.
             return accountMismatchUI(for: site.url, siteCredentials: nil, with: matcher, in: navigationController)
+        }
+
+        // Shows the native Jetpack flow during the site discovery flow.
+        // TODO-8075: replace feature flag with A/B testing
+        if featureFlagService.isFeatureFlagEnabled(.nativeJetpackSetupFlow) {
+            return jetpackSetupUI(for: site.url,
+                                  connectionMissingOnly: site.hasJetpack && site.isJetpackActive,
+                                  in: navigationController)
         }
 
         /// Jetpack is required. Present an error if we don't detect a valid installation.

@@ -137,16 +137,22 @@ struct SiteCredentialLoginView: View {
         }
         .safeAreaInset(edge: .bottom, content: {
             Button {
+                // TODO-8075: add tracks
                 keyboardIsShown = false
-                // TODO
+                viewModel.handleLogin()
             } label: {
                 Text(connectionOnly ? Localization.connectJetpack : Localization.installJetpack)
             }
-            .buttonStyle(PrimaryButtonStyle())
+            .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoggingIn))
             .disabled(viewModel.primaryButtonDisabled)
             .background(Color(UIColor.systemBackground))
         })
         .padding()
+        .alert(viewModel.errorMessage, isPresented: $viewModel.shouldShowErrorAlert) {
+            Button(Localization.ok) {
+                viewModel.shouldShowErrorAlert.toggle()
+            }
+        }
     }
 }
 
@@ -170,6 +176,7 @@ private extension SiteCredentialLoginView {
             "We will ask for your approval to complete the Jetpack connection.",
             comment: "Note at the bottom of the site credential login screen"
         )
+        static let ok = NSLocalizedString("OK", comment: "Button to dismiss the error alert on the site credential login screen")
     }
 
     enum Constants {

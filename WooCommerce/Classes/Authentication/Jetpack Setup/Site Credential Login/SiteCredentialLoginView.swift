@@ -46,6 +46,8 @@ struct SiteCredentialLoginView: View {
 
     @ObservedObject private var viewModel: SiteCredentialLoginViewModel
 
+    @FocusState private var keyboardIsShown: Bool
+
     @State private var showsSecureInput: Bool = false
 
     // Tracks the scale of the view due to accessibility changes.
@@ -91,6 +93,7 @@ struct SiteCredentialLoginView: View {
                     VStack(alignment: .leading, spacing: Constants.fieldVerticalSpacing) {
                         TextField(Localization.enterUsername, text: $viewModel.username)
                             .textFieldStyle(.plain)
+                            .focused($keyboardIsShown)
                         Divider()
                     }
                     .frame(height: Constants.fieldHeight * scale)
@@ -99,8 +102,10 @@ struct SiteCredentialLoginView: View {
                         if showsSecureInput {
                             TextField(Localization.enterPassword, text: $viewModel.password)
                                 .textFieldStyle(.plain)
+                                .focused($keyboardIsShown)
                         } else {
                             SecureField(Localization.enterPassword, text: $viewModel.password)
+                                .focused($keyboardIsShown)
                         }
                         Divider()
                     }
@@ -132,6 +137,7 @@ struct SiteCredentialLoginView: View {
         }
         .safeAreaInset(edge: .bottom, content: {
             Button {
+                keyboardIsShown = false
                 // TODO
             } label: {
                 Text(connectionOnly ? Localization.connectJetpack : Localization.installJetpack)

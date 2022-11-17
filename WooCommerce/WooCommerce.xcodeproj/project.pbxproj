@@ -1721,10 +1721,11 @@
 		DE279BAF26EA03EA002BA963 /* ShippingLabelSinglePackageViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE279BAE26EA03EA002BA963 /* ShippingLabelSinglePackageViewModelTests.swift */; };
 		DE279BB126EA184A002BA963 /* ShippingLabelPackageListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE279BB026EA184A002BA963 /* ShippingLabelPackageListViewModel.swift */; };
 		DE2BF4FD2846192B00FBE68A /* CouponAllowedEmailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2BF4FC2846192B00FBE68A /* CouponAllowedEmailsViewModelTests.swift */; };
-		DE2FE5862925DA050018040A /* SiteCredentialLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2FE5852925DA050018040A /* SiteCredentialLoginView.swift */; };
-		DE2FE5882925DD950018040A /* JetpackInstallHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2FE5872925DD950018040A /* JetpackInstallHeaderView.swift */; };
 		DE2FE5812923729A0018040A /* JetpackSetupRequiredViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2FE5802923729A0018040A /* JetpackSetupRequiredViewModel.swift */; };
 		DE2FE5832924DA2F0018040A /* JetpackSetupRequiredViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2FE5822924DA2F0018040A /* JetpackSetupRequiredViewModelTests.swift */; };
+		DE2FE5862925DA050018040A /* SiteCredentialLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2FE5852925DA050018040A /* SiteCredentialLoginView.swift */; };
+		DE2FE5882925DD950018040A /* JetpackInstallHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2FE5872925DD950018040A /* JetpackInstallHeaderView.swift */; };
+		DE2FE58A2925EAAE0018040A /* LoginJetpackSetupCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2FE5892925EAAE0018040A /* LoginJetpackSetupCoordinator.swift */; };
 		DE3404E828B4B96800CF0D97 /* NonAtomicSiteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3404E728B4B96800CF0D97 /* NonAtomicSiteViewModel.swift */; };
 		DE3404EA28B4C1D000CF0D97 /* NonAtomicSiteViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3404E928B4C1D000CF0D97 /* NonAtomicSiteViewModelTests.swift */; };
 		DE34771327F174C8009CA300 /* StatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE34771227F174C8009CA300 /* StatusView.swift */; };
@@ -3707,10 +3708,11 @@
 		DE279BAE26EA03EA002BA963 /* ShippingLabelSinglePackageViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelSinglePackageViewModelTests.swift; sourceTree = "<group>"; };
 		DE279BB026EA184A002BA963 /* ShippingLabelPackageListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackageListViewModel.swift; sourceTree = "<group>"; };
 		DE2BF4FC2846192B00FBE68A /* CouponAllowedEmailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponAllowedEmailsViewModelTests.swift; sourceTree = "<group>"; };
-		DE2FE5852925DA050018040A /* SiteCredentialLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteCredentialLoginView.swift; sourceTree = "<group>"; };
-		DE2FE5872925DD950018040A /* JetpackInstallHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackInstallHeaderView.swift; sourceTree = "<group>"; };
 		DE2FE5802923729A0018040A /* JetpackSetupRequiredViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackSetupRequiredViewModel.swift; sourceTree = "<group>"; };
 		DE2FE5822924DA2F0018040A /* JetpackSetupRequiredViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackSetupRequiredViewModelTests.swift; sourceTree = "<group>"; };
+		DE2FE5852925DA050018040A /* SiteCredentialLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteCredentialLoginView.swift; sourceTree = "<group>"; };
+		DE2FE5872925DD950018040A /* JetpackInstallHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackInstallHeaderView.swift; sourceTree = "<group>"; };
+		DE2FE5892925EAAE0018040A /* LoginJetpackSetupCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginJetpackSetupCoordinator.swift; sourceTree = "<group>"; };
 		DE3404E728B4B96800CF0D97 /* NonAtomicSiteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NonAtomicSiteViewModel.swift; sourceTree = "<group>"; };
 		DE3404E928B4C1D000CF0D97 /* NonAtomicSiteViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NonAtomicSiteViewModelTests.swift; sourceTree = "<group>"; };
 		DE34771227F174C8009CA300 /* StatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusView.swift; sourceTree = "<group>"; };
@@ -8573,6 +8575,7 @@
 			isa = PBXGroup;
 			children = (
 				DE2FE5852925DA050018040A /* SiteCredentialLoginView.swift */,
+				DE2FE5892925EAAE0018040A /* LoginJetpackSetupCoordinator.swift */,
 			);
 			path = "Jetpack Setup";
 			sourceTree = "<group>";
@@ -10262,6 +10265,7 @@
 				B541B21C2189F3D8008FE7C1 /* StringStyles.swift in Sources */,
 				B58B4AB82108F14700076FDD /* NoticeNotificationInfo.swift in Sources */,
 				CE24BCD8212F25D4001CD12E /* StorageOrder+Woo.swift in Sources */,
+				DE2FE58A2925EAAE0018040A /* LoginJetpackSetupCoordinator.swift in Sources */,
 				02820F3422C257B700DE0D37 /* UITableView+HeaderFooterHelpers.swift in Sources */,
 				D8C2A291231BD0FD00F503E9 /* ReviewsDataSource.swift in Sources */,
 				CE855366209BA6A700938BDC /* CustomerInfoTableViewCell.swift in Sources */,

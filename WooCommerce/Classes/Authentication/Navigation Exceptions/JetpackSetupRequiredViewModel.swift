@@ -4,11 +4,12 @@ import UIKit
 /// modeling an error when Jetpack is not installed or is not connected
 /// Displayed as an entry point to the native Jetpack setup flow.
 /// 
-struct JetpackSetupRequiredViewModel: ULErrorViewModel {
+final class JetpackSetupRequiredViewModel: ULErrorViewModel {
     private let siteURL: String
     private let connectionOnly: Bool
     private let authentication: Authentication
     private let analytics: Analytics
+    private var coordinator: LoginJetpackSetupCoordinator?
 
     init(siteURL: String,
          connectionOnly: Bool,
@@ -84,7 +85,13 @@ struct JetpackSetupRequiredViewModel: ULErrorViewModel {
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        // TODO: handle Jetpack setup natively
+        // TODO: add tracks
+        guard let navigationController = viewController?.navigationController else {
+            return
+        }
+        let coordinator = LoginJetpackSetupCoordinator(siteURL: siteURL, navigationController: navigationController)
+        self.coordinator = coordinator
+        coordinator.start()
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {

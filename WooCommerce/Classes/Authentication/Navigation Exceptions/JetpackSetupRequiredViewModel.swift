@@ -73,9 +73,9 @@ struct JetpackSetupRequiredViewModel: ULErrorViewModel {
         )
 
         mutableAttributedText.setAsLink(textToFind: Localization.termsOfService,
-                                        linkURL: Strings.jetpackTermsURL + self.siteURL)
+                                        linkURL: Links.jetpackTerms + self.siteURL)
         mutableAttributedText.setAsLink(textToFind: Localization.shareDetails,
-                                        linkURL: Strings.jetpackShareDetailsURL + self.siteURL)
+                                        linkURL: Links.jetpackShareDetails + self.siteURL)
         return mutableAttributedText
     }
 
@@ -117,11 +117,13 @@ extension JetpackSetupRequiredViewModel {
         static let setupErrorMessage = NSLocalizedString(
             "To use this app for %@ you'll need the free Jetpack plugin installed and connected on your store.",
             comment: "Error message on the Jetpack setup required screen." +
-            "Reads like: To use this app for test.com you'll need...")
+            "Reads like: To use this app for test.com you'll need..."
+        )
         static let connectionErrorMessage = NSLocalizedString(
             "To use this app for %@ you'll need to connect your store to Jetpack.",
             comment: "Error message on the Jetpack setup required screen when Jetpack connection is missing." +
-            "Reads like: To use this app for test.com you'll need...")
+            "Reads like: To use this app for test.com you'll need..."
+        )
         static let setupSubtitle = NSLocalizedString(
             "You’ll need your store credentials to begin the installation.",
             comment: "Subtitle on the Jetpack setup required screen"
@@ -134,7 +136,8 @@ extension JetpackSetupRequiredViewModel {
         static let termsContent = NSLocalizedString(
             "By tapping the Connect Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com.",
             comment: "Content of the label at the end of the Jetpack setup required screen. " +
-            "Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com.")
+            "Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com."
+        )
         static let termsOfService = NSLocalizedString(
             "Terms of Service",
             comment: "The terms to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen."
@@ -145,8 +148,8 @@ extension JetpackSetupRequiredViewModel {
         )
     }
 
-    enum Strings {
-        static let jetpackTermsURL = "https://jetpack.com/redirect/?source=wpcom-tos&site="
-        static let jetpackShareDetailsURL = "https://jetpack.com/redirect/?source=jetpack-support-what-data-does-jetpack-sync&site="
+    enum Links {
+        static let jetpackTerms = "https://jetpack.com/redirect/?source=wpcom-tos&site="
+        static let jetpackShareDetails = "https://jetpack.com/redirect/?source=jetpack-support-what-data-does-jetpack-sync&site="
     }
 }

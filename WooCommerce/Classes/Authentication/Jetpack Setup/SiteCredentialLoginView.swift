@@ -36,6 +36,13 @@ struct SiteCredentialLoginView: View {
     let siteURL: String
     let connectionOnly: Bool
 
+    @State private var username = ""
+    @State private var password = ""
+    @State private var showsSecureInput: Bool = true
+
+    // Tracks the scale of the view due to accessibility changes.
+    @ScaledMetric private var scale: CGFloat = 1.0
+
     /// Attributed string for the description text
     private var descriptionAttributedString: NSAttributedString {
         let font: UIFont = .body
@@ -56,12 +63,57 @@ struct SiteCredentialLoginView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: Constants.contentVerticalSpacing) {
+            VStack(alignment: .leading, spacing: Constants.blockVerticalPadding) {
                 JetpackInstallHeaderView()
-                    .padding(.vertical, Constants.headerVerticalPadding)
-                Text(Localization.title)
-                    .largeTitleStyle()
-                AttributedText(descriptionAttributedString)
+
+                // title and description
+                VStack(alignment: .leading, spacing: Constants.contentVerticalSpacing) {
+                    Text(Localization.title)
+                        .largeTitleStyle()
+                    AttributedText(descriptionAttributedString)
+                }
+
+                // text fields
+                VStack(alignment: .leading, spacing: Constants.contentVerticalSpacing) {
+                    VStack(alignment: .leading, spacing: Constants.fieldVerticalSpacing) {
+                        TextField(Localization.enterUsername, text: $username)
+                            .textFieldStyle(.plain)
+                        Divider()
+                    }
+                    .frame(height: Constants.fieldHeight * scale)
+
+                    VStack(alignment: .leading, spacing: Constants.fieldVerticalSpacing) {
+                        if showsSecureInput {
+                            TextField(Localization.enterPassword, text: $password)
+                                .textFieldStyle(.plain)
+                        } else {
+                            SecureField(Localization.enterPassword, text: $password)
+                        }
+                        Divider()
+                    }
+                    .frame(height: Constants.fieldHeight * scale)
+                    .overlay(HStack {
+                        Spacer()
+                        // Button to show/hide the text field content.
+                        Button(action: {
+                            showsSecureInput.toggle()
+                        }) {
+                            Image(systemName: showsSecureInput ? "eye.slash" : "eye")
+                                .accentColor(Color(.textSubtle))
+                                .frame(width: Constants.eyeButtonDimension * scale,
+                                       height: Constants.eyeButtonDimension * scale)
+                                .padding(.horizontal, Constants.eyeButtonHorizontalPadding)
+                        }
+                    })
+                }
+
+                Label {
+                    Text(Localization.note)
+                } icon: {
+                    Image(systemName: "info.circle")
+                }
+                .foregroundColor(Color(uiColor: .secondaryLabel))
+
                 Spacer()
             }
         }
@@ -91,11 +143,23 @@ private extension SiteCredentialLoginView {
         )
         static let installJetpack = NSLocalizedString("Install Jetpack", comment: "Button title on the site credential login screen")
         static let connectJetpack = NSLocalizedString("Connect Jetpack", comment: "Button title on the site credential login screen")
+        static let enterUsername = NSLocalizedString("Enter username", comment: "Placeholder for the username field on the site credential login screen")
+        static let enterPassword = NSLocalizedString("Enter password", comment: "Placeholder for the password field on the site credential login screen")
+        static let resetPassword = NSLocalizedString("Reset password", comment: "Button to reset password on the site credential login screen")
+        static let note = NSLocalizedString(
+            "We will ask for your approval to complete the Jetpack connection.",
+            comment: "Note at the bottom of the site credential login screen"
+        )
     }
 
     enum Constants {
-        static let headerVerticalPadding: CGFloat = 24
+        static let blockVerticalPadding: CGFloat = 32
         static let contentVerticalSpacing: CGFloat = 8
+        static let borderHeight: CGFloat = 1
+        static let fieldVerticalSpacing: CGFloat = 16
+        static let eyeButtonHorizontalPadding: CGFloat = 8
+        static let eyeButtonDimension: CGFloat = 24
+        static let fieldHeight: CGFloat = 44
     }
 }
 

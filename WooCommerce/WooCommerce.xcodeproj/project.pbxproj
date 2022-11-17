@@ -1722,6 +1722,7 @@
 		DE279BB126EA184A002BA963 /* ShippingLabelPackageListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE279BB026EA184A002BA963 /* ShippingLabelPackageListViewModel.swift */; };
 		DE2BF4FD2846192B00FBE68A /* CouponAllowedEmailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2BF4FC2846192B00FBE68A /* CouponAllowedEmailsViewModelTests.swift */; };
 		DE2FE5862925DA050018040A /* SiteCredentialLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2FE5852925DA050018040A /* SiteCredentialLoginView.swift */; };
+		DE2FE5882925DD950018040A /* JetpackInstallHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2FE5872925DD950018040A /* JetpackInstallHeaderView.swift */; };
 		DE3404E828B4B96800CF0D97 /* NonAtomicSiteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3404E728B4B96800CF0D97 /* NonAtomicSiteViewModel.swift */; };
 		DE3404EA28B4C1D000CF0D97 /* NonAtomicSiteViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3404E928B4C1D000CF0D97 /* NonAtomicSiteViewModelTests.swift */; };
 		DE34771327F174C8009CA300 /* StatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE34771227F174C8009CA300 /* StatusView.swift */; };
@@ -3705,6 +3706,7 @@
 		DE279BB026EA184A002BA963 /* ShippingLabelPackageListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackageListViewModel.swift; sourceTree = "<group>"; };
 		DE2BF4FC2846192B00FBE68A /* CouponAllowedEmailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponAllowedEmailsViewModelTests.swift; sourceTree = "<group>"; };
 		DE2FE5852925DA050018040A /* SiteCredentialLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteCredentialLoginView.swift; sourceTree = "<group>"; };
+		DE2FE5872925DD950018040A /* JetpackInstallHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackInstallHeaderView.swift; sourceTree = "<group>"; };
 		DE3404E728B4B96800CF0D97 /* NonAtomicSiteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NonAtomicSiteViewModel.swift; sourceTree = "<group>"; };
 		DE3404E928B4C1D000CF0D97 /* NonAtomicSiteViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NonAtomicSiteViewModelTests.swift; sourceTree = "<group>"; };
 		DE34771227F174C8009CA300 /* StatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusView.swift; sourceTree = "<group>"; };
@@ -6062,6 +6064,7 @@
 				03076D37290C223D008EE839 /* WooNavigationSheet.swift */,
 				02EAA4C92911004B00918DAB /* TextFieldStyles.swift */,
 				036CA6F029229C9E00E4DF4F /* IndefiniteCircularProgressViewStyle.swift */,
+				DE2FE5872925DD950018040A /* JetpackInstallHeaderView.swift */,
 			);
 			path = "SwiftUI Components";
 			sourceTree = "<group>";
@@ -9770,6 +9773,7 @@
 				02CA63DB23D1ADD100BBF148 /* MediaPickingCoordinator.swift in Sources */,
 				028FA466257E021100F88A48 /* RefundShippingLabelViewModel.swift in Sources */,
 				CCC284112768C18500F6CC8B /* ProductInOrder.swift in Sources */,
+				DE2FE5882925DD950018040A /* JetpackInstallHeaderView.swift in Sources */,
 				B59D49CD219B587E006BF0AD /* UILabel+OrderStatus.swift in Sources */,
 				265BCA0C2430E741004E53EE /* ProductCategoryTableViewCell.swift in Sources */,
 				02ACD25A2852E11700EC928E /* RemoveAppleIDAccessCoordinator.swift in Sources */,

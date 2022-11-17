@@ -7,27 +7,7 @@ import WordPressShared
 /// Partial copy of the same file from WP-iOS
 /// https://github.com/wordpress-mobile/WordPress-iOS/blob/c027ccf05ba839d658f8496e62b7bfdae6608a10/WordPress/Classes/Utility/WebKitViewController.swift
 
-protocol WebKitAuthenticatable {
-    var authenticator: RequestAuthenticator? { get }
-    func authenticatedRequest(for url: URL, on webView: WKWebView, completion: @escaping (URLRequest) -> Void)
-}
-
-extension WebKitAuthenticatable {
-    func authenticatedRequest(for url: URL, on webView: WKWebView, completion: @escaping (URLRequest) -> Void) {
-        guard let authenticator = authenticator else {
-            return completion(URLRequest(url: url))
-        }
-
-        DispatchQueue.main.async {
-            let cookieStore = webView.configuration.websiteDataStore.httpCookieStore
-            authenticator.request(url: url, cookieJar: cookieStore) { (request) in
-                completion(request)
-            }
-        }
-    }
-}
-
-class WebKitViewController: UIViewController, WebKitAuthenticatable {
+class WebKitViewController: UIViewController {
     @objc let webView: WKWebView
     @objc let progressView = WebProgressView()
     @objc let titleView = NavigationTitleView()
@@ -77,7 +57,6 @@ class WebKitViewController: UIViewController, WebKitAuthenticatable {
     }()
 
     @objc let url: URL?
-    @objc let authenticator: RequestAuthenticator?
     @objc var secureInteraction = false
     @objc var customTitle: String?
     private let opensNewInSafari: Bool
@@ -92,9 +71,6 @@ class WebKitViewController: UIViewController, WebKitAuthenticatable {
         static let frameLoadInterrupted = 102
     }
 
-    /// Precautionary variable that's in place to make sure the web view doesn't run into an endless loop of reloads if it encounters an error.
-    private var hasAttemptedAuthRecovery = false
-
     @objc init(configuration: WebViewControllerConfiguration) {
         let config = WKWebViewConfiguration()
         // The default on iPad is true. We want the iPhone to be true as well.
@@ -104,7 +80,6 @@ class WebKitViewController: UIViewController, WebKitAuthenticatable {
         url = configuration.url
         secureInteraction = configuration.secureInteraction
         customTitle = configuration.customTitle
-        authenticator = configuration.authenticator
         linkBehavior = configuration.linkBehavior
         opensNewInSafari = configuration.opensNewInSafari
         onClose = configuration.onClose
@@ -119,7 +94,6 @@ class WebKitViewController: UIViewController, WebKitAuthenticatable {
         self.url = url
         secureInteraction = parent.secureInteraction
         customTitle = parent.customTitle
-        authenticator = parent.authenticator
         linkBehavior = parent.linkBehavior
         opensNewInSafari = parent.opensNewInSafari
         super.init(nibName: nil, bundle: nil)
@@ -198,9 +172,7 @@ class WebKitViewController: UIViewController, WebKitAuthenticatable {
             return
         }
 
-        authenticatedRequest(for: url, on: webView) { [weak self] (request) in
-            self?.webView.load(request)
-        }
+        webView.load(URLRequest(url: url))
     }
 
     // MARK: Navigation bar setup
@@ -427,13 +399,6 @@ class WebKitViewController: UIViewController, WebKitAuthenticatable {
 
 extension WebKitViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-
-        // Allow request if it is to `wp-login` for 2fa
-        if let url = navigationAction.request.url, authenticator?.isLogin(url: url) == true {
-            decisionHandler(.allow)
-            return
-        }
-
         // Check for link protocols such as `tel:` and set the correct behavior
         if let url = navigationAction.request.url, let scheme = url.scheme {
             let linkProtocols = ["tel", "sms", "mailto"]
@@ -457,24 +422,7 @@ extension WebKitViewController: WKNavigationDelegate {
             ServiceLocator.analytics.track(event: .ProductDetail.previewFailed(statusCode: response.statusCode))
         }
 
-        guard navigationResponse.isForMainFrame, let authenticator = authenticator, !hasAttemptedAuthRecovery else {
-            decisionHandler(.allow)
-            return
-        }
-
-        let cookieStore = webView.configuration.websiteDataStore.httpCookieStore
-        authenticator.decideActionFor(response: navigationResponse.response, cookieJar: cookieStore) { [unowned self] action in
-            switch action {
-            case .reload:
-                decisionHandler(.cancel)
-
-                /// We've cleared the stored cookies so let's try again.
-                self.hasAttemptedAuthRecovery = true
-                self.loadWebViewRequest()
-            case .allow:
-                decisionHandler(.allow)
-            }
-        }
+        decisionHandler(.allow)
     }
 }
 

@@ -73,7 +73,7 @@ private extension EmptyStoresTableViewCell {
             comment: "Link on the store picker for users who signed in with Apple to close their WordPress.com account."
         )
         static let legend =
-            NSLocalizedString("Create your first store.",
+            NSLocalizedString("Create your first store",
                               comment: "Displayed during the Login flow, whenever the user has no woo stores associated.")
         static let subtitle = NSLocalizedString("Quickly get up and selling with a beautiful online store.",
                                                 comment: "Subtitle displayed during the Login flow, whenever the user has no woo stores associated.")

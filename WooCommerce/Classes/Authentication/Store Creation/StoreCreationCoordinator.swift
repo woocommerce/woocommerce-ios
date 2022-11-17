@@ -301,8 +301,13 @@ private extension StoreCreationCoordinator {
                       siteID: Int64,
                       planToPurchase: WPComPlanProduct) async {
         do {
-            try await iapManager.purchaseProduct(with: planToPurchase.id, for: siteID)
-            showInProgressViewWhileWaitingForJetpackSite(from: navigationController, siteID: siteID)
+            let result = try await iapManager.purchaseProduct(with: planToPurchase.id, for: siteID)
+            switch result {
+            case .success:
+                showInProgressViewWhileWaitingForJetpackSite(from: navigationController, siteID: siteID)
+            default:
+                return
+            }
         } catch {
             showPlanPurchaseErrorAlert(from: navigationController, error: error)
         }

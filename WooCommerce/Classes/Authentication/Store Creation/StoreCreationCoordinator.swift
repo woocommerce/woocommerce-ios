@@ -25,7 +25,11 @@ final class StoreCreationCoordinator: Coordinator {
 
     @MainActor
     private lazy var iapManager: InAppPurchasesForWPComPlansProtocol = {
+        #if DEBUG
+        MockInAppPurchases()
+        #else
         InAppPurchasesForWPComPlansManager(stores: stores)
+        #endif
     }()
 
     @Published private var siteIDFromStoreCreation: Int64?
@@ -68,18 +72,22 @@ final class StoreCreationCoordinator: Coordinator {
                                    viewProperties: .init(title: "Just checking a few things",
                                                          message: "Waiting for in-app purchase eligibility"))
                 guard await iapManager.inAppPurchasesAreSupported() else {
+                    // TODO: 8108 - update in-progress UI while fetching IAP status
+                    _ = navigationController.popViewController(animated: false)
                     throw PlanPurchaseError.iapNotSupported
                 }
                 let products = try await iapManager.fetchProducts()
                 guard let product = products.first,
                       product.id == Constants.planIdentifier else {
+                    // TODO: 8108 - update in-progress UI while fetching IAP status
+                    _ = navigationController.popViewController(animated: false)
                     throw PlanPurchaseError.noMatchingProduct
                 }
                 guard try await iapManager.userIsEntitledToProduct(with: product.id) == false else {
+                    // TODO: 8108 - update in-progress UI while fetching IAP status
+                    _ = navigationController.popViewController(animated: false)
                     throw PlanPurchaseError.productNotEligible
                 }
-                // TODO: 8108 - update in-progress UI while fetching IAP status
-                _ = navigationController.popViewController(animated: false)
                 startStoreCreationM2(planToPurchase: product)
             } catch {
                 startStoreCreationM1()
@@ -306,7 +314,12 @@ private extension StoreCreationCoordinator {
             case .success:
                 showInProgressViewWhileWaitingForJetpackSite(from: navigationController, siteID: siteID)
             default:
+#if DEBUG
+                // Since a successful result cannot be easily mocked, any result is considered a success.
+                showInProgressViewWhileWaitingForJetpackSite(from: navigationController, siteID: siteID)
+#else
                 return
+#endif
             }
         } catch {
             showPlanPurchaseErrorAlert(from: navigationController, error: error)
@@ -382,9 +395,12 @@ private extension StoreCreationCoordinator {
                 guard let site = self.storePickerViewModel.site(thatMatchesSiteID: siteID) else {
                     return continuation.resume(throwing: StoreCreationError.newSiteUnavailable)
                 }
+#if DEBUG
+#else
                 guard site.isJetpackConnected && site.isJetpackThePluginInstalled else {
                     return continuation.resume(throwing: StoreCreationError.newSiteIsNotJetpackSite)
                 }
+#endif
                 continuation.resume(returning: site)
             }
         }

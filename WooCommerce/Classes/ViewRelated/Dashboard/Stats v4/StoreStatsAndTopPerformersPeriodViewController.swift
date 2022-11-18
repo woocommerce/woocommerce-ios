@@ -292,7 +292,9 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
             ])
 
         // Analytics Hub ("See more") button
-        stackView.addArrangedSubview(analyticsHubButtonView)
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.analyticsHub) {
+            stackView.addArrangedSubview(analyticsHubButtonView)
+        }
 
         // In-app Feedback Card
         stackView.addArrangedSubviews(inAppFeedbackCardViewsForStackView)

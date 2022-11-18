@@ -1,6 +1,6 @@
 import Yosemite
 
-class AnalyticsHubViewModel {
+class AnalyticsHubViewModel: ObservableObject {
     private let selectedTimeRange: StatsTimeRangeV4
 
     init(selectedTimeRange: StatsTimeRangeV4) {

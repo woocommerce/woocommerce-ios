@@ -146,6 +146,7 @@ struct SiteCredentialLoginView: View {
             }
             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoggingIn))
             .disabled(viewModel.primaryButtonDisabled)
+            .padding(.top, Constants.contentVerticalSpacing)
             .background(Color(UIColor.systemBackground))
         })
         .padding()

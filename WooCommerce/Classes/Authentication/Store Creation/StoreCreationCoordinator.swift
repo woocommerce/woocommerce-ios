@@ -49,7 +49,8 @@ final class StoreCreationCoordinator: Coordinator {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         iapManager: InAppPurchasesForWPComPlansProtocol? = nil) {
         self.source = source
         self.navigationController = navigationController
         // Passing the `standard` configuration to include sites without WooCommerce (`isWooCommerceActive = false`).
@@ -61,6 +62,12 @@ final class StoreCreationCoordinator: Coordinator {
         self.stores = stores
         self.analytics = analytics
         self.featureFlagService = featureFlagService
+
+        Task { @MainActor in
+            if let iapManager {
+                self.iapManager = iapManager
+            }
+        }
     }
 
     func start() {

@@ -76,7 +76,8 @@ final class StoreCreationCoordinatorTests: XCTestCase {
         let featureFlagService = MockFeatureFlagService(isStoreCreationM2Enabled: true)
         let coordinator = StoreCreationCoordinator(source: .storePicker,
                                                    navigationController: navigationController,
-                                                   featureFlagService: featureFlagService)
+                                                   featureFlagService: featureFlagService,
+                                                   iapManager: MockInAppPurchases(fetchProductsDuration: 0))
         waitFor { promise in
             self.navigationController.present(.init(), animated: false) {
                 promise(())
@@ -101,7 +102,8 @@ final class StoreCreationCoordinatorTests: XCTestCase {
         navigationController.show(.init(), sender: nil)
         let coordinator = StoreCreationCoordinator(source: .loggedOut(source: .loginEmailError),
                                                    navigationController: navigationController,
-                                                   featureFlagService: featureFlagService)
+                                                   featureFlagService: featureFlagService,
+                                                   iapManager: MockInAppPurchases(fetchProductsDuration: 0))
         XCTAssertNotNil(navigationController.topViewController)
         XCTAssertNil(navigationController.presentedViewController)
 
@@ -114,5 +116,69 @@ final class StoreCreationCoordinatorTests: XCTestCase {
         }
         let storeCreationNavigationController = try XCTUnwrap(navigationController.presentedViewController as? UINavigationController)
         assertThat(storeCreationNavigationController.topViewController, isAnInstanceOf: StoreNameFormHostingController.self)
+    }
+
+    func test_InProgressViewController_is_first_presented_when_fetching_iap_products() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isStoreCreationM2Enabled: true)
+        let iapManager = MockInAppPurchases(fetchProductsDuration: 1)
+        let coordinator = StoreCreationCoordinator(source: .storePicker,
+                                                   navigationController: navigationController,
+                                                   featureFlagService: featureFlagService,
+                                                   iapManager: iapManager)
+
+        // When
+        coordinator.start()
+
+        // Then
+        waitUntil {
+            self.navigationController.presentedViewController is InProgressViewController
+        }
+    }
+
+    func test_AuthenticatedWebViewController_is_presented_when_no_matching_iap_product() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isStoreCreationM2Enabled: true)
+        let iapManager = MockInAppPurchases(fetchProductsDuration: 0,
+                                            products: [
+                                                MockInAppPurchases.Plan(displayName: "",
+                                                                        description: "",
+                                                                        id: "random.id",
+                                                                        displayPrice: "$25")
+                                            ])
+        let coordinator = StoreCreationCoordinator(source: .storePicker,
+                                                   navigationController: navigationController,
+                                                   featureFlagService: featureFlagService,
+                                                   iapManager: iapManager)
+
+        // When
+        coordinator.start()
+
+        // Then
+        waitUntil {
+            self.navigationController.presentedViewController is WooNavigationController
+        }
+        let storeCreationNavigationController = try XCTUnwrap(navigationController.presentedViewController as? UINavigationController)
+        assertThat(storeCreationNavigationController.topViewController, isAnInstanceOf: AuthenticatedWebViewController.self)
+    }
+
+    func test_AuthenticatedWebViewController_is_presented_when_user_is_already_entitled_to_iap_product() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isStoreCreationM2Enabled: true)
+        let iapManager = MockInAppPurchases(fetchProductsDuration: 0, userIsEntitledToProduct: true)
+        let coordinator = StoreCreationCoordinator(source: .storePicker,
+                                                   navigationController: navigationController,
+                                                   featureFlagService: featureFlagService,
+                                                   iapManager: iapManager)
+
+        // When
+        coordinator.start()
+
+        // Then
+        waitUntil {
+            self.navigationController.presentedViewController is WooNavigationController
+        }
+        let storeCreationNavigationController = try XCTUnwrap(navigationController.presentedViewController as? UINavigationController)
+        assertThat(storeCreationNavigationController.topViewController, isAnInstanceOf: AuthenticatedWebViewController.self)
     }
 }

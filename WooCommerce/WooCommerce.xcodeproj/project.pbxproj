@@ -1728,6 +1728,8 @@
 		DE2FE58A2925EAAE0018040A /* LoginJetpackSetupCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2FE5892925EAAE0018040A /* LoginJetpackSetupCoordinator.swift */; };
 		DE2FE58D292617C30018040A /* SiteCredentialLoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2FE58C292617C30018040A /* SiteCredentialLoginViewModel.swift */; };
 		DE2FE59029261DED0018040A /* SiteCredentialLoginViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2FE58F29261DED0018040A /* SiteCredentialLoginViewModelTests.swift */; };
+		DE2FE595292737330018040A /* LoginJetpackSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2FE594292737330018040A /* LoginJetpackSetupView.swift */; };
+		DE2FE597292737630018040A /* LoginJetpackSetupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2FE596292737630018040A /* LoginJetpackSetupViewModel.swift */; };
 		DE3404E828B4B96800CF0D97 /* NonAtomicSiteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3404E728B4B96800CF0D97 /* NonAtomicSiteViewModel.swift */; };
 		DE3404EA28B4C1D000CF0D97 /* NonAtomicSiteViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3404E928B4C1D000CF0D97 /* NonAtomicSiteViewModelTests.swift */; };
 		DE34771327F174C8009CA300 /* StatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE34771227F174C8009CA300 /* StatusView.swift */; };
@@ -3717,6 +3719,8 @@
 		DE2FE5892925EAAE0018040A /* LoginJetpackSetupCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginJetpackSetupCoordinator.swift; sourceTree = "<group>"; };
 		DE2FE58C292617C30018040A /* SiteCredentialLoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteCredentialLoginViewModel.swift; sourceTree = "<group>"; };
 		DE2FE58F29261DED0018040A /* SiteCredentialLoginViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteCredentialLoginViewModelTests.swift; sourceTree = "<group>"; };
+		DE2FE594292737330018040A /* LoginJetpackSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginJetpackSetupView.swift; sourceTree = "<group>"; };
+		DE2FE596292737630018040A /* LoginJetpackSetupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginJetpackSetupViewModel.swift; sourceTree = "<group>"; };
 		DE3404E728B4B96800CF0D97 /* NonAtomicSiteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NonAtomicSiteViewModel.swift; sourceTree = "<group>"; };
 		DE3404E928B4C1D000CF0D97 /* NonAtomicSiteViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NonAtomicSiteViewModelTests.swift; sourceTree = "<group>"; };
 		DE34771227F174C8009CA300 /* StatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusView.swift; sourceTree = "<group>"; };
@@ -8579,6 +8583,7 @@
 		DE2FE5842925D9040018040A /* Jetpack Setup */ = {
 			isa = PBXGroup;
 			children = (
+				DE2FE593292736F90018040A /* Native Jetpack Setup */,
 				DE2FE58B2926179A0018040A /* Site Credential Login */,
 				DE2FE5892925EAAE0018040A /* LoginJetpackSetupCoordinator.swift */,
 			);
@@ -8600,6 +8605,15 @@
 				DE2FE58F29261DED0018040A /* SiteCredentialLoginViewModelTests.swift */,
 			);
 			path = "Jetpack Setup";
+			sourceTree = "<group>";
+		};
+		DE2FE593292736F90018040A /* Native Jetpack Setup */ = {
+			isa = PBXGroup;
+			children = (
+				DE2FE594292737330018040A /* LoginJetpackSetupView.swift */,
+				DE2FE596292737630018040A /* LoginJetpackSetupViewModel.swift */,
+			);
+			path = "Native Jetpack Setup";
 			sourceTree = "<group>";
 		};
 		DE4B3B2A2692DBF200EEF2D8 /* Review Order */ = {
@@ -9843,6 +9857,7 @@
 				684AB83A2870677F003DFDD1 /* CardReaderManualsView.swift in Sources */,
 				E1BAAEA026BBECEF00F2C037 /* ButtonStyles.swift in Sources */,
 				CC13C0CB278E021300C0B5B5 /* ProductVariationSelectorViewModel.swift in Sources */,
+				DE2FE595292737330018040A /* LoginJetpackSetupView.swift in Sources */,
 				B59D1EEA2190AE96009D1978 /* StorageNote+Woo.swift in Sources */,
 				024DF3072372C18D006658FE /* AztecUIConfigurator.swift in Sources */,
 				CCF4346E290AE1F900B4475A /* ProductsOnboardingAnnouncementCardViewModel.swift in Sources */,
@@ -10586,6 +10601,7 @@
 				744F00D221B582A9007EFA93 /* StarRatingView.swift in Sources */,
 				45F627B9253603AE00894B86 /* ProductDownloadSettingsViewModel.swift in Sources */,
 				031B10E3274FE2AE007390BA /* CardPresentModalConnectionFailedUpdateAddress.swift in Sources */,
+				DE2FE597292737630018040A /* LoginJetpackSetupViewModel.swift in Sources */,
 				4572641727F1EB0D004E1F95 /* AddEditCoupon.swift in Sources */,
 				318109E825E5B8D600EE0BE7 /* NumberedListItemTableViewCell.swift in Sources */,
 				DE26B52C277DA11800A2EA0A /* CouponListView.swift in Sources */,

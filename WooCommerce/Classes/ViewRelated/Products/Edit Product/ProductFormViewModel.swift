@@ -181,6 +181,10 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     private let featureFlagService: FeatureFlagService
 
+    /// Assign this closure to be notified when a new product is saved remotely
+    ///
+    var onProductCreated: () -> Void = {}
+
     init(product: EditableProductModel,
          formType: ProductFormType,
          productImageActionHandler: ProductImageActionHandler,
@@ -432,7 +436,7 @@ extension ProductFormViewModel {
             let productWithStatusUpdated = product.product.copy(statusKey: status.rawValue)
             return EditableProductModel(product: productWithStatusUpdated)
         }()
-        let remoteActionUseCase = ProductFormRemoteActionUseCase()
+        let remoteActionUseCase = ProductFormRemoteActionUseCase(stores: stores)
         switch formType {
         case .add:
             let productIDBeforeSave = productModel.productID
@@ -449,6 +453,7 @@ extension ProductFormViewModel {
                     onCompletion(.success(data.product))
                     self.replaceProductID(productIDBeforeSave: productIDBeforeSave)
                     self.saveProductImagesWhenNoneIsPendingUploadAnymore()
+                    self.onProductCreated()
                 }
             }
         case .edit:

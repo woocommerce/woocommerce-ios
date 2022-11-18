@@ -6692,6 +6692,17 @@
 			path = FlowCoordinator;
 			sourceTree = "<group>";
 		};
+		AE2EA1122927F86C000392B6 /* AnalyticsHub */ = {
+			isa = PBXGroup;
+			children = (
+				B6A480FB2927B70400A00183 /* AnalyticsHub.swift */,
+				B6A480FD2927B77B00A00183 /* AnalyticsHubViewModel.swift */,
+				B6A480FF2927BAA700A00183 /* AnalyticsHubTimeRange.swift */,
+				AE2EA1132927F87B000392B6 /* AnalyticsHubView.swift */,
+			);
+			path = AnalyticsHub;
+			sourceTree = "<group>";
+		};
 		AE9E04732776034B003FA09E /* CustomerSection */ = {
 			isa = PBXGroup;
 			children = (
@@ -7355,16 +7366,6 @@
 				53284C9FD06F2BDABC554BEE /* OrderFormCustomerNoteViewModel.swift */,
 			);
 			path = CustomerNoteSection;
-			sourceTree = "<group>";
-		};
-		B6A480FA2927B6AB00A00183 /* Analytics Hub */ = {
-			isa = PBXGroup;
-			children = (
-				B6A480FB2927B70400A00183 /* AnalyticsHub.swift */,
-				B6A480FD2927B77B00A00183 /* AnalyticsHubViewModel.swift */,
-				B6A480FF2927BAA700A00183 /* AnalyticsHubTimeRange.swift */,
-			);
-			path = "Analytics Hub";
 			sourceTree = "<group>";
 		};
 		B958A7C528B3D42000823EEF /* Universal Links */ = {
@@ -8070,6 +8071,7 @@
 			isa = PBXGroup;
 			children = (
 				2647F7B329280A5000D59FDF /* Analytics Hub */,
+				AE2EA1122927F86C000392B6 /* AnalyticsHub */,
 				DE23CFF827462CD2003BE54E /* JetpackInstall */,
 				02F843D8273646190017FE12 /* JetpackConnectionPackageSites */,
 				028BAC4322F3AE3B008BB4AF /* Stats v4 */,

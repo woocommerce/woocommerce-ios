@@ -127,6 +127,17 @@ struct SiteCredentialLoginView: View {
                         }
                         .offset(x: 0, y: -Constants.fieldVerticalSpacing/2)
                     })
+
+                    VStack(alignment: .leading, spacing: Constants.fieldVerticalSpacing) {
+                        Button {
+                            viewModel.resetPassword()
+                        } label: {
+                            Text(Localization.resetPassword)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                        .foregroundColor(Color(uiColor: .accent))
+                        Divider()
+                    }
                 }
 
                 Label {
@@ -176,7 +187,7 @@ private extension SiteCredentialLoginView {
         static let connectJetpack = NSLocalizedString("Connect Jetpack", comment: "Button title on the site credential login screen")
         static let enterUsername = NSLocalizedString("Enter username", comment: "Placeholder for the username field on the site credential login screen")
         static let enterPassword = NSLocalizedString("Enter password", comment: "Placeholder for the password field on the site credential login screen")
-        static let resetPassword = NSLocalizedString("Reset password", comment: "Button to reset password on the site credential login screen")
+        static let resetPassword = NSLocalizedString("Reset your password", comment: "Button to reset password on the site credential login screen")
         static let note = NSLocalizedString(
             "We will ask for your approval to complete the Jetpack connection.",
             comment: "Note at the bottom of the site credential login screen"

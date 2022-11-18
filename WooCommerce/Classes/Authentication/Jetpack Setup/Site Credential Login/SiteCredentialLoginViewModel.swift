@@ -18,6 +18,15 @@ final class SiteCredentialLoginViewModel: NSObject, ObservableObject {
                                                dotcomSecret: ApiCredentials.dotcomSecret,
                                                userAgent: UserAgent.defaultUserAgent)
 
+    private var loginFields: LoginFields {
+        let loginFields = LoginFields()
+        loginFields.username = username
+        loginFields.password = password
+        loginFields.siteAddress = siteURL
+        loginFields.meta.userIsDotCom = false
+        return loginFields
+    }
+
     init(siteURL: String) {
         self.siteURL = siteURL
         super.init()
@@ -26,13 +35,12 @@ final class SiteCredentialLoginViewModel: NSObject, ObservableObject {
     }
 
     func handleLogin() {
-        let loginFields = LoginFields()
-        loginFields.username = username
-        loginFields.password = password
-        loginFields.siteAddress = siteURL
-        loginFields.meta.userIsDotCom = false
         loginFacade.signIn(with: loginFields)
         isLoggingIn = true
+    }
+
+    func resetPassword() {
+        WordPressAuthenticator.openForgotPasswordURL(loginFields)
     }
 }
 

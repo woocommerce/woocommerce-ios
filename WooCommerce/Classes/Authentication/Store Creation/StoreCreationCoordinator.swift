@@ -27,11 +27,15 @@ final class StoreCreationCoordinator: Coordinator {
     /// If it's passed in the initializer, all call sites have to become @MainActor which results in too many changes.
     @MainActor
     private lazy var iapManager: InAppPurchasesForWPComPlansProtocol = {
+#if DEBUG
         if featureFlagService.isFeatureFlagEnabled(.storeCreationM2WithInAppPurchasesEnabled) {
             return InAppPurchasesForWPComPlansManager(stores: stores)
         } else {
             return MockInAppPurchases()
         }
+#else
+        InAppPurchasesForWPComPlansManager(stores: stores)
+#endif
     }()
 
     @Published private var siteIDFromStoreCreation: Int64?

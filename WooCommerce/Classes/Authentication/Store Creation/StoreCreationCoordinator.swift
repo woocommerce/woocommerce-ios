@@ -112,7 +112,7 @@ private extension StoreCreationCoordinator {
     }
 
     func startStoreCreationM2(planToPurchase: WPComPlanProduct) {
-        let storeCreationNavigationController = UINavigationController()
+        let storeCreationNavigationController = WooNavigationController()
         storeCreationNavigationController.navigationBar.prefersLargeTitles = true
 
         let storeNameForm = StoreNameFormHostingController { [weak self] storeName in

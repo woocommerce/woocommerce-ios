@@ -15,7 +15,7 @@ struct AnalyticsHub: View {
 
 struct AnalyticsHub_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = AnalyticsHubViewModel(selectedTimeRange: StatsTimeRangeV4(rawValue: "2022-11-18"))
+        let viewModel = AnalyticsHubViewModel(selectedTimeRange: .thisYear)
         AnalyticsHub(viewModel)
     }
 }

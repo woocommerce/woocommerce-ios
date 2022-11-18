@@ -10,10 +10,10 @@ extension UIButton {
     func applyPrimaryButtonStyle() {
         var configuration = UIButton.Configuration.filled()
         configuration.contentInsets = .init(
-            top: Style.defaultVerticalInsets,
-            leading: Style.defaultHorizontalInsets,
-            bottom: Style.defaultVerticalInsets,
-            trailing: Style.defaultHorizontalInsets
+            top: Style.verticalInset,
+            leading: Style.horizontalInset,
+            bottom: Style.verticalInset,
+            trailing: Style.horizontalInset
         )
         layer.borderColor = UIColor.primaryButtonBorder.cgColor
         layer.borderWidth = Style.defaultBorderWidth
@@ -47,10 +47,10 @@ extension UIButton {
     func applySecondaryButtonStyle() {
         var configuration = UIButton.Configuration.filled()
         configuration.contentInsets = .init(
-            top: Style.defaultVerticalInsets,
-            leading: Style.defaultHorizontalInsets,
-            bottom: Style.defaultVerticalInsets,
-            trailing: Style.defaultHorizontalInsets
+            top: Style.verticalInset,
+            leading: Style.horizontalInset,
+            bottom: Style.verticalInset,
+            trailing: Style.horizontalInset
         )
         backgroundColor = .secondaryButtonBackground
         layer.borderColor = UIColor.secondaryButtonBorder.cgColor
@@ -85,10 +85,10 @@ extension UIButton {
     func applyLinkButtonStyle(enableMultipleLines: Bool = false) {
         var configuration = UIButton.Configuration.plain()
         configuration.contentInsets = .init(
-            top: Style.defaultVerticalInsets,
-            leading: Style.defaultHorizontalInsets,
-            bottom: Style.defaultVerticalInsets,
-            trailing: Style.defaultHorizontalInsets
+            top: Style.verticalInset,
+            leading: Style.horizontalInset,
+            bottom: Style.verticalInset,
+            trailing: Style.horizontalInset
         )
         backgroundColor = .clear
         tintColor = .accent
@@ -115,10 +115,10 @@ extension UIButton {
     func applyPaymentsModalCancelButtonStyle() {
         var configuration = UIButton.Configuration.plain()
         configuration.contentInsets = .init(
-            top: Style.defaultVerticalInsets,
-            leading: Style.defaultHorizontalInsets,
-            bottom: Style.defaultVerticalInsets,
-            trailing: Style.defaultHorizontalInsets
+            top: Style.verticalInset,
+            leading: Style.horizontalInset,
+            bottom: Style.verticalInset,
+            trailing: Style.horizontalInset
         )
         backgroundColor = .tertiarySystemBackground
         layer.borderColor = UIColor.secondaryButtonBorder.cgColor
@@ -193,7 +193,7 @@ private extension UIButton {
     struct Style {
         static let defaultCornerRadius = CGFloat(8.0)
         static let defaultBorderWidth = CGFloat(1.0)
-        static let defaultVerticalInsets = CGFloat(12)
-        static let defaultHorizontalInsets = CGFloat(22)
+        static let verticalInset = CGFloat(12)
+        static let horizontalInset = CGFloat(22)
     }
 }

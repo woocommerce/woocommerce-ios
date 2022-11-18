@@ -44,9 +44,9 @@ class VerticalButton: UIButton {
         var configuration = UIButton.Configuration.filled()
         configuration.contentInsets = .init(
             top: .zero,
-            leading: Settings.horizontalEdgeInsets,
+            leading: Settings.inset,
             bottom: .zero,
-            trailing: Settings.horizontalEdgeInsets
+            trailing: Settings.inset
         )
         layer.cornerRadius = Settings.cornerRadius
         titleLabel?.font = UIFont.footnote
@@ -60,7 +60,7 @@ private extension VerticalButton {
 
     enum Settings {
         static let cornerRadius     = CGFloat(10)
-        static let horizontalEdgeInsets = CGFloat(5)
+        static let inset            = CGFloat(5)
         static let labelPaddingTop  = CGFloat(2)
     }
 }

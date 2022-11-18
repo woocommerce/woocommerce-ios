@@ -39,7 +39,7 @@ final class PaymentCaptureOrchestrator {
                         paymentGatewayAccount: PaymentGatewayAccount,
                         paymentMethodTypes: [String],
                         stripeSmallestCurrencyUnitMultiplier: Decimal,
-                        onWaitingForInput: @escaping () -> Void,
+                        onWaitingForInput: @escaping (CardReaderInput) -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onDisplayMessage: @escaping (String) -> Void,
                         onProcessingCompletion: @escaping (PaymentIntent) -> Void,
@@ -68,8 +68,8 @@ final class PaymentCaptureOrchestrator {
             parameters: parameters,
             onCardReaderMessage: { event in
                 switch event {
-                case .waitingForInput:
-                    onWaitingForInput()
+                case .waitingForInput(let inputMethods):
+                    onWaitingForInput(inputMethods)
                 case .displayMessage(let message):
                     onDisplayMessage(message)
                 case .cardRemovedAfterClientSidePaymentCapture:

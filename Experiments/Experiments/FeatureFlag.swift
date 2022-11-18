@@ -79,7 +79,7 @@ public enum FeatureFlag: Int {
     case storeCreationM2
 
     /// Whether in-app purchases are enabled for store creation milestone 2 behind `storeCreationM2` feature flag.
-    /// If disabled, mock in-app purchases are used in `MockInAppPurchases`.
+    /// If disabled, mock in-app purchases are provided by `MockInAppPurchases`.
     ///
     case storeCreationM2WithInAppPurchasesEnabled
 

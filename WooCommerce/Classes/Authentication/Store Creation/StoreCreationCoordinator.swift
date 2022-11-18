@@ -69,7 +69,6 @@ final class StoreCreationCoordinator: Coordinator {
         }
         Task { @MainActor in
             do {
-                // TODO: 8108 - update in-progress UI while fetching IAP status
                 presentIAPEligibilityInProgressView()
                 guard await iapManager.inAppPurchasesAreSupported() else {
                     throw PlanPurchaseError.iapNotSupported
@@ -321,7 +320,8 @@ private extension StoreCreationCoordinator {
                 showInProgressViewWhileWaitingForJetpackSite(from: navigationController, siteID: siteID)
             default:
                 if !featureFlagService.isFeatureFlagEnabled(.storeCreationM2WithInAppPurchasesEnabled) {
-                    // Since a successful result cannot be easily mocked, any result is considered a success.
+                    // Since a successful result cannot be easily mocked, any result is considered a success
+                    // when using a mock for IAP.
                     showInProgressViewWhileWaitingForJetpackSite(from: navigationController, siteID: siteID)
                 }
                 return
@@ -401,7 +401,7 @@ private extension StoreCreationCoordinator {
                     return continuation.resume(throwing: StoreCreationError.newSiteUnavailable)
                 }
 
-                // For IAP mocks, returns the site without waiting for the site to become a Jetpack site.
+                // When using a mock for IAP, returns the site without waiting for the site to become a Jetpack site.
                 if !self.featureFlagService.isFeatureFlagEnabled(.storeCreationM2WithInAppPurchasesEnabled) {
                     return continuation.resume(returning: site)
                 }
@@ -416,7 +416,6 @@ private extension StoreCreationCoordinator {
 
     @MainActor
     func showPlanPurchaseErrorAlert(from navigationController: UINavigationController, error: Error) {
-        // TODO: 8108 - improve error handling
         let alertController = UIAlertController(title: Localization.PlanPurchaseErrorAlert.title,
                                                 message: Localization.PlanPurchaseErrorAlert.defaultErrorMessage,
                                                 preferredStyle: .alert)
@@ -505,9 +504,13 @@ private extension StoreCreationCoordinator {
         static let planIdentifier = "debug.woocommerce.ecommerce.monthly"
     }
 
+    /// Error scenarios when purchasing a WPCOM plan.
     enum PlanPurchaseError: Error {
+        /// The user is not eligible for In-App Purchases.
         case iapNotSupported
+        /// There is no matching product to purchase.
         case noMatchingProduct
+        /// The user is already entitled to the product, and cannot purchase it anymore.
         case productNotEligible
     }
 }

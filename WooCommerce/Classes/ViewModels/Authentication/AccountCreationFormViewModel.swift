@@ -52,27 +52,25 @@ final class AccountCreationFormViewModel: ObservableObject {
     /// Creates a WPCOM account with the email and password.
     /// - Returns: async result of account creation.
     @MainActor
-    func createAccount() async -> Result<Void, Error> {
+    func createAccount() async throws {
         analytics.track(event: .StoreCreation.signupSubmitted())
 
-        let result: Result<CreateAccountResult, CreateAccountError> = await withCheckedContinuation { continuation in
-            let action = AccountCreationAction.createAccount(email: email, password: password) { result in
-                continuation.resume(returning: result)
+        do {
+            let data = try await withCheckedThrowingContinuation { continuation in
+                let action = AccountCreationAction.createAccount(email: email, password: password) { result in
+                    continuation.resume(with: result)
+                }
+                stores.dispatch(action)
             }
-            stores.dispatch(action)
-        }
 
-        switch result {
-        case .success(let data):
             analytics.track(event: .StoreCreation.signupSuccess())
 
             await handleSuccess(data: data)
-            return .success(())
-        case .failure(let error):
+        } catch let error as CreateAccountError {
             analytics.track(event: .StoreCreation.signupFailed(error: error))
-
             handleFailure(error: error)
-            return .failure(error)
+        } catch {
+            throw error
         }
     }
 }

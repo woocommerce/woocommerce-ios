@@ -123,13 +123,13 @@ struct AccountCreationForm: View {
                 Button(Localization.submitButtonTitle) {
                     Task { @MainActor in
                         isPerformingTask = true
-                        let result = await viewModel.createAccount()
-                        isPerformingTask = false
-                        switch result {
-                        case .success:
+
+                        do {
+                            try await viewModel.createAccount()
+                            isPerformingTask = false
                             completion()
-                        case .failure:
-                            break
+                        } catch {
+                            isPerformingTask = false
                         }
                     }
                 }

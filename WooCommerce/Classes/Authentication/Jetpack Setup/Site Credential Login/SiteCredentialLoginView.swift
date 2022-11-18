@@ -90,27 +90,30 @@ struct SiteCredentialLoginView: View {
                 }
 
                 // text fields
-                VStack(alignment: .leading, spacing: Constants.contentVerticalSpacing) {
+                VStack(alignment: .leading, spacing: Constants.fieldVerticalSpacing) {
                     VStack(alignment: .leading, spacing: Constants.fieldVerticalSpacing) {
                         TextField(Localization.enterUsername, text: $viewModel.username)
                             .textFieldStyle(.plain)
                             .focused($keyboardIsShown)
+                            .frame(height: Constants.fieldHeight * scale)
                         Divider()
                     }
-                    .frame(height: Constants.fieldHeight * scale)
 
                     VStack(alignment: .leading, spacing: Constants.fieldVerticalSpacing) {
-                        if showsSecureInput {
-                            SecureField(Localization.enterPassword, text: $viewModel.password)
-                                .focused($keyboardIsShown)
-                        } else {
-                            TextField(Localization.enterPassword, text: $viewModel.password)
-                                .textFieldStyle(.plain)
-                                .focused($keyboardIsShown)
+                        Group {
+                            if showsSecureInput {
+                                SecureField(Localization.enterPassword, text: $viewModel.password)
+                                    .focused($keyboardIsShown)
+                            } else {
+                                TextField(Localization.enterPassword, text: $viewModel.password)
+                                    .textFieldStyle(.plain)
+                                    .focused($keyboardIsShown)
+                            }
                         }
+                        .frame(height: Constants.fieldHeight * scale)
+                        .padding(.trailing, Constants.eyeButtonDimension * scale + Constants.eyeButtonHorizontalPadding)
                         Divider()
                     }
-                    .frame(height: Constants.fieldHeight * scale)
                     .overlay(HStack {
                         Spacer()
                         // Button to show/hide the text field content.
@@ -121,8 +124,8 @@ struct SiteCredentialLoginView: View {
                                 .accentColor(Color(.textSubtle))
                                 .frame(width: Constants.eyeButtonDimension * scale,
                                        height: Constants.eyeButtonDimension * scale)
-                                .padding(.horizontal, Constants.eyeButtonHorizontalPadding)
                         }
+                        .offset(x: 0, y: -Constants.fieldVerticalSpacing/2)
                     })
                 }
 
@@ -188,7 +191,7 @@ private extension SiteCredentialLoginView {
         static let fieldVerticalSpacing: CGFloat = 16
         static let eyeButtonHorizontalPadding: CGFloat = 8
         static let eyeButtonDimension: CGFloat = 24
-        static let fieldHeight: CGFloat = 44
+        static let fieldHeight: CGFloat = 24
     }
 }
 

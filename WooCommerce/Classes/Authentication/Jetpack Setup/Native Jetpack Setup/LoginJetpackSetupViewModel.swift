@@ -11,7 +11,8 @@ final class LoginJetpackSetupViewModel: ObservableObject {
 
     let setupSteps: [JetpackInstallStep]
 
-    @Published private(set) var currentStep: JetpackInstallStep
+    @Published private(set) var currentSetupStep: JetpackInstallStep
+    @Published private(set) var currentConnectionStep: ConnectionStep = .authorized
 
     init(siteURL: String, connectionOnly: Bool, stores: StoresManager = ServiceLocator.stores) {
         self.siteURL = siteURL
@@ -19,6 +20,62 @@ final class LoginJetpackSetupViewModel: ObservableObject {
         self.stores = stores
         let setupSteps = connectionOnly ? [.connection, .done] : JetpackInstallStep.allCases
         self.setupSteps = setupSteps
-        self.currentStep = setupSteps[0]
+        self.currentSetupStep = setupSteps[0]
+    }
+}
+
+// MARK: Subtypes
+//
+extension LoginJetpackSetupViewModel {
+    enum ConnectionStep {
+        case pending
+        case inProgress
+        case authorized
+
+        var title: String {
+            switch self {
+            case .pending:
+                return LoginJetpackSetupViewModel.Localization.approvalRequired
+            case .inProgress:
+                return LoginJetpackSetupViewModel.Localization.validating
+            case .authorized:
+                return LoginJetpackSetupViewModel.Localization.connectionApproved
+            }
+        }
+
+        var imageName: String? {
+            switch self {
+            case .pending:
+                return "info.circle.fill"
+            case .inProgress, .authorized:
+                return nil
+            }
+        }
+
+        var tintColor: UIColor {
+            switch self {
+            case .pending:
+                return .wooOrange
+            case .inProgress:
+                return .secondaryLabel
+            case .authorized:
+                return .withColorStudio(.green, shade: .shade50)
+            }
+        }
+    }
+
+    enum Localization {
+        static let approvalRequired = NSLocalizedString(
+            "Approval required",
+            comment: "Message to be displayed when a Jetpack connection is pending approval"
+        )
+        static let validating = NSLocalizedString(
+            "Validating",
+            comment: "Message to be displayed when a Jetpack connection is being authorized"
+        )
+        static let connectionApproved = NSLocalizedString(
+            "Connection approved",
+            comment: "Message to be displayed when a Jetpack connection has been authorized"
+        )
     }
 }

@@ -86,9 +86,9 @@ struct LoginJetpackSetupView: View {
 
                 ForEach(viewModel.setupSteps) { step in
                     HStack(spacing: Constants.stepItemHorizontalSpacing) {
-                        if step == viewModel.currentStep, step != .done {
+                        if step == viewModel.currentSetupStep, step != .done {
                             ActivityIndicator(isAnimating: .constant(true), style: .medium)
-                        } else if step > viewModel.currentStep {
+                        } else if step > viewModel.currentSetupStep {
                             Image(uiImage: .checkEmptyCircleImage)
                                 .resizable()
                                 .frame(width: Constants.stepImageSize * scale, height: Constants.stepImageSize * scale)
@@ -98,14 +98,25 @@ struct LoginJetpackSetupView: View {
                                 .frame(width: Constants.stepImageSize * scale, height: Constants.stepImageSize * scale)
                         }
 
-                        VStack(alignment: .leading, spacing: 0) {
+                        VStack(alignment: .leading, spacing: 4) {
                             Text(step == .connection ? Localization.authorizing : step.title)
                                 .font(.body)
-                                .if(step <= viewModel.currentStep) {
+                                .if(step <= viewModel.currentSetupStep) {
                                     $0.bold()
                                 }
                                 .foregroundColor(Color(.text))
-                                .opacity(step <= viewModel.currentStep ? 1 : 0.5)
+                                .opacity(step <= viewModel.currentSetupStep ? 1 : 0.5)
+                            Label {
+                                Text(viewModel.currentConnectionStep.title)
+                                    .font(.footnote)
+                                    .fontWeight(.semibold)
+                            } icon: {
+                                viewModel.currentConnectionStep.imageName.map { name in
+                                    Image(systemName: name)
+                                }
+                            }
+                            .foregroundColor(Color(uiColor: viewModel.currentConnectionStep.tintColor))
+                            .renderedIf(step == .connection)
                         }
                     }
                 }
@@ -122,7 +133,7 @@ struct LoginJetpackSetupView: View {
             }
             .buttonStyle(PrimaryButtonStyle())
             .padding(.top, Constants.contentVerticalSpacing)
-            .renderedIf(viewModel.currentStep == .done)
+            .renderedIf(viewModel.currentSetupStep == .done)
         })
         .padding()
     }

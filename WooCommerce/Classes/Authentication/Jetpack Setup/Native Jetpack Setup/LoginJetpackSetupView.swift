@@ -44,6 +44,9 @@ final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpack
 struct LoginJetpackSetupView: View {
     @ObservedObject private var viewModel: LoginJetpackSetupViewModel
 
+    /// Scale of the view based on accessibility changes
+    @ScaledMetric private var scale: CGFloat = 1.0
+
     init(viewModel: LoginJetpackSetupViewModel) {
         self.viewModel = viewModel
     }
@@ -81,9 +84,46 @@ struct LoginJetpackSetupView: View {
                     AttributedText(descriptionAttributedString)
                 }
 
+                ForEach(viewModel.setupSteps) { step in
+                    HStack(spacing: Constants.stepItemHorizontalSpacing) {
+                        if step == viewModel.currentStep, step != .done {
+                            ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                        } else if step > viewModel.currentStep {
+                            Image(uiImage: .checkEmptyCircleImage)
+                                .resizable()
+                                .frame(width: Constants.stepImageSize * scale, height: Constants.stepImageSize * scale)
+                        } else {
+                            Image(uiImage: .checkCircleImage)
+                                .resizable()
+                                .frame(width: Constants.stepImageSize * scale, height: Constants.stepImageSize * scale)
+                        }
+
+                        VStack(alignment: .leading, spacing: 0) {
+                            Text(step == .connection ? Localization.authorizing : step.title)
+                                .font(.body)
+                                .if(step <= viewModel.currentStep) {
+                                    $0.bold()
+                                }
+                                .foregroundColor(Color(.text))
+                                .opacity(step <= viewModel.currentStep ? 1 : 0.5)
+                        }
+                    }
+                }
+                .padding(.top, Constants.contentVerticalSpacing)
+
                 Spacer()
             }
         }
+        .safeAreaInset(edge: .bottom, content: {
+            Button {
+                // TODO
+            } label: {
+                Text(Localization.goToStore)
+            }
+            .buttonStyle(PrimaryButtonStyle())
+            .padding(.top, Constants.contentVerticalSpacing)
+            .renderedIf(viewModel.currentStep == .done)
+        })
         .padding()
     }
 }
@@ -102,11 +142,16 @@ private extension LoginJetpackSetupView {
             "Please wait while we connect your store %1$@ with Jetpack.",
             comment: "Message on the Jetpack setup screen. The %1$@ is the site address."
         )
+        static let goToStore = NSLocalizedString("Got to Store", comment: "Title for the button to navigate to the home screen after Jetpack setup completes")
+        static let authorizing = NSLocalizedString("Authorizing connection", comment: "Name of the connection step on the Jetpack setup screen")
     }
 
     enum Constants {
         static let blockVerticalPadding: CGFloat = 32
         static let contentVerticalSpacing: CGFloat = 8
+        static let stepItemHorizontalSpacing: CGFloat = 24
+        static let stepItemsVerticalSpacing: CGFloat = 20
+        static let stepImageSize: CGFloat = 24
     }
 }
 

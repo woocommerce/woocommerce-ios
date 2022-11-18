@@ -69,7 +69,7 @@ final class AccountCreationFormViewModel: ObservableObject {
         } catch let error as CreateAccountError {
             analytics.track(event: .StoreCreation.signupFailed(error: error))
             handleFailure(error: error)
-        } catch {
+
             throw error
         }
     }

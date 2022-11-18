@@ -8,6 +8,7 @@ import WordPressShared
 import CoreTelephony
 import SafariServices
 import Yosemite
+import Experiments
 
 extension NSNotification.Name {
     static let ZDPNReceived = NSNotification.Name(rawValue: "ZDPNReceived")
@@ -145,6 +146,8 @@ struct ZendeskProvider {
 final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     private let stores = ServiceLocator.stores
     private let storageManager = ServiceLocator.storageManager
+
+    private let isSSREnabled = DefaultFeatureFlagService().isFeatureFlagEnabled(.systemStatusReportInSupportRequest)
 
     /// Controller for fetching site plugins from Storage
     ///
@@ -638,16 +641,29 @@ private extension ZendeskManager {
     /// Without it, the tickets won't appear in the correct view(s) in the web portal and they won't contain all the metadata needed to solve a ticket.
     ///
     func createRequest(supportSourceTag: String?) -> RequestUiConfiguration {
+
+        var logsFieldID: Int64 = TicketFieldIDs.legacyLogs
+        var systemStatusReportFieldID: Int64 = 0
+        if isSSREnabled {
+            logsFieldID = 10901699622036
+            systemStatusReportFieldID = TicketFieldIDs.legacyLogs
+        }
+
         let ticketFields = [
             CustomField(fieldId: TicketFieldIDs.appVersion, value: Bundle.main.version),
             CustomField(fieldId: TicketFieldIDs.deviceFreeSpace, value: getDeviceFreeSpace()),
             CustomField(fieldId: TicketFieldIDs.networkInformation, value: getNetworkInformation()),
-            CustomField(fieldId: TicketFieldIDs.logs, value: getLogFile()),
+            CustomField(fieldId: logsFieldID, value: getLogFile()),
+            CustomField(fieldId: systemStatusReportFieldID, value: getSystemStatusReport()),
             CustomField(fieldId: TicketFieldIDs.currentSite, value: getCurrentSiteDescription()),
             CustomField(fieldId: TicketFieldIDs.sourcePlatform, value: Constants.sourcePlatform),
             CustomField(fieldId: TicketFieldIDs.appLanguage, value: Locale.preferredLanguage),
             CustomField(fieldId: TicketFieldIDs.subcategory, value: Constants.subcategory)
         ].compactMap { $0 }
+
+        for i in 0..<ticketFields.count {
+            print("🍍\(ticketFields[i].fieldId) - \(String(describing: ticketFields[i].value))")
+        }
 
         return createRequest(supportSourceTag: supportSourceTag,
                              formID: TicketFieldIDs.form,
@@ -662,7 +678,7 @@ private extension ZendeskManager {
             CustomField(fieldId: TicketFieldIDs.appVersion, value: Bundle.main.version),
             CustomField(fieldId: TicketFieldIDs.deviceFreeSpace, value: getDeviceFreeSpace()),
             CustomField(fieldId: TicketFieldIDs.networkInformation, value: getNetworkInformation()),
-            CustomField(fieldId: TicketFieldIDs.logs, value: getLogFile()),
+            CustomField(fieldId: TicketFieldIDs.legacyLogs, value: getLogFile()),
             CustomField(fieldId: TicketFieldIDs.currentSite, value: getCurrentSiteDescription()),
             CustomField(fieldId: TicketFieldIDs.sourcePlatform, value: Constants.sourcePlatform),
             CustomField(fieldId: TicketFieldIDs.appLanguage, value: Locale.preferredLanguage),
@@ -808,6 +824,10 @@ private extension ZendeskManager {
         }
 
         return logText
+    }
+
+    func getSystemStatusReport() -> String {
+        return "SSR goes here"
     }
 
     func getCurrentSiteDescription() -> String {
@@ -1087,7 +1107,13 @@ private extension ZendeskManager {
         static let allBlogs: Int64 = 360000087183
         static let deviceFreeSpace: Int64 = 360000089123
         static let networkInformation: Int64 = 360000086966
-        static let logs: Int64 = 22871957
+        // ----------------------------------------------------
+        // 1 - We're re-using the "logs" field in order to pass the new SSR
+        // 2 - We add "logs" to a new field
+        static let legacyLogs: Int64 = 22871957
+        //static let systemStatusReport: Int64 = 22871957
+        //static let logs: Int64 = 10901699622036
+        // ----------------------------------------------------
         static let currentSite: Int64 = 360000103103
         static let sourcePlatform: Int64 = 360009311651
         static let appLanguage: Int64 = 360008583691

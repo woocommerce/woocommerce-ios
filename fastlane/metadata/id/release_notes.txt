@@ -1,1 +1,1 @@
-Sudah pernah membuat atau memperbarui pesanan dari aplikasi? Sekarang Anda bisa mencari pelanggan saat melakukannya! Cobalah dan kirim masukan Anda! 
+Untuk rilis kali ini, kami berfokus pada penyempurnaan beberapa hal dan penanganan bug kecil yang tim kami temukan, termasuk pilihan untuk melakukan pratinjau produk-produk Anda sebelum mempublikasikannya. Jangan terkecoh – kami sedang menyiapkan sesuatu yang keren untuk Anda! Terus bagikan feedback!

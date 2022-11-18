@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-11-09 12:54:03+0000 */
+/* Translation-Revision-Date: 2022-11-16 11:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -428,7 +428,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
 "Add a price to your variation to make it visible on your store" = "יש להוסיף מחיר לסוג כדי שהוא יופיע בחנות שלך";
 
-/* The action to add a product */
+/* Message title of bottom sheet for selecting a template or manual product
+   The action to add a product */
 "Add a product" = "להוסיף מוצר";
 
 /* Cell text in Add / Edit product when there are no images. */
@@ -1035,9 +1036,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the row that has a switch when creating a simple payment */
 "Charge Taxes" = "לגבות מיסים";
 
-/* Login onboarding survey option: check my analytics. */
-"Check my analytics" = "לבדוק את הנתונים האנליטיים שלי";
-
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "יש לוודא שכתובת ה-URL של האתר שהוזנה תקפה";
 
@@ -1062,8 +1060,14 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title on the shipping label states of a country selector screen */
 "Choose a State" = "בחר מדינה";
 
+/* Title of the domain selector. */
+"Choose a domain" = "לבחור דומיין";
+
 /* Title of the password field on the account creation form. */
 "Choose a password" = "יש לבחור סיסמה";
+
+/* Message title of bottom sheet for selecting a template or manual product */
+"Choose a template" = "יש לבחור תבנית";
 
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "לבחור מהמכשיר";
@@ -1166,11 +1170,9 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connect > A button to begin a search for a reader */
 "Connect Card Reader" = "לחבר קורא כרטיסים";
 
-/* Title of the Jetpack connection web view in the login flow */
+/* Action button to handle connecting the logged-in account to a given site.Presented when logging in with a store address that does not match the account entered
+   Title of the Jetpack connection web view in the login flow */
 "Connect Jetpack" = "לחבר את Jetpack";
-
-/* Action button to handle connecting the logged-in account to a given site.Presented when logging in with a store address that does not match the account entered */
-"Connect Jetpack to your account" = "לחבר את Jetpack לחשבון שלך";
 
 /* Button to connect to an existing store from the store picker */
 "Connect an existing store" = "לחבר חנות קיימת";
@@ -1253,7 +1255,8 @@ which should be translated separately and considered part of this sentence. */
    Continue button inside every cell inside Create Shipping Label form
    The button title text when there is a next step for logging in or signing up.
    Title of continue button
-   Title of dismiss button presented when users attempt to log in without Jetpack installed or connected */
+   Title of dismiss button presented when users attempt to log in without Jetpack installed or connected
+   Title of the button to continue with a selected domain. */
 "Continue" = "המשך";
 
 /* Call to Action to finish the setup of In-Person Payments in the Menu */
@@ -1420,9 +1423,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "יצירת אריזה חדשה";
-
-/* Login onboarding survey option: create or update my products. */
-"Create or update my products" = "ליצור או לעדכן את המוצרים שלי";
 
 /* Action sheet option when the user wants to create full manual order */
 "Create order" = "ליצור הזמנה";
@@ -2413,7 +2413,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "איך נוכל לשפר את השירות שלנו?";
 
-/* Message title of bottom sheet for selecting a template or manual product */
+/* Message subtitle of bottom sheet for selecting a template or manual product */
 "How do you want to start?" = "איך היית רוצה להתחיל?";
 
 /* The title of the button for giving a positive feedback for the app. */
@@ -2674,9 +2674,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "להצטרף מכל מקום";
 
-/* Login onboarding survey option: just exploring. */
-"Just exploring" = "אני רק רוצה לעיין";
-
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "להמשך העריכה";
 
@@ -2902,9 +2899,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Navigates to Card Reader management screen */
 "Manage card reader" = "לנהל את קורא הכרטיסים";
-
-/* Login onboarding survey option: manage my orders. */
-"Manage my orders" = "לנהל את ההזמנות שלי";
 
 /* Title of the cell in Product Inventory Settings > Manage stock */
 "Manage stock" = "ניהול מלאי";
@@ -3621,7 +3615,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Placeholder for editing the text of a text link */
 "Please enter some text" = "יש להזין טקסט";
 
-/* No comment provided by engineer. */
+/* Instructional text shown when requesting the user's password for a login initiated via Sign In with Apple */
 "Please enter the password for your WordPress.com account to log in with your Apple ID." = "עליך להזין את הסיסמה לחשבון שלך ב-WordPress.com כדי להתחבר עם ה-Apple ID שלך.";
 
 /* Instruction text on the two-factor screen. */
@@ -4231,6 +4225,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS נשלח";
 
+/* Header label of the domain suggestions on the domain selector. */
+"SUGGESTIONS" = "הצעות";
+
 /* Button label to open web page in Safari */
 "Safari" = "Safari";
 
@@ -4388,7 +4385,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Placeholder for the selected package in the Shipping Labels Package Details screen */
 "Select a package" = "יש לבחור חבילה";
 
-/* Message title of bottom sheet for selecting a product type to create a product */
+/* Message subtitle of bottom sheet for selecting a product type to create a product */
 "Select a product type" = "יש לבחור את סוג המוצר";
 
 /* Text field placeholder in Edit Address Form */
@@ -4653,7 +4650,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "כתובת אתר צריכה להכיל לפחות 4 תווים.";
 
-/* The button title on the login onboarding screen to skip to the prologue screen.
+/* Navigation bar button on the domain selector screen to skip domain selection.
+   The button title on the login onboarding screen to skip to the prologue screen.
    Title for the button to skip the onboarding step informing the merchant of pending account requirements */
 "Skip" = "דלג";
 
@@ -4845,9 +4843,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "החלפת חנות";
-
-/* Login onboarding survey option: switch between multiple Stores. */
-"Switch between multiple Stores" = "להחליף בין מספר חנויות";
 
 /* Switch store option in the hub menu */
 "Switch store" = "להחליף חנות";
@@ -5364,6 +5359,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Footer text for Downloadable File URL */
 "This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "זוהי כתובת ה-URL של הקובץ שאליו הלקוחות יקבלו גישה. כתובות ה-URL שהוזנו צריכות להיות מקודדות כבר.";
 
+/* Subtitle of the domain selector. */
+"This is where people will find you on the Internet. Don't worry, you can change it later." = "כאן הגולשים ימצאו אותך באינטרנט. אל דאגה, אפשר לשנות את ההגדרות מאוחר יותר.";
+
 /* Message in action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow.The package name reads like: Package 1: Custom Envelope. */
 "This item is currently in Package %1$d: %2$@. Where would you like to move it?" = "הפריט הזה נמצא כעת בחבילה ⁦%1$d⁩ : %2$@. לאן ברצונך להעביר אותו?";
 
@@ -5553,9 +5551,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Message when a card is declined due to a potentially temporary problem. */
 "Trying again may succeed, or try another means of payment" = "ייתכן שהפעולה תצליח בניסיון חוזר. לחלופין, אפשר לנסות אמצעי תשלום אחר";
 
-/* Login onboarding survey option: trying to set up a store. */
-"Trying to set up a store" = "מנסה להקים חנות";
-
 /* Settings > Manage Card Reader > Connect > Hint to power on reader */
 "Turn card reader on and place it next to mobile device" = "יש להפעיל את קורא הכרטיסים ולמקם אותו ליד המכשיר הנייד";
 
@@ -5576,6 +5571,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Placeholder for the Restriction Details row in Customs screen of Shipping Label flow */
 "Type of restriction" = "סוג ההגבלה";
+
+/* Placeholder of the search text field on the domain selector. */
+"Type to get suggestions" = "יש להקליד כדי לקבל הצעות";
 
 /* Navigation bar title for editing the URL of a text link
    URL text field placeholder */
@@ -6131,9 +6129,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Content of the feedback banner on the coupon list screen */
 "We’ve been working on making it possible to view and edit coupons from your device!" = "אנחנו כרגע עובדים על אפשרות להציג ולערוך קופונים מהמכשיר שלך!";
-
-/* Login onboarding survey title. */
-"What brings you to the WooCommerce app today?" = "למה הגעת לאפליקציה של WooCommerce היום?";
 
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "באיזה אימייל השתמשתי כדי להתחבר?";

@@ -198,7 +198,6 @@ private extension SiteCredentialLoginView {
     enum Constants {
         static let blockVerticalPadding: CGFloat = 32
         static let contentVerticalSpacing: CGFloat = 8
-        static let borderHeight: CGFloat = 1
         static let fieldVerticalSpacing: CGFloat = 16
         static let eyeButtonHorizontalPadding: CGFloat = 8
         static let eyeButtonDimension: CGFloat = 24

@@ -70,29 +70,25 @@ final class StoreCreationCoordinator: Coordinator {
         Task { @MainActor in
             do {
                 // TODO: 8108 - update in-progress UI while fetching IAP status
-                showInProgressView(from: navigationController.presentedViewController as? UINavigationController ?? navigationController,
-                                   viewProperties: .init(title: "Just checking a few things",
-                                                         message: "Waiting for in-app purchase eligibility"))
+                presentIAPEligibilityInProgressView()
                 guard await iapManager.inAppPurchasesAreSupported() else {
-                    // TODO: 8108 - update in-progress UI while fetching IAP status
-                    _ = navigationController.popViewController(animated: false)
                     throw PlanPurchaseError.iapNotSupported
                 }
                 let products = try await iapManager.fetchProducts()
                 guard let product = products.first,
                       product.id == Constants.planIdentifier else {
-                    // TODO: 8108 - update in-progress UI while fetching IAP status
-                    _ = navigationController.popViewController(animated: false)
                     throw PlanPurchaseError.noMatchingProduct
                 }
                 guard try await iapManager.userIsEntitledToProduct(with: product.id) == false else {
-                    // TODO: 8108 - update in-progress UI while fetching IAP status
-                    _ = navigationController.popViewController(animated: false)
                     throw PlanPurchaseError.productNotEligible
                 }
-                startStoreCreationM2(planToPurchase: product)
+                navigationController.dismiss(animated: true) { [weak self] in
+                    self?.startStoreCreationM2(planToPurchase: product)
+                }
             } catch {
-                startStoreCreationM1()
+                navigationController.dismiss(animated: true) { [weak self] in
+                    self?.startStoreCreationM1()
+                }
             }
         }
     }
@@ -141,6 +137,14 @@ private extension StoreCreationCoordinator {
         } else {
             navigationController.present(viewController, animated: true)
         }
+    }
+
+    @MainActor
+    func presentIAPEligibilityInProgressView() {
+        let inProgressView = InProgressViewController(viewProperties:
+                .init(title: Localization.WaitingForIAPEligibility.title,
+                      message: Localization.WaitingForIAPEligibility.message))
+        presentStoreCreation(viewController: inProgressView)
     }
 }
 
@@ -439,6 +443,17 @@ private extension StoreCreationCoordinator {
     }
 
     enum Localization {
+        enum WaitingForIAPEligibility {
+            static let title = NSLocalizedString(
+                "We are getting ready for your store creation",
+                comment: "Title of the in-progress view when waiting for the in-app purchase status before the store creation flow."
+            )
+            static let message = NSLocalizedString(
+                "Please remain connected.",
+                comment: "Message of the in-progress view when waiting for the in-app purchase status before the store creation flow."
+            )
+        }
+
         enum DiscardChangesAlert {
             static let title = NSLocalizedString("Do you want to leave?",
                                                  comment: "Title of the alert when the user dismisses the store creation flow.")

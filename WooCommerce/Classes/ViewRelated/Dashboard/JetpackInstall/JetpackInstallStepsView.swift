@@ -59,29 +59,8 @@ struct JetpackInstallStepsView: View {
             // Main content
             VStack(alignment: .leading, spacing: Constants.contentSpacing) {
                 // Header
-                HStack(spacing: Constants.headerContentSpacing) {
-                    Image(uiImage: .jetpackGreenLogoImage)
-                        .resizable()
-                        .frame(width: Constants.logoSize * scale, height: Constants.logoSize * scale)
-                    Image(uiImage: .connectionImage)
-                        .resizable()
-                        .flipsForRightToLeftLayoutDirection(true)
-                        .frame(width: Constants.connectionIconSize * scale, height: Constants.connectionIconSize * scale)
-
-                    if let image = UIImage.wooLogoImage(tintColor: .white) {
-                        Circle()
-                            .foregroundColor(Color(.withColorStudio(.wooCommercePurple, shade: .shade60)))
-                            .frame(width: Constants.logoSize * scale, height: Constants.logoSize * scale)
-                            .overlay(
-                                Image(uiImage: image)
-                                    .resizable()
-                                    .frame(width: Constants.wooIconSize.width * scale, height: Constants.wooIconSize.height * scale)
-                            )
-                    }
-
-                    Spacer()
-                }
-                .padding(.top, Constants.contentTopMargin)
+                JetpackInstallHeaderView()
+                    .padding(.top, Constants.contentTopMargin)
 
                 // Title and description
                 VStack(alignment: .leading, spacing: Constants.textSpacing) {
@@ -192,13 +171,9 @@ struct JetpackInstallStepsView: View {
 private extension JetpackInstallStepsView {
     enum Constants {
         static let cancelButtonTopMargin: CGFloat = 8
-        static let headerContentSpacing: CGFloat = 8
         static let contentTopMargin: CGFloat = 32
         static let contentHorizontalMargin: CGFloat = 40
         static let contentSpacing: CGFloat = 32
-        static let logoSize: CGFloat = 40
-        static let wooIconSize: CGSize = .init(width: 30, height: 18)
-        static let connectionIconSize: CGFloat = 10
         static let textSpacing: CGFloat = 12
         static let actionButtonMargin: CGFloat = 16
         static let stepItemHorizontalSpacing: CGFloat = 24

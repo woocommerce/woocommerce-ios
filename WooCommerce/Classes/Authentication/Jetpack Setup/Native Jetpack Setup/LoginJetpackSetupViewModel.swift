@@ -12,7 +12,7 @@ final class LoginJetpackSetupViewModel: ObservableObject {
     let setupSteps: [JetpackInstallStep]
 
     @Published private(set) var currentSetupStep: JetpackInstallStep
-    @Published private(set) var currentConnectionStep: ConnectionStep = .authorized
+    @Published private(set) var currentConnectionStep: ConnectionStep = .pending
 
     init(siteURL: String, connectionOnly: Bool, stores: StoresManager = ServiceLocator.stores) {
         self.siteURL = siteURL

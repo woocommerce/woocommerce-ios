@@ -52,7 +52,8 @@ extension SiteCredentialLoginViewModel: LoginFacadeDelegate {
         isLoggingIn = false
 
         let err = error as NSError
-        errorMessage = err.code == 3 ? Localization.wrongCredentials : Localization.genericFailure
+        let wrongCredentials = err.domain == Constants.xmlrpcErrorDomain && err.code == Constants.invalidCredentialErrorCode
+        errorMessage = wrongCredentials ? Localization.wrongCredentials : Localization.genericFailure
         shouldShowErrorAlert = true
     }
 
@@ -70,5 +71,10 @@ extension SiteCredentialLoginViewModel {
             comment: "An error message shown during login when the username or password is incorrect."
         )
         static let genericFailure = NSLocalizedString("Login failed. Please try again.", comment: "A generic error during site credential login")
+    }
+
+    enum Constants {
+        static let xmlrpcErrorDomain = "WPXMLRPCFaultError"
+        static let invalidCredentialErrorCode = 403
     }
 }

@@ -89,7 +89,7 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldShowErrorAlert)
 
         // When
-        viewModel.displayRemoteError(NSError(domain: "Test", code: 3))
+        viewModel.displayRemoteError(NSError(domain: "WPXMLRPCFaultError", code: 403))
 
         // Then
         XCTAssertTrue(viewModel.shouldShowErrorAlert)

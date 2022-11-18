@@ -39,6 +39,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .justInTimeMessagesOnDashboard:
             return true
+        case .systemStatusReportInSupportRequest:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .performanceMonitoring,
                 .performanceMonitoringCoreData,
                 .performanceMonitoringFileIO,

@@ -82,6 +82,10 @@ public enum FeatureFlag: Int {
     ///
     case justInTimeMessagesOnDashboard
 
+    /// Adds the System Status Report to a support requests
+    ///
+    case systemStatusReportInSupportRequest
+
     // MARK: - Performance Monitoring
     //
     // These flags are not transient. That is, they are not here to help us rollout a feature,

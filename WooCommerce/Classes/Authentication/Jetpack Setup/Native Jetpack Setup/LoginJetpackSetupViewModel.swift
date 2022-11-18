@@ -3,7 +3,7 @@ import Yosemite
 
 /// View model for `LoginJetpackSetupView`.
 ///
-final class LoginJetpackSetupViewModel {
+final class LoginJetpackSetupViewModel: ObservableObject {
     private let siteURL: String
     /// Whether Jetpack is installed and activated and only connection needs to be handled.
     private let connectionOnly: Bool

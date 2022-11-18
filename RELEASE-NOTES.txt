@@ -3,6 +3,7 @@
 11.3
 -----
 - [*] In-Person Payments: Show spinner while preparing reader for payment, instead of saying it's ready before it is. [https://github.com/woocommerce/woocommerce-ios/pull/8115]
+- [internal] In-Person Payments: update StripeTerminal from 2.7 to 2.14 [https://github.com/woocommerce/woocommerce-ios/pull/8132]
 
 11.2
 -----

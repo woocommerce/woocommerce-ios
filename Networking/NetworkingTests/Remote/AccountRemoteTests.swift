@@ -151,10 +151,9 @@ final class AccountRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "username/suggestions", filename: "account-username-suggestions")
 
         // When
-        let result = await remote.loadUsernameSuggestions(from: "woo")
+        let suggestions = try await remote.loadUsernameSuggestions(from: "woo")
 
         // Then
-        let suggestions = try XCTUnwrap(result.get())
         XCTAssertEqual(suggestions, ["woowriter", "woowoowoo", "woodaily"])
     }
 
@@ -163,11 +162,14 @@ final class AccountRemoteTests: XCTestCase {
         let remote = AccountRemote(network: network)
 
         // When
-        let result = await remote.loadUsernameSuggestions(from: "woo")
+        do {
+            _ = try await remote.loadUsernameSuggestions(from: "woo")
 
-        // Then
-        let error = try XCTUnwrap(result.failure as? NetworkError)
-        XCTAssertEqual(error, .notFound)
+            XCTFail("It should throw an error")
+        } catch {
+            let networkError = try XCTUnwrap(error as? NetworkError)
+            XCTAssertEqual(networkError, .notFound)
+        }
     }
 
     // MARK: - `createAccount`

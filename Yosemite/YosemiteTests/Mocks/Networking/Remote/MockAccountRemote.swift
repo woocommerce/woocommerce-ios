@@ -98,12 +98,18 @@ extension MockAccountRemote: AccountRemoteProtocol {
         // no-op
     }
 
-    func loadUsernameSuggestions(from text: String) async -> Result<[String], Error> {
+    func loadUsernameSuggestions(from text: String) async throws -> [String] {
         guard let result = loadUsernameSuggestionsResult else {
             XCTFail("Could not find result for loading username suggestions.")
-            return .failure(NetworkError.notFound)
+            throw NetworkError.notFound
         }
-        return result
+
+        switch result {
+        case let .success(suggestions):
+            return suggestions
+        case let .failure(error):
+            throw error
+        }
     }
 
     func createAccount(email: String,

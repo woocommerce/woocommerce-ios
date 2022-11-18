@@ -13,7 +13,7 @@ public protocol AccountRemoteProtocol {
     func checkIfWooCommerceIsActive(for siteID: Int64) -> AnyPublisher<Result<Bool, Error>, Never>
     func fetchWordPressSiteSettings(for siteID: Int64) -> AnyPublisher<Result<WordPressSiteSettings, Error>, Never>
     func loadSitePlan(for siteID: Int64, completion: @escaping (Result<SitePlan, Error>) -> Void)
-    func loadUsernameSuggestions(from text: String) async -> Result<[String], Error>
+    func loadUsernameSuggestions(from text: String) async throws -> [String]
 
     /// Creates a WPCOM account with the given email and password.
     /// - Parameters:
@@ -131,17 +131,15 @@ public class AccountRemote: Remote, AccountRemoteProtocol {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
-    public func loadUsernameSuggestions(from text: String) async -> Result<[String], Error> {
+    public func loadUsernameSuggestions(from text: String) async throws -> [String] {
         let path = Path.usernameSuggestions
         let parameters = [ParameterKey.name: text]
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path, parameters: parameters)
-        do {
-            let result: [String: [String]] = try await enqueue(request)
-            let suggestions = result["suggestions"] ?? []
-            return .success(suggestions)
-        } catch {
-            return .failure(error)
-        }
+
+        let result: [String: [String]] = try await enqueue(request)
+        let suggestions = result["suggestions"] ?? []
+
+        return suggestions
     }
 
     public func createAccount(email: String,

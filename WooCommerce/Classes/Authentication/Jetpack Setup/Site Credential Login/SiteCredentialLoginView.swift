@@ -49,7 +49,7 @@ struct SiteCredentialLoginView: View {
 
     @FocusState private var keyboardIsShown: Bool
 
-    @State private var showsSecureInput: Bool = false
+    @State private var showsSecureInput: Bool = true
 
     // Tracks the scale of the view due to accessibility changes.
     @ScaledMetric private var scale: CGFloat = 1.0
@@ -101,11 +101,11 @@ struct SiteCredentialLoginView: View {
 
                     VStack(alignment: .leading, spacing: Constants.fieldVerticalSpacing) {
                         if showsSecureInput {
-                            TextField(Localization.enterPassword, text: $viewModel.password)
-                                .textFieldStyle(.plain)
+                            SecureField(Localization.enterPassword, text: $viewModel.password)
                                 .focused($keyboardIsShown)
                         } else {
-                            SecureField(Localization.enterPassword, text: $viewModel.password)
+                            TextField(Localization.enterPassword, text: $viewModel.password)
+                                .textFieldStyle(.plain)
                                 .focused($keyboardIsShown)
                         }
                         Divider()

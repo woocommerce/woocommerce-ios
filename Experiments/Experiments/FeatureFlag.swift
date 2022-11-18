@@ -82,7 +82,7 @@ public enum FeatureFlag: Int {
     ///
     case justInTimeMessagesOnDashboard
 
-    /// Adds the System Status Report to a support requests
+    /// Adds the System Status Report to support requests
     ///
     case systemStatusReportInSupportRequest
 

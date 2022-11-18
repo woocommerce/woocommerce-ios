@@ -300,14 +300,14 @@ private extension StoreCreationCoordinator {
     func showWPCOMPlan(from navigationController: UINavigationController,
                        planToPurchase: WPComPlanProduct,
                        siteID: Int64) {
-        let storeSummary = StoreCreationPlanHostingController(viewModel: .init(plan: planToPurchase)) { [weak self] in
+        let storePlan = StoreCreationPlanHostingController(viewModel: .init(plan: planToPurchase)) { [weak self] in
             guard let self else { return }
             await self.purchasePlan(from: navigationController, siteID: siteID, planToPurchase: planToPurchase)
         } onClose: { [weak self] in
             guard let self else { return }
             self.showDiscardChangesAlert()
         }
-        navigationController.pushViewController(storeSummary, animated: true)
+        navigationController.pushViewController(storePlan, animated: true)
     }
 
     @MainActor

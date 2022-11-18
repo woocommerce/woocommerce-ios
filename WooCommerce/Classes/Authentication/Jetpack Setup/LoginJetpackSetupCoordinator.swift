@@ -24,7 +24,20 @@ final class LoginJetpackSetupCoordinator: Coordinator {
     }
 
     func start() {
-        let siteCredentialUI = SiteCredentialLoginHostingViewController(siteURL: siteURL, connectionOnly: connectionOnly)
+        let siteCredentialUI = SiteCredentialLoginHostingViewController(siteURL: siteURL, connectionOnly: connectionOnly, onLoginSuccess: showSetupSteps)
         navigationController.present(UINavigationController(rootViewController: siteCredentialUI), animated: true)
+    }
+}
+
+// MARK: Private helpers
+//
+private extension LoginJetpackSetupCoordinator {
+    func showSetupSteps() {
+        let setupUI = LoginJetpackSetupHostingController(siteURL: siteURL, connectionOnly: connectionOnly)
+        guard let contentNavigationController = navigationController.presentedViewController as? UINavigationController else {
+            // this is not likely to happen but handling this for safety
+            return navigationController.present(UINavigationController(rootViewController: setupUI), animated: true)
+        }
+        contentNavigationController.viewControllers = [setupUI]
     }
 }

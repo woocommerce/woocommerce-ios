@@ -2,8 +2,8 @@ import SwiftUI
 
 /// Hosting controller that wraps the `SiteCredentialLoginView`.
 final class SiteCredentialLoginHostingViewController: UIHostingController<SiteCredentialLoginView> {
-    init(siteURL: String, connectionOnly: Bool) {
-        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL)
+    init(siteURL: String, connectionOnly: Bool, onLoginSuccess: @escaping () -> Void) {
+        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, onLoginSuccess: onLoginSuccess)
         super.init(rootView: SiteCredentialLoginView(connectionOnly: connectionOnly, viewModel: viewModel))
     }
 

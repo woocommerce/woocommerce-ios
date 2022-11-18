@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Hosting controller for `LoginJetpackSetupView`.
 ///
-final class LoginJetpackSetupHostingViewController: UIHostingController<LoginJetpackSetupView> {
+final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpackSetupView> {
     init(siteURL: String, connectionOnly: Bool) {
         let viewModel = LoginJetpackSetupViewModel(siteURL: siteURL, connectionOnly: connectionOnly)
         super.init(rootView: LoginJetpackSetupView(viewModel: viewModel))

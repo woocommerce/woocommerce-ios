@@ -729,7 +729,8 @@ extension Networking.OrderStatsV4Totals {
         taxes: CopiableProp<Decimal> = .copy,
         shipping: CopiableProp<Decimal> = .copy,
         netRevenue: CopiableProp<Decimal> = .copy,
-        totalProducts: NullableCopiableProp<Int> = .copy
+        totalProducts: NullableCopiableProp<Int> = .copy,
+        averageOrderValue: CopiableProp<Double> = .copy
     ) -> Networking.OrderStatsV4Totals {
         let totalOrders = totalOrders ?? self.totalOrders
         let totalItemsSold = totalItemsSold ?? self.totalItemsSold
@@ -741,6 +742,7 @@ extension Networking.OrderStatsV4Totals {
         let shipping = shipping ?? self.shipping
         let netRevenue = netRevenue ?? self.netRevenue
         let totalProducts = totalProducts ?? self.totalProducts
+        let averageOrderValue = averageOrderValue ?? self.averageOrderValue
 
         return Networking.OrderStatsV4Totals(
             totalOrders: totalOrders,
@@ -752,7 +754,8 @@ extension Networking.OrderStatsV4Totals {
             taxes: taxes,
             shipping: shipping,
             netRevenue: netRevenue,
-            totalProducts: totalProducts
+            totalProducts: totalProducts,
+            averageOrderValue: averageOrderValue
         )
     }
 }

@@ -604,7 +604,8 @@ extension Networking.OrderStatsV4Totals {
             taxes: .fake(),
             shipping: .fake(),
             netRevenue: .fake(),
-            totalProducts: .fake()
+            totalProducts: .fake(),
+            averageOrderValue: .fake()
         )
     }
 }

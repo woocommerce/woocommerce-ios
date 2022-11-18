@@ -287,6 +287,9 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
             storeStatsPeriodView.heightAnchor.constraint(equalToConstant: Constants.storeStatsPeriodViewHeight),
             ])
 
+        // Analytics Hub ("See more") button
+        stackView.addArrangedSubview(createAnalyticsHubButtonView())
+
         // In-app Feedback Card
         stackView.addArrangedSubviews(inAppFeedbackCardViewsForStackView)
 
@@ -327,10 +330,28 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
         return [emptySpaceView, cardView]
     }
 
+    func createAnalyticsHubButtonView() -> UIView {
+        let button = UIButton(frame: .zero)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.applySecondaryButtonStyle()
+        button.setTitle(Localization.seeMoreButton, for: .normal)
+        button.addTarget(self, action: #selector(seeMoreButtonTapped), for: .touchUpInside)
+
+        let view = UIView(frame: .zero)
+        view.addSubview(button)
+        view.pinSubviewToSafeArea(button, insets: Constants.buttonInsets)
+
+        return view
+    }
+
     func configureInAppFeedbackViewControllerAction() {
         inAppFeedbackCardViewController.onFeedbackGiven = { [weak self] in
             self?.viewModel.onInAppFeedbackCardAction()
         }
+    }
+
+    @objc func seeMoreButtonTapped() {
+        // TODO: navigate to analytics hub view
     }
 }
 
@@ -349,5 +370,10 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
         static let storeStatsPeriodViewHeight: CGFloat = 444
         static let ghostStyle: GhostStyle = .wooDefaultGhostStyle
         static let backgroundColor: UIColor = .systemBackground
+        static let buttonInsets: UIEdgeInsets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
+    }
+
+    enum Localization {
+        static let seeMoreButton = NSLocalizedString("See more", comment: "Button on the stats dashboard that navigates user to the analytics hub")
     }
 }

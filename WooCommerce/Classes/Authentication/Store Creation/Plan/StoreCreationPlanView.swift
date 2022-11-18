@@ -31,7 +31,12 @@ final class StoreCreationPlanHostingController: UIHostingController<StoreCreatio
     /// Shows a transparent navigation bar without a bottom border and with a close button to dismiss.
     func configureNavigationBarAppearance() {
         addCloseNavigationBarButton(target: self, action: #selector(closeButtonTapped))
-        navigationItem.hidesBackButton = true
+
+        // If large title is only disabled with `navigationBarTitleDisplayMode(.inline)` in the SwiftUI view,
+        // navigating from a screen with large title results in a gap below the navigation bar briefly.
+        // Also disabling large title in the hosting controller smoothens the transition.
+        navigationItem.largeTitleDisplayMode = .never
+        navigationController?.navigationBar.prefersLargeTitles = false
 
         let appearance = UINavigationBarAppearance()
         appearance.configureWithTransparentBackground()
@@ -151,6 +156,10 @@ struct StoreCreationPlanView: View {
         .background(Color(.withColorStudio(.wooCommercePurple, shade: .shade90)))
         // This screen is using the dark theme for both light and dark modes.
         .environment(\.colorScheme, .dark)
+        // Disables large title to avoid a large gap below the navigation bar.
+        .navigationBarTitleDisplayMode(.inline)
+        // Hides the back button and shows a close button in the hosting controller instead.
+        .navigationBarBackButtonHidden(true)
     }
 }
 

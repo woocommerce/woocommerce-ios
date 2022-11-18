@@ -42,8 +42,6 @@ private extension DomainSelectorHostingController {
 
     /// Shows a transparent navigation bar without a bottom border.
     func configureNavigationBarAppearance() {
-        navigationItem.title = Localization.title
-
         let appearance = UINavigationBarAppearance()
         appearance.configureWithTransparentBackground()
         appearance.backgroundColor = .systemBackground
@@ -62,7 +60,6 @@ private extension DomainSelectorHostingController {
 
 private extension DomainSelectorHostingController {
     enum Localization {
-        static let title = NSLocalizedString("Choose a domain", comment: "Title of the domain selector.")
         static let skipButtonTitle = NSLocalizedString("Skip", comment: "Navigation bar button on the domain selector screen to skip domain selection.")
     }
 }
@@ -166,6 +163,8 @@ struct DomainSelectorView: View {
                 .padding(Layout.defaultPadding)
             }
         }
+        .navigationTitle(Localization.title)
+        .navigationBarTitleDisplayMode(.large)
         .onChange(of: viewModel.isLoadingDomainSuggestions) { isLoadingDomainSuggestions in
             // Resets selected domain when loading domain suggestions.
             if isLoadingDomainSuggestions {
@@ -184,6 +183,7 @@ private extension DomainSelectorView {
     }
 
     enum Localization {
+        static let title = NSLocalizedString("Choose a domain", comment: "Title of the domain selector.")
         static let subtitle = NSLocalizedString(
             "This is where people will find you on the Internet. Don't worry, you can change it later.",
             comment: "Subtitle of the domain selector.")

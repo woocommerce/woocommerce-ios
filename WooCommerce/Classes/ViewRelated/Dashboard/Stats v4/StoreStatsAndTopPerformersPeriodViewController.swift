@@ -83,6 +83,8 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
 
     private lazy var inAppFeedbackCardViewController = InAppFeedbackCardViewController()
 
+    private lazy var analyticsHubButtonView = createAnalyticsHubButtonView()
+
     /// An array of UIViews for the In-app Feedback Card. This will be dynamically shown
     /// or hidden depending on the configuration.
     private lazy var inAppFeedbackCardViewsForStackView: [UIView] = createInAppFeedbackCardViewsForStackView()
@@ -182,6 +184,7 @@ extension StoreStatsAndTopPerformersPeriodViewController {
 
     func displayGhostContent() {
         storeStatsPeriodViewController.displayGhostContent()
+        analyticsHubButtonView.startGhostAnimation(style: Constants.ghostStyle)
         topPerformersHeaderView.startGhostAnimation(style: Constants.ghostStyle)
         topPerformersPeriodViewController.displayGhostContent()
     }
@@ -190,6 +193,7 @@ extension StoreStatsAndTopPerformersPeriodViewController {
     ///
     func removeStoreStatsGhostContent() {
         storeStatsPeriodViewController.removeGhostContent()
+        analyticsHubButtonView.stopGhostAnimation()
         topPerformersHeaderView.stopGhostAnimation()
     }
 
@@ -288,7 +292,7 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
             ])
 
         // Analytics Hub ("See more") button
-        stackView.addArrangedSubview(createAnalyticsHubButtonView())
+        stackView.addArrangedSubview(analyticsHubButtonView)
 
         // In-app Feedback Card
         stackView.addArrangedSubviews(inAppFeedbackCardViewsForStackView)

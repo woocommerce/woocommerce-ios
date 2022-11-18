@@ -42,6 +42,7 @@ final class SiteCredentialLoginHostingViewController: UIHostingController<SiteCr
 ///
 struct SiteCredentialLoginView: View {
 
+    /// Whether Jetpack is installed and activated and only connection needs to be handled.
     private let connectionOnly: Bool
 
     @ObservedObject private var viewModel: SiteCredentialLoginViewModel

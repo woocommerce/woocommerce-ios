@@ -6,6 +6,7 @@ final class LoginJetpackSetupCoordinator: Coordinator {
     let navigationController: UINavigationController
 
     private let siteURL: String
+    /// Whether Jetpack is installed and activated and only connection needs to be handled.
     private let connectionOnly: Bool
     private let stores: StoresManager
     private let analytics: Analytics

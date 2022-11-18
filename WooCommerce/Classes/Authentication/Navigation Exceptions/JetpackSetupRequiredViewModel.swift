@@ -6,6 +6,7 @@ import UIKit
 /// 
 final class JetpackSetupRequiredViewModel: ULErrorViewModel {
     private let siteURL: String
+    /// Whether Jetpack is installed and activated and only connection needs to be handled.
     private let connectionOnly: Bool
     private let authentication: Authentication
     private let analytics: Analytics

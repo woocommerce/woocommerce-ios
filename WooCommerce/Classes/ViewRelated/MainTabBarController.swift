@@ -414,19 +414,6 @@ extension MainTabBarController {
         }
     }
 
-    static func presentAddProductFlow() {
-        navigateTo(.products)
-
-        guard let productsViewController: ProductsViewController = childViewController() else {
-            return
-        }
-
-        // We give some time for the products tab transition to finish, so the add product button is present to start the flow
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            productsViewController.addProduct()
-        }
-    }
-
     static func presentPayments() {
         switchToHubMenuTab()
 

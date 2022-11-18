@@ -50,26 +50,25 @@ struct StoreCreationSuccessView: View {
     @State private var isPresentingWebview: Bool = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            ScrollView {
-                VStack(alignment: .center, spacing: 33) {
-                    // Title label.
-                    Text(Localization.title)
-                        .fontWeight(.bold)
-                        .titleStyle()
+        ScrollView {
+            VStack(alignment: .center, spacing: 33) {
+                // Title label.
+                Text(Localization.title)
+                    .fontWeight(.bold)
+                    .titleStyle()
 
-                    // Readonly webview for the new site.
-                    WebView(isPresented: .constant(true), url: siteURL)
-                        .frame(height: 400 * scale)
-                        .disabled(true)
-                        .border(Color(.systemBackground), width: 8)
-                        .cornerRadius(8)
-                        .shadow(color: Color(.secondaryLabel), radius: 26)
-                        .padding(.horizontal, insets: Layout.webviewHorizontalPadding)
-                }
-                .padding(Layout.contentPadding)
+                // Readonly webview for the new site.
+                WebView(isPresented: .constant(true), url: siteURL)
+                    .frame(height: 400 * scale)
+                    .disabled(true)
+                    .border(Color(.systemBackground), width: 8)
+                    .cornerRadius(8)
+                    .shadow(color: Color(.secondaryLabel), radius: 26)
+                    .padding(.horizontal, insets: Layout.webviewHorizontalPadding)
             }
-
+            .padding(Layout.contentPadding)
+        }
+        .safeAreaInset(edge: .bottom) {
             VStack(spacing: 0) {
                 Divider()
                     .frame(height: 1)
@@ -90,6 +89,7 @@ struct StoreCreationSuccessView: View {
                 }
                 .padding(insets: Layout.buttonContainerPadding)
             }
+            .background(Color(.systemBackground))
         }
         .safariSheet(isPresented: $isPresentingWebview, url: siteURL)
     }

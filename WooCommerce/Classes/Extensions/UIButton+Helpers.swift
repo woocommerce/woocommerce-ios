@@ -22,17 +22,17 @@ extension UIButton {
 
         let normalBackgroundImage = UIImage.renderBackgroundImage(fill: .primaryButtonBackground,
                                                                   border: .primaryButtonBorder)
-            .applyTintColorToiOS13(.primaryButtonBackground)
+            .withTintColor(.primaryButtonBackground)
         setBackgroundImage(normalBackgroundImage, for: .normal)
 
         let highlightedBackgroundImage = UIImage.renderBackgroundImage(fill: .primaryButtonDownBackground,
                                                                        border: .primaryButtonDownBorder)
-            .applyTintColorToiOS13(.primaryButtonDownBackground)
+            .withTintColor(.primaryButtonDownBackground)
         setBackgroundImage(highlightedBackgroundImage, for: .highlighted)
 
         let disabledBackgroundImage = UIImage.renderBackgroundImage(fill: .buttonDisabledBackground,
                                                                     border: .buttonDisabledBorder)
-            .applyTintColorToiOS13(.buttonDisabledBorder) // Use border as tint color since the background is clear
+            .withTintColor(.buttonDisabledBorder) // Use border as tint color since the background is clear
         setBackgroundImage(disabledBackgroundImage, for: .disabled)
     }
 
@@ -54,17 +54,17 @@ extension UIButton {
 
         let normalBackgroundImage = UIImage.renderBackgroundImage(fill: .secondaryButtonBackground,
                                                                   border: .secondaryButtonBorder)
-            .applyTintColorToiOS13(.secondaryButtonBackground)
+            .withTintColor(.secondaryButtonBackground)
         setBackgroundImage(normalBackgroundImage, for: .normal)
 
         let highlightedBackgroundImage = UIImage.renderBackgroundImage(fill: .secondaryButtonDownBackground,
                                                                        border: .secondaryButtonDownBorder)
-            .applyTintColorToiOS13(.secondaryButtonDownBackground)
+            .withTintColor(.secondaryButtonDownBackground)
         setBackgroundImage(highlightedBackgroundImage, for: .highlighted)
 
         let disabledBackgroundImage = UIImage.renderBackgroundImage(fill: .buttonDisabledBackground,
                                                                     border: .buttonDisabledBorder)
-            .applyTintColorToiOS13(.buttonDisabledBackground)
+            .withTintColor(.buttonDisabledBackground)
         setBackgroundImage(disabledBackgroundImage, for: .disabled)
     }
 
@@ -110,25 +110,25 @@ extension UIButton {
 
         let normalBackgroundImage = UIImage.renderBackgroundImage(fill: .tertiarySystemBackground,
                                                                   border: .secondaryButtonBorder)
-            .applyTintColorToiOS13(.tertiarySystemBackground)
+            .withTintColor(.tertiarySystemBackground)
         setBackgroundImage(normalBackgroundImage, for: .normal)
 
         let highlightedBackgroundImage = UIImage.renderBackgroundImage(fill: .secondaryButtonDownBackground,
                                                                        border: .secondaryButtonDownBorder)
-            .applyTintColorToiOS13(.secondaryButtonDownBackground)
+            .withTintColor(.secondaryButtonDownBackground)
         setBackgroundImage(highlightedBackgroundImage, for: .highlighted)
 
         let disabledBackgroundImage = UIImage.renderBackgroundImage(fill: .buttonDisabledBackground,
                                                                     border: .buttonDisabledBorder)
-            .applyTintColorToiOS13(.buttonDisabledBackground)
+            .withTintColor(.buttonDisabledBackground)
         setBackgroundImage(disabledBackgroundImage, for: .disabled)
     }
 
     /// Applies the Single-Color Icon Button Style: accent/accent dark tint color
     ///
     func applyIconButtonStyle(icon: UIImage) {
-        let normalImage = icon.applyTintColor(.accent)
-        let highlightedImage = icon.applyTintColor(.accentDark)
+        let normalImage = icon.withTintColor(.accent)
+        let highlightedImage = icon.withTintColor(.accentDark)
         setImage(normalImage, for: .normal)
         setImage(highlightedImage, for: .highlighted)
         tintColor = .accent

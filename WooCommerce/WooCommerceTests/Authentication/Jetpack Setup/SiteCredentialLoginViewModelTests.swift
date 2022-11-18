@@ -1,6 +1,7 @@
 import XCTest
 @testable import WooCommerce
 import WordPressAuthenticator
+import Yosemite
 
 final class SiteCredentialLoginViewModelTests: XCTestCase {
 
@@ -94,5 +95,31 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.shouldShowErrorAlert)
         XCTAssertEqual(viewModel.errorMessage, SiteCredentialLoginViewModel.Localization.wrongCredentials)
+    }
+
+    func test_finishedLogin_triggers_authentication_in_JetpackConnectionAction_and_successHandler() {
+        // Given
+        var successHandlerTriggered = false
+        var triggeredAuthentication = false
+        let siteURL = "https://test.com"
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, stores: stores) {
+            successHandlerTriggered = true
+        }
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .authenticate:
+                triggeredAuthentication = true
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.finishedLogin(withUsername: "test", password: "secret", xmlrpc: "https://test.com/xmlrpc.php")
+
+        // Then
+        XCTAssertTrue(triggeredAuthentication)
+        XCTAssertTrue(successHandlerTriggered)
     }
 }

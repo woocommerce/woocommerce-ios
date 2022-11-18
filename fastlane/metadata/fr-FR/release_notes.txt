@@ -1,1 +1,1 @@
-Avez-vous déjà créé ou mis à jour une commande depuis l’application ? Il est maintenant possible de rechercher des clients lorsque vous le faites. Découvrez cette nouvelle fonctionnalité et donnez-nous votre avis !
+For this release, we focused on polishing a few things and taking care of minor bugs that our team found, including the option to preview your products before publishing them. Mais rassurez-vous : il y aura des nouveautés intéressantes pour tout le monde en 2022 ! Keep sharing feedback 💜

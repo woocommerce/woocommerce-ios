@@ -30,7 +30,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertEqual(hourlyStats.totals.shipping, 0)
         XCTAssertEqual(hourlyStats.totals.netRevenue, 800)
         XCTAssertEqual(hourlyStats.totals.totalProducts, 2)
-        XCTAssertEqual(hourlyStats.totals.averageOrderValue, 266.66666666666667)
+        XCTAssertEqual(hourlyStats.totals.averageOrderValue, 266)
 
         XCTAssertEqual(hourlyStats.intervals.count, 24)
 
@@ -72,7 +72,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertEqual(dailyStats.totals.shipping, 0)
         XCTAssertEqual(dailyStats.totals.netRevenue, 800)
         XCTAssertEqual(dailyStats.totals.totalProducts, 2)
-        XCTAssertEqual(dailyStats.totals.averageOrderValue, 266.66666666666667)
+        XCTAssertEqual(dailyStats.totals.averageOrderValue, 266)
 
         XCTAssertEqual(dailyStats.intervals.count, 1)
 
@@ -90,7 +90,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertEqual(nonZeroDayTotals.shipping, 0)
         XCTAssertEqual(nonZeroDayTotals.netRevenue, 800)
         XCTAssertNil(nonZeroDayTotals.totalProducts)
-        XCTAssertEqual(nonZeroDayTotals.averageOrderValue, 266.66666666666667)
+        XCTAssertEqual(nonZeroDayTotals.averageOrderValue, 266)
     }
 
     /// Verifies that all of the weekly unit OrderStatsV4 fields are parsed correctly.
@@ -114,7 +114,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertEqual(weeklyStats.totals.shipping, 0)
         XCTAssertEqual(weeklyStats.totals.netRevenue, 800)
         XCTAssertEqual(weeklyStats.totals.totalProducts, 2)
-        XCTAssertEqual(weeklyStats.totals.averageOrderValue, 266.66666666666667)
+        XCTAssertEqual(weeklyStats.totals.averageOrderValue, 266)
 
         XCTAssertEqual(weeklyStats.intervals.count, 2)
 
@@ -132,7 +132,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertEqual(nonZeroWeekTotals.shipping, 0)
         XCTAssertEqual(nonZeroWeekTotals.netRevenue, 800)
         XCTAssertNil(nonZeroWeekTotals.totalProducts)
-        XCTAssertEqual(nonZeroWeekTotals.averageOrderValue, 266.66666666666667)
+        XCTAssertEqual(nonZeroWeekTotals.averageOrderValue, 266)
     }
 
     /// Verifies that all of the monthly unit OrderStatsV4 fields are parsed correctly.
@@ -156,7 +156,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertEqual(monthlyStats.totals.shipping, 0)
         XCTAssertEqual(monthlyStats.totals.netRevenue, 800)
         XCTAssertEqual(monthlyStats.totals.totalProducts, 2)
-        XCTAssertEqual(monthlyStats.totals.averageOrderValue, 266.66666666666667)
+        XCTAssertEqual(monthlyStats.totals.averageOrderValue, 266)
 
         XCTAssertEqual(monthlyStats.intervals.count, 1)
 
@@ -174,7 +174,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertEqual(nonZeroMonthTotals.shipping, 0)
         XCTAssertEqual(nonZeroMonthTotals.netRevenue, 800)
         XCTAssertNil(nonZeroMonthTotals.totalProducts)
-        XCTAssertEqual(nonZeroMonthTotals.averageOrderValue, 266.66666666666667)
+        XCTAssertEqual(nonZeroMonthTotals.averageOrderValue, 266)
     }
 
     /// Verifies that all of the yearly unit OrderStatsV4 fields are parsed correctly.
@@ -198,7 +198,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertEqual(yearlyStats.totals.shipping, 0)
         XCTAssertEqual(yearlyStats.totals.netRevenue, 800)
         XCTAssertEqual(yearlyStats.totals.totalProducts, 2)
-        XCTAssertEqual(yearlyStats.totals.averageOrderValue, 266.66666666666667)
+        XCTAssertEqual(yearlyStats.totals.averageOrderValue, 266)
 
         XCTAssertEqual(yearlyStats.intervals.count, 1)
 
@@ -216,7 +216,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertEqual(nonZeroYearTotals.shipping, 0)
         XCTAssertEqual(nonZeroYearTotals.netRevenue, 800)
         XCTAssertNil(nonZeroYearTotals.totalProducts)
-        XCTAssertEqual(nonZeroYearTotals.averageOrderValue, 266.66666666666667)
+        XCTAssertEqual(nonZeroYearTotals.averageOrderValue, 266)
     }
 }
 

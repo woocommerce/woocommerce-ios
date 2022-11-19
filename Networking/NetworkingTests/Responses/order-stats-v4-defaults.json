@@ -10,7 +10,7 @@
             "taxes": 0,
             "shipping": 0,
             "net_revenue": 800,
-            "avg_order_value": 266.66666666666667,
+            "avg_order_value": 266,
             "products": 2,
             "segments": []
         },
@@ -31,7 +31,7 @@
                     "taxes": 0,
                     "shipping": 0,
                     "net_revenue": 800,
-                    "avg_order_value": 266.66666666666667,
+                    "avg_order_value": 266,
                     "segments": []
                 }
             },

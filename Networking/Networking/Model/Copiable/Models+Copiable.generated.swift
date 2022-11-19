@@ -730,7 +730,7 @@ extension Networking.OrderStatsV4Totals {
         shipping: CopiableProp<Decimal> = .copy,
         netRevenue: CopiableProp<Decimal> = .copy,
         totalProducts: NullableCopiableProp<Int> = .copy,
-        averageOrderValue: CopiableProp<Double> = .copy
+        averageOrderValue: CopiableProp<Decimal> = .copy
     ) -> Networking.OrderStatsV4Totals {
         let totalOrders = totalOrders ?? self.totalOrders
         let totalItemsSold = totalItemsSold ?? self.totalItemsSold

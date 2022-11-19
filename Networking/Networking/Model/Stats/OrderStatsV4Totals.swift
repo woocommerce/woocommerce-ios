@@ -13,7 +13,7 @@ public struct OrderStatsV4Totals: Decodable, Equatable, GeneratedCopiable, Gener
     public let shipping: Decimal
     public let netRevenue: Decimal
     public let totalProducts: Int?
-    public let averageOrderValue: Double
+    public let averageOrderValue: Decimal
 
     public init(totalOrders: Int,
                 totalItemsSold: Int,
@@ -25,7 +25,7 @@ public struct OrderStatsV4Totals: Decodable, Equatable, GeneratedCopiable, Gener
                 shipping: Decimal,
                 netRevenue: Decimal,
                 totalProducts: Int?,
-                averageOrderValue: Double) {
+                averageOrderValue: Decimal) {
         self.totalOrders = totalOrders
         self.totalItemsSold = totalItemsSold
         self.grossRevenue = grossRevenue
@@ -51,7 +51,7 @@ public struct OrderStatsV4Totals: Decodable, Equatable, GeneratedCopiable, Gener
         let shipping = try container.decode(Decimal.self, forKey: .shipping)
         let netRevenue = try container.decode(Decimal.self, forKey: .netRevenue)
         let totalProducts = try container.decodeIfPresent(Int.self, forKey: .products)
-        let averageOrderValue = try container.decode(Double.self, forKey: .averageOrderValue)
+        let averageOrderValue = try container.decode(Decimal.self, forKey: .averageOrderValue)
 
         self.init(totalOrders: totalOrders,
                   totalItemsSold: totalItemsSold,

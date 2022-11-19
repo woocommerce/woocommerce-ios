@@ -51,6 +51,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .alpha
         case .nativeJetpackSetupFlow:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .analyticsHub:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

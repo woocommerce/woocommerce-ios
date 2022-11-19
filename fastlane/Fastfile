@@ -217,10 +217,10 @@ platform :ios do
   # the release_notes.txt file and the other text sources
   # -----------------------------------------------------------------------------------
   # Usage:
-  # bundle exec fastlane update_appstore_strings version:<release note version>
+  # bundle exec fastlane update_appstore_strings
   #
   # Example:
-  # bundle exec fastlane update_appstore_strings version:1.1
+  # bundle exec fastlane update_appstore_strings
   #####################################################################################
   desc 'Updates the AppStoreStrings.pot file with the latest data'
   lane :update_appstore_strings do |options|
@@ -242,7 +242,7 @@ platform :ios do
     ios_update_metadata_source(
       po_file_path: File.join(RESOURCES_FOLDER, 'AppStoreStrings.pot'),
       source_files: files,
-      release_version: options[:version]
+      release_version: options.fetch(:version, ios_get_app_version)
     )
   end
 

@@ -7,7 +7,7 @@ public class AnalyticsHubTimeRange {
     var timeRange: TimeRange {
         get {
             let currentDate = Date()
-            return TimeRange(start: currentDate.startOfCurrentMonth(), end: currentDate)
+            return TimeRange(start: currentDate.startOfLastMonth(), end: currentDate)
         }
     }
     

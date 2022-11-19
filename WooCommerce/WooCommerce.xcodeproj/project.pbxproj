@@ -1160,7 +1160,6 @@
 		ABC35528D2D6BE6F516E5CEF /* InPersonPaymentsOnboardingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABC35A4B736A0B2D8348DD08 /* InPersonPaymentsOnboardingError.swift */; };
 		ABC35F18E744C5576B986CB3 /* InPersonPaymentsUnavailableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABC35055F8AC8C8EB649F421 /* InPersonPaymentsUnavailableView.swift */; };
 		AE1CC33829129A010021C8EF /* LinkBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1CC33729129A010021C8EF /* LinkBehavior.swift */; };
-		AE2EA1142927F87B000392B6 /* AnalyticsHubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2EA1132927F87B000392B6 /* AnalyticsHubView.swift */; };
 		AE3AA889290C303B00BE422D /* WebKitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3AA888290C303B00BE422D /* WebKitViewController.swift */; };
 		AE3AA88B290C30B900BE422D /* WebViewControllerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3AA88A290C30B900BE422D /* WebViewControllerConfiguration.swift */; };
 		AE3AA88D290C30E800BE422D /* WebProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3AA88C290C30E800BE422D /* WebProgressView.swift */; };
@@ -3111,7 +3110,6 @@
 		ABC353433EABC5F0EC796222 /* CardReaderSettingsSearchingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsSearchingViewController.swift; sourceTree = "<group>"; };
 		ABC35A4B736A0B2D8348DD08 /* InPersonPaymentsOnboardingError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsOnboardingError.swift; sourceTree = "<group>"; };
 		AE1CC33729129A010021C8EF /* LinkBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkBehavior.swift; sourceTree = "<group>"; };
-		AE2EA1132927F87B000392B6 /* AnalyticsHubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubView.swift; sourceTree = "<group>"; };
 		AE3AA888290C303B00BE422D /* WebKitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebKitViewController.swift; sourceTree = "<group>"; };
 		AE3AA88A290C30B900BE422D /* WebViewControllerConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewControllerConfiguration.swift; sourceTree = "<group>"; };
 		AE3AA88C290C30E800BE422D /* WebProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebProgressView.swift; sourceTree = "<group>"; };
@@ -6688,14 +6686,6 @@
 			path = FlowCoordinator;
 			sourceTree = "<group>";
 		};
-		AE2EA1122927F86C000392B6 /* AnalyticsHub */ = {
-			isa = PBXGroup;
-			children = (
-				AE2EA1132927F87B000392B6 /* AnalyticsHubView.swift */,
-			);
-			path = AnalyticsHub;
-			sourceTree = "<group>";
-		};
 		AE9E04732776034B003FA09E /* CustomerSection */ = {
 			isa = PBXGroup;
 			children = (
@@ -8063,7 +8053,6 @@
 		CE85FD5120F677460080B73E /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
-				AE2EA1122927F86C000392B6 /* AnalyticsHub */,
 				2647F7B329280A5000D59FDF /* Analytics Hub */,
 				DE23CFF827462CD2003BE54E /* JetpackInstall */,
 				02F843D8273646190017FE12 /* JetpackConnectionPackageSites */,
@@ -10210,7 +10199,6 @@
 				CC254F2D26C17AB5005F3C82 /* BottomButtonView.swift in Sources */,
 				DEF36DE92898D3CF00178AC2 /* AuthenticatedWebViewController.swift in Sources */,
 				74334F36214AB130006D6AC5 /* ProductTableViewCell.swift in Sources */,
-				AE2EA1142927F87B000392B6 /* AnalyticsHubView.swift in Sources */,
 				D8610D762570AE1F00A5DF27 /* NotWPErrorViewModel.swift in Sources */,
 				0245465B24EE7637004F531C /* ProductFormEventLoggerProtocol.swift in Sources */,
 				02C1853D27FF153A00ABD764 /* CardPresentRefundOrchestrator.swift in Sources */,

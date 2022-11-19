@@ -2,11 +2,29 @@ import Foundation
 
 public class AnalyticsHubTimeRange {
     
+    private let selectionType: SelectionType
+    
+    var timeRange: TimeRange {
+        get {
+            let currentDate = Date()
+            return TimeRange(start: currentDate.startOfCurrentMonth(), end: currentDate)
+        }
+    }
+    
+    init(selectionType: SelectionType) {
+        self.selectionType = selectionType
+    }
+    
     enum SelectionType {
         case today
         case weekToDate
         case monthToDate
         case yearToDate
+    }
+    
+    struct TimeRange {
+        let start: Date
+        let end: Date
     }
 }
 

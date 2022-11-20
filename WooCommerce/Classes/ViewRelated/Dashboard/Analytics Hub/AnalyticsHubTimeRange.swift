@@ -55,7 +55,7 @@ public class AnalyticsHubTimeRange {
     }
 }
 
-extension Date {
+private extension Date {
     func asFirstDayOfMonth() -> Date {
         let year = Calendar.current.component(.year, from: self)
         let month = Calendar.current.component(.month, from: self)

@@ -24,6 +24,6 @@ struct AnalyticsHubView: View {
         Text("Selected End date: \(viewModel.analyticsTimeRange.selectedTimeRange.end.description)")
         Spacer()
         Text("Previous Start date: \(viewModel.analyticsTimeRange.previousTimeRange.start.description)")
-        Text("Previous End date: \(viewModel.analyticsTimeRange.previousTimeRange.start.description)")
+        Text("Previous End date: \(viewModel.analyticsTimeRange.previousTimeRange.end.description)")
     }
 }

@@ -57,7 +57,9 @@ public class AnalyticsHubTimeRange {
 
 extension Date {
     func asFirstDayOfMonth() -> Date {
-        return Calendar.current.date(from: Calendar.current.dateComponents([.year, .month], from: Calendar.current.startOfDay(for: self)))!
+        let year = Calendar.current.component(.year, from: self)
+        let month = Calendar.current.component(.month, from: self)
+        return Calendar.current.date(from: DateComponents(year: year, month: month, day: 1))!
     }
 
     func oneMonthAgo() -> Date {
@@ -65,12 +67,11 @@ extension Date {
     }
 
     func asFirstDayOfYear() -> Date {
-        let year = Calendar.current.component(.year, from: Date())
+        let year = Calendar.current.component(.year, from: self)
         return Calendar.current.date(from: DateComponents(year: year, month: 1, day: 1))!
     }
 
     func oneYearAgo() -> Date {
-        let year = Calendar.current.component(.year, from: Date())
-        return Calendar.current.date(from: DateComponents(year: year - 1))!
+        return Calendar.current.date(byAdding: .year, value: -1, to: self)!
     }
 }

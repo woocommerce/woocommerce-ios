@@ -25,19 +25,21 @@ public class AnalyticsHubTimeRange {
     }
 
     private func generateSelectedTimeRangeFrom(selectionType: SelectionType) -> TimeRange {
+        let now = Date()
         switch selectionType {
         case .today:
-            return TimeRange(start: Date(), end: Date())
+            return TimeRange(start: Date(), end: now)
         case .weekToDate:
-            return TimeRange(start: Date(), end: Date())
+            return TimeRange(start: Date(), end: now)
         case .monthToDate:
-            return TimeRange(start: Date(), end: Date())
+            return TimeRange(start: now.asFirstDayOfMonth(), end: now)
         case .yearToDate:
-            return TimeRange(start: Date(), end: Date())
+            return TimeRange(start: now.asFirstDayOfYear(), end: now)
         }
     }
 
     private func generatePreviousTimeRangeFrom(selectionType: SelectionType) -> TimeRange {
+        let now = Date()
         switch selectionType {
         case .today:
             return TimeRange(start: Date(), end: Date())
@@ -52,15 +54,15 @@ public class AnalyticsHubTimeRange {
 }
 
 extension Date {
-    func startOfCurrentMonth() -> Date {
+    func asFirstDayOfMonth() -> Date {
         return Calendar.current.date(from: Calendar.current.dateComponents([.year, .month], from: Calendar.current.startOfDay(for: self)))!
     }
 
     func startOfLastMonth() -> Date {
-        return Calendar.current.date(byAdding: .month, value: -1, to: startOfCurrentMonth())!
+        return Calendar.current.date(byAdding: .month, value: -1, to: asFirstDayOfMonth())!
     }
 
-    func startOfCurrentYear() -> Date {
+    func asFirstDayOfYear() -> Date {
         let year = Calendar.current.component(.year, from: Date())
         return Calendar.current.date(from: DateComponents(year: year, month: 1, day: 1))!
     }

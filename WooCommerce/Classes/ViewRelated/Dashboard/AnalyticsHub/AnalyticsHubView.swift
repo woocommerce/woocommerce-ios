@@ -22,7 +22,7 @@ struct AnalyticsHubView: View {
     var body: some View {
         let timeRange = AnalyticsHubTimeRange(selectionType: .today)
         Text("Selected time range: \(viewModel.selectedTimeRange.rawValue)")
-        Text("Start date: \(timeRange.timeRange.start.description)")
-        Text("End date: \(timeRange.timeRange.end.description)")
+        Text("Start date: \(timeRange.selectedTimeRange.start.description)")
+        Text("End date: \(timeRange.selectedTimeRange.end.description)")
     }
 }

@@ -46,9 +46,11 @@ public class AnalyticsHubTimeRange {
         case .weekToDate:
             return TimeRange(start: Date(), end: Date())
         case .monthToDate:
-            return TimeRange(start: Date(), end: Date())
+            let oneMonthAgo = now.oneMonthAgo()
+            return TimeRange(start: oneMonthAgo.asFirstDayOfMonth(), end: oneMonthAgo)
         case .yearToDate:
-            return TimeRange(start: Date(), end: Date())
+            let oneYearAgo = now.oneYearAgo()
+            return TimeRange(start: oneYearAgo.asFirstDayOfYear(), end: oneYearAgo)
         }
     }
 }
@@ -58,8 +60,8 @@ extension Date {
         return Calendar.current.date(from: Calendar.current.dateComponents([.year, .month], from: Calendar.current.startOfDay(for: self)))!
     }
 
-    func startOfLastMonth() -> Date {
-        return Calendar.current.date(byAdding: .month, value: -1, to: asFirstDayOfMonth())!
+    func oneMonthAgo() -> Date {
+        return Calendar.current.date(byAdding: .month, value: -1, to: self)!
     }
 
     func asFirstDayOfYear() -> Date {
@@ -67,8 +69,8 @@ extension Date {
         return Calendar.current.date(from: DateComponents(year: year, month: 1, day: 1))!
     }
 
-    func startOfLastYear() -> Date {
+    func oneYearAgo() -> Date {
         let year = Calendar.current.component(.year, from: Date())
-        return Calendar.current.date(from: DateComponents(year: year, month: 1, day: 1))!
+        return Calendar.current.date(from: DateComponents(year: year - 1))!
     }
 }

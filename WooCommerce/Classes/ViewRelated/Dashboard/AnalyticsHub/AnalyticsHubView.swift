@@ -20,9 +20,10 @@ struct AnalyticsHubView: View {
     }
 
     var body: some View {
-        let timeRange = AnalyticsHubTimeRange(selectionType: .today)
-        Text("Selected time range: \(viewModel.selectedTimeRange.rawValue)")
-        Text("Start date: \(timeRange.selectedTimeRange.start.description)")
-        Text("End date: \(timeRange.selectedTimeRange.end.description)")
+        Text("Selected Start date: \(viewModel.analyticsTimeRange.selectedTimeRange.start.description)")
+        Text("Selected End date: \(viewModel.analyticsTimeRange.selectedTimeRange.end.description)")
+        Spacer()
+        Text("Previous Start date: \(viewModel.analyticsTimeRange.previousTimeRange.start.description)")
+        Text("Previous End date: \(viewModel.analyticsTimeRange.previousTimeRange.start.description)")
     }
 }

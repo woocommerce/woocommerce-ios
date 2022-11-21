@@ -13,7 +13,7 @@ struct AnalyticsReportCard: View {
     let netGrowthColor: UIColor
 
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: Layout.titleSpacing) {
 
             Text(title)
                 .foregroundColor(Color(.text))
@@ -23,7 +23,7 @@ struct AnalyticsReportCard: View {
 
                 /// Total Sales
                 ///
-                VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: Layout.salesColumnSpacing) {
 
                     Text(Localization.totalSales)
                         .calloutStyle()
@@ -37,7 +37,7 @@ struct AnalyticsReportCard: View {
 
                 /// Net Sales
                 ///
-                VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: Layout.salesColumnSpacing) {
                     Text(Localization.netSales)
                         .calloutStyle()
 
@@ -48,6 +48,7 @@ struct AnalyticsReportCard: View {
                 }
             }
         }
+        .padding(Layout.cardPadding)
     }
 }
 
@@ -74,6 +75,9 @@ private extension AnalyticsReportCard {
     }
 
     enum Layout {
+        static let titleSpacing: CGFloat = 24
+        static let cardPadding: CGFloat = 16
+        static let salesColumnSpacing: CGFloat = 10
         static let growthBackgroundPadding = EdgeInsets(top: 2, leading: 8, bottom: 2, trailing: 8)
         static let growthCornerRadius: CGFloat = 4.0
     }

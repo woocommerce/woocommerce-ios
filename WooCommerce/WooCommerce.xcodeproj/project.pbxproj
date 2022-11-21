@@ -5240,6 +5240,8 @@
 		2647F7B329280A5000D59FDF /* Analytics Hub */ = {
 			isa = PBXGroup;
 			children = (
+				B6A480FD2927B77B00A00183 /* AnalyticsHubViewModel.swift */,
+				B6A480FF2927BAA700A00183 /* AnalyticsHubTimeRange.swift */,
 				2647F7B429280A7F00D59FDF /* AnalyticsHubView.swift */,
 			);
 			path = "Analytics Hub";
@@ -8066,8 +8068,6 @@
 			isa = PBXGroup;
 			children = (
 				2647F7B329280A5000D59FDF /* Analytics Hub */,
-				B6A480FD2927B77B00A00183 /* AnalyticsHubViewModel.swift */,
-				B6A480FF2927BAA700A00183 /* AnalyticsHubTimeRange.swift */,
 				DE23CFF827462CD2003BE54E /* JetpackInstall */,
 				02F843D8273646190017FE12 /* JetpackConnectionPackageSites */,
 				028BAC4322F3AE3B008BB4AF /* Stats v4 */,

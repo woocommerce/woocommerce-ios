@@ -43,6 +43,7 @@ struct LoginJetpackSetupView: View {
 
     init(viewModel: LoginJetpackSetupViewModel) {
         self.viewModel = viewModel
+        viewModel.startSetup()
     }
 
     var body: some View {
@@ -56,6 +57,14 @@ struct LoginJetpackSetupView: View {
                         .largeTitleStyle()
                     AttributedText(viewModel.descriptionAttributedString)
                 }
+
+                // Loading indicator for when checking plugin details
+                HStack {
+                    Spacer()
+                    ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                    Spacer()
+                }
+                .renderedIf(viewModel.currentSetupStep == nil)
 
                 ForEach(viewModel.setupSteps) { step in
                     HStack(spacing: Constants.stepItemHorizontalSpacing) {
@@ -74,11 +83,11 @@ struct LoginJetpackSetupView: View {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(step == .connection ? Localization.authorizing : step.title)
                                 .font(.body)
-                                .if(step <= viewModel.currentSetupStep) {
+                                .if(viewModel.isSetupStepPending(step) == false) {
                                     $0.bold()
                                 }
                                 .foregroundColor(Color(.text))
-                                .opacity(step <= viewModel.currentSetupStep ? 1 : 0.5)
+                                .opacity(viewModel.isSetupStepPending(step) == false ? 1 : 0.5)
                             Label {
                                 Text(viewModel.currentConnectionStep.title)
                                     .font(.footnote)
@@ -94,6 +103,7 @@ struct LoginJetpackSetupView: View {
                     }
                 }
                 .padding(.top, Constants.contentVerticalSpacing)
+                .renderedIf(viewModel.currentSetupStep != nil)
 
                 Spacer()
             }
@@ -109,6 +119,7 @@ struct LoginJetpackSetupView: View {
             .renderedIf(viewModel.currentSetupStep == .done)
         })
         .padding()
+//        .safariSheet(isPresented: $viewModel.shouldPresentWebView, url: viewModel.jetpackConnectionURL)
     }
 }
 

@@ -12,8 +12,10 @@ final class LoginJetpackSetupViewModel: ObservableObject {
     let setupSteps: [JetpackInstallStep]
     let title: String
 
-    @Published private(set) var currentSetupStep: JetpackInstallStep
+    @Published private(set) var currentSetupStep: JetpackInstallStep?
     @Published private(set) var currentConnectionStep: ConnectionStep = .pending
+    @Published private(set) var jetpackConnectionURL: URL?
+    @Published var shouldPresentWebView = false
 
     /// Attributed string for the description text
     lazy private(set) var descriptionAttributedString: NSAttributedString = {
@@ -38,16 +40,95 @@ final class LoginJetpackSetupViewModel: ObservableObject {
         self.stores = stores
         let setupSteps = connectionOnly ? [.connection, .done] : JetpackInstallStep.allCases
         self.setupSteps = setupSteps
-        self.currentSetupStep = setupSteps[0]
         self.title = connectionOnly ? Localization.connectingJetpack : Localization.installingJetpack
     }
 
     func isSetupStepInProgress(_ step: JetpackInstallStep) -> Bool {
-        step == currentSetupStep && step != .done
+        guard let currentStep = currentSetupStep else {
+            return false
+        }
+        return step == currentStep && step != .done
     }
 
     func isSetupStepPending(_ step: JetpackInstallStep) -> Bool {
-        step > currentSetupStep
+        guard let currentStep = currentSetupStep else {
+            return false
+        }
+        return step > currentStep
+    }
+
+    func startSetup() {
+        retrieveJetpackPluginDetails()
+    }
+}
+
+// MARK: Private helpers
+//
+private extension LoginJetpackSetupViewModel {
+    func retrieveJetpackPluginDetails() {
+        let action = JetpackConnectionAction.retrieveJetpackPluginDetails { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let plugin):
+                if plugin.status == .inactive {
+                    self.activateJetpack()
+                } else {
+                    self.fetchJetpackConnectionURL()
+                }
+            case .failure(let error):
+                // TODO: handle error
+                print(error)
+                self.installJetpack()
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    func installJetpack() {
+        currentSetupStep = .installation
+        let action = JetpackConnectionAction.installJetpackPlugin { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success:
+                self.activateJetpack()
+            case .failure(let error):
+                // TODO: handle error
+                print(error)
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    func activateJetpack() {
+        currentSetupStep = .activation
+        let action = JetpackConnectionAction.activateJetpackPlugin { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success:
+                self.fetchJetpackConnectionURL()
+            case .failure(let error):
+                // TODO: handle error
+                print(error)
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    func fetchJetpackConnectionURL() {
+        currentSetupStep = .connection
+        let action = JetpackConnectionAction.fetchJetpackConnectionURL { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let url):
+                self.currentConnectionStep = .inProgress
+                self.jetpackConnectionURL = url
+                self.shouldPresentWebView = true
+            case .failure(let error):
+                // TODO: handle error
+                print(error)
+            }
+        }
+        stores.dispatch(action)
     }
 }
 

@@ -1,5 +1,6 @@
 import Combine
 import XCTest
+import TestKit
 @testable import Networking
 
 
@@ -161,15 +162,13 @@ final class AccountRemoteTests: XCTestCase {
         // Given
         let remote = AccountRemote(network: network)
 
-        // When
-        do {
+        await assertThrowsError({
+            // When
             _ = try await remote.loadUsernameSuggestions(from: "woo")
-
-            XCTFail("It should throw an error")
-        } catch {
-            let networkError = try XCTUnwrap(error as? NetworkError)
-            XCTAssertEqual(networkError, .notFound)
-        }
+        }, errorAssert: { error in
+            // Then
+            (error as? NetworkError) == .notFound
+        })
     }
 
     // MARK: - `createAccount`

@@ -1,4 +1,5 @@
 import XCTest
+import TestKit
 @testable import Networking
 
 final class DomainRemoteTests: XCTestCase {
@@ -34,13 +35,12 @@ final class DomainRemoteTests: XCTestCase {
         // Given
         let remote = DomainRemote(network: network)
 
-        // When
-        do {
+        await assertThrowsError({
+            // When
             _ = try await remote.loadFreeDomainSuggestions(query: "domain")
-            XCTFail("it should throw an error")
-        } catch {
-            let error = try XCTUnwrap(error as? NetworkError)
-            XCTAssertEqual(error, .notFound)
-        }
+        }, errorAssert: { error in
+            // Then
+            (error as? NetworkError) == .notFound
+        })
     }
 }

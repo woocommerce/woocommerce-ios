@@ -1,4 +1,5 @@
 import XCTest
+import TestKit
 @testable import Networking
 
 final class SiteRemoteTests: XCTestCase {
@@ -35,43 +36,36 @@ final class SiteRemoteTests: XCTestCase {
     }
 
     func test_createSite_returns_invalidDomain_error_when_domain_is_empty() async throws {
-        // When
-        do {
+        await assertThrowsError({
+            // When
             _ = try await remote.createSite(name: "Wapuu swags", domain: "")
-            XCTFail("It should throw an error")
-        } catch {
+        }, errorAssert: { error in
             // Then
-            let error = try XCTUnwrap(error as? SiteCreationError)
-            XCTAssertEqual(error, .invalidDomain)
-        }
+            (error as? SiteCreationError) == .invalidDomain
+        })
     }
 
     func test_createSite_returns_DotcomError_failure_on_domain_error() async throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "sites/new", filename: "site-creation-domain-error")
 
-        // When
-        do {
+        await assertThrowsError({
+            // When
             _ = try await remote.createSite(name: "Wapuu swags", domain: "wapuu.store")
-            XCTFail("It should throw an error")
-        } catch {
+        }, errorAssert: { error in
             // Then
-            let error = try XCTUnwrap(error as? DotcomError)
-            XCTAssertEqual(error,
-                           .unknown(code: "blog_name_only_lowercase_letters_and_numbers",
-                                    message: "Site names can only contain lowercase letters (a-z) and numbers."))
-        }
+            (error as? DotcomError) == .unknown(code: "blog_name_only_lowercase_letters_and_numbers",
+                                                message: "Site names can only contain lowercase letters (a-z) and numbers.")
+        })
     }
 
     func test_createSite_returns_failure_on_empty_response() async throws {
-        // When
-        do {
+        await assertThrowsError({
+            // When
             _ = try await remote.createSite(name: "Wapuu swags", domain: "wapuu.store")
-            XCTFail("It should throw an error")
-        } catch {
+        }, errorAssert: { error in
             // Then
-            let error = try XCTUnwrap(error as? NetworkError)
-            XCTAssertEqual(error, .notFound)
-        }
+            (error as? NetworkError) == .notFound
+        })
     }
 }

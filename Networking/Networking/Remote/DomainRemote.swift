@@ -19,7 +19,7 @@ public class DomainRemote: Remote, DomainRemoteProtocol {
             ParameterKey.wordPressDotComSubdomainsOnly: true
         ]
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
-            return try await enqueue(request)
+        return try await enqueue(request)
     }
 }
 

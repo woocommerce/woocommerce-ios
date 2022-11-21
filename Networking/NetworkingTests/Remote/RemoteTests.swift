@@ -1,6 +1,7 @@
 import Combine
 import XCTest
 import Fakes
+import TestKit
 
 @testable import Networking
 
@@ -275,13 +276,11 @@ final class RemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "mock", filename: "timeout_error")
 
-        // When
-        do {
+        await assertThrowsError({
             _ = try await remote.enqueue(request, mapper: mapper)
-            XCTFail("It should throw an error")
-        } catch {
-            XCTAssert(error is DotcomError)
-        }
+        }, errorAssert: { error in
+            error is DotcomError
+        })
     }
 
     /// Verifies that dotcom v1.1 request doesn't parse WordPressApiError
@@ -312,13 +311,12 @@ final class RemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "mock", filename: "timeout_error")
 
         // When
-        do {
+        await assertThrowsError({
             _ = try await remote.enqueue(request, mapper: mapper)
-            XCTFail("It should throw an error")
-        } catch {
+        }, errorAssert: { error in
             // Then
-            XCTAssert(error is DotcomError)
-        }
+            error is DotcomError
+        })
     }
 
     /// Verifies that dotcom v1.2 request doesn't parse WordPressApiError
@@ -351,14 +349,12 @@ final class RemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "mock", filename: "error-wp-rest-forbidden")
 
         // When
-        do {
+        await assertThrowsError({
             _ = try await remote.enqueue(request, mapper: mapper)
-
-            XCTFail("It should throw an error")
-        } catch {
+        }, errorAssert: { error in
             // Then
-            XCTAssert(error is WordPressApiError)
-        }
+            error is WordPressApiError
+        })
     }
 
     /// Verifies that dotcom wpcom v2 request doesn't parse DotcomError
@@ -391,14 +387,12 @@ final class RemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "mock", filename: "error-wp-rest-forbidden")
 
         // When
-        do {
-            let result = try await remote.enqueue(request, mapper: mapper)
-
-            XCTFail("It should throw an error")
-        } catch {
+        await assertThrowsError({
+            _ = try await remote.enqueue(request, mapper: mapper)
+        }, errorAssert: { error in
             // Then
-            XCTAssert(error is WordPressApiError)
-        }
+            error is WordPressApiError
+        })
     }
 
     /// Verifies that dotcom wp v2 request doesn't parse DotcomError
@@ -430,13 +424,13 @@ final class RemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "mock", filename: "timeout_error")
 
-        // When
-        do {
+        await assertThrowsError({
+            // When
             _ = try await remote.enqueue(request, mapper: mapper)
-            XCTFail("It should thrown an error")
-        } catch {
-            XCTAssert(error is DotcomError)
-        }
+        }, errorAssert: { error in
+            // Then
+            error is DotcomError
+        })
     }
 
     /// Verifies that Jetpack request doesn't parse WordPressApiError
@@ -469,13 +463,12 @@ final class RemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "mock", filename: "error-wp-rest-forbidden")
 
         // When
-        do {
+        await assertThrowsError({
             _ = try await remote.enqueue(request, mapper: mapper)
-            XCTFail("It should throw an error")
-        } catch {
+        }, errorAssert: { error in
             // Then
-            XCTAssert(error is WordPressApiError)
-        }
+            error is WordPressApiError
+        })
     }
 
     /// Verifies that WordPressOrg request doesn't parse DotcomError

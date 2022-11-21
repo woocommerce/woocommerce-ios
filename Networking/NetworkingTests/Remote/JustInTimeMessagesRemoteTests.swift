@@ -117,7 +117,7 @@ final class JustInTimeMessagesRemoteTests: XCTestCase {
         network.simulateError(requestUrlSuffix: "jetpack/v4/jitm", error: expectedError)
 
         // When
-        do {
+        await assertThrowsError({
             _ = try await remote.loadAllJustInTimeMessages(
                     for: self.sampleSiteID,
                     messagePath: JustInTimeMessagesRemote.MessagePath(
@@ -126,12 +126,10 @@ final class JustInTimeMessagesRemoteTests: XCTestCase {
                         hook: .adminNotices),
                     query: nil,
                     locale: "en_US")
-            XCTFail("It should throw an error")
-        } catch {
+        }, errorAssert: { error in
             // Then
-            let resultError = try XCTUnwrap(error as? NetworkError)
-            assertEqual(expectedError, resultError)
-        }
+            (error as? NetworkError) == expectedError
+        })
     }
 
     func test_test_loadAllJustInTimeMessages_uses_passed_locale_for_request() async throws {

@@ -16,6 +16,11 @@ public enum ABTest: String, CaseIterable {
     ///
     case abTestLoginWithWPComOnly = "woocommerceios_login_wpcom_only"
 
+    /// A/B test to measure the sign-in success rate when native Jetpack installation experience is enabled
+    /// Experiment ref:
+    ///
+    case abTestNativeJetpackSetupFlow = "woocommerceios_login_jetpack_setup_flow"
+
     /// A/B test for the Products Onboarding banner on the My Store dashboard.
     /// Experiment ref: pbxNRc-26F-p2
     case productsOnboardingBanner = "woocommerceios_products_onboarding_first_product_banner"
@@ -36,7 +41,7 @@ public enum ABTest: String, CaseIterable {
         switch self {
         case .productsOnboardingBanner, .productsOnboardingTemplateProducts:
             return .loggedIn
-        case .aaTestLoggedOut, .abTestLoginWithWPComOnly:
+        case .aaTestLoggedOut, .abTestLoginWithWPComOnly, .abTestNativeJetpackSetupFlow:
             return .loggedOut
         case .null:
             return .none

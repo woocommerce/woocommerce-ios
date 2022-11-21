@@ -17,7 +17,7 @@ public enum ABTest: String, CaseIterable {
     case abTestLoginWithWPComOnly = "woocommerceios_login_wpcom_only"
 
     /// A/B test to measure the sign-in success rate when native Jetpack installation experience is enabled
-    /// Experiment ref:
+    /// Experiment ref: pbxNRc-29W-p2
     ///
     case abTestNativeJetpackSetupFlow = "woocommerceios_login_jetpack_setup_flow"
 

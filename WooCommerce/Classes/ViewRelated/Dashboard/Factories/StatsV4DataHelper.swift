@@ -37,6 +37,18 @@ final class StatsV4DataHelper {
         }
     }
 
+    /// Creates the text to display for the average order value.
+    ///
+    static func createAverageOrderValueText(orderStatsData: OrderStatsData, currencyFormatter: CurrencyFormatter, currencyCode: String) -> String {
+        if let value = averageOrderValue(orderStats: orderStatsData.stats) {
+            // If order value is an integer, no decimal points are shown.
+            let numberOfDecimals: Int? = value.isInteger ? 0 : nil
+            return currencyFormatter.formatAmount(value, with: currencyCode, numberOfDecimals: numberOfDecimals) ?? String()
+        } else {
+            return Constants.placeholderText
+        }
+    }
+
     // MARK: Views and Visitors Stats
 
     /// Creates the text to display for the visitor count.
@@ -99,6 +111,16 @@ private extension StatsV4DataHelper {
             return Double(orderStats.subtotals.totalOrders)
         } else if let orderStats {
             return Double(orderStats.totals.totalOrders)
+        } else {
+            return nil
+        }
+    }
+
+    /// Retrieves the average order value for the provided order stats.
+    ///
+    static func averageOrderValue(orderStats: OrderStatsV4?) -> Decimal? {
+        if let orderStats {
+            return orderStats.totals.averageOrderValue
         } else {
             return nil
         }

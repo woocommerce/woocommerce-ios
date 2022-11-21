@@ -33,6 +33,7 @@ extension Storage.OrderStatsV4Totals: ReadOnlyConvertible {
                                   taxes: taxes.decimalValue,
                                   shipping: shipping.decimalValue,
                                   netRevenue: netRevenue.decimalValue,
-                                  totalProducts: Int(totalProducts))
+                                  totalProducts: Int(totalProducts),
+                                  averageOrderValue: 0) // TODO-8156: Update after Storage.OrderStatsV4Totals is updated
     }
 }

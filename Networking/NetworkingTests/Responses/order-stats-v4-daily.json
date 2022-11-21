@@ -11,6 +11,7 @@
             "shipping": 0,
             "net_revenue": 800,
             "products": 2,
+            "avg_order_value": 266,
             "segments": []
         },
         "intervals": [
@@ -30,6 +31,7 @@
                     "taxes": 0,
                     "shipping": 0,
                     "net_revenue": 800,
+                    "avg_order_value": 266,
                     "segments": []
                 }
             }

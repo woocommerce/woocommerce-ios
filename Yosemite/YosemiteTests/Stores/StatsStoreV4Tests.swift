@@ -524,7 +524,7 @@ private extension StatsStoreV4Tests {
                                   shipping: 0,
                                   netRevenue: 800,
                                   totalProducts: 2,
-                                  averageOrderValue: 0)
+                                  averageOrderValue: 266)
     }
 
     /// Matches the first interval's `subtotals` field in `order-stats-v4-year` response.
@@ -539,7 +539,7 @@ private extension StatsStoreV4Tests {
                                   shipping: 0,
                                   netRevenue: 800,
                                   totalProducts: 0,
-                                  averageOrderValue: 0)
+                                  averageOrderValue: 266)
     }
 
     func sampleIntervals() -> [Networking.OrderStatsV4Interval] {

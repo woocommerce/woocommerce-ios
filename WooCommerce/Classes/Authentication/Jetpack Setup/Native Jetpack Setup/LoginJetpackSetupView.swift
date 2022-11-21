@@ -6,6 +6,27 @@ final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpack
     init(siteURL: String, connectionOnly: Bool) {
         let viewModel = LoginJetpackSetupViewModel(siteURL: siteURL, connectionOnly: connectionOnly)
         super.init(rootView: LoginJetpackSetupView(viewModel: viewModel))
+        rootView.webViewPresentationHandler = { [weak self] in
+            guard let self else { return }
+            guard let connectionURL = viewModel.jetpackConnectionURL else {
+                return
+            }
+
+            let webViewModel = JetpackConnectionWebViewModel(initialURL: connectionURL,
+                                                             siteURL: viewModel.siteURL,
+                                                             title: Localization.approveConnection) { [weak self] in
+                viewModel.shouldPresentWebView = false
+                viewModel.authorizeJetpackConnection()
+                self?.dismissView()
+            }
+            let webView = AuthenticatedWebViewController(viewModel: webViewModel)
+            webView.navigationItem.leftBarButtonItem = UIBarButtonItem(title: Localization.cancel,
+                                                                       style: .plain,
+                                                                       target: self,
+                                                                       action: #selector(self.dismissView))
+            let navigationController = UINavigationController(rootViewController: webView)
+            self.present(navigationController, animated: true)
+        }
     }
 
     @available(*, unavailable)
@@ -23,8 +44,7 @@ final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpack
     private func configureNavigationBarAppearance() {
         configureTransparentNavigationBar()
 
-        let title = NSLocalizedString("Cancel", comment: "Button to dismiss the site credential login screen")
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: title, style: .plain, target: self, action: #selector(dismissView))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: Localization.cancel, style: .plain, target: self, action: #selector(dismissView))
     }
 
     @objc
@@ -33,9 +53,19 @@ final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpack
     }
 }
 
+private extension LoginJetpackSetupHostingController {
+    enum Localization {
+        static let cancel = NSLocalizedString("Cancel", comment: "Button to dismiss the site credential login screen")
+        static let approveConnection = NSLocalizedString("Approve connection", comment: "Title of the web view to approve Jetpack connection")
+    }
+}
+
 /// View to show the process of Jetpack setup during login.
 ///
 struct LoginJetpackSetupView: View {
+    // To be set by the hosting controller
+    var webViewPresentationHandler: () -> Void = {}
+
     @ObservedObject private var viewModel: LoginJetpackSetupViewModel
 
     /// Scale of the view based on accessibility changes
@@ -119,36 +149,10 @@ struct LoginJetpackSetupView: View {
             .renderedIf(viewModel.currentSetupStep == .done)
         })
         .padding()
-        .sheet(isPresented: $viewModel.shouldPresentWebView) {
-            webView(url: viewModel.jetpackConnectionURL)
-        }
-    }
-
-    @ViewBuilder
-    private func webView(url: URL?) -> some View {
-        if let url = url {
-            NavigationView {
-                AuthenticatedWebView(isPresented: .constant(true),
-                                     url: url,
-                                     urlToTriggerExit: Constants.plansPage,
-                                     exitTrigger: {
-                    viewModel.shouldPresentWebView = false
-                    viewModel.authorizeJetpackConnection()
-                })
-                .navigationTitle(Localization.approveConnection)
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button(action: {
-                            // TODO: add tracks
-                            viewModel.shouldPresentWebView = false
-                        }, label: {
-                            Text(Localization.cancel)
-                        })
-                    }
-                }
+        .onChange(of: viewModel.shouldPresentWebView) { shouldPresent in
+            if shouldPresent {
+                webViewPresentationHandler()
             }
-            .wooNavigationBarStyle()
         }
     }
 }
@@ -157,8 +161,6 @@ private extension LoginJetpackSetupView {
     enum Localization {
         static let goToStore = NSLocalizedString("Go to Store", comment: "Title for the button to navigate to the home screen after Jetpack setup completes")
         static let authorizing = NSLocalizedString("Authorizing connection", comment: "Name of the connection step on the Jetpack setup screen")
-        static let approveConnection = NSLocalizedString("Approve connection", comment: "Title of the web view to approve Jetpack connection")
-        static let cancel = NSLocalizedString("Cancel", comment: "Title for the button to dismiss Jetpack connection web view")
     }
 
     enum Constants {

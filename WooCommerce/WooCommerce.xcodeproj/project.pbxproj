@@ -6690,16 +6690,6 @@
 			path = FlowCoordinator;
 			sourceTree = "<group>";
 		};
-		AE2EA1122927F86C000392B6 /* AnalyticsHub */ = {
-			isa = PBXGroup;
-			children = (
-				B6A480FD2927B77B00A00183 /* AnalyticsHubViewModel.swift */,
-				B6A480FF2927BAA700A00183 /* AnalyticsHubTimeRange.swift */,
-				AE2EA1132927F87B000392B6 /* AnalyticsHubView.swift */,
-			);
-			path = AnalyticsHub;
-			sourceTree = "<group>";
-		};
 		AE9E04732776034B003FA09E /* CustomerSection */ = {
 			isa = PBXGroup;
 			children = (
@@ -8069,6 +8059,8 @@
 			children = (
 				2647F7B329280A5000D59FDF /* Analytics Hub */,
 				AE2EA1122927F86C000392B6 /* AnalyticsHub */,
+				B6A480FD2927B77B00A00183 /* AnalyticsHubViewModel.swift */,
+				B6A480FF2927BAA700A00183 /* AnalyticsHubTimeRange.swift */,
 				DE23CFF827462CD2003BE54E /* JetpackInstall */,
 				02F843D8273646190017FE12 /* JetpackConnectionPackageSites */,
 				028BAC4322F3AE3B008BB4AF /* Stats v4 */,

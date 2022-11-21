@@ -36,13 +36,8 @@ final class SiteRemoteTests: XCTestCase {
     }
 
     func test_createSite_returns_invalidDomain_error_when_domain_is_empty() async throws {
-        await assertThrowsError({
-            // When
-            _ = try await remote.createSite(name: "Wapuu swags", domain: "")
-        }, errorAssert: { error in
-            // Then
-            (error as? SiteCreationError) == .invalidDomain
-        })
+        await assertThrowsError({ _ = try await remote.createSite(name: "Wapuu swags", domain: "") },
+                                errorAssert: { ($0 as? SiteCreationError) == .invalidDomain} )
     }
 
     func test_createSite_returns_DotcomError_failure_on_domain_error() async throws {
@@ -52,9 +47,7 @@ final class SiteRemoteTests: XCTestCase {
         await assertThrowsError({
             // When
             _ = try await remote.createSite(name: "Wapuu swags", domain: "wapuu.store")
-        }, errorAssert: { error in
-            // Then
-            (error as? DotcomError) == .unknown(code: "blog_name_only_lowercase_letters_and_numbers",
+        }, errorAssert: { ($0 as? DotcomError) == .unknown(code: "blog_name_only_lowercase_letters_and_numbers",
                                                 message: "Site names can only contain lowercase letters (a-z) and numbers.")
         })
     }
@@ -63,9 +56,6 @@ final class SiteRemoteTests: XCTestCase {
         await assertThrowsError({
             // When
             _ = try await remote.createSite(name: "Wapuu swags", domain: "wapuu.store")
-        }, errorAssert: { error in
-            // Then
-            (error as? NetworkError) == .notFound
-        })
+        }, errorAssert: { ($0 as? NetworkError) == .notFound })
     }
 }

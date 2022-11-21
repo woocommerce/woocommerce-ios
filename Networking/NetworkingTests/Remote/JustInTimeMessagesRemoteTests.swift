@@ -126,10 +126,7 @@ final class JustInTimeMessagesRemoteTests: XCTestCase {
                         hook: .adminNotices),
                     query: nil,
                     locale: "en_US")
-        }, errorAssert: { error in
-            // Then
-            (error as? NetworkError) == expectedError
-        })
+        }, errorAssert: { ($0 as? NetworkError) == expectedError })
     }
 
     func test_test_loadAllJustInTimeMessages_uses_passed_locale_for_request() async throws {

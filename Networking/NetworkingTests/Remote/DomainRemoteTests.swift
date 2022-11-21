@@ -35,12 +35,6 @@ final class DomainRemoteTests: XCTestCase {
         // Given
         let remote = DomainRemote(network: network)
 
-        await assertThrowsError({
-            // When
-            _ = try await remote.loadFreeDomainSuggestions(query: "domain")
-        }, errorAssert: { error in
-            // Then
-            (error as? NetworkError) == .notFound
-        })
+        await assertThrowsError({_ = try await remote.loadFreeDomainSuggestions(query: "domain")}, errorAssert: { ($0 as? NetworkError) == .notFound })
     }
 }

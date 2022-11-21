@@ -162,13 +162,7 @@ final class AccountRemoteTests: XCTestCase {
         // Given
         let remote = AccountRemote(network: network)
 
-        await assertThrowsError({
-            // When
-            _ = try await remote.loadUsernameSuggestions(from: "woo")
-        }, errorAssert: { error in
-            // Then
-            (error as? NetworkError) == .notFound
-        })
+        await assertThrowsError({  _ = try await remote.loadUsernameSuggestions(from: "woo")}, errorAssert: { ($0 as? NetworkError) == .notFound })
     }
 
     // MARK: - `createAccount`

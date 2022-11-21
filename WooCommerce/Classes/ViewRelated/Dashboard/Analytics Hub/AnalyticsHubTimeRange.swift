@@ -1,21 +1,27 @@
 import Foundation
 
-enum SelectionType {
-    case today
-    case weekToDate
-    case monthToDate
-    case yearToDate
-}
-
 struct TimeRange {
     let start: Date
     let end: Date
+
+    var description: String {
+        get {
+            return "Range description"
+        }
+    }
+}
+
+public enum SelectionType: String {
+    case today = "Today"
+    case weekToDate = "Week to Date"
+    case monthToDate = "Month to Date"
+    case yearToDate = "Year to Date"
 }
 
 public class AnalyticsHubTimeRange {
 
     private let currentTimezone: TimeZone
-    private let selectionType: SelectionType
+    let selectionType: SelectionType
 
     lazy private(set) var selectedTimeRange: TimeRange = {
         return generateSelectedTimeRangeFrom(selectionType: selectionType)

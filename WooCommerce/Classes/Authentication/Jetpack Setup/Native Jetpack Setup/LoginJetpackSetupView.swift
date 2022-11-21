@@ -3,8 +3,8 @@ import SwiftUI
 /// Hosting controller for `LoginJetpackSetupView`.
 ///
 final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpackSetupView> {
-    init(siteURL: String, connectionOnly: Bool) {
-        let viewModel = LoginJetpackSetupViewModel(siteURL: siteURL, connectionOnly: connectionOnly)
+    init(siteURL: String, connectionOnly: Bool, onStoreNavigation: @escaping () -> Void) {
+        let viewModel = LoginJetpackSetupViewModel(siteURL: siteURL, connectionOnly: connectionOnly, onStoreNavigation: onStoreNavigation)
         super.init(rootView: LoginJetpackSetupView(viewModel: viewModel))
         rootView.webViewPresentationHandler = { [weak self] in
             guard let self else { return }
@@ -140,7 +140,8 @@ struct LoginJetpackSetupView: View {
         }
         .safeAreaInset(edge: .bottom, content: {
             Button {
-                // TODO
+                // TODO: add tracks
+                viewModel.navigateToStore()
             } label: {
                 Text(Localization.goToStore)
             }

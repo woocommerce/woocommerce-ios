@@ -8,6 +8,7 @@ final class LoginJetpackSetupViewModel: ObservableObject {
     /// Whether Jetpack is installed and activated and only connection needs to be handled.
     let connectionOnly: Bool
     private let stores: StoresManager
+    private let storeNavigationHandler: () -> Void
 
     let setupSteps: [JetpackInstallStep]
     let title: String
@@ -34,13 +35,14 @@ final class LoginJetpackSetupViewModel: ObservableObject {
         return attributedString
     }()
 
-    init(siteURL: String, connectionOnly: Bool, stores: StoresManager = ServiceLocator.stores) {
+    init(siteURL: String, connectionOnly: Bool, stores: StoresManager = ServiceLocator.stores, onStoreNavigation: @escaping () -> Void = {}) {
         self.siteURL = siteURL
         self.connectionOnly = connectionOnly
         self.stores = stores
         let setupSteps = connectionOnly ? [.connection, .done] : JetpackInstallStep.allCases
         self.setupSteps = setupSteps
         self.title = connectionOnly ? Localization.connectingJetpack : Localization.installingJetpack
+        self.storeNavigationHandler = onStoreNavigation
     }
 
     func isSetupStepInProgress(_ step: JetpackInstallStep) -> Bool {
@@ -63,6 +65,10 @@ final class LoginJetpackSetupViewModel: ObservableObject {
 
     func authorizeJetpackConnection() {
         checkJetpackConnection()
+    }
+
+    func navigateToStore() {
+        storeNavigationHandler()
     }
 }
 

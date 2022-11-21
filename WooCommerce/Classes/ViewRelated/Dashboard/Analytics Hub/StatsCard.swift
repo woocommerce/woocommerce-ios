@@ -20,9 +20,12 @@ struct AnalyticsReportCard: View {
                 .footnoteStyle()
 
             HStack {
+
+                /// Total Sales
+                ///
                 VStack(alignment: .leading) {
 
-                    Text("Left Subtitle")
+                    Text(Localization.totalSales)
                         .calloutStyle()
 
                     Text(totalSales)
@@ -31,14 +34,15 @@ struct AnalyticsReportCard: View {
                     Text(totalGrowth)
                         .foregroundColor(Color(.textInverted))
                         .captionStyle()
-                        .padding(8)
+                        .padding(Layout.growthBackgroundPadding)
                         .background(Color(totalGrowthColor))
 
                 }
 
+                /// Net Sales
+                ///
                 VStack(alignment: .leading) {
-
-                    Text("Right Subtitle")
+                    Text(Localization.netSales)
                         .calloutStyle()
 
                     Text(netSales)
@@ -47,11 +51,23 @@ struct AnalyticsReportCard: View {
                     Text(netGrowth)
                         .foregroundColor(Color(.textInverted))
                         .captionStyle()
-                        .padding(8)
-                        .background(Color(netGrowth))
+                        .padding(Layout.growthBackgroundPadding)
+                        .background(Color(netGrowthColor))
                 }
             }
         }
+    }
+}
+
+// MARK: Constants
+private extension AnalyticsReportCard {
+    enum Localization {
+        static let totalSales = NSLocalizedString("Total Sales", comment: "Total Sales subtitle on the analytics hub report card.")
+        static let netSales = NSLocalizedString("Net Sales", comment: "Net Sales subtitle on the analytics hub report card.")
+    }
+
+    enum Layout {
+        static let growthBackgroundPadding = EdgeInsets(top: 2, leading: 8, bottom: 2, trailing: 8)
     }
 }
 

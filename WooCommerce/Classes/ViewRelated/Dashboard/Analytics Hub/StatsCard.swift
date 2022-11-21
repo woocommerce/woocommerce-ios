@@ -15,15 +15,14 @@ struct AnalyticsReportCard: View {
                 VStack(alignment: .leading) {
 
                     Text("Left Subtitle")
-                        .font(.callout)
-                        .foregroundColor(Color(.textSubtle))
+                        .calloutStyle()
 
                     Text("Left Value")
                         .titleStyle()
 
                     Text("Left Percentage")
-                        .font(.caption)
                         .foregroundColor(Color(.textInverted))
+                        .captionStyle()
                         .padding(8)
                         .background(Color(.systemGreen))
 
@@ -32,15 +31,14 @@ struct AnalyticsReportCard: View {
                 VStack(alignment: .leading) {
 
                     Text("Right Subtitle")
-                        .font(.callout)
-                        .foregroundColor(Color(.textSubtle))
+                        .calloutStyle()
 
                     Text("Right Value")
                         .titleStyle()
 
                     Text("Right Percentage")
-                        .font(.caption)
                         .foregroundColor(Color(.textInverted))
+                        .captionStyle()
                         .padding(8)
                         .background(Color(.systemGreen))
                 }

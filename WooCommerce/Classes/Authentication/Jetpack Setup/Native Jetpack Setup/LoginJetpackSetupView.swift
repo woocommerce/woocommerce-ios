@@ -51,27 +51,6 @@ struct LoginJetpackSetupView: View {
         self.viewModel = viewModel
     }
 
-    private var title: String {
-        viewModel.connectionOnly ? Localization.connectingJetpack : Localization.installingJetpack
-    }
-
-    /// Attributed string for the description text
-    private var descriptionAttributedString: NSAttributedString {
-        let font: UIFont = .body
-        let boldFont: UIFont = font.bold
-        let siteName = viewModel.siteURL.trimHTTPScheme()
-
-        let attributedString = NSMutableAttributedString(
-            string: String(format: Localization.description, siteName),
-            attributes: [.font: font,
-                         .foregroundColor: UIColor.text.withAlphaComponent(0.8)
-                        ]
-        )
-        let boldSiteAddress = NSAttributedString(string: siteName, attributes: [.font: boldFont, .foregroundColor: UIColor.text])
-        attributedString.replaceFirstOccurrence(of: siteName, with: boldSiteAddress)
-        return attributedString
-    }
-
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Constants.blockVerticalPadding) {
@@ -79,9 +58,9 @@ struct LoginJetpackSetupView: View {
 
                 // title and description
                 VStack(alignment: .leading, spacing: Constants.contentVerticalSpacing) {
-                    Text(title)
+                    Text(viewModel.title)
                         .largeTitleStyle()
-                    AttributedText(descriptionAttributedString)
+                    AttributedText(viewModel.descriptionAttributedString)
                 }
 
                 ForEach(viewModel.setupSteps) { step in
@@ -141,18 +120,6 @@ struct LoginJetpackSetupView: View {
 
 private extension LoginJetpackSetupView {
     enum Localization {
-        static let installingJetpack = NSLocalizedString(
-            "Installing Jetpack",
-            comment: "Title for the Jetpack setup screen when installation is required"
-        )
-        static let connectingJetpack = NSLocalizedString(
-            "Connecting Jetpack",
-            comment: "Title for the Jetpack setup screen when connection is required"
-        )
-        static let description = NSLocalizedString(
-            "Please wait while we connect your store %1$@ with Jetpack.",
-            comment: "Message on the Jetpack setup screen. The %1$@ is the site address."
-        )
         static let goToStore = NSLocalizedString("Go to Store", comment: "Title for the button to navigate to the home screen after Jetpack setup completes")
         static let authorizing = NSLocalizedString("Authorizing connection", comment: "Name of the connection step on the Jetpack setup screen")
     }

@@ -42,6 +42,7 @@ protocol ZendeskManagerProtocol: SupportManagerAdapter {
     func showTicketListIfPossible(from controller: UIViewController)
     func showSupportEmailPrompt(from controller: UIViewController, completion: @escaping onUserInformationCompletion)
     func getTags(supportSourceTag: String?) -> [String]
+    func fetchSystemStatusReport()
     func initialize()
     func reset()
 }
@@ -91,6 +92,10 @@ struct NoZendeskManager: ZendeskManagerProtocol {
 
     func getTags(supportSourceTag: String?) -> [String] {
         []
+    }
+
+    func fetchSystemStatusReport() {
+        // no-op
     }
 
     func initialize() {
@@ -203,6 +208,25 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
             ippTags.append(.wcpayNotInstalled)
         }
         return ippTags.map { $0.rawValue }
+    }
+
+    /// Instantiates the SystemStatusReportViewModel as soon as the Zendesk instance needs it
+    /// This generally happens in the SettingsViewModel if we need to fetch the site's System Status Report
+    ///
+    private lazy var systemStatusReportViewModel: SystemStatusReportViewModel = SystemStatusReportViewModel(
+        siteID: ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0
+    )
+    
+    /// Formatted system status report to be displayed on-screen
+    ///
+    private var systemStatusReport: String {
+        return systemStatusReportViewModel.statusReport
+    }
+
+    /// Handles fetching the site's System Status Report
+    ///
+    func fetchSystemStatusReport() {
+        systemStatusReportViewModel.fetchReport()
     }
 
     func showNewRequestIfPossible(from controller: UIViewController) {
@@ -826,8 +850,10 @@ private extension ZendeskManager {
         return logText
     }
 
+    /// Get the System Status Report as a formatted String that we can use in the support request
+    ///
     func getSystemStatusReport() -> String {
-        return "SSR goes here"
+        return self.systemStatusReport
     }
 
     func getCurrentSiteDescription() -> String {

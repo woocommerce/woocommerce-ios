@@ -216,7 +216,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     private lazy var systemStatusReportViewModel: SystemStatusReportViewModel = SystemStatusReportViewModel(
         siteID: ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0
     )
-    
+
     /// Formatted system status report to be displayed on-screen
     ///
     private var systemStatusReport: String {

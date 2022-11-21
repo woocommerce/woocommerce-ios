@@ -155,26 +155,29 @@ private extension StatsStoreV4 {
                                 forceRefresh: Bool,
                                 onCompletion: @escaping (Result<Void, Error>) -> Void) {
         Task { @MainActor in
-            let result = await loadTopEarnerStats(siteID: siteID,
-                                                  timeRange: timeRange,
-                                                  earliestDateToInclude: earliestDateToInclude,
-                                                  latestDateToInclude: latestDateToInclude,
-                                                  quantity: quantity,
-                                                  forceRefresh: forceRefresh)
-            switch result {
-            case .success:
-                onCompletion(result)
-            case .failure(let error):
+            do {
+                try await loadTopEarnerStats(siteID: siteID,
+                                                      timeRange: timeRange,
+                                                      earliestDateToInclude: earliestDateToInclude,
+                                                      latestDateToInclude: latestDateToInclude,
+                                                      quantity: quantity,
+                                                      forceRefresh: forceRefresh)
+                onCompletion(.success(()))
+            } catch {
                 if let error = error as? DotcomError, error == .noRestRoute {
-                    let resultFromDeprecatedAPI = await loadTopEarnerStatsWithDeprecatedAPI(siteID: siteID,
-                                                                                            timeRange: timeRange,
-                                                                                            earliestDateToInclude: earliestDateToInclude,
-                                                                                            latestDateToInclude: latestDateToInclude,
-                                                                                            quantity: quantity,
-                                                                                            forceRefresh: forceRefresh)
-                    onCompletion(resultFromDeprecatedAPI)
+                    do {
+                        try await loadTopEarnerStatsWithDeprecatedAPI(siteID: siteID,
+                                                                      timeRange: timeRange,
+                                                                      earliestDateToInclude: earliestDateToInclude,
+                                                                      latestDateToInclude: latestDateToInclude,
+                                                                      quantity: quantity,
+                                                                      forceRefresh: forceRefresh)
+                        onCompletion(.success(()))
+                    } catch {
+                        onCompletion(.failure(error))
+                    }
                 } else {
-                    onCompletion(result)
+                    onCompletion(.failure(error))
                 }
             }
         }
@@ -186,8 +189,8 @@ private extension StatsStoreV4 {
                             earliestDateToInclude: Date,
                             latestDateToInclude: Date,
                             quantity: Int,
-                            forceRefresh: Bool) async -> Result<Void, Error> {
-        await withCheckedContinuation { continuation in
+                            forceRefresh: Bool) async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) -> Void in
             let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
             let earliestDate = dateFormatter.string(from: earliestDateToInclude)
             let latestDate = dateFormatter.string(from: latestDateToInclude)
@@ -208,10 +211,14 @@ private extension StatsStoreV4 {
                                                                    date: latestDateToInclude,
                                                                    leaderboards: leaderboards,
                                                                    quantity: quantity) { result in
-                        continuation.resume(returning: result)
+                        if case let .failure(error) = result {
+                            continuation.resume(throwing: error)
+                        } else {
+                            continuation.resume(returning: (()))
+                        }
                     }
                 case .failure(let error):
-                    continuation.resume(returning: .failure(error))
+                    continuation.resume(throwing: error)
                 }
             }
         }
@@ -223,8 +230,8 @@ private extension StatsStoreV4 {
                                              earliestDateToInclude: Date,
                                              latestDateToInclude: Date,
                                              quantity: Int,
-                                             forceRefresh: Bool) async -> Result<Void, Error> {
-        await withCheckedContinuation { continuation in
+                                             forceRefresh: Bool) async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) -> Void in
             let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
             let earliestDate = dateFormatter.string(from: earliestDateToInclude)
             let latestDate = dateFormatter.string(from: latestDateToInclude)
@@ -245,10 +252,14 @@ private extension StatsStoreV4 {
                                                                    date: latestDateToInclude,
                                                                    leaderboards: leaderboards,
                                                                    quantity: quantity) { result in
-                        continuation.resume(returning: result)
+                        if case let .failure(error) = result {
+                            continuation.resume(throwing: error)
+                        } else {
+                            continuation.resume(returning: ())
+                        }
                     }
                 case .failure(let error):
-                    continuation.resume(returning: .failure(error))
+                    continuation.resume(throwing: error)
                 }
             }
         }

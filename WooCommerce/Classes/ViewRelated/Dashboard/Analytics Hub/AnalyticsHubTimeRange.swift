@@ -25,11 +25,11 @@ public class AnalyticsHubTimeRange {
     lazy private(set) var previousTimeRange: TimeRange = {
         generatePreviousTimeRangeFrom(selectionType: selectionType)
     }()
-    
+
     lazy private(set) var currentRangeDescription: String = {
         generateDescriptionOf(timeRange: currentTimeRange)
     }()
-    
+
     lazy private(set) var previousRangeDescription: String = {
         generateDescriptionOf(timeRange: previousTimeRange)
     }()

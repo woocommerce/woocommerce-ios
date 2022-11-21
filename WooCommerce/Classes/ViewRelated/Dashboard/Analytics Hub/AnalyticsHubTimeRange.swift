@@ -19,7 +19,10 @@ public class AnalyticsHubTimeRange {
     private(set) var selectedTimeRange: TimeRange = TimeRange.empty
     private(set) var previousTimeRange: TimeRange = TimeRange.empty
 
-    init(selectionType: SelectionType) {
+    private let siteTimezone: TimeZone
+
+    init(selectionType: SelectionType, siteTimezone: TimeZone = TimeZone.siteTimezone) {
+        self.siteTimezone = siteTimezone
         selectedTimeRange = generateSelectedTimeRangeFrom(selectionType: selectionType)
         previousTimeRange = generatePreviousTimeRangeFrom(selectionType: selectionType)
     }

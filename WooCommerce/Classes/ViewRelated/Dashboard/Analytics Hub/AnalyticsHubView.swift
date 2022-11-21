@@ -31,9 +31,9 @@ struct AnalyticsHubView: View {
                     Divider()
                     VStack {
                         Text(timeRange.selectionType.rawValue)
-                        Text(timeRange.selectedTimeRange.description)
+                        Text(timeRange.currentRangeDescription)
                         Divider()
-                        Text(timeRange.previousTimeRange.description)
+                        Text(timeRange.previousRangeDescription)
 
                     }
                     .padding(.leading)

@@ -4,20 +4,6 @@ import Yosemite
 struct TimeRange {
     let start: Date
     let end: Date
-
-    var description: String {
-        get {
-            let dateFormatter = DateFormatter()
-
-            dateFormatter.dateFormat = "MMM d, yyyy"
-            let endDateDescription = dateFormatter.string(from: end)
-
-            dateFormatter.dateFormat = "MMM d"
-            let startDateDescription = dateFormatter.string(from: start)
-
-            return "\(startDateDescription) - \(endDateDescription)"
-        }
-    }
 }
 
 public enum SelectionType: String {
@@ -40,6 +26,17 @@ public class AnalyticsHubTimeRange {
         return generatePreviousTimeRangeFrom(selectionType: selectionType)
     }()
 
+    var currentRangeDescription: String {
+        get {
+            return generateTimeRangeDescription(timeRange: selectedTimeRange)
+        }
+    }
+
+    var previousRangeDescription: String {
+        get {
+            return generateTimeRangeDescription(timeRange: previousTimeRange)
+        }
+    }
 
     init(selectedTimeRange: StatsTimeRangeV4, siteTimezone: TimeZone = TimeZone.current) {
         self.selectionType = selectedTimeRange.toAnalyticsHubSelectionType()
@@ -75,6 +72,27 @@ public class AnalyticsHubTimeRange {
         case .yearToDate:
             let oneYearAgo = Calendar.current.date(byAdding: .year, value: -1, to: now)!
             return TimeRange(start: oneYearAgo.startOfYear(timezone: currentTimezone), end: oneYearAgo)
+        }
+    }
+
+    private func generateTimeRangeDescription(timeRange: TimeRange) -> String {
+        let dateFormatter = DateFormatter()
+
+        dateFormatter.dateFormat = "MMM d"
+        let startDateDescription = dateFormatter.string(from: timeRange.start)
+
+        let endDateDescription = generateEndDateDescription(endDate: timeRange.end, dateFormatter: dateFormatter)
+
+        return "\(startDateDescription) - \(endDateDescription)"
+    }
+
+    private func generateEndDateDescription(endDate: Date, dateFormatter: DateFormatter) -> String {
+        if selectionType == .yearToDate {
+            dateFormatter.dateFormat = "MMM d, yyyy"
+            return dateFormatter.string(from: endDate)
+        } else {
+            dateFormatter.dateFormat = "d, yyyy"
+            return dateFormatter.string(from: endDate)
         }
     }
 }

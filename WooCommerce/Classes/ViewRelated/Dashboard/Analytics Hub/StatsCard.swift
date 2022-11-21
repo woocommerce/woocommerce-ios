@@ -34,6 +34,7 @@ struct AnalyticsReportCard: View {
                     GrowthTag(value: totalGrowth, backgroundColor: totalGrowthColor)
 
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
 
                 /// Net Sales
                 ///
@@ -46,6 +47,7 @@ struct AnalyticsReportCard: View {
 
                     GrowthTag(value: netGrowth, backgroundColor: netGrowthColor)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
         .padding(Layout.cardPadding)

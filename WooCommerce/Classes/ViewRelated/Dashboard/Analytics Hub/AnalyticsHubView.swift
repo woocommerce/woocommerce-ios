@@ -43,7 +43,6 @@ struct AnalyticsHubView: View {
                                         netSales: "$2.324",
                                         netGrowth: "-4%",
                                         netGrowthColor: .withColorStudio(.red, shade: .shade40))
-                    .frame(maxWidth: .infinity, alignment: .leading)
                     .background(Color(uiColor: .listForeground))
 
                     Divider()
@@ -59,7 +58,6 @@ struct AnalyticsHubView: View {
                                         netSales: "$1.624",
                                         netGrowth: "-9%",
                                         netGrowthColor: .withColorStudio(.red, shade: .shade40))
-                    .frame(maxWidth: .infinity, alignment: .leading)
                     .background(Color(uiColor: .listForeground))
 
                     Divider()

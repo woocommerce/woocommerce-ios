@@ -129,7 +129,12 @@ struct LoginJetpackSetupView: View {
         if let url = url {
             NavigationView {
                 AuthenticatedWebView(isPresented: .constant(true),
-                                     url: url)
+                                     url: url,
+                                     urlToTriggerExit: Constants.plansPage,
+                                     exitTrigger: {
+                    viewModel.shouldPresentWebView = false
+                    viewModel.authorizeJetpackConnection()
+                })
                 .navigationTitle(Localization.approveConnection)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
@@ -162,6 +167,7 @@ private extension LoginJetpackSetupView {
         static let stepItemHorizontalSpacing: CGFloat = 24
         static let stepItemsVerticalSpacing: CGFloat = 20
         static let stepImageSize: CGFloat = 24
+        static let plansPage = "https://wordpress.com/jetpack/connect/plans"
     }
 }
 

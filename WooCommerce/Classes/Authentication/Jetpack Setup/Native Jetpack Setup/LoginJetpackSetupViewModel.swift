@@ -60,6 +60,10 @@ final class LoginJetpackSetupViewModel: ObservableObject {
     func startSetup() {
         retrieveJetpackPluginDetails()
     }
+
+    func authorizeJetpackConnection() {
+        checkJetpackConnection()
+    }
 }
 
 // MARK: Private helpers
@@ -120,9 +124,29 @@ private extension LoginJetpackSetupViewModel {
             guard let self else { return }
             switch result {
             case .success(let url):
-                self.currentConnectionStep = .inProgress
                 self.jetpackConnectionURL = url
                 self.shouldPresentWebView = true
+            case .failure(let error):
+                // TODO: handle error
+                print(error)
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    func checkJetpackConnection() {
+        currentConnectionStep = .inProgress
+        let action = JetpackConnectionAction.fetchJetpackUser { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let user):
+                guard user.wpcomUser?.email != nil else {
+                    DDLogWarn("⚠️ Cannot find connected WPcom user")
+                    return // TODO: add tracks and handle error
+                }
+
+                self.currentConnectionStep = .authorized
+                self.currentSetupStep = .done
             case .failure(let error):
                 // TODO: handle error
                 print(error)

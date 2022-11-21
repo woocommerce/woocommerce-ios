@@ -51,10 +51,9 @@ private extension SiteStore {
                     domain: String,
                     completion: @escaping (Result<SiteCreationResult, SiteCreationError>) -> Void) {
         Task { @MainActor in
-            let result = await remote.createSite(name: name,
-                                                 domain: domain)
-            switch result {
-            case .success(let response):
+            do {
+                let response = try await remote.createSite(name: name, domain: domain)
+
                 guard response.success else {
                     return completion(.failure(SiteCreationError.unsuccessful))
                 }
@@ -65,8 +64,8 @@ private extension SiteStore {
                                           name: response.site.name,
                                           url: response.site.url,
                                           siteSlug: response.site.siteSlug)))
-            case .failure(let remoteError):
-                completion(.failure(SiteCreationError(remoteError: remoteError)))
+            } catch {
+                completion(.failure(SiteCreationError(remoteError: error)))
             }
         }
     }

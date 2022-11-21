@@ -72,7 +72,7 @@ private extension AnalyticsHubView {
     }
 
     struct Layout {
-        static let vertialSpacing: CGFloat = 26.0
+        static let vertialSpacing: CGFloat = 24.0
     }
 }
 

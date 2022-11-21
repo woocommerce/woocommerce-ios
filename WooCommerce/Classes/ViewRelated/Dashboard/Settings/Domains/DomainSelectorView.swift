@@ -73,85 +73,87 @@ struct DomainSelectorView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            ScrollView {
-                VStack(alignment: .leading) {
-                    // Header label.
-                    Text(Localization.subtitle)
-                        .foregroundColor(Color(.secondaryLabel))
-                        .bodyStyle()
-                        .padding(.horizontal, Layout.defaultHorizontalPadding)
+        ScrollView {
+            VStack(alignment: .leading) {
+                // Header label.
+                Text(Localization.subtitle)
+                    .foregroundColor(Color(.secondaryLabel))
+                    .bodyStyle()
+                    .padding(.horizontal, Layout.defaultHorizontalPadding)
 
-                    // Search text field.
-                    SearchHeader(text: $viewModel.searchTerm,
-                                 placeholder: Localization.searchPlaceholder,
-                                 customizations: .init(backgroundColor: .clear,
-                                                       borderColor: .separator,
-                                                       internalHorizontalPadding: 21,
-                                                       internalVerticalPadding: 12))
-                    .focused($textFieldIsFocused)
+                // Search text field.
+                SearchHeader(text: $viewModel.searchTerm,
+                             placeholder: Localization.searchPlaceholder,
+                             customizations: .init(backgroundColor: .clear,
+                                                   borderColor: .separator,
+                                                   internalHorizontalPadding: 21,
+                                                   internalVerticalPadding: 12))
+                .focused($textFieldIsFocused)
 
-                    // Results header.
-                    Text(Localization.suggestionsHeader)
-                        .foregroundColor(Color(.secondaryLabel))
-                        .footnoteStyle()
-                        .padding(.horizontal, Layout.defaultHorizontalPadding)
+                // Results header.
+                Text(Localization.suggestionsHeader)
+                    .foregroundColor(Color(.secondaryLabel))
+                    .footnoteStyle()
+                    .padding(.horizontal, Layout.defaultHorizontalPadding)
 
-                    if viewModel.searchTerm.isEmpty {
-                        // Placeholder image when search query is empty.
-                        HStack {
-                            Spacer()
-                            Image(uiImage: .domainSearchPlaceholderImage)
-                            Spacer()
-                        }
-                    } else if viewModel.isLoadingDomainSuggestions {
-                        // Progress indicator when loading domain suggestions.
-                        HStack {
-                            Spacer()
-                            ProgressView()
-                            Spacer()
-                        }
-                    } else if let errorMessage = viewModel.errorMessage {
-                        // Error message when there is an error loading domain suggestions.
-                        Text(errorMessage)
-                            .padding(Layout.defaultPadding)
-                    } else {
-                        // Domain suggestions.
-                        LazyVStack {
-                            ForEach(viewModel.domains, id: \.self) { domain in
-                                Button {
-                                    textFieldIsFocused = false
-                                    selectedDomainName = domain
-                                } label: {
-                                    VStack(alignment: .leading) {
-                                        DomainRowView(viewModel: .init(domainName: domain,
-                                                                       searchQuery: viewModel.searchTerm,
-                                                                       isSelected: domain == selectedDomainName))
-                                        Divider()
-                                            .frame(height: Layout.dividerHeight)
-                                            .padding(.leading, Layout.defaultHorizontalPadding)
-                                    }
+                if viewModel.searchTerm.isEmpty {
+                    // Placeholder image when search query is empty.
+                    HStack {
+                        Spacer()
+                        Image(uiImage: .domainSearchPlaceholderImage)
+                        Spacer()
+                    }
+                } else if viewModel.isLoadingDomainSuggestions {
+                    // Progress indicator when loading domain suggestions.
+                    HStack {
+                        Spacer()
+                        ProgressView()
+                        Spacer()
+                    }
+                } else if let errorMessage = viewModel.errorMessage {
+                    // Error message when there is an error loading domain suggestions.
+                    Text(errorMessage)
+                        .padding(Layout.defaultPadding)
+                } else {
+                    // Domain suggestions.
+                    LazyVStack {
+                        ForEach(viewModel.domains, id: \.self) { domain in
+                            Button {
+                                textFieldIsFocused = false
+                                selectedDomainName = domain
+                            } label: {
+                                VStack(alignment: .leading) {
+                                    DomainRowView(viewModel: .init(domainName: domain,
+                                                                   searchQuery: viewModel.searchTerm,
+                                                                   isSelected: domain == selectedDomainName))
+                                    Divider()
+                                        .frame(height: Layout.dividerHeight)
+                                        .padding(.leading, Layout.defaultHorizontalPadding)
                                 }
                             }
                         }
                     }
                 }
             }
-
+        }
+        .safeAreaInset(edge: .bottom) {
             // Continue button when a domain is selected.
             if let selectedDomainName {
-                Divider()
-                    .frame(height: Layout.dividerHeight)
-                    .foregroundColor(Color(.separator))
-                Button(Localization.continueButtonTitle) {
-                    Task { @MainActor in
-                        isWaitingForDomainSelectionCompletion = true
-                        await onDomainSelection(selectedDomainName)
-                        isWaitingForDomainSelectionCompletion = false
+                VStack {
+                    Divider()
+                        .frame(height: Layout.dividerHeight)
+                        .foregroundColor(Color(.separator))
+                    Button(Localization.continueButtonTitle) {
+                        Task { @MainActor in
+                            isWaitingForDomainSelectionCompletion = true
+                            await onDomainSelection(selectedDomainName)
+                            isWaitingForDomainSelectionCompletion = false
+                        }
                     }
+                    .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isWaitingForDomainSelectionCompletion))
+                    .padding(Layout.defaultPadding)
                 }
-                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isWaitingForDomainSelectionCompletion))
-                .padding(Layout.defaultPadding)
+                .background(Color(.systemBackground))
             }
         }
         .onChange(of: viewModel.isLoadingDomainSuggestions) { isLoadingDomainSuggestions in

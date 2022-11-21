@@ -18,6 +18,7 @@ struct MockInAppPurchases {
 
     /// - Parameter fetchProductsDuration: How long to wait until the mock plan is returned, in nanoseconds.
     /// - Parameter products: WPCOM products to return for purchase.
+    /// - Parameter userIsEntitledToProduct: Whether the user is entitled to the matched IAP product.
     init(fetchProductsDuration: UInt64 = 1_000_000_000,
          products: [WPComPlanProduct] = Defaults.products,
          userIsEntitledToProduct: Bool = false) {
@@ -38,12 +39,12 @@ extension MockInAppPurchases: InAppPurchasesForWPComPlansProtocol {
     }
 
     func purchaseProduct(with id: String, for remoteSiteId: Int64) async throws -> InAppPurchaseResult {
-        // Return .pending in case of success because `StoreKit.Transaction` cannot be mocked for a success result.
+        // Returns `.pending` in case of success because `StoreKit.Transaction` cannot be easily mocked.
         .pending
     }
 
     func retryWPComSyncForPurchasedProduct(with id: String) async throws {
-
+        // no-op
     }
 
     func inAppPurchasesAreSupported() async -> Bool {

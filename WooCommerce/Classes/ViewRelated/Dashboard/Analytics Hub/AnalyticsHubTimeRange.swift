@@ -18,8 +18,8 @@ public class AnalyticsHubTimeRange {
     private let currentTimezone: TimeZone
     let selectionType: SelectionType
 
-    lazy private(set) var selectedTimeRange: TimeRange = {
-        generateSelectedTimeRangeFrom(selectionType: selectionType)
+    lazy private(set) var currentTimeRange: TimeRange = {
+        generateCurrentTimeRangeFrom(selectionType: selectionType)
     }()
 
     lazy private(set) var previousTimeRange: TimeRange = {
@@ -27,11 +27,11 @@ public class AnalyticsHubTimeRange {
     }()
     
     lazy private(set) var currentRangeDescription: String = {
-        generateTimeRangeDescription(timeRange: selectedTimeRange)
+        generateDescriptionOf(timeRange: currentTimeRange)
     }()
     
     lazy private(set) var previousRangeDescription: String = {
-        generateTimeRangeDescription(timeRange: previousTimeRange)
+        generateDescriptionOf(timeRange: previousTimeRange)
     }()
 
     init(selectedTimeRange: StatsTimeRangeV4, siteTimezone: TimeZone = TimeZone.current) {
@@ -39,7 +39,7 @@ public class AnalyticsHubTimeRange {
         self.currentTimezone = siteTimezone
     }
 
-    private func generateSelectedTimeRangeFrom(selectionType: SelectionType) -> TimeRange {
+    private func generateCurrentTimeRangeFrom(selectionType: SelectionType) -> TimeRange {
         let now = Date()
         switch selectionType {
         case .today:
@@ -71,7 +71,7 @@ public class AnalyticsHubTimeRange {
         }
     }
 
-    private func generateTimeRangeDescription(timeRange: TimeRange) -> String {
+    private func generateDescriptionOf(timeRange: TimeRange) -> String {
         let dateFormatter = DateFormatter()
 
         if selectionType == .today {

@@ -4,18 +4,14 @@ import SwiftUI
 final class DomainSelectorHostingController: UIHostingController<DomainSelectorView> {
     private let viewModel: DomainSelectorViewModel
     private let onDomainSelection: (String) async -> Void
-    private let onSkip: () -> Void
 
     /// - Parameters:
     ///   - viewModel: View model for the domain selector.
     ///   - onDomainSelection: Called when the user continues with a selected domain name.
-    ///   - onSkip: Called when the user taps to skip domain selection.
     init(viewModel: DomainSelectorViewModel,
-         onDomainSelection: @escaping (String) async -> Void,
-         onSkip: @escaping () -> Void) {
+         onDomainSelection: @escaping (String) async -> Void) {
         self.viewModel = viewModel
         self.onDomainSelection = onDomainSelection
-        self.onSkip = onSkip
         super.init(rootView: DomainSelectorView(viewModel: viewModel))
 
         rootView.onDomainSelection = { [weak self] domain in
@@ -30,16 +26,11 @@ final class DomainSelectorHostingController: UIHostingController<DomainSelectorV
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        configureSkipButton()
         configureNavigationBarAppearance()
     }
 }
 
 private extension DomainSelectorHostingController {
-    func configureSkipButton() {
-        navigationItem.rightBarButtonItem = .init(title: Localization.skipButtonTitle, style: .plain, target: self, action: #selector(skipButtonTapped))
-    }
-
     /// Shows a transparent navigation bar without a bottom border.
     func configureNavigationBarAppearance() {
         navigationItem.title = Localization.title
@@ -55,15 +46,8 @@ private extension DomainSelectorHostingController {
 }
 
 private extension DomainSelectorHostingController {
-    @objc func skipButtonTapped() {
-        onSkip()
-    }
-}
-
-private extension DomainSelectorHostingController {
     enum Localization {
         static let title = NSLocalizedString("Choose a domain", comment: "Title of the domain selector.")
-        static let skipButtonTitle = NSLocalizedString("Skip", comment: "Navigation bar button on the domain selector screen to skip domain selection.")
     }
 }
 

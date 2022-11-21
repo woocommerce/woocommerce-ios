@@ -199,8 +199,6 @@ private extension StoreCreationCoordinator {
             await self.createStoreAndContinueToStoreSummary(from: navigationController,
                                                             name: storeName,
                                                             domain: domain)
-        }, onSkip: {
-            // TODO-8045: skip to the next step of store creation with an auto-generated domain.
         })
         navigationController.pushViewController(domainSelector, animated: false)
     }

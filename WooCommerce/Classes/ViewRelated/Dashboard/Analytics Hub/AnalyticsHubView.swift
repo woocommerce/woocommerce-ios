@@ -36,13 +36,15 @@ struct AnalyticsHubView: View {
                 VStack(spacing: 0) {
                     Divider()
 
-                    AnalyticsReportCard(title: Localization.revenue,
-                                        totalSales: "$3.234",
-                                        totalGrowth: "+23%",
-                                        totalGrowthColor: .withColorStudio(.green, shade: .shade50),
-                                        netSales: "$2.324",
-                                        netGrowth: "-4%",
-                                        netGrowthColor: .withColorStudio(.red, shade: .shade40))
+                    AnalyticsReportCard(title: "REVENUE",
+                                        leadingTitle: "Total Sales",
+                                        leadingValue: "$3.234",
+                                        leadingGrowth: "+23%",
+                                        leadingGrowthColor: .withColorStudio(.green, shade: .shade50),
+                                        trailingTitle: "Net Sales",
+                                        trailingValue: "$2.324",
+                                        trailingGrowth: "-4%",
+                                        trailingGrowthColor: .withColorStudio(.red, shade: .shade40))
                     .background(Color(uiColor: .listForeground))
 
                     Divider()
@@ -51,13 +53,15 @@ struct AnalyticsHubView: View {
                 VStack(spacing: 0) {
                     Divider()
 
-                    AnalyticsReportCard(title: Localization.orders,
-                                        totalSales: "$2.934",
-                                        totalGrowth: "+15%",
-                                        totalGrowthColor: .withColorStudio(.green, shade: .shade50),
-                                        netSales: "$1.624",
-                                        netGrowth: "-9%",
-                                        netGrowthColor: .withColorStudio(.red, shade: .shade40))
+                    AnalyticsReportCard(title: "ORDERS",
+                                        leadingTitle: "Total Orders",
+                                        leadingValue: "145",
+                                        leadingGrowth: "+36%",
+                                        leadingGrowthColor: .withColorStudio(.green, shade: .shade50),
+                                        trailingTitle: "Average Order Value",
+                                        trailingValue: "$57,99",
+                                        trailingGrowth: "-16%",
+                                        trailingGrowthColor: .withColorStudio(.red, shade: .shade40))
                     .background(Color(uiColor: .listForeground))
 
                     Divider()
@@ -77,8 +81,6 @@ struct AnalyticsHubView: View {
 private extension AnalyticsHubView {
     struct Localization {
         static let title = NSLocalizedString("Analytics", comment: "Title for the Analytics Hub screen.")
-        static let revenue = NSLocalizedString("REVENUE", comment: "Title for the revenue report card on the analytics hub screen. Capitalized")
-        static let orders = NSLocalizedString("ORDERS", comment: "Title for the orders report card on the analytics hub screen. Capitalized")
     }
 
     struct Layout {

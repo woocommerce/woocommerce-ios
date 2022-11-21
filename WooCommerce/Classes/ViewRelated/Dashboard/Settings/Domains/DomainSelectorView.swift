@@ -120,6 +120,7 @@ struct DomainSelectorView: View {
                     Text(errorMessage)
                         .foregroundColor(Color(.secondaryLabel))
                         .bodyStyle()
+                        .frame(maxWidth: .infinity, alignment: .center)
                         .multilineTextAlignment(.center)
                         .padding(Layout.defaultPadding)
                 } else {

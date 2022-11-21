@@ -23,7 +23,7 @@ public enum ProductCreationType: Equatable {
     var actionSheetDescription: String {
         switch self {
         case .template:
-            return NSLocalizedString("Use a template to create physical, virtual, and variable products.",
+            return NSLocalizedString("Use a template to create physical, virtual, and variable products. You can edit it as you go.",
                                      comment: "Description for the option to create a template product")
         case .manual:
             return NSLocalizedString("Add a product manually.",

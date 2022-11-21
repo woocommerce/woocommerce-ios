@@ -12,10 +12,10 @@ extension CardBrand {
         .visa
     }
 }
-extension CardPresentReceiptParameters {
+extension Hardware.CardPresentReceiptParameters {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> CardPresentReceiptParameters {
+    public static func fake() -> Hardware.CardPresentReceiptParameters {
         .init(
             amount: .fake(),
             formattedAmount: .fake(),
@@ -27,10 +27,10 @@ extension CardPresentReceiptParameters {
         )
     }
 }
-extension CardPresentTransactionDetails {
+extension Hardware.CardPresentTransactionDetails {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> CardPresentTransactionDetails {
+    public static func fake() -> Hardware.CardPresentTransactionDetails {
         .init(
             last4: .fake(),
             expMonth: .fake(),
@@ -44,10 +44,10 @@ extension CardPresentTransactionDetails {
         )
     }
 }
-extension Charge {
+extension Hardware.Charge {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> Charge {
+    public static func fake() -> Hardware.Charge {
         .init(
             id: .fake(),
             amount: .fake(),
@@ -66,10 +66,10 @@ extension ChargeStatus {
         .succeeded
     }
 }
-extension PaymentIntent {
+extension Hardware.PaymentIntent {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> PaymentIntent {
+    public static func fake() -> Hardware.PaymentIntent {
         .init(
             id: .fake(),
             status: .fake(),

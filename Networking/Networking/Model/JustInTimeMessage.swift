@@ -3,7 +3,7 @@ import Codegen
 
 /// Just In Time Message
 /// Also referred to as JITM, these messages are triggered on a per WPcom user basis, and can be requested for particular contexts within the app.
-/// They are generally displayed as a title, description, and CTA button
+/// They are generally displayed as a title, description, and Call To Action (CTA) button
 ///
 public struct JustInTimeMessage: GeneratedCopiable, GeneratedFakeable, Equatable {
     /// Site Identifier
@@ -18,7 +18,7 @@ public struct JustInTimeMessage: GeneratedCopiable, GeneratedFakeable, Equatable
     ///
     public let featureClass: String
 
-    /// Validity of the JITM in seconds
+    /// TTL, or Time To Live: validity of the JITM's client-side dismissal in seconds, only relevant after dismissal.
     ///
     public let ttl: Int64
 
@@ -26,7 +26,7 @@ public struct JustInTimeMessage: GeneratedCopiable, GeneratedFakeable, Equatable
     ///
     public let content: Content
 
-    /// The Call to Action for the JITM: in particular, the button text and link to open
+    /// CTA, or Call to Action: button details for the JITM: in particular, the button text and link to open
     ///
     public let cta: CTA
 

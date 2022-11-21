@@ -1,4 +1,5 @@
 import Combine
+import protocol Experiments.FeatureFlagService
 import Yosemite
 
 import protocol Storage.StorageManagerType
@@ -151,6 +152,14 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
             }
         }()
 
+        // The `frame_nonce` value must be stored for the preview to be displayed
+        if let site = stores.sessionManager.defaultSite,
+           site.frameNonce.isNotEmpty,
+            // Preview existing drafts or new products that can be saved as a draft
+           (canSaveAsDraft() || originalProductModel.status == .draft) {
+            buttons.insert(.preview, at: 0)
+        }
+
         // Add more button if needed
         if shouldShowMoreOptionsMenu() {
             buttons.append(.more)
@@ -170,13 +179,20 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     private let analytics: Analytics
 
+    private let featureFlagService: FeatureFlagService
+
+    /// Assign this closure to be notified when a new product is saved remotely
+    ///
+    var onProductCreated: () -> Void = {}
+
     init(product: EditableProductModel,
          formType: ProductFormType,
          productImageActionHandler: ProductImageActionHandler,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          productImagesUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.formType = formType
         self.productImageActionHandler = productImageActionHandler
         self.originalProduct = product
@@ -186,6 +202,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.storageManager = storageManager
         self.productImagesUploader = productImagesUploader
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
 
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
             guard let self = self else { return }
@@ -207,7 +224,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
                                                   productOrVariationID: .product(id: product.productID),
                                                   isLocalID: !product.existsRemotely),
                                        originalImages: originalProduct.images)
-        return hasProductChangesExcludingImages || hasImageChanges || password != originalPassword
+        return hasProductChangesExcludingImages || hasImageChanges || password != originalPassword || isNewTemplateProduct()
     }
 }
 
@@ -419,7 +436,7 @@ extension ProductFormViewModel {
             let productWithStatusUpdated = product.product.copy(statusKey: status.rawValue)
             return EditableProductModel(product: productWithStatusUpdated)
         }()
-        let remoteActionUseCase = ProductFormRemoteActionUseCase()
+        let remoteActionUseCase = ProductFormRemoteActionUseCase(stores: stores)
         switch formType {
         case .add:
             let productIDBeforeSave = productModel.productID
@@ -436,6 +453,7 @@ extension ProductFormViewModel {
                     onCompletion(.success(data.product))
                     self.replaceProductID(productIDBeforeSave: productIDBeforeSave)
                     self.saveProductImagesWhenNoneIsPendingUploadAnymore()
+                    self.onProductCreated()
                 }
             }
         case .edit:
@@ -605,6 +623,15 @@ private extension ProductFormViewModel {
         }
 
         return controller
+    }
+
+    /// Helper to determine if the added/editted product comes as a new template product.
+    /// We assume that a new template product is a product that:
+    ///  - Doesn't have an `id` - has not been saved remotely
+    ///  - Is not empty.
+    ///
+    private func isNewTemplateProduct() -> Bool {
+        originalProduct.productID == .zero && !originalProduct.isEmpty()
     }
 }
 

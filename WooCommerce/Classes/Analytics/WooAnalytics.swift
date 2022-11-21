@@ -212,7 +212,7 @@ private extension WooAnalytics {
         var updatedProperties = properties ?? [:]
         let site = ServiceLocator.stores.sessionManager.defaultSite
         updatedProperties[PropertyKeys.blogIDKey] = site?.siteID
-        updatedProperties[PropertyKeys.wpcomStoreKey] = site?.isWordPressStore
+        updatedProperties[PropertyKeys.wpcomStoreKey] = site?.isWordPressComStore
         return updatedProperties
     }
 

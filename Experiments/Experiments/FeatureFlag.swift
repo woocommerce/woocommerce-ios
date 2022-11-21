@@ -50,10 +50,6 @@ public enum FeatureFlag: Int {
     ///
     case loginErrorNotifications
 
-    /// Whether to show a survey at the end of the login onboarding screen after feature carousel
-    ///
-    case loginPrologueOnboardingSurvey
-
     /// Whether to prefer magic link to password in the login flow
     ///
     case loginMagicLinkEmphasis
@@ -70,14 +66,6 @@ public enum FeatureFlag: Int {
     ///
     case searchProductsBySKU
 
-    /// Enables the Search Customers functionality in the Order Creation screen
-    ///
-    case orderCreationSearchCustomers
-
-    /// Enables signing up for a WP.com account.
-    ///
-    case wpcomSignup
-
     /// Enables In-app purchases for buying Hosted WooCommerce plans
     ///
     case inAppPurchases
@@ -86,12 +74,59 @@ public enum FeatureFlag: Int {
     ///
     case storeCreationMVP
 
-    /// Temporary feature flag for the simplified login flow.
-    /// TODO: replace with A/B testing.
+    /// Store creation milestone 2. https://wp.me/pe5sF9-I3
     ///
-    case simplifiedLoginFlowI1
+    case storeCreationM2
 
-    /// Hides products onboarding development.
+    /// Just In Time Messages on Dashboard
     ///
-    case productsOnboarding
+    case justInTimeMessagesOnDashboard
+
+    /// Adds the System Status Report to support requests
+    ///
+    case systemStatusReportInSupportRequest
+
+    // MARK: - Performance Monitoring
+    //
+    // These flags are not transient. That is, they are not here to help us rollout a feature,
+    // but to serve a safety switches to granularly turn off performance monitoring if it looks
+    // like we are consuming too many events.
+
+    /// Whether to enable performance monitoring.
+    ///
+    case performanceMonitoring
+
+    /// Whether to enable performance monitoring for Core Data operations.
+    ///
+    /// - Note: The app will ignore this if `performanceMonitoring` is `false`
+    case performanceMonitoringCoreData
+
+    /// Whether to enable performance monitoring for file IO operations.
+    ///
+    /// - Note: The app will ignore this if `performanceMonitoring` is `false`
+    case performanceMonitoringFileIO
+
+    /// Whether to enable performance monitoring for networking operations.
+    ///
+    /// - Note: The app will ignore this if `performanceMonitoring` is `false`
+    case performanceMonitoringNetworking
+
+    /// Whether to enable performance monitoring for user interaction events.
+    ///
+    /// - Note: The app will ignore this if `performanceMonitoring` is `false`
+    case performanceMonitoringUserInteraction
+
+    /// Whether to enable performance monitoring for `UIViewController` life-cycle events.
+    ///
+    /// - Note: The app will ignore this if `performanceMonitoring` is `false`.
+    case performanceMonitoringViewController
+
+    /// Temporary feature flag for the native Jetpack setup flow.
+    /// TODO-8075: replace this with A/B test.
+    ///
+    case nativeJetpackSetupFlow
+
+    /// Temporary feature flag for the native Jetpack setup flow.
+    ///
+    case analyticsHub
 }

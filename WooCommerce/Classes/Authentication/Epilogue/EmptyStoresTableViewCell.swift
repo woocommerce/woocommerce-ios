@@ -12,9 +12,17 @@ final class EmptyStoresTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var legendLabel: UILabel! {
         didSet {
-            legendLabel.textColor = .textSubtle
-            legendLabel.font = .subheadline
+            legendLabel.textColor = .text
+            legendLabel.font = .title3SemiBold
             legendLabel.text = Localization.legend
+        }
+    }
+
+    @IBOutlet private var subtitleLabel: UILabel! {
+        didSet {
+            subtitleLabel.textColor = .secondaryLabel
+            subtitleLabel.font = .body
+            subtitleLabel.text = Localization.subtitle
         }
     }
 
@@ -25,7 +33,6 @@ final class EmptyStoresTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
-        configureBackground()
         configureStackView()
         configureImageView()
         configureRemoveAppleIDAccessButton()
@@ -39,17 +46,15 @@ final class EmptyStoresTableViewCell: UITableViewCell {
 
 
 private extension EmptyStoresTableViewCell {
-    func configureBackground() {
-        applyDefaultBackgroundStyle()
-    }
 
     func configureStackView() {
-        stackView.spacing = 10
+        stackView.spacing = 24
         stackView.alignment = .center
     }
 
     func configureImageView() {
         emptyStoresImageView.contentMode = .scaleAspectFit
+        emptyStoresImageView.image = .emptyStorePickerImage
     }
 
     func configureRemoveAppleIDAccessButton() {
@@ -68,7 +73,9 @@ private extension EmptyStoresTableViewCell {
             comment: "Link on the store picker for users who signed in with Apple to close their WordPress.com account."
         )
         static let legend =
-            NSLocalizedString("We couldn't find a WooCommerce store connected to your account.",
+            NSLocalizedString("Create your first store",
                               comment: "Displayed during the Login flow, whenever the user has no woo stores associated.")
+        static let subtitle = NSLocalizedString("Quickly get up and selling with a beautiful online store.",
+                                                comment: "Subtitle displayed during the Login flow, whenever the user has no woo stores associated.")
     }
 }

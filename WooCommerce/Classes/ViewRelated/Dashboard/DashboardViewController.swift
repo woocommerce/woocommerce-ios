@@ -3,6 +3,7 @@ import UIKit
 import Gridicons
 import WordPressUI
 import Yosemite
+import SwiftUI
 
 // MARK: - DashboardViewController
 //
@@ -73,6 +74,10 @@ final class DashboardViewController: UIViewController {
                                               })
     }()
 
+    private var announcementViewHostingController: ConstraintsUpdatingHostingController<AnnouncementCardWrapper>?
+
+    private var announcementView: UIView?
+
     /// Bottom Jetpack benefits banner, shown when the site is connected to Jetpack without Jetpack-the-plugin.
     private lazy var bottomJetpackBenefitsBannerController = JetpackBenefitsBannerHostingController()
     private var contentBottomToJetpackBenefitsBannerConstraint: NSLayoutConstraint?
@@ -116,7 +121,10 @@ final class DashboardViewController: UIViewController {
         observeBottomJetpackBenefitsBannerVisibilityUpdates()
         observeNavigationBarHeightForStoreNameLabelVisibility()
         observeStatsVersionForDashboardUIUpdates()
-        trackProductsOnboardingEligibility()
+        observeAnnouncements()
+        observeShowWebViewSheet()
+        observeAddProductTrigger()
+        viewModel.syncAnnouncements(for: siteID)
         Task { @MainActor in
             await reloadDashboardUIStatsVersion(forced: true)
         }
@@ -135,6 +143,18 @@ final class DashboardViewController: UIViewController {
 
     override var shouldShowOfflineBanner: Bool {
         return true
+    }
+
+    internal override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.willTransition(to: newCollection, with: coordinator)
+        updateAnnouncementCardVisibility(with: newCollection)
+    }
+
+    /// Hide the announcement card in compact (landscape phone)
+    ///
+    func updateAnnouncementCardVisibility(with newCollection: UITraitCollection) {
+        let shouldHideCard = newCollection.verticalSizeClass == .compact
+        announcementView?.isHidden = shouldHideCard
     }
 }
 
@@ -245,23 +265,6 @@ private extension DashboardViewController {
         }
     }
 
-    /// Tracks if the store is eligible for products onboarding (if the store has no existing products)
-    ///
-    func trackProductsOnboardingEligibility() {
-        let action = ProductAction.checkForProducts(siteID: siteID) { result in
-            switch result {
-            case .success(let hasProducts):
-                // Store is eligible for onboarding if it has no products
-                if !hasProducts {
-                    ServiceLocator.analytics.track(.productsOnboardingEligible)
-                }
-            case .failure(let error):
-                DDLogError("⛔️ Dashboard — Error checking products onboarding eligibility: \(error)")
-            }
-        }
-        ServiceLocator.stores.dispatch(action)
-    }
-
     func reloadDashboardUIStatsVersion(forced: Bool) async {
         await storeStatsAndTopPerformersViewController.reloadData(forced: forced)
     }
@@ -279,6 +282,105 @@ private extension DashboardViewController {
             dashboardUI.scrollDelegate = self
             self.onDashboardUIUpdate(forced: false, updatedDashboardUI: dashboardUI)
         }.store(in: &subscriptions)
+    }
+
+    func observeShowWebViewSheet() {
+        viewModel.$showWebViewSheet.sink { [weak self] viewModel in
+            guard let self = self else { return }
+            guard let viewModel = viewModel else { return }
+            self.openWebView(viewModel: viewModel)
+        }
+        .store(in: &subscriptions)
+    }
+
+    private func openWebView(viewModel: WebViewSheetViewModel) {
+        let webViewSheet = WebViewSheet(viewModel: viewModel) { [weak self] in
+            guard let self = self else { return }
+            self.dismiss(animated: true)
+            self.viewModel.syncAnnouncements(for: self.siteID)
+        }
+        let hostingController = UIHostingController(rootView: webViewSheet)
+        hostingController.presentationController?.delegate = self
+        present(hostingController, animated: true, completion: nil)
+    }
+
+    /// Subscribes to the trigger to start the Add Product flow for products onboarding
+    ///
+    private func observeAddProductTrigger() {
+        viewModel.addProductTrigger.sink { [weak self] _ in
+            self?.startAddProductFlow()
+        }
+        .store(in: &subscriptions)
+    }
+
+    /// Starts the Add Product flow (without switching tabs)
+    ///
+    private func startAddProductFlow() {
+        guard let announcementView, let navigationController else { return }
+        let coordinator = AddProductCoordinator(siteID: siteID, sourceView: announcementView, sourceNavigationController: navigationController)
+        coordinator.onProductCreated = { [weak self] in
+            guard let self else { return }
+            self.viewModel.announcementViewModel = nil // Remove the products onboarding banner
+            self.viewModel.syncAnnouncements(for: self.siteID)
+        }
+        coordinator.start()
+    }
+
+    // This is used so we have a specific type for the view while applying modifiers.
+    struct AnnouncementCardWrapper: View {
+        let cardView: FeatureAnnouncementCardView
+
+        var body: some View {
+            cardView.background(Color(.listForeground))
+        }
+    }
+
+    func observeAnnouncements() {
+        viewModel.$announcementViewModel.sink { [weak self] viewModel in
+            guard let self = self else { return }
+            self.removeAnnouncement()
+            guard let viewModel = viewModel else {
+                return
+            }
+
+            let cardView = FeatureAnnouncementCardView(
+                viewModel: viewModel,
+                dismiss: { [weak self] in
+                    self?.viewModel.announcementViewModel = nil
+                },
+                callToAction: {})
+
+            self.showAnnouncement(AnnouncementCardWrapper(cardView: cardView))
+        }
+        .store(in: &subscriptions)
+    }
+
+    private func removeAnnouncement() {
+        guard let announcementView = announcementView else {
+            return
+        }
+        announcementView.removeFromSuperview()
+        announcementViewHostingController?.removeFromParent()
+        announcementViewHostingController = nil
+        self.announcementView = nil
+    }
+
+    private func showAnnouncement(_ cardView: AnnouncementCardWrapper) {
+        let hostingController = ConstraintsUpdatingHostingController(rootView: cardView)
+        guard let uiView = hostingController.view else {
+            return
+        }
+        announcementViewHostingController = hostingController
+        announcementView = uiView
+
+        addChild(hostingController)
+        let indexAfterHeader = (headerStackView.arrangedSubviews.firstIndex(of: innerStackView) ?? -1) + 1
+        headerStackView.insertArrangedSubview(uiView, at: indexAfterHeader)
+
+        updateAnnouncementCardVisibility(with: traitCollection)
+
+        hostingController.didMove(toParent: self)
+        hostingController.view.layoutIfNeeded()
     }
 
     /// Display the error banner at the top of the dashboard content (below the site title)
@@ -307,9 +409,18 @@ private extension DashboardViewController {
     }
 }
 
+// MARK: - Delegate conformance
 extension DashboardViewController: DashboardUIScrollDelegate {
     func dashboardUIScrollViewDidScroll(_ scrollView: UIScrollView) {
         hiddenScrollView.updateFromScrollViewDidScrollEventForLargeTitleWorkaround(scrollView)
+    }
+}
+
+extension DashboardViewController: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        if presentationController.presentedViewController is UIHostingController<WebViewSheet> {
+            viewModel.syncAnnouncements(for: siteID)
+        }
     }
 }
 
@@ -421,6 +532,7 @@ private extension DashboardViewController {
 
     func pullToRefresh() async {
         ServiceLocator.analytics.track(.dashboardPulledToRefresh)
+        viewModel.syncAnnouncements(for: siteID)
         await reloadDashboardUIStatsVersion(forced: true)
     }
 }

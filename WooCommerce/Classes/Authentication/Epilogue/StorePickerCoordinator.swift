@@ -7,7 +7,7 @@ import Yosemite
 ///
 final class StorePickerCoordinator: Coordinator {
 
-    unowned var navigationController: UINavigationController
+    unowned private(set) var navigationController: UINavigationController
 
     /// Determines how the store picker should initialized
     ///
@@ -86,12 +86,10 @@ extension StorePickerCoordinator: StorePickerViewControllerDelegate {
     }
 
     func createStore() {
-        // TODO-7879: analytics
-
         let source: StoreCreationCoordinator.Source
         switch selectedConfiguration {
-        case .storeCreationFromLoginPrologue:
-            source = .prologue
+        case .storeCreationFromLogin(let loggedOutSource):
+            source = .loggedOut(source: loggedOutSource)
         default:
             source = .storePicker
         }
@@ -124,7 +122,7 @@ private extension StorePickerCoordinator {
     func showStorePicker() {
         showStorePicker(presentationStyle: selectedConfiguration.presentationStyle)
         switch selectedConfiguration {
-        case .storeCreationFromLoginPrologue:
+        case .storeCreationFromLogin:
             createStore()
         default:
             break
@@ -186,7 +184,7 @@ private extension StorePickerConfiguration {
             return .fullscreen
         case .switchingStores:
             return .modally
-        case .storeCreationFromLoginPrologue:
+        case .storeCreationFromLogin:
             return .navigationStack(animated: false)
         default:
             return .navigationStack(animated: true)

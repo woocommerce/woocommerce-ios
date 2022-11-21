@@ -1,6 +1,7 @@
 import MessageUI
 import UIKit
 import WordPressUI
+import Yosemite
 import enum Hardware.CardReaderServiceError
 import enum Hardware.UnderlyingError
 
@@ -17,7 +18,10 @@ final class OrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
         if let controller = _modalController {
             return controller
         } else {
-            let controller = CardPresentPaymentsModalViewController(viewModel: readerIsReady(onCancel: {}))
+            let controller = CardPresentPaymentsModalViewController(
+                viewModel: CardPresentModalPreparingReader(cancelAction: { [weak self] in
+                    self?.presentingController?.dismiss(animated: true)
+                }))
             _modalController = controller
             return controller
         }
@@ -43,18 +47,20 @@ final class OrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
         }
     }
 
-    func readerIsReady(title: String, amount: String, onCancel: @escaping () -> Void) {
+    func preparingReader(onCancel: @escaping () -> Void) {
+        presentViewModel(viewModel: CardPresentModalPreparingReader(cancelAction: onCancel))
+    }
+
+    func tapOrInsertCard(title: String,
+                         amount: String,
+                         inputMethods: CardReaderInput,
+                         onCancel: @escaping () -> Void) {
         self.name = title
         self.amount = amount
 
         // Initial presentation of the modal view controller. We need to provide
         // a customer name and an amount.
-        let viewModel = readerIsReady(onCancel: onCancel)
-        presentViewModel(viewModel: viewModel)
-    }
-
-    func tapOrInsertCard(onCancel: @escaping () -> Void) {
-        let viewModel = tapOrInsert(onCancel: onCancel)
+        let viewModel = tapOrInsert(readerInputMethods: inputMethods, onCancel: onCancel)
         presentViewModel(viewModel: viewModel)
     }
 
@@ -92,15 +98,12 @@ final class OrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
 }
 
 private extension OrderDetailsPaymentAlerts {
-    func readerIsReady(onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalReaderIsReady(name: name,
-                                      amount: amount,
-                                      transactionType: transactionType,
-                                      cancelAction: onCancel)
-    }
-
-    func tapOrInsert(onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalTapCard(name: name, amount: amount, transactionType: transactionType, onCancel: onCancel)
+    func tapOrInsert(readerInputMethods: CardReaderInput, onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalTapCard(name: name,
+                                amount: amount,
+                                transactionType: transactionType,
+                                inputMethods: readerInputMethods,
+                                onCancel: onCancel)
     }
 
     func displayMessage(message: String) -> CardPresentPaymentsModalViewModel {

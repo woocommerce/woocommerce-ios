@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-10-12 15:54:03+0000 */
+/* Translation-Revision-Date: 2022-11-15 14:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -409,6 +409,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title on empty state button when the product has attributes but no variations */
 "Add Variation" = "변형 추가";
 
+/* Title for the button on the Products onboarding banner */
+"Add a Product" = "상품 추가";
+
+/* Button title on the store picker for store creation */
+"Add a Store" = "스토어 추가";
+
 /* Title for the Add a Different Address switch in the Address form */
 "Add a different shipping address" = "다른 배송 주소 추가";
 
@@ -422,11 +428,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
 "Add a price to your variation to make it visible on your store" = "변형이 스토어에 표시되도록 가격 추가";
 
-/* The action to add a product */
+/* Message title of bottom sheet for selecting a template or manual product
+   The action to add a product */
 "Add a product" = "제품 추가";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "제품 이미지 추가";
+
+/* Description for the option to create product manually */
+"Add a product manually." = "수동으로 상품을 추가합니다.";
 
 /* Placeholder text in Product Purchase Note screen */
 "Add a purchase note..." = "구매 메모 추가...";
@@ -449,6 +459,9 @@ which should be translated separately and considered part of this sentence. */
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press enter" = "각 옵션 추가 및 Enter 키 누르기";
 
+/* Title for the option to create product manually */
+"Add manually" = "수동으로 추가";
+
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
 "Add more details" = "세부사항 추가";
@@ -458,6 +471,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "제품 링크 추가";
+
+/* Title for the Products onboarding banner */
+"Add products to sell" = "판매할 상품 추가";
 
 /* Title for adding grouped products row on Product main screen for a grouped product */
 "Add products to the group" = "그룹에 제품 추가";
@@ -565,6 +581,9 @@ which should be translated separately and considered part of this sentence. */
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "마지막 부분입니다! 인증 앱의 확인 코드를 입력하세요.";
 
+/* Subtitle for the login button on the account creation form. */
+"Already registered?" = "이미 등록하셨나요?";
+
 /* Instruction text to explain to help users type their password instead of using magic link login option. */
 "Alternatively, you may enter the password for this account." = "또는 이 계정에 대한 비밀번호를 입력하셔도 됩니다.";
 
@@ -596,6 +615,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* A failure reason for when an error HTTP status code was returned from the site. */
 "An HTTP error code was returned." = "HTTP 오류 코드가 반환되었습니다.";
+
+/* Account creation error when the email is already associated with an existing WP.com account. */
+"An account with this email already exists." = "이 이메일이 포함된 계정이 이미 있습니다.";
 
 /* Default error message displayed when unable to close user account. */
 "An error occured while closing account." = "계정을 종료하는 동안 오류가 발생했습니다.";
@@ -756,7 +778,8 @@ which should be translated separately and considered part of this sentence. */
 "BILLING ADDRESS" = "청구 주소";
 
 /* Accessibility label for Back button in the navigation bar
-   Alert button title - dismisses alert, which cancels the log out attempt */
+   Alert button title - dismisses alert, which cancels the log out attempt
+   Previous web page */
 "Back" = "뒤로";
 
 /* Accessibility announcement message when device goes back online */
@@ -810,6 +833,9 @@ which should be translated separately and considered part of this sentence. */
 /* Box package type, used to create a custom package in the Shipping Label flow */
 "Box" = "상자";
 
+/* Message for the Products onboarding banner */
+"Build your catalog by adding what you want to sell." = "판매하려는 품목을 추가하여 카탈로그를 제작하세요.";
+
 /* Button title in the action sheet of product variatiosns that shows the bulk update
    Title that appears on top of the bulk update of product variations screen */
 "Bulk Update" = "일괄 업데이트";
@@ -823,11 +849,17 @@ which should be translated separately and considered part of this sentence. */
 /* Title of one of the elements in the CTA View for installing WCShip extension */
 "Buy postage when you need it" = "필요할 때 우송료 구매";
 
+/* Terms of service format on the account creation form. */
+"By continuing, you agree to our %1$@." = "계속하면 %1$@에 동의하는 것입니다.";
+
 /* Legal disclaimer for logging in. The underscores _..._ denote underline. */
 "By continuing, you agree to our _Terms of Service_." = "계속하면 _서비스 약관_에 동의하게 됩니다.";
 
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "가입하려면 _서비스 약관_에 동의해야 합니다.";
+
+/* Content of the label at the end of the Wrong Account screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com. */
+"By tapping the Connect Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com." = "젯팩 연결 버튼을 클릭하면 워드프레스닷컴의 %1$@ 및 %2$@에 동의하는 것입니다.";
 
 /* Header for the Custom Packages section in Shipping Label Package listing */
 "CUSTOM PACKAGES" = "사용자 정의 패키지";
@@ -870,6 +902,7 @@ which should be translated separately and considered part of this sentence. */
    Button to cancel an in-person payment or refund
    Button to cancel the creation of an order on the New Order screen
    Button to dismiss Select Categories screen
+   Button to dismiss the action sheet on the store picker
    Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching.
    Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching.
    Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching.
@@ -1003,9 +1036,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the row that has a switch when creating a simple payment */
 "Charge Taxes" = "세금 청구";
 
-/* Login onboarding survey option: check my analytics. */
-"Check my analytics" = "내 분석 확인";
-
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "입력한 URL이 올바른지 확인합니다.";
 
@@ -1029,6 +1059,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation title on the shipping label states of a country selector screen */
 "Choose a State" = "주 선택";
+
+/* Title of the domain selector. */
+"Choose a domain" = "도메인 선택하기";
+
+/* Title of the password field on the account creation form. */
+"Choose a password" = "비밀번호 선택";
+
+/* Message title of bottom sheet for selecting a template or manual product */
+"Choose a template" = "템플릿 선택";
 
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "기기에서 선택";
@@ -1116,6 +1155,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to confirm the preferred provider for In-Person Payments */
 "Confirm Payment Method" = "결제 수단 확인";
 
+/* Button title Discard Changes in Discard Changes Action Sheet */
+"Confirm and leave" = "확인 및 종료";
+
 /* Title displayed if there are no inbox notes in the inbox screen. */
 "Congrats, you’ve read everything!" = "수고하셨습니다. 다 읽으셨습니다!";
 
@@ -1128,14 +1170,15 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connect > A button to begin a search for a reader */
 "Connect Card Reader" = "카드 리더 연결";
 
-/* Title of the Jetpack connection web view in the login flow */
+/* Action button to handle connecting the logged-in account to a given site.Presented when logging in with a store address that does not match the account entered
+   Title of the Jetpack connection web view in the login flow */
 "Connect Jetpack" = "젯팩 연결";
+
+/* Button to connect to an existing store from the store picker */
+"Connect an existing store" = "기존 스토어 연결";
 
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "리더에 연결";
-
-/* Action button to handle connecting the logged-in account to a given site.Presented when logging in with a store address that does not match the account entered */
-"Connect to the site" = "사이트에 연결";
 
 /* Settings > Manage Card Reader > Prompt user to connect their first reader */
 "Connect your card reader" = "카드 리더 연결";
@@ -1212,7 +1255,8 @@ which should be translated separately and considered part of this sentence. */
    Continue button inside every cell inside Create Shipping Label form
    The button title text when there is a next step for logging in or signing up.
    Title of continue button
-   Title of dismiss button presented when users attempt to log in without Jetpack installed or connected */
+   Title of dismiss button presented when users attempt to log in without Jetpack installed or connected
+   Title of the button to continue with a selected domain. */
 "Continue" = "계속";
 
 /* Call to Action to finish the setup of In-Person Payments in the Menu */
@@ -1336,6 +1380,9 @@ which should be translated separately and considered part of this sentence. */
 /* The button title text for creating a new account. */
 "Create Account" = "계정 생성";
 
+/* Action button linking to create WooCommerce store flow.Presented when logging in with an email address that is not a WordPress.com account */
+"Create An Account" = "계정 만들기";
+
 /* Title of the create coupon button on the coupon list screen when it's empty */
 "Create Coupon" = "쿠폰 생성";
 
@@ -1343,6 +1390,9 @@ which should be translated separately and considered part of this sentence. */
    Option to create new shipping label from the action sheet on Products section of Order Details screen
    Text on the button that starts shipping label creation */
 "Create Shipping Label" = "배송 레이블 만들기";
+
+/* Navigates to a new flow for site creation. */
+"Create a Site" = "사이트 만들기";
 
 /* Description for fixed product discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a fixed total discount for selected products" = "선택한 제품에 대해 전체 고정 할인을 설정하세요.";
@@ -1353,8 +1403,14 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the Action sheet option when the user wants to create full manual order */
 "Create a new manual order" = "새 수동 주문 생성";
 
+/* Button to create a new store from the store picker */
+"Create a new store" = "새 스토어 생성";
+
 /* Description for percentage discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a percentage discount for selected products" = "선택한 제품에 대해 할인율을 설정하세요.";
+
+/* Title of the store creation web view. */
+"Create a store" = "스토어 생성";
 
 /* Description of the Action sheet option when the user wants to create Simple Payments order */
 "Create an order with minimal information" = "최소 정보로 주문 생성";
@@ -1368,9 +1424,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "새 패키지 생성";
 
-/* Login onboarding survey option: create or update my products. */
-"Create or update my products" = "내 상품 생성 또는 업데이트";
-
 /* Action sheet option when the user wants to create full manual order */
 "Create order" = "주문 생성";
 
@@ -1382,6 +1435,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "첫 번째 변형 생성";
+
+/* Loading text while creating a product from a template */
+"Creating Template Product..." = "템플릿 상품 생성 중...";
 
 /* Credit card payment method for shipping label. */
 "Credit card" = "신용카드";
@@ -1598,6 +1654,9 @@ which should be translated separately and considered part of this sentence. */
 /* Dialog title that displays the name of a found card reader */
 "Do you want to connect to reader %1$@?" = "리더 %1$@에 연결하시겠나요?";
 
+/* Title of the alert when the user dismisses the store creation flow. */
+"Do you want to leave?" = "종료하시겠어요?";
+
 /* Body of the alert when a user is moving a product to the trash */
 "Do you want to move this product to the Trash?" = "이 제품을 휴지통에 버리시겠습니까?";
 
@@ -1633,7 +1692,7 @@ which should be translated separately and considered part of this sentence. */
    Text for the done button in the Fee Details screen
    Text for the done button in the Shipping Line Details screen
    The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again.
-   Title for the Done button on the WebView opened to upsell card readers */
+   Title for the Done button on a WebView modal sheet */
 "Done" = "완료";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
@@ -1778,7 +1837,8 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the email address text field.
    Placeholder for a textfield. The user may enter their email address.
-   Placeholder for the email address textfield. */
+   Placeholder for the email address textfield.
+   Placeholder of the email field on the account creation form. */
 "Email address" = "이메일 주소";
 
 /* Label for yes/no switch - emailing the note to customer. */
@@ -1878,8 +1938,7 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "URL 입력";
 
-/* Button title. Takes the user to the login by store address flow.
-   Button to input a site address in store picker when there are no stores found */
+/* Button title. Takes the user to the login by store address flow. */
 "Enter Your Store Address" = "스토어 주소 입력";
 
 /* Text field coupon code placeholder in the view for adding or editing a coupon. */
@@ -1919,6 +1978,9 @@ which should be translated separately and considered part of this sentence. */
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "워드프레스닷컴 계정에 대한 비밀번호를 입력합니다.";
 
+/* Instructional text shown when requesting the user's password for WPCom login. */
+"Enter the password for your account." = "계정의 비밀번호를 입력합니다.";
+
 /* Add custom shipping carrier. Placeholder of cell presenting carrier link */
 "Enter tracking link" = "추적 링크 입력";
 
@@ -1927,6 +1989,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Enter your account information for {site url}. Asks the user to enter a username and password for their self-hosted site. */
 "Enter your account information for %@." = "%@ 계정 정보를 입력하세요.";
+
+/* Sign in instructions on the 'log in using WordPress.com account' screen. */
+"Enter your email address to get started." = "이메일 주소를 입력하여 시작하기";
 
 /* Instruction text on the initial email address entry screen. */
 "Enter your email address to log in or create a WordPress.com account." = "이메일 주소를 입력하여 로그인하거나 워드프레스닷컴 계정을 만드세요.";
@@ -2143,6 +2208,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text field name in Edit Address Form */
 "First name" = "이름";
 
+/* Subtitle for the account creation form. */
+"First, let’s create your account." = "먼저 계정을 만들겠습니다.";
+
 /* Name of fixed cart discount type */
 "Fixed Cart Discount" = "정률 장바구니 할인";
 
@@ -2151,6 +2219,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* User role badge */
 "Follower" = "팔로워";
+
+/* Next web page */
+"Forward" = "전달";
 
 /* Title of the cell in Product Price Settings > Schedule sale from a certain date */
 "From" = "발신:";
@@ -2176,7 +2247,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "변형 생성 중";
 
-/* Title of install action in the Jetpack Install view.
+/* Button displayed on the prologue screen of the simplified login flow to create a new store
+   Title of install action in the Jetpack Install view.
    View title for initial auth views. */
 "Get Started" = "시작하기";
 
@@ -2197,6 +2269,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Local notification body when the user encounters an error logging in with site address. */
 "Get some help!" = "약간의 도움말을 이용하세요!";
+
+/* Title of the submit button on the account creation form. */
+"Get started" = "시작하기";
+
+/* Title for the account creation form. */
+"Get started in minutes" = "몇 분 만에 시작하기";
 
 /* Title of the Jetpack benefits banner. */
 "Get the full experience with Jetpack" = "젯팩 최대한 활용하기";
@@ -2335,6 +2413,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "어떻게 개선할 수 있을까요?";
 
+/* Message subtitle of bottom sheet for selecting a template or manual product */
+"How do you want to start?" = "어떻게 시작하시겠어요?";
+
 /* The title of the button for giving a positive feedback for the app. */
 "I Like It" = "좋아요";
 
@@ -2402,6 +2483,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when the merchant's payment account has been rejected. */
 "In-Person Payments isn't available for this store" = "이 스토어에서 대면 결제 사용 불가능";
+
+/* Cell title on beta features screen to enable in-app purchases */
+"In-app purchases" = "앱 내 구매";
 
 /* Application's Inactive State */
 "Inactive" = "비활성";
@@ -2590,9 +2674,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "어디서나 참여";
 
-/* Login onboarding survey option: just exploring. */
-"Just exploring" = "그냥 둘러보기";
-
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "편집 계속";
 
@@ -2650,6 +2731,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
 "Learn more about Jetpack" = "Jetpack에 대해 자세히 알아보기";
 
+/* Title of button in the simplified login prologue screen for learning more about WooCommerce. */
+"Learn more about WooCommerce" = "우커머스 더 알아보기";
+
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
 "Learn more about creating labels with your mobile device" = "모바일 장치로 레이블 만들기에 대해 자세히 알아보기";
 
@@ -2668,9 +2752,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "편지지(8.5 x 11in)";
-
-/* Caption displayed in the prologue screen shown after onboarding during the login flow. */
-"Let’s get started!" = "시작해 보세요!";
 
 /* Title for the limit usage to X items row in coupon usage restrictions screen. */
 "Limit Usage to X Items" = "X개 아이템으로 사용 제한";
@@ -2728,7 +2809,11 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Accessibility label for placeholder rows while products are loading */
 "Loading products" = "상품 로드하기";
 
-/* Button title.  Tapping takes the user to the login form.
+/* Loading. Verb */
+"Loading..." = "로딩 중...";
+
+/* Button title in the simplified login prologue screen. Takes the user to the login flow.
+   Button title.  Tapping takes the user to the login form.
    Log In button label.
    View title during the log in process. */
 "Log In" = "로그인";
@@ -2736,7 +2821,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Action button that will restart the login flow.Presented when logging in with a site address that appears to be invalid.
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
    Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
-   Action button that will restart the login flow.Presented when the user tries to log in to the app with a simple WP.com site. */
+   Action button that will restart the login flow.Presented when the user tries to log in to the app with a simple WP.com site.
+   Button to trigger connection to another account in store picker */
 "Log In With Another Account" = "다른 계정으로 로그인";
 
 /* Action button triggering a Log Out.Presented when logging in with a store address that does not match the account entered
@@ -2746,6 +2832,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Explains that the files are sorted by LIFO date: most recent day listed first. */
 "Log files by created date" = "생성 일자별 로그 파일";
+
+/* Title of the login button on the account creation form. */
+"Log in" = "로그인";
 
 /* A generic error message for a failed log in. */
 "Log in failed. Please try again." = "로그인에 실패했습니다. 다시 시도하세요.";
@@ -2772,9 +2861,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Instructions on the WordPress.com username / password log in form. */
 "Log in with your WordPress.com username and password." = "워드프레스닷컴 사용자 이름과 비밀번호로 로그인하세요.";
-
-/* Action button linking to instructions for enter another store.Presented when logging in with an email address that is not a WordPress.com account */
-"Log in with your store address" = "스토어 주소로 로그인";
 
 /* Local notification action to log in with WordPress.com. */
 "Login with WordPress.com" = "워드프레스닷컴으로 로그인";
@@ -2813,9 +2899,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Navigates to Card Reader management screen */
 "Manage card reader" = "카드 판독기 관리";
-
-/* Login onboarding survey option: manage my orders. */
-"Manage my orders" = "내 주문 관리";
 
 /* Title of the cell in Product Inventory Settings > Manage stock */
 "Manage stock" = "재고 관리";
@@ -2996,8 +3079,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Message for the mocked order notification needed for the AppStore listing screenshot. 'Your WooCommerce Store' is the name of the mocked store. */
 "New order for $13.98 on Your WooCommerce Store" = "우커머스 스토어의 새 주문 $13.98";
 
-/* Title of button in the login prologue screen for users who are new to WooCommerce.
-   Title of button on the site picker screen for users who are new to WooCommerce. */
+/* Title of button in the login prologue screen for users who are new to WooCommerce. */
 "New to WooCommerce?" = "우커머스를 처음 이용하시나요?";
 
 /* Action navigate to the variation creation screen
@@ -3217,6 +3299,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Accessibility hint for selecting a product in an order form */
 "Opens product detail." = "상품 상세 정보를 엽니다.";
 
+/* Accessibility hint to open web page in Safari */
+"Opens the web page in Safari" = "웹 페이지를 사파리로 열기";
+
 /* Placeholder of cell presenting the title of the new attribute option. */
 "Option name" = "옵션 이름";
 
@@ -3365,11 +3450,15 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Login dialog password placeholder
    Password field title in Product Visibility
    Password placeholder
-   Placeholder for the password textfield. */
+   Placeholder for the password textfield.
+   Placeholder of the password field on the account creation form. */
 "Password" = "비밀번호";
 
 /* One of the possible options in Product Visibility */
 "Password Protected" = "비밀번호로 보호";
+
+/* Account creation error when the password is invalid. */
+"Password must be at least 6 characters." = "비밀번호는 6자 이상이어야 합니다.";
 
 /* Paste without Formatting Menu Item */
 "Paste without Formatting" = "서식없이 붙여넣기";
@@ -3526,7 +3615,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Placeholder for editing the text of a text link */
 "Please enter some text" = "텍스트를 입력하세요.";
 
-/* No comment provided by engineer. */
+/* Instructional text shown when requesting the user's password for a login initiated via Sign In with Apple */
 "Please enter the password for your WordPress.com account to log in with your Apple ID." = "Apple ID로 로그인하려면 워드프레스닷컴 계정의 비밀번호를 입력하세요.";
 
 /* Instruction text on the two-factor screen. */
@@ -3566,7 +3655,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Body text for the default store picker error screen */
 "Please try again or reach out to us and we'll be happy to assist you!" = "다시 시도해 보세요. 또는 당사에 연락하면 기꺼이 도와드리겠습니다!";
 
-/* The message of the alert when there is an error uploading an image */
+/* Account creation error when an unexpected error occurs.
+   The message of the alert when there is an error uploading an image */
 "Please try again." = "다시 시도하세요.";
 
 /* Error message when Jetpack activation fails */
@@ -3632,6 +3722,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Title of in-progress modal when preparing for printing customs invoice */
 "Preparing document" = "문서 준비 중";
+
+/* Action for previewing draft Product changes in the webview */
+"Preview" = "미리보기";
 
 /* A label representing the amount that was previously refunded for the order. */
 "Previously Refunded" = "이전에 환불됨";
@@ -3884,6 +3977,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of receipt. Reads like Receipt from WooCommerce, Inc. */
 "Receipt from %1$@" = "%1$@에서 받은 영수증";
 
+/* Button label to refresh a web page */
+"Refresh" = "새로 고침";
+
 /* Button to reload plugin data after activating a Card Present Payments extension */
 "Refresh After Activating" = "활성화 후 새로 고침";
 
@@ -4129,6 +4225,12 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS 전송됨";
 
+/* Header label of the domain suggestions on the domain selector. */
+"SUGGESTIONS" = "제안";
+
+/* Button label to open web page in Safari */
+"Safari" = "사파리";
+
 /* Format of the sale period on the Price Settings row */
 "Sale dates: %@" = "판매 날짜: %@";
 
@@ -4215,6 +4317,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Coupons Search Placeholder */
 "Search all coupons" = "모든 쿠폰 검색";
 
+/* Customer Search Placeholder */
+"Search all customers" = "모든 고객 검색";
+
 /* Orders Search Placeholder */
 "Search all orders" = "모든 주문 검색";
 
@@ -4280,7 +4385,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Placeholder for the selected package in the Shipping Labels Package Details screen */
 "Select a package" = "패키지 선택";
 
-/* Message title of bottom sheet for selecting a product type to create a product */
+/* Message subtitle of bottom sheet for selecting a product type to create a product */
 "Select a product type" = "제품 유형 선택";
 
 /* Text field placeholder in Edit Address Form */
@@ -4351,7 +4456,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of a modal presenting a list of readers to choose from. */
 "Several readers found" = "리더를 몇 개 찾음";
 
-/* Button title Share in Edit Product More Options Action Sheet */
+/* Button label to share a web page
+   Button title Share in Edit Product More Options Action Sheet */
 "Share" = "공유";
 
 /* Action title for sharing coupon from the Coupon Details screen
@@ -4544,7 +4650,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "사이트 주소는 최소한 4 글자 이상이어야 합니다.";
 
-/* The button title on the login onboarding screen to skip to the prologue screen.
+/* Navigation bar button on the domain selector screen to skip domain selection.
+   The button title on the login onboarding screen to skip to the prologue screen.
    Title for the button to skip the onboarding step informing the merchant of pending account requirements */
 "Skip" = "생략하기";
 
@@ -4661,6 +4768,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The details on the placeholder overlay when there are no products on the Products tab */
 "Start selling today by adding your first product to the store." = "스토어에 첫 번째 제품을 추가하고 지금 바로 판매하세요.";
 
+/* Title for the option to create a template product */
+"Start with a template" = "템플릿 시작";
+
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %@, ending period %@" = "시작 기간 %1$@, 종료 기간 %2$@";
 
@@ -4733,9 +4843,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "스토어 전환";
-
-/* Login onboarding survey option: switch between multiple Stores. */
-"Switch between multiple Stores" = "여러 스토어 간 전환";
 
 /* Switch store option in the hub menu */
 "Switch store" = "스토어 전환";
@@ -4903,8 +5010,13 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "%1$@에 대한 정보를 알려주세요...";
 
-/* Title of button that displays the App's terms of service */
+/* Terms of service link on the account creation form.
+   The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen.
+   Title of button that displays the App's terms of service */
 "Terms of Service" = "서비스 약관";
+
+/* Cell description on beta features screen to enable in-app purchases */
+"Test out in-app purchases as we get ready to launch" = "시작할 준비가 되었으니 앱 내 구매를 테스트해 보세요.";
 
 /* Cell description on beta features screen to enable coupon management */
 "Test out managing coupons as we get ready to launch" = "출시 준비가 끝나면 쿠폰 관리 테스트해 보기";
@@ -5158,6 +5270,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* A general error message shown to the user when there was an API communication failure. */
 "There was a problem communicating with the site." = "사이트와 통신하는 중 문제가 발생했습니다.";
 
+/* Title for the error notice when creating a template product */
+"There was a problem creating the template product." = "템플릿 상품 생성 중 문제가 발생했습니다.";
+
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "지정된 사이트의 차단을 제거하는 중 문제가 발생했습니다.";
 
@@ -5226,9 +5341,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "이 이메일 주소는 워드프레스닷컴에 등록되어 있지 않습니다.";
 
-/* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
-"This email isn't used with a WordPress.com account." = "이 이메일은 워드프레스닷컴 계정에서 사용되지 않습니다.";
-
 /* Error for missing package details on the Add New Custom Package screen in Shipping Label flow */
 "This field is required" = "필수 필드";
 
@@ -5246,6 +5358,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Footer text for Downloadable File URL */
 "This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "고객이 액세스할 파일의 URL입니다. 입력한 URL은 이미 인코딩되어 있어야 합니다.";
+
+/* Subtitle of the domain selector. */
+"This is where people will find you on the Internet. Don't worry, you can change it later." = "사람들이 인터넷에서 회원님을 찾을 수 있는 곳입니다. 걱정하지 마세요. 나중에 변경할 수 있습니다.";
 
 /* Message in action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow.The package name reads like: Package 1: Custom Envelope. */
 "This item is currently in Package %1$d: %2$@. Where would you like to move it?" = "이 아이템은 현재 패키지 %1$d: %2$@에 있습니다. 해당 아이템을 어디로 이동하시겠어요?";
@@ -5281,7 +5396,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of the badge shown when promoting an existing feature */
 "Tip" = "팁";
 
-/* Add Product Category. Placeholder of cell presenting the title of the category.
+/* Accessibility label for web page preview title
+   Add Product Category. Placeholder of cell presenting the title of the category.
    Placeholder in the Product Title row on Product form screen. */
 "Title" = "제목";
 
@@ -5404,6 +5520,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Try Again button on the error alert when fetching system status report fails */
 "Try Again" = "재시도";
 
+/* Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
+"Try Another Address" = "다른 주소 시도";
+
 /* Message from the in-person payment card reader prompting user to retry a payment using a different card */
 "Try Another Card" = "다른 카드 시도";
 
@@ -5412,9 +5531,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Button to try to collect a payment again. Presented to users after collecting a payment fails */
 "Try Collecting Again" = "다시 수집 시도";
-
-/* Button to trigger connection to another account in store picker */
-"Try With Another Account" = "다른 계정으로 시도";
 
 /* Action to resync on the placeholder overlay when there is issue syncing site plugins
    Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
@@ -5434,9 +5550,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Message when a card is declined due to a potentially temporary problem. */
 "Trying again may succeed, or try another means of payment" = "다시 시도하면 성공할 수 있습니다. 아니면 다른 결제 수단을 시도하세요.";
-
-/* Login onboarding survey option: trying to set up a store. */
-"Trying to set up a store" = "스토어 설정 시도하기";
 
 /* Settings > Manage Card Reader > Connect > Hint to power on reader */
 "Turn card reader on and place it next to mobile device" = "카드 리더 켜기 및 모바일 장치 옆에 놓기";
@@ -5458,6 +5571,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Placeholder for the Restriction Details row in Customs screen of Shipping Label flow */
 "Type of restriction" = "제한 유형";
+
+/* Placeholder of the search text field on the domain selector. */
+"Type to get suggestions" = "입력하여 제안받기";
 
 /* Navigation bar title for editing the URL of a text link
    URL text field placeholder */
@@ -5749,6 +5865,12 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Action to use the address in Shipping Label Suggested screen as suggested */
 "Use Suggested Address" = "제안된 주소 사용";
 
+/* Description for the option to create a template product */
+"Use a template to create physical, virtual, and variable products. You can edit it as you go." = "템플릿을 사용하여 실물 상품, 가상 상품 및 변형 상품을 생성하세요. 언제든지 편집할 수 있습니다.";
+
+/* Account creation error when the email is invalid. */
+"Use a working email address, so you can receive our messages." = "메시지를 받을 수 있도록 사용 중인 이메일 주소를 사용하세요.";
+
 /* Title for the Use as Billing Address switch in the Address form */
 "Use as Billing Address" = "청구 주소로 사용";
 
@@ -5903,9 +6025,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Title of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
 "We couldn't connect your reader" = "리더를 연결할 수 없음";
 
-/* Displayed during the Login flow, whenever the user has no woo stores associated. */
-"We couldn't find a WooCommerce store connected to your account." = "계정에 연결된 우커머스 스토어를 찾을 수 없습니다.";
-
 /* The title of the Error Loading Data banner */
 "We couldn't load your data" = "데이터를 로드할 수 없음";
 
@@ -5979,6 +6098,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "We're sorry, we couldn't find any order that match %@" = "죄송합니다. %@과(와) 일치하는 주문을 찾을 수 없습니다.";
 
 /* Message for empty Coupons search results. The %@ is a placeholder for the text entered by the user.
+   Message for empty Customers search results. %@ is a placeholder for the text entered by the user.
    Message for empty Orders search results. The %@ is a placeholder for the text entered by the user.
    Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */
 "We're sorry, we couldn't find results for “%@”" = "죄송합니다. “%@” 검색 결과를 찾을 수 없습니다.";
@@ -6009,9 +6129,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Content of the feedback banner on the coupon list screen */
 "We’ve been working on making it possible to view and edit coupons from your device!" = "사용하시는 기기에서 쿠폰 보기 및 편집이 가능하도록 만들려고 노력하고 있습니다.";
-
-/* Login onboarding survey title. */
-"What brings you to the WooCommerce app today?" = "오늘은 무슨 일로 우커머스 앱에 오셨나요?";
 
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "로그인할 때 어떤 이메일을 사용하나요?";
@@ -6074,6 +6191,12 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Subject of new Zendesk ticket. */
 "WooCommerce for iOS Support" = "iOS용 우커머스 지원";
+
+/* Caption displayed in the simplified prologue screen */
+"WooCommerce is a customizable, open-source eCommerce platform built on WordPress." = "우커머스는 워드프레스에 구축된 사용자 정의 가능한 오픈 소스 전자상거래 플랫폼입니다.";
+
+/* WordPress API (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
+"WordPress API Error: [%1$@] %2$@" = "워드프레스 API 오류: [%1$@] %2$@";
 
 /* Menu option for selecting media from the site's media library.
    Navigation bar title for WordPress Media Library image picker */
@@ -6140,14 +6263,26 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "DudaMobile에서 설치한 모바일 플러그인으로 인해 앱이 블로그에 연결할 수 없습니다.";
 
+/* Message of the alert when the user dismisses the store creation flow. */
+"You will lose all your store information." = "모든 스토어 정보가 손실됩니다.";
+
 /* Error message when the merchant's payment account is under review */
 "You'll be able to accept In-Person Payments as soon as we finish reviewing your account." = "계정 검토를 완료하는 즉시 대면 결제를 수락할 수 있습니다.";
 
 /* Error message displayed when unable to close user account due to being unauthorized. */
 "You're not authorized to close the account." = "계정을 종료할 권한이 없습니다.";
 
+/* Displayed during the Login flow, whenever the user has no woo stores associated. */
+"Your account isn’t connected to any WooCommerce stores." = "계정이 어떠한 우커머스 스토어에도 연결되지 않았습니다.";
+
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "결제 대금을 수령하려면 카드 리더 소프트웨어를 업데이트해야 합니다. 취소하면 리더 연결이 차단됩니다.";
+
+/* Title of the email field on the account creation form. */
+"Your email address" = "사용 중인 이메일 주소";
+
+/* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
+"Your email isn't used with a WordPress.com account" = "해당 이메일은 워드프레스닷컴 계정에서 사용되지 않습니다.";
 
 /* Message displayed when a coupon was successfully created */
 "Your new coupon was created!" = "새 쿠폰이 생성되었습니다.";
@@ -6216,6 +6351,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Format of the number of product ratings in singular form */
 "rated once" = "한 번 평가됨";
 
+/* The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
+"share details" = "상세 정보 공유";
+
 /* Widget description, displayed when selecting which widget to add */
 "storeWidgets.description" = "우커머스 통계 오늘";
 
@@ -6275,6 +6413,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Used when the response doesn't have a valid url to display */
 "unknown url" = "알 수 없는 url";
+
+/* Verb. Dismiss the web view screen. */
+"webKit.button.dismiss" = "무시";
 
 /* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need...
    Placeholder for site url, if the url is unknown.Presented when logging in with a store address that does not match the account entered. */

@@ -47,6 +47,18 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         return stackView
     }()
 
+    /// The button in the navigation bar to add a product
+    ///
+    private lazy var addProductButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(image: .plusBarButtonItemImage,
+                                     style: .plain,
+                                     target: self,
+                                     action: #selector(addProduct(_:)))
+        button.accessibilityTraits = .button
+        button.accessibilityLabel = NSLocalizedString("Add a product", comment: "The action to add a product")
+        button.accessibilityIdentifier = "product-add-button"
+        return button
+    }()
 
     /// Top toolbar that shows the sort and filter CTAs.
     ///
@@ -236,8 +248,6 @@ private extension ProductsViewController {
             return
         }
 
-        ServiceLocator.analytics.track(.productListAddProductTapped)
-
         let coordinatingController: AddProductCoordinator
         if let sourceBarButtonItem = sourceBarButtonItem {
             coordinatingController = AddProductCoordinator(siteID: siteID,
@@ -271,17 +281,7 @@ private extension ProductsViewController {
 
     func configureNavigationBarRightButtonItems() {
         var rightBarButtonItems = [UIBarButtonItem]()
-        let buttonItem: UIBarButtonItem = {
-            let button = UIBarButtonItem(image: .plusBarButtonItemImage,
-                                         style: .plain,
-                                         target: self,
-                                         action: #selector(addProduct(_:)))
-            button.accessibilityTraits = .button
-            button.accessibilityLabel = NSLocalizedString("Add a product", comment: "The action to add a product")
-            button.accessibilityIdentifier = "product-add-button"
-            return button
-        }()
-        rightBarButtonItems.append(buttonItem)
+        rightBarButtonItems.append(addProductButton)
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.barcodeScanner) && UIImagePickerController.isSourceTypeAvailable(.camera) {
             let buttonItem: UIBarButtonItem = {
@@ -653,7 +653,7 @@ private extension ProductsViewController {
         ServiceLocator.analytics.track(.productListViewSortingOptionsTapped)
         let title = NSLocalizedString("Sort by",
                                       comment: "Message title for sort products action bottom sheet")
-        let viewProperties = BottomSheetListSelectorViewProperties(title: title)
+        let viewProperties = BottomSheetListSelectorViewProperties(subtitle: title)
         let command = ProductsSortOrderBottomSheetListSelectorCommand(selected: sortOrder) { [weak self] selectedSortOrder in
             self?.dismiss(animated: true, completion: nil)
             guard let selectedSortOrder = selectedSortOrder as ProductsSortOrder? else {

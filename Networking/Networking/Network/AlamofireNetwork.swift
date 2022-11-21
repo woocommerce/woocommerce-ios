@@ -13,13 +13,13 @@ public class AlamofireNetwork: Network {
 
     /// WordPress.com Credentials.
     ///
-    private let credentials: Credentials
+    private let credentials: Credentials?
 
     public var session: URLSession { SessionManager.default.session }
 
     /// Public Initializer
     ///
-    public required init(credentials: Credentials) {
+    public required init(credentials: Credentials?) {
         self.credentials = credentials
 
         // A unique ID is included in the background session identifier so that the session does not get invalidated when the initializer is called multiple
@@ -45,9 +45,9 @@ public class AlamofireNetwork: Network {
     ///     - Yes. We do the above because the Jetpack Tunnel endpoint doesn't properly relay the correct statusCode.
     ///
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
-        let authenticated = AuthenticatedRequest(credentials: credentials, request: request)
+        let request = createRequest(wrapping: request)
 
-        Alamofire.request(authenticated)
+        Alamofire.request(request)
             .responseData { response in
                 completion(response.value, response.networkingError)
             }
@@ -63,9 +63,9 @@ public class AlamofireNetwork: Network {
     ///     - completion: Closure to be executed upon completion.
     ///
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Swift.Result<Data, Error>) -> Void) {
-        let authenticated = AuthenticatedRequest(credentials: credentials, request: request)
+        let request = createRequest(wrapping: request)
 
-        Alamofire.request(authenticated).responseData { response in
+        Alamofire.request(request).responseData { response in
             completion(response.result.toSwiftResult())
         }
     }
@@ -79,10 +79,10 @@ public class AlamofireNetwork: Network {
     /// - Parameter request: Request that should be performed.
     /// - Returns: A publisher that emits the result of the given request.
     public func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
-        let authenticated = AuthenticatedRequest(credentials: credentials, request: request)
+        let request = createRequest(wrapping: request)
 
         return Future() { promise in
-            Alamofire.request(authenticated).responseData { response in
+            Alamofire.request(request).responseData { response in
                 let result = response.result.toSwiftResult()
                 promise(Swift.Result.success(result))
             }
@@ -92,9 +92,9 @@ public class AlamofireNetwork: Network {
     public func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
                                         to request: URLRequestConvertible,
                                         completion: @escaping (Data?, Error?) -> Void) {
-        let authenticated = AuthenticatedRequest(credentials: credentials, request: request)
+        let request = createRequest(wrapping: request)
 
-        backgroundSessionManager.upload(multipartFormData: multipartFormData, with: authenticated) { (encodingResult) in
+        backgroundSessionManager.upload(multipartFormData: multipartFormData, with: request) { (encodingResult) in
             switch encodingResult {
             case .success(let upload, _, _):
                 upload.responseData { response in
@@ -104,6 +104,13 @@ public class AlamofireNetwork: Network {
                 completion(nil, error)
             }
         }
+    }
+}
+
+private extension AlamofireNetwork {
+    func createRequest(wrapping request: URLRequestConvertible) -> URLRequestConvertible {
+        credentials.map { AuthenticatedRequest(credentials: $0, request: request) } ??
+        UnauthenticatedRequest(request: request)
     }
 }
 

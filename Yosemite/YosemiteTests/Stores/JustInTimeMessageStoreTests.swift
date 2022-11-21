@@ -26,7 +26,7 @@ final class JustInTimeMessageStoreTests: XCTestCase {
         sut = JustInTimeMessageStore(dispatcher: Dispatcher(), storageManager: storageManager, network: network)
     }
 
-    func test_loadMessage_then_it_returns_nil_upon_successful_empty_response() throws {
+    func test_loadMessage_then_it_returns_empty_array_upon_successful_empty_response() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "jetpack/v4/jitm", filename: "empty-data-array")
 
@@ -43,7 +43,7 @@ final class JustInTimeMessageStoreTests: XCTestCase {
 
         // Then
         XCTAssert(result.isSuccess)
-        XCTAssertNil(try result.get())
+        XCTAssert(try result.get().isEmpty)
     }
 
     func test_loadMessage_then_it_returns_the_Just_In_Time_Message_upon_successful_response() throws {
@@ -61,7 +61,7 @@ final class JustInTimeMessageStoreTests: XCTestCase {
             self.sut.onAction(action)
         }
 
-        let expectedJustInTimeMessage = YosemiteJustInTimeMessage(
+        let expectedJustInTimeMessage = JustInTimeMessage(
             siteID: sampleSiteID,
             messageID: "woomobile_ipp_barcode_users",
             featureClass: "woomobile_ipp",
@@ -72,37 +72,7 @@ final class JustInTimeMessageStoreTests: XCTestCase {
 
         // Then
         XCTAssert(result.isSuccess)
-        let recievedMessage = try XCTUnwrap(result.get())
-        assertEqual(expectedJustInTimeMessage, recievedMessage)
-    }
-
-    func test_loadMessage_then_it_returns_the_first_Just_In_Time_Message_upon_successful_response_with_multiple_jitms() throws {
-        // Given
-        network.simulateResponse(requestUrlSuffix: "jetpack/v4/jitm", filename: "just-in-time-message-list-multiple")
-
-        // When
-        let result = waitFor { promise in
-            let action = JustInTimeMessageAction.loadMessage(
-                siteID: self.sampleSiteID,
-                screen: "my_store",
-                hook: .adminNotices) { result in
-                    promise(result)
-                }
-            self.sut.onAction(action)
-        }
-
-        let expectedJustInTimeMessage = YosemiteJustInTimeMessage(
-            siteID: sampleSiteID,
-            messageID: "woomobile_onboarding_add_product",
-            featureClass: "woomobile_onboarding_products",
-            title: "Add some products",
-            detail: "Get started selling your products: add them easily using the Products tab",
-            buttonTitle: "Add product",
-            url: "woocommerce://products/add")
-
-        // Then
-        XCTAssert(result.isSuccess)
-        let recievedMessage = try XCTUnwrap(result.get())
+        let recievedMessage = try XCTUnwrap(result.get().first)
         assertEqual(expectedJustInTimeMessage, recievedMessage)
     }
 

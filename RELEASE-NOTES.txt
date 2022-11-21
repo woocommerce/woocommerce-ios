@@ -1,7 +1,32 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+11.4
+-----
+
+
+11.3
+-----
+- [*] In-Person Payments: Show spinner while preparing reader for payment, instead of saying it's ready before it is. [https://github.com/woocommerce/woocommerce-ios/pull/8115]
+- [internal] In-Person Payments: update StripeTerminal from 2.7 to 2.14 [https://github.com/woocommerce/woocommerce-ios/pull/8132]
+- [*] In-Person Payments: Fixed payment method prompt for WisePad 3 to show only Tap and Insert options [https://github.com/woocommerce/woocommerce-ios/pull/8136]
+
+11.2
+-----
+- [***] You can now preview draft products before publishing. [https://github.com/woocommerce/woocommerce-ios/pull/8102]
+- [*] The survey at the end of the login onboarding flow is no longer available. [https://github.com/woocommerce/woocommerce-ios/pull/8062]
+- [*] Fixed layout issues on the Account Mismatch error screen. [https://github.com/woocommerce/woocommerce-ios/pull/8074]
+- [*] The Accept Payments Easily banner has been removed from the order list [https://github.com/woocommerce/woocommerce-ios/pull/8078]
+
+11.1
+-----
+- [**] You can now search customers when creating or editing an order. [https://github.com/woocommerce/woocommerce-ios/issues/7741]
+- [internal] Store creation is available from the login prologue, login email error screen, and store picker. [https://github.com/woocommerce/woocommerce-ios/pull/8023]
+- [internal] The login flow is simplified with only the option to log in with WordPress.com. This flow is presented in parallel with the existing flow in an A/B test experiment. [https://github.com/woocommerce/woocommerce-ios/pull/7996]
+- [**] Relevant Just In Time Messages will be displayed on the My Store screen [https://github.com/woocommerce/woocommerce-ios/issues/7853]
+
 11.0
 -----
+- [internal] Add support for controlling performance monitoring via Sentry. **Off by default**. [https://github.com/woocommerce/woocommerce-ios/pull/7831]
 
 
 10.9

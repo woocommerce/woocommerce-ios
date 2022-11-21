@@ -7,14 +7,22 @@ public enum ABTest: String, CaseIterable {
     /// `An enum with no cases cannot declare a raw type`
     case null
 
-    /// A/A test for ExPlat integration in the logged in state.
-    /// Experiment ref: pbxNRc-1QS-p2
-    ///
-    case aaTestLoggedIn202210 = "woocommerceios_explat_aa_test_logged_in_202210"
-
     /// A/A test to make sure there is no bias in the logged out state.
     /// Experiment ref: pbxNRc-1S0-p2
     case aaTestLoggedOut = "woocommerceios_explat_aa_test_logged_out_202211"
+
+    /// A/B test to measure the sign-in success rate when only WPCom login is enabled.
+    /// Experiment ref: pbxNRc-27s-p2
+    ///
+    case abTestLoginWithWPComOnly = "woocommerceios_login_wpcom_only"
+
+    /// A/B test for the Products Onboarding banner on the My Store dashboard.
+    /// Experiment ref: pbxNRc-26F-p2
+    case productsOnboardingBanner = "woocommerceios_products_onboarding_first_product_banner"
+
+    /// A/B test for the Products Onboarding product creation type bottom sheet after tapping the "Add Product" CTA.
+    /// Experiment ref: pbxNRc-28r-p2
+    case productsOnboardingTemplateProducts = "woocommerceios_products_onboarding_template_products"
 
     /// Returns a variation for the given experiment
     public var variation: Variation {
@@ -26,9 +34,9 @@ public enum ABTest: String, CaseIterable {
     /// When adding a new experiment, add it to the appropriate case depending on its context (logged-in or logged-out experience).
     public var context: ExperimentContext {
         switch self {
-        case .aaTestLoggedIn202210:
+        case .productsOnboardingBanner, .productsOnboardingTemplateProducts:
             return .loggedIn
-        case .aaTestLoggedOut:
+        case .aaTestLoggedOut, .abTestLoginWithWPComOnly:
             return .loggedOut
         case .null:
             return .none

@@ -3,22 +3,29 @@ import XCTest
 @testable import WooCommerce
 import Yosemite
 import TestKit
+import protocol Experiments.FeatureFlagService
 
 final class ProductFormViewModelTests: XCTestCase {
 
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
+    private var sessionManager: SessionManager!
+    private var stores: StoresManager!
 
     override func setUp() {
         super.setUp()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        sessionManager = SessionManager.testingInstance
+        stores = MockStoresManager(sessionManager: sessionManager)
     }
 
     override func tearDown() {
         super.tearDown()
         analytics = nil
         analyticsProvider = nil
+        sessionManager = nil
+        stores = nil
     }
 
     // MARK: `canViewProductInStore`
@@ -228,7 +235,7 @@ final class ProductFormViewModelTests: XCTestCase {
     func test_update_variations_fires_replace_product_action() throws {
         // Given
         let product = Product.fake()
-        let mockStores = MockStoresManager(sessionManager: SessionManager.testingInstance)
+        let mockStores = MockStoresManager(sessionManager: sessionManager)
         let viewModel = createViewModel(product: product, formType: .edit, stores: mockStores)
 
         // When
@@ -267,35 +274,54 @@ final class ProductFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.formType, .edit)
     }
 
-    func test_action_buttons_for_new_product_with_published_status_and_pending_changes() {
+    func test_action_buttons_for_new_product_and_pending_changes() throws {
         // Given
-        let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
-        let viewModel = createViewModel(product: product, formType: .add)
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
+        let product = try XCTUnwrap(ProductFactory().createNewProduct(type: .simple, isVirtual: false, siteID: 123))
+        let viewModel = createViewModel(product: product, formType: .add, stores: stores)
         viewModel.updateName("new name")
 
         // When
         let actionButtons = viewModel.actionButtons
 
         // Then
-        XCTAssertEqual(actionButtons, [.publish, .more])
+        XCTAssertEqual(actionButtons, [.preview, .publish, .more])
     }
 
-    func test_action_buttons_for_new_product_with_published_status_and_no_pending_changes() {
+    func test_action_buttons_for_new_product_and_no_pending_changes() throws {
         // Given
-        let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
-        let viewModel = createViewModel(product: product, formType: .add)
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
+        let product = try XCTUnwrap(ProductFactory().createNewProduct(type: .simple, isVirtual: false, siteID: 123))
+        let viewModel = createViewModel(product: product, formType: .add, stores: stores)
 
         // When
         let actionButtons = viewModel.actionButtons
 
         // Then
-        XCTAssertEqual(actionButtons, [.publish, .more])
+        XCTAssertEqual(actionButtons, [.preview, .publish, .more])
+    }
+
+    func test_action_buttons_for_new_template_product() throws {
+        // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
+
+        // Adding some value to simulate a template product
+        let product = try XCTUnwrap(ProductFactory().createNewProduct(type: .simple, isVirtual: false, siteID: 123)?.copy(price: "10.00"))
+        let viewModel = createViewModel(product: product, formType: .add, stores: stores)
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.preview, .publish, .more])
+        XCTAssertTrue(viewModel.shouldEnablePreviewButton())
     }
 
     func test_action_buttons_for_new_product_with_different_status() {
         // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
         let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
-        let viewModel = createViewModel(product: product, formType: .add)
+        let viewModel = createViewModel(product: product, formType: .add, stores: stores)
 
         let updatedProduct = product.copy(statusKey: ProductStatus.draft.rawValue)
         let settings = ProductSettings(from: updatedProduct, password: nil)
@@ -310,8 +336,9 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_action_buttons_for_existing_published_product_and_pending_changes() {
         // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
         let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.published.rawValue)
-        let viewModel = createViewModel(product: product, formType: .edit)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
         viewModel.updateName("new name")
 
         // When
@@ -323,8 +350,9 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_action_buttons_for_existing_published_product_and_no_pending_changes() {
         // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
         let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.published.rawValue)
-        let viewModel = createViewModel(product: product, formType: .edit)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
 
         // When
         let actionButtons = viewModel.actionButtons
@@ -335,33 +363,36 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_action_buttons_for_existing_draft_product_and_pending_changes() {
         // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
         let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.draft.rawValue)
-        let viewModel = createViewModel(product: product, formType: .edit)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
         viewModel.updateName("new name")
 
         // When
         let actionButtons = viewModel.actionButtons
 
         // Then
-        XCTAssertEqual(actionButtons, [.save, .more])
+        XCTAssertEqual(actionButtons, [.preview, .save, .more])
     }
 
     func test_action_buttons_for_existing_draft_product_and_no_pending_changes() {
         // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
         let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.draft.rawValue)
-        let viewModel = createViewModel(product: product, formType: .edit)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
 
         // When
         let actionButtons = viewModel.actionButtons
 
         // Then
-        XCTAssertEqual(actionButtons, [.publish, .more])
+        XCTAssertEqual(actionButtons, [.preview, .publish, .more])
     }
 
     func test_action_buttons_for_existing_product_with_other_status_and_peding_changes() {
         // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
         let product = Product.fake().copy(productID: 123, statusKey: "other")
-        let viewModel = createViewModel(product: product, formType: .edit)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
         viewModel.updateName("new name")
 
         // When
@@ -373,8 +404,9 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_action_buttons_for_existing_product_with_other_status_and_no_peding_changes() {
         // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
         let product = Product.fake().copy(productID: 123, statusKey: "other")
-        let viewModel = createViewModel(product: product, formType: .edit)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
 
         // When
         let actionButtons = viewModel.actionButtons
@@ -385,8 +417,9 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_action_buttons_for_any_product_in_read_only_mode() {
         // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
         let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.published.rawValue)
-        let viewModel = createViewModel(product: product, formType: .readonly)
+        let viewModel = createViewModel(product: product, formType: .readonly, stores: stores)
         viewModel.updateName("new name")
 
         // When
@@ -394,6 +427,20 @@ final class ProductFormViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(actionButtons, [.more])
+    }
+
+    func test_no_preview_button_for_existing_draft_product_on_site_with_no_frame_nonce() {
+        // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "")
+
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.draft.rawValue)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.publish, .more])
     }
 
     func test_canPublishOption_is_true_when_creating_new_product_with_different_status() {
@@ -532,19 +579,45 @@ final class ProductFormViewModelTests: XCTestCase {
         let hasLinkedProducts = try XCTUnwrap(analyticsProvider.receivedProperties.first?["has_linked_products"] as? Bool)
         XCTAssertTrue(hasLinkedProducts)
     }
+
+    func test_onProductCreated_called_when_new_product_saved_remotely() {
+        // Given
+        var isCallbackCalled = false
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = createViewModel(product: Product.fake(), formType: .add, stores: stores)
+        viewModel.onProductCreated = {
+            isCallbackCalled = true
+        }
+
+        // When
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .addProduct(product, onCompletion):
+                onCompletion(.success(product))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+        viewModel.saveProductRemotely(status: .draft) { _ in }
+
+        // Then
+        XCTAssertTrue(isCallbackCalled)
+    }
 }
 
 private extension ProductFormViewModelTests {
     func createViewModel(product: Product,
                          formType: ProductFormType,
                          stores: StoresManager = ServiceLocator.stores,
-                         analytics: Analytics = ServiceLocator.analytics) -> ProductFormViewModel {
+                         analytics: Analytics = ServiceLocator.analytics,
+                         featureFlagService: FeatureFlagService = MockFeatureFlagService()) -> ProductFormViewModel {
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
         return ProductFormViewModel(product: model,
                                     formType: formType,
                                     productImageActionHandler: productImageActionHandler,
                                     stores: stores,
-                                    analytics: analytics)
+                                    analytics: analytics,
+                                    featureFlagService: featureFlagService)
     }
 }

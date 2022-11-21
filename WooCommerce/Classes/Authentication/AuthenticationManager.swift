@@ -18,6 +18,9 @@ class AuthenticationManager: Authentication {
     ///
     private var storePickerCoordinator: StorePickerCoordinator?
 
+    /// Store creation coordinator in the logged-out state.
+    private var loggedOutStoreCreationCoordinator: LoggedOutStoreCreationCoordinator?
+
     /// Keychain access for SIWA auth token
     ///
     private lazy var keychain = Keychain(service: WooConstants.keychainServiceName)
@@ -38,13 +41,12 @@ class AuthenticationManager: Authentication {
     ///
     private let storageManager: StorageManagerType
 
-    /// Whether WP.com signup is enabled in the authentication flow based on the feature flag.
-    private let isWPComSignupEnabled: Bool
+    private let featureFlagService: FeatureFlagService
 
     init(storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.storageManager = storageManager
-        self.isWPComSignupEnabled = featureFlagService.isFeatureFlagEnabled(.wpcomSignup)
+        self.featureFlagService = featureFlagService
     }
 
     /// Initializes the WordPress Authenticator.
@@ -52,9 +54,7 @@ class AuthenticationManager: Authentication {
     func initialize(loggedOutAppSettings: LoggedOutAppSettingsProtocol) {
         let isWPComMagicLinkPreferredToPassword = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasis)
         let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasisM2)
-        let isFeatureCarouselShown = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginPrologueOnboarding) == false
-        || loggedOutAppSettings.hasFinishedOnboarding == true
-        let isSimplifiedLoginI1Enabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifiedLoginFlowI1)
+        let isSimplifiedLoginI1Enabled = ABTest.abTestLoginWithWPComOnly.variation != .control
         let isStoreCreationMVPEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
@@ -67,7 +67,7 @@ class AuthenticationManager: Authentication {
                                                                 googleLoginScheme: ApiCredentials.googleAuthScheme,
                                                                 userAgent: UserAgent.defaultUserAgent,
                                                                 showLoginOptions: true,
-                                                                enableSignUp: isWPComSignupEnabled,
+                                                                enableSignUp: false,
                                                                 enableSignInWithApple: true,
                                                                 enableSignupWithGoogle: false,
                                                                 enableUnifiedAuth: true,
@@ -80,9 +80,9 @@ class AuthenticationManager: Authentication {
                                                                 enableWPComLoginOnlyInPrologue: isSimplifiedLoginI1Enabled,
                                                                 enableSiteCreation: isStoreCreationMVPEnabled,
                                                                 enableSocialLogin: !isSimplifiedLoginI1Enabled,
-                                                                emphasizeEmailForWPComPassword: isSimplifiedLoginI1Enabled,
-                                                                wpcomPasswordInstructions: isSimplifiedLoginI1Enabled ?
-                                                                AuthenticationConstants.wpcomPasswordInstructions : nil)
+                                                                emphasizeEmailForWPComPassword: true,
+                                                                wpcomPasswordInstructions:
+                                                                AuthenticationConstants.wpcomPasswordInstructions)
 
         let systemGray3LightModeColor = UIColor(red: 199/255.0, green: 199/255.0, blue: 204/255.0, alpha: 1)
         let systemLabelLightModeColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)
@@ -113,7 +113,7 @@ class AuthenticationManager: Authentication {
                                                 navBarBadgeColor: .primary,
                                                 navBarBackgroundColor: .appBar,
                                                 prologueTopContainerChildViewController:
-                                                    LoginPrologueViewController(isFeatureCarouselShown: isFeatureCarouselShown),
+                                                    LoginPrologueViewController(isFeatureCarouselShown: false),
                                                 statusBarStyle: .default)
 
         let getStartedInstructions = isSimplifiedLoginI1Enabled ?
@@ -362,7 +362,10 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
     /// Presents the Login Epilogue, in the specified NavigationController.
     ///
-    func presentLoginEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, onDismiss: @escaping () -> Void) {
+    func presentLoginEpilogue(in navigationController: UINavigationController,
+                              for credentials: AuthenticatorCredentials,
+                              source: SignInSource?,
+                              onDismiss: @escaping () -> Void) {
 
         guard let siteURL = credentials.wpcom?.siteURL ?? credentials.wporg?.siteURL else {
             // This should not happen since the resulting credentials should be either `wpcom` or `wporg`
@@ -391,34 +394,26 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         } else {
             loggedOutAppSettings?.setErrorLoginSiteAddress(nil)
             let matchedSite = matcher.matchedSite(originalURL: siteURL)
-            startStorePicker(with: matchedSite?.siteID, in: navigationController, onDismiss: onDismiss)
+            startStorePicker(with: matchedSite?.siteID, source: source, in: navigationController, onDismiss: onDismiss)
         }
     }
 
     /// Presents the Signup Epilogue, in the specified NavigationController.
     ///
     func presentSignupEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, service: SocialService?) {
-        if isWPComSignupEnabled {
-            // A proper signup epilogue flow will be added incrementally later as part of the WP.com signup experiment:
-            // Ref: pe5sF9-xP-p2
-            sync(credentials: credentials) { [weak self] in
-                self?.startStorePicker(in: navigationController)
-            }
-        } else {
-            // NO-OP: The current WC version does not support Signup. Let SIWA through.
-            guard case .apple = service else {
-                return
-            }
+        // NO-OP: The current WC version does not support Signup. Let SIWA through.
+        guard case .apple = service else {
+            return
+        }
 
-            // For SIWA, signups are treating like signing in for now.
-            // Signup code in Authenticator normally synchronizes the auth credentials but
-            // since we're hacking in SIWA, that's never called in the pod. Call here so the
-            // person's name and user ID show up on the picker screen.
-            //
-            // This is effectively a useless screen for them other than telling them to install Jetpack.
-            sync(credentials: credentials) { [weak self] in
-                self?.startStorePicker(in: navigationController)
-            }
+        // For SIWA, signups are treating like signing in for now.
+        // Signup code in Authenticator normally synchronizes the auth credentials but
+        // since we're hacking in SIWA, that's never called in the pod. Call here so the
+        // person's name and user ID show up on the picker screen.
+        //
+        // This is effectively a useless screen for them other than telling them to install Jetpack.
+        sync(credentials: credentials) { [weak self] in
+            self?.startStorePicker(in: navigationController)
         }
     }
 
@@ -476,7 +471,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Note: As of now, this is a NO-OP, we're not supporting any signup flows.
     ///
     func shouldPresentSignupEpilogue() -> Bool {
-        isWPComSignupEnabled
+        false
     }
 
     /// Synchronizes the specified WordPress Account.
@@ -539,8 +534,12 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
     // Navigate to store creation
     func showSiteCreation(in navigationController: UINavigationController) {
-        // TODO: add tracks
-        // Navigate to store creation
+        ServiceLocator.analytics.track(event: .StoreCreation.loginPrologueCreateSiteTapped())
+
+        let coordinator = LoggedOutStoreCreationCoordinator(source: .prologue,
+                                                            navigationController: navigationController)
+        self.loggedOutStoreCreationCoordinator = coordinator
+        coordinator.start()
     }
 }
 
@@ -611,15 +610,30 @@ private extension AuthenticationManager {
             // Tries re-syncing to get an updated store list,
             // then attempts to present epilogue again.
             ServiceLocator.stores.synchronizeEntities { [weak self] in
-                self?.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: onDismiss)
+                self?.presentLoginEpilogue(in: navigationController, for: credentials, source: nil, onDismiss: onDismiss)
             }
         })
         let installJetpackUI = ULErrorViewController(viewModel: viewModel)
         navigationController.show(installJetpackUI, sender: nil)
     }
 
-    func startStorePicker(with siteID: Int64? = nil, in navigationController: UINavigationController, onDismiss: @escaping () -> Void = {}) {
-        storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)
+    func startStorePicker(with siteID: Int64? = nil,
+                          source: SignInSource? = nil,
+                          in navigationController: UINavigationController,
+                          onDismiss: @escaping () -> Void = {}) {
+        let config: StorePickerConfiguration = {
+            switch source {
+            case .custom(let source):
+                if let loggedOutSource = LoggedOutStoreCreationCoordinator.Source(rawValue: source) {
+                    return .storeCreationFromLogin(source: loggedOutSource)
+                } else {
+                    return .login
+                }
+            default:
+                return .login
+            }
+        }()
+        storePickerCoordinator = StorePickerCoordinator(navigationController, config: config)
         storePickerCoordinator?.onDismiss = onDismiss
         if let siteID = siteID {
             storePickerCoordinator?.didSelectStore(with: siteID, onCompletion: onDismiss)
@@ -712,6 +726,18 @@ private extension AuthenticationManager {
         return ULErrorViewController(viewModel: viewModel)
     }
 
+    /// The error screen to be displayed when Jetpack setup for a site is required.
+    /// This is the entry point to the native Jetpack setup flow.
+    ///
+    func jetpackSetupUI(for siteURL: String,
+                        connectionMissingOnly: Bool,
+                        in navigationController: UINavigationController) -> UIViewController {
+        let viewModel = JetpackSetupRequiredViewModel(siteURL: siteURL,
+                                                      connectionOnly: connectionMissingOnly)
+        let jetpackSetupUI = ULErrorViewController(viewModel: viewModel)
+        return jetpackSetupUI
+    }
+
     /// Appropriate error to display for a site when entered from the site discovery flow.
     /// More about this flow: pe5sF9-mz-p2
     ///
@@ -726,6 +752,14 @@ private extension AuthenticationManager {
         guard !site.isWPCom else {
             // The site doesn't belong to the current account since it was not included in the site picker.
             return accountMismatchUI(for: site.url, siteCredentials: nil, with: matcher, in: navigationController)
+        }
+
+        // Shows the native Jetpack flow during the site discovery flow.
+        // TODO-8075: replace feature flag with A/B testing
+        if featureFlagService.isFeatureFlagEnabled(.nativeJetpackSetupFlow) {
+            return jetpackSetupUI(for: site.url,
+                                  connectionMissingOnly: site.hasJetpack && site.isJetpackActive,
+                                  in: navigationController)
         }
 
         /// Jetpack is required. Present an error if we don't detect a valid installation.
@@ -777,14 +811,14 @@ private extension AuthenticationManager {
                 switch error {
                 case .invalidWPComEmail(let source):
                     switch source {
-                    case .wpCom:
+                    case .wpCom, .custom:
                         return .invalidEmailFromWPComLogin
                     case .wpComSiteAddress:
                         return .invalidEmailFromSiteAddressLogin
                     }
                 case .invalidWPComPassword(let source):
                     switch source {
-                    case .wpCom:
+                    case .wpCom, .custom:
                         return .invalidPasswordFromWPComLogin
                     case .wpComSiteAddress:
                         return .invalidPasswordFromSiteAddressWPComLogin

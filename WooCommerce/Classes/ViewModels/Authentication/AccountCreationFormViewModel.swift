@@ -25,21 +25,25 @@ final class AccountCreationFormViewModel: ObservableObject {
     @Published private(set) var isPasswordValid: Bool = false
 
     private let stores: StoresManager
+    private let analytics: Analytics
     private var subscriptions: Set<AnyCancellable> = []
 
-    init(stores: StoresManager = ServiceLocator.stores) {
+    init(debounceDuration: Double = Constants.fieldDebounceDuration,
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.stores = stores
+        self.analytics = analytics
 
         $email
             .removeDuplicates()
-            .debounce(for: .seconds(Constants.fieldDebounceDuration), scheduler: DispatchQueue.main)
+            .debounce(for: .seconds(debounceDuration), scheduler: DispatchQueue.main)
             .sink { [weak self] email in
                 self?.validateEmail(email)
             }.store(in: &subscriptions)
 
         $password
             .removeDuplicates()
-            .debounce(for: .seconds(Constants.fieldDebounceDuration), scheduler: DispatchQueue.main)
+            .debounce(for: .seconds(debounceDuration), scheduler: DispatchQueue.main)
             .sink { [weak self] password in
                 self?.validatePassword(password)
             }.store(in: &subscriptions)
@@ -49,6 +53,8 @@ final class AccountCreationFormViewModel: ObservableObject {
     /// - Returns: async result of account creation.
     @MainActor
     func createAccount() async -> Result<Void, Error> {
+        analytics.track(event: .StoreCreation.signupSubmitted())
+
         let result: Result<CreateAccountResult, CreateAccountError> = await withCheckedContinuation { continuation in
             let action = AccountCreationAction.createAccount(email: email, password: password) { result in
                 continuation.resume(returning: result)
@@ -58,9 +64,13 @@ final class AccountCreationFormViewModel: ObservableObject {
 
         switch result {
         case .success(let data):
+            analytics.track(event: .StoreCreation.signupSuccess())
+
             await handleSuccess(data: data)
             return .success(())
         case .failure(let error):
+            analytics.track(event: .StoreCreation.signupFailed(error: error))
+
             handleFailure(error: error)
             return .failure(error)
         }

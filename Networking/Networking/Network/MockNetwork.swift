@@ -185,6 +185,8 @@ private extension MockNetwork {
         switch request {
         case let request as AuthenticatedRequest:
             return path(for: request.request)
+        case let request as UnauthenticatedRequest:
+            return path(for: request.request)
         case let request as JetpackRequest:
             return request.path
         case let request as DotcomRequest:

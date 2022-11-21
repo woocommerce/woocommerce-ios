@@ -14,6 +14,7 @@ final class CardPresentModalTapCardTests: XCTestCase {
             name: Expectations.name,
             amount: Expectations.amount,
             transactionType: .collectPayment,
+            inputMethods: [.tap, .swipe, .insert],
             onCancel: closures.onCancel()
         )
     }

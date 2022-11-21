@@ -128,6 +128,10 @@ final class IconsTests: XCTestCase {
         XCTAssertEqual(deleteCellImage.size, CGSize(width: 22, height: 22))
     }
 
+    func test_domainSearchPlaceholderImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.domainSearchPlaceholderImage)
+    }
+
     func testEllipsisImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.ellipsisImage)
     }
@@ -208,8 +212,16 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.mailboxImage)
     }
 
+    func test_storeCreationPlanImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.storeCreationPlanImage)
+    }
+
     func testStoreImageIsNotNil() {
         XCTAssertNotNil(UIImage.storeImage)
+    }
+
+    func test_storeSummaryImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.storeSummaryImage)
     }
 
     func testCotImageIsNotNil() {
@@ -605,6 +617,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.prologueReviewsImage)
     }
 
+    func test_prologueWooMobileImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.prologueWooMobileImage)
+    }
+
     func test_cloudOutlineImage_is_not_nil() {
         XCTAssertNotNil(UIImage.cloudOutlineImage)
     }
@@ -675,5 +691,22 @@ final class IconsTests: XCTestCase {
 
     func test_sites_icon_is_not_nil() {
         XCTAssertNotNil(UIImage.sitesImage)
+    }
+
+    func test_emptyStorePickerImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.emptyStorePickerImage)
+    }
+
+    func test_jetpackSetupImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.jetpackSetupImage)
+    }
+
+    func test_jetpackConnectionImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.jetpackConnectionImage)
+    }
+
+    func test_wpcomLogoImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.wpcomLogoImage)
+
     }
 }

@@ -36,13 +36,13 @@ PODS:
   - Sentry/Core (7.25.1)
   - Sodium (0.9.1)
   - Sourcery (1.0.3)
-  - StripeTerminal (2.7.0)
+  - StripeTerminal (2.14.0)
   - SVProgressHUD (2.2.5)
   - UIDeviceIdentifier (2.0.0)
   - WordPress-Aztec-iOS (1.11.0)
   - WordPress-Editor-iOS (1.11.0):
     - WordPress-Aztec-iOS (= 1.11.0)
-  - WordPressAuthenticator (3.3.0-beta.1):
+  - WordPressAuthenticator (4.2.0):
     - CocoaLumberjack (~> 3.5)
     - GoogleSignIn (~> 6.0.1)
     - Gridicons (~> 1.0)
@@ -89,9 +89,9 @@ DEPENDENCIES:
   - KeychainAccess (~> 4.2.2)
   - Kingfisher (~> 7.2.2)
   - Sourcery (~> 1.0.3)
-  - StripeTerminal (~> 2.7)
+  - StripeTerminal (~> 2.14)
   - WordPress-Editor-iOS (~> 1.11.0)
-  - WordPressAuthenticator (~> 3.3.0-beta.1)
+  - WordPressAuthenticator (~> 4.2.0)
   - WordPressKit (~> 4.49.0)
   - WordPressShared (~> 1.15)
   - WordPressUI (~> 1.12.5)
@@ -157,12 +157,12 @@ SPEC CHECKSUMS:
   Sentry: dd29c18c32b0af9269949f079cf631d581ca76ca
   Sodium: 23d11554ecd556196d313cf6130d406dfe7ac6da
   Sourcery: 70a6048014bd4f37ea80e6bd4354d47bf3b760e1
-  StripeTerminal: 237b759168a00c7f55b97c743cd8a4921866c46b
+  StripeTerminal: 9bb367c9efa7bcddf2602cc29f8962390d87b6a6
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   UIDeviceIdentifier: af4e11e25a2ea670078e2bd677bb0e8144f9f063
   WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348
   WordPress-Editor-iOS: 304098424f1051cb271546c99f906aac296b1b81
-  WordPressAuthenticator: 11f20320f3a80dbe1803d0af38958561b078ca84
+  WordPressAuthenticator: 27178591a805804bd27959f1f76ddcb94605916c
   WordPressKit: 96deb6ba37ea5eaec4ddcaa53eca04d653246152
   WordPressShared: 5477f179c7fe03b5d574f91adda66f67d131827e
   WordPressUI: c5be816f6c7b3392224ac21de9e521e89fa108ac
@@ -178,6 +178,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2bdf8544f7cd0fd4c002546f5704b813845beb2a
   ZendeskSupportSDK: 3a8e508ab1d9dd22dc038df6c694466414e037ba
 
-PODFILE CHECKSUM: 7d6054e92998bd533f3ee9097331e22ad596717c
+PODFILE CHECKSUM: 8b243f1ea76d4db3aa638b50ef0d516185d01c2c
 
 COCOAPODS: 1.11.3

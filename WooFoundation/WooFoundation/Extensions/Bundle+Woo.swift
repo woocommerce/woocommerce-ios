@@ -1,7 +1,7 @@
 import Foundation
 
 extension Bundle {
-    var buildNumber: String {
+    public var buildNumber: String {
         guard let buildNumber = Bundle.main.infoDictionary?["CFBundleVersion"] as? String else {
             return "unknown"
         }
@@ -9,7 +9,7 @@ extension Bundle {
         return buildNumber
     }
 
-    var marketingVersion: String {
+    public var marketingVersion: String {
         guard let marketingVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String else {
             return "unknown"
         }

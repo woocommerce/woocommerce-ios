@@ -33,6 +33,12 @@ def tracks
   # pod 'Automattic-Tracks-iOS', :path => '../Automattic-Tracks-iOS'
 end
 
+def wordpress_kit
+  # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
+  pod 'WordPressKit', '~> 4.49.0'
+  # pod 'WordPressKit', :git => 'https://github.com/wordpress-mobile/WordPressKit-iOS.git', :branch => ''
+end
+
 def keychain
   pod 'KeychainAccess', '~> 4.2.2'
 end
@@ -47,7 +53,7 @@ def cocoa_lumberjack
 end
 
 def stripe_terminal
-  pod 'StripeTerminal', '~> 2.7'
+  pod 'StripeTerminal', '~> 2.14'
 end
 
 # Main Target!
@@ -65,8 +71,8 @@ target 'WooCommerce' do
   pod 'Gridicons', '~> 1.2.0'
 
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
-  pod 'WordPressAuthenticator', '~> 3.3.0-beta.1'
-#   pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :commit => ''
+  pod 'WordPressAuthenticator', '~> 4.2.0'
+  # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :commit => ''
   # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => ''
   # pod 'WordPressAuthenticator', :path => '../WordPressAuthenticator-iOS'
 
@@ -115,10 +121,7 @@ def yosemite_pods
   alamofire
   stripe_terminal
   cocoa_lumberjack
-
-  # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
-  pod 'WordPressKit', '~> 4.49.0'
-  # pod 'WordPressKit', :git => 'https://github.com/wordpress-mobile/WordPressKit-iOS.git', :branch => ''
+  wordpress_kit
 
   aztec
 end
@@ -174,9 +177,7 @@ def networking_pods
   # Used for HTML parsing
   aztec
 
-  # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
-  pod 'WordPressKit', '~> 4.49.0'
-  # pod 'WordPressKit', :git => 'https://github.com/wordpress-mobile/WordPressKit-iOS.git', :branch => ''
+  wordpress_kit
 end
 
 # Networking Target:

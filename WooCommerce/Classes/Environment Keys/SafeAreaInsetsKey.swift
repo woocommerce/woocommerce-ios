@@ -8,7 +8,10 @@ struct SafeAreaInsetsKey: EnvironmentKey {
     /// Returns the safe areas of the main window.
     ///
     static var defaultValue: EdgeInsets {
-        guard let window = UIApplication.shared.windows.first else {
+
+        // Get the first window from all connected scenes
+        let scenes = UIApplication.shared.connectedScenes
+        guard let window = scenes.compactMap({ $0 as? UIWindowScene }).flatMap({ $0.windows }).first else {
             return .zero
         }
 

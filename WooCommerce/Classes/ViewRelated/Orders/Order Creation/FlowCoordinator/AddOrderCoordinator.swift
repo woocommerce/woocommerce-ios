@@ -7,7 +7,7 @@ import WordPressUI
 /// Manages the different navigation flows that start from the Orders main tab
 ///
 final class AddOrderCoordinator: Coordinator {
-    var navigationController: UINavigationController
+    let navigationController: UINavigationController
 
     private let siteID: Int64
     private let sourceBarButtonItem: UIBarButtonItem?
@@ -53,7 +53,7 @@ final class AddOrderCoordinator: Coordinator {
 // MARK: Navigation
 private extension AddOrderCoordinator {
     func presentOrderTypeBottomSheet() {
-        let viewProperties = BottomSheetListSelectorViewProperties(title: nil)
+        let viewProperties = BottomSheetListSelectorViewProperties(subtitle: nil)
         let command = OrderTypeBottomSheetListSelectorCommand() { selectedBottomSheetOrderType in
             self.navigationController.dismiss(animated: true)
             self.presentOrderCreationFlow(bottomSheetOrderType: selectedBottomSheetOrderType)

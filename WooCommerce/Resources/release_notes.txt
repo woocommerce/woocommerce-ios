@@ -1,1 +1,4 @@
-This release includes a lot more stability fixes to help you log in much easier. You can now connect your WordPress.com account with Jetpack and access your store that much faster. We've also updated our app to support devices with iOS 15+ only. Please update your device to iOS 15 to continue to use the app.
+- [*] In-Person Payments: Show spinner while preparing reader for payment, instead of saying it's ready before it is. [https://github.com/woocommerce/woocommerce-ios/pull/8115]
+- [internal] In-Person Payments: update StripeTerminal from 2.7 to 2.14 [https://github.com/woocommerce/woocommerce-ios/pull/8132]
+- [*] In-Person Payments: Fixed payment method prompt for WisePad 3 to show only Tap and Insert options [https://github.com/woocommerce/woocommerce-ios/pull/8136]
+

@@ -38,3 +38,13 @@ if ABTest.experimentName.variation == .control {
     // Treatment logic
 }
 ```
+### Experiment Design Considerations
+
+If your experiment uses an exposure event, watch out for race conditions between the exposure event and the test assignment or experiment metrics. The exposure event must be triggered _after_ the app receives the test assignment from the experiments endpoint, and _before_ any of the experiment metrics are triggered.
+
+Due to potential race conditions, do not use these as exposure events:
+
+- `woocommerceios_application_opened`
+- `woocommerceios_application_installed`
+
+When designing a logged-out experiment, consider that you may not need an exposure event at all.

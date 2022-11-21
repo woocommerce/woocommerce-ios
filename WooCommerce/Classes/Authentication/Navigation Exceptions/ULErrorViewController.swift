@@ -24,7 +24,7 @@ final class ULErrorViewController: UIViewController {
     @IBOutlet private weak var secondaryButton: UIButton!
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var errorMessage: UILabel!
-
+    @IBOutlet private weak var termsLabel: UITextView!
 
     /// Constraints on the view containing the action buttons
     /// and the stack view containing the image and error text
@@ -64,6 +64,7 @@ final class ULErrorViewController: UIViewController {
 
         configurePrimaryButton()
         configureSecondaryButton()
+        configureTermsLabel()
 
         configureButtonLabels()
 
@@ -110,9 +111,7 @@ private extension ULErrorViewController {
     }
 
     func configureErrorMessage() {
-        errorMessage.adjustsFontForContentSizeCategory = true
-        errorMessage.font = .title3SemiBold
-        errorMessage.textColor = .text
+        errorMessage.applyBodyStyle()
         errorMessage.attributedText = viewModel.text
     }
 
@@ -132,6 +131,20 @@ private extension ULErrorViewController {
         extraInfoButton.titleLabel?.textAlignment = .center
         extraInfoButton.on(.touchUpInside) { [weak self] _ in
             self?.didTapAuxiliaryButton()
+        }
+    }
+
+    func configureTermsLabel() {
+        let linkAttributes: [NSAttributedString.Key: Any] = [
+            NSAttributedString.Key.foregroundColor: UIColor.accent,
+            NSAttributedString.Key.underlineColor: UIColor.accent,
+            NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue
+        ]
+        termsLabel.linkTextAttributes = linkAttributes
+        termsLabel.isSelectable = true
+        termsLabel.isHidden = viewModel.termsLabelText == nil
+        if let text = viewModel.termsLabelText {
+            termsLabel.attributedText = text
         }
     }
 
@@ -265,5 +278,9 @@ extension ULErrorViewController {
 
     func secondaryActionButton() -> UIButton {
         return secondaryButton
+    }
+
+    func getTermsLabel() -> UITextView {
+        return termsLabel
     }
 }

@@ -532,7 +532,7 @@ platform :ios do
       owner_name: 'automattic',
       owner_type: 'organization',
       app_name: 'WooCommerce-Installable-Builds',
-      destinations: 'All-users-of-WooCommerce-Installable-Builds',
+      destinations: 'Collaborators',
       notify_testers: false
     )
 

@@ -15,7 +15,7 @@ class DeauthenticatedState: StoresManagerState {
 
     init() {
         // Used for logged-out state without a WPCOM auth token.
-        let network = AlamofireNetwork(credentials: .init(authToken: ""))
+        let network = AlamofireNetwork(credentials: nil)
         services = [
             JetpackConnectionStore(dispatcher: dispatcher),
             AccountCreationStore(dotcomClientID: ApiCredentials.dotcomAppId,

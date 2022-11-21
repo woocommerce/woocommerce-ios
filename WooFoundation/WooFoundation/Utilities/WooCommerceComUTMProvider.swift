@@ -1,6 +1,8 @@
 import Foundation
 
 public struct WooCommerceComUTMProvider: UTMParametersProviding {
+    public var limitToHosts: [String]? = ["woocommerce.com"]
+
     public let parameters: [UTMParameterKey: String?]
 
     public init(campaign: String,

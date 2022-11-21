@@ -150,6 +150,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                     // Inform about the collect payment state
                     switch result {
                     case .failure(CollectOrderPaymentUseCaseError.flowCanceledByUser):
+                        self.rootViewController.presentedViewController?.dismiss(animated: true)
                         return onCancel()
                     default:
                         onCollect(result.map { _ in () }) // Transforms Result<CardPresentCapturedPaymentData, Error> to Result<Void, Error>
@@ -271,13 +272,11 @@ private extension CollectOrderPaymentUseCase {
             return
         }
 
-        // Show reader ready alert
-        alerts.readerIsReady(title: Localization.collectPaymentTitle(username: order.billingAddress?.firstName),
-                             amount: formattedAmount,
-                             onCancel: { [weak self] in
-            self?.cancelPayment {
+        // Show preparing reader alert
+        alerts.preparingReader(onCancel: { [weak self] in
+            self?.cancelPayment(onCompleted: {
                 onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
-            }
+            })
         })
 
         // Start collect payment process
@@ -287,13 +286,16 @@ private extension CollectOrderPaymentUseCase {
             paymentGatewayAccount: paymentGatewayAccount,
             paymentMethodTypes: configuration.paymentMethods.map(\.rawValue),
             stripeSmallestCurrencyUnitMultiplier: configuration.stripeSmallestCurrencyUnitMultiplier,
-            onWaitingForInput: { [weak self] in
-                   // Request card input
-                   self?.alerts.tapOrInsertCard(onCancel: { [weak self] in
-                       self?.cancelPayment {
-                           onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
-                       }
-                   })
+            onWaitingForInput: { [weak self] inputMethods in
+                guard let self = self else { return }
+                self.alerts.tapOrInsertCard(title: Localization.collectPaymentTitle(username: self.order.billingAddress?.firstName),
+                                            amount: self.formattedAmount,
+                                            inputMethods: inputMethods,
+                                            onCancel: { [weak self] in
+                    self?.cancelPayment {
+                        onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
+                    }
+                })
 
             }, onProcessingMessage: { [weak self] in
                 // Waiting message

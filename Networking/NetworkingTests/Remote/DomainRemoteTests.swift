@@ -21,11 +21,9 @@ final class DomainRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "domains/suggestions", filename: "domain-suggestions")
 
         // When
-        let result = await remote.loadFreeDomainSuggestions(query: "domain")
+        let suggestions = try await remote.loadFreeDomainSuggestions(query: "domain")
 
         // Then
-        XCTAssertTrue(result.isSuccess)
-        let suggestions = try XCTUnwrap(result.get())
         XCTAssertEqual(suggestions, [
             .init(name: "domaintestingtips.wordpress.com", isFree: true),
             .init(name: "domaintestingtoday.wordpress.com", isFree: true),
@@ -37,11 +35,12 @@ final class DomainRemoteTests: XCTestCase {
         let remote = DomainRemote(network: network)
 
         // When
-        let result = await remote.loadFreeDomainSuggestions(query: "domain")
-
-        // Then
-        XCTAssertTrue(result.isFailure)
-        let error = try XCTUnwrap(result.failure as? NetworkError)
-        XCTAssertEqual(error, .notFound)
+        do {
+            _ = try await remote.loadFreeDomainSuggestions(query: "domain")
+            XCTFail("it should throw an error")
+        } catch {
+            let error = try XCTUnwrap(error as? NetworkError)
+            XCTAssertEqual(error, .notFound)
+        }
     }
 }

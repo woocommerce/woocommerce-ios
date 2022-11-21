@@ -5,13 +5,13 @@ public protocol DomainRemoteProtocol {
     /// Loads domain suggestions that are free (`*.wordpress.com` only) based on the query.
     /// - Parameter query: What the domain suggestions are based on.
     /// - Returns: The result of free domain suggestions.
-    func loadFreeDomainSuggestions(query: String) async -> Result<[FreeDomainSuggestion], Error>
+    func loadFreeDomainSuggestions(query: String) async throws -> [FreeDomainSuggestion]
 }
 
 /// Domain: Remote Endpoints
 ///
 public class DomainRemote: Remote, DomainRemoteProtocol {
-    public func loadFreeDomainSuggestions(query: String) async -> Result<[FreeDomainSuggestion], Error> {
+    public func loadFreeDomainSuggestions(query: String) async throws -> [FreeDomainSuggestion] {
         let path = Path.domainSuggestions
         let parameters: [String: Any] = [
             ParameterKey.query: query,
@@ -19,12 +19,7 @@ public class DomainRemote: Remote, DomainRemoteProtocol {
             ParameterKey.wordPressDotComSubdomainsOnly: true
         ]
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
-        do {
-            let suggestions: [FreeDomainSuggestion] = try await enqueue(request)
-            return .success(suggestions)
-        } catch {
-            return .failure(error)
-        }
+            return try await enqueue(request)
     }
 }
 

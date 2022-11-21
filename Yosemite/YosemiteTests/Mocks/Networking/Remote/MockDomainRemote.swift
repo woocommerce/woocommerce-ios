@@ -14,11 +14,16 @@ final class MockDomainRemote {
 }
 
 extension MockDomainRemote: DomainRemoteProtocol {
-    func loadFreeDomainSuggestions(query: String) async -> Result<[FreeDomainSuggestion], Error> {
+    func loadFreeDomainSuggestions(query: String) async throws -> [FreeDomainSuggestion] {
         guard let result = loadDomainSuggestionsResult else {
             XCTFail("Could not find result for loading domain suggestions.")
-            return .failure(NetworkError.notFound)
+            throw NetworkError.notFound
         }
-        return result
+        switch result {
+        case let .success(suggestions):
+            return suggestions
+        case let .failure(error):
+            throw error
+        }
     }
 }

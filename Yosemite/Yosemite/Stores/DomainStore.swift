@@ -39,8 +39,12 @@ public final class DomainStore: Store {
 private extension DomainStore {
     func loadFreeDomainSuggestions(query: String, completion: @escaping (Result<[FreeDomainSuggestion], Error>) -> Void) {
         Task { @MainActor in
-            let result = await remote.loadFreeDomainSuggestions(query: query)
-            completion(result)
+            do {
+                let suggestions = try await remote.loadFreeDomainSuggestions(query: query)
+                completion(.success(suggestions))
+            } catch {
+                completion(.failure(error))
+            }
         }
     }
 }

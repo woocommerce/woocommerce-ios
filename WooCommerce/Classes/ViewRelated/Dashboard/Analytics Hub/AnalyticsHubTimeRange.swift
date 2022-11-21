@@ -78,6 +78,11 @@ public class AnalyticsHubTimeRange {
     private func generateTimeRangeDescription(timeRange: TimeRange) -> String {
         let dateFormatter = DateFormatter()
 
+        if selectionType == .today {
+            dateFormatter.dateFormat = "MMM d, yyyy"
+            return dateFormatter.string(from: timeRange.start)
+        }
+
         dateFormatter.dateFormat = "MMM d"
         let startDateDescription = dateFormatter.string(from: timeRange.start)
 

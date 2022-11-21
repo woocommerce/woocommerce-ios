@@ -1,4 +1,5 @@
 import Foundation
+import Yosemite
 
 struct TimeRange {
     let start: Date
@@ -32,8 +33,8 @@ public class AnalyticsHubTimeRange {
     }()
 
 
-    init(selectionType: SelectionType, siteTimezone: TimeZone = TimeZone.current) {
-        self.selectionType = selectionType
+    init(selectedTimeRange: StatsTimeRangeV4, siteTimezone: TimeZone = TimeZone.current) {
+        self.selectionType = selectedTimeRange.toAnalyticsHubSelectionType()
         self.currentTimezone = siteTimezone
     }
 
@@ -66,6 +67,21 @@ public class AnalyticsHubTimeRange {
         case .yearToDate:
             let oneYearAgo = Calendar.current.date(byAdding: .year, value: -1, to: now)!
             return TimeRange(start: oneYearAgo.startOfYear(timezone: currentTimezone), end: oneYearAgo)
+        }
+    }
+}
+
+private extension StatsTimeRangeV4 {
+    func toAnalyticsHubSelectionType() -> SelectionType {
+        switch self {
+        case .today:
+            return .today
+        case .thisWeek:
+            return .weekToDate
+        case .thisMonth:
+            return .monthToDate
+        case .thisYear:
+            return .yearToDate
         }
     }
 }

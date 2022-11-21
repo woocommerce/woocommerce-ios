@@ -5,8 +5,8 @@ import SwiftUI
 /// Hosting Controller for the `AnalyticsHubView` view.
 ///
 final class AnalyticsHubHostingViewController: UIHostingController<AnalyticsHubView> {
-    init(viewModel: AnalyticsHubViewModel) {
-        super.init(rootView: AnalyticsHubView(viewModel))
+    init(timeRange: AnalyticsHubTimeRange) {
+        super.init(rootView: AnalyticsHubView(timeRange))
     }
 
     @available(*, unavailable)
@@ -18,10 +18,10 @@ final class AnalyticsHubHostingViewController: UIHostingController<AnalyticsHubV
 /// Main Analytics Hub View
 ///
 struct AnalyticsHubView: View {
-    @ObservedObject private var viewModel: AnalyticsHubViewModel
+    private var timeRange: AnalyticsHubTimeRange
 
-    init(_ viewModel: AnalyticsHubViewModel) {
-        self.viewModel = viewModel
+    init(_ timeRange: AnalyticsHubTimeRange) {
+        self.timeRange = timeRange
     }
 
     var body: some View {
@@ -29,10 +29,16 @@ struct AnalyticsHubView: View {
             VStack(alignment: .leading, spacing: Layout.vertialSpacing) {
                 VStack(spacing: 0) {
                     Divider()
-                    Text("Placeholder for Time Range Selection")
-                        .padding(.leading)
-                        .frame(maxWidth: .infinity, minHeight: 84, alignment: .leading)
-                        .background(Color(uiColor: .listForeground))
+                    VStack {
+                        Text(timeRange.selectionType.rawValue)
+                        Text(timeRange.selectedTimeRange.description)
+                        Divider()
+                        Text(timeRange.previousTimeRange.description)
+
+                    }
+                    .padding(.leading)
+                    .frame(maxWidth: .infinity, minHeight: 84, alignment: .leading)
+                    .background(Color(uiColor: .listForeground))
 
                     Divider()
                 }
@@ -86,8 +92,8 @@ private extension AnalyticsHubView {
 struct AnalyticsHubPreview: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            let viewModel = AnalyticsHubViewModel(selectedTimeRange: .thisMonth)
-            AnalyticsHubView(viewModel)
+            let timeRange = AnalyticsHubTimeRange(selectedTimeRange: .thisMonth)
+            AnalyticsHubView(timeRange)
         }
     }
 }

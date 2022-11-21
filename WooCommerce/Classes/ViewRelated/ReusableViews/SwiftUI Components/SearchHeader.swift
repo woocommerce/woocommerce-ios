@@ -9,6 +9,7 @@ struct SearchHeader: View {
         let borderColor: UIColor
         let internalHorizontalPadding: CGFloat
         let internalVerticalPadding: CGFloat
+        let iconSize: CGSize
     }
 
     // Tracks the scale of the view due to accessibility changes
@@ -34,7 +35,8 @@ struct SearchHeader: View {
             backgroundColor: .searchBarBackground,
             borderColor: .clear,
             internalHorizontalPadding: Layout.internalPadding,
-            internalVerticalPadding: Layout.internalPadding
+            internalVerticalPadding: Layout.internalPadding,
+            iconSize: Layout.iconSize
          )) {
              self._text = text
              self.placeholder = placeholder
@@ -47,7 +49,8 @@ struct SearchHeader: View {
             Image(uiImage: .searchBarButtonItemImage)
                 .renderingMode(.template)
                 .resizable()
-                .frame(width: Layout.iconSize.width * scale, height: Layout.iconSize.height * scale)
+                .frame(width: customizations.iconSize.width * scale,
+                       height: customizations.iconSize.height * scale)
                 .foregroundColor(Color(.listSmallIcon))
                 .padding([.leading, .trailing], customizations.internalHorizontalPadding)
                 .accessibilityHidden(true)
@@ -55,6 +58,7 @@ struct SearchHeader: View {
             // TextField
             TextField(placeholder, text: $text)
                 .padding([.bottom, .top], customizations.internalVerticalPadding)
+                .padding(.trailing, customizations.internalHorizontalPadding)
                 .accessibility(addTraits: .isSearchField)
         }
         .background(Color(customizations.backgroundColor))

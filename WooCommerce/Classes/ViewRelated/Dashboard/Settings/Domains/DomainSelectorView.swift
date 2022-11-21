@@ -74,12 +74,16 @@ struct DomainSelectorView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 0) {
                 // Header label.
                 Text(Localization.subtitle)
                     .foregroundColor(Color(.secondaryLabel))
                     .bodyStyle()
                     .padding(.horizontal, Layout.defaultHorizontalPadding)
+                    .padding(.top, 16)
+
+                Spacer()
+                    .frame(height: 30)
 
                 // Search text field.
                 SearchHeader(text: $viewModel.searchTerm,
@@ -87,17 +91,15 @@ struct DomainSelectorView: View {
                              customizations: .init(backgroundColor: .clear,
                                                    borderColor: .separator,
                                                    internalHorizontalPadding: 21,
-                                                   internalVerticalPadding: 12))
+                                                   internalVerticalPadding: 12,
+                                                   iconSize: .init(width: 14, height: 14)))
                 .focused($textFieldIsFocused)
-
-                // Results header.
-                Text(Localization.suggestionsHeader)
-                    .foregroundColor(Color(.secondaryLabel))
-                    .footnoteStyle()
-                    .padding(.horizontal, Layout.defaultHorizontalPadding)
 
                 if viewModel.searchTerm.isEmpty {
                     // Placeholder image when search query is empty.
+                    Spacer()
+                        .frame(height: 30)
+
                     HStack {
                         Spacer()
                         Image(uiImage: .domainSearchPlaceholderImage)
@@ -112,10 +114,22 @@ struct DomainSelectorView: View {
                     }
                 } else if let errorMessage = viewModel.errorMessage {
                     // Error message when there is an error loading domain suggestions.
+                    Spacer()
+                        .frame(height: 23)
+
                     Text(errorMessage)
+                        .foregroundColor(Color(.secondaryLabel))
+                        .bodyStyle()
+                        .multilineTextAlignment(.center)
                         .padding(Layout.defaultPadding)
                 } else {
                     // Domain suggestions.
+                    Text(Localization.suggestionsHeader)
+                        .foregroundColor(Color(.secondaryLabel))
+                        .footnoteStyle()
+                        .padding(.horizontal, Layout.defaultHorizontalPadding)
+                        .padding(.vertical, insets: .init(top: 14, leading: 0, bottom: 8, trailing: 0))
+
                     LazyVStack {
                         ForEach(viewModel.domains, id: \.self) { domain in
                             Button {
@@ -167,7 +181,6 @@ struct DomainSelectorView: View {
 
 private extension DomainSelectorView {
     enum Layout {
-        static let spacingBetweenTitleAndSubtitle: CGFloat = 16
         static let defaultHorizontalPadding: CGFloat = 16
         static let dividerHeight: CGFloat = 1
         static let defaultPadding: EdgeInsets = .init(top: 10, leading: 16, bottom: 10, trailing: 16)

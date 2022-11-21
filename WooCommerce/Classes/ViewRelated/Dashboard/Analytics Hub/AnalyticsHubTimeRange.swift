@@ -31,13 +31,13 @@ public class AnalyticsHubTimeRange {
         let now = Date()
         switch selectionType {
         case .today:
-            return TimeRange(start: Date(), end: now)
+            return TimeRange(start: now.startOfDay(timezone: siteTimezone), end: now)
         case .weekToDate:
-            return TimeRange(start: Date(), end: now)
+            return TimeRange(start: now.startOfWeek(timezone: siteTimezone), end: now)
         case .monthToDate:
-            return TimeRange(start: now.asFirstDayOfMonth(), end: now)
+            return TimeRange(start: now.startOfMonth(timezone: siteTimezone), end: now)
         case .yearToDate:
-            return TimeRange(start: now.asFirstDayOfYear(), end: now)
+            return TimeRange(start: now.startOfYear(timezone: siteTimezone), end: now)
         }
     }
 
@@ -45,33 +45,27 @@ public class AnalyticsHubTimeRange {
         let now = Date()
         switch selectionType {
         case .today:
-            return TimeRange(start: Date(), end: Date())
+            let oneDayAgo = now.oneDayAgo()
+            return TimeRange(start: oneDayAgo.startOfDay(timezone: siteTimezone), end: oneDayAgo)
         case .weekToDate:
             return TimeRange(start: Date(), end: Date())
         case .monthToDate:
             let oneMonthAgo = now.oneMonthAgo()
-            return TimeRange(start: oneMonthAgo.asFirstDayOfMonth(), end: oneMonthAgo)
+            return TimeRange(start: oneMonthAgo.startOfMonth(timezone: siteTimezone), end: oneMonthAgo)
         case .yearToDate:
             let oneYearAgo = now.oneYearAgo()
-            return TimeRange(start: oneYearAgo.asFirstDayOfYear(), end: oneYearAgo)
+            return TimeRange(start: oneYearAgo.startOfYear(timezone: siteTimezone), end: oneYearAgo)
         }
     }
 }
 
 private extension Date {
-    func asFirstDayOfMonth() -> Date {
-        let year = Calendar.current.component(.year, from: self)
-        let month = Calendar.current.component(.month, from: self)
-        return Calendar.current.date(from: DateComponents(year: year, month: month, day: 1))!
+    func oneDayAgo() -> Date {
+        return Calendar.current.date(byAdding: .day, value: -1, to: self)!
     }
 
     func oneMonthAgo() -> Date {
         return Calendar.current.date(byAdding: .month, value: -1, to: self)!
-    }
-
-    func asFirstDayOfYear() -> Date {
-        let year = Calendar.current.component(.year, from: self)
-        return Calendar.current.date(from: DateComponents(year: year, month: 1, day: 1))!
     }
 
     func oneYearAgo() -> Date {

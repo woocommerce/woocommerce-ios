@@ -19,24 +19,20 @@ public class AnalyticsHubTimeRange {
     let selectionType: SelectionType
 
     lazy private(set) var selectedTimeRange: TimeRange = {
-        return generateSelectedTimeRangeFrom(selectionType: selectionType)
+        generateSelectedTimeRangeFrom(selectionType: selectionType)
     }()
 
     lazy private(set) var previousTimeRange: TimeRange = {
-        return generatePreviousTimeRangeFrom(selectionType: selectionType)
+        generatePreviousTimeRangeFrom(selectionType: selectionType)
     }()
-
-    var currentRangeDescription: String {
-        get {
-            return generateTimeRangeDescription(timeRange: selectedTimeRange)
-        }
-    }
-
-    var previousRangeDescription: String {
-        get {
-            return generateTimeRangeDescription(timeRange: previousTimeRange)
-        }
-    }
+    
+    lazy private(set) var currentRangeDescription: String = {
+        generateTimeRangeDescription(timeRange: selectedTimeRange)
+    }()
+    
+    lazy private(set) var previousRangeDescription: String = {
+        generateTimeRangeDescription(timeRange: previousTimeRange)
+    }()
 
     init(selectedTimeRange: StatsTimeRangeV4, siteTimezone: TimeZone = TimeZone.current) {
         self.selectionType = selectedTimeRange.toAnalyticsHubSelectionType()
@@ -85,7 +81,6 @@ public class AnalyticsHubTimeRange {
 
         dateFormatter.dateFormat = "MMM d"
         let startDateDescription = dateFormatter.string(from: timeRange.start)
-
         let endDateDescription = generateEndDateDescription(endDate: timeRange.end, dateFormatter: dateFormatter)
 
         return "\(startDateDescription) - \(endDateDescription)"

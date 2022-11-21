@@ -94,7 +94,7 @@ struct DomainSelectorView: View {
                     // Results header.
                     Text(Localization.suggestionsHeader)
                         .foregroundColor(Color(.secondaryLabel))
-                        .bodyStyle()
+                        .footnoteStyle()
                         .padding(.horizontal, Layout.defaultHorizontalPadding)
 
                     if viewModel.searchTerm.isEmpty {

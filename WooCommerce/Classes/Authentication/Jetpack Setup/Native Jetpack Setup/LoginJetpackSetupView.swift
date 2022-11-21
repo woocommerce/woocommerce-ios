@@ -146,14 +146,14 @@ private extension LoginJetpackSetupView {
             comment: "Title for the Jetpack setup screen when installation is required"
         )
         static let connectingJetpack = NSLocalizedString(
-            "Installing Jetpack",
+            "Connecting Jetpack",
             comment: "Title for the Jetpack setup screen when connection is required"
         )
         static let description = NSLocalizedString(
             "Please wait while we connect your store %1$@ with Jetpack.",
             comment: "Message on the Jetpack setup screen. The %1$@ is the site address."
         )
-        static let goToStore = NSLocalizedString("Got to Store", comment: "Title for the button to navigate to the home screen after Jetpack setup completes")
+        static let goToStore = NSLocalizedString("Go to Store", comment: "Title for the button to navigate to the home screen after Jetpack setup completes")
         static let authorizing = NSLocalizedString("Authorizing connection", comment: "Name of the connection step on the Jetpack setup screen")
     }
 

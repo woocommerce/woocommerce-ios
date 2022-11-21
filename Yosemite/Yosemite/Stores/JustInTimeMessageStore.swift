@@ -46,16 +46,22 @@ private extension JustInTimeMessageStore {
                      hook: JustInTimeMessageHook,
                      completion: @escaping (Result<[JustInTimeMessage], Error>) -> ()) {
         Task {
-            let result = await remote.loadAllJustInTimeMessages(
-                    for: siteID,
-                    messagePath: .init(app: .wooMobile,
-                                       screen: screen,
-                                       hook: hook),
-                    query: justInTimeMessageQuery(),
-                    locale: localeLanguageRegionIdentifier())
-            let displayResult = result.map(displayMessages(_:))
-            await MainActor.run {
-                completion(displayResult)
+            do {
+                let result = try await remote.loadAllJustInTimeMessages(
+                        for: siteID,
+                        messagePath: .init(app: .wooMobile,
+                                           screen: screen,
+                                           hook: hook),
+                        query: justInTimeMessageQuery(),
+                        locale: localeLanguageRegionIdentifier())
+
+                await MainActor.run {
+                    completion(.success(displayMessages(result)))
+                }
+            } catch {
+                await MainActor.run {
+                    completion(.failure(error))
+                }
             }
         }
     }
@@ -114,11 +120,17 @@ private extension JustInTimeMessageStore {
                         for siteID: Int64,
                         completion: @escaping (Result<Bool, Error>) -> ()) {
         Task {
-            let result = await remote.dismissJustInTimeMessage(for: siteID,
-                                                               messageID: message.messageID,
-                                                               featureClass: message.featureClass)
-            await MainActor.run {
-                completion(result)
+            do {
+                let result = try await remote.dismissJustInTimeMessage(for: siteID,
+                                                                   messageID: message.messageID,
+                                                                   featureClass: message.featureClass)
+                await MainActor.run {
+                    completion(.success(result))
+                }
+            } catch {
+                await MainActor.run {
+                    completion(.failure(error))
+                }
             }
         }
     }

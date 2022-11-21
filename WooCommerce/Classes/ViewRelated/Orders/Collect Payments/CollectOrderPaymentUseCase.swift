@@ -286,11 +286,12 @@ private extension CollectOrderPaymentUseCase {
             paymentGatewayAccount: paymentGatewayAccount,
             paymentMethodTypes: configuration.paymentMethods.map(\.rawValue),
             stripeSmallestCurrencyUnitMultiplier: configuration.stripeSmallestCurrencyUnitMultiplier,
-            onWaitingForInput: { [weak self] in
+            onWaitingForInput: { [weak self] inputMethods in
                 guard let self = self else { return }
-                self.alerts.readerIsReady(title: Localization.collectPaymentTitle(username: self.order.billingAddress?.firstName),
-                                     amount: self.formattedAmount,
-                                     onCancel: { [weak self] in
+                self.alerts.tapOrInsertCard(title: Localization.collectPaymentTitle(username: self.order.billingAddress?.firstName),
+                                            amount: self.formattedAmount,
+                                            inputMethods: inputMethods,
+                                            onCancel: { [weak self] in
                     self?.cancelPayment {
                         onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
                     }

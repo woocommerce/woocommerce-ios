@@ -646,7 +646,7 @@ extension StripeCardReaderService: BluetoothReaderDelegate {
     /// This method is called by the Stripe Terminal SDK when it wants client apps
     /// to request users to tap / insert / swipe a card.
     public func reader(_ reader: Reader, didRequestReaderInput inputOptions: ReaderInputOptions = []) {
-        sendReaderEvent(CardReaderEvent.make(readerInputOptions: inputOptions))
+        sendReaderEvent(CardReaderEvent.make(stripeReaderInputOptions: inputOptions))
     }
 
     /// In this case the Stripe Terminal SDK wants us to present a string on screen

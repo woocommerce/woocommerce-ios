@@ -87,6 +87,10 @@ public enum FeatureFlag: Int {
     ///
     case justInTimeMessagesOnDashboard
 
+    /// Adds the System Status Report to support requests
+    ///
+    case systemStatusReportInSupportRequest
+
     // MARK: - Performance Monitoring
     //
     // These flags are not transient. That is, they are not here to help us rollout a feature,
@@ -126,4 +130,8 @@ public enum FeatureFlag: Int {
     /// TODO-8075: replace this with A/B test.
     ///
     case nativeJetpackSetupFlow
+
+    /// Temporary feature flag for the native Jetpack setup flow.
+    ///
+    case analyticsHub
 }

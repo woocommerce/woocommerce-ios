@@ -27,7 +27,7 @@ final class CardPresentRefundOrchestrator {
     func refund(amount: Decimal,
                 charge: WCPayCharge,
                 paymentGatewayAccount: PaymentGatewayAccount,
-                onWaitingForInput: @escaping () -> Void,
+                onWaitingForInput: @escaping (CardReaderInput) -> Void,
                 onProcessingMessage: @escaping () -> Void,
                 onDisplayMessage: @escaping (String) -> Void,
                 onCompletion: @escaping (Result<Void, Error>) -> Void) {
@@ -40,8 +40,8 @@ final class CardPresentRefundOrchestrator {
         let refundAction = CardPresentPaymentAction.refundPayment(parameters: refundParameters,
                                                                   onCardReaderMessage: { event in
             switch event {
-            case .waitingForInput:
-                onWaitingForInput()
+            case .waitingForInput(let inputMethods):
+                onWaitingForInput(inputMethods)
             case .displayMessage(let message):
                 onDisplayMessage(message)
             default:

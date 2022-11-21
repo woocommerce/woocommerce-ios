@@ -1,1 +1,1 @@
-Uygulamadan bir sipariş oluşturmayı veya güncellemeyi denediniz mi? Artık bun uyaparken müşterileri aramak mümkün! Kontrol edin ve lütfen geri bildiriminizi paylaşın!
+Bu sürümde birkaç şeyi düzeltmeye ve ürünlerinizi yayınlamadan önce önizleme seçeneği dahil olmak üzere ekibimizin bulduğu küçük hataları gidermeye odaklandık. Merak etmeyin, hepiniz için çok güzel şeyler üzerinde çalışıyoruz! Geri bildirim paylaşmaya devam edin!

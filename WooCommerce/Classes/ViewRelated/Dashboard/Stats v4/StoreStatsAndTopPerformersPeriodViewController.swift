@@ -83,6 +83,8 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
 
     private lazy var inAppFeedbackCardViewController = InAppFeedbackCardViewController()
 
+    private lazy var analyticsHubButtonView = createAnalyticsHubButtonView()
+
     /// An array of UIViews for the In-app Feedback Card. This will be dynamically shown
     /// or hidden depending on the configuration.
     private lazy var inAppFeedbackCardViewsForStackView: [UIView] = createInAppFeedbackCardViewsForStackView()
@@ -182,6 +184,7 @@ extension StoreStatsAndTopPerformersPeriodViewController {
 
     func displayGhostContent() {
         storeStatsPeriodViewController.displayGhostContent()
+        analyticsHubButtonView.startGhostAnimation(style: Constants.ghostStyle)
         topPerformersHeaderView.startGhostAnimation(style: Constants.ghostStyle)
         topPerformersPeriodViewController.displayGhostContent()
     }
@@ -190,6 +193,7 @@ extension StoreStatsAndTopPerformersPeriodViewController {
     ///
     func removeStoreStatsGhostContent() {
         storeStatsPeriodViewController.removeGhostContent()
+        analyticsHubButtonView.stopGhostAnimation()
         topPerformersHeaderView.stopGhostAnimation()
     }
 
@@ -287,6 +291,11 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
             storeStatsPeriodView.heightAnchor.constraint(equalToConstant: Constants.storeStatsPeriodViewHeight),
             ])
 
+        // Analytics Hub ("See more") button
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.analyticsHub) {
+            stackView.addArrangedSubview(analyticsHubButtonView)
+        }
+
         // In-app Feedback Card
         stackView.addArrangedSubviews(inAppFeedbackCardViewsForStackView)
 
@@ -327,10 +336,29 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
         return [emptySpaceView, cardView]
     }
 
+    func createAnalyticsHubButtonView() -> UIView {
+        let button = UIButton(frame: .zero)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.applySecondaryButtonStyle()
+        button.setTitle(Localization.seeMoreButton, for: .normal)
+        button.addTarget(self, action: #selector(seeMoreButtonTapped), for: .touchUpInside)
+
+        let view = UIView(frame: .zero)
+        view.addSubview(button)
+        view.pinSubviewToSafeArea(button, insets: Constants.buttonInsets)
+
+        return view
+    }
+
     func configureInAppFeedbackViewControllerAction() {
         inAppFeedbackCardViewController.onFeedbackGiven = { [weak self] in
             self?.viewModel.onInAppFeedbackCardAction()
         }
+    }
+
+    @objc func seeMoreButtonTapped() {
+        let analyticsHubVC = AnalyticsHubHostingViewController(timeRange: timeRange)
+        show(analyticsHubVC, sender: self)
     }
 }
 
@@ -349,5 +377,10 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
         static let storeStatsPeriodViewHeight: CGFloat = 444
         static let ghostStyle: GhostStyle = .wooDefaultGhostStyle
         static let backgroundColor: UIColor = .systemBackground
+        static let buttonInsets: UIEdgeInsets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
+    }
+
+    enum Localization {
+        static let seeMoreButton = NSLocalizedString("See more", comment: "Button on the stats dashboard that navigates user to the analytics hub")
     }
 }

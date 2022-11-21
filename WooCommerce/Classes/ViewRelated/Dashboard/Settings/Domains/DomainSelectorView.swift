@@ -66,6 +66,8 @@ struct DomainSelectorView: View {
 
     @State private var isWaitingForDomainSelectionCompletion: Bool = false
 
+    @FocusState private var textFieldIsFocused: Bool
+
     init(viewModel: DomainSelectorViewModel) {
         self.viewModel = viewModel
     }
@@ -87,6 +89,7 @@ struct DomainSelectorView: View {
                                                        borderColor: .separator,
                                                        internalHorizontalPadding: 21,
                                                        internalVerticalPadding: 12))
+                    .focused($textFieldIsFocused)
 
                     // Results header.
                     Text(Localization.suggestionsHeader)
@@ -117,6 +120,7 @@ struct DomainSelectorView: View {
                         LazyVStack {
                             ForEach(viewModel.domains, id: \.self) { domain in
                                 Button {
+                                    textFieldIsFocused = false
                                     selectedDomainName = domain
                                 } label: {
                                     VStack(alignment: .leading) {

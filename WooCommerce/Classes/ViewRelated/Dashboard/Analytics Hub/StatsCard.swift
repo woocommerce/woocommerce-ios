@@ -4,10 +4,18 @@ import SwiftUI
 ///
 struct AnalyticsReportCard: View {
 
+    let title: String
+    let totalSales: String
+    let totalGrowth: String
+    let totalGrowthColor: UIColor
+    let netSales: String
+    let netGrowth: String
+    let netGrowthColor: UIColor
+
     var body: some View {
         VStack(alignment: .leading) {
 
-            Text("Title")
+            Text(title)
                 .foregroundColor(Color(.text))
                 .footnoteStyle()
 
@@ -17,14 +25,14 @@ struct AnalyticsReportCard: View {
                     Text("Left Subtitle")
                         .calloutStyle()
 
-                    Text("Left Value")
+                    Text(totalSales)
                         .titleStyle()
 
-                    Text("Left Percentage")
+                    Text(totalGrowth)
                         .foregroundColor(Color(.textInverted))
                         .captionStyle()
                         .padding(8)
-                        .background(Color(.systemGreen))
+                        .background(Color(totalGrowthColor))
 
                 }
 
@@ -33,14 +41,14 @@ struct AnalyticsReportCard: View {
                     Text("Right Subtitle")
                         .calloutStyle()
 
-                    Text("Right Value")
+                    Text(netSales)
                         .titleStyle()
 
-                    Text("Right Percentage")
+                    Text(netGrowth)
                         .foregroundColor(Color(.textInverted))
                         .captionStyle()
                         .padding(8)
-                        .background(Color(.systemGreen))
+                        .background(Color(netGrowth))
                 }
             }
         }
@@ -50,7 +58,13 @@ struct AnalyticsReportCard: View {
 // MARK: Previews
 struct Previews: PreviewProvider {
     static var previews: some View {
-        AnalyticsReportCard()
+        AnalyticsReportCard(title: "REVENUE",
+                            totalSales: "$3.678",
+                            totalGrowth: "+23%",
+                            totalGrowthColor: .systemGreen,
+                            netSales: "$3.232",
+                            netGrowth: "-3%",
+                            netGrowthColor: .systemRed)
             .previewLayout(.sizeThatFits)
     }
 }

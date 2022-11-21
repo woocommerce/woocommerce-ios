@@ -4,15 +4,21 @@ class AnalyticsHubViewModel: ObservableObject {
     let analyticsTimeRange: AnalyticsHubTimeRange
 
     init(selectedTimeRange: StatsTimeRangeV4) {
-        switch selectedTimeRange {
+        analyticsTimeRange = selectedTimeRange.toAnalyticsHubTimeRange()
+    }
+}
+
+private extension StatsTimeRangeV4 {
+    func toAnalyticsHubTimeRange() -> AnalyticsHubTimeRange {
+        switch self {
         case .today:
-            analyticsTimeRange = AnalyticsHubTimeRange(selectionType: .today)
+            return AnalyticsHubTimeRange(selectionType: .today)
         case .thisWeek:
-            analyticsTimeRange = AnalyticsHubTimeRange(selectionType: .weekToDate)
+            return AnalyticsHubTimeRange(selectionType: .weekToDate)
         case .thisMonth:
-            analyticsTimeRange = AnalyticsHubTimeRange(selectionType: .monthToDate)
+            return AnalyticsHubTimeRange(selectionType: .monthToDate)
         case .thisYear:
-            analyticsTimeRange = AnalyticsHubTimeRange(selectionType: .yearToDate)
+            return AnalyticsHubTimeRange(selectionType: .yearToDate)
         }
     }
 }

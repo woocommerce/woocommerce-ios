@@ -119,7 +119,32 @@ struct LoginJetpackSetupView: View {
             .renderedIf(viewModel.currentSetupStep == .done)
         })
         .padding()
-//        .safariSheet(isPresented: $viewModel.shouldPresentWebView, url: viewModel.jetpackConnectionURL)
+        .sheet(isPresented: $viewModel.shouldPresentWebView) {
+            webView(url: viewModel.jetpackConnectionURL)
+        }
+    }
+
+    @ViewBuilder
+    private func webView(url: URL?) -> some View {
+        if let url = url {
+            NavigationView {
+                AuthenticatedWebView(isPresented: .constant(true),
+                                     url: url)
+                .navigationTitle(Localization.approveConnection)
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button(action: {
+                            // TODO: add tracks
+                            viewModel.shouldPresentWebView = false
+                        }, label: {
+                            Text(Localization.cancel)
+                        })
+                    }
+                }
+            }
+            .wooNavigationBarStyle()
+        }
     }
 }
 
@@ -127,6 +152,8 @@ private extension LoginJetpackSetupView {
     enum Localization {
         static let goToStore = NSLocalizedString("Go to Store", comment: "Title for the button to navigate to the home screen after Jetpack setup completes")
         static let authorizing = NSLocalizedString("Authorizing connection", comment: "Name of the connection step on the Jetpack setup screen")
+        static let approveConnection = NSLocalizedString("Approve connection", comment: "Title of the web view to approve Jetpack connection")
+        static let cancel = NSLocalizedString("Cancel", comment: "Title for the button to dismiss Jetpack connection web view")
     }
 
     enum Constants {

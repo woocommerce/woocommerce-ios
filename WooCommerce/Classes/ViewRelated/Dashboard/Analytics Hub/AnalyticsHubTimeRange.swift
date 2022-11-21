@@ -10,21 +10,25 @@ enum SelectionType {
 struct TimeRange {
     let start: Date
     let end: Date
-
-    internal static let empty = TimeRange(start: Date(), end: Date())
 }
 
 public class AnalyticsHubTimeRange {
 
-    private(set) var selectedTimeRange: TimeRange = TimeRange.empty
-    private(set) var previousTimeRange: TimeRange = TimeRange.empty
-
     private let siteTimezone: TimeZone
+    private let selectionType: SelectionType
+
+    lazy private(set) var selectedTimeRange: TimeRange = {
+        return generateSelectedTimeRangeFrom(selectionType: selectionType)
+    }()
+
+    lazy private(set) var previousTimeRange: TimeRange = {
+        return generatePreviousTimeRangeFrom(selectionType: selectionType)
+    }()
+
 
     init(selectionType: SelectionType, siteTimezone: TimeZone = TimeZone.siteTimezone) {
+        self.selectionType = selectionType
         self.siteTimezone = siteTimezone
-        selectedTimeRange = generateSelectedTimeRangeFrom(selectionType: selectionType)
-        previousTimeRange = generatePreviousTimeRangeFrom(selectionType: selectionType)
     }
 
     private func generateSelectedTimeRangeFrom(selectionType: SelectionType) -> TimeRange {

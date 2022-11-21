@@ -84,8 +84,11 @@ public final class CardPresentPaymentStore: Store {
         case .loadAccounts(let siteID, let onCompletion):
             loadAccounts(siteID: siteID,
                          onCompletion: onCompletion)
-        case .startCardReaderDiscovery(let siteID, let onReaderDiscovered, let onError):
-            startCardReaderDiscovery(siteID: siteID, onReaderDiscovered: onReaderDiscovered, onError: onError)
+        case .startCardReaderDiscovery(let siteID, let discoveryMethod, let onReaderDiscovered, let onError):
+            startCardReaderDiscovery(siteID: siteID,
+                                     discoveryMethod: discoveryMethod,
+                                     onReaderDiscovered: onReaderDiscovered,
+                                     onError: onError)
         case .cancelCardReaderDiscovery(let completion):
             cancelCardReaderDiscovery(completion: completion)
         case .connect(let reader, let completion):
@@ -125,15 +128,18 @@ public final class CardPresentPaymentStore: Store {
 // MARK: - Services
 //
 private extension CardPresentPaymentStore {
-   func startCardReaderDiscovery(siteID: Int64, onReaderDiscovered: @escaping (_ readers: [CardReader]) -> Void, onError: @escaping (Error) -> Void) {
+   func startCardReaderDiscovery(siteID: Int64,
+                                 discoveryMethod: CardReaderDiscoveryMethod,
+                                 onReaderDiscovered: @escaping (_ readers: [CardReader]) -> Void,
+                                 onError: @escaping (Error) -> Void) {
         do {
             switch usingBackend {
             case .wcpay:
                 commonReaderConfigProvider.setContext(siteID: siteID, remote: self.remote)
-                try cardReaderService.start(commonReaderConfigProvider)
+                try cardReaderService.start(commonReaderConfigProvider, discoveryMethod: discoveryMethod)
             case .stripe:
                 commonReaderConfigProvider.setContext(siteID: siteID, remote: self.stripeRemote)
-                try cardReaderService.start(commonReaderConfigProvider)
+                try cardReaderService.start(commonReaderConfigProvider, discoveryMethod: discoveryMethod)
             }
         } catch {
             return onError(error)

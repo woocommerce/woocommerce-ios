@@ -22,7 +22,7 @@ class FeatureAnnouncementCardCell: UITableViewCell {
     @IBOutlet private weak var messageLabel: UILabel!
     @IBOutlet private weak var ctaButton: UIButton! {
         didSet {
-            ctaButton.setTitleColor(UIColor.withColorStudio(.pink), for: .normal)
+            ctaButton.setTitleColor(UIColor.accent, for: .normal)
         }
     }
     @IBOutlet private weak var closeButton: UIButton! {

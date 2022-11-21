@@ -45,35 +45,17 @@ public class AnalyticsHubTimeRange {
         let now = Date()
         switch selectionType {
         case .today:
-            let oneDayAgo = now.oneDayAgo()
+            let oneDayAgo = Calendar.current.date(byAdding: .day, value: -1, to: now)!
             return TimeRange(start: oneDayAgo.startOfDay(timezone: siteTimezone), end: oneDayAgo)
         case .weekToDate:
-            let oneWeekAgo = now.oneWeekAgo()
+            let oneWeekAgo = Calendar.current.date(byAdding: .day, value: -7, to: now)!
             return TimeRange(start: oneWeekAgo.startOfWeek(timezone: siteTimezone), end: oneWeekAgo)
         case .monthToDate:
-            let oneMonthAgo = now.oneMonthAgo()
+            let oneMonthAgo = Calendar.current.date(byAdding: .month, value: -1, to: now)!
             return TimeRange(start: oneMonthAgo.startOfMonth(timezone: siteTimezone), end: oneMonthAgo)
         case .yearToDate:
-            let oneYearAgo = now.oneYearAgo()
+            let oneYearAgo = Calendar.current.date(byAdding: .year, value: -1, to: now)!
             return TimeRange(start: oneYearAgo.startOfYear(timezone: siteTimezone), end: oneYearAgo)
         }
-    }
-}
-
-private extension Date {
-    func oneDayAgo() -> Date {
-        return Calendar.current.date(byAdding: .day, value: -1, to: self)!
-    }
-    
-    func oneWeekAgo() -> Date {
-        return Calendar.current.date(byAdding: .day, value: -7, to: self)!
-    }
-
-    func oneMonthAgo() -> Date {
-        return Calendar.current.date(byAdding: .month, value: -1, to: self)!
-    }
-
-    func oneYearAgo() -> Date {
-        return Calendar.current.date(byAdding: .year, value: -1, to: self)!
     }
 }

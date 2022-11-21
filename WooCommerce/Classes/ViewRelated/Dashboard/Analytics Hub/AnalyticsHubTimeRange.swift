@@ -7,7 +7,15 @@ struct TimeRange {
 
     var description: String {
         get {
-            return "Range description"
+            let endDateFormatter = DateFormatter()
+            endDateFormatter.dateFormat = "MMM d, yyyy"
+            let endDateDescription = endDateFormatter.string(from: end)
+
+            let startDateFormatter = DateFormatter()
+            startDateFormatter.dateFormat = "MMM d"
+            let startDateDescription = startDateFormatter.string(from: start)
+
+            return "\(startDateDescription) - \(endDateDescription)"
         }
     }
 }

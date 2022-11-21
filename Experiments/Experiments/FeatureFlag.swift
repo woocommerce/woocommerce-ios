@@ -70,6 +70,10 @@ public enum FeatureFlag: Int {
     ///
     case inAppPurchases
 
+    /// Enables Tap to Pay on iPhone flow in In-Person Payments, on eligible devices.
+    ///
+    case tapToPayOnIPhone
+
     /// Store creation MVP.
     ///
     case storeCreationMVP

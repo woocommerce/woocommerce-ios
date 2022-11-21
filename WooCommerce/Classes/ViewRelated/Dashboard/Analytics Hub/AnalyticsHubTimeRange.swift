@@ -48,7 +48,8 @@ public class AnalyticsHubTimeRange {
             let oneDayAgo = now.oneDayAgo()
             return TimeRange(start: oneDayAgo.startOfDay(timezone: siteTimezone), end: oneDayAgo)
         case .weekToDate:
-            return TimeRange(start: Date(), end: Date())
+            let oneWeekAgo = now.oneWeekAgo()
+            return TimeRange(start: oneWeekAgo.startOfWeek(timezone: siteTimezone), end: oneWeekAgo)
         case .monthToDate:
             let oneMonthAgo = now.oneMonthAgo()
             return TimeRange(start: oneMonthAgo.startOfMonth(timezone: siteTimezone), end: oneMonthAgo)
@@ -62,6 +63,10 @@ public class AnalyticsHubTimeRange {
 private extension Date {
     func oneDayAgo() -> Date {
         return Calendar.current.date(byAdding: .day, value: -1, to: self)!
+    }
+    
+    func oneWeekAgo() -> Date {
+        return Calendar.current.date(byAdding: .day, value: -7, to: self)!
     }
 
     func oneMonthAgo() -> Date {

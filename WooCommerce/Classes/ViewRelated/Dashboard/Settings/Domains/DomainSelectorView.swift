@@ -188,7 +188,7 @@ private extension DomainSelectorView {
 
     enum Localization {
         static let subtitle = NSLocalizedString(
-            "This is where people will find you on the Internet. Don't worry, you can change it later.",
+            "This is where people will find you on the Internet. You can add another domain later.",
             comment: "Subtitle of the domain selector.")
         static let searchPlaceholder = NSLocalizedString("Type to get suggestions", comment: "Placeholder of the search text field on the domain selector.")
         static let suggestionsHeader = NSLocalizedString("SUGGESTIONS", comment: "Header label of the domain suggestions on the domain selector.")

@@ -2,18 +2,18 @@ import SwiftUI
 
 /// Hosting controller that wraps the `StoreCreationPlanView`.
 final class StoreCreationPlanHostingController: UIHostingController<StoreCreationPlanView> {
-    private let onPurchase: () -> Void
+    private let onPurchase: () async -> Void
     private let onClose: () -> Void
 
     init(viewModel: StoreCreationPlanViewModel,
-         onPurchase: @escaping () -> Void,
+         onPurchase: @escaping () async -> Void,
          onClose: @escaping () -> Void) {
         self.onPurchase = onPurchase
         self.onClose = onClose
         super.init(rootView: StoreCreationPlanView(viewModel: viewModel))
 
         rootView.onPurchase = { [weak self] in
-            self?.onPurchase()
+            await self?.onPurchase()
         }
     }
 
@@ -32,6 +32,12 @@ final class StoreCreationPlanHostingController: UIHostingController<StoreCreatio
     func configureNavigationBarAppearance() {
         addCloseNavigationBarButton(target: self, action: #selector(closeButtonTapped))
 
+        // If large title is only disabled with `navigationBarTitleDisplayMode(.inline)` in the SwiftUI view,
+        // navigating from a screen with large title results in a gap below the navigation bar briefly.
+        // Also disabling large title in the hosting controller smoothens the transition.
+        navigationItem.largeTitleDisplayMode = .never
+        navigationController?.navigationBar.prefersLargeTitles = false
+
         let appearance = UINavigationBarAppearance()
         appearance.configureWithTransparentBackground()
         appearance.backgroundColor = .withColorStudio(.wooCommercePurple, shade: .shade90)
@@ -49,9 +55,11 @@ final class StoreCreationPlanHostingController: UIHostingController<StoreCreatio
 /// Displays the WPCOM eCommerce plan for purchase during the store creation flow.
 struct StoreCreationPlanView: View {
     /// Set in the hosting controller.
-    var onPurchase: (() -> Void) = {}
+    var onPurchase: (() async -> Void) = {}
 
     let viewModel: StoreCreationPlanViewModel
+
+    @State private var isPurchaseInProgress: Bool = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -126,9 +134,13 @@ struct StoreCreationPlanView: View {
 
                 // Continue button.
                 Button(String(format: Localization.continueButtonTitleFormat, viewModel.plan.displayPrice)) {
-                    onPurchase()
+                    Task { @MainActor in
+                        isPurchaseInProgress = true
+                        await onPurchase()
+                        isPurchaseInProgress = false
+                    }
                 }
-                .buttonStyle(PrimaryButtonStyle())
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isPurchaseInProgress))
                 .padding(Layout.defaultButtonPadding)
 
                 // Refund information.
@@ -144,6 +156,10 @@ struct StoreCreationPlanView: View {
         .background(Color(.withColorStudio(.wooCommercePurple, shade: .shade90)))
         // This screen is using the dark theme for both light and dark modes.
         .environment(\.colorScheme, .dark)
+        // Disables large title to avoid a large gap below the navigation bar.
+        .navigationBarTitleDisplayMode(.inline)
+        // Hides the back button and shows a close button in the hosting controller instead.
+        .navigationBarBackButtonHidden(true)
     }
 }
 

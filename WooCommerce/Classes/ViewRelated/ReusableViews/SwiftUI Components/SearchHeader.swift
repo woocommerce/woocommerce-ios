@@ -93,7 +93,7 @@ struct SearchHeaderView_Previews: PreviewProvider {
                          customizations: .init(backgroundColor: .clear,
                                                borderColor: .separator,
                                                internalHorizontalPadding: 21,
-                                               internalVerticalPadding: 12))
+                                               internalVerticalPadding: 12, iconSize: .init(width: 14, height: 14)))
         }
     }
 }

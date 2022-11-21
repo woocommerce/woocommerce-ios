@@ -761,7 +761,7 @@ private extension AuthenticationManager {
         }
 
         // Shows the native Jetpack flow during the site discovery flow.
-        if ABTest.abTestNativeJetpackSetupFlow.variation == .control {
+        if ABTest.abTestNativeJetpackSetupFlow.variation != .control {
             return jetpackSetupUI(for: site.url,
                                   connectionMissingOnly: site.hasJetpack && site.isJetpackActive,
                                   in: navigationController)

@@ -5,12 +5,14 @@ import SwiftUI
 struct AnalyticsReportCard: View {
 
     let title: String
-    let totalSales: String
-    let totalGrowth: String
-    let totalGrowthColor: UIColor
-    let netSales: String
-    let netGrowth: String
-    let netGrowthColor: UIColor
+    let leadingTitle: String
+    let leadingValue: String
+    let leadingGrowth: String
+    let leadingGrowthColor: UIColor
+    let trailingTitle: String
+    let trailingValue: String
+    let trailingGrowth: String
+    let trailingGrowthColor: UIColor
 
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.titleSpacing) {
@@ -21,17 +23,17 @@ struct AnalyticsReportCard: View {
 
             HStack {
 
-                /// Total Sales
+                /// Leading Column
                 ///
                 VStack(alignment: .leading, spacing: Layout.salesColumnSpacing) {
 
-                    Text(Localization.totalSales)
+                    Text(leadingTitle)
                         .calloutStyle()
 
-                    Text(totalSales)
+                    Text(leadingValue)
                         .titleStyle()
 
-                    GrowthTag(value: totalGrowth, backgroundColor: totalGrowthColor)
+                    GrowthTag(value: leadingGrowth, backgroundColor: leadingGrowthColor)
 
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -39,13 +41,13 @@ struct AnalyticsReportCard: View {
                 /// Net Sales
                 ///
                 VStack(alignment: .leading, spacing: Layout.salesColumnSpacing) {
-                    Text(Localization.netSales)
+                    Text(trailingTitle)
                         .calloutStyle()
 
-                    Text(netSales)
+                    Text(trailingValue)
                         .titleStyle()
 
-                    GrowthTag(value: netGrowth, backgroundColor: netGrowthColor)
+                    GrowthTag(value: trailingGrowth, backgroundColor: trailingGrowthColor)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -71,11 +73,6 @@ private struct GrowthTag: View {
 
 // MARK: Constants
 private extension AnalyticsReportCard {
-    enum Localization {
-        static let totalSales = NSLocalizedString("Total Sales", comment: "Total Sales subtitle on the analytics hub report card.")
-        static let netSales = NSLocalizedString("Net Sales", comment: "Net Sales subtitle on the analytics hub report card.")
-    }
-
     enum Layout {
         static let titleSpacing: CGFloat = 24
         static let cardPadding: CGFloat = 16
@@ -89,12 +86,14 @@ private extension AnalyticsReportCard {
 struct Previews: PreviewProvider {
     static var previews: some View {
         AnalyticsReportCard(title: "REVENUE",
-                            totalSales: "$3.678",
-                            totalGrowth: "+23%",
-                            totalGrowthColor: .withColorStudio(.green, shade: .shade40),
-                            netSales: "$3.232",
-                            netGrowth: "-3%",
-                            netGrowthColor: .withColorStudio(.red, shade: .shade40))
+                            leadingTitle: "Total Sales",
+                            leadingValue: "$3.678",
+                            leadingGrowth: "+23%",
+                            leadingGrowthColor: .withColorStudio(.green, shade: .shade40),
+                            trailingTitle: "Net Sales",
+                            trailingValue: "$3.232",
+                            trailingGrowth: "-3%",
+                            trailingGrowthColor: .withColorStudio(.red, shade: .shade40))
             .previewLayout(.sizeThatFits)
     }
 }

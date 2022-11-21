@@ -170,7 +170,6 @@ private extension LoginJetpackSetupView {
         static let stepItemHorizontalSpacing: CGFloat = 24
         static let stepItemsVerticalSpacing: CGFloat = 20
         static let stepImageSize: CGFloat = 24
-        static let plansPage = "https://wordpress.com/jetpack/connect/plans"
     }
 }
 

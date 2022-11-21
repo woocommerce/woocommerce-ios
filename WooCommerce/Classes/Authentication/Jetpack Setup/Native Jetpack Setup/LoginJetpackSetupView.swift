@@ -86,9 +86,9 @@ struct LoginJetpackSetupView: View {
 
                 ForEach(viewModel.setupSteps) { step in
                     HStack(spacing: Constants.stepItemHorizontalSpacing) {
-                        if step == viewModel.currentSetupStep, step != .done {
+                        if viewModel.isSetupStepInProgress(step) {
                             ActivityIndicator(isAnimating: .constant(true), style: .medium)
-                        } else if step > viewModel.currentSetupStep {
+                        } else if viewModel.isSetupStepPending(step) {
                             Image(uiImage: .checkEmptyCircleImage)
                                 .resizable()
                                 .frame(width: Constants.stepImageSize * scale, height: Constants.stepImageSize * scale)

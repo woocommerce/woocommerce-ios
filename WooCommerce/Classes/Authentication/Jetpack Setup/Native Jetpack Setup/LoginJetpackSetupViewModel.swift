@@ -22,6 +22,14 @@ final class LoginJetpackSetupViewModel: ObservableObject {
         self.setupSteps = setupSteps
         self.currentSetupStep = setupSteps[0]
     }
+
+    func isSetupStepInProgress(_ step: JetpackInstallStep) -> Bool {
+        step == currentSetupStep && step != .done
+    }
+
+    func isSetupStepPending(_ step: JetpackInstallStep) -> Bool {
+        step > currentSetupStep
+    }
 }
 
 // MARK: Subtypes

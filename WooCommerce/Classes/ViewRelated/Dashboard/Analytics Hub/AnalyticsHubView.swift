@@ -5,8 +5,8 @@ import SwiftUI
 /// Hosting Controller for the `AnalyticsHubView` view.
 ///
 final class AnalyticsHubHostingViewController: UIHostingController<AnalyticsHubView> {
-    init(timeRange: StatsTimeRangeV4) {
-        super.init(rootView: AnalyticsHubView())
+    init(viewModel: AnalyticsHubViewModel) {
+        super.init(rootView: AnalyticsHubView(viewModel))
     }
 
     @available(*, unavailable)
@@ -18,6 +18,11 @@ final class AnalyticsHubHostingViewController: UIHostingController<AnalyticsHubV
 /// Main Analytics Hub View
 ///
 struct AnalyticsHubView: View {
+    @ObservedObject private var viewModel: AnalyticsHubViewModel
+
+    init(_ viewModel: AnalyticsHubViewModel) {
+        self.viewModel = viewModel
+    }
 
     var body: some View {
         ScrollView {
@@ -81,7 +86,8 @@ private extension AnalyticsHubView {
 struct AnalyticsHubPreview: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            AnalyticsHubView()
+            let viewModel = AnalyticsHubViewModel(selectedTimeRange: .thisMonth)
+            AnalyticsHubView(viewModel)
         }
     }
 }

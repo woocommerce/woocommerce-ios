@@ -107,6 +107,9 @@ struct DomainSelectorView: View {
                     }
                 } else if viewModel.isLoadingDomainSuggestions {
                     // Progress indicator when loading domain suggestions.
+                    Spacer()
+                        .frame(height: 23)
+
                     HStack {
                         Spacer()
                         ProgressView()

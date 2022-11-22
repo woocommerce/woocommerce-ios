@@ -39,7 +39,10 @@ struct AnalyticsHubView: View {
                         }
                         VStack(alignment: .leading, spacing: .zero) {
                             Text(timeRange.selectionType.rawValue)
+                                .foregroundColor(Color(.text))
+                                .subheadlineStyle()
                             Text(timeRange.currentRangeDescription)
+                                .bold()
                         }
                         .padding(.leading)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -49,9 +52,11 @@ struct AnalyticsHubView: View {
 
                     Divider()
 
-                    Text("Compared to \(timeRange.previousRangeDescription)")
+                    Text("Compared to **\(timeRange.previousRangeDescription)**")
                         .padding(.leading)
                         .frame(maxWidth: .infinity, minHeight: 48, alignment: .leading)
+                        .font(.callout)
+                        .foregroundColor(Color(.textSubtle))
 
                     Divider()
                 }

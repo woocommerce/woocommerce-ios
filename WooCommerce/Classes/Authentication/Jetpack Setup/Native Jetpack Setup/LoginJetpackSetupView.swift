@@ -4,11 +4,14 @@ import SwiftUI
 ///
 final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpackSetupView> {
     private let viewModel: LoginJetpackSetupViewModel
+    private let analytics: Analytics
 
     init(siteURL: String,
          connectionOnly: Bool,
          authentication: Authentication = ServiceLocator.authenticationManager,
+         analytics: Analytics = ServiceLocator.analytics,
          onStoreNavigation: @escaping (String?) -> Void) {
+        self.analytics = analytics
         self.viewModel = LoginJetpackSetupViewModel(siteURL: siteURL, connectionOnly: connectionOnly, onStoreNavigation: onStoreNavigation)
         super.init(rootView: LoginJetpackSetupView(viewModel: viewModel))
 
@@ -34,6 +37,7 @@ final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpack
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        analytics.track(.loginJetpackInstallScreenViewed)
         configureNavigationBarAppearance()
     }
 
@@ -46,6 +50,7 @@ final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpack
 
     @objc
     private func dismissView() {
+        analytics.track(.loginJetpackInstallScreenDismissed)
         dismiss(animated: true)
     }
 

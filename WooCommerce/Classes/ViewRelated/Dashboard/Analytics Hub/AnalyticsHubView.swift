@@ -31,13 +31,17 @@ struct AnalyticsHubView: View {
                     Divider()
 
                     HStack {
-                        Image(uiImage: .calendar)
-                            .padding(.trailing)
-                            .frame(alignment: .leading)
+                        ZStack(alignment: .center) {
+                            Circle()
+                                .fill(.gray)
+                                .frame(width: 48)
+                            Image(uiImage: .calendar)
+                        }
                         VStack(alignment: .leading, spacing: .zero) {
                             Text(timeRange.selectionType.rawValue)
                             Text(timeRange.currentRangeDescription)
                         }
+                        .padding(.leading)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     .padding(.leading)
@@ -102,7 +106,7 @@ private extension AnalyticsHubView {
 struct AnalyticsHubPreview: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            let timeRange = AnalyticsHubTimeRange(selectedTimeRange: .thisMonth)
+            let timeRange = AnalyticsHubTimeRange(selectedTimeRange: .thisYear)
             AnalyticsHubView(timeRange)
         }
     }

@@ -3,29 +3,13 @@ import SwiftUI
 /// Hosting controller for `LoginJetpackSetupView`.
 ///
 final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpackSetupView> {
+    let viewModel: LoginJetpackSetupViewModel
+
     init(siteURL: String, connectionOnly: Bool, onStoreNavigation: @escaping () -> Void) {
-        let viewModel = LoginJetpackSetupViewModel(siteURL: siteURL, connectionOnly: connectionOnly, onStoreNavigation: onStoreNavigation)
+        self.viewModel = LoginJetpackSetupViewModel(siteURL: siteURL, connectionOnly: connectionOnly, onStoreNavigation: onStoreNavigation)
         super.init(rootView: LoginJetpackSetupView(viewModel: viewModel))
         rootView.webViewPresentationHandler = { [weak self] in
-            guard let self else { return }
-            guard let connectionURL = viewModel.jetpackConnectionURL else {
-                return
-            }
-
-            let webViewModel = JetpackConnectionWebViewModel(initialURL: connectionURL,
-                                                             siteURL: viewModel.siteURL,
-                                                             title: Localization.approveConnection) { [weak self] in
-                viewModel.shouldPresentWebView = false
-                viewModel.authorizeJetpackConnection()
-                self?.dismissView()
-            }
-            let webView = AuthenticatedWebViewController(viewModel: webViewModel)
-            webView.navigationItem.leftBarButtonItem = UIBarButtonItem(title: Localization.cancel,
-                                                                       style: .plain,
-                                                                       target: self,
-                                                                       action: #selector(self.dismissView))
-            let navigationController = UINavigationController(rootViewController: webView)
-            self.present(navigationController, animated: true)
+            self?.presentJetpackConnectionWebView()
         }
     }
 
@@ -50,6 +34,28 @@ final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpack
     @objc
     private func dismissView() {
         dismiss(animated: true)
+    }
+
+    private func presentJetpackConnectionWebView() {
+        guard let connectionURL = viewModel.jetpackConnectionURL else {
+            return
+        }
+
+        let webViewModel = JetpackConnectionWebViewModel(initialURL: connectionURL,
+                                                         siteURL: viewModel.siteURL,
+                                                         title: Localization.approveConnection) { [weak self] in
+            guard let self else { return }
+            self.viewModel.shouldPresentWebView = false
+            self.viewModel.authorizeJetpackConnection()
+            self.dismissView()
+        }
+        let webView = AuthenticatedWebViewController(viewModel: webViewModel)
+        webView.navigationItem.leftBarButtonItem = UIBarButtonItem(title: Localization.cancel,
+                                                                   style: .plain,
+                                                                   target: self,
+                                                                   action: #selector(self.dismissView))
+        let navigationController = UINavigationController(rootViewController: webView)
+        self.present(navigationController, animated: true)
     }
 }
 

@@ -39,12 +39,12 @@ struct AnalyticsHubView: View {
                     AnalyticsReportCard(title: "REVENUE",
                                         leadingTitle: "Total Sales",
                                         leadingValue: "$3.234",
-                                        leadingGrowth: "+23%",
-                                        leadingGrowthColor: .withColorStudio(.green, shade: .shade50),
+                                        leadingDelta: "+23%",
+                                        leadingDeltaColor: .withColorStudio(.green, shade: .shade50),
                                         trailingTitle: "Net Sales",
                                         trailingValue: "$2.324",
-                                        trailingGrowth: "-4%",
-                                        trailingGrowthColor: .withColorStudio(.red, shade: .shade40))
+                                        trailingDelta: "-4%",
+                                        trailingDeltaColor: .withColorStudio(.red, shade: .shade40))
                     .background(Color(uiColor: .listForeground))
 
                     Divider()
@@ -56,12 +56,12 @@ struct AnalyticsHubView: View {
                     AnalyticsReportCard(title: "ORDERS",
                                         leadingTitle: "Total Orders",
                                         leadingValue: "145",
-                                        leadingGrowth: "+36%",
-                                        leadingGrowthColor: .withColorStudio(.green, shade: .shade50),
+                                        leadingDelta: "+36%",
+                                        leadingDeltaColor: .withColorStudio(.green, shade: .shade50),
                                         trailingTitle: "Average Order Value",
                                         trailingValue: "$57,99",
-                                        trailingGrowth: "-16%",
-                                        trailingGrowthColor: .withColorStudio(.red, shade: .shade40))
+                                        trailingDelta: "-16%",
+                                        trailingDeltaColor: .withColorStudio(.red, shade: .shade40))
                     .background(Color(uiColor: .listForeground))
 
                     Divider()

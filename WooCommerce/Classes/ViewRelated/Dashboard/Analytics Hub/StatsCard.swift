@@ -7,12 +7,12 @@ struct AnalyticsReportCard: View {
     let title: String
     let leadingTitle: String
     let leadingValue: String
-    let leadingGrowth: String
-    let leadingGrowthColor: UIColor
+    let leadingDelta: String
+    let leadingDeltaColor: UIColor
     let trailingTitle: String
     let trailingValue: String
-    let trailingGrowth: String
-    let trailingGrowthColor: UIColor
+    let trailingDelta: String
+    let trailingDeltaColor: UIColor
 
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.titleSpacing) {
@@ -33,7 +33,7 @@ struct AnalyticsReportCard: View {
                     Text(leadingValue)
                         .titleStyle()
 
-                    GrowthTag(value: leadingGrowth, backgroundColor: leadingGrowthColor)
+                    DeltaTag(value: leadingDelta, backgroundColor: leadingDeltaColor)
 
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -47,7 +47,7 @@ struct AnalyticsReportCard: View {
                     Text(trailingValue)
                         .titleStyle()
 
-                    GrowthTag(value: trailingGrowth, backgroundColor: trailingGrowthColor)
+                    DeltaTag(value: trailingDelta, backgroundColor: trailingDeltaColor)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -56,7 +56,7 @@ struct AnalyticsReportCard: View {
     }
 }
 
-private struct GrowthTag: View {
+private struct DeltaTag: View {
 
     let value: String
     let backgroundColor: UIColor
@@ -88,12 +88,12 @@ struct Previews: PreviewProvider {
         AnalyticsReportCard(title: "REVENUE",
                             leadingTitle: "Total Sales",
                             leadingValue: "$3.678",
-                            leadingGrowth: "+23%",
-                            leadingGrowthColor: .withColorStudio(.green, shade: .shade40),
+                            leadingDelta: "+23%",
+                            leadingDeltaColor: .withColorStudio(.green, shade: .shade40),
                             trailingTitle: "Net Sales",
                             trailingValue: "$3.232",
-                            trailingGrowth: "-3%",
-                            trailingGrowthColor: .withColorStudio(.red, shade: .shade40))
+                            trailingDelta: "-3%",
+                            trailingDeltaColor: .withColorStudio(.red, shade: .shade40))
             .previewLayout(.sizeThatFits)
     }
 }

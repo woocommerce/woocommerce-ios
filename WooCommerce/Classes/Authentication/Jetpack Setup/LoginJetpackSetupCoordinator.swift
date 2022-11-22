@@ -36,7 +36,6 @@ private extension LoginJetpackSetupCoordinator {
     func showSetupSteps() {
         let setupUI = LoginJetpackSetupHostingController(siteURL: siteURL, connectionOnly: connectionOnly, onStoreNavigation: { [weak self] in
             guard let self else { return }
-            self.navigationController.dismiss(animated: true)
             self.showStorePickerForLogin()
         })
         guard let contentNavigationController = navigationController.presentedViewController as? UINavigationController else {
@@ -58,6 +57,9 @@ private extension LoginJetpackSetupCoordinator {
                 DDLogWarn("⚠️ Could not find \(self.siteURL) connected to the account")
                 return
             }
+
+            // dismiss the setup view
+            self.navigationController.dismiss(animated: true)
 
             // open the store picker if the matched site doesn't have Woo so the user can install it.
             guard matchedSite.isWooCommerceActive else {

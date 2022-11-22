@@ -5250,14 +5250,6 @@
 			path = "Analytics Hub";
 			sourceTree = "<group>";
 		};
-		2647F7B329280A5000D59FDF /* Analytics Hub */ = {
-			isa = PBXGroup;
-			children = (
-				2647F7B429280A7F00D59FDF /* AnalyticsHubView.swift */,
-			);
-			path = "Analytics Hub";
-			sourceTree = "<group>";
-		};
 		265284002624933B00F91BA1 /* AddOns */ = {
 			isa = PBXGroup;
 			children = (

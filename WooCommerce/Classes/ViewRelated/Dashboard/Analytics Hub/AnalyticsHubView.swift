@@ -32,7 +32,6 @@ struct AnalyticsHubView: View {
                     currentRangeDescription: timeRange.currentRangeDescription,
                     previousRangeDescription: timeRange.previousRangeDescription)
 
-
                 VStack(spacing: 0) {
                     Divider()
 

@@ -19,7 +19,6 @@ extension MockDomainRemote: DomainRemoteProtocol {
             XCTFail("Could not find result for loading domain suggestions.")
             throw NetworkError.notFound
         }
-        
         return try result.get()
     }
 }

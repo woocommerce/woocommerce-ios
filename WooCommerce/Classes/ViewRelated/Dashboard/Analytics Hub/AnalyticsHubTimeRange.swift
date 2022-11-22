@@ -15,8 +15,9 @@ public enum SelectionType: String {
 
 public class AnalyticsHubTimeRange {
 
-    private let currentTimezone: TimeZone
+    private let currentTimezone = TimeZone.current
     private let currentDate: Date
+    private let currentCalendar: Calendar
     let selectionType: SelectionType
 
     lazy private(set) var currentTimeRange: TimeRange = {
@@ -37,11 +38,11 @@ public class AnalyticsHubTimeRange {
 
     init(selectedTimeRange: StatsTimeRangeV4,
          currentDate: Date = Date(),
-         siteTimezone: TimeZone = TimeZone.current
+         currentCalendar: Calendar = Calendar(identifier: .iso8601)
     ) {
         self.selectionType = selectedTimeRange.toAnalyticsHubSelectionType()
         self.currentDate = currentDate
-        self.currentTimezone = siteTimezone
+        self.currentCalendar = currentCalendar
     }
 
     private func generateCurrentTimeRangeFrom(selectionType: SelectionType) -> TimeRange {
@@ -49,7 +50,7 @@ public class AnalyticsHubTimeRange {
         case .today:
             return TimeRange(start: currentDate.startOfDay(timezone: currentTimezone), end: currentDate)
         case .weekToDate:
-            let weekStart = currentDate.startOfWeek(timezone: currentTimezone, calendar: Calendar(identifier: .iso8601))
+            let weekStart = currentDate.startOfWeek(timezone: currentTimezone, calendar: currentCalendar)
             return TimeRange(start: weekStart, end: currentDate)
         case .monthToDate:
             return TimeRange(start: currentDate.startOfMonth(timezone: currentTimezone), end: currentDate)
@@ -61,17 +62,17 @@ public class AnalyticsHubTimeRange {
     private func generatePreviousTimeRangeFrom(selectionType: SelectionType) -> TimeRange {
         switch selectionType {
         case .today:
-            let oneDayAgo = Calendar.current.date(byAdding: .day, value: -1, to: currentDate)!
+            let oneDayAgo = currentCalendar.date(byAdding: .day, value: -1, to: currentDate)!
             return TimeRange(start: oneDayAgo.startOfDay(timezone: currentTimezone), end: oneDayAgo)
         case .weekToDate:
-            let oneWeekAgo = Calendar.current.date(byAdding: .day, value: -7, to: currentDate)!
-            let weekStart = oneWeekAgo.startOfWeek(timezone: currentTimezone, calendar: Calendar(identifier: .iso8601))
-            return TimeRange(start: weekStart, end: oneWeekAgo)
+            let oneWeekAgo = currentCalendar.date(byAdding: .day, value: -7, to: currentDate)!
+            let lastWeekStart = oneWeekAgo.startOfWeek(timezone: currentTimezone, calendar: currentCalendar)
+            return TimeRange(start: lastWeekStart, end: oneWeekAgo)
         case .monthToDate:
-            let oneMonthAgo = Calendar.current.date(byAdding: .month, value: -1, to: currentDate)!
+            let oneMonthAgo = currentCalendar.date(byAdding: .month, value: -1, to: currentDate)!
             return TimeRange(start: oneMonthAgo.startOfMonth(timezone: currentTimezone), end: oneMonthAgo)
         case .yearToDate:
-            let oneYearAgo = Calendar.current.date(byAdding: .year, value: -1, to: currentDate)!
+            let oneYearAgo = currentCalendar.date(byAdding: .year, value: -1, to: currentDate)!
             return TimeRange(start: oneYearAgo.startOfYear(timezone: currentTimezone), end: oneYearAgo)
         }
     }

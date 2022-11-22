@@ -16,6 +16,7 @@ public enum SelectionType: String {
 public class AnalyticsHubTimeRange {
 
     private let currentTimezone: TimeZone
+    private let currentDate: Date
     let selectionType: SelectionType
 
     lazy private(set) var currentTimeRange: TimeRange = {
@@ -33,40 +34,42 @@ public class AnalyticsHubTimeRange {
     lazy private(set) var previousRangeDescription: String = {
         generateDescriptionOf(timeRange: previousTimeRange)
     }()
-
-    init(selectedTimeRange: StatsTimeRangeV4, siteTimezone: TimeZone = TimeZone.current) {
+    
+    init(selectedTimeRange: StatsTimeRangeV4,
+         currentDate: Date = Date(),
+         siteTimezone: TimeZone = TimeZone.current
+    ) {
         self.selectionType = selectedTimeRange.toAnalyticsHubSelectionType()
+        self.currentDate = currentDate
         self.currentTimezone = siteTimezone
     }
 
     private func generateCurrentTimeRangeFrom(selectionType: SelectionType) -> TimeRange {
-        let now = Date()
         switch selectionType {
         case .today:
-            return TimeRange(start: now.startOfDay(timezone: currentTimezone), end: now)
+            return TimeRange(start: currentDate.startOfDay(timezone: currentTimezone), end: currentDate)
         case .weekToDate:
-            return TimeRange(start: now.startOfWeek(timezone: currentTimezone), end: now)
+            return TimeRange(start: currentDate.startOfWeek(timezone: currentTimezone), end: currentDate)
         case .monthToDate:
-            return TimeRange(start: now.startOfMonth(timezone: currentTimezone), end: now)
+            return TimeRange(start: currentDate.startOfMonth(timezone: currentTimezone), end: currentDate)
         case .yearToDate:
-            return TimeRange(start: now.startOfYear(timezone: currentTimezone), end: now)
+            return TimeRange(start: currentDate.startOfYear(timezone: currentTimezone), end: currentDate)
         }
     }
 
     private func generatePreviousTimeRangeFrom(selectionType: SelectionType) -> TimeRange {
-        let now = Date()
         switch selectionType {
         case .today:
-            let oneDayAgo = Calendar.current.date(byAdding: .day, value: -1, to: now)!
+            let oneDayAgo = Calendar.current.date(byAdding: .day, value: -1, to: currentDate)!
             return TimeRange(start: oneDayAgo.startOfDay(timezone: currentTimezone), end: oneDayAgo)
         case .weekToDate:
-            let oneWeekAgo = Calendar.current.date(byAdding: .day, value: -7, to: now)!
+            let oneWeekAgo = Calendar.current.date(byAdding: .day, value: -7, to: currentDate)!
             return TimeRange(start: oneWeekAgo.startOfWeek(timezone: currentTimezone), end: oneWeekAgo)
         case .monthToDate:
-            let oneMonthAgo = Calendar.current.date(byAdding: .month, value: -1, to: now)!
+            let oneMonthAgo = Calendar.current.date(byAdding: .month, value: -1, to: currentDate)!
             return TimeRange(start: oneMonthAgo.startOfMonth(timezone: currentTimezone), end: oneMonthAgo)
         case .yearToDate:
-            let oneYearAgo = Calendar.current.date(byAdding: .year, value: -1, to: now)!
+            let oneYearAgo = Calendar.current.date(byAdding: .year, value: -1, to: currentDate)!
             return TimeRange(start: oneYearAgo.startOfYear(timezone: currentTimezone), end: oneYearAgo)
         }
     }

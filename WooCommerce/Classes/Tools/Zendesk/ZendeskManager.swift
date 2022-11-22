@@ -669,6 +669,8 @@ private extension ZendeskManager {
         var logsFieldID: Int64 = TicketFieldIDs.legacyLogs
         var systemStatusReportFieldID: Int64 = 0
         if isSSREnabled {
+            // If the SSR feature flag is enabled, we'll use the newly added TicketFieldID
+            // for the Application logs, and the old one for the SSR.
             logsFieldID = 10901699622036
             systemStatusReportFieldID = TicketFieldIDs.legacyLogs
         }
@@ -685,10 +687,6 @@ private extension ZendeskManager {
             CustomField(fieldId: TicketFieldIDs.subcategory, value: Constants.subcategory)
         ].compactMap { $0 }
 
-        for i in 0..<ticketFields.count {
-            print("🍍\(ticketFields[i].fieldId) - \(String(describing: ticketFields[i].value))")
-        }
-
         return createRequest(supportSourceTag: supportSourceTag,
                              formID: TicketFieldIDs.form,
                              ticketFields: ticketFields,
@@ -697,12 +695,22 @@ private extension ZendeskManager {
 
     func createWCPayRequest(supportSourceTag: String?) -> RequestUiConfiguration {
 
+        var logsFieldID: Int64 = TicketFieldIDs.legacyLogs
+        var systemStatusReportFieldID: Int64 = 0
+        if isSSREnabled {
+            // If the SSR feature flag is enabled, we'll use the newly added TicketFieldID
+            // for the Application logs, and the old one for the SSR.
+            logsFieldID = 10901699622036
+            systemStatusReportFieldID = TicketFieldIDs.legacyLogs
+        }
+
         // Set form field values
         let ticketFields = [
             CustomField(fieldId: TicketFieldIDs.appVersion, value: Bundle.main.version),
             CustomField(fieldId: TicketFieldIDs.deviceFreeSpace, value: getDeviceFreeSpace()),
             CustomField(fieldId: TicketFieldIDs.networkInformation, value: getNetworkInformation()),
-            CustomField(fieldId: TicketFieldIDs.legacyLogs, value: getLogFile()),
+            CustomField(fieldId: logsFieldID, value: getLogFile()),
+            CustomField(fieldId: systemStatusReportFieldID, value: getSystemStatusReport()),
             CustomField(fieldId: TicketFieldIDs.currentSite, value: getCurrentSiteDescription()),
             CustomField(fieldId: TicketFieldIDs.sourcePlatform, value: Constants.sourcePlatform),
             CustomField(fieldId: TicketFieldIDs.appLanguage, value: Locale.preferredLanguage),
@@ -1133,13 +1141,7 @@ private extension ZendeskManager {
         static let allBlogs: Int64 = 360000087183
         static let deviceFreeSpace: Int64 = 360000089123
         static let networkInformation: Int64 = 360000086966
-        // ----------------------------------------------------
-        // 1 - We're re-using the "logs" field in order to pass the new SSR
-        // 2 - We add "logs" to a new field
         static let legacyLogs: Int64 = 22871957
-        //static let systemStatusReport: Int64 = 22871957
-        //static let logs: Int64 = 10901699622036
-        // ----------------------------------------------------
         static let currentSite: Int64 = 360000103103
         static let sourcePlatform: Int64 = 360009311651
         static let appLanguage: Int64 = 360008583691

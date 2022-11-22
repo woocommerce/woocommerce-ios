@@ -50,63 +50,11 @@ final class MainTabViewModelTests: XCTestCase {
         XCTAssertEqual(storesManager.receivedActions.count, 0)
     }
 
-    func test_loadHubMenuTabBadge_when_both_badges_should_be_shown_calls_onMenuBadgeShouldBeDisplayed_with_type_primary() {
-        // Given
-        let sessionManager = SessionManager.makeForTesting()
-        sessionManager.setStoreId(sampleStoreID)
-        let storesManager = MockStoresManager(sessionManager: sessionManager)
-
-        storesManager.whenReceivingAction(ofType: NotificationCountAction.self) { action in
-            switch action {
-            case let .load(_, type, onCompletion):
-                if case .kind(.comment) = type {
-                    let pendingNotifications = 23
-                    onCompletion(pendingNotifications)
-                }
-            default:
-                break
-            }
-        }
-
-        storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case let .getFeatureAnnouncementVisibility(FeatureAnnouncementCampaign.paymentsInMenuTabBarButton, onCompletion):
-                onCompletion(.success(true))
-            default:
-                break
-            }
-        }
-
-
-        let viewModel = MainTabViewModel(storesManager: storesManager)
-        var returnedType: NotificationBadgeType?
-        viewModel.onMenuBadgeShouldBeDisplayed = { type in
-            returnedType = type
-
-        }
-
-        // When
-        viewModel.loadHubMenuTabBadge()
-
-        // Then
-        waitUntil {
-            returnedType == .primary
-        }
-    }
-
     func test_loadHubMenuTabBadge_when_should_show_reviews_badge_only_calls_onMenuBadgeShouldBeDisplayed_with_type_secondary() {
         // Given
         let sessionManager = SessionManager.makeForTesting()
         sessionManager.setStoreId(sampleStoreID)
         let storesManager = MockStoresManager(sessionManager: sessionManager)
-        storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case let .getFeatureAnnouncementVisibility(FeatureAnnouncementCampaign.paymentsInMenuTabBarButton, onCompletion):
-                onCompletion(.success(false))
-            default:
-                break
-            }
-        }
 
         storesManager.whenReceivingAction(ofType: NotificationCountAction.self) { action in
             switch action {
@@ -136,19 +84,11 @@ final class MainTabViewModelTests: XCTestCase {
         }
     }
 
-    func test_loadHubMenuTabBadge_when_both_badges_should_be_hidden_calls_onMenuBadgeShouldBeHidden() {
+    func test_loadHubMenuTabBadge_when_reviews_badge_should_be_hidden_calls_onMenuBadgeShouldBeHidden() {
         // Given
         let sessionManager = SessionManager.makeForTesting()
         sessionManager.setStoreId(sampleStoreID)
         let storesManager = MockStoresManager(sessionManager: sessionManager)
-        storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case let .getFeatureAnnouncementVisibility(FeatureAnnouncementCampaign.paymentsInMenuTabBarButton, onCompletion):
-                onCompletion(.success(false))
-            default:
-                break
-            }
-        }
 
         storesManager.whenReceivingAction(ofType: NotificationCountAction.self) { action in
             switch action {

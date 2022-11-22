@@ -15,14 +15,14 @@ struct TimeRangeCard: View {
     let previousRangeDescription: String
 
     var body: some View {
-        VStack(spacing: 0) {
+        VStack(alignment: .leading) {
             Divider()
 
             HStack {
                 ZStack(alignment: .center) {
                     Circle()
                         .fill(.gray)
-                        .frame(width: 48)
+                        .frame(width: Layout.calendarCircleWidth)
                     Image(uiImage: .calendar)
                 }
                 VStack(alignment: .leading, spacing: .zero) {
@@ -36,13 +36,13 @@ struct TimeRangeCard: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
             .padding(.leading)
-            .frame(minHeight: 80)
+            .frame(minHeight: Layout.selectedRangeMinHeight)
 
             Divider()
 
             Text("Compared to **\(previousRangeDescription)**")
                 .padding(.leading)
-                .frame(maxWidth: .infinity, minHeight: 48, alignment: .leading)
+                .frame(maxWidth: .infinity, minHeight: Layout.previousRangeMinHeight, alignment: .leading)
                 .font(.callout)
                 .foregroundColor(Color(.textSubtle))
 
@@ -52,12 +52,19 @@ struct TimeRangeCard: View {
     }
 }
 
+private extension TimeRangeCard {
+    enum Layout {
+        static let calendarCircleWidth: CGFloat = 48
+        static let selectedRangeMinHeight: CGFloat = 72
+        static let previousRangeMinHeight: CGFloat = 32
+    }
+}
+
 struct TimeRangeCard_Previews: PreviewProvider {
     static var previews: some View {
         let timeRange = AnalyticsHubTimeRange(selectedTimeRange: .thisMonth)
         TimeRangeCard(
             timeRangeTitle: timeRange.selectionType.rawValue,
-            currentRangeDescription: timeRange.currentRangeDescription,
-            previousRangeDescription: timeRange.previousRangeDescription)
+            currentRangeDescription: timeRange.currentRangeDescription, previousRangeDescription: timeRange.previousRangeDescription)
     }
 }

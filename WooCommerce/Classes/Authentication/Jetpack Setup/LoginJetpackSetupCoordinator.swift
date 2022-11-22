@@ -18,7 +18,7 @@ final class LoginJetpackSetupCoordinator: Coordinator {
          navigationController: UINavigationController,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         authentication: Authentication = ServiceLocator.authenticationManager,) {
+         authentication: Authentication = ServiceLocator.authenticationManager) {
         self.siteURL = siteURL
         self.connectionOnly = connectionOnly
         self.navigationController = navigationController

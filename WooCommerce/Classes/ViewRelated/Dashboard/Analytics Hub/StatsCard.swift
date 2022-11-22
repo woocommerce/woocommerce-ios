@@ -25,7 +25,7 @@ struct AnalyticsReportCard: View {
 
                 /// Leading Column
                 ///
-                VStack(alignment: .leading, spacing: Layout.salesColumnSpacing) {
+                VStack(alignment: .leading, spacing: Layout.columnSpacing) {
 
                     Text(leadingTitle)
                         .calloutStyle()
@@ -38,9 +38,9 @@ struct AnalyticsReportCard: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-                /// Net Sales
+                /// Trailing Column
                 ///
-                VStack(alignment: .leading, spacing: Layout.salesColumnSpacing) {
+                VStack(alignment: .leading, spacing: Layout.columnSpacing) {
                     Text(trailingTitle)
                         .calloutStyle()
 
@@ -63,11 +63,11 @@ private struct DeltaTag: View {
 
     var body: some View {
         Text(value)
-            .padding(AnalyticsReportCard.Layout.growthBackgroundPadding)
+            .padding(AnalyticsReportCard.Layout.deltaBackgroundPadding)
             .foregroundColor(Color(.textInverted))
             .captionStyle()
             .background(Color(backgroundColor))
-            .cornerRadius(AnalyticsReportCard.Layout.growthCornerRadius)
+            .cornerRadius(AnalyticsReportCard.Layout.deltaCornerRadius)
     }
 }
 
@@ -76,9 +76,9 @@ private extension AnalyticsReportCard {
     enum Layout {
         static let titleSpacing: CGFloat = 24
         static let cardPadding: CGFloat = 16
-        static let salesColumnSpacing: CGFloat = 10
-        static let growthBackgroundPadding = EdgeInsets(top: 2, leading: 8, bottom: 2, trailing: 8)
-        static let growthCornerRadius: CGFloat = 4.0
+        static let columnSpacing: CGFloat = 10
+        static let deltaBackgroundPadding = EdgeInsets(top: 2, leading: 8, bottom: 2, trailing: 8)
+        static let deltaCornerRadius: CGFloat = 4.0
     }
 }
 

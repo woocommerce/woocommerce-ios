@@ -46,7 +46,7 @@ final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpack
                                                          title: Localization.approveConnection) { [weak self] in
             guard let self else { return }
             self.viewModel.shouldPresentWebView = false
-            self.viewModel.authorizeJetpackConnection()
+            self.viewModel.didAuthorizeJetpackConnection()
             self.dismissView()
         }
         let webView = AuthenticatedWebViewController(viewModel: webViewModel)

@@ -63,7 +63,7 @@ final class LoginJetpackSetupViewModel: ObservableObject {
         retrieveJetpackPluginDetails()
     }
 
-    func authorizeJetpackConnection() {
+    func didAuthorizeJetpackConnection() {
         checkJetpackConnection()
     }
 

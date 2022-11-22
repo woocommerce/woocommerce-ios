@@ -238,7 +238,7 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
         }
 
         // When
-        viewModel.authorizeJetpackConnection()
+        viewModel.didAuthorizeJetpackConnection()
 
         // Then
         XCTAssertTrue(triggeredFetchingJetpackUser)
@@ -262,7 +262,7 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
         }
 
         // When
-        viewModel.authorizeJetpackConnection()
+        viewModel.didAuthorizeJetpackConnection()
 
         // Then
         XCTAssertEqual(viewModel.currentConnectionStep, .authorized)

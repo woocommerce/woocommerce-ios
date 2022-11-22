@@ -25,7 +25,7 @@ protocol CollectOrderPaymentProtocol {
 /// Use case to collect payments from an order.
 /// Orchestrates reader connection, payment, UI alerts, receipt handling and analytics.
 ///
-final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
+final class LegacyCollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     /// Currency Formatter
     ///
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
@@ -173,7 +173,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
 }
 
 // MARK: Private functions
-private extension CollectOrderPaymentUseCase {
+private extension LegacyCollectOrderPaymentUseCase {
     /// Checks whether the amount to be collected is valid: (not nil, convertible to decimal, higher than minimum amount ...)
     ///
     func isTotalAmountValid() -> Bool {
@@ -439,7 +439,7 @@ private extension CollectOrderPaymentUseCase {
 }
 
 // MARK: Interac handling
-private extension CollectOrderPaymentUseCase {
+private extension LegacyCollectOrderPaymentUseCase {
     /// For certain payment methods like Interac in Canada, the payment is captured on the client side (customer is charged).
     /// To prevent the order from multiple charges after the first client side success, the order is marked as paid locally in case of any
     /// potential failures until the next order refresh.
@@ -458,7 +458,7 @@ private extension CollectOrderPaymentUseCase {
 }
 
 // MARK: Analytics
-private extension CollectOrderPaymentUseCase {
+private extension LegacyCollectOrderPaymentUseCase {
     func observeConnectedReadersForAnalytics() {
         let action = CardPresentPaymentAction.observeConnectedReaders() { [weak self] readers in
             self?.connectedReader = readers.first
@@ -483,7 +483,7 @@ private extension CollectOrderPaymentUseCase {
 }
 
 // MARK: Definitions
-private extension CollectOrderPaymentUseCase {
+private extension LegacyCollectOrderPaymentUseCase {
     /// Mailing a receipt failed but the SDK didn't return a more specific error
     ///
     struct UnknownEmailError: Error {}
@@ -514,7 +514,7 @@ private extension CollectOrderPaymentUseCase {
     }
 }
 
-extension CollectOrderPaymentUseCase {
+extension LegacyCollectOrderPaymentUseCase {
     enum NotValidAmountError: Error, LocalizedError {
         case belowMinimumAmount(amount: String)
         case other

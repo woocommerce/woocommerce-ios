@@ -2,9 +2,9 @@ import Foundation
 import Yosemite
 import WooFoundation
 
-/// Helpers for calculating and displaying Stats V4 data
+/// Helpers for calculating and formatting stats data for display.
 ///
-final class StatsV4DataHelper {
+struct StatsDataTextFormatter {
 
     // MARK: Revenue Stats
 
@@ -97,7 +97,7 @@ final class StatsV4DataHelper {
 
 // MARK: - Private helpers
 
-private extension StatsV4DataHelper {
+private extension StatsDataTextFormatter {
     /// Retrieves the visitor count for the provided order stats and, optionally, a specific interval.
     ///
     static func visitorCount(at selectedIndex: Int?, siteStats: SiteVisitStats?) -> Double? {

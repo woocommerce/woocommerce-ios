@@ -22,7 +22,7 @@ final class StoreStatsPeriodViewModel {
     private(set) lazy var orderStatsText: AnyPublisher<String, Never> =
     Publishers.CombineLatest($orderStatsData.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
         .compactMap { [weak self] orderStatsData, selectedIntervalIndex in
-            StatsV4DataHelper.createOrderCountText(orderStats: orderStatsData.stats, selectedIntervalIndex: selectedIntervalIndex)
+            StatsDataTextFormatter.createOrderCountText(orderStats: orderStatsData.stats, selectedIntervalIndex: selectedIntervalIndex)
         }
         .removeDuplicates()
         .eraseToAnyPublisher()
@@ -30,7 +30,7 @@ final class StoreStatsPeriodViewModel {
     /// Emits revenue stats text values based on order stats, selected time interval, and currency code.
     private(set) lazy var revenueStatsText: AnyPublisher<String, Never> = $orderStatsData.combineLatest($selectedIntervalIndex, currencySettings.$currencyCode)
         .compactMap { [weak self] orderStatsData, selectedIntervalIndex, currencyCode in
-            StatsV4DataHelper.createTotalRevenueText(orderStats: orderStatsData.stats,
+            StatsDataTextFormatter.createTotalRevenueText(orderStats: orderStatsData.stats,
                                                      selectedIntervalIndex: selectedIntervalIndex,
                                                      currencyFormatter: self?.currencyFormatter,
                                                      currencyCode: currencyCode.rawValue)
@@ -42,7 +42,7 @@ final class StoreStatsPeriodViewModel {
     private(set) lazy var visitorStatsText: AnyPublisher<String, Never> =
     Publishers.CombineLatest($siteStats.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
         .compactMap { siteStats, selectedIntervalIndex in
-            StatsV4DataHelper.createVisitorCountText(siteStats: siteStats, selectedIntervalIndex: selectedIntervalIndex)
+            StatsDataTextFormatter.createVisitorCountText(siteStats: siteStats, selectedIntervalIndex: selectedIntervalIndex)
         }
         .removeDuplicates()
         .eraseToAnyPublisher()
@@ -51,7 +51,7 @@ final class StoreStatsPeriodViewModel {
     private(set) lazy var conversionStatsText: AnyPublisher<String, Never> =
     Publishers.CombineLatest3($orderStatsData.eraseToAnyPublisher(), $siteStats.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
         .compactMap { orderStatsData, siteStats, selectedIntervalIndex in
-            StatsV4DataHelper.createConversionRateText(orderStats: orderStatsData.stats, siteStats: siteStats, selectedIntervalIndex: selectedIntervalIndex)
+            StatsDataTextFormatter.createConversionRateText(orderStats: orderStatsData.stats, siteStats: siteStats, selectedIntervalIndex: selectedIntervalIndex)
         }
         .removeDuplicates()
         .eraseToAnyPublisher()
@@ -268,7 +268,7 @@ private extension StoreStatsPeriodViewModel {
 
     func updateOrderDataIfNeeded() {
         let orderStats = orderStatsResultsController.fetchedObjects.first
-        let intervals = StatsV4DataHelper.sortOrderStatsIntervals(from: orderStats)
+        let intervals = StatsDataTextFormatter.sortOrderStatsIntervals(from: orderStats)
         orderStatsData = (stats: orderStats, intervals: intervals)
     }
 }

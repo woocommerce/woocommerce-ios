@@ -1,6 +1,7 @@
 import Foundation
 import Storage
 import Networking
+import WooFoundation
 
 // MARK: - JustInTimeMessageStore
 //
@@ -46,8 +47,8 @@ private extension JustInTimeMessageStore {
                      hook: JustInTimeMessageHook,
                      completion: @escaping (Result<[JustInTimeMessage], Error>) -> ()) {
         Task {
-            do {
-                let result = try await remote.loadAllJustInTimeMessages(
+            let result = await Result {
+                let messages = try await remote.loadAllJustInTimeMessages(
                         for: siteID,
                         messagePath: .init(app: .wooMobile,
                                            screen: screen,
@@ -55,13 +56,11 @@ private extension JustInTimeMessageStore {
                         query: justInTimeMessageQuery(),
                         locale: localeLanguageRegionIdentifier())
 
-                await MainActor.run {
-                    completion(.success(displayMessages(result)))
-                }
-            } catch {
-                await MainActor.run {
-                    completion(.failure(error))
-                }
+                return displayMessages(messages)
+            }
+
+            await MainActor.run {
+                completion(result)
             }
         }
     }
@@ -120,17 +119,14 @@ private extension JustInTimeMessageStore {
                         for siteID: Int64,
                         completion: @escaping (Result<Bool, Error>) -> ()) {
         Task {
-            do {
-                let result = try await remote.dismissJustInTimeMessage(for: siteID,
+            let result = await Result {
+                try await remote.dismissJustInTimeMessage(for: siteID,
                                                                    messageID: message.messageID,
                                                                    featureClass: message.featureClass)
-                await MainActor.run {
-                    completion(.success(result))
-                }
-            } catch {
-                await MainActor.run {
-                    completion(.failure(error))
-                }
+            }
+
+            await MainActor.run {
+                completion(result)
             }
         }
     }

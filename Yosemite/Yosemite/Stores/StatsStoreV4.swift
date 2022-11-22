@@ -1,7 +1,7 @@
 import Foundation
 import Networking
 import Storage
-
+import WooFoundation
 
 // MARK: - StatsStoreV4
 //
@@ -165,17 +165,16 @@ private extension StatsStoreV4 {
                 onCompletion(.success(()))
             } catch {
                 if let error = error as? DotcomError, error == .noRestRoute {
-                    do {
+                    let result = await Result {
                         try await loadTopEarnerStatsWithDeprecatedAPI(siteID: siteID,
                                                                       timeRange: timeRange,
                                                                       earliestDateToInclude: earliestDateToInclude,
                                                                       latestDateToInclude: latestDateToInclude,
                                                                       quantity: quantity,
                                                                       forceRefresh: forceRefresh)
-                        onCompletion(.success(()))
-                    } catch {
-                        onCompletion(.failure(error))
                     }
+
+                    onCompletion(result)
                 } else {
                     onCompletion(.failure(error))
                 }

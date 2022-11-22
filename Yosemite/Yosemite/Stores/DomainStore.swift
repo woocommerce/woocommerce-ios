@@ -1,5 +1,6 @@
 import Foundation
 import Networking
+import WooFoundation
 import protocol Storage.StorageManagerType
 
 /// Handles `DomainAction`.
@@ -39,12 +40,8 @@ public final class DomainStore: Store {
 private extension DomainStore {
     func loadFreeDomainSuggestions(query: String, completion: @escaping (Result<[FreeDomainSuggestion], Error>) -> Void) {
         Task { @MainActor in
-            do {
-                let suggestions = try await remote.loadFreeDomainSuggestions(query: query)
-                completion(.success(suggestions))
-            } catch {
-                completion(.failure(error))
-            }
+            let result = await Result { try await remote.loadFreeDomainSuggestions(query: query) }
+            completion(result)
         }
     }
 }

@@ -122,14 +122,11 @@ struct AccountCreationForm: View {
                 // CTA to submit the form.
                 Button(Localization.submitButtonTitle) {
                     Task { @MainActor in
-                        isPerformingTask = true
+                        let createAccountCompleted = (try? await viewModel.createAccount()) != nil
+                        isPerformingTask = false
 
-                        do {
-                            try await viewModel.createAccount()
-                            isPerformingTask = false
+                        if createAccountCompleted {
                             completion()
-                        } catch {
-                            isPerformingTask = false
                         }
                     }
                 }

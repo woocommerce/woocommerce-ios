@@ -9,6 +9,7 @@ final class StatsV4DataHelperTests: XCTestCase {
 
     private let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()) // Default is US
     private let currencyCode = CurrencySettings().currencyCode
+    private let locale = Locale(identifier: "en_US")
 
     // MARK: Revenue Stats
 
@@ -199,5 +200,55 @@ final class StatsV4DataHelperTests: XCTestCase {
 
         // Then
         XCTAssertEqual(conversionRate, "10%")
+    }
+
+    // MARK: Delta Calculations
+
+    func test_createDeltaText_returns_expected_positive_text() {
+        // Given
+        let previousValue: Double = 100
+        let currentValue: Double = 150
+
+        // When
+        let deltaText = StatsV4DataHelper.createDeltaText(from: previousValue, to: currentValue, locale: locale)
+
+        // Then
+        XCTAssertEqual(deltaText, "+50%")
+    }
+
+    func test_createDeltaText_returns_expected_negative_text() {
+        // Given
+        let previousValue: Double = 150
+        let currentValue: Double = 100
+
+        // When
+        let deltaText = StatsV4DataHelper.createDeltaText(from: previousValue, to: currentValue, locale: locale)
+
+        // Then
+        XCTAssertEqual(deltaText, "-33%")
+    }
+
+    func test_createDeltaText_returns_100_percent_change_when_previous_value_is_zero() {
+        // Given
+        let previousValue: Double = 0
+        let currentValue: Double = 10
+
+        // When
+        let deltaText = StatsV4DataHelper.createDeltaText(from: previousValue, to: currentValue, locale: locale)
+
+        // Then
+        XCTAssertEqual(deltaText, "+100%")
+    }
+
+    func test_createDeltaText_returns_negative_100_percent_change_when_current_value_is_zero() {
+        // Given
+        let previousValue: Double = 10
+        let currentValue: Double = 0
+
+        // When
+        let deltaText = StatsV4DataHelper.createDeltaText(from: previousValue, to: currentValue, locale: locale)
+
+        // Then
+        XCTAssertEqual(deltaText, "-100%")
     }
 }

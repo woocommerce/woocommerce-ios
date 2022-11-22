@@ -83,6 +83,30 @@ final class StatsV4DataHelper {
         }
     }
 
+    // MARK: Delta Calculations
+
+    /// Creates the text showing the percent change from the previous `Decimal` value to the current `Decimal` value
+    ///
+    static func createDeltaText(from previousValue: Decimal, to currentValue: Decimal, locale: Locale = Locale.current) -> String {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .percent
+        numberFormatter.positivePrefix = numberFormatter.plusSign
+        numberFormatter.locale = locale
+
+        guard previousValue > 0 else {
+            return numberFormatter.string(from: 1) ?? "+100%"
+        }
+
+        let deltaValue = ((currentValue - previousValue) / previousValue)
+        return numberFormatter.string(from: deltaValue as NSNumber) ?? Constants.placeholderText
+    }
+
+    /// Creates the text showing the percent change from the previous `Double` value to the current `Double` value
+    ///
+    static func createDeltaText(from previousValue: Double, to currentValue: Double, locale: Locale = Locale.current) -> String {
+        createDeltaText(from: Decimal(previousValue), to: Decimal(currentValue))
+    }
+
     // MARK: Stats Intervals
 
     /// Returns the order stats intervals, ordered by date.

@@ -29,19 +29,23 @@ struct AnalyticsHubView: View {
             VStack(alignment: .leading, spacing: Layout.vertialSpacing) {
                 VStack(spacing: 0) {
                     Divider()
-                    VStack {
-                        Text(timeRange.selectionType.rawValue)
-                        Text(timeRange.currentRangeDescription)
-                        Divider()
-                        Text(timeRange.previousRangeDescription)
 
+                    HStack {
+                        Image(uiImage: .calendar)
+                        VStack(alignment: .leading, spacing: .zero) {
+                            Text(timeRange.selectionType.rawValue)
+                            Text(timeRange.currentRangeDescription)
+                        }
                     }
-                    .padding(.leading)
-                    .frame(maxWidth: .infinity, minHeight: 84, alignment: .leading)
-                    .background(Color(uiColor: .listForeground))
+
+                    Divider()
+
+                    Text("Compared to \(timeRange.previousRangeDescription)")
+                        .padding(.leading)
 
                     Divider()
                 }
+                .background(Color(uiColor: .listForeground))
 
 
                 VStack(spacing: 0) {

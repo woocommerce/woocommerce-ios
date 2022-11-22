@@ -189,7 +189,7 @@ private extension DomainSelectorView {
         static let subtitle = NSLocalizedString(
             "This is where people will find you on the Internet. You can add another domain later.",
             comment: "Subtitle of the domain selector.")
-        static let searchPlaceholder = NSLocalizedString("Type to get suggestions", comment: "Placeholder of the search text field on the domain selector.")
+        static let searchPlaceholder = NSLocalizedString("Type a name for your store", comment: "Placeholder of the search text field on the domain selector.")
         static let suggestionsHeader = NSLocalizedString("SUGGESTIONS", comment: "Header label of the domain suggestions on the domain selector.")
         static let continueButtonTitle = NSLocalizedString("Continue", comment: "Title of the button to continue with a selected domain.")
     }

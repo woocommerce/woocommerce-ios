@@ -19,11 +19,7 @@ extension MockDomainRemote: DomainRemoteProtocol {
             XCTFail("Could not find result for loading domain suggestions.")
             throw NetworkError.notFound
         }
-        switch result {
-        case let .success(suggestions):
-            return suggestions
-        case let .failure(error):
-            throw error
-        }
+        
+        return try result.get()
     }
 }

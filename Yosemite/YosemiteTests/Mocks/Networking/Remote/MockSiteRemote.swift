@@ -20,11 +20,6 @@ extension MockSiteRemote: SiteRemoteProtocol {
             throw NetworkError.notFound
         }
 
-        switch result {
-        case let .success(response):
-            return response
-        case let .failure(error):
-            throw error
-        }
+        return try result.get()
     }
 }

@@ -104,12 +104,7 @@ extension MockAccountRemote: AccountRemoteProtocol {
             throw NetworkError.notFound
         }
 
-        switch result {
-        case let .success(suggestions):
-            return suggestions
-        case let .failure(error):
-            throw error
-        }
+        return try result.get()
     }
 
     func createAccount(email: String,

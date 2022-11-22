@@ -82,11 +82,20 @@ final class JetpackSetupRequiredViewModel: ULErrorViewModel {
     }
 
     func viewDidLoad(_ viewController: UIViewController?) {
-        // TODO: add tracks
+        if connectionOnly {
+            analytics.track(.loginJetpackConnectionErrorShown)
+        } else {
+            analytics.track(.loginJetpackRequiredScreenViewed)
+        }
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        // TODO: add tracks
+        if connectionOnly {
+            analytics.track(.loginJetpackConnectButtonTapped)
+        } else {
+            analytics.track(.loginJetpackSetupButtonTapped)
+        }
+
         guard let navigationController = viewController?.navigationController else {
             return
         }

@@ -8,7 +8,7 @@ final class LoginJetpackSetupViewModel: ObservableObject {
     /// Whether Jetpack is installed and activated and only connection needs to be handled.
     let connectionOnly: Bool
     private let stores: StoresManager
-    private let storeNavigationHandler: () -> Void
+    private let storeNavigationHandler: (_ connectedEmail: String?) -> Void
 
     let setupSteps: [JetpackInstallStep]
     let title: String
@@ -17,6 +17,8 @@ final class LoginJetpackSetupViewModel: ObservableObject {
     @Published private(set) var currentConnectionStep: ConnectionStep = .pending
     @Published private(set) var jetpackConnectionURL: URL?
     @Published var shouldPresentWebView = false
+
+    private var jetpackConnectedEmail: String?
 
     /// Attributed string for the description text
     lazy private(set) var descriptionAttributedString: NSAttributedString = {
@@ -35,7 +37,7 @@ final class LoginJetpackSetupViewModel: ObservableObject {
         return attributedString
     }()
 
-    init(siteURL: String, connectionOnly: Bool, stores: StoresManager = ServiceLocator.stores, onStoreNavigation: @escaping () -> Void = {}) {
+    init(siteURL: String, connectionOnly: Bool, stores: StoresManager = ServiceLocator.stores, onStoreNavigation: @escaping (String?) -> Void = { _ in }) {
         self.siteURL = siteURL
         self.connectionOnly = connectionOnly
         self.stores = stores
@@ -68,7 +70,7 @@ final class LoginJetpackSetupViewModel: ObservableObject {
     }
 
     func navigateToStore() {
-        storeNavigationHandler()
+        storeNavigationHandler(jetpackConnectedEmail)
     }
 }
 
@@ -146,11 +148,12 @@ private extension LoginJetpackSetupViewModel {
             guard let self else { return }
             switch result {
             case .success(let user):
-                guard user.wpcomUser?.email != nil else {
+                guard let connectedEmail = user.wpcomUser?.email else {
                     DDLogWarn("⚠️ Cannot find connected WPcom user")
                     return // TODO: add tracks and handle error
                 }
 
+                self.jetpackConnectedEmail = connectedEmail
                 self.currentConnectionStep = .authorized
                 self.currentSetupStep = .done
             case .failure(let error):

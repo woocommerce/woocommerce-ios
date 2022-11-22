@@ -5,7 +5,7 @@ import SwiftUI
 final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpackSetupView> {
     let viewModel: LoginJetpackSetupViewModel
 
-    init(siteURL: String, connectionOnly: Bool, onStoreNavigation: @escaping () -> Void) {
+    init(siteURL: String, connectionOnly: Bool, onStoreNavigation: @escaping (String?) -> Void) {
         self.viewModel = LoginJetpackSetupViewModel(siteURL: siteURL, connectionOnly: connectionOnly, onStoreNavigation: onStoreNavigation)
         super.init(rootView: LoginJetpackSetupView(viewModel: viewModel))
         rootView.webViewPresentationHandler = { [weak self] in

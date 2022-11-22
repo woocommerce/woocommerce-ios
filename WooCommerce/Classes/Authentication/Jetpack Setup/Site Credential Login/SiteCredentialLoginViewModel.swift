@@ -18,7 +18,7 @@ final class SiteCredentialLoginViewModel: NSObject, ObservableObject {
     @Published var shouldShowErrorAlert = false
 
     private let stores: StoresManager
-    private let successHandler: () -> Void
+    private let successHandler: (_ xmlrpc: String) -> Void
 
     private lazy var loginFacade = LoginFacade(dotcomClientID: ApiCredentials.dotcomAppId,
                                                dotcomSecret: ApiCredentials.dotcomSecret,
@@ -33,7 +33,7 @@ final class SiteCredentialLoginViewModel: NSObject, ObservableObject {
         return loginFields
     }
 
-    init(siteURL: String, stores: StoresManager = ServiceLocator.stores, onLoginSuccess: @escaping () -> Void = {}) {
+    init(siteURL: String, stores: StoresManager = ServiceLocator.stores, onLoginSuccess: @escaping (String) -> Void = { _ in }) {
         self.siteURL = siteURL
         self.stores = stores
         self.successHandler = onLoginSuccess
@@ -82,7 +82,7 @@ extension SiteCredentialLoginViewModel: LoginFacadeDelegate {
         let network = WordPressOrgNetwork(authenticator: authenticator)
         let action = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
         stores.dispatch(action)
-        successHandler()
+        successHandler(xmlrpc)
     }
 }
 

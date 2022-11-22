@@ -5,10 +5,27 @@ import MessageUI
 import WooFoundation
 import protocol Storage.StorageManagerType
 
+enum CollectOrderPaymentUseCaseError: Error {
+    case flowCanceledByUser
+}
+
+/// Protocol to abstract the `CollectOrderPaymentUseCase`.
+/// Currently only used to facilitate unit tests.
+///
+protocol CollectOrderPaymentProtocol {
+    /// Starts the collect payment flow.
+    ///
+    ///
+    /// - Parameter onCollect: Closure Invoked after the collect process has finished.
+    /// - Parameter onCompleted: Closure Invoked after the flow has been totally completed.
+    /// - Parameter onCancel: Closure invoked after the flow is cancelled
+    func collectPayment(onCollect: @escaping (Result<Void, Error>) -> (), onCancel: @escaping () -> (), onCompleted: @escaping () -> ())
+}
+
 /// Use case to collect payments from an order.
 /// Orchestrates reader connection, payment, UI alerts, receipt handling and analytics.
 ///
-final class LegacyCollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
+final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     /// Currency Formatter
     ///
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
@@ -156,7 +173,7 @@ final class LegacyCollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProto
 }
 
 // MARK: Private functions
-private extension LegacyCollectOrderPaymentUseCase {
+private extension CollectOrderPaymentUseCase {
     /// Checks whether the amount to be collected is valid: (not nil, convertible to decimal, higher than minimum amount ...)
     ///
     func isTotalAmountValid() -> Bool {
@@ -422,7 +439,7 @@ private extension LegacyCollectOrderPaymentUseCase {
 }
 
 // MARK: Interac handling
-private extension LegacyCollectOrderPaymentUseCase {
+private extension CollectOrderPaymentUseCase {
     /// For certain payment methods like Interac in Canada, the payment is captured on the client side (customer is charged).
     /// To prevent the order from multiple charges after the first client side success, the order is marked as paid locally in case of any
     /// potential failures until the next order refresh.
@@ -441,7 +458,7 @@ private extension LegacyCollectOrderPaymentUseCase {
 }
 
 // MARK: Analytics
-private extension LegacyCollectOrderPaymentUseCase {
+private extension CollectOrderPaymentUseCase {
     func observeConnectedReadersForAnalytics() {
         let action = CardPresentPaymentAction.observeConnectedReaders() { [weak self] readers in
             self?.connectedReader = readers.first
@@ -466,7 +483,7 @@ private extension LegacyCollectOrderPaymentUseCase {
 }
 
 // MARK: Definitions
-private extension LegacyCollectOrderPaymentUseCase {
+private extension CollectOrderPaymentUseCase {
     /// Mailing a receipt failed but the SDK didn't return a more specific error
     ///
     struct UnknownEmailError: Error {}
@@ -497,7 +514,7 @@ private extension LegacyCollectOrderPaymentUseCase {
     }
 }
 
-extension LegacyCollectOrderPaymentUseCase {
+extension CollectOrderPaymentUseCase {
     enum NotValidAmountError: Error, LocalizedError {
         case belowMinimumAmount(amount: String)
         case other

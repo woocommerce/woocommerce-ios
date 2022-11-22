@@ -10,13 +10,16 @@ final class DomainSelectorViewModel: ObservableObject {
     @Published var searchTerm: String = ""
 
     /// Domain names after domain suggestions are loaded remotely.
-    @Published private(set) var domains: [String] = []
+    @Published private var domains: [String] = []
 
     /// Error message from loading domain suggestions.
-    @Published private(set) var errorMessage: String?
+    @Published private var errorMessage: String?
 
     /// Whether domain suggestions are being loaded.
     @Published private(set) var isLoadingDomainSuggestions: Bool = false
+
+    /// The state of the main domain selector view based on the search query and loading state.
+    @Published private(set) var state: DomainSelectorView.ViewState = .placeholder
 
     /// Subscription for search query changes for domain search.
     private var searchQuerySubscription: AnyCancellable?
@@ -36,6 +39,8 @@ final class DomainSelectorViewModel: ObservableObject {
         // and thus the initial value isn't emitted in `observeDomainQuery` until setting the value afterward.
         observeDomainQuery()
         self.searchTerm = initialSearchTerm
+
+        configureState()
     }
 }
 
@@ -62,6 +67,22 @@ private extension DomainSelectorViewModel {
                     }
                 }
             }
+    }
+
+    func configureState() {
+        Publishers.CombineLatest4($searchTerm, $isLoadingDomainSuggestions, $errorMessage, $domains)
+            .map { searchTerm, isLoadingDomainSuggestions, errorMessage, domains in
+                if searchTerm.isEmpty {
+                    return .placeholder
+                } else if isLoadingDomainSuggestions {
+                    return .loading
+                } else if let errorMessage {
+                    return .error(message: errorMessage)
+                } else {
+                    return .results(domains: domains)
+                }
+            }
+            .assign(to: &$state)
     }
 
     @MainActor

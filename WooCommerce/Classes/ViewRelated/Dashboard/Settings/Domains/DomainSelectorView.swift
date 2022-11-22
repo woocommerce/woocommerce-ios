@@ -45,6 +45,18 @@ private extension DomainSelectorHostingController {
 
 /// Allows the user to search for a domain and then select one to continue.
 struct DomainSelectorView: View {
+    /// The state of the main view below the fixed header.
+    enum ViewState: Equatable {
+        /// When loading domain suggestions.
+        case loading
+        /// Shown when the search query is empty.
+        case placeholder
+        /// When there is an error loading domain suggestions.
+        case error(message: String)
+        /// When domain suggestions are displayed.
+        case results(domains: [String])
+    }
+
     /// Set in the hosting controller.
     var onDomainSelection: ((String) async -> Void) = { _ in }
 
@@ -87,7 +99,8 @@ struct DomainSelectorView: View {
                                                    iconSize: .init(width: 14, height: 14)))
                 .focused($textFieldIsFocused)
 
-                if viewModel.searchTerm.isEmpty {
+                switch viewModel.state {
+                case .placeholder:
                     // Placeholder image when search query is empty.
                     Spacer()
                         .frame(height: 30)
@@ -97,7 +110,7 @@ struct DomainSelectorView: View {
                         Image(uiImage: .domainSearchPlaceholderImage)
                         Spacer()
                     }
-                } else if viewModel.isLoadingDomainSuggestions {
+                case .loading:
                     // Progress indicator when loading domain suggestions.
                     Spacer()
                         .frame(height: 23)
@@ -107,7 +120,7 @@ struct DomainSelectorView: View {
                         ProgressView()
                         Spacer()
                     }
-                } else if let errorMessage = viewModel.errorMessage {
+                case .error(let errorMessage):
                     // Error message when there is an error loading domain suggestions.
                     Spacer()
                         .frame(height: 23)
@@ -118,7 +131,7 @@ struct DomainSelectorView: View {
                         .frame(maxWidth: .infinity, alignment: .center)
                         .multilineTextAlignment(.center)
                         .padding(Layout.defaultPadding)
-                } else {
+                case .results(let domains):
                     // Domain suggestions.
                     Text(Localization.suggestionsHeader)
                         .foregroundColor(Color(.secondaryLabel))
@@ -127,7 +140,7 @@ struct DomainSelectorView: View {
                         .padding(.vertical, insets: .init(top: 14, leading: 0, bottom: 8, trailing: 0))
 
                     LazyVStack {
-                        ForEach(viewModel.domains, id: \.self) { domain in
+                        ForEach(domains, id: \.self) { domain in
                             Button {
                                 textFieldIsFocused = false
                                 selectedDomainName = domain

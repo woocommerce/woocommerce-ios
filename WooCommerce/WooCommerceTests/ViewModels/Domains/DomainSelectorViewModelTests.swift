@@ -24,96 +24,16 @@ final class DomainSelectorViewModelTests: XCTestCase {
     func test_DomainAction_is_not_dispatched_when_searchTerm_is_empty() {
         // Given
         stores.whenReceivingAction(ofType: DomainAction.self) { action in
+            // Then
             XCTFail("Unexpected action: \(action)")
         }
 
         // When
         viewModel.searchTerm = ""
         viewModel.searchTerm = ""
-
-        // Then
-        XCTAssertEqual(viewModel.domains, [])
-        XCTAssertTrue(stores.receivedActions.isEmpty)
     }
 
-    func test_domain_suggestions_success_returns_domain_rows_for_free_domains() {
-        // Given
-        mockDomainSuggestionsSuccess(suggestions: [
-            .init(name: "free.com", isFree: true),
-            .init(name: "paid.com", isFree: false)
-        ])
-
-        // When
-        viewModel.searchTerm = "woo"
-
-        // Then
-        waitUntil {
-            self.viewModel.domains.isNotEmpty
-        }
-        XCTAssertEqual(viewModel.domains, ["free.com"])
-    }
-
-    func test_domain_suggestions_failure_does_not_update_domain_rows() {
-        // Given
-        mockDomainSuggestionsFailure(error: SampleError.first)
-
-        // When
-        viewModel.searchTerm = "woo"
-
-        // Then
-        XCTAssertEqual(viewModel.domains, [])
-    }
-
-    // MARK: - `errorMessage`
-
-    func test_domain_suggestions_failure_with_non_DotcomError_sets_default_error_message() {
-        // Given
-        mockDomainSuggestionsFailure(error: SampleError.first)
-
-        // When
-        viewModel.searchTerm = "woo"
-
-        // Then
-        waitUntil {
-            self.viewModel.errorMessage?.isNotEmpty == true
-        }
-        XCTAssertEqual(viewModel.errorMessage, DomainSelectorViewModel.Localization.defaultErrorMessage)
-    }
-
-    func test_domain_suggestions_failure_with_DotcomError_unknown_error_sets_error_message() {
-        // Given
-        mockDomainSuggestionsFailure(error: DotcomError.unknown(code: "", message: "error message"))
-
-        // When
-        viewModel.searchTerm = "woo"
-
-        // Then
-        waitUntil {
-            self.viewModel.errorMessage?.isNotEmpty == true
-        }
-        XCTAssertEqual(viewModel.errorMessage, "error message")
-    }
-
-    func test_domain_suggestions_error_message_is_reset_when_loading_domain_suggestions() {
-        // Given
-        mockDomainSuggestionsFailure(error: SampleError.first)
-
-        // When
-        viewModel.searchTerm = "woo"
-        waitUntil {
-            self.viewModel.errorMessage?.isNotEmpty == true
-        }
-
-        mockDomainSuggestionsSuccess(suggestions: [])
-        viewModel.searchTerm = "wooo"
-
-        // Then
-        waitUntil {
-            self.viewModel.errorMessage == nil
-        }
-    }
-
-    // MARK: `isLoadingDomainSuggestions`
+    // MARK: - `isLoadingDomainSuggestions`
 
     func test_isLoadingDomainSuggestions_is_toggled_when_loading_suggestions() {
         var loadingValues: [Bool] = []
@@ -129,6 +49,77 @@ final class DomainSelectorViewModelTests: XCTestCase {
         // Then
         waitUntil {
             loadingValues == [false, true, false]
+        }
+    }
+
+    // MARK: - `state`
+
+    func test_state_is_placeholder_when_searchTerm_is_empty() {
+        // When
+        viewModel.searchTerm = ""
+
+        // Then
+        XCTAssertEqual(viewModel.state, .placeholder)
+    }
+
+    func test_state_is_results_with_free_domain_only_on_domain_suggestions_success() {
+        // Given
+        mockDomainSuggestionsSuccess(suggestions: [
+            .init(name: "free.com", isFree: true),
+            .init(name: "paid.com", isFree: false)
+        ])
+
+        // When
+        viewModel.searchTerm = "woo"
+
+        // Then
+        waitUntil {
+            self.viewModel.state == .results(domains: ["free.com"])
+        }
+    }
+
+    func test_state_is_errorMessage_with_default_error_message_when_failure_is_not_DotcomError() {
+        // Given
+        mockDomainSuggestionsFailure(error: SampleError.first)
+
+        // When
+        viewModel.searchTerm = "woo"
+
+        // Then
+        waitUntil {
+            self.viewModel.state == .error(message: DomainSelectorViewModel.Localization.defaultErrorMessage)
+        }
+    }
+
+    func test_state_is_errorMessage_with_DotcomError_message_when_failure_is_DotcomError() {
+        // Given
+        mockDomainSuggestionsFailure(error: DotcomError.unknown(code: "", message: "error message"))
+
+        // When
+        viewModel.searchTerm = "woo"
+
+        // Then
+        waitUntil {
+            self.viewModel.state == .error(message: "error message")
+        }
+    }
+
+    func test_state_is_updated_from_errorMessage_to_results_when_changing_search_term_after_failure() {
+        // Given
+        mockDomainSuggestionsFailure(error: SampleError.first)
+
+        // When
+        viewModel.searchTerm = "woo"
+        waitUntil {
+            self.viewModel.state == .error(message: DomainSelectorViewModel.Localization.defaultErrorMessage)
+        }
+
+        mockDomainSuggestionsSuccess(suggestions: [])
+        viewModel.searchTerm = "wooo"
+
+        // Then
+        waitUntil {
+            self.viewModel.state == .results(domains: [])
         }
     }
 }

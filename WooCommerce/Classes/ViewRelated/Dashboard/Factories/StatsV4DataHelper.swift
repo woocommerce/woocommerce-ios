@@ -24,6 +24,16 @@ final class StatsV4DataHelper {
         }
     }
 
+    /// Creates the text to display for the total revenue delta.
+    ///
+    static func createTotalRevenueDelta(from previousPeriod: OrderStatsV4?, to currentPeriod: OrderStatsV4?, locale: Locale = .current) -> String {
+        if let previousRevenue = totalRevenue(at: nil, orderStats: previousPeriod), let currentRevenue = totalRevenue(at: nil, orderStats: currentPeriod) {
+            return createDeltaText(from: previousRevenue, to: currentRevenue, locale: locale)
+        } else {
+            return Constants.placeholderText
+        }
+    }
+
     // MARK: Orders Stats
 
     /// Creates the text to display for the order count.
@@ -31,6 +41,16 @@ final class StatsV4DataHelper {
     static func createOrderCountText(orderStats: OrderStatsV4?, selectedIntervalIndex: Int?) -> String {
         if let count = orderCount(at: selectedIntervalIndex, orderStats: orderStats) {
             return Double(count).humanReadableString()
+        } else {
+            return Constants.placeholderText
+        }
+    }
+
+    /// Creates the text to display for the order count delta.
+    ///
+    static func createOrderCountDelta(from previousPeriod: OrderStatsV4?, to currentPeriod: OrderStatsV4?, locale: Locale = .current) -> String {
+        if let previousCount = orderCount(at: nil, orderStats: previousPeriod), let currentCount = orderCount(at: nil, orderStats: currentPeriod) {
+            return createDeltaText(from: previousCount, to: currentCount, locale: locale)
         } else {
             return Constants.placeholderText
         }
@@ -48,6 +68,16 @@ final class StatsV4DataHelper {
         }
     }
 
+    /// Creates the text to display for the average order value delta.
+    ///
+    static func createAverageOrderValueDelta(from previousPeriod: OrderStatsV4?, to currentPeriod: OrderStatsV4?, locale: Locale = .current) -> String {
+        if let previousAverage = averageOrderValue(orderStats: previousPeriod), let currentAverage = averageOrderValue(orderStats: currentPeriod) {
+            return createDeltaText(from: previousAverage, to: currentAverage, locale: locale)
+        } else {
+            return Constants.placeholderText
+        }
+    }
+
     // MARK: Views and Visitors Stats
 
     /// Creates the text to display for the visitor count.
@@ -55,6 +85,16 @@ final class StatsV4DataHelper {
     static func createVisitorCountText(siteStats: SiteVisitStats?, selectedIntervalIndex: Int?) -> String {
         if let visitorCount = visitorCount(at: selectedIntervalIndex, siteStats: siteStats) {
             return Double(visitorCount).humanReadableString()
+        } else {
+            return Constants.placeholderText
+        }
+    }
+
+    /// Creates the text to display for the visitor count delta.
+    ///
+    static func createVisitorCountDelta(from previousPeriod: SiteVisitStats?, to currentPeriod: SiteVisitStats?, locale: Locale = .current) -> String {
+        if let previousCount = visitorCount(at: nil, siteStats: previousPeriod), let currentCount = visitorCount(at: nil, siteStats: currentPeriod) {
+            return createDeltaText(from: previousCount, to: currentCount, locale: locale)
         } else {
             return Constants.placeholderText
         }
@@ -82,12 +122,15 @@ final class StatsV4DataHelper {
             return Constants.placeholderText
         }
     }
+}
+
+extension StatsV4DataHelper {
 
     // MARK: Delta Calculations
 
     /// Creates the text showing the percent change from the previous `Decimal` value to the current `Decimal` value
     ///
-    static func createDeltaText(from previousValue: Decimal, to currentValue: Decimal, locale: Locale = Locale.current) -> String {
+    static func createDeltaText(from previousValue: Decimal, to currentValue: Decimal, locale: Locale = .current) -> String {
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .percent
         numberFormatter.positivePrefix = numberFormatter.plusSign
@@ -103,7 +146,7 @@ final class StatsV4DataHelper {
 
     /// Creates the text showing the percent change from the previous `Double` value to the current `Double` value
     ///
-    static func createDeltaText(from previousValue: Double, to currentValue: Double, locale: Locale = Locale.current) -> String {
+    static func createDeltaText(from previousValue: Double, to currentValue: Double, locale: Locale = .current) -> String {
         createDeltaText(from: Decimal(previousValue), to: Decimal(currentValue))
     }
 

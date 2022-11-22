@@ -63,6 +63,18 @@ final class StatsV4DataHelperTests: XCTestCase {
         XCTAssertEqual(totalRevenue, "$25")
     }
 
+    func test_createTotalRevenueDelta_returns_expected_delta_text() {
+        // Given
+        let previousOrderStats = OrderStatsV4.fake().copy(totals: .fake().copy(grossRevenue: 10))
+        let currentOrderStats = OrderStatsV4.fake().copy(totals: .fake().copy(grossRevenue: 15))
+
+        // When
+        let totalRevenueDelta = StatsV4DataHelper.createTotalRevenueDelta(from: previousOrderStats, to: currentOrderStats, locale: locale)
+
+        // Then
+        XCTAssertEqual(totalRevenueDelta, "+50%")
+    }
+
     // MARK: Orders Stats
 
     func test_createOrderCountText_returns_expected_order_count() {
@@ -95,6 +107,18 @@ final class StatsV4DataHelperTests: XCTestCase {
         XCTAssertEqual(orderCount, "1")
     }
 
+    func test_createOrderCountDelta_returns_expected_delta_text() {
+        // Given
+        let previousOrderStats = OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 10))
+        let currentOrderStats = OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 15))
+
+        // When
+        let orderCountDelta = StatsV4DataHelper.createOrderCountDelta(from: previousOrderStats, to: currentOrderStats, locale: locale)
+
+        // Then
+        XCTAssertEqual(orderCountDelta, "+50%")
+    }
+
     func test_createAverageOrderValueText_does_not_return_decimal_points_for_integer_value() {
         // Given
         let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(averageOrderValue: 62))
@@ -119,6 +143,18 @@ final class StatsV4DataHelperTests: XCTestCase {
 
         // Then
         XCTAssertEqual(averageOrderValue, "$62.86")
+    }
+
+    func test_createAverageOrderValueDelta_returns_expected_delta_text() {
+        // Given
+        let previousOrderStats = OrderStatsV4.fake().copy(totals: .fake().copy(averageOrderValue: 10.00))
+        let currentOrderStats = OrderStatsV4.fake().copy(totals: .fake().copy(averageOrderValue: 15.00))
+
+        // When
+        let averageOrderValueDelta = StatsV4DataHelper.createAverageOrderValueDelta(from: previousOrderStats, to: currentOrderStats, locale: locale)
+
+        // Then
+        XCTAssertEqual(averageOrderValueDelta, "+50%")
     }
 
     // MARK: Views and Visitors Stats
@@ -149,6 +185,18 @@ final class StatsV4DataHelperTests: XCTestCase {
 
         // Then
         XCTAssertEqual(visitorCount, "17")
+    }
+
+    func test_createVisitorCountDelta_returns_expected_delta_text() {
+        // Given
+        let previousSiteStats = SiteVisitStats.fake().copy(items: [.fake().copy(period: "0", visitors: 10)])
+        let currentSiteStats = SiteVisitStats.fake().copy(items: [.fake().copy(period: "0", visitors: 15)])
+
+        // When
+        let visitorCountDelta = StatsV4DataHelper.createVisitorCountDelta(from: previousSiteStats, to: currentSiteStats, locale: locale)
+
+        // Then
+        XCTAssertEqual(visitorCountDelta, "+50%")
     }
 
     // MARK: Conversion Stats

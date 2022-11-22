@@ -106,6 +106,12 @@ extension Date {
 
         return selfYear == otherYear
     }
+    
+    /// Returns `true` if `self` is in the same month as `other`.
+    ///
+    func isSameMonth(as otherDate: Date, using calendar: Calendar = .current) -> Bool {
+        calendar.isDate(self, equalTo: otherDate, toGranularity: .month)
+    }
 
     /// Returns `true` if `self` is in the same day as `other`.
     ///

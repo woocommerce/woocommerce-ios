@@ -87,18 +87,18 @@ public class AnalyticsHubTimeRange {
 
         dateFormatter.dateFormat = "MMM d"
         let startDateDescription = dateFormatter.string(from: timeRange.start)
-        let endDateDescription = generateEndDateDescription(endDate: timeRange.end, dateFormatter: dateFormatter)
+        let endDateDescription = generateEndDateDescription(timeRange: timeRange, dateFormatter: dateFormatter)
 
         return "\(startDateDescription) - \(endDateDescription)"
     }
 
-    private func generateEndDateDescription(endDate: Date, dateFormatter: DateFormatter) -> String {
-        if selectionType == .yearToDate {
-            dateFormatter.dateFormat = "MMM d, yyyy"
-            return dateFormatter.string(from: endDate)
-        } else {
+    private func generateEndDateDescription(timeRange: TimeRange, dateFormatter: DateFormatter) -> String {
+        if timeRange.start.isSameMonth(as: timeRange.end, using: currentCalendar) {
             dateFormatter.dateFormat = "d, yyyy"
-            return dateFormatter.string(from: endDate)
+            return dateFormatter.string(from: timeRange.end)
+        } else {
+            dateFormatter.dateFormat = "MMM d, yyyy"
+            return dateFormatter.string(from: timeRange.end)
         }
     }
 }

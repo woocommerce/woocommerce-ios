@@ -118,6 +118,20 @@ final class AnalyticsHubTimeRangeTests: XCTestCase {
         XCTAssertEqual(previousRangeDescription, "Jul 18 - 22, 2022")
     }
 
+    func test_when_time_range_inits_with_thisWeek_with_different_months_then_generate_expected_descriptions() {
+        // Given
+        let currentDate = dateFrom("2022-07-02")
+        let timeRange = AnalyticsHubTimeRange(selectedTimeRange: .thisWeek, currentDate: currentDate)
+
+        // When
+        let currentRangeDescription = timeRange.currentRangeDescription
+        let previousRangeDescription = timeRange.previousRangeDescription
+
+        // Then
+        XCTAssertEqual(currentRangeDescription, "Jun 27 - Jul 2, 2022")
+        XCTAssertEqual(previousRangeDescription, "Jun 20 - 25, 2022")
+    }
+
     func test_when_time_range_inits_with_today_then_generate_expected_descriptions() {
         // Given
         let currentDate = dateFrom("2022-07-01")

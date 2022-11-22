@@ -11,7 +11,7 @@ public class AnalyticsHubTimeRange {
     private let currentTimezone = TimeZone.current
     private let currentDate: Date
     private let currentCalendar: Calendar
-    let selectionType: SelectionType
+    private let selectionType: SelectionType
 
     lazy private(set) var currentTimeRange: TimeRange = {
         generateCurrentTimeRangeFrom(selectionType: selectionType)
@@ -28,6 +28,10 @@ public class AnalyticsHubTimeRange {
     lazy private(set) var previousRangeDescription: String = {
         generateDescriptionOf(timeRange: previousTimeRange)
     }()
+
+    var selectionDescription: String {
+        selectionType.description
+    }
 
     init(selectedTimeRange: StatsTimeRangeV4,
          currentDate: Date = Date(),
@@ -96,7 +100,7 @@ public class AnalyticsHubTimeRange {
     }
 }
 
-extension AnalyticsHubTimeRange {
+private extension AnalyticsHubTimeRange {
 
     enum SelectionType {
         case today

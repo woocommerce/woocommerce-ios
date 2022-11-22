@@ -63,7 +63,7 @@ struct TimeRangeCard_Previews: PreviewProvider {
     static var previews: some View {
         let timeRange = AnalyticsHubTimeRange(selectedTimeRange: .thisMonth)
         TimeRangeCard(
-            timeRangeTitle: timeRange.selectionType.description,
+            timeRangeTitle: timeRange.selectionDescription,
             currentRangeDescription: timeRange.currentRangeDescription, previousRangeDescription: timeRange.previousRangeDescription)
     }
 }

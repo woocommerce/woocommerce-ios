@@ -32,16 +32,22 @@ struct AnalyticsHubView: View {
 
                     HStack {
                         Image(uiImage: .calendar)
+                            .padding(.trailing)
+                            .frame(alignment: .leading)
                         VStack(alignment: .leading, spacing: .zero) {
                             Text(timeRange.selectionType.rawValue)
                             Text(timeRange.currentRangeDescription)
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
+                    .padding(.leading)
+                    .frame(minHeight: 80)
 
                     Divider()
 
                     Text("Compared to \(timeRange.previousRangeDescription)")
                         .padding(.leading)
+                        .frame(maxWidth: .infinity, minHeight: 48, alignment: .leading)
 
                     Divider()
                 }

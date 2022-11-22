@@ -277,13 +277,13 @@ private extension SettingsViewModel {
                            footerHeight: CGFloat.leastNonzeroMagnitude)
         }()
 
-        // Remove Apple ID Access
-        let removeAppleIDAccessSection: Section? = {
+        // Close account
+        let closeAccountSection: Section? = {
             guard appleIDCredentialChecker.hasAppleUserID() else {
                 return nil
             }
             return Section(title: nil,
-                           rows: [.removeAppleIDAccess],
+                           rows: [.closeAccount],
                            footerHeight: CGFloat.leastNonzeroMagnitude)
         }()
 
@@ -299,7 +299,7 @@ private extension SettingsViewModel {
             appSettingsSection,
             aboutTheAppSection,
             otherSection,
-            removeAppleIDAccessSection,
+            closeAccountSection,
             logoutSection
         ]
         .compactMap { $0 }

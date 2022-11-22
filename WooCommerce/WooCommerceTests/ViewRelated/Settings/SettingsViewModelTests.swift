@@ -136,9 +136,9 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.installJetpack) })
     }
 
-    // MARK: - `removeAppleIDAccess` row visibility
+    // MARK: - `closeAccount` row visibility
 
-    func test_removeAppleIDAccess_section_is_shown_when_user_apple_id_exists() {
+    func test_closeAccount_section_is_shown_when_user_apple_id_exists() {
         // Given
         let appleIDCredentialChecker = MockAppleIDCredentialChecker(hasAppleUserID: true)
         let viewModel = SettingsViewModel(stores: stores,
@@ -149,10 +149,10 @@ final class SettingsViewModelTests: XCTestCase {
         viewModel.onViewDidLoad()
 
         // Then
-        XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.removeAppleIDAccess) })
+        XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.closeAccount) })
     }
 
-    func test_removeAppleIDAccess_section_is_not_shown_when_user_apple_id_does_not_exist() {
+    func test_closeAccount_section_is_hidden_when_apple_id_does_not_exist_and_store_creation_features_disabled() {
         // Given
         let appleIDCredentialChecker = MockAppleIDCredentialChecker(hasAppleUserID: false)
         let viewModel = SettingsViewModel(stores: stores,
@@ -163,7 +163,7 @@ final class SettingsViewModelTests: XCTestCase {
         viewModel.onViewDidLoad()
 
         // Then
-        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.removeAppleIDAccess) })
+        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.closeAccount) })
     }
 }
 

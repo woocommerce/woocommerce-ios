@@ -1,8 +1,8 @@
 import UIKit
 import protocol Yosemite.StoresManager
 
-/// Coordinates navigation for removing Apple ID access from various entry points (settings and empty stores screens).
-@MainActor final class RemoveAppleIDAccessCoordinator {
+/// Coordinates navigation for closing a WPCOM account from various entry points (settings and empty stores screens).
+@MainActor final class CloseAccountCoordinator {
     private let sourceViewController: UIViewController
     private let removeAction: () async -> Result<Void, Error>
     private let onRemoveSuccess: () -> Void
@@ -30,7 +30,7 @@ import protocol Yosemite.StoresManager
     }
 }
 
-private extension RemoveAppleIDAccessCoordinator {
+private extension CloseAccountCoordinator {
     func presentConfirmationAlert() {
         // TODO: 7068 - analytics
 
@@ -81,7 +81,7 @@ private extension RemoveAppleIDAccessCoordinator {
     }
 
     func presentInProgressUI() {
-        let viewProperties = InProgressViewProperties(title: Localization.RemoveAppleIDAccessInProgressView.title, message: "")
+        let viewProperties = InProgressViewProperties(title: Localization.InProgressView.title, message: "")
         let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
         inProgressViewController.modalPresentationStyle = .overFullScreen
         sourceViewController.present(inProgressViewController, animated: true)
@@ -135,9 +135,9 @@ private extension RemoveAppleIDAccessCoordinator {
     }
 }
 
-private extension RemoveAppleIDAccessCoordinator {
+private extension CloseAccountCoordinator {
     enum Localization {
-        enum RemoveAppleIDAccessInProgressView {
+        enum InProgressView {
             static let title = NSLocalizedString(
                 "Closing account...",
                 comment: "Title of the Close Account in-progress view."
@@ -181,12 +181,12 @@ private extension RemoveAppleIDAccessCoordinator {
     }
 }
 
-private extension RemoveAppleIDAccessCoordinator {
+private extension CloseAccountCoordinator {
     enum Constants {
         static let dotcomAPIErrorCodeKey = "WordPressComRestApiErrorCodeKey"
     }
 }
 
-enum RemoveAppleIDAccessError: Error {
+enum CloseAccountError: Error {
     case presenterDeallocated
 }

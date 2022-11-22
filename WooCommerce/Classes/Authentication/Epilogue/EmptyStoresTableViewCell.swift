@@ -28,19 +28,19 @@ final class EmptyStoresTableViewCell: UITableViewCell {
 
     @IBOutlet private weak var stackView: UIStackView!
     @IBOutlet private weak var emptyStoresImageView: UIImageView!
-    @IBOutlet private weak var removeAppleIDAccessButton: UIButton!
+    @IBOutlet private weak var closeAccountButton: UIButton!
 
     override func awakeFromNib() {
         super.awakeFromNib()
 
         configureStackView()
         configureImageView()
-        configureRemoveAppleIDAccessButton()
-        updateRemoveAppleIDAccessButtonVisibility(isVisible: false)
+        configureCloseAccountButton()
+        updateCloseAccountButtonVisibility(isVisible: false)
     }
 
-    func updateRemoveAppleIDAccessButtonVisibility(isVisible: Bool) {
-        removeAppleIDAccessButton.isHidden = !isVisible
+    func updateCloseAccountButtonVisibility(isVisible: Bool) {
+        closeAccountButton.isHidden = !isVisible
     }
 }
 
@@ -57,10 +57,10 @@ private extension EmptyStoresTableViewCell {
         emptyStoresImageView.image = .emptyStorePickerImage
     }
 
-    func configureRemoveAppleIDAccessButton() {
-        removeAppleIDAccessButton.applyLinkButtonStyle()
-        removeAppleIDAccessButton.setTitle(Localization.closeAccountTitle, for: .normal)
-        removeAppleIDAccessButton.on(.touchUpInside) { [weak self] _ in
+    func configureCloseAccountButton() {
+        closeAccountButton.applyLinkButtonStyle()
+        closeAccountButton.setTitle(Localization.closeAccountTitle, for: .normal)
+        closeAccountButton.on(.touchUpInside) { [weak self] _ in
             self?.onCloseAccountButtonTapped?()
         }
     }

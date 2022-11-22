@@ -83,6 +83,15 @@ public enum WooAnalyticsStat: String {
     case whatIsWPComOnInvalidEmailScreenTapped = "what_is_wordpress_com_on_invalid_email_screen"
     case createAccountOnInvalidEmailScreenTapped = "create_account_on_invalid_email_screen"
 
+    // MARK: Site credentials
+    //
+    case loginJetpackSiteCredentialScreenViewed = "login_jetpack_site_credential_screen_viewed"
+    case loginJetpackSiteCredentialScreenDismissed = "login_jetpack_site_credential_screen_dismissed"
+    case loginJetpackSiteCredentialInstallTapped = "login_jetpack_site_credential_install_button_tapped"
+    case loginJetpackSiteCredentialResetPasswordTapped = "login_jetpack_site_credential_reset_password_button_tapped"
+    case loginJetpackSiteCredentialDidShowErrorAlert = "login_jetpack_site_credential_did_show_error_alert"
+    case loginJetpackSiteCredentialDidFinishLogin = "login_jetpack_site_credential_did_finish_login"
+
     // MARK: Dashboard View Events
     //
     case dashboardSelected = "main_tab_dashboard_selected"

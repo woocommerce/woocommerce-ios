@@ -3,9 +3,9 @@ import Yosemite
 import WooFoundation
 @testable import WooCommerce
 
-/// `StatsV4DataHelper` tests.
+/// `StatsDataTextFormatter` tests.
 /// 
-final class StatsV4DataHelperTests: XCTestCase {
+final class StatsDataTextFormatterTests: XCTestCase {
 
     private let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()) // Default is US
     private let currencyCode = CurrencySettings().currencyCode
@@ -18,7 +18,7 @@ final class StatsV4DataHelperTests: XCTestCase {
         let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(grossRevenue: 62))
 
         // When
-        let totalRevenue = StatsV4DataHelper.createTotalRevenueText(orderStats: orderStats,
+        let totalRevenue = StatsDataTextFormatter.createTotalRevenueText(orderStats: orderStats,
                                                                     selectedIntervalIndex: nil,
                                                                     currencyFormatter: currencyFormatter,
                                                                     currencyCode: currencyCode.rawValue)
@@ -32,7 +32,7 @@ final class StatsV4DataHelperTests: XCTestCase {
         let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(grossRevenue: 62.856))
 
         // When
-        let totalRevenue = StatsV4DataHelper.createTotalRevenueText(orderStats: orderStats,
+        let totalRevenue = StatsDataTextFormatter.createTotalRevenueText(orderStats: orderStats,
                                                                     selectedIntervalIndex: nil,
                                                                     currencyFormatter: currencyFormatter,
                                                                     currencyCode: currencyCode.rawValue)
@@ -54,7 +54,7 @@ final class StatsV4DataHelperTests: XCTestCase {
         let selectedIntervalIndex = 1 // Corresponds to the second earliest interval, which is the first interval in `OrderStatsV4`.
 
         // When
-        let totalRevenue = StatsV4DataHelper.createTotalRevenueText(orderStats: orderStats,
+        let totalRevenue = StatsDataTextFormatter.createTotalRevenueText(orderStats: orderStats,
                                                                     selectedIntervalIndex: selectedIntervalIndex,
                                                                     currencyFormatter: currencyFormatter,
                                                                     currencyCode: currencyCode.rawValue)
@@ -82,7 +82,7 @@ final class StatsV4DataHelperTests: XCTestCase {
         let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 3))
 
         // When
-        let orderCount = StatsV4DataHelper.createOrderCountText(orderStats: orderStats, selectedIntervalIndex: nil)
+        let orderCount = StatsDataTextFormatter.createOrderCountText(orderStats: orderStats, selectedIntervalIndex: nil)
 
         // Then
         XCTAssertEqual(orderCount, "3")
@@ -101,7 +101,7 @@ final class StatsV4DataHelperTests: XCTestCase {
         let selectedIntervalIndex = 1 // Corresponds to the second earliest interval, which is the first interval in `OrderStatsV4`.
 
         // When
-        let orderCount = StatsV4DataHelper.createOrderCountText(orderStats: orderStats, selectedIntervalIndex: selectedIntervalIndex)
+        let orderCount = StatsDataTextFormatter.createOrderCountText(orderStats: orderStats, selectedIntervalIndex: selectedIntervalIndex)
 
         // Then
         XCTAssertEqual(orderCount, "1")
@@ -124,7 +124,7 @@ final class StatsV4DataHelperTests: XCTestCase {
         let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(averageOrderValue: 62))
 
         // When
-        let averageOrderValue = StatsV4DataHelper.createAverageOrderValueText(orderStats: orderStats,
+        let averageOrderValue = StatsDataTextFormatter.createAverageOrderValueText(orderStats: orderStats,
                                                                               currencyFormatter: currencyFormatter,
                                                                               currencyCode: currencyCode.rawValue)
 
@@ -137,7 +137,7 @@ final class StatsV4DataHelperTests: XCTestCase {
         let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(averageOrderValue: 62.856))
 
         // When
-        let averageOrderValue = StatsV4DataHelper.createAverageOrderValueText(orderStats: orderStats,
+        let averageOrderValue = StatsDataTextFormatter.createAverageOrderValueText(orderStats: orderStats,
                                                                               currencyFormatter: currencyFormatter,
                                                                               currencyCode: currencyCode.rawValue)
 
@@ -167,7 +167,7 @@ final class StatsV4DataHelperTests: XCTestCase {
                                                                          .fake().copy(period: "0", visitors: 5)])
 
         // When
-        let visitorCount = StatsV4DataHelper.createVisitorCountText(siteStats: siteVisitStats, selectedIntervalIndex: nil)
+        let visitorCount = StatsDataTextFormatter.createVisitorCountText(siteStats: siteVisitStats, selectedIntervalIndex: nil)
 
         // Then
         XCTAssertEqual(visitorCount, "22")
@@ -181,7 +181,7 @@ final class StatsV4DataHelperTests: XCTestCase {
 
 
         // When
-        let visitorCount = StatsV4DataHelper.createVisitorCountText(siteStats: siteVisitStats, selectedIntervalIndex: selectedIntervalIndex)
+        let visitorCount = StatsDataTextFormatter.createVisitorCountText(siteStats: siteVisitStats, selectedIntervalIndex: selectedIntervalIndex)
 
         // Then
         XCTAssertEqual(visitorCount, "17")
@@ -207,7 +207,7 @@ final class StatsV4DataHelperTests: XCTestCase {
         let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 3))
 
         // When
-        let conversionRate = StatsV4DataHelper.createConversionRateText(orderStats: orderStats, siteStats: siteVisitStats, selectedIntervalIndex: nil)
+        let conversionRate = StatsDataTextFormatter.createConversionRateText(orderStats: orderStats, siteStats: siteVisitStats, selectedIntervalIndex: nil)
 
         // Then
         XCTAssertEqual(conversionRate, "0%")
@@ -219,7 +219,7 @@ final class StatsV4DataHelperTests: XCTestCase {
         let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 3557))
 
         // When
-        let conversionRate = StatsV4DataHelper.createConversionRateText(orderStats: orderStats, siteStats: siteVisitStats, selectedIntervalIndex: nil)
+        let conversionRate = StatsDataTextFormatter.createConversionRateText(orderStats: orderStats, siteStats: siteVisitStats, selectedIntervalIndex: nil)
 
         // Then
         XCTAssertEqual(conversionRate, "35.6%") // order count: 3557, visitor count: 10000 => 0.3557 (35.57%)
@@ -231,7 +231,7 @@ final class StatsV4DataHelperTests: XCTestCase {
         let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 3))
 
         // When
-        let conversionRate = StatsV4DataHelper.createConversionRateText(orderStats: orderStats, siteStats: siteVisitStats, selectedIntervalIndex: nil)
+        let conversionRate = StatsDataTextFormatter.createConversionRateText(orderStats: orderStats, siteStats: siteVisitStats, selectedIntervalIndex: nil)
 
         // Then
         XCTAssertEqual(conversionRate, "30%") // order count: 3, visitor count: 10 => 0.3 (30%)
@@ -244,7 +244,7 @@ final class StatsV4DataHelperTests: XCTestCase {
                                                   intervals: [.fake().copy(subtotals: .fake().copy(totalOrders: 1))])
 
         // When
-        let conversionRate = StatsV4DataHelper.createConversionRateText(orderStats: orderStats, siteStats: siteVisitStats, selectedIntervalIndex: 0)
+        let conversionRate = StatsDataTextFormatter.createConversionRateText(orderStats: orderStats, siteStats: siteVisitStats, selectedIntervalIndex: 0)
 
         // Then
         XCTAssertEqual(conversionRate, "10%")

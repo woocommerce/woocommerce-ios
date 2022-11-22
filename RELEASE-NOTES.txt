@@ -2,7 +2,7 @@
 
 11.4
 -----
-
+- [*] In-Person Payments: We removed any references to Simple Payments from Orders, and the red badge from the Menu tab and Menu Payments icon announcing the new Payments section. [https://github.com/woocommerce/woocommerce-ios/pull/8183] 
 
 11.3
 -----

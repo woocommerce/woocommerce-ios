@@ -49,7 +49,8 @@ public class AnalyticsHubTimeRange {
         case .today:
             return TimeRange(start: currentDate.startOfDay(timezone: currentTimezone), end: currentDate)
         case .weekToDate:
-            return TimeRange(start: currentDate.startOfWeek(timezone: currentTimezone), end: currentDate)
+            let weekStart = currentDate.startOfWeek(timezone: currentTimezone, calendar: Calendar(identifier: .iso8601))
+            return TimeRange(start: weekStart, end: currentDate)
         case .monthToDate:
             return TimeRange(start: currentDate.startOfMonth(timezone: currentTimezone), end: currentDate)
         case .yearToDate:
@@ -64,7 +65,8 @@ public class AnalyticsHubTimeRange {
             return TimeRange(start: oneDayAgo.startOfDay(timezone: currentTimezone), end: oneDayAgo)
         case .weekToDate:
             let oneWeekAgo = Calendar.current.date(byAdding: .day, value: -7, to: currentDate)!
-            return TimeRange(start: oneWeekAgo.startOfWeek(timezone: currentTimezone), end: oneWeekAgo)
+            let weekStart = oneWeekAgo.startOfWeek(timezone: currentTimezone, calendar: Calendar(identifier: .iso8601))
+            return TimeRange(start: weekStart, end: oneWeekAgo)
         case .monthToDate:
             let oneMonthAgo = Calendar.current.date(byAdding: .month, value: -1, to: currentDate)!
             return TimeRange(start: oneMonthAgo.startOfMonth(timezone: currentTimezone), end: oneMonthAgo)

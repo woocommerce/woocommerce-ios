@@ -1107,6 +1107,12 @@ extension UIImage {
     static var wpcomLogoImage: UIImage {
         UIImage(named: "wpcom-logo")!
     }
+
+    /// Calendar Icon
+    ///
+    static var calendar: UIImage {
+        return UIImage.gridicon(.calendar)
+    }
 }
 
 private extension UIImage {

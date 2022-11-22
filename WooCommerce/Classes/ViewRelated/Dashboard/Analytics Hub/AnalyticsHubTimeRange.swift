@@ -6,13 +6,6 @@ struct TimeRange {
     let end: Date
 }
 
-public enum SelectionType: String {
-    case today = "Today"
-    case weekToDate = "Week to Date"
-    case monthToDate = "Month to Date"
-    case yearToDate = "Year to Date"
-}
-
 public class AnalyticsHubTimeRange {
 
     private let currentTimezone = TimeZone.current
@@ -40,7 +33,7 @@ public class AnalyticsHubTimeRange {
          currentDate: Date = Date(),
          currentCalendar: Calendar = Calendar(identifier: .iso8601)
     ) {
-        self.selectionType = selectedTimeRange.toAnalyticsHubSelectionType()
+        self.selectionType = SelectionType.from(selectedTimeRange)
         self.currentDate = currentDate
         self.currentCalendar = currentCalendar
     }
@@ -103,17 +96,47 @@ public class AnalyticsHubTimeRange {
     }
 }
 
-private extension StatsTimeRangeV4 {
-    func toAnalyticsHubSelectionType() -> SelectionType {
-        switch self {
-        case .today:
-            return .today
-        case .thisWeek:
-            return .weekToDate
-        case .thisMonth:
-            return .monthToDate
-        case .thisYear:
-            return .yearToDate
+extension AnalyticsHubTimeRange {
+
+    enum SelectionType {
+        case today
+        case weekToDate
+        case monthToDate
+        case yearToDate
+
+        var description: String {
+            get {
+                switch self {
+                case .today:
+                    return Localization.today
+                case .weekToDate:
+                    return Localization.weekToDate
+                case .monthToDate:
+                    return Localization.monthToDate
+                case .yearToDate:
+                    return Localization.yearToDate
+                }
+            }
         }
+
+        static func from(_ statsTimeRange: StatsTimeRangeV4) -> SelectionType {
+            switch statsTimeRange {
+            case .today:
+                return .today
+            case .thisWeek:
+                return .weekToDate
+            case .thisMonth:
+                return .monthToDate
+            case .thisYear:
+                return .yearToDate
+            }
+        }
+    }
+
+    enum Localization {
+        static let today = NSLocalizedString("Today", comment: "Today")
+        static let weekToDate = NSLocalizedString("Week to Date", comment: "Week to Date")
+        static let monthToDate = NSLocalizedString("Month to Date", comment: "Month to Date")
+        static let yearToDate = NSLocalizedString("Year to Date", comment: "Year to Date")
     }
 }

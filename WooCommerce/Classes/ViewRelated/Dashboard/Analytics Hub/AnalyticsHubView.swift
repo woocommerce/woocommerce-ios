@@ -28,7 +28,7 @@ struct AnalyticsHubView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: Layout.vertialSpacing) {
                 TimeRangeCard(
-                    timeRangeTitle: timeRange.selectionType.rawValue,
+                    timeRangeTitle: timeRange.selectionType.description,
                     currentRangeDescription: timeRange.currentRangeDescription,
                     previousRangeDescription: timeRange.previousRangeDescription)
 

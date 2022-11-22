@@ -27,40 +27,10 @@ struct AnalyticsHubView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Layout.vertialSpacing) {
-                VStack(spacing: 0) {
-                    Divider()
-
-                    HStack {
-                        ZStack(alignment: .center) {
-                            Circle()
-                                .fill(.gray)
-                                .frame(width: 48)
-                            Image(uiImage: .calendar)
-                        }
-                        VStack(alignment: .leading, spacing: .zero) {
-                            Text(timeRange.selectionType.rawValue)
-                                .foregroundColor(Color(.text))
-                                .subheadlineStyle()
-                            Text(timeRange.currentRangeDescription)
-                                .bold()
-                        }
-                        .padding(.leading)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                    .padding(.leading)
-                    .frame(minHeight: 80)
-
-                    Divider()
-
-                    Text("Compared to **\(timeRange.previousRangeDescription)**")
-                        .padding(.leading)
-                        .frame(maxWidth: .infinity, minHeight: 48, alignment: .leading)
-                        .font(.callout)
-                        .foregroundColor(Color(.textSubtle))
-
-                    Divider()
-                }
-                .background(Color(uiColor: .listForeground))
+                TimeRangeCard(
+                    timeRangeTitle: timeRange.selectionType.rawValue,
+                    currentRangeDescription: timeRange.currentRangeDescription,
+                    previousRangeDescription: timeRange.previousRangeDescription)
 
 
                 VStack(spacing: 0) {

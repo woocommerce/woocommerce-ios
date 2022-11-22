@@ -1,11 +1,3 @@
-//
-//  TimeRangeCard.swift
-//  WooCommerce
-//
-//  Created by Thomaz F B Cortez on 22/11/22.
-//  Copyright © 2022 Automattic. All rights reserved.
-//
-
 import SwiftUI
 
 struct TimeRangeCard: View {
@@ -40,7 +32,7 @@ struct TimeRangeCard: View {
 
             Divider()
 
-            Text("Compared to **\(previousRangeDescription)**")
+            BoldableTextView(String.localizedStringWithFormat(Localization.previousRangeComparisonContent, previousRangeDescription))
                 .padding(.leading)
                 .frame(maxWidth: .infinity, minHeight: Layout.previousRangeMinHeight, alignment: .leading)
                 .font(.callout)
@@ -57,6 +49,13 @@ private extension TimeRangeCard {
         static let calendarCircleWidth: CGFloat = 48
         static let selectedRangeMinHeight: CGFloat = 72
         static let previousRangeMinHeight: CGFloat = 32
+    }
+
+    enum Localization {
+        static let previousRangeComparisonContent = NSLocalizedString(
+            "Compared to **%1$@**",
+            comment: "Subtitle describing the previous analytics period under comparison. E.g. Compared to Oct 1 - 22, 2022"
+        )
     }
 }
 

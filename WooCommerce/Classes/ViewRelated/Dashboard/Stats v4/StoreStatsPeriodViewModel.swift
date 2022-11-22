@@ -51,7 +51,9 @@ final class StoreStatsPeriodViewModel {
     private(set) lazy var conversionStatsText: AnyPublisher<String, Never> =
     Publishers.CombineLatest3($orderStatsData.eraseToAnyPublisher(), $siteStats.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
         .compactMap { orderStatsData, siteStats, selectedIntervalIndex in
-            StatsDataTextFormatter.createConversionRateText(orderStats: orderStatsData.stats, siteStats: siteStats, selectedIntervalIndex: selectedIntervalIndex)
+            StatsDataTextFormatter.createConversionRateText(orderStats: orderStatsData.stats,
+                                                            siteStats: siteStats,
+                                                            selectedIntervalIndex: selectedIntervalIndex)
         }
         .removeDuplicates()
         .eraseToAnyPublisher()

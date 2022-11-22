@@ -13,7 +13,7 @@ struct TimeRangeCard: View {
             HStack {
                 ZStack(alignment: .center) {
                     Circle()
-                        .fill(.gray)
+                        .fill(Color(UIColor.systemGray6))
                         .frame(width: Layout.calendarCircleWidth)
                     Image(uiImage: .calendar)
                 }

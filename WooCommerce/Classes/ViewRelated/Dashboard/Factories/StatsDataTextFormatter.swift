@@ -124,7 +124,7 @@ struct StatsDataTextFormatter {
     }
 }
 
-extension StatsV4DataHelper {
+extension StatsDataTextFormatter {
 
     // MARK: Delta Calculations
 

@@ -69,7 +69,7 @@ final class StatsDataTextFormatterTests: XCTestCase {
         let currentOrderStats = OrderStatsV4.fake().copy(totals: .fake().copy(grossRevenue: 15))
 
         // When
-        let totalRevenueDelta = StatsV4DataHelper.createTotalRevenueDelta(from: previousOrderStats, to: currentOrderStats, locale: locale)
+        let totalRevenueDelta = StatsDataTextFormatter.createTotalRevenueDelta(from: previousOrderStats, to: currentOrderStats, locale: locale)
 
         // Then
         XCTAssertEqual(totalRevenueDelta, "+50%")
@@ -113,7 +113,7 @@ final class StatsDataTextFormatterTests: XCTestCase {
         let currentOrderStats = OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 15))
 
         // When
-        let orderCountDelta = StatsV4DataHelper.createOrderCountDelta(from: previousOrderStats, to: currentOrderStats, locale: locale)
+        let orderCountDelta = StatsDataTextFormatter.createOrderCountDelta(from: previousOrderStats, to: currentOrderStats, locale: locale)
 
         // Then
         XCTAssertEqual(orderCountDelta, "+50%")
@@ -151,7 +151,7 @@ final class StatsDataTextFormatterTests: XCTestCase {
         let currentOrderStats = OrderStatsV4.fake().copy(totals: .fake().copy(averageOrderValue: 15.00))
 
         // When
-        let averageOrderValueDelta = StatsV4DataHelper.createAverageOrderValueDelta(from: previousOrderStats, to: currentOrderStats, locale: locale)
+        let averageOrderValueDelta = StatsDataTextFormatter.createAverageOrderValueDelta(from: previousOrderStats, to: currentOrderStats, locale: locale)
 
         // Then
         XCTAssertEqual(averageOrderValueDelta, "+50%")
@@ -193,7 +193,7 @@ final class StatsDataTextFormatterTests: XCTestCase {
         let currentSiteStats = SiteVisitStats.fake().copy(items: [.fake().copy(period: "0", visitors: 15)])
 
         // When
-        let visitorCountDelta = StatsV4DataHelper.createVisitorCountDelta(from: previousSiteStats, to: currentSiteStats, locale: locale)
+        let visitorCountDelta = StatsDataTextFormatter.createVisitorCountDelta(from: previousSiteStats, to: currentSiteStats, locale: locale)
 
         // Then
         XCTAssertEqual(visitorCountDelta, "+50%")
@@ -258,7 +258,7 @@ final class StatsDataTextFormatterTests: XCTestCase {
         let currentValue: Double = 150
 
         // When
-        let deltaText = StatsV4DataHelper.createDeltaText(from: previousValue, to: currentValue, locale: locale)
+        let deltaText = StatsDataTextFormatter.createDeltaText(from: previousValue, to: currentValue, locale: locale)
 
         // Then
         XCTAssertEqual(deltaText, "+50%")
@@ -270,7 +270,7 @@ final class StatsDataTextFormatterTests: XCTestCase {
         let currentValue: Double = 100
 
         // When
-        let deltaText = StatsV4DataHelper.createDeltaText(from: previousValue, to: currentValue, locale: locale)
+        let deltaText = StatsDataTextFormatter.createDeltaText(from: previousValue, to: currentValue, locale: locale)
 
         // Then
         XCTAssertEqual(deltaText, "-33%")
@@ -282,7 +282,7 @@ final class StatsDataTextFormatterTests: XCTestCase {
         let currentValue: Double = 10
 
         // When
-        let deltaText = StatsV4DataHelper.createDeltaText(from: previousValue, to: currentValue, locale: locale)
+        let deltaText = StatsDataTextFormatter.createDeltaText(from: previousValue, to: currentValue, locale: locale)
 
         // Then
         XCTAssertEqual(deltaText, "+100%")
@@ -294,7 +294,7 @@ final class StatsDataTextFormatterTests: XCTestCase {
         let currentValue: Double = 0
 
         // When
-        let deltaText = StatsV4DataHelper.createDeltaText(from: previousValue, to: currentValue, locale: locale)
+        let deltaText = StatsDataTextFormatter.createDeltaText(from: previousValue, to: currentValue, locale: locale)
 
         // Then
         XCTAssertEqual(deltaText, "-100%")

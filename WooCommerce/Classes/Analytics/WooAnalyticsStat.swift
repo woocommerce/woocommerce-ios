@@ -92,6 +92,26 @@ public enum WooAnalyticsStat: String {
     case loginJetpackSiteCredentialDidShowErrorAlert = "login_jetpack_site_credential_did_show_error_alert"
     case loginJetpackSiteCredentialDidFinishLogin = "login_jetpack_site_credential_did_finish_login"
 
+    // MARK: Install/Setup Jetpack (`LoginJetpackSetupView`)
+    //
+    case loginJetpackInstallScreenViewed = "login_jetpack_install_screen_viewed"
+    case loginJetpackInstallScreenDismissed = "login_jetpack_install_screen_dismissed"
+
+    case loginJetpackInstallScreenInstallSuccessful = "login_jetpack_install_install_successful"
+    case loginJetpackInstallScreenInstallFailed = "login_jetpack_install_install_failed"
+
+    case loginJetpackInstallActivationSuccessful = "login_jetpack_install_activation_successful"
+    case loginJetpackInstallActivationFailed = "login_jetpack_install_activation_failed"
+
+    case loginJetpackInstallFetchJetpackConnectionURLSuccessful = "login_jetpack_install_fetch_jetpack_connection_url_successful"
+    case loginJetpackInstallFetchJetpackConnectionURLFailed = "login_jetpack_install_fetch_jetpack_connection_url_failed"
+
+    case loginJetpackInstallCannotFindWPCOMUser = "login_jetpack_install_cannot_find_WPCOM_user"
+    case loginJetpackInstallAllStepsMarkedDone = "login_jetpack_install_all_steps_marked_done"
+    case loginJetpackInstallErrorCheckingJetpackConnection = "login_jetpack_install_error_checking_jetpack_connection"
+
+    case loginJetpackInstallGoToStoreTapped = "login_jetpack_install_go_to_store_button_tapped"
+
     // MARK: Dashboard View Events
     //
     case dashboardSelected = "main_tab_dashboard_selected"

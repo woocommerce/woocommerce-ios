@@ -279,7 +279,9 @@ private extension SettingsViewModel {
 
         // Close account
         let closeAccountSection: Section? = {
-            guard appleIDCredentialChecker.hasAppleUserID() else {
+            guard appleIDCredentialChecker.hasAppleUserID()
+                    || featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
+                    || featureFlagService.isFeatureFlagEnabled(.storeCreationM2) else {
                 return nil
             }
             return Section(title: nil,

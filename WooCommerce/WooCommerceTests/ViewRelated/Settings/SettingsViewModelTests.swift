@@ -155,8 +155,10 @@ final class SettingsViewModelTests: XCTestCase {
     func test_closeAccount_section_is_hidden_when_apple_id_does_not_exist_and_store_creation_features_disabled() {
         // Given
         let appleIDCredentialChecker = MockAppleIDCredentialChecker(hasAppleUserID: false)
+        let featureFlagService = MockFeatureFlagService(isStoreCreationMVPEnabled: false, isStoreCreationM2Enabled: false)
         let viewModel = SettingsViewModel(stores: stores,
                                           storageManager: storageManager,
+                                          featureFlagService: featureFlagService,
                                           appleIDCredentialChecker: appleIDCredentialChecker)
 
         // When

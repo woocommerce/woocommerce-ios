@@ -1496,6 +1496,34 @@ final class MigrationTests: XCTestCase {
         let newFrameNonce = try XCTUnwrap(migratedSite.value(forKey: "frameNonce") as? String)
         XCTAssertEqual(newFrameNonce, frameNonce)
     }
+
+    func test_migrating_from_77_to_78_adds_averageOrderValue_attribute() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 77")
+        let sourceContext = sourceContainer.viewContext
+
+        let orderStatsV4Totals = insertOrderStatsTotals(to: sourceContainer.viewContext)
+        try sourceContext.save()
+
+        XCTAssertNil(orderStatsV4Totals.entity.attributesByName["averageOrderValue"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 78")
+        let targetContext = targetContainer.viewContext
+
+        let migratedOrderStatsV4Totals = try XCTUnwrap(targetContext.first(entityName: "OrderStatsV4Totals"))
+        let defaultAverageOrderValue = try XCTUnwrap(migratedOrderStatsV4Totals.value(forKey: "averageOrderValue") as? Double)
+
+        let averageOrderValue = 123.45
+        migratedOrderStatsV4Totals.setValue(averageOrderValue, forKey: "averageOrderValue")
+
+        // Then
+        // Default value is 0.
+        XCTAssertEqual(defaultAverageOrderValue, 0)
+
+        let newAverageOrderValue = try XCTUnwrap(migratedOrderStatsV4Totals.value(forKey: "averageOrderValue") as? Double)
+        XCTAssertEqual(newAverageOrderValue, averageOrderValue)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -1888,6 +1916,22 @@ private extension MigrationTests {
             "siteID": 134,
             "orderID": 191,
             "paperSize": "legal"
+        ])
+    }
+
+    @discardableResult
+    func insertOrderStatsTotals(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "OrderStatsV4Totals", properties: [
+            "totalOrders": 3,
+            "totalItemsSold": 5,
+            "grossRevenue": 800,
+            "couponDiscount": 0,
+            "totalCoupons": 0,
+            "refunds": 0,
+            "taxes": 0,
+            "shipping": 0,
+            "netRevenue": 800,
+            "totalProducts": 2,
         ])
     }
 

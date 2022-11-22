@@ -10,18 +10,21 @@ final class LoginJetpackSetupCoordinator: Coordinator {
     private let connectionOnly: Bool
     private let stores: StoresManager
     private let analytics: Analytics
+    private let authentication: Authentication
     private var storePickerCoordinator: StorePickerCoordinator?
 
     init(siteURL: String,
          connectionOnly: Bool,
          navigationController: UINavigationController,
          stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         authentication: Authentication = ServiceLocator.authenticationManager,) {
         self.siteURL = siteURL
         self.connectionOnly = connectionOnly
         self.navigationController = navigationController
         self.stores = stores
         self.analytics = analytics
+        self.authentication = authentication
     }
 
     func start() {
@@ -55,7 +58,8 @@ private extension LoginJetpackSetupCoordinator {
             matcher.refreshStoredSites()
             guard let matchedSite = matcher.matchedSite(originalURL: self.siteURL) else {
                 DDLogWarn("⚠️ Could not find \(self.siteURL) connected to the account")
-                return
+                let topViewController = self.navigationController.presentedViewController ?? self.navigationController
+                return self.showNoMatchedSiteAlert(from: topViewController)
             }
 
             // dismiss the setup view
@@ -70,5 +74,29 @@ private extension LoginJetpackSetupCoordinator {
             // navigate the user to the home screen.
             self.storePickerCoordinator?.didSelectStore(with: matchedSite.siteID, onCompletion: {})
         }
+    }
+
+    func showNoMatchedSiteAlert(from viewController: UIViewController) {
+        let alert = UIAlertController(title: nil, message: Localization.noMatchSiteAlertTitle, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: Localization.tryAgain, style: .default, handler: { [weak self] _ in
+            self?.showStorePickerForLogin()
+        }))
+        alert.addAction(UIAlertAction(title: Localization.contactSupport, style: .default, handler: { [weak self] _ in
+            guard let self else { return }
+            self.authentication.presentSupport(from: viewController, screen: .storePicker)
+        }))
+        viewController.present(alert, animated: true)
+    }
+}
+
+private extension LoginJetpackSetupCoordinator {
+    enum Localization {
+        static let noMatchSiteAlertTitle = NSLocalizedString(
+            "We cannot load the store at the moment.",
+            comment: "Error message displayed when there is no store matching the site URL " +
+            "that is associated with the user's account"
+        )
+        static let tryAgain = NSLocalizedString("Try Again", comment: "Title of the button to attempt loading the store again after Jetpack setup")
+        static let contactSupport = NSLocalizedString("Contact Support", comment: "Title of the button to contact support for help accessing a store after Jetpack setup")
     }
 }

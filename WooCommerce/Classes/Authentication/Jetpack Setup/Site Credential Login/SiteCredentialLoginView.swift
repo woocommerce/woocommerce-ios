@@ -21,6 +21,7 @@ final class SiteCredentialLoginHostingViewController: UIHostingController<SiteCr
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        analytics.track(.loginJetpackSiteCredentialScreenViewed)
         configureNavigationBarAppearance()
     }
 
@@ -34,6 +35,7 @@ final class SiteCredentialLoginHostingViewController: UIHostingController<SiteCr
 
     @objc
     private func dismissView() {
+        analytics.track(.loginJetpackSiteCredentialScreenDismissed)
         dismiss(animated: true)
     }
 }

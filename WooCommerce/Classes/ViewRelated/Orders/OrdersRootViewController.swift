@@ -358,17 +358,25 @@ private extension OrdersRootViewController {
             return
         }
 
-        let coordinatingController = AddOrderCoordinator(siteID: siteID,
-                                                         sourceBarButtonItem: sender,
-                                                         sourceNavigationController: navigationController)
-        coordinatingController.onOrderCreated = { [weak self] order in
+        let viewModel = EditableOrderViewModel(siteID: siteID)
+        viewModel.onFinished = { [weak self] order in
             guard let self = self else { return }
 
             self.dismiss(animated: true) {
                 self.navigateToOrderDetail(order)
             }
         }
-        coordinatingController.start()
+
+        let viewController = OrderFormHostingController(viewModel: viewModel)
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+            let newOrderNC = WooNavigationController(rootViewController: viewController)
+            navigationController.present(newOrderNC, animated: true)
+        } else {
+            viewController.hidesBottomBarWhenPushed = true
+            navigationController.pushViewController(viewController, animated: true)
+        }
+
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderAddNew())
     }
 
     /// Pushes an `OrderDetailsViewController` onto the navigation stack.

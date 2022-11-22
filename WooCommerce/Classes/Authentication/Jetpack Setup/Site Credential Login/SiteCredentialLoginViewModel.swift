@@ -48,11 +48,13 @@ final class SiteCredentialLoginViewModel: NSObject, ObservableObject {
     }
 
     func handleLogin() {
+        analytics.track(.loginJetpackSiteCredentialInstallTapped)
         loginFacade.signIn(with: loginFields)
         isLoggingIn = true
     }
 
     func resetPassword() {
+        analytics.track(.loginJetpackSiteCredentialResetPasswordTapped)
         WordPressAuthenticator.openForgotPasswordURL(loginFields)
     }
 }
@@ -76,9 +78,11 @@ extension SiteCredentialLoginViewModel: LoginFacadeDelegate {
         let wrongCredentials = err.domain == Constants.xmlrpcErrorDomain && err.code == Constants.invalidCredentialErrorCode
         errorMessage = wrongCredentials ? Localization.wrongCredentials : Localization.genericFailure
         shouldShowErrorAlert = true
+        analytics.track(.loginJetpackSiteCredentialDidShowErrorAlert)
     }
 
     func finishedLogin(withUsername username: String, password: String, xmlrpc: String, options: [AnyHashable: Any] = [:]) {
+        analytics.track(.loginJetpackSiteCredentialDidFinishLogin)
         isLoggingIn = false
         let credentials = WordPressOrgCredentials(username: username, password: password, xmlrpc: xmlrpc, options: options)
         guard let authenticator = credentials.makeCookieNonceAuthenticator() else {

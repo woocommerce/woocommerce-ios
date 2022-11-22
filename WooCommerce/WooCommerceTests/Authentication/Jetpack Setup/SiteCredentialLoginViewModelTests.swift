@@ -126,4 +126,69 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
         XCTAssertTrue(successHandlerTriggered)
         XCTAssertEqual(returnedXMLRPC, xmlrpcURL)
     }
+
+    // MARK: - Analytics
+    func test_it_tracks_login_jetpack_site_credential_install_button_tapped_when_tapping_install_button() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let siteURL = "https://test.com"
+        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, analytics: analytics)
+
+        // When
+        viewModel.handleLogin()
+
+        // Then
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_site_credential_install_button_tapped" }))
+    }
+
+    func test_it_tracks_login_jetpack_site_credential_reset_password_button_tapped_when_tapping_reset_password_button() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let siteURL = "https://test.com"
+        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, analytics: analytics)
+
+        // When
+        viewModel.resetPassword()
+
+        // Then
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_site_credential_reset_password_button_tapped" }))
+    }
+
+    func test_it_tracks_login_jetpack_site_credential_did_show_error_alert_when_displaying_remote_error() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let siteURL = "https://test.com"
+        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, analytics: analytics)
+
+        // When
+        viewModel.displayRemoteError(MockError())
+
+        // Then
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_site_credential_did_show_error_alert" }))
+    }
+
+    func test_it_tracks_login_jetpack_site_credential_did_finish_login_when_login_finishes() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let siteURL = "https://test.com"
+        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, analytics: analytics)
+
+        // When
+        viewModel.finishedLogin(withUsername: "", password: "", xmlrpc: "")
+
+        // Then
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_site_credential_did_finish_login" }))
+    }
+}
+
+private extension SiteCredentialLoginViewModelTests {
+    final class MockError: Error {
+        var localizedDescription: String {
+            "description"
+        }
+    }
 }

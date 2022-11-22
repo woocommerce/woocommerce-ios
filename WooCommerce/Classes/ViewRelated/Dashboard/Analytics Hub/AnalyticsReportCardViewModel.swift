@@ -4,7 +4,7 @@ import class UIKit.UIColor
 /// Analytics Hub Report Card ViewModel.
 /// Used to transmit analytics report data.
 ///
-struct ReportCardViewModel {
+struct AnalyticsReportCardViewModel {
     /// Report Card Title.
     ///
     let title: String
@@ -40,4 +40,20 @@ struct ReportCardViewModel {
     /// Second Column Delta Background Color
     ///
     let trailingDeltaColor: UIColor
+}
+
+/// Convenience extension to create an `AnalyticsReportCard` from a view model.
+///
+extension AnalyticsReportCard {
+    init(viewModel: AnalyticsReportCardViewModel) {
+        self.title = viewModel.title
+        self.leadingTitle = viewModel.leadingTitle
+        self.leadingValue = viewModel.leadingValue
+        self.leadingDelta = viewModel.leadingDelta
+        self.leadingDeltaColor = viewModel.leadingDeltaColor
+        self.trailingTitle = viewModel.trailingTitle
+        self.trailingValue = viewModel.trailingValue
+        self.trailingDelta = viewModel.trailingDelta
+        self.trailingDeltaColor = viewModel.trailingDeltaColor
+    }
 }

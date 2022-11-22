@@ -34,7 +34,7 @@ public class AnalyticsHubTimeRange {
     lazy private(set) var previousRangeDescription: String = {
         generateDescriptionOf(timeRange: previousTimeRange)
     }()
-    
+
     init(selectedTimeRange: StatsTimeRangeV4,
          currentDate: Date = Date(),
          siteTimezone: TimeZone = TimeZone.current

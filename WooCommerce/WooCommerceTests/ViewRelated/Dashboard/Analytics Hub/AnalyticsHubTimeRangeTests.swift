@@ -1,28 +1,31 @@
 import XCTest
+@testable import WooCommerce
 
 final class AnalyticsHubTimeRangeTests: XCTestCase {
+    private var dateFormatter: DateFormatter = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        return dateFormatter
+    }()
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    func test_when_time_range_inits_with_thisYear_then_generate_expected_ranges() {
+        // Given
+        let currentDate = dateFrom("2022-02-05")
+        let timeRange = AnalyticsHubTimeRange(selectedTimeRange: .thisYear, currentDate: currentDate)
+
+        // When
+        let currentTimeRange = timeRange.currentTimeRange
+        let previousTimeRange = timeRange.previousTimeRange
+
+        // Then
+        XCTAssertEqual(currentTimeRange.start, dateFrom("2022-01-01"))
+        XCTAssertEqual(currentTimeRange.end, dateFrom("2022-02-05"))
+
+        XCTAssertEqual(previousTimeRange.start, dateFrom("2021-01-01"))
+        XCTAssertEqual(previousTimeRange.end, dateFrom("2021-02-05"))
     }
 
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    private func dateFrom(_ date: String) -> Date {
+        return dateFormatter.date(from: date)!
     }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
-
 }

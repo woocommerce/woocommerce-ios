@@ -97,6 +97,9 @@ private extension LoginJetpackSetupCoordinator {
             "that is associated with the user's account"
         )
         static let tryAgain = NSLocalizedString("Try Again", comment: "Title of the button to attempt loading the store again after Jetpack setup")
-        static let contactSupport = NSLocalizedString("Contact Support", comment: "Title of the button to contact support for help accessing a store after Jetpack setup")
+        static let contactSupport = NSLocalizedString(
+            "Contact Support",
+            comment: "Title of the button to contact support for help accessing a store after Jetpack setup"
+        )
     }
 }

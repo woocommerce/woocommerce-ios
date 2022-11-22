@@ -100,11 +100,14 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
     func test_finishedLogin_triggers_authentication_in_JetpackConnectionAction_and_successHandler() {
         // Given
         var successHandlerTriggered = false
+        var returnedXMLRPC: String?
         var triggeredAuthentication = false
         let siteURL = "https://test.com"
+        let xmlrpcURL = "https://test.com/xmlrpc.php"
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, stores: stores) {
+        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, stores: stores) { xmlrpc in
             successHandlerTriggered = true
+            returnedXMLRPC = xmlrpc
         }
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
@@ -116,10 +119,11 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
         }
 
         // When
-        viewModel.finishedLogin(withUsername: "test", password: "secret", xmlrpc: "https://test.com/xmlrpc.php")
+        viewModel.finishedLogin(withUsername: "test", password: "secret", xmlrpc: xmlrpcURL)
 
         // Then
         XCTAssertTrue(triggeredAuthentication)
         XCTAssertTrue(successHandlerTriggered)
+        XCTAssertEqual(returnedXMLRPC, xmlrpcURL)
     }
 }

@@ -272,7 +272,7 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
     func test_navigateToStore_triggers_storeNavigationHandler() {
         // Given
         var storeNavigationTriggered = false
-        let viewModel = LoginJetpackSetupViewModel(siteURL: testURL, connectionOnly: false, onStoreNavigation: {
+        let viewModel = LoginJetpackSetupViewModel(siteURL: testURL, connectionOnly: false, onStoreNavigation: { _ in
             storeNavigationTriggered = true
         })
 

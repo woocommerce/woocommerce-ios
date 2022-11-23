@@ -112,6 +112,12 @@ public enum WooAnalyticsStat: String {
 
     case loginJetpackSetupGoToStoreTapped = "login_jetpack_setup_go_to_store_button_tapped"
 
+    // MARK: No matched site alert
+    //
+    case loginJetpackNoMatchedSiteErrorViewed = "login_jetpack_no_matched_site_error_viewed"
+    case loginJetpackNoMatchedSiteErrorTryAgainButtonTapped = "login_jetpack_no_matched_site_error_try_again_button_tapped"
+    case loginJetpackNoMatchedSiteErrorContactSupportButtonTapped = "login_jetpack_no_matched_site_error_contact_support_button_tapped"
+
     // MARK: Dashboard View Events
     //
     case dashboardSelected = "main_tab_dashboard_selected"

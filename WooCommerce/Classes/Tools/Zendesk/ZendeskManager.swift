@@ -669,9 +669,10 @@ private extension ZendeskManager {
         var logsFieldID: Int64 = TicketFieldIDs.legacyLogs
         var systemStatusReportFieldID: Int64 = 0
         if isSSRFeatureFlagEnabled {
-            // If the SSR feature flag is enabled, we'll use the newly added TicketFieldID
-            // for the Application logs, and the old one for the SSR.
-            logsFieldID = 10901699622036
+            /// If the feature flag is enabled, `legacyLogs` Field ID is used to send the SSR logs,
+            /// and `logs` Field ID is used to send the logs.
+            ///
+            logsFieldID = TicketFieldIDs.logs
             systemStatusReportFieldID = TicketFieldIDs.legacyLogs
         }
 
@@ -698,9 +699,10 @@ private extension ZendeskManager {
         var logsFieldID: Int64 = TicketFieldIDs.legacyLogs
         var systemStatusReportFieldID: Int64 = 0
         if isSSRFeatureFlagEnabled {
-            // If the SSR feature flag is enabled, we'll use the newly added TicketFieldID
-            // for the Application logs, and the old one for the SSR.
-            logsFieldID = 10901699622036
+            /// If the feature flag is enabled, `legacyLogs` Field ID is used to send the SSR logs,
+            /// and `logs` Field ID is used to send the logs.
+            ///
+            logsFieldID = TicketFieldIDs.logs
             systemStatusReportFieldID = TicketFieldIDs.legacyLogs
         }
 
@@ -1136,6 +1138,7 @@ private extension ZendeskManager {
         static let deviceFreeSpace: Int64 = 360000089123
         static let networkInformation: Int64 = 360000086966
         static let legacyLogs: Int64 = 22871957
+        static let logs: Int64 = 10901699622036
         static let currentSite: Int64 = 360000103103
         static let sourcePlatform: Int64 = 360009311651
         static let appLanguage: Int64 = 360008583691

@@ -33,51 +33,9 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Order stats for the current selected time period
     ///
-    @Published private var currentOrderStats: OrderStatsV4 = {
-        fakeOrderStats(with: fakeCurrentOrderTotals())
-    }()
+    @Published private var currentOrderStats: OrderStatsV4? = nil
 
     /// Order stats for the previous time period (for comparison)
     ///
-    @Published private var previousOrderStats: OrderStatsV4 = {
-        fakeOrderStats(with: fakePreviousOrderTotals())
-    }()
-}
-
-// MARK: - Fake data
-
-/// Extension with fake data. This can be removed once we fetch real data from the API.
-///
-private extension AnalyticsHubViewModel {
-    static func fakeCurrentOrderTotals() -> OrderStatsV4Totals {
-        OrderStatsV4Totals(totalOrders: 3,
-                           totalItemsSold: 5,
-                           grossRevenue: 800,
-                           couponDiscount: 0,
-                           totalCoupons: 0,
-                           refunds: 0,
-                           taxes: 0,
-                           shipping: 0,
-                           netRevenue: 800,
-                           totalProducts: 2,
-                           averageOrderValue: 266)
-    }
-
-    static func fakePreviousOrderTotals() -> OrderStatsV4Totals {
-        OrderStatsV4Totals(totalOrders: 2,
-                           totalItemsSold: 8,
-                           grossRevenue: 1000,
-                           couponDiscount: 0,
-                           totalCoupons: 0,
-                           refunds: 0,
-                           taxes: 0,
-                           shipping: 0,
-                           netRevenue: 900,
-                           totalProducts: 2,
-                           averageOrderValue: 500)
-    }
-
-    static func fakeOrderStats(with totals: OrderStatsV4Totals) -> OrderStatsV4 {
-        OrderStatsV4(siteID: 12345, granularity: .daily, totals: totals, intervals: [])
-    }
+    @Published private var previousOrderStats: OrderStatsV4? = nil
 }

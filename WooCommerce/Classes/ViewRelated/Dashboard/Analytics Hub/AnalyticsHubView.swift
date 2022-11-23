@@ -6,7 +6,8 @@ import SwiftUI
 ///
 final class AnalyticsHubHostingViewController: UIHostingController<AnalyticsHubView> {
     init(timeRange: StatsTimeRangeV4) {
-        super.init(rootView: AnalyticsHubView())
+        let viewModel = AnalyticsHubViewModel()
+        super.init(rootView: AnalyticsHubView(viewModel: viewModel))
     }
 
     @available(*, unavailable)
@@ -19,10 +20,12 @@ final class AnalyticsHubHostingViewController: UIHostingController<AnalyticsHubV
 ///
 struct AnalyticsHubView: View {
 
+    @StateObject var viewModel: AnalyticsHubViewModel
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Layout.vertialSpacing) {
-                VStack(spacing: 0) {
+                VStack(spacing: Layout.dividerSpacing) {
                     Divider()
                     Text("Placeholder for Time Range Selection")
                         .padding(.leading)
@@ -33,35 +36,19 @@ struct AnalyticsHubView: View {
                 }
 
 
-                VStack(spacing: 0) {
+                VStack(spacing: Layout.dividerSpacing) {
                     Divider()
 
-                    AnalyticsReportCard(title: "REVENUE",
-                                        leadingTitle: "Total Sales",
-                                        leadingValue: "$3.234",
-                                        leadingDelta: "+23%",
-                                        leadingDeltaColor: .withColorStudio(.green, shade: .shade50),
-                                        trailingTitle: "Net Sales",
-                                        trailingValue: "$2.324",
-                                        trailingDelta: "-4%",
-                                        trailingDeltaColor: .withColorStudio(.red, shade: .shade40))
+                    AnalyticsReportCard(viewModel: viewModel.revenueCard)
                     .background(Color(uiColor: .listForeground))
 
                     Divider()
                 }
 
-                VStack(spacing: 0) {
+                VStack(spacing: Layout.dividerSpacing) {
                     Divider()
 
-                    AnalyticsReportCard(title: "ORDERS",
-                                        leadingTitle: "Total Orders",
-                                        leadingValue: "145",
-                                        leadingDelta: "+36%",
-                                        leadingDeltaColor: .withColorStudio(.green, shade: .shade50),
-                                        trailingTitle: "Average Order Value",
-                                        trailingValue: "$57,99",
-                                        trailingDelta: "-16%",
-                                        trailingDeltaColor: .withColorStudio(.red, shade: .shade40))
+                    AnalyticsReportCard(viewModel: viewModel.ordersCard)
                     .background(Color(uiColor: .listForeground))
 
                     Divider()
@@ -85,6 +72,7 @@ private extension AnalyticsHubView {
 
     struct Layout {
         static let vertialSpacing: CGFloat = 24.0
+        static let dividerSpacing: CGFloat = .zero
     }
 }
 
@@ -93,7 +81,7 @@ private extension AnalyticsHubView {
 struct AnalyticsHubPreview: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            AnalyticsHubView()
+            AnalyticsHubView(viewModel: AnalyticsHubViewModel())
         }
     }
 }

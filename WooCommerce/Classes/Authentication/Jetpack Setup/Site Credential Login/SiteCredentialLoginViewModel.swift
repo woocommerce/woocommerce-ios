@@ -19,6 +19,7 @@ final class SiteCredentialLoginViewModel: NSObject, ObservableObject {
 
     private let stores: StoresManager
     private let successHandler: (_ xmlrpc: String) -> Void
+    private let analytics: Analytics
 
     private lazy var loginFacade = LoginFacade(dotcomClientID: ApiCredentials.dotcomAppId,
                                                dotcomSecret: ApiCredentials.dotcomSecret,
@@ -33,9 +34,13 @@ final class SiteCredentialLoginViewModel: NSObject, ObservableObject {
         return loginFields
     }
 
-    init(siteURL: String, stores: StoresManager = ServiceLocator.stores, onLoginSuccess: @escaping (String) -> Void = { _ in }) {
+    init(siteURL: String,
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics,
+         onLoginSuccess: @escaping (String) -> Void = { _ in }) {
         self.siteURL = siteURL
         self.stores = stores
+        self.analytics = analytics
         self.successHandler = onLoginSuccess
         super.init()
         loginFacade.delegate = self

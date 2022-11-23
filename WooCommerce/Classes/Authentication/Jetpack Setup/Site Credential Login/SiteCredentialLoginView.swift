@@ -2,7 +2,13 @@ import SwiftUI
 
 /// Hosting controller that wraps the `SiteCredentialLoginView`.
 final class SiteCredentialLoginHostingViewController: UIHostingController<SiteCredentialLoginView> {
-    init(siteURL: String, connectionOnly: Bool, onLoginSuccess: @escaping (String) -> Void) {
+    private let analytics: Analytics
+
+    init(siteURL: String,
+         connectionOnly: Bool,
+         analytics: Analytics = ServiceLocator.analytics,
+         onLoginSuccess: @escaping (String) -> Void) {
+        self.analytics = analytics
         let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, onLoginSuccess: onLoginSuccess)
         super.init(rootView: SiteCredentialLoginView(connectionOnly: connectionOnly, viewModel: viewModel))
     }
@@ -146,7 +152,6 @@ struct SiteCredentialLoginView: View {
         }
         .safeAreaInset(edge: .bottom, content: {
             Button {
-                // TODO-8075: add tracks
                 keyboardIsShown = false
                 viewModel.handleLogin()
             } label: {

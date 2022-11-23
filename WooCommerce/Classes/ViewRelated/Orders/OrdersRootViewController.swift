@@ -351,7 +351,7 @@ private extension OrdersRootViewController {
         return button
     }
 
-    /// Presents Order Creation or Simple Payments flows.
+    /// Presents the Order Creation flow.
     ///
     @objc func presentOrderCreationFlow(sender: UIBarButtonItem) {
         guard let navigationController = navigationController else {
@@ -410,8 +410,7 @@ private extension OrdersRootViewController {
             "Retrieves a list of orders that contain a given keyword.",
             comment: "VoiceOver accessibility hint, informing the user the button can be used to search orders."
         )
-        static let accessibilityLabelAddSimplePayment = NSLocalizedString("Add simple payments order",
-                                                                          comment: "Navigates to a screen to create a simple payments order")
+
         static let emptyOrderDetails = NSLocalizedString("No order selected",
                                                          comment: "Message on the detail view of the Orders tab before any order is selected")
     }

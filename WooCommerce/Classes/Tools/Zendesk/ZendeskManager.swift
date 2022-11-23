@@ -861,7 +861,7 @@ private extension ZendeskManager {
     /// Get the System Status Report as a formatted String that we can use in the support request
     ///
     func getSystemStatusReport() -> String {
-        return self.systemStatusReport
+        return systemStatusReport
     }
 
     func getCurrentSiteDescription() -> String {

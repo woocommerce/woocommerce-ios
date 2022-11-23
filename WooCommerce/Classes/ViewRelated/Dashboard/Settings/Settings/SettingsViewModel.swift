@@ -149,7 +149,7 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
         /// Fetch System Status Report from Zendesk
         /// so it will be ready to be attached to a a support request when needed
         ///
-        self.zendeskShared.fetchSystemStatusReport()
+        zendeskShared.fetchSystemStatusReport()
     }
 
     /// Sets up the view model and loads the settings.

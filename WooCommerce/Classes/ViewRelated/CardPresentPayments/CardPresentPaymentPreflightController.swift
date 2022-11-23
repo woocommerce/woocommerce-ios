@@ -38,7 +38,7 @@ final class CardPresentPaymentPreflightController {
 
     /// Controller to connect a card reader.
     ///
-    private var connectionController: CardReaderConnectionController
+    private var connectionController: LegacyCardReaderConnectionController
 
 
     private(set) var readerConnection = CurrentValueSubject<CardReaderConnectionResult?, Never>(nil)
@@ -59,8 +59,8 @@ final class CardPresentPaymentPreflightController {
         let analyticsTracker = CardReaderConnectionAnalyticsTracker(configuration: configuration,
                                                                     stores: stores,
                                                                     analytics: analytics)
-        // TODO: Replace this with a refactored (New)CardReaderConnectionController
-        self.connectionController = CardReaderConnectionController(
+        // TODO: Replace this with a refactored (New)LegacyCardReaderConnectionController
+        self.connectionController = LegacyCardReaderConnectionController(
             forSiteID: siteID,
             knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
             alertsProvider: CardReaderSettingsAlerts(),

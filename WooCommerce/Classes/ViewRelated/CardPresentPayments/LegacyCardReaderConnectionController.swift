@@ -7,7 +7,7 @@ import Yosemite
 
 /// Facilitates connecting to a card reader
 ///
-final class CardReaderConnectionController {
+final class LegacyCardReaderConnectionController {
     private enum ControllerState {
         /// Initial state of the controller
         ///
@@ -174,7 +174,7 @@ final class CardReaderConnectionController {
     }
 }
 
-private extension CardReaderConnectionController {
+private extension LegacyCardReaderConnectionController {
     func configureResultsControllers() {
         dataSource.configureResultsControllers(onReload: { [weak self] in
             guard let self = self else { return }
@@ -782,7 +782,7 @@ private extension CardReaderConnectionController {
     }
 }
 
-private extension CardReaderConnectionController {
+private extension LegacyCardReaderConnectionController {
     enum Localization {
         static let adminWebviewTitle = NSLocalizedString(
             "WooCommerce Settings",

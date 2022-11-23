@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct TimeRangeCard: View {
+struct AnalyticsTimeRangeCard: View {
 
     let timeRangeTitle: String
     let currentRangeDescription: String
@@ -44,7 +44,7 @@ struct TimeRangeCard: View {
     }
 }
 
-private extension TimeRangeCard {
+private extension AnalyticsTimeRangeCard {
     enum Layout {
         static let calendarCircleWidth: CGFloat = 48
         static let selectedRangeMinHeight: CGFloat = 72
@@ -62,7 +62,7 @@ private extension TimeRangeCard {
 struct TimeRangeCard_Previews: PreviewProvider {
     static var previews: some View {
         let timeRange = AnalyticsHubTimeRange(selectedTimeRange: .thisMonth)
-        TimeRangeCard(
+        AnalyticsTimeRangeCard(
             timeRangeTitle: timeRange.selectionDescription,
             currentRangeDescription: timeRange.currentRangeDescription, previousRangeDescription: timeRange.previousRangeDescription)
     }

@@ -29,7 +29,7 @@ final class AnalyticsHubViewModel: ObservableObject {
                                                              trailingDelta: "-16%",
                                                              trailingDeltaColor: .withColorStudio(.red, shade: .shade40))
 
-    /// Current time range controlling the Analytics Hub
+    /// Current Time Range controlling the Analytics Hub
     ///
     @Published var currentTimeRange: AnalyticsHubTimeRange
 

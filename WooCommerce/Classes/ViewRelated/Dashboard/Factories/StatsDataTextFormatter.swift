@@ -127,8 +127,10 @@ extension StatsDataTextFormatter {
             return DeltaPercentage(value: 0) // Missing or equal values: 0% change
         }
 
-        guard previousValue > 0 else {
-            return DeltaPercentage(value: 1) // Previous value was 0: 100% change
+        // If the previous value was 0, return a 100% or -100% change
+        guard previousValue != 0 else {
+            let deltaValue: Decimal = currentValue > 0 ? 1 : -1
+            return DeltaPercentage(value: deltaValue)
         }
 
         return DeltaPercentage(value: (currentValue - previousValue) / previousValue)

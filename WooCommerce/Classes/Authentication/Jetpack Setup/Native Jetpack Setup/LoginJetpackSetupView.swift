@@ -85,13 +85,18 @@ struct LoginJetpackSetupView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Constants.blockVerticalPadding) {
-                JetpackInstallHeaderView()
+                JetpackInstallHeaderView(isError: viewModel.setupFailed)
 
                 // title and description
                 VStack(alignment: .leading, spacing: Constants.contentVerticalSpacing) {
-                    Text(viewModel.title)
-                        .largeTitleStyle()
-                    AttributedText(viewModel.descriptionAttributedString)
+                    if let errorTitle = viewModel.currentSetupStep?.errorTitle {
+                        Text(errorTitle)
+                            .largeTitleStyle() 
+                    } else {
+                        Text(viewModel.title)
+                            .largeTitleStyle()
+                        AttributedText(viewModel.descriptionAttributedString)
+                    }
                 }
 
                 // Loading indicator for when checking plugin details

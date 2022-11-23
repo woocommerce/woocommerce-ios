@@ -39,6 +39,21 @@ extension JetpackInstallStep {
         }
     }
 
+    /// Error title to display when Jetpack setup fails on the step
+    ///
+    var errorTitle: String? {
+        switch self {
+        case .installation:
+            return Localization.installErrorTitle
+        case .activation:
+            return Localization.activationErrorTitle
+        case .connection:
+            return Localization.connectionErrorTitle
+        case .done:
+            return nil
+        }
+    }
+
     /// Error message to display when Jetpack install fails on the step
     ///
     var errorMessage: String? {
@@ -74,6 +89,12 @@ extension JetpackInstallStep {
         static let activationStep = NSLocalizedString("Activating", comment: "Name of the activation Jetpack plugin step")
         static let connectionStep = NSLocalizedString("Connecting your store", comment: "Name of the step to connect the store to Jetpack")
         static let finalStep = NSLocalizedString("All done", comment: "Name of final step in Install Jetpack flow.")
+        static let installErrorTitle = NSLocalizedString("Error installing Jetpack",
+                                                         comment: "Error title when Jetpack install fails")
+        static let activationErrorTitle = NSLocalizedString("Error activating Jetpack",
+                                                            comment: "Error title when Jetpack activation fails")
+        static let connectionErrorTitle = NSLocalizedString("Error authorizing connection to Jetpack",
+                                                            comment: "Error title when Jetpack connection fails")
         static let installErrorMessage = NSLocalizedString("Please try again. Alternatively, you can install Jetpack through your WP-Admin.",
                                                     comment: "Error message when Jetpack install fails")
         static let activationErrorMessage = NSLocalizedString("Please try again. Alternatively, you can activate Jetpack through your WP-Admin.",

@@ -5,11 +5,9 @@ struct AnalyticsTimeRangeCard: View {
     let timeRangeTitle: String
     let currentRangeDescription: String
     let previousRangeDescription: String
-
+    
     var body: some View {
-        VStack(alignment: .leading) {
-            Divider()
-
+        VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
             HStack {
                 ZStack(alignment: .center) {
                     Circle()
@@ -28,27 +26,22 @@ struct AnalyticsTimeRangeCard: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
             .padding(.leading)
-            .frame(minHeight: Layout.selectedRangeMinHeight)
 
             Divider()
 
             BoldableTextView(String.localizedStringWithFormat(Localization.previousRangeComparisonContent, previousRangeDescription))
                 .padding(.leading)
-                .frame(maxWidth: .infinity, minHeight: Layout.previousRangeMinHeight, alignment: .leading)
-                .font(.callout)
-                .foregroundColor(Color(.textSubtle))
-
-            Divider()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .calloutStyle()
         }
-        .background(Color(uiColor: .listForeground))
+        .padding([.top, .bottom])
     }
 }
 
 private extension AnalyticsTimeRangeCard {
     enum Layout {
         static let calendarCircleWidth: CGFloat = 48
-        static let selectedRangeMinHeight: CGFloat = 72
-        static let previousRangeMinHeight: CGFloat = 32
+        static let verticalSpacing: CGFloat = 16
     }
 
     enum Localization {

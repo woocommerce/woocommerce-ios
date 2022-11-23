@@ -24,7 +24,14 @@ struct AnalyticsHubView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Layout.vertialSpacing) {
-                AnalyticsTimeRangeCard(viewModel: viewModel.timeRangeCard)
+                VStack(spacing: Layout.dividerSpacing) {
+                    Divider()
+
+                    AnalyticsTimeRangeCard(viewModel: viewModel.timeRangeCard)
+                    .background(Color(uiColor: .listForeground))
+
+                    Divider()
+                }
 
                 VStack(spacing: Layout.dividerSpacing) {
                     Divider()

@@ -1,6 +1,9 @@
 import Foundation
 import Yosemite
 import Combine
+#if !targetEnvironment(simulator)
+import ProximityReader
+#endif
 
 enum CardReaderConnectionResult {
     case connected(CardReader)
@@ -91,25 +94,37 @@ final class CardPresentPaymentPreflightController {
 
         // TODO: Run onboarding if needed
 
-        // Ask for a Reader type
-        // TODO: only ask if supported by device/in country
-        let tapOnMobileSupported = true
-        if tapOnMobileSupported {
-            alertsPresenter.present(viewModel: CardPresentModalSelectSearchType(
-                options: [
-                    .localMobile: {
-                        self.builtInConnectionController.searchAndConnect(
-                            onCompletion: self.handleConnectionResult)
-                    },
-                    .bluetoothProximity: {
-                        self.connectionController.searchAndConnect(
-                            onCompletion: self.handleConnectionResult)
-                    }
-                ]))
-        } else {
+        // Ask for a Reader type if supported by device/in country
+        guard localMobileReaderSupported(),
+              configuration.supportedReaders.contains(.appleBuiltIn)
+        else {
             // Attempt to find a bluetooth reader and connect
             connectionController.searchAndConnect(onCompletion: handleConnectionResult)
+            return
         }
+
+        alertsPresenter.present(viewModel: CardPresentModalSelectSearchType(
+            options: [
+                .localMobile: {
+                    self.builtInConnectionController.searchAndConnect(
+                        onCompletion: self.handleConnectionResult)
+                },
+                .bluetoothProximity: {
+                    self.connectionController.searchAndConnect(
+                        onCompletion: self.handleConnectionResult)
+                }
+            ]))
+    }
+
+    private func localMobileReaderSupported() -> Bool {
+        #if !targetEnvironment(simulator)
+        if #available(iOS 15.4, *) {
+            return PaymentCardReader.isSupported
+        } else {
+            return false
+        }
+        #endif
+        return true
     }
 
     private func handleConnectionResult(_ result: Result<CardReaderConnectionController.ConnectionResult, Error>) {

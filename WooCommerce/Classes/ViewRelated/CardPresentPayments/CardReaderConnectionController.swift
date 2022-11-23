@@ -134,8 +134,11 @@ final class CardReaderConnectionController {
         }
     }
 
+    private let discoveryMethod: CardReaderDiscoveryMethod
+
     init(
         forSiteID: Int64,
+        discoveryMethod: CardReaderDiscoveryMethod,
         storageManager: StorageManagerType = ServiceLocator.storageManager,
         stores: StoresManager = ServiceLocator.stores,
         knownReaderProvider: CardReaderSettingsKnownReaderProvider,
@@ -144,6 +147,7 @@ final class CardReaderConnectionController {
         analyticsTracker: CardReaderConnectionAnalyticsTracker
     ) {
         siteID = forSiteID
+        self.discoveryMethod = discoveryMethod
         self.storageManager = storageManager
         self.stores = stores
         state = .idle
@@ -315,10 +319,6 @@ private extension CardReaderConnectionController {
     func onBeginSearch() {
         self.state = .searching
         var didAutoAdvance = false
-
-        // TODO: make this a choice for the user, when the switch is enabled
-        let tapOnIphoneEnabled = ServiceLocator.generalAppSettings.settings.isTapToPayOnIPhoneSwitchEnabled
-        let discoveryMethod: CardReaderDiscoveryMethod = tapOnIphoneEnabled ? .localMobile : .bluetoothProximity
 
         let action = CardPresentPaymentAction.startCardReaderDiscovery(
             siteID: siteID,

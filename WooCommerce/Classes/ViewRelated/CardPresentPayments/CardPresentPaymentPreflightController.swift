@@ -40,6 +40,10 @@ final class CardPresentPaymentPreflightController {
     ///
     private var connectionController: CardReaderConnectionController
 
+    /// Controller to connect a card reader.
+    ///
+    private var builtInConnectionController: CardReaderConnectionController
+
 
     private(set) var readerConnection = CurrentValueSubject<CardReaderConnectionResult?, Never>(nil)
 
@@ -62,6 +66,15 @@ final class CardPresentPaymentPreflightController {
         // TODO: Replace this with a refactored (New)LegacyCardReaderConnectionController
         self.connectionController = CardReaderConnectionController(
             forSiteID: siteID,
+            discoveryMethod: .bluetoothProximity,
+            knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
+            alertsPresenter: alertsPresenter,
+            configuration: configuration,
+            analyticsTracker: analyticsTracker)
+
+        self.builtInConnectionController = CardReaderConnectionController(
+            forSiteID: siteID,
+            discoveryMethod: .localMobile,
             knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
             alertsPresenter: alertsPresenter,
             configuration: configuration,
@@ -78,31 +91,46 @@ final class CardPresentPaymentPreflightController {
 
         // TODO: Run onboarding if needed
 
-        // TODO: Ask for a Reader type if supported by device
-
-        // Attempt to find a reader and connect
-        connectionController.searchAndConnect { result in
-            let connectionResult = result.map { connection in
-                switch connection {
-                case .connected:
-                    // TODO: pass the reader from the (New)CardReaderConnectionController
-                    guard let connectedReader = self.connectedReader else { return CardReaderConnectionResult.canceled }
-                    return CardReaderConnectionResult.connected(connectedReader)
-                case .canceled:
-                    return CardReaderConnectionResult.canceled
-                }
-            }
-
-            switch connectionResult {
-            case .success(let unwrapped):
-                self.readerConnection.send(unwrapped)
-            default:
-                break
-            }
+        // Ask for a Reader type
+        // TODO: only ask if supported by device/in country
+        let tapOnMobileSupported = true
+        if tapOnMobileSupported {
+            alertsPresenter.present(viewModel: CardPresentModalSelectSearchType(
+                options: [
+                    .localMobile: {
+                        self.builtInConnectionController.searchAndConnect(
+                            onCompletion: self.handleConnectionResult)
+                    },
+                    .bluetoothProximity: {
+                        self.connectionController.searchAndConnect(
+                            onCompletion: self.handleConnectionResult)
+                    }
+                ]))
+        } else {
+            // Attempt to find a bluetooth reader and connect
+            connectionController.searchAndConnect(onCompletion: handleConnectionResult)
         }
     }
 
+    private func handleConnectionResult(_ result: Result<CardReaderConnectionController.ConnectionResult, Error>) {
+        let connectionResult = result.map { connection in
+            switch connection {
+            case .connected:
+                // TODO: pass the reader from the (New)CardReaderConnectionController
+                guard let connectedReader = self.connectedReader else { return CardReaderConnectionResult.canceled }
+                return CardReaderConnectionResult.connected(connectedReader)
+            case .canceled:
+                return CardReaderConnectionResult.canceled
+            }
+        }
 
+        switch connectionResult {
+        case .success(let unwrapped):
+            self.readerConnection.send(unwrapped)
+        default:
+            break
+        }
+    }
 
     /// Configure the CardPresentPaymentStore to use the appropriate backend
     ///

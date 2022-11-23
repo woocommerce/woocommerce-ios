@@ -52,10 +52,6 @@ final class LoginJetpackSetupViewModel: ObservableObject {
 
     private var jetpackConnectedEmail: String?
 
-    /// Number of retries done for current step.
-    ///
-    private var retryCount: Int = 0
-
     /// Error occurred in any install step
     ///
     private var setupError: Error? {
@@ -140,14 +136,6 @@ final class LoginJetpackSetupViewModel: ObservableObject {
 //
 private extension LoginJetpackSetupViewModel {
     func retrieveJetpackPluginDetails() {
-        guard !hasEncounteredPermissionError else {
-            setupFailed = true
-            return
-        }
-        guard retryCount <= Constants.maxRetryCount else {
-            setupFailed = true
-            return
-        }
         let action = JetpackConnectionAction.retrieveJetpackPluginDetails { [weak self] result in
             guard let self else { return }
             switch result {
@@ -160,14 +148,12 @@ private extension LoginJetpackSetupViewModel {
             case .failure(let error):
                 DDLogError("⛔️ Error retrieving Jetpack: \(error)")
                 self.setupError = error
-                if self.hasEncounteredPermissionError {
-                    self.setupFailed = true
-                } else if self.setupSteps.contains(.installation) {
+                if self.hasEncounteredPermissionError == false,
+                    self.setupSteps.contains(.installation) {
                     // plugin is likely to not have been installed, so proceed to install it.
                     self.installJetpack()
                 } else {
-                    self.retryCount += 1
-                    self.retryFetchingJetpackPlugin()
+                    self.setupFailed = true
                 }
             }
         }
@@ -180,14 +166,12 @@ private extension LoginJetpackSetupViewModel {
             guard let self else { return }
             switch result {
             case .success:
-                self.retryCount = 0
                 self.activateJetpack()
             case .failure(let error):
                 // TODO: add tracks
                 DDLogError("⛔️ Error installing Jetpack: \(error)")
                 self.setupError = error
-                self.retryCount += 1
-                self.retryFetchingJetpackPlugin()
+                self.setupFailed = true
             }
         }
         stores.dispatch(action)
@@ -199,14 +183,12 @@ private extension LoginJetpackSetupViewModel {
             guard let self else { return }
             switch result {
             case .success:
-                self.retryCount = 0
                 self.fetchJetpackConnectionURL()
             case .failure(let error):
                 // TODO: add tracks
                 DDLogError("⛔️ Error activating Jetpack: \(error)")
                 self.setupError = error
-                self.retryCount += 1
-                self.retryFetchingJetpackPlugin()
+                self.setupFailed = true
             }
         }
         stores.dispatch(action)
@@ -218,21 +200,19 @@ private extension LoginJetpackSetupViewModel {
             guard let self else { return }
             switch result {
             case .success(let url):
-                self.retryCount = 0
                 self.jetpackConnectionURL = url
                 self.shouldPresentWebView = true
             case .failure(let error):
                 // TODO: add tracks
                 DDLogError("⛔️ Error fetching Jetpack connection URL: \(error)")
                 self.setupError = error
-                self.retryCount += 1
-                self.retryFetchingJetpackPlugin()
+                self.setupFailed = true
             }
         }
         stores.dispatch(action)
     }
 
-    func checkJetpackConnection() {
+    func checkJetpackConnection(retryCount: Int = 0) {
         guard retryCount <= Constants.maxRetryCount else {
             setupFailed = true
             return
@@ -242,7 +222,6 @@ private extension LoginJetpackSetupViewModel {
             guard let self else { return }
             switch result {
             case .success(let user):
-                self.retryCount = 0
                 guard let connectedEmail = user.wpcomUser?.email else {
                     DDLogWarn("⚠️ Cannot find connected WPcom user")
                     return // TODO: add tracks and handle error
@@ -255,9 +234,8 @@ private extension LoginJetpackSetupViewModel {
                 // TODO: add tracks
                 DDLogError("⛔️ Error checking Jetpack connection: \(error)")
                 self.setupError = error
-                self.retryCount += 1
                 DispatchQueue.main.asyncAfter(deadline: .now() + Constants.delayBeforeRetry) { [weak self] in
-                    self?.checkJetpackConnection()
+                    self?.checkJetpackConnection(retryCount: retryCount + 1)
                 }
             }
         }
@@ -283,12 +261,6 @@ private extension LoginJetpackSetupViewModel {
                 }
                 return (setupError as? NSError)?.code
             }()
-        }
-    }
-
-    func retryFetchingJetpackPlugin() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.delayBeforeRetry) { [weak self] in
-            self?.retrieveJetpackPluginDetails()
         }
     }
 }

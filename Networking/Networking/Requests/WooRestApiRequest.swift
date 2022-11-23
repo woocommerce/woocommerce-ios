@@ -29,7 +29,12 @@ struct WooRestApiRequest: Request {
         let url = URL(string: baseURL.removingSuffix("/") + Settings.basePath + wooApiVersion.path.removingPrefix("/") + path.removingPrefix("/"))!
         let request = try URLRequest(url: url, method: method, headers: nil)
 
-        return try URLEncoding.default.encode(request, with: parameters)
+        switch method {
+        case .post:
+            return try JSONEncoding.default.encode(request, with: parameters)
+        default:
+            return try URLEncoding.default.encode(request, with: parameters)
+        }
     }
 
     func responseDataValidator() -> ResponseDataValidator {

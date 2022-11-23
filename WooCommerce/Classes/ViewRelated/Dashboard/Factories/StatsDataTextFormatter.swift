@@ -124,11 +124,11 @@ extension StatsDataTextFormatter {
     ///
     static func createDeltaPercentage(from previousValue: Decimal?, to currentValue: Decimal?) -> DeltaPercentage {
         guard let previousValue, let currentValue else {
-            return DeltaPercentage(value: 0) // Placeholder for missing data: `+0%`
+            return DeltaPercentage(value: 0) // Missing data: 0% change
         }
 
         guard previousValue > 0 else {
-            return DeltaPercentage(value: 1) // When previous value was 0: `+100%`
+            return DeltaPercentage(value: 1) // Previous value was 0: 100% change
         }
 
         return DeltaPercentage(value: (currentValue - previousValue) / previousValue)
@@ -138,23 +138,38 @@ extension StatsDataTextFormatter {
     ///
     static func createDeltaPercentage(from previousValue: Double?, to currentValue: Double?) -> DeltaPercentage {
         guard let previousValue, let currentValue else {
-            return DeltaPercentage(value: 0) // Placeholder for missing data: `+0%`
+            return DeltaPercentage(value: 0) // Missing data: 0% change
         }
 
         return createDeltaPercentage(from: Decimal(previousValue), to: Decimal(currentValue))
     }
 
-    /// Represents a delta percentage value and its formatted string
+    /// Represents a formatted delta percentage string and its direction of change
     struct DeltaPercentage {
-        /// The delta percentage value
-        let value: Decimal
-
         /// The delta percentage formatted as a localized string (e.g. `+100%`)
         let string: String
 
+        /// The direction of change
+        let direction: Direction
+
         init(value: Decimal) {
-            self.value = value
             self.string = deltaNumberFormatter.string(from: value as NSNumber) ?? Constants.placeholderText
+            self.direction = {
+                if value > 0 {
+                    return .positive
+                } else if value < 0 {
+                    return .negative
+                } else {
+                    return .zero
+                }
+            }()
+        }
+
+        /// Represents the direction of change for a delta value
+        enum Direction {
+            case positive
+            case negative
+            case zero
         }
     }
 

@@ -71,8 +71,8 @@ final class StatsDataTextFormatterTests: XCTestCase {
         let totalRevenueDelta = StatsDataTextFormatter.createTotalRevenueDelta(from: previousOrderStats, to: currentOrderStats)
 
         // Then
-        XCTAssertEqual(totalRevenueDelta.value, 0.5)
         XCTAssertEqual(totalRevenueDelta.string, "+50%")
+        XCTAssertEqual(totalRevenueDelta.direction, .positive)
     }
 
     // MARK: Orders Stats
@@ -116,8 +116,8 @@ final class StatsDataTextFormatterTests: XCTestCase {
         let orderCountDelta = StatsDataTextFormatter.createOrderCountDelta(from: previousOrderStats, to: currentOrderStats)
 
         // Then
-        XCTAssertEqual(orderCountDelta.value, 0.5)
         XCTAssertEqual(orderCountDelta.string, "+50%")
+        XCTAssertEqual(orderCountDelta.direction, .positive)
     }
 
     func test_createAverageOrderValueText_does_not_return_decimal_points_for_integer_value() {
@@ -155,8 +155,8 @@ final class StatsDataTextFormatterTests: XCTestCase {
         let averageOrderValueDelta = StatsDataTextFormatter.createAverageOrderValueDelta(from: previousOrderStats, to: currentOrderStats)
 
         // Then
-        XCTAssertEqual(averageOrderValueDelta.value, 0.5)
         XCTAssertEqual(averageOrderValueDelta.string, "+50%")
+        XCTAssertEqual(averageOrderValueDelta.direction, .positive)
     }
 
     // MARK: Views and Visitors Stats
@@ -198,8 +198,8 @@ final class StatsDataTextFormatterTests: XCTestCase {
         let visitorCountDelta = StatsDataTextFormatter.createVisitorCountDelta(from: previousSiteStats, to: currentSiteStats)
 
         // Then
-        XCTAssertEqual(visitorCountDelta.value, 0.5)
         XCTAssertEqual(visitorCountDelta.string, "+50%")
+        XCTAssertEqual(visitorCountDelta.direction, .positive)
     }
 
     // MARK: Conversion Stats
@@ -255,7 +255,7 @@ final class StatsDataTextFormatterTests: XCTestCase {
 
     // MARK: Delta Calculations
 
-    func test_createDeltaText_returns_expected_positive_text() {
+    func test_createDeltaPercentage_returns_expected_positive_delta() {
         // Given
         let previousValue: Double = 100
         let currentValue: Double = 150
@@ -264,11 +264,11 @@ final class StatsDataTextFormatterTests: XCTestCase {
         let delta = StatsDataTextFormatter.createDeltaPercentage(from: previousValue, to: currentValue)
 
         // Then
-        XCTAssertEqual(delta.value, 0.5)
         XCTAssertEqual(delta.string, "+50%")
+        XCTAssertEqual(delta.direction, .positive)
     }
 
-    func test_createDeltaText_returns_expected_negative_text() {
+    func test_createDeltaPercentage_returns_expected_negative_delta() {
         // Given
         let previousValue: Double = 100
         let currentValue: Double = 50
@@ -277,11 +277,24 @@ final class StatsDataTextFormatterTests: XCTestCase {
         let delta = StatsDataTextFormatter.createDeltaPercentage(from: previousValue, to: currentValue)
 
         // Then
-        XCTAssertEqual(delta.value, -0.5)
         XCTAssertEqual(delta.string, "-50%")
+        XCTAssertEqual(delta.direction, .negative)
     }
 
-    func test_createDeltaText_returns_100_percent_change_when_previous_value_is_zero() {
+    func test_createDeltaPercentage_returns_expected_zero_delta() {
+        // Given
+        let previousValue: Double = 100
+        let currentValue: Double = 100
+
+        // When
+        let delta = StatsDataTextFormatter.createDeltaPercentage(from: previousValue, to: currentValue)
+
+        // Then
+        XCTAssertEqual(delta.string, "+0%")
+        XCTAssertEqual(delta.direction, .zero)
+    }
+
+    func test_createDeltaPercentage_returns_100_percent_change_when_previous_value_is_zero() {
         // Given
         let previousValue: Double = 0
         let currentValue: Double = 10
@@ -290,11 +303,11 @@ final class StatsDataTextFormatterTests: XCTestCase {
         let delta = StatsDataTextFormatter.createDeltaPercentage(from: previousValue, to: currentValue)
 
         // Then
-        XCTAssertEqual(delta.value, 1)
         XCTAssertEqual(delta.string, "+100%")
+        XCTAssertEqual(delta.direction, .positive)
     }
 
-    func test_createDeltaText_returns_negative_100_percent_change_when_current_value_is_zero() {
+    func test_createDeltaPercentage_returns_negative_100_percent_change_when_current_value_is_zero() {
         // Given
         let previousValue: Double = 10
         let currentValue: Double = 0
@@ -303,7 +316,7 @@ final class StatsDataTextFormatterTests: XCTestCase {
         let delta = StatsDataTextFormatter.createDeltaPercentage(from: previousValue, to: currentValue)
 
         // Then
-        XCTAssertEqual(delta.value, -1)
         XCTAssertEqual(delta.string, "-100%")
+        XCTAssertEqual(delta.direction, .negative)
     }
 }

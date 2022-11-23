@@ -5,7 +5,7 @@ struct AnalyticsTimeRangeCard: View {
     let timeRangeTitle: String
     let currentRangeDescription: String
     let previousRangeDescription: String
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
             HStack {

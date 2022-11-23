@@ -124,6 +124,7 @@ final class LoginJetpackSetupViewModel: ObservableObject {
     }
 
     func navigateToStore() {
+        analytics.track(.loginJetpackInstallGoToStoreTapped)
         storeNavigationHandler(jetpackConnectedEmail)
     }
 

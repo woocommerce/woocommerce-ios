@@ -208,7 +208,6 @@ struct LoginJetpackSetupView: View {
         }
         .safeAreaInset(edge: .bottom, content: {
             Button {
-                // TODO: add tracks
                 viewModel.navigateToStore()
             } label: {
                 Text(Localization.goToStore)

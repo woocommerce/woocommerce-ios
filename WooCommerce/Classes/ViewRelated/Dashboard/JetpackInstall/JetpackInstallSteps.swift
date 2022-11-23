@@ -84,6 +84,19 @@ extension JetpackInstallStep {
         }
     }
 
+    var tryAgainButtonTitle: String? {
+        switch self {
+        case .installation:
+            return Localization.tryInstallingAgain
+        case .activation:
+            return Localization.tryActivatingAgain
+        case .connection:
+            return Localization.tryAuthorizingAgain
+        case .done:
+            return nil
+        }
+    }
+
     private enum Localization {
         static let installationStep = NSLocalizedString("Installing Jetpack", comment: "Name of installing Jetpack plugin step")
         static let activationStep = NSLocalizedString("Activating", comment: "Name of the activation Jetpack plugin step")
@@ -106,5 +119,8 @@ extension JetpackInstallStep {
         static let wpAdminActivateAction = NSLocalizedString("Activate Jetpack in WP-Admin",
                                                              comment: "Action button to activate Jetpack on WP-Admin instead of on app")
         static let checkConnectionAction = NSLocalizedString("Retry Connection", comment: "Action button to check site's connection again.")
+        static let tryInstallingAgain = NSLocalizedString("Try Installing Again", comment: "Action button to retry Jetpack installation.")
+        static let tryActivatingAgain = NSLocalizedString("Try Activating Again", comment: "Action button to retry Jetpack activation.")
+        static let tryAuthorizingAgain = NSLocalizedString("Try Authorizing Again", comment: "Action button to retry Jetpack connection.")
     }
 }

@@ -12,14 +12,39 @@ final class LoginJetpackSetupViewModel: ObservableObject {
     private let storeNavigationHandler: (_ connectedEmail: String?) -> Void
 
     let setupSteps: [JetpackInstallStep]
-    let title: String
+
+    /// Title to be displayed on the Jetpack setup view
+    var title: String {
+        let step = currentSetupStep ?? .installation
+        if setupFailed, let errorTitle = step.errorTitle {
+            return errorTitle
+        }
+        return connectionOnly ? Localization.connectingJetpack : Localization.installingJetpack
+    }
+
+    var shouldShowInitialLoadingIndicator: Bool {
+        currentSetupStep == nil && setupFailed == false
+    }
+
+    var shouldShowSetupSteps: Bool {
+        currentSetupStep != nil && setupFailed == false
+    }
+
+    var shouldShowGoToStoreButton: Bool {
+        currentSetupStep == .done && setupFailed == false
+    }
+
+    var tryAgainButtonTitle: String {
+        let step = currentSetupStep ?? .installation
+        return step.tryAgainButtonTitle ?? ""
+    }
 
     @Published private(set) var currentSetupStep: JetpackInstallStep?
     @Published private(set) var currentConnectionStep: ConnectionStep = .pending
     @Published private(set) var jetpackConnectionURL: URL?
     @Published var shouldPresentWebView = false
+
     /// Whether the setup failed. This will be observed by `LoginJetpackSetupView` to present error modal.
-    ///
     @Published private(set) var setupFailed: Bool = false
     @Published private(set) var setupErrorMessage: String = ""
     @Published private(set) var setupErrorSuggestion: String = ""
@@ -39,7 +64,7 @@ final class LoginJetpackSetupViewModel: ObservableObject {
         }
     }
 
-    private var hasEncounteredPermissionError: Bool {
+    var hasEncounteredPermissionError: Bool {
         if case .responseValidationFailed(reason: .unacceptableStatusCode(code: 403)) = setupError as? AFError {
             return true
         }
@@ -69,7 +94,6 @@ final class LoginJetpackSetupViewModel: ObservableObject {
         self.stores = stores
         let setupSteps = connectionOnly ? [.connection, .done] : JetpackInstallStep.allCases
         self.setupSteps = setupSteps
-        self.title = connectionOnly ? Localization.connectingJetpack : Localization.installingJetpack
         self.storeNavigationHandler = onStoreNavigation
     }
 
@@ -98,6 +122,18 @@ final class LoginJetpackSetupViewModel: ObservableObject {
     func navigateToStore() {
         storeNavigationHandler(jetpackConnectedEmail)
     }
+
+    func retryAllSteps() {
+        setupFailed = false
+        setupError = nil
+        setupErrorMessage = ""
+        setupErrorSuggestion = ""
+        errorCode = nil
+
+        currentSetupStep = nil
+        currentConnectionStep = .pending
+        startSetup()
+    }
 }
 
 // MARK: Private helpers
@@ -106,12 +142,10 @@ private extension LoginJetpackSetupViewModel {
     func retrieveJetpackPluginDetails() {
         guard !hasEncounteredPermissionError else {
             setupFailed = true
-            // TODO: show permission error
             return
         }
         guard retryCount <= Constants.maxRetryCount else {
             setupFailed = true
-            // TODO: show generic error
             return
         }
         let action = JetpackConnectionAction.retrieveJetpackPluginDetails { [weak self] result in
@@ -128,11 +162,12 @@ private extension LoginJetpackSetupViewModel {
                 self.setupError = error
                 if self.hasEncounteredPermissionError {
                     self.setupFailed = true
-                    // TODO: show permission error
-                    return
-                } else {
+                } else if self.setupSteps.contains(.installation) {
                     // plugin is likely to not have been installed, so proceed to install it.
                     self.installJetpack()
+                } else {
+                    self.retryCount += 1
+                    self.retryFetchingJetpackPlugin()
                 }
             }
         }
@@ -152,9 +187,7 @@ private extension LoginJetpackSetupViewModel {
                 DDLogError("⛔️ Error installing Jetpack: \(error)")
                 self.setupError = error
                 self.retryCount += 1
-                DispatchQueue.main.asyncAfter(deadline: .now() + Constants.delayBeforeRetry) { [weak self] in
-                    self?.retrieveJetpackPluginDetails()
-                }
+                self.retryFetchingJetpackPlugin()
             }
         }
         stores.dispatch(action)
@@ -173,9 +206,7 @@ private extension LoginJetpackSetupViewModel {
                 DDLogError("⛔️ Error activating Jetpack: \(error)")
                 self.setupError = error
                 self.retryCount += 1
-                DispatchQueue.main.asyncAfter(deadline: .now() + Constants.delayBeforeRetry) { [weak self] in
-                    self?.retrieveJetpackPluginDetails()
-                }
+                self.retryFetchingJetpackPlugin()
             }
         }
         stores.dispatch(action)
@@ -195,15 +226,17 @@ private extension LoginJetpackSetupViewModel {
                 DDLogError("⛔️ Error fetching Jetpack connection URL: \(error)")
                 self.setupError = error
                 self.retryCount += 1
-                DispatchQueue.main.asyncAfter(deadline: .now() + Constants.delayBeforeRetry) { [weak self] in
-                    self?.retrieveJetpackPluginDetails()
-                }
+                self.retryFetchingJetpackPlugin()
             }
         }
         stores.dispatch(action)
     }
 
     func checkJetpackConnection() {
+        guard retryCount <= Constants.maxRetryCount else {
+            setupFailed = true
+            return
+        }
         currentConnectionStep = .inProgress
         let action = JetpackConnectionAction.fetchJetpackUser { [weak self] result in
             guard let self else { return }
@@ -224,7 +257,7 @@ private extension LoginJetpackSetupViewModel {
                 self.setupError = error
                 self.retryCount += 1
                 DispatchQueue.main.asyncAfter(deadline: .now() + Constants.delayBeforeRetry) { [weak self] in
-                    self?.retrieveJetpackPluginDetails()
+                    self?.checkJetpackConnection()
                 }
             }
         }
@@ -250,6 +283,12 @@ private extension LoginJetpackSetupViewModel {
                 }
                 return (setupError as? NSError)?.code
             }()
+        }
+    }
+
+    func retryFetchingJetpackPlugin() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.delayBeforeRetry) { [weak self] in
+            self?.retrieveJetpackPluginDetails()
         }
     }
 }

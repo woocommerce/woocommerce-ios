@@ -3,14 +3,25 @@ import SwiftUI
 /// Hosting controller for `LoginJetpackSetupView`.
 ///
 final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpackSetupView> {
-    let viewModel: LoginJetpackSetupViewModel
+    private let viewModel: LoginJetpackSetupViewModel
 
-    init(siteURL: String, connectionOnly: Bool, onStoreNavigation: @escaping (String?) -> Void) {
+    init(siteURL: String,
+         connectionOnly: Bool,
+         authentication: Authentication = ServiceLocator.authenticationManager,
+         onStoreNavigation: @escaping (String?) -> Void) {
         self.viewModel = LoginJetpackSetupViewModel(siteURL: siteURL, connectionOnly: connectionOnly, onStoreNavigation: onStoreNavigation)
         super.init(rootView: LoginJetpackSetupView(viewModel: viewModel))
+
         rootView.webViewPresentationHandler = { [weak self] in
             self?.presentJetpackConnectionWebView()
         }
+
+        rootView.supportHandler = { [weak self] in
+            guard let self else { return }
+            authentication.presentSupport(from: self, screen: .jetpackRequired)
+        }
+
+        rootView.cancellationHandler = dismissView
     }
 
     @available(*, unavailable)
@@ -69,8 +80,14 @@ private extension LoginJetpackSetupHostingController {
 /// View to show the process of Jetpack setup during login.
 ///
 struct LoginJetpackSetupView: View {
-    // To be set by the hosting controller
+    /// To be set by the hosting controller
     var webViewPresentationHandler: () -> Void = {}
+
+    /// Triggered when the user choose to cancel setup after failure. To be set by the hosting controller.
+    var cancellationHandler: () -> Void = {}
+
+    /// Triggered when the user selects Get support.
+    var supportHandler: () -> Void = {}
 
     @ObservedObject private var viewModel: LoginJetpackSetupViewModel
 
@@ -89,15 +106,10 @@ struct LoginJetpackSetupView: View {
 
                 // title and description
                 VStack(alignment: .leading, spacing: Constants.contentVerticalSpacing) {
-                    if viewModel.setupFailed {
-                        (viewModel.currentSetupStep ?? .installation).errorTitle.map { title in
-                            Text(title).largeTitleStyle()
-                        }
-                    } else {
-                        Text(viewModel.title)
-                            .largeTitleStyle()
-                        AttributedText(viewModel.descriptionAttributedString)
-                    }
+                    Text(viewModel.title)
+                        .largeTitleStyle()
+                    AttributedText(viewModel.descriptionAttributedString)
+                        .renderedIf(viewModel.setupFailed == false)
                 }
 
                 // Loading indicator for when checking plugin details
@@ -106,7 +118,7 @@ struct LoginJetpackSetupView: View {
                     ActivityIndicator(isAnimating: .constant(true), style: .medium)
                     Spacer()
                 }
-                .renderedIf(viewModel.currentSetupStep == nil && viewModel.setupFailed == false)
+                .renderedIf(viewModel.shouldShowInitialLoadingIndicator)
 
                 ForEach(viewModel.setupSteps) { step in
                     HStack(spacing: Constants.stepItemHorizontalSpacing) {
@@ -145,7 +157,7 @@ struct LoginJetpackSetupView: View {
                     }
                 }
                 .padding(.top, Constants.contentVerticalSpacing)
-                .renderedIf(viewModel.currentSetupStep != nil && viewModel.setupFailed == false)
+                .renderedIf(viewModel.shouldShowSetupSteps)
 
                 VStack(alignment: .leading, spacing: Constants.errorContentSpacing) {
                     Text(viewModel.setupErrorMessage)
@@ -162,7 +174,8 @@ struct LoginJetpackSetupView: View {
                     }
 
                     Button {
-                        // TODO
+                        // TODO: add tracks?
+                        supportHandler()
                     } label: {
                         Label {
                             Text(Localization.getSupport)
@@ -191,7 +204,27 @@ struct LoginJetpackSetupView: View {
             }
             .buttonStyle(PrimaryButtonStyle())
             .padding(.top, Constants.contentVerticalSpacing)
-            .renderedIf(viewModel.currentSetupStep == .done)
+            .renderedIf(viewModel.shouldShowGoToStoreButton)
+
+            VStack(spacing: Constants.contentVerticalSpacing) {
+                Button {
+                    // TODO: add tracks
+                    viewModel.retryAllSteps()
+                } label: {
+                    Text(viewModel.tryAgainButtonTitle)
+                }
+                .buttonStyle(PrimaryButtonStyle())
+                .renderedIf(viewModel.hasEncounteredPermissionError == false)
+
+                Button {
+                    // TODO: add tracks
+                    cancellationHandler()
+                } label: {
+                    Text(Localization.cancelInstallation)
+                }
+                .buttonStyle(SecondaryButtonStyle())
+            }
+            .renderedIf(viewModel.setupFailed)
         })
         .padding()
         .onChange(of: viewModel.shouldPresentWebView) { shouldPresent in
@@ -208,6 +241,7 @@ private extension LoginJetpackSetupView {
         static let authorizing = NSLocalizedString("Authorizing connection", comment: "Name of the connection step on the Jetpack setup screen")
         static let errorCode = NSLocalizedString("Error code %1$d", comment: "Error code displayed when the Jetpack setup fails. %1$d is the code.")
         static let getSupport = NSLocalizedString("Get support", comment: "Button to contact support when Jetpack setup fails")
+        static let cancelInstallation = NSLocalizedString("Cancel Installation", comment: "Action button to cancel Jetpack installation.")
     }
 
     enum Constants {

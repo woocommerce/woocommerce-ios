@@ -20,6 +20,9 @@ final class AnalyticsHubHostingViewController: UIHostingController<AnalyticsHubV
 ///
 struct AnalyticsHubView: View {
 
+    /// Environment safe areas
+    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+
     @StateObject var viewModel: AnalyticsHubViewModel
 
     var body: some View {
@@ -29,6 +32,7 @@ struct AnalyticsHubView: View {
                     Divider()
                     Text("Placeholder for Time Range Selection")
                         .padding(.leading)
+                        .padding(.horizontal, insets: safeAreaInsets)
                         .frame(maxWidth: .infinity, minHeight: 84, alignment: .leading)
                         .background(Color(uiColor: .listForeground))
 
@@ -40,7 +44,8 @@ struct AnalyticsHubView: View {
                     Divider()
 
                     AnalyticsReportCard(viewModel: viewModel.revenueCard)
-                    .background(Color(uiColor: .listForeground))
+                        .padding(.horizontal, insets: safeAreaInsets)
+                        .background(Color(uiColor: .listForeground))
 
                     Divider()
                 }
@@ -49,7 +54,8 @@ struct AnalyticsHubView: View {
                     Divider()
 
                     AnalyticsReportCard(viewModel: viewModel.ordersCard)
-                    .background(Color(uiColor: .listForeground))
+                        .padding(.horizontal, insets: safeAreaInsets)
+                        .background(Color(uiColor: .listForeground))
 
                     Divider()
                 }
@@ -60,6 +66,7 @@ struct AnalyticsHubView: View {
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
         .background(Color(uiColor: .listBackground))
+        .edgesIgnoringSafeArea(.horizontal)
     }
 }
 

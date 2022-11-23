@@ -193,9 +193,10 @@ private extension LoginJetpackSetupViewModel {
             guard let self else { return }
             switch result {
             case .success:
+                self.analytics.track(.loginJetpackInstallActivationSuccessful)
                 self.fetchJetpackConnectionURL()
             case .failure(let error):
-                // TODO: add tracks
+                self.analytics.track(.loginJetpackInstallActivationFailed)
                 DDLogError("⛔️ Error activating Jetpack: \(error)")
                 self.setupError = error
                 self.setupFailed = true

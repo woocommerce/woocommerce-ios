@@ -94,23 +94,23 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Install/Setup Jetpack (`LoginJetpackSetupView`)
     //
-    case loginJetpackInstallScreenViewed = "login_jetpack_install_screen_viewed"
-    case loginJetpackInstallScreenDismissed = "login_jetpack_install_screen_dismissed"
+    case loginJetpackSetupScreenViewed = "login_jetpack_setup_screen_viewed"
+    case loginJetpackSetupScreenDismissed = "login_jetpack_setup_screen_dismissed"
 
-    case loginJetpackInstallScreenInstallSuccessful = "login_jetpack_install_install_successful"
-    case loginJetpackInstallScreenInstallFailed = "login_jetpack_install_install_failed"
+    case loginJetpackSetupScreenInstallSuccessful = "login_jetpack_setup_install_successful"
+    case loginJetpackSetupScreenInstallFailed = "login_jetpack_setup_install_failed"
 
-    case loginJetpackInstallActivationSuccessful = "login_jetpack_install_activation_successful"
-    case loginJetpackInstallActivationFailed = "login_jetpack_install_activation_failed"
+    case loginJetpackSetupActivationSuccessful = "login_jetpack_setup_activation_successful"
+    case loginJetpackSetupActivationFailed = "login_jetpack_setup_activation_failed"
 
-    case loginJetpackInstallFetchJetpackConnectionURLSuccessful = "login_jetpack_install_fetch_jetpack_connection_url_successful"
-    case loginJetpackInstallFetchJetpackConnectionURLFailed = "login_jetpack_install_fetch_jetpack_connection_url_failed"
+    case loginJetpackSetupFetchJetpackConnectionURLSuccessful = "login_jetpack_setup_fetch_jetpack_connection_url_successful"
+    case loginJetpackSetupFetchJetpackConnectionURLFailed = "login_jetpack_setup_fetch_jetpack_connection_url_failed"
 
-    case loginJetpackInstallCannotFindWPCOMUser = "login_jetpack_install_cannot_find_WPCOM_user"
-    case loginJetpackInstallAllStepsMarkedDone = "login_jetpack_install_all_steps_marked_done"
-    case loginJetpackInstallErrorCheckingJetpackConnection = "login_jetpack_install_error_checking_jetpack_connection"
+    case loginJetpackSetupCannotFindWPCOMUser = "login_jetpack_setup_cannot_find_WPCOM_user"
+    case loginJetpackSetupAllStepsMarkedDone = "login_jetpack_setup_all_steps_marked_done"
+    case loginJetpackSetupErrorCheckingJetpackConnection = "login_jetpack_setup_error_checking_jetpack_connection"
 
-    case loginJetpackInstallGoToStoreTapped = "login_jetpack_install_go_to_store_button_tapped"
+    case loginJetpackSetupGoToStoreTapped = "login_jetpack_setup_go_to_store_button_tapped"
 
     // MARK: Dashboard View Events
     //

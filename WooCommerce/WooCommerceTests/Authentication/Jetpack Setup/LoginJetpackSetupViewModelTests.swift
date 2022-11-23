@@ -284,7 +284,7 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
     }
 
     // MARK: - Analytics
-    func test_it_tracks_login_jetpack_install_go_to_store_button_tapped_when_tapping_go_to_store_button() {
+    func test_it_tracks_login_jetpack_setup_go_to_store_button_tapped_when_tapping_go_to_store_button() {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
@@ -295,7 +295,7 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
         viewModel.navigateToStore()
 
         // Then
-        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_install_go_to_store_button_tapped" }))
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_go_to_store_button_tapped" }))
     }
 
     func test_it_tracks_correct_event_when_jetpack_installation_is_successful() {
@@ -321,7 +321,7 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
         viewModel.startSetup()
 
         // Then
-        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_install_install_successful" }))
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_install_successful" }))
     }
 
     func test_it_tracks_correct_event_when_jetpack_installation_fails() {
@@ -347,7 +347,7 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
         viewModel.startSetup()
 
         // Then
-        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_install_install_failed" }))
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_install_failed" }))
     }
 
     func test_it_tracks_correct_event_when_jetpack_activation_is_successful() {
@@ -375,7 +375,7 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
         viewModel.startSetup()
 
         // Then
-        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_install_activation_successful" }))
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_activation_successful" }))
     }
 
     func test_it_tracks_correct_event_when_jetpack_activation_fails() {
@@ -402,7 +402,7 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
         viewModel.startSetup()
 
         // Then
-        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_install_activation_failed" }))
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_activation_failed" }))
     }
 
     func test_it_tracks_correct_event_when_fetching_jetpack_connection_url_is_successful() throws {
@@ -433,7 +433,7 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
         viewModel.startSetup()
 
         // Then
-        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_install_fetch_jetpack_connection_url_successful" }))
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_fetch_jetpack_connection_url_successful" }))
     }
 
     func test_it_tracks_correct_event_when_fetching_jetpack_connection_url_fails() {
@@ -462,7 +462,7 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
         viewModel.startSetup()
 
         // Then
-        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_install_fetch_jetpack_connection_url_failed" }))
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_fetch_jetpack_connection_url_failed" }))
     }
 
     func test_it_tracks_correct_event_when_checking_jetpack_connection_is_successful() throws {
@@ -486,7 +486,7 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
         viewModel.didAuthorizeJetpackConnection()
 
         // Then
-        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_install_all_steps_marked_done" }))
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_all_steps_marked_done" }))
     }
 
     func test_it_tracks_correct_event_when_checking_jetpack_connection_is_successful_but_no_wpCom_user_present() throws {
@@ -510,7 +510,7 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
         viewModel.didAuthorizeJetpackConnection()
 
         // Then
-        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_install_cannot_find_WPCOM_user" }))
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_cannot_find_WPCOM_user" }))
     }
 
     func test_it_tracks_correct_event_when_checking_jetpack_connection_fails() throws {
@@ -534,6 +534,6 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
         viewModel.didAuthorizeJetpackConnection()
 
         // Then
-        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_install_error_checking_jetpack_connection" }))
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_error_checking_jetpack_connection" }))
     }
 }

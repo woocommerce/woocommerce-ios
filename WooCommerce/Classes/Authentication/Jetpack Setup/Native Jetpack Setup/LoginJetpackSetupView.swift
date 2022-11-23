@@ -37,7 +37,7 @@ final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpack
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        analytics.track(.loginJetpackInstallScreenViewed)
+        analytics.track(.loginJetpackSetupScreenViewed)
         configureNavigationBarAppearance()
     }
 
@@ -50,7 +50,7 @@ final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpack
 
     @objc
     private func dismissView() {
-        analytics.track(.loginJetpackInstallScreenDismissed)
+        analytics.track(.loginJetpackSetupScreenDismissed)
         dismiss(animated: true)
     }
 

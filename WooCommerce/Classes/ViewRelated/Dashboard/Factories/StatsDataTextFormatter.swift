@@ -123,8 +123,8 @@ extension StatsDataTextFormatter {
     /// Creates the `DeltaPercentage` for the percent change from the previous `Decimal` value to the current `Decimal` value
     ///
     static func createDeltaPercentage(from previousValue: Decimal?, to currentValue: Decimal?) -> DeltaPercentage {
-        guard let previousValue, let currentValue else {
-            return DeltaPercentage(value: 0) // Missing data: 0% change
+        guard let previousValue, let currentValue, previousValue != currentValue else {
+            return DeltaPercentage(value: 0) // Missing or equal values: 0% change
         }
 
         guard previousValue > 0 else {

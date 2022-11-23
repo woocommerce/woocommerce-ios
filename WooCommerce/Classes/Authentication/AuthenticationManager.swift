@@ -353,7 +353,9 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     func troubleshootSite(_ siteInfo: WordPressComSiteInfo?, in navigationController: UINavigationController?) {
         analytics.track(event: .SitePicker.siteDiscovery(hasWordPress: siteInfo?.isWP ?? false,
                                                                         isWPCom: siteInfo?.isWPCom ?? false,
-                                                                        hasValidJetpack: siteInfo?.isJetpackConnected ?? false))
+                                                                        isJetpackInstalled: siteInfo?.hasJetpack ?? false,
+                                                                        isJetpackActive: siteInfo?.isJetpackActive ?? false,
+                                                                        isJetpackConnected: siteInfo?.isJetpackConnected ?? false))
 
         guard let site = siteInfo, let navigationController = navigationController else {
             navigationController?.show(noWPUI, sender: nil)

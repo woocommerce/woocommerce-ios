@@ -176,8 +176,7 @@ extension UIButton {
             } else {
                 DDLogWarn("""
                     Failed attempt to pin button's title to the edges.
-                    This is likely because the custom button title label was not added to its view hierarchy
-                    See ButtonActivityIndicator as an example
+                    This is likely because the custom button title label was not added to its view hierarchy.
                     """
                 )
             }

@@ -24,10 +24,7 @@ struct AnalyticsHubView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Layout.vertialSpacing) {
-                AnalyticsTimeRangeCard(
-                    timeRangeTitle: viewModel.currentTimeRange.selectionDescription,
-                    currentRangeDescription: viewModel.currentTimeRange.currentRangeDescription,
-                    previousRangeDescription: viewModel.currentTimeRange.previousRangeDescription)
+                AnalyticsTimeRangeCard(viewModel: viewModel.timeRangeCard)
 
                 VStack(spacing: Layout.dividerSpacing) {
                     Divider()

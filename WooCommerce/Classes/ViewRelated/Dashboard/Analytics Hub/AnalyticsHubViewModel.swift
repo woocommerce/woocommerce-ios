@@ -1,5 +1,4 @@
 import Foundation
-import Yosemite
 
 /// Main View Model for the Analytics Hub.
 ///

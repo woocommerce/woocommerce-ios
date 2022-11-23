@@ -9,7 +9,6 @@ final class StatsDataTextFormatterTests: XCTestCase {
 
     private let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()) // Default is US
     private let currencyCode = CurrencySettings().currencyCode
-    private let locale = Locale(identifier: "en_US")
 
     // MARK: Revenue Stats
 
@@ -69,7 +68,7 @@ final class StatsDataTextFormatterTests: XCTestCase {
         let currentOrderStats = OrderStatsV4.fake().copy(totals: .fake().copy(grossRevenue: 15))
 
         // When
-        let totalRevenueDelta = StatsDataTextFormatter.createTotalRevenueDelta(from: previousOrderStats, to: currentOrderStats, locale: locale)
+        let totalRevenueDelta = StatsDataTextFormatter.createTotalRevenueDelta(from: previousOrderStats, to: currentOrderStats)
 
         // Then
         XCTAssertEqual(totalRevenueDelta, "+50%")
@@ -113,7 +112,7 @@ final class StatsDataTextFormatterTests: XCTestCase {
         let currentOrderStats = OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 15))
 
         // When
-        let orderCountDelta = StatsDataTextFormatter.createOrderCountDelta(from: previousOrderStats, to: currentOrderStats, locale: locale)
+        let orderCountDelta = StatsDataTextFormatter.createOrderCountDelta(from: previousOrderStats, to: currentOrderStats)
 
         // Then
         XCTAssertEqual(orderCountDelta, "+50%")
@@ -151,7 +150,7 @@ final class StatsDataTextFormatterTests: XCTestCase {
         let currentOrderStats = OrderStatsV4.fake().copy(totals: .fake().copy(averageOrderValue: 15.00))
 
         // When
-        let averageOrderValueDelta = StatsDataTextFormatter.createAverageOrderValueDelta(from: previousOrderStats, to: currentOrderStats, locale: locale)
+        let averageOrderValueDelta = StatsDataTextFormatter.createAverageOrderValueDelta(from: previousOrderStats, to: currentOrderStats)
 
         // Then
         XCTAssertEqual(averageOrderValueDelta, "+50%")
@@ -193,7 +192,7 @@ final class StatsDataTextFormatterTests: XCTestCase {
         let currentSiteStats = SiteVisitStats.fake().copy(items: [.fake().copy(period: "0", visitors: 15)])
 
         // When
-        let visitorCountDelta = StatsDataTextFormatter.createVisitorCountDelta(from: previousSiteStats, to: currentSiteStats, locale: locale)
+        let visitorCountDelta = StatsDataTextFormatter.createVisitorCountDelta(from: previousSiteStats, to: currentSiteStats)
 
         // Then
         XCTAssertEqual(visitorCountDelta, "+50%")
@@ -258,7 +257,7 @@ final class StatsDataTextFormatterTests: XCTestCase {
         let currentValue: Double = 150
 
         // When
-        let deltaText = StatsDataTextFormatter.createDeltaText(from: previousValue, to: currentValue, locale: locale)
+        let deltaText = StatsDataTextFormatter.createDeltaText(from: previousValue, to: currentValue)
 
         // Then
         XCTAssertEqual(deltaText, "+50%")
@@ -270,7 +269,7 @@ final class StatsDataTextFormatterTests: XCTestCase {
         let currentValue: Double = 100
 
         // When
-        let deltaText = StatsDataTextFormatter.createDeltaText(from: previousValue, to: currentValue, locale: locale)
+        let deltaText = StatsDataTextFormatter.createDeltaText(from: previousValue, to: currentValue)
 
         // Then
         XCTAssertEqual(deltaText, "-33%")
@@ -282,7 +281,7 @@ final class StatsDataTextFormatterTests: XCTestCase {
         let currentValue: Double = 10
 
         // When
-        let deltaText = StatsDataTextFormatter.createDeltaText(from: previousValue, to: currentValue, locale: locale)
+        let deltaText = StatsDataTextFormatter.createDeltaText(from: previousValue, to: currentValue)
 
         // Then
         XCTAssertEqual(deltaText, "+100%")
@@ -294,7 +293,7 @@ final class StatsDataTextFormatterTests: XCTestCase {
         let currentValue: Double = 0
 
         // When
-        let deltaText = StatsDataTextFormatter.createDeltaText(from: previousValue, to: currentValue, locale: locale)
+        let deltaText = StatsDataTextFormatter.createDeltaText(from: previousValue, to: currentValue)
 
         // Then
         XCTAssertEqual(deltaText, "-100%")

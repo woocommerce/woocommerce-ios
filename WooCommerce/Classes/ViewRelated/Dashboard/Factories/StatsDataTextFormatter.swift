@@ -26,9 +26,9 @@ struct StatsDataTextFormatter {
 
     /// Creates the text to display for the total revenue delta.
     ///
-    static func createTotalRevenueDelta(from previousPeriod: OrderStatsV4?, to currentPeriod: OrderStatsV4?, locale: Locale = .current) -> String {
+    static func createTotalRevenueDelta(from previousPeriod: OrderStatsV4?, to currentPeriod: OrderStatsV4?) -> String {
         if let previousRevenue = totalRevenue(at: nil, orderStats: previousPeriod), let currentRevenue = totalRevenue(at: nil, orderStats: currentPeriod) {
-            return createDeltaText(from: previousRevenue, to: currentRevenue, locale: locale)
+            return createDeltaText(from: previousRevenue, to: currentRevenue)
         } else {
             return Constants.placeholderText
         }
@@ -48,9 +48,9 @@ struct StatsDataTextFormatter {
 
     /// Creates the text to display for the order count delta.
     ///
-    static func createOrderCountDelta(from previousPeriod: OrderStatsV4?, to currentPeriod: OrderStatsV4?, locale: Locale = .current) -> String {
+    static func createOrderCountDelta(from previousPeriod: OrderStatsV4?, to currentPeriod: OrderStatsV4?) -> String {
         if let previousCount = orderCount(at: nil, orderStats: previousPeriod), let currentCount = orderCount(at: nil, orderStats: currentPeriod) {
-            return createDeltaText(from: previousCount, to: currentCount, locale: locale)
+            return createDeltaText(from: previousCount, to: currentCount)
         } else {
             return Constants.placeholderText
         }
@@ -70,9 +70,9 @@ struct StatsDataTextFormatter {
 
     /// Creates the text to display for the average order value delta.
     ///
-    static func createAverageOrderValueDelta(from previousPeriod: OrderStatsV4?, to currentPeriod: OrderStatsV4?, locale: Locale = .current) -> String {
+    static func createAverageOrderValueDelta(from previousPeriod: OrderStatsV4?, to currentPeriod: OrderStatsV4?) -> String {
         if let previousAverage = averageOrderValue(orderStats: previousPeriod), let currentAverage = averageOrderValue(orderStats: currentPeriod) {
-            return createDeltaText(from: previousAverage, to: currentAverage, locale: locale)
+            return createDeltaText(from: previousAverage, to: currentAverage)
         } else {
             return Constants.placeholderText
         }
@@ -92,9 +92,9 @@ struct StatsDataTextFormatter {
 
     /// Creates the text to display for the visitor count delta.
     ///
-    static func createVisitorCountDelta(from previousPeriod: SiteVisitStats?, to currentPeriod: SiteVisitStats?, locale: Locale = .current) -> String {
+    static func createVisitorCountDelta(from previousPeriod: SiteVisitStats?, to currentPeriod: SiteVisitStats?) -> String {
         if let previousCount = visitorCount(at: nil, siteStats: previousPeriod), let currentCount = visitorCount(at: nil, siteStats: currentPeriod) {
-            return createDeltaText(from: previousCount, to: currentCount, locale: locale)
+            return createDeltaText(from: previousCount, to: currentCount)
         } else {
             return Constants.placeholderText
         }
@@ -130,23 +130,18 @@ extension StatsDataTextFormatter {
 
     /// Creates the text showing the percent change from the previous `Decimal` value to the current `Decimal` value
     ///
-    static func createDeltaText(from previousValue: Decimal, to currentValue: Decimal, locale: Locale = .current) -> String {
-        let numberFormatter = NumberFormatter()
-        numberFormatter.numberStyle = .percent
-        numberFormatter.positivePrefix = numberFormatter.plusSign
-        numberFormatter.locale = locale
-
+    static func createDeltaText(from previousValue: Decimal, to currentValue: Decimal) -> String {
         guard previousValue > 0 else {
-            return numberFormatter.string(from: 1) ?? "+100%"
+            return deltaNumberFormatter.string(from: 1) ?? "+100%"
         }
 
         let deltaValue = ((currentValue - previousValue) / previousValue)
-        return numberFormatter.string(from: deltaValue as NSNumber) ?? Constants.placeholderText
+        return deltaNumberFormatter.string(from: deltaValue as NSNumber) ?? Constants.placeholderText
     }
 
     /// Creates the text showing the percent change from the previous `Double` value to the current `Double` value
     ///
-    static func createDeltaText(from previousValue: Double, to currentValue: Double, locale: Locale = .current) -> String {
+    static func createDeltaText(from previousValue: Double, to currentValue: Double) -> String {
         createDeltaText(from: Decimal(previousValue), to: Decimal(currentValue))
     }
 
@@ -165,6 +160,16 @@ extension StatsDataTextFormatter {
 // MARK: - Private helpers
 
 private extension StatsDataTextFormatter {
+
+    /// Number formatter for delta percentages, e.g. `+36%` or `-16%`.
+    ///
+    static let deltaNumberFormatter: NumberFormatter = {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .percent
+        numberFormatter.positivePrefix = numberFormatter.plusSign
+        return numberFormatter
+    }()
+
     /// Retrieves the visitor count for the provided order stats and, optionally, a specific interval.
     ///
     static func visitorCount(at selectedIndex: Int?, siteStats: SiteVisitStats?) -> Double? {

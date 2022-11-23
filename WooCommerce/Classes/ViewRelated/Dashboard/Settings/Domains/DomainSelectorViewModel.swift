@@ -51,13 +51,13 @@ private extension DomainSelectorViewModel {
                 Task { @MainActor in
                     self.errorMessage = nil
                     self.isLoadingDomainSuggestions = true
-                    let result = await self.loadFreeDomainSuggestions(query: searchTerm)
-                    self.isLoadingDomainSuggestions = false
 
-                    switch result {
-                    case .success(let suggestions):
+                    do {
+                        let suggestions = try await self.loadFreeDomainSuggestions(query: searchTerm)
+                        self.isLoadingDomainSuggestions = false
                         self.handleFreeDomainSuggestions(suggestions, query: searchTerm)
-                    case .failure(let error):
+                    } catch {
+                        self.isLoadingDomainSuggestions = false
                         self.handleError(error)
                     }
                 }
@@ -65,10 +65,10 @@ private extension DomainSelectorViewModel {
     }
 
     @MainActor
-    func loadFreeDomainSuggestions(query: String) async -> Result<[FreeDomainSuggestion], Error> {
-        await withCheckedContinuation { continuation in
+    func loadFreeDomainSuggestions(query: String) async throws -> [FreeDomainSuggestion] {
+        try await withCheckedThrowingContinuation { continuation in
             let action = DomainAction.loadFreeDomainSuggestions(query: searchTerm) { result in
-                continuation.resume(returning: result)
+                continuation.resume(with: result)
             }
             stores.dispatch(action)
         }

@@ -5,8 +5,9 @@ import SwiftUI
 /// Hosting Controller for the `AnalyticsHubView` view.
 ///
 final class AnalyticsHubHostingViewController: UIHostingController<AnalyticsHubView> {
-    init(timeRange: AnalyticsHubTimeRange) {
-        super.init(rootView: AnalyticsHubView(timeRange))
+    init(timeRange: StatsTimeRangeV4) {
+        let viewModel = AnalyticsHubViewModel()
+        super.init(rootView: AnalyticsHubView(viewModel: viewModel))
     }
 
     @available(*, unavailable)
@@ -24,6 +25,8 @@ struct AnalyticsHubView: View {
         self.timeRange = timeRange
     }
 
+    @StateObject var viewModel: AnalyticsHubViewModel
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Layout.vertialSpacing) {
@@ -32,24 +35,20 @@ struct AnalyticsHubView: View {
                     currentRangeDescription: timeRange.currentRangeDescription,
                     previousRangeDescription: timeRange.previousRangeDescription)
 
-                VStack(spacing: 0) {
+                VStack(spacing: Layout.dividerSpacing) {
                     Divider()
 
-                    Text("Placeholder For Revenue Card")
-                        .padding(.leading)
-                        .frame(maxWidth: .infinity, minHeight: 220, alignment: .leading)
-                        .background(Color(uiColor: .listForeground))
+                    AnalyticsReportCard(viewModel: viewModel.revenueCard)
+                    .background(Color(uiColor: .listForeground))
 
                     Divider()
                 }
 
-                VStack(spacing: 0) {
+                VStack(spacing: Layout.dividerSpacing) {
                     Divider()
 
-                    Text("Placeholder For Orders Card")
-                        .padding(.leading)
-                        .frame(maxWidth: .infinity, minHeight: 220, alignment: .leading)
-                        .background(Color(uiColor: .listForeground))
+                    AnalyticsReportCard(viewModel: viewModel.ordersCard)
+                    .background(Color(uiColor: .listForeground))
 
                     Divider()
                 }
@@ -72,6 +71,7 @@ private extension AnalyticsHubView {
 
     struct Layout {
         static let vertialSpacing: CGFloat = 24.0
+        static let dividerSpacing: CGFloat = .zero
     }
 }
 
@@ -80,8 +80,7 @@ private extension AnalyticsHubView {
 struct AnalyticsHubPreview: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            let timeRange = AnalyticsHubTimeRange(selectedTimeRange: .thisYear)
-            AnalyticsHubView(timeRange)
+            AnalyticsHubView(viewModel: AnalyticsHubViewModel())
         }
     }
 }

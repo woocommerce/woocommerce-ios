@@ -27,7 +27,7 @@ final class JustInTimeMessagesRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "jetpack/v4/jitm", filename: "just-in-time-message-list")
 
         // When
-        let result = await remote.loadAllJustInTimeMessages(
+        let justInTimeMessages = try await remote.loadAllJustInTimeMessages(
                 for: self.sampleSiteID,
                 messagePath: JustInTimeMessagesRemote.MessagePath(
                     app: .wooMobile,
@@ -37,8 +37,6 @@ final class JustInTimeMessagesRemoteTests: XCTestCase {
                 locale: "en_US")
 
         // Then
-        XCTAssert(result.isSuccess)
-        let justInTimeMessages = try XCTUnwrap(result.get())
         assertEqual(1, justInTimeMessages.count)
     }
 
@@ -49,7 +47,7 @@ final class JustInTimeMessagesRemoteTests: XCTestCase {
         let remote = JustInTimeMessagesRemote(network: network)
 
         // When
-        _ = await remote.loadAllJustInTimeMessages(
+        _ = try? await remote.loadAllJustInTimeMessages(
             for: self.sampleSiteID,
             messagePath: JustInTimeMessagesRemote.MessagePath(
                 app: .wooMobile,
@@ -72,7 +70,7 @@ final class JustInTimeMessagesRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "jetpack/v4/jitm", filename: "just-in-time-message-list")
 
         // When
-        let result = await remote.loadAllJustInTimeMessages(
+        let justInTimeMessages = try await remote.loadAllJustInTimeMessages(
                 for: self.sampleSiteID,
                 messagePath: JustInTimeMessagesRemote.MessagePath(
                     app: .wooMobile,
@@ -82,7 +80,6 @@ final class JustInTimeMessagesRemoteTests: XCTestCase {
                 locale: "en_US")
 
         // Then
-        let justInTimeMessages = try result.get()
         assertEqual(sampleSiteID, justInTimeMessages.first?.siteID)
     }
 
@@ -93,7 +90,7 @@ final class JustInTimeMessagesRemoteTests: XCTestCase {
         let remote = JustInTimeMessagesRemote(network: network)
 
         // When
-        _ = await remote.loadAllJustInTimeMessages(
+        _ = try? await remote.loadAllJustInTimeMessages(
             for: self.sampleSiteID,
             messagePath: JustInTimeMessagesRemote.MessagePath(
                 app: .wooMobile,
@@ -116,23 +113,20 @@ final class JustInTimeMessagesRemoteTests: XCTestCase {
         // Given
         let remote = JustInTimeMessagesRemote(network: network)
 
-        let error = NetworkError.unacceptableStatusCode(statusCode: 403)
-        network.simulateError(requestUrlSuffix: "jetpack/v4/jitm", error: error)
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 403)
+        network.simulateError(requestUrlSuffix: "jetpack/v4/jitm", error: expectedError)
 
         // When
-        let result = await remote.loadAllJustInTimeMessages(
-                for: self.sampleSiteID,
-                messagePath: JustInTimeMessagesRemote.MessagePath(
-                    app: .wooMobile,
-                    screen: "my_store",
-                    hook: .adminNotices),
-                query: nil,
-                locale: "en_US")
-
-        // Then
-        XCTAssertTrue(result.isFailure)
-        let resultError = try XCTUnwrap(result.failure as? NetworkError)
-        assertEqual(error, resultError)
+        await assertThrowsError({
+            _ = try await remote.loadAllJustInTimeMessages(
+                    for: self.sampleSiteID,
+                    messagePath: JustInTimeMessagesRemote.MessagePath(
+                        app: .wooMobile,
+                        screen: "my_store",
+                        hook: .adminNotices),
+                    query: nil,
+                    locale: "en_US")
+        }, errorAssert: { ($0 as? NetworkError) == expectedError })
     }
 
     func test_test_loadAllJustInTimeMessages_uses_passed_locale_for_request() async throws {
@@ -140,7 +134,7 @@ final class JustInTimeMessagesRemoteTests: XCTestCase {
         let remote = JustInTimeMessagesRemote(network: network)
 
         // When
-        _ = await remote.loadAllJustInTimeMessages(
+        _ = try? await remote.loadAllJustInTimeMessages(
             for: self.sampleSiteID,
             messagePath: JustInTimeMessagesRemote.MessagePath(
                 app: .wooMobile,
@@ -162,7 +156,7 @@ final class JustInTimeMessagesRemoteTests: XCTestCase {
         let remote = JustInTimeMessagesRemote(network: network)
 
         // When
-        _ = await remote.loadAllJustInTimeMessages(
+        _ = try? await remote.loadAllJustInTimeMessages(
             for: self.sampleSiteID,
             messagePath: JustInTimeMessagesRemote.MessagePath(
                 app: .wooMobile,
@@ -180,7 +174,6 @@ final class JustInTimeMessagesRemoteTests: XCTestCase {
         let queryItems = try XCTUnwrap(URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems)
         let queryJson = try XCTUnwrap(queryItems.first { $0.name == "query" }?.value)
         assertThat(queryJson, contains: "\"query\":")
-        let parameters = request.parameters
         let jitmQuery = try XCTUnwrap(request.parameters["query"] as? String)
         // Individually check query items because dictionaries aren't ordered
         assertThat(jitmQuery, contains: "platform=ios") // platform=ios

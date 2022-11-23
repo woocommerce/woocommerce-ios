@@ -85,10 +85,17 @@ final class LoginJetpackSetupViewModel: ObservableObject {
         return attributedString
     }()
 
-    init(siteURL: String, connectionOnly: Bool, stores: StoresManager = ServiceLocator.stores, onStoreNavigation: @escaping (String?) -> Void = { _ in }) {
+    private let analytics: Analytics
+
+    init(siteURL: String,
+         connectionOnly: Bool,
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics,
+         onStoreNavigation: @escaping (String?) -> Void = { _ in}) {
         self.siteURL = siteURL
         self.connectionOnly = connectionOnly
         self.stores = stores
+        self.analytics = analytics
         let setupSteps = connectionOnly ? [.connection, .done] : JetpackInstallStep.allCases
         self.setupSteps = setupSteps
         self.storeNavigationHandler = onStoreNavigation

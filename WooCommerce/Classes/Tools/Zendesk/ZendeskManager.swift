@@ -152,7 +152,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     private let stores = ServiceLocator.stores
     private let storageManager = ServiceLocator.storageManager
 
-    private let isSSREnabled = DefaultFeatureFlagService().isFeatureFlagEnabled(.systemStatusReportInSupportRequest)
+    private let isSSRFeatureFlagEnabled = DefaultFeatureFlagService().isFeatureFlagEnabled(.systemStatusReportInSupportRequest)
 
     /// Controller for fetching site plugins from Storage
     ///
@@ -668,7 +668,7 @@ private extension ZendeskManager {
 
         var logsFieldID: Int64 = TicketFieldIDs.legacyLogs
         var systemStatusReportFieldID: Int64 = 0
-        if isSSREnabled {
+        if isSSRFeatureFlagEnabled {
             // If the SSR feature flag is enabled, we'll use the newly added TicketFieldID
             // for the Application logs, and the old one for the SSR.
             logsFieldID = 10901699622036
@@ -697,7 +697,7 @@ private extension ZendeskManager {
 
         var logsFieldID: Int64 = TicketFieldIDs.legacyLogs
         var systemStatusReportFieldID: Int64 = 0
-        if isSSREnabled {
+        if isSSRFeatureFlagEnabled {
             // If the SSR feature flag is enabled, we'll use the newly added TicketFieldID
             // for the Application logs, and the old one for the SSR.
             logsFieldID = 10901699622036

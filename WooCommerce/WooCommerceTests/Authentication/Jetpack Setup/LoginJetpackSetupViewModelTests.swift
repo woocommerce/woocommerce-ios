@@ -464,4 +464,76 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
         // Then
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_install_fetch_jetpack_connection_url_failed" }))
     }
+
+    func test_it_tracks_correct_event_when_checking_jetpack_connection_is_successful() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let viewModel = LoginJetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics)
+
+        let user = JetpackUser.fake().copy(isConnected: true, wpcomUser: DotcomUser.fake().copy(email: "test@mail.com"))
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .fetchJetpackUser(let completion):
+                completion(.success(user))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.didAuthorizeJetpackConnection()
+
+        // Then
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_install_all_steps_marked_done" }))
+    }
+
+    func test_it_tracks_correct_event_when_checking_jetpack_connection_is_successful_but_no_wpCom_user_present() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let viewModel = LoginJetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics)
+
+        let user = JetpackUser.fake().copy(isConnected: true, wpcomUser: nil)
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .fetchJetpackUser(let completion):
+                completion(.success(user))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.didAuthorizeJetpackConnection()
+
+        // Then
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_install_cannot_find_WPCOM_user" }))
+    }
+
+    func test_it_tracks_correct_event_when_checking_jetpack_connection_fails() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let viewModel = LoginJetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics)
+
+        let error = NSError(domain: "Test", code: 1)
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .fetchJetpackUser(let completion):
+                completion(.failure(error))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.didAuthorizeJetpackConnection()
+
+        // Then
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_install_error_checking_jetpack_connection" }))
+    }
 }

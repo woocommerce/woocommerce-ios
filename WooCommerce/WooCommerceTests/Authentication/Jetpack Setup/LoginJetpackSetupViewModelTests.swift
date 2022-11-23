@@ -404,4 +404,64 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
         // Then
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_install_activation_failed" }))
     }
+
+    func test_it_tracks_correct_event_when_fetching_jetpack_connection_url_is_successful() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let viewModel = LoginJetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics)
+        let error = NSError(domain: "Test", code: 1)
+        let testConnectionURL = try XCTUnwrap(URL(string: "https://test-connection.com"))
+
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .retrieveJetpackPluginDetails(let completion):
+                completion(.failure(error))
+            case .installJetpackPlugin(let completion):
+                completion(.success(()))
+            case .activateJetpackPlugin(let completion):
+                completion(.success(()))
+            case .fetchJetpackConnectionURL(let completion):
+                completion(.success((testConnectionURL)))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.startSetup()
+
+        // Then
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_install_fetch_jetpack_connection_url_successful" }))
+    }
+
+    func test_it_tracks_correct_event_when_fetching_jetpack_connection_url_fails() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let viewModel = LoginJetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics)
+        let error = NSError(domain: "Test", code: 1)
+
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .retrieveJetpackPluginDetails(let completion):
+                completion(.failure(error))
+            case .installJetpackPlugin(let completion):
+                completion(.success(()))
+            case .activateJetpackPlugin(let completion):
+                completion(.success(()))
+            case .fetchJetpackConnectionURL(let completion):
+                completion(.failure(error))
+            default:
+                break
+            }
+        }
+        // When
+        viewModel.startSetup()
+
+        // Then
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_install_fetch_jetpack_connection_url_failed" }))
+    }
 }

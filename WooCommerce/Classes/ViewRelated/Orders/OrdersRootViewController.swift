@@ -369,8 +369,8 @@ private extension OrdersRootViewController {
 
         let viewController = OrderFormHostingController(viewModel: viewModel)
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
-            let newOrderNC = WooNavigationController(rootViewController: viewController)
-            navigationController.present(newOrderNC, animated: true)
+            let newOrderNavigationController = WooNavigationController(rootViewController: viewController)
+            navigationController.present(newOrderNavigationController, animated: true)
         } else {
             viewController.hidesBottomBarWhenPushed = true
             navigationController.pushViewController(viewController, animated: true)

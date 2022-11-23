@@ -104,6 +104,22 @@ public struct FootnoteStyle: ViewModifier {
     }
 }
 
+public struct CalloutStyle: ViewModifier {
+    public func body(content: Content) -> some View {
+        content
+            .font(.callout)
+            .foregroundColor(Color(.textSubtle))
+    }
+}
+
+public struct CaptionStyle: ViewModifier {
+    public func body(content: Content) -> some View {
+        content
+            .font(.caption)
+            .foregroundColor(Color(.text))
+    }
+}
+
 public struct ErrorStyle: ViewModifier {
     public func body(content: Content) -> some View {
         content
@@ -200,5 +216,13 @@ public extension View {
 
     func headlineLinkStyle() -> some View {
         self.modifier(HeadlineLinkStyle())
+    }
+
+    func calloutStyle() -> some View {
+        self.modifier(CalloutStyle())
+    }
+
+    func captionStyle() -> some View {
+        self.modifier(CaptionStyle())
     }
 }

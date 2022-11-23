@@ -32,6 +32,7 @@
 		9FA5113235035AC9A6079B0D /* Pods_WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1733C61561AE3A1AD3C16B7 /* Pods_WooFoundation.framework */; };
 		AE948D0A28CF67CF009F3246 /* Date+StartAndEnd.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE948D0928CF67CE009F3246 /* Date+StartAndEnd.swift */; };
 		AE948D0D28CF6D50009F3246 /* DateStartAndEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE948D0C28CF6D50009F3246 /* DateStartAndEndTests.swift */; };
+		B97190D1292CF3BC0065E413 /* Result+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B97190D0292CF3BC0065E413 /* Result+Extensions.swift */; };
 		B987B06F284540D300C53CF6 /* CurrencyCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = B987B06E284540D300C53CF6 /* CurrencyCode.swift */; };
 		B9C9C63F283E703C001B879F /* WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9C9C635283E703C001B879F /* WooFoundation.framework */; };
 		B9C9C659283E7195001B879F /* NSDecimalNumber+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C9C658283E7195001B879F /* NSDecimalNumber+Helpers.swift */; };
@@ -79,6 +80,7 @@
 		A21D73D352B4162AB096E276 /* Pods-WooFoundationTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundationTests.release-alpha.xcconfig"; path = "Target Support Files/Pods-WooFoundationTests/Pods-WooFoundationTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		AE948D0928CF67CE009F3246 /* Date+StartAndEnd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+StartAndEnd.swift"; sourceTree = "<group>"; };
 		AE948D0C28CF6D50009F3246 /* DateStartAndEndTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateStartAndEndTests.swift; sourceTree = "<group>"; };
+		B97190D0292CF3BC0065E413 /* Result+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+Extensions.swift"; sourceTree = "<group>"; };
 		B987B06E284540D300C53CF6 /* CurrencyCode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrencyCode.swift; sourceTree = "<group>"; };
 		B9AED558283E7553002A2668 /* Yosemite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Yosemite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B9AED55B283E755A002A2668 /* Hardware.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Hardware.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -246,6 +248,7 @@
 				B9C9C658283E7195001B879F /* NSDecimalNumber+Helpers.swift */,
 				68FBC5B228926B2C00A05461 /* Collection+Extensions.swift */,
 				03B8C3882914083F002235B1 /* Bundle+Woo.swift */,
+				B97190D0292CF3BC0065E413 /* Result+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -480,6 +483,7 @@
 				03597A9B28F87BFC005E4A98 /* WooCommerceComUTMProvider.swift in Sources */,
 				B9C9C663283E7296001B879F /* Logging.swift in Sources */,
 				6874E81428998AD300074A97 /* LogErrorAndExit.swift in Sources */,
+				B97190D1292CF3BC0065E413 /* Result+Extensions.swift in Sources */,
 				B9C9C65D283E71C8001B879F /* CurrencyFormatter.swift in Sources */,
 				AE948D0A28CF67CF009F3246 /* Date+StartAndEnd.swift in Sources */,
 				03597A9428F85686005E4A98 /* UTMParameters.swift in Sources */,

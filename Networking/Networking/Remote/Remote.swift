@@ -201,9 +201,9 @@ public class Remote: NSObject {
     ///
     /// - Parameter request: Request that should be performed.
     /// - Returns: The result from the JSON parsed response for the expected type.
-    func enqueue<M: Mapper>(_ request: Request, mapper: M) async -> Result<M.Output, Error> {
-        await withCheckedContinuation { continuation in
-            network.responseData(for: request) { [weak self] result in
+    func enqueue<M: Mapper>(_ request: Request, mapper: M) async throws -> M.Output {
+        try await withCheckedThrowingContinuation { continuation in
+            network.responseData(for: request) { [weak self] (result: Swift.Result<Data, Error>) in
                 guard let self else { return }
 
                 switch result {
@@ -212,14 +212,14 @@ public class Remote: NSObject {
                         let validator = request.responseDataValidator()
                         try validator.validate(data: data)
                         let parsed = try mapper.map(response: data)
-                        continuation.resume(returning: .success(parsed))
+                        continuation.resume(returning: parsed)
                     } catch {
                         DDLogError("<> Mapping Error: \(error)")
                         self.handleResponseError(error: error, for: request)
-                        continuation.resume(returning: .failure(error))
+                        continuation.resume(throwing: error)
                     }
                 case .failure(let error):
-                    continuation.resume(returning: .failure(error))
+                    continuation.resume(throwing: error)
                 }
             }
         }

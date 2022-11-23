@@ -89,9 +89,10 @@ struct LoginJetpackSetupView: View {
 
                 // title and description
                 VStack(alignment: .leading, spacing: Constants.contentVerticalSpacing) {
-                    if let errorTitle = viewModel.currentSetupStep?.errorTitle {
-                        Text(errorTitle)
-                            .largeTitleStyle() 
+                    if viewModel.setupFailed {
+                        (viewModel.currentSetupStep ?? .installation).errorTitle.map { title in
+                            Text(title).largeTitleStyle()
+                        }
                     } else {
                         Text(viewModel.title)
                             .largeTitleStyle()
@@ -105,7 +106,7 @@ struct LoginJetpackSetupView: View {
                     ActivityIndicator(isAnimating: .constant(true), style: .medium)
                     Spacer()
                 }
-                .renderedIf(viewModel.currentSetupStep == nil)
+                .renderedIf(viewModel.currentSetupStep == nil && viewModel.setupFailed == false)
 
                 ForEach(viewModel.setupSteps) { step in
                     HStack(spacing: Constants.stepItemHorizontalSpacing) {
@@ -144,8 +145,40 @@ struct LoginJetpackSetupView: View {
                     }
                 }
                 .padding(.top, Constants.contentVerticalSpacing)
-                .renderedIf(viewModel.currentSetupStep != nil)
+                .renderedIf(viewModel.currentSetupStep != nil && viewModel.setupFailed == false)
 
+                VStack(alignment: .leading, spacing: Constants.errorContentSpacing) {
+                    Text(viewModel.setupErrorMessage)
+                        .font(.title2)
+                        .foregroundColor(Color(uiColor: .withColorStudio(.gray, shade: .shade80)))
+                    Text(viewModel.setupErrorSuggestion)
+                        .font(.body)
+                        .foregroundColor(Color(uiColor: .withColorStudio(.gray, shade: .shade80)))
+                    viewModel.errorCode.map { code in
+                        Text(String.localizedStringWithFormat(Localization.errorCode, code))
+                            .font(.footnote)
+                            .bold()
+                            .foregroundColor(Color(uiColor: .secondaryLabel))
+                    }
+
+                    Button {
+                        // TODO
+                    } label: {
+                        Label {
+                            Text(Localization.getSupport)
+                                .font(.body)
+                                .fontWeight(.semibold)
+                        } icon: {
+                            Image(systemName: "questionmark.circle")
+                                .resizable()
+                                .frame(width: Constants.supportImageSize * scale, height: Constants.supportImageSize * scale)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundColor(Color(uiColor: .withColorStudio(.blue, shade: .shade50)))
+
+                }
+                .renderedIf(viewModel.setupFailed)
                 Spacer()
             }
         }
@@ -173,6 +206,8 @@ private extension LoginJetpackSetupView {
     enum Localization {
         static let goToStore = NSLocalizedString("Go to Store", comment: "Title for the button to navigate to the home screen after Jetpack setup completes")
         static let authorizing = NSLocalizedString("Authorizing connection", comment: "Name of the connection step on the Jetpack setup screen")
+        static let errorCode = NSLocalizedString("Error code %1$d", comment: "Error code displayed when the Jetpack setup fails. %1$d is the code.")
+        static let getSupport = NSLocalizedString("Get support", comment: "Button to contact support when Jetpack setup fails")
     }
 
     enum Constants {
@@ -181,6 +216,8 @@ private extension LoginJetpackSetupView {
         static let stepItemHorizontalSpacing: CGFloat = 24
         static let stepItemsVerticalSpacing: CGFloat = 20
         static let stepImageSize: CGFloat = 24
+        static let supportImageSize: CGFloat = 18
+        static let errorContentSpacing: CGFloat = 16
     }
 }
 

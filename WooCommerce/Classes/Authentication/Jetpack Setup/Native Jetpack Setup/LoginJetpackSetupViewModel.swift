@@ -21,6 +21,9 @@ final class LoginJetpackSetupViewModel: ObservableObject {
     /// Whether the setup failed. This will be observed by `LoginJetpackSetupView` to present error modal.
     ///
     @Published private(set) var setupFailed: Bool = false
+    @Published private(set) var setupErrorMessage: String = ""
+    @Published private(set) var setupErrorSuggestion: String = ""
+    @Published private(set) var errorCode: Int?
 
     private var jetpackConnectedEmail: String?
 
@@ -30,7 +33,11 @@ final class LoginJetpackSetupViewModel: ObservableObject {
 
     /// Error occurred in any install step
     ///
-    private var setupError: Error?
+    private var setupError: Error? {
+        didSet {
+            updateErrorMessage()
+        }
+    }
 
     private var hasEncounteredPermissionError: Bool {
         if case .responseValidationFailed(reason: .unacceptableStatusCode(code: 403)) = setupError as? AFError {
@@ -223,6 +230,28 @@ private extension LoginJetpackSetupViewModel {
         }
         stores.dispatch(action)
     }
+
+    func updateErrorMessage() {
+        switch setupError {
+        case .some(AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403))):
+            setupErrorMessage = Localization.permissionErrorMessage
+            setupErrorSuggestion = Localization.permissionErrorSuggestion
+            errorCode = 403
+        case .some(AFError.responseValidationFailed(reason: .unacceptableStatusCode(let code))) where 500...599 ~= code:
+            setupErrorMessage = Localization.communicationErrorMessage
+            setupErrorSuggestion = Localization.communicationErrorSuggestion
+            errorCode = code
+        default:
+            setupErrorMessage = Localization.genericErrorMessage
+            setupErrorSuggestion = Localization.communicationErrorSuggestion
+            errorCode = {
+                if let afError = setupError as? AFError, let code = afError.responseCode {
+                    return code
+                }
+                return (setupError as? NSError)?.code
+            }()
+        }
+    }
 }
 
 // MARK: Subtypes
@@ -289,6 +318,26 @@ extension LoginJetpackSetupViewModel {
         static let connectionApproved = NSLocalizedString(
             "Connection approved",
             comment: "Message to be displayed when a Jetpack connection has been authorized"
+        )
+        static let permissionErrorMessage = NSLocalizedString(
+            "You don't have permission to manage plugins on this store.",
+            comment: "Message to be displayed when the user encounters a permission error during Jetpack setup"
+        )
+        static let permissionErrorSuggestion = NSLocalizedString(
+            "Please contact your shop manager or administrator for help.",
+            comment: "Suggestion to be displayed when the user encounters a permission error during Jetpack setup"
+        )
+        static let communicationErrorMessage = NSLocalizedString(
+            "There was an error communicating with your site.",
+            comment: "Message to be displayed when the user encounters a permission error during Jetpack setup"
+        )
+        static let communicationErrorSuggestion = NSLocalizedString(
+            "Please try again or contact support if this error continues.",
+            comment: "Suggestion to be displayed when the user encounters a permission error during Jetpack setup"
+        )
+        static let genericErrorMessage = NSLocalizedString(
+            "There was an error completing your request.",
+            comment: "Message to be displayed when the user encounters a generic error during Jetpack setup"
         )
     }
 

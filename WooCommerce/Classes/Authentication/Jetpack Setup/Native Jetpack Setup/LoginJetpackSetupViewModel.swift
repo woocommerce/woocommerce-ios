@@ -211,10 +211,11 @@ private extension LoginJetpackSetupViewModel {
             guard let self else { return }
             switch result {
             case .success(let url):
+                self.analytics.track(.loginJetpackInstallFetchJetpackConnectionURLSuccessful)
                 self.jetpackConnectionURL = url
                 self.shouldPresentWebView = true
             case .failure(let error):
-                // TODO: add tracks
+                self.analytics.track(.loginJetpackInstallFetchJetpackConnectionURLFailed)
                 DDLogError("⛔️ Error fetching Jetpack connection URL: \(error)")
                 self.setupError = error
                 self.setupFailed = true

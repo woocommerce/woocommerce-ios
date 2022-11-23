@@ -1,4 +1,5 @@
 import Foundation
+import Yosemite
 
 /// Main View Model for the Analytics Hub.
 ///
@@ -30,7 +31,16 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Time Range ViewModel
     ///
-    @Published var timeRangeCard = AnalyticsTimeRangeCardViewModel(selectedRangeTitle: "Year to Date",
-                                                                   currentRangeSubtitle: "Jan 1 - Nov 23, 2022",
-                                                                   previousRangeSubtitle: "Jan 1 - Nov 23, 2021")
+    @Published var timeRangeCard: AnalyticsTimeRangeCardViewModel
+
+    /// Time Range control of the Analytics Hub
+    ///
+    private let analyticsTimeRange: AnalyticsHubTimeRange
+
+    init(statsTimeRange: StatsTimeRangeV4) {
+        self.analyticsTimeRange = AnalyticsHubTimeRange(selectedTimeRange: statsTimeRange)
+        self.timeRangeCard = AnalyticsTimeRangeCardViewModel(selectedRangeTitle: analyticsTimeRange.selectionDescription,
+                                                             currentRangeSubtitle: analyticsTimeRange.currentRangeDescription,
+                                                             previousRangeSubtitle: analyticsTimeRange.previousRangeDescription)
+    }
 }

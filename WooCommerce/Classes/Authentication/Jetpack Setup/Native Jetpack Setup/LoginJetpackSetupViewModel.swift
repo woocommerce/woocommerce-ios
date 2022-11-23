@@ -236,14 +236,17 @@ private extension LoginJetpackSetupViewModel {
             case .success(let user):
                 guard let connectedEmail = user.wpcomUser?.email else {
                     DDLogWarn("⚠️ Cannot find connected WPcom user")
-                    return // TODO: add tracks and handle error
+                    self.analytics.track(.loginJetpackInstallCannotFindWPCOMUser)
+                    return // TODO: handle error
                 }
 
                 self.jetpackConnectedEmail = connectedEmail
                 self.currentConnectionStep = .authorized
                 self.currentSetupStep = .done
+
+                self.analytics.track(.loginJetpackInstallAllStepsMarkedDone)
             case .failure(let error):
-                // TODO: add tracks
+                self.analytics.track(.loginJetpackInstallErrorCheckingJetpackConnection)
                 DDLogError("⛔️ Error checking Jetpack connection: \(error)")
                 self.setupError = error
                 DispatchQueue.main.asyncAfter(deadline: .now() + Constants.delayBeforeRetry) { [weak self] in

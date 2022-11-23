@@ -297,4 +297,56 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
         // Then
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_install_go_to_store_button_tapped" }))
     }
+
+    func test_it_tracks_correct_event_when_jetpack_installation_is_successful() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let viewModel = LoginJetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics)
+        let error = NSError(domain: "Test", code: 1)
+
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .retrieveJetpackPluginDetails(let completion):
+                completion(.failure(error))
+            case .installJetpackPlugin(let completion):
+                completion(.success(()))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.startSetup()
+
+        // Then
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_install_install_successful" }))
+    }
+
+    func test_it_tracks_correct_event_when_jetpack_installation_fails() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let viewModel = LoginJetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics)
+        let error = NSError(domain: "Test", code: 1)
+
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .retrieveJetpackPluginDetails(let completion):
+                completion(.failure(error))
+            case .installJetpackPlugin(let completion):
+                completion(.failure(error))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.startSetup()
+
+        // Then
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_install_install_failed" }))
+    }
 }

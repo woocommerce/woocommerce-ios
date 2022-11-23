@@ -1657,7 +1657,7 @@ extension WooAnalyticsEvent {
             case isJetpackActive = "is_jetpack_active"
             case isJetpackConnected = "is_jetpack_connected"
         }
-        
+
         /// Tracks when the result for site discovery is returned
         static func siteDiscovery(hasWordPress: Bool,
                                   isWPCom: Bool,
@@ -1670,7 +1670,7 @@ extension WooAnalyticsEvent {
                                                                                Key.isJetpackActive.rawValue: isJetpackActive,
                                                                                Key.isJetpackConnected.rawValue: isJetpackConnected])
         }
-        
+
         /// Tracks when the user taps the New To WooCommerce button
         ///
         static func newToWooTapped() -> WooAnalyticsEvent {

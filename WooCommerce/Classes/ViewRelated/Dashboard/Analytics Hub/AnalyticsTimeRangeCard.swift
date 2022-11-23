@@ -54,9 +54,8 @@ private extension AnalyticsTimeRangeCard {
 
 struct TimeRangeCard_Previews: PreviewProvider {
     static var previews: some View {
-        let timeRange = AnalyticsHubTimeRange(selectedTimeRange: .thisMonth)
-        AnalyticsTimeRangeCard(
-            timeRangeTitle: timeRange.selectionDescription,
-            currentRangeDescription: timeRange.currentRangeDescription, previousRangeDescription: timeRange.previousRangeDescription)
+        AnalyticsTimeRangeCard(timeRangeTitle: "Month to Date",
+                               currentRangeDescription: "Nov 1 - 23, 2022",
+                               previousRangeDescription: "Oct 1 - 23, 2022")
     }
 }

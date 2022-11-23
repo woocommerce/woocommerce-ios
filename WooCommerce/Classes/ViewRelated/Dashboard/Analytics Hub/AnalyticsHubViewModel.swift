@@ -29,16 +29,9 @@ final class AnalyticsHubViewModel: ObservableObject {
                                                              trailingDelta: "-16%",
                                                              trailingDeltaColor: .withColorStudio(.red, shade: .shade40))
 
-    @Published var timeRangeCard: AnalyticsTimeRangeCardViewModel
-
-    /// Current Time Range controlling the Analytics Hub
+    /// Time Range ViewModel
     ///
-    private var currentTimeRange: AnalyticsHubTimeRange
-
-    init(statsTimeRange: StatsTimeRangeV4) {
-        self.currentTimeRange = AnalyticsHubTimeRange(selectedTimeRange: statsTimeRange)
-        self.timeRangeCard = AnalyticsTimeRangeCardViewModel(selectedRangeTitle: currentTimeRange.selectionDescription,
-                                                             currentRangeSubtitle: currentTimeRange.currentRangeDescription,
-                                                             previousRangeSubtitle: currentTimeRange.previousRangeDescription)
-    }
+    @Published var timeRangeCard = AnalyticsTimeRangeCardViewModel(selectedRangeTitle: "Year to Date",
+                                                                   currentRangeSubtitle: "Jan 1 - Nov 23, 2022",
+                                                                   previousRangeSubtitle: "Jan 1 - Nov 23, 2021")
 }

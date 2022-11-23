@@ -8970,7 +8970,6 @@
 				B56DB3C42049BFAA00D4AA8E /* Resources */,
 				B5650B1020A4CD7F009702D0 /* Embed Frameworks */,
 				B7A94351C1ADC31EA528B895 /* [CP] Embed Pods Frameworks */,
-				095040D72655531C001D08FA /* Check for nested frameworks */,
 				3F1FA85028B60126009E246C /* Embed Foundation Extensions */,
 			);
 			buildRules = (
@@ -9478,26 +9477,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		095040D72655531C001D08FA /* Check for nested frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Check for nested frameworks";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/check-for-nested-frameworks.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = "/bin/sh -euo pipefail";
-			shellScript = "${PROJECT_DIR}/../Scripts/check-nested-frameworks.sh\n\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
 		3F50FE4528CAEE9F00C89201 /* Enforce AppLocalizedString usages */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;

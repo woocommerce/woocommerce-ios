@@ -42,12 +42,6 @@ public extension Date {
         return calendar.date(from: components)!
     }
 
-    /// Returns self's start of week in the given time zone from a supplied calendar.
-    func startOfWeek(timezone: TimeZone, calendar: Calendar) -> Date {
-        let components = calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: startOfDay(timezone: timezone))
-        return calendar.date(from: components)!
-    }
-
     /// Returns self's end of week in the given time zone.
     func endOfWeek(timezone: TimeZone, locale: Locale = .current) -> Date {
         let calendar = createCalendar(timezone: timezone, locale: locale)

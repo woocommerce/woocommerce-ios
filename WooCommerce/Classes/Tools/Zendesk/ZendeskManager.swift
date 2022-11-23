@@ -220,7 +220,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     /// Formatted system status report to be displayed on-screen
     ///
     private var systemStatusReport: String {
-        return systemStatusReportViewModel.statusReport
+        systemStatusReportViewModel.statusReport
     }
 
     /// Handles fetching the site's System Status Report

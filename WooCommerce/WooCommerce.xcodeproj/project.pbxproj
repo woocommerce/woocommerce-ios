@@ -1338,7 +1338,7 @@
 		B622BC74289CF19400B10CEC /* WaitingTimeTrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B622BC73289CF19400B10CEC /* WaitingTimeTrackerTests.swift */; };
 		B626C71B287659D60083820C /* OrderCustomFieldsDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = B626C71A287659D60083820C /* OrderCustomFieldsDetails.swift */; };
 		B63AAF4B254AD2C6000B28A2 /* URL+SurveyViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63AAF4A254AD2C6000B28A2 /* URL+SurveyViewControllerTests.swift */; };
-		B6440FB6292E72DA0012D506 /* AnalyticsHubTimeRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6440FB5292E72DA0012D506 /* AnalyticsHubTimeRange.swift */; };
+		B6440FB6292E72DA0012D506 /* AnalyticsHubTimeRangeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6440FB5292E72DA0012D506 /* AnalyticsHubTimeRangeController.swift */; };
 		B6440FB9292E74230012D506 /* AnalyticsHubTimeRangeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6440FB8292E74230012D506 /* AnalyticsHubTimeRangeTests.swift */; };
 		B651474527D644FF00C9C4E6 /* CustomerNoteSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B651474427D644FF00C9C4E6 /* CustomerNoteSection.swift */; };
 		B687940C27699D420092BCA0 /* RefundFeesCalculationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B687940B27699D410092BCA0 /* RefundFeesCalculationUseCase.swift */; };
@@ -3319,7 +3319,7 @@
 		B622BC73289CF19400B10CEC /* WaitingTimeTrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaitingTimeTrackerTests.swift; sourceTree = "<group>"; };
 		B626C71A287659D60083820C /* OrderCustomFieldsDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCustomFieldsDetails.swift; sourceTree = "<group>"; };
 		B63AAF4A254AD2C6000B28A2 /* URL+SurveyViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+SurveyViewControllerTests.swift"; sourceTree = "<group>"; };
-		B6440FB5292E72DA0012D506 /* AnalyticsHubTimeRange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubTimeRange.swift; sourceTree = "<group>"; };
+		B6440FB5292E72DA0012D506 /* AnalyticsHubTimeRangeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubTimeRangeController.swift; sourceTree = "<group>"; };
 		B6440FB8292E74230012D506 /* AnalyticsHubTimeRangeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubTimeRangeTests.swift; sourceTree = "<group>"; };
 		B651474427D644FF00C9C4E6 /* CustomerNoteSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerNoteSection.swift; sourceTree = "<group>"; };
 		B687940B27699D410092BCA0 /* RefundFeesCalculationUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundFeesCalculationUseCase.swift; sourceTree = "<group>"; };
@@ -5263,7 +5263,7 @@
 				26E7EE6B292D894100793045 /* AnalyticsReportCardViewModel.swift */,
 				B60B5025292D308A00178C26 /* AnalyticsTimeRangeCard.swift */,
 				B6A10E9B292E5DEE00790797 /* AnalyticsTimeRangeCardViewModel.swift */,
-				B6440FB5292E72DA0012D506 /* AnalyticsHubTimeRange.swift */,
+				B6440FB5292E72DA0012D506 /* AnalyticsHubTimeRangeController.swift */,
 			);
 			path = "Analytics Hub";
 			sourceTree = "<group>";
@@ -10095,7 +10095,7 @@
 				025CA1A62887D17A00CCBB25 /* LoggedOutAppSettingsProtocol.swift in Sources */,
 				021E2A1E23AA24C600B1DE07 /* StringInputFormatter.swift in Sources */,
 				CC440E1E2770C6AF0074C264 /* ProductInOrderViewModel.swift in Sources */,
-				B6440FB6292E72DA0012D506 /* AnalyticsHubTimeRange.swift in Sources */,
+				B6440FB6292E72DA0012D506 /* AnalyticsHubTimeRangeController.swift in Sources */,
 				D8D15F83230A17A000D48B3F /* ServiceLocator.swift in Sources */,
 				317F679826420E9D00BA2A7A /* CardReaderSettingsViewModelsOrderedList.swift in Sources */,
 				DE279BA426E9C4DC002BA963 /* ShippingLabelPackagesForm.swift in Sources */,

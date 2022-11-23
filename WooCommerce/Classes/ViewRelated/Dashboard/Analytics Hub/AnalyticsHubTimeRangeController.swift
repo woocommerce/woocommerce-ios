@@ -6,7 +6,7 @@ struct TimeRange {
     let end: Date
 }
 
-public class AnalyticsHubTimeRange {
+public class AnalyticsHubTimeRangeController {
 
     private let currentTimezone = TimeZone.current
     private let currentDate: Date
@@ -100,7 +100,7 @@ public class AnalyticsHubTimeRange {
     }
 }
 
-private extension AnalyticsHubTimeRange {
+private extension AnalyticsHubTimeRangeController {
 
     enum SelectionType {
         case today

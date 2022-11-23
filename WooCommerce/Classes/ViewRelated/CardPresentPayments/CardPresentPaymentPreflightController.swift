@@ -20,9 +20,9 @@ final class CardPresentPaymentPreflightController {
     ///
     private let configuration: CardPresentPaymentsConfiguration
 
-    /// View Controller used to present alerts.
+    /// Alerts presenter to send alert view models
     ///
-    private var rootViewController: UIViewController
+    private var alertsPresenter: CardPresentPaymentAlertsPresenting
 
     /// Stores manager.
     ///
@@ -38,7 +38,7 @@ final class CardPresentPaymentPreflightController {
 
     /// Controller to connect a card reader.
     ///
-    private var connectionController: LegacyCardReaderConnectionController
+    private var connectionController: CardReaderConnectionController
 
 
     private(set) var readerConnection = CurrentValueSubject<CardReaderConnectionResult?, Never>(nil)
@@ -46,13 +46,13 @@ final class CardPresentPaymentPreflightController {
     init(siteID: Int64,
          paymentGatewayAccount: PaymentGatewayAccount,
          configuration: CardPresentPaymentsConfiguration,
-         rootViewController: UIViewController,
+         alertsPresenter: CardPresentPaymentAlertsPresenting,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.paymentGatewayAccount = paymentGatewayAccount
         self.configuration = configuration
-        self.rootViewController = rootViewController
+        self.alertsPresenter = alertsPresenter
         self.stores = stores
         self.analytics = analytics
         self.connectedReader = nil
@@ -60,10 +60,10 @@ final class CardPresentPaymentPreflightController {
                                                                     stores: stores,
                                                                     analytics: analytics)
         // TODO: Replace this with a refactored (New)LegacyCardReaderConnectionController
-        self.connectionController = LegacyCardReaderConnectionController(
+        self.connectionController = CardReaderConnectionController(
             forSiteID: siteID,
             knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
-            alertsProvider: CardReaderSettingsAlerts(),
+            alertsPresenter: alertsPresenter,
             configuration: configuration,
             analyticsTracker: analyticsTracker)
     }
@@ -81,7 +81,7 @@ final class CardPresentPaymentPreflightController {
         // TODO: Ask for a Reader type if supported by device
 
         // Attempt to find a reader and connect
-        connectionController.searchAndConnect(from: rootViewController) { result in
+        connectionController.searchAndConnect { result in
             let connectionResult = result.map { connection in
                 switch connection {
                 case .connected:

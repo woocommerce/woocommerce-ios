@@ -18,6 +18,8 @@ final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpack
 
         rootView.supportHandler = { [weak self] in
             guard let self else { return }
+            // dismiss any presented view if possible
+            self.presentedViewController?.dismiss(animated: true)
             authentication.presentSupport(from: self, screen: .jetpackRequired)
         }
 
@@ -54,12 +56,16 @@ final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpack
 
         let webViewModel = JetpackConnectionWebViewModel(initialURL: connectionURL,
                                                          siteURL: viewModel.siteURL,
-                                                         title: Localization.approveConnection) { [weak self] in
+                                                         title: Localization.approveConnection,
+                                                         completion: { [weak self] in
             guard let self else { return }
             self.viewModel.shouldPresentWebView = false
             self.viewModel.didAuthorizeJetpackConnection()
             self.dismissView()
-        }
+        }, onDismissal: { [weak self] in
+            guard let self else { return }
+            self.viewModel.jetpackConnectionInterrupted = true
+        })
         let webView = AuthenticatedWebViewController(viewModel: webViewModel)
         webView.navigationItem.leftBarButtonItem = UIBarButtonItem(title: Localization.cancel,
                                                                    style: .plain,
@@ -231,6 +237,21 @@ struct LoginJetpackSetupView: View {
             if shouldPresent {
                 webViewPresentationHandler()
             }
+        }
+        .fullScreenCover(isPresented: $viewModel.jetpackConnectionInterrupted) {
+            LoginJetpackSetupInterruptedView(onSupport: supportHandler, onContinue: {
+                viewModel.jetpackConnectionInterrupted = false
+                // delay for 300ms for the dismissal of the interrupted screen to complete.
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    webViewPresentationHandler()
+                }
+            }, onCancellation: {
+                viewModel.jetpackConnectionInterrupted = false
+                // delay for 300ms for the dismissal of the interrupted screen to complete.
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    cancellationHandler()
+                }
+            })
         }
     }
 }

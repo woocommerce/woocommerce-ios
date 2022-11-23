@@ -43,6 +43,7 @@ final class LoginJetpackSetupViewModel: ObservableObject {
     @Published private(set) var currentConnectionStep: ConnectionStep = .pending
     @Published private(set) var jetpackConnectionURL: URL?
     @Published var shouldPresentWebView = false
+    @Published var jetpackConnectionInterrupted = false
 
     /// Whether the setup failed. This will be observed by `LoginJetpackSetupView` to present error modal.
     @Published private(set) var setupFailed: Bool = false

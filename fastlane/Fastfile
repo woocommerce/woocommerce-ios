@@ -210,18 +210,10 @@ platform :ios do
     end
   end
 
-  #####################################################################################
-  # update_appstore_strings
-  # -----------------------------------------------------------------------------------
-  # This lane updates the AppStoreStrings.pot files with the latest content from
-  # the release_notes.txt file and the other text sources
-  # -----------------------------------------------------------------------------------
-  # Usage:
-  # bundle exec fastlane update_appstore_strings version:<release note version>
+  # Updates the `AppStoreStrings.pot` file with the latest content from the `release_notes.txt` files and the other text sources.
   #
-  # Example:
-  # bundle exec fastlane update_appstore_strings version:1.1
-  #####################################################################################
+  # @option [String] version The current `x.y[.z]` version of the app. Optional. Used to derive the `vx.y[.z]-whats-new` key to use in the `.pot` file.
+  #
   desc 'Updates the AppStoreStrings.pot file with the latest data'
   lane :update_appstore_strings do |options|
     source_metadata_folder = File.join(PROJECT_ROOT_FOLDER, 'fastlane', 'appstoreres', 'metadata', 'source')
@@ -242,7 +234,7 @@ platform :ios do
     ios_update_metadata_source(
       po_file_path: File.join(RESOURCES_FOLDER, 'AppStoreStrings.pot'),
       source_files: files,
-      release_version: options[:version]
+      release_version: options.fetch(:version, ios_get_app_version)
     )
   end
 

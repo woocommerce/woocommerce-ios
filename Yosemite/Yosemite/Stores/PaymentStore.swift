@@ -38,6 +38,8 @@ public final class PaymentStore: Store {
             return
         }
         switch action {
+        case .loadPlan(let productID, let completion):
+            loadPlan(productID: productID, completion: completion)
         case .createCart(let productID, let siteID, let completion):
             createCart(productID: productID, siteID: siteID, completion: completion)
         }
@@ -45,6 +47,18 @@ public final class PaymentStore: Store {
 }
 
 private extension PaymentStore {
+    func loadPlan(productID: Int64,
+                  completion: @escaping (Result<WPComPlan, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let plan = try await remote.loadPlan(thatMatchesID: productID)
+                completion(.success(plan))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+    }
+
     func createCart(productID: String,
                     siteID: Int64,
                     completion: @escaping (Result<Void, Error>) -> Void) {

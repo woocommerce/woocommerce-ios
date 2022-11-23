@@ -282,4 +282,19 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(storeNavigationTriggered)
     }
+
+    // MARK: - Analytics
+    func test_it_tracks_login_jetpack_install_go_to_store_button_tapped_when_tapping_go_to_store_button() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let viewModel = LoginJetpackSetupViewModel(siteURL: testURL, connectionOnly: false, analytics: analytics)
+
+        // When
+        // Tapping "Go to Store" button
+        viewModel.navigateToStore()
+
+        // Then
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_install_go_to_store_button_tapped" }))
+    }
 }

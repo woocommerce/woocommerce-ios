@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import enum Alamofire.AFError
 
 /// View model for `LoginJetpackSetupView`.
 ///
@@ -17,8 +18,26 @@ final class LoginJetpackSetupViewModel: ObservableObject {
     @Published private(set) var currentConnectionStep: ConnectionStep = .pending
     @Published private(set) var jetpackConnectionURL: URL?
     @Published var shouldPresentWebView = false
+    /// Whether the setup failed. This will be observed by `LoginJetpackSetupView` to present error modal.
+    ///
+    @Published private(set) var setupFailed: Bool = false
 
     private var jetpackConnectedEmail: String?
+
+    /// Number of retries done for current step.
+    ///
+    private var retryCount: Int = 0
+
+    /// Error occurred in any install step
+    ///
+    private var setupError: Error?
+
+    private var hasEncounteredPermissionError: Bool {
+        if case .responseValidationFailed(reason: .unacceptableStatusCode(code: 403)) = setupError as? AFError {
+            return true
+        }
+        return false
+    }
 
     /// Attributed string for the description text
     lazy private(set) var descriptionAttributedString: NSAttributedString = {
@@ -78,6 +97,16 @@ final class LoginJetpackSetupViewModel: ObservableObject {
 //
 private extension LoginJetpackSetupViewModel {
     func retrieveJetpackPluginDetails() {
+        guard !hasEncounteredPermissionError else {
+            setupFailed = true
+            // TODO: show permission error
+            return
+        }
+        guard retryCount <= Constants.maxRetryCount else {
+            setupFailed = true
+            // TODO: show generic error
+            return
+        }
         let action = JetpackConnectionAction.retrieveJetpackPluginDetails { [weak self] result in
             guard let self else { return }
             switch result {
@@ -88,9 +117,16 @@ private extension LoginJetpackSetupViewModel {
                     self.fetchJetpackConnectionURL()
                 }
             case .failure(let error):
-                // TODO: handle error
-                print(error)
-                self.installJetpack()
+                DDLogError("⛔️ Error retrieving Jetpack: \(error)")
+                self.setupError = error
+                if self.hasEncounteredPermissionError {
+                    self.setupFailed = true
+                    // TODO: show permission error
+                    return
+                } else {
+                    // plugin is likely to not have been installed, so proceed to install it.
+                    self.installJetpack()
+                }
             }
         }
         stores.dispatch(action)
@@ -102,10 +138,16 @@ private extension LoginJetpackSetupViewModel {
             guard let self else { return }
             switch result {
             case .success:
+                self.retryCount = 0
                 self.activateJetpack()
             case .failure(let error):
-                // TODO: handle error
-                print(error)
+                // TODO: add tracks
+                DDLogError("⛔️ Error installing Jetpack: \(error)")
+                self.setupError = error
+                self.retryCount += 1
+                DispatchQueue.main.asyncAfter(deadline: .now() + Constants.delayBeforeRetry) { [weak self] in
+                    self?.retrieveJetpackPluginDetails()
+                }
             }
         }
         stores.dispatch(action)
@@ -117,10 +159,16 @@ private extension LoginJetpackSetupViewModel {
             guard let self else { return }
             switch result {
             case .success:
+                self.retryCount = 0
                 self.fetchJetpackConnectionURL()
             case .failure(let error):
-                // TODO: handle error
-                print(error)
+                // TODO: add tracks
+                DDLogError("⛔️ Error activating Jetpack: \(error)")
+                self.setupError = error
+                self.retryCount += 1
+                DispatchQueue.main.asyncAfter(deadline: .now() + Constants.delayBeforeRetry) { [weak self] in
+                    self?.retrieveJetpackPluginDetails()
+                }
             }
         }
         stores.dispatch(action)
@@ -132,11 +180,17 @@ private extension LoginJetpackSetupViewModel {
             guard let self else { return }
             switch result {
             case .success(let url):
+                self.retryCount = 0
                 self.jetpackConnectionURL = url
                 self.shouldPresentWebView = true
             case .failure(let error):
-                // TODO: handle error
-                print(error)
+                // TODO: add tracks
+                DDLogError("⛔️ Error fetching Jetpack connection URL: \(error)")
+                self.setupError = error
+                self.retryCount += 1
+                DispatchQueue.main.asyncAfter(deadline: .now() + Constants.delayBeforeRetry) { [weak self] in
+                    self?.retrieveJetpackPluginDetails()
+                }
             }
         }
         stores.dispatch(action)
@@ -148,6 +202,7 @@ private extension LoginJetpackSetupViewModel {
             guard let self else { return }
             switch result {
             case .success(let user):
+                self.retryCount = 0
                 guard let connectedEmail = user.wpcomUser?.email else {
                     DDLogWarn("⚠️ Cannot find connected WPcom user")
                     return // TODO: add tracks and handle error
@@ -157,8 +212,13 @@ private extension LoginJetpackSetupViewModel {
                 self.currentConnectionStep = .authorized
                 self.currentSetupStep = .done
             case .failure(let error):
-                // TODO: handle error
-                print(error)
+                // TODO: add tracks
+                DDLogError("⛔️ Error checking Jetpack connection: \(error)")
+                self.setupError = error
+                self.retryCount += 1
+                DispatchQueue.main.asyncAfter(deadline: .now() + Constants.delayBeforeRetry) { [weak self] in
+                    self?.retrieveJetpackPluginDetails()
+                }
             }
         }
         stores.dispatch(action)
@@ -230,5 +290,10 @@ extension LoginJetpackSetupViewModel {
             "Connection approved",
             comment: "Message to be displayed when a Jetpack connection has been authorized"
         )
+    }
+
+    private enum Constants {
+        static let maxRetryCount: Int = 2
+        static let delayBeforeRetry: Double = 0.5
     }
 }

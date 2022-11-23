@@ -680,7 +680,7 @@ private extension ZendeskManager {
             CustomField(fieldId: TicketFieldIDs.deviceFreeSpace, value: getDeviceFreeSpace()),
             CustomField(fieldId: TicketFieldIDs.networkInformation, value: getNetworkInformation()),
             CustomField(fieldId: logsFieldID, value: getLogFile()),
-            CustomField(fieldId: systemStatusReportFieldID, value: getSystemStatusReport()),
+            CustomField(fieldId: systemStatusReportFieldID, value: systemStatusReport),
             CustomField(fieldId: TicketFieldIDs.currentSite, value: getCurrentSiteDescription()),
             CustomField(fieldId: TicketFieldIDs.sourcePlatform, value: Constants.sourcePlatform),
             CustomField(fieldId: TicketFieldIDs.appLanguage, value: Locale.preferredLanguage),
@@ -710,7 +710,7 @@ private extension ZendeskManager {
             CustomField(fieldId: TicketFieldIDs.deviceFreeSpace, value: getDeviceFreeSpace()),
             CustomField(fieldId: TicketFieldIDs.networkInformation, value: getNetworkInformation()),
             CustomField(fieldId: logsFieldID, value: getLogFile()),
-            CustomField(fieldId: systemStatusReportFieldID, value: getSystemStatusReport()),
+            CustomField(fieldId: systemStatusReportFieldID, value: systemStatusReport),
             CustomField(fieldId: TicketFieldIDs.currentSite, value: getCurrentSiteDescription()),
             CustomField(fieldId: TicketFieldIDs.sourcePlatform, value: Constants.sourcePlatform),
             CustomField(fieldId: TicketFieldIDs.appLanguage, value: Locale.preferredLanguage),
@@ -856,12 +856,6 @@ private extension ZendeskManager {
         }
 
         return logText
-    }
-
-    /// Get the System Status Report as a formatted String that we can use in the support request
-    ///
-    func getSystemStatusReport() -> String {
-        return systemStatusReport
     }
 
     func getCurrentSiteDescription() -> String {

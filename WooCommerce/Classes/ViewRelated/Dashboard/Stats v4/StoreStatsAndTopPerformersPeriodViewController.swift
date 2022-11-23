@@ -357,8 +357,7 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
     }
 
     @objc func seeMoreButtonTapped() {
-        let analyticsTimeRange = AnalyticsHubTimeRange(selectedTimeRange: timeRange)
-        let analyticsHubVC = AnalyticsHubHostingViewController(timeRange: analyticsTimeRange)
+        let analyticsHubVC = AnalyticsHubHostingViewController(timeRange: timeRange)
         show(analyticsHubVC, sender: self)
     }
 }

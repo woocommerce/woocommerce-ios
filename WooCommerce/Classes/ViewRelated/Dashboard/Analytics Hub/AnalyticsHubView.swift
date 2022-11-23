@@ -6,7 +6,7 @@ import SwiftUI
 ///
 final class AnalyticsHubHostingViewController: UIHostingController<AnalyticsHubView> {
     init(timeRange: StatsTimeRangeV4) {
-        let viewModel = AnalyticsHubViewModel()
+        let viewModel = AnalyticsHubViewModel(statsTimeRange: timeRange)
         super.init(rootView: AnalyticsHubView(viewModel: viewModel))
     }
 
@@ -19,21 +19,15 @@ final class AnalyticsHubHostingViewController: UIHostingController<AnalyticsHubV
 /// Main Analytics Hub View
 ///
 struct AnalyticsHubView: View {
-    private var timeRange: AnalyticsHubTimeRange
-
-    init(_ timeRange: AnalyticsHubTimeRange) {
-        self.timeRange = timeRange
-    }
-
     @StateObject var viewModel: AnalyticsHubViewModel
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Layout.vertialSpacing) {
                 TimeRangeCard(
-                    timeRangeTitle: timeRange.selectionDescription,
-                    currentRangeDescription: timeRange.currentRangeDescription,
-                    previousRangeDescription: timeRange.previousRangeDescription)
+                    timeRangeTitle: viewModel.currentTimeRange.selectionDescription,
+                    currentRangeDescription: viewModel.currentTimeRange.currentRangeDescription,
+                    previousRangeDescription: viewModel.currentTimeRange.previousRangeDescription)
 
                 VStack(spacing: Layout.dividerSpacing) {
                     Divider()
@@ -80,7 +74,7 @@ private extension AnalyticsHubView {
 struct AnalyticsHubPreview: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            AnalyticsHubView(viewModel: AnalyticsHubViewModel())
+            AnalyticsHubView(viewModel: AnalyticsHubViewModel(statsTimeRange: .thisYear))
         }
     }
 }

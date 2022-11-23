@@ -1,4 +1,5 @@
 import Foundation
+import Yosemite
 
 /// Main View Model for the Analytics Hub.
 ///
@@ -27,4 +28,12 @@ final class AnalyticsHubViewModel: ObservableObject {
                                                              trailingValue: "$57,99",
                                                              trailingDelta: "-16%",
                                                              trailingDeltaColor: .withColorStudio(.red, shade: .shade40))
+
+    /// Current time range controlling the Analytics Hub
+    ///
+    @Published var currentTimeRange: AnalyticsHubTimeRange
+
+    init(statsTimeRange: StatsTimeRangeV4) {
+        self.currentTimeRange = AnalyticsHubTimeRange(selectedTimeRange: statsTimeRange)
+    }
 }

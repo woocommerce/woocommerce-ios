@@ -246,14 +246,14 @@ struct LoginJetpackSetupView: View {
         .fullScreenCover(isPresented: $viewModel.jetpackConnectionInterrupted) {
             LoginJetpackSetupInterruptedView(onSupport: supportHandler, onContinue: {
                 viewModel.jetpackConnectionInterrupted = false
-                // delay for 300ms for the dismissal of the interrupted screen to complete.
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                // delay for the dismissal of the interrupted screen to complete.
+                DispatchQueue.main.asyncAfter(deadline: .now() + Constants.interruptedConnectionActionHandlerDelayTime) {
                     webViewPresentationHandler()
                 }
             }, onCancellation: {
                 viewModel.jetpackConnectionInterrupted = false
-                // delay for 300ms for the dismissal of the interrupted screen to complete.
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                // delay for the dismissal of the interrupted screen to complete.
+                DispatchQueue.main.asyncAfter(deadline: .now() + Constants.interruptedConnectionActionHandlerDelayTime) {
                     cancellationHandler()
                 }
             })
@@ -278,6 +278,7 @@ private extension LoginJetpackSetupView {
         static let stepImageSize: CGFloat = 24
         static let supportImageSize: CGFloat = 18
         static let errorContentSpacing: CGFloat = 16
+        static let interruptedConnectionActionHandlerDelayTime: Double = 0.3
     }
 }
 

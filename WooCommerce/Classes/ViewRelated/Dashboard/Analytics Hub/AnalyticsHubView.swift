@@ -23,12 +23,12 @@ struct AnalyticsHubView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: Layout.vertialSpacing) {
+            VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
                 VStack(spacing: Layout.dividerSpacing) {
                     Divider()
 
                     AnalyticsTimeRangeCard(viewModel: viewModel.timeRangeCard)
-                    .background(Color(uiColor: .listForeground))
+                        .background(Color(uiColor: .listForeground))
 
                     Divider()
                 }
@@ -37,7 +37,7 @@ struct AnalyticsHubView: View {
                     Divider()
 
                     AnalyticsReportCard(viewModel: viewModel.revenueCard)
-                    .background(Color(uiColor: .listForeground))
+                        .background(Color(uiColor: .listForeground))
 
                     Divider()
                 }
@@ -46,7 +46,7 @@ struct AnalyticsHubView: View {
                     Divider()
 
                     AnalyticsReportCard(viewModel: viewModel.ordersCard)
-                    .background(Color(uiColor: .listForeground))
+                        .background(Color(uiColor: .listForeground))
 
                     Divider()
                 }
@@ -68,7 +68,7 @@ private extension AnalyticsHubView {
     }
 
     struct Layout {
-        static let vertialSpacing: CGFloat = 24.0
+        static let verticalSpacing: CGFloat = 24.0
         static let dividerSpacing: CGFloat = .zero
     }
 }

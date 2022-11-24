@@ -62,6 +62,7 @@ struct AnalyticsHubView: View {
                     Divider()
 
                     AnalyticsProductCard(viewModel: viewModel.productCard)
+                        .padding(.horizontal, insets: safeAreaInsets)
                         .background(Color(uiColor: .listForeground))
 
                     Divider()

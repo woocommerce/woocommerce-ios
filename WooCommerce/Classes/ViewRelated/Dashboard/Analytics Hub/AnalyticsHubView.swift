@@ -5,8 +5,8 @@ import SwiftUI
 /// Hosting Controller for the `AnalyticsHubView` view.
 ///
 final class AnalyticsHubHostingViewController: UIHostingController<AnalyticsHubView> {
-    init(timeRange: StatsTimeRangeV4) {
-        let viewModel = AnalyticsHubViewModel()
+    init(siteID: Int64, timeRange: StatsTimeRangeV4) {
+        let viewModel = AnalyticsHubViewModel(siteID: siteID)
         super.init(rootView: AnalyticsHubView(viewModel: viewModel))
     }
 
@@ -81,7 +81,7 @@ private extension AnalyticsHubView {
 struct AnalyticsHubPreview: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            AnalyticsHubView(viewModel: AnalyticsHubViewModel())
+            AnalyticsHubView(viewModel: AnalyticsHubViewModel(siteID: 123))
         }
     }
 }

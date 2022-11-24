@@ -5,6 +5,15 @@ import Yosemite
 ///
 final class AnalyticsHubViewModel: ObservableObject {
 
+    private let siteID: Int64
+    private let stores: StoresManager
+
+    init(siteID: Int64,
+         stores: StoresManager = ServiceLocator.stores) {
+        self.siteID = siteID
+        self.stores = stores
+    }
+
     /// Revenue Card ViewModel
     ///
     @Published var revenueCard = AnalyticsReportCardViewModel(title: "REVENUE",

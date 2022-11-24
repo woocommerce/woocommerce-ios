@@ -32,6 +32,27 @@ struct StatsDataTextFormatter {
         return createDeltaPercentage(from: previousRevenue, to: currentRevenue)
     }
 
+    /// Creates the text to display for the net revenue.
+    ///
+    static func createNetRevenueText(orderStats: OrderStatsV4?, currencyFormatter: CurrencyFormatter?, currencyCode: String) -> String {
+        guard let revenue = orderStats?.totals.netRevenue else {
+            return Constants.placeholderText
+        }
+
+        // If revenue is an integer, no decimal points are shown.
+        let numberOfDecimals: Int? = revenue.isInteger ? 0 : nil
+        let currencyFormatter = currencyFormatter ?? CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+        return currencyFormatter.formatAmount(revenue, with: currencyCode, numberOfDecimals: numberOfDecimals) ?? String()
+    }
+
+    /// Creates the text to display for the net revenue delta.
+    ///
+    static func createNetRevenueDelta(from previousPeriod: OrderStatsV4?, to currentPeriod: OrderStatsV4?) -> DeltaPercentage {
+        let previousRevenue = previousPeriod?.totals.netRevenue
+        let currentRevenue = currentPeriod?.totals.netRevenue
+        return createDeltaPercentage(from: previousRevenue, to: currentRevenue)
+    }
+
     // MARK: Orders Stats
 
     /// Creates the text to display for the order count.

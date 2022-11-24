@@ -13,6 +13,8 @@ extension CardReaderType {
             return .stripeM2
         case .wisePad3:
             return .wisepad3
+        case .appleBuiltIn:
+            return appleBuiltIn
         default:
             return .other
         }

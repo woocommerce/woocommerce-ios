@@ -47,10 +47,10 @@ final class AnalyticsHubViewModel: ObservableObject {
     
     /// Time Range control of the Analytics Hub
     ///
-    private let timeRangeController: AnalyticsHubTimeRangeController
+    private let timeRangeController: AnalyticsHubTimeRangeGenerator
 
     init(statsTimeRange: StatsTimeRangeV4) {
-        self.timeRangeController = AnalyticsHubTimeRangeController(selectedTimeRange: statsTimeRange)
+        self.timeRangeController = AnalyticsHubTimeRangeGenerator(selectedTimeRange: statsTimeRange)
         self.timeRangeCard = AnalyticsTimeRangeCardViewModel(selectedRangeTitle: timeRangeController.selectionDescription,
                                                              currentRangeSubtitle: timeRangeController.currentRangeDescription,
                                                              previousRangeSubtitle: timeRangeController.previousRangeDescription)

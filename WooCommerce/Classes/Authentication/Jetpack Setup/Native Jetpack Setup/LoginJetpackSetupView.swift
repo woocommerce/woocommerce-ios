@@ -5,6 +5,7 @@ import SwiftUI
 final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpackSetupView> {
     private let viewModel: LoginJetpackSetupViewModel
     private let analytics: Analytics
+    private let authentication: Authentication
 
     init(siteURL: String,
          connectionOnly: Bool,
@@ -13,6 +14,7 @@ final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpack
          onStoreNavigation: @escaping (String?) -> Void) {
         self.analytics = analytics
         self.viewModel = LoginJetpackSetupViewModel(siteURL: siteURL, connectionOnly: connectionOnly, onStoreNavigation: onStoreNavigation)
+        self.authentication = authentication
         super.init(rootView: LoginJetpackSetupView(viewModel: viewModel))
 
         rootView.webViewPresentationHandler = { [weak self] in
@@ -20,10 +22,7 @@ final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpack
         }
 
         rootView.supportHandler = { [weak self] in
-            guard let self else { return }
-            // dismiss any presented view if possible
-            self.presentedViewController?.dismiss(animated: true)
-            authentication.presentSupport(from: self, screen: .jetpackRequired)
+            self?.presentSupport()
         }
 
         rootView.cancellationHandler = dismissView
@@ -79,6 +78,12 @@ final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpack
         let navigationController = UINavigationController(rootViewController: webView)
         self.present(navigationController, animated: true)
     }
+
+    private func presentSupport() {
+        // dismiss any presented view if possible
+        presentedViewController?.dismiss(animated: true)
+        authentication.presentSupport(from: self, screen: .jetpackRequired)
+    }
 }
 
 private extension LoginJetpackSetupHostingController {
@@ -131,6 +136,7 @@ struct LoginJetpackSetupView: View {
                 }
                 .renderedIf(viewModel.shouldShowInitialLoadingIndicator)
 
+                // Setup steps and progress
                 ForEach(viewModel.setupSteps) { step in
                     HStack(spacing: Constants.stepItemHorizontalSpacing) {
                         if viewModel.isSetupStepInProgress(step) {
@@ -170,43 +176,49 @@ struct LoginJetpackSetupView: View {
                 .padding(.top, Constants.contentVerticalSpacing)
                 .renderedIf(viewModel.shouldShowSetupSteps)
 
-                VStack(alignment: .leading, spacing: Constants.errorContentSpacing) {
-                    Text(viewModel.setupErrorMessage)
-                        .font(.title2)
-                        .foregroundColor(Color(uiColor: .withColorStudio(.gray, shade: .shade80)))
-                    Text(viewModel.setupErrorSuggestion)
-                        .font(.body)
-                        .foregroundColor(Color(uiColor: .withColorStudio(.gray, shade: .shade80)))
-                    viewModel.errorCode.map { code in
-                        Text(String.localizedStringWithFormat(Localization.errorCode, code))
-                            .font(.footnote)
-                            .bold()
-                            .foregroundColor(Color(uiColor: .secondaryLabel))
-                    }
-
-                    Button {
-                        // TODO: add tracks?
-                        supportHandler()
-                    } label: {
-                        Label {
-                            Text(Localization.getSupport)
-                                .font(.body)
-                                .fontWeight(.semibold)
-                        } icon: {
-                            Image(systemName: "questionmark.circle")
-                                .resizable()
-                                .frame(width: Constants.supportImageSize * scale, height: Constants.supportImageSize * scale)
+                // Error state contents: title and messages
+                viewModel.setupErrorDetail.map { detail in
+                    VStack(alignment: .leading, spacing: Constants.errorContentSpacing) {
+                        Text(detail.setupErrorMessage)
+                            .font(.title2)
+                            .foregroundColor(Color(uiColor: .label))
+                        Text(detail.setupErrorSuggestion)
+                            .font(.body)
+                            .foregroundColor(Color(uiColor: .label))
+                        detail.errorCode.map { code in
+                            Text(String.localizedStringWithFormat(Localization.errorCode, code))
+                                .font(.footnote)
+                                .bold()
+                                .foregroundColor(Color(uiColor: .secondaryLabel))
                         }
-                    }
-                    .buttonStyle(.plain)
-                    .foregroundColor(Color(uiColor: .withColorStudio(.blue, shade: .shade50)))
 
+                        // Support button
+                        Button {
+                            // TODO: add tracks?
+                            supportHandler()
+                        } label: {
+                            Label {
+                                Text(Localization.getSupport)
+                                    .font(.body)
+                                    .fontWeight(.semibold)
+                            } icon: {
+                                Image(systemName: "questionmark.circle")
+                                    .resizable()
+                                    .frame(width: Constants.supportImageSize * scale, height: Constants.supportImageSize * scale)
+                            }
+                        }
+                        .buttonStyle(.plain)
+                        .foregroundColor(Color(uiColor: .withColorStudio(.blue, shade: .shade50)))
+
+                    }
+                    .renderedIf(viewModel.setupFailed)
                 }
-                .renderedIf(viewModel.setupFailed)
+
                 Spacer()
             }
         }
         .safeAreaInset(edge: .bottom, content: {
+            // Go to Store button
             Button {
                 viewModel.navigateToStore()
             } label: {
@@ -216,6 +228,7 @@ struct LoginJetpackSetupView: View {
             .padding(.top, Constants.contentVerticalSpacing)
             .renderedIf(viewModel.shouldShowGoToStoreButton)
 
+            // Error state buttons: Retry and Cancel
             VStack(spacing: Constants.contentVerticalSpacing) {
                 Button {
                     // TODO: add tracks
@@ -245,14 +258,14 @@ struct LoginJetpackSetupView: View {
         .fullScreenCover(isPresented: $viewModel.jetpackConnectionInterrupted) {
             LoginJetpackSetupInterruptedView(onSupport: supportHandler, onContinue: {
                 viewModel.jetpackConnectionInterrupted = false
-                // delay for 300ms for the dismissal of the interrupted screen to complete.
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                // delay for the dismissal of the interrupted screen to complete.
+                DispatchQueue.main.asyncAfter(deadline: .now() + Constants.interruptedConnectionActionHandlerDelayTime) {
                     webViewPresentationHandler()
                 }
             }, onCancellation: {
                 viewModel.jetpackConnectionInterrupted = false
-                // delay for 300ms for the dismissal of the interrupted screen to complete.
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                // delay for the dismissal of the interrupted screen to complete.
+                DispatchQueue.main.asyncAfter(deadline: .now() + Constants.interruptedConnectionActionHandlerDelayTime) {
                     cancellationHandler()
                 }
             })
@@ -277,6 +290,7 @@ private extension LoginJetpackSetupView {
         static let stepImageSize: CGFloat = 24
         static let supportImageSize: CGFloat = 18
         static let errorContentSpacing: CGFloat = 16
+        static let interruptedConnectionActionHandlerDelayTime: Double = 0.3
     }
 }
 

@@ -8,56 +8,54 @@ struct LoginJetpackSetupInterruptedView: View {
     let onCancellation: () -> Void
 
     var body: some View {
-        GeometryReader { geometry in
-            ScrollView {
-                VStack {
-                    HStack {
-                        Spacer()
-                        Button {
-                            onSupport()
-                        } label: {
-                            Text(Localization.help)
-                                .fontWeight(.semibold)
-                        }
-                        .buttonStyle(.plain)
-                        .foregroundColor(Color(uiColor: .accent))
-                    }
-
-                    Spacer()
-
-                    VStack(spacing: Constants.contentVerticalSpacing) {
-                        Image(uiImage: .jetpackSetupInterruptedImage)
-                        Text(Localization.title)
-                            .fontWeight(.semibold)
-                        Text(Localization.message)
-                        Text(Localization.suggestion)
-                    }
-                    .font(.title3)
-                    .foregroundColor(Color(uiColor: .text))
-                    .multilineTextAlignment(.center)
-
-                    Spacer()
-
-                    VStack(spacing: Constants.contentVerticalSpacing) {
-                        Button {
-                            onContinue()
-                        } label: {
-                            Text(Localization.continueConnection)
-                        }
-                        .buttonStyle(PrimaryButtonStyle())
-
-                        Button {
-                            onCancellation()
-                        } label: {
-                            Text(Localization.cancelInstallation)
-                        }
-                        .buttonStyle(SecondaryButtonStyle())
-                    }
+        VStack {
+            HStack {
+                Spacer()
+                Button {
+                    onSupport()
+                } label: {
+                    Text(Localization.help)
+                        .fontWeight(.semibold)
                 }
-                .frame(minHeight: geometry.size.height)
+                .buttonStyle(.plain)
+                .foregroundColor(Color(uiColor: .accent))
+            }
+            .padding(.trailing, Constants.contentSpacing)
+            .padding(.top, Constants.contentSpacing)
+
+            ScrollableVStack(padding: Constants.contentSpacing, spacing: Constants.contentSpacing) {
+                Spacer()
+
+                VStack(spacing: Constants.contentSpacing) {
+                    Image(uiImage: .jetpackSetupInterruptedImage)
+                    Text(Localization.title)
+                        .fontWeight(.semibold)
+                    Text(Localization.message)
+                    Text(Localization.suggestion)
+                }
+                .font(.title3)
+                .foregroundColor(Color(uiColor: .text))
+                .multilineTextAlignment(.center)
+
+                Spacer()
+
+                VStack(spacing: Constants.contentSpacing) {
+                    Button {
+                        onContinue()
+                    } label: {
+                        Text(Localization.continueConnection)
+                    }
+                    .buttonStyle(PrimaryButtonStyle())
+
+                    Button {
+                        onCancellation()
+                    } label: {
+                        Text(Localization.cancelInstallation)
+                    }
+                    .buttonStyle(SecondaryButtonStyle())
+                }
             }
         }
-        .padding()
     }
 }
 
@@ -87,12 +85,14 @@ extension LoginJetpackSetupInterruptedView {
     }
 
     enum Constants {
-        static let contentVerticalSpacing: CGFloat = 16
+        static let contentSpacing: CGFloat = 16
     }
 }
 
 struct LoginJetpackSetupInterruptedView_Previews: PreviewProvider {
     static var previews: some View {
         LoginJetpackSetupInterruptedView(onSupport: {}, onContinue: {}, onCancellation: {})
+        LoginJetpackSetupInterruptedView(onSupport: {}, onContinue: {}, onCancellation: {})
+            .previewInterfaceOrientation(.landscapeLeft)
     }
 }

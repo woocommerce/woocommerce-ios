@@ -307,7 +307,8 @@ private extension EmptyStateViewController {
         case .withSupportRequest(_, _, _, let buttonTitle, _):
             actionButton.isHidden = false
             actionButton.applyLinkButtonStyle()
-            actionButton.contentEdgeInsets = .zero
+            var configuration = UIButton.Configuration.filled()
+            configuration.contentInsets = .init(.zero)
             actionButton.setTitle(buttonTitle, for: .normal)
         }
     }

@@ -131,6 +131,7 @@ struct LoginJetpackSetupView: View {
                 }
                 .renderedIf(viewModel.shouldShowInitialLoadingIndicator)
 
+                // Setup steps and progress
                 ForEach(viewModel.setupSteps) { step in
                     HStack(spacing: Constants.stepItemHorizontalSpacing) {
                         if viewModel.isSetupStepInProgress(step) {
@@ -170,6 +171,7 @@ struct LoginJetpackSetupView: View {
                 .padding(.top, Constants.contentVerticalSpacing)
                 .renderedIf(viewModel.shouldShowSetupSteps)
 
+                // Error state contents: title and messages
                 VStack(alignment: .leading, spacing: Constants.errorContentSpacing) {
                     Text(viewModel.setupErrorMessage)
                         .font(.title2)
@@ -184,6 +186,7 @@ struct LoginJetpackSetupView: View {
                             .foregroundColor(Color(uiColor: .secondaryLabel))
                     }
 
+                    // Support button
                     Button {
                         // TODO: add tracks?
                         supportHandler()
@@ -207,6 +210,7 @@ struct LoginJetpackSetupView: View {
             }
         }
         .safeAreaInset(edge: .bottom, content: {
+            // Go to Store button
             Button {
                 // TODO: add tracks
                 viewModel.navigateToStore()
@@ -217,6 +221,7 @@ struct LoginJetpackSetupView: View {
             .padding(.top, Constants.contentVerticalSpacing)
             .renderedIf(viewModel.shouldShowGoToStoreButton)
 
+            // Error state buttons: Retry and Cancel
             VStack(spacing: Constants.contentVerticalSpacing) {
                 Button {
                     // TODO: add tracks

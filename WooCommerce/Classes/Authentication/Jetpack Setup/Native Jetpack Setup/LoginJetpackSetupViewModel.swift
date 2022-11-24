@@ -47,9 +47,7 @@ final class LoginJetpackSetupViewModel: ObservableObject {
 
     /// Whether the setup failed. This will be observed by `LoginJetpackSetupView` to present error modal.
     @Published private(set) var setupFailed: Bool = false
-    @Published private(set) var setupErrorMessage: String = ""
-    @Published private(set) var setupErrorSuggestion: String = ""
-    @Published private(set) var errorCode: Int?
+    @Published private(set) var setupErrorDetail: SetupErrorDetail?
 
     private var jetpackConnectedEmail: String?
 
@@ -123,9 +121,7 @@ final class LoginJetpackSetupViewModel: ObservableObject {
     func retryAllSteps() {
         setupFailed = false
         setupError = nil
-        setupErrorMessage = ""
-        setupErrorSuggestion = ""
-        errorCode = nil
+        setupErrorDetail = nil
 
         currentSetupStep = nil
         currentConnectionStep = .pending
@@ -246,22 +242,23 @@ private extension LoginJetpackSetupViewModel {
     func updateErrorMessage() {
         switch setupError {
         case .some(AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403))):
-            setupErrorMessage = Localization.permissionErrorMessage
-            setupErrorSuggestion = Localization.permissionErrorSuggestion
-            errorCode = 403
+            setupErrorDetail = .init(setupErrorMessage: Localization.permissionErrorMessage,
+                                     setupErrorSuggestion: Localization.permissionErrorSuggestion,
+                                     errorCode: 403)
         case .some(AFError.responseValidationFailed(reason: .unacceptableStatusCode(let code))) where 500...599 ~= code:
-            setupErrorMessage = Localization.communicationErrorMessage
-            setupErrorSuggestion = Localization.communicationErrorSuggestion
-            errorCode = code
+            setupErrorDetail = .init(setupErrorMessage: Localization.communicationErrorMessage,
+                                     setupErrorSuggestion: Localization.communicationErrorSuggestion,
+                                     errorCode: code)
         default:
-            setupErrorMessage = Localization.genericErrorMessage
-            setupErrorSuggestion = Localization.communicationErrorSuggestion
-            errorCode = {
+            let code: Int? = {
                 if let afError = setupError as? AFError, let code = afError.responseCode {
                     return code
                 }
                 return (setupError as? NSError)?.code
             }()
+            setupErrorDetail = .init(setupErrorMessage: Localization.genericErrorMessage,
+                                     setupErrorSuggestion: Localization.communicationErrorSuggestion,
+                                     errorCode: code)
         }
     }
 }
@@ -269,6 +266,16 @@ private extension LoginJetpackSetupViewModel {
 // MARK: Subtypes
 //
 extension LoginJetpackSetupViewModel {
+    /// Details for setup error to display on `LoginJetpackSetupView`
+    ///
+    struct SetupErrorDetail {
+        let setupErrorMessage: String
+        let setupErrorSuggestion: String
+        let errorCode: Int?
+    }
+
+    /// Steps for the Jetpack connection process.
+    ///
     enum ConnectionStep {
         case pending
         case inProgress

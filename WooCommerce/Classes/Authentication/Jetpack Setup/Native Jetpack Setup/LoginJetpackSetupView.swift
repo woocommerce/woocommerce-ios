@@ -172,40 +172,43 @@ struct LoginJetpackSetupView: View {
                 .renderedIf(viewModel.shouldShowSetupSteps)
 
                 // Error state contents: title and messages
-                VStack(alignment: .leading, spacing: Constants.errorContentSpacing) {
-                    Text(viewModel.setupErrorMessage)
-                        .font(.title2)
-                        .foregroundColor(Color(uiColor: .withColorStudio(.gray, shade: .shade80)))
-                    Text(viewModel.setupErrorSuggestion)
-                        .font(.body)
-                        .foregroundColor(Color(uiColor: .withColorStudio(.gray, shade: .shade80)))
-                    viewModel.errorCode.map { code in
-                        Text(String.localizedStringWithFormat(Localization.errorCode, code))
-                            .font(.footnote)
-                            .bold()
-                            .foregroundColor(Color(uiColor: .secondaryLabel))
-                    }
-
-                    // Support button
-                    Button {
-                        // TODO: add tracks?
-                        supportHandler()
-                    } label: {
-                        Label {
-                            Text(Localization.getSupport)
-                                .font(.body)
-                                .fontWeight(.semibold)
-                        } icon: {
-                            Image(systemName: "questionmark.circle")
-                                .resizable()
-                                .frame(width: Constants.supportImageSize * scale, height: Constants.supportImageSize * scale)
+                viewModel.setupErrorDetail.map { detail in
+                    VStack(alignment: .leading, spacing: Constants.errorContentSpacing) {
+                        Text(detail.setupErrorMessage)
+                            .font(.title2)
+                            .foregroundColor(Color(uiColor: .withColorStudio(.gray, shade: .shade80)))
+                        Text(detail.setupErrorSuggestion)
+                            .font(.body)
+                            .foregroundColor(Color(uiColor: .withColorStudio(.gray, shade: .shade80)))
+                        detail.errorCode.map { code in
+                            Text(String.localizedStringWithFormat(Localization.errorCode, code))
+                                .font(.footnote)
+                                .bold()
+                                .foregroundColor(Color(uiColor: .secondaryLabel))
                         }
-                    }
-                    .buttonStyle(.plain)
-                    .foregroundColor(Color(uiColor: .withColorStudio(.blue, shade: .shade50)))
 
+                        // Support button
+                        Button {
+                            // TODO: add tracks?
+                            supportHandler()
+                        } label: {
+                            Label {
+                                Text(Localization.getSupport)
+                                    .font(.body)
+                                    .fontWeight(.semibold)
+                            } icon: {
+                                Image(systemName: "questionmark.circle")
+                                    .resizable()
+                                    .frame(width: Constants.supportImageSize * scale, height: Constants.supportImageSize * scale)
+                            }
+                        }
+                        .buttonStyle(.plain)
+                        .foregroundColor(Color(uiColor: .withColorStudio(.blue, shade: .shade50)))
+
+                    }
+                    .renderedIf(viewModel.setupFailed)
                 }
-                .renderedIf(viewModel.setupFailed)
+
                 Spacer()
             }
         }

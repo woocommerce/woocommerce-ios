@@ -87,10 +87,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                                        network: network,
                                                        cardReaderService: mockCardReaderService)
 
-        let action = CardPresentPaymentAction.startCardReaderDiscovery(
-            siteID: sampleSiteID,
-            discoveryMethod: .bluetoothProximity,
-            onReaderDiscovered: { _ in }, onError: { _ in })
+        let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: sampleSiteID, onReaderDiscovered: { _ in }, onError: { _ in })
 
         cardPresentStore.onAction(action)
 
@@ -107,7 +104,6 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
         let action = CardPresentPaymentAction.startCardReaderDiscovery(
             siteID: sampleSiteID,
-            discoveryMethod: .bluetoothProximity,
             onReaderDiscovered: { _ in
                 expectation.fulfill()
             },
@@ -119,32 +115,13 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    func test_start_discovery_action_passes_configuration_provider_to_service() {
+    func test_start_discovery_action_passes_configuraton_provider_to_service() {
         let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
                                                        storageManager: storageManager,
                                                        network: network,
                                                        cardReaderService: mockCardReaderService)
 
-        let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: sampleSiteID,
-                                                                       discoveryMethod: .bluetoothProximity,
-                                                                       onReaderDiscovered: { _ in },
-                                                                       onError: { _ in })
-
-        cardPresentStore.onAction(action)
-
-        XCTAssertTrue(mockCardReaderService.didReceiveAConfigurationProvider)
-    }
-
-    func test_start_discovery_action_passes_discovery_method_to_service() {
-        let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
-                                                       storageManager: storageManager,
-                                                       network: network,
-                                                       cardReaderService: mockCardReaderService)
-
-        let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: sampleSiteID,
-                                                                       discoveryMethod: .bluetoothProximity,
-                                                                       onReaderDiscovered: { _ in },
-                                                                       onError: { _ in })
+        let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: sampleSiteID, onReaderDiscovered: { _ in }, onError: { _ in })
 
         cardPresentStore.onAction(action)
 
@@ -170,7 +147,6 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
         let action = CardPresentPaymentAction.startCardReaderDiscovery(
             siteID: sampleSiteID,
-            discoveryMethod: .bluetoothProximity,
             onReaderDiscovered: { discoveredReaders in
                 XCTAssertTrue(self.mockCardReaderService.didReceiveAConfigurationProvider)
                 if discoveredReaders.count == 0 {
@@ -229,11 +205,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
         let expectation = self.expectation(description: "Cancelling discovery changes discoveryStatus to idle")
 
-        let startDiscoveryAction = CardPresentPaymentAction.startCardReaderDiscovery(
-            siteID: sampleSiteID,
-            discoveryMethod: .bluetoothProximity,
-            onReaderDiscovered: { _ in },
-            onError: { _ in })
+        let startDiscoveryAction = CardPresentPaymentAction.startCardReaderDiscovery(siteID: sampleSiteID, onReaderDiscovered: { _ in }, onError: { _ in })
 
         cardPresentStore.onAction(startDiscoveryAction)
 

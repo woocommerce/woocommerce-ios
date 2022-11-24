@@ -27,7 +27,6 @@ extension Storage.GeneralAppSettings {
         isProductSKUInputScannerSwitchEnabled: CopiableProp<Bool> = .copy,
         isCouponManagementSwitchEnabled: CopiableProp<Bool> = .copy,
         isInAppPurchasesSwitchEnabled: CopiableProp<Bool> = .copy,
-        isTapToPayOnIPhoneSwitchEnabled: CopiableProp<Bool> = .copy,
         knownCardReaders: CopiableProp<[String]> = .copy,
         lastEligibilityErrorInfo: NullableCopiableProp<EligibilityErrorInfo> = .copy,
         lastJetpackBenefitsBannerDismissedTime: NullableCopiableProp<Date> = .copy,
@@ -39,7 +38,6 @@ extension Storage.GeneralAppSettings {
         let isProductSKUInputScannerSwitchEnabled = isProductSKUInputScannerSwitchEnabled ?? self.isProductSKUInputScannerSwitchEnabled
         let isCouponManagementSwitchEnabled = isCouponManagementSwitchEnabled ?? self.isCouponManagementSwitchEnabled
         let isInAppPurchasesSwitchEnabled = isInAppPurchasesSwitchEnabled ?? self.isInAppPurchasesSwitchEnabled
-        let isTapToPayOnIPhoneSwitchEnabled = isTapToPayOnIPhoneSwitchEnabled ?? self.isTapToPayOnIPhoneSwitchEnabled
         let knownCardReaders = knownCardReaders ?? self.knownCardReaders
         let lastEligibilityErrorInfo = lastEligibilityErrorInfo ?? self.lastEligibilityErrorInfo
         let lastJetpackBenefitsBannerDismissedTime = lastJetpackBenefitsBannerDismissedTime ?? self.lastJetpackBenefitsBannerDismissedTime
@@ -52,7 +50,6 @@ extension Storage.GeneralAppSettings {
             isProductSKUInputScannerSwitchEnabled: isProductSKUInputScannerSwitchEnabled,
             isCouponManagementSwitchEnabled: isCouponManagementSwitchEnabled,
             isInAppPurchasesSwitchEnabled: isInAppPurchasesSwitchEnabled,
-            isTapToPayOnIPhoneSwitchEnabled: isTapToPayOnIPhoneSwitchEnabled,
             knownCardReaders: knownCardReaders,
             lastEligibilityErrorInfo: lastEligibilityErrorInfo,
             lastJetpackBenefitsBannerDismissedTime: lastJetpackBenefitsBannerDismissedTime,

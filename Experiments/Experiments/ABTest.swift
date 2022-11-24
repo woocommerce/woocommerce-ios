@@ -39,9 +39,9 @@ public enum ABTest: String, CaseIterable {
     /// When adding a new experiment, add it to the appropriate case depending on its context (logged-in or logged-out experience).
     public var context: ExperimentContext {
         switch self {
-        case .productsOnboardingBanner, .productsOnboardingTemplateProducts:
+        case .productsOnboardingBanner, .productsOnboardingTemplateProducts, .abTestNativeJetpackSetupFlow:
             return .loggedIn
-        case .aaTestLoggedOut, .abTestLoginWithWPComOnly, .abTestNativeJetpackSetupFlow:
+        case .aaTestLoggedOut, .abTestLoginWithWPComOnly:
             return .loggedOut
         case .null:
             return .none

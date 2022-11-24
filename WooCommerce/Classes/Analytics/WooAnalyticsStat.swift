@@ -112,6 +112,8 @@ public enum WooAnalyticsStat: String {
 
     case loginJetpackSetupGoToStoreTapped = "login_jetpack_setup_go_to_store_button_tapped"
 
+    case loginJetpackSetupAuthorizedUsingDifferentWPCOMAccount = "login_jetpack_setup_authorized_using_different_wpcom_account"
+
     // MARK: No matched site alert
     //
     case loginJetpackNoMatchedSiteErrorViewed = "login_jetpack_no_matched_site_error_viewed"

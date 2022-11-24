@@ -176,10 +176,10 @@ struct LoginJetpackSetupView: View {
                     VStack(alignment: .leading, spacing: Constants.errorContentSpacing) {
                         Text(detail.setupErrorMessage)
                             .font(.title2)
-                            .foregroundColor(Color(uiColor: .withColorStudio(.gray, shade: .shade80)))
+                            .foregroundColor(Color(uiColor: .label))
                         Text(detail.setupErrorSuggestion)
                             .font(.body)
-                            .foregroundColor(Color(uiColor: .withColorStudio(.gray, shade: .shade80)))
+                            .foregroundColor(Color(uiColor: .label))
                         detail.errorCode.map { code in
                             Text(String.localizedStringWithFormat(Localization.errorCode, code))
                                 .font(.footnote)

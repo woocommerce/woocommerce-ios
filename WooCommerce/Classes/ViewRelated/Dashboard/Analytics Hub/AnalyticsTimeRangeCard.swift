@@ -28,7 +28,7 @@ struct AnalyticsTimeRangeCard: View {
 
             Divider()
 
-            BoldableTextView(String.localizedStringWithFormat(Localization.previousRangeComparisonContent, previousRangeDescription))
+            BoldableTextView(Localization.comparisonHeaderTextWith(previousRangeDescription))
                 .padding(.leading)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .calloutStyle()
@@ -48,6 +48,10 @@ private extension AnalyticsTimeRangeCard {
             "Compared to **%1$@**",
             comment: "Subtitle describing the previous analytics period under comparison. E.g. Compared to Oct 1 - 22, 2022"
         )
+
+        static func comparisonHeaderTextWith(_ rangeDescription: String) -> String {
+            return String.localizedStringWithFormat(Localization.previousRangeComparisonContent, rangeDescription)
+        }
     }
 }
 

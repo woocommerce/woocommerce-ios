@@ -31,8 +31,20 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Time Range ViewModel
     ///
-    @Published var timeRangeCard: AnalyticsTimeRangeCardViewModel
+    @Published var timeRangeCard = AnalyticsTimeRangeCardViewModel(selectedRangeTitle: "Year to Date",
+                                                                   currentRangeSubtitle: "Jan 1 - Nov 23, 2022",
+                                                                   previousRangeSubtitle: "Jan 1 - Nov 23, 2021")
 
+    // MARK: Private data
+
+    /// Order stats for the current selected time period
+    ///
+    @Published private var currentOrderStats: OrderStatsV4? = nil
+
+    /// Order stats for the previous time period (for comparison)
+    ///
+    @Published private var previousOrderStats: OrderStatsV4? = nil
+    
     /// Time Range control of the Analytics Hub
     ///
     private let timeRangeController: AnalyticsHubTimeRangeController

@@ -1,5 +1,7 @@
 import SwiftUI
 
+/// Resuable Time Range card made for the Analytics Hub.
+///
 struct AnalyticsTimeRangeCard: View {
 
     let timeRangeTitle: String
@@ -9,12 +11,9 @@ struct AnalyticsTimeRangeCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
             HStack {
-                ZStack(alignment: .center) {
-                    Circle()
-                        .fill(Color(UIColor.systemGray6))
-                        .frame(width: Layout.calendarCircleWidth)
-                    Image(uiImage: .calendar)
-                }
+                Image(uiImage: .calendar)
+                    .padding()
+                    .background(Circle().foregroundColor(Color(.systemGray6)))
                 VStack(alignment: .leading, spacing: .zero) {
                     Text(timeRangeTitle)
                         .foregroundColor(Color(.text))
@@ -29,7 +28,7 @@ struct AnalyticsTimeRangeCard: View {
 
             Divider()
 
-            BoldableTextView(String.localizedStringWithFormat(Localization.previousRangeComparisonContent, previousRangeDescription))
+            BoldableTextView(Localization.comparisonHeaderTextWith(previousRangeDescription))
                 .padding(.leading)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .calloutStyle()
@@ -38,9 +37,9 @@ struct AnalyticsTimeRangeCard: View {
     }
 }
 
+// MARK: Constants
 private extension AnalyticsTimeRangeCard {
     enum Layout {
-        static let calendarCircleWidth: CGFloat = 48
         static let verticalSpacing: CGFloat = 16
     }
 
@@ -49,9 +48,14 @@ private extension AnalyticsTimeRangeCard {
             "Compared to **%1$@**",
             comment: "Subtitle describing the previous analytics period under comparison. E.g. Compared to Oct 1 - 22, 2022"
         )
+
+        static func comparisonHeaderTextWith(_ rangeDescription: String) -> String {
+            return String.localizedStringWithFormat(Localization.previousRangeComparisonContent, rangeDescription)
+        }
     }
 }
 
+// MARK: Previews
 struct TimeRangeCard_Previews: PreviewProvider {
     static var previews: some View {
         AnalyticsTimeRangeCard(timeRangeTitle: "Month to Date",

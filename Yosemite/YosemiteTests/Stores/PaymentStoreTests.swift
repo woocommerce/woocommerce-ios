@@ -117,5 +117,7 @@ final class PaymentStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, .timeout)
     }
 }

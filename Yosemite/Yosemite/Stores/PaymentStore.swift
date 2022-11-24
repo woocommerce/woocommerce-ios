@@ -70,7 +70,7 @@ private extension PaymentStore {
                 _ = try await remote.createCart(siteID: siteID, productID: productID)
                 completion(.success(()))
             } catch {
-                completion(.failure(CreateCartError(remoteError: error)))
+                completion(.failure(error))
             }
         }
     }
@@ -80,17 +80,4 @@ private extension PaymentStore {
 public enum CreateCartError: Error, Equatable {
     /// Product ID is not in the correct format for WPCOM plans.
     case invalidProductID
-    /// Unexpected error from WPCOM.
-    case unexpected(error: DotcomError)
-    /// Unknown error that is not a `DotcomError`.
-    case unknown(description: String)
-
-    init(remoteError: Error) {
-        switch remoteError {
-        case let remoteError as DotcomError:
-            self = .unexpected(error: remoteError)
-        default:
-            self = .unknown(description: remoteError.localizedDescription)
-        }
-    }
 }

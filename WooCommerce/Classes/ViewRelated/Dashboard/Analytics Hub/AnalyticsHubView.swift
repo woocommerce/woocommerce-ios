@@ -32,7 +32,7 @@ struct AnalyticsHubView: View {
                     Divider()
 
                     AnalyticsTimeRangeCard(viewModel: viewModel.timeRangeCard)
-                            .padding(.horizontal, insets: safeAreaInsets)
+                        .padding(.horizontal, insets: safeAreaInsets)
                         .background(Color(uiColor: .listForeground))
 
                     Divider()

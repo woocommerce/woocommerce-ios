@@ -174,6 +174,15 @@ extension StorePickerViewModel {
             return possibleURLs.contains(siteURL)
         })
     }
+
+    /// Returns the site that matches the given site ID.
+    ///
+    func site(thatMatchesSiteID siteID: Int64) -> Site? {
+        guard resultsController.numberOfObjects > 0 else {
+            return nil
+        }
+        return resultsController.fetchedObjects.first(where: { $0.siteID == siteID })
+    }
 }
 
 private extension StorePickerViewModel {

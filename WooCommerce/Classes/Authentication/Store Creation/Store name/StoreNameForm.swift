@@ -104,6 +104,8 @@ struct StoreNameForm: View {
             .buttonStyle(PrimaryButtonStyle())
             .disabled(name.isEmpty)
         }
+        // Disables large title to avoid a large gap below the navigation bar.
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

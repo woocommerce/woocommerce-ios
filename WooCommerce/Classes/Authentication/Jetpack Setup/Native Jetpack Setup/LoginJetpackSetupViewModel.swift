@@ -215,7 +215,7 @@ private extension LoginJetpackSetupViewModel {
                 self.jetpackConnectionURL = url
                 self.shouldPresentWebView = true
             case .failure(let error):
-                self.analytics.track(.loginJetpackSetupFetchJetpackConnectionURLFailed)
+                self.analytics.track(.loginJetpackSetupFetchJetpackConnectionURLFailed, withError: error)
                 DDLogError("⛔️ Error fetching Jetpack connection URL: \(error)")
                 self.setupError = error
                 self.setupFailed = true

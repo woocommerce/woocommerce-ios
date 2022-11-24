@@ -8,7 +8,7 @@ struct AnalyticsHubTimeRange {
 
 public class AnalyticsHubTimeRangeGenerator {
 
-    private let currentTimezone = TimeZone.current
+    private let currentTimezone = TimeZone.autoupdatingCurrent
     private let currentDate: Date
     private let currentCalendar: Calendar
     private let selectionType: SelectionType

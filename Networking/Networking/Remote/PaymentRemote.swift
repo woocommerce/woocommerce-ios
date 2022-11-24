@@ -44,7 +44,7 @@ public class PaymentRemote: Remote, PaymentRemoteProtocol {
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)
         let response: CreateCartResponse = try await enqueue(request)
         guard response.products.contains(where: { $0.productID == productID }) else {
-            throw CreateCartError.noMatchingProduct
+            throw CreateCartError.productNotInCart
         }
     }
 }
@@ -69,7 +69,7 @@ public enum LoadPlanError: Error {
 
 /// Possible error cases from creating cart for a site with a WPCOM plan.
 public enum CreateCartError: Error {
-    case noMatchingProduct
+    case productNotInCart
 }
 
 /// Contains necessary data for handling the remote response from creating a cart.

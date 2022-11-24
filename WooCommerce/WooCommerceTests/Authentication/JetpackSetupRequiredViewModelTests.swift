@@ -170,4 +170,33 @@ final class JetpackSetupRequiredViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(mockAuthentication.presentSupportFromScreenInvoked)
     }
+
+    // MARK: - Analytics
+    func test_jetpack_connection_error_is_tracked_when_the_view_is_loaded_when_connectionOnly_is_true() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let mockAuthentication = MockAuthentication()
+        let viewModel = JetpackSetupRequiredViewModel(siteURL: testSiteURL, connectionOnly: true, authentication: mockAuthentication, analytics: analytics)
+
+        // When
+        viewModel.viewDidLoad(nil)
+
+        // Then
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_connection_error_shown" }))
+    }
+
+    func test_jetpack_required_error_is_tracked_when_the_view_is_loaded_when_connectionOnly_is_false() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let mockAuthentication = MockAuthentication()
+        let viewModel = JetpackSetupRequiredViewModel(siteURL: testSiteURL, connectionOnly: false, authentication: mockAuthentication, analytics: analytics)
+
+        // When
+        viewModel.viewDidLoad(nil)
+
+        // Then
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_required_screen_viewed" }))
+    }
 }

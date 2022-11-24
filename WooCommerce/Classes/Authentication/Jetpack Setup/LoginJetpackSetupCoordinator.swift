@@ -47,6 +47,7 @@ private extension LoginJetpackSetupCoordinator {
             guard let self, let email = connectedEmail else { return }
             if email != self.stores.sessionManager.defaultAccount?.email {
                 // if the user authorized Jetpack with a different account, support them to log in with that account.
+                self.analytics.track(.loginJetpackSetupAuthorizedUsingDifferentWPCOMAccount)
                 self.showVerifyWPComAccount(email: email, xmlrpc: xmlrpc)
             } else {
                 self.showStorePickerForLogin()
@@ -98,12 +99,18 @@ private extension LoginJetpackSetupCoordinator {
     }
 
     func showNoMatchedSiteAlert(from viewController: UIViewController) {
+        analytics.track(.loginJetpackNoMatchedSiteErrorViewed)
         let alert = UIAlertController(title: nil, message: Localization.noMatchSiteAlertTitle, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: Localization.tryAgain, style: .default, handler: { [weak self] _ in
-            self?.showStorePickerForLogin()
+            guard let self else { return }
+
+            self.analytics.track(.loginJetpackNoMatchedSiteErrorTryAgainButtonTapped)
+            self.showStorePickerForLogin()
         }))
         alert.addAction(UIAlertAction(title: Localization.contactSupport, style: .default, handler: { [weak self] _ in
             guard let self else { return }
+
+            self.analytics.track(.loginJetpackNoMatchedSiteErrorContactSupportButtonTapped)
             self.authentication.presentSupport(from: viewController, screen: .storePicker)
         }))
         viewController.present(alert, animated: true)

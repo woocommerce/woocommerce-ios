@@ -83,10 +83,17 @@ final class LoginJetpackSetupViewModel: ObservableObject {
         return attributedString
     }()
 
-    init(siteURL: String, connectionOnly: Bool, stores: StoresManager = ServiceLocator.stores, onStoreNavigation: @escaping (String?) -> Void = { _ in }) {
+    private let analytics: Analytics
+
+    init(siteURL: String,
+         connectionOnly: Bool,
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics,
+         onStoreNavigation: @escaping (String?) -> Void = { _ in}) {
         self.siteURL = siteURL
         self.connectionOnly = connectionOnly
         self.stores = stores
+        self.analytics = analytics
         let setupSteps = connectionOnly ? [.connection, .done] : JetpackInstallStep.allCases
         self.setupSteps = setupSteps
         self.storeNavigationHandler = onStoreNavigation
@@ -115,6 +122,7 @@ final class LoginJetpackSetupViewModel: ObservableObject {
     }
 
     func navigateToStore() {
+        analytics.track(.loginJetpackSetupGoToStoreTapped)
         storeNavigationHandler(jetpackConnectedEmail)
     }
 
@@ -163,9 +171,10 @@ private extension LoginJetpackSetupViewModel {
             guard let self else { return }
             switch result {
             case .success:
+                self.analytics.track(.loginJetpackSetupScreenInstallSuccessful)
                 self.activateJetpack()
             case .failure(let error):
-                // TODO: add tracks
+                self.analytics.track(.loginJetpackSetupScreenInstallFailed, withError: error)
                 DDLogError("⛔️ Error installing Jetpack: \(error)")
                 self.setupError = error
                 self.setupFailed = true
@@ -180,9 +189,10 @@ private extension LoginJetpackSetupViewModel {
             guard let self else { return }
             switch result {
             case .success:
+                self.analytics.track(.loginJetpackSetupActivationSuccessful)
                 self.fetchJetpackConnectionURL()
             case .failure(let error):
-                // TODO: add tracks
+                self.analytics.track(.loginJetpackSetupActivationFailed, withError: error)
                 DDLogError("⛔️ Error activating Jetpack: \(error)")
                 self.setupError = error
                 self.setupFailed = true
@@ -197,10 +207,11 @@ private extension LoginJetpackSetupViewModel {
             guard let self else { return }
             switch result {
             case .success(let url):
+                self.analytics.track(.loginJetpackSetupFetchJetpackConnectionURLSuccessful)
                 self.jetpackConnectionURL = url
                 self.shouldPresentWebView = true
             case .failure(let error):
-                // TODO: add tracks
+                self.analytics.track(.loginJetpackSetupFetchJetpackConnectionURLFailed, withError: error)
                 DDLogError("⛔️ Error fetching Jetpack connection URL: \(error)")
                 self.setupError = error
                 self.setupFailed = true
@@ -212,6 +223,9 @@ private extension LoginJetpackSetupViewModel {
     func checkJetpackConnection(retryCount: Int = 0) {
         guard retryCount <= Constants.maxRetryCount else {
             setupFailed = true
+            if let setupError {
+                analytics.track(.loginJetpackSetupErrorCheckingJetpackConnection, withError: setupError)
+            }
             return
         }
         currentConnectionStep = .inProgress
@@ -221,9 +235,11 @@ private extension LoginJetpackSetupViewModel {
             case .success(let user):
                 guard let connectedEmail = user.wpcomUser?.email else {
                     DDLogWarn("⚠️ Cannot find connected WPcom user")
-                    self.setupError = NSError(domain: Constants.errorDomain,
-                                              code: Constants.errorCodeNoWPComUser,
-                                              userInfo: [Constants.errorUserInfoReason: Constants.errorUserInfoNoWPComUser])
+                    let missingWpcomUserError = NSError(domain: Constants.errorDomain,
+                                                        code: Constants.errorCodeNoWPComUser,
+                                                        userInfo: [Constants.errorUserInfoReason: Constants.errorUserInfoNoWPComUser])
+                    self.setupError = missingWpcomUserError
+                    self.analytics.track(.loginJetpackSetupCannotFindWPCOMUser, withError: missingWpcomUserError)
                     // Retry fetching user in case Jetpack sync takes some time.
                     DispatchQueue.main.asyncAfter(deadline: .now() + Constants.delayBeforeRetry) { [weak self] in
                         self?.checkJetpackConnection(retryCount: retryCount + 1)
@@ -234,8 +250,9 @@ private extension LoginJetpackSetupViewModel {
                 self.jetpackConnectedEmail = connectedEmail
                 self.currentConnectionStep = .authorized
                 self.currentSetupStep = .done
+
+                self.analytics.track(.loginJetpackSetupAllStepsMarkedDone)
             case .failure(let error):
-                // TODO: add tracks
                 DDLogError("⛔️ Error checking Jetpack connection: \(error)")
                 self.setupError = error
                 DispatchQueue.main.asyncAfter(deadline: .now() + Constants.delayBeforeRetry) { [weak self] in

@@ -221,7 +221,14 @@ private extension LoginJetpackSetupViewModel {
             case .success(let user):
                 guard let connectedEmail = user.wpcomUser?.email else {
                     DDLogWarn("⚠️ Cannot find connected WPcom user")
-                    return // TODO: add tracks and handle error
+                    self.setupError = NSError(domain: Constants.errorDomain,
+                                              code: Constants.errorCodeNoWPComUser,
+                                              userInfo: [Constants.errorUserInfoReason: Constants.errorUserInfoNoWPComUser])
+                    // Retry fetching user in case Jetpack sync takes some time.
+                    DispatchQueue.main.asyncAfter(deadline: .now() + Constants.delayBeforeRetry) { [weak self] in
+                        self?.checkJetpackConnection(retryCount: retryCount + 1)
+                    }
+                    return
                 }
 
                 self.jetpackConnectedEmail = connectedEmail
@@ -363,5 +370,9 @@ extension LoginJetpackSetupViewModel {
     private enum Constants {
         static let maxRetryCount: Int = 2
         static let delayBeforeRetry: Double = 0.5
+        static let errorDomain = "LoginJetpackSetup"
+        static let errorCodeNoWPComUser = 99
+        static let errorUserInfoReason = "reason"
+        static let errorUserInfoNoWPComUser = "No connected WP.com user found"
     }
 }

@@ -263,8 +263,6 @@ private extension StoreCreationCoordinator {
                                                             name: storeName,
                                                             domain: domain,
                                                             planToPurchase: planToPurchase)
-        }, onSkip: {
-            // TODO-8045: skip to the next step of store creation with an auto-generated domain.
         })
         navigationController.pushViewController(domainSelector, animated: false)
     }

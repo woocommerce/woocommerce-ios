@@ -178,7 +178,7 @@ private extension LoginJetpackSetupViewModel {
                 self.analytics.track(.loginJetpackSetupScreenInstallSuccessful)
                 self.activateJetpack()
             case .failure(let error):
-                self.analytics.track(.loginJetpackSetupScreenInstallFailed)
+                self.analytics.track(.loginJetpackSetupScreenInstallFailed, withError: error)
                 DDLogError("⛔️ Error installing Jetpack: \(error)")
                 self.setupError = error
                 self.setupFailed = true

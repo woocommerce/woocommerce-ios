@@ -533,6 +533,10 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
         // When
         viewModel.didAuthorizeJetpackConnection()
 
+        waitUntil {
+            analyticsProvider.receivedEvents.isNotEmpty
+        }
+
         // Then
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_error_checking_jetpack_connection" }))
     }

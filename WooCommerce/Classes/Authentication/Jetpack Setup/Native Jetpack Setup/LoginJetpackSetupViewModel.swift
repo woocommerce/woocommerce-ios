@@ -227,6 +227,7 @@ private extension LoginJetpackSetupViewModel {
     func checkJetpackConnection(retryCount: Int = 0) {
         guard retryCount <= Constants.maxRetryCount else {
             setupFailed = true
+            analytics.track(.loginJetpackSetupErrorCheckingJetpackConnection)
             return
         }
         currentConnectionStep = .inProgress
@@ -246,7 +247,6 @@ private extension LoginJetpackSetupViewModel {
 
                 self.analytics.track(.loginJetpackSetupAllStepsMarkedDone)
             case .failure(let error):
-                self.analytics.track(.loginJetpackSetupErrorCheckingJetpackConnection)
                 DDLogError("⛔️ Error checking Jetpack connection: \(error)")
                 self.setupError = error
                 DispatchQueue.main.asyncAfter(deadline: .now() + Constants.delayBeforeRetry) { [weak self] in

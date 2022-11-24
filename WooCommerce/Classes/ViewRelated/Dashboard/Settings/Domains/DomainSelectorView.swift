@@ -4,18 +4,14 @@ import SwiftUI
 final class DomainSelectorHostingController: UIHostingController<DomainSelectorView> {
     private let viewModel: DomainSelectorViewModel
     private let onDomainSelection: (String) async -> Void
-    private let onSkip: () -> Void
 
     /// - Parameters:
     ///   - viewModel: View model for the domain selector.
     ///   - onDomainSelection: Called when the user continues with a selected domain name.
-    ///   - onSkip: Called when the user taps to skip domain selection.
     init(viewModel: DomainSelectorViewModel,
-         onDomainSelection: @escaping (String) async -> Void,
-         onSkip: @escaping () -> Void) {
+         onDomainSelection: @escaping (String) async -> Void) {
         self.viewModel = viewModel
         self.onDomainSelection = onDomainSelection
-        self.onSkip = onSkip
         super.init(rootView: DomainSelectorView(viewModel: viewModel))
 
         rootView.onDomainSelection = { [weak self] domain in
@@ -30,20 +26,13 @@ final class DomainSelectorHostingController: UIHostingController<DomainSelectorV
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        configureSkipButton()
         configureNavigationBarAppearance()
     }
 }
 
 private extension DomainSelectorHostingController {
-    func configureSkipButton() {
-        navigationItem.rightBarButtonItem = .init(title: Localization.skipButtonTitle, style: .plain, target: self, action: #selector(skipButtonTapped))
-    }
-
     /// Shows a transparent navigation bar without a bottom border.
     func configureNavigationBarAppearance() {
-        navigationItem.title = Localization.title
-
         let appearance = UINavigationBarAppearance()
         appearance.configureWithTransparentBackground()
         appearance.backgroundColor = .systemBackground
@@ -54,21 +43,20 @@ private extension DomainSelectorHostingController {
     }
 }
 
-private extension DomainSelectorHostingController {
-    @objc func skipButtonTapped() {
-        onSkip()
-    }
-}
-
-private extension DomainSelectorHostingController {
-    enum Localization {
-        static let title = NSLocalizedString("Choose a domain", comment: "Title of the domain selector.")
-        static let skipButtonTitle = NSLocalizedString("Skip", comment: "Navigation bar button on the domain selector screen to skip domain selection.")
-    }
-}
-
 /// Allows the user to search for a domain and then select one to continue.
 struct DomainSelectorView: View {
+    /// The state of the main view below the fixed header.
+    enum ViewState: Equatable {
+        /// When loading domain suggestions.
+        case loading
+        /// Shown when the search query is empty.
+        case placeholder
+        /// When there is an error loading domain suggestions.
+        case error(message: String)
+        /// When domain suggestions are displayed.
+        case results(domains: [String])
+    }
+
     /// Set in the hosting controller.
     var onDomainSelection: ((String) async -> Void) = { _ in }
 
@@ -82,90 +70,117 @@ struct DomainSelectorView: View {
 
     @State private var isWaitingForDomainSelectionCompletion: Bool = false
 
+    @FocusState private var textFieldIsFocused: Bool
+
     init(viewModel: DomainSelectorViewModel) {
         self.viewModel = viewModel
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            ScrollView {
-                VStack(alignment: .leading) {
-                    // Header label.
-                    Text(Localization.subtitle)
+        ScrollView {
+            VStack(alignment: .leading, spacing: 0) {
+                // Header label.
+                Text(Localization.subtitle)
+                    .foregroundColor(Color(.secondaryLabel))
+                    .bodyStyle()
+                    .padding(.horizontal, Layout.defaultHorizontalPadding)
+                    .padding(.top, 16)
+
+                Spacer()
+                    .frame(height: 30)
+
+                // Search text field.
+                SearchHeader(text: $viewModel.searchTerm,
+                             placeholder: Localization.searchPlaceholder,
+                             customizations: .init(backgroundColor: .clear,
+                                                   borderColor: .separator,
+                                                   internalHorizontalPadding: 21,
+                                                   internalVerticalPadding: 12,
+                                                   iconSize: .init(width: 14, height: 14)))
+                .focused($textFieldIsFocused)
+
+                switch viewModel.state {
+                case .placeholder:
+                    // Placeholder image when search query is empty.
+                    Spacer()
+                        .frame(height: 30)
+
+                    HStack {
+                        Spacer()
+                        Image(uiImage: .domainSearchPlaceholderImage)
+                        Spacer()
+                    }
+                case .loading:
+                    // Progress indicator when loading domain suggestions.
+                    Spacer()
+                        .frame(height: 23)
+
+                    HStack {
+                        Spacer()
+                        ProgressView()
+                        Spacer()
+                    }
+                case .error(let errorMessage):
+                    // Error message when there is an error loading domain suggestions.
+                    Spacer()
+                        .frame(height: 23)
+
+                    Text(errorMessage)
                         .foregroundColor(Color(.secondaryLabel))
                         .bodyStyle()
-                        .padding(.horizontal, Layout.defaultHorizontalPadding)
-
-                    // Search text field.
-                    SearchHeader(text: $viewModel.searchTerm,
-                                 placeholder: Localization.searchPlaceholder,
-                                 customizations: .init(backgroundColor: .clear,
-                                                       borderColor: .separator,
-                                                       internalHorizontalPadding: 21,
-                                                       internalVerticalPadding: 12))
-
-                    // Results header.
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .multilineTextAlignment(.center)
+                        .padding(Layout.defaultPadding)
+                case .results(let domains):
+                    // Domain suggestions.
                     Text(Localization.suggestionsHeader)
                         .foregroundColor(Color(.secondaryLabel))
-                        .bodyStyle()
+                        .footnoteStyle()
                         .padding(.horizontal, Layout.defaultHorizontalPadding)
+                        .padding(.vertical, insets: .init(top: 14, leading: 0, bottom: 8, trailing: 0))
 
-                    if viewModel.searchTerm.isEmpty {
-                        // Placeholder image when search query is empty.
-                        HStack {
-                            Spacer()
-                            Image(uiImage: .domainSearchPlaceholderImage)
-                            Spacer()
-                        }
-                    } else if viewModel.isLoadingDomainSuggestions {
-                        // Progress indicator when loading domain suggestions.
-                        HStack {
-                            Spacer()
-                            ProgressView()
-                            Spacer()
-                        }
-                    } else if let errorMessage = viewModel.errorMessage {
-                        // Error message when there is an error loading domain suggestions.
-                        Text(errorMessage)
-                            .padding(Layout.defaultPadding)
-                    } else {
-                        // Domain suggestions.
-                        LazyVStack {
-                            ForEach(viewModel.domains, id: \.self) { domain in
-                                Button {
-                                    selectedDomainName = domain
-                                } label: {
-                                    VStack(alignment: .leading) {
-                                        DomainRowView(viewModel: .init(domainName: domain,
-                                                                       searchQuery: viewModel.searchTerm,
-                                                                       isSelected: domain == selectedDomainName))
-                                        Divider()
-                                            .frame(height: Layout.dividerHeight)
-                                            .padding(.leading, Layout.defaultHorizontalPadding)
-                                    }
+                    LazyVStack {
+                        ForEach(domains, id: \.self) { domain in
+                            Button {
+                                textFieldIsFocused = false
+                                selectedDomainName = domain
+                            } label: {
+                                VStack(alignment: .leading) {
+                                    DomainRowView(viewModel: .init(domainName: domain,
+                                                                   searchQuery: viewModel.searchTerm,
+                                                                   isSelected: domain == selectedDomainName))
+                                    Divider()
+                                        .frame(height: Layout.dividerHeight)
+                                        .padding(.leading, Layout.defaultHorizontalPadding)
                                 }
                             }
                         }
                     }
                 }
             }
-
+        }
+        .safeAreaInset(edge: .bottom) {
             // Continue button when a domain is selected.
             if let selectedDomainName {
-                Divider()
-                    .frame(height: Layout.dividerHeight)
-                    .foregroundColor(Color(.separator))
-                Button(Localization.continueButtonTitle) {
-                    Task { @MainActor in
-                        isWaitingForDomainSelectionCompletion = true
-                        await onDomainSelection(selectedDomainName)
-                        isWaitingForDomainSelectionCompletion = false
+                VStack {
+                    Divider()
+                        .frame(height: Layout.dividerHeight)
+                        .foregroundColor(Color(.separator))
+                    Button(Localization.continueButtonTitle) {
+                        Task { @MainActor in
+                            isWaitingForDomainSelectionCompletion = true
+                            await onDomainSelection(selectedDomainName)
+                            isWaitingForDomainSelectionCompletion = false
+                        }
                     }
+                    .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isWaitingForDomainSelectionCompletion))
+                    .padding(Layout.defaultPadding)
                 }
-                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isWaitingForDomainSelectionCompletion))
-                .padding(Layout.defaultPadding)
+                .background(Color(.systemBackground))
             }
         }
+        .navigationTitle(Localization.title)
+        .navigationBarTitleDisplayMode(.large)
         .onChange(of: viewModel.isLoadingDomainSuggestions) { isLoadingDomainSuggestions in
             // Resets selected domain when loading domain suggestions.
             if isLoadingDomainSuggestions {
@@ -177,17 +192,17 @@ struct DomainSelectorView: View {
 
 private extension DomainSelectorView {
     enum Layout {
-        static let spacingBetweenTitleAndSubtitle: CGFloat = 16
         static let defaultHorizontalPadding: CGFloat = 16
         static let dividerHeight: CGFloat = 1
         static let defaultPadding: EdgeInsets = .init(top: 10, leading: 16, bottom: 10, trailing: 16)
     }
 
     enum Localization {
+        static let title = NSLocalizedString("Choose a domain", comment: "Title of the domain selector.")
         static let subtitle = NSLocalizedString(
-            "This is where people will find you on the Internet. Don't worry, you can change it later.",
+            "This is where people will find you on the Internet. You can add another domain later.",
             comment: "Subtitle of the domain selector.")
-        static let searchPlaceholder = NSLocalizedString("Type to get suggestions", comment: "Placeholder of the search text field on the domain selector.")
+        static let searchPlaceholder = NSLocalizedString("Type a name for your store", comment: "Placeholder of the search text field on the domain selector.")
         static let suggestionsHeader = NSLocalizedString("SUGGESTIONS", comment: "Header label of the domain suggestions on the domain selector.")
         static let continueButtonTitle = NSLocalizedString("Continue", comment: "Title of the button to continue with a selected domain.")
     }

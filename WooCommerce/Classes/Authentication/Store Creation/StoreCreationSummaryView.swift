@@ -27,8 +27,6 @@ final class StoreCreationSummaryHostingController: UIHostingController<StoreCrea
 
     /// Shows a transparent navigation bar without a bottom border.
     func configureNavigationBarAppearance() {
-        navigationItem.title = Localization.title
-
         let appearance = UINavigationBarAppearance()
         appearance.configureWithTransparentBackground()
         appearance.backgroundColor = .systemBackground
@@ -36,12 +34,6 @@ final class StoreCreationSummaryHostingController: UIHostingController<StoreCrea
         navigationItem.standardAppearance = appearance
         navigationItem.scrollEdgeAppearance = appearance
         navigationItem.compactAppearance = appearance
-    }
-}
-
-private extension StoreCreationSummaryHostingController {
-    enum Localization {
-        static let title = NSLocalizedString("My store", comment: "Title of the store creation summary screen.")
     }
 }
 
@@ -117,6 +109,8 @@ struct StoreCreationSummaryView: View {
                 .padding(Layout.defaultButtonPadding)
             }
         }
+        .navigationTitle(Localization.title)
+        .navigationBarTitleDisplayMode(.large)
     }
 }
 
@@ -133,6 +127,7 @@ private extension StoreCreationSummaryView {
     }
 
     enum Localization {
+        static let title = NSLocalizedString("My store", comment: "Title of the store creation summary screen.")
         static let subtitle = NSLocalizedString(
             "Your store will be created based on the options of your choice!",
             comment: "Subtitle of the store creation summary screen.")

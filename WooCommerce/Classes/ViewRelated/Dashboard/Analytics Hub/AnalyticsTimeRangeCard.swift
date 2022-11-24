@@ -1,5 +1,7 @@
 import SwiftUI
 
+/// Resuable Time Range card made for the Analytics Hub.
+///
 struct AnalyticsTimeRangeCard: View {
 
     let timeRangeTitle: String
@@ -35,6 +37,7 @@ struct AnalyticsTimeRangeCard: View {
     }
 }
 
+// MARK: Constants
 private extension AnalyticsTimeRangeCard {
     enum Layout {
         static let verticalSpacing: CGFloat = 16
@@ -48,6 +51,7 @@ private extension AnalyticsTimeRangeCard {
     }
 }
 
+// MARK: Previews
 struct TimeRangeCard_Previews: PreviewProvider {
     static var previews: some View {
         AnalyticsTimeRangeCard(timeRangeTitle: "Month to Date",

@@ -75,27 +75,21 @@ public class AnalyticsHubTimeRangeGenerator {
     }
 
     private func generateDescriptionOf(timeRange: AnalyticsHubTimeRange) -> String {
-        let dateFormatter = DateFormatter()
-
         if selectionType == .today {
-            dateFormatter.dateFormat = "MMM d, yyyy"
-            return dateFormatter.string(from: timeRange.start)
+            return DateFormatter.Stats.analyticsHubDayMonthYearFormatter.string(from: timeRange.start)
         }
 
-        dateFormatter.dateFormat = "MMM d"
-        let startDateDescription = dateFormatter.string(from: timeRange.start)
-        let endDateDescription = generateEndDateDescription(timeRange: timeRange, dateFormatter: dateFormatter)
+        let startDateDescription = DateFormatter.Stats.analyticsHubDayMonthFormatter.string(from: timeRange.start)
+        let endDateDescription = generateEndDateDescription(timeRange: timeRange)
 
         return "\(startDateDescription) - \(endDateDescription)"
     }
 
-    private func generateEndDateDescription(timeRange: AnalyticsHubTimeRange, dateFormatter: DateFormatter) -> String {
+    private func generateEndDateDescription(timeRange: AnalyticsHubTimeRange) -> String {
         if timeRange.start.isSameMonth(as: timeRange.end, using: currentCalendar) {
-            dateFormatter.dateFormat = "d, yyyy"
-            return dateFormatter.string(from: timeRange.end)
+            return DateFormatter.Stats.analyticsHubDayYearFormatter.string(from: timeRange.end)
         } else {
-            dateFormatter.dateFormat = "MMM d, yyyy"
-            return dateFormatter.string(from: timeRange.end)
+            return DateFormatter.Stats.analyticsHubDayMonthYearFormatter.string(from: timeRange.end)
         }
     }
 }

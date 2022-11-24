@@ -78,7 +78,7 @@ extension SiteCredentialLoginViewModel: LoginFacadeDelegate {
         let wrongCredentials = err.domain == Constants.xmlrpcErrorDomain && err.code == Constants.invalidCredentialErrorCode
         errorMessage = wrongCredentials ? Localization.wrongCredentials : Localization.genericFailure
         shouldShowErrorAlert = true
-        analytics.track(.loginJetpackSiteCredentialDidShowErrorAlert)
+        analytics.track(.loginJetpackSiteCredentialDidShowErrorAlert, withError: error)
     }
 
     func finishedLogin(withUsername username: String, password: String, xmlrpc: String, options: [AnyHashable: Any] = [:]) {

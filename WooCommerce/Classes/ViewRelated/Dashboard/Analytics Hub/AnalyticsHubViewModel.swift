@@ -1,4 +1,5 @@
 import Foundation
+import Yosemite
 
 /// Main View Model for the Analytics Hub.
 ///
@@ -27,4 +28,14 @@ final class AnalyticsHubViewModel: ObservableObject {
                                                              trailingValue: "$57,99",
                                                              trailingDelta: "-16%",
                                                              trailingDeltaColor: .withColorStudio(.red, shade: .shade40))
+
+    // MARK: Private data
+
+    /// Order stats for the current selected time period
+    ///
+    @Published private var currentOrderStats: OrderStatsV4? = nil
+
+    /// Order stats for the previous time period (for comparison)
+    ///
+    @Published private var previousOrderStats: OrderStatsV4? = nil
 }

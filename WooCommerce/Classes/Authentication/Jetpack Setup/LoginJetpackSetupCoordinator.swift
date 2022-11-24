@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import WordPressAuthenticator
 
 /// Coordinates navigation for the Jetpack setup flow during login.
 final class LoginJetpackSetupCoordinator: Coordinator {
@@ -28,7 +29,12 @@ final class LoginJetpackSetupCoordinator: Coordinator {
     }
 
     func start() {
-        let siteCredentialUI = SiteCredentialLoginHostingViewController(siteURL: siteURL, connectionOnly: connectionOnly, onLoginSuccess: showSetupSteps)
+        let siteCredentialUI = SiteCredentialLoginHostingViewController(
+            siteURL: siteURL,
+            connectionOnly: connectionOnly,
+            onLoginSuccess: { [weak self] xmlrpc in
+                self?.showSetupSteps(xmlrpc: xmlrpc)
+        })
         navigationController.present(UINavigationController(rootViewController: siteCredentialUI), animated: true)
     }
 }
@@ -36,16 +42,32 @@ final class LoginJetpackSetupCoordinator: Coordinator {
 // MARK: Private helpers
 //
 private extension LoginJetpackSetupCoordinator {
-    func showSetupSteps() {
-        let setupUI = LoginJetpackSetupHostingController(siteURL: siteURL, connectionOnly: connectionOnly, onStoreNavigation: { [weak self] in
-            guard let self else { return }
-            self.showStorePickerForLogin()
+    func showSetupSteps(xmlrpc: String) {
+        let setupUI = LoginJetpackSetupHostingController(siteURL: siteURL, connectionOnly: connectionOnly, onStoreNavigation: { [weak self] connectedEmail in
+            guard let self, let email = connectedEmail else { return }
+            if email != self.stores.sessionManager.defaultAccount?.email {
+                // if the user authorized Jetpack with a different account, support them to log in with that account.
+                self.analytics.track(.loginJetpackSetupAuthorizedUsingDifferentWPCOMAccount)
+                self.showVerifyWPComAccount(email: email, xmlrpc: xmlrpc)
+            } else {
+                self.showStorePickerForLogin()
+            }
+
         })
         guard let contentNavigationController = navigationController.presentedViewController as? UINavigationController else {
             // this is not likely to happen but handling this for safety
             return navigationController.present(UINavigationController(rootViewController: setupUI), animated: true)
         }
         contentNavigationController.setViewControllers([setupUI], animated: true)
+    }
+
+    func showVerifyWPComAccount(email: String, xmlrpc: String) {
+        WordPressAuthenticator.showVerifyEmailForWPCom(
+            from: navigationController.presentedViewController ?? navigationController,
+            xmlrpc: xmlrpc,
+            connectedEmail: email,
+            siteURL: siteURL
+        )
     }
 
     func showStorePickerForLogin() {
@@ -77,12 +99,18 @@ private extension LoginJetpackSetupCoordinator {
     }
 
     func showNoMatchedSiteAlert(from viewController: UIViewController) {
+        analytics.track(.loginJetpackNoMatchedSiteErrorViewed)
         let alert = UIAlertController(title: nil, message: Localization.noMatchSiteAlertTitle, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: Localization.tryAgain, style: .default, handler: { [weak self] _ in
-            self?.showStorePickerForLogin()
+            guard let self else { return }
+
+            self.analytics.track(.loginJetpackNoMatchedSiteErrorTryAgainButtonTapped)
+            self.showStorePickerForLogin()
         }))
         alert.addAction(UIAlertAction(title: Localization.contactSupport, style: .default, handler: { [weak self] _ in
             guard let self else { return }
+
+            self.analytics.track(.loginJetpackNoMatchedSiteErrorContactSupportButtonTapped)
             self.authentication.presentSupport(from: viewController, screen: .storePicker)
         }))
         viewController.present(alert, animated: true)

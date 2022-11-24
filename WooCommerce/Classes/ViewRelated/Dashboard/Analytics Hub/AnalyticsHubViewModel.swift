@@ -12,6 +12,14 @@ final class AnalyticsHubViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.stores = stores
+
+        Task.init {
+            do {
+                try await retrieveOrderStats()
+            } catch {
+                DDLogWarn("⚠️ Error fetching analytics data: \(error)")
+            }
+        }
     }
 
     /// Revenue Card ViewModel
@@ -47,4 +55,45 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Order stats for the previous time period (for comparison)
     ///
     @Published private var previousOrderStats: OrderStatsV4? = nil
+}
+
+private extension AnalyticsHubViewModel {
+
+    @MainActor
+    func retrieveOrderStats() async throws {
+        // TODO: get dates from the selected period
+        let currentMonthDate = Date()
+        let previousMonthDate = Calendar.current.date(byAdding: .month, value: -1, to: Date())!
+
+        async let currentPeriodRequest = retrieveStats(earliestDateToInclude: currentMonthDate.startOfMonth(timezone: .current),
+                                                       latestDateToInclude: currentMonthDate.endOfMonth(timezone: .current),
+                                                       forceRefresh: true)
+        async let previousPeriodRequest = retrieveStats(earliestDateToInclude: previousMonthDate.startOfMonth(timezone: .current),
+                                                        latestDateToInclude: previousMonthDate.endOfMonth(timezone: .current),
+                                                        forceRefresh: true)
+        let (currentPeriodStats, previousPeriodStats) = try await (currentPeriodRequest, previousPeriodRequest)
+        self.currentOrderStats = currentPeriodStats
+        self.previousOrderStats = previousPeriodStats
+    }
+
+    @MainActor
+    func retrieveStats(earliestDateToInclude: Date,
+                       latestDateToInclude: Date,
+                       forceRefresh: Bool) async throws -> OrderStatsV4 {
+        try await withCheckedThrowingContinuation { continuation in
+            // TODO: get unit and quantity from the selected period
+            let unit: StatsGranularityV4 = .daily
+            let quantity = 31
+
+            let action = StatsActionV4.retrieveCustomStats(siteID: siteID,
+                                                           unit: unit,
+                                                           earliestDateToInclude: earliestDateToInclude,
+                                                           latestDateToInclude: latestDateToInclude,
+                                                           quantity: quantity,
+                                                           forceRefresh: forceRefresh) { result in
+                continuation.resume(with: result)
+            }
+            stores.dispatch(action)
+        }
+    }
 }

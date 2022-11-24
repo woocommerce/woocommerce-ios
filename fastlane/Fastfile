@@ -976,8 +976,15 @@ platform :ios do
     configure_validate
   end
 
+  # Generates the `.strings` file to be imported by GlotPress, by parsing source code (using `genstrings` under the hood).
+  #
+  #
+  # @option [Boolean] skip_commit (default: false) If true, does not commit the changes made to the `.strings` file.
+  #
+  # @called_by complete_code_freeze
+  #
   desc 'Updates the main `Localizable.strings` file — that will be imported by GlotPress — from code and `Info.plist` files'
-  lane :generate_strings_file_for_glotpress do
+  lane :generate_strings_file_for_glotpress do |options|
     cocoapods
 
     en_lproj_path = File.join(RESOURCES_FOLDER, 'en.lproj')
@@ -1005,6 +1012,8 @@ platform :ios do
       paths_to_merge: MANUALLY_MAINTAINED_STRINGS_FILES,
       destination: File.join(en_lproj_path, 'Localizable.strings')
     )
+
+    next if options.fetch(:skip_commit, false)
 
     git_commit(
       path: en_lproj_path,

@@ -1,7 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "woo-jetpack-setup-interrupted.pdf",
+      "filename" : "Frame 1000004597.pdf",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "Frame 1000004597(1).pdf",
       "idiom" : "universal"
     }
   ],

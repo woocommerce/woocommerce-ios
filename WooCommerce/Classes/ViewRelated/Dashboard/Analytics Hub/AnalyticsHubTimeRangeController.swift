@@ -1,7 +1,7 @@
 import Foundation
 import Yosemite
 
-struct TimeRange {
+struct AnalyticsHubTimeRange {
     let start: Date
     let end: Date
 }
@@ -13,11 +13,11 @@ public class AnalyticsHubTimeRangeController {
     private let currentCalendar: Calendar
     private let selectionType: SelectionType
 
-    lazy private(set) var currentTimeRange: TimeRange = {
+    lazy private(set) var currentTimeRange: AnalyticsHubTimeRange = {
         generateCurrentTimeRangeFrom(selectionType: selectionType)
     }()
 
-    lazy private(set) var previousTimeRange: TimeRange = {
+    lazy private(set) var previousTimeRange: AnalyticsHubTimeRange = {
         generatePreviousTimeRangeFrom(selectionType: selectionType)
     }()
 
@@ -42,39 +42,39 @@ public class AnalyticsHubTimeRangeController {
         self.currentCalendar = currentCalendar
     }
 
-    private func generateCurrentTimeRangeFrom(selectionType: SelectionType) -> TimeRange {
+    private func generateCurrentTimeRangeFrom(selectionType: SelectionType) -> AnalyticsHubTimeRange {
         switch selectionType {
         case .today:
-            return TimeRange(start: currentDate.startOfDay(timezone: currentTimezone), end: currentDate)
+            return AnalyticsHubTimeRange(start: currentDate.startOfDay(timezone: currentTimezone), end: currentDate)
         case .weekToDate:
             let weekStart = currentDate.startOfWeek(timezone: currentTimezone, calendar: currentCalendar)
-            return TimeRange(start: weekStart, end: currentDate)
+            return AnalyticsHubTimeRange(start: weekStart, end: currentDate)
         case .monthToDate:
-            return TimeRange(start: currentDate.startOfMonth(timezone: currentTimezone), end: currentDate)
+            return AnalyticsHubTimeRange(start: currentDate.startOfMonth(timezone: currentTimezone), end: currentDate)
         case .yearToDate:
-            return TimeRange(start: currentDate.startOfYear(timezone: currentTimezone), end: currentDate)
+            return AnalyticsHubTimeRange(start: currentDate.startOfYear(timezone: currentTimezone), end: currentDate)
         }
     }
 
-    private func generatePreviousTimeRangeFrom(selectionType: SelectionType) -> TimeRange {
+    private func generatePreviousTimeRangeFrom(selectionType: SelectionType) -> AnalyticsHubTimeRange {
         switch selectionType {
         case .today:
             let oneDayAgo = currentCalendar.date(byAdding: .day, value: -1, to: currentDate)!
-            return TimeRange(start: oneDayAgo.startOfDay(timezone: currentTimezone), end: oneDayAgo)
+            return AnalyticsHubTimeRange(start: oneDayAgo.startOfDay(timezone: currentTimezone), end: oneDayAgo)
         case .weekToDate:
             let oneWeekAgo = currentCalendar.date(byAdding: .day, value: -7, to: currentDate)!
             let lastWeekStart = oneWeekAgo.startOfWeek(timezone: currentTimezone, calendar: currentCalendar)
-            return TimeRange(start: lastWeekStart, end: oneWeekAgo)
+            return AnalyticsHubTimeRange(start: lastWeekStart, end: oneWeekAgo)
         case .monthToDate:
             let oneMonthAgo = currentCalendar.date(byAdding: .month, value: -1, to: currentDate)!
-            return TimeRange(start: oneMonthAgo.startOfMonth(timezone: currentTimezone), end: oneMonthAgo)
+            return AnalyticsHubTimeRange(start: oneMonthAgo.startOfMonth(timezone: currentTimezone), end: oneMonthAgo)
         case .yearToDate:
             let oneYearAgo = currentCalendar.date(byAdding: .year, value: -1, to: currentDate)!
-            return TimeRange(start: oneYearAgo.startOfYear(timezone: currentTimezone), end: oneYearAgo)
+            return AnalyticsHubTimeRange(start: oneYearAgo.startOfYear(timezone: currentTimezone), end: oneYearAgo)
         }
     }
 
-    private func generateDescriptionOf(timeRange: TimeRange) -> String {
+    private func generateDescriptionOf(timeRange: AnalyticsHubTimeRange) -> String {
         let dateFormatter = DateFormatter()
 
         if selectionType == .today {
@@ -89,7 +89,7 @@ public class AnalyticsHubTimeRangeController {
         return "\(startDateDescription) - \(endDateDescription)"
     }
 
-    private func generateEndDateDescription(timeRange: TimeRange, dateFormatter: DateFormatter) -> String {
+    private func generateEndDateDescription(timeRange: AnalyticsHubTimeRange, dateFormatter: DateFormatter) -> String {
         if timeRange.start.isSameMonth(as: timeRange.end, using: currentCalendar) {
             dateFormatter.dateFormat = "d, yyyy"
             return dateFormatter.string(from: timeRange.end)

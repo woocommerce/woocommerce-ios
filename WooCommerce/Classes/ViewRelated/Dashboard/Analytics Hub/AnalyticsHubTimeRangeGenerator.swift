@@ -35,8 +35,7 @@ public class AnalyticsHubTimeRangeGenerator {
 
     init(selectedTimeRange: StatsTimeRangeV4,
          currentDate: Date = Date(),
-         currentCalendar: Calendar = Calendar(identifier: .iso8601)
-    ) {
+         currentCalendar: Calendar = Calendar(identifier: .iso8601)) {
         self.selectionType = SelectionType.from(selectedTimeRange)
         self.currentDate = currentDate
         self.currentCalendar = currentCalendar

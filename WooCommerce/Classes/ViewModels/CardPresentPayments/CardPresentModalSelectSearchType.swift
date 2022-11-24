@@ -28,6 +28,8 @@ final class CardPresentModalSelectSearchType: CardPresentPaymentsModalViewModel 
 
     private var bluetoothProximityAction: (() -> Void)
 
+    private var cancelAction: (() -> Void)
+
     func didTapPrimaryButton(in viewController: UIViewController?) {
         tapOnIphoneAction()
     }
@@ -37,16 +39,20 @@ final class CardPresentModalSelectSearchType: CardPresentPaymentsModalViewModel 
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {
-        //no-op
+        cancelAction()
     }
 
-    init(tapOnIPhoneAction: @escaping () -> Void, bluetoothAction: @escaping () -> Void) {
+    init(tapOnIPhoneAction: @escaping () -> Void,
+         bluetoothAction: @escaping () -> Void,
+         cancelAction: @escaping () -> Void) {
         textMode = .fullInfo
-        actionsMode = .twoAction
+        actionsMode = .twoActionAndAuxiliary
         primaryButtonTitle = CardReaderDiscoveryMethod.localMobile.name
         self.tapOnIphoneAction = tapOnIPhoneAction
         secondaryButtonTitle = CardReaderDiscoveryMethod.bluetoothProximity.name
         self.bluetoothProximityAction = bluetoothAction
+        auxiliaryButtonTitle = Localization.cancel
+        self.cancelAction = cancelAction
     }
 }
 
@@ -61,6 +67,10 @@ private extension CardPresentModalSelectSearchType {
             "Your iPhone can be used as a card reader, or you can connect to an external reader via bluetooth.",
             comment: "The description on the alert shown when connecting a card reader, asking the user to choose a " +
             "reader type. Only shown when supported on their device.")
+
+        static let cancel = NSLocalizedString(
+            "Cancel",
+            comment: "Cancel button title")
     }
 }
 

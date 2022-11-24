@@ -113,6 +113,11 @@ final class CardPresentPaymentPreflightController {
                 guard let self = self else { return }
                 self.connectionController.searchAndConnect(
                     onCompletion: self.handleConnectionResult)
+            },
+            cancelAction: { [weak self] in
+                guard let self = self else { return }
+                self.alertsPresenter.dismiss()
+                self.handleConnectionResult(.success(.canceled))
             }))
     }
 

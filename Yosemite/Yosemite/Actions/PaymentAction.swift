@@ -12,7 +12,8 @@ public enum PaymentAction: Action {
 
     /// Creates a cart with a WPCOM plan.
     /// - Parameters:
-    ///   - productID: The ID of the WPCOM plan product.
+    ///   - productID: The ID of the WPCOM plan product. It is of string type to integrate with `InAppPurchasesForWPComPlansProtocol`.
+    ///                If the value is not a string of integer value, an error `CreateCartError.invalidProductID` is returned.
     ///   - siteID: The site ID for the WPCOM plan to be attached to.
     ///   - completion: The result of cart creation.
     case createCart(productID: String,

@@ -104,6 +104,23 @@ final class PaymentStoreTests: XCTestCase {
         XCTAssertEqual(error as? Yosemite.CreateCartError, .invalidProductID)
     }
 
+    func test_createCart_relays_networking_CreateCartError_failure() throws {
+        // Given
+        remote.whenCreatingCart(thenReturn: .failure(Networking.CreateCartError.productNotInCart))
+
+        // When
+        let result = waitFor { promise in
+            self.store.onAction(PaymentAction.createCart(productID: "12", siteID: 62) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? Yosemite.CreateCartError, .productNotInCart)
+    }
+
     func test_createCart_returns_failure_on_error() throws {
         // Given
         remote.whenCreatingCart(thenReturn: .failure(NetworkError.timeout))

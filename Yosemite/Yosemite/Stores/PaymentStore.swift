@@ -70,7 +70,15 @@ private extension PaymentStore {
                 _ = try await remote.createCart(siteID: siteID, productID: productID)
                 completion(.success(()))
             } catch {
-                completion(.failure(error))
+                switch error {
+                case let networkError as Networking.CreateCartError:
+                    switch networkError {
+                    case .productNotInCart:
+                        completion(.failure(CreateCartError.productNotInCart))
+                    }
+                default:
+                    completion(.failure(error))
+                }
             }
         }
     }
@@ -80,4 +88,6 @@ private extension PaymentStore {
 public enum CreateCartError: Error, Equatable {
     /// Product ID is not in the correct format for WPCOM plans.
     case invalidProductID
+    /// The expected product is not in the created cart.
+    case productNotInCart
 }

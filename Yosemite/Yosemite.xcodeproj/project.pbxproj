@@ -84,6 +84,8 @@
 		02E7FFD92562234F00C53030 /* MockShippingLabelRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E7FFD82562234F00C53030 /* MockShippingLabelRemote.swift */; };
 		02EF1666292DB65000D90AD6 /* PaymentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EF1665292DB65000D90AD6 /* PaymentStore.swift */; };
 		02EF1668292DB68C00D90AD6 /* PaymentAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EF1667292DB68C00D90AD6 /* PaymentAction.swift */; };
+		02F2722D292F18BF00C36419 /* PaymentStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F2722C292F18BF00C36419 /* PaymentStoreTests.swift */; };
+		02F2722F292F18FD00C36419 /* MockPaymentRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F2722E292F18FD00C36419 /* MockPaymentRemote.swift */; };
 		02F6AAAC270556A4002425D0 /* Models+Copiable.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F6AAAB270556A4002425D0 /* Models+Copiable.generated.swift */; };
 		02FF054D23D983F30058E6E7 /* MediaFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FF054523D983F30058E6E7 /* MediaFileManager.swift */; };
 		02FF054E23D983F30058E6E7 /* MediaImageExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FF054623D983F30058E6E7 /* MediaImageExporter.swift */; };
@@ -511,6 +513,8 @@
 		02E7FFD82562234F00C53030 /* MockShippingLabelRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockShippingLabelRemote.swift; sourceTree = "<group>"; };
 		02EF1665292DB65000D90AD6 /* PaymentStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentStore.swift; sourceTree = "<group>"; };
 		02EF1667292DB68C00D90AD6 /* PaymentAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentAction.swift; sourceTree = "<group>"; };
+		02F2722C292F18BF00C36419 /* PaymentStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentStoreTests.swift; sourceTree = "<group>"; };
+		02F2722E292F18FD00C36419 /* MockPaymentRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPaymentRemote.swift; sourceTree = "<group>"; };
 		02F6AAAB270556A4002425D0 /* Models+Copiable.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Models+Copiable.generated.swift"; sourceTree = "<group>"; };
 		02FF054523D983F30058E6E7 /* MediaFileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaFileManager.swift; sourceTree = "<group>"; };
 		02FF054623D983F30058E6E7 /* MediaImageExporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaImageExporter.swift; sourceTree = "<group>"; };
@@ -1210,6 +1214,7 @@
 				021BA0C328576940006E9886 /* MockDotcomAccountRemote.swift */,
 				02DAE7F9291A9F36009342B7 /* MockDomainRemote.swift */,
 				02616F932921E1CD0095BC00 /* MockSiteRemote.swift */,
+				02F2722E292F18FD00C36419 /* MockPaymentRemote.swift */,
 			);
 			path = Remote;
 			sourceTree = "<group>";
@@ -1485,6 +1490,7 @@
 				02E3B629290622DE007E0F13 /* AccountCreationStoreTests.swift */,
 				02DAE7F7291A9F11009342B7 /* DomainStoreTests.swift */,
 				02616F912921E1530095BC00 /* SiteStoreTests.swift */,
+				02F2722C292F18BF00C36419 /* PaymentStoreTests.swift */,
 			);
 			path = Stores;
 			sourceTree = "<group>";
@@ -2287,6 +2293,7 @@
 				02FF055B23D9846A0058E6E7 /* MediaDirectoryTests.swift in Sources */,
 				265BCA0024301ACD004E53EE /* ProductCategoryStoreTests.swift in Sources */,
 				02FF056D23DEDCB90058E6E7 /* MockImageSourceWriter.swift in Sources */,
+				02F2722F292F18FD00C36419 /* MockPaymentRemote.swift in Sources */,
 				FE28F6F2268462A6004465C7 /* UserStoreTests.swift in Sources */,
 				02DAE7FA291A9F36009342B7 /* MockDomainRemote.swift in Sources */,
 				741F34842195F752005F5BD9 /* CommentStoreTests.swift in Sources */,
@@ -2303,6 +2310,7 @@
 				031FD8A026FC970400B315C7 /* RosettaTestingHelper.swift in Sources */,
 				077F39E526A5C98200ABEADC /* SystemStatusStoreTests.swift in Sources */,
 				022F931D257F27B40011CD94 /* MockShippingLabelAddress.swift in Sources */,
+				02F2722D292F18BF00C36419 /* PaymentStoreTests.swift in Sources */,
 				02FF056923DECD5B0058E6E7 /* MediaImageExporterTests.swift in Sources */,
 				0202B6972387AFBF00F3EBE0 /* MockInMemoryStorage.swift in Sources */,
 				028BCE2422DE22BB00056966 /* SiteVisitStatsStoreErrorTests.swift in Sources */,

@@ -44,7 +44,7 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Order stats for the previous time period (for comparison)
     ///
     @Published private var previousOrderStats: OrderStatsV4? = nil
-    
+
     /// Time Range control of the Analytics Hub
     ///
     private let timeRangeController: AnalyticsHubTimeRangeGenerator

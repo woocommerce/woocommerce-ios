@@ -4,12 +4,14 @@ import SwiftUI
 ///
 final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpackSetupView> {
     private let viewModel: LoginJetpackSetupViewModel
+    private let authentication: Authentication
 
     init(siteURL: String,
          connectionOnly: Bool,
          authentication: Authentication = ServiceLocator.authenticationManager,
          onStoreNavigation: @escaping (String?) -> Void) {
         self.viewModel = LoginJetpackSetupViewModel(siteURL: siteURL, connectionOnly: connectionOnly, onStoreNavigation: onStoreNavigation)
+        self.authentication = authentication
         super.init(rootView: LoginJetpackSetupView(viewModel: viewModel))
 
         rootView.webViewPresentationHandler = { [weak self] in
@@ -17,10 +19,7 @@ final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpack
         }
 
         rootView.supportHandler = { [weak self] in
-            guard let self else { return }
-            // dismiss any presented view if possible
-            self.presentedViewController?.dismiss(animated: true)
-            authentication.presentSupport(from: self, screen: .jetpackRequired)
+            self?.presentSupport()
         }
 
         rootView.cancellationHandler = dismissView
@@ -73,6 +72,12 @@ final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpack
                                                                    action: #selector(self.dismissView))
         let navigationController = UINavigationController(rootViewController: webView)
         self.present(navigationController, animated: true)
+    }
+
+    private func presentSupport() {
+        // dismiss any presented view if possible
+        presentedViewController?.dismiss(animated: true)
+        authentication.presentSupport(from: self, screen: .jetpackRequired)
     }
 }
 

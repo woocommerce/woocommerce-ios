@@ -5,8 +5,8 @@ import SwiftUI
 /// Hosting Controller for the `AnalyticsHubView` view.
 ///
 final class AnalyticsHubHostingViewController: UIHostingController<AnalyticsHubView> {
-    init(timeRange: StatsTimeRangeV4) {
-        let viewModel = AnalyticsHubViewModel()
+    init(siteID: Int64, timeRange: StatsTimeRangeV4) {
+        let viewModel = AnalyticsHubViewModel(siteID: siteID)
         super.init(rootView: AnalyticsHubView(viewModel: viewModel))
     }
 
@@ -19,6 +19,10 @@ final class AnalyticsHubHostingViewController: UIHostingController<AnalyticsHubV
 /// Main Analytics Hub View
 ///
 struct AnalyticsHubView: View {
+
+    /// Environment safe areas
+    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+
     @StateObject var viewModel: AnalyticsHubViewModel
 
     var body: some View {
@@ -28,6 +32,7 @@ struct AnalyticsHubView: View {
                     Divider()
 
                     AnalyticsTimeRangeCard(viewModel: viewModel.timeRangeCard)
+                            .padding(.horizontal, insets: safeAreaInsets)
                         .background(Color(uiColor: .listForeground))
 
                     Divider()
@@ -37,6 +42,7 @@ struct AnalyticsHubView: View {
                     Divider()
 
                     AnalyticsReportCard(viewModel: viewModel.revenueCard)
+                        .padding(.horizontal, insets: safeAreaInsets)
                         .background(Color(uiColor: .listForeground))
 
                     Divider()
@@ -46,6 +52,7 @@ struct AnalyticsHubView: View {
                     Divider()
 
                     AnalyticsReportCard(viewModel: viewModel.ordersCard)
+                        .padding(.horizontal, insets: safeAreaInsets)
                         .background(Color(uiColor: .listForeground))
 
                     Divider()
@@ -57,6 +64,7 @@ struct AnalyticsHubView: View {
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
         .background(Color(uiColor: .listBackground))
+        .edgesIgnoringSafeArea(.horizontal)
     }
 }
 
@@ -78,7 +86,7 @@ private extension AnalyticsHubView {
 struct AnalyticsHubPreview: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            AnalyticsHubView(viewModel: AnalyticsHubViewModel())
+            AnalyticsHubView(viewModel: AnalyticsHubViewModel(siteID: 123))
         }
     }
 }

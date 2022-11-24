@@ -55,6 +55,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .analyticsHub:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .tapToPayOnIPhone:
+            return buildConfig == .localDeveloper
         default:
             return true
         }

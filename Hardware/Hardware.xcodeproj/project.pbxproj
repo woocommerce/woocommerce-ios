@@ -11,6 +11,7 @@
 		02B5147A28254ED300750B71 /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 02B5147928254ED300750B71 /* Codegen */; };
 		030338102705F7D400764131 /* ReceiptTotalLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0303380F2705F7D400764131 /* ReceiptTotalLine.swift */; };
 		035DBA3929251ED6003E5125 /* CardReaderInputOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035DBA3829251ED6003E5125 /* CardReaderInputOptions.swift */; };
+		035DBA41292BBEB2003E5125 /* CardReaderDiscoveryMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035DBA40292BBEB2003E5125 /* CardReaderDiscoveryMethod.swift */; };
 		039D948B2760C0660044EF38 /* NoOpCardReaderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039D948A2760C0660044EF38 /* NoOpCardReaderService.swift */; };
 		03B440AA2754DFC400759429 /* UnderlyingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B440A92754DFC400759429 /* UnderlyingError.swift */; };
 		03CF78D327C6710C00523706 /* interac.svg in Resources */ = {isa = PBXBuildFile; fileRef = 03CF78D227C6710B00523706 /* interac.svg */; };
@@ -155,6 +156,7 @@
 		028C39DF28255CFE0007BA25 /* Models+Copiable.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Models+Copiable.generated.swift"; sourceTree = "<group>"; };
 		0303380F2705F7D400764131 /* ReceiptTotalLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptTotalLine.swift; sourceTree = "<group>"; };
 		035DBA3829251ED6003E5125 /* CardReaderInputOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderInputOptions.swift; sourceTree = "<group>"; };
+		035DBA40292BBEB2003E5125 /* CardReaderDiscoveryMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderDiscoveryMethod.swift; sourceTree = "<group>"; };
 		039D948A2760C0660044EF38 /* NoOpCardReaderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoOpCardReaderService.swift; sourceTree = "<group>"; };
 		03B440A92754DFC400759429 /* UnderlyingError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnderlyingError.swift; sourceTree = "<group>"; };
 		03CF78D227C6710B00523706 /* interac.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = interac.svg; sourceTree = "<group>"; };
@@ -478,6 +480,7 @@
 				D845BDCB262D9B7700A3E40F /* CardBrand+Stripe.swift */,
 				D845BDC5262D9A4200A3E40F /* CardPresentDetails+Stripe.swift */,
 				D8DF5F4925DD9F7A008AFE25 /* CardReader+Stripe.swift */,
+				035DBA40292BBEB2003E5125 /* CardReaderDiscoveryMethod.swift */,
 				D865C61D261CE001006717B8 /* CardReaderEvent+Stripe.swift */,
 				D8DF5F4D25DD9F91008AFE25 /* CardReaderType+Stripe.swift */,
 				D89B8F1125DDCBCD0001C726 /* Charge+Stripe.swift */,
@@ -831,6 +834,7 @@
 				D89B8F0C25DDC9D30001C726 /* ChargeStatus.swift in Sources */,
 				035DBA3929251ED6003E5125 /* CardReaderInputOptions.swift in Sources */,
 				E140F61C2668CDC900FDB5FF /* Logging.swift in Sources */,
+				035DBA41292BBEB2003E5125 /* CardReaderDiscoveryMethod.swift in Sources */,
 				03CF78D727DF9BE600523706 /* RefundParameters.swift in Sources */,
 				03B440AA2754DFC400759429 /* UnderlyingError.swift in Sources */,
 				E1E125AC26EB582B0068A9B0 /* CardReaderSoftwareUpdateState.swift in Sources */,

@@ -25,7 +25,10 @@ public enum CardPresentPaymentAction: Action {
 
     /// Start the Card Reader discovery process.
     ///
-    case startCardReaderDiscovery(siteID: Int64, onReaderDiscovered: ([CardReader]) -> Void, onError: (Error) -> Void)
+    case startCardReaderDiscovery(siteID: Int64,
+                                  discoveryMethod: CardReaderDiscoveryMethod,
+                                  onReaderDiscovered: ([CardReader]) -> Void,
+                                  onError: (Error) -> Void)
 
     /// Cancels the Card Reader discovery process.
     ///

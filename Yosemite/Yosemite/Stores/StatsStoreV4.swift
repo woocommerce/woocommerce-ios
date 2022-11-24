@@ -50,6 +50,20 @@ public final class StatsStoreV4: Store {
                           quantity: quantity,
                           forceRefresh: forceRefresh,
                           onCompletion: onCompletion)
+        case .retrieveCustomStats(let siteID,
+                                  let unit,
+                                  let earliestDateToInclude,
+                                  let latestDateToInclude,
+                                  let quantity,
+                                  let forceRefresh,
+                                  let onCompletion):
+            retrieveCustomStats(siteID: siteID,
+                                unit: unit,
+                                earliestDateToInclude: earliestDateToInclude,
+                                latestDateToInclude: latestDateToInclude,
+                                quantity: quantity,
+                                forceRefresh: forceRefresh,
+                                onCompletion: onCompletion)
         case .retrieveSiteVisitStats(let siteID,
                                      let siteTimezone,
                                      let timeRange,
@@ -118,6 +132,24 @@ private extension StatsStoreV4 {
                 onCompletion(.failure(error))
             }
         }
+    }
+
+    /// Retrieves the order stats for the provided siteID, and time range, without saving them to the Storage layer.
+    ///
+    func retrieveCustomStats(siteID: Int64,
+                             unit: StatsGranularityV4,
+                             earliestDateToInclude: Date,
+                             latestDateToInclude: Date,
+                             quantity: Int,
+                             forceRefresh: Bool,
+                             onCompletion: @escaping (Result<OrderStatsV4, Error>) -> Void) {
+        orderStatsRemote.loadOrderStats(for: siteID,
+                                        unit: unit,
+                                        earliestDateToInclude: earliestDateToInclude,
+                                        latestDateToInclude: latestDateToInclude,
+                                        quantity: quantity,
+                                        forceRefresh: forceRefresh,
+                                        completion: onCompletion)
     }
 
     /// Retrieves the site visit stats associated with the provided Site ID (if any!).

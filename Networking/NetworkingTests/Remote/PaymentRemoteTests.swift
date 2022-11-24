@@ -76,7 +76,7 @@ final class PaymentRemoteTests: XCTestCase {
         }
     }
 
-    func test_createCart_throws_noMatchingProduct_error_when_response_does_not_include_plan_with_given_id() async throws {
+    func test_createCart_throws_productNotInCart_error_when_response_does_not_include_plan_with_given_id() async throws {
         // Given
         let siteID: Int64 = 606
         let remote = PaymentRemote(network: network)
@@ -87,7 +87,7 @@ final class PaymentRemoteTests: XCTestCase {
             _ = try await remote.createCart(siteID: siteID, productID: 685)
         } errorAssert: { error in
             // Then
-            (error as? CreateCartError) == .noMatchingProduct
+            (error as? CreateCartError) == .productNotInCart
         }
     }
 

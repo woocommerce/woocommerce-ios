@@ -99,7 +99,7 @@ final class PaymentMethodsViewModel: ObservableObject {
 
     /// Retains the use-case so it can perform all of its async tasks.
     ///
-    private var legacyCollectPaymentsUseCase: CollectOrderPaymentProtocol?
+    private var collectPaymentsUseCase: CollectOrderPaymentProtocol?
 
     private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
@@ -220,7 +220,7 @@ final class PaymentMethodsViewModel: ObservableObject {
                         return DDLogError("⛔️ Payment Gateway not found, can't collect payment.")
                     }
 
-                    self.legacyCollectPaymentsUseCase = useCase ?? LegacyCollectOrderPaymentUseCase(
+                    self.collectPaymentsUseCase = useCase ?? CollectOrderPaymentUseCase(
                         siteID: self.siteID,
                         order: order,
                         formattedAmount: self.formattedTotal,
@@ -230,7 +230,7 @@ final class PaymentMethodsViewModel: ObservableObject {
                                                           presentingController: rootViewController),
                         configuration: CardPresentConfigurationLoader().configuration)
 
-                    self.legacyCollectPaymentsUseCase?.collectPayment(
+                    self.collectPaymentsUseCase?.collectPayment(
                         onCollect: { [weak self] result in
                             guard result.isFailure else { return }
                             self?.trackFlowFailed()
@@ -249,7 +249,7 @@ final class PaymentMethodsViewModel: ObservableObject {
                             self?.presentNoticeSubject.send(.completed)
 
                             // Make sure we free all the resources
-                            self?.legacyCollectPaymentsUseCase = nil
+                            self?.collectPaymentsUseCase = nil
 
                             // Tracks completion
                             self?.trackFlowCompleted(method: .card)

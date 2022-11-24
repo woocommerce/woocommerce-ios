@@ -5,7 +5,7 @@ import XCTest
 import Yosemite
 @testable import WooCommerce
 
-final class LegacyCollectOrderPaymentUseCaseTests: XCTestCase {
+final class CollectOrderPaymentUseCaseTests: XCTestCase {
     private let defaultSiteID: Int64 = 122
     private let defaultOrderID: Int64 = 322
 
@@ -13,7 +13,7 @@ final class LegacyCollectOrderPaymentUseCaseTests: XCTestCase {
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
     private var alerts: MockOrderDetailsPaymentAlerts!
-    private var useCase: LegacyCollectOrderPaymentUseCase!
+    private var useCase: CollectOrderPaymentUseCase!
 
     override func setUp() {
         super.setUp()
@@ -23,7 +23,7 @@ final class LegacyCollectOrderPaymentUseCaseTests: XCTestCase {
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
 
         alerts = MockOrderDetailsPaymentAlerts()
-        useCase = LegacyCollectOrderPaymentUseCase(siteID: defaultSiteID,
+        useCase = CollectOrderPaymentUseCase(siteID: defaultSiteID,
                                              order: .fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "1.5"),
                                              formattedAmount: "1.5",
                                              paymentGatewayAccount: .fake().copy(gatewayID: Mocks.paymentGatewayAccount),
@@ -154,7 +154,7 @@ final class LegacyCollectOrderPaymentUseCaseTests: XCTestCase {
 
     func test_collectPayment_with_below_minimum_amount_results_in_failure_and_tracks_collectPaymentFailed_event() throws {
         // Given
-        let useCase = LegacyCollectOrderPaymentUseCase(siteID: 122,
+        let useCase = CollectOrderPaymentUseCase(siteID: 122,
                                                  order: .fake().copy(total: "0.49"),
                                                  formattedAmount: "0.49",
                                                  paymentGatewayAccount: .fake().copy(gatewayID: Mocks.paymentGatewayAccount),
@@ -179,7 +179,7 @@ final class LegacyCollectOrderPaymentUseCaseTests: XCTestCase {
         }
 
         // Then
-        XCTAssertNotNil(result?.failure as? LegacyCollectOrderPaymentUseCase.NotValidAmountError)
+        XCTAssertNotNil(result?.failure as? CollectOrderPaymentUseCase.NotValidAmountError)
 
         let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "card_present_collect_payment_failed"}))
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
@@ -234,7 +234,7 @@ final class LegacyCollectOrderPaymentUseCaseTests: XCTestCase {
     }
 }
 
-private extension LegacyCollectOrderPaymentUseCaseTests {
+private extension CollectOrderPaymentUseCaseTests {
     func mockCardPresentPaymentActions() {
         stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
             if case let .publishCardReaderConnections(completion) = action {
@@ -272,7 +272,7 @@ private extension LegacyCollectOrderPaymentUseCaseTests {
     }
 }
 
-private extension LegacyCollectOrderPaymentUseCaseTests {
+private extension CollectOrderPaymentUseCaseTests {
     enum Mocks {
         static let configuration = CardPresentPaymentsConfiguration(country: "US")
         static let cardReaderModel: String = "WISEPAD_3"

@@ -227,7 +227,9 @@ private extension LoginJetpackSetupViewModel {
     func checkJetpackConnection(retryCount: Int = 0) {
         guard retryCount <= Constants.maxRetryCount else {
             setupFailed = true
-            analytics.track(.loginJetpackSetupErrorCheckingJetpackConnection)
+            if let setupError {
+                analytics.track(.loginJetpackSetupErrorCheckingJetpackConnection, withError: setupError)
+            }
             return
         }
         currentConnectionStep = .inProgress

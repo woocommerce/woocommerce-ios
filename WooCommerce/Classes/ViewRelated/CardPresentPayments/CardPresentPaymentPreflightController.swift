@@ -104,16 +104,16 @@ final class CardPresentPaymentPreflightController {
         }
 
         alertsPresenter.present(viewModel: CardPresentModalSelectSearchType(
-            options: [
-                .localMobile: {
-                    self.builtInConnectionController.searchAndConnect(
-                        onCompletion: self.handleConnectionResult)
-                },
-                .bluetoothProximity: {
-                    self.connectionController.searchAndConnect(
-                        onCompletion: self.handleConnectionResult)
-                }
-            ]))
+            tapOnIPhoneAction: { [weak self] in
+                guard let self = self else { return }
+                self.builtInConnectionController.searchAndConnect(
+                    onCompletion: self.handleConnectionResult)
+            },
+            bluetoothAction: { [weak self] in
+                guard let self = self else { return }
+                self.connectionController.searchAndConnect(
+                    onCompletion: self.handleConnectionResult)
+            }))
     }
 
     private func localMobileReaderSupported() -> Bool {

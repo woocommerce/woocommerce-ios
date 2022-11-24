@@ -31,8 +31,8 @@ final class SettingsViewController: UIViewController {
 
     private lazy var closeAccountCoordinator: CloseAccountCoordinator =
     CloseAccountCoordinator(sourceViewController: self) { [weak self] in
-        guard let self = self else { return .failure(CloseAccountError.presenterDeallocated) }
-        return await self.closeAccount()
+        guard let self = self else { throw CloseAccountError.presenterDeallocated }
+        try await self.closeAccount()
     } onRemoveSuccess: { [weak self] in
         self?.logOutUser()
     }
@@ -284,11 +284,11 @@ private extension SettingsViewController {
         closeAccountCoordinator.start()
     }
 
-    func closeAccount() async -> Result<Void, Error> {
-        await withCheckedContinuation { [weak self] continuation in
+    func closeAccount() async throws {
+        try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self = self else { return }
             let action = AccountAction.closeAccount { result in
-                continuation.resume(returning: result)
+                continuation.resume(with: result)
             }
             self.stores.dispatch(action)
         }

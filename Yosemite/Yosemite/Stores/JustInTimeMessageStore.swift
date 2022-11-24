@@ -1,6 +1,7 @@
 import Foundation
 import Storage
 import Networking
+import WooFoundation
 
 // MARK: - JustInTimeMessageStore
 //
@@ -46,16 +47,20 @@ private extension JustInTimeMessageStore {
                      hook: JustInTimeMessageHook,
                      completion: @escaping (Result<[JustInTimeMessage], Error>) -> ()) {
         Task {
-            let result = await remote.loadAllJustInTimeMessages(
-                    for: siteID,
-                    messagePath: .init(app: .wooMobile,
-                                       screen: screen,
-                                       hook: hook),
-                    query: justInTimeMessageQuery(),
-                    locale: localeLanguageRegionIdentifier())
-            let displayResult = result.map(displayMessages(_:))
+            let result = await Result {
+                let messages = try await remote.loadAllJustInTimeMessages(
+                        for: siteID,
+                        messagePath: .init(app: .wooMobile,
+                                           screen: screen,
+                                           hook: hook),
+                        query: justInTimeMessageQuery(),
+                        locale: localeLanguageRegionIdentifier())
+
+                return displayMessages(messages)
+            }
+
             await MainActor.run {
-                completion(displayResult)
+                completion(result)
             }
         }
     }
@@ -114,9 +119,12 @@ private extension JustInTimeMessageStore {
                         for siteID: Int64,
                         completion: @escaping (Result<Bool, Error>) -> ()) {
         Task {
-            let result = await remote.dismissJustInTimeMessage(for: siteID,
-                                                               messageID: message.messageID,
-                                                               featureClass: message.featureClass)
+            let result = await Result {
+                try await remote.dismissJustInTimeMessage(for: siteID,
+                                                                   messageID: message.messageID,
+                                                                   featureClass: message.featureClass)
+            }
+
             await MainActor.run {
                 completion(result)
             }

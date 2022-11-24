@@ -30,9 +30,7 @@ final class CloseAccountCoordinatorTests: XCTestCase {
 
     @MainActor func test_alert_is_presented_when_starting_coordinator() throws {
         // Given
-        let coordinator = CloseAccountCoordinator(sourceViewController: sourceViewController) {
-            return .success(())
-        } onRemoveSuccess: {}
+        let coordinator = CloseAccountCoordinator(sourceViewController: sourceViewController) {} onRemoveSuccess: {}
 
         // When
         coordinator.start()

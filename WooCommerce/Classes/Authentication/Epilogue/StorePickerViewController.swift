@@ -157,8 +157,8 @@ final class StorePickerViewController: UIViewController {
 
     private lazy var closeAccountCoordinator: CloseAccountCoordinator =
     CloseAccountCoordinator(sourceViewController: self) { [weak self] in
-        guard let self = self else { return .failure(CloseAccountError.presenterDeallocated) }
-        return await self.closeAccount()
+        guard let self = self else { throw CloseAccountError.presenterDeallocated }
+        return try await self.closeAccount()
     } onRemoveSuccess: { [weak self] in
         self?.restartAuthentication()
     }
@@ -760,11 +760,11 @@ extension StorePickerViewController: UITableViewDelegate {
 }
 
 private extension StorePickerViewController {
-    func closeAccount() async -> Result<Void, Error> {
-        await withCheckedContinuation { [weak self] continuation in
+    func closeAccount() async throws {
+        try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self = self else { return }
             let action = AccountAction.closeAccount { result in
-                continuation.resume(returning: result)
+                continuation.resume(with: result)
             }
             self.stores.dispatch(action)
         }

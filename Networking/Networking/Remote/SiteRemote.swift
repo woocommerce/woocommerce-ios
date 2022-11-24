@@ -6,9 +6,8 @@ public protocol SiteRemoteProtocol {
     /// - Parameters:
     ///   - name: The name of the site.
     ///   - domain: The domain selected for the site.
-    /// - Returns: The result of site creation.
-    func createSite(name: String,
-                    domain: String) async -> Result<SiteCreationResponse, Error>
+    /// - Returns: The response with the site creation.
+    func createSite(name: String, domain: String) async throws -> SiteCreationResponse
 }
 
 /// Site: Remote Endpoints
@@ -24,12 +23,12 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
     }
 
     public func createSite(name: String,
-                           domain: String) async -> Result<SiteCreationResponse, Error> {
+                           domain: String) async throws -> SiteCreationResponse {
         let path = Path.siteCreation
 
         // Domain input should be a `wordpress.com` subdomain.
         guard let subdomainName = domain.split(separator: ".").first else {
-            return .failure(SiteCreationError.invalidDomain)
+            throw SiteCreationError.invalidDomain
         }
         let parameters: [String: Any] = [
             "blog_name": subdomainName,
@@ -52,12 +51,7 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
         ]
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)
 
-        do {
-            let response: SiteCreationResponse = try await enqueue(request)
-            return .success(response)
-        } catch {
-            return .failure(error)
-        }
+        return try await enqueue(request)
     }
 }
 

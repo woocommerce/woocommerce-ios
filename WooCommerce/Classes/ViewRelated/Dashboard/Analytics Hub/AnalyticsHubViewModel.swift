@@ -10,25 +10,25 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published var revenueCard = AnalyticsReportCardViewModel(title: Localization.RevenueCard.title,
                                                               leadingTitle: Localization.RevenueCard.leadingTitle,
-                                                              leadingValue: Constants.placeholderLabel,
-                                                              leadingDelta: Constants.placeholderLabel,
-                                                              leadingDeltaColor: Constants.deltaColor(for: .negative),
+                                                              leadingValue: Constants.placeholderValue,
+                                                              leadingDelta: Constants.placeholderDelta.string,
+                                                              leadingDeltaColor: Constants.deltaColor(for: Constants.placeholderDelta.direction),
                                                               trailingTitle: Localization.RevenueCard.trailingTitle,
-                                                              trailingValue: Constants.placeholderLabel,
-                                                              trailingDelta: Constants.placeholderLabel,
-                                                              trailingDeltaColor: Constants.deltaColor(for: .negative))
+                                                              trailingValue: Constants.placeholderValue,
+                                                              trailingDelta: Constants.placeholderDelta.string,
+                                                              trailingDeltaColor: Constants.deltaColor(for: Constants.placeholderDelta.direction))
 
     /// Orders Card ViewModel
     ///
     @Published var ordersCard = AnalyticsReportCardViewModel(title: Localization.OrderCard.title,
                                                              leadingTitle: Localization.OrderCard.leadingTitle,
-                                                             leadingValue: Constants.placeholderLabel,
-                                                             leadingDelta: Constants.placeholderLabel,
-                                                             leadingDeltaColor: Constants.deltaColor(for: .negative),
+                                                             leadingValue: Constants.placeholderValue,
+                                                             leadingDelta: Constants.placeholderDelta.string,
+                                                             leadingDeltaColor: Constants.deltaColor(for: Constants.placeholderDelta.direction),
                                                              trailingTitle: Localization.OrderCard.trailingTitle,
-                                                             trailingValue: Constants.placeholderLabel,
-                                                             trailingDelta: Constants.placeholderLabel,
-                                                             trailingDeltaColor: Constants.deltaColor(for: .negative))
+                                                             trailingValue: Constants.placeholderValue,
+                                                             trailingDelta: Constants.placeholderDelta.string,
+                                                             trailingDeltaColor: Constants.deltaColor(for: Constants.placeholderDelta.direction))
 
     // MARK: Private data
 
@@ -44,7 +44,8 @@ final class AnalyticsHubViewModel: ObservableObject {
 // MARK: - Constants
 private extension AnalyticsHubViewModel {
     enum Constants {
-        static let placeholderLabel = "-"
+        static let placeholderValue = "-"
+        static let placeholderDelta = StatsDataTextFormatter.createDeltaPercentage(from: 0.0, to: 0.0)
         static func deltaColor(for direction: StatsDataTextFormatter.DeltaPercentage.Direction) -> UIColor {
             switch direction {
             case .positive:

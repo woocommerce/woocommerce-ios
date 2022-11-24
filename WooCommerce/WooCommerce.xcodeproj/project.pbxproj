@@ -646,6 +646,7 @@
 		26E1BECE251CD9F80096D0A1 /* RefundItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E1BECD251CD9F80096D0A1 /* RefundItemViewModel.swift */; };
 		26E7EE6A292D688900793045 /* AnalyticsHubViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E7EE69292D688900793045 /* AnalyticsHubViewModel.swift */; };
 		26E7EE6C292D894100793045 /* AnalyticsReportCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E7EE6B292D894100793045 /* AnalyticsReportCardViewModel.swift */; };
+		26E7EE6E29300E8100793045 /* AnalyticsProductCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E7EE6D29300E8100793045 /* AnalyticsProductCard.swift */; };
 		26ED9660274328BC00FA00A1 /* SimplePaymentsSummaryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26ED965F274328BC00FA00A1 /* SimplePaymentsSummaryViewModel.swift */; };
 		26F65C9825DEDAF0008FAE29 /* GenerateVariationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F65C9725DEDAF0008FAE29 /* GenerateVariationUseCase.swift */; };
 		26F65C9E25DEDE67008FAE29 /* GenerateVariationUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F65C9D25DEDE67008FAE29 /* GenerateVariationUseCaseTests.swift */; };
@@ -2623,6 +2624,7 @@
 		26E1BECD251CD9F80096D0A1 /* RefundItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundItemViewModel.swift; sourceTree = "<group>"; };
 		26E7EE69292D688900793045 /* AnalyticsHubViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubViewModel.swift; sourceTree = "<group>"; };
 		26E7EE6B292D894100793045 /* AnalyticsReportCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsReportCardViewModel.swift; sourceTree = "<group>"; };
+		26E7EE6D29300E8100793045 /* AnalyticsProductCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsProductCard.swift; sourceTree = "<group>"; };
 		26ED965F274328BC00FA00A1 /* SimplePaymentsSummaryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplePaymentsSummaryViewModel.swift; sourceTree = "<group>"; };
 		26F65C9725DEDAF0008FAE29 /* GenerateVariationUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateVariationUseCase.swift; sourceTree = "<group>"; };
 		26F65C9D25DEDE67008FAE29 /* GenerateVariationUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateVariationUseCaseTests.swift; sourceTree = "<group>"; };
@@ -5277,6 +5279,7 @@
 				26E7EE6B292D894100793045 /* AnalyticsReportCardViewModel.swift */,
 				B60B5025292D308A00178C26 /* AnalyticsTimeRangeCard.swift */,
 				B6A10E9B292E5DEE00790797 /* AnalyticsTimeRangeCardViewModel.swift */,
+				26E7EE6D29300E8100793045 /* AnalyticsProductCard.swift */,
 			);
 			path = "Analytics Hub";
 			sourceTree = "<group>";
@@ -9789,6 +9792,7 @@
 				03EF24FC28BF996F006A033E /* InPersonPaymentsCashOnDeliveryPaymentGatewayHelpers.swift in Sources */,
 				57896D6625362B0C000E8C4D /* TitleAndEditableValueTableViewCellViewModel.swift in Sources */,
 				0205021E27C8B6C600FB1C6B /* InboxEligibilityUseCase.swift in Sources */,
+				26E7EE6E29300E8100793045 /* AnalyticsProductCard.swift in Sources */,
 				26E1BECE251CD9F80096D0A1 /* RefundItemViewModel.swift in Sources */,
 				26E7EE6C292D894100793045 /* AnalyticsReportCardViewModel.swift in Sources */,
 				6827141128A5410D00E6E3F6 /* NewSimplePaymentsLocationNoticeViewModel.swift in Sources */,

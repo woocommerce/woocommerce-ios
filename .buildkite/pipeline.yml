@@ -70,6 +70,11 @@ steps:
           - github_commit_status:
               context: "Lint Translations"
 
+      - label: ":sleuth_or_spy: Lint Localized Strings Format"
+        command: .buildkite/commands/lint-localized-strings-format.sh
+        plugins: *common_plugins
+        env: *common_env
+
   #################
   # UI Tests
   #################

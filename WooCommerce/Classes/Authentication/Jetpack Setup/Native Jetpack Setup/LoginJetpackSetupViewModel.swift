@@ -235,10 +235,11 @@ private extension LoginJetpackSetupViewModel {
             case .success(let user):
                 guard let connectedEmail = user.wpcomUser?.email else {
                     DDLogWarn("⚠️ Cannot find connected WPcom user")
-                    self.setupError = NSError(domain: Constants.errorDomain,
-                                              code: Constants.errorCodeNoWPComUser,
-                                              userInfo: [Constants.errorUserInfoReason: Constants.errorUserInfoNoWPComUser])
-                    self.analytics.track(.loginJetpackSetupCannotFindWPCOMUser, withError: self.setupError)
+                    let missingWpcomUserError = NSError(domain: Constants.errorDomain,
+                                                        code: Constants.errorCodeNoWPComUser,
+                                                        userInfo: [Constants.errorUserInfoReason: Constants.errorUserInfoNoWPComUser])
+                    self.setupError = missingWpcomUserError
+                    self.analytics.track(.loginJetpackSetupCannotFindWPCOMUser, withError: missingWpcomUserError)
                     // Retry fetching user in case Jetpack sync takes some time.
                     DispatchQueue.main.asyncAfter(deadline: .now() + Constants.delayBeforeRetry) { [weak self] in
                         self?.checkJetpackConnection(retryCount: retryCount + 1)

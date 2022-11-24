@@ -55,18 +55,20 @@ steps:
           context: "Unit Tests"
 
   #################
-  # Lint Translations
+  # Linters
   #################
-  - label: "🧹 Lint Translations"
-    command: "gplint /workdir/WooCommerce/Resources/AppStoreStrings.pot"
-    plugins:
-      - docker#v3.8.0:
-          image: "public.ecr.aws/automattic/glotpress-validator:1.0.0"
-    agents:
-      queue: "default"
-    notify:
-      - github_commit_status:
-          context: "Lint Translations"
+  - group: Linters
+    steps:
+      - label: "🧹 Lint Translations"
+        command: "gplint /workdir/WooCommerce/Resources/AppStoreStrings.pot"
+        plugins:
+          - docker#v3.8.0:
+              image: "public.ecr.aws/automattic/glotpress-validator:1.0.0"
+        agents:
+          queue: "default"
+        notify:
+          - github_commit_status:
+              context: "Lint Translations"
 
   #################
   # UI Tests

@@ -58,6 +58,15 @@ struct AnalyticsHubView: View {
                     Divider()
                 }
 
+                VStack(spacing: Layout.dividerSpacing) {
+                    Divider()
+
+                    AnalyticsProductCard(itemsSold: "2,342", delta: "+23%", deltaBackgroundColor: .withColorStudio(.green, shade: .shade50))
+                        .background(Color(uiColor: .listForeground))
+
+                    Divider()
+                }
+
                 Spacer()
             }
         }

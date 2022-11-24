@@ -707,6 +707,9 @@ final class IconsTests: XCTestCase {
 
     func test_wpcomLogoImage_is_not_nil() {
         XCTAssertNotNil(UIImage.wpcomLogoImage)
+    }
 
+    func test_jetpackSetupInterruptedImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.jetpackSetupInterruptedImage)
     }
 }

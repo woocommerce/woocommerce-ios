@@ -18,7 +18,8 @@ final class SiteCredentialLoginViewModel: NSObject, ObservableObject {
     @Published var shouldShowErrorAlert = false
 
     private let stores: StoresManager
-    private let successHandler: () -> Void
+    private let successHandler: (_ xmlrpc: String) -> Void
+    private let analytics: Analytics
 
     private lazy var loginFacade = LoginFacade(dotcomClientID: ApiCredentials.dotcomAppId,
                                                dotcomSecret: ApiCredentials.dotcomSecret,
@@ -33,9 +34,13 @@ final class SiteCredentialLoginViewModel: NSObject, ObservableObject {
         return loginFields
     }
 
-    init(siteURL: String, stores: StoresManager = ServiceLocator.stores, onLoginSuccess: @escaping () -> Void = {}) {
+    init(siteURL: String,
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics,
+         onLoginSuccess: @escaping (String) -> Void = { _ in }) {
         self.siteURL = siteURL
         self.stores = stores
+        self.analytics = analytics
         self.successHandler = onLoginSuccess
         super.init()
         loginFacade.delegate = self
@@ -43,11 +48,13 @@ final class SiteCredentialLoginViewModel: NSObject, ObservableObject {
     }
 
     func handleLogin() {
+        analytics.track(.loginJetpackSiteCredentialInstallTapped)
         loginFacade.signIn(with: loginFields)
         isLoggingIn = true
     }
 
     func resetPassword() {
+        analytics.track(.loginJetpackSiteCredentialResetPasswordTapped)
         WordPressAuthenticator.openForgotPasswordURL(loginFields)
     }
 }
@@ -71,9 +78,11 @@ extension SiteCredentialLoginViewModel: LoginFacadeDelegate {
         let wrongCredentials = err.domain == Constants.xmlrpcErrorDomain && err.code == Constants.invalidCredentialErrorCode
         errorMessage = wrongCredentials ? Localization.wrongCredentials : Localization.genericFailure
         shouldShowErrorAlert = true
+        analytics.track(.loginJetpackSiteCredentialDidShowErrorAlert, withError: error)
     }
 
     func finishedLogin(withUsername username: String, password: String, xmlrpc: String, options: [AnyHashable: Any] = [:]) {
+        analytics.track(.loginJetpackSiteCredentialDidFinishLogin)
         isLoggingIn = false
         let credentials = WordPressOrgCredentials(username: username, password: password, xmlrpc: xmlrpc, options: options)
         guard let authenticator = credentials.makeCookieNonceAuthenticator() else {
@@ -82,7 +91,7 @@ extension SiteCredentialLoginViewModel: LoginFacadeDelegate {
         let network = WordPressOrgNetwork(authenticator: authenticator)
         let action = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
         stores.dispatch(action)
-        successHandler()
+        successHandler(xmlrpc)
     }
 }
 

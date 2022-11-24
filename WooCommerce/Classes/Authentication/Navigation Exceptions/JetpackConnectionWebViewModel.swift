@@ -4,26 +4,36 @@ import WebKit
 /// View model used for the web view controller to setup Jetpack connection during the login flow.
 ///
 final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
-    let title = Localization.title
+    let title: String
 
     let initialURL: URL?
     let siteURL: String
     let completionHandler: () -> Void
+    let dismissalHandler: () -> Void
 
     private let analytics: Analytics
+    private var isCompleted = false
 
     init(initialURL: URL,
          siteURL: String,
+         title: String = Localization.title,
          analytics: Analytics = ServiceLocator.analytics,
-         completion: @escaping () -> Void) {
+         completion: @escaping () -> Void,
+         onDismissal: @escaping () -> Void = {}) {
+        self.title = title
         self.analytics = analytics
         self.initialURL = initialURL
         self.siteURL = siteURL
         self.completionHandler = completion
+        self.dismissalHandler = onDismissal
     }
 
     func handleDismissal() {
+        guard isCompleted == false else {
+            return
+        }
         analytics.track(.loginJetpackConnectDismissed)
+        dismissalHandler()
     }
 
     func handleRedirect(for url: URL?) {
@@ -42,6 +52,7 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
     }
 
     private func handleSetupCompletion() {
+        isCompleted = true
         analytics.track(.loginJetpackConnectCompleted)
         completionHandler()
     }

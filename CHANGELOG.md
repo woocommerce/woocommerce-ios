@@ -1,6 +1,14 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 11.4
+
+We focused on some stability and performance issues to make your experience smoother. Please keep sharing feedback. We read every one of them.
+
+## 11.3
+
+Merchants using the app for taking payments in person will be happy to hear of improvements we’ve made. This and many other tiny improvements were made to make your experience smoother. We hope you notice the love we put into our software.
+
 ## 11.2
 For this release, we focused on polishing a few things and taking care of minor bugs that our team found, including the option to preview your products before publishing them. Don’t be fooled – we are working on some pretty cool stuff for you all! Keep sharing feedback 💜
 

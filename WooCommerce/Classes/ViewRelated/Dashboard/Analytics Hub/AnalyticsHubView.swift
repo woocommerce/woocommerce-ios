@@ -58,6 +58,16 @@ struct AnalyticsHubView: View {
                     Divider()
                 }
 
+                VStack(spacing: Layout.dividerSpacing) {
+                    Divider()
+
+                    AnalyticsProductCard(viewModel: viewModel.productCard)
+                        .padding(.horizontal, insets: safeAreaInsets)
+                        .background(Color(uiColor: .listForeground))
+
+                    Divider()
+                }
+
                 Spacer()
             }
         }

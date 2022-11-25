@@ -15,7 +15,6 @@ final class AnalyticsHubViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.stores = stores
-
         self.timeRangeGenerator = AnalyticsHubTimeRangeGenerator(selectedTimeRange: statsTimeRange)
         self.timeRangeCard = AnalyticsTimeRangeCardViewModel(selectedRangeTitle: timeRangeGenerator.selectionDescription,
                                                              currentRangeSubtitle: timeRangeGenerator.currentRangeDescription,

@@ -17,17 +17,25 @@ public class AnalyticsHubTimeRangeGenerator {
         generateCurrentTimeRangeFrom(selectionType: selectionType)
     }()
 
-    lazy private(set) var previousTimeRange: AnalyticsHubTimeRange = {
-        generatePreviousTimeRangeFrom(selectionType: selectionType)
-    }()
+    var previousTimeRange: AnalyticsHubTimeRange {
+        get throws {
+            return try generatePreviousTimeRangeFrom(selectionType: selectionType)
+        }
+    }
 
     lazy private(set) var currentRangeDescription: String = {
         generateDescriptionOf(timeRange: currentTimeRange)
     }()
 
-    lazy private(set) var previousRangeDescription: String = {
-        generateDescriptionOf(timeRange: previousTimeRange)
-    }()
+    var previousRangeDescription: String {
+        get {
+            do {
+                return try generateDescriptionOf(timeRange: previousTimeRange)
+            } catch {
+                return Localization.noPreviousPeriodAvailable
+            }
+        }
+    }
 
     var selectionDescription: String {
         selectionType.description
@@ -55,20 +63,31 @@ public class AnalyticsHubTimeRangeGenerator {
         }
     }
 
-    private func generatePreviousTimeRangeFrom(selectionType: SelectionType) -> AnalyticsHubTimeRange {
+    private func generatePreviousTimeRangeFrom(selectionType: SelectionType) throws -> AnalyticsHubTimeRange {
         switch selectionType {
         case .today:
-            let oneDayAgo = currentCalendar.date(byAdding: .day, value: -1, to: currentDate)!
+            guard let oneDayAgo = currentCalendar.date(byAdding: .day, value: -1, to: currentDate) else {
+                throw TimeRangeGeneratorError.previousRangeGenerationFailed
+            }
             return AnalyticsHubTimeRange(start: oneDayAgo.startOfDay(timezone: currentTimezone), end: oneDayAgo)
+
         case .weekToDate:
-            let oneWeekAgo = currentCalendar.date(byAdding: .day, value: -7, to: currentDate)!
+            guard let oneWeekAgo = currentCalendar.date(byAdding: .day, value: -7, to: currentDate) else {
+                throw TimeRangeGeneratorError.previousRangeGenerationFailed
+            }
             let lastWeekStart = oneWeekAgo.startOfWeek(timezone: currentTimezone, calendar: currentCalendar)
             return AnalyticsHubTimeRange(start: lastWeekStart, end: oneWeekAgo)
+
         case .monthToDate:
-            let oneMonthAgo = currentCalendar.date(byAdding: .month, value: -1, to: currentDate)!
+            guard let oneMonthAgo = currentCalendar.date(byAdding: .month, value: -1, to: currentDate) else {
+                throw TimeRangeGeneratorError.previousRangeGenerationFailed
+            }
             return AnalyticsHubTimeRange(start: oneMonthAgo.startOfMonth(timezone: currentTimezone), end: oneMonthAgo)
+
         case .yearToDate:
-            let oneYearAgo = currentCalendar.date(byAdding: .year, value: -1, to: currentDate)!
+            guard let oneYearAgo = currentCalendar.date(byAdding: .year, value: -1, to: currentDate) else {
+                throw TimeRangeGeneratorError.previousRangeGenerationFailed
+            }
             return AnalyticsHubTimeRange(start: oneYearAgo.startOfYear(timezone: currentTimezone), end: oneYearAgo)
         }
     }
@@ -94,6 +113,11 @@ public class AnalyticsHubTimeRangeGenerator {
 }
 
 private extension AnalyticsHubTimeRangeGenerator {
+
+    enum TimeRangeGeneratorError: Error {
+        case selectedRangeGenerationFailed
+        case previousRangeGenerationFailed
+    }
 
     enum SelectionType {
         case today
@@ -135,5 +159,6 @@ private extension AnalyticsHubTimeRangeGenerator {
         static let weekToDate = NSLocalizedString("Week to Date", comment: "Week to Date")
         static let monthToDate = NSLocalizedString("Month to Date", comment: "Month to Date")
         static let yearToDate = NSLocalizedString("Year to Date", comment: "Year to Date")
+        static let noPreviousPeriodAvailable = NSLocalizedString("no previous period", comment: "")
     }
 }

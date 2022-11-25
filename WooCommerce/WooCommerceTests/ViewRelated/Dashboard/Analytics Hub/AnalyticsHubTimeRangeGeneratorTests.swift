@@ -14,8 +14,8 @@ final class AnalyticsHubTimeRangeGeneratorTests: XCTestCase {
         let timeRange = AnalyticsHubTimeRangeGenerator(selectedTimeRange: .thisYear, currentDate: currentDate)
 
         // When
-        let currentTimeRange = try timeRange.currentTimeRange
-        let previousTimeRange = try timeRange.previousTimeRange
+        let currentTimeRange = try timeRange.generateCurrentTimeRange()
+        let previousTimeRange = try timeRange.generatePreviousTimeRange()
 
         // Then
         XCTAssertEqual(currentTimeRange.start, dateFrom("2020-01-01"))
@@ -31,8 +31,8 @@ final class AnalyticsHubTimeRangeGeneratorTests: XCTestCase {
         let timeRange = AnalyticsHubTimeRangeGenerator(selectedTimeRange: .thisMonth, currentDate: currentDate)
 
         // When
-        let currentTimeRange = try timeRange.currentTimeRange
-        let previousTimeRange = try timeRange.previousTimeRange
+        let currentTimeRange = try timeRange.generateCurrentTimeRange()
+        let previousTimeRange = try timeRange.generatePreviousTimeRange()
 
         // Then
         XCTAssertEqual(currentTimeRange.start, dateFrom("2010-07-01"))
@@ -48,8 +48,8 @@ final class AnalyticsHubTimeRangeGeneratorTests: XCTestCase {
         let timeRange = AnalyticsHubTimeRangeGenerator(selectedTimeRange: .thisWeek, currentDate: currentDate)
 
         // When
-        let currentTimeRange = try timeRange.currentTimeRange
-        let previousTimeRange = try timeRange.previousTimeRange
+        let currentTimeRange = try timeRange.generateCurrentTimeRange()
+        let previousTimeRange = try timeRange.generatePreviousTimeRange()
 
         // Then
         XCTAssertEqual(currentTimeRange.start, dateFrom("2022-06-27"))
@@ -65,8 +65,8 @@ final class AnalyticsHubTimeRangeGeneratorTests: XCTestCase {
         let timeRange = AnalyticsHubTimeRangeGenerator(selectedTimeRange: .today, currentDate: currentDate)
 
         // When
-        let currentTimeRange = try timeRange.currentTimeRange
-        let previousTimeRange = try timeRange.previousTimeRange
+        let currentTimeRange = try timeRange.generateCurrentTimeRange()
+        let previousTimeRange = try timeRange.generatePreviousTimeRange()
 
         // Then
         XCTAssertEqual(currentTimeRange.start, dateFrom("2022-07-01"))

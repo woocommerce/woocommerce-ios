@@ -16,43 +16,21 @@ public class AnalyticsHubTimeRangeGenerator {
     private let currentCalendar: Calendar
     private let selectionType: SelectionType
 
-    private var _currentTimeRange: AnalyticsHubTimeRange? = nil
-    private var _previousTimeRange: AnalyticsHubTimeRange? = nil
-
-    var currentTimeRange: AnalyticsHubTimeRange {
-        get throws {
-            guard let currentTimeRange = _currentTimeRange else {
-                throw TimeRangeGeneratorError.selectedRangeGenerationFailed
-            }
-            return currentTimeRange
-        }
-    }
-
-    var previousTimeRange: AnalyticsHubTimeRange {
-        get throws {
-            guard let previousTimeRange = _previousTimeRange else {
-                throw TimeRangeGeneratorError.previousRangeGenerationFailed
-            }
-            return previousTimeRange
-        }
-    }
+    private var currentTimeRange: AnalyticsHubTimeRange? = nil
+    private var previousTimeRange: AnalyticsHubTimeRange? = nil
 
     var currentRangeDescription: String {
-        get {
-            guard let currentTimeRange = _currentTimeRange else {
-                return Localization.noCurrentPeriodAvailable
-            }
-            return generateDescriptionOf(timeRange: currentTimeRange)
+        guard let currentTimeRange = currentTimeRange else {
+            return Localization.noCurrentPeriodAvailable
         }
+        return generateDescriptionOf(timeRange: currentTimeRange)
     }
 
     var previousRangeDescription: String {
-        get {
-            guard let previousTimeRange = _previousTimeRange else {
-                return Localization.noPreviousPeriodAvailable
-            }
-            return generateDescriptionOf(timeRange: previousTimeRange)
+        guard let previousTimeRange = previousTimeRange else {
+            return Localization.noPreviousPeriodAvailable
         }
+        return generateDescriptionOf(timeRange: previousTimeRange)
     }
 
     var selectionDescription: String {
@@ -66,8 +44,28 @@ public class AnalyticsHubTimeRangeGenerator {
         self.currentDate = currentDate
         self.currentCalendar = currentCalendar
         self.selectionType = SelectionType.from(selectedTimeRange)
-        _currentTimeRange = generateCurrentTimeRangeFrom(selectionType: selectionType)
-        _previousTimeRange = generatePreviousTimeRangeFrom(selectionType: selectionType)
+        self.currentTimeRange = generateCurrentTimeRangeFrom(selectionType: selectionType)
+        self.previousTimeRange = generatePreviousTimeRangeFrom(selectionType: selectionType)
+    }
+
+    /// Unwrap the generated selected `AnalyticsHubTimeRange` based on the `selectedTimeRange`
+    /// provided during initialization.
+    /// - throws an `.selectedRangeGenerationFailed` error if the unwrap fails.
+    func unwrapCurrentTimeRange() throws -> AnalyticsHubTimeRange {
+        guard let currentTimeRange = currentTimeRange else {
+            throw TimeRangeGeneratorError.selectedRangeGenerationFailed
+        }
+        return currentTimeRange
+    }
+
+    /// Unwrap the generated previous `AnalyticsHubTimeRange`relative to the selected one
+    /// based on the `selectedTimeRange` provided during initialization.
+    /// - throws a `.previousRangeGenerationFailed` error if the unwrap fails.
+    func unwrapPreviousTimeRange() throws -> AnalyticsHubTimeRange {
+        guard let previousTimeRange = previousTimeRange else {
+            throw TimeRangeGeneratorError.previousRangeGenerationFailed
+        }
+        return previousTimeRange
     }
 
     private func generateCurrentTimeRangeFrom(selectionType: SelectionType) -> AnalyticsHubTimeRange? {

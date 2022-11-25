@@ -78,8 +78,8 @@ private extension AnalyticsHubViewModel {
 
     @MainActor
     func retrieveOrderStats() async throws {
-        let currentTimeRange = try timeRangeGenerator.currentTimeRange
-        let previousTimeRange = try timeRangeGenerator.previousTimeRange
+        let currentTimeRange = try timeRangeGenerator.unwrapCurrentTimeRange()
+        let previousTimeRange = try timeRangeGenerator.unwrapPreviousTimeRange()
 
         async let currentPeriodRequest = retrieveStats(earliestDateToInclude: currentTimeRange.start,
                                                        latestDateToInclude: currentTimeRange.end,

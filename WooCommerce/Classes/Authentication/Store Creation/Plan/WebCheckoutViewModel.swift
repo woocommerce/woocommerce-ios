@@ -13,10 +13,10 @@ final class WebCheckoutViewModel: AuthenticatedWebViewModel {
     private let completion: () -> Void
 
     /// - Parameters:
-    ///   - siteID: The ID of the site that the web checkout is for.
+    ///   - siteSlug: The slug of the site URL that the web checkout is for.
     ///   - completion: Invoked when the webview reaches the success URL.
-    init(siteID: Int64, completion: @escaping () -> Void) {
-        self.initialURL = URL(string: String(format: Constants.checkoutURLFormat, "\(siteID)"))
+    init(siteSlug: String, completion: @escaping () -> Void) {
+        self.initialURL = URL(string: String(format: Constants.checkoutURLFormat, siteSlug))
         self.completion = completion
     }
 

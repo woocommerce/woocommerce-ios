@@ -297,7 +297,8 @@ private extension StoreCreationCoordinator {
             guard let self else { return }
             self.showWPCOMPlan(from: navigationController,
                                planToPurchase: planToPurchase,
-                               siteID: result.siteID)
+                               siteID: result.siteID,
+                               siteSlug: result.siteSlug)
         }
         navigationController.pushViewController(storeSummary, animated: true)
     }
@@ -305,10 +306,11 @@ private extension StoreCreationCoordinator {
     @MainActor
     func showWPCOMPlan(from navigationController: UINavigationController,
                        planToPurchase: WPComPlanProduct,
-                       siteID: Int64) {
+                       siteID: Int64,
+                       siteSlug: String) {
         let storePlan = StoreCreationPlanHostingController(viewModel: .init(plan: planToPurchase)) { [weak self] in
             guard let self else { return }
-            await self.purchasePlan(from: navigationController, siteID: siteID, planToPurchase: planToPurchase)
+            await self.purchasePlan(from: navigationController, siteID: siteID, siteSlug: siteSlug, planToPurchase: planToPurchase)
         } onClose: { [weak self] in
             guard let self else { return }
             self.showDiscardChangesAlert()
@@ -319,6 +321,7 @@ private extension StoreCreationCoordinator {
     @MainActor
     func purchasePlan(from navigationController: UINavigationController,
                       siteID: Int64,
+                      siteSlug: String,
                       planToPurchase: WPComPlanProduct) async {
         do {
             let result = try await purchasesManager.purchaseProduct(with: planToPurchase.id, for: siteID)
@@ -333,7 +336,7 @@ private extension StoreCreationCoordinator {
             } else {
                 switch result {
                 case .pending:
-                    showWebCheckout(from: navigationController, siteID: siteID)
+                    showWebCheckout(from: navigationController, siteID: siteID, siteSlug: siteSlug)
                 default:
                     return
                 }
@@ -344,8 +347,8 @@ private extension StoreCreationCoordinator {
     }
 
     @MainActor
-    func showWebCheckout(from navigationController: UINavigationController, siteID: Int64) {
-        let checkoutViewModel = WebCheckoutViewModel(siteID: siteID) { [weak self] in
+    func showWebCheckout(from navigationController: UINavigationController, siteID: Int64, siteSlug: String) {
+        let checkoutViewModel = WebCheckoutViewModel(siteSlug: siteSlug) { [weak self] in
             self?.showInProgressViewWhileWaitingForJetpackSite(from: navigationController, siteID: siteID)
         }
         let checkoutController = AuthenticatedWebViewController(viewModel: checkoutViewModel)

@@ -8,6 +8,7 @@ import WordPressShared
 import CoreTelephony
 import SafariServices
 import Yosemite
+import Experiments
 
 extension NSNotification.Name {
     static let ZDPNReceived = NSNotification.Name(rawValue: "ZDPNReceived")
@@ -41,6 +42,7 @@ protocol ZendeskManagerProtocol: SupportManagerAdapter {
     func showTicketListIfPossible(from controller: UIViewController)
     func showSupportEmailPrompt(from controller: UIViewController, completion: @escaping onUserInformationCompletion)
     func getTags(supportSourceTag: String?) -> [String]
+    func fetchSystemStatusReport()
     func initialize()
     func reset()
 }
@@ -90,6 +92,10 @@ struct NoZendeskManager: ZendeskManagerProtocol {
 
     func getTags(supportSourceTag: String?) -> [String] {
         []
+    }
+
+    func fetchSystemStatusReport() {
+        // no-op
     }
 
     func initialize() {
@@ -146,6 +152,8 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     private let stores = ServiceLocator.stores
     private let storageManager = ServiceLocator.storageManager
 
+    private let isSSRFeatureFlagEnabled = DefaultFeatureFlagService().isFeatureFlagEnabled(.systemStatusReportInSupportRequest)
+
     /// Controller for fetching site plugins from Storage
     ///
     private lazy var pluginResultsController: ResultsController<StorageSitePlugin> = createPluginResultsController()
@@ -200,6 +208,25 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
             ippTags.append(.wcpayNotInstalled)
         }
         return ippTags.map { $0.rawValue }
+    }
+
+    /// Instantiates the SystemStatusReportViewModel as soon as the Zendesk instance needs it
+    /// This generally happens in the SettingsViewModel if we need to fetch the site's System Status Report
+    ///
+    private lazy var systemStatusReportViewModel: SystemStatusReportViewModel = SystemStatusReportViewModel(
+        siteID: ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0
+    )
+
+    /// Formatted system status report to be displayed on-screen
+    ///
+    private var systemStatusReport: String {
+        systemStatusReportViewModel.statusReport
+    }
+
+    /// Handles fetching the site's System Status Report
+    ///
+    func fetchSystemStatusReport() {
+        systemStatusReportViewModel.fetchReport()
     }
 
     func showNewRequestIfPossible(from controller: UIViewController) {
@@ -638,11 +665,23 @@ private extension ZendeskManager {
     /// Without it, the tickets won't appear in the correct view(s) in the web portal and they won't contain all the metadata needed to solve a ticket.
     ///
     func createRequest(supportSourceTag: String?) -> RequestUiConfiguration {
+
+        var logsFieldID: Int64 = TicketFieldIDs.legacyLogs
+        var systemStatusReportFieldID: Int64 = 0
+        if isSSRFeatureFlagEnabled {
+            /// If the feature flag is enabled, `legacyLogs` Field ID is used to send the SSR logs,
+            /// and `logs` Field ID is used to send the logs.
+            ///
+            logsFieldID = TicketFieldIDs.logs
+            systemStatusReportFieldID = TicketFieldIDs.legacyLogs
+        }
+
         let ticketFields = [
             CustomField(fieldId: TicketFieldIDs.appVersion, value: Bundle.main.version),
             CustomField(fieldId: TicketFieldIDs.deviceFreeSpace, value: getDeviceFreeSpace()),
             CustomField(fieldId: TicketFieldIDs.networkInformation, value: getNetworkInformation()),
-            CustomField(fieldId: TicketFieldIDs.logs, value: getLogFile()),
+            CustomField(fieldId: logsFieldID, value: getLogFile()),
+            CustomField(fieldId: systemStatusReportFieldID, value: systemStatusReport),
             CustomField(fieldId: TicketFieldIDs.currentSite, value: getCurrentSiteDescription()),
             CustomField(fieldId: TicketFieldIDs.sourcePlatform, value: Constants.sourcePlatform),
             CustomField(fieldId: TicketFieldIDs.appLanguage, value: Locale.preferredLanguage),
@@ -657,12 +696,23 @@ private extension ZendeskManager {
 
     func createWCPayRequest(supportSourceTag: String?) -> RequestUiConfiguration {
 
+        var logsFieldID: Int64 = TicketFieldIDs.legacyLogs
+        var systemStatusReportFieldID: Int64 = 0
+        if isSSRFeatureFlagEnabled {
+            /// If the feature flag is enabled, `legacyLogs` Field ID is used to send the SSR logs,
+            /// and `logs` Field ID is used to send the logs.
+            ///
+            logsFieldID = TicketFieldIDs.logs
+            systemStatusReportFieldID = TicketFieldIDs.legacyLogs
+        }
+
         // Set form field values
         let ticketFields = [
             CustomField(fieldId: TicketFieldIDs.appVersion, value: Bundle.main.version),
             CustomField(fieldId: TicketFieldIDs.deviceFreeSpace, value: getDeviceFreeSpace()),
             CustomField(fieldId: TicketFieldIDs.networkInformation, value: getNetworkInformation()),
-            CustomField(fieldId: TicketFieldIDs.logs, value: getLogFile()),
+            CustomField(fieldId: logsFieldID, value: getLogFile()),
+            CustomField(fieldId: systemStatusReportFieldID, value: systemStatusReport),
             CustomField(fieldId: TicketFieldIDs.currentSite, value: getCurrentSiteDescription()),
             CustomField(fieldId: TicketFieldIDs.sourcePlatform, value: Constants.sourcePlatform),
             CustomField(fieldId: TicketFieldIDs.appLanguage, value: Locale.preferredLanguage),
@@ -1087,7 +1137,8 @@ private extension ZendeskManager {
         static let allBlogs: Int64 = 360000087183
         static let deviceFreeSpace: Int64 = 360000089123
         static let networkInformation: Int64 = 360000086966
-        static let logs: Int64 = 22871957
+        static let legacyLogs: Int64 = 22871957
+        static let logs: Int64 = 10901699622036
         static let currentSite: Int64 = 360000103103
         static let sourcePlatform: Int64 = 360009311651
         static let appLanguage: Int64 = 360008583691

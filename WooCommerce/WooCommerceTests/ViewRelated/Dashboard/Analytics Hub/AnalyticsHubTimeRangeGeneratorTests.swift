@@ -8,14 +8,14 @@ final class AnalyticsHubTimeRangeGeneratorTests: XCTestCase {
         return dateFormatter
     }()
 
-    func test_when_time_range_inits_with_thisYear_then_generate_expected_ranges() {
+    func test_when_time_range_inits_with_thisYear_then_generate_expected_ranges() throws {
         // Given
         let currentDate = dateFrom("2020-02-29")
         let timeRange = AnalyticsHubTimeRangeGenerator(selectedTimeRange: .thisYear, currentDate: currentDate)
 
         // When
-        let currentTimeRange = timeRange.currentTimeRange
-        let previousTimeRange = timeRange.previousTimeRange
+        let currentTimeRange = try timeRange.currentTimeRange
+        let previousTimeRange = try timeRange.previousTimeRange
 
         // Then
         XCTAssertEqual(currentTimeRange.start, dateFrom("2020-01-01"))
@@ -25,14 +25,14 @@ final class AnalyticsHubTimeRangeGeneratorTests: XCTestCase {
         XCTAssertEqual(previousTimeRange.end, dateFrom("2019-02-28"))
     }
 
-    func test_when_time_range_inits_with_thisMonth_then_generate_expected_ranges() {
+    func test_when_time_range_inits_with_thisMonth_then_generate_expected_ranges() throws {
         // Given
         let currentDate = dateFrom("2010-07-31")
         let timeRange = AnalyticsHubTimeRangeGenerator(selectedTimeRange: .thisMonth, currentDate: currentDate)
 
         // When
-        let currentTimeRange = timeRange.currentTimeRange
-        let previousTimeRange = timeRange.previousTimeRange
+        let currentTimeRange = try timeRange.currentTimeRange
+        let previousTimeRange = try timeRange.previousTimeRange
 
         // Then
         XCTAssertEqual(currentTimeRange.start, dateFrom("2010-07-01"))
@@ -42,14 +42,14 @@ final class AnalyticsHubTimeRangeGeneratorTests: XCTestCase {
         XCTAssertEqual(previousTimeRange.end, dateFrom("2010-06-30"))
     }
 
-    func test_when_time_range_inits_with_thisWeek_then_generate_expected_ranges() {
+    func test_when_time_range_inits_with_thisWeek_then_generate_expected_ranges() throws {
         // Given
         let currentDate = dateFrom("2022-07-01")
         let timeRange = AnalyticsHubTimeRangeGenerator(selectedTimeRange: .thisWeek, currentDate: currentDate)
 
         // When
-        let currentTimeRange = timeRange.currentTimeRange
-        let previousTimeRange = timeRange.previousTimeRange
+        let currentTimeRange = try timeRange.currentTimeRange
+        let previousTimeRange = try timeRange.previousTimeRange
 
         // Then
         XCTAssertEqual(currentTimeRange.start, dateFrom("2022-06-27"))
@@ -59,14 +59,14 @@ final class AnalyticsHubTimeRangeGeneratorTests: XCTestCase {
         XCTAssertEqual(previousTimeRange.end, dateFrom("2022-06-24"))
     }
 
-    func test_when_time_range_inits_with_today_then_generate_expected_ranges() {
+    func test_when_time_range_inits_with_today_then_generate_expected_ranges() throws {
         // Given
         let currentDate = dateFrom("2022-07-01")
         let timeRange = AnalyticsHubTimeRangeGenerator(selectedTimeRange: .today, currentDate: currentDate)
 
         // When
-        let currentTimeRange = timeRange.currentTimeRange
-        let previousTimeRange = timeRange.previousTimeRange
+        let currentTimeRange = try timeRange.currentTimeRange
+        let previousTimeRange = try timeRange.previousTimeRange
 
         // Then
         XCTAssertEqual(currentTimeRange.start, dateFrom("2022-07-01"))
@@ -76,7 +76,7 @@ final class AnalyticsHubTimeRangeGeneratorTests: XCTestCase {
         XCTAssertEqual(previousTimeRange.end, dateFrom("2022-06-30"))
     }
 
-    func test_when_time_range_inits_with_thisYear_then_generate_expected_descriptions() {
+    func test_when_time_range_inits_with_thisYear_then_generate_expected_descriptions() throws {
         // Given
         let currentDate = dateFrom("2022-07-01")
         let timeRange = AnalyticsHubTimeRangeGenerator(selectedTimeRange: .thisYear, currentDate: currentDate)
@@ -90,7 +90,7 @@ final class AnalyticsHubTimeRangeGeneratorTests: XCTestCase {
         XCTAssertEqual(previousRangeDescription, "Jan 1 - Jul 1, 2021")
     }
 
-    func test_when_time_range_inits_with_thisMonth_then_generate_expected_descriptions() {
+    func test_when_time_range_inits_with_thisMonth_then_generate_expected_descriptions() throws {
         // Given
         let currentDate = dateFrom("2022-07-31")
         let timeRange = AnalyticsHubTimeRangeGenerator(selectedTimeRange: .thisMonth, currentDate: currentDate)
@@ -104,7 +104,7 @@ final class AnalyticsHubTimeRangeGeneratorTests: XCTestCase {
         XCTAssertEqual(previousRangeDescription, "Jun 1 - 30, 2022")
     }
 
-    func test_when_time_range_inits_with_thisWeek_then_generate_expected_descriptions() {
+    func test_when_time_range_inits_with_thisWeek_then_generate_expected_descriptions() throws {
         // Given
         let currentDate = dateFrom("2022-07-29")
         let timeRange = AnalyticsHubTimeRangeGenerator(selectedTimeRange: .thisWeek, currentDate: currentDate)
@@ -118,7 +118,7 @@ final class AnalyticsHubTimeRangeGeneratorTests: XCTestCase {
         XCTAssertEqual(previousRangeDescription, "Jul 18 - 22, 2022")
     }
 
-    func test_when_time_range_inits_with_thisWeek_with_different_months_then_generate_expected_descriptions() {
+    func test_when_time_range_inits_with_thisWeek_with_different_months_then_generate_expected_descriptions() throws {
         // Given
         let currentDate = dateFrom("2022-07-02")
         let timeRange = AnalyticsHubTimeRangeGenerator(selectedTimeRange: .thisWeek, currentDate: currentDate)
@@ -132,7 +132,7 @@ final class AnalyticsHubTimeRangeGeneratorTests: XCTestCase {
         XCTAssertEqual(previousRangeDescription, "Jun 20 - 25, 2022")
     }
 
-    func test_when_time_range_inits_with_today_then_generate_expected_descriptions() {
+    func test_when_time_range_inits_with_today_then_generate_expected_descriptions() throws {
         // Given
         let currentDate = dateFrom("2022-07-01")
         let timeRange = AnalyticsHubTimeRangeGenerator(selectedTimeRange: .today, currentDate: currentDate)

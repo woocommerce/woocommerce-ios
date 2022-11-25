@@ -435,8 +435,10 @@ private extension StoreCreationCoordinator {
 
     @MainActor
     func showPlanPurchaseErrorAlert(from navigationController: UINavigationController, error: Error) {
+        let errorMessage = featureFlagService.isFeatureFlagEnabled(.storeCreationM2WithInAppPurchasesEnabled) ?
+        Localization.PlanPurchaseErrorAlert.defaultErrorMessage: Localization.PlanPurchaseErrorAlert.webPurchaseErrorMessage
         let alertController = UIAlertController(title: Localization.PlanPurchaseErrorAlert.title,
-                                                message: Localization.PlanPurchaseErrorAlert.defaultErrorMessage,
+                                                message: errorMessage,
                                                 preferredStyle: .alert)
         alertController.view.tintColor = .text
         _ = alertController.addCancelActionWithTitle(Localization.StoreCreationErrorAlert.cancelActionTitle) { _ in }
@@ -502,6 +504,10 @@ private extension StoreCreationCoordinator {
             static let defaultErrorMessage = NSLocalizedString(
                 "Please try again and make sure you are signed in to an App Store account eligible for purchase.",
                 comment: "Message of the alert when the WPCOM plan cannot be purchased in the store creation flow."
+            )
+            static let webPurchaseErrorMessage = NSLocalizedString(
+                "Please try again.",
+                comment: "Message of the alert when the WPCOM plan cannot be purchased in a webview in the store creation flow."
             )
             static let cancelActionTitle = NSLocalizedString(
                 "OK",

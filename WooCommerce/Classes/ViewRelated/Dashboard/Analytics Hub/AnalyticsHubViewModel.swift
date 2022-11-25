@@ -57,6 +57,12 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published var timeRangeCard: AnalyticsTimeRangeCardViewModel
 
+    /// Products Card ViewModel
+    ///
+    @Published var productCard = AnalyticsProductCardViewModel(itemsSold: "3,234",
+                                                               delta: "+43%",
+                                                               deltaBackgroundColor: .withColorStudio(.green, shade: .shade50))
+
     // MARK: Private data
 
     /// Order stats for the current selected time period

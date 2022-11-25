@@ -56,29 +56,12 @@ struct AnalyticsReportCard: View {
     }
 }
 
-private struct DeltaTag: View {
-
-    let value: String
-    let backgroundColor: UIColor
-
-    var body: some View {
-        Text(value)
-            .padding(AnalyticsReportCard.Layout.deltaBackgroundPadding)
-            .foregroundColor(Color(.textInverted))
-            .captionStyle()
-            .background(Color(backgroundColor))
-            .cornerRadius(AnalyticsReportCard.Layout.deltaCornerRadius)
-    }
-}
-
 // MARK: Constants
 private extension AnalyticsReportCard {
     enum Layout {
         static let titleSpacing: CGFloat = 24
         static let cardPadding: CGFloat = 16
         static let columnSpacing: CGFloat = 10
-        static let deltaBackgroundPadding = EdgeInsets(top: 2, leading: 8, bottom: 2, trailing: 8)
-        static let deltaCornerRadius: CGFloat = 4.0
     }
 }
 

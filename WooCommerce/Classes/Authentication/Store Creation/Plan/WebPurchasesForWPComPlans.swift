@@ -5,7 +5,7 @@ import struct Yosemite.WPComPlan
 
 /// An `InAppPurchasesForWPComPlansProtocol` implementation for purchasing a WPCOM plan in a webview.
 struct WebPurchasesForWPComPlans {
-    struct Plan: WPComPlanProduct {
+    struct Plan: WPComPlanProduct, Equatable {
         let displayName: String
         let description: String
         let id: String

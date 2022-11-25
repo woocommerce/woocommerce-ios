@@ -45,7 +45,7 @@ protocol ULErrorViewModel {
     ///
     var isSiteAddressViewHidden: Bool { get }
 
-    /// Address of the site with error.
+    /// Address of the site.
     ///
     var siteURL: String { get }
 

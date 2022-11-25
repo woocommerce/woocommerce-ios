@@ -12,7 +12,7 @@ public class AnalyticsHubTimeRangeGenerator {
     private let currentDate: Date
     private let currentCalendar: Calendar
     private let selectionType: SelectionType
-    
+
     private var _currentTimeRange: AnalyticsHubTimeRange? = nil
     private var _previousTimeRange: AnalyticsHubTimeRange? = nil
 

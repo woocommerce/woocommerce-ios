@@ -26,16 +26,12 @@ final class StoreCreationCoordinator: Coordinator {
     /// This property is kept as a lazy var instead of a dependency in the initializer because `InAppPurchasesForWPComPlansManager` is a @MainActor.
     /// If it's passed in the initializer, all call sites have to become @MainActor which results in too many changes.
     @MainActor
-    private lazy var iapManager: InAppPurchasesForWPComPlansProtocol = {
-#if DEBUG
+    private lazy var purchasesManager: InAppPurchasesForWPComPlansProtocol = {
         if featureFlagService.isFeatureFlagEnabled(.storeCreationM2WithInAppPurchasesEnabled) {
             return InAppPurchasesForWPComPlansManager(stores: stores)
         } else {
             return WebPurchasesForWPComPlans(stores: stores)
         }
-#else
-        InAppPurchasesForWPComPlansManager(stores: stores)
-#endif
     }()
 
     @Published private var siteIDFromStoreCreation: Int64?
@@ -54,7 +50,7 @@ final class StoreCreationCoordinator: Coordinator {
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         iapManager: InAppPurchasesForWPComPlansProtocol? = nil) {
+         purchasesManager: InAppPurchasesForWPComPlansProtocol? = nil) {
         self.source = source
         self.navigationController = navigationController
         // Passing the `standard` configuration to include sites without WooCommerce (`isWooCommerceActive = false`).
@@ -68,8 +64,8 @@ final class StoreCreationCoordinator: Coordinator {
         self.featureFlagService = featureFlagService
 
         Task { @MainActor in
-            if let iapManager {
-                self.iapManager = iapManager
+            if let purchasesManager {
+                self.purchasesManager = purchasesManager
             }
         }
     }
@@ -81,17 +77,17 @@ final class StoreCreationCoordinator: Coordinator {
         Task { @MainActor in
             do {
                 presentIAPEligibilityInProgressView()
-                guard await iapManager.inAppPurchasesAreSupported() else {
+                guard await purchasesManager.inAppPurchasesAreSupported() else {
                     throw PlanPurchaseError.iapNotSupported
                 }
-                let products = try await iapManager.fetchProducts()
+                let products = try await purchasesManager.fetchProducts()
                 let expectedPlanIdentifier = featureFlagService.isFeatureFlagEnabled(.storeCreationM2WithInAppPurchasesEnabled) ?
                 Constants.iapPlanIdentifier: Constants.webPlanIdentifier
                 guard let product = products.first,
                       product.id == expectedPlanIdentifier else {
                     throw PlanPurchaseError.noMatchingProduct
                 }
-                guard try await iapManager.userIsEntitledToProduct(with: product.id) == false else {
+                guard try await purchasesManager.userIsEntitledToProduct(with: product.id) == false else {
                     throw PlanPurchaseError.productNotEligible
                 }
                 navigationController.dismiss(animated: true) { [weak self] in
@@ -325,7 +321,7 @@ private extension StoreCreationCoordinator {
                       siteID: Int64,
                       planToPurchase: WPComPlanProduct) async {
         do {
-            let result = try await iapManager.purchaseProduct(with: planToPurchase.id, for: siteID)
+            let result = try await purchasesManager.purchaseProduct(with: planToPurchase.id, for: siteID)
 
             if featureFlagService.isFeatureFlagEnabled(.storeCreationM2WithInAppPurchasesEnabled) {
                 switch result {

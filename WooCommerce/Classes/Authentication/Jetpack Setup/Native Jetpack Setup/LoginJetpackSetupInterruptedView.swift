@@ -52,7 +52,7 @@ struct LoginJetpackSetupInterruptedView: View {
                     .foregroundColor(Color(uiColor: .text))
                     .padding(Constants.contentSpacing)
                     .overlay {
-                        RoundedRectangle(cornerRadius: 8)
+                        RoundedRectangle(cornerRadius: 4)
                             .stroke(Color(.separator), lineWidth: 0.5)
                     }
                     .padding(.bottom, Constants.contentSpacing)

@@ -171,9 +171,9 @@ private extension ULErrorViewController {
             return
         }
         siteAddressContainerView.isHidden = false
-        siteAddressContainerView.layer.borderWidth = 1
+        siteAddressContainerView.layer.borderWidth = 0.5
         siteAddressContainerView.layer.borderColor = UIColor.border.cgColor
-        siteAddressContainerView.layer.cornerRadius = 8
+        siteAddressContainerView.layer.cornerRadius = 4
         siteAddressContainerView.clipsToBounds = true
 
         siteAddressLabel.applyBodyStyle()

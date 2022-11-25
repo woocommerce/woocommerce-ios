@@ -50,7 +50,7 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
         switch action {
         case .observeConnectedReaders(let onCompletion):
             onCompletion(connectedReaders)
-        case .startCardReaderDiscovery(_, let onReaderDiscovered, let onError):
+        case .startCardReaderDiscovery(_, _, let onReaderDiscovered, let onError):
             guard !failDiscovery else {
                 onError(MockErrors.discoveryFailure)
                 return

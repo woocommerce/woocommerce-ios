@@ -118,23 +118,24 @@ final class StoreCreationCoordinatorTests: XCTestCase {
         assertThat(storeCreationNavigationController.topViewController, isAnInstanceOf: StoreNameFormHostingController.self)
     }
 
-    func test_InProgressViewController_is_first_presented_when_fetching_iap_products() throws {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isStoreCreationM2Enabled: true)
-        let iapManager = MockInAppPurchases(fetchProductsDuration: 1)
-        let coordinator = StoreCreationCoordinator(source: .storePicker,
-                                                   navigationController: navigationController,
-                                                   featureFlagService: featureFlagService,
-                                                   iapManager: iapManager)
-
-        // When
-        coordinator.start()
-
-        // Then
-        waitUntil {
-            self.navigationController.presentedViewController is InProgressViewController
-        }
-    }
+    // TODO: uncomment this test case after the flakiness is fixed
+//    func test_InProgressViewController_is_first_presented_when_fetching_iap_products() throws {
+//        // Given
+//        let featureFlagService = MockFeatureFlagService(isStoreCreationM2Enabled: true)
+//        let iapManager = MockInAppPurchases(fetchProductsDuration: 1)
+//        let coordinator = StoreCreationCoordinator(source: .storePicker,
+//                                                   navigationController: navigationController,
+//                                                   featureFlagService: featureFlagService,
+//                                                   iapManager: iapManager)
+//
+//        // When
+//        coordinator.start()
+//
+//        // Then
+//        waitUntil {
+//            self.navigationController.presentedViewController is InProgressViewController
+//        }
+//    }
 
     func test_AuthenticatedWebViewController_is_presented_when_no_matching_iap_product() throws {
         // Given

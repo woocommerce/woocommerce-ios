@@ -73,15 +73,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // ever new source code is injected into our application.
         Inject.animation = .interactiveSpring()
 
-        Task { @MainActor in
-            await startABTesting()
-
-            // Upgrade check...
-            // This has to be called after A/B testing setup in `startABTesting` if any of the Tracks events
-            // in `checkForUpgrades` is used as an exposure event for an experiment.
-            // For example, `application_installed` could be the exposure event for logged-out experiments.
-            checkForUpgrades()
-        }
+        // Upgrade check...
+        // This has to be called after A/B testing setup in `setupAnalytics` (which calls
+        // `WooAnalytics.refreshUserData`) if any of the Tracks events in `checkForUpgrades` is
+        // used as an exposure event for an experiment.
+        // For example, `application_installed` could be the exposure event for logged-out experiments.
+        checkForUpgrades()
 
         return true
     }
@@ -370,13 +367,6 @@ private extension AppDelegate {
         if ProcessConfiguration.shouldSimulatePushNotification {
             UNUserNotificationCenter.current().requestAuthorization(options: [.alert]) { _, _ in }
         }
-    }
-
-    /// Starts the AB testing platform and fetches test assignments for the current context
-    ///
-    func startABTesting() async {
-        let context: ExperimentContext = ServiceLocator.stores.isAuthenticated ? .loggedIn : .loggedOut
-        await ABTest.start(for: context)
     }
 
     /// Tracks if the application was opened via a widget tap.

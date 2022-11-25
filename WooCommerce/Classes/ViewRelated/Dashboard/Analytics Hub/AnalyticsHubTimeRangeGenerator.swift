@@ -101,34 +101,31 @@ public class AnalyticsHubTimeRangeGenerator {
             guard let oneDayAgo = currentCalendar.date(byAdding: .day, value: -1, to: currentDate) else {
                 return nil
             }
+
             return AnalyticsHubTimeRange(start: oneDayAgo.startOfDay(timezone: currentTimezone), end: oneDayAgo)
 
         case .weekToDate:
-            guard let oneWeekAgo = currentCalendar.date(byAdding: .day, value: -7, to: currentDate) else {
+            guard let oneWeekAgo = currentCalendar.date(byAdding: .day, value: -7, to: currentDate),
+                  let lastWeekStart = oneWeekAgo.startOfWeek(timezone: currentTimezone, calendar: currentCalendar) else {
                 return nil
             }
-            guard let lastWeekStart = oneWeekAgo.startOfWeek(timezone: currentTimezone, calendar: currentCalendar) else {
-                return nil
-            }
+
             return AnalyticsHubTimeRange(start: lastWeekStart, end: oneWeekAgo)
 
         case .monthToDate:
-            guard let oneMonthAgo = currentCalendar.date(byAdding: .month, value: -1, to: currentDate) else {
-                return nil
-            }
-            guard let lastMonthStart = oneMonthAgo.startOfMonth(timezone: currentTimezone) else {
+            guard let oneMonthAgo = currentCalendar.date(byAdding: .month, value: -1, to: currentDate),
+                  let lastMonthStart = oneMonthAgo.startOfMonth(timezone: currentTimezone) else {
                 return nil
             }
 
             return AnalyticsHubTimeRange(start: lastMonthStart, end: oneMonthAgo)
 
         case .yearToDate:
-            guard let oneYearAgo = currentCalendar.date(byAdding: .year, value: -1, to: currentDate) else {
+            guard let oneYearAgo = currentCalendar.date(byAdding: .year, value: -1, to: currentDate),
+                  let lastYearStart = oneYearAgo.startOfYear(timezone: currentTimezone) else {
                 return nil
             }
-            guard let lastYearStart = oneYearAgo.startOfYear(timezone: currentTimezone) else {
-                return nil
-            }
+
             return AnalyticsHubTimeRange(start: lastYearStart, end: oneYearAgo)
         }
     }

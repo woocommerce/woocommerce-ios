@@ -40,7 +40,7 @@ final class LoginJetpackSetupViewModel: ObservableObject {
     }
 
     @Published private(set) var currentSetupStep: JetpackInstallStep?
-    @Published private(set) var currentConnectionStep: ConnectionStep = .pending
+    @Published private(set) var currentConnectionStep: ConnectionStep?
     @Published private(set) var jetpackConnectionURL: URL?
     @Published var shouldPresentWebView = false
     @Published var jetpackConnectionInterrupted = false
@@ -99,6 +99,13 @@ final class LoginJetpackSetupViewModel: ObservableObject {
         self.storeNavigationHandler = onStoreNavigation
     }
 
+    func isSetupStepFailed(_ step: JetpackInstallStep) -> Bool {
+        guard let currentStep = currentSetupStep else {
+            return false
+        }
+        return step == currentStep && setupFailed
+    }
+
     func isSetupStepInProgress(_ step: JetpackInstallStep) -> Bool {
         guard let currentStep = currentSetupStep else {
             return false
@@ -132,7 +139,7 @@ final class LoginJetpackSetupViewModel: ObservableObject {
         setupErrorDetail = nil
 
         currentSetupStep = nil
-        currentConnectionStep = .pending
+        currentConnectionStep = nil
         startSetup()
     }
 }
@@ -301,14 +308,11 @@ extension LoginJetpackSetupViewModel {
     /// Steps for the Jetpack connection process.
     ///
     enum ConnectionStep {
-        case pending
         case inProgress
         case authorized
 
         var title: String {
             switch self {
-            case .pending:
-                return LoginJetpackSetupViewModel.Localization.approvalRequired
             case .inProgress:
                 return LoginJetpackSetupViewModel.Localization.validating
             case .authorized:
@@ -316,19 +320,8 @@ extension LoginJetpackSetupViewModel {
             }
         }
 
-        var imageName: String? {
-            switch self {
-            case .pending:
-                return "info.circle.fill"
-            case .inProgress, .authorized:
-                return nil
-            }
-        }
-
         var tintColor: UIColor {
             switch self {
-            case .pending:
-                return .wooOrange
             case .inProgress:
                 return .secondaryLabel
             case .authorized:
@@ -350,16 +343,12 @@ extension LoginJetpackSetupViewModel {
             "Please wait while we connect your store %1$@ with Jetpack.",
             comment: "Message on the Jetpack setup screen. The %1$@ is the site address."
         )
-        static let approvalRequired = NSLocalizedString(
-            "Approval required",
-            comment: "Message to be displayed when a Jetpack connection is pending approval"
-        )
         static let validating = NSLocalizedString(
             "Validating",
             comment: "Message to be displayed when a Jetpack connection is being authorized"
         )
         static let connectionApproved = NSLocalizedString(
-            "Connection approved",
+            "Connected",
             comment: "Message to be displayed when a Jetpack connection has been authorized"
         )
         static let permissionErrorMessage = NSLocalizedString(

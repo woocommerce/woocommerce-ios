@@ -49,7 +49,5 @@
 	<array>
 		<string>$(AppIdentifierPrefix)com.automattic.woocommerce</string>
 	</array>
-	<key>com.apple.developer.proximity-reader.payment.acceptance</key>
-	<true/>
 </dict>
 </plist>

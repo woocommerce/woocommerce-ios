@@ -131,11 +131,6 @@ public enum FeatureFlag: Int {
     case performanceMonitoringViewController
 
     /// Temporary feature flag for the native Jetpack setup flow.
-    /// TODO-8075: replace this with A/B test.
-    ///
-    case nativeJetpackSetupFlow
-
-    /// Temporary feature flag for the native Jetpack setup flow.
     ///
     case analyticsHub
 }

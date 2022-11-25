@@ -761,8 +761,7 @@ private extension AuthenticationManager {
         }
 
         // Shows the native Jetpack flow during the site discovery flow.
-        // TODO-8075: replace feature flag with A/B testing
-        if featureFlagService.isFeatureFlagEnabled(.nativeJetpackSetupFlow) {
+        if ABTest.nativeJetpackSetupFlow.variation != .control {
             return jetpackSetupUI(for: site.url,
                                   connectionMissingOnly: site.hasJetpack && site.isJetpackActive,
                                   in: navigationController)

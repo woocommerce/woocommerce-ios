@@ -1113,6 +1113,12 @@ extension UIImage {
     static var jetpackSetupInterruptedImage: UIImage {
         UIImage(named: "woo-jetpack-setup-interrupted")!
     }
+
+    /// Calendar Icon
+    ///
+    static var calendar: UIImage {
+        return UIImage.gridicon(.calendar)
+    }
 }
 
 private extension UIImage {

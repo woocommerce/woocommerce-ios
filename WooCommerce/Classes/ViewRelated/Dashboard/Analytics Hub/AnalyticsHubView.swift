@@ -27,18 +27,16 @@ struct AnalyticsHubView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: Layout.vertialSpacing) {
+            VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
                 VStack(spacing: Layout.dividerSpacing) {
                     Divider()
-                    Text("Placeholder for Time Range Selection")
-                        .padding(.leading)
+
+                    AnalyticsTimeRangeCard(viewModel: viewModel.timeRangeCard)
                         .padding(.horizontal, insets: safeAreaInsets)
-                        .frame(maxWidth: .infinity, minHeight: 84, alignment: .leading)
                         .background(Color(uiColor: .listForeground))
 
                     Divider()
                 }
-
 
                 VStack(spacing: Layout.dividerSpacing) {
                     Divider()
@@ -78,7 +76,7 @@ private extension AnalyticsHubView {
     }
 
     struct Layout {
-        static let vertialSpacing: CGFloat = 24.0
+        static let verticalSpacing: CGFloat = 24.0
         static let dividerSpacing: CGFloat = .zero
     }
 }

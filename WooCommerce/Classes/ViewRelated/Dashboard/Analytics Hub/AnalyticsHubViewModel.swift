@@ -47,6 +47,12 @@ final class AnalyticsHubViewModel: ObservableObject {
                                                              trailingDelta: Constants.placeholderDelta.string,
                                                              trailingDeltaColor: Constants.deltaColor(for: Constants.placeholderDelta.direction))
 
+    /// Time Range ViewModel
+    ///
+    @Published var timeRangeCard = AnalyticsTimeRangeCardViewModel(selectedRangeTitle: "Year to Date",
+                                                                   currentRangeSubtitle: "Jan 1 - Nov 23, 2022",
+                                                                   previousRangeSubtitle: "Jan 1 - Nov 23, 2021")
+
     // MARK: Private data
 
     /// Order stats for the current selected time period

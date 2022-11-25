@@ -36,10 +36,14 @@ struct LoginJetpackSetupInterruptedView: View {
 
                     // Site address info
                     HStack(spacing: Constants.contentSpacing) {
-                        Image(systemName: "globe.americas.fill")
-                            .resizable()
-                            .frame(width: Constants.faviconSize * scale, height: Constants.faviconSize * scale)
-                            .scaledToFit()
+                        AsyncImage(url: URL(string: siteURL + Constants.favicoPath)) { image in
+                            image.resizable()
+                        } placeholder: {
+                            Image(systemName: "globe.americas.fill").resizable()
+                        }
+                        .frame(width: Constants.faviconSize * scale, height: Constants.faviconSize * scale)
+                        .scaledToFit()
+
                         Text(siteURL.trimHTTPScheme())
                             .bodyStyle()
                             .multilineTextAlignment(.leading)
@@ -110,6 +114,7 @@ extension LoginJetpackSetupInterruptedView {
     enum Constants {
         static let contentSpacing: CGFloat = 16
         static let faviconSize: CGFloat = 20
+        static let favicoPath = "/favicon.ico"
     }
 }
 

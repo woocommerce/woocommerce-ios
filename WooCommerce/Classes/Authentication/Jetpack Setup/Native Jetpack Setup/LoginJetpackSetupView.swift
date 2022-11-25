@@ -22,7 +22,10 @@ final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpack
         }
 
         rootView.supportHandler = { [weak self] in
-            self?.presentSupport()
+            guard let self else { return }
+
+            self.analytics.track(.loginJetpackSetupScreenGetSupportTapped, withProperties: self.viewModel.currentSetupStep?.analyticsDescription)
+            self.presentSupport()
         }
 
         rootView.cancellationHandler = dismissView
@@ -195,7 +198,6 @@ struct LoginJetpackSetupView: View {
 
                         // Support button
                         Button {
-                            // TODO: add tracks?
                             supportHandler()
                         } label: {
                             Label {

@@ -38,7 +38,7 @@ final class JetpackSetupRequiredViewModel: ULErrorViewModel {
         let title = connectionOnly ? Localization.connectionErrorMessage : Localization.setupErrorMessage
         let message = NSMutableAttributedString(string: title, attributes: [.font: UIFont.title3, .foregroundColor: UIColor.text])
 
-        let subtitle = connectionOnly ? Localization.connectionSubtitle : Localization.setupSubtitle
+        let subtitle = Localization.setupSubtitle
         let subtitleAttributedString = NSAttributedString(string: "\n\n" + subtitle,
                                                           attributes: [.font: UIFont.body,
                                                                        .foregroundColor: UIColor.secondaryLabel])
@@ -160,12 +160,8 @@ extension JetpackSetupRequiredViewModel {
             comment: "Error message on the Jetpack setup required screen when Jetpack connection is missing."
         )
         static let setupSubtitle = NSLocalizedString(
-            "You’ll need your store credentials to begin the installation.",
+            "Have your store credentials ready.",
             comment: "Subtitle on the Jetpack setup required screen"
-        )
-        static let connectionSubtitle = NSLocalizedString(
-            "You’ll need your store credentials to begin the connection.",
-            comment: "Subtitle on the Jetpack setup required screen when only Jetpack connection is missing"
         )
         static let helpBarButtonItemTitle = NSLocalizedString("Help", comment: "Help button on Jetpack setup required screen.")
         static let termsContent = NSLocalizedString(

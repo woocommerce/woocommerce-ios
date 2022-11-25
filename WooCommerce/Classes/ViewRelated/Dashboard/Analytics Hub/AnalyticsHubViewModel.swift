@@ -9,10 +9,20 @@ final class AnalyticsHubViewModel: ObservableObject {
     private let siteID: Int64
     private let stores: StoresManager
 
+    /// Time Range control of the Analytics Hub
+    ///
+    private let timeRangeController: AnalyticsHubTimeRangeGenerator
+
     init(siteID: Int64,
+         statsTimeRange: StatsTimeRangeV4,
          stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.stores = stores
+
+        self.timeRangeController = AnalyticsHubTimeRangeGenerator(selectedTimeRange: statsTimeRange)
+        self.timeRangeCard = AnalyticsTimeRangeCardViewModel(selectedRangeTitle: timeRangeController.selectionDescription,
+                                                             currentRangeSubtitle: timeRangeController.currentRangeDescription,
+                                                             previousRangeSubtitle: timeRangeController.previousRangeDescription)
 
         Task.init {
             do {
@@ -49,9 +59,7 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Time Range ViewModel
     ///
-    @Published var timeRangeCard = AnalyticsTimeRangeCardViewModel(selectedRangeTitle: "Year to Date",
-                                                                   currentRangeSubtitle: "Jan 1 - Nov 23, 2022",
-                                                                   previousRangeSubtitle: "Jan 1 - Nov 23, 2021")
+    @Published var timeRangeCard: AnalyticsTimeRangeCardViewModel
 
     // MARK: Private data
 
@@ -62,17 +70,6 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Order stats for the previous time period (for comparison)
     ///
     @Published private var previousOrderStats: OrderStatsV4? = nil
-
-    /// Time Range control of the Analytics Hub
-    ///
-    private let timeRangeController: AnalyticsHubTimeRangeGenerator
-
-    init(statsTimeRange: StatsTimeRangeV4) {
-        self.timeRangeController = AnalyticsHubTimeRangeGenerator(selectedTimeRange: statsTimeRange)
-        self.timeRangeCard = AnalyticsTimeRangeCardViewModel(selectedRangeTitle: timeRangeController.selectionDescription,
-                                                             currentRangeSubtitle: timeRangeController.currentRangeDescription,
-                                                             previousRangeSubtitle: timeRangeController.previousRangeDescription)
-    }
 }
 
 private extension AnalyticsHubViewModel {

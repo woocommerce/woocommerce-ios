@@ -19,7 +19,7 @@ public enum ABTest: String, CaseIterable {
     /// A/B test to measure the sign-in success rate when native Jetpack installation experience is enabled
     /// Experiment ref: pbxNRc-29W-p2
     ///
-    case abTestNativeJetpackSetupFlow = "woocommerceios_login_jetpack_setup_flow"
+    case nativeJetpackSetupFlow = "woocommerceios_login_jetpack_setup_flow"
 
     /// A/B test for the Products Onboarding banner on the My Store dashboard.
     /// Experiment ref: pbxNRc-26F-p2
@@ -39,7 +39,7 @@ public enum ABTest: String, CaseIterable {
     /// When adding a new experiment, add it to the appropriate case depending on its context (logged-in or logged-out experience).
     public var context: ExperimentContext {
         switch self {
-        case .productsOnboardingBanner, .productsOnboardingTemplateProducts, .abTestNativeJetpackSetupFlow:
+        case .productsOnboardingBanner, .productsOnboardingTemplateProducts, .nativeJetpackSetupFlow:
             return .loggedIn
         case .aaTestLoggedOut, .abTestLoginWithWPComOnly:
             return .loggedOut

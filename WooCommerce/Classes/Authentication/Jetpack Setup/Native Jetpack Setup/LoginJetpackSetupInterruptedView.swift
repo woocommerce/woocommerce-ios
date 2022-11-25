@@ -36,15 +36,15 @@ struct LoginJetpackSetupInterruptedView: View {
 
                     // Site address info
                     HStack(spacing: Constants.contentSpacing) {
-                        Spacer()
                         Image(systemName: "globe.americas.fill")
                             .resizable()
                             .frame(width: Constants.faviconSize * scale, height: Constants.faviconSize * scale)
                             .scaledToFit()
                         Text(siteURL.trimHTTPScheme())
                             .bodyStyle()
-                        Spacer()
+                            .multilineTextAlignment(.leading)
                     }
+                    .frame(maxWidth: .infinity)
                     .foregroundColor(Color(uiColor: .text))
                     .padding(Constants.contentSpacing)
                     .overlay {
@@ -115,8 +115,8 @@ extension LoginJetpackSetupInterruptedView {
 
 struct LoginJetpackSetupInterruptedView_Previews: PreviewProvider {
     static var previews: some View {
-        LoginJetpackSetupInterruptedView(siteURL: "test.com", onSupport: {}, onContinue: {}, onCancellation: {})
-        LoginJetpackSetupInterruptedView(siteURL: "test.com", onSupport: {}, onContinue: {}, onCancellation: {})
+        LoginJetpackSetupInterruptedView(siteURL: "this-is-a-really-really-long-long-long-store-address.com", onSupport: {}, onContinue: {}, onCancellation: {})
+        LoginJetpackSetupInterruptedView(siteURL: "this-is-an-address.com", onSupport: {}, onContinue: {}, onCancellation: {})
             .previewInterfaceOrientation(.landscapeLeft)
     }
 }

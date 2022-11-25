@@ -52,6 +52,7 @@ public enum ABTest: String, CaseIterable {
 public extension ABTest {
     /// Start the AB Testing platform if any experiment exists for the provided context
     ///
+    @MainActor
     static func start(for context: ExperimentContext) async {
         let experiments = ABTest.allCases.filter { $0.context == context }
 

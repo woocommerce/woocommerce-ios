@@ -40,10 +40,8 @@ struct AnalyticsReportCard: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
 
                         AnalyticsLineChart(dataPoints: leadingChartData, lineChartColor: leadingDeltaColor)
-                            .aspectRatio(Layout.chartAspectRatio, contentMode: .fit)
-                            .frame(maxWidth: .infinity, alignment: .trailing)
+                            .frame(maxWidth: .infinity, maxHeight: Layout.chartMaxHeight, alignment: .trailing)
                     }
-                    .fixedSize(horizontal: false, vertical: true)
 
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -62,10 +60,8 @@ struct AnalyticsReportCard: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
 
                         AnalyticsLineChart(dataPoints: trailingChartData, lineChartColor: trailingDeltaColor)
-                            .aspectRatio(Layout.chartAspectRatio, contentMode: .fit)
-                            .frame(maxWidth: .infinity, alignment: .trailing)
+                            .frame(maxWidth: .infinity, maxHeight: Layout.chartMaxHeight, alignment: .trailing)
                     }
-                    .fixedSize(horizontal: false, vertical: true)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -80,7 +76,7 @@ private extension AnalyticsReportCard {
         static let titleSpacing: CGFloat = 24
         static let cardPadding: CGFloat = 16
         static let columnSpacing: CGFloat = 10
-        static let chartAspectRatio: CGFloat = 2.2
+        static let chartMaxHeight: CGFloat = 48
     }
 }
 

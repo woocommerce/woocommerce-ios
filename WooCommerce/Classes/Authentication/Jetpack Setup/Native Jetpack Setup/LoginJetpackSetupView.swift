@@ -49,7 +49,8 @@ final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpack
 
     @objc
     private func dismissView() {
-        analytics.track(.loginJetpackSetupScreenDismissed)
+        analytics.track(.loginJetpackSetupScreenDismissed,
+                        withProperties: viewModel.currentSetupStep?.analyticsDescription)
         dismiss(animated: true)
     }
 

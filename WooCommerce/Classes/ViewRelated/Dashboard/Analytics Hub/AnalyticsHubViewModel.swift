@@ -8,11 +8,17 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     private let siteID: Int64
     private let stores: StoresManager
+    private let timeRangeGenerator: AnalyticsHubTimeRangeGenerator
 
     init(siteID: Int64,
+         statsTimeRange: StatsTimeRangeV4,
          stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.stores = stores
+        self.timeRangeGenerator = AnalyticsHubTimeRangeGenerator(selectedTimeRange: statsTimeRange)
+        self.timeRangeCard = AnalyticsTimeRangeCardViewModel(selectedRangeTitle: timeRangeGenerator.selectionDescription,
+                                                             currentRangeSubtitle: timeRangeGenerator.generateCurrentRangeDescription(),
+                                                             previousRangeSubtitle: timeRangeGenerator.generatePreviousRangeDescription())
 
         Task.init {
             do {
@@ -49,9 +55,7 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Time Range ViewModel
     ///
-    @Published var timeRangeCard = AnalyticsTimeRangeCardViewModel(selectedRangeTitle: "Year to Date",
-                                                                   currentRangeSubtitle: "Jan 1 - Nov 23, 2022",
-                                                                   previousRangeSubtitle: "Jan 1 - Nov 23, 2021")
+    @Published var timeRangeCard: AnalyticsTimeRangeCardViewModel
 
     /// Products Card ViewModel
     ///
@@ -74,15 +78,14 @@ private extension AnalyticsHubViewModel {
 
     @MainActor
     func retrieveOrderStats() async throws {
-        // TODO: get dates from the selected period
-        let currentMonthDate = Date()
-        let previousMonthDate = Calendar.current.date(byAdding: .month, value: -1, to: Date())!
+        let currentTimeRange = try timeRangeGenerator.unwrapCurrentTimeRange()
+        let previousTimeRange = try timeRangeGenerator.unwrapPreviousTimeRange()
 
-        async let currentPeriodRequest = retrieveStats(earliestDateToInclude: currentMonthDate.startOfMonth(timezone: .current),
-                                                       latestDateToInclude: currentMonthDate.endOfMonth(timezone: .current),
+        async let currentPeriodRequest = retrieveStats(earliestDateToInclude: currentTimeRange.start,
+                                                       latestDateToInclude: currentTimeRange.end,
                                                        forceRefresh: true)
-        async let previousPeriodRequest = retrieveStats(earliestDateToInclude: previousMonthDate.startOfMonth(timezone: .current),
-                                                        latestDateToInclude: previousMonthDate.endOfMonth(timezone: .current),
+        async let previousPeriodRequest = retrieveStats(earliestDateToInclude: previousTimeRange.start,
+                                                        latestDateToInclude: previousTimeRange.end,
                                                         forceRefresh: true)
         let (currentPeriodStats, previousPeriodStats) = try await (currentPeriodRequest, previousPeriodRequest)
         self.currentOrderStats = currentPeriodStats

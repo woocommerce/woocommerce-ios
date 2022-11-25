@@ -434,6 +434,28 @@ final class AuthenticationManagerTests: XCTestCase {
         let topController = navigationController.topViewController
         XCTAssertTrue(topController is ULAccountMismatchViewController || topController is ULErrorViewController)
     }
+
+    func test_troubleshootSite_tracks_site_discovery_event() throws {
+        // Given
+        let navigationController = UINavigationController()
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+
+        let siteInfo = siteInfo(exists: true, hasWordPress: true, isWordPressCom: true, hasJetpack: true, isJetpackActive: true, isJetpackConnected: true)
+        let storage = MockStorageManager()
+        let manager = AuthenticationManager(storageManager: storage, analytics: analytics)
+
+        // When
+        manager.troubleshootSite(siteInfo, in: navigationController)
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.sitePickerSiteDiscovery.rawValue])
+        XCTAssertTrue(try XCTUnwrap(analyticsProvider.receivedProperties.first?["has_wordpress"] as? Bool))
+        XCTAssertTrue(try XCTUnwrap(analyticsProvider.receivedProperties.first?["is_wpcom"] as? Bool))
+        XCTAssertTrue(try XCTUnwrap(analyticsProvider.receivedProperties.first?["is_jetpack_installed"] as? Bool))
+        XCTAssertTrue(try XCTUnwrap(analyticsProvider.receivedProperties.first?["is_jetpack_active"] as? Bool))
+        XCTAssertTrue(try XCTUnwrap(analyticsProvider.receivedProperties.first?["is_jetpack_connected"] as? Bool))
+    }
 }
 
 private extension AuthenticationManagerTests {

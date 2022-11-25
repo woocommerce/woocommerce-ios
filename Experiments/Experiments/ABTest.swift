@@ -16,6 +16,11 @@ public enum ABTest: String, CaseIterable {
     ///
     case abTestLoginWithWPComOnly = "woocommerceios_login_wpcom_only"
 
+    /// A/B test to measure the sign-in success rate when native Jetpack installation experience is enabled
+    /// Experiment ref: pbxNRc-29W-p2
+    ///
+    case nativeJetpackSetupFlow = "woocommerceios_login_jetpack_setup_flow"
+
     /// A/B test for the Products Onboarding banner on the My Store dashboard.
     /// Experiment ref: pbxNRc-26F-p2
     case productsOnboardingBanner = "woocommerceios_products_onboarding_first_product_banner"
@@ -34,7 +39,7 @@ public enum ABTest: String, CaseIterable {
     /// When adding a new experiment, add it to the appropriate case depending on its context (logged-in or logged-out experience).
     public var context: ExperimentContext {
         switch self {
-        case .productsOnboardingBanner, .productsOnboardingTemplateProducts:
+        case .productsOnboardingBanner, .productsOnboardingTemplateProducts, .nativeJetpackSetupFlow:
             return .loggedIn
         case .aaTestLoggedOut, .abTestLoginWithWPComOnly:
             return .loggedOut
@@ -47,6 +52,7 @@ public enum ABTest: String, CaseIterable {
 public extension ABTest {
     /// Start the AB Testing platform if any experiment exists for the provided context
     ///
+    @MainActor
     static func start(for context: ExperimentContext) async {
         let experiments = ABTest.allCases.filter { $0.context == context }
 

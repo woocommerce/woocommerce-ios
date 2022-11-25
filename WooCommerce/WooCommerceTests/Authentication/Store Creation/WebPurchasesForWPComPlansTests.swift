@@ -46,7 +46,6 @@ final class WebPurchasesForWPComPlansTests: XCTestCase {
             }
         }
 
-        // When
         await assertThrowsError({
             // When
             _ = try await webPurchases.fetchProducts()
@@ -81,7 +80,6 @@ final class WebPurchasesForWPComPlansTests: XCTestCase {
             }
         }
 
-        // When
         await assertThrowsError({
             // When
             _ = try await webPurchases.purchaseProduct(with: "productID", for: 134)
@@ -97,6 +95,7 @@ final class WebPurchasesForWPComPlansTests: XCTestCase {
         // When
         let userIsEntitledToProduct = try await webPurchases.userIsEntitledToProduct(with: "1021")
 
+        // Then
         XCTAssertFalse(userIsEntitledToProduct)
     }
 
@@ -106,6 +105,7 @@ final class WebPurchasesForWPComPlansTests: XCTestCase {
         // When
         let inAppPurchasesAreSupported = await webPurchases.inAppPurchasesAreSupported()
 
+        // Then
         XCTAssertTrue(inAppPurchasesAreSupported)
     }
 }

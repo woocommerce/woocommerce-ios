@@ -42,7 +42,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .justInTimeMessagesOnDashboard:
             return true
         case .systemStatusReportInSupportRequest:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .performanceMonitoring,
                 .performanceMonitoringCoreData,
                 .performanceMonitoringFileIO,

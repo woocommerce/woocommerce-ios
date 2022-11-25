@@ -6,6 +6,9 @@ struct AnalyticsHubTimeRange {
     let end: Date
 }
 
+/// Main source of time ranges of the Analytics Hub, responsible for generating the current and previous dates
+/// for a given Date and range Type alongside their UI descriptions
+///
 public class AnalyticsHubTimeRangeGenerator {
 
     private let currentTimezone = TimeZone.autoupdatingCurrent
@@ -56,6 +59,7 @@ public class AnalyticsHubTimeRangeGenerator {
         selectionType.description
     }
 
+    //TODO: abandon usage of the ISO 8601 Calendar and build one based on the Site calendar configuration
     init(selectedTimeRange: StatsTimeRangeV4,
          currentDate: Date = Date(),
          currentCalendar: Calendar = Calendar(identifier: .iso8601)) {
@@ -149,6 +153,7 @@ public class AnalyticsHubTimeRangeGenerator {
     }
 }
 
+// MARK: - Constants
 private extension AnalyticsHubTimeRangeGenerator {
 
     enum TimeRangeGeneratorError: Error {
@@ -192,11 +197,11 @@ private extension AnalyticsHubTimeRangeGenerator {
     }
 
     enum Localization {
-        static let today = NSLocalizedString("Today", comment: "Today")
-        static let weekToDate = NSLocalizedString("Week to Date", comment: "Week to Date")
-        static let monthToDate = NSLocalizedString("Month to Date", comment: "Month to Date")
-        static let yearToDate = NSLocalizedString("Year to Date", comment: "Year to Date")
-        static let noCurrentPeriodAvailable = NSLocalizedString("No current period available", comment: "")
-        static let noPreviousPeriodAvailable = NSLocalizedString("No previous period available", comment: "")
+        static let today = NSLocalizedString("Today", comment: "Title of the Analytics Hub Today's selection range")
+        static let weekToDate = NSLocalizedString("Week to Date", comment: "Title of the Analytics Hub Week to Date selection range")
+        static let monthToDate = NSLocalizedString("Month to Date", comment: "Title of the Analytics Hub Month to Date selection range")
+        static let yearToDate = NSLocalizedString("Year to Date", comment: "Title of the Analytics Hub Year to Date selection range")
+        static let noCurrentPeriodAvailable = NSLocalizedString("No current period available", comment: "A error message when it's not possible to acquire the Analytics Hub current selection range")
+        static let noPreviousPeriodAvailable = NSLocalizedString("No previous period available", comment: "A error message when it's not possible to acquire the Analytics Hub previous selection range")
     }
 }

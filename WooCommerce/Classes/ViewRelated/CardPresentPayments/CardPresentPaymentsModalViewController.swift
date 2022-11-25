@@ -104,8 +104,8 @@ private extension CardPresentPaymentsModalViewController {
     func createLoadingIndicator() {
         let loadingIndicator = ProgressView()
             .progressViewStyle(IndefiniteCircularProgressViewStyle(size: 96.0))
-            .background(Color(.tertiarySystemBackground))
         let host = ConstraintsUpdatingHostingController(rootView: loadingIndicator)
+        host.view.backgroundColor = .tertiarySystemBackground
         add(host)
 
         guard let index = mainStackView.arrangedSubviews.firstIndex(of: imageView) else {

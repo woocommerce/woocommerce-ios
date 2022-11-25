@@ -506,7 +506,7 @@ private extension StoreCreationCoordinator {
                 comment: "Message of the alert when the WPCOM plan cannot be purchased in the store creation flow."
             )
             static let webPurchaseErrorMessage = NSLocalizedString(
-                "Please try again.",
+                "Please try again, or exit the screen and check back on your store if you previously left the checkout screen while payment is in progress.",
                 comment: "Message of the alert when the WPCOM plan cannot be purchased in a webview in the store creation flow."
             )
             static let cancelActionTitle = NSLocalizedString(

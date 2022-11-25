@@ -60,7 +60,6 @@ final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpack
 
         let webViewModel = JetpackConnectionWebViewModel(initialURL: connectionURL,
                                                          siteURL: viewModel.siteURL,
-                                                         title: Localization.approveConnection,
                                                          completion: { [weak self] in
             guard let self else { return }
             self.viewModel.shouldPresentWebView = false
@@ -89,7 +88,6 @@ final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpack
 private extension LoginJetpackSetupHostingController {
     enum Localization {
         static let cancel = NSLocalizedString("Cancel", comment: "Button to dismiss the site credential login screen")
-        static let approveConnection = NSLocalizedString("Approve connection", comment: "Title of the web view to approve Jetpack connection")
     }
 }
 
@@ -139,7 +137,12 @@ struct LoginJetpackSetupView: View {
                 // Setup steps and progress
                 ForEach(viewModel.setupSteps) { step in
                     HStack(spacing: Constants.stepItemHorizontalSpacing) {
-                        if viewModel.isSetupStepInProgress(step) {
+                        if viewModel.isSetupStepFailed(step) {
+                            Image(systemName: "exclamationmark.circle.fill")
+                                .resizable()
+                                .frame(width: Constants.stepImageSize * scale, height: Constants.stepImageSize * scale)
+                                .foregroundColor(Color(uiColor: .error))
+                        } else if viewModel.isSetupStepInProgress(step) {
                             ActivityIndicator(isAnimating: .constant(true), style: .medium)
                         } else if viewModel.isSetupStepPending(step) {
                             Image(uiImage: .checkEmptyCircleImage)
@@ -152,6 +155,7 @@ struct LoginJetpackSetupView: View {
                         }
 
                         VStack(alignment: .leading, spacing: 4) {
+                            // Title of the setup step
                             Text(step == .connection ? Localization.authorizing : step.title)
                                 .font(.body)
                                 .if(viewModel.isSetupStepPending(step) == false) {
@@ -159,17 +163,22 @@ struct LoginJetpackSetupView: View {
                                 }
                                 .foregroundColor(Color(.text))
                                 .opacity(viewModel.isSetupStepPending(step) == false ? 1 : 0.5)
-                            Label {
-                                Text(viewModel.currentConnectionStep.title)
+
+                            // Status of the connection step
+                            viewModel.currentConnectionStep.map { step in
+                                Text(step.title)
                                     .font(.footnote)
                                     .fontWeight(.semibold)
-                            } icon: {
-                                viewModel.currentConnectionStep.imageName.map { name in
-                                    Image(systemName: name)
-                                }
+                                    .foregroundColor(Color(uiColor: step.tintColor))
                             }
-                            .foregroundColor(Color(uiColor: viewModel.currentConnectionStep.tintColor))
                             .renderedIf(step == .connection)
+
+                            // Error label
+                            Text(Localization.error)
+                                .font(.footnote)
+                                .fontWeight(.semibold)
+                                .foregroundColor(Color(uiColor: .error))
+                                .renderedIf(viewModel.isSetupStepFailed(step))
                         }
                     }
                 }
@@ -256,7 +265,7 @@ struct LoginJetpackSetupView: View {
             }
         }
         .fullScreenCover(isPresented: $viewModel.jetpackConnectionInterrupted) {
-            LoginJetpackSetupInterruptedView(onSupport: supportHandler, onContinue: {
+            LoginJetpackSetupInterruptedView(siteURL: viewModel.siteURL, onSupport: supportHandler, onContinue: {
                 viewModel.jetpackConnectionInterrupted = false
                 // delay for the dismissal of the interrupted screen to complete.
                 DispatchQueue.main.asyncAfter(deadline: .now() + Constants.interruptedConnectionActionHandlerDelayTime) {
@@ -276,10 +285,11 @@ struct LoginJetpackSetupView: View {
 private extension LoginJetpackSetupView {
     enum Localization {
         static let goToStore = NSLocalizedString("Go to Store", comment: "Title for the button to navigate to the home screen after Jetpack setup completes")
-        static let authorizing = NSLocalizedString("Authorizing connection", comment: "Name of the connection step on the Jetpack setup screen")
+        static let authorizing = NSLocalizedString("Connect store to Jetpack", comment: "Name of the connection step on the Jetpack setup screen")
         static let errorCode = NSLocalizedString("Error code %1$d", comment: "Error code displayed when the Jetpack setup fails. %1$d is the code.")
         static let getSupport = NSLocalizedString("Get support", comment: "Button to contact support when Jetpack setup fails")
         static let cancelInstallation = NSLocalizedString("Cancel Installation", comment: "Action button to cancel Jetpack installation.")
+        static let error = NSLocalizedString("Error", comment: "Title indicating a failed step in Jetpack installation.")
     }
 
     enum Constants {

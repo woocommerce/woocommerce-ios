@@ -225,7 +225,6 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = LoginJetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores)
-        XCTAssertEqual(viewModel.currentConnectionStep, .pending)
 
         var triggeredFetchingJetpackUser = false
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
@@ -249,7 +248,6 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = LoginJetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores)
-        XCTAssertEqual(viewModel.currentConnectionStep, .pending)
 
         let user = JetpackUser.fake().copy(isConnected: true, wpcomUser: DotcomUser.fake().copy(email: "test@mail.com"))
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in

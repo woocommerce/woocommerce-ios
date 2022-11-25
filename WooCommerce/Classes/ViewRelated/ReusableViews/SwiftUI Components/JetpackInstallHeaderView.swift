@@ -32,7 +32,7 @@ struct JetpackInstallHeaderView: View {
             Image(systemName: "exclamationmark.circle.fill")
                 .resizable()
                 .frame(width: Constants.logoSize * scale, height: Constants.logoSize * scale)
-                .foregroundColor(Color(uiColor: .withColorStudio(.red, shade: .shade40)))
+                .foregroundColor(Color(uiColor: .error))
                 .renderedIf(isError)
 
             Spacer()

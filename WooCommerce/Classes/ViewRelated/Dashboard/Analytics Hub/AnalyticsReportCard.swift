@@ -35,7 +35,7 @@ struct AnalyticsReportCard: View {
                     Text(leadingValue)
                         .titleStyle()
 
-                    HStack {
+                    AdaptiveStack {
                         DeltaTag(value: leadingDelta, backgroundColor: leadingDeltaColor)
                             .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -57,7 +57,7 @@ struct AnalyticsReportCard: View {
                     Text(trailingValue)
                         .titleStyle()
 
-                    HStack {
+                    AdaptiveStack {
                         DeltaTag(value: trailingDelta, backgroundColor: trailingDeltaColor)
                             .frame(maxWidth: .infinity, alignment: .leading)
 

@@ -72,15 +72,14 @@ private extension AnalyticsHubViewModel {
 
     @MainActor
     func retrieveOrderStats() async throws {
-        // TODO: get dates from the selected period
-        let currentMonthDate = Date()
-        let previousMonthDate = Calendar.current.date(byAdding: .month, value: -1, to: Date())!
+        let currentTimeRange = try timeRangeGenerator.currentTimeRange
+        let previousTimeRange = try timeRangeGenerator.previousTimeRange
 
-        async let currentPeriodRequest = retrieveStats(earliestDateToInclude: currentMonthDate.startOfMonth(timezone: .current),
-                                                       latestDateToInclude: currentMonthDate.endOfMonth(timezone: .current),
+        async let currentPeriodRequest = retrieveStats(earliestDateToInclude: currentTimeRange.start,
+                                                       latestDateToInclude: currentTimeRange.end,
                                                        forceRefresh: true)
-        async let previousPeriodRequest = retrieveStats(earliestDateToInclude: previousMonthDate.startOfMonth(timezone: .current),
-                                                        latestDateToInclude: previousMonthDate.endOfMonth(timezone: .current),
+        async let previousPeriodRequest = retrieveStats(earliestDateToInclude: previousTimeRange.start,
+                                                        latestDateToInclude: previousTimeRange.end,
                                                         forceRefresh: true)
         let (currentPeriodStats, previousPeriodStats) = try await (currentPeriodRequest, previousPeriodRequest)
         self.currentOrderStats = currentPeriodStats

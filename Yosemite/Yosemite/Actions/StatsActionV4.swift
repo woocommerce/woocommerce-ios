@@ -19,6 +19,16 @@ public enum StatsActionV4: Action {
         forceRefresh: Bool,
         onCompletion: (Result<Void, Error>) -> Void)
 
+    /// Retrieves `OrderStats` for the provided siteID, and time range, without saving them to the Storage layer.
+    ///
+    case retrieveCustomStats(siteID: Int64,
+                             unit: StatsGranularityV4,
+                             earliestDateToInclude: Date,
+                             latestDateToInclude: Date,
+                             quantity: Int,
+                             forceRefresh: Bool,
+                             onCompletion: (Result<OrderStatsV4, Error>) -> Void)
+
     /// Synchronizes `SiteVisitStats` for the provided siteID, time range, and date.
     ///
     case retrieveSiteVisitStats(siteID: Int64,

@@ -1107,6 +1107,18 @@ extension UIImage {
     static var wpcomLogoImage: UIImage {
         UIImage(named: "wpcom-logo")!
     }
+
+    /// Image on the Jetpack setup interrupted screen
+    ///
+    static var jetpackSetupInterruptedImage: UIImage {
+        UIImage(named: "woo-jetpack-setup-interrupted")!
+    }
+
+    /// Calendar Icon
+    ///
+    static var calendar: UIImage {
+        return UIImage.gridicon(.calendar)
+    }
 }
 
 private extension UIImage {

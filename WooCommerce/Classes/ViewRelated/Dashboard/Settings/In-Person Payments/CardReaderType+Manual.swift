@@ -25,7 +25,7 @@ extension CardReaderType {
                 name: "Wisepad 3",
                 urlString: "https://stripe.com/files/docs/terminal/wp3_product_sheet.pdf"
             )
-        case .other:
+        case .other, .appleBuiltIn:
             return nil
         }
     }

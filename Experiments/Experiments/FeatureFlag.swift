@@ -70,6 +70,10 @@ public enum FeatureFlag: Int {
     ///
     case inAppPurchases
 
+    /// Enables Tap to Pay on iPhone flow in In-Person Payments, on eligible devices.
+    ///
+    case tapToPayOnIPhone
+
     /// Store creation MVP.
     ///
     case storeCreationMVP
@@ -125,11 +129,6 @@ public enum FeatureFlag: Int {
     ///
     /// - Note: The app will ignore this if `performanceMonitoring` is `false`.
     case performanceMonitoringViewController
-
-    /// Temporary feature flag for the native Jetpack setup flow.
-    /// TODO-8075: replace this with A/B test.
-    ///
-    case nativeJetpackSetupFlow
 
     /// Temporary feature flag for the native Jetpack setup flow.
     ///

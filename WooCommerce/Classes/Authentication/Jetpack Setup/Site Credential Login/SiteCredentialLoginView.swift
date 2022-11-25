@@ -2,8 +2,14 @@ import SwiftUI
 
 /// Hosting controller that wraps the `SiteCredentialLoginView`.
 final class SiteCredentialLoginHostingViewController: UIHostingController<SiteCredentialLoginView> {
-    init(siteURL: String, connectionOnly: Bool) {
-        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL)
+    private let analytics: Analytics
+
+    init(siteURL: String,
+         connectionOnly: Bool,
+         analytics: Analytics = ServiceLocator.analytics,
+         onLoginSuccess: @escaping (String) -> Void) {
+        self.analytics = analytics
+        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, onLoginSuccess: onLoginSuccess)
         super.init(rootView: SiteCredentialLoginView(connectionOnly: connectionOnly, viewModel: viewModel))
     }
 
@@ -15,18 +21,13 @@ final class SiteCredentialLoginHostingViewController: UIHostingController<SiteCr
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        analytics.track(.loginJetpackSiteCredentialScreenViewed)
         configureNavigationBarAppearance()
     }
 
     /// Shows a transparent navigation bar without a bottom border.
     private func configureNavigationBarAppearance() {
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithTransparentBackground()
-        appearance.backgroundColor = .systemBackground
-
-        navigationItem.standardAppearance = appearance
-        navigationItem.scrollEdgeAppearance = appearance
-        navigationItem.compactAppearance = appearance
+        configureTransparentNavigationBar()
 
         let title = NSLocalizedString("Cancel", comment: "Button to dismiss the site credential login screen")
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: title, style: .plain, target: self, action: #selector(dismissView))
@@ -34,6 +35,7 @@ final class SiteCredentialLoginHostingViewController: UIHostingController<SiteCr
 
     @objc
     private func dismissView() {
+        analytics.track(.loginJetpackSiteCredentialScreenDismissed)
         dismiss(animated: true)
     }
 }
@@ -152,7 +154,6 @@ struct SiteCredentialLoginView: View {
         }
         .safeAreaInset(edge: .bottom, content: {
             Button {
-                // TODO-8075: add tracks
                 keyboardIsShown = false
                 viewModel.handleLogin()
             } label: {
@@ -198,7 +199,6 @@ private extension SiteCredentialLoginView {
     enum Constants {
         static let blockVerticalPadding: CGFloat = 32
         static let contentVerticalSpacing: CGFloat = 8
-        static let borderHeight: CGFloat = 1
         static let fieldVerticalSpacing: CGFloat = 16
         static let eyeButtonHorizontalPadding: CGFloat = 8
         static let eyeButtonDimension: CGFloat = 24

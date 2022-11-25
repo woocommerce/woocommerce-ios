@@ -51,10 +51,10 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
                 .performanceMonitoringUserInteraction:
             // Disabled by default to avoid costs spikes, unless in internal testing builds.
             return buildConfig == .alpha
-        case .nativeJetpackSetupFlow:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .analyticsHub:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .tapToPayOnIPhone:
+            return buildConfig == .localDeveloper
         default:
             return true
         }

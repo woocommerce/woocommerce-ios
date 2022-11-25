@@ -35,6 +35,9 @@ final class MockCardReaderService: CardReaderService {
     /// Boolean flag Indicates that clients have provided a CardReaderConfigProvider
     var didReceiveAConfigurationProvider = false
 
+    /// DiscoveryMethod recieved on starting a payment
+    var spyStartDiscoveryMethod: CardReaderDiscoveryMethod? = nil
+
     /// Boolean flag Indicates that clients have called the cancel payment method
     var didTapCancelPayment = false
 
@@ -58,9 +61,10 @@ final class MockCardReaderService: CardReaderService {
 
     }
 
-    func start(_ configProvider: CardReaderConfigProvider) throws {
+    func start(_ configProvider: Hardware.CardReaderConfigProvider, discoveryMethod: Hardware.CardReaderDiscoveryMethod) throws {
         didHitStart = true
         didReceiveAConfigurationProvider = true
+        spyStartDiscoveryMethod = discoveryMethod
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {[weak self] in
             self?.discoveryStatusSubject.send(.discovering)

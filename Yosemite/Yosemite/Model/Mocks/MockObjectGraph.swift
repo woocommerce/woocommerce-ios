@@ -426,7 +426,8 @@ extension MockObjectGraph {
             taxes: 0,
             shipping: 0,
             netRevenue: 0,
-            totalProducts: 0
+            totalProducts: 0,
+            averageOrderValue: 0
         )
     }
 
@@ -501,7 +502,8 @@ private extension Array where Element == OrderStatsV4Interval {
             taxes: 0,
             shipping: 0,
             netRevenue: 0,
-            totalProducts: 0
+            totalProducts: 0,
+            averageOrderValue: 0
         )
     }
 }

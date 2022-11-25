@@ -10,6 +10,7 @@
             "taxes": 0,
             "shipping": 0,
             "net_revenue": 800,
+            "avg_order_value": 266,
             "products": 2,
             "segments": []
         },
@@ -30,6 +31,7 @@
                     "taxes": 0,
                     "shipping": 0,
                     "net_revenue": 0,
+                    "avg_order_value": 0,
                     "segments": []
                 }
             },
@@ -49,6 +51,7 @@
                     "taxes": 0,
                     "shipping": 0,
                     "net_revenue": 0,
+                    "avg_order_value": 0,
                     "segments": []
                 }
             },
@@ -68,6 +71,7 @@
                     "taxes": 0,
                     "shipping": 0,
                     "net_revenue": 0,
+                    "avg_order_value": 0,
                     "segments": []
                 }
             },
@@ -87,6 +91,7 @@
                     "taxes": 0,
                     "shipping": 0,
                     "net_revenue": 0,
+                    "avg_order_value": 0,
                     "segments": []
                 }
             },
@@ -106,6 +111,7 @@
                     "taxes": 0,
                     "shipping": 0,
                     "net_revenue": 0,
+                    "avg_order_value": 0,
                     "segments": []
                 }
             },
@@ -125,6 +131,7 @@
                     "taxes": 0,
                     "shipping": 0,
                     "net_revenue": 0,
+                    "avg_order_value": 0,
                     "segments": []
                 }
             },
@@ -144,6 +151,7 @@
                     "taxes": 0,
                     "shipping": 0,
                     "net_revenue": 0,
+                    "avg_order_value": 0,
                     "segments": []
                 }
             },
@@ -163,6 +171,7 @@
                     "taxes": 0,
                     "shipping": 0,
                     "net_revenue": 0,
+                    "avg_order_value": 0,
                     "segments": []
                 }
             },
@@ -182,6 +191,7 @@
                     "taxes": 0,
                     "shipping": 0,
                     "net_revenue": 0,
+                    "avg_order_value": 0,
                     "segments": []
                 }
             },
@@ -201,6 +211,7 @@
                     "taxes": 0,
                     "shipping": 0,
                     "net_revenue": 0,
+                    "avg_order_value": 0,
                     "segments": []
                 }
             },
@@ -220,6 +231,7 @@
                     "taxes": 0,
                     "shipping": 0,
                     "net_revenue": 0,
+                    "avg_order_value": 0,
                     "segments": []
                 }
             },
@@ -239,6 +251,7 @@
                     "taxes": 0,
                     "shipping": 0,
                     "net_revenue": 0,
+                    "avg_order_value": 0,
                     "segments": []
                 }
             },
@@ -258,6 +271,7 @@
                     "taxes": 0,
                     "shipping": 0,
                     "net_revenue": 0,
+                    "avg_order_value": 0,
                     "segments": []
                 }
             },
@@ -277,6 +291,7 @@
                     "taxes": 0,
                     "shipping": 0,
                     "net_revenue": 350,
+                    "avg_order_value": 175,
                     "segments": []
                 }
             },
@@ -296,6 +311,7 @@
                     "taxes": 0,
                     "shipping": 0,
                     "net_revenue": 450,
+                    "avg_order_value": 450,
                     "segments": []
                 }
             },
@@ -315,6 +331,7 @@
                     "taxes": 0,
                     "shipping": 0,
                     "net_revenue": 0,
+                    "avg_order_value": 0,
                     "segments": []
                 }
             },
@@ -334,6 +351,7 @@
                     "taxes": 0,
                     "shipping": 0,
                     "net_revenue": 0,
+                    "avg_order_value": 0,
                     "segments": []
                 }
             },
@@ -353,6 +371,7 @@
                     "taxes": 0,
                     "shipping": 0,
                     "net_revenue": 0,
+                    "avg_order_value": 0,
                     "segments": []
                 }
             },
@@ -372,6 +391,7 @@
                     "taxes": 0,
                     "shipping": 0,
                     "net_revenue": 0,
+                    "avg_order_value": 0,
                     "segments": []
                 }
             },
@@ -391,6 +411,7 @@
                     "taxes": 0,
                     "shipping": 0,
                     "net_revenue": 0,
+                    "avg_order_value": 0,
                     "segments": []
                 }
             },
@@ -410,6 +431,7 @@
                     "taxes": 0,
                     "shipping": 0,
                     "net_revenue": 0,
+                    "avg_order_value": 0,
                     "segments": []
                 }
             },
@@ -429,6 +451,7 @@
                     "taxes": 0,
                     "shipping": 0,
                     "net_revenue": 0,
+                    "avg_order_value": 0,
                     "segments": []
                 }
             },
@@ -448,6 +471,7 @@
                     "taxes": 0,
                     "shipping": 0,
                     "net_revenue": 0,
+                    "avg_order_value": 0,
                     "segments": []
                 }
             },
@@ -467,6 +491,7 @@
                     "taxes": 0,
                     "shipping": 0,
                     "net_revenue": 0,
+                    "avg_order_value": 0,
                     "segments": []
                 }
             }

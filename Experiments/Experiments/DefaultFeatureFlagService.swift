@@ -37,8 +37,12 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .storeCreationM2:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .storeCreationM2WithInAppPurchasesEnabled:
+            return false
         case .justInTimeMessagesOnDashboard:
             return true
+        case .systemStatusReportInSupportRequest:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .performanceMonitoring,
                 .performanceMonitoringCoreData,
                 .performanceMonitoringFileIO,
@@ -49,6 +53,10 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .alpha
         case .nativeJetpackSetupFlow:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .analyticsHub:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .tapToPayOnIPhone:
+            return buildConfig == .localDeveloper
         default:
             return true
         }

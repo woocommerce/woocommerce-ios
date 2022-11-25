@@ -4,10 +4,10 @@ public protocol JustInTimeMessagesRemoteProtocol {
     func loadAllJustInTimeMessages(for siteID: Int64,
                                    messagePath: JustInTimeMessagesRemote.MessagePath,
                                    query: [String: String?]?,
-                                   locale: String?) async -> Result<[JustInTimeMessage], Error>
+                                   locale: String?) async throws -> [JustInTimeMessage]
     func dismissJustInTimeMessage(for siteID: Int64,
                                   messageID: String,
-                                  featureClass: String) async -> Result<Bool, Error>
+                                  featureClass: String) async throws -> Bool
 }
 
 /// Just In Time Messages: Remote endpoints
@@ -28,7 +28,7 @@ public final class JustInTimeMessagesRemote: Remote, JustInTimeMessagesRemotePro
     public func loadAllJustInTimeMessages(for siteID: Int64,
                                           messagePath: JustInTimeMessagesRemote.MessagePath,
                                           query: [String: String?]?,
-                                          locale: String?) async -> Result<[JustInTimeMessage], Error> {
+                                          locale: String?) async throws -> [JustInTimeMessage] {
         let request = JetpackRequest(wooApiVersion: .none,
                                      method: .get,
                                      siteID: siteID,
@@ -39,7 +39,7 @@ public final class JustInTimeMessagesRemote: Remote, JustInTimeMessagesRemotePro
 
         let mapper = JustInTimeMessageListMapper(siteID: siteID)
 
-        return await enqueue(request, mapper: mapper)
+        return try await enqueue(request, mapper: mapper)
     }
 
     private func getParameters(messagePath: JustInTimeMessagesRemote.MessagePath,
@@ -88,7 +88,7 @@ public final class JustInTimeMessagesRemote: Remote, JustInTimeMessagesRemotePro
     ///
     public func dismissJustInTimeMessage(for siteID: Int64,
                                          messageID: String,
-                                         featureClass: String) async -> Result<Bool, Error> {
+                                         featureClass: String) async throws -> Bool {
 
         let parameters = [ParameterKey.featureClass: featureClass,
                           ParameterKey.messageID: messageID]
@@ -99,7 +99,7 @@ public final class JustInTimeMessagesRemote: Remote, JustInTimeMessagesRemotePro
                                      path: Path.jitm,
                                      parameters: parameters)
 
-        return await enqueue(request, mapper: DataBoolMapper())
+        return try await enqueue(request, mapper: DataBoolMapper())
     }
 }
 

@@ -1,1 +1,1 @@
-Hai prova a creare o aggiornare un ordine dall'app? Quando lo fai, ora è possibile cercare per cliente. Prova questa opzione e condividi il tuo feedback.
+Per questo rilascio, ci siamo concentrati sul perfezionamento di alcuni dettagli e ci siamo occupati dei piccoli bug riscontrati dal nostro team, inclusa l'opzione per visualizzare in anteprima i prodotti prima di pubblicarli. Non farti ingannare: stiamo lavorando ad alcune novità interessanti da offrire a tutti. Continua a condividere il feedback!

@@ -1,4 +1,5 @@
 import XCTest
+import TestKit
 @testable import Networking
 
 final class DomainRemoteTests: XCTestCase {
@@ -21,11 +22,9 @@ final class DomainRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "domains/suggestions", filename: "domain-suggestions")
 
         // When
-        let result = await remote.loadFreeDomainSuggestions(query: "domain")
+        let suggestions = try await remote.loadFreeDomainSuggestions(query: "domain")
 
         // Then
-        XCTAssertTrue(result.isSuccess)
-        let suggestions = try XCTUnwrap(result.get())
         XCTAssertEqual(suggestions, [
             .init(name: "domaintestingtips.wordpress.com", isFree: true),
             .init(name: "domaintestingtoday.wordpress.com", isFree: true),
@@ -36,12 +35,6 @@ final class DomainRemoteTests: XCTestCase {
         // Given
         let remote = DomainRemote(network: network)
 
-        // When
-        let result = await remote.loadFreeDomainSuggestions(query: "domain")
-
-        // Then
-        XCTAssertTrue(result.isFailure)
-        let error = try XCTUnwrap(result.failure as? NetworkError)
-        XCTAssertEqual(error, .notFound)
+        await assertThrowsError({_ = try await remote.loadFreeDomainSuggestions(query: "domain")}, errorAssert: { ($0 as? NetworkError) == .notFound })
     }
 }

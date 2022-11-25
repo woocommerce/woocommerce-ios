@@ -3,6 +3,16 @@
     {
       "filename" : "domain-search-placeholder.pdf",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "domain-search-placeholder-dark.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

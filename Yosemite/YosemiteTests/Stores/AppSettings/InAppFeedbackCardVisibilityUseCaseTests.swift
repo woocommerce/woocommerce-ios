@@ -162,6 +162,7 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
                                           isProductSKUInputScannerSwitchEnabled: false,
                                           isCouponManagementSwitchEnabled: false,
                                           isInAppPurchasesSwitchEnabled: false,
+                                          isTapToPayOnIPhoneSwitchEnabled: false,
                                           knownCardReaders: [],
                                           featureAnnouncementCampaignSettings: [:])
         let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .ordersCreation)
@@ -230,6 +231,7 @@ private extension InAppFeedbackCardVisibilityUseCaseTests {
             isProductSKUInputScannerSwitchEnabled: false,
             isCouponManagementSwitchEnabled: false,
             isInAppPurchasesSwitchEnabled: false,
+            isTapToPayOnIPhoneSwitchEnabled: false,
             knownCardReaders: [],
             featureAnnouncementCampaignSettings: [:]
         )

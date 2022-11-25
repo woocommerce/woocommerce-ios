@@ -4,7 +4,7 @@ import protocol Yosemite.StoresManager
 /// Coordinates navigation for removing Apple ID access from various entry points (settings and empty stores screens).
 @MainActor final class RemoveAppleIDAccessCoordinator {
     private let sourceViewController: UIViewController
-    private let removeAction: () async -> Result<Void, Error>
+    private let removeAction: () async throws -> Void
     private let onRemoveSuccess: () -> Void
     private let stores: StoresManager
     private let analytics: Analytics
@@ -14,7 +14,7 @@ import protocol Yosemite.StoresManager
     ///   - removeAction: called when the remove action is confirmed.
     ///   - onRemoveSuccess: called when the removal is successful.
     init(sourceViewController: UIViewController,
-         removeAction: @escaping () async -> Result<Void, Error>,
+         removeAction: @escaping () async throws -> Void,
          onRemoveSuccess: @escaping () -> Void,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
@@ -50,19 +50,24 @@ private extension RemoveAppleIDAccessCoordinator {
 
             Task { @MainActor [weak self] in
                 guard let self = self else { return }
-                let result = await self.removeAction()
-                self.dismissInProgressUI { [weak self] in
-                    guard let self = self else { return }
-                    switch result {
-                    case .success:
-                        self.analytics.track(event: .closeAccountSuccess())
-                        self.onRemoveSuccess()
-                    case .failure(let error):
-                        self.analytics.track(event: .closeAccountFailed(error: error))
+
+                var dismissInProgressUICompletion: () -> Void
+
+                do {
+                    try await self.removeAction()
+                    dismissInProgressUICompletion = { [weak self] in
+                        self?.analytics.track(event: .closeAccountSuccess())
+                        self?.onRemoveSuccess()
+                    }
+                } catch {
+                    dismissInProgressUICompletion = { [weak self] in
+                        self?.analytics.track(event: .closeAccountFailed(error: error))
                         DDLogError("⛔️ Cannot close account: \(error)")
-                        self.presentErrorAlert(error: error)
+                        self?.presentErrorAlert(error: error)
                     }
                 }
+
+                self.dismissInProgressUI(completion: dismissInProgressUICompletion)
             }
         }
 

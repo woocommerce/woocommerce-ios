@@ -77,12 +77,7 @@ private extension AccountCreationStore {
     }
 
     func generateUsername(base: String) async -> String? {
-        let usernameSuggestionsResult = await remote.loadUsernameSuggestions(from: base)
-        guard case let .success(usernameSuggestions) = usernameSuggestionsResult,
-              let username = usernameSuggestions.first else {
-            return nil
-        }
-        return username
+        try? await remote.loadUsernameSuggestions(from: base).first
     }
 }
 

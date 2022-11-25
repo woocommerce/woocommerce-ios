@@ -30,6 +30,10 @@ final class AddProductCoordinator: Coordinator {
         return controller
     }()
 
+    /// Assign this closure to be notified when a new product is saved remotely
+    ///
+    var onProductCreated: () -> Void = {}
+
     init(siteID: Int64,
          sourceBarButtonItem: UIBarButtonItem,
          sourceNavigationController: UINavigationController,
@@ -211,6 +215,7 @@ private extension AddProductCoordinator {
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .add,
                                              productImageActionHandler: productImageActionHandler)
+        viewModel.onProductCreated = onProductCreated
         let viewController = ProductFormViewController(viewModel: viewModel,
                                                        eventLogger: ProductFormEventLogger(),
                                                        productImageActionHandler: productImageActionHandler,

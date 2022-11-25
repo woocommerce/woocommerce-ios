@@ -1,7 +1,7 @@
 import Foundation
 import Networking
 import Storage
-
+import WooFoundation
 
 // MARK: - StatsStoreV4
 //
@@ -50,6 +50,20 @@ public final class StatsStoreV4: Store {
                           quantity: quantity,
                           forceRefresh: forceRefresh,
                           onCompletion: onCompletion)
+        case .retrieveCustomStats(let siteID,
+                                  let unit,
+                                  let earliestDateToInclude,
+                                  let latestDateToInclude,
+                                  let quantity,
+                                  let forceRefresh,
+                                  let onCompletion):
+            retrieveCustomStats(siteID: siteID,
+                                unit: unit,
+                                earliestDateToInclude: earliestDateToInclude,
+                                latestDateToInclude: latestDateToInclude,
+                                quantity: quantity,
+                                forceRefresh: forceRefresh,
+                                onCompletion: onCompletion)
         case .retrieveSiteVisitStats(let siteID,
                                      let siteTimezone,
                                      let timeRange,
@@ -120,6 +134,24 @@ private extension StatsStoreV4 {
         }
     }
 
+    /// Retrieves the order stats for the provided siteID, and time range, without saving them to the Storage layer.
+    ///
+    func retrieveCustomStats(siteID: Int64,
+                             unit: StatsGranularityV4,
+                             earliestDateToInclude: Date,
+                             latestDateToInclude: Date,
+                             quantity: Int,
+                             forceRefresh: Bool,
+                             onCompletion: @escaping (Result<OrderStatsV4, Error>) -> Void) {
+        orderStatsRemote.loadOrderStats(for: siteID,
+                                        unit: unit,
+                                        earliestDateToInclude: earliestDateToInclude,
+                                        latestDateToInclude: latestDateToInclude,
+                                        quantity: quantity,
+                                        forceRefresh: forceRefresh,
+                                        completion: onCompletion)
+    }
+
     /// Retrieves the site visit stats associated with the provided Site ID (if any!).
     ///
     func retrieveSiteVisitStats(siteID: Int64,
@@ -155,26 +187,28 @@ private extension StatsStoreV4 {
                                 forceRefresh: Bool,
                                 onCompletion: @escaping (Result<Void, Error>) -> Void) {
         Task { @MainActor in
-            let result = await loadTopEarnerStats(siteID: siteID,
-                                                  timeRange: timeRange,
-                                                  earliestDateToInclude: earliestDateToInclude,
-                                                  latestDateToInclude: latestDateToInclude,
-                                                  quantity: quantity,
-                                                  forceRefresh: forceRefresh)
-            switch result {
-            case .success:
-                onCompletion(result)
-            case .failure(let error):
+            do {
+                try await loadTopEarnerStats(siteID: siteID,
+                                                      timeRange: timeRange,
+                                                      earliestDateToInclude: earliestDateToInclude,
+                                                      latestDateToInclude: latestDateToInclude,
+                                                      quantity: quantity,
+                                                      forceRefresh: forceRefresh)
+                onCompletion(.success(()))
+            } catch {
                 if let error = error as? DotcomError, error == .noRestRoute {
-                    let resultFromDeprecatedAPI = await loadTopEarnerStatsWithDeprecatedAPI(siteID: siteID,
-                                                                                            timeRange: timeRange,
-                                                                                            earliestDateToInclude: earliestDateToInclude,
-                                                                                            latestDateToInclude: latestDateToInclude,
-                                                                                            quantity: quantity,
-                                                                                            forceRefresh: forceRefresh)
-                    onCompletion(resultFromDeprecatedAPI)
-                } else {
+                    let result = await Result {
+                        try await loadTopEarnerStatsWithDeprecatedAPI(siteID: siteID,
+                                                                      timeRange: timeRange,
+                                                                      earliestDateToInclude: earliestDateToInclude,
+                                                                      latestDateToInclude: latestDateToInclude,
+                                                                      quantity: quantity,
+                                                                      forceRefresh: forceRefresh)
+                    }
+
                     onCompletion(result)
+                } else {
+                    onCompletion(.failure(error))
                 }
             }
         }
@@ -186,8 +220,8 @@ private extension StatsStoreV4 {
                             earliestDateToInclude: Date,
                             latestDateToInclude: Date,
                             quantity: Int,
-                            forceRefresh: Bool) async -> Result<Void, Error> {
-        await withCheckedContinuation { continuation in
+                            forceRefresh: Bool) async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) -> Void in
             let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
             let earliestDate = dateFormatter.string(from: earliestDateToInclude)
             let latestDate = dateFormatter.string(from: latestDateToInclude)
@@ -208,10 +242,14 @@ private extension StatsStoreV4 {
                                                                    date: latestDateToInclude,
                                                                    leaderboards: leaderboards,
                                                                    quantity: quantity) { result in
-                        continuation.resume(returning: result)
+                        if case let .failure(error) = result {
+                            continuation.resume(throwing: error)
+                        } else {
+                            continuation.resume(returning: (()))
+                        }
                     }
                 case .failure(let error):
-                    continuation.resume(returning: .failure(error))
+                    continuation.resume(throwing: error)
                 }
             }
         }
@@ -223,8 +261,8 @@ private extension StatsStoreV4 {
                                              earliestDateToInclude: Date,
                                              latestDateToInclude: Date,
                                              quantity: Int,
-                                             forceRefresh: Bool) async -> Result<Void, Error> {
-        await withCheckedContinuation { continuation in
+                                             forceRefresh: Bool) async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) -> Void in
             let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
             let earliestDate = dateFormatter.string(from: earliestDateToInclude)
             let latestDate = dateFormatter.string(from: latestDateToInclude)
@@ -245,10 +283,14 @@ private extension StatsStoreV4 {
                                                                    date: latestDateToInclude,
                                                                    leaderboards: leaderboards,
                                                                    quantity: quantity) { result in
-                        continuation.resume(returning: result)
+                        if case let .failure(error) = result {
+                            continuation.resume(throwing: error)
+                        } else {
+                            continuation.resume(returning: ())
+                        }
                     }
                 case .failure(let error):
-                    continuation.resume(returning: .failure(error))
+                    continuation.resume(throwing: error)
                 }
             }
         }

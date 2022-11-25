@@ -31,8 +31,8 @@ final class SettingsViewController: UIViewController {
 
     private lazy var removeAppleIDAccessCoordinator: RemoveAppleIDAccessCoordinator =
     RemoveAppleIDAccessCoordinator(sourceViewController: self) { [weak self] in
-        guard let self = self else { return .failure(RemoveAppleIDAccessError.presenterDeallocated) }
-        return await self.removeAppleIDAccess()
+        guard let self = self else { throw RemoveAppleIDAccessError.presenterDeallocated }
+        try await self.removeAppleIDAccess()
     } onRemoveSuccess: { [weak self] in
         self?.logOutUser()
     }
@@ -284,11 +284,11 @@ private extension SettingsViewController {
         removeAppleIDAccessCoordinator.start()
     }
 
-    func removeAppleIDAccess() async -> Result<Void, Error> {
-        await withCheckedContinuation { [weak self] continuation in
+    func removeAppleIDAccess() async throws {
+        try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self = self else { return }
             let action = AccountAction.closeAccount { result in
-                continuation.resume(returning: result)
+                continuation.resume(with: result)
             }
             self.stores.dispatch(action)
         }

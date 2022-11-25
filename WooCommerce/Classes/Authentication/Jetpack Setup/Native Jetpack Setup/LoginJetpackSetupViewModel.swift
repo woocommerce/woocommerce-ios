@@ -127,6 +127,7 @@ final class LoginJetpackSetupViewModel: ObservableObject {
     }
 
     func retryAllSteps() {
+        analytics.track(.loginJetpackSetupScreenTryAgainButtonTapped)
         setupFailed = false
         setupError = nil
         setupErrorDetail = nil

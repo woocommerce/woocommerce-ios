@@ -232,7 +232,6 @@ struct LoginJetpackSetupView: View {
             // Error state buttons: Retry and Cancel
             VStack(spacing: Constants.contentVerticalSpacing) {
                 Button {
-                    // TODO: add tracks
                     viewModel.retryAllSteps()
                 } label: {
                     Text(viewModel.tryAgainButtonTitle)

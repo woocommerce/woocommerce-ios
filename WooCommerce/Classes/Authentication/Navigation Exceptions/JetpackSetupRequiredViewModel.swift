@@ -13,6 +13,8 @@ final class JetpackSetupRequiredViewModel: ULErrorViewModel {
     private let authentication: Authentication
     private let analytics: Analytics
     private var coordinator: LoginJetpackSetupCoordinator?
+    private var imageDownloadTask: ImageDownloadTask?
+
     @Published private var siteIcon = UIImage(systemName: "globe.americas.fill")
 
     init(siteURL: String,
@@ -90,6 +92,8 @@ final class JetpackSetupRequiredViewModel: ULErrorViewModel {
         } else {
             analytics.track(.loginJetpackRequiredScreenViewed)
         }
+
+        loadSiteFavicon()
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
@@ -122,6 +126,17 @@ final class JetpackSetupRequiredViewModel: ULErrorViewModel {
             return
         }
         authentication.presentSupport(from: viewController, screen: .jetpackRequired)
+    }
+}
+
+private extension JetpackSetupRequiredViewModel {
+    func loadSiteFavicon() {
+        guard let url = URL(string: siteURL + Links.favicoPath) else {
+            return
+        }
+        imageDownloadTask = ServiceLocator.imageService.downloadImage(with: url, shouldCacheImage: true) { [weak self] image, _ in
+            self?.siteIcon = image ?? UIImage(systemName: "globe.americas.fill")
+        }
     }
 }
 
@@ -171,5 +186,6 @@ extension JetpackSetupRequiredViewModel {
     enum Links {
         static let jetpackTerms = "https://jetpack.com/redirect/?source=wpcom-tos&site="
         static let jetpackShareDetails = "https://jetpack.com/redirect/?source=jetpack-support-what-data-does-jetpack-sync&site="
+        static let favicoPath = "/favicon.ico"
     }
 }

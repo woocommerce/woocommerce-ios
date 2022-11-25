@@ -31,7 +31,7 @@ final class StoreCreationCoordinator: Coordinator {
         if featureFlagService.isFeatureFlagEnabled(.storeCreationM2WithInAppPurchasesEnabled) {
             return InAppPurchasesForWPComPlansManager(stores: stores)
         } else {
-            return MockInAppPurchases()
+            return WebPurchasesForWPComPlans(stores: stores)
         }
 #else
         InAppPurchasesForWPComPlansManager(stores: stores)
@@ -85,8 +85,10 @@ final class StoreCreationCoordinator: Coordinator {
                     throw PlanPurchaseError.iapNotSupported
                 }
                 let products = try await iapManager.fetchProducts()
+                let expectedPlanIdentifier = featureFlagService.isFeatureFlagEnabled(.storeCreationM2WithInAppPurchasesEnabled) ?
+                Constants.iapPlanIdentifier: Constants.webPlanIdentifier
                 guard let product = products.first,
-                      product.id == Constants.planIdentifier else {
+                      product.id == expectedPlanIdentifier else {
                     throw PlanPurchaseError.noMatchingProduct
                 }
                 guard try await iapManager.userIsEntitledToProduct(with: product.id) == false else {
@@ -324,20 +326,34 @@ private extension StoreCreationCoordinator {
                       planToPurchase: WPComPlanProduct) async {
         do {
             let result = try await iapManager.purchaseProduct(with: planToPurchase.id, for: siteID)
-            switch result {
-            case .success:
-                showInProgressViewWhileWaitingForJetpackSite(from: navigationController, siteID: siteID)
-            default:
-                if !featureFlagService.isFeatureFlagEnabled(.storeCreationM2WithInAppPurchasesEnabled) {
-                    // Since a successful result cannot be easily mocked, any result is considered a success
-                    // when using a mock for IAP.
+
+            if featureFlagService.isFeatureFlagEnabled(.storeCreationM2WithInAppPurchasesEnabled) {
+                switch result {
+                case .success:
                     showInProgressViewWhileWaitingForJetpackSite(from: navigationController, siteID: siteID)
+                default:
+                    return
                 }
-                return
+            } else {
+                switch result {
+                case .pending:
+                    showWebCheckout(from: navigationController, siteID: siteID)
+                default:
+                    return
+                }
             }
         } catch {
             showPlanPurchaseErrorAlert(from: navigationController, error: error)
         }
+    }
+
+    @MainActor
+    func showWebCheckout(from navigationController: UINavigationController, siteID: Int64) {
+        let checkoutViewModel = WebCheckoutViewModel(siteID: siteID) { [weak self] in
+            self?.showInProgressViewWhileWaitingForJetpackSite(from: navigationController, siteID: siteID)
+        }
+        let checkoutController = AuthenticatedWebViewController(viewModel: checkoutViewModel)
+        navigationController.pushViewController(checkoutController, animated: true)
     }
 
     @MainActor
@@ -408,11 +424,6 @@ private extension StoreCreationCoordinator {
                 // In this case, we want to retry sites syncing.
                 guard let site = self.storePickerViewModel.site(thatMatchesSiteID: siteID) else {
                     return continuation.resume(throwing: StoreCreationError.newSiteUnavailable)
-                }
-
-                // When using a mock for IAP, returns the site without waiting for the site to become a Jetpack site.
-                if !self.featureFlagService.isFeatureFlagEnabled(.storeCreationM2WithInAppPurchasesEnabled) {
-                    return continuation.resume(returning: site)
                 }
 
                 guard site.isJetpackConnected && site.isJetpackThePluginInstalled else {
@@ -510,7 +521,8 @@ private extension StoreCreationCoordinator {
 
     enum Constants {
         // TODO: 8108 - update the identifier to production value when it's ready
-        static let planIdentifier = "debug.woocommerce.ecommerce.monthly"
+        static let iapPlanIdentifier = "debug.woocommerce.ecommerce.monthly"
+        static let webPlanIdentifier = "1021"
     }
 
     /// Error scenarios when purchasing a WPCOM plan.

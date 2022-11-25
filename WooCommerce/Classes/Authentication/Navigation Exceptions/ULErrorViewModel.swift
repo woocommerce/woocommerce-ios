@@ -41,6 +41,18 @@ protocol ULErrorViewModel {
     ///
     var termsLabelText: NSAttributedString? { get }
 
+    /// Indicates whether the site address view should be hidden.
+    ///
+    var isSiteAddressViewHidden: Bool { get }
+
+    /// Address of the site with error.
+    ///
+    var siteURL: String { get }
+
+    /// Favicon of the site with error.
+    ///
+    var siteFavicon: AnyPublisher<UIImage?, Never> { get }
+
     /// Executed by the view controller when its view was loaded.
     /// - Parameter viewController: the view controller that loads the view.
     func viewDidLoad(_ viewController: UIViewController?)
@@ -82,6 +94,14 @@ extension ULErrorViewModel {
     var isSecondaryButtonHidden: Bool { false }
 
     var auxiliaryView: UIView? { nil }
+
+    var isSiteAddressViewHidden: Bool { true }
+
+    var siteURL: String { "" }
+
+    var siteFavicon: AnyPublisher<UIImage?, Never> {
+        Just(nil).eraseToAnyPublisher()
+    }
 }
 
 // MARK: Default implementation for optional right bar button item

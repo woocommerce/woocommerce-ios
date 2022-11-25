@@ -136,6 +136,12 @@ final class LoginJetpackSetupViewModel: ObservableObject {
         currentConnectionStep = .pending
         startSetup()
     }
+
+    // MARK: - LoginJetpackSetupInterruptedView
+    func didTapContinueConnectionButton() {
+        analytics.track(.loginJetpackSetupScreenTryAgainButtonTapped,
+                        withProperties: currentSetupStep?.analyticsDescription)
+    }
 }
 
 // MARK: Private helpers

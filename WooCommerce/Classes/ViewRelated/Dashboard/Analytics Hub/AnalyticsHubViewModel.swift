@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import Combine
 import class UIKit.UIColor
 
 /// Main View Model for the Analytics Hub.
@@ -9,11 +10,14 @@ final class AnalyticsHubViewModel: ObservableObject {
     private let siteID: Int64
     private let stores: StoresManager
 
+    private var subscriptions = Set<AnyCancellable>()
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.stores = stores
 
+        bindViewModelsWithData()
         Task.init {
             do {
                 try await retrieveOrderStats()
@@ -102,6 +106,51 @@ private extension AnalyticsHubViewModel {
             }
             stores.dispatch(action)
         }
+    }
+}
+
+private extension AnalyticsHubViewModel {
+
+    func bindViewModelsWithData() {
+        Publishers.CombineLatest($currentOrderStats, $previousOrderStats)
+            .sink { [weak self] currentOrderStats, previousOrderStats in
+                guard let self else { return }
+
+                self.revenueCard = AnalyticsHubViewModel.revenueCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
+                self.ordersCard = AnalyticsHubViewModel.ordersCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
+            }.store(in: &subscriptions)
+    }
+
+    static func revenueCard(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) -> AnalyticsReportCardViewModel {
+        let totalDelta = StatsDataTextFormatter.createTotalRevenueDelta(from: previousPeriodStats, to: currentPeriodStats)
+        let netDelta = StatsDataTextFormatter.createNetRevenueDelta(from: previousPeriodStats, to: currentPeriodStats)
+
+        return AnalyticsReportCardViewModel(title: Localization.RevenueCard.title,
+                                            leadingTitle: Localization.RevenueCard.leadingTitle,
+                                            leadingValue: StatsDataTextFormatter.createTotalRevenueText(orderStats: currentPeriodStats,
+                                                                                                        selectedIntervalIndex: nil),
+                                            leadingDelta: totalDelta.string,
+                                            leadingDeltaColor: Constants.deltaColor(for: totalDelta.direction),
+                                            trailingTitle: Localization.RevenueCard.trailingTitle,
+                                            trailingValue: StatsDataTextFormatter.createNetRevenueText(orderStats: currentPeriodStats),
+                                            trailingDelta: netDelta.string,
+                                            trailingDeltaColor: Constants.deltaColor(for: netDelta.direction))
+    }
+
+    static func ordersCard(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) -> AnalyticsReportCardViewModel {
+        let ordersCountDelta = StatsDataTextFormatter.createOrderCountDelta(from: previousPeriodStats, to: currentPeriodStats)
+        let orderValueDelta = StatsDataTextFormatter.createAverageOrderValueDelta(from: previousPeriodStats, to: currentPeriodStats)
+
+        return AnalyticsReportCardViewModel(title: Localization.OrderCard.title,
+                                            leadingTitle: Localization.OrderCard.leadingTitle,
+                                            leadingValue: StatsDataTextFormatter.createOrderCountText(orderStats: currentPeriodStats,
+                                                                                                      selectedIntervalIndex: nil),
+                                            leadingDelta: ordersCountDelta.string,
+                                            leadingDeltaColor: Constants.deltaColor(for: ordersCountDelta.direction),
+                                            trailingTitle: Localization.OrderCard.trailingTitle,
+                                            trailingValue: StatsDataTextFormatter.createAverageOrderValueText(orderStats: currentPeriodStats),
+                                            trailingDelta: orderValueDelta.string,
+                                            trailingDeltaColor: Constants.deltaColor(for: orderValueDelta.direction))
     }
 }
 

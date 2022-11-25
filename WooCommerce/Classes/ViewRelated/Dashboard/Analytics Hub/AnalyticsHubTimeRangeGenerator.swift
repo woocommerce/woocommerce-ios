@@ -12,28 +12,43 @@ public class AnalyticsHubTimeRangeGenerator {
     private let currentDate: Date
     private let currentCalendar: Calendar
     private let selectionType: SelectionType
+    
+    private var _currentTimeRange: AnalyticsHubTimeRange? = nil
+    private var _previousTimeRange: AnalyticsHubTimeRange? = nil
 
-    lazy private(set) var currentTimeRange: AnalyticsHubTimeRange = {
-        generateCurrentTimeRangeFrom(selectionType: selectionType)
-    }()
-
-    var previousTimeRange: AnalyticsHubTimeRange {
+    var currentTimeRange: AnalyticsHubTimeRange {
         get throws {
-            return try generatePreviousTimeRangeFrom(selectionType: selectionType)
+            guard let currentTimeRange = _currentTimeRange else {
+                throw TimeRangeGeneratorError.selectedRangeGenerationFailed
+            }
+            return currentTimeRange
         }
     }
 
-    lazy private(set) var currentRangeDescription: String = {
-        generateDescriptionOf(timeRange: currentTimeRange)
-    }()
+    var previousTimeRange: AnalyticsHubTimeRange {
+        get throws {
+            guard let previousTimeRange = _previousTimeRange else {
+                throw TimeRangeGeneratorError.previousRangeGenerationFailed
+            }
+            return previousTimeRange
+        }
+    }
+
+    var currentRangeDescription: String {
+        get {
+            guard let currentTimeRange = _currentTimeRange else {
+                return Localization.noCurrentPeriodAvailable
+            }
+            return generateDescriptionOf(timeRange: currentTimeRange)
+        }
+    }
 
     var previousRangeDescription: String {
         get {
-            do {
-                return try generateDescriptionOf(timeRange: previousTimeRange)
-            } catch {
+            guard let previousTimeRange = _previousTimeRange else {
                 return Localization.noPreviousPeriodAvailable
             }
+            return generateDescriptionOf(timeRange: previousTimeRange)
         }
     }
 
@@ -44,51 +59,73 @@ public class AnalyticsHubTimeRangeGenerator {
     init(selectedTimeRange: StatsTimeRangeV4,
          currentDate: Date = Date(),
          currentCalendar: Calendar = Calendar(identifier: .iso8601)) {
-        self.selectionType = SelectionType.from(selectedTimeRange)
         self.currentDate = currentDate
         self.currentCalendar = currentCalendar
+        self.selectionType = SelectionType.from(selectedTimeRange)
+        _currentTimeRange = generateCurrentTimeRangeFrom(selectionType: selectionType)
+        _previousTimeRange = generatePreviousTimeRangeFrom(selectionType: selectionType)
     }
 
-    private func generateCurrentTimeRangeFrom(selectionType: SelectionType) -> AnalyticsHubTimeRange {
+    private func generateCurrentTimeRangeFrom(selectionType: SelectionType) -> AnalyticsHubTimeRange? {
         switch selectionType {
         case .today:
             return AnalyticsHubTimeRange(start: currentDate.startOfDay(timezone: currentTimezone), end: currentDate)
+
         case .weekToDate:
-            let weekStart = currentDate.startOfWeek(timezone: currentTimezone, calendar: currentCalendar)
+            guard let weekStart = currentDate.startOfWeek(timezone: currentTimezone, calendar: currentCalendar) else {
+                return nil
+            }
             return AnalyticsHubTimeRange(start: weekStart, end: currentDate)
+
         case .monthToDate:
-            return AnalyticsHubTimeRange(start: currentDate.startOfMonth(timezone: currentTimezone), end: currentDate)
+            guard let monthStart = currentDate.startOfMonth(timezone: currentTimezone) else {
+                return nil
+            }
+            return AnalyticsHubTimeRange(start: monthStart, end: currentDate)
+
         case .yearToDate:
-            return AnalyticsHubTimeRange(start: currentDate.startOfYear(timezone: currentTimezone), end: currentDate)
+            guard let yearStart = currentDate.startOfYear(timezone: currentTimezone) else {
+                return nil
+            }
+            return AnalyticsHubTimeRange(start: yearStart, end: currentDate)
         }
     }
 
-    private func generatePreviousTimeRangeFrom(selectionType: SelectionType) throws -> AnalyticsHubTimeRange {
+    private func generatePreviousTimeRangeFrom(selectionType: SelectionType) -> AnalyticsHubTimeRange? {
         switch selectionType {
         case .today:
             guard let oneDayAgo = currentCalendar.date(byAdding: .day, value: -1, to: currentDate) else {
-                throw TimeRangeGeneratorError.previousRangeGenerationFailed
+                return nil
             }
             return AnalyticsHubTimeRange(start: oneDayAgo.startOfDay(timezone: currentTimezone), end: oneDayAgo)
 
         case .weekToDate:
             guard let oneWeekAgo = currentCalendar.date(byAdding: .day, value: -7, to: currentDate) else {
-                throw TimeRangeGeneratorError.previousRangeGenerationFailed
+                return nil
             }
-            let lastWeekStart = oneWeekAgo.startOfWeek(timezone: currentTimezone, calendar: currentCalendar)
+            guard let lastWeekStart = oneWeekAgo.startOfWeek(timezone: currentTimezone, calendar: currentCalendar) else {
+                return nil
+            }
             return AnalyticsHubTimeRange(start: lastWeekStart, end: oneWeekAgo)
 
         case .monthToDate:
             guard let oneMonthAgo = currentCalendar.date(byAdding: .month, value: -1, to: currentDate) else {
-                throw TimeRangeGeneratorError.previousRangeGenerationFailed
+                return nil
             }
-            return AnalyticsHubTimeRange(start: oneMonthAgo.startOfMonth(timezone: currentTimezone), end: oneMonthAgo)
+            guard let lastMonthStart = oneMonthAgo.startOfMonth(timezone: currentTimezone) else {
+                return nil
+            }
+
+            return AnalyticsHubTimeRange(start: lastMonthStart, end: oneMonthAgo)
 
         case .yearToDate:
             guard let oneYearAgo = currentCalendar.date(byAdding: .year, value: -1, to: currentDate) else {
-                throw TimeRangeGeneratorError.previousRangeGenerationFailed
+                return nil
             }
-            return AnalyticsHubTimeRange(start: oneYearAgo.startOfYear(timezone: currentTimezone), end: oneYearAgo)
+            guard let lastYearStart = oneYearAgo.startOfYear(timezone: currentTimezone) else {
+                return nil
+            }
+            return AnalyticsHubTimeRange(start: lastYearStart, end: oneYearAgo)
         }
     }
 
@@ -159,6 +196,7 @@ private extension AnalyticsHubTimeRangeGenerator {
         static let weekToDate = NSLocalizedString("Week to Date", comment: "Week to Date")
         static let monthToDate = NSLocalizedString("Month to Date", comment: "Month to Date")
         static let yearToDate = NSLocalizedString("Year to Date", comment: "Year to Date")
-        static let noPreviousPeriodAvailable = NSLocalizedString("no previous period", comment: "")
+        static let noCurrentPeriodAvailable = NSLocalizedString("No current period available", comment: "")
+        static let noPreviousPeriodAvailable = NSLocalizedString("No previous period available", comment: "")
     }
 }

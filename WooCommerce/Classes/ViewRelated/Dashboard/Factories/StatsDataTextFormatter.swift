@@ -34,14 +34,15 @@ struct StatsDataTextFormatter {
 
     /// Creates the text to display for the net revenue.
     ///
-    static func createNetRevenueText(orderStats: OrderStatsV4?, currencyFormatter: CurrencyFormatter?, currencyCode: String) -> String {
+    static func createNetRevenueText(orderStats: OrderStatsV4?,
+                                     currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+                                     currencyCode: String = ServiceLocator.currencySettings.currencyCode.rawValue) -> String {
         guard let revenue = orderStats?.totals.netRevenue else {
             return Constants.placeholderText
         }
 
         // If revenue is an integer, no decimal points are shown.
         let numberOfDecimals: Int? = revenue.isInteger ? 0 : nil
-        let currencyFormatter = currencyFormatter ?? CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
         return currencyFormatter.formatAmount(revenue, with: currencyCode, numberOfDecimals: numberOfDecimals) ?? String()
     }
 

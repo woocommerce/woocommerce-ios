@@ -29,27 +29,11 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Revenue Card ViewModel
     ///
-    @Published var revenueCard = AnalyticsReportCardViewModel(title: Localization.RevenueCard.title,
-                                                              leadingTitle: Localization.RevenueCard.leadingTitle,
-                                                              leadingValue: Constants.placeholderValue,
-                                                              leadingDelta: Constants.placeholderDelta.string,
-                                                              leadingDeltaColor: Constants.deltaColor(for: Constants.placeholderDelta.direction),
-                                                              trailingTitle: Localization.RevenueCard.trailingTitle,
-                                                              trailingValue: Constants.placeholderValue,
-                                                              trailingDelta: Constants.placeholderDelta.string,
-                                                              trailingDeltaColor: Constants.deltaColor(for: Constants.placeholderDelta.direction))
+    @Published var revenueCard = AnalyticsHubViewModel.revenueCard(currentPeriodStats: nil, previousPeriodStats: nil)
 
     /// Orders Card ViewModel
     ///
-    @Published var ordersCard = AnalyticsReportCardViewModel(title: Localization.OrderCard.title,
-                                                             leadingTitle: Localization.OrderCard.leadingTitle,
-                                                             leadingValue: Constants.placeholderValue,
-                                                             leadingDelta: Constants.placeholderDelta.string,
-                                                             leadingDeltaColor: Constants.deltaColor(for: Constants.placeholderDelta.direction),
-                                                             trailingTitle: Localization.OrderCard.trailingTitle,
-                                                             trailingValue: Constants.placeholderValue,
-                                                             trailingDelta: Constants.placeholderDelta.string,
-                                                             trailingDeltaColor: Constants.deltaColor(for: Constants.placeholderDelta.direction))
+    @Published var ordersCard = AnalyticsHubViewModel.ordersCard(currentPeriodStats: nil, previousPeriodStats: nil)
 
     /// Time Range ViewModel
     ///
@@ -157,8 +141,6 @@ private extension AnalyticsHubViewModel {
 // MARK: - Constants
 private extension AnalyticsHubViewModel {
     enum Constants {
-        static let placeholderValue = "-"
-        static let placeholderDelta = StatsDataTextFormatter.createDeltaPercentage(from: 0.0, to: 0.0)
         static func deltaColor(for direction: StatsDataTextFormatter.DeltaPercentage.Direction) -> UIColor {
             switch direction {
             case .positive:

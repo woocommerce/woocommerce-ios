@@ -57,6 +57,11 @@ final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpack
         dismiss(animated: true)
     }
 
+    @objc
+    private func dismissWebView() {
+        dismiss(animated: true)
+    }
+
     private func presentJetpackConnectionWebView() {
         guard let connectionURL = viewModel.jetpackConnectionURL else {
             return
@@ -78,7 +83,7 @@ final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpack
         webView.navigationItem.leftBarButtonItem = UIBarButtonItem(title: Localization.cancel,
                                                                    style: .plain,
                                                                    target: self,
-                                                                   action: #selector(self.dismissView))
+                                                                   action: #selector(self.dismissWebView))
         let navigationController = UINavigationController(rootViewController: webView)
         self.present(navigationController, animated: true)
     }

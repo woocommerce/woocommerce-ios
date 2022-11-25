@@ -37,7 +37,7 @@ final class AddProductCoordinator: Coordinator {
     init(siteID: Int64,
          sourceBarButtonItem: UIBarButtonItem,
          sourceNavigationController: UINavigationController,
-         isProductCreationTypeEnabled: Bool = ABTest.productsOnboardingTemplateProducts.variation == .treatment(nil),
+         isProductCreationTypeEnabled: Bool = ABTest.productsOnboardingTemplateProducts.variation == .treatment,
          storage: StorageManagerType = ServiceLocator.storageManager,
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
         self.siteID = siteID
@@ -52,7 +52,7 @@ final class AddProductCoordinator: Coordinator {
     init(siteID: Int64,
          sourceView: UIView,
          sourceNavigationController: UINavigationController,
-         isProductCreationTypeEnabled: Bool = ABTest.productsOnboardingTemplateProducts.variation == .treatment(nil),
+         isProductCreationTypeEnabled: Bool = ABTest.productsOnboardingTemplateProducts.variation == .treatment,
          storage: StorageManagerType = ServiceLocator.storageManager,
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
         self.siteID = siteID

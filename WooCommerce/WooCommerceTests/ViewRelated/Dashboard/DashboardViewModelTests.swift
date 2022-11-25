@@ -91,7 +91,7 @@ final class DashboardViewModelTests: XCTestCase {
 
     func test_products_onboarding_announcements_take_precedence() {
         // Given
-        MockABTesting.setVariation(.treatment(nil), for: .productsOnboardingBanner)
+        MockABTesting.setVariation(.treatment, for: .productsOnboardingBanner)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .checkProductsOnboardingEligibility(_, completion):
@@ -127,7 +127,7 @@ final class DashboardViewModelTests: XCTestCase {
 
     func test_onboarding_announcement_not_displayed_when_previously_dismissed() {
         // Given
-        MockABTesting.setVariation(.treatment(nil), for: .productsOnboardingBanner)
+        MockABTesting.setVariation(.treatment, for: .productsOnboardingBanner)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .checkProductsOnboardingEligibility(_, completion):

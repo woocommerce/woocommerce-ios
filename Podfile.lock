@@ -31,14 +31,14 @@ PODS:
   - Kingfisher (7.2.2)
   - NSObject-SafeExpectations (0.0.4)
   - "NSURL+IDN (0.4)"
-  - Sentry (7.25.1):
-    - Sentry/Core (= 7.25.1)
-  - Sentry/Core (7.25.1)
+  - Sentry (7.31.2):
+    - Sentry/Core (= 7.31.2)
+  - Sentry/Core (7.31.2)
   - Sodium (0.9.1)
   - Sourcery (1.0.3)
   - StripeTerminal (2.14.0)
   - SVProgressHUD (2.2.5)
-  - UIDeviceIdentifier (2.0.0)
+  - UIDeviceIdentifier (2.2.0)
   - WordPress-Aztec-iOS (1.11.0)
   - WordPress-Editor-iOS (1.11.0):
     - WordPress-Aztec-iOS (= 1.11.0)
@@ -82,7 +82,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.8)
-  - Automattic-Tracks-iOS (~> 0.13.0)
+  - Automattic-Tracks-iOS (from `https://github.com/Automattic/Automattic-Tracks-iOS.git`, commit `5bcaa6db14d314ff388ed145af15c7a0379ee017`)
   - CocoaLumberjack (~> 3.7.4)
   - CocoaLumberjack/Swift (~> 3.7.4)
   - Gridicons (~> 1.2.0)
@@ -106,7 +106,6 @@ SPEC REPOS:
   trunk:
     - Alamofire
     - AppAuth
-    - Automattic-Tracks-iOS
     - CocoaLumberjack
     - FormatterKit
     - GoogleSignIn
@@ -140,6 +139,16 @@ SPEC REPOS:
     - ZendeskSupportProvidersSDK
     - ZendeskSupportSDK
 
+EXTERNAL SOURCES:
+  Automattic-Tracks-iOS:
+    :commit: 5bcaa6db14d314ff388ed145af15c7a0379ee017
+    :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
+
+CHECKOUT OPTIONS:
+  Automattic-Tracks-iOS:
+    :commit: 5bcaa6db14d314ff388ed145af15c7a0379ee017
+    :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
+
 SPEC CHECKSUMS:
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
   AppAuth: 8fca6b5563a5baef2c04bee27538025e4ceb2add
@@ -154,12 +163,12 @@ SPEC CHECKSUMS:
   Kingfisher: 184d4d1a8c36666e663caf8e08abe87898595c53
   NSObject-SafeExpectations: ab8fe623d36b25aa1f150affa324e40a2f3c0374
   "NSURL+IDN": afc873e639c18138a1589697c3add197fe8679ca
-  Sentry: dd29c18c32b0af9269949f079cf631d581ca76ca
+  Sentry: b15765d11769852fe78c9add942f7df60ed5dbf5
   Sodium: 23d11554ecd556196d313cf6130d406dfe7ac6da
   Sourcery: 70a6048014bd4f37ea80e6bd4354d47bf3b760e1
   StripeTerminal: 9bb367c9efa7bcddf2602cc29f8962390d87b6a6
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
-  UIDeviceIdentifier: af4e11e25a2ea670078e2bd677bb0e8144f9f063
+  UIDeviceIdentifier: f33af270ba9045ea18b31d9aab88e42a0082ea67
   WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348
   WordPress-Editor-iOS: 304098424f1051cb271546c99f906aac296b1b81
   WordPressAuthenticator: 27178591a805804bd27959f1f76ddcb94605916c
@@ -178,6 +187,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2bdf8544f7cd0fd4c002546f5704b813845beb2a
   ZendeskSupportSDK: 3a8e508ab1d9dd22dc038df6c694466414e037ba
 
-PODFILE CHECKSUM: 8b243f1ea76d4db3aa638b50ef0d516185d01c2c
+PODFILE CHECKSUM: 7ece374478e82b0728d3bd4eb086e5171a80e50f
 
 COCOAPODS: 1.11.3

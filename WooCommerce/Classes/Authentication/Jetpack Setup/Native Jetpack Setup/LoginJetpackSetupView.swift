@@ -265,7 +265,7 @@ struct LoginJetpackSetupView: View {
             }
         }
         .fullScreenCover(isPresented: $viewModel.jetpackConnectionInterrupted) {
-            LoginJetpackSetupInterruptedView(onSupport: supportHandler, onContinue: {
+            LoginJetpackSetupInterruptedView(siteURL: viewModel.siteURL, onSupport: supportHandler, onContinue: {
                 viewModel.jetpackConnectionInterrupted = false
                 // delay for the dismissal of the interrupted screen to complete.
                 DispatchQueue.main.asyncAfter(deadline: .now() + Constants.interruptedConnectionActionHandlerDelayTime) {

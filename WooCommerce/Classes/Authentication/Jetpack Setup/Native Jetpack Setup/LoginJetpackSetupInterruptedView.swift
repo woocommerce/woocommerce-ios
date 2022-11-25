@@ -3,9 +3,13 @@ import SwiftUI
 /// View to be displayed when the native Jetpack connection flow is dismissed.
 ///
 struct LoginJetpackSetupInterruptedView: View {
+    let siteURL: String
     let onSupport: () -> Void
     let onContinue: () -> Void
     let onCancellation: () -> Void
+
+    /// Scale of the view based on accessibility changes
+    @ScaledMetric private var scale: CGFloat = 1.0
 
     var body: some View {
         VStack {
@@ -27,11 +31,34 @@ struct LoginJetpackSetupInterruptedView: View {
                 Spacer()
 
                 VStack(spacing: Constants.contentSpacing) {
+                    // Error image
                     Image(uiImage: .jetpackSetupInterruptedImage)
+
+                    // Site address info
+                    HStack(spacing: Constants.contentSpacing) {
+                        Spacer()
+                        Image(systemName: "globe.americas.fill")
+                            .resizable()
+                            .frame(width: Constants.faviconSize * scale, height: Constants.faviconSize * scale)
+                            .scaledToFit()
+                        Text(siteURL.trimHTTPScheme())
+                            .bodyStyle()
+                        Spacer()
+                    }
+                    .foregroundColor(Color(uiColor: .text))
+                    .padding(Constants.contentSpacing)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(Color(.separator), lineWidth: 0.5)
+                    }
+                    .padding(.bottom, Constants.contentSpacing)
+
+                    // Error title
                     Text(Localization.title)
                         .fontWeight(.semibold)
+
+                    // Error message
                     Text(Localization.message)
-                    Text(Localization.suggestion)
                 }
                 .font(.title3)
                 .foregroundColor(Color(uiColor: .text))
@@ -63,36 +90,33 @@ extension LoginJetpackSetupInterruptedView {
     enum Localization {
         static let help = NSLocalizedString("Help", comment: "Button to contact support on the Jetpack setup interrupted screen")
         static let title = NSLocalizedString(
-            "You interrupted the connection.",
+            "Jetpack is installed, but not connected.",
             comment: "Title of the Jetpack setup interrupted screen"
         )
         static let message = NSLocalizedString(
-            "Jetpack is installed, but not connected.",
+            "Try connecting again to access your store.",
             comment: "Message on the Jetpack setup interrupted screen"
         )
-        static let suggestion = NSLocalizedString(
-            "Please continue the connection process to access your store.",
-            comment: "Suggestion on the Jetpack setup interrupted screen"
-        )
         static let continueConnection = NSLocalizedString(
-            "Continue Connection",
+            "Connect Jetpack",
             comment: "Button on the Jetpack setup interrupted screen to continue the setup"
         )
         static let cancelInstallation = NSLocalizedString(
-            "Cancel Installation",
+            "Exit Without Connecting",
             comment: "Button to cancel installation on the Jetpack setup interrupted screen"
         )
     }
 
     enum Constants {
         static let contentSpacing: CGFloat = 16
+        static let faviconSize: CGFloat = 20
     }
 }
 
 struct LoginJetpackSetupInterruptedView_Previews: PreviewProvider {
     static var previews: some View {
-        LoginJetpackSetupInterruptedView(onSupport: {}, onContinue: {}, onCancellation: {})
-        LoginJetpackSetupInterruptedView(onSupport: {}, onContinue: {}, onCancellation: {})
+        LoginJetpackSetupInterruptedView(siteURL: "test.com", onSupport: {}, onContinue: {}, onCancellation: {})
+        LoginJetpackSetupInterruptedView(siteURL: "test.com", onSupport: {}, onContinue: {}, onCancellation: {})
             .previewInterfaceOrientation(.landscapeLeft)
     }
 }

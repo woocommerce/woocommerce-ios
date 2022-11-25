@@ -151,7 +151,7 @@ final class DashboardViewModel {
     /// and if the user is part of the treatment group for the products onboarding A/B test.
     ///
     private func setProductsOnboardingBannerIfNeeded() {
-        guard ABTest.productsOnboardingBanner.variation == .treatment else {
+        guard ABTest.productsOnboardingBanner.variation == .treatment(nil) else {
             return
         }
 

@@ -76,10 +76,8 @@ public extension Variation {
         switch self {
         case .control:
             return "control"
-        case .treatment:
-            return "treatment"
-        case .customTreatment(let string):
-            return "treatment: \(string)"
+        case .treatment(let string):
+            return string.map { "treatment: \($0)" } ?? "treatment"
         }
     }
 }

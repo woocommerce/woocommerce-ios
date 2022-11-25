@@ -30,10 +30,12 @@ final class AnalyticsHubViewModel: ObservableObject {
                                                               leadingValue: Constants.placeholderValue,
                                                               leadingDelta: Constants.placeholderDelta.string,
                                                               leadingDeltaColor: Constants.deltaColor(for: Constants.placeholderDelta.direction),
+                                                              leadingChartData: [0.0, 10.0, 2.0, 20.0, 15.0, 40.0, 0.0, 10.0, 2.0, 20.0, 15.0, 50.0],
                                                               trailingTitle: Localization.RevenueCard.trailingTitle,
                                                               trailingValue: Constants.placeholderValue,
                                                               trailingDelta: Constants.placeholderDelta.string,
-                                                              trailingDeltaColor: Constants.deltaColor(for: Constants.placeholderDelta.direction))
+                                                              trailingDeltaColor: Constants.deltaColor(for: Constants.placeholderDelta.direction),
+                                                              trailingChartData: [50.0, 15.0, 20.0, 2.0, 10.0, 0.0, 40.0, 15.0, 20.0, 2.0, 10.0, 0.0])
 
     /// Orders Card ViewModel
     ///
@@ -42,10 +44,12 @@ final class AnalyticsHubViewModel: ObservableObject {
                                                              leadingValue: Constants.placeholderValue,
                                                              leadingDelta: Constants.placeholderDelta.string,
                                                              leadingDeltaColor: Constants.deltaColor(for: Constants.placeholderDelta.direction),
+                                                             leadingChartData: [0.0, 10.0, 2.0, 20.0, 15.0, 40.0, 0.0, 10.0, 2.0, 20.0, 15.0, 50.0],
                                                              trailingTitle: Localization.OrderCard.trailingTitle,
                                                              trailingValue: Constants.placeholderValue,
                                                              trailingDelta: Constants.placeholderDelta.string,
-                                                             trailingDeltaColor: Constants.deltaColor(for: Constants.placeholderDelta.direction))
+                                                             trailingDeltaColor: Constants.deltaColor(for: Constants.placeholderDelta.direction),
+                                                             trailingChartData: [50.0, 15.0, 20.0, 2.0, 10.0, 0.0, 40.0, 15.0, 20.0, 2.0, 10.0, 0.0])
 
     /// Time Range ViewModel
     ///

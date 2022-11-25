@@ -9,10 +9,12 @@ struct AnalyticsReportCard: View {
     let leadingValue: String
     let leadingDelta: String
     let leadingDeltaColor: UIColor
+    let leadingChartData: [Double]
     let trailingTitle: String
     let trailingValue: String
     let trailingDelta: String
     let trailingDeltaColor: UIColor
+    let trailingChartData: [Double]
 
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.titleSpacing) {
@@ -33,7 +35,15 @@ struct AnalyticsReportCard: View {
                     Text(leadingValue)
                         .titleStyle()
 
-                    DeltaTag(value: leadingDelta, backgroundColor: leadingDeltaColor)
+                    HStack {
+                        DeltaTag(value: leadingDelta, backgroundColor: leadingDeltaColor)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+
+                        AnalyticsLineChart(dataPoints: leadingChartData, lineChartColor: leadingDeltaColor)
+                            .aspectRatio(Layout.chartAspectRatio, contentMode: .fit)
+                            .frame(maxWidth: .infinity, alignment: .trailing)
+                    }
+                    .fixedSize(horizontal: false, vertical: true)
 
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -47,7 +57,15 @@ struct AnalyticsReportCard: View {
                     Text(trailingValue)
                         .titleStyle()
 
-                    DeltaTag(value: trailingDelta, backgroundColor: trailingDeltaColor)
+                    HStack {
+                        DeltaTag(value: trailingDelta, backgroundColor: trailingDeltaColor)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+
+                        AnalyticsLineChart(dataPoints: trailingChartData, lineChartColor: trailingDeltaColor)
+                            .aspectRatio(Layout.chartAspectRatio, contentMode: .fit)
+                            .frame(maxWidth: .infinity, alignment: .trailing)
+                    }
+                    .fixedSize(horizontal: false, vertical: true)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -62,6 +80,7 @@ private extension AnalyticsReportCard {
         static let titleSpacing: CGFloat = 24
         static let cardPadding: CGFloat = 16
         static let columnSpacing: CGFloat = 10
+        static let chartAspectRatio: CGFloat = 2.2
     }
 }
 
@@ -73,10 +92,12 @@ struct Previews: PreviewProvider {
                             leadingValue: "$3.678",
                             leadingDelta: "+23%",
                             leadingDeltaColor: .withColorStudio(.green, shade: .shade40),
+                            leadingChartData: [0.0, 10.0, 2.0, 20.0, 15.0, 40.0, 0.0, 10.0, 2.0, 20.0, 15.0, 50.0],
                             trailingTitle: "Net Sales",
                             trailingValue: "$3.232",
                             trailingDelta: "-3%",
-                            trailingDeltaColor: .withColorStudio(.red, shade: .shade40))
+                            trailingDeltaColor: .withColorStudio(.red, shade: .shade40),
+                            trailingChartData: [50.0, 15.0, 20.0, 2.0, 10.0, 0.0, 40.0, 15.0, 20.0, 2.0, 10.0, 0.0])
             .previewLayout(.sizeThatFits)
     }
 }

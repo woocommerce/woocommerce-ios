@@ -107,6 +107,16 @@ private extension CardPresentModalScanningForReader {
                      """
         )
 
+        // \u{2011} (Non-Breaking Hyphen) will result in `genstrings` logging
+        //
+        // invalid unicode sequence: \u{201
+        //
+        // This is a known bug in the toolchain.
+        // The only known workaround is to use the actual character, but that would defeat the non-breaking purpose.
+        //
+        // See:
+        // - https://developer.apple.com/forums/thread/696752
+        // - https://github.com/woocommerce/woocommerce-ios/issues/8219
         static let learnMoreText = NSLocalizedString(
             "cardPresent.modalScanningForReader.learnMore.text",
             value: "%1$@ about In\u{2011}Person Payments",

@@ -1,3 +1,4 @@
+import Combine
 import UIKit
 
 /// Configuration and actions for an ULErrorViewController,
@@ -5,12 +6,14 @@ import UIKit
 /// Displayed as an entry point to the native Jetpack setup flow.
 /// 
 final class JetpackSetupRequiredViewModel: ULErrorViewModel {
-    private let siteURL: String
+
+    let siteURL: String
     /// Whether Jetpack is installed and activated and only connection needs to be handled.
     private let connectionOnly: Bool
     private let authentication: Authentication
     private let analytics: Analytics
     private var coordinator: LoginJetpackSetupCoordinator?
+    @Published private var siteIcon = UIImage(systemName: "globe.americas.fill")
 
     init(siteURL: String,
          connectionOnly: Bool,
@@ -30,14 +33,8 @@ final class JetpackSetupRequiredViewModel: ULErrorViewModel {
     }
 
     var text: NSAttributedString {
-        let font: UIFont = .body
-        let boldFont: UIFont = font.bold
-
-        let boldSiteAddress = NSAttributedString(string: siteURL.trimHTTPScheme(),
-                                                           attributes: [.font: boldFont])
-        let message = NSMutableAttributedString(string: connectionOnly ? Localization.connectionErrorMessage : Localization.setupErrorMessage)
-
-        message.replaceFirstOccurrence(of: "%@", with: boldSiteAddress)
+        let title = connectionOnly ? Localization.connectionErrorMessage : Localization.setupErrorMessage
+        let message = NSMutableAttributedString(string: title, attributes: [.font: UIFont.title3, .foregroundColor: UIColor.text])
 
         let subtitle = connectionOnly ? Localization.connectionSubtitle : Localization.setupSubtitle
         let subtitleAttributedString = NSAttributedString(string: "\n\n" + subtitle,
@@ -58,6 +55,12 @@ final class JetpackSetupRequiredViewModel: ULErrorViewModel {
     let secondaryButtonTitle = ""
 
     let isSecondaryButtonHidden = true
+
+    let isSiteAddressViewHidden = false
+
+    var siteFavicon: AnyPublisher<UIImage?, Never> {
+        $siteIcon.eraseToAnyPublisher()
+    }
 
     // Configures `Help` button title
     let rightBarButtonItemTitle: String? = Localization.helpBarButtonItemTitle
@@ -134,14 +137,12 @@ extension JetpackSetupRequiredViewModel {
             comment: "Button to authorize Jetpack connection from the Jetpack setup required screen"
         )
         static let setupErrorMessage = NSLocalizedString(
-            "To use this app for %@ you'll need the free Jetpack plugin installed and connected on your store.",
-            comment: "Error message on the Jetpack setup required screen." +
-            "Reads like: To use this app for test.com you'll need..."
+            "Please install the free Jetpack plugin to access your store on this app.",
+            comment: "Error message on the Jetpack setup required screen."
         )
         static let connectionErrorMessage = NSLocalizedString(
-            "To use this app for %@ you'll need to connect your store to Jetpack.",
-            comment: "Error message on the Jetpack setup required screen when Jetpack connection is missing." +
-            "Reads like: To use this app for test.com you'll need..."
+            "Please connect your store to Jetpack to access it on this app.",
+            comment: "Error message on the Jetpack setup required screen when Jetpack connection is missing."
         )
         static let setupSubtitle = NSLocalizedString(
             "You’ll need your store credentials to begin the installation.",

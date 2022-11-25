@@ -59,7 +59,7 @@ final class JetpackSetupRequiredViewModelTests: XCTestCase {
         let expectedText = JetpackSetupRequiredViewModel.Localization.connectionErrorMessage
             .replacingOccurrences(of: "%@", with: testSiteURL.trimHTTPScheme()) +
             "\n\n" +
-            JetpackSetupRequiredViewModel.Localization.connectionSubtitle
+            JetpackSetupRequiredViewModel.Localization.setupSubtitle
 
         // When
         let text = viewModel.text.string

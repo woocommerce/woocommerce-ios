@@ -19,20 +19,6 @@ public class AnalyticsHubTimeRangeGenerator {
     private var currentTimeRange: AnalyticsHubTimeRange? = nil
     private var previousTimeRange: AnalyticsHubTimeRange? = nil
 
-    var currentRangeDescription: String {
-        guard let currentTimeRange = currentTimeRange else {
-            return Localization.noCurrentPeriodAvailable
-        }
-        return generateDescriptionOf(timeRange: currentTimeRange)
-    }
-
-    var previousRangeDescription: String {
-        guard let previousTimeRange = previousTimeRange else {
-            return Localization.noPreviousPeriodAvailable
-        }
-        return generateDescriptionOf(timeRange: previousTimeRange)
-    }
-
     var selectionDescription: String {
         selectionType.description
     }
@@ -66,6 +52,26 @@ public class AnalyticsHubTimeRangeGenerator {
             throw TimeRangeGeneratorError.previousRangeGenerationFailed
         }
         return previousTimeRange
+    }
+
+    /// Generates a date description of the previous time range set internally.
+    /// - Returns the Time range in a UI friendly format. If the previous time range is not available,
+    /// then returns an presentable error message.
+    func generateCurrentRangeDescription() -> String {
+        guard let currentTimeRange = currentTimeRange else {
+            return Localization.noCurrentPeriodAvailable
+        }
+        return generateDescriptionOf(timeRange: currentTimeRange)
+    }
+
+    /// Generates a date description of the previous time range set internally.
+    /// - Returns the Time range in a UI friendly format. If the previous time range is not available,
+    /// then returns an presentable error message.
+    func generatePreviousRangeDescription() -> String {
+        guard let previousTimeRange = previousTimeRange else {
+            return Localization.noPreviousPeriodAvailable
+        }
+        return generateDescriptionOf(timeRange: previousTimeRange)
     }
 
     private func generateCurrentTimeRangeFrom(selectionType: SelectionType) -> AnalyticsHubTimeRange? {

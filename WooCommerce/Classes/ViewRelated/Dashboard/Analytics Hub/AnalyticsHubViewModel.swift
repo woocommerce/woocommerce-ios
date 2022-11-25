@@ -17,8 +17,8 @@ final class AnalyticsHubViewModel: ObservableObject {
         self.stores = stores
         self.timeRangeGenerator = AnalyticsHubTimeRangeGenerator(selectedTimeRange: statsTimeRange)
         self.timeRangeCard = AnalyticsTimeRangeCardViewModel(selectedRangeTitle: timeRangeGenerator.selectionDescription,
-                                                             currentRangeSubtitle: timeRangeGenerator.currentRangeDescription,
-                                                             previousRangeSubtitle: timeRangeGenerator.previousRangeDescription)
+                                                             currentRangeSubtitle: timeRangeGenerator.generateCurrentRangeDescription(),
+                                                             previousRangeSubtitle: timeRangeGenerator.generatePreviousRangeDescription())
 
         Task.init {
             do {

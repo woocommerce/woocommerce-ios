@@ -14,8 +14,8 @@ final class AnalyticsHubTimeRangeGeneratorTests: XCTestCase {
         let timeRange = AnalyticsHubTimeRangeGenerator(selectedTimeRange: .thisYear, currentDate: currentDate)
 
         // When
-        let currentTimeRange = try timeRange.generateCurrentTimeRange()
-        let previousTimeRange = try timeRange.generatePreviousTimeRange()
+        let currentTimeRange = try timeRange.unwrapCurrentTimeRange()
+        let previousTimeRange = try timeRange.unwrapPreviousTimeRange()
 
         // Then
         XCTAssertEqual(currentTimeRange.start, dateFrom("2020-01-01"))
@@ -31,8 +31,8 @@ final class AnalyticsHubTimeRangeGeneratorTests: XCTestCase {
         let timeRange = AnalyticsHubTimeRangeGenerator(selectedTimeRange: .thisMonth, currentDate: currentDate)
 
         // When
-        let currentTimeRange = try timeRange.generateCurrentTimeRange()
-        let previousTimeRange = try timeRange.generatePreviousTimeRange()
+        let currentTimeRange = try timeRange.unwrapCurrentTimeRange()
+        let previousTimeRange = try timeRange.unwrapPreviousTimeRange()
 
         // Then
         XCTAssertEqual(currentTimeRange.start, dateFrom("2010-07-01"))
@@ -48,8 +48,8 @@ final class AnalyticsHubTimeRangeGeneratorTests: XCTestCase {
         let timeRange = AnalyticsHubTimeRangeGenerator(selectedTimeRange: .thisWeek, currentDate: currentDate)
 
         // When
-        let currentTimeRange = try timeRange.generateCurrentTimeRange()
-        let previousTimeRange = try timeRange.generatePreviousTimeRange()
+        let currentTimeRange = try timeRange.unwrapCurrentTimeRange()
+        let previousTimeRange = try timeRange.unwrapPreviousTimeRange()
 
         // Then
         XCTAssertEqual(currentTimeRange.start, dateFrom("2022-06-27"))
@@ -65,8 +65,8 @@ final class AnalyticsHubTimeRangeGeneratorTests: XCTestCase {
         let timeRange = AnalyticsHubTimeRangeGenerator(selectedTimeRange: .today, currentDate: currentDate)
 
         // When
-        let currentTimeRange = try timeRange.generateCurrentTimeRange()
-        let previousTimeRange = try timeRange.generatePreviousTimeRange()
+        let currentTimeRange = try timeRange.unwrapCurrentTimeRange()
+        let previousTimeRange = try timeRange.unwrapPreviousTimeRange()
 
         // Then
         XCTAssertEqual(currentTimeRange.start, dateFrom("2022-07-01"))
@@ -82,8 +82,8 @@ final class AnalyticsHubTimeRangeGeneratorTests: XCTestCase {
         let timeRange = AnalyticsHubTimeRangeGenerator(selectedTimeRange: .thisYear, currentDate: currentDate)
 
         // When
-        let currentRangeDescription = timeRange.currentRangeDescription
-        let previousRangeDescription = timeRange.previousRangeDescription
+        let currentRangeDescription = timeRange.generateCurrentRangeDescription()
+        let previousRangeDescription = timeRange.generatePreviousRangeDescription()
 
         // Then
         XCTAssertEqual(currentRangeDescription, "Jan 1 - Jul 1, 2022")
@@ -96,8 +96,8 @@ final class AnalyticsHubTimeRangeGeneratorTests: XCTestCase {
         let timeRange = AnalyticsHubTimeRangeGenerator(selectedTimeRange: .thisMonth, currentDate: currentDate)
 
         // When
-        let currentRangeDescription = timeRange.currentRangeDescription
-        let previousRangeDescription = timeRange.previousRangeDescription
+        let currentRangeDescription = timeRange.generateCurrentRangeDescription()
+        let previousRangeDescription = timeRange.generatePreviousRangeDescription()
 
         // Then
         XCTAssertEqual(currentRangeDescription, "Jul 1 - 31, 2022")
@@ -110,8 +110,8 @@ final class AnalyticsHubTimeRangeGeneratorTests: XCTestCase {
         let timeRange = AnalyticsHubTimeRangeGenerator(selectedTimeRange: .thisWeek, currentDate: currentDate)
 
         // When
-        let currentRangeDescription = timeRange.currentRangeDescription
-        let previousRangeDescription = timeRange.previousRangeDescription
+        let currentRangeDescription = timeRange.generateCurrentRangeDescription()
+        let previousRangeDescription = timeRange.generatePreviousRangeDescription()
 
         // Then
         XCTAssertEqual(currentRangeDescription, "Jul 25 - 29, 2022")
@@ -124,8 +124,8 @@ final class AnalyticsHubTimeRangeGeneratorTests: XCTestCase {
         let timeRange = AnalyticsHubTimeRangeGenerator(selectedTimeRange: .thisWeek, currentDate: currentDate)
 
         // When
-        let currentRangeDescription = timeRange.currentRangeDescription
-        let previousRangeDescription = timeRange.previousRangeDescription
+        let currentRangeDescription = timeRange.generateCurrentRangeDescription()
+        let previousRangeDescription = timeRange.generatePreviousRangeDescription()
 
         // Then
         XCTAssertEqual(currentRangeDescription, "Jun 27 - Jul 2, 2022")
@@ -138,8 +138,8 @@ final class AnalyticsHubTimeRangeGeneratorTests: XCTestCase {
         let timeRange = AnalyticsHubTimeRangeGenerator(selectedTimeRange: .today, currentDate: currentDate)
 
         // When
-        let currentRangeDescription = timeRange.currentRangeDescription
-        let previousRangeDescription = timeRange.previousRangeDescription
+        let currentRangeDescription = timeRange.generateCurrentRangeDescription()
+        let previousRangeDescription = timeRange.generatePreviousRangeDescription()
 
         // Then
         XCTAssertEqual(currentRangeDescription, "Jul 1, 2022")

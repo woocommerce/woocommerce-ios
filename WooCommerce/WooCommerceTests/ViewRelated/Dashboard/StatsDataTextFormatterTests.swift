@@ -75,6 +75,45 @@ final class StatsDataTextFormatterTests: XCTestCase {
         XCTAssertEqual(totalRevenueDelta.direction, .positive)
     }
 
+    func test_createNetRevenueText_does_not_return_decimal_points_for_integer_value() {
+        // Given
+        let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(netRevenue: 62))
+
+        // When
+        let netRevenue = StatsDataTextFormatter.createNetRevenueText(orderStats: orderStats,
+                                                                     currencyFormatter: currencyFormatter,
+                                                                     currencyCode: currencyCode.rawValue)
+
+        // Then
+        XCTAssertEqual(netRevenue, "$62")
+    }
+
+    func test_createNetRevenueText_returns_decimal_points_from_currency_settings_for_noninteger_value() {
+        // Given
+        let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(netRevenue: 62.856))
+
+        // When
+        let netRevenue = StatsDataTextFormatter.createNetRevenueText(orderStats: orderStats,
+                                                                     currencyFormatter: currencyFormatter,
+                                                                     currencyCode: currencyCode.rawValue)
+
+        // Then
+        XCTAssertEqual(netRevenue, "$62.86")
+    }
+
+    func test_createNetRevenueDelta_returns_expected_delta() {
+        // Given
+        let previousOrderStats = OrderStatsV4.fake().copy(totals: .fake().copy(netRevenue: 10))
+        let currentOrderStats = OrderStatsV4.fake().copy(totals: .fake().copy(netRevenue: 15))
+
+        // When
+        let netRevenueDelta = StatsDataTextFormatter.createNetRevenueDelta(from: previousOrderStats, to: currentOrderStats)
+
+        // Then
+        XCTAssertEqual(netRevenueDelta.string, "+50%")
+        XCTAssertEqual(netRevenueDelta.direction, .positive)
+    }
+
     // MARK: Orders Stats
 
     func test_createOrderCountText_returns_expected_order_count() {

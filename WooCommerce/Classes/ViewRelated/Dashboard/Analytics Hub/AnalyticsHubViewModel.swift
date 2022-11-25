@@ -52,6 +52,7 @@ final class AnalyticsHubViewModel: ObservableObject {
     @Published private var previousOrderStats: OrderStatsV4? = nil
 }
 
+// MARK: Networking
 private extension AnalyticsHubViewModel {
 
     @MainActor
@@ -93,6 +94,7 @@ private extension AnalyticsHubViewModel {
     }
 }
 
+// MARK: Data - UI mapping
 private extension AnalyticsHubViewModel {
 
     func bindViewModelsWithData() {

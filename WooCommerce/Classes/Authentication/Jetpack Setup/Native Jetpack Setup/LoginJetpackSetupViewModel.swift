@@ -134,6 +134,8 @@ final class LoginJetpackSetupViewModel: ObservableObject {
     }
 
     func retryAllSteps() {
+        analytics.track(.loginJetpackSetupScreenTryAgainButtonTapped,
+                        withProperties: currentSetupStep?.analyticsDescription)
         setupFailed = false
         setupError = nil
         setupErrorDetail = nil
@@ -141,6 +143,12 @@ final class LoginJetpackSetupViewModel: ObservableObject {
         currentSetupStep = nil
         currentConnectionStep = nil
         startSetup()
+    }
+
+    // MARK: - LoginJetpackSetupInterruptedView
+    func didTapContinueConnectionButton() {
+        analytics.track(.loginJetpackSetupScreenTryAgainButtonTapped,
+                        withProperties: currentSetupStep?.analyticsDescription)
     }
 }
 

@@ -22,7 +22,10 @@ final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpack
         }
 
         rootView.supportHandler = { [weak self] in
-            self?.presentSupport()
+            guard let self else { return }
+
+            self.analytics.track(.loginJetpackSetupScreenGetSupportTapped, withProperties: self.viewModel.currentSetupStep?.analyticsDescription)
+            self.presentSupport()
         }
 
         rootView.cancellationHandler = dismissView
@@ -49,7 +52,13 @@ final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpack
 
     @objc
     private func dismissView() {
-        analytics.track(.loginJetpackSetupScreenDismissed)
+        analytics.track(.loginJetpackSetupScreenDismissed,
+                        withProperties: viewModel.currentSetupStep?.analyticsDescription)
+        dismiss(animated: true)
+    }
+
+    @objc
+    private func dismissWebView() {
         dismiss(animated: true)
     }
 
@@ -73,7 +82,7 @@ final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpack
         webView.navigationItem.leftBarButtonItem = UIBarButtonItem(title: Localization.cancel,
                                                                    style: .plain,
                                                                    target: self,
-                                                                   action: #selector(self.dismissView))
+                                                                   action: #selector(self.dismissWebView))
         let navigationController = UINavigationController(rootViewController: webView)
         self.present(navigationController, animated: true)
     }
@@ -203,7 +212,6 @@ struct LoginJetpackSetupView: View {
 
                         // Support button
                         Button {
-                            // TODO: add tracks?
                             supportHandler()
                         } label: {
                             Label {
@@ -240,7 +248,6 @@ struct LoginJetpackSetupView: View {
             // Error state buttons: Retry and Cancel
             VStack(spacing: Constants.contentVerticalSpacing) {
                 Button {
-                    // TODO: add tracks
                     viewModel.retryAllSteps()
                 } label: {
                     Text(viewModel.tryAgainButtonTitle)
@@ -267,6 +274,7 @@ struct LoginJetpackSetupView: View {
         .fullScreenCover(isPresented: $viewModel.jetpackConnectionInterrupted) {
             LoginJetpackSetupInterruptedView(siteURL: viewModel.siteURL, onSupport: supportHandler, onContinue: {
                 viewModel.jetpackConnectionInterrupted = false
+                viewModel.didTapContinueConnectionButton()
                 // delay for the dismissal of the interrupted screen to complete.
                 DispatchQueue.main.asyncAfter(deadline: .now() + Constants.interruptedConnectionActionHandlerDelayTime) {
                     webViewPresentationHandler()

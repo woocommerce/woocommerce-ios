@@ -538,4 +538,17 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
         // Then
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_error_checking_jetpack_connection" }))
     }
+
+    func test_it_tracks_correct_event_when_retying_setup() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let viewModel = LoginJetpackSetupViewModel(siteURL: testURL, connectionOnly: false, analytics: analytics)
+
+        // When
+        viewModel.retryAllSteps()
+
+        // Then
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_try_again_button_tapped" }))
+    }
 }

@@ -97,6 +97,24 @@ extension JetpackInstallStep {
         }
     }
 
+    /// Description dictionary for Analytics
+    ///
+    var analyticsDescription: [String: String] {
+        let stepDescription = {
+            switch self {
+            case .installation:
+                return "installation"
+            case .activation:
+                return "activation"
+            case .connection:
+                return "connection"
+            case .done:
+                return "all_done"
+            }
+        }()
+        return ["jetpack_install_step": stepDescription]
+    }
+
     private enum Localization {
         static let installationStep = NSLocalizedString("Installing Jetpack", comment: "Name of installing Jetpack plugin step")
         static let activationStep = NSLocalizedString("Activating", comment: "Name of the activation Jetpack plugin step")

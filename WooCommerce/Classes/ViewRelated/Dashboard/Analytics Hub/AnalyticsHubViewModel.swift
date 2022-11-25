@@ -8,10 +8,7 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     private let siteID: Int64
     private let stores: StoresManager
-
-    /// Time Range control of the Analytics Hub
-    ///
-    private let timeRangeController: AnalyticsHubTimeRangeGenerator
+    private let timeRangeGenerator: AnalyticsHubTimeRangeGenerator
 
     init(siteID: Int64,
          statsTimeRange: StatsTimeRangeV4,
@@ -19,10 +16,10 @@ final class AnalyticsHubViewModel: ObservableObject {
         self.siteID = siteID
         self.stores = stores
 
-        self.timeRangeController = AnalyticsHubTimeRangeGenerator(selectedTimeRange: statsTimeRange)
-        self.timeRangeCard = AnalyticsTimeRangeCardViewModel(selectedRangeTitle: timeRangeController.selectionDescription,
-                                                             currentRangeSubtitle: timeRangeController.currentRangeDescription,
-                                                             previousRangeSubtitle: timeRangeController.previousRangeDescription)
+        self.timeRangeGenerator = AnalyticsHubTimeRangeGenerator(selectedTimeRange: statsTimeRange)
+        self.timeRangeCard = AnalyticsTimeRangeCardViewModel(selectedRangeTitle: timeRangeGenerator.selectionDescription,
+                                                             currentRangeSubtitle: timeRangeGenerator.currentRangeDescription,
+                                                             previousRangeSubtitle: timeRangeGenerator.previousRangeDescription)
 
         Task.init {
             do {

@@ -83,6 +83,43 @@ public enum WooAnalyticsStat: String {
     case whatIsWPComOnInvalidEmailScreenTapped = "what_is_wordpress_com_on_invalid_email_screen"
     case createAccountOnInvalidEmailScreenTapped = "create_account_on_invalid_email_screen"
 
+    // MARK: Site credentials
+    //
+    case loginJetpackSiteCredentialScreenViewed = "login_jetpack_site_credential_screen_viewed"
+    case loginJetpackSiteCredentialScreenDismissed = "login_jetpack_site_credential_screen_dismissed"
+    case loginJetpackSiteCredentialInstallTapped = "login_jetpack_site_credential_install_button_tapped"
+    case loginJetpackSiteCredentialResetPasswordTapped = "login_jetpack_site_credential_reset_password_button_tapped"
+    case loginJetpackSiteCredentialDidShowErrorAlert = "login_jetpack_site_credential_did_show_error_alert"
+    case loginJetpackSiteCredentialDidFinishLogin = "login_jetpack_site_credential_did_finish_login"
+
+    // MARK: Install/Setup Jetpack (`LoginJetpackSetupView`)
+    //
+    case loginJetpackSetupScreenViewed = "login_jetpack_setup_screen_viewed"
+    case loginJetpackSetupScreenDismissed = "login_jetpack_setup_screen_dismissed"
+
+    case loginJetpackSetupScreenInstallSuccessful = "login_jetpack_setup_install_successful"
+    case loginJetpackSetupScreenInstallFailed = "login_jetpack_setup_install_failed"
+
+    case loginJetpackSetupActivationSuccessful = "login_jetpack_setup_activation_successful"
+    case loginJetpackSetupActivationFailed = "login_jetpack_setup_activation_failed"
+
+    case loginJetpackSetupFetchJetpackConnectionURLSuccessful = "login_jetpack_setup_fetch_jetpack_connection_url_successful"
+    case loginJetpackSetupFetchJetpackConnectionURLFailed = "login_jetpack_setup_fetch_jetpack_connection_url_failed"
+
+    case loginJetpackSetupCannotFindWPCOMUser = "login_jetpack_setup_cannot_find_WPCOM_user"
+    case loginJetpackSetupAllStepsMarkedDone = "login_jetpack_setup_all_steps_marked_done"
+    case loginJetpackSetupErrorCheckingJetpackConnection = "login_jetpack_setup_error_checking_jetpack_connection"
+
+    case loginJetpackSetupGoToStoreTapped = "login_jetpack_setup_go_to_store_button_tapped"
+
+    case loginJetpackSetupAuthorizedUsingDifferentWPCOMAccount = "login_jetpack_setup_authorized_using_different_wpcom_account"
+
+    // MARK: No matched site alert
+    //
+    case loginJetpackNoMatchedSiteErrorViewed = "login_jetpack_no_matched_site_error_viewed"
+    case loginJetpackNoMatchedSiteErrorTryAgainButtonTapped = "login_jetpack_no_matched_site_error_try_again_button_tapped"
+    case loginJetpackNoMatchedSiteErrorContactSupportButtonTapped = "login_jetpack_no_matched_site_error_contact_support_button_tapped"
+
     // MARK: Dashboard View Events
     //
     case dashboardSelected = "main_tab_dashboard_selected"

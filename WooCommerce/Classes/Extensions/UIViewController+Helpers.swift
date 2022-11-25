@@ -37,6 +37,17 @@ extension UIViewController {
         }
     }
 
+    /// Shows a transparent navigation bar without a bottom border.
+    ///
+    func configureTransparentNavigationBar() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithTransparentBackground()
+        appearance.backgroundColor = .systemBackground
+
+        navigationItem.standardAppearance = appearance
+        navigationItem.scrollEdgeAppearance = appearance
+        navigationItem.compactAppearance = appearance
+    }
 }
 
 /// Private methods

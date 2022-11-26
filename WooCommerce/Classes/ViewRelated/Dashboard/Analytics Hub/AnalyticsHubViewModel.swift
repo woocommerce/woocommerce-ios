@@ -43,9 +43,7 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Products Card ViewModel
     ///
-    @Published var productCard = AnalyticsProductCardViewModel(itemsSold: "3,234",
-                                                               delta: "+43%",
-                                                               deltaBackgroundColor: .withColorStudio(.green, shade: .shade50))
+    @Published var productCard = AnalyticsHubViewModel.productCard(currentPeriodStats: nil, previousPeriodStats: nil)
 
     // MARK: Private data
 
@@ -110,6 +108,8 @@ private extension AnalyticsHubViewModel {
 
                 self.revenueCard = AnalyticsHubViewModel.revenueCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
                 self.ordersCard = AnalyticsHubViewModel.ordersCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
+                self.productCard = AnalyticsHubViewModel.productCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
+
             }.store(in: &subscriptions)
     }
 
@@ -143,6 +143,15 @@ private extension AnalyticsHubViewModel {
                                             trailingValue: StatsDataTextFormatter.createAverageOrderValueText(orderStats: currentPeriodStats),
                                             trailingDelta: orderValueDelta.string,
                                             trailingDeltaColor: Constants.deltaColor(for: orderValueDelta.direction))
+    }
+
+    static func productCard(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) -> AnalyticsProductCardViewModel {
+        let itemsSold = StatsDataTextFormatter.createItemsSoldText(orderStats: currentPeriodStats)
+        let itemsSoldDelta = StatsDataTextFormatter.createOrderItemsSoldDelta(from: currentPeriodStats, to: previousPeriodStats)
+
+        return AnalyticsProductCardViewModel(itemsSold: itemsSold,
+                                             delta: itemsSoldDelta.string,
+                                             deltaBackgroundColor: Constants.deltaColor(for: itemsSoldDelta.direction))
     }
 }
 

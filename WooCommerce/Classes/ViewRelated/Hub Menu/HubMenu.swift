@@ -62,7 +62,6 @@ struct HubMenu: View {
                                                            ])
                             switch type(of: menu).id {
                             case HubMenuViewModel.Payments.id:
-                                viewModel.paymentsScreenWasOpened()
                                 showingPayments = true
                             case HubMenuViewModel.WoocommerceAdmin.id:
                                 showingWooCommerceAdmin = true

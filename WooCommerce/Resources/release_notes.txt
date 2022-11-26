@@ -1,1 +1,3 @@
-Merchants using the app for taking payments in person will be happy to hear of improvements we’ve made. This and many other tiny improvements were made to make your experience smoother. We hope you notice the love we put into our software.
+- [*] Add System Status Report to ZenDesk support requests. [https://github.com/woocommerce/woocommerce-ios/pull/8171]
+
+

@@ -1,1 +1,1 @@
-Bu sürümde birkaç şeyi düzeltmeye ve ürünlerinizi yayınlamadan önce önizleme seçeneği dahil olmak üzere ekibimizin bulduğu küçük hataları gidermeye odaklandık. Merak etmeyin, hepiniz için çok güzel şeyler üzerinde çalışıyoruz! Geri bildirim paylaşmaya devam edin!
+Kişisel olarak ödeme almak için uygulamayı kullanan satıcılar yaptığımız iyileştirmeleri çok sevecek. Bu ve diğer birçok küçük iyileştirme, deneyiminizi daha sorunsuz hale getirmek için yapıldı. Yazılımımıza gönlümüzden kattığımız sevgiyi fark edeceğinizi umuyoruz.

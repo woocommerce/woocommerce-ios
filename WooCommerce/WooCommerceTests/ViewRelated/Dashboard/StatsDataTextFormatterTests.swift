@@ -384,4 +384,68 @@ final class StatsDataTextFormatterTests: XCTestCase {
         XCTAssertEqual(delta.string, "-100%")
         XCTAssertEqual(delta.direction, .negative)
     }
+
+    func test_createItemsSoldText_returns_placeholder_on_nil_stats() {
+        let text = StatsDataTextFormatter.createItemsSoldText(orderStats: nil)
+        XCTAssertEqual(text, "-")
+    }
+
+    func test_createItemsSoldText_returns_formatted_value() {
+        // Given
+        let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(totalItemsSold: 67890))
+
+        // When
+        let text = StatsDataTextFormatter.createItemsSoldText(orderStats: orderStats)
+
+        // Then
+        XCTAssertEqual(text, "67.9k")
+    }
+
+    func test_createOrderItemsSoldDelta_returns_zero_on_nil_stats() {
+        let delta = StatsDataTextFormatter.createOrderItemsSoldDelta(from: nil, to: nil)
+        XCTAssertEqual(delta.string, "+0%")
+        XCTAssertEqual(delta.direction, .zero)
+    }
+
+    func test_createOrderItemsSoldDelta_returns_correct_positive_value() {
+        // Given
+        let previousStats = OrderStatsV4.fake().copy(totals: .fake().copy(totalItemsSold: 100))
+        let currentStats = OrderStatsV4.fake().copy(totals: .fake().copy(totalItemsSold: 133))
+
+        // When
+        let delta = StatsDataTextFormatter.createOrderItemsSoldDelta(from: previousStats, to: currentStats)
+
+        // Then
+        XCTAssertEqual(delta.string, "+33%")
+        XCTAssertEqual(delta.direction, .positive)
+    }
+
+    func test_createOrderItemsSoldDelta_returns_correct_negative_value() {
+        // Given
+        let previousStats = OrderStatsV4.fake().copy(totals: .fake().copy(totalItemsSold: 100))
+        let currentStats = OrderStatsV4.fake().copy(totals: .fake().copy(totalItemsSold: 77))
+
+        // When
+        let delta = StatsDataTextFormatter.createOrderItemsSoldDelta(from: previousStats, to: currentStats)
+
+        // Then
+        XCTAssertEqual(delta.string, "-23%")
+        XCTAssertEqual(delta.direction, .negative)
+    }
+
+
+
+//
+//    /// Creates the text to display for the orders item sold delta.
+//    ///
+//    static func createOrderItemsSoldDelta(from previousPeriod: OrderStatsV4?, to currentPeriod: OrderStatsV4?) -> DeltaPercentage {
+//        guard let previousPeriod, let currentPeriod else {
+//            return DeltaPercentage(value: 0) // Missing data: 0% change
+//        }
+//        let previousItemsSold = Double(previousPeriod.totals.totalItemsSold)
+//        let currentItemsSold = Double(currentPeriod.totals.totalItemsSold)
+//        return createDeltaPercentage(from: previousItemsSold, to: currentItemsSold)
+//    }
+
+
 }

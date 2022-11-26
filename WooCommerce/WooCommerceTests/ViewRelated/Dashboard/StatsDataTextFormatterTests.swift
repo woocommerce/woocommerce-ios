@@ -432,20 +432,4 @@ final class StatsDataTextFormatterTests: XCTestCase {
         XCTAssertEqual(delta.string, "-23%")
         XCTAssertEqual(delta.direction, .negative)
     }
-
-
-
-//
-//    /// Creates the text to display for the orders item sold delta.
-//    ///
-//    static func createOrderItemsSoldDelta(from previousPeriod: OrderStatsV4?, to currentPeriod: OrderStatsV4?) -> DeltaPercentage {
-//        guard let previousPeriod, let currentPeriod else {
-//            return DeltaPercentage(value: 0) // Missing data: 0% change
-//        }
-//        let previousItemsSold = Double(previousPeriod.totals.totalItemsSold)
-//        let currentItemsSold = Double(currentPeriod.totals.totalItemsSold)
-//        return createDeltaPercentage(from: previousItemsSold, to: currentItemsSold)
-//    }
-
-
 }

@@ -150,7 +150,7 @@ private extension VerifyEmailViewController {
         case let cell as TextLabelTableViewCell where row == .typePassword:
             configureTypePasswordButton(cell)
         default:
-            DDLogError("Error: Unidentified tableViewCell type found.")
+            WPAuthenticatorLogError("Error: Unidentified tableViewCell type found.")
         }
     }
 
@@ -203,7 +203,7 @@ private extension VerifyEmailViewController {
     ///
     func didRequestAuthenticationLink() {
         guard let vc = LoginMagicLinkViewController.instantiate(from: .unifiedLoginMagicLink) else {
-            DDLogError("Failed to navigate to LoginMagicLinkViewController from VerifyEmailViewController")
+            WPAuthenticatorLogError("Failed to navigate to LoginMagicLinkViewController from VerifyEmailViewController")
             return
         }
 
@@ -216,7 +216,7 @@ private extension VerifyEmailViewController {
     ///
     func presentUnifiedPassword() {
         guard let vc = PasswordViewController.instantiate(from: .password) else {
-            DDLogError("Failed to navigate to PasswordViewController from VerifyEmailViewController")
+            WPAuthenticatorLogError("Failed to navigate to PasswordViewController from VerifyEmailViewController")
             return
         }
         vc.loginFields = loginFields

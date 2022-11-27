@@ -33,7 +33,7 @@ class SafariCredentialsService {
         SecAddSharedWebCredential(LoginSharedWebCredentialFQDN, username, password, { (error: CFError?) in
             guard error == nil else {
                 let err = error
-                DDLogError("Error occurred updating shared web credential: \(String(describing: err?.localizedDescription))")
+                WPAuthenticatorLogError("Error occurred updating shared web credential: \(String(describing: err?.localizedDescription))")
                 return
             }
             DispatchQueue.main.async(execute: {
@@ -48,14 +48,14 @@ class SafariCredentialsService {
     ///
     class func requestSharedWebCredentials(_ completion: @escaping SharedWebCredentialsCallback) {
         SecRequestSharedWebCredential(LoginSharedWebCredentialFQDN, nil, { (credentials: CFArray?, error: CFError?) in
-            DDLogInfo("Completed requesting shared web credentials")
+            WPAuthenticatorLogInfo("Completed requesting shared web credentials")
             guard error == nil else {
                 let err = error as Error?
                 if let error = err as NSError?, error.code == -25300 {
                     // An OSStatus of -25300 is expected when no saved credentails are found.
-                    DDLogInfo("No shared web credenitals found.")
+                    WPAuthenticatorLogInfo("No shared web credenitals found.")
                 } else {
-                    DDLogError("Error requesting shared web credentials: \(String(describing: err?.localizedDescription))")
+                    WPAuthenticatorLogError("Error requesting shared web credentials: \(String(describing: err?.localizedDescription))")
                 }
                 DispatchQueue.main.async {
                     completion(false, nil, nil)

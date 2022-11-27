@@ -82,7 +82,7 @@ private extension GoogleAuthViewController {
 
     func showSignupConfirmationView() {
         guard let vc = GoogleSignupConfirmationViewController.instantiate(from: .googleSignupConfirmation) else {
-            DDLogError("Failed to navigate from GoogleAuthViewController to GoogleSignupConfirmationViewController")
+            WPAuthenticatorLogError("Failed to navigate from GoogleAuthViewController to GoogleSignupConfirmationViewController")
             return
         }
 
@@ -110,7 +110,7 @@ extension GoogleAuthViewController: GoogleAuthenticatorDelegate {
         self.loginFields = loginFields
 
         guard let vc = TwoFAViewController.instantiate(from: .twoFA) else {
-            DDLogError("Failed to navigate from GoogleAuthViewController to TwoFAViewController")
+            WPAuthenticatorLogError("Failed to navigate from GoogleAuthViewController to TwoFAViewController")
             return
         }
 
@@ -122,7 +122,7 @@ extension GoogleAuthViewController: GoogleAuthenticatorDelegate {
         self.loginFields = loginFields
 
         guard let vc = PasswordViewController.instantiate(from: .password) else {
-            DDLogError("Failed to navigate from GoogleAuthViewController to PasswordViewController")
+            WPAuthenticatorLogError("Failed to navigate from GoogleAuthViewController to PasswordViewController")
             return
         }
 

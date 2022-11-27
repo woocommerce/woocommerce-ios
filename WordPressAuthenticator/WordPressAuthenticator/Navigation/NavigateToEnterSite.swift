@@ -12,7 +12,7 @@ public struct NavigateToEnterSite: NavigationCommand {
 private extension NavigateToEnterSite {
     func presentUnifiedSiteAddressView(navigationController: UINavigationController?) {
         guard let vc = SiteAddressViewController.instantiate(from: .siteAddress) else {
-            DDLogError("Failed to navigate from LoginViewController to SiteAddressViewController")
+            WPAuthenticatorLogError("Failed to navigate from LoginViewController to SiteAddressViewController")
             return
         }
 

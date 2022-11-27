@@ -62,7 +62,7 @@ final class SignupMagicLinkViewController: LoginViewController {
     func validationCheck() {
         let email = loginFields.username
         if !email.isValidEmail() {
-            DDLogError("The value of loginFields.username was not a valid email address.")
+            WPAuthenticatorLogError("The value of loginFields.username was not a valid email address.")
         }
     }
 
@@ -145,7 +145,7 @@ private extension SignupMagicLinkViewController {
         case let cell as TextLabelTableViewCell where row == .oops:
             configureoopsLabel(cell)
         default:
-            DDLogError("Error: Unidentified tableViewCell type found.")
+            WPAuthenticatorLogError("Error: Unidentified tableViewCell type found.")
         }
     }
 

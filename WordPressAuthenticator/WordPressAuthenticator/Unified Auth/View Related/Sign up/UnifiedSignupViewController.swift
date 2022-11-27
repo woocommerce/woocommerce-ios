@@ -143,7 +143,7 @@ private extension UnifiedSignupViewController {
         case let cell as TextLabelTableViewCell where row == .errorMessage:
             configureErrorLabel(cell)
         default:
-            DDLogError("Error: Unidentified tableViewCell type found.")
+            WPAuthenticatorLogError("Error: Unidentified tableViewCell type found.")
         }
     }
 
@@ -225,7 +225,7 @@ extension UnifiedSignupViewController {
                                     self?.configureSubmitButton(animating: false)
 
             }, failure: { [weak self] (error: Error) in
-                DDLogError("Request for signup link email failed.")
+                WPAuthenticatorLogError("Request for signup link email failed.")
 
                 guard let self = self else {
                     return
@@ -239,7 +239,7 @@ extension UnifiedSignupViewController {
 
     func didRequestSignupLink() {
         guard let vc = SignupMagicLinkViewController.instantiate(from: .unifiedSignup) else {
-            DDLogError("Failed to navigate from UnifiedSignupViewController to SignupMagicLinkViewController")
+            WPAuthenticatorLogError("Failed to navigate from UnifiedSignupViewController to SignupMagicLinkViewController")
             return
         }
 

@@ -1,7 +1,6 @@
 #import "WordPressXMLRPCAPIFacade.h"
 #import <WPXMLRPC/WPXMLRPC.h>
 #import "WPAuthenticator-Swift.h"
-#import "WPAuthenticatorLoggingPrivate.h"
 
 @import WordPressKit;
 
@@ -44,7 +43,7 @@ NSString *const XMLRPCOriginalErrorKey = @"XMLRPCOriginalErrorKey";
 
 - (NSError *)errorForGuessXMLRPCApiFailure:(NSError *)error
 {
-    DDLogError(@"Error on trying to guess XMLRPC site: %@", error);
+    WPAuthenticatorLogError(@"Error on trying to guess XMLRPC site: %@", error);
     NSArray *errorCodes = @[
                             @(NSURLErrorUserCancelledAuthentication),
                             @(NSURLErrorNotConnectedToInternet),

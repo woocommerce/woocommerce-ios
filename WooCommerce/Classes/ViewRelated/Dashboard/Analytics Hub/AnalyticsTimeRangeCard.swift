@@ -10,12 +10,15 @@ struct AnalyticsTimeRangeCard: View {
 
     @State private var showTimeRangeSelectionView: Bool = false
 
-    @State private var selectedType: AnalyticsHubTimeRangeGenerator.SelectionType = .weekToDate
+    @State private var selectedType: AnalyticsHubViewModel.SelectionType = .weekToDate
 
     var body: some View {
         createTimeRangeContent()
             .sheet(isPresented: $showTimeRangeSelectionView) {
-                SelectionList(title: "Select something", items: AnalyticsHubTimeRangeGenerator.SelectionType.allCases, contentKeyPath: \.description, selected: $selectedType)
+                SelectionList(title: "Select something",
+                              items: AnalyticsHubViewModel.SelectionType.allCases,
+                              contentKeyPath: \.description,
+                              selected: $selectedType)
             }
     }
 

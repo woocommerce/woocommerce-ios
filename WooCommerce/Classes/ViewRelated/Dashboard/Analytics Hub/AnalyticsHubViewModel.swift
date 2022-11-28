@@ -18,8 +18,8 @@ final class AnalyticsHubViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.stores = stores
-        self.timeRangeGenerator = AnalyticsHubTimeRangeGenerator(selectedTimeRange: statsTimeRange)
-        self.timeRangeCard = AnalyticsTimeRangeCardViewModel(selectedRangeTitle: timeRangeGenerator.selectionDescription,
+        self.timeRangeGenerator = AnalyticsHubTimeRangeGenerator(selectionType: SelectionType.from(statsTimeRange))
+        self.timeRangeCard = AnalyticsTimeRangeCardViewModel(selectedRangeTitle: timeRangeGenerator.selectionType.description,
                                                              currentRangeSubtitle: timeRangeGenerator.generateCurrentRangeDescription(),
                                                              previousRangeSubtitle: timeRangeGenerator.generatePreviousRangeDescription())
 
@@ -149,7 +149,7 @@ private extension AnalyticsHubViewModel {
     }
 }
 
-// Mark: - Selection Type
+// MARK: - Selection Type
 extension AnalyticsHubViewModel {
     enum SelectionType: CaseIterable {
         case today

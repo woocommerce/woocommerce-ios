@@ -14,7 +14,7 @@ public class AnalyticsHubTimeRangeGenerator {
     private let currentTimezone = TimeZone.autoupdatingCurrent
     private let currentDate: Date
     private let currentCalendar: Calendar
-    private let selectionType: AnalyticsHubViewModel.SelectionType
+    let selectionType: AnalyticsHubViewModel.SelectionType
 
     private var currentTimeRange: AnalyticsHubTimeRange? = nil
     private var previousTimeRange: AnalyticsHubTimeRange? = nil

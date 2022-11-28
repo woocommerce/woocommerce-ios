@@ -296,7 +296,7 @@ private extension CardPresentPaymentsModalViewController {
             auxiliaryButton.setImage(viewModel.auxiliaryButtonimage, for: .normal)
             if viewModel.auxiliaryButtonimage != nil {
                 var config = UIButton.Configuration.plain()
-                config.imagePadding = CGFloat(Constants.buttonTitleAndImageSpacing)
+                config.imagePadding = Constants.buttonTitleAndImageSpacing
                 auxiliaryButton.configuration = config
             }
             view.layoutIfNeeded()

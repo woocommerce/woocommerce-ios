@@ -40,6 +40,21 @@ final class StatsDataTextFormatterTests: XCTestCase {
         XCTAssertEqual(totalRevenue, "$62")
     }
 
+    func test_createTotalRevenueText_returns_expected_number_of_fractional_digits() {
+        // Given
+        let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(grossRevenue: 62.0023))
+
+        // When
+        let totalRevenue = StatsDataTextFormatter.createTotalRevenueText(orderStats: orderStats,
+                                                                         selectedIntervalIndex: nil,
+                                                                         currencyFormatter: currencyFormatter,
+                                                                         currencyCode: currencyCode.rawValue,
+                                                                         numberOfFractionDigits: 3)
+
+        // Then
+        XCTAssertEqual(totalRevenue, "$62.002")
+    }
+
     func test_createTotalRevenueText_returns_decimal_points_from_currency_settings_for_noninteger_value() {
         // Given
         let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(grossRevenue: 62.856))
@@ -113,6 +128,20 @@ final class StatsDataTextFormatterTests: XCTestCase {
 
         // Then
         XCTAssertEqual(netRevenue, "$62")
+    }
+
+    func test_createNetRevenueText_returns_expected_number_of_fractional_digits() {
+        // Given
+        let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(netRevenue: 62.0023))
+
+        // When
+        let netRevenue = StatsDataTextFormatter.createNetRevenueText(orderStats: orderStats,
+                                                                     currencyFormatter: currencyFormatter,
+                                                                     currencyCode: currencyCode.rawValue,
+                                                                     numberOfFractionDigits: 3)
+
+        // Then
+        XCTAssertEqual(netRevenue, "$62.002")
     }
 
     func test_createNetRevenueText_returns_decimal_points_from_currency_settings_for_noninteger_value() {
@@ -210,6 +239,20 @@ final class StatsDataTextFormatterTests: XCTestCase {
 
         // Then
         XCTAssertEqual(averageOrderValue, "$62")
+    }
+
+    func test_createAverageOrderValueText_returns_expected_number_of_fractional_digits() {
+        // Given
+        let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(averageOrderValue: 62.0023))
+
+        // When
+        let averageOrderValue = StatsDataTextFormatter.createAverageOrderValueText(orderStats: orderStats,
+                                                                                   currencyFormatter: currencyFormatter,
+                                                                                   currencyCode: currencyCode.rawValue,
+                                                                                   numberOfFractionDigits: 3)
+
+        // Then
+        XCTAssertEqual(averageOrderValue, "$62.002")
     }
 
     func test_createAverageOrderValueText_returns_decimal_points_from_currency_settings_for_noninteger_value() {

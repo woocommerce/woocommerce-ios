@@ -20,9 +20,4 @@ struct AnalyticsTimeRangeCardViewModel {
 /// Convenience extension to create an `AnalyticsTimeRangeCard` from a view model.
 ///
 extension AnalyticsTimeRangeCard {
-    init(viewModel: AnalyticsTimeRangeCardViewModel) {
-        self.timeRangeTitle = viewModel.selectedRangeTitle
-        self.currentRangeDescription = viewModel.currentRangeSubtitle
-        self.previousRangeDescription = viewModel.previousRangeSubtitle
-    }
 }

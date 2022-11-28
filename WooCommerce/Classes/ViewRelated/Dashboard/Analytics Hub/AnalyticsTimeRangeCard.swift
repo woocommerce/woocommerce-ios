@@ -4,13 +4,9 @@ import SwiftUI
 ///
 struct AnalyticsTimeRangeCard: View {
 
-    let timeRangeTitle: String
-    let currentRangeDescription: String
-    let previousRangeDescription: String
+    @StateObject var viewModel: AnalyticsHubViewModel
 
     @State private var showTimeRangeSelectionView: Bool = false
-
-    @State private var selectedType: AnalyticsHubViewModel.SelectionType = .weekToDate
 
     var body: some View {
         createTimeRangeContent()
@@ -18,7 +14,7 @@ struct AnalyticsTimeRangeCard: View {
                 SelectionList(title: "Select something",
                               items: AnalyticsHubViewModel.SelectionType.allCases,
                               contentKeyPath: \.description,
-                              selected: $selectedType)
+                              selected: $viewModel.timeRangeSelectionType)
             }
     }
 
@@ -29,10 +25,10 @@ struct AnalyticsTimeRangeCard: View {
                     .padding()
                     .background(Circle().foregroundColor(Color(.systemGray6)))
                 VStack(alignment: .leading, spacing: .zero) {
-                    Text(timeRangeTitle)
+                    Text(viewModel.timeRangeCard.selectedRangeTitle)
                         .foregroundColor(Color(.text))
                         .subheadlineStyle()
-                    Text(currentRangeDescription)
+                    Text(viewModel.timeRangeCard.currentRangeSubtitle)
                         .bold()
                 }
                 .padding(.leading)
@@ -42,7 +38,7 @@ struct AnalyticsTimeRangeCard: View {
 
             Divider()
 
-            BoldableTextView(Localization.comparisonHeaderTextWith(previousRangeDescription))
+            BoldableTextView(Localization.comparisonHeaderTextWith(viewModel.timeRangeCard.previousRangeSubtitle))
                 .padding(.leading)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .calloutStyle()
@@ -77,12 +73,12 @@ private extension AnalyticsTimeRangeCard {
         }
     }
 }
-
-// MARK: Previews
-struct TimeRangeCard_Previews: PreviewProvider {
-    static var previews: some View {
-        AnalyticsTimeRangeCard(timeRangeTitle: "Month to Date",
-                               currentRangeDescription: "Nov 1 - 23, 2022",
-                               previousRangeDescription: "Oct 1 - 23, 2022")
-    }
-}
+//
+//// MARK: Previews
+//struct TimeRangeCard_Previews: PreviewProvider {
+//    static var previews: some View {
+//        AnalyticsTimeRangeCard(timeRangeTitle: "Month to Date",
+//                               currentRangeDescription: "Nov 1 - 23, 2022",
+//                               previousRangeDescription: "Oct 1 - 23, 2022")
+//    }
+//}

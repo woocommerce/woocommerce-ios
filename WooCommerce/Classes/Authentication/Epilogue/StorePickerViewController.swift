@@ -263,9 +263,9 @@ private extension StorePickerViewController {
             }
         }()
         accountHeaderView.isActionButtonEnabled = showsActionButton
-        accountHeaderView.onActionButtonTapped = { [weak self] in
+        accountHeaderView.onActionButtonTapped = { [weak self] sourceView in
             guard let self else { return }
-            self.presentActionMenu()
+            self.presentActionMenu(from: sourceView)
         }
     }
 
@@ -315,7 +315,7 @@ private extension StorePickerViewController {
         return WordPressAuthenticator.shared.unifiedStyle?.viewControllerBackgroundColor ?? .listBackground
     }
 
-    func presentActionMenu() {
+    func presentActionMenu(from sourceView: UIView) {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
         let logOutAction = UIAlertAction(title: Localization.ActionMenu.logOut, style: .default) { [weak self] _ in
@@ -333,8 +333,8 @@ private extension StorePickerViewController {
         actionSheet.addAction(cancelAction)
 
         if let popoverController = actionSheet.popoverPresentationController {
-            popoverController.sourceView = view
-            popoverController.sourceRect = view.bounds
+            popoverController.sourceView = sourceView
+            popoverController.sourceRect = sourceView.bounds
         }
 
         present(actionSheet, animated: true)

@@ -33,7 +33,7 @@ final class AccountHeaderView: UIView {
 
     /// Closure to be executed whenever the action button is pressed
     ///
-    var onActionButtonTapped: (() -> Void)?
+    var onActionButtonTapped: ((UIView) -> Void)?
 
     // MARK: - Overridden Methods
 
@@ -93,7 +93,7 @@ private extension AccountHeaderView {
         actionButton.tintColor = .accent
         actionButton.setTitle(nil, for: .normal)
         actionButton.on(.touchUpInside) { [weak self] control in
-            self?.onActionButtonTapped?()
+            self?.onActionButtonTapped?(control)
         }
     }
 }

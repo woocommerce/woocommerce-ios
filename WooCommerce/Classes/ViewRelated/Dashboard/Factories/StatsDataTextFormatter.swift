@@ -16,7 +16,8 @@ struct StatsDataTextFormatter {
                                        currencyCode: String = ServiceLocator.currencySettings.currencyCode.rawValue) -> String {
         if let revenue = totalRevenue(at: selectedIntervalIndex, orderStats: orderStats) {
             // If revenue is an integer, no decimal points are shown.
-            let numberOfDecimals: Int? = revenue.rounded(.plain, scale: 2).isInteger ? 0 : nil
+            let numberOfFractionDigits = ServiceLocator.currencySettings.fractionDigits
+            let numberOfDecimals: Int? = revenue.rounded(.plain, scale: numberOfFractionDigits).isInteger ? 0 : nil
             return currencyFormatter.formatAmount(revenue, with: currencyCode, numberOfDecimals: numberOfDecimals) ?? String()
         } else {
             return Constants.placeholderText
@@ -41,7 +42,8 @@ struct StatsDataTextFormatter {
         }
 
         // If revenue is an integer, no decimal points are shown.
-        let numberOfDecimals: Int? = revenue.rounded(.plain, scale: 2).isInteger ? 0 : nil
+        let numberOfFractionDigits = ServiceLocator.currencySettings.fractionDigits
+        let numberOfDecimals: Int? = revenue.rounded(.plain, scale: numberOfFractionDigits).isInteger ? 0 : nil
         return currencyFormatter.formatAmount(revenue, with: currencyCode, numberOfDecimals: numberOfDecimals) ?? String()
     }
 
@@ -80,7 +82,8 @@ struct StatsDataTextFormatter {
                                             currencyCode: String = ServiceLocator.currencySettings.currencyCode.rawValue) -> String {
         if let value = averageOrderValue(orderStats: orderStats) {
             // If order value is an integer, no decimal points are shown.
-            let numberOfDecimals: Int? = value.rounded(.plain, scale: 2).isInteger ? 0 : nil
+            let numberOfFractionDigits = ServiceLocator.currencySettings.fractionDigits
+            let numberOfDecimals: Int? = value.rounded(.plain, scale: numberOfFractionDigits).isInteger ? 0 : nil
             return currencyFormatter.formatAmount(value, with: currencyCode, numberOfDecimals: numberOfDecimals) ?? String()
         } else {
             return Constants.placeholderText

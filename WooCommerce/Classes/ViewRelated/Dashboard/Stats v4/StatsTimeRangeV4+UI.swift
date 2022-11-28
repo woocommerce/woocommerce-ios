@@ -39,11 +39,11 @@ extension StatsTimeRangeV4 {
         case .today:
             return currentDate.endOfDay(timezone: siteTimezone)
         case .thisWeek:
-            return currentDate.endOfWeek(timezone: siteTimezone)
+            return currentDate.endOfWeek(timezone: siteTimezone)!
         case .thisMonth:
-            return currentDate.endOfMonth(timezone: siteTimezone)
+            return currentDate.endOfMonth(timezone: siteTimezone)!
         case .thisYear:
-            return currentDate.endOfYear(timezone: siteTimezone)
+            return currentDate.endOfYear(timezone: siteTimezone)!
         }
     }
 
@@ -57,11 +57,11 @@ extension StatsTimeRangeV4 {
         case .today:
             return latestDate.startOfDay(timezone: siteTimezone)
         case .thisWeek:
-            return latestDate.startOfWeek(timezone: siteTimezone)
+            return latestDate.startOfWeek(timezone: siteTimezone)!
         case .thisMonth:
-            return latestDate.startOfMonth(timezone: siteTimezone)
+            return latestDate.startOfMonth(timezone: siteTimezone)!
         case .thisYear:
-            return latestDate.startOfYear(timezone: siteTimezone)
+            return latestDate.startOfYear(timezone: siteTimezone)!
         }
     }
 

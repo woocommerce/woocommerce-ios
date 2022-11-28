@@ -89,7 +89,8 @@ private extension AccountHeaderView {
     }
 
     func setupHelpButton() {
-        actionButton.setImage(.ellipsisImage.withTintColor(.accent), for: .normal)
+        actionButton.setImage(.ellipsisImage, for: .normal)
+        actionButton.tintColor = .accent
         actionButton.setTitle(nil, for: .normal)
         actionButton.on(.touchUpInside) { [weak self] control in
             self?.onActionButtonTapped?()

@@ -155,14 +155,14 @@ public class AnalyticsHubTimeRangeGenerator {
 }
 
 // MARK: - Constants
-private extension AnalyticsHubTimeRangeGenerator {
+extension AnalyticsHubTimeRangeGenerator {
 
     enum TimeRangeGeneratorError: Error {
         case selectedRangeGenerationFailed
         case previousRangeGenerationFailed
     }
 
-    enum SelectionType {
+    enum SelectionType: CaseIterable {
         case today
         case weekToDate
         case monthToDate

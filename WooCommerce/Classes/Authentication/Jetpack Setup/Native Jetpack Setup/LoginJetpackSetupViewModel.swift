@@ -307,7 +307,7 @@ private extension LoginJetpackSetupViewModel {
 extension LoginJetpackSetupViewModel {
     /// Details for setup error to display on `LoginJetpackSetupView`
     ///
-    struct SetupErrorDetail {
+    struct SetupErrorDetail: Equatable {
         let setupErrorMessage: String
         let setupErrorSuggestion: String
         let errorCode: Int?

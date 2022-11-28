@@ -16,7 +16,7 @@ struct StatsDataTextFormatter {
                                        currencyCode: String = ServiceLocator.currencySettings.currencyCode.rawValue) -> String {
         if let revenue = totalRevenue(at: selectedIntervalIndex, orderStats: orderStats) {
             // If revenue is an integer, no decimal points are shown.
-            let numberOfDecimals: Int? = revenue.isInteger ? 0: nil
+            let numberOfDecimals: Int? = revenue.rounded(to: 2).isInteger ? 0 : nil
             return currencyFormatter.formatAmount(revenue, with: currencyCode, numberOfDecimals: numberOfDecimals) ?? String()
         } else {
             return Constants.placeholderText
@@ -41,7 +41,7 @@ struct StatsDataTextFormatter {
         }
 
         // If revenue is an integer, no decimal points are shown.
-        let numberOfDecimals: Int? = revenue.isInteger ? 0 : nil
+        let numberOfDecimals: Int? = revenue.rounded(to: 2).isInteger ? 0 : nil
         return currencyFormatter.formatAmount(revenue, with: currencyCode, numberOfDecimals: numberOfDecimals) ?? String()
     }
 
@@ -80,7 +80,7 @@ struct StatsDataTextFormatter {
                                             currencyCode: String = ServiceLocator.currencySettings.currencyCode.rawValue) -> String {
         if let value = averageOrderValue(orderStats: orderStats) {
             // If order value is an integer, no decimal points are shown.
-            let numberOfDecimals: Int? = value.isInteger ? 0 : nil
+            let numberOfDecimals: Int? = value.rounded(to: 2).isInteger ? 0 : nil
             return currencyFormatter.formatAmount(value, with: currencyCode, numberOfDecimals: numberOfDecimals) ?? String()
         } else {
             return Constants.placeholderText
@@ -278,5 +278,19 @@ private extension StatsDataTextFormatter {
 
     enum Constants {
         static let placeholderText = "-"
+    }
+
+
+}
+
+private extension Decimal {
+    func rounded(to scale: Int16) -> Self {
+        let numberHandler = NSDecimalNumberHandler(roundingMode: .plain,
+                                                   scale: scale,
+                                                   raiseOnExactness: false,
+                                                   raiseOnOverflow: false,
+                                                   raiseOnUnderflow: false,
+                                                   raiseOnDivideByZero: false)
+        return (self as NSDecimalNumber).rounding(accordingToBehavior: numberHandler) as Decimal
     }
 }

@@ -33,6 +33,7 @@ struct StatsIntervalDataParser {
         }
     }
 
+    /// Represents a type of stats total data
     enum StatsTotalData {
         case totalRevenue
         case netRevenue

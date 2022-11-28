@@ -23,7 +23,7 @@ struct AnalyticsReportCard: View {
                 .foregroundColor(Color(.text))
                 .footnoteStyle()
 
-            HStack {
+            HStack(alignment: .top) {
 
                 /// Leading Column
                 ///

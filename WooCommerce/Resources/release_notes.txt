@@ -1,1 +1,2 @@
-Merchants using the app for taking payments in person will be happy to hear of improvements we’ve made. This and many other tiny improvements were made to make your experience smoother. We hope you notice the love we put into our software.
+We focused on some stability and performance issues to make your experience smoother. Please keep sharing feedback. We read every one of them.
+

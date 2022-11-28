@@ -113,33 +113,6 @@ final class HubMenuViewModel: ObservableObject {
         }
 
         stores.dispatch(action)
-
-        setupPaymentsBadge()
-    }
-
-    private func setupPaymentsBadge() {
-        let featureAnnouncementVisibilityAction = AppSettingsAction.getFeatureAnnouncementVisibility(campaign: .paymentsInHubMenuButton) {
-            [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case .success(let visible):
-                    if visible {
-                        self.updatePaymentsBadge(type: .newFeature)
-                    }
-                default:
-                    break
-                }
-        }
-
-        stores.dispatch(featureAnnouncementVisibilityAction)
-    }
-
-    private func updatePaymentsBadge(type badge: HubMenuBadgeType) {
-        if let paymentsMenuItemIndex = self.menuElements.firstIndex(where: { item in
-            type(of: item).id == Payments.id
-        }) {
-            self.menuElements[paymentsMenuItemIndex] = Payments(badge: badge)
-        }
     }
 
     /// Present the `StorePickerViewController` using the `StorePickerCoordinator`, passing the navigation controller from the entry point.
@@ -155,15 +128,6 @@ final class HubMenuViewModel: ObservableObject {
     func showReviewDetails(using parcel: ProductReviewFromNoteParcel) {
         productReviewFromNoteParcel = parcel
         showingReviewDetail = true
-    }
-
-    func paymentsScreenWasOpened() {
-        updatePaymentsBadge(type: .number(number: 0))
-
-        let featureAnnouncementVisibilityAction = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .paymentsInHubMenuButton,
-                                                                                                    remindLater: false,
-                                                                                                    onCompletion: nil)
-        stores.dispatch(featureAnnouncementVisibilityAction)
     }
 
     func getReviewDetailDestination() -> ReviewDetailView? {

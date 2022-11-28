@@ -217,12 +217,6 @@ private extension AnalyticsHubViewModel {
             static let weekToDate = NSLocalizedString("Week to Date", comment: "Title of the Analytics Hub Week to Date selection range")
             static let monthToDate = NSLocalizedString("Month to Date", comment: "Title of the Analytics Hub Month to Date selection range")
             static let yearToDate = NSLocalizedString("Year to Date", comment: "Title of the Analytics Hub Year to Date selection range")
-            static let noCurrentPeriodAvailable = NSLocalizedString("No current period available",
-                                                                    comment: "A error message when it's not possible to acquire"
-                                                                    + "the Analytics Hub current selection range")
-            static let noPreviousPeriodAvailable = NSLocalizedString("No previous period available",
-                                                                     comment: "A error message when it's not possible to"
-                                                                     + "acquire the Analytics Hub previous selection range")
         }
     }
 }

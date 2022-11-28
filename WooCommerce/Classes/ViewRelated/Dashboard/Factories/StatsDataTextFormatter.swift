@@ -12,12 +12,11 @@ struct StatsDataTextFormatter {
     ///
     static func createTotalRevenueText(orderStats: OrderStatsV4?,
                                        selectedIntervalIndex: Int?,
-                                       currencyFormatter: CurrencyFormatter?,
-                                       currencyCode: String) -> String {
+                                       currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+                                       currencyCode: String = ServiceLocator.currencySettings.currencyCode.rawValue) -> String {
         if let revenue = totalRevenue(at: selectedIntervalIndex, orderStats: orderStats) {
             // If revenue is an integer, no decimal points are shown.
             let numberOfDecimals: Int? = revenue.isInteger ? 0: nil
-            let currencyFormatter = currencyFormatter ?? CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
             return currencyFormatter.formatAmount(revenue, with: currencyCode, numberOfDecimals: numberOfDecimals) ?? String()
         } else {
             return Constants.placeholderText
@@ -76,7 +75,9 @@ struct StatsDataTextFormatter {
 
     /// Creates the text to display for the average order value.
     ///
-    static func createAverageOrderValueText(orderStats: OrderStatsV4?, currencyFormatter: CurrencyFormatter, currencyCode: String) -> String {
+    static func createAverageOrderValueText(orderStats: OrderStatsV4?,
+                                            currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+                                            currencyCode: String = ServiceLocator.currencySettings.currencyCode.rawValue) -> String {
         if let value = averageOrderValue(orderStats: orderStats) {
             // If order value is an integer, no decimal points are shown.
             let numberOfDecimals: Int? = value.isInteger ? 0 : nil

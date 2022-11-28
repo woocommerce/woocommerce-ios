@@ -11,6 +11,10 @@ public enum ABTest: String, CaseIterable {
     /// Experiment ref: pbxNRc-1S0-p2
     case aaTestLoggedOut = "woocommerceios_explat_aa_test_logged_out_202211"
 
+    /// A/A test to make sure there is no bias in the logged in state.
+    /// Experiment ref:
+    case aaTestLoggedIn = "woocommerceios_explat_aa_test_logged_in_202212"
+
     /// A/B test to measure the sign-in success rate when only WPCom login is enabled.
     /// Experiment ref: pbxNRc-27s-p2
     ///
@@ -39,7 +43,7 @@ public enum ABTest: String, CaseIterable {
     /// When adding a new experiment, add it to the appropriate case depending on its context (logged-in or logged-out experience).
     public var context: ExperimentContext {
         switch self {
-        case .productsOnboardingBanner, .productsOnboardingTemplateProducts, .nativeJetpackSetupFlow:
+        case .productsOnboardingBanner, .productsOnboardingTemplateProducts, .nativeJetpackSetupFlow, .aaTestLoggedIn:
             return .loggedIn
         case .aaTestLoggedOut, .abTestLoginWithWPComOnly:
             return .loggedOut

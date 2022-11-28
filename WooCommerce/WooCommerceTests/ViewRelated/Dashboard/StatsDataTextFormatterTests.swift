@@ -43,6 +43,9 @@ final class StatsDataTextFormatterTests: XCTestCase {
     func test_createTotalRevenueText_returns_expected_number_of_fractional_digits() {
         // Given
         let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(grossRevenue: 62.0023))
+        let customCurrencySettings = CurrencySettings()
+        customCurrencySettings.fractionDigits = 3
+        let currencyFormatter = CurrencyFormatter(currencySettings: customCurrencySettings)
 
         // When
         let totalRevenue = StatsDataTextFormatter.createTotalRevenueText(orderStats: orderStats,
@@ -133,6 +136,9 @@ final class StatsDataTextFormatterTests: XCTestCase {
     func test_createNetRevenueText_returns_expected_number_of_fractional_digits() {
         // Given
         let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(netRevenue: 62.0023))
+        let customCurrencySettings = CurrencySettings()
+        customCurrencySettings.fractionDigits = 3
+        let currencyFormatter = CurrencyFormatter(currencySettings: customCurrencySettings)
 
         // When
         let netRevenue = StatsDataTextFormatter.createNetRevenueText(orderStats: orderStats,
@@ -244,6 +250,9 @@ final class StatsDataTextFormatterTests: XCTestCase {
     func test_createAverageOrderValueText_returns_expected_number_of_fractional_digits() {
         // Given
         let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(averageOrderValue: 62.0023))
+        let customCurrencySettings = CurrencySettings()
+        customCurrencySettings.fractionDigits = 3
+        let currencyFormatter = CurrencyFormatter(currencySettings: customCurrencySettings)
 
         // When
         let averageOrderValue = StatsDataTextFormatter.createAverageOrderValueText(orderStats: orderStats,

@@ -252,15 +252,12 @@ private extension StorePickerViewController {
             return
         }
 
-        accountHeaderView.username = "@" + defaultAccount.username
-        accountHeaderView.fullname = defaultAccount.displayName
+        accountHeaderView.email = defaultAccount.email
         accountHeaderView.downloadGravatar(with: defaultAccount.email)
         accountHeaderView.isHelpButtonEnabled = configuration == .login || configuration == .standard
-        accountHeaderView.onHelpRequested = { [weak self] in
-            guard let self = self else {
-                return
-            }
-            self.presentHelp()
+        accountHeaderView.onActionButtonTapped = { [weak self] in
+            guard let self else { return }
+            self.presentActionMenu()
         }
     }
 
@@ -308,6 +305,31 @@ private extension StorePickerViewController {
 
     func backgroundColor() -> UIColor {
         return WordPressAuthenticator.shared.unifiedStyle?.viewControllerBackgroundColor ?? .listBackground
+    }
+
+    func presentActionMenu() {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = .text
+        let logOutAction = UIAlertAction(title: Localization.ActionMenu.logOut, style: .default) { [weak self] _ in
+            self?.restartAuthentication()
+        }
+        let helpAction = UIAlertAction(title: Localization.ActionMenu.help, style: .default) { [weak self] _ in
+            guard let self else { return }
+            ServiceLocator.analytics.track(.sitePickerHelpButtonTapped)
+            self.presentHelp()
+        }
+        let cancelAction = UIAlertAction(title: Localization.cancel, style: .cancel)
+
+        actionSheet.addAction(logOutAction)
+        actionSheet.addAction(helpAction)
+        actionSheet.addAction(cancelAction)
+
+        if let popoverController = actionSheet.popoverPresentationController {
+            popoverController.sourceView = view
+            popoverController.sourceRect = view.bounds
+        }
+
+        present(actionSheet, animated: true)
     }
 
     func presentHelp() {
@@ -422,6 +444,7 @@ private extension StorePickerViewController {
         case .empty:
             updateActionButtonAndTableState(animating: false, enabled: false)
             addStoreButton.isHidden = false
+            secondaryActionButton.isHidden = true
         case .available(let sites):
             addStoreButton.isHidden = true
             if sites.allSatisfy({ $0.isWooCommerceActive == false }) {
@@ -824,6 +847,12 @@ private extension StorePickerViewController {
                                               comment: "Button to dismiss the action sheet on the store picker")
         static let addStoreButton = NSLocalizedString("Add a Store",
                                                       comment: "Button title on the store picker for store creation")
+        enum ActionMenu {
+            static let logOut = NSLocalizedString("Log out",
+                                                  comment: "Button to log out from the current account from the store picker")
+            static let help = NSLocalizedString("Help",
+                                                comment: "Button to get help from the store picker")
+        }
     }
 }
 

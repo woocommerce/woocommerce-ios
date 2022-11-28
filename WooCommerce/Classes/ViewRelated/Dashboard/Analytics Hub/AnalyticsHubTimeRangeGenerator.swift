@@ -157,4 +157,13 @@ extension AnalyticsHubTimeRangeGenerator {
         case selectedRangeGenerationFailed
         case previousRangeGenerationFailed
     }
+    
+    enum Localization {
+        static let noCurrentPeriodAvailable = NSLocalizedString("No current period available",
+                                                                comment: "A error message when it's not possible to acquire"
+                                                                + "the Analytics Hub current selection range")
+        static let noPreviousPeriodAvailable = NSLocalizedString("no previous period",
+                                                                 comment: "A error message when it's not possible to"
+                                                                 + "acquire the Analytics Hub previous selection range")
+    }
 }

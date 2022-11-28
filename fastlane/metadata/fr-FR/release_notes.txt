@@ -1,1 +1,2 @@
-Les améliorations que nous avons apportées ravirons les marchands qui utilisent l’application pour recevoir des paiements en personne. Cette amélioration et d’autres plus petites ont été apportées pour rendre votre expérience plus fluide. Nous espérons que vous remarquerez tout l’amour que nous mettons dans notre logiciel.
+Nous nous sommes concentrés sur des problèmes de stabilité et de performances pour améliorer la fluidité de votre expérience. Continuez de nous faire parvenir vos commentaires. Nous les lisons tous.
+

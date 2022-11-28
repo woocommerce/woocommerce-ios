@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-11-22 11:54:04+0000 */
+/* Translation-Revision-Date: 2022-11-27 02:10:06+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: it */
@@ -667,7 +667,8 @@ which should be translated separately and considered part of this sentence. */
 /* A failure reason for when the error that occured wasn't able to be determined. */
 "An unknown error occurred." = "Si è verificato un errore sconosciuto";
 
-/* Title of analytics as part of Jetpack benefits. */
+/* Title for the Analytics Hub screen.
+   Title of analytics as part of Jetpack benefits. */
 "Analytics" = "Analisi";
 
 /* Message when enabling analytics succeeds */
@@ -1189,6 +1190,7 @@ which should be translated separately and considered part of this sentence. */
 "Connect Card Reader" = "Connetti il lettore di carte";
 
 /* Action button to handle connecting the logged-in account to a given site.Presented when logging in with a store address that does not match the account entered
+   Button on the Jetpack setup interrupted screen to continue the setup
    Button title on the site credential login screen
    Button to authorize Jetpack connection from the Jetpack setup required screen
    Title of the Jetpack connection web view in the login flow */
@@ -1205,6 +1207,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Settings > Manage Card Reader > Prompt user to connect their first reader */
 "Connect your card reader" = "Connetti il tuo lettore di carte";
+
+/* Message to be displayed when a Jetpack connection has been authorized */
+"Connected" = "Connesso";
 
 /* Title shown when a user logs in with Google but no matching WordPress.com account is found */
 "Connected But…" = "Connesso ma…";
@@ -1253,7 +1258,8 @@ which should be translated separately and considered part of this sentence. */
    Close Account error alert button title - navigates the user to contact support.
    Contact Support title
    Text for the button to contact support from the store picker error screen
-   The title of the button to contact support in the Error Loading Data banner */
+   The title of the button to contact support in the Error Loading Data banner
+   Title of the button to contact support for help accessing a store after Jetpack setup */
 "Contact Support" = "Contatta il supporto";
 
 /* Contact WooComerce Payments Support title */
@@ -2056,6 +2062,9 @@ which should be translated separately and considered part of this sentence. */
 /* Envelope package type, used to create a custom package in the Shipping Label flow */
 "Envelope" = "Busta";
 
+/* Title indicating a failed step in Jetpack installation. */
+"Error" = "Errore";
+
 /* Error message when enabling analytics fails */
 "Error enabling analytics. Please try again." = "Errore durante l'attivazione dell'analisi. Prova di nuovo.";
 
@@ -2320,6 +2329,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the account creation form. */
 "Get started in minutes" = "Inizia in pochi minuti";
 
+/* Button to contact support when Jetpack setup fails */
+"Get support" = "Ottieni assistenza";
+
 /* Title of the Jetpack benefits banner. */
 "Get the full experience with Jetpack" = "Vivi l'esperienza completa con Jetpack";
 
@@ -2434,6 +2446,7 @@ which should be translated separately and considered part of this sentence. */
 "Height" = "Altezza";
 
 /* Action button for opening Help.Presented when logging in with a site address that does not have WooCommerce
+   Button to contact support on the Jetpack setup interrupted screen
    Help and Support navigation title
    Help button
    Help button on account mismatch error screen.
@@ -2626,7 +2639,8 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the Jetpack benefits view. */
 "Install the free Jetpack plugin to experience the best mobile experience." = "Installa il plugin gratuito di Jetpack per vivere la migliore esperienza possibile con i dispositivi mobili.";
 
-/* Name of installing Jetpack plugin step */
+/* Name of installing Jetpack plugin step
+   Title for the Jetpack setup screen when installation is required */
 "Installing Jetpack" = "Installazione di Jetpack in corso";
 
 /* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates. Placeholder is a literal, e.g \"limited\" */
@@ -2719,7 +2733,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error message for missing value in Weight row in Customs screen of Shipping Label flow */
 "Item weight must be larger than 0" = "Il peso dell'articolo deve essere superiore a 0";
 
-/* Description for Top Performers right column header */
+/* Description for Top Performers right column header
+   Title for the items sold column on the products card on the analytics hub screen. */
 "Items Sold" = "Elementi venduti";
 
 /* Title of the Jetpack Setup screen */
@@ -2911,9 +2926,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Instruction text on the login's email address screen. */
 "Log in to your WordPress.com account with your email address." = "Accedi al tuo account WordPress.com con il tuo indirizzo e-mail.";
-
-/* Title of the site credential login screen in the Jetpack setup flow */
-"Log in to your store" = "Accedi al tuo negozio";
 
 /* Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Log in with another account" = "Accedi con un altro account";
@@ -3289,6 +3301,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Alert dismissal title
    Button title to dismiss the alert when the store cannot be created in the store creation flow.
+   Button title to dismiss the alert when the WPCOM plan cannot be purchased in the store creation flow.
    Button title. An acknowledgement of the message displayed in a prompt.
    Button to dismiss the error alert on the site credential login screen
    Dismiss button on the alert when there is an error creating a new product category
@@ -3529,7 +3542,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Password field title in Product Visibility
    Password placeholder
    Placeholder for the password textfield.
-   Placeholder of the password field on the account creation form. */
+   Placeholder of the password field on the account creation form.
+   Title of the password field on the site credential login screen */
 "Password" = "Password";
 
 /* One of the possible options in Product Visibility */
@@ -3964,6 +3978,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Description for Top Performers left column header
    Product section title if there is more than one product.
    Product section title in Review Order screen if there is more than one product.
+   Title for the products card on the analytics hub screen.
    Title of the Products tab — plural form of Product
    Title text of the section that shows the Products when creating or editing an order
    Title that appears on top of the Product List screen (plural form of the word Product). */
@@ -4757,8 +4772,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "L'indirizzo del sito deve contenere almeno 4 caratteri.";
 
-/* Navigation bar button on the domain selector screen to skip domain selection.
-   The button title on the login onboarding screen to skip to the prologue screen.
+/* The button title on the login onboarding screen to skip to the prologue screen.
    Title for the button to skip the onboarding step informing the merchant of pending account requirements */
 "Skip" = "Salta";
 
@@ -5489,9 +5503,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Footer text for Downloadable File URL */
 "This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "Questo è l'URL del file a cui i clienti avranno accesso. Gli URL inseriti dovrebbero essere già codificati.";
 
-/* Subtitle of the domain selector. */
-"This is where people will find you on the Internet. Don't worry, you can change it later." = "Ecco dove gli utenti ti troveranno su Internet. Non preoccuparti. Puoi cambiarlo più tardi.";
-
 /* Message in action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow.The package name reads like: Package 1: Custom Envelope. */
 "This item is currently in Package %1$d: %2$@. Where would you like to move it?" = "Questo elemento si trova al momento nel pacchetto %1$d: %2$@. Dove vorresti spostarlo?";
 
@@ -5576,17 +5587,12 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Label within the modal dialog that appears when searching for a card reader */
 "To turn on your card reader, briefly press its power button." = "Per attivare il lettore di schede, premi velocemente il pulsante di accensione.";
 
-/* Error message on the Jetpack setup required screen.Reads like: To use this app for test.com you'll need... */
-"To use this app for %@ you'll need the free Jetpack plugin installed and connected on your store." = "Per usare quest'app per %@, avrai bisogno del plugin Jetpack gratuito installato e connesso al tuo negozio.";
-
-/* Error message on the Jetpack setup required screen when Jetpack connection is missing.Reads like: To use this app for test.com you'll need... */
-"To use this app for %@ you'll need to connect your store to Jetpack." = "Per usare quest'app per %@, dovrai connettere il tuo negozio a Jetpack.";
-
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "Per usare quest'app per %@, dovrai disporre del plugin Jetpack installato e connesso al tuo negozio.";
 
 /* Label for one of the filters in order date range
    Tab selector title that shows the statistics for today
+   Title of the Analytics Hub Today's selection range
    Today Section Header
    Top Performers section title - today */
 "Today" = "Oggi";
@@ -5608,6 +5614,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Used when a Reader Topic is not found for a specific id */
 "Topic not found for id:" = "Argomento non trovato per ID:";
+
+/* Label for total number of orders in the Analytics Hub */
+"Total Orders" = "Ordini totali";
 
 /* Title of the row for adding the package weight in Shipping Label Package Detail screen */
 "Total package weight" = "Peso del pacchetto totale";
@@ -5653,6 +5662,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Button to try again after connecting to a specific reader fails due to a critically low battery.
    Button to try again. Presented to users after a failure occurs
    Button to try to refund a payment again. Presented to users after refunding a payment fails
+   Title of the button to attempt loading the store again after Jetpack setup
    Try Again button on the error alert when fetching system status report fails */
 "Try Again" = "Riprova";
 
@@ -5702,7 +5712,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of a button linking to the app's Twitter profile */
 "Twitter" = "Twitter";
 
-/* Text field placeholder on the store name form in the store creation flow. */
+/* Placeholder of the search text field on the domain selector.
+   Text field placeholder on the store name form in the store creation flow. */
 "Type a name for your store" = "Digita un nome per il tuo negozio";
 
 /* Placeholder for the Content Details row in Customs screen of Shipping Label flow */
@@ -5710,9 +5721,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Placeholder for the Restriction Details row in Customs screen of Shipping Label flow */
 "Type of restriction" = "Tipo di restrizione";
-
-/* Placeholder of the search text field on the domain selector. */
-"Type to get suggestions" = "Digita per ottenere suggerimenti";
 
 /* Navigation bar title for editing the URL of a text link
    URL text field placeholder */
@@ -6028,6 +6036,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder
    Placeholder for the username textfield.
+   Title of the email field on the site credential login screen
    Username placeholder */
 "Username" = "Nome utente";
 
@@ -6223,9 +6232,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Error message displayed when an error occurred sending the magic link email. */
 "We were unable to send you an email at this time. Please try again later." = "Al momento non siamo stati in grado di inviarti un'e-mail. Riprova più tardi.";
-
-/* Note at the bottom of the site credential login screen */
-"We will ask for your approval to complete the Jetpack connection." = "Chiederemo la tua approvazione per completare la connessione Jetpack.";
 
 /* Instructional text for the magic link login flow. */
 "We'll email you a magic link that'll log you in instantly, no password needed. Hunt and peck no more!" = "Ti invieremo per e-mail un link per accedere subito, senza password. Non ci sarà più bisogno di digitare la password!";
@@ -6455,12 +6461,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Error message when WooCommerce Payments is not installed */
 "You’ll need to install the free WooCommerce Payments extension on your store to accept In-Person Payments." = "Dovrai installare l'estensione gratuita WooCommerce Payments sul tuo negozio per accettare Pagamenti di persona.";
-
-/* Subtitle on the Jetpack setup required screen when only Jetpack connection is missing */
-"You’ll need your store credentials to begin the connection." = "Avrai bisogno delle credenziali del tuo negozio per iniziare la correzione.";
-
-/* Subtitle on the Jetpack setup required screen */
-"You’ll need your store credentials to begin the installation." = "Avrai bisogno delle credenziali del tuo negozio per iniziare l'installazione.";
 
 /* Error message when an in-person payments plugin is activated but not set up. %1$@ contains the plugin name. */
 "You’re almost there! Please finish setting up %1$@ to start accepting In-Person Payments." = "Ci sei quasi! Completa l'impostazione di %1$@ per iniziare ad accettare pagamenti di persona.";

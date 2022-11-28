@@ -147,7 +147,7 @@ private extension AnalyticsHubViewModel {
 
     static func productCard(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) -> AnalyticsProductCardViewModel {
         let itemsSold = StatsDataTextFormatter.createItemsSoldText(orderStats: currentPeriodStats)
-        let itemsSoldDelta = StatsDataTextFormatter.createOrderItemsSoldDelta(from: currentPeriodStats, to: previousPeriodStats)
+        let itemsSoldDelta = StatsDataTextFormatter.createOrderItemsSoldDelta(from: previousPeriodStats, to: currentPeriodStats)
 
         return AnalyticsProductCardViewModel(itemsSold: itemsSold,
                                              delta: itemsSoldDelta.string,

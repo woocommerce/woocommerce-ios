@@ -14,24 +14,20 @@ public class AnalyticsHubTimeRangeGenerator {
     private let currentTimezone = TimeZone.autoupdatingCurrent
     private let currentDate: Date
     private let currentCalendar: Calendar
-    let selectionType: SelectionType
+    private let selectionType: AnalyticsHubViewModel.SelectionType
 
     private var currentTimeRange: AnalyticsHubTimeRange? = nil
     private var previousTimeRange: AnalyticsHubTimeRange? = nil
 
-    var selectionDescription: String {
-        selectionType.description
-    }
-
     //TODO: abandon usage of the ISO 8601 Calendar and build one based on the Site calendar configuration
-    init(selectedTimeRange: StatsTimeRangeV4,
+    init(selectionType: AnalyticsHubViewModel.SelectionType,
          currentDate: Date = Date(),
          currentCalendar: Calendar = Calendar(identifier: .iso8601)) {
         self.currentDate = currentDate
         self.currentCalendar = currentCalendar
-        self.selectionType = SelectionType.from(selectedTimeRange)
-        self.currentTimeRange = generateCurrentTimeRangeFrom(selectionType: selectionType)
-        self.previousTimeRange = generatePreviousTimeRangeFrom(selectionType: selectionType)
+        self.selectionType = selectionType
+        self.currentTimeRange = generateCurrentTimeRange()
+        self.previousTimeRange = generatePreviousTimeRange()
     }
 
     /// Unwrap the generated selected `AnalyticsHubTimeRange` based on the `selectedTimeRange`
@@ -74,7 +70,7 @@ public class AnalyticsHubTimeRangeGenerator {
         return generateDescriptionOf(timeRange: previousTimeRange)
     }
 
-    private func generateCurrentTimeRangeFrom(selectionType: SelectionType) -> AnalyticsHubTimeRange? {
+    private func generateCurrentTimeRange() -> AnalyticsHubTimeRange? {
         switch selectionType {
         case .today:
             return AnalyticsHubTimeRange(start: currentDate.startOfDay(timezone: currentTimezone), end: currentDate)
@@ -99,7 +95,7 @@ public class AnalyticsHubTimeRangeGenerator {
         }
     }
 
-    private func generatePreviousTimeRangeFrom(selectionType: SelectionType) -> AnalyticsHubTimeRange? {
+    private func generatePreviousTimeRange() -> AnalyticsHubTimeRange? {
         switch selectionType {
         case .today:
             guard let oneDayAgo = currentCalendar.date(byAdding: .day, value: -1, to: currentDate) else {

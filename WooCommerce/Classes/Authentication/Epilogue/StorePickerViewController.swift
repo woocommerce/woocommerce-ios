@@ -254,7 +254,15 @@ private extension StorePickerViewController {
 
         accountHeaderView.email = defaultAccount.email
         accountHeaderView.downloadGravatar(with: defaultAccount.email)
-        accountHeaderView.isHelpButtonEnabled = configuration == .login || configuration == .standard
+        let showsActionButton: Bool = {
+            switch configuration {
+            case .login, .standard, .storeCreationFromLogin:
+                return true
+            case .switchingStores, .listStores:
+                return false
+            }
+        }()
+        accountHeaderView.isActionButtonEnabled = showsActionButton
         accountHeaderView.onActionButtonTapped = { [weak self] in
             guard let self else { return }
             self.presentActionMenu()

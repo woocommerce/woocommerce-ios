@@ -60,7 +60,7 @@ extension AccountHeaderView {
         }
     }
 
-    var isHelpButtonEnabled: Bool {
+    var isActionButtonEnabled: Bool {
         set {
             actionButton.isHidden = !newValue
             actionButton.isEnabled = newValue

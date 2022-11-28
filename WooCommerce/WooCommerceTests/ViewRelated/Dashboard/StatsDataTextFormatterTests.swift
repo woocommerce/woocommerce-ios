@@ -26,6 +26,20 @@ final class StatsDataTextFormatterTests: XCTestCase {
         XCTAssertEqual(totalRevenue, "$62")
     }
 
+    func test_createTotalRevenueText_does_not_return_decimal_points_for_rounded_integer_value() {
+        // Given
+        let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(grossRevenue: 62.0000000000002))
+
+        // When
+        let totalRevenue = StatsDataTextFormatter.createTotalRevenueText(orderStats: orderStats,
+                                                                    selectedIntervalIndex: nil,
+                                                                    currencyFormatter: currencyFormatter,
+                                                                    currencyCode: currencyCode.rawValue)
+
+        // Then
+        XCTAssertEqual(totalRevenue, "$62")
+    }
+
     func test_createTotalRevenueText_returns_decimal_points_from_currency_settings_for_noninteger_value() {
         // Given
         let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(grossRevenue: 62.856))
@@ -78,6 +92,19 @@ final class StatsDataTextFormatterTests: XCTestCase {
     func test_createNetRevenueText_does_not_return_decimal_points_for_integer_value() {
         // Given
         let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(netRevenue: 62))
+
+        // When
+        let netRevenue = StatsDataTextFormatter.createNetRevenueText(orderStats: orderStats,
+                                                                     currencyFormatter: currencyFormatter,
+                                                                     currencyCode: currencyCode.rawValue)
+
+        // Then
+        XCTAssertEqual(netRevenue, "$62")
+    }
+
+    func test_createNetRevenueText_does_not_return_decimal_points_for_rounded_integer_value() {
+        // Given
+        let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(netRevenue: 62.0000000000002))
 
         // When
         let netRevenue = StatsDataTextFormatter.createNetRevenueText(orderStats: orderStats,
@@ -162,6 +189,19 @@ final class StatsDataTextFormatterTests: XCTestCase {
     func test_createAverageOrderValueText_does_not_return_decimal_points_for_integer_value() {
         // Given
         let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(averageOrderValue: 62))
+
+        // When
+        let averageOrderValue = StatsDataTextFormatter.createAverageOrderValueText(orderStats: orderStats,
+                                                                              currencyFormatter: currencyFormatter,
+                                                                              currencyCode: currencyCode.rawValue)
+
+        // Then
+        XCTAssertEqual(averageOrderValue, "$62")
+    }
+
+    func test_createAverageOrderValueText_does_not_return_decimal_points_for_rounded_integer_value() {
+        // Given
+        let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(averageOrderValue: 62.0000000000002))
 
         // When
         let averageOrderValue = StatsDataTextFormatter.createAverageOrderValueText(orderStats: orderStats,

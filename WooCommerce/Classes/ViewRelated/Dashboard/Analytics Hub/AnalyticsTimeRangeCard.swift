@@ -8,7 +8,16 @@ struct AnalyticsTimeRangeCard: View {
     let currentRangeDescription: String
     let previousRangeDescription: String
 
+    @State private var showTimeRangeSelectionView: Bool = false
+
     var body: some View {
+        createTimeRangeContent()
+            .sheet(isPresented: $showTimeRangeSelectionView) {
+                TimeRangeSelectionView()
+            }
+    }
+
+    private func createTimeRangeContent() -> some View {
         VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
             HStack {
                 Image(uiImage: .calendar)
@@ -34,6 +43,15 @@ struct AnalyticsTimeRangeCard: View {
                 .calloutStyle()
         }
         .padding([.top, .bottom])
+        .onTapGesture {
+            showTimeRangeSelectionView.toggle()
+        }
+    }
+}
+
+struct TimeRangeSelectionView: View {
+    var body: some View {
+        Text("Time range Selection")
     }
 }
 

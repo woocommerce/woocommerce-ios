@@ -23,11 +23,11 @@ struct AnalyticsReportCard: View {
                 .foregroundColor(Color(.text))
                 .footnoteStyle()
 
-            HStack(alignment: .top) {
+            HStack(alignment: .top, spacing: Layout.columnOutterSpacing) {
 
                 /// Leading Column
                 ///
-                VStack(alignment: .leading, spacing: Layout.columnSpacing) {
+                VStack(alignment: .leading, spacing: Layout.columnInnerSpacing) {
 
                     Text(leadingTitle)
                         .calloutStyle()
@@ -49,7 +49,7 @@ struct AnalyticsReportCard: View {
 
                 /// Trailing Column
                 ///
-                VStack(alignment: .leading, spacing: Layout.columnSpacing) {
+                VStack(alignment: .leading, spacing: Layout.columnInnerSpacing) {
                     Text(trailingTitle)
                         .calloutStyle()
 
@@ -77,7 +77,8 @@ private extension AnalyticsReportCard {
     enum Layout {
         static let titleSpacing: CGFloat = 24
         static let cardPadding: CGFloat = 16
-        static let columnSpacing: CGFloat = 10
+        static let columnOutterSpacing: CGFloat = 28
+        static let columnInnerSpacing: CGFloat = 10
         static let chartAspectRatio: CGFloat = 2.2
         static let chartMaxHeight: CGFloat = 48
     }

@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Resuable Time Range card made for the Analytics Hub.
+/// Reusable Time Range card made for the Analytics Hub.
 ///
 struct AnalyticsTimeRangeCard: View {
 

@@ -281,9 +281,7 @@ private extension CardPresentPaymentsModalViewController {
     func configureAuxiliaryButton() {
 
         guard shouldShowAuxiliaryButton() else {
-            // Only for testing, switch back to true before merging
-            //auxiliaryButton.isHidden = true
-            auxiliaryButton.isHidden = false
+            auxiliaryButton.isHidden = true
             return
         }
 

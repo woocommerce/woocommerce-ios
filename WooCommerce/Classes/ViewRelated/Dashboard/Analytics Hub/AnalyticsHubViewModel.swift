@@ -9,7 +9,7 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     private let siteID: Int64
     private let stores: StoresManager
-    private let timeRangeGenerator: AnalyticsHubTimeRangeGenerator
+    @Published var timeRangeSelectionType: SelectionType
 
     private var subscriptions = Set<AnyCancellable>()
 
@@ -18,11 +18,16 @@ final class AnalyticsHubViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.stores = stores
-        self.timeRangeGenerator = AnalyticsHubTimeRangeGenerator(selectionType: SelectionType.from(statsTimeRange))
-        self.timeRangeCard = AnalyticsTimeRangeCardViewModel(selectedRangeTitle: timeRangeGenerator.selectionType.description,
-                                                             currentRangeSubtitle: timeRangeGenerator.generateCurrentRangeDescription(),
-                                                             previousRangeSubtitle: timeRangeGenerator.generatePreviousRangeDescription())
+        let selectedType = SelectionType.from(statsTimeRange)
+        self.timeRangeSelectionType = selectedType
+        self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(selectionType: selectedType)
 
+        $timeRangeSelectionType
+            .sink { [weak self] newSelectionType in
+                guard let self else { return }
+                self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(selectionType: newSelectionType)
+            }.store(in: &subscriptions)
+        
         bindViewModelsWithData()
         Task.init {
             do {
@@ -67,6 +72,7 @@ private extension AnalyticsHubViewModel {
 
     @MainActor
     func retrieveOrderStats() async throws {
+        let timeRangeGenerator = AnalyticsHubTimeRangeGenerator(selectionType: timeRangeSelectionType)
         let currentTimeRange = try timeRangeGenerator.unwrapCurrentTimeRange()
         let previousTimeRange = try timeRangeGenerator.unwrapPreviousTimeRange()
 
@@ -147,6 +153,14 @@ private extension AnalyticsHubViewModel {
                                             trailingDelta: orderValueDelta.string,
                                             trailingDeltaColor: Constants.deltaColor(for: orderValueDelta.direction))
     }
+
+    static func timeRangeCard(selectionType: SelectionType) -> AnalyticsTimeRangeCardViewModel {
+        let timeRangeGenerator = AnalyticsHubTimeRangeGenerator(selectionType: selectionType)
+        
+        return AnalyticsTimeRangeCardViewModel(selectedRangeTitle: timeRangeGenerator.selectionType.description,
+                                               currentRangeSubtitle: timeRangeGenerator.generateCurrentRangeDescription(),
+                                               previousRangeSubtitle: timeRangeGenerator.generatePreviousRangeDescription())
+    }
 }
 
 // MARK: - Selection Type
@@ -217,6 +231,7 @@ private extension AnalyticsHubViewModel {
             static let weekToDate = NSLocalizedString("Week to Date", comment: "Title of the Analytics Hub Week to Date selection range")
             static let monthToDate = NSLocalizedString("Month to Date", comment: "Title of the Analytics Hub Month to Date selection range")
             static let yearToDate = NSLocalizedString("Year to Date", comment: "Title of the Analytics Hub Year to Date selection range")
+            static let selectionTitle = NSLocalizedString("Date Range", comment: "Title of the range selection list")
         }
     }
 }

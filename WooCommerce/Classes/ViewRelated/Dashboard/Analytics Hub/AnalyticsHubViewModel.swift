@@ -149,6 +149,44 @@ private extension AnalyticsHubViewModel {
     }
 }
 
+// Mark: - Selection Type
+extension AnalyticsHubViewModel {
+    enum SelectionType: CaseIterable {
+        case today
+        case weekToDate
+        case monthToDate
+        case yearToDate
+
+        var description: String {
+            get {
+                switch self {
+                case .today:
+                    return Localization.TimeRangeCard.today
+                case .weekToDate:
+                    return Localization.TimeRangeCard.weekToDate
+                case .monthToDate:
+                    return Localization.TimeRangeCard.monthToDate
+                case .yearToDate:
+                    return Localization.TimeRangeCard.yearToDate
+                }
+            }
+        }
+
+        static func from(_ statsTimeRange: StatsTimeRangeV4) -> SelectionType {
+            switch statsTimeRange {
+            case .today:
+                return .today
+            case .thisWeek:
+                return .weekToDate
+            case .thisMonth:
+                return .monthToDate
+            case .thisYear:
+                return .yearToDate
+            }
+        }
+    }
+}
+
 // MARK: - Constants
 private extension AnalyticsHubViewModel {
     enum Constants {
@@ -173,6 +211,18 @@ private extension AnalyticsHubViewModel {
             static let title = NSLocalizedString("ORDERS", comment: "Title for order analytics section in the Analytics Hub")
             static let leadingTitle = NSLocalizedString("Total Orders", comment: "Label for total number of orders in the Analytics Hub")
             static let trailingTitle = NSLocalizedString("Average Order Value", comment: "Label for average value of orders in the Analytics Hub")
+        }
+        enum TimeRangeCard {
+            static let today = NSLocalizedString("Today", comment: "Title of the Analytics Hub Today's selection range")
+            static let weekToDate = NSLocalizedString("Week to Date", comment: "Title of the Analytics Hub Week to Date selection range")
+            static let monthToDate = NSLocalizedString("Month to Date", comment: "Title of the Analytics Hub Month to Date selection range")
+            static let yearToDate = NSLocalizedString("Year to Date", comment: "Title of the Analytics Hub Year to Date selection range")
+            static let noCurrentPeriodAvailable = NSLocalizedString("No current period available",
+                                                                    comment: "A error message when it's not possible to acquire"
+                                                                    + "the Analytics Hub current selection range")
+            static let noPreviousPeriodAvailable = NSLocalizedString("No previous period available",
+                                                                     comment: "A error message when it's not possible to"
+                                                                     + "acquire the Analytics Hub previous selection range")
         }
     }
 }

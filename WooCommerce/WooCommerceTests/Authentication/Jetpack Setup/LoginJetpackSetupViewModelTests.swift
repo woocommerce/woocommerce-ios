@@ -6,6 +6,8 @@ import enum Alamofire.AFError
 final class LoginJetpackSetupViewModelTests: XCTestCase {
     private let testURL = "https://test.com"
 
+    // MARK: UI-related
+
     func test_title_is_correct_if_jetpack_installation_is_required() {
         // Given
         let viewModel = LoginJetpackSetupViewModel(siteURL: testURL, connectionOnly: false)
@@ -31,6 +33,210 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.descriptionAttributedString.string, description)
     }
 
+    func test_isSetupStepFailed_is_correct_when_the_current_step_fails() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = LoginJetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores)
+        let plugin = SitePlugin.fake().copy(plugin: "Jetpack", status: .inactive)
+
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .retrieveJetpackPluginDetails(let completion):
+                completion(.success(plugin))
+            case .activateJetpackPlugin(let completion):
+                completion(.failure(NSError(domain: "Test", code: -1001)))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.startSetup()
+
+        // Then
+        XCTAssertFalse(viewModel.isSetupStepFailed(.installation))
+        XCTAssertTrue(viewModel.isSetupStepFailed(.activation))
+        XCTAssertFalse(viewModel.isSetupStepFailed(.connection))
+    }
+
+    func test_title_is_correct_when_retrieveJetpackPluginDetails_fails_with_permission_error() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = LoginJetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores)
+
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .retrieveJetpackPluginDetails(let completion):
+                completion(.failure(AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403))))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.startSetup()
+
+        // Then
+        XCTAssertEqual(viewModel.title, JetpackInstallStep.installation.errorTitle)
+    }
+
+    func test_title_and_tryAgainButtonTitle_are_correct_when_installation_step_fails() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = LoginJetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores)
+
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .retrieveJetpackPluginDetails(let completion):
+                completion(.failure(AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404))))
+            case .installJetpackPlugin(let completion):
+                completion(.failure(NSError(domain: "Test", code: -1001)))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.startSetup()
+
+        // Then
+        XCTAssertEqual(viewModel.title, JetpackInstallStep.installation.errorTitle)
+        XCTAssertEqual(viewModel.tryAgainButtonTitle, JetpackInstallStep.installation.tryAgainButtonTitle)
+    }
+
+    func test_title_and_tryAgainButtonTitle_are_correct_when_activation_step_fails() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = LoginJetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores)
+        let plugin = SitePlugin.fake().copy(plugin: "Jetpack", status: .inactive)
+
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .retrieveJetpackPluginDetails(let completion):
+                completion(.success(plugin))
+            case .activateJetpackPlugin(let completion):
+                completion(.failure(NSError(domain: "Test", code: -1001)))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.startSetup()
+
+        // Then
+        XCTAssertEqual(viewModel.title, JetpackInstallStep.activation.errorTitle)
+        XCTAssertEqual(viewModel.tryAgainButtonTitle, JetpackInstallStep.activation.tryAgainButtonTitle)
+    }
+
+    func test_title_and_tryAgainButtonTitle_are_correct_when_connection_step_fails() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = LoginJetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores)
+        let plugin = SitePlugin.fake().copy(plugin: "Jetpack", status: .active)
+
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .retrieveJetpackPluginDetails(let completion):
+                completion(.success(plugin))
+            case .fetchJetpackConnectionURL(let completion):
+                completion(.failure(NSError(domain: "Test", code: -1001)))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.startSetup()
+
+        // Then
+        XCTAssertEqual(viewModel.title, JetpackInstallStep.connection.errorTitle)
+        XCTAssertEqual(viewModel.tryAgainButtonTitle, JetpackInstallStep.connection.tryAgainButtonTitle)
+    }
+
+    func test_shouldShowInitialLoadingIndicator_is_correct() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = LoginJetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores)
+        let plugin = SitePlugin.fake().copy(plugin: "Jetpack", status: .inactive)
+
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .retrieveJetpackPluginDetails(let completion):
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    completion(.success(plugin))
+                }
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.startSetup()
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowInitialLoadingIndicator)
+        waitUntil(timeout: 1) {
+            viewModel.shouldShowInitialLoadingIndicator == false
+        }
+    }
+
+    func test_shouldShowSetupSteps_is_correct() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = LoginJetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores)
+        let plugin = SitePlugin.fake().copy(plugin: "Jetpack", status: .inactive)
+
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .retrieveJetpackPluginDetails(let completion):
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    completion(.success(plugin))
+                }
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.startSetup()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowSetupSteps)
+        waitUntil(timeout: 1) {
+            viewModel.shouldShowSetupSteps == true
+        }
+    }
+
+    func test_shouldShowGoToStoreButton_is_correct() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = LoginJetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores)
+
+        let user = JetpackUser.fake().copy(isConnected: true, wpcomUser: DotcomUser.fake().copy(email: "test@mail.com"))
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .fetchJetpackUser(let completion):
+                completion(.success(user))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.startSetup()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowGoToStoreButton)
+
+        // When
+        viewModel.didAuthorizeJetpackConnection()
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowGoToStoreButton)
+    }
+
+    // MARK: - API calls
     func test_startSetup_triggers_jetpack_installation_if_retrieving_details_fails() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -303,6 +509,7 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.setupFailed)
+        XCTAssertTrue(viewModel.hasEncounteredPermissionError)
         XCTAssertEqual(viewModel.setupErrorDetail, .init(setupErrorMessage: LoginJetpackSetupViewModel.Localization.permissionErrorMessage,
                                                          setupErrorSuggestion: LoginJetpackSetupViewModel.Localization.permissionErrorSuggestion,
                                                          errorCode: 403))
@@ -439,6 +646,35 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.setupErrorDetail, .init(setupErrorMessage: LoginJetpackSetupViewModel.Localization.genericErrorMessage,
                                                          setupErrorSuggestion: LoginJetpackSetupViewModel.Localization.communicationErrorSuggestion,
                                                          errorCode: -1001))
+    }
+
+    func test_checkJetpackConnection_hits_fetchJetpackUser_3_times_when_failing_to_fetch_connected_wpcom_user() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = LoginJetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores)
+        var fetchJetpackUserTriggerCount = 0
+
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .fetchJetpackUser(let completion):
+                fetchJetpackUserTriggerCount += 1
+                completion(.success(JetpackUser.fake().copy(wpcomUser: nil)))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.didAuthorizeJetpackConnection()
+
+        // Then
+        waitUntil(timeout: 3) {
+            viewModel.setupFailed
+        }
+        XCTAssertEqual(fetchJetpackUserTriggerCount, 3)
+        XCTAssertEqual(viewModel.setupErrorDetail, .init(setupErrorMessage: LoginJetpackSetupViewModel.Localization.genericErrorMessage,
+                                                         setupErrorSuggestion: LoginJetpackSetupViewModel.Localization.communicationErrorSuggestion,
+                                                         errorCode: 99))
     }
 
     // MARK: - Analytics

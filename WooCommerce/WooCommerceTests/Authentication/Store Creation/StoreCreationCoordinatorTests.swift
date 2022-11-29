@@ -156,7 +156,8 @@ final class StoreCreationCoordinatorTests: XCTestCase {
     func test_InProgressViewController_is_first_presented_when_fetching_iap_products() throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isStoreCreationM2Enabled: true)
-        let purchasesManager = MockInAppPurchases(fetchProductsDuration: 10)
+        // 6 seconds = 6_000_000_000 nanoseconds.
+        let purchasesManager = MockInAppPurchases(fetchProductsDuration: 6_000_000_000)
         let coordinator = StoreCreationCoordinator(source: .storePicker,
                                                    navigationController: navigationController,
                                                    featureFlagService: featureFlagService,
@@ -167,8 +168,7 @@ final class StoreCreationCoordinatorTests: XCTestCase {
 
         // Then
         waitUntil(timeout: 5) {
-            print("[Debug for flaky test] \(String(describing: self.navigationController.presentedViewController))")
-            return self.navigationController.presentedViewController is InProgressViewController
+            self.navigationController.presentedViewController is InProgressViewController
         }
     }
 

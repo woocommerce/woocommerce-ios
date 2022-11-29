@@ -12,12 +12,6 @@ final class ULAccountMismatchViewController: UIViewController {
     /// and support for user actions
     private let viewModel: ULAccountMismatchViewModel
 
-    /// Header View: Displays all of the Account Details
-    ///
-    private let accountHeaderView: AccountHeaderView = {
-        return AccountHeaderView.instantiateFromNib()
-    }()
-
     private var subscriptions: Set<AnyCancellable> = []
 
     @IBOutlet private weak var gravatarImageView: CircularImageView!

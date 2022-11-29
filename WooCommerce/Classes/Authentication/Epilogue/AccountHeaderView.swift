@@ -3,9 +3,9 @@ import UIKit
 
 
 
-/// AccountHeaderView: Displays an Account's Details: [Gravatar + Name + Username]
+/// AccountHeaderView: Displays an Account's Details: [Gravatar + Email]
 ///
-class AccountHeaderView: UIView {
+final class AccountHeaderView: UIView {
 
     /// Account's Gravatar.
     ///
@@ -15,33 +15,25 @@ class AccountHeaderView: UIView {
         }
     }
 
-    /// Account's Full Name.
+    /// Account's email.
     ///
-    @IBOutlet private var fullnameLabel: UILabel! {
+    @IBOutlet private var emailLabel: UILabel! {
         didSet {
-            fullnameLabel.textColor = .systemColor(.label)
-            fullnameLabel.accessibilityIdentifier = "full-name-label"
+            emailLabel.textColor = .systemColor(.secondaryLabel)
+            emailLabel.font = .body
+            emailLabel.accessibilityIdentifier = "email-label"
         }
     }
 
-    /// Account's Username.
+    /// Action Button
     ///
-    @IBOutlet private var usernameLabel: UILabel! {
-        didSet {
-            usernameLabel.textColor = .systemColor(.secondaryLabel)
-            usernameLabel.accessibilityIdentifier = "username-label"
-        }
-    }
-
-    /// Help Button
-    ///
-    @IBOutlet private weak var helpButton: UIButton!
+    @IBOutlet private weak var actionButton: UIButton!
 
     @IBOutlet private var containerView: UIView!
 
-    /// Closure to be executed whenever the help button is pressed
+    /// Closure to be executed whenever the action button is pressed
     ///
-    var onHelpRequested: (() -> Void)?
+    var onActionButtonTapped: ((UIView) -> Void)?
 
     // MARK: - Overridden Methods
 
@@ -57,35 +49,24 @@ class AccountHeaderView: UIView {
 //
 extension AccountHeaderView {
 
-    /// Account's Username.
-    ///
-    var username: String? {
-        set {
-            usernameLabel.text = newValue
-        }
-        get {
-            return usernameLabel.text
-        }
-    }
-
     /// Account's Full Name
     ///
-    var fullname: String? {
+    var email: String? {
         set {
-            fullnameLabel.text = newValue
+            emailLabel.text = newValue
         }
         get {
-            return fullnameLabel.text
+            return emailLabel.text
         }
     }
 
-    var isHelpButtonEnabled: Bool {
+    var isActionButtonEnabled: Bool {
         set {
-            helpButton.isHidden = !newValue
-            helpButton.isEnabled = newValue
+            actionButton.isHidden = !newValue
+            actionButton.isEnabled = newValue
         }
         get {
-            return helpButton.isHidden
+            return actionButton.isHidden
         }
     }
 
@@ -108,27 +89,11 @@ private extension AccountHeaderView {
     }
 
     func setupHelpButton() {
-        helpButton.setTitle(Strings.helpButtonTitle, for: .normal)
-        helpButton.setTitleColor(.accent, for: .normal)
-        helpButton.on(.touchUpInside) { [weak self] control in
-            ServiceLocator.analytics.track(.sitePickerHelpButtonTapped)
-            self?.handleHelpButtonTapped(control)
+        actionButton.setImage(.ellipsisImage, for: .normal)
+        actionButton.tintColor = .accent
+        actionButton.setTitle(nil, for: .normal)
+        actionButton.on(.touchUpInside) { [weak self] control in
+            self?.onActionButtonTapped?(control)
         }
-    }
-
-    /// Handle the help button being tapped
-    ///
-    func handleHelpButtonTapped(_ sender: AnyObject) {
-        onHelpRequested?()
-    }
-}
-
-
-// MARK: - Constants!
-//
-private extension AccountHeaderView {
-
-    enum Strings {
-        static let helpButtonTitle = NSLocalizedString("Help", comment: "Help button on store picker screen.")
     }
 }

@@ -14,10 +14,14 @@ public class AnalyticsHubTimeRangeGenerator {
     private let currentTimezone = TimeZone.autoupdatingCurrent
     private let currentDate: Date
     private let currentCalendar: Calendar
-    let selectionType: AnalyticsHubViewModel.TimeRangeSelectionType
+    private let selectionType: AnalyticsHubViewModel.TimeRangeSelectionType
 
     private var currentTimeRange: AnalyticsHubTimeRange? = nil
     private var previousTimeRange: AnalyticsHubTimeRange? = nil
+
+    var rangeSelectionDescription: String {
+        selectionType.description
+    }
 
     //TODO: abandon usage of the ISO 8601 Calendar and build one based on the Site calendar configuration
     init(selectionType: AnalyticsHubViewModel.TimeRangeSelectionType,

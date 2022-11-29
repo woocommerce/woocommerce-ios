@@ -14,6 +14,10 @@ struct AnalyticsProductCard: View {
     /// Delta Tag background color.
     let deltaBackgroundColor: UIColor
 
+    /// Indicates if the values should be hidden (for loading state)
+    ///
+    let isRedacted: Bool
+
     var body: some View {
         VStack(alignment: .leading) {
 
@@ -56,7 +60,10 @@ private extension AnalyticsProductCard {
 // MARK: Previews
 struct AnalyticsProductCardPreviews: PreviewProvider {
     static var previews: some View {
-        AnalyticsProductCard(itemsSold: "2,234", delta: "+23%", deltaBackgroundColor: .withColorStudio(.green, shade: .shade50))
+        AnalyticsProductCard(itemsSold: "2,234",
+                             delta: "+23%",
+                             deltaBackgroundColor: .withColorStudio(.green, shade: .shade50),
+                             isRedacted: false)
             .previewLayout(.sizeThatFits)
     }
 }

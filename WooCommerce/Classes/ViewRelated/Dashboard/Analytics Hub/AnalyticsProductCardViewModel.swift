@@ -16,6 +16,10 @@ struct AnalyticsProductCardViewModel {
     /// Delta background color.
     ///
     let deltaBackgroundColor: UIColor
+
+    /// Indicates if the values should be hidden (for loading state)
+    ///
+    let isRedacted: Bool
 }
 
 /// Convenience extension to create an `AnalyticsReportCard` from a view model.
@@ -25,5 +29,6 @@ extension AnalyticsProductCard {
         self.itemsSold = viewModel.itemsSold
         self.delta = viewModel.delta
         self.deltaBackgroundColor = viewModel.deltaBackgroundColor
+        self.isRedacted = viewModel.isRedacted
     }
 }

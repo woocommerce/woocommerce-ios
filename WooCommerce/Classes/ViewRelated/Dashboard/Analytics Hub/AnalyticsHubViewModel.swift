@@ -160,7 +160,8 @@ private extension AnalyticsHubViewModel {
 
         return AnalyticsProductCardViewModel(itemsSold: itemsSold,
                                              delta: itemsSoldDelta.string,
-                                             deltaBackgroundColor: Constants.deltaColor(for: itemsSoldDelta.direction))
+                                             deltaBackgroundColor: Constants.deltaColor(for: itemsSoldDelta.direction),
+                                             isRedacted: false)
     }
 }
 

@@ -34,8 +34,12 @@ struct AnalyticsProductCard: View {
                 Text(itemsSold)
                     .titleStyle()
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .redacted(reason: isRedacted ? .placeholder : [])
+                    .shimmering(active: isRedacted)
 
                 DeltaTag(value: delta, backgroundColor: deltaBackgroundColor)
+                    .redacted(reason: isRedacted ? .placeholder : [])
+                    .shimmering(active: isRedacted)
             }
         }
         .padding(Layout.cardPadding)

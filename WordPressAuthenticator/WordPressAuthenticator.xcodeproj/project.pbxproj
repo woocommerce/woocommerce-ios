@@ -755,24 +755,24 @@
 		B5ED78F6207E976500A8FD8C /* WordPressAuthenticator */ = {
 			isa = PBXGroup;
 			children = (
-				D881A307256B5A6900FE5605 /* Navigation */,
 				F12F9FB624D8A7E800771BCE /* Analytics */,
-				CE1B18CA20EEC31000BECC3F /* Credentials */,
 				B5609099208A4EAF00399AE4 /* Authenticator */,
+				CE1B18CA20EEC31000BECC3F /* Credentials */,
 				3F550D4F23DA4A6B007E5897 /* Email Client Picker */,
 				B560909B208A4EB000399AE4 /* Extensions */,
+				B5ED78F8207E976500A8FD8C /* Info.plist */,
 				B5ED7917207E993E00A8FD8C /* Logging */,
 				B5609098208A4EAF00399AE4 /* Model */,
+				D881A307256B5A6900FE5605 /* Navigation */,
 				B5609097208A4EAF00399AE4 /* NUX */,
 				1A4095132271AEFC009AA86D /* Private */,
+				B5A5273F20B477F70065BE81 /* Resources */,
 				B560909A208A4EAF00399AE4 /* Services */,
 				B5609095208A4EAF00399AE4 /* Signin */,
 				B5609096208A4EAF00399AE4 /* Signup */,
 				B5609094208A4EAF00399AE4 /* UI */,
 				98655A56247F2AEA005EF9CC /* Unified Auth */,
-				B5A5273F20B477F70065BE81 /* Resources */,
 				B5ED78F7207E976500A8FD8C /* WordPressAuthenticator.h */,
-				B5ED78F8207E976500A8FD8C /* Info.plist */,
 			);
 			path = WordPressAuthenticator;
 			sourceTree = "<group>";

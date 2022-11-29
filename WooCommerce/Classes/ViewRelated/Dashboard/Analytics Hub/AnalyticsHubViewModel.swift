@@ -24,7 +24,6 @@ final class AnalyticsHubViewModel: ObservableObject {
                                                              previousRangeSubtitle: timeRangeGenerator.generatePreviousRangeDescription())
 
         bindViewModelsWithData()
-        updateData()
     }
 
     /// Revenue Card ViewModel
@@ -52,21 +51,21 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Order stats for the previous time period (for comparison)
     ///
     @Published private var previousOrderStats: OrderStatsV4? = nil
+
+    /// Request stats data from network
+    ///
+    func updateData() async {
+        do {
+            try await retrieveOrderStats()
+        } catch {
+            switchToErrorState()
+            DDLogWarn("⚠️ Error fetching analytics data: \(error)")
+        }
+    }
 }
 
 // MARK: Networking
 private extension AnalyticsHubViewModel {
-
-    func updateData() {
-        Task.init {
-            do {
-                try await retrieveOrderStats()
-            } catch {
-                switchToErrorState()
-                DDLogWarn("⚠️ Error fetching analytics data: \(error)")
-            }
-        }
-    }
 
     @MainActor
     func retrieveOrderStats() async throws {

@@ -65,6 +65,8 @@ private extension AnalyticsHubViewModel {
 
     @MainActor
     func retrieveOrderStats() async throws {
+        switchToLoadingState()
+
         let currentTimeRange = try timeRangeGenerator.unwrapCurrentTimeRange()
         let previousTimeRange = try timeRangeGenerator.unwrapPreviousTimeRange()
 
@@ -103,6 +105,12 @@ private extension AnalyticsHubViewModel {
 
 // MARK: Data - UI mapping
 private extension AnalyticsHubViewModel {
+
+    func switchToLoadingState() {
+        self.revenueCard = revenueCard.redacted
+        self.ordersCard = ordersCard.redacted
+        self.productCard = productCard.redacted
+    }
 
     func bindViewModelsWithData() {
         Publishers.CombineLatest($currentOrderStats, $previousOrderStats)

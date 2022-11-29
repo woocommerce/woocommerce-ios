@@ -29,7 +29,7 @@ struct AnalyticsReportCardViewModel {
     ///
     let leadingChartData: [Double]
 
-    /// Second Column Titlke
+    /// Second Column Title
     ///
     let trailingTitle: String
 
@@ -52,6 +52,27 @@ struct AnalyticsReportCardViewModel {
     /// Indicates if the values should be hidden (for loading state)
     ///
     let isRedacted: Bool
+}
+
+extension AnalyticsReportCardViewModel {
+
+    /// Make redacted state of the card, replacing values with hardcoded placeholders
+    ///
+    var redacted: Self {
+        // Values here are placeholders and will be redacted in the UI
+        .init(title: title,
+              leadingTitle: leadingTitle,
+              leadingValue: "$1000",
+              leadingDelta: "+50%",
+              leadingDeltaColor: .lightGray,
+              leadingChartData: [],
+              trailingTitle: trailingTitle,
+              trailingValue: "$1000",
+              trailingDelta: "+50%",
+              trailingDeltaColor: .lightGray,
+              trailingChartData: [],
+              isRedacted: true)
+    }
 }
 
 /// Convenience extension to create an `AnalyticsReportCard` from a view model.

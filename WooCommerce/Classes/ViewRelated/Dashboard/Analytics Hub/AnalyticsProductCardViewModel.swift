@@ -22,6 +22,19 @@ struct AnalyticsProductCardViewModel {
     let isRedacted: Bool
 }
 
+extension AnalyticsProductCardViewModel {
+
+    /// Make redacted state of the card, replacing values with hardcoded placeholders
+    ///
+    var redacted: Self {
+        // Values here are placeholders and will be redacted in the UI
+        .init(itemsSold: "1000",
+              delta: "+50%",
+              deltaBackgroundColor: .lightGray,
+              isRedacted: true)
+    }
+}
+
 /// Convenience extension to create an `AnalyticsReportCard` from a view model.
 ///
 extension AnalyticsProductCard {

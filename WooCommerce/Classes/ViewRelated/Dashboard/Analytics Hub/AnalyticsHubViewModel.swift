@@ -58,6 +58,8 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published private var previousOrderStats: OrderStatsV4? = nil
 
+    /// Time Range selection data defining the current and previous time period
+    ///
     private var timeRangeSelectionData: AnalyticsHubTimeRangeSelectionData
 }
 

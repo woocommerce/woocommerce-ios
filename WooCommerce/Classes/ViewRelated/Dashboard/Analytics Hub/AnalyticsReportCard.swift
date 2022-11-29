@@ -16,6 +16,8 @@ struct AnalyticsReportCard: View {
     let trailingDeltaColor: UIColor
     let trailingChartData: [Double]
 
+    let isRedacted: Bool
+
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.titleSpacing) {
 
@@ -97,7 +99,8 @@ struct Previews: PreviewProvider {
                             trailingValue: "$3.232",
                             trailingDelta: "-3%",
                             trailingDeltaColor: .withColorStudio(.red, shade: .shade40),
-                            trailingChartData: [50.0, 15.0, 20.0, 2.0, 10.0, 0.0, 40.0, 15.0, 20.0, 2.0, 10.0, 0.0])
+                            trailingChartData: [50.0, 15.0, 20.0, 2.0, 10.0, 0.0, 40.0, 15.0, 20.0, 2.0, 10.0, 0.0],
+                            isRedacted: false)
             .previewLayout(.sizeThatFits)
     }
 }

@@ -48,6 +48,10 @@ struct AnalyticsReportCardViewModel {
     /// Second Column Chart Data
     ///
     let trailingChartData: [Double]
+
+    /// Indicates if the values should be hidden (for loading state)
+    ///
+    let isRedacted: Bool
 }
 
 /// Convenience extension to create an `AnalyticsReportCard` from a view model.
@@ -65,5 +69,6 @@ extension AnalyticsReportCard {
         self.trailingDelta = viewModel.trailingDelta
         self.trailingDeltaColor = viewModel.trailingDeltaColor
         self.trailingChartData = viewModel.trailingChartData
+        self.isRedacted = viewModel.isRedacted
     }
 }

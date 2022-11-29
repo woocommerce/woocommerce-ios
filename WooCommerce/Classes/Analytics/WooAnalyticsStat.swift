@@ -159,6 +159,7 @@ public enum WooAnalyticsStat: String {
     case sitePickerContinueTapped = "site_picker_continue_tapped"
     case sitePickerStoresShown = "site_picker_stores_shown"
     case sitePickerHelpButtonTapped = "site_picker_help_button_tapped"
+    case sitePickerLogoutButtonTapped = "site_picker_logout_tapped"
     case sitePickerNonWooSiteTapped = "site_picker_non_woo_site_tapped"
     case sitePickerSiteDiscovery = "site_picker_site_discovery"
     case sitePickerNewToWooTapped = "site_picker_new_to_woo_tapped"

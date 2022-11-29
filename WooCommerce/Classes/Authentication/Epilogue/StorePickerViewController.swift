@@ -507,6 +507,8 @@ private extension StorePickerViewController {
             return
         }
 
+        ServiceLocator.analytics.track(.sitePickerLogoutButtonTapped)
+
         delegate?.restartAuthentication()
     }
 

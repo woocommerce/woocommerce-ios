@@ -107,22 +107,13 @@ private extension CardPresentModalScanningForReader {
                      """
         )
 
-        // \u{2011} (Non-Breaking Hyphen) will result in `genstrings` logging
-        //
-        // invalid unicode sequence: \u{201
-        //
-        // This is a known bug in the toolchain.
-        // The only known workaround is to use the actual character, but that would defeat the non-breaking purpose.
-        //
-        // See:
-        // - https://developer.apple.com/forums/thread/696752
-        // - https://github.com/woocommerce/woocommerce-ios/issues/8219
         static let learnMoreText = NSLocalizedString(
             "cardPresent.modalScanningForReader.learnMore.text",
-            value: "%1$@ about In\u{2011}Person Payments",
+            value: "%1$@ about In‑Person Payments",
             comment: """
                      A label prompting users to learn more about In-Person Payments.
-                     \u{2011} is a special character that acts as nonbreaking hyphen for "-" in the "In-Person" string.
+                     The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+                     If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
                      %1$@ is a placeholder that always replaced with \"Learn more\" string,
                      which should be translated separately and considered part of this sentence.
                      """

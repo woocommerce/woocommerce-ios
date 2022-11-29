@@ -125,8 +125,10 @@ private extension CustomerInfoTableViewCell {
         addButton.setImage(.plusImage, for: .normal)
         addButton.contentHorizontalAlignment = .leading
         addButton.contentVerticalAlignment = .bottom
-        addButton.contentEdgeInsets = .zero
-        addButton.distributeTitleAndImage(spacing: Constants.buttonTitleAndImageSpacing)
+        var configuration = UIButton.Configuration.plain()
+        configuration.contentInsets = .init(.zero)
+        configuration.imagePadding = Constants.buttonTitleAndImageSpacing
+        addButton.configuration = configuration
         addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
     }
 

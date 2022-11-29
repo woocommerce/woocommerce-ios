@@ -38,9 +38,7 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Products Card ViewModel
     ///
-    @Published var productCard = AnalyticsProductCardViewModel(itemsSold: "3,234",
-                                                               delta: "+43%",
-                                                               deltaBackgroundColor: .withColorStudio(.green, shade: .shade50))
+    @Published var productCard = AnalyticsHubViewModel.productCard(currentPeriodStats: nil, previousPeriodStats: nil)
 
     /// Time Range Selection Type
     ///
@@ -123,6 +121,8 @@ private extension AnalyticsHubViewModel {
 
                 self.revenueCard = AnalyticsHubViewModel.revenueCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
                 self.ordersCard = AnalyticsHubViewModel.ordersCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
+                self.productCard = AnalyticsHubViewModel.productCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
+
             }.store(in: &subscriptions)
 
         $timeRangeSelectionType
@@ -145,10 +145,12 @@ private extension AnalyticsHubViewModel {
                                                                                                         selectedIntervalIndex: nil),
                                             leadingDelta: totalDelta.string,
                                             leadingDeltaColor: Constants.deltaColor(for: totalDelta.direction),
+                                            leadingChartData: [0.0, 10.0, 2.0, 20.0, 15.0, 40.0, 0.0, 10.0, 2.0, 20.0, 15.0, 50.0],
                                             trailingTitle: Localization.RevenueCard.trailingTitle,
                                             trailingValue: StatsDataTextFormatter.createNetRevenueText(orderStats: currentPeriodStats),
                                             trailingDelta: netDelta.string,
-                                            trailingDeltaColor: Constants.deltaColor(for: netDelta.direction))
+                                            trailingDeltaColor: Constants.deltaColor(for: netDelta.direction),
+                                            trailingChartData: [50.0, 15.0, 20.0, 2.0, 10.0, 0.0, 40.0, 15.0, 20.0, 2.0, 10.0, 0.0])
     }
 
     static func ordersCard(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) -> AnalyticsReportCardViewModel {
@@ -161,10 +163,21 @@ private extension AnalyticsHubViewModel {
                                                                                                       selectedIntervalIndex: nil),
                                             leadingDelta: ordersCountDelta.string,
                                             leadingDeltaColor: Constants.deltaColor(for: ordersCountDelta.direction),
+                                            leadingChartData: [0.0, 10.0, 2.0, 20.0, 15.0, 40.0, 0.0, 10.0, 2.0, 20.0, 15.0, 50.0],
                                             trailingTitle: Localization.OrderCard.trailingTitle,
                                             trailingValue: StatsDataTextFormatter.createAverageOrderValueText(orderStats: currentPeriodStats),
                                             trailingDelta: orderValueDelta.string,
-                                            trailingDeltaColor: Constants.deltaColor(for: orderValueDelta.direction))
+                                            trailingDeltaColor: Constants.deltaColor(for: orderValueDelta.direction),
+                                            trailingChartData: [50.0, 15.0, 20.0, 2.0, 10.0, 0.0, 40.0, 15.0, 20.0, 2.0, 10.0, 0.0])
+    }
+
+    static func productCard(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) -> AnalyticsProductCardViewModel {
+        let itemsSold = StatsDataTextFormatter.createItemsSoldText(orderStats: currentPeriodStats)
+        let itemsSoldDelta = StatsDataTextFormatter.createOrderItemsSoldDelta(from: previousPeriodStats, to: currentPeriodStats)
+
+        return AnalyticsProductCardViewModel(itemsSold: itemsSold,
+                                             delta: itemsSoldDelta.string,
+                                             deltaBackgroundColor: Constants.deltaColor(for: itemsSoldDelta.direction))
     }
 
     static func timeRangeCard(timeRangeSelectionData: AnalyticsHubTimeRangeSelectionData) -> AnalyticsTimeRangeCardViewModel {

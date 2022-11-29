@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-11-22 17:54:04+0000 */
+/* Translation-Revision-Date: 2022-11-28 16:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -667,7 +667,8 @@ which should be translated separately and considered part of this sentence. */
 /* A failure reason for when the error that occured wasn't able to be determined. */
 "An unknown error occurred." = "Ha ocurrido un error desconocido.";
 
-/* Title of analytics as part of Jetpack benefits. */
+/* Title for the Analytics Hub screen.
+   Title of analytics as part of Jetpack benefits. */
 "Analytics" = "Análisis";
 
 /* Message when enabling analytics succeeds */
@@ -779,6 +780,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of a button linking to the Automattic website */
 "Automattic family" = "Familia Automattic";
+
+/* Label for average value of orders in the Analytics Hub */
+"Average Order Value" = "Valor medio de los pedidos";
 
 /* The title on the payment row of the Order Details screen when the payment is still pending */
 "Awaiting payment" = "Pago pendiente";
@@ -956,6 +960,9 @@ which should be translated separately and considered part of this sentence. */
    Title for the button to cancel the payment methods screen
    Title for the button to cancel the simple payments screen */
 "Cancel" = "Cancelar";
+
+/* Action button to cancel Jetpack installation. */
+"Cancel Installation" = "Cancelar instalación";
 
 /* Display label for cancelled order status. */
 "Cancelled" = "Cancelada";
@@ -1161,6 +1168,9 @@ which should be translated separately and considered part of this sentence. */
    Text field company in Shipping Label Address Validation */
 "Company" = "Empresa";
 
+/* Subtitle describing the previous analytics period under comparison. E.g. Compared to Oct 1 - 22, 2022 */
+"Compared to **%1$@**" = "Comparado con **%1$@**";
+
 /* Display label for completed order status. */
 "Completed" = "Completado";
 
@@ -1189,6 +1199,7 @@ which should be translated separately and considered part of this sentence. */
 "Connect Card Reader" = "Conectar con el lector de tarjetas";
 
 /* Action button to handle connecting the logged-in account to a given site.Presented when logging in with a store address that does not match the account entered
+   Button on the Jetpack setup interrupted screen to continue the setup
    Button title on the site credential login screen
    Button to authorize Jetpack connection from the Jetpack setup required screen
    Title of the Jetpack connection web view in the login flow */
@@ -1200,11 +1211,17 @@ which should be translated separately and considered part of this sentence. */
 /* Button to connect to an existing store from the store picker */
 "Connect an existing store" = "Conectar una tienda existente";
 
+/* Name of the connection step on the Jetpack setup screen */
+"Connect store to Jetpack" = "Conecta tu tienda a Jetpack";
+
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "Conectar con el lector";
 
 /* Settings > Manage Card Reader > Prompt user to connect their first reader */
 "Connect your card reader" = "Conectar el lector de tarjetas";
+
+/* Message to be displayed when a Jetpack connection has been authorized */
+"Connected" = "Conectado";
 
 /* Title shown when a user logs in with Google but no matching WordPress.com account is found */
 "Connected But…" = "Conectado pero…";
@@ -1217,6 +1234,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Page title for the list of connected stores */
 "Connected Stores" = "Tiendas conectadas";
+
+/* Title for the Jetpack setup screen when connection is required */
+"Connecting Jetpack" = "Conectando Jetpack";
 
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
 "Connecting reader failed" = "La conexión del lector ha fallado";
@@ -1253,7 +1273,8 @@ which should be translated separately and considered part of this sentence. */
    Close Account error alert button title - navigates the user to contact support.
    Contact Support title
    Text for the button to contact support from the store picker error screen
-   The title of the button to contact support in the Error Loading Data banner */
+   The title of the button to contact support in the Error Loading Data banner
+   Title of the button to contact support for help accessing a store after Jetpack setup */
 "Contact Support" = "Contactar con el servicio de asistencia";
 
 /* Contact WooComerce Payments Support title */
@@ -1472,6 +1493,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Loading text while creating a product from a template */
 "Creating Template Product..." = "Creando el producto de la plantilla...";
+
+/* Title of the in-progress view when waiting for the site to become a Jetpack site after WPCOM plan purchase in the store creation flow. */
+"Creating your store" = "Estamos creando tu tienda";
 
 /* Credit card payment method for shipping label. */
 "Credit card" = "Tarjeta de crédito";
@@ -2056,6 +2080,18 @@ which should be translated separately and considered part of this sentence. */
 /* Envelope package type, used to create a custom package in the Shipping Label flow */
 "Envelope" = "Envoltorio";
 
+/* Title indicating a failed step in Jetpack installation. */
+"Error" = "Error";
+
+/* Error title when Jetpack activation fails */
+"Error activating Jetpack" = "Error al activar Jetpack";
+
+/* Error title when Jetpack connection fails */
+"Error authorizing connection to Jetpack" = "Error al autorizar la conexión con Jetpack";
+
+/* Error code displayed when the Jetpack setup fails. %1$d is the code. */
+"Error code %1$d" = "Código de error %1$d";
+
 /* Error message when enabling analytics fails */
 "Error enabling analytics. Please try again." = "Error al activar los análisis. Inténtalo de nuevo.";
 
@@ -2064,6 +2100,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Error al encontrar la dirección en los Mapas de Apple";
+
+/* Error title when Jetpack install fails */
+"Error installing Jetpack" = "Error al instalar Jetpack";
 
 /* Message displayed on Coupon Details screen when loading total discounted amount fails */
 "Error loading data" = "Error al cargar los datos";
@@ -2123,6 +2162,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the exclusions section in Coupon Usage Restrictions screen */
 "Exclusions" = "Exclusiones";
+
+/* Button to cancel installation on the Jetpack setup interrupted screen */
+"Exit Without Connecting" = "Salir sin conectarse";
 
 /* Accessibility value when a banner is expanded */
 "Expanded" = "Ampliado";
@@ -2320,6 +2362,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the account creation form. */
 "Get started in minutes" = "Empezar en pocos minutos";
 
+/* Button to contact support when Jetpack setup fails */
+"Get support" = "Obtener soporte";
+
 /* Title of the Jetpack benefits banner. */
 "Get the full experience with Jetpack" = "Consigue la experiencia completa con Jetpack";
 
@@ -2354,6 +2399,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Option to select the Gmail app when logging in with magic links */
 "Gmail" = "Gmail";
+
+/* Title for the button to navigate to the home screen after Jetpack setup completes */
+"Go to Store" = "Ir a la tienda";
 
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Fallo en el registro en Google.";
@@ -2392,6 +2440,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Post HTML content */
 "HTML Content" = "Contenido HTML";
+
+/* Subtitle on the Jetpack setup required screen */
+"Have your store credentials ready." = "Debes tener preparadas las credenciales de tu tienda.";
 
 /* Accessibility label for selecting h1 paragraph style button on the formatting toolbar. */
 "Header 1" = "Encabezado 1";
@@ -2434,6 +2485,7 @@ which should be translated separately and considered part of this sentence. */
 "Height" = "Altura";
 
 /* Action button for opening Help.Presented when logging in with a site address that does not have WooCommerce
+   Button to contact support on the Jetpack setup interrupted screen
    Help and Support navigation title
    Help button
    Help button on account mismatch error screen.
@@ -2626,7 +2678,8 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the Jetpack benefits view. */
 "Install the free Jetpack plugin to experience the best mobile experience." = "Instala el plugin gratuito de Jetpack y disfruta de la mejor experiencia en dispositivos móviles.";
 
-/* Name of installing Jetpack plugin step */
+/* Name of installing Jetpack plugin step
+   Title for the Jetpack setup screen when installation is required */
 "Installing Jetpack" = "Instalando Jetpack";
 
 /* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates. Placeholder is a literal, e.g \"limited\" */
@@ -2682,6 +2735,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text on the button that starts a new refund process */
 "Issue Refund" = "Emitir reembolso";
 
+/* Title of the alert when the WPCOM plan cannot be purchased in the store creation flow. */
+"Issue purchasing the plan" = "Se ha producido un problema al comprar el plan.";
+
 /* Text of the screen that is displayed while the refund is being created. */
 "Issuing Refund..." = "Se está emitiendo el reembolso...";
 
@@ -2719,7 +2775,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error message for missing value in Weight row in Customs screen of Shipping Label flow */
 "Item weight must be larger than 0" = "El peso del artículo debe ser mayor que 0";
 
-/* Description for Top Performers right column header */
+/* Description for Top Performers right column header
+   Title for the items sold column on the products card on the analytics hub screen. */
 "Items Sold" = "Artículos vendidos";
 
 /* Title of the Jetpack Setup screen */
@@ -2727,6 +2784,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack es un plugin gratuito de WordPress que conecta tu tienda con las herramientas necesarias para ofrecer la mejor experiencia para móviles, como notificaciones push y estadísticas";
+
+/* Title of the Jetpack setup interrupted screen */
+"Jetpack is installed, but not connected." = "Jetpack se ha instalado, pero no conectado.";
 
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "Únete desde cualquier lugar";
@@ -2912,9 +2972,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Instruction text on the login's email address screen. */
 "Log in to your WordPress.com account with your email address." = "Accede a tu cuenta de WordPress.com con tu dirección de correo electrónico.";
 
-/* Title of the site credential login screen in the Jetpack setup flow */
-"Log in to your store" = "Accede a tu tienda";
-
 /* Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Log in with another account" = "Acceder con otra cuenta";
 
@@ -3055,6 +3112,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Caption displayed in promotional screens shown during the login flow. */
 "Monitor and approve your product reviews" = "Supervisa y aprueba los comentarios de tus productos";
 
+/* Title of the Analytics Hub Month to Date selection range */
+"Month to Date" = "Desde hace un mes";
+
 /* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
    Accessibility label for the More button on formatting toolbar. */
 "More" = "Más";
@@ -3131,6 +3191,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The title for the net amount paid cell */
 "Net Payment" = "Pago neto";
 
+/* Label for net sales (net revenue) in the Analytics Hub */
+"Net Sales" = "Ventas netas";
+
 /* Top performers — label for the total sales of a product */
 "Net sales: %@" = "Ventas netas: %@";
 
@@ -3191,6 +3254,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
 "No coupons found" = "No se han encontrado cupones";
 
+/* A error message when it's not possible to acquirethe Analytics Hub current selection range */
+"No current period available" = "No hay ningún período actual disponible.";
+
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "No hay datos disponibles.";
 
@@ -3214,6 +3280,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Message on the detail view of the Orders tab before any order is selected */
 "No order selected" = "No se ha seleccionado ningún pedido";
+
+/* A error message when it's not possible toacquire the Analytics Hub previous selection range */
+"No previous period available" = "No hay ningún período anterior disponible.";
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "Sin precio";
@@ -3289,6 +3358,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Alert dismissal title
    Button title to dismiss the alert when the store cannot be created in the store creation flow.
+   Button title to dismiss the alert when the WPCOM plan cannot be purchased in the store creation flow.
    Button title. An acknowledgement of the message displayed in a prompt.
    Button to dismiss the error alert on the site credential login screen
    Dismiss button on the alert when there is an error creating a new product category
@@ -3303,6 +3373,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Header of selected attribute options section in Add Attribute Options screen */
 "OPTIONS OFFERED" = "OPCIONES OFRECIDAS";
+
+/* Title for order analytics section in the Analytics Hub */
+"ORDERS" = "PEDIDOS";
 
 /* Spoken label to indicate switch control is turned off. */
 "Off" = "Apagado";
@@ -3529,7 +3602,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Password field title in Product Visibility
    Password placeholder
    Placeholder for the password textfield.
-   Placeholder of the password field on the account creation form. */
+   Placeholder of the password field on the account creation form.
+   Title of the password field on the site credential login screen */
 "Password" = "Contraseña";
 
 /* One of the possible options in Product Visibility */
@@ -3649,8 +3723,14 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "Carga el lector";
 
+/* Error message on the Jetpack setup required screen when Jetpack connection is missing. */
+"Please connect your store to Jetpack to access it on this app." = "Conecta tu tienda a Jetpack para acceder a ella en esta aplicación.";
+
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app." = "Ponte en contacto con el propietario del sitio para obtener una invitación como gestor o administrador de la tienda y utilizar la aplicación con este rol.";
+
+/* Suggestion to be displayed when the user encounters a permission error during Jetpack setup */
+"Please contact your shop manager or administrator for help." = "Ponte en contacto con el gestor o administrador de la tienda para obtener ayuda.";
 
 /* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to address problems */
 "Please correct your store address to proceed" = "Para proceder, debes corregir la dirección de la tienda.";
@@ -3711,6 +3791,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* A short prompt asking the user to properly fill out all login fields. */
 "Please fill out all the fields" = "Rellena todos los campos";
 
+/* Error message on the Jetpack setup required screen. */
+"Please install the free Jetpack plugin to access your store on this app." = "Para acceder a tu tienda en esta aplicación, instala el plugin gratuito Jetpack.";
+
 /* Message for alert to prompt user to logout before connecting to a different wordpress.com site. */
 "Please log out before connecting to a different wordpress.com site" = "Cierra la sesión antes de conectarte a otro sitio de wordpress.com";
 
@@ -3721,14 +3804,23 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Recovery suggestion when we fail to update an address when creating or editing an order */
 "Please make sure you are running the latest version of WooCommerce and try again later." = "Comprueba que tienes la última versión de WooCommerce y vuelve a intentarlo más tarde.";
 
+/* Message of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
+"Please remain connected." = "Permanece conectado.";
+
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "Por favor, elige un paquete";
 
 /* Message of the alert when the store cannot be created due to the domain in the store creation flow. */
 "Please try a different domain." = "Prueba con otro dominio.";
 
+/* Message of the alert when the WPCOM plan cannot be purchased in the store creation flow. */
+"Please try again and make sure you are signed in to an App Store account eligible for purchase." = "Inténtalo de nuevo y comprueba que has iniciado sesión en una cuenta del App Store que cumple los requisitos para la compra.";
+
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "Inténtalo de nuevo más tarde o ponte en contacto con nosotros y estaremos encantados de ayudarte.";
+
+/* Suggestion to be displayed when the user encounters a permission error during Jetpack setup */
+"Please try again or contact support if this error continues." = "Inténtalo de nuevo o ponte en contacto con soporte si el error continúa.";
 
 /* Error message when Jetpack connection fails */
 "Please try again or contact us for support." = "Inténtalo de nuevo o ponte en contacto con nuestro servicio de soporte.";
@@ -3763,6 +3855,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Message on the Jetpack Install Progress screen. The %1$@ is the site address. */
 "Please wait while we connect your site %1$@ with Jetpack." = "Espera mientras conectamos tu sitio %1$@ con Jetpack.";
+
+/* Message on the Jetpack setup screen. The %1$@ is the site address. */
+"Please wait while we connect your store %1$@ with Jetpack." = "Espera mientras conectamos tu tienda %1$@ con Jetpack.";
 
 /* Instructions for the progress screen while generating a variation */
 "Please wait while we create the new variation" = "Espera un momento mientras creamos la nueva variación";
@@ -3964,6 +4059,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Description for Top Performers left column header
    Product section title if there is more than one product.
    Product section title in Review Order screen if there is more than one product.
+   Title for the products card on the analytics hub screen.
    Title of the Products tab — plural form of Product
    Title text of the section that shows the Products when creating or editing an order
    Title that appears on top of the Product List screen (plural form of the word Product). */
@@ -4042,6 +4138,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
 "Quickly get up and selling with a beautiful online store." = "Empieza a vender enseguida con una tienda online atractiva.";
+
+/* Title for revenue analytics section in the Analytics Hub */
+"REVENUE" = "INGRESOS";
 
 /* Title of button that allows the user to rate the app in the App Store */
 "Rate us" = "Puntúanos";
@@ -4453,6 +4552,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Link title to see all paper size options */
 "See layout and paper sizes options" = "Consulta las opciones de tamaño de papel y diseño";
 
+/* Button on the stats dashboard that navigates user to the analytics hub */
+"See more" = "Ver más";
+
 /* Subtitle of the Jetpack benefits banner. */
 "See the benefits" = "Ver las ventajas";
 
@@ -4757,8 +4859,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "La dirección del sitio debe tener al menos 4 caracteres.";
 
-/* Navigation bar button on the domain selector screen to skip domain selection.
-   The button title on the login onboarding screen to skip to the prologue screen.
+/* The button title on the login onboarding screen to skip to the prologue screen.
    Title for the button to skip the onboarding step informing the merchant of pending account requirements */
 "Skip" = "Saltar";
 
@@ -5030,6 +5131,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
 "Tap or insert card to refund" = "Toca o introduce una tarjeta para obtener el reembolso";
 
+/* Cell tytle on beta features screen to enable Tap to Pay on iPhone: card payments with the phone's built in reader */
+"Tap to Pay on iPhone" = "Toca para pagar en el iPhone";
+
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
 "Tap to insert a Horizontal Ruler" = "Toca para insertar una regla horizontal";
 
@@ -5141,6 +5245,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
    The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen.
    Title of button that displays the App's terms of service */
 "Terms of Service" = "Condiciones del servicio";
+
+/* Cell description on beta features screen to enable in-app purchases */
+"Test out In-Person Payments using your phone's built-in card reader, as we get ready to launch. Supported on iPhone XS and newer phones, running iOS 15.5 or above." = "Prueba Pagos en persona mediante el lector de tarjetas integrado en tu teléfono, mientras preparamos el lanzamiento. Compatible con el iPhone XS y los teléfonos más nuevos que dispongan de iOS 15.5 o superior.";
 
 /* Cell description on beta features screen to enable in-app purchases */
 "Test out in-app purchases as we get ready to launch" = "Prueba las compras en la aplicación mientras preparamos el lanzamiento";
@@ -5406,6 +5513,12 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The details on the placeholder overlay when there is issue syncing site plugins */
 "There was a problem while trying to load plugins. Check your internet and try again." = "Se ha producido un error al cargar los plugins. Comprueba tu conexión a Internet y vuelve a intentarlo.";
 
+/* Message to be displayed when the user encounters a permission error during Jetpack setup */
+"There was an error communicating with your site." = "Se ha producido un error al comunicarse con el sitio.";
+
+/* Message to be displayed when the user encounters a generic error during Jetpack setup */
+"There was an error completing your request." = "Se ha producido un error al completar tu solicitud.";
+
 /* Notice text after failing to create a simple payments order. */
 "There was an error creating the order" = "Se ha producido un error al crear el pedido";
 
@@ -5490,7 +5603,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "Esta es la URL del archivo al que los clientes podrán acceder. Las URL introducidas ya deberían estar cifradas.";
 
 /* Subtitle of the domain selector. */
-"This is where people will find you on the Internet. Don't worry, you can change it later." = "Aquí es donde las personas te encontrarán en Internet. No te preocupes, lo podrás cambiar después.";
+"This is where people will find you on the Internet. You can add another domain later." = "Aquí es donde las personas te encontrarán en Internet. Puedes añadir otro dominio más adelante.";
 
 /* Message in action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow.The package name reads like: Package 1: Custom Envelope. */
 "This item is currently in Package %1$d: %2$@. Where would you like to move it?" = "Actualmente, este artículo se encuentra en el Paquete %1$d: %2$@. ¿A dónde te gustaría moverlo?";
@@ -5576,17 +5689,12 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Label within the modal dialog that appears when searching for a card reader */
 "To turn on your card reader, briefly press its power button." = "Para encender el lector de tarjetas, pulsa el botón de encendido.";
 
-/* Error message on the Jetpack setup required screen.Reads like: To use this app for test.com you'll need... */
-"To use this app for %@ you'll need the free Jetpack plugin installed and connected on your store." = "Para usar esta aplicación para %@ deberás tener el plugin gratuito de Jetpack instalado y conectado en tu tienda.";
-
-/* Error message on the Jetpack setup required screen when Jetpack connection is missing.Reads like: To use this app for test.com you'll need... */
-"To use this app for %@ you'll need to connect your store to Jetpack." = "Para usar esta aplicación para %@ deberás conectar tu tienda con Jetpack.";
-
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "Para usar esta aplicación para %@ deberás tener el plugin de Jetpack instalado y conectado en tu tienda.";
 
 /* Label for one of the filters in order date range
    Tab selector title that shows the statistics for today
+   Title of the Analytics Hub Today's selection range
    Today Section Header
    Top Performers section title - today */
 "Today" = "Hoy";
@@ -5608,6 +5716,12 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Used when a Reader Topic is not found for a specific id */
 "Topic not found for id:" = "No se ha encontrado tema con id:";
+
+/* Label for total number of orders in the Analytics Hub */
+"Total Orders" = "Total de pedidos";
+
+/* Label for total sales (gross revenue) in the Analytics Hub */
+"Total Sales" = "Ventas totales";
 
 /* Title of the row for adding the package weight in Shipping Label Package Detail screen */
 "Total package weight" = "Peso total del paquete";
@@ -5648,11 +5762,15 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Connect when the SSL certificate is invalid */
 "Trust" = "Confiar";
 
+/* Action button to retry Jetpack activation. */
+"Try Activating Again" = "Prueba a activarlo de nuevo.";
+
 /* Action displayed in the error prompt when loading total discounted amount in Coupon Details screen fails
    Button to retry a software update. Presented to users when updating the card reader software fails
    Button to try again after connecting to a specific reader fails due to a critically low battery.
    Button to try again. Presented to users after a failure occurs
    Button to try to refund a payment again. Presented to users after refunding a payment fails
+   Title of the button to attempt loading the store again after Jetpack setup
    Try Again button on the error alert when fetching system status report fails */
 "Try Again" = "Intentar de nuevo";
 
@@ -5665,8 +5783,14 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Message from the in-person payment card reader prompting user to retry a payment using a different method, e.g. swipe, tap, insert */
 "Try Another Read Method" = "Prueba otro método de lectura.";
 
+/* Action button to retry Jetpack connection. */
+"Try Authorizing Again" = "Prueba a autorizarlo de nuevo.";
+
 /* Button to try to collect a payment again. Presented to users after collecting a payment fails */
 "Try Collecting Again" = "Intenta recibir el pago de nuevo";
+
+/* Action button to retry Jetpack installation. */
+"Try Installing Again" = "Prueba a instalarlo de nuevo.";
 
 /* Action to resync on the placeholder overlay when there is issue syncing site plugins
    Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
@@ -5674,6 +5798,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
 "Try another means of payment" = "Prueba otro método de pago.";
+
+/* Message on the Jetpack setup interrupted screen */
+"Try connecting again to access your store." = "Prueba a conectarte de nuevo para acceder a tu tienda.";
 
 /* Title for the button on the Linked Products announcement banner */
 "Try it now" = "Probar ahora";
@@ -5702,7 +5829,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of a button linking to the app's Twitter profile */
 "Twitter" = "Twitter";
 
-/* Text field placeholder on the store name form in the store creation flow. */
+/* Placeholder of the search text field on the domain selector.
+   Text field placeholder on the store name form in the store creation flow. */
 "Type a name for your store" = "Escribe un nombre para tu tienda";
 
 /* Placeholder for the Content Details row in Customs screen of Shipping Label flow */
@@ -5710,9 +5838,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Placeholder for the Restriction Details row in Customs screen of Shipping Label flow */
 "Type of restriction" = "Tipo de restricción";
-
-/* Placeholder of the search text field on the domain selector. */
-"Type to get suggestions" = "Escribe algo para obtener sugerencias";
 
 /* Navigation bar title for editing the URL of a text link
    URL text field placeholder */
@@ -6028,11 +6153,15 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder
    Placeholder for the username textfield.
+   Title of the email field on the site credential login screen
    Username placeholder */
 "Username" = "Usuario";
 
 /* No comment provided by engineer. */
 "Username must be at least 4 characters." = "El nombre de usuario debe tener al menos 4 caracteres.";
+
+/* Message to be displayed when a Jetpack connection is being authorized */
+"Validating" = "Validación";
 
 /* Title for the Value row in item details in Customs screen of Shipping Label flow */
 "Value (%1$@ per unit)" = "Valor (%1$@ por unidad)";
@@ -6154,11 +6283,17 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* View title during the Google auth process. */
 "Waiting..." = "Esperando...";
 
+/* Title of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
+"We are getting ready for your store creation" = "Estamos preparando la creación de tu tienda.";
+
 /* Error message when the merchant's payment account has been rejected */
 "We are sorry but we can't support In-Person Payments for this store." = "Lo sentimos, pero no podemos admitir Pagos en Persona para esta tienda.";
 
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "Estamos trabajando para que sea más sencillo ver complementos de producto directamente con tu dispositivo. A partir de ahora, podrás ver los complementos de tus pedidos. Puedes crear y editar estos complementos en el escritorio web.";
+
+/* Error message displayed when there is no store matching the site URL that is associated with the user's account */
+"We cannot load the store at the moment." = "En este momento, no podemos cargar la tienda.";
 
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "No podemos mostrar los análisis en tiempo real de tu tienda";
@@ -6224,9 +6359,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Error message displayed when an error occurred sending the magic link email. */
 "We were unable to send you an email at this time. Please try again later." = "No hemos sido capaces de enviarte un correo electrónico en este momento. Por favor, inténtalo más tarde de nuevo.";
 
-/* Note at the bottom of the site credential login screen */
-"We will ask for your approval to complete the Jetpack connection." = "Deberás dar tu aprobación para completar la conexión de Jetpack.";
-
 /* Instructional text for the magic link login flow. */
 "We'll email you a magic link that'll log you in instantly, no password needed. Hunt and peck no more!" = "Te enviaremos por correo electrónico un enlace mágico que te registrará al instante, sin necesidad de contraseña. ¡Sin errores!";
 
@@ -6259,6 +6391,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Title of a button linking to the app's website */
 "Website" = "Sitio web";
+
+/* Title of the Analytics Hub Week to Date selection range */
+"Week to Date" = "Desde hace una semana";
 
 /* Title of the cell in Product Shipping Settings > Weight */
 "Weight" = "Peso";
@@ -6362,6 +6497,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Option to select the Yahoo Mail app when logging in with magic links */
 "Yahoo Mail" = "Yahoo Mail";
 
+/* Title of the Analytics Hub Year to Date selection range */
+"Year to Date" = "Desde hace un año";
+
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "Sí, cambiar";
 
@@ -6398,6 +6536,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* The description on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
 "You currently have Coupons disabled for this store. Enable coupons to get started." = "En este momento, los cupones están desactivados en esta tienda. Activa los cupones para empezar.";
+
+/* Message to be displayed when the user encounters a permission error during Jetpack setup */
+"You don't have permission to manage plugins on this store." = "No tienes permiso para gestionar plugins en esta tienda.";
 
 /* Title for the mocked order notification needed for the AppStore listing screenshot */
 "You have a new order! 🎉" = "Tienes un pedido nuevo 🎉";
@@ -6455,12 +6596,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Error message when WooCommerce Payments is not installed */
 "You’ll need to install the free WooCommerce Payments extension on your store to accept In-Person Payments." = "Tendrás que instalar la extensión gratuita de WooCommerce Payments en tu tienda para aceptar Pagos en Persona.";
-
-/* Subtitle on the Jetpack setup required screen when only Jetpack connection is missing */
-"You’ll need your store credentials to begin the connection." = "Necesitarás las credenciales de tu tienda para comenzar la conexión.";
-
-/* Subtitle on the Jetpack setup required screen */
-"You’ll need your store credentials to begin the installation." = "Necesitarás las credenciales de tu tienda para comenzar la instalación.";
 
 /* Error message when an in-person payments plugin is activated but not set up. %1$@ contains the plugin name. */
 "You’re almost there! Please finish setting up %1$@ to start accepting In-Person Payments." = "Ya casi has acabado. Termina de configurar %1$@ para empezar a aceptar Pagos en Persona.";

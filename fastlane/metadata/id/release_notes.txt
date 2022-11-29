@@ -1,1 +1,2 @@
-Penjual yang menggunakan aplikasi untuk menerima pembayaran secara langsung pasti menyukai pengembangan yang kami buat. Kami melakukan peningkatan ini dan peningkatan kecil lainnya agar pengalaman Anda makin mulus. Semoga kesungguhan kami mengembangkan perangkat lunak ini dapat Anda rasakan.
+We focused on some stability and performance issues to make your experience smoother. Please keep sharing feedback. Kami membaca semuanya!
+

@@ -13,10 +13,11 @@ struct StatsDataTextFormatter {
     static func createTotalRevenueText(orderStats: OrderStatsV4?,
                                        selectedIntervalIndex: Int?,
                                        currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-                                       currencyCode: String = ServiceLocator.currencySettings.currencyCode.rawValue) -> String {
+                                       currencyCode: String = ServiceLocator.currencySettings.currencyCode.rawValue,
+                                       numberOfFractionDigits: Int = ServiceLocator.currencySettings.fractionDigits) -> String {
         if let revenue = totalRevenue(at: selectedIntervalIndex, orderStats: orderStats) {
             // If revenue is an integer, no decimal points are shown.
-            let numberOfDecimals: Int? = revenue.isInteger ? 0: nil
+            let numberOfDecimals: Int? = revenue.rounded(.plain, scale: numberOfFractionDigits).isInteger ? 0 : nil
             return currencyFormatter.formatAmount(revenue, with: currencyCode, numberOfDecimals: numberOfDecimals) ?? String()
         } else {
             return Constants.placeholderText
@@ -35,13 +36,14 @@ struct StatsDataTextFormatter {
     ///
     static func createNetRevenueText(orderStats: OrderStatsV4?,
                                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-                                     currencyCode: String = ServiceLocator.currencySettings.currencyCode.rawValue) -> String {
+                                     currencyCode: String = ServiceLocator.currencySettings.currencyCode.rawValue,
+                                     numberOfFractionDigits: Int = ServiceLocator.currencySettings.fractionDigits) -> String {
         guard let revenue = orderStats?.totals.netRevenue else {
             return Constants.placeholderText
         }
 
         // If revenue is an integer, no decimal points are shown.
-        let numberOfDecimals: Int? = revenue.isInteger ? 0 : nil
+        let numberOfDecimals: Int? = revenue.rounded(.plain, scale: numberOfFractionDigits).isInteger ? 0 : nil
         return currencyFormatter.formatAmount(revenue, with: currencyCode, numberOfDecimals: numberOfDecimals) ?? String()
     }
 
@@ -77,10 +79,11 @@ struct StatsDataTextFormatter {
     ///
     static func createAverageOrderValueText(orderStats: OrderStatsV4?,
                                             currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-                                            currencyCode: String = ServiceLocator.currencySettings.currencyCode.rawValue) -> String {
+                                            currencyCode: String = ServiceLocator.currencySettings.currencyCode.rawValue,
+                                            numberOfFractionDigits: Int = ServiceLocator.currencySettings.fractionDigits) -> String {
         if let value = averageOrderValue(orderStats: orderStats) {
             // If order value is an integer, no decimal points are shown.
-            let numberOfDecimals: Int? = value.isInteger ? 0 : nil
+            let numberOfDecimals: Int? = value.rounded(.plain, scale: numberOfFractionDigits).isInteger ? 0 : nil
             return currencyFormatter.formatAmount(value, with: currencyCode, numberOfDecimals: numberOfDecimals) ?? String()
         } else {
             return Constants.placeholderText
@@ -136,6 +139,28 @@ struct StatsDataTextFormatter {
         } else {
             return Constants.placeholderText
         }
+    }
+
+    // MARK: Product Stats
+
+    /// Creates the text to display for all of items sold value.
+    ///
+    static func createItemsSoldText(orderStats: OrderStatsV4?) -> String {
+        guard let orderStats else {
+            return Constants.placeholderText
+        }
+        return Double(orderStats.totals.totalItemsSold).humanReadableString()
+    }
+
+    /// Creates the text to display for the orders item sold delta.
+    ///
+    static func createOrderItemsSoldDelta(from previousPeriod: OrderStatsV4?, to currentPeriod: OrderStatsV4?) -> DeltaPercentage {
+        guard let previousPeriod, let currentPeriod else {
+            return DeltaPercentage(value: 0) // Missing data: 0% change
+        }
+        let previousItemsSold = Double(previousPeriod.totals.totalItemsSold)
+        let currentItemsSold = Double(currentPeriod.totals.totalItemsSold)
+        return createDeltaPercentage(from: previousItemsSold, to: currentItemsSold)
     }
 }
 
@@ -279,4 +304,6 @@ private extension StatsDataTextFormatter {
     enum Constants {
         static let placeholderText = "-"
     }
+
+
 }

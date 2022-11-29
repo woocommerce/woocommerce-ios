@@ -1,1 +1,2 @@
-Handlare som använder appen för att ta emot personliga betalningar kommer att uppskatta de förändringar vi har gjort. Dessa och andra små förbättringar har gjorts för att göra din upplevelse smidigare. Vi hoppas att du kommer att märka hur mycket arbete vi lägger ned på vår programvara.
+Vi har fokuserat på att åtgärda vissa stabilitets- och prestandaproblem för att göra din upplevelse smidigare. Fortsätt lämna feedback. Vi läser allt.
+

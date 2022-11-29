@@ -34,6 +34,7 @@ struct AnalyticsTimeRangeCard: View {
                 Image(uiImage: .calendar)
                     .padding()
                     .background(Circle().foregroundColor(Color(.systemGray6)))
+
                 VStack(alignment: .leading, spacing: .zero) {
                     Text(timeRangeTitle)
                         .foregroundColor(Color(.text))
@@ -43,6 +44,10 @@ struct AnalyticsTimeRangeCard: View {
                 }
                 .padding(.leading)
                 .frame(maxWidth: .infinity, alignment: .leading)
+
+                Image(uiImage: .chevronDownImage)
+                    .padding()
+                    .frame(alignment: .trailing)
             }
             .padding(.leading)
 

@@ -8,6 +8,7 @@ extension URL {
 
         let queryItems = [
             ("client_id", clientId),
+            ("redirect_uri", redirectURI(from: clientId)),
             ("response_type", "code")
         ].map { URLQueryItem(name: $0.0, value: $0.1) }
 
@@ -18,5 +19,14 @@ extension URL {
             components.queryItems = queryItems
             return try components.asURL()
         }
+    }
+
+    private static func redirectURI(from clientId: String) -> String {
+        // Google's client id is in the form: 123-abc245def.apps.googleusercontent.com
+        // The redirect URI uses the reverse-DNS notation.
+        let reverseDNSClientId = clientId.split(separator: ".").reversed().joined(separator: ".")
+        // After that, we add "oautha2callback", as per GIDSignIn.m line 421 at
+        // commit 1b0c4ec33a6fe282f4fa35d8ac64263230ddaf36
+        return "\(reverseDNSClientId):/oauth2callback"
     }
 }

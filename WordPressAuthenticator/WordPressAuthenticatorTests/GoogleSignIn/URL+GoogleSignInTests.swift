@@ -12,6 +12,11 @@ class URLGoogleSignInTests: XCTestCase {
             includeItemNamed: "client_id",
             withValue: "123-abc245def.apps.googleusercontent.com"
         )
+        assertQueryItems(
+            for: url,
+            includeItemNamed: "redirect_uri",
+            withValue: "com.googleusercontent.apps.123-abc245def:/oauth2callback"
+        )
         assertQueryItems(for: url, includeItemNamed: "response_type", withValue: "code")
         // TODO: need to check more parameters
     }

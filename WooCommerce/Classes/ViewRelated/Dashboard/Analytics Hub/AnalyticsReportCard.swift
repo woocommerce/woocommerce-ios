@@ -36,10 +36,14 @@ struct AnalyticsReportCard: View {
 
                     Text(leadingValue)
                         .titleStyle()
+                        .redacted(reason: isRedacted ? .placeholder : [])
+                        .shimmering(active: isRedacted)
 
                     AdaptiveStack {
                         DeltaTag(value: leadingDelta, backgroundColor: leadingDeltaColor)
                             .frame(maxWidth: .infinity, alignment: .leading)
+                            .redacted(reason: isRedacted ? .placeholder : [])
+                            .shimmering(active: isRedacted)
 
                         AnalyticsLineChart(dataPoints: leadingChartData, lineChartColor: leadingDeltaColor)
                             .aspectRatio(Layout.chartAspectRatio, contentMode: .fit)
@@ -57,10 +61,14 @@ struct AnalyticsReportCard: View {
 
                     Text(trailingValue)
                         .titleStyle()
+                        .redacted(reason: isRedacted ? .placeholder : [])
+                        .shimmering(active: isRedacted)
 
                     AdaptiveStack {
                         DeltaTag(value: trailingDelta, backgroundColor: trailingDeltaColor)
                             .frame(maxWidth: .infinity, alignment: .leading)
+                            .redacted(reason: isRedacted ? .placeholder : [])
+                            .shimmering(active: isRedacted)
 
                         AnalyticsLineChart(dataPoints: trailingChartData, lineChartColor: trailingDeltaColor)
                             .aspectRatio(Layout.chartAspectRatio, contentMode: .fit)

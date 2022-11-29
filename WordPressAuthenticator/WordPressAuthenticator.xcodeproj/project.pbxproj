@@ -780,17 +780,17 @@
 		B5ED7901207E976500A8FD8C /* WordPressAuthenticatorTests */ = {
 			isa = PBXGroup;
 			children = (
-				D85C36E4256E0DAF00D56E34 /* Navigation */,
-				F18DF0E32525009200D83AFE /* SupportingFiles */,
-				BA53D64924DFE06C001F1ABF /* Mocks */,
-				BA53D64424DFDE0B001F1ABF /* Credentials */,
 				F12F9FB524D8A7DB00771BCE /* Analytics */,
-				3F550D5423DA5094007E5897 /* Email Client Picker */,
 				B501C03D208FC52500D1E58F /* Authenticator */,
-				B501C03B208FC52400D1E58F /* Model */,
-				B501C03F208FC52500D1E58F /* Services */,
-				4A1DEF4729341B1F00322608 /* Logging */,
+				BA53D64424DFDE0B001F1ABF /* Credentials */,
+				3F550D5423DA5094007E5897 /* Email Client Picker */,
 				B5ED7904207E976500A8FD8C /* Info.plist */,
+				4A1DEF4729341B1F00322608 /* Logging */,
+				BA53D64924DFE06C001F1ABF /* Mocks */,
+				B501C03B208FC52400D1E58F /* Model */,
+				D85C36E4256E0DAF00D56E34 /* Navigation */,
+				B501C03F208FC52500D1E58F /* Services */,
+				F18DF0E32525009200D83AFE /* SupportingFiles */,
 				3F338B6B289B87E60014ADC5 /* UnitTests.xctestplan */,
 			);
 			path = WordPressAuthenticatorTests;

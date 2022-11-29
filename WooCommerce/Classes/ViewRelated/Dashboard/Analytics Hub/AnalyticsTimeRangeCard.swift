@@ -75,7 +75,10 @@ private extension AnalyticsTimeRangeCard {
     }
 
     enum Localization {
-        static let timeRangeSelectionTitle = NSLocalizedString("Date Range", comment: "Title describing the possible date range selections of the Analytics Hub")
+        static let timeRangeSelectionTitle = NSLocalizedString(
+            "Date Range",
+            comment: "Title describing the possible date range selections of the Analytics Hub"
+        )
         static let previousRangeComparisonContent = NSLocalizedString(
             "Compared to **%1$@**",
             comment: "Subtitle describing the previous analytics period under comparison. E.g. Compared to Oct 1 - 22, 2022"
@@ -86,12 +89,13 @@ private extension AnalyticsTimeRangeCard {
         }
     }
 }
-//
-//// MARK: Previews
-//struct TimeRangeCard_Previews: PreviewProvider {
-//    static var previews: some View {
-//        AnalyticsTimeRangeCard(timeRangeTitle: "Month to Date",
-//                               currentRangeDescription: "Nov 1 - 23, 2022",
-//                               previousRangeDescription: "Oct 1 - 23, 2022")
-//    }
-//}
+
+// MARK: Previews
+struct TimeRangeCard_Previews: PreviewProvider {
+    static var previews: some View {
+        let viewModel = AnalyticsTimeRangeCardViewModel(selectedRangeTitle: "Month to Date",
+                                                        currentRangeSubtitle: "Nov 1 - 23, 2022",
+                                                        previousRangeSubtitle: "Oct 1 - 23, 2022")
+        AnalyticsTimeRangeCard(viewModel: viewModel, selectionType: .constant(.monthToDate))
+    }
+}

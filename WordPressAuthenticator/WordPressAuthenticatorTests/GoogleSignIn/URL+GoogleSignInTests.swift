@@ -4,9 +4,14 @@ import XCTest
 class URLGoogleSignInTests: XCTestCase {
 
     func testGoogleSignInAuthURL() throws {
-        let url = try URL.googleSignInAuthURL()
+        let url = try URL.googleSignInAuthURL(clientId: "123-abc245def.apps.googleusercontent.com")
 
         assert(url, matchesBaseURL: "https://accounts.google.com/o/oauth2/v2/auth")
+        assertQueryItems(
+            for: url,
+            includeItemNamed: "client_id",
+            withValue: "123-abc245def.apps.googleusercontent.com"
+        )
         assertQueryItems(for: url, includeItemNamed: "response_type", withValue: "code")
         // TODO: need to check more parameters
     }

@@ -3,10 +3,11 @@ import Foundation
 extension URL {
 
     // TODO: This is incomplete
-    static func googleSignInAuthURL() throws -> URL {
+    static func googleSignInAuthURL(clientId: String) throws -> URL {
         let baseURL = "https://accounts.google.com/o/oauth2/v2/auth"
 
         let queryItems = [
+            ("client_id", clientId),
             ("response_type", "code")
         ].map { URLQueryItem(name: $0.0, value: $0.1) }
 

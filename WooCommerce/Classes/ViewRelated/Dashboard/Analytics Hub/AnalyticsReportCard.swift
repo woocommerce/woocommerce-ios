@@ -35,13 +35,13 @@ struct AnalyticsReportCard: View {
                     Text(leadingValue)
                         .titleStyle()
 
-                    AdaptiveStack {
+                    AdaptiveStack(horizontalAlignment: .leading) {
                         DeltaTag(value: leadingDelta, backgroundColor: leadingDeltaColor)
                             .frame(maxWidth: .infinity, alignment: .leading)
 
                         AnalyticsLineChart(dataPoints: leadingChartData, lineChartColor: leadingDeltaColor)
                             .aspectRatio(Layout.chartAspectRatio, contentMode: .fit)
-                            .frame(maxWidth: .infinity, maxHeight: Layout.chartMaxHeight, alignment: .trailing)
+                            .frame(maxHeight: Layout.chartMaxHeight)
                     }
 
                 }
@@ -56,13 +56,13 @@ struct AnalyticsReportCard: View {
                     Text(trailingValue)
                         .titleStyle()
 
-                    AdaptiveStack {
+                    AdaptiveStack(horizontalAlignment: .leading) {
                         DeltaTag(value: trailingDelta, backgroundColor: trailingDeltaColor)
                             .frame(maxWidth: .infinity, alignment: .leading)
 
                         AnalyticsLineChart(dataPoints: trailingChartData, lineChartColor: trailingDeltaColor)
                             .aspectRatio(Layout.chartAspectRatio, contentMode: .fit)
-                            .frame(maxWidth: .infinity, maxHeight: Layout.chartMaxHeight, alignment: .trailing)
+                            .frame(maxHeight: Layout.chartMaxHeight)
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)

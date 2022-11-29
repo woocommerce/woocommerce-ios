@@ -7,6 +7,8 @@ extension WooAnalyticsEvent {
             static let source = "source"
             static let url = "url"
             static let errorType = "error_type"
+            static let flow = "flow"
+            static let step = "step"
         }
 
         /// Tracked when the user taps on the CTA in store picker (logged in to WPCOM) to create a store.
@@ -16,22 +18,35 @@ extension WooAnalyticsEvent {
         }
 
         /// Tracked when a site is created from the store creation flow.
-        static func siteCreated(source: Source, siteURL: String) -> WooAnalyticsEvent {
+        static func siteCreated(source: Source, siteURL: String, flow: Flow) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .siteCreated,
-                              properties: [Key.source: source.rawValue, Key.url: siteURL])
+                              properties: [Key.source: source.rawValue,
+                                           Key.url: siteURL,
+                                           Key.flow: flow.rawValue])
         }
 
         /// Tracked when site creation fails.
-        static func siteCreationFailed(source: Source, error: Error) -> WooAnalyticsEvent {
+        static func siteCreationFailed(source: Source, error: Error, flow: Flow) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .siteCreationFailed,
-                              properties: [Key.source: source.rawValue],
+                              properties: [Key.source: source.rawValue, Key.flow: flow.rawValue],
                               error: error)
         }
 
         /// Tracked when the user dismisses the store creation flow before the flow is complete.
-        static func siteCreationDismissed(source: Source) -> WooAnalyticsEvent {
+        static func siteCreationDismissed(source: Source, flow: Flow) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .siteCreationDismissed,
-                              properties: [Key.source: source.rawValue])
+                              properties: [Key.source: source.rawValue, Key.flow: flow.rawValue])
+        }
+
+        /// Tracked when the user reaches each step of the store creation flow.
+        static func siteCreationStep(step: Step) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .siteCreationStep,
+                              properties: [Key.step: step.rawValue])
+        }
+
+        /// Tracked clicking on “Store Preview” button after a site is created successfully.
+        static func siteCreationSitePreviewed() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .siteCreationSitePreviewed, properties: [:])
         }
 
         /// Tracked when the user taps on the CTA in login prologue (logged out) to create a store.
@@ -83,6 +98,22 @@ extension WooAnalyticsEvent.StoreCreation {
         case loginPrologue = "prologue"
         case storePicker = "store_picker"
         case loginEmailError = "login_email_error"
+    }
+
+    /// The implementation of store creation flow - native (M2) or web (M1).
+    enum Flow: String {
+        case native = "native"
+        case web = "web"
+    }
+
+    /// Steps of the native store creation flow.
+    enum Step: String {
+        case storeName = "store_name"
+        case domainPicker = "domain_picker"
+        case storeSummary = "store_summary"
+        case planPurchase = "plan_purchase"
+        case webCheckout = "web_checkout"
+        case storeInstallation = "store_installation"
     }
 }
 

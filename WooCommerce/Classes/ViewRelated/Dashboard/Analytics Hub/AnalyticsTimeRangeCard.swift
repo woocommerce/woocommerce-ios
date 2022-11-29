@@ -62,12 +62,6 @@ struct AnalyticsTimeRangeCard: View {
     }
 }
 
-struct TimeRangeSelectionView: View {
-    var body: some View {
-        Text("Time range Selection")
-    }
-}
-
 // MARK: Constants
 private extension AnalyticsTimeRangeCard {
     enum Layout {

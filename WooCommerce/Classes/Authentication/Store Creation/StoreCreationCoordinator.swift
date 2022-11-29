@@ -461,7 +461,9 @@ private extension StoreCreationCoordinator {
             return continueWithSelectedSite(site: site)
         }
         let successView = StoreCreationSuccessHostingController(siteURL: url) { [weak self] in
-            self?.continueWithSelectedSite(site: site)
+            guard let self else { return }
+            self.analytics.track(event: .StoreCreation.siteCreationManageStoreTapped())
+            self.continueWithSelectedSite(site: site)
         } onPreviewSite: { [weak self] in
             self?.analytics.track(event: .StoreCreation.siteCreationSitePreviewed())
         }

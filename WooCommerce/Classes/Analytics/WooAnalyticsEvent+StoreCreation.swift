@@ -49,6 +49,11 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .siteCreationSitePreviewed, properties: [:])
         }
 
+        /// Tracked when tapping on the “Manage my store” button on the store creation success screen.
+        static func siteCreationManageStoreTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .siteCreationManageStoreTapped, properties: [:])
+        }
+
         /// Tracked when the user taps on the CTA in login prologue (logged out) to create a store.
         static func loginPrologueCreateSiteTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .loginPrologueCreateSiteTapped,

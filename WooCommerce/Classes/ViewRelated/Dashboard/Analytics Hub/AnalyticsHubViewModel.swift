@@ -119,6 +119,7 @@ private extension AnalyticsHubViewModel {
             }.store(in: &subscriptions)
         
         $timeRangeSelectionType
+            .removeDuplicates()
             .sink { [weak self] newSelectionType in
                 guard let self else { return }
                 self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(selectionType: newSelectionType)

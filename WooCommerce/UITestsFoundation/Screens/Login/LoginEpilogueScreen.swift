@@ -1,19 +1,19 @@
 import XCTest
 
 private struct ElementStringIDs {
-    static let displayNameField = "full-name-label"
+    static let emailField = "email-label"
     static let siteUrlField = "url-label"
     static let continueButton = "login-epilogue-continue-button"
 }
 
 public final class LoginEpilogueScreen: BaseScreen {
     private let continueButton: XCUIElement
-    private let displayNameField: XCUIElement
+    private let emailField: XCUIElement
     private let siteUrlField: XCUIElement
 
     public init() {
         let app = XCUIApplication()
-        displayNameField = app.staticTexts[ElementStringIDs.displayNameField]
+        emailField = app.staticTexts[ElementStringIDs.emailField]
         siteUrlField = app.staticTexts[ElementStringIDs.siteUrlField]
         continueButton = app.buttons[ElementStringIDs.continueButton]
 
@@ -26,11 +26,11 @@ public final class LoginEpilogueScreen: BaseScreen {
         return try MyStoreScreen()
     }
 
-    public func verifyEpilogueDisplays(displayName expectedDisplayName: String, siteUrl expectedSiteUrl: String) -> LoginEpilogueScreen {
-        let actualDisplayName = displayNameField.label
+    public func verifyEpilogueDisplays(email expectedEmail: String, siteUrl expectedSiteUrl: String) -> LoginEpilogueScreen {
+        let actualEmail = emailField.label
         let actualSiteUrl = siteUrlField.label
 
-        XCTAssertEqual(expectedDisplayName, actualDisplayName, "Display name is '\(actualDisplayName)' but should be '\(expectedDisplayName)'.")
+        XCTAssertEqual(expectedEmail, actualEmail, "Display name is '\(actualEmail)' but should be '\(expectedEmail)'.")
         XCTAssertEqual(expectedSiteUrl, actualSiteUrl, "Site URL is \(actualSiteUrl) but should be \(expectedSiteUrl)")
 
         return self

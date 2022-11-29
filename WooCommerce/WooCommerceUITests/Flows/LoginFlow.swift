@@ -10,7 +10,7 @@ class LoginFlow {
             .proceedWith(password: TestCredentials.password)
 
         return try LoginEpilogueScreen()
-            .verifyEpilogueDisplays(displayName: TestCredentials.displayName, siteUrl: TestCredentials.siteUrl)
+            .verifyEpilogueDisplays(email: "e2eflowtestingmobile@example.com", siteUrl: TestCredentials.siteUrl)
             .continueWithSelectedSite()
     }
 }

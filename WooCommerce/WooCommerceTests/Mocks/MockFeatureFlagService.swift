@@ -9,6 +9,7 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isLoginPrologueOnboardingEnabled: Bool
     private let isStoreCreationMVPEnabled: Bool
     private let isStoreCreationM2Enabled: Bool
+    private let isStoreCreationM2WithInAppPurchasesEnabled: Bool
 
     init(isInboxOn: Bool = false,
          isSplitViewInOrdersTabOn: Bool = false,
@@ -16,7 +17,8 @@ struct MockFeatureFlagService: FeatureFlagService {
          shippingLabelsOnboardingM1: Bool = false,
          isLoginPrologueOnboardingEnabled: Bool = false,
          isStoreCreationMVPEnabled: Bool = true,
-         isStoreCreationM2Enabled: Bool = false) {
+         isStoreCreationM2Enabled: Bool = false,
+         isStoreCreationM2WithInAppPurchasesEnabled: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isSplitViewInOrdersTabOn = isSplitViewInOrdersTabOn
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -24,6 +26,7 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isLoginPrologueOnboardingEnabled = isLoginPrologueOnboardingEnabled
         self.isStoreCreationMVPEnabled = isStoreCreationMVPEnabled
         self.isStoreCreationM2Enabled = isStoreCreationM2Enabled
+        self.isStoreCreationM2WithInAppPurchasesEnabled = isStoreCreationM2WithInAppPurchasesEnabled
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -42,6 +45,8 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isStoreCreationMVPEnabled
         case .storeCreationM2:
             return isStoreCreationM2Enabled
+        case .storeCreationM2WithInAppPurchasesEnabled:
+            return isStoreCreationM2WithInAppPurchasesEnabled
         default:
             return false
         }

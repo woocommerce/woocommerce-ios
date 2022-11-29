@@ -137,6 +137,28 @@ struct StatsDataTextFormatter {
             return Constants.placeholderText
         }
     }
+
+    // MARK: Product Stats
+
+    /// Creates the text to display for all of items sold value.
+    ///
+    static func createItemsSoldText(orderStats: OrderStatsV4?) -> String {
+        guard let orderStats else {
+            return Constants.placeholderText
+        }
+        return Double(orderStats.totals.totalItemsSold).humanReadableString()
+    }
+
+    /// Creates the text to display for the orders item sold delta.
+    ///
+    static func createOrderItemsSoldDelta(from previousPeriod: OrderStatsV4?, to currentPeriod: OrderStatsV4?) -> DeltaPercentage {
+        guard let previousPeriod, let currentPeriod else {
+            return DeltaPercentage(value: 0) // Missing data: 0% change
+        }
+        let previousItemsSold = Double(previousPeriod.totals.totalItemsSold)
+        let currentItemsSold = Double(currentPeriod.totals.totalItemsSold)
+        return createDeltaPercentage(from: previousItemsSold, to: currentItemsSold)
+    }
 }
 
 extension StatsDataTextFormatter {

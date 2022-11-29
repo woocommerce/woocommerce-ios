@@ -4,9 +4,19 @@ import SwiftUI
 ///
 struct AnalyticsTimeRangeCard: View {
 
-    @StateObject var viewModel: AnalyticsHubViewModel
+    let timeRangeTitle: String
+    let currentRangeDescription: String
+    let previousRangeDescription: String
+    @Binding var selectionType: AnalyticsHubViewModel.SelectionType
 
     @State private var showTimeRangeSelectionView: Bool = false
+
+    init(viewModel: AnalyticsTimeRangeCardViewModel, selectionType: Binding<AnalyticsHubViewModel.SelectionType>) {
+        self.timeRangeTitle = viewModel.selectedRangeTitle
+        self.currentRangeDescription = viewModel.currentRangeSubtitle
+        self.previousRangeDescription = viewModel.previousRangeSubtitle
+        self._selectionType = selectionType
+    }
 
     var body: some View {
         createTimeRangeContent()
@@ -14,7 +24,7 @@ struct AnalyticsTimeRangeCard: View {
                 SelectionList(title: "Select something",
                               items: AnalyticsHubViewModel.SelectionType.allCases,
                               contentKeyPath: \.description,
-                              selected: $viewModel.timeRangeSelectionType)
+                              selected: $selectionType)
             }
     }
 
@@ -25,10 +35,10 @@ struct AnalyticsTimeRangeCard: View {
                     .padding()
                     .background(Circle().foregroundColor(Color(.systemGray6)))
                 VStack(alignment: .leading, spacing: .zero) {
-                    Text(viewModel.timeRangeCard.selectedRangeTitle)
+                    Text(timeRangeTitle)
                         .foregroundColor(Color(.text))
                         .subheadlineStyle()
-                    Text(viewModel.timeRangeCard.currentRangeSubtitle)
+                    Text(currentRangeDescription)
                         .bold()
                 }
                 .padding(.leading)
@@ -38,7 +48,7 @@ struct AnalyticsTimeRangeCard: View {
 
             Divider()
 
-            BoldableTextView(Localization.comparisonHeaderTextWith(viewModel.timeRangeCard.previousRangeSubtitle))
+            BoldableTextView(Localization.comparisonHeaderTextWith(previousRangeDescription))
                 .padding(.leading)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .calloutStyle()

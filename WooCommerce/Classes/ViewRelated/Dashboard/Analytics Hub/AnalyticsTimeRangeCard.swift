@@ -21,7 +21,7 @@ struct AnalyticsTimeRangeCard: View {
     var body: some View {
         createTimeRangeContent()
             .sheet(isPresented: $showTimeRangeSelectionView) {
-                SelectionList(title: "Select something",
+                SelectionList(title: Localization.timeRangeSelectionTitle,
                               items: AnalyticsHubViewModel.SelectionType.allCases,
                               contentKeyPath: \.description,
                               selected: $selectionType)
@@ -75,6 +75,7 @@ private extension AnalyticsTimeRangeCard {
     }
 
     enum Localization {
+        static let timeRangeSelectionTitle = NSLocalizedString("Date Range", comment: "Title describing the possible date range selections of the Analytics Hub")
         static let previousRangeComparisonContent = NSLocalizedString(
             "Compared to **%1$@**",
             comment: "Subtitle describing the previous analytics period under comparison. E.g. Compared to Oct 1 - 22, 2022"

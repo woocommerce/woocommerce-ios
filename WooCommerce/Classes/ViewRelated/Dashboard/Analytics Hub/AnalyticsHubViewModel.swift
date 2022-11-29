@@ -15,12 +15,14 @@ final class AnalyticsHubViewModel: ObservableObject {
     init(siteID: Int64,
          statsTimeRange: StatsTimeRangeV4,
          stores: StoresManager = ServiceLocator.stores) {
+        let selectedType = TimeRangeSelectionType.from(statsTimeRange)
+        let timeRangeGenerator = AnalyticsHubTimeRangeGenerator(selectionType: selectedType)
+
         self.siteID = siteID
         self.stores = stores
-
-        let selectedType = TimeRangeSelectionType.from(statsTimeRange)
         self.timeRangeSelectionType = selectedType
-        self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(selectionType: selectedType)
+        self.timeRangeGenerator = timeRangeGenerator
+        self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeGenerator: timeRangeGenerator)
 
         bindViewModelsWithData()
         requestAnalyticsHubStats()
@@ -57,6 +59,8 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Order stats for the previous time period (for comparison)
     ///
     @Published private var previousOrderStats: OrderStatsV4? = nil
+
+    private var timeRangeGenerator: AnalyticsHubTimeRangeGenerator
 }
 
 // MARK: Networking
@@ -73,7 +77,6 @@ private extension AnalyticsHubViewModel {
 
     @MainActor
     func retrieveOrderStats() async throws {
-        let timeRangeGenerator = AnalyticsHubTimeRangeGenerator(selectionType: timeRangeSelectionType)
         let currentTimeRange = try timeRangeGenerator.unwrapCurrentTimeRange()
         let previousTimeRange = try timeRangeGenerator.unwrapPreviousTimeRange()
 
@@ -126,7 +129,8 @@ private extension AnalyticsHubViewModel {
             .removeDuplicates()
             .sink { [weak self] newSelectionType in
                 guard let self else { return }
-                self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(selectionType: newSelectionType)
+                self.timeRangeGenerator = AnalyticsHubTimeRangeGenerator(selectionType: newSelectionType)
+                self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeGenerator: self.timeRangeGenerator)
                 self.requestAnalyticsHubStats()
             }.store(in: &subscriptions)
     }
@@ -163,9 +167,7 @@ private extension AnalyticsHubViewModel {
                                             trailingDeltaColor: Constants.deltaColor(for: orderValueDelta.direction))
     }
 
-    static func timeRangeCard(selectionType: TimeRangeSelectionType) -> AnalyticsTimeRangeCardViewModel {
-        let timeRangeGenerator = AnalyticsHubTimeRangeGenerator(selectionType: selectionType)
-
+    static func timeRangeCard(timeRangeGenerator: AnalyticsHubTimeRangeGenerator) -> AnalyticsTimeRangeCardViewModel {
         return AnalyticsTimeRangeCardViewModel(selectedRangeTitle: timeRangeGenerator.selectionType.description,
                                                currentRangeSubtitle: timeRangeGenerator.generateCurrentRangeDescription(),
                                                previousRangeSubtitle: timeRangeGenerator.generatePreviousRangeDescription())

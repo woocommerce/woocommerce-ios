@@ -50,6 +50,10 @@ struct AnalyticsTimeRangeCard: View {
                     .frame(alignment: .trailing)
             }
             .padding(.leading)
+            .contentShape(Rectangle())
+            .onTapGesture {
+                showTimeRangeSelectionView.toggle()
+            }
 
             Divider()
 
@@ -60,10 +64,6 @@ struct AnalyticsTimeRangeCard: View {
         }
         .padding([.top, .bottom])
         .frame(maxWidth: .infinity)
-        .background(Color(uiColor: .listForeground))
-        .onTapGesture {
-            showTimeRangeSelectionView.toggle()
-        }
     }
 }
 

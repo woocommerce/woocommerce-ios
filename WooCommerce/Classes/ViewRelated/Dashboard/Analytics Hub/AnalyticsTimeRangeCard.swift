@@ -7,11 +7,11 @@ struct AnalyticsTimeRangeCard: View {
     let timeRangeTitle: String
     let currentRangeDescription: String
     let previousRangeDescription: String
-    @Binding var selectionType: AnalyticsHubViewModel.SelectionType
+    @Binding var selectionType: AnalyticsHubViewModel.TimeRangeSelectionType
 
     @State private var showTimeRangeSelectionView: Bool = false
 
-    init(viewModel: AnalyticsTimeRangeCardViewModel, selectionType: Binding<AnalyticsHubViewModel.SelectionType>) {
+    init(viewModel: AnalyticsTimeRangeCardViewModel, selectionType: Binding<AnalyticsHubViewModel.TimeRangeSelectionType>) {
         self.timeRangeTitle = viewModel.selectedRangeTitle
         self.currentRangeDescription = viewModel.currentRangeSubtitle
         self.previousRangeDescription = viewModel.previousRangeSubtitle
@@ -22,7 +22,7 @@ struct AnalyticsTimeRangeCard: View {
         createTimeRangeContent()
             .sheet(isPresented: $showTimeRangeSelectionView) {
                 SelectionList(title: Localization.timeRangeSelectionTitle,
-                              items: AnalyticsHubViewModel.SelectionType.allCases,
+                              items: AnalyticsHubViewModel.TimeRangeSelectionType.allCases,
                               contentKeyPath: \.description,
                               selected: $selectionType)
             }

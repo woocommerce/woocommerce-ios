@@ -9,7 +9,6 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     private let siteID: Int64
     private let stores: StoresManager
-    @Published var timeRangeSelectionType: SelectionType
 
     private var subscriptions = Set<AnyCancellable>()
 
@@ -18,10 +17,11 @@ final class AnalyticsHubViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.stores = stores
-        let selectedType = SelectionType.from(statsTimeRange)
+
+        let selectedType = TimeRangeSelectionType.from(statsTimeRange)
         self.timeRangeSelectionType = selectedType
         self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(selectionType: selectedType)
-        
+
         bindViewModelsWithData()
         requestAnalyticsHubStats()
     }
@@ -34,15 +34,19 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published var ordersCard = AnalyticsHubViewModel.ordersCard(currentPeriodStats: nil, previousPeriodStats: nil)
 
-    /// Time Range ViewModel
-    ///
-    @Published var timeRangeCard: AnalyticsTimeRangeCardViewModel
-
     /// Products Card ViewModel
     ///
     @Published var productCard = AnalyticsProductCardViewModel(itemsSold: "3,234",
                                                                delta: "+43%",
                                                                deltaBackgroundColor: .withColorStudio(.green, shade: .shade50))
+
+    /// Time Range Selection Type
+    ///
+    @Published var timeRangeSelectionType: TimeRangeSelectionType
+
+    /// Time Range ViewModel
+    ///
+    @Published var timeRangeCard: AnalyticsTimeRangeCardViewModel
 
     // MARK: Private data
 
@@ -117,7 +121,7 @@ private extension AnalyticsHubViewModel {
                 self.revenueCard = AnalyticsHubViewModel.revenueCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
                 self.ordersCard = AnalyticsHubViewModel.ordersCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
             }.store(in: &subscriptions)
-        
+
         $timeRangeSelectionType
             .removeDuplicates()
             .sink { [weak self] newSelectionType in
@@ -159,9 +163,9 @@ private extension AnalyticsHubViewModel {
                                             trailingDeltaColor: Constants.deltaColor(for: orderValueDelta.direction))
     }
 
-    static func timeRangeCard(selectionType: SelectionType) -> AnalyticsTimeRangeCardViewModel {
+    static func timeRangeCard(selectionType: TimeRangeSelectionType) -> AnalyticsTimeRangeCardViewModel {
         let timeRangeGenerator = AnalyticsHubTimeRangeGenerator(selectionType: selectionType)
-        
+
         return AnalyticsTimeRangeCardViewModel(selectedRangeTitle: timeRangeGenerator.selectionType.description,
                                                currentRangeSubtitle: timeRangeGenerator.generateCurrentRangeDescription(),
                                                previousRangeSubtitle: timeRangeGenerator.generatePreviousRangeDescription())
@@ -170,7 +174,7 @@ private extension AnalyticsHubViewModel {
 
 // MARK: - Selection Type
 extension AnalyticsHubViewModel {
-    enum SelectionType: CaseIterable {
+    enum TimeRangeSelectionType: CaseIterable {
         case today
         case weekToDate
         case monthToDate
@@ -191,7 +195,7 @@ extension AnalyticsHubViewModel {
             }
         }
 
-        static func from(_ statsTimeRange: StatsTimeRangeV4) -> SelectionType {
+        static func from(_ statsTimeRange: StatsTimeRangeV4) -> TimeRangeSelectionType {
             switch statsTimeRange {
             case .today:
                 return .today

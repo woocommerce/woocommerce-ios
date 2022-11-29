@@ -14,13 +14,13 @@ public class AnalyticsHubTimeRangeGenerator {
     private let currentTimezone = TimeZone.autoupdatingCurrent
     private let currentDate: Date
     private let currentCalendar: Calendar
-    let selectionType: AnalyticsHubViewModel.SelectionType
+    let selectionType: AnalyticsHubViewModel.TimeRangeSelectionType
 
     private var currentTimeRange: AnalyticsHubTimeRange? = nil
     private var previousTimeRange: AnalyticsHubTimeRange? = nil
 
     //TODO: abandon usage of the ISO 8601 Calendar and build one based on the Site calendar configuration
-    init(selectionType: AnalyticsHubViewModel.SelectionType,
+    init(selectionType: AnalyticsHubViewModel.TimeRangeSelectionType,
          currentDate: Date = Date(),
          currentCalendar: Calendar = Calendar(identifier: .iso8601)) {
         self.currentDate = currentDate
@@ -157,7 +157,7 @@ extension AnalyticsHubTimeRangeGenerator {
         case selectedRangeGenerationFailed
         case previousRangeGenerationFailed
     }
-    
+
     enum Localization {
         static let noCurrentPeriodAvailable = NSLocalizedString("No current period available",
                                                                 comment: "A error message when it's not possible to acquire"

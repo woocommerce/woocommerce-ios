@@ -16,8 +16,3 @@ struct AnalyticsTimeRangeCardViewModel {
     ///
     let previousRangeSubtitle: String
 }
-
-/// Convenience extension to create an `AnalyticsTimeRangeCard` from a view model.
-///
-extension AnalyticsTimeRangeCard {
-}

@@ -1,1 +1,0 @@
-Med den här versionen har vi fokuserat på att förfina ett par saker och att åtgärda några mindre fel som vårt team hittade. Det är nu exempelvis möjligt att förhandsgranska dina produkter innan du publicerar dem. Men låt er inte luras – vi har några riktigt häftiga saker på gång för er. Fortsätt lämna feedback!

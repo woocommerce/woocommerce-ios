@@ -1,1 +1,2 @@
-For this release, we focused on polishing a few things and taking care of minor bugs that our team found, including the option to preview your products before publishing them. Mais rassurez-vous : il y aura des nouveautés intéressantes pour tout le monde en 2022 ! Keep sharing feedback!
+Nous nous sommes concentrés sur des problèmes de stabilité et de performances pour améliorer la fluidité de votre expérience. Continuez de nous faire parvenir vos commentaires. Nous les lisons tous.
+

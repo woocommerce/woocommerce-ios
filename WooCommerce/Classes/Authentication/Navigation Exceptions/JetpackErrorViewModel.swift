@@ -7,7 +7,7 @@ import WordPressUI
 /// Configuration and actions for an ULErrorViewController, modelling
 /// an error when Jetpack is not installed or is not connected
 struct JetpackErrorViewModel: ULErrorViewModel {
-    private let siteURL: String
+    let siteURL: String
     private let siteCredentials: WordPressOrgCredentials?
     private let analytics: Analytics
     private let jetpackSetupCompletionHandler: (String?) -> Void

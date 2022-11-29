@@ -3,6 +3,16 @@
     {
       "filename" : "woo-jetpack-connection.pdf",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "Frame 1000004600.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

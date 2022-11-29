@@ -6,6 +6,8 @@ struct JetpackInstallHeaderView: View {
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 
+    var isError: Bool = false
+
     var body: some View {
         HStack(spacing: Constants.headerContentSpacing) {
             Image(uiImage: .jetpackGreenLogoImage)
@@ -16,7 +18,7 @@ struct JetpackInstallHeaderView: View {
                 .flipsForRightToLeftLayoutDirection(true)
                 .frame(width: Constants.connectionIconSize * scale, height: Constants.connectionIconSize * scale)
 
-            if let image = UIImage.wooLogoImage(tintColor: .white) {
+            if let image = UIImage.wooLogoImage(tintColor: .white), isError == false {
                 Circle()
                     .foregroundColor(Color(.withColorStudio(.wooCommercePurple, shade: .shade60)))
                     .frame(width: Constants.logoSize * scale, height: Constants.logoSize * scale)
@@ -26,6 +28,12 @@ struct JetpackInstallHeaderView: View {
                             .frame(width: Constants.wooIconSize.width * scale, height: Constants.wooIconSize.height * scale)
                     )
             }
+
+            Image(systemName: "exclamationmark.circle.fill")
+                .resizable()
+                .frame(width: Constants.logoSize * scale, height: Constants.logoSize * scale)
+                .foregroundColor(Color(uiColor: .error))
+                .renderedIf(isError)
 
             Spacer()
         }
@@ -44,5 +52,6 @@ private extension JetpackInstallHeaderView {
 struct JetpackInstallHeaderView_Previews: PreviewProvider {
     static var previews: some View {
         JetpackInstallHeaderView()
+        JetpackInstallHeaderView(isError: true)
     }
 }

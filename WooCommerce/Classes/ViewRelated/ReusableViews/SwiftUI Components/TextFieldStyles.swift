@@ -31,7 +31,7 @@ struct RoundedBorderTextFieldStyle: TextFieldStyle {
             .padding(insets)
             .background(
                 RoundedRectangle(cornerRadius: 8, style: .continuous)
-                    .stroke(focused ? focusedBorderColor: unfocusedBorderColor,
+                    .strokeBorder(focused ? focusedBorderColor: unfocusedBorderColor,
                             lineWidth: focused ? 2: 1)
                     .frame(height: height)
             )

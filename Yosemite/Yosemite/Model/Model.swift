@@ -138,6 +138,7 @@ public typealias WooAPIVersion = Networking.WooAPIVersion
 public typealias WPComPlan = Networking.WPComPlan
 public typealias StoredProductSettings = Networking.StoredProductSettings
 public typealias CardReader = Hardware.CardReader
+public typealias CardReaderDiscoveryMethod = Hardware.CardReaderDiscoveryMethod
 public typealias CardReaderEvent = Hardware.CardReaderEvent
 public typealias CardReaderInput = Hardware.CardReaderInput
 public typealias CardReaderSoftwareUpdateState = Hardware.CardReaderSoftwareUpdateState

@@ -121,12 +121,6 @@ private extension StorePickerCoordinator {
 
     func showStorePicker() {
         showStorePicker(presentationStyle: selectedConfiguration.presentationStyle)
-        switch selectedConfiguration {
-        case .storeCreationFromLogin:
-            createStore()
-        default:
-            break
-        }
     }
 
     func showStorePicker(presentationStyle: PresentationStyle) {

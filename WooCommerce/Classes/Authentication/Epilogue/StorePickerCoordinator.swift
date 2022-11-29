@@ -179,7 +179,7 @@ private extension StorePickerConfiguration {
         case .switchingStores:
             return .modally
         case .storeCreationFromLogin:
-            return .navigationStack(animated: false)
+            return .navigationStack(animated: true)
         default:
             return .navigationStack(animated: true)
         }

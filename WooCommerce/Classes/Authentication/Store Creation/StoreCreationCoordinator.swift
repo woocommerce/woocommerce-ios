@@ -128,7 +128,7 @@ private extension StoreCreationCoordinator {
                                      storeName: storeName,
                                      planToPurchase: planToPurchase)
         } onClose: { [weak self] in
-            self?.showDiscardChangesAlert()
+            self?.showDiscardChangesAlert(flow: .native)
         }
         storeCreationNavigationController.pushViewController(storeNameForm, animated: false)
 
@@ -184,8 +184,7 @@ private extension StoreCreationCoordinator {
     }
 
     @objc func handleStoreCreationCloseAction() {
-        analytics.track(event: .StoreCreation.siteCreationDismissed(source: source.analyticsValue, flow: .web))
-        showDiscardChangesAlert()
+        showDiscardChangesAlert(flow: .web)
     }
 
     func handleStoreCreationResult(_ result: Result<String, Error>) {
@@ -232,7 +231,7 @@ private extension StoreCreationCoordinator {
         }
     }
 
-    func showDiscardChangesAlert() {
+    func showDiscardChangesAlert(flow: WooAnalyticsEvent.StoreCreation.Flow) {
         let alert = UIAlertController(title: Localization.DiscardChangesAlert.title,
                                       message: Localization.DiscardChangesAlert.message,
                                       preferredStyle: .alert)
@@ -240,7 +239,7 @@ private extension StoreCreationCoordinator {
 
         alert.addDestructiveActionWithTitle(Localization.DiscardChangesAlert.confirmActionTitle) { [weak self] _ in
             guard let self else { return }
-            self.analytics.track(event: .StoreCreation.siteCreationDismissed(source: self.source.analyticsValue, flow: .native))
+            self.analytics.track(event: .StoreCreation.siteCreationDismissed(source: self.source.analyticsValue, flow: flow))
             self.navigationController.dismiss(animated: true)
         }
 
@@ -319,7 +318,7 @@ private extension StoreCreationCoordinator {
             await self.purchasePlan(from: navigationController, siteID: siteID, siteSlug: siteSlug, planToPurchase: planToPurchase)
         } onClose: { [weak self] in
             guard let self else { return }
-            self.showDiscardChangesAlert()
+            self.showDiscardChangesAlert(flow: .native)
         }
         navigationController.pushViewController(storePlan, animated: true)
         analytics.track(event: .StoreCreation.siteCreationStep(step: .planPurchase))

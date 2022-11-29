@@ -16,13 +16,13 @@ final class AnalyticsHubViewModel: ObservableObject {
          statsTimeRange: StatsTimeRangeV4,
          stores: StoresManager = ServiceLocator.stores) {
         let selectedType = TimeRangeSelectionType.from(statsTimeRange)
-        let timeRangeGenerator = AnalyticsHubTimeRangeGenerator(selectionType: selectedType)
+        let timeRangeSelectionData = AnalyticsHubTimeRangeSelectionData(selectionType: selectedType)
 
         self.siteID = siteID
         self.stores = stores
         self.timeRangeSelectionType = selectedType
-        self.timeRangeGenerator = timeRangeGenerator
-        self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeGenerator: timeRangeGenerator)
+        self.timeRangeSelectionData = timeRangeSelectionData
+        self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelectionData: timeRangeSelectionData)
 
         bindViewModelsWithData()
         requestAnalyticsHubStats()
@@ -60,7 +60,7 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published private var previousOrderStats: OrderStatsV4? = nil
 
-    private var timeRangeGenerator: AnalyticsHubTimeRangeGenerator
+    private var timeRangeSelectionData: AnalyticsHubTimeRangeSelectionData
 }
 
 // MARK: Networking
@@ -77,8 +77,8 @@ private extension AnalyticsHubViewModel {
 
     @MainActor
     func retrieveOrderStats() async throws {
-        let currentTimeRange = try timeRangeGenerator.unwrapCurrentTimeRange()
-        let previousTimeRange = try timeRangeGenerator.unwrapPreviousTimeRange()
+        let currentTimeRange = try timeRangeSelectionData.unwrapCurrentTimeRange()
+        let previousTimeRange = try timeRangeSelectionData.unwrapPreviousTimeRange()
 
         async let currentPeriodRequest = retrieveStats(earliestDateToInclude: currentTimeRange.start,
                                                        latestDateToInclude: currentTimeRange.end,
@@ -129,8 +129,8 @@ private extension AnalyticsHubViewModel {
             .removeDuplicates()
             .sink { [weak self] newSelectionType in
                 guard let self else { return }
-                self.timeRangeGenerator = AnalyticsHubTimeRangeGenerator(selectionType: newSelectionType)
-                self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeGenerator: self.timeRangeGenerator)
+                self.timeRangeSelectionData = AnalyticsHubTimeRangeSelectionData(selectionType: newSelectionType)
+                self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelectionData: self.timeRangeSelectionData)
                 self.requestAnalyticsHubStats()
             }.store(in: &subscriptions)
     }
@@ -167,10 +167,10 @@ private extension AnalyticsHubViewModel {
                                             trailingDeltaColor: Constants.deltaColor(for: orderValueDelta.direction))
     }
 
-    static func timeRangeCard(timeRangeGenerator: AnalyticsHubTimeRangeGenerator) -> AnalyticsTimeRangeCardViewModel {
-        return AnalyticsTimeRangeCardViewModel(selectedRangeTitle: timeRangeGenerator.rangeSelectionDescription,
-                                               currentRangeSubtitle: timeRangeGenerator.generateCurrentRangeDescription(),
-                                               previousRangeSubtitle: timeRangeGenerator.generatePreviousRangeDescription())
+    static func timeRangeCard(timeRangeSelectionData: AnalyticsHubTimeRangeSelectionData) -> AnalyticsTimeRangeCardViewModel {
+        return AnalyticsTimeRangeCardViewModel(selectedRangeTitle: timeRangeSelectionData.rangeSelectionDescription,
+                                               currentRangeSubtitle: timeRangeSelectionData.generateCurrentRangeDescription(),
+                                               previousRangeSubtitle: timeRangeSelectionData.generatePreviousRangeDescription())
     }
 }
 

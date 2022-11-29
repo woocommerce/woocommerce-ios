@@ -6,10 +6,10 @@ struct AnalyticsHubTimeRange {
     let end: Date
 }
 
-/// Main source of time ranges of the Analytics Hub, responsible for generating the current and previous dates
+/// Main source of time ranges of the Analytics Hub, responsible for providing the current and previous dates
 /// for a given Date and range Type alongside their UI descriptions
 ///
-public class AnalyticsHubTimeRangeGenerator {
+public class AnalyticsHubTimeRangeSelectionData {
 
     private let currentTimezone = TimeZone.autoupdatingCurrent
     private let currentDate: Date
@@ -155,7 +155,7 @@ public class AnalyticsHubTimeRangeGenerator {
 }
 
 // MARK: - Constants
-extension AnalyticsHubTimeRangeGenerator {
+extension AnalyticsHubTimeRangeSelectionData {
 
     enum TimeRangeGeneratorError: Error {
         case selectedRangeGenerationFailed

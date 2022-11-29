@@ -34,7 +34,6 @@ struct AnalyticsHubView: View {
                     AnalyticsTimeRangeCard(viewModel: viewModel.timeRangeCard,
                                            selectionType: $viewModel.timeRangeSelectionType)
                         .padding(.horizontal, insets: safeAreaInsets)
-                        .background(Color(uiColor: .listForeground))
 
                     Divider()
                 }

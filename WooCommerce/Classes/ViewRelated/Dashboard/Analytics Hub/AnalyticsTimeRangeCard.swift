@@ -54,6 +54,8 @@ struct AnalyticsTimeRangeCard: View {
                 .calloutStyle()
         }
         .padding([.top, .bottom])
+        .frame(maxWidth: .infinity)
+        .background(Color(uiColor: .listForeground))
         .onTapGesture {
             showTimeRangeSelectionView.toggle()
         }

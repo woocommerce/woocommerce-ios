@@ -30,30 +30,36 @@ struct AnalyticsTimeRangeCard: View {
 
     private func createTimeRangeContent() -> some View {
         VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
-            HStack {
-                Image(uiImage: .calendar)
-                    .padding()
-                    .background(Circle().foregroundColor(Color(.systemGray6)))
-
-                VStack(alignment: .leading, spacing: .zero) {
-                    Text(timeRangeTitle)
+            Button(action: {
+                showTimeRangeSelectionView.toggle()
+            }, label: {
+                HStack {
+                    Image(uiImage: .calendar)
+                        .padding()
                         .foregroundColor(Color(.text))
-                        .subheadlineStyle()
-                    Text(currentRangeDescription)
-                        .bold()
-                }
-                .padding(.leading)
-                .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(Circle().foregroundColor(Color(.systemGray6)))
 
-                Image(uiImage: .chevronDownImage)
-                    .padding()
-                    .frame(alignment: .trailing)
-            }
+                    VStack(alignment: .leading, spacing: .zero) {
+                        Text(timeRangeTitle)
+                            .foregroundColor(Color(.text))
+                            .subheadlineStyle()
+
+                        Text(currentRangeDescription)
+                            .foregroundColor(Color(.text))
+                            .bold()
+                    }
+                    .padding(.leading)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                    Image(uiImage: .chevronDownImage)
+                        .padding()
+                        .foregroundColor(Color(.text))
+                        .frame(alignment: .trailing)
+                }
+            })
+            .buttonStyle(.borderless)
             .padding(.leading)
             .contentShape(Rectangle())
-            .onTapGesture {
-                showTimeRangeSelectionView.toggle()
-            }
 
             Divider()
 

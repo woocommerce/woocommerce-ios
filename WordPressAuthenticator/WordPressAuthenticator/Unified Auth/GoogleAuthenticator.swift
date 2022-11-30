@@ -231,6 +231,10 @@ private extension GoogleAuthenticator {
         }
 
         // Initiate unified path by attempting to login first.
+        //
+        // `SVProgressHUD.show()` will crash in an app that doesn't have a window property in its
+        // `UIApplicationDelegate`, such as those created via the Xcode templates circa version 12
+        // onwards.
         SVProgressHUD.show()
         loginFacade.loginToWordPressDotCom(withSocialIDToken: token, service: SocialServiceName.google.rawValue)
     }

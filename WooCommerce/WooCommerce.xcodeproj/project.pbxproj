@@ -1350,7 +1350,7 @@
 		B6E851F3276320C70041D1BA /* RefundFeesDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E851F2276320C70041D1BA /* RefundFeesDetailsViewModel.swift */; };
 		B6E851F5276330200041D1BA /* RefundFeesDetailsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E851F4276330200041D1BA /* RefundFeesDetailsTableViewCell.swift */; };
 		B6E851F7276331110041D1BA /* RefundFeesDetailsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6E851F6276331110041D1BA /* RefundFeesDetailsTableViewCell.xib */; };
-		B6F379682937836700718561 /* AnalyticsHubTimeRangeSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F379672937836700718561 /* AnalyticsHubTimeRangeSelection.swift */; };
+		B6F379682937836700718561 /* AnalyticsHubTimeRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F379672937836700718561 /* AnalyticsHubTimeRange.swift */; };
 		B6F3796A29378B3900718561 /* AnalyticsHubMonthRangeSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F3796929378B3900718561 /* AnalyticsHubMonthRangeSelection.swift */; };
 		B6F3796C293794A000718561 /* AnalyticsHubYearRangeSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F3796B293794A000718561 /* AnalyticsHubYearRangeSelection.swift */; };
 		B6F3796E293796BC00718561 /* AnalyticsHubWeekRangeSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F3796D293796BC00718561 /* AnalyticsHubWeekRangeSelection.swift */; };
@@ -3347,7 +3347,7 @@
 		B6E851F2276320C70041D1BA /* RefundFeesDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundFeesDetailsViewModel.swift; sourceTree = "<group>"; };
 		B6E851F4276330200041D1BA /* RefundFeesDetailsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundFeesDetailsTableViewCell.swift; sourceTree = "<group>"; };
 		B6E851F6276331110041D1BA /* RefundFeesDetailsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RefundFeesDetailsTableViewCell.xib; sourceTree = "<group>"; };
-		B6F379672937836700718561 /* AnalyticsHubTimeRangeSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubTimeRangeSelection.swift; sourceTree = "<group>"; };
+		B6F379672937836700718561 /* AnalyticsHubTimeRange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubTimeRange.swift; sourceTree = "<group>"; };
 		B6F3796929378B3900718561 /* AnalyticsHubMonthRangeSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubMonthRangeSelection.swift; sourceTree = "<group>"; };
 		B6F3796B293794A000718561 /* AnalyticsHubYearRangeSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubYearRangeSelection.swift; sourceTree = "<group>"; };
 		B6F3796D293796BC00718561 /* AnalyticsHubWeekRangeSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubWeekRangeSelection.swift; sourceTree = "<group>"; };
@@ -7429,7 +7429,7 @@
 		B6F379662937831D00718561 /* Time Range */ = {
 			isa = PBXGroup;
 			children = (
-				B6F379672937836700718561 /* AnalyticsHubTimeRangeSelection.swift */,
+				B6F379672937836700718561 /* AnalyticsHubTimeRange.swift */,
 				B6F3796929378B3900718561 /* AnalyticsHubMonthRangeSelection.swift */,
 				B6F3796B293794A000718561 /* AnalyticsHubYearRangeSelection.swift */,
 				B6F3796D293796BC00718561 /* AnalyticsHubWeekRangeSelection.swift */,
@@ -10197,7 +10197,7 @@
 				77E53EC82510FE07003D385F /* ProductDownloadsEditableData.swift in Sources */,
 				0235595B24496E88004BE2B8 /* BottomSheetListSelectorViewController+DrawerPresentable.swift in Sources */,
 				036CA6B9291E8D4B00E4DF4F /* CardPresentModalPreparingReader.swift in Sources */,
-				B6F379682937836700718561 /* AnalyticsHubTimeRangeSelection.swift in Sources */,
+				B6F379682937836700718561 /* AnalyticsHubTimeRange.swift in Sources */,
 				0227958D237A51F300787C63 /* OptionsTableViewController+Styles.swift in Sources */,
 				02863F6F2925FC29006A06AA /* MockInAppPurchases.swift in Sources */,
 				B541B226218A412C008FE7C1 /* UIFont+Woo.swift in Sources */,

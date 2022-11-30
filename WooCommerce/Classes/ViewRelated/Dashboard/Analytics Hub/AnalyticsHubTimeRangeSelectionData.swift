@@ -1,6 +1,13 @@
 import Foundation
 import Yosemite
 
+protocol AnalyticsHubTimeRangeSelection {
+    var currentTimeRange: AnalyticsHubTimeRange? { get }
+    var previousTimeRange: AnalyticsHubTimeRange? { get }
+
+    init(referenceDate: Date, currentCalendar: Calendar)
+}
+
 /// Main source of time ranges of the Analytics Hub, responsible for providing the current and previous dates
 /// for a given Date and range Type alongside their UI descriptions
 ///

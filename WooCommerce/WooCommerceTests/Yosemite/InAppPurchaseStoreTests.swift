@@ -15,7 +15,7 @@ final class InAppPurchaseStoreTests: XCTestCase {
     ///
     private var storageManager: MockStorageManager!
 
-    private var storeKitSession = try! SKTestSession(configurationFileNamed: "WooCommerceTest")
+    private var storeKitSession: SKTestSession!
 
     /// Testing SiteID
     ///
@@ -35,15 +35,19 @@ final class InAppPurchaseStoreTests: XCTestCase {
 
 
     override func setUp() {
+        super.setUp()
         network = MockNetwork(useResponseQueue: true)
         storageManager = MockStorageManager()
         store = InAppPurchaseStore(dispatcher: Dispatcher(), storageManager: storageManager, network: network)
+        storeKitSession = try! SKTestSession(configurationFileNamed: "WooCommerceTest")
         storeKitSession.disableDialogs = true
     }
 
     override func tearDown() {
         storeKitSession.resetToDefaultState()
         storeKitSession.clearTransactions()
+        storeKitSession = nil
+        super.tearDown()
     }
 
     func test_iap_supported_in_us() throws {

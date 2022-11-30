@@ -38,7 +38,7 @@ public struct CardPresentPaymentsConfiguration {
                 paymentMethods: [.cardPresent],
                 currencies: [.USD],
                 paymentGateways: [WCPayAccount.gatewayID, StripeAccount.gatewayID],
-                supportedReaders: [.chipper, .stripeM2],
+                supportedReaders: [.chipper, .stripeM2, .appleBuiltIn],
                 supportedPluginVersions: [
                     .init(plugin: .wcPay, minimumVersion: "3.2.1"),
                     .init(plugin: .stripe, minimumVersion: "6.2.0")

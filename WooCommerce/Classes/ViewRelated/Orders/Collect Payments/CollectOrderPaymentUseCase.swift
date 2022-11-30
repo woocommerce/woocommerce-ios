@@ -92,6 +92,8 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     /// Coordinates emailing a receipt after payment success.
     private var receiptEmailCoordinator: CardPresentPaymentReceiptEmailCoordinator?
 
+    private var preflightController: CardPresentPaymentPreflightController?
+
     private var cancellables: Set<AnyCancellable> = []
 
     init(siteID: Int64,
@@ -137,11 +139,11 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
             return handleTotalAmountInvalidError(totalAmountInvalidError(), onCompleted: onCompleted)
         }
 
-        let preflightController = CardPresentPaymentPreflightController(siteID: siteID,
-                                                                        paymentGatewayAccount: paymentGatewayAccount,
-                                                                        configuration: configuration,
-                                                                        alertsPresenter: alertsPresenter)
-        preflightController.readerConnection.sink { [weak self] connectionResult in
+        preflightController = CardPresentPaymentPreflightController(siteID: siteID,
+                                                                    paymentGatewayAccount: paymentGatewayAccount,
+                                                                    configuration: configuration,
+                                                                    alertsPresenter: alertsPresenter)
+        preflightController?.readerConnection.sink { [weak self] connectionResult in
             guard let self = self else { return }
             switch connectionResult {
             case .connected(let reader):
@@ -171,7 +173,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
         }
         .store(in: &cancellables)
 
-        preflightController.start()
+        preflightController?.start()
     }
 }
 

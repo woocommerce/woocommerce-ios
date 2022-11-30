@@ -492,6 +492,7 @@
 		03AA16602719B83D005CCB7B /* ReceiptActionCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AA165F2719B83D005CCB7B /* ReceiptActionCoordinatorTests.swift */; };
 		03AFDE02282C0B82003B67CD /* InPersonPaymentsCompletedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AFDE01282C0B82003B67CD /* InPersonPaymentsCompletedView.swift */; };
 		03BB9EA5292E2D0C00251E9E /* CardReaderConnectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03BB9EA4292E2D0C00251E9E /* CardReaderConnectionController.swift */; };
+		03BB9EA7292E50B600251E9E /* CardPresentModalSelectSearchType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03BB9EA6292E50B600251E9E /* CardPresentModalSelectSearchType.swift */; };
 		03CF78D127C3DBC000523706 /* WCPayCardBrand+IconsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CF78D027C3DBC000523706 /* WCPayCardBrand+IconsTests.swift */; };
 		03EF24FA28BF5D21006A033E /* InPersonPaymentsCashOnDeliveryToggleRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EF24F928BF5D21006A033E /* InPersonPaymentsCashOnDeliveryToggleRowViewModel.swift */; };
 		03EF24FC28BF996F006A033E /* InPersonPaymentsCashOnDeliveryPaymentGatewayHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EF24FB28BF996F006A033E /* InPersonPaymentsCashOnDeliveryPaymentGatewayHelpers.swift */; };
@@ -2487,6 +2488,7 @@
 		03AA165F2719B83D005CCB7B /* ReceiptActionCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptActionCoordinatorTests.swift; sourceTree = "<group>"; };
 		03AFDE01282C0B82003B67CD /* InPersonPaymentsCompletedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCompletedView.swift; sourceTree = "<group>"; };
 		03BB9EA4292E2D0C00251E9E /* CardReaderConnectionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardReaderConnectionController.swift; sourceTree = "<group>"; };
+		03BB9EA6292E50B600251E9E /* CardPresentModalSelectSearchType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPresentModalSelectSearchType.swift; sourceTree = "<group>"; };
 		03CF78D027C3DBC000523706 /* WCPayCardBrand+IconsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayCardBrand+IconsTests.swift"; sourceTree = "<group>"; };
 		03EF24F928BF5D21006A033E /* InPersonPaymentsCashOnDeliveryToggleRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCashOnDeliveryToggleRowViewModel.swift; sourceTree = "<group>"; };
 		03EF24FB28BF996F006A033E /* InPersonPaymentsCashOnDeliveryPaymentGatewayHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCashOnDeliveryPaymentGatewayHelpers.swift; sourceTree = "<group>"; };
@@ -8525,6 +8527,7 @@
 				318477E427A33C650058C7E9 /* CardPresentModalConnectingFailedChargeReader.swift */,
 				031B10E2274FE2AE007390BA /* CardPresentModalConnectionFailedUpdateAddress.swift */,
 				036CA6B8291E8D4B00E4DF4F /* CardPresentModalPreparingReader.swift */,
+				03BB9EA6292E50B600251E9E /* CardPresentModalSelectSearchType.swift */,
 				D8EE9697264D3CCB0033B2F9 /* ReceiptViewModel.swift */,
 				D8752EF6265E60F4008ACC80 /* PaymentCaptureCelebration.swift */,
 				03AA165D2719B7EF005CCB7B /* ReceiptActionCoordinator.swift */,
@@ -10153,6 +10156,7 @@
 				DEC6C51A2747758D006832D3 /* JetpackInstallView.swift in Sources */,
 				DE37517C28DC5FC6000163CB /* Authenticator.swift in Sources */,
 				AED089F227C794BC0020AE10 /* View+CurrencySymbol.swift in Sources */,
+				03BB9EA7292E50B600251E9E /* CardPresentModalSelectSearchType.swift in Sources */,
 				D85806292642BA5400A8AB6C /* PaymentCaptureOrchestrator.swift in Sources */,
 				E1E636BB26FB467A00C9D0D7 /* Comparable+Woo.swift in Sources */,
 				450C2CB024CF006A00D570DD /* ProductTagsDataSource.swift in Sources */,

@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 import WordPressKit
 import WordPressAuthenticator
+import enum Alamofire.AFError
 import class Networking.UserAgent
 import class Networking.WordPressOrgNetwork
 
@@ -21,10 +22,6 @@ final class SiteCredentialLoginViewModel: NSObject, ObservableObject {
     private let successHandler: (_ xmlrpc: String) -> Void
     private let analytics: Analytics
 
-    private lazy var loginFacade = LoginFacade(dotcomClientID: ApiCredentials.dotcomAppId,
-                                               dotcomSecret: ApiCredentials.dotcomSecret,
-                                               userAgent: UserAgent.defaultUserAgent)
-
     private var loginFields: LoginFields {
         let loginFields = LoginFields()
         loginFields.username = username
@@ -43,14 +40,12 @@ final class SiteCredentialLoginViewModel: NSObject, ObservableObject {
         self.analytics = analytics
         self.successHandler = onLoginSuccess
         super.init()
-        loginFacade.delegate = self
         configurePrimaryButton()
     }
 
     func handleLogin() {
         analytics.track(.loginJetpackSiteCredentialInstallTapped)
-        loginFacade.signIn(with: loginFields)
-        isLoggingIn = true
+        loginAndAttemptFetchingJetpackConnection()
     }
 
     func resetPassword() {
@@ -66,32 +61,52 @@ private extension SiteCredentialLoginViewModel {
             .map { $0.isEmpty || $1.isEmpty }
             .assign(to: &$primaryButtonDisabled)
     }
-}
 
-// MARK: LoginFacadeDelegate conformance
-//
-extension SiteCredentialLoginViewModel: LoginFacadeDelegate {
-    func displayRemoteError(_ error: Error) {
-        isLoggingIn = false
-
-        let err = error as NSError
-        let wrongCredentials = err.domain == Constants.xmlrpcErrorDomain && err.code == Constants.invalidCredentialErrorCode
-        errorMessage = wrongCredentials ? Localization.wrongCredentials : Localization.genericFailure
-        shouldShowErrorAlert = true
-        analytics.track(.loginJetpackSiteCredentialDidShowErrorAlert, withError: error)
-    }
-
-    func finishedLogin(withUsername username: String, password: String, xmlrpc: String, options: [AnyHashable: Any] = [:]) {
-        analytics.track(.loginJetpackSiteCredentialDidFinishLogin)
-        isLoggingIn = false
-        let credentials = WordPressOrgCredentials(username: username, password: password, xmlrpc: xmlrpc, options: options)
-        guard let authenticator = credentials.makeCookieNonceAuthenticator() else {
+    func loginAndAttemptFetchingJetpackConnection() {
+        guard let loginURL = URL(string: siteURL + Constants.loginPath),
+              let adminURL = URL(string: siteURL + Constants.adminPath) else {
+            DDLogWarn("⚠️ Cannot construct login URL and admin URL for site \(siteURL)")
             return
         }
+
+        // makes sure the loading indicator is shown
+        isLoggingIn = true
+
+        let authenticator = CookieNonceAuthenticator(username: username,
+                                                     password: password,
+                                                     loginURL: loginURL,
+                                                     adminURL: adminURL,
+                                                     version: Constants.defaultWPVersion,
+                                                     nonce: nil)
         let network = WordPressOrgNetwork(authenticator: authenticator)
-        let action = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
-        stores.dispatch(action)
-        successHandler(xmlrpc)
+        let authenticationAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
+        stores.dispatch(authenticationAction)
+
+        let jetpackAction = JetpackConnectionAction.retrieveJetpackPluginDetails { [weak self] result in
+            guard let self else { return }
+            self.isLoggingIn = false
+            switch result {
+            case .success:
+                self.successHandler("")
+            case .failure(let error):
+                self.handleRemoteError(error)
+            }
+        }
+        stores.dispatch(jetpackAction)
+    }
+
+    func handleRemoteError(_ error: Error) {
+        switch error {
+        case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403)):
+            errorMessage = Localization.permissionErrorMessage
+        case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 401)):
+            errorMessage = Localization.wrongCredentials
+        default:
+            errorMessage = Localization.genericFailure
+        }
+
+        shouldShowErrorAlert = true
+        analytics.track(.loginJetpackSiteCredentialDidShowErrorAlert, withError: error)
     }
 }
 
@@ -102,10 +117,15 @@ extension SiteCredentialLoginViewModel {
             comment: "An error message shown during login when the username or password is incorrect."
         )
         static let genericFailure = NSLocalizedString("Login failed. Please try again.", comment: "A generic error during site credential login")
+        static let permissionErrorMessage = NSLocalizedString(
+            "You don't have permission to manage plugins on this store.",
+            comment: "Message to be displayed when the user encounters a permission error during Jetpack setup"
+        )
     }
 
     enum Constants {
-        static let xmlrpcErrorDomain = "WPXMLRPCFaultError"
-        static let invalidCredentialErrorCode = 403
+        static let loginPath = "/wp-login.php"
+        static let adminPath = "/wp-admin/"
+        static let defaultWPVersion = "5.6.0"
     }
 }

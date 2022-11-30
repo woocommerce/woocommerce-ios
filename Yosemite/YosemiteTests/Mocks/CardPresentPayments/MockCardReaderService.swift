@@ -35,7 +35,7 @@ final class MockCardReaderService: CardReaderService {
     /// Boolean flag Indicates that clients have provided a CardReaderConfigProvider
     var didReceiveAConfigurationProvider = false
 
-    /// DiscoveryMethod recieved on starting a payment
+    /// DiscoveryMethod received on starting a payment
     var spyStartDiscoveryMethod: CardReaderDiscoveryMethod? = nil
 
     /// Boolean flag Indicates that clients have called the cancel payment method

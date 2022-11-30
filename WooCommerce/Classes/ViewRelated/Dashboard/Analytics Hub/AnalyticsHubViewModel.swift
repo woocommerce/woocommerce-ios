@@ -25,7 +25,6 @@ final class AnalyticsHubViewModel: ObservableObject {
         self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelectionData: timeRangeSelectionData)
 
         bindViewModelsWithData()
-        requestAnalyticsHubStats()
     }
 
     /// Revenue Card ViewModel
@@ -61,6 +60,17 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Time Range selection data defining the current and previous time period
     ///
     private var timeRangeSelectionData: AnalyticsHubTimeRangeGenerator
+
+    /// Request stats data from network
+    ///
+    func updateData() async {
+        do {
+            try await retrieveOrderStats()
+        } catch {
+            switchToErrorState()
+            DDLogWarn("⚠️ Error fetching analytics data: \(error)")
+        }
+    }
 }
 
 // MARK: Networking
@@ -77,8 +87,10 @@ private extension AnalyticsHubViewModel {
 
     @MainActor
     func retrieveOrderStats() async throws {
-        let currentTimeRange = try timeRangeSelectionData.unwrapCurrentTimeRange()
-        let previousTimeRange = try timeRangeSelectionData.unwrapPreviousTimeRange()
+        switchToLoadingState()
+
+        let currentTimeRange = try timeRangeGenerator.unwrapCurrentTimeRange()
+        let previousTimeRange = try timeRangeGenerator.unwrapPreviousTimeRange()
 
         async let currentPeriodRequest = retrieveStats(earliestDateToInclude: currentTimeRange.start,
                                                        latestDateToInclude: currentTimeRange.end,
@@ -116,6 +128,17 @@ private extension AnalyticsHubViewModel {
 // MARK: Data - UI mapping
 private extension AnalyticsHubViewModel {
 
+    func switchToLoadingState() {
+        self.revenueCard = revenueCard.redacted
+        self.ordersCard = ordersCard.redacted
+        self.productCard = productCard.redacted
+    }
+
+    func switchToErrorState() {
+        self.currentOrderStats = nil
+        self.previousOrderStats = nil
+    }
+
     func bindViewModelsWithData() {
         Publishers.CombineLatest($currentOrderStats, $previousOrderStats)
             .sink { [weak self] currentOrderStats, previousOrderStats in
@@ -147,12 +170,13 @@ private extension AnalyticsHubViewModel {
                                                                                                         selectedIntervalIndex: nil),
                                             leadingDelta: totalDelta.string,
                                             leadingDeltaColor: Constants.deltaColor(for: totalDelta.direction),
-                                            leadingChartData: [0.0, 10.0, 2.0, 20.0, 15.0, 40.0, 0.0, 10.0, 2.0, 20.0, 15.0, 50.0],
+                                            leadingChartData: StatsIntervalDataParser.getChartData(for: .totalRevenue, from: currentPeriodStats),
                                             trailingTitle: Localization.RevenueCard.trailingTitle,
                                             trailingValue: StatsDataTextFormatter.createNetRevenueText(orderStats: currentPeriodStats),
                                             trailingDelta: netDelta.string,
                                             trailingDeltaColor: Constants.deltaColor(for: netDelta.direction),
-                                            trailingChartData: [50.0, 15.0, 20.0, 2.0, 10.0, 0.0, 40.0, 15.0, 20.0, 2.0, 10.0, 0.0])
+                                            trailingChartData: StatsIntervalDataParser.getChartData(for: .netRevenue, from: currentPeriodStats),
+                                            isRedacted: false)
     }
 
     static func ordersCard(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) -> AnalyticsReportCardViewModel {
@@ -165,12 +189,13 @@ private extension AnalyticsHubViewModel {
                                                                                                       selectedIntervalIndex: nil),
                                             leadingDelta: ordersCountDelta.string,
                                             leadingDeltaColor: Constants.deltaColor(for: ordersCountDelta.direction),
-                                            leadingChartData: [0.0, 10.0, 2.0, 20.0, 15.0, 40.0, 0.0, 10.0, 2.0, 20.0, 15.0, 50.0],
+                                            leadingChartData: StatsIntervalDataParser.getChartData(for: .orderCount, from: currentPeriodStats),
                                             trailingTitle: Localization.OrderCard.trailingTitle,
                                             trailingValue: StatsDataTextFormatter.createAverageOrderValueText(orderStats: currentPeriodStats),
                                             trailingDelta: orderValueDelta.string,
                                             trailingDeltaColor: Constants.deltaColor(for: orderValueDelta.direction),
-                                            trailingChartData: [50.0, 15.0, 20.0, 2.0, 10.0, 0.0, 40.0, 15.0, 20.0, 2.0, 10.0, 0.0])
+                                            trailingChartData: StatsIntervalDataParser.getChartData(for: .averageOrderValue, from: currentPeriodStats),
+                                            isRedacted: false)
     }
 
     static func productCard(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) -> AnalyticsProductCardViewModel {
@@ -179,7 +204,8 @@ private extension AnalyticsHubViewModel {
 
         return AnalyticsProductCardViewModel(itemsSold: itemsSold,
                                              delta: itemsSoldDelta.string,
-                                             deltaBackgroundColor: Constants.deltaColor(for: itemsSoldDelta.direction))
+                                             deltaBackgroundColor: Constants.deltaColor(for: itemsSoldDelta.direction),
+                                             isRedacted: false)
     }
 
     static func timeRangeCard(timeRangeSelectionData: AnalyticsHubTimeRangeGenerator) -> AnalyticsTimeRangeCardViewModel {

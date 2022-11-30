@@ -60,10 +60,10 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
     /// In-person refund orchestrator.
     private lazy var cardPresentRefundOrchestrator = CardPresentRefundOrchestrator(stores: stores)
 
-    /// Alert manager to inform merchants about card reader connection actions used in `CardReaderConnectionController`.
+    /// Alert manager to inform merchants about card reader connection actions used in `LegacyCardReaderConnectionController`.
     private let cardReaderConnectionAlerts: CardReaderSettingsAlertsProvider
 
-    /// Provides any known card reader to be used in `CardReaderConnectionController`.
+    /// Provides any known card reader to be used in `LegacyCardReaderConnectionController`.
     private let knownReaderProvider: CardReaderSettingsKnownReaderProvider
 
     /// Presents the card present onboarding flow, when required.
@@ -72,7 +72,7 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
 
     /// Controller to connect a card reader for in-person refund.
     private lazy var cardReaderConnectionController =
-    CardReaderConnectionController(forSiteID: order.siteID,
+    LegacyCardReaderConnectionController(forSiteID: order.siteID,
                                    storageManager: storageManager,
                                    stores: stores,
                                    knownReaderProvider: knownReaderProvider,

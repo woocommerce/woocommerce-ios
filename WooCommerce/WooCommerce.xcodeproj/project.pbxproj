@@ -331,7 +331,7 @@
 		02A9A496244D84AB00757B99 /* ProductsSortOrderBottomSheetListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A9A495244D84AB00757B99 /* ProductsSortOrderBottomSheetListSelectorCommandTests.swift */; };
 		02A9BCD42737DE0D00159C79 /* JetpackBenefitsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A9BCD32737DE0D00159C79 /* JetpackBenefitsView.swift */; };
 		02A9BCD62737F73C00159C79 /* JetpackBenefitItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A9BCD52737F73C00159C79 /* JetpackBenefitItem.swift */; };
-		02AA586628531D0E0068B6F0 /* RemoveAppleIDAccessCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AA586528531D0E0068B6F0 /* RemoveAppleIDAccessCoordinatorTests.swift */; };
+		02AA586628531D0E0068B6F0 /* CloseAccountCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AA586528531D0E0068B6F0 /* CloseAccountCoordinatorTests.swift */; };
 		02AAD54525023A8300BA1E26 /* ProductFormRemoteActionUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AAD54425023A8300BA1E26 /* ProductFormRemoteActionUseCase.swift */; };
 		02AB407B27827C9100929CF3 /* ChartPlaceholderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02AB407927827C9000929CF3 /* ChartPlaceholderView.xib */; };
 		02AB407C27827C9100929CF3 /* ChartPlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AB407A27827C9100929CF3 /* ChartPlaceholderView.swift */; };
@@ -340,7 +340,7 @@
 		02AB82ED27069D5D008D7334 /* Experiments.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 02AB82EB27069D5D008D7334 /* Experiments.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		02AC30CF2888EC8100146A25 /* WooAnalyticsEvent+LoginOnboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AC30CE2888EC8100146A25 /* WooAnalyticsEvent+LoginOnboarding.swift */; };
 		02AC822C2498BC9700A615FB /* ProductFormViewModel+UpdatesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AC822B2498BC9700A615FB /* ProductFormViewModel+UpdatesTests.swift */; };
-		02ACD25A2852E11700EC928E /* RemoveAppleIDAccessCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02ACD2592852E11700EC928E /* RemoveAppleIDAccessCoordinator.swift */; };
+		02ACD25A2852E11700EC928E /* CloseAccountCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02ACD2592852E11700EC928E /* CloseAccountCoordinator.swift */; };
 		02ADC7CC239762E0008D4BED /* PaginatedListSelectorViewProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02ADC7CB239762E0008D4BED /* PaginatedListSelectorViewProperties.swift */; };
 		02ADC7CE23978EAA008D4BED /* PaginatedProductShippingClassListSelectorDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02ADC7CD23978EAA008D4BED /* PaginatedProductShippingClassListSelectorDataSourceTests.swift */; };
 		02B1AFEC24BC5AE5005DB1E3 /* LinkedProductListSelectorDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B1AFEB24BC5AE5005DB1E3 /* LinkedProductListSelectorDataSource.swift */; };
@@ -466,6 +466,8 @@
 		035BA3A8291000E90056F0AD /* JustInTimeMessageAnnouncementCardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035BA3A7291000E90056F0AD /* JustInTimeMessageAnnouncementCardViewModelTests.swift */; };
 		035C6DEB273EA12D00F70406 /* SoftwareUpdateTypeProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035C6DEA273EA12D00F70406 /* SoftwareUpdateTypeProperty.swift */; };
 		035DBA45292D0164003E5125 /* CollectOrderPaymentUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035DBA44292D0163003E5125 /* CollectOrderPaymentUseCase.swift */; };
+		035DBA47292D0995003E5125 /* CardPresentPaymentPreflightController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035DBA46292D0994003E5125 /* CardPresentPaymentPreflightController.swift */; };
+		035DBA4B292E248C003E5125 /* CardPresentPaymentAlertsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035DBA4A292E248C003E5125 /* CardPresentPaymentAlertsPresenter.swift */; };
 		035F2308275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035F2307275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift */; };
 		0366EAE12909A37800B51755 /* JustInTimeMessageAnnouncementCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0366EAE02909A37800B51755 /* JustInTimeMessageAnnouncementCardViewModel.swift */; };
 		036CA6B9291E8D4B00E4DF4F /* CardPresentModalPreparingReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036CA6B8291E8D4B00E4DF4F /* CardPresentModalPreparingReader.swift */; };
@@ -489,6 +491,8 @@
 		03AA165E2719B7EF005CCB7B /* ReceiptActionCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AA165D2719B7EF005CCB7B /* ReceiptActionCoordinator.swift */; };
 		03AA16602719B83D005CCB7B /* ReceiptActionCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AA165F2719B83D005CCB7B /* ReceiptActionCoordinatorTests.swift */; };
 		03AFDE02282C0B82003B67CD /* InPersonPaymentsCompletedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AFDE01282C0B82003B67CD /* InPersonPaymentsCompletedView.swift */; };
+		03BB9EA5292E2D0C00251E9E /* CardReaderConnectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03BB9EA4292E2D0C00251E9E /* CardReaderConnectionController.swift */; };
+		03BB9EA7292E50B600251E9E /* CardPresentModalSelectSearchType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03BB9EA6292E50B600251E9E /* CardPresentModalSelectSearchType.swift */; };
 		03CF78D127C3DBC000523706 /* WCPayCardBrand+IconsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CF78D027C3DBC000523706 /* WCPayCardBrand+IconsTests.swift */; };
 		03EF24FA28BF5D21006A033E /* InPersonPaymentsCashOnDeliveryToggleRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EF24F928BF5D21006A033E /* InPersonPaymentsCashOnDeliveryToggleRowViewModel.swift */; };
 		03EF24FC28BF996F006A033E /* InPersonPaymentsCashOnDeliveryPaymentGatewayHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EF24FB28BF996F006A033E /* InPersonPaymentsCashOnDeliveryPaymentGatewayHelpers.swift */; };
@@ -708,8 +712,8 @@
 		31B19B67263B5E580099DAA6 /* CardReaderSettingsSearchingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31B19B66263B5E580099DAA6 /* CardReaderSettingsSearchingViewModel.swift */; };
 		31C21FA426D9949000916E2E /* SeveralReadersFoundViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31C21FA326D9949000916E2E /* SeveralReadersFoundViewController.swift */; };
 		31C21FA626D994B700916E2E /* SeveralReadersFoundViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31C21FA526D994B700916E2E /* SeveralReadersFoundViewController.xib */; };
-		31E6F21F26B3577800227E6F /* CardReaderConnectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31E6F21E26B3577800227E6F /* CardReaderConnectionController.swift */; };
-		31E906A326CC91A70099A985 /* CardReaderConnectionControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31E906A226CC91A70099A985 /* CardReaderConnectionControllerTests.swift */; };
+		31E6F21F26B3577800227E6F /* LegacyCardReaderConnectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31E6F21E26B3577800227E6F /* LegacyCardReaderConnectionController.swift */; };
+		31E906A326CC91A70099A985 /* LegacyCardReaderConnectionControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31E906A226CC91A70099A985 /* LegacyCardReaderConnectionControllerTests.swift */; };
 		31EF399C26430C6D0093C6F6 /* CardReaderSettingsPrioritizedViewModelsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31EF399B26430C6D0093C6F6 /* CardReaderSettingsPrioritizedViewModelsProvider.swift */; };
 		31F21B02263C8E150035B50A /* CardReaderSettingsSearchingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F21B01263C8E150035B50A /* CardReaderSettingsSearchingViewModelTests.swift */; };
 		31F21B5A263CB41A0035B50A /* MockCardPresentPaymentsStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F21B59263CB41A0035B50A /* MockCardPresentPaymentsStoresManager.swift */; };
@@ -1174,6 +1178,7 @@
 		AE3AA88D290C30E800BE422D /* WebProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3AA88C290C30E800BE422D /* WebProgressView.swift */; };
 		AE3AA890290C313600BE422D /* NavigationTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3AA88F290C313600BE422D /* NavigationTitleView.swift */; };
 		AE457813275644590092F687 /* OrderStatusSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE457812275644590092F687 /* OrderStatusSection.swift */; };
+		AE4CCCEB29365CFD00B47EE8 /* AnalyticsHubViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4CCCEA29365CFD00B47EE8 /* AnalyticsHubViewModelTests.swift */; };
 		AE56E73428E76CDB00A1292B /* StoreInfoInlineWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE56E73328E76CDB00A1292B /* StoreInfoInlineWidget.swift */; };
 		AE56E73628E7787700A1292B /* StoreInfoCircularWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE56E73528E7787700A1292B /* StoreInfoCircularWidget.swift */; };
 		AE56E73828E7869800A1292B /* StoreInfoRectangularWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE56E73728E7869800A1292B /* StoreInfoRectangularWidget.swift */; };
@@ -1451,6 +1456,8 @@
 		CCCC29DD25E5757C0046B96F /* RenameAttributesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CCCC29DC25E5757C0046B96F /* RenameAttributesViewController.xib */; };
 		CCCC29E325E576810046B96F /* RenameAttributesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC29E225E576810046B96F /* RenameAttributesViewController.swift */; };
 		CCCC5B1326CC2B9F0034FB63 /* ShippingLabelCustomPackageFormViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC5B1226CC2B9F0034FB63 /* ShippingLabelCustomPackageFormViewModelTests.swift */; };
+		CCCFFC5A2934EF5E006130AF /* StatsIntervalDataParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCFFC592934EF5E006130AF /* StatsIntervalDataParser.swift */; };
+		CCCFFC5D2934F0BA006130AF /* StatsIntervalDataParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCFFC5C2934F0BA006130AF /* StatsIntervalDataParserTests.swift */; };
 		CCD2E67E25DD4DC900BD975D /* ProductVariationsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD2E67D25DD4DC900BD975D /* ProductVariationsViewModel.swift */; };
 		CCD2E68925DD52C100BD975D /* ProductVariationsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD2E68825DD52C100BD975D /* ProductVariationsViewModelTests.swift */; };
 		CCD2F51A26D67BB50010E679 /* ShippingLabelServicePackageList.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD2F51926D67BB50010E679 /* ShippingLabelServicePackageList.swift */; };
@@ -2319,7 +2326,7 @@
 		02A9A495244D84AB00757B99 /* ProductsSortOrderBottomSheetListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsSortOrderBottomSheetListSelectorCommandTests.swift; sourceTree = "<group>"; };
 		02A9BCD32737DE0D00159C79 /* JetpackBenefitsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackBenefitsView.swift; sourceTree = "<group>"; };
 		02A9BCD52737F73C00159C79 /* JetpackBenefitItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackBenefitItem.swift; sourceTree = "<group>"; };
-		02AA586528531D0E0068B6F0 /* RemoveAppleIDAccessCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoveAppleIDAccessCoordinatorTests.swift; sourceTree = "<group>"; };
+		02AA586528531D0E0068B6F0 /* CloseAccountCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloseAccountCoordinatorTests.swift; sourceTree = "<group>"; };
 		02AAD54425023A8300BA1E26 /* ProductFormRemoteActionUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormRemoteActionUseCase.swift; sourceTree = "<group>"; };
 		02AB407927827C9000929CF3 /* ChartPlaceholderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChartPlaceholderView.xib; sourceTree = "<group>"; };
 		02AB407A27827C9100929CF3 /* ChartPlaceholderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartPlaceholderView.swift; sourceTree = "<group>"; };
@@ -2327,7 +2334,7 @@
 		02AB82EB27069D5D008D7334 /* Experiments.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Experiments.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		02AC30CE2888EC8100146A25 /* WooAnalyticsEvent+LoginOnboarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+LoginOnboarding.swift"; sourceTree = "<group>"; };
 		02AC822B2498BC9700A615FB /* ProductFormViewModel+UpdatesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductFormViewModel+UpdatesTests.swift"; sourceTree = "<group>"; };
-		02ACD2592852E11700EC928E /* RemoveAppleIDAccessCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoveAppleIDAccessCoordinator.swift; sourceTree = "<group>"; };
+		02ACD2592852E11700EC928E /* CloseAccountCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloseAccountCoordinator.swift; sourceTree = "<group>"; };
 		02ADC7CB239762E0008D4BED /* PaginatedListSelectorViewProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedListSelectorViewProperties.swift; sourceTree = "<group>"; };
 		02ADC7CD23978EAA008D4BED /* PaginatedProductShippingClassListSelectorDataSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedProductShippingClassListSelectorDataSourceTests.swift; sourceTree = "<group>"; };
 		02B1AFEB24BC5AE5005DB1E3 /* LinkedProductListSelectorDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkedProductListSelectorDataSource.swift; sourceTree = "<group>"; };
@@ -2456,6 +2463,8 @@
 		035BA3A7291000E90056F0AD /* JustInTimeMessageAnnouncementCardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustInTimeMessageAnnouncementCardViewModelTests.swift; sourceTree = "<group>"; };
 		035C6DEA273EA12D00F70406 /* SoftwareUpdateTypeProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoftwareUpdateTypeProperty.swift; sourceTree = "<group>"; };
 		035DBA44292D0163003E5125 /* CollectOrderPaymentUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectOrderPaymentUseCase.swift; sourceTree = "<group>"; };
+		035DBA46292D0994003E5125 /* CardPresentPaymentPreflightController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentPreflightController.swift; sourceTree = "<group>"; };
+		035DBA4A292E248C003E5125 /* CardPresentPaymentAlertsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentAlertsPresenter.swift; sourceTree = "<group>"; };
 		035F2307275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalConnectingFailedUpdatePostalCode.swift; sourceTree = "<group>"; };
 		0366EAE02909A37800B51755 /* JustInTimeMessageAnnouncementCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustInTimeMessageAnnouncementCardViewModel.swift; sourceTree = "<group>"; };
 		036CA6B8291E8D4B00E4DF4F /* CardPresentModalPreparingReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalPreparingReader.swift; sourceTree = "<group>"; };
@@ -2479,6 +2488,8 @@
 		03AA165D2719B7EF005CCB7B /* ReceiptActionCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptActionCoordinator.swift; sourceTree = "<group>"; };
 		03AA165F2719B83D005CCB7B /* ReceiptActionCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptActionCoordinatorTests.swift; sourceTree = "<group>"; };
 		03AFDE01282C0B82003B67CD /* InPersonPaymentsCompletedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCompletedView.swift; sourceTree = "<group>"; };
+		03BB9EA4292E2D0C00251E9E /* CardReaderConnectionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardReaderConnectionController.swift; sourceTree = "<group>"; };
+		03BB9EA6292E50B600251E9E /* CardPresentModalSelectSearchType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPresentModalSelectSearchType.swift; sourceTree = "<group>"; };
 		03CF78D027C3DBC000523706 /* WCPayCardBrand+IconsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayCardBrand+IconsTests.swift"; sourceTree = "<group>"; };
 		03EF24F928BF5D21006A033E /* InPersonPaymentsCashOnDeliveryToggleRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCashOnDeliveryToggleRowViewModel.swift; sourceTree = "<group>"; };
 		03EF24FB28BF996F006A033E /* InPersonPaymentsCashOnDeliveryPaymentGatewayHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCashOnDeliveryPaymentGatewayHelpers.swift; sourceTree = "<group>"; };
@@ -2693,8 +2704,8 @@
 		31B19B66263B5E580099DAA6 /* CardReaderSettingsSearchingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsSearchingViewModel.swift; sourceTree = "<group>"; };
 		31C21FA326D9949000916E2E /* SeveralReadersFoundViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeveralReadersFoundViewController.swift; sourceTree = "<group>"; };
 		31C21FA526D994B700916E2E /* SeveralReadersFoundViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SeveralReadersFoundViewController.xib; sourceTree = "<group>"; };
-		31E6F21E26B3577800227E6F /* CardReaderConnectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderConnectionController.swift; sourceTree = "<group>"; };
-		31E906A226CC91A70099A985 /* CardReaderConnectionControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderConnectionControllerTests.swift; sourceTree = "<group>"; };
+		31E6F21E26B3577800227E6F /* LegacyCardReaderConnectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyCardReaderConnectionController.swift; sourceTree = "<group>"; };
+		31E906A226CC91A70099A985 /* LegacyCardReaderConnectionControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyCardReaderConnectionControllerTests.swift; sourceTree = "<group>"; };
 		31EF399B26430C6D0093C6F6 /* CardReaderSettingsPrioritizedViewModelsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsPrioritizedViewModelsProvider.swift; sourceTree = "<group>"; };
 		31F21B01263C8E150035B50A /* CardReaderSettingsSearchingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsSearchingViewModelTests.swift; sourceTree = "<group>"; };
 		31F21B59263CB41A0035B50A /* MockCardPresentPaymentsStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCardPresentPaymentsStoresManager.swift; sourceTree = "<group>"; };
@@ -3144,6 +3155,7 @@
 		AE3AA88C290C30E800BE422D /* WebProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebProgressView.swift; sourceTree = "<group>"; };
 		AE3AA88F290C313600BE422D /* NavigationTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationTitleView.swift; sourceTree = "<group>"; };
 		AE457812275644590092F687 /* OrderStatusSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusSection.swift; sourceTree = "<group>"; };
+		AE4CCCEA29365CFD00B47EE8 /* AnalyticsHubViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubViewModelTests.swift; sourceTree = "<group>"; };
 		AE56E73328E76CDB00A1292B /* StoreInfoInlineWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreInfoInlineWidget.swift; sourceTree = "<group>"; };
 		AE56E73528E7787700A1292B /* StoreInfoCircularWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreInfoCircularWidget.swift; sourceTree = "<group>"; };
 		AE56E73728E7869800A1292B /* StoreInfoRectangularWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreInfoRectangularWidget.swift; sourceTree = "<group>"; };
@@ -3441,6 +3453,8 @@
 		CCCC29DC25E5757C0046B96F /* RenameAttributesViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RenameAttributesViewController.xib; sourceTree = "<group>"; };
 		CCCC29E225E576810046B96F /* RenameAttributesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameAttributesViewController.swift; sourceTree = "<group>"; };
 		CCCC5B1226CC2B9F0034FB63 /* ShippingLabelCustomPackageFormViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomPackageFormViewModelTests.swift; sourceTree = "<group>"; };
+		CCCFFC592934EF5E006130AF /* StatsIntervalDataParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsIntervalDataParser.swift; sourceTree = "<group>"; };
+		CCCFFC5C2934F0BA006130AF /* StatsIntervalDataParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsIntervalDataParserTests.swift; sourceTree = "<group>"; };
 		CCD2E67D25DD4DC900BD975D /* ProductVariationsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationsViewModel.swift; sourceTree = "<group>"; };
 		CCD2E68825DD52C100BD975D /* ProductVariationsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationsViewModelTests.swift; sourceTree = "<group>"; };
 		CCD2F51926D67BB50010E679 /* ShippingLabelServicePackageList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelServicePackageList.swift; sourceTree = "<group>"; };
@@ -4826,6 +4840,7 @@
 			isa = PBXGroup;
 			children = (
 				CC04918C292BB74500F719D8 /* StatsDataTextFormatter.swift */,
+				CCCFFC592934EF5E006130AF /* StatsIntervalDataParser.swift */,
 			);
 			path = Factories;
 			sourceTree = "<group>";
@@ -5006,11 +5021,11 @@
 				31F21B07263C8E1F0035B50A /* CardReaderSettings */,
 				DEFD6E5F264990DD00E51E0D /* Plugins */,
 				576D9F2724DB81BF007B48F4 /* Stats V4 */,
+				CCCFFC5B2934F089006130AF /* Factories */,
 				02E4FD802306AA890049610C /* StatsTimeRangeBarViewModelTests.swift */,
 				0257285B230ACC7E00A288C4 /* StoreStatsV4ChartAxisHelperTests.swift */,
 				02AB40812784297C00929CF3 /* ProductTableViewCellViewModelTests.swift */,
 				028E1F712833E954001F8829 /* DashboardViewModelTests.swift */,
-				CC04918E292BD6AC00F719D8 /* StatsDataTextFormatterTests.swift */,
 			);
 			path = Dashboard;
 			sourceTree = "<group>";
@@ -5406,6 +5421,7 @@
 			isa = PBXGroup;
 			children = (
 				035DBA44292D0163003E5125 /* CollectOrderPaymentUseCase.swift */,
+				035DBA4A292E248C003E5125 /* CardPresentPaymentAlertsPresenter.swift */,
 				268FD44627580A81008FDF9B /* LegacyCollectOrderPaymentUseCase.swift */,
 				0375799A28227EDE0083F2E1 /* CardPresentPaymentsOnboardingPresenter.swift */,
 				02C27BCD282CB52F0065471A /* CardPresentPaymentReceiptEmailCoordinator.swift */,
@@ -7401,6 +7417,7 @@
 		B6440FB7292E73E50012D506 /* Analytics Hub */ = {
 			isa = PBXGroup;
 			children = (
+				AE4CCCEA29365CFD00B47EE8 /* AnalyticsHubViewModelTests.swift */,
 				B6440FB8292E74230012D506 /* AnalyticsHubTimeRangeGeneratorTests.swift */,
 			);
 			path = "Analytics Hub";
@@ -7456,7 +7473,7 @@
 			isa = PBXGroup;
 			children = (
 				BAFEF51D273C2151005F94CC /* SettingsViewModelTests.swift */,
-				02AA586528531D0E0068B6F0 /* RemoveAppleIDAccessCoordinatorTests.swift */,
+				02AA586528531D0E0068B6F0 /* CloseAccountCoordinatorTests.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -7547,6 +7564,15 @@
 				2602A64027BD89B300B347F1 /* Synchronizer */,
 			);
 			path = "Order Creation";
+			sourceTree = "<group>";
+		};
+		CCCFFC5B2934F089006130AF /* Factories */ = {
+			isa = PBXGroup;
+			children = (
+				CC04918E292BD6AC00F719D8 /* StatsDataTextFormatterTests.swift */,
+				CCCFFC5C2934F0BA006130AF /* StatsIntervalDataParserTests.swift */,
+			);
+			path = Factories;
 			sourceTree = "<group>";
 		};
 		CCD2E68725DD528000BD975D /* Variations */ = {
@@ -8133,7 +8159,7 @@
 		CE85FD5820F7A59E0080B73E /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				02ACD2592852E11700EC928E /* RemoveAppleIDAccessCoordinator.swift */,
+				02ACD2592852E11700EC928E /* CloseAccountCoordinator.swift */,
 				0239305F2918F35600B2632F /* Domains */,
 				BAF1B3B32736595A00BA11DC /* Settings */,
 				DE8C9464264698E800C94823 /* Plugins */,
@@ -8383,7 +8409,7 @@
 			children = (
 				E12AF69A26BA8B2000C371C1 /* CardPresentPaymentsOnboardingUseCaseTests.swift */,
 				D810F8F72639EDE900437C67 /* CardPresentPaymentsModalViewControllerTests.swift */,
-				31E906A226CC91A70099A985 /* CardReaderConnectionControllerTests.swift */,
+				31E906A226CC91A70099A985 /* LegacyCardReaderConnectionControllerTests.swift */,
 				26100B1F2722FCAD00473045 /* MockCardPresentPaymentsOnboardingUseCase.swift */,
 				03AA165F2719B83D005CCB7B /* ReceiptActionCoordinatorTests.swift */,
 				03CF78D027C3DBC000523706 /* WCPayCardBrand+IconsTests.swift */,
@@ -8463,7 +8489,9 @@
 				D8815ADD26383EE600EDAD62 /* CardPresentPaymentsModalViewController.swift */,
 				037D270C28CA444F00A3F924 /* CardReaderModalFlowViewControllerProtocol.swift */,
 				D8815ADE26383EE700EDAD62 /* CardPresentPaymentsModalViewController.xib */,
-				31E6F21E26B3577800227E6F /* CardReaderConnectionController.swift */,
+				03BB9EA4292E2D0C00251E9E /* CardReaderConnectionController.swift */,
+				31E6F21E26B3577800227E6F /* LegacyCardReaderConnectionController.swift */,
+				035DBA46292D0994003E5125 /* CardPresentPaymentPreflightController.swift */,
 				D8EE9690264D328A0033B2F9 /* ReceiptViewController.swift */,
 				D8EE9691264D328A0033B2F9 /* ReceiptViewController.xib */,
 				31C21FA326D9949000916E2E /* SeveralReadersFoundViewController.swift */,
@@ -8502,6 +8530,7 @@
 				318477E427A33C650058C7E9 /* CardPresentModalConnectingFailedChargeReader.swift */,
 				031B10E2274FE2AE007390BA /* CardPresentModalConnectionFailedUpdateAddress.swift */,
 				036CA6B8291E8D4B00E4DF4F /* CardPresentModalPreparingReader.swift */,
+				03BB9EA6292E50B600251E9E /* CardPresentModalSelectSearchType.swift */,
 				D8EE9697264D3CCB0033B2F9 /* ReceiptViewModel.swift */,
 				D8752EF6265E60F4008ACC80 /* PaymentCaptureCelebration.swift */,
 				03AA165D2719B7EF005CCB7B /* ReceiptActionCoordinator.swift */,
@@ -9829,6 +9858,7 @@
 				024DF31E23743045006658FE /* TextList+AztecFormatting.swift in Sources */,
 				0260F40123224E8100EDA10A /* ProductsViewController.swift in Sources */,
 				DE4D308928507B5B00E36ADD /* CouponCreationSuccess.swift in Sources */,
+				03BB9EA5292E2D0C00251E9E /* CardReaderConnectionController.swift in Sources */,
 				B95112DA28BF79CA00D9578D /* PaymentsRoute.swift in Sources */,
 				7E6A019F2725CD76001668D5 /* FilterProductCategoryListViewModel.swift in Sources */,
 				CC53FB3C2757EC7200C4CA4F /* ProductSelectorViewModel.swift in Sources */,
@@ -9859,7 +9889,7 @@
 				DE2FE5882925DD950018040A /* JetpackInstallHeaderView.swift in Sources */,
 				B59D49CD219B587E006BF0AD /* UILabel+OrderStatus.swift in Sources */,
 				265BCA0C2430E741004E53EE /* ProductCategoryTableViewCell.swift in Sources */,
-				02ACD25A2852E11700EC928E /* RemoveAppleIDAccessCoordinator.swift in Sources */,
+				02ACD25A2852E11700EC928E /* CloseAccountCoordinator.swift in Sources */,
 				036CA6F129229C9E00E4DF4F /* IndefiniteCircularProgressViewStyle.swift in Sources */,
 				451A9973260E39270059D135 /* ShippingLabelPackageNumberRow.swift in Sources */,
 				AEE2610F26E664CE00B142A0 /* EditOrderAddressFormViewModel.swift in Sources */,
@@ -10008,6 +10038,7 @@
 				318477E527A33C650058C7E9 /* CardPresentModalConnectingFailedChargeReader.swift in Sources */,
 				DE46133926B2BEB8001DE59C /* ShippingLabelCountryListSelectorCommand.swift in Sources */,
 				68E952D22875A44B0095A23D /* CardReaderType+Manual.swift in Sources */,
+				035DBA4B292E248C003E5125 /* CardPresentPaymentAlertsPresenter.swift in Sources */,
 				0211259F2578DE310075AD2A /* ShippingLabelPrintingStepView.swift in Sources */,
 				B58B4AB22108F01700076FDD /* NoticeView.swift in Sources */,
 				74B5713621CD7604008F9B8E /* SharingHelper.swift in Sources */,
@@ -10128,6 +10159,7 @@
 				DEC6C51A2747758D006832D3 /* JetpackInstallView.swift in Sources */,
 				DE37517C28DC5FC6000163CB /* Authenticator.swift in Sources */,
 				AED089F227C794BC0020AE10 /* View+CurrencySymbol.swift in Sources */,
+				03BB9EA7292E50B600251E9E /* CardPresentModalSelectSearchType.swift in Sources */,
 				D85806292642BA5400A8AB6C /* PaymentCaptureOrchestrator.swift in Sources */,
 				E1E636BB26FB467A00C9D0D7 /* Comparable+Woo.swift in Sources */,
 				450C2CB024CF006A00D570DD /* ProductTagsDataSource.swift in Sources */,
@@ -10138,6 +10170,7 @@
 				02162729237965E8000208D2 /* ProductFormTableViewModel.swift in Sources */,
 				DEF3300C270444070073AE29 /* ShippingLabelSelectedRate.swift in Sources */,
 				CE2A9FBF23BFB1BE002BEC1C /* LedgerTableViewCell.swift in Sources */,
+				035DBA47292D0995003E5125 /* CardPresentPaymentPreflightController.swift in Sources */,
 				B58B4AC02108FF6100076FDD /* Array+Helpers.swift in Sources */,
 				028AFFB32484ED2800693C09 /* Dictionary+Logging.swift in Sources */,
 				45BBFBC1274FD94300213001 /* HubMenuCoordinator.swift in Sources */,
@@ -10190,6 +10223,7 @@
 				023D877925EC8BCB00625963 /* UIScrollView+LargeTitleWorkaround.swift in Sources */,
 				2664210326F40FB1001FC5B4 /* View+ScrollModifiers.swift in Sources */,
 				02695770237281A9001BA0BF /* AztecTextViewAttachmentHandler.swift in Sources */,
+				CCCFFC5A2934EF5E006130AF /* StatsIntervalDataParser.swift in Sources */,
 				AEA3F90F27BE8EB400B9F555 /* ShippingLineDetailsViewModel.swift in Sources */,
 				26771A14256FFA8700EE030E /* IssueRefundCoordinatingController.swift in Sources */,
 				027A2E162513356100DA6ACB /* AppleIDCredentialChecker.swift in Sources */,
@@ -10753,7 +10787,7 @@
 				DEC2961F26BD1605005A056B /* ShippingLabelCustomsFormListViewModel.swift in Sources */,
 				D843D5D722485B19001BFA55 /* ShippingProvidersViewModel.swift in Sources */,
 				4572641927F1EB27004E1F95 /* AddEditCouponViewModel.swift in Sources */,
-				31E6F21F26B3577800227E6F /* CardReaderConnectionController.swift in Sources */,
+				31E6F21F26B3577800227E6F /* LegacyCardReaderConnectionController.swift in Sources */,
 				02ADC7CC239762E0008D4BED /* PaginatedListSelectorViewProperties.swift in Sources */,
 				03FBDAF2263EE47C00ACE257 /* CouponListViewModel.swift in Sources */,
 				B6A10E9C292E5DEE00790797 /* AnalyticsTimeRangeCardViewModel.swift in Sources */,
@@ -10903,7 +10937,7 @@
 				02BA128B24616B48008D8325 /* ProductFormActionsFactory+VisibilityTests.swift in Sources */,
 				DE2BF4FD2846192B00FBE68A /* CouponAllowedEmailsViewModelTests.swift in Sources */,
 				FEEB2F6E268A2F7B0075A6E0 /* RoleEligibilityUseCaseTests.swift in Sources */,
-				31E906A326CC91A70099A985 /* CardReaderConnectionControllerTests.swift in Sources */,
+				31E906A326CC91A70099A985 /* LegacyCardReaderConnectionControllerTests.swift in Sources */,
 				02AB40822784297C00929CF3 /* ProductTableViewCellViewModelTests.swift in Sources */,
 				02829BAA288FA8B300951E1E /* MockUserNotification.swift in Sources */,
 				D85B8336222FCDA1002168F3 /* StatusListTableViewCellTests.swift in Sources */,
@@ -11087,7 +11121,7 @@
 				B57C5C9A21B80E7100FF82B2 /* DataWooTests.swift in Sources */,
 				B53A56A42112483E000776C9 /* Constants.swift in Sources */,
 				2667BFE72530E78F008099D4 /* RefundItemsValuesCalculationUseCaseTests.swift in Sources */,
-				02AA586628531D0E0068B6F0 /* RemoveAppleIDAccessCoordinatorTests.swift in Sources */,
+				02AA586628531D0E0068B6F0 /* CloseAccountCoordinatorTests.swift in Sources */,
 				E12AF69B26BA8B2000C371C1 /* CardPresentPaymentsOnboardingUseCaseTests.swift in Sources */,
 				D802549B265531D4001B2CC1 /* CardPresentModalConnectingToReaderTests.swift in Sources */,
 				4572641B27F1FDF2004E1F95 /* AddEditCouponViewModelTests.swift in Sources */,
@@ -11096,6 +11130,7 @@
 				02B653AC2429F7BF00A9C839 /* MockTaxClassStoresManager.swift in Sources */,
 				0277AEA5256CAA4200F45C4A /* MockShippingLabel.swift in Sources */,
 				02BAB02324D0250300F8B06E /* ProductVariation+ProductFormTests.swift in Sources */,
+				AE4CCCEB29365CFD00B47EE8 /* AnalyticsHubViewModelTests.swift in Sources */,
 				025C00CC2551524300FAC222 /* BarcodeScannerFrameScalerTests.swift in Sources */,
 				02B1AFEE24BC5BA9005DB1E3 /* LinkedProductListSelectorDataSourceTests.swift in Sources */,
 				028E19BA28053443001C36E0 /* MockOrderDetailsPaymentAlerts.swift in Sources */,
@@ -11293,6 +11328,7 @@
 				D8736B5122EB69E300A14A29 /* OrderDetailsViewModelTests.swift in Sources */,
 				02C0CD2E23B5E3AE00F880B1 /* DefaultImageServiceTests.swift in Sources */,
 				02E4FD812306AA890049610C /* StatsTimeRangeBarViewModelTests.swift in Sources */,
+				CCCFFC5D2934F0BA006130AF /* StatsIntervalDataParserTests.swift in Sources */,
 				02645D8A27BA2EDB0065DC68 /* NSAttributedString+AttributesTests.swift in Sources */,
 				6856D2A5C2076F5BF14F2C11 /* KeyboardStateProviderTests.swift in Sources */,
 				B9DA153E28101BE100FC67DD /* MockOrderRefundsOptionsDeterminer.swift in Sources */,

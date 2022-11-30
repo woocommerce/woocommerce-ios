@@ -71,7 +71,7 @@ final class LegacyCollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProto
     /// Controller to connect a card reader.
     ///
     private lazy var connectionController = {
-        CardReaderConnectionController(forSiteID: siteID,
+        LegacyCardReaderConnectionController(forSiteID: siteID,
                                        knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
                                        alertsProvider: CardReaderSettingsAlerts(),
                                        configuration: configuration,

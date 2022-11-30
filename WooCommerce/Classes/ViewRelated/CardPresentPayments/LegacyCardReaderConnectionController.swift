@@ -7,7 +7,7 @@ import Yosemite
 
 /// Facilitates connecting to a card reader
 ///
-final class CardReaderConnectionController {
+final class LegacyCardReaderConnectionController {
     private enum ControllerState {
         /// Initial state of the controller
         ///
@@ -83,10 +83,10 @@ final class CardReaderConnectionController {
             didSetState()
         }
     }
-
+    private weak var fromController: UIViewController?
     private let siteID: Int64
     private let knownCardReaderProvider: CardReaderSettingsKnownReaderProvider
-    private let alertsPresenter: CardPresentPaymentAlertsPresenting
+    private let alerts: CardReaderSettingsAlertsProvider
     private let configuration: CardPresentPaymentsConfiguration
 
     /// Reader(s) discovered by the card reader service
@@ -134,25 +134,21 @@ final class CardReaderConnectionController {
         }
     }
 
-    private let discoveryMethod: CardReaderDiscoveryMethod
-
     init(
         forSiteID: Int64,
-        discoveryMethod: CardReaderDiscoveryMethod,
         storageManager: StorageManagerType = ServiceLocator.storageManager,
         stores: StoresManager = ServiceLocator.stores,
         knownReaderProvider: CardReaderSettingsKnownReaderProvider,
-        alertsPresenter: CardPresentPaymentAlertsPresenting,
+        alertsProvider: CardReaderSettingsAlertsProvider,
         configuration: CardPresentPaymentsConfiguration,
         analyticsTracker: CardReaderConnectionAnalyticsTracker
     ) {
         siteID = forSiteID
-        self.discoveryMethod = discoveryMethod
         self.storageManager = storageManager
         self.stores = stores
         state = .idle
         knownCardReaderProvider = knownReaderProvider
-        self.alertsPresenter = alertsPresenter
+        alerts = alertsProvider
         foundReaders = []
         knownReaderID = nil
         skippedReaderIDs = []
@@ -167,13 +163,18 @@ final class CardReaderConnectionController {
         subscriptions.removeAll()
     }
 
-    func searchAndConnect(onCompletion: @escaping (Result<ConnectionResult, Error>) -> Void) {
+    func searchAndConnect(from: UIViewController?, onCompletion: @escaping (Result<ConnectionResult, Error>) -> Void) {
+        guard from != nil else {
+            return
+        }
+
+        self.fromController = from
         self.onCompletion = onCompletion
         self.state = .initializing
     }
 }
 
-private extension CardReaderConnectionController {
+private extension LegacyCardReaderConnectionController {
     func configureResultsControllers() {
         dataSource.configureResultsControllers(onReload: { [weak self] in
             guard let self = self else { return }
@@ -320,6 +321,10 @@ private extension CardReaderConnectionController {
         self.state = .searching
         var didAutoAdvance = false
 
+        // TODO: make this a choice for the user, when the switch is enabled
+        let tapOnIphoneEnabled = ServiceLocator.generalAppSettings.settings.isTapToPayOnIPhoneSwitchEnabled
+        let discoveryMethod: CardReaderDiscoveryMethod = tapOnIphoneEnabled ? .localMobile : .bluetoothProximity
+
         let action = CardPresentPaymentAction.startCardReaderDiscovery(
             siteID: siteID,
             discoveryMethod: discoveryMethod,
@@ -342,7 +347,7 @@ private extension CardReaderConnectionController {
                 /// If the found-several-readers view is already presenting, update its list of found readers
                 ///
                 if case .foundSeveralReaders = self.state {
-                    self.alertsPresenter.updateSeveralReadersList(readerIDs: self.getFoundReaderIDs())
+                    self.alerts.updateSeveralReadersList(readerIDs: self.getFoundReaderIDs())
                 }
 
                 /// To avoid interrupting connecting to a known reader, ensure we are
@@ -399,6 +404,10 @@ private extension CardReaderConnectionController {
     /// If the user cancels the modal will trigger a transition to `.endSearch`
     ///
     func onSearching() {
+        guard let from = fromController else {
+            return
+        }
+
         /// If we enter this state and another reader was discovered while the
         /// "Do you want to connect to" modal was being displayed and if that reader
         /// is known and the merchant tapped keep searching on the first
@@ -429,9 +438,9 @@ private extension CardReaderConnectionController {
         /// If all else fails, display the "scanning" modal and
         /// stay in this state
         ///
-        alertsPresenter.present(viewModel: CardPresentModalScanningForReader(cancel: {
+        alerts.scanningForReader(from: from, cancel: {
             self.state = .cancel
-        }))
+        })
     }
 
     /// A (unknown) reader has been found
@@ -442,28 +451,37 @@ private extension CardReaderConnectionController {
             return
         }
 
-        alertsPresenter.present(
-            viewModel: CardPresentModalFoundReader(
-                name: candidateReader.id,
-                connect: {
-                    self.state = .connectToReader
-                },
-                continueSearch: {
-                    self.skippedReaderIDs.append(candidateReader.id)
-                    self.candidateReader = nil
-                    self.pruneSkippedReaders()
-                    self.state = .searching
-                },
-                cancel: { [weak self] in
-                    self?.state = .cancel
-                }))
+        guard let from = fromController else {
+            return
+        }
+
+        alerts.foundReader(
+            from: from,
+            name: candidateReader.id,
+            connect: {
+                self.state = .connectToReader
+            },
+            continueSearch: {
+                self.skippedReaderIDs.append(candidateReader.id)
+                self.candidateReader = nil
+                self.pruneSkippedReaders()
+                self.state = .searching
+            },
+            cancelSearch: { [weak self] in
+                self?.state = .cancel
+            })
     }
 
     /// Several readers have been found
     /// Opens a continually updating list modal for the user to pick one (or cancel the search)
     ///
     func onFoundSeveralReaders() {
-        alertsPresenter.foundSeveralReaders(
+        guard let from = fromController else {
+            return
+        }
+
+        alerts.foundSeveralReaders(
+            from: from,
             readerIDs: getFoundReaderIDs(),
             connect: { [weak self] readerID in
                 guard let self = self else {
@@ -481,6 +499,10 @@ private extension CardReaderConnectionController {
     /// A mandatory update is being installed
     ///
     func onUpdateProgress(progress: Float) {
+        guard let from = fromController else {
+            return
+        }
+
         let cancel = softwareUpdateCancelable.map { cancelable in
             return { [weak self] in
                 guard let self = self else { return }
@@ -496,16 +518,16 @@ private extension CardReaderConnectionController {
             }
         }
 
-        alertsPresenter.present(
-            viewModel: CardPresentModalUpdateProgress(requiredUpdate: true,
-                                                      progress: progress,
-                                                      cancel: cancel))
+        alerts.updateProgress(from: from,
+                              requiredUpdate: true,
+                              progress: progress,
+                              cancel: cancel)
     }
 
     /// Retry a search for a card reader
     ///
     func onRetry() {
-        alertsPresenter.dismiss()
+        alerts.dismiss()
         let action = CardPresentPaymentAction.cancelCardReaderDiscovery() { [weak self] _ in
             self?.state = .beginSearch
         }
@@ -525,6 +547,10 @@ private extension CardReaderConnectionController {
     ///
     func onConnectToReader() {
         guard let candidateReader = candidateReader else {
+            return
+        }
+
+        guard let from = fromController else {
             return
         }
 
@@ -592,7 +618,7 @@ private extension CardReaderConnectionController {
         }
         stores.dispatch(action)
 
-        alertsPresenter.present(viewModel: CardPresentModalConnectingToReader())
+        alerts.connectingToReader(from: from)
     }
 
     /// An error occurred while connecting
@@ -612,7 +638,8 @@ private extension CardReaderConnectionController {
     }
 
     private func onUpdateFailed(error: Error) {
-        guard case CardReaderServiceError.softwareUpdate(underlyingError: let underlyingError, batteryLevel: let batteryLevel) = error else {
+        guard let from = fromController,
+              case CardReaderServiceError.softwareUpdate(underlyingError: let underlyingError, batteryLevel: let batteryLevel) = error else {
             return
         }
 
@@ -621,20 +648,28 @@ private extension CardReaderConnectionController {
             // Update was cancelled, don't treat this as an error
             return
         case .readerSoftwareUpdateFailedBatteryLow:
-            alertsPresenter.present(
-                viewModel: CardPresentModalUpdateFailedLowBattery(batteryLevel: batteryLevel,
-                                                                  close: {
-                                                                      self.state = .searching
-                                                                  }))
-        default:
-            alertsPresenter.present(
-                viewModel: CardPresentModalUpdateFailedNonRetryable(close: {
+            alerts.updatingFailedLowBattery(
+                from: from,
+                batteryLevel: batteryLevel,
+                close: {
                     self.state = .searching
-                }))
+                }
+            )
+        default:
+            alerts.updatingFailed(
+                from: from,
+                tryAgain: nil,
+                close: {
+                    self.state = .searching
+                })
         }
     }
 
     private func showConnectionFailed(error: Error) {
+        guard let from = fromController else {
+            return
+        }
+
         let retrySearch = {
             self.state = .retry
         }
@@ -648,37 +683,28 @@ private extension CardReaderConnectionController {
         }
 
         guard case CardReaderServiceError.connection(let underlyingError) = error else {
-            return alertsPresenter.present(
-                viewModel: CardPresentModalConnectingFailed(continueSearch: continueSearch, cancelSearch: cancelSearch))
+            return alerts.connectingFailed(from: from, continueSearch: continueSearch, cancelSearch: cancelSearch)
         }
 
         switch underlyingError {
         case .incompleteStoreAddress(let adminUrl):
-            alertsPresenter.present(
-                viewModel: CardPresentModalConnectingFailedUpdateAddress(
-                    openWCSettings: openWCSettingsAction(adminUrl: adminUrl,
-                                                         retrySearch: retrySearch),
-                    retrySearch: retrySearch,
-                    cancelSearch: cancelSearch))
+            alerts.connectingFailedIncompleteAddress(from: from,
+                                                     openWCSettings: openWCSettingsAction(adminUrl: adminUrl,
+                                                                                          from: from,
+                                                                                          retrySearch: retrySearch),
+                                                     retrySearch: retrySearch,
+                                                     cancelSearch: cancelSearch)
         case .invalidPostalCode:
-            alertsPresenter.present(
-                viewModel: CardPresentModalConnectingFailedUpdatePostalCode(
-                    retrySearch: retrySearch,
-                    cancelSearch: cancelSearch))
+            alerts.connectingFailedInvalidPostalCode(from: from, retrySearch: retrySearch, cancelSearch: cancelSearch)
         case .bluetoothConnectionFailedBatteryCriticallyLow:
-            alertsPresenter.present(
-                viewModel: CardPresentModalConnectingFailedChargeReader(
-                    retrySearch: retrySearch,
-                    cancelSearch: cancelSearch))
+            alerts.connectingFailedCriticallyLowBattery(from: from, retrySearch: retrySearch, cancelSearch: cancelSearch)
         default:
-            alertsPresenter.present(
-                viewModel: CardPresentModalConnectingFailed(
-                    continueSearch: continueSearch,
-                    cancelSearch: cancelSearch))
+            alerts.connectingFailed(from: from, continueSearch: continueSearch, cancelSearch: cancelSearch)
         }
     }
 
     private func openWCSettingsAction(adminUrl: URL?,
+                                      from viewController: UIViewController,
                                       retrySearch: @escaping () -> Void) -> ((UIViewController) -> Void)? {
         if let adminUrl = adminUrl {
             if let site = stores.sessionManager.defaultSite,
@@ -730,30 +756,33 @@ private extension CardReaderConnectionController {
     /// Presents the error in a modal
     ///
     private func onDiscoveryFailed(error: Error) {
-        alertsPresenter.present(
-            viewModel: CardPresentModalScanningFailed(error: error) { [weak self] in
+        guard let from = fromController else {
+            return
+        }
+
+        alerts.scanningFailed(from: from, error: error) { [weak self] in
             self?.returnFailure(error: error)
-        })
+        }
     }
 
     /// Calls the completion with a success result
     ///
     private func returnSuccess(result: ConnectionResult) {
         onCompletion?(.success(result))
-        alertsPresenter.dismiss()
+        alerts.dismiss()
         state = .idle
     }
 
     /// Calls the completion with a failure result
     ///
     private func returnFailure(error: Error) {
-        alertsPresenter.dismiss()
+        alerts.dismiss()
         onCompletion?(.failure(error))
         state = .idle
     }
 }
 
-private extension CardReaderConnectionController {
+private extension LegacyCardReaderConnectionController {
     enum Localization {
         static let adminWebviewTitle = NSLocalizedString(
             "WooCommerce Settings",

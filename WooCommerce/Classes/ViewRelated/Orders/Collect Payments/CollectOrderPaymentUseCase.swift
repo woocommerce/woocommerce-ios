@@ -64,7 +64,11 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
 
     /// View Controller used to present alerts.
     ///
-    private var rootViewController: UIViewController
+    private let rootViewController: UIViewController
+
+    /// Alerts presenter: alerts from the various parts of the payment process are forwarded here
+    ///
+    private let alertsPresenter: CardPresentPaymentAlertsPresenting
 
     /// Stores the card reader listener subscription while trying to connect to one.
     ///
@@ -85,20 +89,12 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     ///
     private lazy var paymentOrchestrator = PaymentCaptureOrchestrator(stores: stores)
 
-    /// Controller to connect a card reader.
-    ///
-    private lazy var connectionController = {
-        CardReaderConnectionController(forSiteID: siteID,
-                                       knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
-                                       alertsProvider: CardReaderSettingsAlerts(),
-                                       configuration: configuration,
-                                       analyticsTracker: CardReaderConnectionAnalyticsTracker(configuration: configuration,
-                                                                                              stores: stores,
-                                                                                              analytics: analytics))
-    }()
-
     /// Coordinates emailing a receipt after payment success.
     private var receiptEmailCoordinator: CardPresentPaymentReceiptEmailCoordinator?
+
+    private var preflightController: CardPresentPaymentPreflightController?
+
+    private var cancellables: Set<AnyCancellable> = []
 
     init(siteID: Int64,
          order: Order,
@@ -114,6 +110,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
         self.formattedAmount = formattedAmount
         self.paymentGatewayAccount = paymentGatewayAccount
         self.rootViewController = rootViewController
+        self.alertsPresenter = CardPresentPaymentAlertsPresenter(rootViewController: rootViewController)
         self.alerts = alerts
         self.configuration = configuration
         self.stores = stores
@@ -121,10 +118,13 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     }
 
     /// Starts the collect payment flow.
-    /// 1. Connects to a reader
-    /// 2. Collect payment from order
-    /// 3. If successful: prints or emails receipt
-    /// 4. If failure: Allows retry
+    /// 1. Checks valid total
+    /// 2. Calls CardReaderPreflightController to get a connected reader
+    /// 3. Hands off to PaymentCaptureOrchestrator to perform the payment
+    /// 4. Shows payment messages using an alert provider appropriate to the reader type
+    /// 5. Handles receipt alerts on success
+    /// 6. Allows retry on failure
+    /// 7. Tracks payment analytics
     ///
     ///
     /// - Parameter onCollect: Closure invoked after the collect process has finished.
@@ -139,12 +139,15 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
             return handleTotalAmountInvalidError(totalAmountInvalidError(), onCompleted: onCompleted)
         }
 
-        configureBackend()
-        observeConnectedReadersForAnalytics()
-        connectReader { [weak self] result in
+        preflightController = CardPresentPaymentPreflightController(siteID: siteID,
+                                                                    paymentGatewayAccount: paymentGatewayAccount,
+                                                                    configuration: configuration,
+                                                                    alertsPresenter: alertsPresenter)
+        preflightController?.readerConnection.sink { [weak self] connectionResult in
             guard let self = self else { return }
-            switch result {
-            case .success:
+            switch connectionResult {
+            case .connected(let reader):
+                self.connectedReader = reader
                 self.attemptPayment(onCompletion: { [weak self] result in
                     guard let self = self else { return }
                     // Inform about the collect payment state
@@ -155,20 +158,22 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                     default:
                         onCollect(result.map { _ in () }) // Transforms Result<CardPresentCapturedPaymentData, Error> to Result<Void, Error>
                     }
-
                     // Handle payment receipt
                     guard let paymentData = try? result.get() else {
                         return onCompleted()
                     }
                     self.presentReceiptAlert(receiptParameters: paymentData.receiptParameters, onCompleted: onCompleted)
                 })
-            case .failure(CollectOrderPaymentUseCaseError.flowCanceledByUser):
+            case .canceled:
                 self.trackPaymentCancelation()
                 onCancel()
-            case .failure(let error):
-                onCollect(.failure(error))
+            case .none:
+                break
             }
         }
+        .store(in: &cancellables)
+
+        preflightController?.start()
     }
 }
 
@@ -205,64 +210,6 @@ private extension CollectOrderPaymentUseCase {
         self.alerts.nonRetryableError(from: self.rootViewController, error: totalAmountInvalidError(), dismissCompletion: onCompleted)
     }
 
-    /// Configure the CardPresentPaymentStore to use the appropriate backend
-    ///
-    func configureBackend() {
-        let setAccount = CardPresentPaymentAction.use(paymentGatewayAccount: paymentGatewayAccount)
-        stores.dispatch(setAccount)
-    }
-
-    /// Attempts to connect to a reader.
-    /// Finishes with success immediately if a reader is already connected.
-    ///
-    func connectReader(onCompletion: @escaping (Result<Void, Error>) -> ()) {
-        // `checkCardReaderConnected` action will return a publisher that:
-        // - Sends one value if there is no reader connected.
-        // - Completes when a reader is connected.
-        let readerConnected = CardPresentPaymentAction.publishCardReaderConnections() { [weak self] connectPublisher in
-            guard let self = self else { return }
-            self.readerSubscription = connectPublisher
-                .sink(receiveValue: { [weak self] readers in
-                    guard let self = self else { return }
-
-                    if readers.isNotEmpty {
-                        // Dismiss the current connection alert before notifying the completion.
-                        // If no presented controller is found(because the reader was already connected), just notify the completion.
-                        if let connectionController = self.rootViewController.presentedViewController {
-                            connectionController.dismiss(animated: true) {
-                                onCompletion(.success(()))
-                            }
-                        } else {
-                            onCompletion(.success(()))
-                        }
-
-                        // Nil the subscription since we are done with the connection.
-                        self.readerSubscription = nil
-                    } else {
-                        // Attempt reader connection
-                        self.connectionController.searchAndConnect(from: self.rootViewController) { [weak self] result in
-                            guard let self = self else { return }
-                            switch result {
-                            case let .success(connectionResult):
-                                switch connectionResult {
-                                case .canceled:
-                                    self.readerSubscription = nil
-                                    onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
-                                case .connected:
-                                    // Connected case will be handled in `if readers.isNotEmpty`.
-                                    break
-                                }
-                            case .failure(let error):
-                                self.readerSubscription = nil
-                                onCompletion(.failure(error))
-                            }
-                        }
-                    }
-                })
-        }
-        stores.dispatch(readerConnected)
-    }
-
     /// Attempts to collect payment for an order.
     ///
     func attemptPayment(onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
@@ -273,6 +220,7 @@ private extension CollectOrderPaymentUseCase {
         }
 
         // Show preparing reader alert
+        // TODO: Move this tho the (New)PaymentCaptureOrchestrator
         alerts.preparingReader(onCancel: { [weak self] in
             self?.cancelPayment(onCompleted: {
                 onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
@@ -459,13 +407,6 @@ private extension CollectOrderPaymentUseCase {
 
 // MARK: Analytics
 private extension CollectOrderPaymentUseCase {
-    func observeConnectedReadersForAnalytics() {
-        let action = CardPresentPaymentAction.observeConnectedReaders() { [weak self] readers in
-            self?.connectedReader = readers.first
-        }
-        stores.dispatch(action)
-    }
-
     func trackProcessingCompletion(intent: PaymentIntent) {
         guard let paymentMethod = intent.paymentMethod() else {
             return

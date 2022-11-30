@@ -16,6 +16,12 @@ struct AnalyticsReportCard: View {
     let trailingDeltaColor: UIColor
     let trailingChartData: [Double]
 
+    let isRedacted: Bool
+
+    // Layout metrics that scale based on accessibility changes
+    @ScaledMetric private var scaledChartWidth: CGFloat = Layout.chartWidth
+    @ScaledMetric private var scaledChartHeight: CGFloat = Layout.chartHeight
+
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.titleSpacing) {
 
@@ -34,14 +40,17 @@ struct AnalyticsReportCard: View {
 
                     Text(leadingValue)
                         .titleStyle()
+                        .redacted(reason: isRedacted ? .placeholder : [])
+                        .shimmering(active: isRedacted)
 
-                    AdaptiveStack {
+                    AdaptiveStack(horizontalAlignment: .leading) {
                         DeltaTag(value: leadingDelta, backgroundColor: leadingDeltaColor)
                             .frame(maxWidth: .infinity, alignment: .leading)
+                            .redacted(reason: isRedacted ? .placeholder : [])
+                            .shimmering(active: isRedacted)
 
                         AnalyticsLineChart(dataPoints: leadingChartData, lineChartColor: leadingDeltaColor)
-                            .aspectRatio(Layout.chartAspectRatio, contentMode: .fit)
-                            .frame(maxWidth: .infinity, maxHeight: Layout.chartMaxHeight, alignment: .trailing)
+                            .frame(width: scaledChartWidth, height: scaledChartHeight)
                     }
 
                 }
@@ -55,14 +64,17 @@ struct AnalyticsReportCard: View {
 
                     Text(trailingValue)
                         .titleStyle()
+                        .redacted(reason: isRedacted ? .placeholder : [])
+                        .shimmering(active: isRedacted)
 
-                    AdaptiveStack {
+                    AdaptiveStack(horizontalAlignment: .leading) {
                         DeltaTag(value: trailingDelta, backgroundColor: trailingDeltaColor)
                             .frame(maxWidth: .infinity, alignment: .leading)
+                            .redacted(reason: isRedacted ? .placeholder : [])
+                            .shimmering(active: isRedacted)
 
                         AnalyticsLineChart(dataPoints: trailingChartData, lineChartColor: trailingDeltaColor)
-                            .aspectRatio(Layout.chartAspectRatio, contentMode: .fit)
-                            .frame(maxWidth: .infinity, maxHeight: Layout.chartMaxHeight, alignment: .trailing)
+                            .frame(width: scaledChartWidth, height: scaledChartHeight)
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -79,8 +91,8 @@ private extension AnalyticsReportCard {
         static let cardPadding: CGFloat = 16
         static let columnOutterSpacing: CGFloat = 28
         static let columnInnerSpacing: CGFloat = 10
-        static let chartAspectRatio: CGFloat = 2.2
-        static let chartMaxHeight: CGFloat = 48
+        static let chartHeight: CGFloat = 32
+        static let chartWidth: CGFloat = 72
     }
 }
 
@@ -97,7 +109,8 @@ struct Previews: PreviewProvider {
                             trailingValue: "$3.232",
                             trailingDelta: "-3%",
                             trailingDeltaColor: .withColorStudio(.red, shade: .shade40),
-                            trailingChartData: [50.0, 15.0, 20.0, 2.0, 10.0, 0.0, 40.0, 15.0, 20.0, 2.0, 10.0, 0.0])
+                            trailingChartData: [50.0, 15.0, 20.0, 2.0, 10.0, 0.0, 40.0, 15.0, 20.0, 2.0, 10.0, 0.0],
+                            isRedacted: false)
             .previewLayout(.sizeThatFits)
     }
 }

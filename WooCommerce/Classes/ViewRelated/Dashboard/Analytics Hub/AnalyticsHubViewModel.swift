@@ -233,12 +233,5 @@ private extension AnalyticsHubViewModel {
             static let leadingTitle = NSLocalizedString("Total Orders", comment: "Label for total number of orders in the Analytics Hub")
             static let trailingTitle = NSLocalizedString("Average Order Value", comment: "Label for average value of orders in the Analytics Hub")
         }
-        enum TimeRangeCard {
-            static let today = NSLocalizedString("Today", comment: "Title of the Analytics Hub Today's selection range")
-            static let weekToDate = NSLocalizedString("Week to Date", comment: "Title of the Analytics Hub Week to Date selection range")
-            static let monthToDate = NSLocalizedString("Month to Date", comment: "Title of the Analytics Hub Month to Date selection range")
-            static let yearToDate = NSLocalizedString("Year to Date", comment: "Title of the Analytics Hub Year to Date selection range")
-            static let selectionTitle = NSLocalizedString("Date Range", comment: "Title of the range selection list")
-        }
     }
 }

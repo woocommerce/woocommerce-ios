@@ -27,20 +27,14 @@ final class ProductsRemoteTests: XCTestCase {
 
     // MARK: - Add Product
 
-    func test_addProduct_with_success_mock_returns_a_product() {
+    func test_addProduct_with_success_mock_returns_a_product() async throws {
         // Given
         let remote = ProductsRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "products", filename: "product-add-or-delete")
 
         // When
         let product = sampleProduct()
-        var addedProduct: Product?
-        waitForExpectation { expectation in
-            remote.addProduct(product: product) { result in
-                addedProduct = try? result.get()
-                expectation.fulfill()
-            }
-        }
+        var addedProduct = try await remote.addProduct(product: product)
 
         // Then
         let expectedProduct = Product(siteID: sampleSiteID,
@@ -109,27 +103,28 @@ final class ProductsRemoteTests: XCTestCase {
         XCTAssertEqual(addedProduct, expectedProduct)
     }
 
-    func test_addProduct_relays_networking_error() {
+    func test_addProduct_relays_networking_error() async throws {
         // Given
         let remote = ProductsRemote(network: network)
 
         // When
         let product = sampleProduct()
-        var result: Result<Product, Error>?
-        waitForExpectation { expectation in
-            remote.addProduct(product: product) { aResult in
-                result = aResult
-                expectation.fulfill()
-            }
+        var addedProduct: Product?
+        var result: Error?
+
+        do {
+            addedProduct = try await remote.addProduct(product: product)
+        } catch {
+            result = error
         }
 
-        // Then
-        XCTAssertEqual(result?.isFailure, true)
+        XCTAssertNil(addedProduct)
+        XCTAssertEqual(result as? NetworkError, NetworkError.notFound)
     }
 
     // MARK: - Delete Product
 
-    func test_deleteProduct_with_success_mock_returns_a_product() {
+    func test_deleteProduct_with_success_mock_returns_a_product() async throws {
         // Given
         let remote = ProductsRemote(network: network)
 
@@ -137,13 +132,7 @@ final class ProductsRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)", filename: "product-add-or-delete")
 
         // When
-        var deletedProduct: Product?
-        waitForExpectation { expectation in
-            remote.deleteProduct(for: sampleSiteID, productID: sampleProductID) { (result) in
-                deletedProduct = try? result.get()
-                expectation.fulfill()
-            }
-        }
+        var deletedProduct = try await remote.deleteProduct(for: sampleSiteID, productID: sampleProductID)
 
         // Then
         let expectedProduct = Product(siteID: sampleSiteID,
@@ -212,21 +201,23 @@ final class ProductsRemoteTests: XCTestCase {
         XCTAssertEqual(deletedProduct, expectedProduct)
     }
 
-    func test_deleteProduct_relays_networking_error() {
+    func test_deleteProduct_relays_networking_error() async throws {
         // Given
         let remote = ProductsRemote(network: network)
 
         // When
-        var result: Result<Product, Error>?
-        waitForExpectation { expectation in
-            remote.deleteProduct(for: sampleSiteID, productID: sampleProductID) { (aResult) in
-                result = aResult
-                expectation.fulfill()
-            }
+        var deletedProduct: Product?
+        var result: Error?
+
+        do {
+            deletedProduct = try await remote.deleteProduct(for: sampleSiteID, productID: sampleProductID)
+        } catch {
+            result = error
         }
 
         // Then
-        XCTAssertEqual(result?.isFailure, true)
+        XCTAssertNil(deletedProduct)
+        XCTAssertEqual(result as? NetworkError, NetworkError.notFound)
     }
 
     // MARK: - Load all products tests

@@ -73,32 +73,14 @@ final class MockProductsRemote {
 // MARK: - ProductsEndpointsProviding
 
 extension MockProductsRemote: ProductsRemoteProtocol {
-    func addProduct(product: Product, completion: @escaping (Result<Product, Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else {
-                return
-            }
-
-            if let result = self.addProductResultsBySiteID[product.siteID] {
-                completion(result)
-            } else {
-                XCTFail("\(String(describing: self)) Could not find Result for site ID \(product.siteID)")
-            }
-        }
+    func addProduct(product: Product) async throws -> Product {
+        // TODO: Mock addProduct. We no longer use the Result<Product, Error> signature
+        return product
     }
 
-    func deleteProduct(for siteID: Int64, productID: Int64, completion: @escaping (Result<Product, Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else {
-                return
-            }
-
-            if let result = self.deleteProductResultsBySiteID[siteID] {
-                completion(result)
-            } else {
-                XCTFail("\(String(describing: self)) Could not find Result for site ID \(siteID)")
-            }
-        }
+    func deleteProduct(for siteID: Int64, productID: Int64) async throws -> Product {
+        // TODO: Mock deleteProduct. We no longer use the Result<Product, Error> signature
+        return Product.fake()
     }
 
     func loadProduct(for siteID: Int64,

@@ -72,6 +72,7 @@ private extension SiteCredentialLoginViewModel {
         // makes sure the loading indicator is shown
         isLoggingIn = true
 
+        // Prepares the authenticator with username and password
         let authenticator = CookieNonceAuthenticator(username: username,
                                                      password: password,
                                                      loginURL: loginURL,
@@ -82,6 +83,7 @@ private extension SiteCredentialLoginViewModel {
         let authenticationAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
         stores.dispatch(authenticationAction)
 
+        // Retrieves Jetpack plugin details to see if the authentication succeeds.
         let jetpackAction = JetpackConnectionAction.retrieveJetpackPluginDetails { [weak self] result in
             guard let self else { return }
             self.isLoggingIn = false
@@ -130,6 +132,6 @@ extension SiteCredentialLoginViewModel {
     enum Constants {
         static let loginPath = "/wp-login.php"
         static let adminPath = "/wp-admin/"
-        static let defaultWPVersion = "5.6.0"
+        static let defaultWPVersion = "5.6.0" // a default version that supports Ajax nonce retrieval
     }
 }

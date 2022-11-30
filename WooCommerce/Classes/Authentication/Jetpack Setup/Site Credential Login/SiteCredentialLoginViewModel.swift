@@ -19,7 +19,7 @@ final class SiteCredentialLoginViewModel: NSObject, ObservableObject {
     @Published var shouldShowErrorAlert = false
 
     private let stores: StoresManager
-    private let successHandler: (_ xmlrpc: String) -> Void
+    private let successHandler: () -> Void
     private let analytics: Analytics
 
     private var loginFields: LoginFields {
@@ -34,7 +34,7 @@ final class SiteCredentialLoginViewModel: NSObject, ObservableObject {
     init(siteURL: String,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         onLoginSuccess: @escaping (String) -> Void = { _ in }) {
+         onLoginSuccess: @escaping () -> Void = {}) {
         self.siteURL = siteURL
         self.stores = stores
         self.analytics = analytics
@@ -87,11 +87,11 @@ private extension SiteCredentialLoginViewModel {
             self.isLoggingIn = false
             switch result {
             case .success:
-                self.successHandler("")
+                self.successHandler()
             case .failure(let error):
                 if case .responseValidationFailed(reason: .unacceptableStatusCode(code: 404)) = error as? AFError {
                     // Error 404 means Jetpack is not installed. Allow this to come through.
-                    return self.successHandler("")
+                    return self.successHandler()
                 }
                 self.handleRemoteError(error)
             }

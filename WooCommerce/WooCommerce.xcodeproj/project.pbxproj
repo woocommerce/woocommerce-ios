@@ -1353,6 +1353,7 @@
 		B6F379682937836700718561 /* AnalyticsHubTimeRangeSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F379672937836700718561 /* AnalyticsHubTimeRangeSelection.swift */; };
 		B6F3796A29378B3900718561 /* AnalyticsHubMonthRangeSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F3796929378B3900718561 /* AnalyticsHubMonthRangeSelection.swift */; };
 		B6F3796C293794A000718561 /* AnalyticsHubYearRangeSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F3796B293794A000718561 /* AnalyticsHubYearRangeSelection.swift */; };
+		B6F3796E293796BC00718561 /* AnalyticsHubWeekRangeSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F3796D293796BC00718561 /* AnalyticsHubWeekRangeSelection.swift */; };
 		B873E8F8E103966D2182EE67 /* Pods_WooCommerceTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DC4526F9A7357761197EBF0 /* Pods_WooCommerceTests.framework */; };
 		B910686027F1F28F00AD0575 /* GhostableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B910685F27F1F28F00AD0575 /* GhostableViewController.swift */; };
 		B9151B3F2840EB330036180F /* WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9151B3E2840EB330036180F /* WooFoundation.framework */; };
@@ -3348,6 +3349,7 @@
 		B6F379672937836700718561 /* AnalyticsHubTimeRangeSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubTimeRangeSelection.swift; sourceTree = "<group>"; };
 		B6F3796929378B3900718561 /* AnalyticsHubMonthRangeSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubMonthRangeSelection.swift; sourceTree = "<group>"; };
 		B6F3796B293794A000718561 /* AnalyticsHubYearRangeSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubYearRangeSelection.swift; sourceTree = "<group>"; };
+		B6F3796D293796BC00718561 /* AnalyticsHubWeekRangeSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubWeekRangeSelection.swift; sourceTree = "<group>"; };
 		B910685F27F1F28F00AD0575 /* GhostableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhostableViewController.swift; sourceTree = "<group>"; };
 		B9151B3E2840EB330036180F /* WooFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = WooFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B92FF9AD27FC7217005C34E3 /* OrderListViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OrderListViewController.xib; sourceTree = "<group>"; };
@@ -7428,6 +7430,7 @@
 				B6F379672937836700718561 /* AnalyticsHubTimeRangeSelection.swift */,
 				B6F3796929378B3900718561 /* AnalyticsHubMonthRangeSelection.swift */,
 				B6F3796B293794A000718561 /* AnalyticsHubYearRangeSelection.swift */,
+				B6F3796D293796BC00718561 /* AnalyticsHubWeekRangeSelection.swift */,
 			);
 			path = "Time Range";
 			sourceTree = "<group>";
@@ -9834,6 +9837,7 @@
 				02645D8827BA2E820065DC68 /* NSAttributedString+Attributes.swift in Sources */,
 				024DF3092372CA00006658FE /* EditorViewProperties.swift in Sources */,
 				45F8C43B2680BC3500F1A6EC /* ShippingLabelDiscountInfoViewController.swift in Sources */,
+				B6F3796E293796BC00718561 /* AnalyticsHubWeekRangeSelection.swift in Sources */,
 				DE77889A26FD7EF0008DFF44 /* ShippingLabelPackageItem.swift in Sources */,
 				CE85535D209B5BB700938BDC /* OrderDetailsViewModel.swift in Sources */,
 				31B05523264B3C8900134D87 /* CardPresentModalConnectingToReader.swift in Sources */,

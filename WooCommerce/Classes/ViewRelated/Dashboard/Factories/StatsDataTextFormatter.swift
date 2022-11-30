@@ -222,17 +222,6 @@ extension StatsDataTextFormatter {
             case zero
         }
     }
-
-    // MARK: Stats Intervals
-
-    /// Returns the order stats intervals, ordered by date.
-    ///
-    static func sortOrderStatsIntervals(from orderStats: OrderStatsV4?) -> [OrderStatsV4Interval] {
-        return orderStats?.intervals.sorted(by: { (lhs, rhs) -> Bool in
-            let siteTimezone = TimeZone.siteTimezone
-            return lhs.dateStart(timeZone: siteTimezone) < rhs.dateStart(timeZone: siteTimezone)
-        }) ?? []
-    }
 }
 
 // MARK: - Private helpers
@@ -266,7 +255,7 @@ private extension StatsDataTextFormatter {
     /// Retrieves the order count for the provided order stats and, optionally, a specific interval.
     ///
     static func orderCount(at selectedIndex: Int?, orderStats: OrderStatsV4?) -> Double? {
-        let orderStatsIntervals = sortOrderStatsIntervals(from: orderStats)
+        let orderStatsIntervals = StatsIntervalDataParser.sortOrderStatsIntervals(from: orderStats)
         if let selectedIndex, selectedIndex < orderStatsIntervals.count {
             let orderStats = orderStatsIntervals[selectedIndex]
             return Double(orderStats.subtotals.totalOrders)
@@ -290,7 +279,7 @@ private extension StatsDataTextFormatter {
     /// Retrieves the total revenue from the provided order stats and, optionally, a specific interval.
     ///
     static func totalRevenue(at selectedIndex: Int?, orderStats: OrderStatsV4?) -> Decimal? {
-        let orderStatsIntervals = sortOrderStatsIntervals(from: orderStats)
+        let orderStatsIntervals = StatsIntervalDataParser.sortOrderStatsIntervals(from: orderStats)
         if let selectedIndex, selectedIndex < orderStatsIntervals.count {
             let orderStats = orderStatsIntervals[selectedIndex]
             return orderStats.subtotals.grossRevenue

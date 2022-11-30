@@ -21,8 +21,8 @@ final class AnalyticsHubViewModel: ObservableObject {
         self.siteID = siteID
         self.stores = stores
         self.timeRangeSelectionType = selectedType
-        self.timeRangeGenerator = timeRangeGenerator
-        self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeGenerator: timeRangeGenerator)
+        self.timeRangeSelection = timeRangeSelectionData
+        self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelectionData: timeRangeSelectionData)
 
         bindViewModelsWithData()
     }
@@ -41,7 +41,7 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Time Range Selection Type
     ///
-    @Published var timeRangeSelectionType: AnalyticsHubTimeRangeGenerator.SelectionType
+    @Published var timeRangeSelectionType: TimeRangeSelectionType
 
     /// Time Range ViewModel
     ///
@@ -59,8 +59,7 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Time Range selection data defining the current and previous time period
     ///
-    private var timeRangeSelectionData: AnalyticsHubTimeRangeSelection
-}
+    private var timeRangeSelection: AnalyticsHubTimeRangeSelection
 
     /// Request stats data from network
     ///
@@ -81,8 +80,8 @@ private extension AnalyticsHubViewModel {
     func retrieveOrderStats() async throws {
         switchToLoadingState()
 
-        let currentTimeRange = try timeRangeGenerator.unwrapCurrentTimeRange()
-        let previousTimeRange = try timeRangeGenerator.unwrapPreviousTimeRange()
+        let currentTimeRange = try timeRangeSelection.unwrapCurrentTimeRange()
+        let previousTimeRange = try timeRangeSelection.unwrapPreviousTimeRange()
 
         async let currentPeriodRequest = retrieveStats(earliestDateToInclude: currentTimeRange.start,
                                                        latestDateToInclude: currentTimeRange.end,
@@ -146,8 +145,8 @@ private extension AnalyticsHubViewModel {
             .removeDuplicates()
             .sink { [weak self] newSelectionType in
                 guard let self else { return }
-                self.timeRangeSelectionData = AnalyticsHubTimeRangeSelection(selectionType: newSelectionType)
-                self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelectionData: self.timeRangeSelectionData)
+                self.timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: newSelectionType)
+                self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelectionData: self.timeRangeSelection)
                 Task.init {
                     await self.updateData()
                 }
@@ -209,7 +208,7 @@ private extension AnalyticsHubViewModel {
     }
 }
 
-// MARK: - Selection Type
+// MARK: - Time Range Selection Type
 extension AnalyticsHubViewModel {
     enum TimeRangeSelectionType: CaseIterable {
         case today
@@ -231,6 +230,20 @@ extension AnalyticsHubViewModel {
                 }
             }
         }
+
+        static func from(_ statsTimeRange: StatsTimeRangeV4) -> TimeRangeSelectionType {
+            switch statsTimeRange {
+            case .today:
+                return .today
+            case .thisWeek:
+                return .weekToDate
+            case .thisMonth:
+                return .monthToDate
+            case .thisYear:
+                return .yearToDate
+            }
+        }
+    }
 }
 
 // MARK: - Constants
@@ -257,6 +270,13 @@ private extension AnalyticsHubViewModel {
             static let title = NSLocalizedString("ORDERS", comment: "Title for order analytics section in the Analytics Hub")
             static let leadingTitle = NSLocalizedString("Total Orders", comment: "Label for total number of orders in the Analytics Hub")
             static let trailingTitle = NSLocalizedString("Average Order Value", comment: "Label for average value of orders in the Analytics Hub")
+        }
+        enum TimeRangeCard {
+            static let today = NSLocalizedString("Today", comment: "Title of the Analytics Hub Today's selection range")
+            static let weekToDate = NSLocalizedString("Week to Date", comment: "Title of the Analytics Hub Week to Date selection range")
+            static let monthToDate = NSLocalizedString("Month to Date", comment: "Title of the Analytics Hub Month to Date selection range")
+            static let yearToDate = NSLocalizedString("Year to Date", comment: "Title of the Analytics Hub Year to Date selection range")
+            static let selectionTitle = NSLocalizedString("Date Range", comment: "Title of the range selection list")
         }
     }
 }

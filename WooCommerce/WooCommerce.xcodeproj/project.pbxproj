@@ -466,6 +466,7 @@
 		035BA3A8291000E90056F0AD /* JustInTimeMessageAnnouncementCardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035BA3A7291000E90056F0AD /* JustInTimeMessageAnnouncementCardViewModelTests.swift */; };
 		035C6DEB273EA12D00F70406 /* SoftwareUpdateTypeProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035C6DEA273EA12D00F70406 /* SoftwareUpdateTypeProperty.swift */; };
 		035DBA45292D0164003E5125 /* CollectOrderPaymentUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035DBA44292D0163003E5125 /* CollectOrderPaymentUseCase.swift */; };
+		035DBA47292D0995003E5125 /* CardPresentPaymentPreflightController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035DBA46292D0994003E5125 /* CardPresentPaymentPreflightController.swift */; };
 		035F2308275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035F2307275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift */; };
 		0366EAE12909A37800B51755 /* JustInTimeMessageAnnouncementCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0366EAE02909A37800B51755 /* JustInTimeMessageAnnouncementCardViewModel.swift */; };
 		036CA6B9291E8D4B00E4DF4F /* CardPresentModalPreparingReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036CA6B8291E8D4B00E4DF4F /* CardPresentModalPreparingReader.swift */; };
@@ -2458,6 +2459,7 @@
 		035BA3A7291000E90056F0AD /* JustInTimeMessageAnnouncementCardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustInTimeMessageAnnouncementCardViewModelTests.swift; sourceTree = "<group>"; };
 		035C6DEA273EA12D00F70406 /* SoftwareUpdateTypeProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoftwareUpdateTypeProperty.swift; sourceTree = "<group>"; };
 		035DBA44292D0163003E5125 /* CollectOrderPaymentUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectOrderPaymentUseCase.swift; sourceTree = "<group>"; };
+		035DBA46292D0994003E5125 /* CardPresentPaymentPreflightController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentPreflightController.swift; sourceTree = "<group>"; };
 		035F2307275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalConnectingFailedUpdatePostalCode.swift; sourceTree = "<group>"; };
 		0366EAE02909A37800B51755 /* JustInTimeMessageAnnouncementCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustInTimeMessageAnnouncementCardViewModel.swift; sourceTree = "<group>"; };
 		036CA6B8291E8D4B00E4DF4F /* CardPresentModalPreparingReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalPreparingReader.swift; sourceTree = "<group>"; };
@@ -8478,6 +8480,7 @@
 				037D270C28CA444F00A3F924 /* CardReaderModalFlowViewControllerProtocol.swift */,
 				D8815ADE26383EE700EDAD62 /* CardPresentPaymentsModalViewController.xib */,
 				31E6F21E26B3577800227E6F /* CardReaderConnectionController.swift */,
+				035DBA46292D0994003E5125 /* CardPresentPaymentPreflightController.swift */,
 				D8EE9690264D328A0033B2F9 /* ReceiptViewController.swift */,
 				D8EE9691264D328A0033B2F9 /* ReceiptViewController.xib */,
 				31C21FA326D9949000916E2E /* SeveralReadersFoundViewController.swift */,
@@ -10152,6 +10155,7 @@
 				02162729237965E8000208D2 /* ProductFormTableViewModel.swift in Sources */,
 				DEF3300C270444070073AE29 /* ShippingLabelSelectedRate.swift in Sources */,
 				CE2A9FBF23BFB1BE002BEC1C /* LedgerTableViewCell.swift in Sources */,
+				035DBA47292D0995003E5125 /* CardPresentPaymentPreflightController.swift in Sources */,
 				B58B4AC02108FF6100076FDD /* Array+Helpers.swift in Sources */,
 				028AFFB32484ED2800693C09 /* Dictionary+Logging.swift in Sources */,
 				45BBFBC1274FD94300213001 /* HubMenuCoordinator.swift in Sources */,

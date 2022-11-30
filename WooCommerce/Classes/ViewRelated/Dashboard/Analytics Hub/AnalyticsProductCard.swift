@@ -41,6 +41,17 @@ struct AnalyticsProductCard: View {
                     .redacted(reason: isRedacted ? .placeholder : [])
                     .shimmering(active: isRedacted)
             }
+
+            let imageURL = URL(string: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")
+            TopPerformersView(itemTitle: "Products",
+                              valueTitle: "Items Sold",
+                              rows: [
+                                .init(imageURL: imageURL, name: "Tabletop Photos", details: "Net Sales: $1,232", value: "32"),
+                                .init(imageURL: imageURL, name: "Kentya Palm", details: "Net Sales: $800", value: "10"),
+                                .init(imageURL: imageURL, name: "Love Ficus", details: "Net Sales: $599", value: "5"),
+                                .init(imageURL: imageURL, name: "Bird Of Paradise", details: "Net Sales: $23.50", value: "2")
+                              ])
+            .padding(.top, Layout.columnSpacing)
         }
         .padding(Layout.cardPadding)
     }

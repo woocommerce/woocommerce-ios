@@ -21,7 +21,7 @@ struct TopPerformersView: View {
     /// Text margin value: Where the row text is placed in the X position.
     /// Needed to properly layout the row divider.
     ///
-    @State private var rowTextMarging: CGFloat = 0
+    @State private var rowTextMargin: CGFloat = 0
 
     var body: some View {
         VStack() {
@@ -34,14 +34,15 @@ struct TopPerformersView: View {
             }
             .foregroundColor(Color(.text))
             .subheadlineStyle()
+            .padding(.bottom, Layout.tableSpacing)
 
             // Rows
             ForEach(rows.indexed(), id: \.0.self) { index, row in
 
-                TopPerformersRow(data: row, textMarging: $rowTextMarging)
+                TopPerformersRow(data: row, textMargin: $rowTextMargin)
 
                 Divider()
-                    .padding(.leading, rowTextMarging)
+                    .padding(.leading, rowTextMargin)
                     .renderedIf(index < rows.count - 1) // Do not render the divider for the last row.
             }
         }
@@ -83,7 +84,7 @@ struct TopPerformersRow: View {
     /// Binding variable where we set in what X position the text labels begin, using the main view coordinate space.
     /// Useful for letting consumers know where to layout the row divider.
     ///
-    @Binding var textMarging: CGFloat
+    @Binding var textMargin: CGFloat
 
     var body: some View {
         HStack(alignment: .firstTextBaseline) {
@@ -107,7 +108,7 @@ struct TopPerformersRow: View {
                     // Trick to get the text labels X position relative to the main parent view.
                     GeometryReader() { proxy in
                         Color.clear.task {
-                            textMarging = proxy.frame(in: .named(Layout.mainViewCoordinaateSpace)).minX
+                            textMargin = proxy.frame(in: .named(Layout.mainViewCoordinaateSpace)).minX
                         }
                     }
                 )
@@ -119,6 +120,12 @@ struct TopPerformersRow: View {
                 .subheadlineStyle()
         }
         .coordinateSpace(name: Layout.mainViewCoordinaateSpace)
+    }
+}
+
+private extension TopPerformersView {
+    enum Layout {
+        static let tableSpacing: CGFloat = 16
     }
 }
 

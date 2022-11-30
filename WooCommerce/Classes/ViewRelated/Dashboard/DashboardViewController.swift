@@ -607,7 +607,7 @@ private extension DashboardViewController {
         if self.traitCollection.userInterfaceIdiom == .pad {
             collapsedNavigationBarHeight = Constants.iPadCollapsedNavigationBarHeight
         } else {
-            collapsedNavigationBarHeight = Constants.collapsedNavigationBarHeight
+            collapsedNavigationBarHeight = Constants.iPhoneCollapsedNavigationBarHeight
         }
         return navigationBarHeight <= collapsedNavigationBarHeight
     }
@@ -627,7 +627,7 @@ private extension DashboardViewController {
         static let horizontalMargin = CGFloat(16)
         static let storeNameTextColor: UIColor = .secondaryLabel
         static let backgroundColor: UIColor = .systemBackground
-        static let collapsedNavigationBarHeight = CGFloat(44)
+        static let iPhoneCollapsedNavigationBarHeight = CGFloat(44)
         static let iPadCollapsedNavigationBarHeight = CGFloat(50)
     }
 }

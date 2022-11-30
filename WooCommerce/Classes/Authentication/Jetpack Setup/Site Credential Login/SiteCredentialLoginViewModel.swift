@@ -90,7 +90,7 @@ private extension SiteCredentialLoginViewModel {
             switch result {
             case .success:
                 // Success to get the details means the authentication succeeds.
-                self.successHandler()
+                self.handleCompletion()
             case .failure(let error):
                 self.handleRemoteError(error)
             }
@@ -105,7 +105,7 @@ private extension SiteCredentialLoginViewModel {
             // Error 404 means Jetpack is not installed. Allow this to come through.
             // Error 403 means the lack of permission to manage plugins. Also allow this error
             // since we want to show the error on the next screen.
-            return successHandler()
+            return handleCompletion()
         case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 401)):
             errorMessage = Localization.wrongCredentials
         default:
@@ -114,6 +114,11 @@ private extension SiteCredentialLoginViewModel {
 
         shouldShowErrorAlert = true
         analytics.track(.loginJetpackSiteCredentialDidShowErrorAlert, withError: error)
+    }
+
+    func handleCompletion() {
+        analytics.track(.loginJetpackSiteCredentialDidFinishLogin)
+        successHandler()
     }
 }
 

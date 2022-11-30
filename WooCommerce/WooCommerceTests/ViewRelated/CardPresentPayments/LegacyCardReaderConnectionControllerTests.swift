@@ -4,7 +4,7 @@ import Storage
 import Yosemite
 @testable import WooCommerce
 
-final class CardReaderConnectionControllerTests: XCTestCase {
+final class LegacyCardReaderConnectionControllerTests: XCTestCase {
     /// Dummy Site ID
     ///
     private let sampleSiteID: Int64 = 1234
@@ -42,7 +42,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         let mockPresentingViewController = UIViewController()
         let mockKnownReaderProvider = MockKnownReaderProvider(knownReader: nil)
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .cancelScanning)
-        let controller = CardReaderConnectionController(
+        let controller = LegacyCardReaderConnectionController(
             forSiteID: sampleSiteID,
             storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
@@ -53,7 +53,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         )
 
         // When
-        let connectionResult: CardReaderConnectionController.ConnectionResult = waitFor { promise in
+        let connectionResult: LegacyCardReaderConnectionController.ConnectionResult = waitFor { promise in
             controller.searchAndConnect(from: mockPresentingViewController) { result in
                 XCTAssertTrue(result.isSuccess)
                 if case .success(let connectionResult) = result {
@@ -78,7 +78,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         let mockPresentingViewController = UIViewController()
         let mockKnownReaderProvider = MockKnownReaderProvider(knownReader: nil)
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .connectFoundReader)
-        let controller = CardReaderConnectionController(
+        let controller = LegacyCardReaderConnectionController(
             forSiteID: sampleSiteID,
             storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
@@ -89,7 +89,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         )
 
         // When
-        let connectionResult: CardReaderConnectionController.ConnectionResult = waitFor { promise in
+        let connectionResult: LegacyCardReaderConnectionController.ConnectionResult = waitFor { promise in
             controller.searchAndConnect(from: mockPresentingViewController) { result in
                 if case .success(let connectionResult) = result {
                     promise(connectionResult)
@@ -121,7 +121,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         let mockPresentingViewController = UIViewController()
         let mockKnownReaderProvider = MockKnownReaderProvider(knownReader: knownReader.id)
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .connectFoundReader)
-        let controller = CardReaderConnectionController(
+        let controller = LegacyCardReaderConnectionController(
             forSiteID: sampleSiteID,
             storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
@@ -132,7 +132,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         )
 
         // When
-        let connectionResult: CardReaderConnectionController.ConnectionResult = waitFor { promise in
+        let connectionResult: LegacyCardReaderConnectionController.ConnectionResult = waitFor { promise in
             controller.searchAndConnect(from: mockPresentingViewController) { result in
                 if case .success(let connectionResult) = result {
                     promise(connectionResult)
@@ -159,7 +159,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         let mockPresentingViewController = UIViewController()
         let mockKnownReaderProvider = MockKnownReaderProvider(knownReader: nil)
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .closeScanFailure)
-        let controller = CardReaderConnectionController(
+        let controller = LegacyCardReaderConnectionController(
             forSiteID: sampleSiteID,
             storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
@@ -196,7 +196,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         let mockPresentingViewController = UIViewController()
         let mockKnownReaderProvider = MockKnownReaderProvider(knownReader: nil)
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .cancelFoundSeveral)
-        let controller = CardReaderConnectionController(
+        let controller = LegacyCardReaderConnectionController(
             forSiteID: sampleSiteID,
             storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
@@ -207,7 +207,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         )
 
         // When
-        let connectionResult: CardReaderConnectionController.ConnectionResult = waitFor { promise in
+        let connectionResult: LegacyCardReaderConnectionController.ConnectionResult = waitFor { promise in
             controller.searchAndConnect(from: mockPresentingViewController) { result in
                 if case .success(let connectionResult) = result {
                     promise(connectionResult)
@@ -235,7 +235,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         let mockKnownReaderProvider = MockKnownReaderProvider(knownReader: nil)
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .cancelSearchingAfterConnectionFailure)
 
-        let controller = CardReaderConnectionController(
+        let controller = LegacyCardReaderConnectionController(
             forSiteID: sampleSiteID,
             storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
@@ -246,7 +246,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         )
 
         // When
-        let connectionResult: CardReaderConnectionController.ConnectionResult = waitFor { promise in
+        let connectionResult: LegacyCardReaderConnectionController.ConnectionResult = waitFor { promise in
             controller.searchAndConnect(from: mockPresentingViewController) { result in
                 if case .success(let connectionResult) = result {
                     promise(connectionResult)
@@ -279,7 +279,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         let mockKnownReaderProvider = MockKnownReaderProvider(knownReader: nil)
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .cancelSearchingAfterConnectionFailure)
 
-        let controller = CardReaderConnectionController(
+        let controller = LegacyCardReaderConnectionController(
             forSiteID: sampleSiteID,
             storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
@@ -290,7 +290,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         )
 
         // When
-        let connectionResult: CardReaderConnectionController.ConnectionResult = waitFor { promise in
+        let connectionResult: LegacyCardReaderConnectionController.ConnectionResult = waitFor { promise in
             controller.searchAndConnect(from: mockPresentingViewController) { result in
                 if case .success(let connectionResult) = result {
                     promise(connectionResult)
@@ -315,7 +315,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         let mockKnownReaderProvider = MockKnownReaderProvider(knownReader: nil)
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .connectFirstFound)
 
-        let controller = CardReaderConnectionController(
+        let controller = LegacyCardReaderConnectionController(
             forSiteID: sampleSiteID,
             storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
@@ -326,7 +326,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         )
 
         // When
-        let connectionResult: CardReaderConnectionController.ConnectionResult = waitFor { promise in
+        let connectionResult: LegacyCardReaderConnectionController.ConnectionResult = waitFor { promise in
             controller.searchAndConnect(from: mockPresentingViewController) { result in
                 if case .success(let connectionResult) = result {
                     promise(connectionResult)
@@ -354,7 +354,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         let mockKnownReaderProvider = MockKnownReaderProvider(knownReader: nil)
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .continueSearchingAfterConnectionFailure)
 
-        let controller = CardReaderConnectionController(
+        let controller = LegacyCardReaderConnectionController(
             forSiteID: sampleSiteID,
             storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
@@ -365,7 +365,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         )
 
         // When
-        let connectionResult: CardReaderConnectionController.ConnectionResult = waitFor { promise in
+        let connectionResult: LegacyCardReaderConnectionController.ConnectionResult = waitFor { promise in
             controller.searchAndConnect(from: mockPresentingViewController) { result in
                 if case .success(let connectionResult) = result {
                     promise(connectionResult)
@@ -393,7 +393,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         let mockKnownReaderProvider = MockKnownReaderProvider(knownReader: nil)
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .continueSearchingAfterConnectionFailure)
 
-        let controller = CardReaderConnectionController(
+        let controller = LegacyCardReaderConnectionController(
             forSiteID: sampleSiteID,
             storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
@@ -404,7 +404,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         )
 
         // When
-        let connectionResult: CardReaderConnectionController.ConnectionResult = waitFor { promise in
+        let connectionResult: LegacyCardReaderConnectionController.ConnectionResult = waitFor { promise in
             controller.searchAndConnect(from: mockPresentingViewController) { result in
                 if case .success(let connectionResult) = result {
                     promise(connectionResult)
@@ -430,7 +430,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         let mockPresentingViewController = UIViewController()
         let mockKnownReaderProvider = MockKnownReaderProvider(knownReader: nil)
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .cancelFoundReader)
-        let controller = CardReaderConnectionController(
+        let controller = LegacyCardReaderConnectionController(
             forSiteID: sampleSiteID,
             storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
@@ -441,7 +441,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         )
 
         // When
-        let connectionResult: CardReaderConnectionController.ConnectionResult = waitFor { promise in
+        let connectionResult: LegacyCardReaderConnectionController.ConnectionResult = waitFor { promise in
             controller.searchAndConnect(from: mockPresentingViewController) { result in
                 if case .success(let connectionResult) = result {
                     promise(connectionResult)
@@ -454,7 +454,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
     }
 }
 
-private extension CardReaderConnectionControllerTests {
+private extension LegacyCardReaderConnectionControllerTests {
     enum Mocks {
         static let configuration = CardPresentPaymentsConfiguration(country: "US")
     }

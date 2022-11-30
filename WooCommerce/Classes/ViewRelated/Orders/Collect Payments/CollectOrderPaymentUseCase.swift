@@ -64,7 +64,11 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
 
     /// View Controller used to present alerts.
     ///
-    private var rootViewController: UIViewController
+    private let rootViewController: UIViewController
+
+    /// Alerts presenter: alerts from the various parts of the payment process are forwarded here
+    ///
+    private let alertsPresenter: CardPresentPaymentAlertsPresenting
 
     /// Stores the card reader listener subscription while trying to connect to one.
     ///
@@ -88,6 +92,8 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     /// Coordinates emailing a receipt after payment success.
     private var receiptEmailCoordinator: CardPresentPaymentReceiptEmailCoordinator?
 
+    private var preflightController: CardPresentPaymentPreflightController?
+
     private var cancellables: Set<AnyCancellable> = []
 
     init(siteID: Int64,
@@ -104,6 +110,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
         self.formattedAmount = formattedAmount
         self.paymentGatewayAccount = paymentGatewayAccount
         self.rootViewController = rootViewController
+        self.alertsPresenter = CardPresentPaymentAlertsPresenter(rootViewController: rootViewController)
         self.alerts = alerts
         self.configuration = configuration
         self.stores = stores
@@ -132,11 +139,11 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
             return handleTotalAmountInvalidError(totalAmountInvalidError(), onCompleted: onCompleted)
         }
 
-        let preflightController = CardPresentPaymentPreflightController(siteID: siteID,
-                                                                        paymentGatewayAccount: paymentGatewayAccount,
-                                                                        configuration: configuration,
-                                                                        rootViewController: rootViewController)
-        preflightController.readerConnection.sink { [weak self] connectionResult in
+        preflightController = CardPresentPaymentPreflightController(siteID: siteID,
+                                                                    paymentGatewayAccount: paymentGatewayAccount,
+                                                                    configuration: configuration,
+                                                                    alertsPresenter: alertsPresenter)
+        preflightController?.readerConnection.sink { [weak self] connectionResult in
             guard let self = self else { return }
             switch connectionResult {
             case .connected(let reader):
@@ -166,7 +173,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
         }
         .store(in: &cancellables)
 
-        preflightController.start()
+        preflightController?.start()
     }
 }
 

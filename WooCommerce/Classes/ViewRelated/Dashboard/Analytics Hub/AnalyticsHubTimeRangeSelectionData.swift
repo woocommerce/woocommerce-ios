@@ -4,6 +4,8 @@ import Yosemite
 protocol AnalyticsHubTimeRangeSelection {
     var currentTimeRange: AnalyticsHubTimeRange? { get }
     var previousTimeRange: AnalyticsHubTimeRange? { get }
+    var currentRangeDescription: String? { get }
+    var previousRangeDescription: String? { get }
 
     init(referenceDate: Date, currentCalendar: Calendar)
 }

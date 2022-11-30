@@ -2,7 +2,7 @@ import XCTest
 @testable import WooCommerce
 import TestKit
 
-final class RemoveAppleIDAccessCoordinatorTests: XCTestCase {
+final class CloseAccountCoordinatorTests: XCTestCase {
     private var sourceViewController: UIViewController!
     private var window: UIWindow?
 
@@ -30,7 +30,7 @@ final class RemoveAppleIDAccessCoordinatorTests: XCTestCase {
 
     @MainActor func test_alert_is_presented_when_starting_coordinator() throws {
         // Given
-        let coordinator = RemoveAppleIDAccessCoordinator(sourceViewController: sourceViewController) {} onRemoveSuccess: {}
+        let coordinator = CloseAccountCoordinator(sourceViewController: sourceViewController) {} onRemoveSuccess: {}
 
         // When
         coordinator.start()

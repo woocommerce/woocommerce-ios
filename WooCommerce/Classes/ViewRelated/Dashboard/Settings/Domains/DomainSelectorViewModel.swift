@@ -46,11 +46,19 @@ final class DomainSelectorViewModel: ObservableObject {
 
 private extension DomainSelectorViewModel {
     func observeDomainQuery() {
-        searchQuerySubscription = $searchTerm
+        let searchQuery = $searchTerm
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-            .debounce(for: .seconds(debounceDuration), scheduler: DispatchQueue.main)
             .filter { $0.isNotEmpty }
             .removeDuplicates()
+        // In order to always trigger a network request for the initial search query while supporting debounce
+        // for the following user input, the first search query is concatenated with the debounce version except
+        // for the first value.
+        searchQuerySubscription = Publishers.Concatenate(
+            prefix: searchQuery.first(),
+            suffix: searchQuery.dropFirst()
+                .debounce(for: .seconds(debounceDuration), scheduler: DispatchQueue.main)
+        )
+            .eraseToAnyPublisher()
             .sink { [weak self] searchTerm in
                 guard let self = self else { return }
                 Task { @MainActor in

@@ -16,13 +16,13 @@ final class AnalyticsHubViewModel: ObservableObject {
          statsTimeRange: StatsTimeRangeV4,
          stores: StoresManager = ServiceLocator.stores) {
         let selectedType = AnalyticsHubTimeRangeGenerator.SelectionType.from(statsTimeRange)
-        let timeRangeSelectionData = AnalyticsHubTimeRangeGenerator(selectionType: selectedType)
+        let timeRangeGenerator = AnalyticsHubTimeRangeGenerator(selectionType: selectedType)
 
         self.siteID = siteID
         self.stores = stores
         self.timeRangeSelectionType = selectedType
-        self.timeRangeSelectionData = timeRangeSelectionData
-        self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelectionData: timeRangeSelectionData)
+        self.timeRangeGenerator = timeRangeGenerator
+        self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeGenerator: timeRangeGenerator)
 
         bindViewModelsWithData()
     }
@@ -59,7 +59,7 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Time Range selection data defining the current and previous time period
     ///
-    private var timeRangeSelectionData: AnalyticsHubTimeRangeGenerator
+    private var timeRangeGenerator: AnalyticsHubTimeRangeGenerator
 
     /// Request stats data from network
     ///
@@ -75,15 +75,6 @@ final class AnalyticsHubViewModel: ObservableObject {
 
 // MARK: Networking
 private extension AnalyticsHubViewModel {
-    func requestAnalyticsHubStats() {
-        Task.init {
-            do {
-                try await retrieveOrderStats()
-            } catch {
-                DDLogWarn("⚠️ Error fetching analytics data: \(error)")
-            }
-        }
-    }
 
     @MainActor
     func retrieveOrderStats() async throws {
@@ -154,9 +145,11 @@ private extension AnalyticsHubViewModel {
             .removeDuplicates()
             .sink { [weak self] newSelectionType in
                 guard let self else { return }
-                self.timeRangeSelectionData = AnalyticsHubTimeRangeGenerator(selectionType: newSelectionType)
-                self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelectionData: self.timeRangeSelectionData)
-                self.requestAnalyticsHubStats()
+                self.timeRangeGenerator = AnalyticsHubTimeRangeGenerator(selectionType: newSelectionType)
+                self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeGenerator: self.timeRangeGenerator)
+                Task.init {
+                    await self.updateData()
+                }
             }.store(in: &subscriptions)
     }
 
@@ -208,10 +201,10 @@ private extension AnalyticsHubViewModel {
                                              isRedacted: false)
     }
 
-    static func timeRangeCard(timeRangeSelectionData: AnalyticsHubTimeRangeGenerator) -> AnalyticsTimeRangeCardViewModel {
-        return AnalyticsTimeRangeCardViewModel(selectedRangeTitle: timeRangeSelectionData.selectionDescription,
-                                               currentRangeSubtitle: timeRangeSelectionData.generateCurrentRangeDescription(),
-                                               previousRangeSubtitle: timeRangeSelectionData.generatePreviousRangeDescription())
+    static func timeRangeCard(timeRangeGenerator: AnalyticsHubTimeRangeGenerator) -> AnalyticsTimeRangeCardViewModel {
+        return AnalyticsTimeRangeCardViewModel(selectedRangeTitle: timeRangeGenerator.selectionDescription,
+                                               currentRangeSubtitle: timeRangeGenerator.generateCurrentRangeDescription(),
+                                               previousRangeSubtitle: timeRangeGenerator.generatePreviousRangeDescription())
     }
 }
 

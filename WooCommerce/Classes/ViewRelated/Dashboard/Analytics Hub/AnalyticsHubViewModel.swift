@@ -28,11 +28,11 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Revenue Card ViewModel
     ///
-    @Published var revenueCard = AnalyticsHubViewModel.revenueCard(currentPeriodStats: nil, previousPeriodStats: nil)
+    @Published var revenueCard: AnalyticsReportCardViewModel? = AnalyticsHubViewModel.revenueCard(currentPeriodStats: nil, previousPeriodStats: nil)
 
     /// Orders Card ViewModel
     ///
-    @Published var ordersCard = AnalyticsHubViewModel.ordersCard(currentPeriodStats: nil, previousPeriodStats: nil)
+    @Published var ordersCard: AnalyticsReportCardViewModel? = AnalyticsHubViewModel.ordersCard(currentPeriodStats: nil, previousPeriodStats: nil)
 
     /// Time Range ViewModel
     ///
@@ -40,7 +40,7 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Products Card ViewModel
     ///
-    @Published var productCard = AnalyticsHubViewModel.productCard(currentPeriodStats: nil, previousPeriodStats: nil)
+    @Published var productCard: AnalyticsProductCardViewModel? = AnalyticsHubViewModel.productCard(currentPeriodStats: nil, previousPeriodStats: nil)
 
     // MARK: Private data
 
@@ -111,14 +111,15 @@ private extension AnalyticsHubViewModel {
 private extension AnalyticsHubViewModel {
 
     func switchToLoadingState() {
-        self.revenueCard = revenueCard.redacted
-        self.ordersCard = ordersCard.redacted
-        self.productCard = productCard.redacted
+        self.revenueCard = revenueCard?.redacted
+        self.ordersCard = ordersCard?.redacted
+        self.productCard = productCard?.redacted
     }
 
     func switchToErrorState() {
-        self.currentOrderStats = nil
-        self.previousOrderStats = nil
+        self.revenueCard = nil
+        self.ordersCard = nil
+        self.productCard = nil
     }
 
     func bindViewModelsWithData() {

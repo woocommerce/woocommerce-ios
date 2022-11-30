@@ -31,6 +31,7 @@ final class SiteAddressViewController: LoginViewController {
     /// Whether the protocol method `troubleshootSite` should be triggered after site info is fetched.
     ///
     private let isSiteDiscovery: Bool
+    private let configuration = WordPressAuthenticator.shared.configuration
 
     init?(isSiteDiscovery: Bool, coder: NSCoder) {
         self.isSiteDiscovery = isSiteDiscovery
@@ -442,6 +443,11 @@ private extension SiteAddressViewController {
         // Checks that the site exists
         checkSiteExistence(url: url) { [weak self] in
             guard let self = self else { return }
+            // skips XMLRPC check for site discovery if needed
+            if self.isSiteDiscovery && self.configuration.skipXMLRPCCheckForSiteDiscovery {
+                self.fetchSiteInfo()
+                return
+            }
             // Proceeds to check for the site's WordPress
             self.guessXMLRPCURL(for: self.loginFields.siteAddress)
         }

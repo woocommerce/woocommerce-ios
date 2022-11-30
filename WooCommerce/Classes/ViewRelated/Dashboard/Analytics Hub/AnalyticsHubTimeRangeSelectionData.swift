@@ -14,24 +14,14 @@ protocol AnalyticsHubTimeRangeSelection {
 /// for a given Date and range Type alongside their UI descriptions
 ///
 public class AnalyticsHubTimeRangeSelectionData {
-
-    private let currentTimezone = TimeZone.autoupdatingCurrent
-    private let currentDate: Date
-    private let currentCalendar: Calendar
-    private let selectionType: AnalyticsHubViewModel.TimeRangeSelectionType
     private let timeRangeSelection: AnalyticsHubTimeRangeSelection
-
-    var rangeSelectionDescription: String {
-        selectionType.description
-    }
+    private let rangeSelectionDescription: String
 
     //TODO: abandon usage of the ISO 8601 Calendar and build one based on the Site calendar configuration
     init(selectionType: AnalyticsHubViewModel.TimeRangeSelectionType,
          currentDate: Date = Date(),
          currentCalendar: Calendar = Calendar(identifier: .iso8601)) {
-        self.currentDate = currentDate
-        self.currentCalendar = currentCalendar
-        self.selectionType = selectionType
+        self.rangeSelectionDescription = selectionType.description
 
         switch selectionType {
         case .today:
@@ -69,28 +59,20 @@ public class AnalyticsHubTimeRangeSelectionData {
     /// - Returns the Time range in a UI friendly format. If the previous time range is not available,
     /// then returns an presentable error message.
     func generateCurrentRangeDescription() -> String {
-        guard let currentTimeRange = timeRangeSelection.currentTimeRange else {
+        guard let currentTimeRangeDescription = timeRangeSelection.currentRangeDescription else {
             return Localization.noCurrentPeriodAvailable
         }
-        return generateDescriptionOf(timeRange: currentTimeRange)
+        return currentTimeRangeDescription
     }
 
     /// Generates a date description of the previous time range set internally.
     /// - Returns the Time range in a UI friendly format. If the previous time range is not available,
     /// then returns an presentable error message.
     func generatePreviousRangeDescription() -> String {
-        guard let previousTimeRange = timeRangeSelection.previousTimeRange else {
+        guard let previousTimeRangeDescription = timeRangeSelection.previousRangeDescription else {
             return Localization.noPreviousPeriodAvailable
         }
-        return generateDescriptionOf(timeRange: previousTimeRange)
-    }
-
-    private func generateDescriptionOf(timeRange: AnalyticsHubTimeRange) -> String {
-        if selectionType == .today {
-            return DateFormatter.Stats.analyticsHubDayMonthYearFormatter.string(from: timeRange.start)
-        } else {
-            return timeRange.generateDescription(referenceCalendar: currentCalendar)
-        }
+        return previousTimeRangeDescription
     }
 }
 

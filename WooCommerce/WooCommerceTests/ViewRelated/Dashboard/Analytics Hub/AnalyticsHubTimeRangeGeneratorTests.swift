@@ -1,7 +1,7 @@
 import XCTest
 @testable import WooCommerce
 
-final class AnalyticsHubTimeRangeSelectionDataTests: XCTestCase {
+final class AnalyticsHubTimeRangeGeneratorTests: XCTestCase {
     private var dateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
@@ -11,7 +11,7 @@ final class AnalyticsHubTimeRangeSelectionDataTests: XCTestCase {
     func test_when_time_range_inits_with_yearToDate_then_generate_expected_ranges() throws {
         // Given
         let currentDate = dateFrom("2020-02-29")
-        let timeRange = AnalyticsHubTimeRangeSelectionData(selectionType: .yearToDate, currentDate: currentDate)
+        let timeRange = AnalyticsHubTimeRangeGenerator(selectionType: .yearToDate, currentDate: currentDate)
 
         // When
         let currentTimeRange = try timeRange.unwrapCurrentTimeRange()
@@ -28,7 +28,7 @@ final class AnalyticsHubTimeRangeSelectionDataTests: XCTestCase {
     func test_when_time_range_inits_with_monthToDate_then_generate_expected_ranges() throws {
         // Given
         let currentDate = dateFrom("2010-07-31")
-        let timeRange = AnalyticsHubTimeRangeSelectionData(selectionType: .monthToDate, currentDate: currentDate)
+        let timeRange = AnalyticsHubTimeRangeGenerator(selectionType: .monthToDate, currentDate: currentDate)
 
         // When
         let currentTimeRange = try timeRange.unwrapCurrentTimeRange()
@@ -45,7 +45,7 @@ final class AnalyticsHubTimeRangeSelectionDataTests: XCTestCase {
     func test_when_time_range_inits_with_weekToDate_then_generate_expected_ranges() throws {
         // Given
         let currentDate = dateFrom("2022-07-01")
-        let timeRange = AnalyticsHubTimeRangeSelectionData(selectionType: .weekToDate, currentDate: currentDate)
+        let timeRange = AnalyticsHubTimeRangeGenerator(selectionType: .weekToDate, currentDate: currentDate)
 
         // When
         let currentTimeRange = try timeRange.unwrapCurrentTimeRange()
@@ -62,7 +62,7 @@ final class AnalyticsHubTimeRangeSelectionDataTests: XCTestCase {
     func test_when_time_range_inits_with_today_then_generate_expected_ranges() throws {
         // Given
         let currentDate = dateFrom("2022-07-01")
-        let timeRange = AnalyticsHubTimeRangeSelectionData(selectionType: .today, currentDate: currentDate)
+        let timeRange = AnalyticsHubTimeRangeGenerator(selectionType: .today, currentDate: currentDate)
 
         // When
         let currentTimeRange = try timeRange.unwrapCurrentTimeRange()
@@ -79,7 +79,7 @@ final class AnalyticsHubTimeRangeSelectionDataTests: XCTestCase {
     func test_when_time_range_inits_with_yearToDate_then_generate_expected_descriptions() throws {
         // Given
         let currentDate = dateFrom("2022-07-01")
-        let timeRange = AnalyticsHubTimeRangeSelectionData(selectionType: .yearToDate, currentDate: currentDate)
+        let timeRange = AnalyticsHubTimeRangeGenerator(selectionType: .yearToDate, currentDate: currentDate)
 
         // When
         let currentRangeDescription = timeRange.generateCurrentRangeDescription()
@@ -93,7 +93,7 @@ final class AnalyticsHubTimeRangeSelectionDataTests: XCTestCase {
     func test_when_time_range_inits_with_monthToDate_then_generate_expected_descriptions() throws {
         // Given
         let currentDate = dateFrom("2022-07-31")
-        let timeRange = AnalyticsHubTimeRangeSelectionData(selectionType: .monthToDate, currentDate: currentDate)
+        let timeRange = AnalyticsHubTimeRangeGenerator(selectionType: .monthToDate, currentDate: currentDate)
 
         // When
         let currentRangeDescription = timeRange.generateCurrentRangeDescription()
@@ -107,7 +107,7 @@ final class AnalyticsHubTimeRangeSelectionDataTests: XCTestCase {
     func test_when_time_range_inits_with_weekToDate_then_generate_expected_descriptions() throws {
         // Given
         let currentDate = dateFrom("2022-07-29")
-        let timeRange = AnalyticsHubTimeRangeSelectionData(selectionType: .weekToDate, currentDate: currentDate)
+        let timeRange = AnalyticsHubTimeRangeGenerator(selectionType: .weekToDate, currentDate: currentDate)
 
         // When
         let currentRangeDescription = timeRange.generateCurrentRangeDescription()
@@ -121,7 +121,7 @@ final class AnalyticsHubTimeRangeSelectionDataTests: XCTestCase {
     func test_when_time_range_inits_with_weekToDate_with_different_months_then_generate_expected_descriptions() throws {
         // Given
         let currentDate = dateFrom("2022-07-02")
-        let timeRange = AnalyticsHubTimeRangeSelectionData(selectionType: .weekToDate, currentDate: currentDate)
+        let timeRange = AnalyticsHubTimeRangeGenerator(selectionType: .weekToDate, currentDate: currentDate)
 
         // When
         let currentRangeDescription = timeRange.generateCurrentRangeDescription()
@@ -135,7 +135,7 @@ final class AnalyticsHubTimeRangeSelectionDataTests: XCTestCase {
     func test_when_time_range_inits_with_today_then_generate_expected_descriptions() throws {
         // Given
         let currentDate = dateFrom("2022-07-01")
-        let timeRange = AnalyticsHubTimeRangeSelectionData(selectionType: .today, currentDate: currentDate)
+        let timeRange = AnalyticsHubTimeRangeGenerator(selectionType: .today, currentDate: currentDate)
 
         // When
         let currentRangeDescription = timeRange.generateCurrentRangeDescription()

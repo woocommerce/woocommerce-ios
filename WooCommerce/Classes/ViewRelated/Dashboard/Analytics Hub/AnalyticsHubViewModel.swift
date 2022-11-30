@@ -15,8 +15,8 @@ final class AnalyticsHubViewModel: ObservableObject {
     init(siteID: Int64,
          statsTimeRange: StatsTimeRangeV4,
          stores: StoresManager = ServiceLocator.stores) {
-        let selectedType = TimeRangeSelectionType.from(statsTimeRange)
-        let timeRangeSelectionData = AnalyticsHubTimeRangeSelectionData(selectionType: selectedType)
+        let selectedType = AnalyticsHubTimeRangeGenerator.SelectionType.from(statsTimeRange)
+        let timeRangeSelectionData = AnalyticsHubTimeRangeGenerator(selectionType: selectedType)
 
         self.siteID = siteID
         self.stores = stores
@@ -42,7 +42,7 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Time Range Selection Type
     ///
-    @Published var timeRangeSelectionType: TimeRangeSelectionType
+    @Published var timeRangeSelectionType: AnalyticsHubTimeRangeGenerator.SelectionType
 
     /// Time Range ViewModel
     ///
@@ -60,7 +60,7 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Time Range selection data defining the current and previous time period
     ///
-    private var timeRangeSelectionData: AnalyticsHubTimeRangeSelectionData
+    private var timeRangeSelectionData: AnalyticsHubTimeRangeGenerator
 }
 
 // MARK: Networking
@@ -131,7 +131,7 @@ private extension AnalyticsHubViewModel {
             .removeDuplicates()
             .sink { [weak self] newSelectionType in
                 guard let self else { return }
-                self.timeRangeSelectionData = AnalyticsHubTimeRangeSelectionData(selectionType: newSelectionType)
+                self.timeRangeSelectionData = AnalyticsHubTimeRangeGenerator(selectionType: newSelectionType)
                 self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelectionData: self.timeRangeSelectionData)
                 self.requestAnalyticsHubStats()
             }.store(in: &subscriptions)
@@ -182,48 +182,10 @@ private extension AnalyticsHubViewModel {
                                              deltaBackgroundColor: Constants.deltaColor(for: itemsSoldDelta.direction))
     }
 
-    static func timeRangeCard(timeRangeSelectionData: AnalyticsHubTimeRangeSelectionData) -> AnalyticsTimeRangeCardViewModel {
-        return AnalyticsTimeRangeCardViewModel(selectedRangeTitle: timeRangeSelectionData.rangeSelectionDescription,
+    static func timeRangeCard(timeRangeSelectionData: AnalyticsHubTimeRangeGenerator) -> AnalyticsTimeRangeCardViewModel {
+        return AnalyticsTimeRangeCardViewModel(selectedRangeTitle: timeRangeSelectionData.selectionDescription,
                                                currentRangeSubtitle: timeRangeSelectionData.generateCurrentRangeDescription(),
                                                previousRangeSubtitle: timeRangeSelectionData.generatePreviousRangeDescription())
-    }
-}
-
-// MARK: - Selection Type
-extension AnalyticsHubViewModel {
-    enum TimeRangeSelectionType: CaseIterable {
-        case today
-        case weekToDate
-        case monthToDate
-        case yearToDate
-
-        var description: String {
-            get {
-                switch self {
-                case .today:
-                    return Localization.TimeRangeCard.today
-                case .weekToDate:
-                    return Localization.TimeRangeCard.weekToDate
-                case .monthToDate:
-                    return Localization.TimeRangeCard.monthToDate
-                case .yearToDate:
-                    return Localization.TimeRangeCard.yearToDate
-                }
-            }
-        }
-
-        static func from(_ statsTimeRange: StatsTimeRangeV4) -> TimeRangeSelectionType {
-            switch statsTimeRange {
-            case .today:
-                return .today
-            case .thisWeek:
-                return .weekToDate
-            case .thisMonth:
-                return .monthToDate
-            case .thisYear:
-                return .yearToDate
-            }
-        }
     }
 }
 

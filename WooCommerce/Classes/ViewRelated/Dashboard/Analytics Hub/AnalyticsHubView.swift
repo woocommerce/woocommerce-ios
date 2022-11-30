@@ -78,6 +78,9 @@ struct AnalyticsHubView: View {
         .task {
             await viewModel.updateData()
         }
+        .refreshable {
+            await viewModel.updateData()
+        }
     }
 }
 

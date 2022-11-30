@@ -28,9 +28,15 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Revenue Card ViewModel
     ///
+    /// Setting an `AnalyticsHubViewModel` with `nil` order data displays the revenue card with placeholders.
+    /// Setting the view model to `nil` displays an error message instead of the revenue card.
+    ///
     @Published var revenueCard: AnalyticsReportCardViewModel? = AnalyticsHubViewModel.revenueCard(currentPeriodStats: nil, previousPeriodStats: nil)
 
     /// Orders Card ViewModel
+    ///
+    /// Setting an `AnalyticsHubViewModel` with `nil` order data displays the order card with placeholders.
+    /// Setting the view model to `nil` displays an error message instead of the order card.
     ///
     @Published var ordersCard: AnalyticsReportCardViewModel? = AnalyticsHubViewModel.ordersCard(currentPeriodStats: nil, previousPeriodStats: nil)
 
@@ -39,6 +45,9 @@ final class AnalyticsHubViewModel: ObservableObject {
     @Published var timeRangeCard: AnalyticsTimeRangeCardViewModel
 
     /// Products Card ViewModel
+    ///
+    /// Setting an `AnalyticsProductCardViewModel` with `nil` order data displays the product card with placeholders.
+    /// Setting the view model to `nil` displays an error message instead of the product card.
     ///
     @Published var productCard: AnalyticsProductCardViewModel? = AnalyticsHubViewModel.productCard(currentPeriodStats: nil, previousPeriodStats: nil)
 

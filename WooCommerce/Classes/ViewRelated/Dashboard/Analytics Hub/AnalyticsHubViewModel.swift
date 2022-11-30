@@ -126,12 +126,12 @@ private extension AnalyticsHubViewModel {
                                                                                                         selectedIntervalIndex: nil),
                                             leadingDelta: totalDelta.string,
                                             leadingDeltaColor: Constants.deltaColor(for: totalDelta.direction),
-                                            leadingChartData: [0.0, 10.0, 2.0, 20.0, 15.0, 40.0, 0.0, 10.0, 2.0, 20.0, 15.0, 50.0],
+                                            leadingChartData: StatsIntervalDataParser.getChartData(for: .totalRevenue, from: currentPeriodStats),
                                             trailingTitle: Localization.RevenueCard.trailingTitle,
                                             trailingValue: StatsDataTextFormatter.createNetRevenueText(orderStats: currentPeriodStats),
                                             trailingDelta: netDelta.string,
                                             trailingDeltaColor: Constants.deltaColor(for: netDelta.direction),
-                                            trailingChartData: [50.0, 15.0, 20.0, 2.0, 10.0, 0.0, 40.0, 15.0, 20.0, 2.0, 10.0, 0.0])
+                                            trailingChartData: StatsIntervalDataParser.getChartData(for: .netRevenue, from: currentPeriodStats))
     }
 
     static func ordersCard(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) -> AnalyticsReportCardViewModel {
@@ -144,12 +144,12 @@ private extension AnalyticsHubViewModel {
                                                                                                       selectedIntervalIndex: nil),
                                             leadingDelta: ordersCountDelta.string,
                                             leadingDeltaColor: Constants.deltaColor(for: ordersCountDelta.direction),
-                                            leadingChartData: [0.0, 10.0, 2.0, 20.0, 15.0, 40.0, 0.0, 10.0, 2.0, 20.0, 15.0, 50.0],
+                                            leadingChartData: StatsIntervalDataParser.getChartData(for: .orderCount, from: currentPeriodStats),
                                             trailingTitle: Localization.OrderCard.trailingTitle,
                                             trailingValue: StatsDataTextFormatter.createAverageOrderValueText(orderStats: currentPeriodStats),
                                             trailingDelta: orderValueDelta.string,
                                             trailingDeltaColor: Constants.deltaColor(for: orderValueDelta.direction),
-                                            trailingChartData: [50.0, 15.0, 20.0, 2.0, 10.0, 0.0, 40.0, 15.0, 20.0, 2.0, 10.0, 0.0])
+                                            trailingChartData: StatsIntervalDataParser.getChartData(for: .averageOrderValue, from: currentPeriodStats))
     }
 
     static func productCard(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) -> AnalyticsProductCardViewModel {

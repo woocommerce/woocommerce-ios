@@ -119,7 +119,7 @@ final class DashboardViewController: UIViewController {
         configureBottomJetpackBenefitsBanner()
         observeSiteForUIUpdates()
         observeBottomJetpackBenefitsBannerVisibilityUpdates()
-        observeNavigationBarHeightForStoreNameLabelVisibility()
+        observeNavigationBarHeightForHeaderExtrasVisibility()
         observeStatsVersionForDashboardUIUpdates()
         observeAnnouncements()
         observeShowWebViewSheet()
@@ -145,16 +145,16 @@ final class DashboardViewController: UIViewController {
         return true
     }
 
-    internal override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.willTransition(to: newCollection, with: coordinator)
-        updateAnnouncementCardVisibility(with: newCollection)
+    /// Hide the announcement card when the navigation bar is compact
+    ///
+    func updateAnnouncementCardVisibility() {
+        announcementView?.isHidden = navigationBarIsShort
     }
 
-    /// Hide the announcement card in compact (landscape phone)
+    /// Hide the store name when the navigation bar is compact
     ///
-    func updateAnnouncementCardVisibility(with newCollection: UITraitCollection) {
-        let shouldHideCard = newCollection.verticalSizeClass == .compact
-        announcementView?.isHidden = shouldHideCard
+    func updateStoreNameLabelVisibility() {
+        storeNameLabel.isHidden = !shouldShowStoreNameAsSubtitle || navigationBarIsShort
     }
 }
 
@@ -377,7 +377,7 @@ private extension DashboardViewController {
         let indexAfterHeader = (headerStackView.arrangedSubviews.firstIndex(of: innerStackView) ?? -1) + 1
         headerStackView.insertArrangedSubview(uiView, at: indexAfterHeader)
 
-        updateAnnouncementCardVisibility(with: traitCollection)
+        updateAnnouncementCardVisibility()
 
         hostingController.didMove(toParent: self)
         hostingController.view.layoutIfNeeded()
@@ -406,6 +406,7 @@ private extension DashboardViewController {
         }
         shouldShowStoreNameAsSubtitle = true
         storeNameLabel.text = siteName
+        updateStoreNameLabelVisibility()
     }
 }
 
@@ -584,19 +585,31 @@ private extension DashboardViewController {
             }.store(in: &subscriptions)
     }
 
-    func observeNavigationBarHeightForStoreNameLabelVisibility() {
+    func observeNavigationBarHeightForHeaderExtrasVisibility() {
         navigationController?.navigationBar.publisher(for: \.frame, options: [.initial, .new])
-            .map { $0.height }
             .removeDuplicates()
-            .sink(receiveValue: { [weak self] navigationBarHeight in
-                guard let self = self else { return }
-
-                guard self.shouldShowStoreNameAsSubtitle else {
-                    return
-                }
-                self.storeNameLabel.isHidden = navigationBarHeight <= Constants.collapsedNavigationBarHeight
+            .sink(receiveValue: { [weak self] _ in
+                guard let self else { return }
+                self.updateStoreNameLabelVisibility()
+                self.updateAnnouncementCardVisibility()
             })
             .store(in: &subscriptions)
+    }
+
+    /// Returns true if the navigation bar has a compact height as opposed to showing a large title
+    ///
+    var navigationBarIsShort: Bool {
+        guard let navigationBarHeight = navigationController?.navigationBar.frame.height else {
+            return false
+        }
+
+        let collapsedNavigationBarHeight: CGFloat
+        if self.traitCollection.userInterfaceIdiom == .pad {
+            collapsedNavigationBarHeight = Constants.iPadCollapsedNavigationBarHeight
+        } else {
+            collapsedNavigationBarHeight = Constants.iPhoneCollapsedNavigationBarHeight
+        }
+        return navigationBarHeight <= collapsedNavigationBarHeight
     }
 }
 
@@ -614,6 +627,7 @@ private extension DashboardViewController {
         static let horizontalMargin = CGFloat(16)
         static let storeNameTextColor: UIColor = .secondaryLabel
         static let backgroundColor: UIColor = .systemBackground
-        static let collapsedNavigationBarHeight = CGFloat(44)
+        static let iPhoneCollapsedNavigationBarHeight = CGFloat(44)
+        static let iPadCollapsedNavigationBarHeight = CGFloat(50)
     }
 }

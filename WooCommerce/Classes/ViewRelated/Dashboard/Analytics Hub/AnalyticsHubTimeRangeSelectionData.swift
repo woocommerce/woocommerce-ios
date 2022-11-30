@@ -87,19 +87,8 @@ public class AnalyticsHubTimeRangeSelectionData {
     private func generateDescriptionOf(timeRange: AnalyticsHubTimeRange) -> String {
         if selectionType == .today {
             return DateFormatter.Stats.analyticsHubDayMonthYearFormatter.string(from: timeRange.start)
-        }
-
-        let startDateDescription = DateFormatter.Stats.analyticsHubDayMonthFormatter.string(from: timeRange.start)
-        let endDateDescription = generateEndDateDescription(timeRange: timeRange)
-
-        return "\(startDateDescription) - \(endDateDescription)"
-    }
-
-    private func generateEndDateDescription(timeRange: AnalyticsHubTimeRange) -> String {
-        if timeRange.start.isSameMonth(as: timeRange.end, using: currentCalendar) {
-            return DateFormatter.Stats.analyticsHubDayYearFormatter.string(from: timeRange.end)
         } else {
-            return DateFormatter.Stats.analyticsHubDayMonthYearFormatter.string(from: timeRange.end)
+            return timeRange.generateDescription(referenceCalendar: currentCalendar)
         }
     }
 }

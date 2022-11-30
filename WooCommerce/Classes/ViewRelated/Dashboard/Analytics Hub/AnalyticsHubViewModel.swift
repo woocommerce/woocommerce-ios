@@ -15,7 +15,7 @@ final class AnalyticsHubViewModel: ObservableObject {
     init(siteID: Int64,
          statsTimeRange: StatsTimeRangeV4,
          stores: StoresManager = ServiceLocator.stores) {
-        let selectedType = TimeRangeSelectionType.from(statsTimeRange)
+        let selectedType = AnalyticsHubTimeRangeSelection.SelectionType.from(statsTimeRange)
         let timeRangeSelectionData = AnalyticsHubTimeRangeSelection(selectionType: selectedType)
 
         self.siteID = siteID
@@ -41,7 +41,7 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Time Range Selection Type
     ///
-    @Published var timeRangeSelectionType: TimeRangeSelectionType
+    @Published var timeRangeSelectionType: AnalyticsHubTimeRangeSelection.SelectionType
 
     /// Time Range ViewModel
     ///
@@ -208,44 +208,6 @@ private extension AnalyticsHubViewModel {
     }
 }
 
-// MARK: - Time Range Selection Type
-extension AnalyticsHubViewModel {
-    enum TimeRangeSelectionType: CaseIterable {
-        case today
-        case weekToDate
-        case monthToDate
-        case yearToDate
-
-        var description: String {
-            get {
-                switch self {
-                case .today:
-                    return Localization.TimeRangeCard.today
-                case .weekToDate:
-                    return Localization.TimeRangeCard.weekToDate
-                case .monthToDate:
-                    return Localization.TimeRangeCard.monthToDate
-                case .yearToDate:
-                    return Localization.TimeRangeCard.yearToDate
-                }
-            }
-        }
-
-        static func from(_ statsTimeRange: StatsTimeRangeV4) -> TimeRangeSelectionType {
-            switch statsTimeRange {
-            case .today:
-                return .today
-            case .thisWeek:
-                return .weekToDate
-            case .thisMonth:
-                return .monthToDate
-            case .thisYear:
-                return .yearToDate
-            }
-        }
-    }
-}
-
 // MARK: - Constants
 private extension AnalyticsHubViewModel {
     enum Constants {
@@ -270,13 +232,6 @@ private extension AnalyticsHubViewModel {
             static let title = NSLocalizedString("ORDERS", comment: "Title for order analytics section in the Analytics Hub")
             static let leadingTitle = NSLocalizedString("Total Orders", comment: "Label for total number of orders in the Analytics Hub")
             static let trailingTitle = NSLocalizedString("Average Order Value", comment: "Label for average value of orders in the Analytics Hub")
-        }
-        enum TimeRangeCard {
-            static let today = NSLocalizedString("Today", comment: "Title of the Analytics Hub Today's selection range")
-            static let weekToDate = NSLocalizedString("Week to Date", comment: "Title of the Analytics Hub Week to Date selection range")
-            static let monthToDate = NSLocalizedString("Month to Date", comment: "Title of the Analytics Hub Month to Date selection range")
-            static let yearToDate = NSLocalizedString("Year to Date", comment: "Title of the Analytics Hub Year to Date selection range")
-            static let selectionTitle = NSLocalizedString("Date Range", comment: "Title of the range selection list")
         }
     }
 }

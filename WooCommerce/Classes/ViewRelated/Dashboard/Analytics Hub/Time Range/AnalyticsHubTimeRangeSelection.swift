@@ -14,24 +14,24 @@ protocol AnalyticsHubTimeRangeSelectionDelegate {
 /// for a given Date and range Type alongside their UI descriptions
 ///
 public class AnalyticsHubTimeRangeSelection {
-    private let timeRangeSelection: AnalyticsHubTimeRangeSelectionDelegate
+    private let selectionDelegate: AnalyticsHubTimeRangeSelectionDelegate
     let rangeSelectionDescription: String
 
     //TODO: abandon usage of the ISO 8601 Calendar and build one based on the Site calendar configuration
-    init(selectionType: AnalyticsHubViewModel.TimeRangeSelectionType,
+    init(selectionType: SelectionType,
          currentDate: Date = Date(),
          currentCalendar: Calendar = Calendar(identifier: .iso8601)) {
         self.rangeSelectionDescription = selectionType.description
 
         switch selectionType {
         case .today:
-            self.timeRangeSelection = AnalyticsHubDayRangeSelection(referenceDate: currentDate, currentCalendar: currentCalendar)
+            self.selectionDelegate = AnalyticsHubDayRangeSelection(referenceDate: currentDate, currentCalendar: currentCalendar)
         case .weekToDate:
-            self.timeRangeSelection = AnalyticsHubWeekRangeSelection(referenceDate: currentDate, currentCalendar: currentCalendar)
+            self.selectionDelegate = AnalyticsHubWeekRangeSelection(referenceDate: currentDate, currentCalendar: currentCalendar)
         case .monthToDate:
-            self.timeRangeSelection = AnalyticsHubMonthRangeSelection(referenceDate: currentDate, currentCalendar: currentCalendar)
+            self.selectionDelegate = AnalyticsHubMonthRangeSelection(referenceDate: currentDate, currentCalendar: currentCalendar)
         case .yearToDate:
-            self.timeRangeSelection = AnalyticsHubYearRangeSelection(referenceDate: currentDate, currentCalendar: currentCalendar)
+            self.selectionDelegate = AnalyticsHubYearRangeSelection(referenceDate: currentDate, currentCalendar: currentCalendar)
         }
     }
 
@@ -39,7 +39,7 @@ public class AnalyticsHubTimeRangeSelection {
     /// provided during initialization.
     /// - throws an `.selectedRangeGenerationFailed` error if the unwrap fails.
     func unwrapCurrentTimeRange() throws -> AnalyticsHubTimeRange {
-        guard let currentTimeRange = timeRangeSelection.currentTimeRange else {
+        guard let currentTimeRange = selectionDelegate.currentTimeRange else {
             throw TimeRangeGeneratorError.selectedRangeGenerationFailed
         }
         return currentTimeRange
@@ -49,7 +49,7 @@ public class AnalyticsHubTimeRangeSelection {
     /// based on the `selectedTimeRange` provided during initialization.
     /// - throws a `.previousRangeGenerationFailed` error if the unwrap fails.
     func unwrapPreviousTimeRange() throws -> AnalyticsHubTimeRange {
-        guard let previousTimeRange = timeRangeSelection.previousTimeRange else {
+        guard let previousTimeRange = selectionDelegate.previousTimeRange else {
             throw TimeRangeGeneratorError.previousRangeGenerationFailed
         }
         return previousTimeRange
@@ -59,7 +59,7 @@ public class AnalyticsHubTimeRangeSelection {
     /// - Returns the Time range in a UI friendly format. If the previous time range is not available,
     /// then returns an presentable error message.
     func generateCurrentRangeDescription() -> String {
-        guard let currentTimeRangeDescription = timeRangeSelection.currentRangeDescription else {
+        guard let currentTimeRangeDescription = selectionDelegate.currentRangeDescription else {
             return Localization.noCurrentPeriodAvailable
         }
         return currentTimeRangeDescription
@@ -69,10 +69,48 @@ public class AnalyticsHubTimeRangeSelection {
     /// - Returns the Time range in a UI friendly format. If the previous time range is not available,
     /// then returns an presentable error message.
     func generatePreviousRangeDescription() -> String {
-        guard let previousTimeRangeDescription = timeRangeSelection.previousRangeDescription else {
+        guard let previousTimeRangeDescription = selectionDelegate.previousRangeDescription else {
             return Localization.noPreviousPeriodAvailable
         }
         return previousTimeRangeDescription
+    }
+}
+
+// MARK: - Time Range Selection Type
+extension AnalyticsHubTimeRangeSelection {
+    enum SelectionType: CaseIterable {
+        case today
+        case weekToDate
+        case monthToDate
+        case yearToDate
+
+        var description: String {
+            get {
+                switch self {
+                case .today:
+                    return Localization.today
+                case .weekToDate:
+                    return Localization.weekToDate
+                case .monthToDate:
+                    return Localization.monthToDate
+                case .yearToDate:
+                    return Localization.yearToDate
+                }
+            }
+        }
+
+        static func from(_ statsTimeRange: StatsTimeRangeV4) -> SelectionType {
+            switch statsTimeRange {
+            case .today:
+                return .today
+            case .thisWeek:
+                return .weekToDate
+            case .thisMonth:
+                return .monthToDate
+            case .thisYear:
+                return .yearToDate
+            }
+        }
     }
 }
 
@@ -85,6 +123,11 @@ extension AnalyticsHubTimeRangeSelection {
     }
 
     enum Localization {
+        static let today = NSLocalizedString("Today", comment: "Title of the Analytics Hub Today's selection range")
+        static let weekToDate = NSLocalizedString("Week to Date", comment: "Title of the Analytics Hub Week to Date selection range")
+        static let monthToDate = NSLocalizedString("Month to Date", comment: "Title of the Analytics Hub Month to Date selection range")
+        static let yearToDate = NSLocalizedString("Year to Date", comment: "Title of the Analytics Hub Year to Date selection range")
+        static let selectionTitle = NSLocalizedString("Date Range", comment: "Title of the range selection list")
         static let noCurrentPeriodAvailable = NSLocalizedString("No current period available",
                                                                 comment: "A error message when it's not possible to acquire"
                                                                 + "the Analytics Hub current selection range")

@@ -6,6 +6,8 @@ struct AnalyticsHubTimeRange {
 }
 
 protocol AnalyticsHubTimeRangeSelection {
-    var currentTimeRange: AnalyticsHubTimeRange { get }
-    var previousTimeRange: AnalyticsHubTimeRange { get }
+    var currentTimeRange: AnalyticsHubTimeRange? { get }
+    var previousTimeRange: AnalyticsHubTimeRange? { get }
+
+    init(referenceDate: Date, currentCalendar: Calendar)
 }

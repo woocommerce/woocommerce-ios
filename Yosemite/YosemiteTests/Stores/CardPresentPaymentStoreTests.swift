@@ -89,7 +89,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
         let action = CardPresentPaymentAction.startCardReaderDiscovery(
             siteID: sampleSiteID,
-            discoveryMethod: .bluetoothProximity,
+            discoveryMethod: .bluetoothScan,
             onReaderDiscovered: { _ in }, onError: { _ in })
 
         cardPresentStore.onAction(action)
@@ -107,7 +107,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
         let action = CardPresentPaymentAction.startCardReaderDiscovery(
             siteID: sampleSiteID,
-            discoveryMethod: .bluetoothProximity,
+            discoveryMethod: .bluetoothScan,
             onReaderDiscovered: { _ in
                 expectation.fulfill()
             },
@@ -126,7 +126,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                                        cardReaderService: mockCardReaderService)
 
         let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: sampleSiteID,
-                                                                       discoveryMethod: .bluetoothProximity,
+                                                                       discoveryMethod: .bluetoothScan,
                                                                        onReaderDiscovered: { _ in },
                                                                        onError: { _ in })
 
@@ -142,7 +142,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                                        cardReaderService: mockCardReaderService)
 
         let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: sampleSiteID,
-                                                                       discoveryMethod: .bluetoothProximity,
+                                                                       discoveryMethod: .bluetoothScan,
                                                                        onReaderDiscovered: { _ in },
                                                                        onError: { _ in })
 
@@ -170,7 +170,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
         let action = CardPresentPaymentAction.startCardReaderDiscovery(
             siteID: sampleSiteID,
-            discoveryMethod: .bluetoothProximity,
+            discoveryMethod: .bluetoothScan,
             onReaderDiscovered: { discoveredReaders in
                 XCTAssertTrue(self.mockCardReaderService.didReceiveAConfigurationProvider)
                 if discoveredReaders.count == 0 {
@@ -231,7 +231,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
         let startDiscoveryAction = CardPresentPaymentAction.startCardReaderDiscovery(
             siteID: sampleSiteID,
-            discoveryMethod: .bluetoothProximity,
+            discoveryMethod: .bluetoothScan,
             onReaderDiscovered: { _ in },
             onError: { _ in })
 

@@ -301,18 +301,19 @@ private extension ProductStore {
     /// Adds a product.
     ///
     func addProduct(product: Product, onCompletion: @escaping (Result<Product, ProductUpdateError>) -> Void) {
-        remote.addProduct(product: product) { [weak self] result in
-            switch result {
-            case .failure(let error):
-                onCompletion(.failure(ProductUpdateError(error: error)))
-            case .success(let product):
-                self?.upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: product.siteID) { [weak self] in
+        Task {
+            do {
+                let product = try await remote.addProduct(product: product)
+                upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: product.siteID) { [weak self] in
                     guard let storageProduct = self?.storageManager.viewStorage.loadProduct(siteID: product.siteID, productID: product.productID) else {
                         onCompletion(.failure(.notFoundInStorage))
                         return
                     }
                     onCompletion(.success(storageProduct.toReadOnly()))
                 }
+
+            } catch {
+                onCompletion(.failure(ProductUpdateError(error: error)))
             }
         }
     }
@@ -320,13 +321,12 @@ private extension ProductStore {
     /// Delete an existing product.
     ///
     func deleteProduct(siteID: Int64, productID: Int64, onCompletion: @escaping (Result<Product, ProductUpdateError>) -> Void) {
-        remote.deleteProduct(for: siteID, productID: productID) { (result) in
-            switch result {
-            case .failure(let error):
-                onCompletion(.failure(ProductUpdateError(error: error)))
-            case .success(let product):
-                self.deleteStoredProduct(siteID: siteID, productID: productID)
+        Task {
+            do {
+                let product = try await remote.deleteProduct(for: siteID, productID: productID)
                 onCompletion(.success(product))
+            } catch {
+                onCompletion(.failure(ProductUpdateError(error: error)))
             }
         }
     }

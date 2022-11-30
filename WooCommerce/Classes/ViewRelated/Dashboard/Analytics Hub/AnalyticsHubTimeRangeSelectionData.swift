@@ -15,7 +15,7 @@ protocol AnalyticsHubTimeRangeSelection {
 ///
 public class AnalyticsHubTimeRangeSelectionData {
     private let timeRangeSelection: AnalyticsHubTimeRangeSelection
-    private let rangeSelectionDescription: String
+    let rangeSelectionDescription: String
 
     //TODO: abandon usage of the ISO 8601 Calendar and build one based on the Site calendar configuration
     init(selectionType: AnalyticsHubViewModel.TimeRangeSelectionType,

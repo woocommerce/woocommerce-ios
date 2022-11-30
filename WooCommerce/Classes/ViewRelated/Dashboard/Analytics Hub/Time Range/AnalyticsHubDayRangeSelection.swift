@@ -12,13 +12,13 @@ final class AnalyticsHubDayRangeSelection: AnalyticsHubTimeRangeSelection {
         let currentDayStart = referenceDate.startOfDay(timezone: currentTimezone)
         let currentTimeRange = AnalyticsHubTimeRange(start: currentDayStart, end: referenceDate)
         self.currentTimeRange = currentTimeRange
-        self.currentRangeDescription = currentTimeRange.generateDescription(referenceCalendar: currentCalendar)
+        self.currentRangeDescription = DateFormatter.Stats.analyticsHubDayMonthYearFormatter.string(from: currentTimeRange.start)
 
         if let previousDay = currentCalendar.date(byAdding: .day, value: -1, to: referenceDate) {
             let previousDayStart = previousDay.startOfDay(timezone: currentTimezone)
             let previousTimeRange = AnalyticsHubTimeRange(start: previousDayStart, end: previousDay)
             self.previousTimeRange = previousTimeRange
-            self.previousRangeDescription = previousTimeRange.generateDescription(referenceCalendar: currentCalendar)
+            self.previousRangeDescription = DateFormatter.Stats.analyticsHubDayMonthYearFormatter.string(from: previousTimeRange.start)
         } else {
             self.previousTimeRange = nil
             self.previousRangeDescription = nil

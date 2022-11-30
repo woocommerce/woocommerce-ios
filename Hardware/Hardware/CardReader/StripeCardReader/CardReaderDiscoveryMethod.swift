@@ -4,14 +4,14 @@ import StripeTerminal
 
 public enum CardReaderDiscoveryMethod {
     case localMobile
-    case bluetoothProximity
+    case bluetoothScan
 
     func toStripe() -> DiscoveryMethod {
         switch self {
         case .localMobile:
             return .localMobile
-        case .bluetoothProximity:
-            return .bluetoothProximity
+        case .bluetoothScan:
+            return .bluetoothScan
         }
     }
 }

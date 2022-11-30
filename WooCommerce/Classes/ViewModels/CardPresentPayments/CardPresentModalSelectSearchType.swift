@@ -26,7 +26,7 @@ final class CardPresentModalSelectSearchType: CardPresentPaymentsModalViewModel 
 
     private var tapOnIphoneAction: (() -> Void)
 
-    private var bluetoothProximityAction: (() -> Void)
+    private var bluetoothScanAction: (() -> Void)
 
     private var cancelAction: (() -> Void)
 
@@ -35,7 +35,7 @@ final class CardPresentModalSelectSearchType: CardPresentPaymentsModalViewModel 
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
-        bluetoothProximityAction()
+        bluetoothScanAction()
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {
@@ -49,8 +49,8 @@ final class CardPresentModalSelectSearchType: CardPresentPaymentsModalViewModel 
         actionsMode = .twoActionAndAuxiliary
         primaryButtonTitle = CardReaderDiscoveryMethod.localMobile.name
         self.tapOnIphoneAction = tapOnIPhoneAction
-        secondaryButtonTitle = CardReaderDiscoveryMethod.bluetoothProximity.name
-        self.bluetoothProximityAction = bluetoothAction
+        secondaryButtonTitle = CardReaderDiscoveryMethod.bluetoothScan.name
+        self.bluetoothScanAction = bluetoothAction
         auxiliaryButtonTitle = Localization.cancel
         self.cancelAction = cancelAction
     }
@@ -77,7 +77,7 @@ private extension CardPresentModalSelectSearchType {
 private extension CardReaderDiscoveryMethod {
     var name: String {
         switch self {
-        case .bluetoothProximity:
+        case .bluetoothScan:
             return NSLocalizedString(
                 "Bluetooth Reader",
                 comment: "The button title on the reader type alert, for the user to choose a bluetooth reader.")

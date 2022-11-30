@@ -45,7 +45,7 @@ final class SiteCredentialLoginViewModel: NSObject, ObservableObject {
 
     func handleLogin() {
         analytics.track(.loginJetpackSiteCredentialInstallTapped)
-        loginAndAttemptFetchingJetpackConnection()
+        loginAndAttemptFetchingJetpackPluginDetails()
     }
 
     func resetPassword() {
@@ -62,7 +62,7 @@ private extension SiteCredentialLoginViewModel {
             .assign(to: &$primaryButtonDisabled)
     }
 
-    func loginAndAttemptFetchingJetpackConnection() {
+    func loginAndAttemptFetchingJetpackPluginDetails() {
         guard let loginURL = URL(string: siteURL + Constants.loginPath),
               let adminURL = URL(string: siteURL + Constants.adminPath) else {
             DDLogWarn("⚠️ Cannot construct login URL and admin URL for site \(siteURL)")
@@ -89,6 +89,10 @@ private extension SiteCredentialLoginViewModel {
             case .success:
                 self.successHandler("")
             case .failure(let error):
+                if case .responseValidationFailed(reason: .unacceptableStatusCode(code: 404)) = error as? AFError {
+                    // Error 404 means Jetpack is not installed. Allow this to come through.
+                    return self.successHandler("")
+                }
                 self.handleRemoteError(error)
             }
         }

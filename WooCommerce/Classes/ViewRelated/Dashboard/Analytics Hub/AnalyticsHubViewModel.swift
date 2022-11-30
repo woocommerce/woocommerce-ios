@@ -16,7 +16,7 @@ final class AnalyticsHubViewModel: ObservableObject {
          statsTimeRange: StatsTimeRangeV4,
          stores: StoresManager = ServiceLocator.stores) {
         let selectedType = TimeRangeSelectionType.from(statsTimeRange)
-        let timeRangeSelectionData = AnalyticsHubTimeRangeSelectionData(selectionType: selectedType)
+        let timeRangeSelectionData = AnalyticsHubTimeRangeSelection(selectionType: selectedType)
 
         self.siteID = siteID
         self.stores = stores
@@ -60,7 +60,7 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Time Range selection data defining the current and previous time period
     ///
-    private var timeRangeSelectionData: AnalyticsHubTimeRangeSelectionData
+    private var timeRangeSelectionData: AnalyticsHubTimeRangeSelection
 }
 
 // MARK: Networking
@@ -131,7 +131,7 @@ private extension AnalyticsHubViewModel {
             .removeDuplicates()
             .sink { [weak self] newSelectionType in
                 guard let self else { return }
-                self.timeRangeSelectionData = AnalyticsHubTimeRangeSelectionData(selectionType: newSelectionType)
+                self.timeRangeSelectionData = AnalyticsHubTimeRangeSelection(selectionType: newSelectionType)
                 self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelectionData: self.timeRangeSelectionData)
                 self.requestAnalyticsHubStats()
             }.store(in: &subscriptions)
@@ -182,7 +182,7 @@ private extension AnalyticsHubViewModel {
                                              deltaBackgroundColor: Constants.deltaColor(for: itemsSoldDelta.direction))
     }
 
-    static func timeRangeCard(timeRangeSelectionData: AnalyticsHubTimeRangeSelectionData) -> AnalyticsTimeRangeCardViewModel {
+    static func timeRangeCard(timeRangeSelectionData: AnalyticsHubTimeRangeSelection) -> AnalyticsTimeRangeCardViewModel {
         return AnalyticsTimeRangeCardViewModel(selectedRangeTitle: timeRangeSelectionData.rangeSelectionDescription,
                                                currentRangeSubtitle: timeRangeSelectionData.generateCurrentRangeDescription(),
                                                previousRangeSubtitle: timeRangeSelectionData.generatePreviousRangeDescription())

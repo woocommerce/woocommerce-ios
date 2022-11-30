@@ -1,6 +1,6 @@
 import Foundation
 
-final class AnalyticsHubWeekRangeSelection: AnalyticsHubTimeRangeSelection {
+final class AnalyticsHubWeekRangeSelection: AnalyticsHubTimeRangeSelectionDelegate {
     var currentTimeRange: AnalyticsHubTimeRange?
     var previousTimeRange: AnalyticsHubTimeRange?
     var currentRangeDescription: String?

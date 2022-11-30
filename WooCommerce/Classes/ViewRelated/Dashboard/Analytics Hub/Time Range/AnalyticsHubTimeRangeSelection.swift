@@ -1,7 +1,7 @@
 import Foundation
 import Yosemite
 
-protocol AnalyticsHubTimeRangeSelection {
+protocol AnalyticsHubTimeRangeSelectionDelegate {
     var currentTimeRange: AnalyticsHubTimeRange? { get }
     var previousTimeRange: AnalyticsHubTimeRange? { get }
     var currentRangeDescription: String? { get }
@@ -13,8 +13,8 @@ protocol AnalyticsHubTimeRangeSelection {
 /// Main source of time ranges of the Analytics Hub, responsible for providing the current and previous dates
 /// for a given Date and range Type alongside their UI descriptions
 ///
-public class AnalyticsHubTimeRangeSelectionData {
-    private let timeRangeSelection: AnalyticsHubTimeRangeSelection
+public class AnalyticsHubTimeRangeSelection {
+    private let timeRangeSelection: AnalyticsHubTimeRangeSelectionDelegate
     let rangeSelectionDescription: String
 
     //TODO: abandon usage of the ISO 8601 Calendar and build one based on the Site calendar configuration
@@ -77,7 +77,7 @@ public class AnalyticsHubTimeRangeSelectionData {
 }
 
 // MARK: - Constants
-extension AnalyticsHubTimeRangeSelectionData {
+extension AnalyticsHubTimeRangeSelection {
 
     enum TimeRangeGeneratorError: Error {
         case selectedRangeGenerationFailed

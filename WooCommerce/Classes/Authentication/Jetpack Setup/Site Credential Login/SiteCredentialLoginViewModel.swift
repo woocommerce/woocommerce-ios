@@ -89,13 +89,9 @@ private extension SiteCredentialLoginViewModel {
             self.isLoggingIn = false
             switch result {
             case .success:
-                // Success to get the details mean authentication succeeds.
+                // Success to get the details means the authentication succeeds.
                 self.successHandler()
             case .failure(let error):
-                if case .responseValidationFailed(reason: .unacceptableStatusCode(code: 404)) = error as? AFError {
-                    // Error 404 means Jetpack is not installed. Allow this to come through.
-                    return self.successHandler()
-                }
                 self.handleRemoteError(error)
             }
         }
@@ -104,8 +100,12 @@ private extension SiteCredentialLoginViewModel {
 
     func handleRemoteError(_ error: Error) {
         switch error {
-        case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403)):
-            errorMessage = Localization.permissionErrorMessage
+        case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)),
+            AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403)):
+            // Error 404 means Jetpack is not installed. Allow this to come through.
+            // Error 403 means the lack of permission to manage plugins. Also allow this error
+            // since we want to show the error on the next screen.
+            return successHandler()
         case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 401)):
             errorMessage = Localization.wrongCredentials
         default:
@@ -124,10 +124,6 @@ extension SiteCredentialLoginViewModel {
             comment: "An error message shown during login when the username or password is incorrect."
         )
         static let genericFailure = NSLocalizedString("Login failed. Please try again.", comment: "A generic error during site credential login")
-        static let permissionErrorMessage = NSLocalizedString(
-            "You don't have permission to manage plugins on this store.",
-            comment: "Message to be displayed when the user encounters a permission error during Jetpack setup"
-        )
     }
 
     enum Constants {

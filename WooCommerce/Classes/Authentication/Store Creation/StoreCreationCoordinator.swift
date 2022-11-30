@@ -76,7 +76,10 @@ final class StoreCreationCoordinator: Coordinator {
         }
         Task { @MainActor in
             do {
-                presentIAPEligibilityInProgressView()
+                let inProgressView = createIAPEligibilityInProgressView()
+                let storeCreationNavigationController = WooNavigationController(rootViewController: inProgressView)
+                presentStoreCreation(viewController: storeCreationNavigationController)
+
                 guard await purchasesManager.inAppPurchasesAreSupported() else {
                     throw PlanPurchaseError.iapNotSupported
                 }
@@ -90,9 +93,8 @@ final class StoreCreationCoordinator: Coordinator {
                 guard try await purchasesManager.userIsEntitledToProduct(with: product.id) == false else {
                     throw PlanPurchaseError.productNotEligible
                 }
-                navigationController.dismiss(animated: true) { [weak self] in
-                    self?.startStoreCreationM2(planToPurchase: product)
-                }
+
+                startStoreCreationM2(from: storeCreationNavigationController, planToPurchase: product)
             } catch {
                 navigationController.dismiss(animated: true) { [weak self] in
                     self?.startStoreCreationM1()
@@ -119,20 +121,17 @@ private extension StoreCreationCoordinator {
         presentStoreCreation(viewController: webNavigationController)
     }
 
-    func startStoreCreationM2(planToPurchase: WPComPlanProduct) {
-        let storeCreationNavigationController = WooNavigationController()
-        storeCreationNavigationController.navigationBar.prefersLargeTitles = true
+    func startStoreCreationM2(from navigationController: UINavigationController, planToPurchase: WPComPlanProduct) {
+        navigationController.navigationBar.prefersLargeTitles = true
 
         let storeNameForm = StoreNameFormHostingController { [weak self] storeName in
-            self?.showDomainSelector(from: storeCreationNavigationController,
+            self?.showDomainSelector(from: navigationController,
                                      storeName: storeName,
                                      planToPurchase: planToPurchase)
         } onClose: { [weak self] in
             self?.showDiscardChangesAlert()
         }
-        storeCreationNavigationController.pushViewController(storeNameForm, animated: false)
-
-        presentStoreCreation(viewController: storeCreationNavigationController)
+        navigationController.pushViewController(storeNameForm, animated: true)
     }
 
     func presentStoreCreation(viewController: UIViewController) {
@@ -148,11 +147,11 @@ private extension StoreCreationCoordinator {
     }
 
     @MainActor
-    func presentIAPEligibilityInProgressView() {
-        let inProgressView = InProgressViewController(viewProperties:
+    func createIAPEligibilityInProgressView() -> UIViewController {
+        InProgressViewController(viewProperties:
                 .init(title: Localization.WaitingForIAPEligibility.title,
-                      message: Localization.WaitingForIAPEligibility.message))
-        presentStoreCreation(viewController: inProgressView)
+                      message: Localization.WaitingForIAPEligibility.message),
+                                 hidesNavigationBar: true)
     }
 }
 

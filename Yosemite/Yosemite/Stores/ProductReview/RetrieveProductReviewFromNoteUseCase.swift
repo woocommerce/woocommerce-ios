@@ -170,13 +170,12 @@ final class RetrieveProductReviewFromNoteUseCase {
         if let productInStorage = derivedStorage?.loadProduct(siteID: siteID, productID: productID) {
             return next(productInStorage.toReadOnly())
         }
-
-        productsRemote.loadProduct(for: siteID, productID: productID) { result in
-            switch result {
-            case .failure(let error):
+        Task {
+            do {
+                let result = try await productsRemote.loadProduct(for: siteID, productID: productID)
+                next(result)
+            } catch {
                 abort(error)
-            case .success(let product):
-                next(product)
             }
         }
     }

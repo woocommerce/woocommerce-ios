@@ -83,23 +83,9 @@ extension MockProductsRemote: ProductsRemoteProtocol {
         return Product.fake()
     }
 
-    func loadProduct(for siteID: Int64,
-                     productID: Int64,
-                     completion: @escaping (Result<Product, Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else {
-                return
-            }
-
-            self.invocationCountOfLoadProduct += 1
-
-            let key = ResultKey(siteID: siteID, productIDs: [productID])
-            if let result = self.productLoadingResults[key] {
-                completion(result)
-            } else {
-                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
-            }
-        }
+    func loadProduct(for siteID: Int64, productID: Int64) async throws -> Product {
+        // TODO: Mock loadProduct. We no longer use the Result<Product, Error> signature
+        return Product.fake()
     }
 
     func loadProducts(for siteID: Int64, by productIDs: [Int64], pageNumber: Int, pageSize: Int, completion: @escaping (Result<[Product], Error>) -> Void) {

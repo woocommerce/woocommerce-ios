@@ -272,29 +272,22 @@ private extension ProductStore {
     /// Retrieves the product associated with a given siteID + productID (if any!).
     ///
     func retrieveProduct(siteID: Int64, productID: Int64, onCompletion: @escaping (Result<Product, Error>) -> Void) {
-        remote.loadProduct(for: siteID, productID: productID) { [weak self] result in
-            guard let self = self else {
-                return
-            }
-
-            switch result {
-            case .failure(let originalError):
-                let error = ProductLoadError(underlyingError: originalError)
-
-                if case ProductLoadError.notFound = error {
-                    self.deleteStoredProduct(siteID: siteID, productID: productID)
-                }
-
-                onCompletion(.failure(error))
-            case .success(let product):
-                self.upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: siteID) { [weak self] in
+        Task {
+            do {
+                let product = try await remote.loadProduct(for: siteID, productID: productID)
+                upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: siteID) { [weak self] in
                     guard let storageProduct = self?.storageManager.viewStorage.loadProduct(siteID: siteID, productID: productID) else {
                         return onCompletion(.failure(ProductLoadError.notFoundInStorage))
                     }
                     onCompletion(.success(storageProduct.toReadOnly()))
                 }
             }
-
+            catch let originalError {
+                let error = ProductLoadError(underlyingError: originalError)
+                if case ProductLoadError.notFound = error {
+                    self.deleteStoredProduct(siteID: siteID, productID: productID)
+                }
+            }
         }
     }
 
@@ -420,8 +413,10 @@ private extension ProductStore {
         remote.createTemplateProduct(for: siteID, template: template) { [remote] result in
             switch result {
             case .success(let productID):
-                remote.loadProduct(for: siteID, productID: productID, completion: onCompletion)
-
+                Task {
+                    let result = try await remote.loadProduct(for: siteID, productID: productID)
+                    onCompletion(.success(result))
+                }
             case .failure(let error):
                 onCompletion(.failure(error))
             }

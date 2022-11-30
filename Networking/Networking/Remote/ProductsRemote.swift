@@ -7,7 +7,7 @@ import Foundation
 public protocol ProductsRemoteProtocol {
     func addProduct(product: Product) async throws -> Product
     func deleteProduct(for siteID: Int64, productID: Int64) async throws -> Product
-    func loadProduct(for siteID: Int64, productID: Int64, completion: @escaping (Result<Product, Error>) -> Void)
+    func loadProduct(for siteID: Int64, productID: Int64) async throws -> Product
     func loadProducts(for siteID: Int64, by productIDs: [Int64], pageNumber: Int, pageSize: Int, completion: @escaping (Result<[Product], Error>) -> Void)
     func loadAllProducts(for siteID: Int64,
                          context: String?,
@@ -186,14 +186,13 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     /// - Parameters:
     ///     - siteID: Site which hosts the Product.
     ///     - productID: Identifier of the Product.
-    ///     - completion: Closure to be executed upon completion.
     ///
-    public func loadProduct(for siteID: Int64, productID: Int64, completion: @escaping (Result<Product, Error>) -> Void) {
+    public func loadProduct(for siteID: Int64, productID: Int64) async throws -> Product {
         let path = "\(Path.products)/\(productID)"
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
         let mapper = ProductMapper(siteID: siteID)
 
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Retrieves all of the `Product`s available.

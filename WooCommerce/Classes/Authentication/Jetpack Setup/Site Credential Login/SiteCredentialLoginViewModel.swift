@@ -69,7 +69,7 @@ private extension SiteCredentialLoginViewModel {
             return
         }
 
-        // makes sure the loading indicator is shown
+        // Makes sure the loading indicator is shown
         isLoggingIn = true
 
         // Prepares the authenticator with username and password
@@ -89,6 +89,7 @@ private extension SiteCredentialLoginViewModel {
             self.isLoggingIn = false
             switch result {
             case .success:
+                // Success to get the details mean authentication succeeds.
                 self.successHandler()
             case .failure(let error):
                 if case .responseValidationFailed(reason: .unacceptableStatusCode(code: 404)) = error as? AFError {

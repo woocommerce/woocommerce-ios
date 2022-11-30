@@ -16,12 +16,15 @@ struct FeatureAnnouncementCardView: View {
     }
 
     var body: some View {
-        if viewModel.showDividers {
-            content
-                .addingTopAndBottomDividers()
-        } else {
-            content
-        }
+        Group {
+            if viewModel.showDividers {
+                content
+                    .addingTopAndBottomDividers()
+                    .background(Color.yellow)
+            } else {
+                content.background(Color.yellow)
+            }
+        }.fixedSize(horizontal: false, vertical: true)
     }
 
     var content: some View {

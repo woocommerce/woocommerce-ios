@@ -5,9 +5,18 @@ import SwiftUI
 /// https://stackoverflow.com/questions/69265914/on-ios-15-the-uihostingcontroller-is-adding-some-weird-extra-padding-to-its-hos
 ///
 final class ConstraintsUpdatingHostingController<Content: View>: UIHostingController<Content> {
+    private var heightConstraint: NSLayoutConstraint?
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        heightConstraint = view.heightAnchor.constraint(equalToConstant: view.intrinsicContentSize.height)
+        NSLayoutConstraint.activate([
+            heightConstraint!,
+        ])
+    }
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-
-        view.setNeedsUpdateConstraints()
+        heightConstraint?.constant = view.intrinsicContentSize.height
     }
 }

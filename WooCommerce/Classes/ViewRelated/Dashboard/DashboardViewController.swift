@@ -24,7 +24,9 @@ final class DashboardViewController: UIViewController {
     // MARK: Subviews
 
     private lazy var containerView: UIView = {
-        return UIView(frame: .zero)
+        let view = UIView(frame: .zero)
+        view.accessibilityIdentifier = "containerView"
+        return view
     }()
 
     private lazy var storeNameLabel: UILabel = {
@@ -39,6 +41,7 @@ final class DashboardViewController: UIViewController {
     ///
     private lazy var innerStackView: UIStackView = {
         let view = UIStackView()
+        view.accessibilityIdentifier = "innerStackView"
         let horizontalMargin = Constants.horizontalMargin
         view.layoutMargins = UIEdgeInsets(top: 0, left: horizontalMargin, bottom: 0, right: horizontalMargin)
         view.isLayoutMarginsRelativeArrangement = true
@@ -49,10 +52,16 @@ final class DashboardViewController: UIViewController {
     ///
     private lazy var headerStackView: UIStackView = {
         let view = UIStackView()
+        view.accessibilityIdentifier = "headerStackView"
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .listForeground
         view.axis = .vertical
+        view.backgroundColor = .red
         return view
+    }()
+
+    private lazy var headerTopConstraint: NSLayoutConstraint = {
+        headerStackView.topAnchor.constraint(equalTo: containerView.topAnchor)
     }()
 
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
@@ -74,7 +83,7 @@ final class DashboardViewController: UIViewController {
                                               })
     }()
 
-    private var announcementViewHostingController: ConstraintsUpdatingHostingController<AnnouncementCardWrapper>?
+    private var announcementViewHostingController: UIHostingController<AnnouncementCardWrapper>?
 
     private var announcementView: UIView?
 
@@ -148,7 +157,7 @@ final class DashboardViewController: UIViewController {
     /// Hide the announcement card when the navigation bar is compact
     ///
     func updateAnnouncementCardVisibility() {
-        announcementView?.isHidden = navigationBarIsShort
+//        announcementView?.isHidden = navigationBarIsShort
     }
 
     /// Hide the store name when the navigation bar is compact
@@ -186,7 +195,7 @@ private extension DashboardViewController {
         configureErrorBanner()
         containerView.addSubview(headerStackView)
         NSLayoutConstraint.activate([
-            headerStackView.topAnchor.constraint(equalTo: containerView.topAnchor),
+            headerTopConstraint,
             headerStackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             headerStackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor)
         ])
@@ -219,9 +228,9 @@ private extension DashboardViewController {
     func configureDashboardUIContainer() {
         hiddenScrollView.configureForLargeTitleWorkaround()
         // Adds the "hidden" scroll view to the root of the UIViewController for large titles.
-        view.addSubview(hiddenScrollView)
+//        view.addSubview(hiddenScrollView)
         hiddenScrollView.translatesAutoresizingMaskIntoConstraints = false
-        view.pinSubviewToAllEdges(hiddenScrollView, insets: .zero)
+//        view.pinSubviewToAllEdges(hiddenScrollView, insets: .zero)
 
         // A container view is added to respond to safe area insets from the view controller.
         // This is needed when the child view controller's view has to use a frame-based layout
@@ -332,6 +341,8 @@ private extension DashboardViewController {
 
         var body: some View {
             cardView.background(Color(.listForeground))
+                .edgesIgnoringSafeArea([.all])
+//                .ignoresSafeArea()
         }
     }
 
@@ -366,12 +377,13 @@ private extension DashboardViewController {
     }
 
     private func showAnnouncement(_ cardView: AnnouncementCardWrapper) {
-        let hostingController = ConstraintsUpdatingHostingController(rootView: cardView)
+        let hostingController = UIHostingController(rootView: cardView)
         guard let uiView = hostingController.view else {
             return
         }
         announcementViewHostingController = hostingController
         announcementView = uiView
+        uiView.backgroundColor = .green
 
         addChild(hostingController)
         let indexAfterHeader = (headerStackView.arrangedSubviews.firstIndex(of: innerStackView) ?? -1) + 1
@@ -414,6 +426,8 @@ private extension DashboardViewController {
 extension DashboardViewController: DashboardUIScrollDelegate {
     func dashboardUIScrollViewDidScroll(_ scrollView: UIScrollView) {
         hiddenScrollView.updateFromScrollViewDidScrollEventForLargeTitleWorkaround(scrollView)
+        headerTopConstraint.constant = -scrollView.contentOffset.y
+//        headerStackView.transform = CGAffineTransform(translationX: 0, y: -scrollView.contentOffset.y)
     }
 }
 

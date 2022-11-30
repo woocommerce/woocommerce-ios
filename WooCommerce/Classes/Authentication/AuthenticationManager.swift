@@ -43,10 +43,14 @@ class AuthenticationManager: Authentication {
 
     private let featureFlagService: FeatureFlagService
 
+    private let analytics: Analytics
+
     init(storageManager: StorageManagerType = ServiceLocator.storageManager,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
+        self.analytics = analytics
     }
 
     /// Initializes the WordPress Authenticator.
@@ -181,7 +185,7 @@ class AuthenticationManager: Authentication {
                 // Resets Apple ID at the beginning of the authentication.
                 self.appleUserID = nil
 
-                ServiceLocator.analytics.track(.loginPrologueContinueTapped)
+                self.analytics.track(.loginPrologueContinueTapped)
             })
             guard let loginVC = loginUI else {
                 fatalError("Cannot instantiate login UI from WordPressAuthenticator")
@@ -347,9 +351,11 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Data flow following ZwYqDGHdenvYZoPHXZ1SOf-fi
     ///
     func troubleshootSite(_ siteInfo: WordPressComSiteInfo?, in navigationController: UINavigationController?) {
-        ServiceLocator.analytics.track(event: .SitePicker.siteDiscovery(hasWordPress: siteInfo?.isWP ?? false,
-                                                                        isWPCom: siteInfo?.isWPCom ?? false,
-                                                                        hasValidJetpack: siteInfo?.isJetpackConnected ?? false))
+        analytics.track(event: .SitePicker.siteDiscovery(hasWordPress: siteInfo?.isWP ?? false,
+                                                         isWPCom: siteInfo?.isWPCom ?? false,
+                                                         isJetpackInstalled: siteInfo?.hasJetpack ?? false,
+                                                         isJetpackActive: siteInfo?.isJetpackActive ?? false,
+                                                         isJetpackConnected: siteInfo?.isJetpackConnected ?? false))
 
         guard let site = siteInfo, let navigationController = navigationController else {
             navigationController?.show(noWPUI, sender: nil)
@@ -509,7 +515,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             DDLogWarn("⚠️ Could not convert WPAnalyticsStat with value: \(event.rawValue)")
             return
         }
-        ServiceLocator.analytics.track(wooEvent)
+        analytics.track(wooEvent)
     }
 
     /// Tracks a given Analytics Event, with the specified properties.
@@ -519,7 +525,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             DDLogWarn("⚠️ Could not convert WPAnalyticsStat with value: \(event.rawValue)")
             return
         }
-        ServiceLocator.analytics.track(wooEvent, withProperties: properties)
+        analytics.track(wooEvent, withProperties: properties)
     }
 
     /// Tracks a given Analytics Event, with the specified error.
@@ -529,12 +535,12 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             DDLogWarn("⚠️ Could not convert WPAnalyticsStat with value: \(event.rawValue)")
             return
         }
-        ServiceLocator.analytics.track(wooEvent, withError: error)
+        analytics.track(wooEvent, withError: error)
     }
 
     // Navigate to store creation
     func showSiteCreation(in navigationController: UINavigationController) {
-        ServiceLocator.analytics.track(event: .StoreCreation.loginPrologueCreateSiteTapped())
+        analytics.track(event: .StoreCreation.loginPrologueCreateSiteTapped())
 
         let coordinator = LoggedOutStoreCreationCoordinator(source: .prologue,
                                                             navigationController: navigationController)
@@ -755,8 +761,7 @@ private extension AuthenticationManager {
         }
 
         // Shows the native Jetpack flow during the site discovery flow.
-        // TODO-8075: replace feature flag with A/B testing
-        if featureFlagService.isFeatureFlagEnabled(.nativeJetpackSetupFlow) {
+        if ABTest.nativeJetpackSetupFlow.variation != .control {
             return jetpackSetupUI(for: site.url,
                                   connectionMissingOnly: site.hasJetpack && site.isJetpackActive,
                                   in: navigationController)

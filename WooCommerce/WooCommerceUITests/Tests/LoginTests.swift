@@ -37,7 +37,7 @@ final class LoginTests: XCTestCase {
             .proceedWith(password: TestCredentials.password)
 
         try LoginEpilogueScreen()
-            .verifyEpilogueDisplays(displayName: TestCredentials.displayName, siteUrl: TestCredentials.siteUrl)
+            .verifyEpilogueDisplays(email: "e2eflowtestingmobile@example.com", siteUrl: TestCredentials.siteUrl)
             .continueWithSelectedSite()
 
         try TabNavComponent()

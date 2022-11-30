@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-11-15 11:54:04+0000 */
+/* Translation-Revision-Date: 2022-11-29 10:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -217,6 +217,9 @@ which should be translated separately and considered part of this sentence. */
 /* Number of items in packages in Shipping Labels in plural form. Reads like - 10 items */
 "- %1$d items" = "- %1$d 個項目";
 
+/* The text is preceded by the monthly price on the store creation plan screen. */
+"\/month" = "\/月";
+
 /* Settings > Manage Card Reader > Connect > Help hint number 1 */
 "1" = "1";
 
@@ -279,6 +282,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Shown when a user types a non-number into the two factor field. */
 "A verification code will only contain numbers." = "驗證碼僅包含數字。";
+
+/* Header label on the top of the store name form in the store creation flow. */
+"ABOUT YOUR STORE" = "關於你的商店";
 
 /* Header of existing attribute options section in Add Attribute Options screen */
 "ADD OPTIONS" = "新增選項";
@@ -559,6 +565,9 @@ which should be translated separately and considered part of this sentence. */
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "已將所有評論標記為已讀";
 
+/* Subtitle of the store creation plan screen. */
+"All the featues you need, already built in" = "你需要的所有功能均已內建";
+
 /* Display label for the product's inventory backorders setting option */
 "Allow" = "允許";
 
@@ -652,10 +661,14 @@ which should be translated separately and considered part of this sentence. */
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "可選擇在購買之後傳送備註給客戶";
 
+/* Error message when an order already exists in the backend for a given receipt */
+"An order aready exists for this receipt" = "已有此收據的訂單";
+
 /* A failure reason for when the error that occured wasn't able to be determined. */
 "An unknown error occurred." = "發生未知的錯誤。";
 
-/* Title of analytics as part of Jetpack benefits. */
+/* Title for the Analytics Hub screen.
+   Title of analytics as part of Jetpack benefits. */
 "Analytics" = "分析";
 
 /* Message when enabling analytics succeeds */
@@ -768,6 +781,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the Automattic website */
 "Automattic family" = "Automattic 品牌系列";
 
+/* Label for average value of orders in the Analytics Hub */
+"Average Order Value" = "平均訂單金額";
+
 /* The title on the payment row of the Order Details screen when the payment is still pending */
 "Awaiting payment" = "正在等待付款";
 
@@ -858,7 +874,8 @@ which should be translated separately and considered part of this sentence. */
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "註冊即代表你同意我們的「服務條款」。";
 
-/* Content of the label at the end of the Wrong Account screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com. */
+/* Content of the label at the end of the Jetpack setup required screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com.
+   Content of the label at the end of the Wrong Account screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com. */
 "By tapping the Connect Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com." = "點選「連結 Jetpack」 按鈕，即表示你同意我們的%1$@以及 WordPress.com 的%2$@。";
 
 /* Header for the Custom Packages section in Shipping Label Package listing */
@@ -899,7 +916,6 @@ which should be translated separately and considered part of this sentence. */
    Button to allow the user to close the modal without connecting.
    Button to cancel (not try again). Presented to users after a failure occurs
    Button to cancel a payment
-   Button to cancel an in-person payment or refund
    Button to cancel the creation of an order on the New Order screen
    Button to dismiss Select Categories screen
    Button to dismiss the action sheet on the store picker
@@ -908,6 +924,8 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching.
    Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching.
    Button to dismiss the alert presented whenan update fails because the reader is low on battery.
+   Button to dismiss the alert presented while the reader is being prepared.
+   Button to dismiss the site credential login screen
    Button to dismiss. Presented to users when updating the card reader software fails
    Cancel button in the More Options action sheet
    Cancel button in the navigation bar of the view for adding or editing a coupon.
@@ -930,6 +948,7 @@ which should be translated separately and considered part of this sentence. */
    Dismiss button on the alert when the user taps to delete a Product image
    Label for a button that when tapped, cancels the process of connecting to a card reader 
    Label for a cancel button
+   Navigation bar button on the store name form to leave the store creation flow.
    Option to cancel the email app selection when logging in with magic links
    Text for the cancel button in the edit customer provided note screen
    Text for the cancel button in the Exclude Products screen
@@ -941,6 +960,9 @@ which should be translated separately and considered part of this sentence. */
    Title for the button to cancel the payment methods screen
    Title for the button to cancel the simple payments screen */
 "Cancel" = "取消";
+
+/* Action button to cancel Jetpack installation. */
+"Cancel Installation" = "取消安裝";
 
 /* Display label for cancelled order status. */
 "Cancelled" = "已取消";
@@ -956,6 +978,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the alert when there is a generic error adding the package */
 "Cannot add package" = "無法新增包裹";
+
+/* Title of the alert when the store cannot be created in the store creation flow. */
+"Cannot create store" = "無法建立商店";
 
 /* The title of the alert when there is an error duplicating the product */
 "Cannot duplicate product" = "無法複製商品";
@@ -1143,6 +1168,9 @@ which should be translated separately and considered part of this sentence. */
    Text field company in Shipping Label Address Validation */
 "Company" = "公司";
 
+/* Subtitle describing the previous analytics period under comparison. E.g. Compared to Oct 1 - 22, 2022 */
+"Compared to **%1$@**" = "與 **%1$@** 比較";
+
 /* Display label for completed order status. */
 "Completed" = "已完成";
 
@@ -1171,17 +1199,29 @@ which should be translated separately and considered part of this sentence. */
 "Connect Card Reader" = "連接讀卡機";
 
 /* Action button to handle connecting the logged-in account to a given site.Presented when logging in with a store address that does not match the account entered
+   Button on the Jetpack setup interrupted screen to continue the setup
+   Button title on the site credential login screen
+   Button to authorize Jetpack connection from the Jetpack setup required screen
    Title of the Jetpack connection web view in the login flow */
 "Connect Jetpack" = "連結 Jetpack";
 
+/* Title of the Jetpack setup required screen */
+"Connect Store" = "連結商店";
+
 /* Button to connect to an existing store from the store picker */
 "Connect an existing store" = "連結現有商店";
+
+/* Name of the connection step on the Jetpack setup screen */
+"Connect store to Jetpack" = "將商店連結至 Jetpack";
 
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "連線至讀卡機";
 
 /* Settings > Manage Card Reader > Prompt user to connect their first reader */
 "Connect your card reader" = "連接讀卡機";
+
+/* Message to be displayed when a Jetpack connection has been authorized */
+"Connected" = "已連結";
 
 /* Title shown when a user logs in with Google but no matching WordPress.com account is found */
 "Connected But…" = "已連線，但是…";
@@ -1195,6 +1235,9 @@ which should be translated separately and considered part of this sentence. */
 /* Page title for the list of connected stores */
 "Connected Stores" = "連結的商店";
 
+/* Title for the Jetpack setup screen when connection is required */
+"Connecting Jetpack" = "正在連結 Jetpack";
+
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
 "Connecting reader failed" = "連線至讀卡機失敗";
 
@@ -1204,7 +1247,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Connecting to a WordPress.com site" = "正在連結到 WordPress.com 網站";
 
-/* Title label for modal dialog that appears when connecting to a card reader */
+/* Bottom title of the alert presented with a spinner while the reader is being prepared
+   Title label for modal dialog that appears when connecting to a card reader */
 "Connecting to reader" = "正在連線至讀卡機";
 
 /* Error message when establishing a connection to the card reader times out. */
@@ -1229,7 +1273,8 @@ which should be translated separately and considered part of this sentence. */
    Close Account error alert button title - navigates the user to contact support.
    Contact Support title
    Text for the button to contact support from the store picker error screen
-   The title of the button to contact support in the Error Loading Data banner */
+   The title of the button to contact support in the Error Loading Data banner
+   Title of the button to contact support for help accessing a store after Jetpack setup */
 "Contact Support" = "聯絡支援團隊";
 
 /* Contact WooComerce Payments Support title */
@@ -1256,6 +1301,7 @@ which should be translated separately and considered part of this sentence. */
    The button title text when there is a next step for logging in or signing up.
    Title of continue button
    Title of dismiss button presented when users attempt to log in without Jetpack installed or connected
+   Title of the button on the store creation store name form to continue.
    Title of the button to continue with a selected domain. */
 "Continue" = "繼續";
 
@@ -1267,6 +1313,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "繼續閱讀";
+
+/* Title of the button on the store creation summary view to continue to payment. */
+"Continue to Payment" = "繼續進行付款";
 
 /* Button title. Tapping begins log in using Apple. */
 "Continue with Apple" = "繼續使用 Apple";
@@ -1391,6 +1440,9 @@ which should be translated separately and considered part of this sentence. */
    Text on the button that starts shipping label creation */
 "Create Shipping Label" = "建立運送標籤";
 
+/* Title of the button on the store creation plan view to purchase the plan. %1$@ is replaced by the monthly price. */
+"Create Store for %1$@\/month" = "每月 %1$@ 即可建立商店";
+
 /* Navigates to a new flow for site creation. */
 "Create a Site" = "建立網站";
 
@@ -1433,11 +1485,17 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the shipping labels top banner in order details */
 "Create shipping labels from your device!" = "從你的裝置建立郵寄標籤！";
 
+/* Displayed during the Login flow, whenever the user has no woo stores associated. */
+"Create your first store" = "建立你的第一個商店";
+
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "建立第一個款式";
 
 /* Loading text while creating a product from a template */
 "Creating Template Product..." = "正在建立範本商品...";
+
+/* Title of the in-progress view when waiting for the site to become a Jetpack site after WPCOM plan purchase in the store creation flow. */
+"Creating your store" = "正在建立你的商店";
 
 /* Credit card payment method for shipping label. */
 "Credit card" = "信用卡";
@@ -1701,6 +1759,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of button in order details > shipping label that shows the instructions on how to print a shipping label on the mobile device. */
 "Don’t know how to print from your mobile device?" = "不知道如何從行動裝置列印嗎？";
 
+/* Subtitle label on the store name form in the store creation flow. */
+"Don’t worry you can always change it later." = "之後隨時都能修改，不用擔心。";
+
 /* WordPress.com (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
 "Dotcom Error: [%1$@] %2$@" = "Dotcom 錯誤：[%1$@] %2$@";
 
@@ -1780,6 +1841,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "使用唯一代碼輕鬆識別你的產品";
+
+/* Title of eCommerce plan feature on the store creation plan screen. */
+"Ecommerce reports" = "電子商務報告";
 
 /* Button to edit a customer on the New Order screen
    Button to edit an order on Order Details screen
@@ -1956,7 +2020,8 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder of HS Tariff Number row in Package Content section in Customs screen of Shipping Label flow */
 "Enter number (Optional)" = "輸入號碼 (選填)";
 
-/* Enter password placeholder in Product Visibility */
+/* Enter password placeholder in Product Visibility
+   Placeholder for the password field on the site credential login screen */
 "Enter password" = "輸入密碼";
 
 /* Sign in instructions for logging in with a URL. */
@@ -1987,6 +2052,9 @@ which should be translated separately and considered part of this sentence. */
 /* Add custom shipping carrier. Placeholder of cell presenting tracking number */
 "Enter tracking number" = "輸入追蹤號碼";
 
+/* Placeholder for the username field on the site credential login screen */
+"Enter username" = "輸入使用者名稱";
+
 /* Enter your account information for {site url}. Asks the user to enter a username and password for their self-hosted site. */
 "Enter your account information for %@." = "請輸入你的 %@ 帳號資訊。";
 
@@ -2012,6 +2080,18 @@ which should be translated separately and considered part of this sentence. */
 /* Envelope package type, used to create a custom package in the Shipping Label flow */
 "Envelope" = "信封";
 
+/* Title indicating a failed step in Jetpack installation. */
+"Error" = "錯誤";
+
+/* Error title when Jetpack activation fails */
+"Error activating Jetpack" = "啟用 Jetpack 時發生錯誤";
+
+/* Error title when Jetpack connection fails */
+"Error authorizing connection to Jetpack" = "授權連結到 Jetpack 時發生錯誤";
+
+/* Error code displayed when the Jetpack setup fails. %1$d is the code. */
+"Error code %1$d" = "錯誤代碼 %1$d";
+
 /* Error message when enabling analytics fails */
 "Error enabling analytics. Please try again." = "啟用分析時發生錯誤。 請再試一次。";
 
@@ -2020,6 +2100,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "在 Apple 地圖中尋找位址時的錯誤";
+
+/* Error title when Jetpack install fails */
+"Error installing Jetpack" = "安裝 Jetpack 時發生錯誤";
 
 /* Message displayed on Coupon Details screen when loading total discounted amount fails */
 "Error loading data" = "載入資料時發生錯誤";
@@ -2079,6 +2162,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the exclusions section in Coupon Usage Restrictions screen */
 "Exclusions" = "排除項目";
+
+/* Button to cancel installation on the Jetpack setup interrupted screen */
+"Exit Without Connecting" = "結束而不要連結";
 
 /* Accessibility value when a banner is expanded */
 "Expanded" = "已展開";
@@ -2276,6 +2362,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the account creation form. */
 "Get started in minutes" = "只要幾分鐘即可開始使用";
 
+/* Button to contact support when Jetpack setup fails */
+"Get support" = "取得支援";
+
 /* Title of the Jetpack benefits banner. */
 "Get the full experience with Jetpack" = "取得 Jetpack 完整功能";
 
@@ -2288,6 +2377,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Alerts the user that wpcom account information is being retrieved. */
 "Getting account information" = "取得帳號資訊";
+
+/* Title of the alert presented with a spinner while the reader is being prepared */
+"Getting ready to collect payment" = "正在準備收取款項";
 
 /* Type Gift of content to be declared for the customs form in Shipping Label flow */
 "Gift" = "禮物";
@@ -2307,6 +2399,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Option to select the Gmail app when logging in with magic links */
 "Gmail" = "Gmail";
+
+/* Title for the button to navigate to the home screen after Jetpack setup completes */
+"Go to Store" = "前往商店";
 
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Google 註冊失敗。";
@@ -2345,6 +2440,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Post HTML content */
 "HTML Content" = "HTML 內容";
+
+/* Subtitle on the Jetpack setup required screen */
+"Have your store credentials ready." = "準備好你的商店憑證。";
 
 /* Accessibility label for selecting h1 paragraph style button on the formatting toolbar. */
 "Header 1" = "標題 1";
@@ -2387,10 +2485,12 @@ which should be translated separately and considered part of this sentence. */
 "Height" = "高度";
 
 /* Action button for opening Help.Presented when logging in with a site address that does not have WooCommerce
+   Button to contact support on the Jetpack setup interrupted screen
    Help and Support navigation title
    Help button
    Help button on account mismatch error screen.
    Help button on Jetpack required error screen.
+   Help button on Jetpack setup required screen.
    Help button on store picker screen. */
 "Help" = "幫助";
 
@@ -2543,10 +2643,18 @@ which should be translated separately and considered part of this sentence. */
 /* Message from the in-person payment card reader prompting user to insert or swipe their card */
 "Insert Or Swipe Card" = "插入卡片或刷卡";
 
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"Insert card to pay" = "插入卡片以付款";
+
+/* Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
+"Insert card to refund" = "插入卡片以退款";
+
 /* Title of a button linking to the app's Instagram profile */
 "Instagram" = "Instagram";
 
-/* Navigates to Install Jetpack screen.
+/* Button title on the site credential login screen
+   Button to install Jetpack from the Jetpack setup required screen
+   Navigates to Install Jetpack screen.
    Title of install action in the Jetpack benefits view.
    Title of the Install Jetpack intro view
    Title of the Install Jetpack view */
@@ -2570,7 +2678,8 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the Jetpack benefits view. */
 "Install the free Jetpack plugin to experience the best mobile experience." = "安裝 Jetpack 免費外掛程式，獲得最佳行動體驗。";
 
-/* Name of installing Jetpack plugin step */
+/* Name of installing Jetpack plugin step
+   Title for the Jetpack setup screen when installation is required */
 "Installing Jetpack" = "正在安裝 Jetpack";
 
 /* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates. Placeholder is a literal, e.g \"limited\" */
@@ -2626,6 +2735,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text on the button that starts a new refund process */
 "Issue Refund" = "核發退款";
 
+/* Title of the alert when the WPCOM plan cannot be purchased in the store creation flow. */
+"Issue purchasing the plan" = "購買方案時發生問題";
+
 /* Text of the screen that is displayed while the refund is being created. */
 "Issuing Refund..." = "正在核發退款…";
 
@@ -2635,7 +2747,8 @@ which should be translated separately and considered part of this sentence. */
 /* Message explaining that the site entered doesn't have WooCommerce installed or activated. Reads like 'It looks like awebsite.com is not a WooCommerce site. */
 "It looks like %@ is not a WooCommerce site." = "%@ 似乎不是 WooCommerce 網站。";
 
-/* An error message shown during log in when the username or password is incorrect. */
+/* An error message shown during log in when the username or password is incorrect.
+   An error message shown during login when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "使用者名稱\/密碼似乎不適用於這個網站。";
 
 /* Message on enable analytics screen to notify that the module is disabled for the store */
@@ -2662,7 +2775,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error message for missing value in Weight row in Customs screen of Shipping Label flow */
 "Item weight must be larger than 0" = "商品目重量必須大於 0";
 
-/* Description for Top Performers right column header */
+/* Description for Top Performers right column header
+   Title for the items sold column on the products card on the analytics hub screen. */
 "Items Sold" = "售出的項目";
 
 /* Title of the Jetpack Setup screen */
@@ -2670,6 +2784,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack 是一款免費的 WordPress 外掛程式，能夠透過所需工具連結你的商店，為你提供最佳行動裝置體驗，包含推播通知和統計資料";
+
+/* Title of the Jetpack setup interrupted screen */
+"Jetpack is installed, but not connected." = "已安裝 Jetpack，但未連結。";
 
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "隨處皆可加入";
@@ -2843,6 +2960,12 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Button title. Tapping begins our normal log in process. */
 "Log in or sign up with WordPress.com" = "登入或註冊 WordPress.com";
 
+/* Message on the site credential login screen for connecting Jetpack. The %1$@ is the site address. */
+"Log in to %1$@ with your store credentials to connect Jetpack." = "使用你的商店憑證登入 %1$@ 以連結 Jetpack。";
+
+/* Message on the site credential login screen for installing Jetpack. The %1$@ is the site address. */
+"Log in to %1$@ with your store credentials to install Jetpack." = "使用你的商店憑證登入 %1$@ 以安裝 Jetpack。";
+
 /* Instruction text on the login's email address screen. */
 "Log in to the WordPress.com account you used to connect Jetpack." = "請登入你用來連結 Jetpack 的 WordPress.com 帳號。";
 
@@ -2861,6 +2984,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Instructions on the WordPress.com username / password log in form. */
 "Log in with your WordPress.com username and password." = "請使用你的 WordPress.com 使用者名稱和密碼登入。";
+
+/* A generic error during site credential login */
+"Login failed. Please try again." = "登入失敗。 請再試一次。";
 
 /* Local notification action to log in with WordPress.com. */
 "Login with WordPress.com" = "登入 WordPress.com";
@@ -2893,6 +3019,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Title of the action sheet displayed from the Coupon Details screen */
 "Manage Coupon" = "管理優惠券";
+
+/* Title of the primary button on the store creation success screen to continue to the newly created store. */
+"Manage My Store" = "管理我的商店";
 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Manage and edit orders on the go" = "隨時隨地管理及編輯訂單";
@@ -2983,6 +3112,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Caption displayed in promotional screens shown during the login flow. */
 "Monitor and approve your product reviews" = "監控和核准你的產品評論";
 
+/* Title of the Analytics Hub Month to Date selection range */
+"Month to Date" = "月初至今";
+
 /* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
    Accessibility label for the More button on formatting toolbar. */
 "More" = "更多";
@@ -3012,13 +3144,17 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
 "Multiple Contactless Cards Detected" = "偵測到多張感應式卡片";
 
+/* Title of eCommerce plan feature on the store creation plan screen. */
+"Multiple payment options" = "多種付款選項";
+
 /* Title of the hub menu view in case there is no title for the store */
 "My Store" = "我的商店";
 
 /* My Tickets title */
 "My Tickets" = "我的票證";
 
-/* Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
+/* Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard
+   Title of the store creation summary screen. */
 "My store" = "我的商店";
 
 /* Name text field placeholder
@@ -3054,6 +3190,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* The title for the net amount paid cell */
 "Net Payment" = "付款淨額";
+
+/* Label for net sales (net revenue) in the Analytics Hub */
+"Net Sales" = "淨銷售額";
 
 /* Top performers — label for the total sales of a product */
 "Net sales: %@" = "淨銷售額：%@";
@@ -3115,6 +3254,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
 "No coupons found" = "沒有找到折價券";
 
+/* A error message when it's not possible to acquirethe Analytics Hub current selection range */
+"No current period available" = "無法使用這一期";
+
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "目前沒有資料";
 
@@ -3138,6 +3280,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Message on the detail view of the Orders tab before any order is selected */
 "No order selected" = "未選取訂單";
+
+/* A error message when it's not possible toacquire the Analytics Hub previous selection range */
+"No previous period available" = "無法使用上一期";
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "未設定價格";
@@ -3212,7 +3357,10 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "Now you can quickly access In-Person Payments and other features with ease." = "你現在可以快速輕鬆存取「親自收款」和其他功能。";
 
 /* Alert dismissal title
+   Button title to dismiss the alert when the store cannot be created in the store creation flow.
+   Button title to dismiss the alert when the WPCOM plan cannot be purchased in the store creation flow.
    Button title. An acknowledgement of the message displayed in a prompt.
+   Button to dismiss the error alert on the site credential login screen
    Dismiss button on the alert when there is an error creating a new product category
    Dismiss button on the alert when there is an error creating new product tags.
    Dismiss button on the alert when there is an error requesting shipping label document for printing
@@ -3225,6 +3373,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Header of selected attribute options section in Add Attribute Options screen */
 "OPTIONS OFFERED" = "已提供的選項";
+
+/* Title for order analytics section in the Analytics Hub */
+"ORDERS" = "訂單";
 
 /* Spoken label to indicate switch control is turned off. */
 "Off" = "關閉";
@@ -3451,7 +3602,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Password field title in Product Visibility
    Password placeholder
    Placeholder for the password textfield.
-   Placeholder of the password field on the account creation form. */
+   Placeholder of the password field on the account creation form.
+   Title of the password field on the site credential login screen */
 "Password" = "密碼";
 
 /* One of the possible options in Product Visibility */
@@ -3571,8 +3723,14 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "請為讀卡機充電";
 
+/* Error message on the Jetpack setup required screen when Jetpack connection is missing. */
+"Please connect your store to Jetpack to access it on this app." = "請將你的商店連結到 Jetpack，以在此應用程式上存取你的商店。";
+
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app." = "請聯絡網站管理員以獲得網站邀請，成為商店經理或管理員後即可使用應用程式。";
+
+/* Suggestion to be displayed when the user encounters a permission error during Jetpack setup */
+"Please contact your shop manager or administrator for help." = "請聯絡商店經理或管理員尋求協助。";
 
 /* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to address problems */
 "Please correct your store address to proceed" = "請更正商店地址以繼續";
@@ -3633,6 +3791,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* A short prompt asking the user to properly fill out all login fields. */
 "Please fill out all the fields" = "請填寫所有欄位";
 
+/* Error message on the Jetpack setup required screen. */
+"Please install the free Jetpack plugin to access your store on this app." = "請安裝免費的 Jetpack 外掛程式，以在此應用程式上存取你的商店。";
+
 /* Message for alert to prompt user to logout before connecting to a different wordpress.com site. */
 "Please log out before connecting to a different wordpress.com site" = "請先登出再連結至另一個 WordPress.com 網站";
 
@@ -3643,11 +3804,23 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Recovery suggestion when we fail to update an address when creating or editing an order */
 "Please make sure you are running the latest version of WooCommerce and try again later." = "請確認執行的是 WooCommerce 最新版本，並於稍後再試一次。";
 
+/* Message of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
+"Please remain connected." = "請維持連結。";
+
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "請選取包裹";
 
+/* Message of the alert when the store cannot be created due to the domain in the store creation flow. */
+"Please try a different domain." = "請嘗試其他網域。";
+
+/* Message of the alert when the WPCOM plan cannot be purchased in the store creation flow. */
+"Please try again and make sure you are signed in to an App Store account eligible for purchase." = "請再試一次並確認你已登入符合購買條件的 App Store 帳戶。";
+
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "請稍後再試或與我們聯絡，我們將很樂意提供協助！";
+
+/* Suggestion to be displayed when the user encounters a permission error during Jetpack setup */
+"Please try again or contact support if this error continues." = "請再試一次；如果持續發生此錯誤，請聯絡支援團隊。";
 
 /* Error message when Jetpack connection fails */
 "Please try again or contact us for support." = "請再試一次，或聯絡支援團隊。";
@@ -3656,6 +3829,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "Please try again or reach out to us and we'll be happy to assist you!" = "請再試一次或與我們聯絡，我們將很樂意提供協助！";
 
 /* Account creation error when an unexpected error occurs.
+   Message of the alert when the store cannot be created in the store creation flow.
    The message of the alert when there is an error uploading an image */
 "Please try again." = "請再試一次。";
 
@@ -3664,6 +3838,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Error message when Jetpack install fails */
 "Please try again. Alternatively, you can install Jetpack through your WP-Admin." = "請再試一次。 或者，你可以透過 WP 管理員安裝 Jetpack。";
+
+/* Default message when there is an unexpected error loading domain suggestions on the domain selector. */
+"Please try another query." = "請嘗試其他查詢。";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
 "Please update your reader software to keep accepting payments" = "請更新你的讀卡機軟體以接受付款";
@@ -3678,6 +3855,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Message on the Jetpack Install Progress screen. The %1$@ is the site address. */
 "Please wait while we connect your site %1$@ with Jetpack." = "我們正在連結你的網站 %1$@ 與 Jetpack，請稍候。";
+
+/* Message on the Jetpack setup screen. The %1$@ is the site address. */
+"Please wait while we connect your store %1$@ with Jetpack." = "我們正在連結你的商店 %1$@ 與 Jetpack，請稍候。";
 
 /* Instructions for the progress screen while generating a variation */
 "Please wait while we create the new variation" = "我們正在建立新款式，請稍候";
@@ -3698,7 +3878,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Message of the in-progress UI while deleting the Variation remotely */
 "Please wait while we update your store details" = "請稍候，我們正在更新你的商店詳細資料";
 
-/* Label within the modal dialog that appears when connecting to a card reader
+/* Bottom subtitle of the alert presented with a spinner while the reader is being prepared
+   Label within the modal dialog that appears when connecting to a card reader
    Text on the loading view of the product downloadable file screen indicating the user to wait */
 "Please wait..." = "請稍候…";
 
@@ -3717,11 +3898,23 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Error showed in Shipping Label Address Validation for the postcode field */
 "Postcode missing" = "未填寫郵遞區號";
 
+/* The text is followed by a WordPress.com logo on the store creation plan screen. */
+"Powered by" = "技術支援：";
+
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "由 Automattic 提供技術";
 
+/* Title of eCommerce plan feature on the store creation plan screen. */
+"Premium themes" = "進階版佈景主題";
+
 /* Title of in-progress modal when preparing for printing customs invoice */
 "Preparing document" = "正在準備文件";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"Present card to pay" = "出示卡片以付款";
+
+/* Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
+"Present card to refund" = "出示卡片以退款";
 
 /* Action for previewing draft Product changes in the webview */
 "Preview" = "預覽";
@@ -3866,6 +4059,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Description for Top Performers left column header
    Product section title if there is more than one product.
    Product section title in Review Order screen if there is more than one product.
+   Title for the products card on the analytics hub screen.
    Title of the Products tab — plural form of Product
    Title text of the section that shows the Products when creating or editing an order
    Title that appears on top of the Product List screen (plural form of the word Product). */
@@ -3942,6 +4136,12 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Restriction type Quarantine for contents declared in the customs form for Shipping Label flow */
 "Quarantine" = "檢疫";
 
+/* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
+"Quickly get up and selling with a beautiful online store." = "快速上手並透過精美的線上商店銷售。";
+
+/* Title for revenue analytics section in the Analytics Hub */
+"REVENUE" = "收益";
+
 /* Title of button that allows the user to rate the app in the App Store */
 "Rate us" = "幫我們評分";
 
@@ -3957,8 +4157,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "閱讀隱私權政策";
 
-/* Indicates the status of a card reader. Presented to users when in-person payment collection or refund starts
-   Indicates the status of a card reader. Presented to users when payment collection starts */
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
 "Reader is ready" = "閱讀器已準備就緒";
 
 /* Refund note section title */
@@ -4137,7 +4336,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Local notification action to reset password. */
 "Reset password" = "重設密碼";
 
-/* The button title for a secondary call-to-action button. When the user can't remember their password. */
+/* Button to reset password on the site credential login screen
+   The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "重設密碼";
 
 /* Restriction for customers with specified emails to use a coupon, reads like: Restricted to customers with emails: *@a8c.com, *@vip.com */
@@ -4246,6 +4446,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "折扣價格：%@";
 
+/* Title of eCommerce plan feature on the store creation plan screen. */
+"Sales channels" = "銷售通路";
+
 /* Type Sample of content to be declared for the customs form in Shipping Label flow */
 "Sample" = "樣本";
 
@@ -4348,6 +4551,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Link title to see all paper size options */
 "See layout and paper sizes options" = "查看版面配置和紙張大小選項";
+
+/* Button on the stats dashboard that navigates user to the analytics hub */
+"See more" = "查看更多";
 
 /* Subtitle of the Jetpack benefits banner. */
 "See the benefits" = "查看優勢";
@@ -4548,6 +4754,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Header text when printing a newly purchased shipping label */
 "Shipping label purchased!" = "已購買郵寄標籤！";
 
+/* Title of eCommerce plan feature on the store creation plan screen. */
+"Shipping labels" = "運送標籤";
+
 /* Header text when printing multiple newly purchased shipping labels */
 "Shipping labels purchased!" = "已購買郵寄標籤！";
 
@@ -4650,8 +4859,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "網站位址至少必須為 4 個字元。";
 
-/* Navigation bar button on the domain selector screen to skip domain selection.
-   The button title on the login onboarding screen to skip to the prologue screen.
+/* The button title on the login onboarding screen to skip to the prologue screen.
    Title for the button to skip the onboarding step informing the merchant of pending account requirements */
 "Skip" = "跳過";
 
@@ -4796,8 +5004,14 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Title of the cell in Product Inventory Settings > Stock status */
 "Stock status" = "庫存狀態";
 
+/* Title of the secondary button on the store creation success screen to preview the newly created store. */
+"Store Preview" = "商店預覽";
+
 /* My Store > Settings > Store Settings section title */
 "Store Settings" = "商店設定";
+
+/* Text field prompt on the store name form in the store creation flow. */
+"Store name" = "商店名稱";
 
 /* VoiceOver accessibility label for the store revenue chart. */
 "Store revenue chart" = "商店收益圖";
@@ -4816,6 +5030,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Display label for subscription product type. */
 "Subscription" = "訂購";
+
+/* Title of eCommerce plan feature on the store creation plan screen. */
+"Subscriptions & giftcards" = "訂購與禮品卡";
 
 /* Create Shipping Label form -> Subtotal label
    Line description for 'Subtotal' cart total on the receipt. The subtotal of the products purchased before discounts.
@@ -4899,8 +5116,23 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Message when a payments account is successfully connected for Card Present Payments */
 "Taking you back to collect a payment" = "即將讓您返回以收取款項";
 
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"Tap card to pay" = "感應卡片以付款";
+
+/* Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
+"Tap card to refund" = "感應卡片以退款";
+
 /* Accessibility hint for the More button on formatting toolbar. */
 "Tap for more formatting options" = "點選以取得更多格式選項";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"Tap or insert card to pay" = "感應或插入卡片以付款";
+
+/* Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
+"Tap or insert card to refund" = "感應或插入卡片以退款";
+
+/* Cell tytle on beta features screen to enable Tap to Pay on iPhone: card payments with the phone's built in reader */
+"Tap to Pay on iPhone" = "iPhone 上的「Tap to Pay」(輕觸付款) 功能";
 
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
 "Tap to insert a Horizontal Ruler" = "點選以插入水平尺規";
@@ -4965,12 +5197,10 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Accessibility hint for selecting paragraph style button on formatting toolbar. */
 "Tap to toggle paragraph style" = "點選以切換段落風格";
 
-/* Indicates the action expected from a user. Presented to users when payment collection starts
-   Label asking users to present a card. Presented to users when a payment is going to be collected */
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Tap, insert or swipe to pay" = "點選、插入或撥動以付款";
 
-/* Indicates the action expected from a user. Presented to users when in-person refund starts
-   Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
+/* Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
 "Tap, insert or swipe to refund" = "點選、插入或滑動以退款";
 
 /* Tax label for a refund details view
@@ -5011,9 +5241,13 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "Tell us more about %1$@..." = "告訴我們更多關於 %1$@ 的資訊…";
 
 /* Terms of service link on the account creation form.
+   The terms to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
    The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen.
    Title of button that displays the App's terms of service */
 "Terms of Service" = "服務條款";
+
+/* Cell description on beta features screen to enable in-app purchases */
+"Test out In-Person Payments using your phone's built-in card reader, as we get ready to launch. Supported on iPhone XS and newer phones, running iOS 15.5 or above." = "我們準備推出「親自收款」功能，請使用手機的內建讀取器測試。 支援執行 iOS 15.5 或更新版本的 iPhone XS 和更新款手機。";
 
 /* Cell description on beta features screen to enable in-app purchases */
 "Test out in-app purchases as we get ready to launch" = "在準備推出前測試應用程式內購買項目";
@@ -5279,6 +5513,12 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The details on the placeholder overlay when there is issue syncing site plugins */
 "There was a problem while trying to load plugins. Check your internet and try again." = "嘗試載入外掛程式時出現問題。 請檢查你的網際網路，然後再試一次。";
 
+/* Message to be displayed when the user encounters a permission error during Jetpack setup */
+"There was an error communicating with your site." = "與你的網站通訊時發生錯誤。";
+
+/* Message to be displayed when the user encounters a generic error during Jetpack setup */
+"There was an error completing your request." = "處理你的要求時發生錯誤。";
+
 /* Notice text after failing to create a simple payments order. */
 "There was an error creating the order" = "建立訂單時發生錯誤";
 
@@ -5306,6 +5546,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Text when there is an unknown error while trying to collect payments */
 "There was an error while trying to collect the payment." = "嘗試收款時發生錯誤。";
+
+/* Refund policy under the purchase button on the store creation plan screen. */
+"There’s no risk, you can cancel for a full refund within 30 days." = "沒有任何風險，30 天內取消可獲得全額退款。";
 
 /* Software Licenses (information page title)
    Title of button that displays information about the third party software libraries used in the creation of this app */
@@ -5360,7 +5603,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "這是顧客能夠存取的檔案 URL。 輸入的 URL 應該已編碼。";
 
 /* Subtitle of the domain selector. */
-"This is where people will find you on the Internet. Don't worry, you can change it later." = "這是人們在網際網路上找到你的地方。 不用擔心，之後還能修改。";
+"This is where people will find you on the Internet. You can add another domain later." = "這是人們在網際網路上找到你的地方。 你可以稍後新增另一個網域。";
 
 /* Message in action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow.The package name reads like: Package 1: Custom Envelope. */
 "This item is currently in Package %1$d: %2$@. Where would you like to move it?" = "此商品目前在包裹 %1$d 中：%2$@。 你想移到哪裡？";
@@ -5451,6 +5694,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Label for one of the filters in order date range
    Tab selector title that shows the statistics for today
+   Title of the Analytics Hub Today's selection range
    Today Section Header
    Top Performers section title - today */
 "Today" = "今天";
@@ -5472,6 +5716,12 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Used when a Reader Topic is not found for a specific id */
 "Topic not found for id:" = "找不到 ID 的主題：";
+
+/* Label for total number of orders in the Analytics Hub */
+"Total Orders" = "總訂單數";
+
+/* Label for total sales (gross revenue) in the Analytics Hub */
+"Total Sales" = "銷售總計";
 
 /* Title of the row for adding the package weight in Shipping Label Package Detail screen */
 "Total package weight" = "包裹總重";
@@ -5512,11 +5762,15 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Connect when the SSL certificate is invalid */
 "Trust" = "信任";
 
+/* Action button to retry Jetpack activation. */
+"Try Activating Again" = "嘗試重新啟用";
+
 /* Action displayed in the error prompt when loading total discounted amount in Coupon Details screen fails
    Button to retry a software update. Presented to users when updating the card reader software fails
    Button to try again after connecting to a specific reader fails due to a critically low battery.
    Button to try again. Presented to users after a failure occurs
    Button to try to refund a payment again. Presented to users after refunding a payment fails
+   Title of the button to attempt loading the store again after Jetpack setup
    Try Again button on the error alert when fetching system status report fails */
 "Try Again" = "再試一次";
 
@@ -5529,8 +5783,14 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Message from the in-person payment card reader prompting user to retry a payment using a different method, e.g. swipe, tap, insert */
 "Try Another Read Method" = "請嘗試其他讀取方法";
 
+/* Action button to retry Jetpack connection. */
+"Try Authorizing Again" = "嘗試重新授權";
+
 /* Button to try to collect a payment again. Presented to users after collecting a payment fails */
 "Try Collecting Again" = "重新嘗試收款";
+
+/* Action button to retry Jetpack installation. */
+"Try Installing Again" = "嘗試重新安裝";
 
 /* Action to resync on the placeholder overlay when there is issue syncing site plugins
    Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
@@ -5538,6 +5798,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
 "Try another means of payment" = "請嘗試其他付款方式";
+
+/* Message on the Jetpack setup interrupted screen */
+"Try connecting again to access your store." = "嘗試重新連結以存取商店。";
 
 /* Title for the button on the Linked Products announcement banner */
 "Try it now" = "立即試試";
@@ -5566,14 +5829,15 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of a button linking to the app's Twitter profile */
 "Twitter" = "Twitter";
 
+/* Placeholder of the search text field on the domain selector.
+   Text field placeholder on the store name form in the store creation flow. */
+"Type a name for your store" = "輸入你的商店名稱";
+
 /* Placeholder for the Content Details row in Customs screen of Shipping Label flow */
 "Type of contents" = "內容物類型";
 
 /* Placeholder for the Restriction Details row in Customs screen of Shipping Label flow */
 "Type of restriction" = "限制類型";
-
-/* Placeholder of the search text field on the domain selector. */
-"Type to get suggestions" = "請輸入以獲得建議";
 
 /* Navigation bar title for editing the URL of a text link
    URL text field placeholder */
@@ -5747,6 +6011,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Value for fields in Coupon Usage Restrictions screen when no limit is set */
 "Unlimited" = "無限制";
 
+/* Title of eCommerce plan feature on the store creation plan screen. */
+"Unlimited products" = "不限制產品數量";
+
 /* Back button title when the product doesn't have a name */
 "Unnamed product" = "未命名產品";
 
@@ -5886,11 +6153,15 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder
    Placeholder for the username textfield.
+   Title of the email field on the site credential login screen
    Username placeholder */
 "Username" = "使用者名稱";
 
 /* No comment provided by engineer. */
 "Username must be at least 4 characters." = "使用者名稱至少必須為 4 個字元。";
+
+/* Message to be displayed when a Jetpack connection is being authorized */
+"Validating" = "驗證中";
 
 /* Title for the Value row in item details in Customs screen of Shipping Label flow */
 "Value (%1$@ per unit)" = "價格 (每件 %1$@)";
@@ -6012,11 +6283,17 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* View title during the Google auth process. */
 "Waiting..." = "等待中…";
 
+/* Title of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
+"We are getting ready for your store creation" = "我們正在準備建立你的商店";
+
 /* Error message when the merchant's payment account has been rejected */
 "We are sorry but we can't support In-Person Payments for this store." = "很抱歉，我們不支援此商店的親自收款功能。";
 
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "我們正努力讓你能更輕鬆查看裝置的產品附加元件！ 你現在可以查看訂單的附加元件。 你可以在 Web 控制台中建立和編輯這些附加元件。";
+
+/* Error message displayed when there is no store matching the site URL that is associated with the user's account */
+"We cannot load the store at the moment." = "目前無法載入商店。";
 
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "我們無法顯示你的商店分析資料";
@@ -6115,6 +6392,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of a button linking to the app's website */
 "Website" = "網站";
 
+/* Title of the Analytics Hub Week to Date selection range */
+"Week to Date" = "週初至今";
+
 /* Title of the cell in Product Shipping Settings > Weight */
 "Weight" = "重量";
 
@@ -6154,6 +6434,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Title of Whats New Component */
 "What’s New in WooCommerce" = "WooCommerce 新功能";
+
+/* Title label on the store name form in the store creation flow. */
+"What’s your store name?" = "你的商店名稱為何？";
 
 /* Shipping Labels: info description about WooCommerce Services discount */
 "When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices." = "透過 WooCommerce 購買郵寄標籤可享折扣商業價。";
@@ -6214,6 +6497,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Option to select the Yahoo Mail app when logging in with magic links */
 "Yahoo Mail" = "Yahoo奇摩電子信箱";
 
+/* Title of the Analytics Hub Year to Date selection range */
+"Year to Date" = "年初至今";
+
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "是，請變更";
 
@@ -6251,6 +6537,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The description on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
 "You currently have Coupons disabled for this store. Enable coupons to get started." = "你目前在此商店中停用優惠券。 啟用優惠券即可開始使用。";
 
+/* Message to be displayed when the user encounters a permission error during Jetpack setup */
+"You don't have permission to manage plugins on this store." = "你無權管理此商店的外掛程式。";
+
 /* Title for the mocked order notification needed for the AppStore listing screenshot */
 "You have a new order! 🎉" = "你有新訂單！🎉";
 
@@ -6271,9 +6560,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Error message displayed when unable to close user account due to being unauthorized. */
 "You're not authorized to close the account." = "你無權關閉該帳號。";
-
-/* Displayed during the Login flow, whenever the user has no woo stores associated. */
-"Your account isn’t connected to any WooCommerce stores." = "你的帳號未連結至任何 WooCommerce 商店。";
 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "你的讀卡機軟體需要更新才能收取款項。 取消更新將會封鎖你的讀卡機連線。";
@@ -6302,6 +6588,12 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "當你使用 Safari 造訪自己的網站時，網站位址會顯示在畫面上方的網址列中。";
 
+/* Title of the store creation success screen. */
+"Your store has been created!" = "已建立你的商店！";
+
+/* Subtitle of the store creation summary screen. */
+"Your store will be created based on the options of your choice!" = "系統會根據你選擇的選項建立你的商店！";
+
 /* Error message when WooCommerce Payments is not installed */
 "You’ll need to install the free WooCommerce Payments extension on your store to accept In-Person Payments." = "你需要為商店安裝免費 WooCommerce Payments 擴充功能，才能使用親自收款功能。";
 
@@ -6316,6 +6608,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "圖示";
+
+/* Title of the store creation plan on the plan screen. */
+"eCommerce" = "電子商務";
 
 /* Placeholder for the site url textfield.
    Site Address placeholder */
@@ -6351,7 +6646,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Format of the number of product ratings in singular form */
 "rated once" = "已評分一次";
 
-/* The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
+/* The action to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
+   The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
 "share details" = "分享詳細資訊";
 
 /* Widget description, displayed when selecting which widget to add */

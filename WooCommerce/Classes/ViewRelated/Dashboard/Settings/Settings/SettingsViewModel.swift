@@ -110,6 +110,10 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
               configuration: upsellCardReadersCampaign.configuration)
     }
 
+    /// Reference to the Zendesk shared instance
+    ///
+    private let zendeskShared: ZendeskManagerProtocol = ZendeskProvider.shared
+
     init(stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -141,6 +145,11 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
             let action = SystemStatusAction.synchronizeSystemPlugins(siteID: siteID, onCompletion: { _ in })
             stores.dispatch(action)
         }
+
+        /// Fetch System Status Report from Zendesk
+        /// so it will be ready to be attached to a a support request when needed
+        ///
+        zendeskShared.fetchSystemStatusReport()
     }
 
     /// Sets up the view model and loads the settings.

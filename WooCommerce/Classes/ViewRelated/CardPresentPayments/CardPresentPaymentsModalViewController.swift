@@ -104,8 +104,8 @@ private extension CardPresentPaymentsModalViewController {
     func createLoadingIndicator() {
         let loadingIndicator = ProgressView()
             .progressViewStyle(IndefiniteCircularProgressViewStyle(size: 96.0))
-            .background(Color(.tertiarySystemBackground))
         let host = ConstraintsUpdatingHostingController(rootView: loadingIndicator)
+        host.view.backgroundColor = .tertiarySystemBackground
         add(host)
 
         guard let index = mainStackView.arrangedSubviews.firstIndex(of: imageView) else {
@@ -320,7 +320,9 @@ private extension CardPresentPaymentsModalViewController {
             auxiliaryButton.setAttributedTitle(viewModel.auxiliaryAttributedButtonTitle, for: .normal)
             auxiliaryButton.setImage(viewModel.auxiliaryButtonimage, for: .normal)
             if viewModel.auxiliaryButtonimage != nil {
-                auxiliaryButton.distributeTitleAndImage(spacing: 8.0)
+                var config = UIButton.Configuration.plain()
+                config.imagePadding = Constants.buttonTitleAndImageSpacing
+                auxiliaryButton.configuration = config
             }
             view.layoutIfNeeded()
         }
@@ -416,6 +418,7 @@ private extension CardPresentPaymentsModalViewController {
         static let extraInfoCustomInsets = UIEdgeInsets(top: 12, left: 10, bottom: 12, right: 10)
         static let modalHeight: CGFloat = 382
         static let modalWidth: CGFloat = 280
+        static let buttonTitleAndImageSpacing: CGFloat = 8
     }
 }
 

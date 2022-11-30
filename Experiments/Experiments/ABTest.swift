@@ -8,13 +8,22 @@ public enum ABTest: String, CaseIterable {
     case null
 
     /// A/A test to make sure there is no bias in the logged out state.
+    /// Experiment ref: pbxNRc-1QS-p2
+    case aaTestLoggedIn = "woocommerceios_explat_aa_test_logged_in_202212_v2"
+
+    /// A/A test to make sure there is no bias in the logged out state.
     /// Experiment ref: pbxNRc-1S0-p2
-    case aaTestLoggedOut = "woocommerceios_explat_aa_test_logged_out_202211"
+    case aaTestLoggedOut = "woocommerceios_explat_aa_test_logged_out_202212_v2"
 
     /// A/B test to measure the sign-in success rate when only WPCom login is enabled.
     /// Experiment ref: pbxNRc-27s-p2
     ///
     case abTestLoginWithWPComOnly = "woocommerceios_login_wpcom_only"
+
+    /// A/B test to measure the sign-in success rate when native Jetpack installation experience is enabled
+    /// Experiment ref: pbxNRc-29W-p2
+    ///
+    case nativeJetpackSetupFlow = "woocommerceios_login_jetpack_setup_flow_v2"
 
     /// A/B test for the Products Onboarding banner on the My Store dashboard.
     /// Experiment ref: pbxNRc-26F-p2
@@ -34,7 +43,7 @@ public enum ABTest: String, CaseIterable {
     /// When adding a new experiment, add it to the appropriate case depending on its context (logged-in or logged-out experience).
     public var context: ExperimentContext {
         switch self {
-        case .productsOnboardingBanner, .productsOnboardingTemplateProducts:
+        case .aaTestLoggedIn, .productsOnboardingBanner, .productsOnboardingTemplateProducts, .nativeJetpackSetupFlow:
             return .loggedIn
         case .aaTestLoggedOut, .abTestLoginWithWPComOnly:
             return .loggedOut
@@ -47,6 +56,7 @@ public enum ABTest: String, CaseIterable {
 public extension ABTest {
     /// Start the AB Testing platform if any experiment exists for the provided context
     ///
+    @MainActor
     static func start(for context: ExperimentContext) async {
         let experiments = ABTest.allCases.filter { $0.context == context }
 

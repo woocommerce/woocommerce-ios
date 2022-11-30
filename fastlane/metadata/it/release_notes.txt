@@ -1,1 +1,2 @@
-Per questo rilascio, ci siamo concentrati sul perfezionamento di alcuni dettagli e ci siamo occupati dei piccoli bug riscontrati dal nostro team, inclusa l'opzione per visualizzare in anteprima i prodotti prima di pubblicarli. Non farti ingannare: stiamo lavorando ad alcune novità interessanti da offrire a tutti. Continua a condividere il feedback!
+Ci siamo concentrati su alcuni problemi di stabilità e prestazioni per rendere la tua esperienza più fluida. Continua a condividere il feedback. Li leggiamo uno a uno.
+

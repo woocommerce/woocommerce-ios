@@ -1,1 +1,2 @@
-Untuk rilis kali ini, kami berfokus pada penyempurnaan beberapa hal dan penanganan bug kecil yang tim kami temukan, termasuk pilihan untuk melakukan pratinjau produk-produk Anda sebelum mempublikasikannya. Jangan terkecoh – kami sedang menyiapkan sesuatu yang keren untuk Anda! Terus bagikan feedback!
+We focused on some stability and performance issues to make your experience smoother. Please keep sharing feedback. Kami membaca semuanya!
+

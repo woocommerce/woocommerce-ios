@@ -9,10 +9,12 @@ struct AnalyticsReportCard: View {
     let leadingValue: String
     let leadingDelta: String
     let leadingDeltaColor: UIColor
+    let leadingChartData: [Double]
     let trailingTitle: String
     let trailingValue: String
     let trailingDelta: String
     let trailingDeltaColor: UIColor
+    let trailingChartData: [Double]
 
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.titleSpacing) {
@@ -21,11 +23,11 @@ struct AnalyticsReportCard: View {
                 .foregroundColor(Color(.text))
                 .footnoteStyle()
 
-            HStack {
+            HStack(alignment: .top, spacing: Layout.columnOutterSpacing) {
 
                 /// Leading Column
                 ///
-                VStack(alignment: .leading, spacing: Layout.columnSpacing) {
+                VStack(alignment: .leading, spacing: Layout.columnInnerSpacing) {
 
                     Text(leadingTitle)
                         .calloutStyle()
@@ -33,21 +35,35 @@ struct AnalyticsReportCard: View {
                     Text(leadingValue)
                         .titleStyle()
 
-                    DeltaTag(value: leadingDelta, backgroundColor: leadingDeltaColor)
+                    AdaptiveStack {
+                        DeltaTag(value: leadingDelta, backgroundColor: leadingDeltaColor)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+
+                        AnalyticsLineChart(dataPoints: leadingChartData, lineChartColor: leadingDeltaColor)
+                            .aspectRatio(Layout.chartAspectRatio, contentMode: .fit)
+                            .frame(maxWidth: .infinity, maxHeight: Layout.chartMaxHeight, alignment: .trailing)
+                    }
 
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
 
                 /// Trailing Column
                 ///
-                VStack(alignment: .leading, spacing: Layout.columnSpacing) {
+                VStack(alignment: .leading, spacing: Layout.columnInnerSpacing) {
                     Text(trailingTitle)
                         .calloutStyle()
 
                     Text(trailingValue)
                         .titleStyle()
 
-                    DeltaTag(value: trailingDelta, backgroundColor: trailingDeltaColor)
+                    AdaptiveStack {
+                        DeltaTag(value: trailingDelta, backgroundColor: trailingDeltaColor)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+
+                        AnalyticsLineChart(dataPoints: trailingChartData, lineChartColor: trailingDeltaColor)
+                            .aspectRatio(Layout.chartAspectRatio, contentMode: .fit)
+                            .frame(maxWidth: .infinity, maxHeight: Layout.chartMaxHeight, alignment: .trailing)
+                    }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -56,29 +72,15 @@ struct AnalyticsReportCard: View {
     }
 }
 
-private struct DeltaTag: View {
-
-    let value: String
-    let backgroundColor: UIColor
-
-    var body: some View {
-        Text(value)
-            .padding(AnalyticsReportCard.Layout.deltaBackgroundPadding)
-            .foregroundColor(Color(.textInverted))
-            .captionStyle()
-            .background(Color(backgroundColor))
-            .cornerRadius(AnalyticsReportCard.Layout.deltaCornerRadius)
-    }
-}
-
 // MARK: Constants
 private extension AnalyticsReportCard {
     enum Layout {
         static let titleSpacing: CGFloat = 24
         static let cardPadding: CGFloat = 16
-        static let columnSpacing: CGFloat = 10
-        static let deltaBackgroundPadding = EdgeInsets(top: 2, leading: 8, bottom: 2, trailing: 8)
-        static let deltaCornerRadius: CGFloat = 4.0
+        static let columnOutterSpacing: CGFloat = 28
+        static let columnInnerSpacing: CGFloat = 10
+        static let chartAspectRatio: CGFloat = 2.2
+        static let chartMaxHeight: CGFloat = 48
     }
 }
 
@@ -90,10 +92,12 @@ struct Previews: PreviewProvider {
                             leadingValue: "$3.678",
                             leadingDelta: "+23%",
                             leadingDeltaColor: .withColorStudio(.green, shade: .shade40),
+                            leadingChartData: [0.0, 10.0, 2.0, 20.0, 15.0, 40.0, 0.0, 10.0, 2.0, 20.0, 15.0, 50.0],
                             trailingTitle: "Net Sales",
                             trailingValue: "$3.232",
                             trailingDelta: "-3%",
-                            trailingDeltaColor: .withColorStudio(.red, shade: .shade40))
+                            trailingDeltaColor: .withColorStudio(.red, shade: .shade40),
+                            trailingChartData: [50.0, 15.0, 20.0, 2.0, 10.0, 0.0, 40.0, 15.0, 20.0, 2.0, 10.0, 0.0])
             .previewLayout(.sizeThatFits)
     }
 }

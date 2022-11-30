@@ -1,1 +1,2 @@
-Para esta versión, nos hemos centrado en mejorar algunos aspectos y solucionar pequeños errores que nuestro equipo ha detectado, como la opción de previsualizar los productos antes de publicarlos. No te dejes engañar. ¡Estamos trabajando en cosas muy interesantes para todos vosotros! No dejes de compartir tu opinión!
+Nos hemos centrado en solucionar algunos problemas de estabilidad y rendimiento para que tu experiencia sea más fluida. No dejes de compartir tu opinión. Leemos todos los comentarios.
+

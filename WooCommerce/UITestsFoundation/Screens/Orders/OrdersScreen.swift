@@ -15,19 +15,11 @@ public final class OrdersScreen: ScreenObject {
         $0.buttons["new-order-type-sheet-button"]
     }
 
-    private let newOrderCellGetter: (XCUIApplication) -> XCUIElement = {
-        $0.cells["new_order_full_manual_order"]
-    }
-
     private var searchButton: XCUIElement { searchButtonGetter(app) }
 
     /// Button (`+`) to create a new order or simple payment
     ///
     private var createButton: XCUIElement { createButtonGetter(app) }
-
-    /// Button (on the Orders bottom sheet) to create a full manual order
-    ///
-    private var newOrderButton: XCUIElement { newOrderCellGetter(app) }
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
@@ -82,7 +74,6 @@ public final class OrdersScreen: ScreenObject {
     @discardableResult
     public func startOrderCreation() throws -> UnifiedOrderScreen {
         createButton.tap()
-        newOrderButton.tap()
         return try UnifiedOrderScreen()
     }
 }

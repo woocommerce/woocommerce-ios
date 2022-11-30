@@ -1,1 +1,2 @@
-For this release, we focused on polishing a few things and taking care of minor bugs that our team found, including the option to preview your products before publishing them. Don’t be fooled – we are working on some pretty cool stuff for you all! Keep sharing feedback!
+We focused on some stability and performance issues to make your experience smoother. Please keep sharing feedback. We read every one of them.
+

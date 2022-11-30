@@ -71,6 +71,10 @@ final class MockZendeskManager: ZendeskManagerProtocol {
     func observeStoreSwitch() {
         // no-op
     }
+
+    func fetchSystemStatusReport() {
+        // no-op
+    }
 }
 
 extension MockZendeskManager: SupportManagerAdapter {

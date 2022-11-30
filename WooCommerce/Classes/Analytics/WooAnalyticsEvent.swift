@@ -1653,14 +1653,22 @@ extension WooAnalyticsEvent {
         enum Key: String {
             case hasWordPress = "has_wordpress"
             case isWPCom = "is_wpcom"
-            case hasValidJetpack = "has_valid_jetpack"
+            case isJetpackInstalled = "is_jetpack_installed"
+            case isJetpackActive = "is_jetpack_active"
+            case isJetpackConnected = "is_jetpack_connected"
         }
 
         /// Tracks when the result for site discovery is returned
-        static func siteDiscovery(hasWordPress: Bool, isWPCom: Bool, hasValidJetpack: Bool) -> WooAnalyticsEvent {
+        static func siteDiscovery(hasWordPress: Bool,
+                                  isWPCom: Bool,
+                                  isJetpackInstalled: Bool,
+                                  isJetpackActive: Bool,
+                                  isJetpackConnected: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .sitePickerSiteDiscovery, properties: [Key.hasWordPress.rawValue: hasWordPress,
                                                                                Key.isWPCom.rawValue: isWPCom,
-                                                                               Key.hasValidJetpack.rawValue: hasValidJetpack])
+                                                                               Key.isJetpackInstalled.rawValue: isJetpackInstalled,
+                                                                               Key.isJetpackActive.rawValue: isJetpackActive,
+                                                                               Key.isJetpackConnected.rawValue: isJetpackConnected])
         }
 
         /// Tracks when the user taps the New To WooCommerce button

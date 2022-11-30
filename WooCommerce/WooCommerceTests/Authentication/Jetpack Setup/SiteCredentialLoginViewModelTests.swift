@@ -1,6 +1,7 @@
 import XCTest
 @testable import WooCommerce
 import WordPressAuthenticator
+import Yosemite
 
 final class SiteCredentialLoginViewModelTests: XCTestCase {
 
@@ -94,5 +95,100 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.shouldShowErrorAlert)
         XCTAssertEqual(viewModel.errorMessage, SiteCredentialLoginViewModel.Localization.wrongCredentials)
+    }
+
+    func test_finishedLogin_triggers_authentication_in_JetpackConnectionAction_and_successHandler() {
+        // Given
+        var successHandlerTriggered = false
+        var returnedXMLRPC: String?
+        var triggeredAuthentication = false
+        let siteURL = "https://test.com"
+        let xmlrpcURL = "https://test.com/xmlrpc.php"
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, stores: stores) { xmlrpc in
+            successHandlerTriggered = true
+            returnedXMLRPC = xmlrpc
+        }
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .authenticate:
+                triggeredAuthentication = true
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.finishedLogin(withUsername: "test", password: "secret", xmlrpc: xmlrpcURL)
+
+        // Then
+        XCTAssertTrue(triggeredAuthentication)
+        XCTAssertTrue(successHandlerTriggered)
+        XCTAssertEqual(returnedXMLRPC, xmlrpcURL)
+    }
+
+    // MARK: - Analytics
+    func test_it_tracks_login_jetpack_site_credential_install_button_tapped_when_tapping_install_button() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let siteURL = "https://test.com"
+        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, analytics: analytics)
+
+        // When
+        viewModel.handleLogin()
+
+        // Then
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_site_credential_install_button_tapped" }))
+    }
+
+    func test_it_tracks_login_jetpack_site_credential_reset_password_button_tapped_when_tapping_reset_password_button() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let siteURL = "https://test.com"
+        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, analytics: analytics)
+
+        // When
+        viewModel.resetPassword()
+
+        // Then
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_site_credential_reset_password_button_tapped" }))
+    }
+
+    func test_it_tracks_login_jetpack_site_credential_did_show_error_alert_when_displaying_remote_error() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let siteURL = "https://test.com"
+        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, analytics: analytics)
+
+        // When
+        viewModel.displayRemoteError(MockError())
+
+        // Then
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_site_credential_did_show_error_alert" }))
+    }
+
+    func test_it_tracks_login_jetpack_site_credential_did_finish_login_when_login_finishes() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let siteURL = "https://test.com"
+        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, analytics: analytics)
+
+        // When
+        viewModel.finishedLogin(withUsername: "", password: "", xmlrpc: "")
+
+        // Then
+        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_site_credential_did_finish_login" }))
+    }
+}
+
+private extension SiteCredentialLoginViewModelTests {
+    final class MockError: Error {
+        var localizedDescription: String {
+            "description"
+        }
     }
 }

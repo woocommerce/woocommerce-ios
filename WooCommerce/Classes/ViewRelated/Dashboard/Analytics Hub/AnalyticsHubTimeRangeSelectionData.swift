@@ -1,11 +1,6 @@
 import Foundation
 import Yosemite
 
-struct AnalyticsHubTimeRange {
-    let start: Date
-    let end: Date
-}
-
 /// Main source of time ranges of the Analytics Hub, responsible for providing the current and previous dates
 /// for a given Date and range Type alongside their UI descriptions
 ///

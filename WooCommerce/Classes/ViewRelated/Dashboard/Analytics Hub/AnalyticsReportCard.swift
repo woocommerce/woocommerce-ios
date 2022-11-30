@@ -16,6 +16,8 @@ struct AnalyticsReportCard: View {
     let trailingDeltaColor: UIColor
     let trailingChartData: [Double]
 
+    let isRedacted: Bool
+
     // Layout metrics that scale based on accessibility changes
     @ScaledMetric private var scaledChartWidth: CGFloat = Layout.chartWidth
     @ScaledMetric private var scaledChartHeight: CGFloat = Layout.chartHeight
@@ -38,10 +40,14 @@ struct AnalyticsReportCard: View {
 
                     Text(leadingValue)
                         .titleStyle()
+                        .redacted(reason: isRedacted ? .placeholder : [])
+                        .shimmering(active: isRedacted)
 
                     AdaptiveStack(horizontalAlignment: .leading) {
                         DeltaTag(value: leadingDelta, backgroundColor: leadingDeltaColor)
                             .frame(maxWidth: .infinity, alignment: .leading)
+                            .redacted(reason: isRedacted ? .placeholder : [])
+                            .shimmering(active: isRedacted)
 
                         AnalyticsLineChart(dataPoints: leadingChartData, lineChartColor: leadingDeltaColor)
                             .frame(width: scaledChartWidth, height: scaledChartHeight)
@@ -58,10 +64,14 @@ struct AnalyticsReportCard: View {
 
                     Text(trailingValue)
                         .titleStyle()
+                        .redacted(reason: isRedacted ? .placeholder : [])
+                        .shimmering(active: isRedacted)
 
                     AdaptiveStack(horizontalAlignment: .leading) {
                         DeltaTag(value: trailingDelta, backgroundColor: trailingDeltaColor)
                             .frame(maxWidth: .infinity, alignment: .leading)
+                            .redacted(reason: isRedacted ? .placeholder : [])
+                            .shimmering(active: isRedacted)
 
                         AnalyticsLineChart(dataPoints: trailingChartData, lineChartColor: trailingDeltaColor)
                             .frame(width: scaledChartWidth, height: scaledChartHeight)
@@ -99,7 +109,8 @@ struct Previews: PreviewProvider {
                             trailingValue: "$3.232",
                             trailingDelta: "-3%",
                             trailingDeltaColor: .withColorStudio(.red, shade: .shade40),
-                            trailingChartData: [50.0, 15.0, 20.0, 2.0, 10.0, 0.0, 40.0, 15.0, 20.0, 2.0, 10.0, 0.0])
+                            trailingChartData: [50.0, 15.0, 20.0, 2.0, 10.0, 0.0, 40.0, 15.0, 20.0, 2.0, 10.0, 0.0],
+                            isRedacted: false)
             .previewLayout(.sizeThatFits)
     }
 }

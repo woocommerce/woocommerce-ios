@@ -1178,6 +1178,7 @@
 		AE3AA88D290C30E800BE422D /* WebProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3AA88C290C30E800BE422D /* WebProgressView.swift */; };
 		AE3AA890290C313600BE422D /* NavigationTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3AA88F290C313600BE422D /* NavigationTitleView.swift */; };
 		AE457813275644590092F687 /* OrderStatusSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE457812275644590092F687 /* OrderStatusSection.swift */; };
+		AE4CCCEB29365CFD00B47EE8 /* AnalyticsHubViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4CCCEA29365CFD00B47EE8 /* AnalyticsHubViewModelTests.swift */; };
 		AE56E73428E76CDB00A1292B /* StoreInfoInlineWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE56E73328E76CDB00A1292B /* StoreInfoInlineWidget.swift */; };
 		AE56E73628E7787700A1292B /* StoreInfoCircularWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE56E73528E7787700A1292B /* StoreInfoCircularWidget.swift */; };
 		AE56E73828E7869800A1292B /* StoreInfoRectangularWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE56E73728E7869800A1292B /* StoreInfoRectangularWidget.swift */; };
@@ -3154,6 +3155,7 @@
 		AE3AA88C290C30E800BE422D /* WebProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebProgressView.swift; sourceTree = "<group>"; };
 		AE3AA88F290C313600BE422D /* NavigationTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationTitleView.swift; sourceTree = "<group>"; };
 		AE457812275644590092F687 /* OrderStatusSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusSection.swift; sourceTree = "<group>"; };
+		AE4CCCEA29365CFD00B47EE8 /* AnalyticsHubViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubViewModelTests.swift; sourceTree = "<group>"; };
 		AE56E73328E76CDB00A1292B /* StoreInfoInlineWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreInfoInlineWidget.swift; sourceTree = "<group>"; };
 		AE56E73528E7787700A1292B /* StoreInfoCircularWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreInfoCircularWidget.swift; sourceTree = "<group>"; };
 		AE56E73728E7869800A1292B /* StoreInfoRectangularWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreInfoRectangularWidget.swift; sourceTree = "<group>"; };
@@ -7415,6 +7417,7 @@
 		B6440FB7292E73E50012D506 /* Analytics Hub */ = {
 			isa = PBXGroup;
 			children = (
+				AE4CCCEA29365CFD00B47EE8 /* AnalyticsHubViewModelTests.swift */,
 				B6440FB8292E74230012D506 /* AnalyticsHubTimeRangeGeneratorTests.swift */,
 			);
 			path = "Analytics Hub";
@@ -11127,6 +11130,7 @@
 				02B653AC2429F7BF00A9C839 /* MockTaxClassStoresManager.swift in Sources */,
 				0277AEA5256CAA4200F45C4A /* MockShippingLabel.swift in Sources */,
 				02BAB02324D0250300F8B06E /* ProductVariation+ProductFormTests.swift in Sources */,
+				AE4CCCEB29365CFD00B47EE8 /* AnalyticsHubViewModelTests.swift in Sources */,
 				025C00CC2551524300FAC222 /* BarcodeScannerFrameScalerTests.swift in Sources */,
 				02B1AFEE24BC5BA9005DB1E3 /* LinkedProductListSelectorDataSourceTests.swift in Sources */,
 				028E19BA28053443001C36E0 /* MockOrderDetailsPaymentAlerts.swift in Sources */,

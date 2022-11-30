@@ -211,12 +211,8 @@ import WordPressKit
     ///     - siteURL: The URL of the site to log in to.
     ///
     @objc public class func showVerifyEmailForWPCom(from presenter: UIViewController, xmlrpc: String, connectedEmail: String, siteURL: String) {
-        guard let xmlrpcURL = URL(string: xmlrpc) else {
-            DDLogError("Failed to initiate XML-RPC URL from \(xmlrpc)")
-            return
-        }
         let loginFields = LoginFields()
-        loginFields.meta.xmlrpcURL = xmlrpcURL as NSURL
+        loginFields.meta.xmlrpcURL = NSURL(string: xmlrpc)
         loginFields.username = connectedEmail
         loginFields.siteAddress = siteURL
 

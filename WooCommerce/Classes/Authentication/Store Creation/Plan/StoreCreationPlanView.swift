@@ -74,9 +74,11 @@ struct StoreCreationPlanView: View {
                                 .foregroundColor(.white)
 
                             // Price information.
-                            HStack(alignment: .bottom) {
+                            VStack(alignment: .leading, spacing: 0) {
                                 Text(viewModel.plan.displayPrice)
                                     .fontWeight(.bold)
+                                    .minimumScaleFactor(0.3)
+                                    .lineLimit(2)
                                     .foregroundColor(.white)
                                     .largeTitleStyle()
                                 Text(Localization.priceDuration)
@@ -147,7 +149,8 @@ struct StoreCreationPlanView: View {
                 Text(Localization.refundableNote)
                     .multilineTextAlignment(.center)
                     .foregroundColor(Color(.secondaryLabel))
-                    .bodyStyle()
+                    .footnoteStyle()
+                    .padding(.horizontal, insets: Layout.defaultPadding)
 
                 Spacer()
                     .frame(height: 24)

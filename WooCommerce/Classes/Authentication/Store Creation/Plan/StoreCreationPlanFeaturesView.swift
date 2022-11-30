@@ -5,6 +5,9 @@ struct StoreCreationPlanFeaturesView: View {
     /// Features to show in a vertical list.
     let features: [StoreCreationPlanViewModel.Feature]
 
+    /// Scale of the view based on accessibility changes
+    @ScaledMetric private var scale: CGFloat = 1.0
+
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             ForEach(features, id: \.title) { feature in
@@ -12,6 +15,8 @@ struct StoreCreationPlanFeaturesView: View {
                     Image(uiImage: feature.icon)
                         .renderingMode(.template)
                         .foregroundColor(Color(.wooCommercePurple(.shade90)))
+                        .scaledToFit()
+                        .frame(width: 18 * scale, height: 18 * scale)
                     Text(feature.title)
                         .foregroundColor(Color(.label))
                         .bodyStyle()

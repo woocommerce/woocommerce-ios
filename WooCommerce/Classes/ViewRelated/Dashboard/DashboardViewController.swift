@@ -56,7 +56,7 @@ final class DashboardViewController: UIViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .listForeground
         view.axis = .vertical
-        view.backgroundColor = .red
+        view.backgroundColor = .blue
         return view
     }()
 
@@ -83,7 +83,7 @@ final class DashboardViewController: UIViewController {
                                               })
     }()
 
-    private var announcementViewHostingController: UIHostingController<AnnouncementCardWrapper>?
+    private var announcementViewHostingController: UIHostingController<FeatureAnnouncementCardView>?
 
     private var announcementView: UIView?
 
@@ -361,7 +361,8 @@ private extension DashboardViewController {
                 },
                 callToAction: {})
 
-            self.showAnnouncement(AnnouncementCardWrapper(cardView: cardView))
+            //self.showAnnouncement(AnnouncementCardWrapper(cardView: cardView))
+            self.showAnnouncement(cardView)
         }
         .store(in: &subscriptions)
     }
@@ -376,14 +377,14 @@ private extension DashboardViewController {
         self.announcementView = nil
     }
 
-    private func showAnnouncement(_ cardView: AnnouncementCardWrapper) {
+    private func showAnnouncement(_ cardView: FeatureAnnouncementCardView) {
         let hostingController = UIHostingController(rootView: cardView)
         guard let uiView = hostingController.view else {
             return
         }
         announcementViewHostingController = hostingController
         announcementView = uiView
-        uiView.backgroundColor = .green
+        uiView.backgroundColor = .red
 
         addChild(hostingController)
         let indexAfterHeader = (headerStackView.arrangedSubviews.firstIndex(of: innerStackView) ?? -1) + 1
@@ -426,8 +427,11 @@ private extension DashboardViewController {
 extension DashboardViewController: DashboardUIScrollDelegate {
     func dashboardUIScrollViewDidScroll(_ scrollView: UIScrollView) {
         hiddenScrollView.updateFromScrollViewDidScrollEventForLargeTitleWorkaround(scrollView)
-        headerTopConstraint.constant = -scrollView.contentOffset.y
-//        headerStackView.transform = CGAffineTransform(translationX: 0, y: -scrollView.contentOffset.y)
+       headerTopConstraint.constant = -scrollView.contentOffset.y
+        debugPrint("scroll view content offset", -scrollView.contentOffset.y)
+        debugPrint("header stack view height", headerStackView.frame)
+
+ //    headerStackView.transform = CGAffineTransform(translationX: 0, y: -scrollView.contentOffset.y)
     }
 }
 

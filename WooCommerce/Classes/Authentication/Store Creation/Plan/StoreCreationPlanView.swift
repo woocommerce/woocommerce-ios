@@ -61,6 +61,9 @@ struct StoreCreationPlanView: View {
 
     @State private var isPurchaseInProgress: Bool = false
 
+    /// Scale of the view based on accessibility changes
+    @ScaledMetric private var scale: CGFloat = 1.0
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             ScrollView {
@@ -117,6 +120,9 @@ struct StoreCreationPlanView: View {
                                 .foregroundColor(Color(.secondaryLabel))
                                 .footnoteStyle()
                             Image(uiImage: .wpcomLogoImage)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(height: 18 * scale)
                         }
 
                         Spacer()

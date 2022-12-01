@@ -6,7 +6,7 @@ import WordPressUI
 
 /// NoticePresenter: Coordinates Notice rendering, in both, FG and BG execution modes.
 ///
-class DefaultNoticePresenter: NSObject, NoticePresenter {
+class DefaultNoticePresenter: NoticePresenter {
 
     /// UIKit Feedback Gen!
     ///
@@ -205,8 +205,6 @@ private extension DefaultNoticePresenter {
         }
     }
 
-
-
     func makeBottomConstraintForNoticeContainer(_ container: UIView) -> NSLayoutConstraint {
         guard let presentingViewController = presentingViewController else {
             fatalError("NoticePresenter requires a presentingViewController!")
@@ -225,9 +223,9 @@ private extension DefaultNoticePresenter {
             }
 
             return container.bottomAnchor.constraint(equalTo: tabBarController.tabBar.topAnchor)
-        } else {
-            return container.bottomAnchor.constraint(equalTo: presentingViewController.view.bottomAnchor)
         }
+
+        return container.bottomAnchor.constraint(equalTo: presentingViewController.view.bottomAnchor)
     }
 
     var offscreenBottomOffset: CGFloat {

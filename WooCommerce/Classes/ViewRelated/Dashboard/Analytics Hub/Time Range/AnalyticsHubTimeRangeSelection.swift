@@ -1,34 +1,6 @@
 import Foundation
 import Yosemite
 
-protocol AnalyticsHubTimeRangeData {
-    var currentDateStart: Date? { get }
-    var currentDateEnd: Date? { get }
-    var previousDateStart: Date? { get }
-    var previousDateEnd: Date? { get }
-
-    init(referenceDate: Date, currentCalendar: Calendar)
-}
-
-private extension AnalyticsHubTimeRangeData {
-    var currentTimeRange: AnalyticsHubTimeRange? {
-        generateTimeRangeFrom(startDate: currentDateStart, endDate: currentDateEnd)
-    }
-
-    var previousTimeRange: AnalyticsHubTimeRange? {
-        generateTimeRangeFrom(startDate: previousDateStart, endDate: previousDateEnd)
-    }
-
-    private func generateTimeRangeFrom(startDate: Date?, endDate: Date?) -> AnalyticsHubTimeRange? {
-        if let startDate = startDate,
-           let endDate = endDate {
-            return AnalyticsHubTimeRange(start: startDate, end: endDate)
-        } else {
-            return nil
-        }
-    }
-}
-
 /// Main source of time ranges of the Analytics Hub, responsible for providing the current and previous dates
 /// for a given Date and range Type alongside their UI descriptions
 ///
@@ -59,11 +31,12 @@ public class AnalyticsHubTimeRangeSelection {
 
         let currentTimeRange = selectionData.currentTimeRange
         let previousTimeRange = selectionData.previousTimeRange
-
         self.currentTimeRange = currentTimeRange
         self.previousTimeRange = previousTimeRange
-        self.currentRangeDescription = currentTimeRange?.generateDescription(referenceCalendar: currentCalendar)
-        self.previousRangeDescription = previousTimeRange?.generateDescription(referenceCalendar: currentCalendar)
+        
+        let simplifiedDescription = selectionType == .today
+        self.currentRangeDescription = currentTimeRange?.generateDescription(referenceCalendar: currentCalendar, simplified: simplifiedDescription)
+        self.previousRangeDescription = previousTimeRange?.generateDescription(referenceCalendar: currentCalendar, simplified: simplifiedDescription)
 
     }
 

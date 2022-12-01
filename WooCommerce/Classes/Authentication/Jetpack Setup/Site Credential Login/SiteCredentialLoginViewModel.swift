@@ -63,25 +63,10 @@ private extension SiteCredentialLoginViewModel {
     }
 
     func loginAndAttemptFetchingJetpackPluginDetails() {
-        guard let loginURL = URL(string: siteURL + Constants.loginPath),
-              let adminURL = URL(string: siteURL + Constants.adminPath) else {
-            DDLogWarn("⚠️ Cannot construct login URL and admin URL for site \(siteURL)")
-            return
-        }
-
         // Makes sure the loading indicator is shown
         isLoggingIn = true
 
-        // Prepares the authenticator with username and password
-        let authenticator = CookieNonceAuthenticator(username: username,
-                                                     password: password,
-                                                     loginURL: loginURL,
-                                                     adminURL: adminURL,
-                                                     version: Constants.defaultWPVersion,
-                                                     nonce: nil)
-        let network = WordPressOrgNetwork(authenticator: authenticator)
-        let authenticationAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
-        stores.dispatch(authenticationAction)
+        handleCookieAuthentication()
 
         // Retrieves Jetpack plugin details to see if the authentication succeeds.
         let jetpackAction = JetpackConnectionAction.retrieveJetpackPluginDetails { [weak self] result in
@@ -96,6 +81,25 @@ private extension SiteCredentialLoginViewModel {
             }
         }
         stores.dispatch(jetpackAction)
+    }
+
+    func handleCookieAuthentication() {
+        guard let loginURL = URL(string: siteURL + Constants.loginPath),
+              let adminURL = URL(string: siteURL + Constants.adminPath) else {
+            DDLogWarn("⚠️ Cannot construct login URL and admin URL for site \(siteURL)")
+            isLoggingIn = false
+            return
+        }
+        // Prepares the authenticator with username and password
+        let authenticator = CookieNonceAuthenticator(username: username,
+                                                     password: password,
+                                                     loginURL: loginURL,
+                                                     adminURL: adminURL,
+                                                     version: Constants.defaultWPVersion,
+                                                     nonce: nil)
+        let network = WordPressOrgNetwork(authenticator: authenticator)
+        let authenticationAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
+        stores.dispatch(authenticationAction)
     }
 
     func handleRemoteError(_ error: Error) {

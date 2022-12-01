@@ -90,17 +90,15 @@ extension AnalyticsHubTimeRangeSelection {
         case yearToDate
 
         var description: String {
-            get {
-                switch self {
-                case .today:
-                    return Localization.today
-                case .weekToDate:
-                    return Localization.weekToDate
-                case .monthToDate:
-                    return Localization.monthToDate
-                case .yearToDate:
-                    return Localization.yearToDate
-                }
+            switch self {
+            case .today:
+                return Localization.today
+            case .weekToDate:
+                return Localization.weekToDate
+            case .monthToDate:
+                return Localization.monthToDate
+            case .yearToDate:
+                return Localization.yearToDate
             }
         }
 

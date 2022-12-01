@@ -320,13 +320,6 @@ private extension CardReaderConnectionController {
         self.state = .searching
         var didAutoAdvance = false
 
-<<<<<<< HEAD
-        // TODO: make this a choice for the user, when the switch is enabled
-        let tapOnIphoneEnabled = ServiceLocator.generalAppSettings.settings.isTapToPayOnIPhoneSwitchEnabled
-        let discoveryMethod: CardReaderDiscoveryMethod = tapOnIphoneEnabled ? .localMobile : .bluetoothScan
-
-=======
->>>>>>> origin/trunk
         let action = CardPresentPaymentAction.startCardReaderDiscovery(
             siteID: siteID,
             discoveryMethod: discoveryMethod,

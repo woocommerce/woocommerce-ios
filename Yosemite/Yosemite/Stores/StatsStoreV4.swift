@@ -80,6 +80,7 @@ public final class StatsStoreV4: Store {
                                      let latestDateToInclude,
                                      let quantity,
                                      let forceRefresh,
+                                     let saveInStorage,
                                      let onCompletion):
             retrieveTopEarnerStats(siteID: siteID,
                                    timeRange: timeRange,
@@ -87,6 +88,7 @@ public final class StatsStoreV4: Store {
                                    latestDateToInclude: latestDateToInclude,
                                    quantity: quantity,
                                    forceRefresh: forceRefresh,
+                                   saveInStorage: saveInStorage,
                                    onCompletion: onCompletion)
         }
     }
@@ -178,6 +180,7 @@ private extension StatsStoreV4 {
     }
 
     /// Retrieves the top earner stats associated with the provided Site ID (if any!).
+    ///  Saves to storage if required,
     ///
     func retrieveTopEarnerStats(siteID: Int64,
                                 timeRange: StatsTimeRangeV4,
@@ -185,29 +188,37 @@ private extension StatsStoreV4 {
                                 latestDateToInclude: Date,
                                 quantity: Int,
                                 forceRefresh: Bool,
-                                onCompletion: @escaping (Result<Void, Error>) -> Void) {
+                                saveInStorage: Bool,
+                                onCompletion: @escaping (Result<TopEarnerStats, Error>) -> Void) {
         Task { @MainActor in
             do {
-                try await loadTopEarnerStats(siteID: siteID,
-                                                      timeRange: timeRange,
-                                                      earliestDateToInclude: earliestDateToInclude,
-                                                      latestDateToInclude: latestDateToInclude,
-                                                      quantity: quantity,
-                                                      forceRefresh: forceRefresh)
-                onCompletion(.success(()))
+                let topEarnersStats = try await loadTopEarnerStats(siteID: siteID,
+                                                                   timeRange: timeRange,
+                                                                   earliestDateToInclude: earliestDateToInclude,
+                                                                   latestDateToInclude: latestDateToInclude,
+                                                                   quantity: quantity,
+                                                                   forceRefresh: forceRefresh)
+                if saveInStorage {
+                    upsertStoredTopEarnerStats(readOnlyStats: topEarnersStats)
+                }
+                onCompletion(.success(topEarnersStats))
             } catch {
-                if let error = error as? DotcomError, error == .noRestRoute {
-                    let result = await Result {
-                        try await loadTopEarnerStatsWithDeprecatedAPI(siteID: siteID,
-                                                                      timeRange: timeRange,
-                                                                      earliestDateToInclude: earliestDateToInclude,
-                                                                      latestDateToInclude: latestDateToInclude,
-                                                                      quantity: quantity,
-                                                                      forceRefresh: forceRefresh)
-                    }
+                guard let error = error as? DotcomError, error == .noRestRoute else {
+                    return onCompletion(.failure(error))
+                }
 
-                    onCompletion(result)
-                } else {
+                do {
+                    let topEarnersStats = try await loadTopEarnerStatsWithDeprecatedAPI(siteID: siteID,
+                                                                                        timeRange: timeRange,
+                                                                                        earliestDateToInclude: earliestDateToInclude,
+                                                                                        latestDateToInclude: latestDateToInclude,
+                                                                                        quantity: quantity,
+                                                                                        forceRefresh: forceRefresh)
+                    if saveInStorage {
+                        upsertStoredTopEarnerStats(readOnlyStats: topEarnersStats)
+                    }
+                    onCompletion(.success(topEarnersStats))
+                } catch {
                     onCompletion(.failure(error))
                 }
             }
@@ -220,8 +231,8 @@ private extension StatsStoreV4 {
                             earliestDateToInclude: Date,
                             latestDateToInclude: Date,
                             quantity: Int,
-                            forceRefresh: Bool) async throws {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) -> Void in
+                            forceRefresh: Bool) async throws -> TopEarnerStats {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<TopEarnerStats, Error>) -> Void in
             let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
             let earliestDate = dateFormatter.string(from: earliestDateToInclude)
             let latestDate = dateFormatter.string(from: latestDateToInclude)
@@ -237,16 +248,12 @@ private extension StatsStoreV4 {
 
                 switch result {
                 case .success(let leaderboards):
-                    self.convertAndStoreLeaderboardsIntoTopEarners(siteID: siteID,
-                                                                   granularity: timeRange.topEarnerStatsGranularity,
-                                                                   date: latestDateToInclude,
-                                                                   leaderboards: leaderboards,
-                                                                   quantity: quantity) { result in
-                        if case let .failure(error) = result {
-                            continuation.resume(throwing: error)
-                        } else {
-                            continuation.resume(returning: (()))
-                        }
+                    self.convertLeaderboardsIntoTopEarners(siteID: siteID,
+                                                           granularity: timeRange.topEarnerStatsGranularity,
+                                                           date: latestDateToInclude,
+                                                           leaderboards: leaderboards,
+                                                           quantity: quantity) { result in
+                        continuation.resume(with: result)
                     }
                 case .failure(let error):
                     continuation.resume(throwing: error)
@@ -261,8 +268,8 @@ private extension StatsStoreV4 {
                                              earliestDateToInclude: Date,
                                              latestDateToInclude: Date,
                                              quantity: Int,
-                                             forceRefresh: Bool) async throws {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) -> Void in
+                                             forceRefresh: Bool) async throws -> TopEarnerStats {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<TopEarnerStats, Error>) -> Void in
             let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
             let earliestDate = dateFormatter.string(from: earliestDateToInclude)
             let latestDate = dateFormatter.string(from: latestDateToInclude)
@@ -278,16 +285,12 @@ private extension StatsStoreV4 {
 
                 switch result {
                 case .success(let leaderboards):
-                    self.convertAndStoreLeaderboardsIntoTopEarners(siteID: siteID,
-                                                                   granularity: timeRange.topEarnerStatsGranularity,
-                                                                   date: latestDateToInclude,
-                                                                   leaderboards: leaderboards,
-                                                                   quantity: quantity) { result in
-                        if case let .failure(error) = result {
-                            continuation.resume(throwing: error)
-                        } else {
-                            continuation.resume(returning: ())
-                        }
+                    self.convertLeaderboardsIntoTopEarners(siteID: siteID,
+                                                           granularity: timeRange.topEarnerStatsGranularity,
+                                                           date: latestDateToInclude,
+                                                           leaderboards: leaderboards,
+                                                           quantity: quantity) { result in
+                        continuation.resume(with: result)
                     }
                 case .failure(let error):
                     continuation.resume(throwing: error)
@@ -435,15 +438,15 @@ extension StatsStoreV4 {
 //
 private extension StatsStoreV4 {
 
-    /// Converts and stores a top-product `leaderboard` into a `StatsTopEarner`
+    /// Converts a top-product `leaderboard` into a `StatsTopEarner`
     /// Since  a `leaderboard` does not contain the necessary product information, this method fetches the related product before starting the conversion.
     ///
-    func convertAndStoreLeaderboardsIntoTopEarners(siteID: Int64,
-                                                   granularity: StatGranularity,
-                                                   date: Date,
-                                                   leaderboards: [Leaderboard],
-                                                   quantity: Int,
-                                                   onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func convertLeaderboardsIntoTopEarners(siteID: Int64,
+                                           granularity: StatGranularity,
+                                           date: Date,
+                                           leaderboards: [Leaderboard],
+                                           quantity: Int,
+                                           onCompletion: @escaping (Result<TopEarnerStats, Error>) -> Void) {
 
         // Find the top products leaderboard by its ID
         guard let topProducts = leaderboards.first(where: { $0.id == Constants.topProductsID }) else {
@@ -457,13 +460,13 @@ private extension StatsStoreV4 {
 
             switch topProductsResult {
             case .success(let products):
-                self.mergeAndStoreTopProductsAndStoredProductsIntoTopEarners(siteID: siteID,
-                                                                             granularity: granularity,
-                                                                             date: date,
-                                                                             topProducts: topProducts,
-                                                                             storedProducts: products,
-                                                                             quantityLimit: quantity)
-                onCompletion(.success(()))
+                let topEarners = self.mergeTopProductsAndStoredProductsIntoTopEarners(siteID: siteID,
+                                                                                      granularity: granularity,
+                                                                                      date: date,
+                                                                                      topProducts: topProducts,
+                                                                                      storedProducts: products,
+                                                                                      quantityLimit: quantity)
+                onCompletion(.success((topEarners)))
             case .failure(let error):
                 onCompletion(.failure(error))
             }
@@ -507,24 +510,21 @@ private extension StatsStoreV4 {
         return products.map { $0.toReadOnly() }
     }
 
-    /// Merges and stores a top-product leaderboard with an array of stored products into  a `TopEarnerStats` object
+    /// Merges a top-product leaderboard with an array of stored products into  a `TopEarnerStats` object
     ///
-    func mergeAndStoreTopProductsAndStoredProductsIntoTopEarners(siteID: Int64,
-                                                                 granularity: StatGranularity,
-                                                                 date: Date,
-                                                                 topProducts: Leaderboard,
-                                                                 storedProducts: [Product],
-                                                                 quantityLimit: Int) {
+    func mergeTopProductsAndStoredProductsIntoTopEarners(siteID: Int64,
+                                                         granularity: StatGranularity,
+                                                         date: Date,
+                                                         topProducts: Leaderboard,
+                                                         storedProducts: [Product],
+                                                         quantityLimit: Int) -> TopEarnerStats {
         let statsDate = Self.buildDateString(from: date, with: granularity)
         let statsItems = LeaderboardStatsConverter.topEarnerStatsItems(from: topProducts, using: storedProducts)
-        let stats = TopEarnerStats(siteID: siteID,
-                                   date: statsDate,
-                                   granularity: granularity,
-                                   limit: String(quantityLimit),
-                                   items: statsItems
-        )
-
-        upsertStoredTopEarnerStats(readOnlyStats: stats)
+        return TopEarnerStats(siteID: siteID,
+                              date: statsDate,
+                              granularity: granularity,
+                              limit: String(quantityLimit),
+                              items: statsItems)
     }
 }
 

@@ -1,30 +1,65 @@
 import SwiftUI
 
-/// Resuable Time Range card made for the Analytics Hub.
+/// Reusable Time Range card made for the Analytics Hub.
 ///
 struct AnalyticsTimeRangeCard: View {
 
     let timeRangeTitle: String
     let currentRangeDescription: String
     let previousRangeDescription: String
+    @Binding var selectionType: AnalyticsHubTimeRangeGenerator.SelectionType
+
+    @State private var showTimeRangeSelectionView: Bool = false
+
+    init(viewModel: AnalyticsTimeRangeCardViewModel, selectionType: Binding<AnalyticsHubTimeRangeGenerator.SelectionType>) {
+        self.timeRangeTitle = viewModel.selectedRangeTitle
+        self.currentRangeDescription = viewModel.currentRangeSubtitle
+        self.previousRangeDescription = viewModel.previousRangeSubtitle
+        self._selectionType = selectionType
+    }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
-            HStack {
-                Image(uiImage: .calendar)
-                    .padding()
-                    .background(Circle().foregroundColor(Color(.systemGray6)))
-                VStack(alignment: .leading, spacing: .zero) {
-                    Text(timeRangeTitle)
-                        .foregroundColor(Color(.text))
-                        .subheadlineStyle()
-                    Text(currentRangeDescription)
-                        .bold()
-                }
-                .padding(.leading)
-                .frame(maxWidth: .infinity, alignment: .leading)
+        createTimeRangeContent()
+            .sheet(isPresented: $showTimeRangeSelectionView) {
+                SelectionList(title: Localization.timeRangeSelectionTitle,
+                              items: AnalyticsHubTimeRangeGenerator.SelectionType.allCases,
+                              contentKeyPath: \.description,
+                              selected: $selectionType)
             }
+    }
+
+    private func createTimeRangeContent() -> some View {
+        VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
+            Button(action: {
+                showTimeRangeSelectionView.toggle()
+            }, label: {
+                HStack {
+                    Image(uiImage: .calendar)
+                        .padding()
+                        .foregroundColor(Color(.text))
+                        .background(Circle().foregroundColor(Color(.systemGray6)))
+
+                    VStack(alignment: .leading, spacing: .zero) {
+                        Text(timeRangeTitle)
+                            .foregroundColor(Color(.text))
+                            .subheadlineStyle()
+
+                        Text(currentRangeDescription)
+                            .foregroundColor(Color(.text))
+                            .bold()
+                    }
+                    .padding(.leading)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                    Image(uiImage: .chevronDownImage)
+                        .padding()
+                        .foregroundColor(Color(.text))
+                        .frame(alignment: .trailing)
+                }
+            })
+            .buttonStyle(.borderless)
             .padding(.leading)
+            .contentShape(Rectangle())
 
             Divider()
 
@@ -34,6 +69,7 @@ struct AnalyticsTimeRangeCard: View {
                 .calloutStyle()
         }
         .padding([.top, .bottom])
+        .frame(maxWidth: .infinity)
     }
 }
 
@@ -44,6 +80,10 @@ private extension AnalyticsTimeRangeCard {
     }
 
     enum Localization {
+        static let timeRangeSelectionTitle = NSLocalizedString(
+            "Date Range",
+            comment: "Title describing the possible date range selections of the Analytics Hub"
+        )
         static let previousRangeComparisonContent = NSLocalizedString(
             "Compared to **%1$@**",
             comment: "Subtitle describing the previous analytics period under comparison. E.g. Compared to Oct 1 - 22, 2022"
@@ -58,8 +98,9 @@ private extension AnalyticsTimeRangeCard {
 // MARK: Previews
 struct TimeRangeCard_Previews: PreviewProvider {
     static var previews: some View {
-        AnalyticsTimeRangeCard(timeRangeTitle: "Month to Date",
-                               currentRangeDescription: "Nov 1 - 23, 2022",
-                               previousRangeDescription: "Oct 1 - 23, 2022")
+        let viewModel = AnalyticsTimeRangeCardViewModel(selectedRangeTitle: "Month to Date",
+                                                        currentRangeSubtitle: "Nov 1 - 23, 2022",
+                                                        previousRangeSubtitle: "Oct 1 - 23, 2022")
+        AnalyticsTimeRangeCard(viewModel: viewModel, selectionType: .constant(.monthToDate))
     }
 }

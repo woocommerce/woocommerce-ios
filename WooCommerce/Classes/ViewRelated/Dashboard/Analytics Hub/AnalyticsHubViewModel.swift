@@ -9,19 +9,20 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     private let siteID: Int64
     private let stores: StoresManager
-    private let timeRangeGenerator: AnalyticsHubTimeRangeGenerator
 
     private var subscriptions = Set<AnyCancellable>()
 
     init(siteID: Int64,
          statsTimeRange: StatsTimeRangeV4,
          stores: StoresManager = ServiceLocator.stores) {
+        let selectedType = AnalyticsHubTimeRangeGenerator.SelectionType.from(statsTimeRange)
+        let timeRangeGenerator = AnalyticsHubTimeRangeGenerator(selectionType: selectedType)
+
         self.siteID = siteID
         self.stores = stores
-        self.timeRangeGenerator = AnalyticsHubTimeRangeGenerator(selectedTimeRange: statsTimeRange)
-        self.timeRangeCard = AnalyticsTimeRangeCardViewModel(selectedRangeTitle: timeRangeGenerator.selectionDescription,
-                                                             currentRangeSubtitle: timeRangeGenerator.generateCurrentRangeDescription(),
-                                                             previousRangeSubtitle: timeRangeGenerator.generatePreviousRangeDescription())
+        self.timeRangeSelectionType = selectedType
+        self.timeRangeGenerator = timeRangeGenerator
+        self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeGenerator: timeRangeGenerator)
 
         bindViewModelsWithData()
     }
@@ -34,13 +35,17 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published var ordersCard = AnalyticsHubViewModel.ordersCard(currentPeriodStats: nil, previousPeriodStats: nil)
 
-    /// Time Range ViewModel
-    ///
-    @Published var timeRangeCard: AnalyticsTimeRangeCardViewModel
-
     /// Products Card ViewModel
     ///
     @Published var productCard = AnalyticsHubViewModel.productCard(currentPeriodStats: nil, previousPeriodStats: nil)
+
+    /// Time Range Selection Type
+    ///
+    @Published var timeRangeSelectionType: AnalyticsHubTimeRangeGenerator.SelectionType
+
+    /// Time Range ViewModel
+    ///
+    @Published var timeRangeCard: AnalyticsTimeRangeCardViewModel
 
     // MARK: Private data
 
@@ -51,6 +56,10 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Order stats for the previous time period (for comparison)
     ///
     @Published private var previousOrderStats: OrderStatsV4? = nil
+
+    /// Time Range selection data defining the current and previous time period
+    ///
+    private var timeRangeGenerator: AnalyticsHubTimeRangeGenerator
 
     /// Request stats data from network
     ///
@@ -131,6 +140,17 @@ private extension AnalyticsHubViewModel {
                 self.productCard = AnalyticsHubViewModel.productCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
 
             }.store(in: &subscriptions)
+
+        $timeRangeSelectionType
+            .removeDuplicates()
+            .sink { [weak self] newSelectionType in
+                guard let self else { return }
+                self.timeRangeGenerator = AnalyticsHubTimeRangeGenerator(selectionType: newSelectionType)
+                self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeGenerator: self.timeRangeGenerator)
+                Task.init {
+                    await self.updateData()
+                }
+            }.store(in: &subscriptions)
     }
 
     static func revenueCard(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) -> AnalyticsReportCardViewModel {
@@ -186,6 +206,12 @@ private extension AnalyticsHubViewModel {
                                                 .init(imageURL: imageURL, name: "Bird Of Paradise", details: "Net Sales: $23.50", value: "2")
                                              ],
                                              isRedacted: false)
+    }
+
+    static func timeRangeCard(timeRangeGenerator: AnalyticsHubTimeRangeGenerator) -> AnalyticsTimeRangeCardViewModel {
+        return AnalyticsTimeRangeCardViewModel(selectedRangeTitle: timeRangeGenerator.selectionDescription,
+                                               currentRangeSubtitle: timeRangeGenerator.generateCurrentRangeDescription(),
+                                               previousRangeSubtitle: timeRangeGenerator.generatePreviousRangeDescription())
     }
 }
 

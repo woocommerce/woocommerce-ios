@@ -27,8 +27,13 @@ public class AnalyticsHubTimeRangeSelection {
         case .today:
             self.selectionDelegate = AnalyticsHubDayRangeSelection(referenceDate: currentDate, currentCalendar: currentCalendar)
         case .yesterday:
+            //TODO: use correct referenceDate parameter
             self.selectionDelegate = AnalyticsHubDayRangeSelection(referenceDate: currentDate, currentCalendar: currentCalendar)
         case .lastWeek:
+            //TODO: use correct referenceDate parameter
+            self.selectionDelegate = AnalyticsHubWeekRangeSelection(referenceDate: currentDate, currentCalendar: currentCalendar)
+        case .lastMonth:
+            //TODO: use correct referenceDate parameter
             self.selectionDelegate = AnalyticsHubWeekRangeSelection(referenceDate: currentDate, currentCalendar: currentCalendar)
         case .weekToDate:
             self.selectionDelegate = AnalyticsHubWeekRangeSelection(referenceDate: currentDate, currentCalendar: currentCalendar)
@@ -86,6 +91,7 @@ extension AnalyticsHubTimeRangeSelection {
         case today
         case yesterday
         case lastWeek
+        case lastMonth
         case weekToDate
         case monthToDate
         case yearToDate
@@ -99,6 +105,8 @@ extension AnalyticsHubTimeRangeSelection {
                     return Localization.yesterday
                 case .lastWeek:
                     return Localization.lastWeek
+                case .lastMonth:
+                    return Localization.lastMonth
                 case .weekToDate:
                     return Localization.weekToDate
                 case .monthToDate:
@@ -136,6 +144,7 @@ extension AnalyticsHubTimeRangeSelection {
         static let today = NSLocalizedString("Today", comment: "Title of the Analytics Hub Today's selection range")
         static let yesterday = NSLocalizedString("Yesterday", comment: "Title of the Analytics Hub Yesterday selection range")
         static let lastWeek = NSLocalizedString("Last Week", comment: "Title of the Analytics Hub Last Week selection range")
+        static let lastMonth = NSLocalizedString("Last Month", comment: "Title of the Analytics Hub Last Month selection range")
         static let weekToDate = NSLocalizedString("Week to Date", comment: "Title of the Analytics Hub Week to Date selection range")
         static let monthToDate = NSLocalizedString("Month to Date", comment: "Title of the Analytics Hub Month to Date selection range")
         static let yearToDate = NSLocalizedString("Year to Date", comment: "Title of the Analytics Hub Year to Date selection range")

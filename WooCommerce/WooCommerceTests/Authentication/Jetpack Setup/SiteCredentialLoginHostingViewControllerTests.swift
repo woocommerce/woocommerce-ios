@@ -25,7 +25,7 @@ final class SiteCredentialLoginHostingViewControllerTests: XCTestCase {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let viewController = SiteCredentialLoginHostingViewController(siteURL: testURL, connectionOnly: true, analytics: analytics, onLoginSuccess: { _ in })
+        let viewController = SiteCredentialLoginHostingViewController(siteURL: testURL, connectionOnly: true, analytics: analytics, onLoginSuccess: {})
 
         // When
         _ = try XCTUnwrap(viewController.view)
@@ -38,7 +38,7 @@ final class SiteCredentialLoginHostingViewControllerTests: XCTestCase {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let viewController = SiteCredentialLoginHostingViewController(siteURL: testURL, connectionOnly: true, analytics: analytics, onLoginSuccess: { _ in })
+        let viewController = SiteCredentialLoginHostingViewController(siteURL: testURL, connectionOnly: true, analytics: analytics, onLoginSuccess: {})
 
         // When
         _ = try XCTUnwrap(viewController.view)

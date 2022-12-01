@@ -103,7 +103,7 @@ Please, remember to not add this information on your commits and PRs.
     - [Tracking Events](docs/tracking-events.md)
         - [Custom Properties](docs/tracking-events.md#custom-properties)
 - Quality & Testing
-    - [UI Tests](docs/UI-TESTS.md)
+    - [UI Tests](WooCommerce/WooCommerceUITests/README.md)
     - [Testing Card Present Payments](docs/stripe-tests.md)
     - [Beta Testing](https://woocommercehalo.wordpress.com/setup/join-ios-beta/)
     - [Issue Triage](docs/issue-triage.md)

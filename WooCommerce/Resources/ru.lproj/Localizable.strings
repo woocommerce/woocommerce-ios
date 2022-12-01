@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-11-29 10:54:04+0000 */
+/* Translation-Revision-Date: 2022-11-29 14:54:03+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -1495,7 +1495,7 @@ which should be translated separately and considered part of this sentence. */
 "Creating Template Product..." = "Создание товара по шаблону...";
 
 /* Title of the in-progress view when waiting for the site to become a Jetpack site after WPCOM plan purchase in the store creation flow. */
-"Creating your store" = "Идет создание магазина";
+"Creating your store" = "Идёт создание магазина";
 
 /* Credit card payment method for shipping label. */
 "Credit card" = "Банковская карта";
@@ -2442,7 +2442,7 @@ which should be translated separately and considered part of this sentence. */
 "HTML Content" = "HTML-содержимое";
 
 /* Subtitle on the Jetpack setup required screen */
-"Have your store credentials ready." = "Подготовьте учетные данные магазина.";
+"Have your store credentials ready." = "Подготовьте учётные данные магазина.";
 
 /* Accessibility label for selecting h1 paragraph style button on the formatting toolbar. */
 "Header 1" = "Заголовок №1";
@@ -2786,7 +2786,7 @@ which should be translated separately and considered part of this sentence. */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack — это бесплатный плагин WordPress с дополнительными инструментами, которые обеспечивают удобное управление магазином с мобильных устройств и доступ к расширенным возможностям, например push-уведомлениям и статистике.";
 
 /* Title of the Jetpack setup interrupted screen */
-"Jetpack is installed, but not connected." = "Jetpack установлен, но не подключен.";
+"Jetpack is installed, but not connected." = "Jetpack установлен, но не подключён.";
 
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "Присоединяйтесь откуда угодно";
@@ -3814,13 +3814,13 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "Please try a different domain." = "Выберите другой домен.";
 
 /* Message of the alert when the WPCOM plan cannot be purchased in the store creation flow. */
-"Please try again and make sure you are signed in to an App Store account eligible for purchase." = "Повторите попытку, убедившись, что выполнили вход в учетную запись App Store, из которой требуется совершить покупку.";
+"Please try again and make sure you are signed in to an App Store account eligible for purchase." = "Повторите попытку, убедившись, что выполнили вход в учётную запись App Store, из которой требуется совершить покупку.";
 
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "Повторите попытку позже или свяжитесь с нами. Мы будем рады помочь!";
 
 /* Suggestion to be displayed when the user encounters a permission error during Jetpack setup */
-"Please try again or contact support if this error continues." = "Повторите попытку или обратитесь в службу поддержки, если эта ошибка произойдет снова.";
+"Please try again or contact support if this error continues." = "Повторите попытку или обратитесь в службу поддержки, если эта ошибка произойдёт снова.";
 
 /* Error message when Jetpack connection fails */
 "Please try again or contact us for support." = "Повторите попытку или обратитесь в службу поддержки.";
@@ -5247,7 +5247,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "Terms of Service" = "Условия предоставления услуг";
 
 /* Cell description on beta features screen to enable in-app purchases */
-"Test out In-Person Payments using your phone's built-in card reader, as we get ready to launch. Supported on iPhone XS and newer phones, running iOS 15.5 or above." = "Протестируйте функцию очных платежей с помощью встроенного в телефон устройства чтения карт, пока мы готовимся к запуску. Функция поддерживается iPhone XS и более новыми моделями телефонов с iOS 15.5 и более поздних версий.";
+"Test out In-Person Payments using your phone's built-in card reader, as we get ready to launch. Supported on iPhone XS and newer phones, running iOS 15.5 or above." = "Протестируйте функцию очных платежей с помощью встроенного в телефон устройства чтения карт, пока мы готовимся к запуску. Функция поддерживается iPhone XS и более новыми моделями телефонов с iOS 15.5 и более поздних версий.";
 
 /* Cell description on beta features screen to enable in-app purchases */
 "Test out in-app purchases as we get ready to launch" = "Проверьте, как работают покупки в приложении, пока готовится запуск";
@@ -5800,7 +5800,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "Try another means of payment" = "Попробуйте другое средство платежа";
 
 /* Message on the Jetpack setup interrupted screen */
-"Try connecting again to access your store." = "Попробуйте подключиться еще раз, чтобы войти в магазин.";
+"Try connecting again to access your store." = "Попробуйте подключиться ещё раз, чтобы войти в магазин.";
 
 /* Title for the button on the Linked Products announcement banner */
 "Try it now" = "Попробовать";
@@ -6293,7 +6293,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "Мы стараемся упростить процедуру просмотра дополнений к товару с вашего устройства. В настоящее время вы можете просматривать дополнения для своих заказов. Такие дополнения можно создавать и редактировать в веб-консоли.";
 
 /* Error message displayed when there is no store matching the site URL that is associated with the user's account */
-"We cannot load the store at the moment." = "Не удается загрузить магазин в данный момент.";
+"We cannot load the store at the moment." = "Не удаётся загрузить магазин в данный момент.";
 
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "Невозможно отображать аналитику вашего магазина";

@@ -23,6 +23,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.analyticsImage)
     }
 
+    func test_currency_image_is_not_nil() {
+        XCTAssertNotNil(UIImage.currencyImage)
+    }
+
     func testNoticeImageIsNotNil() {
         XCTAssertNotNil(UIImage.noticeImage)
     }

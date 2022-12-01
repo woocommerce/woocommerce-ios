@@ -69,7 +69,7 @@ final class CardPresentPaymentPreflightController {
         // TODO: Replace this with a refactored (New)LegacyCardReaderConnectionController
         self.connectionController = CardReaderConnectionController(
             forSiteID: siteID,
-            discoveryMethod: .bluetoothProximity,
+            discoveryMethod: .bluetoothScan,
             knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
             alertsPresenter: alertsPresenter,
             configuration: configuration,

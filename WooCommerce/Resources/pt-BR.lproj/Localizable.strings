@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-11-29 08:54:24+0000 */
+/* Translation-Revision-Date: 2022-11-29 14:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -1212,7 +1212,7 @@ which should be translated separately and considered part of this sentence. */
 "Connect an existing store" = "Conectar uma loja existente";
 
 /* Name of the connection step on the Jetpack setup screen */
-"Connect store to Jetpack" = "Conecte loja ao Jetpack";
+"Connect store to Jetpack" = "Conecte a loja ao Jetpack";
 
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "Conectar-se ao leitor";
@@ -1236,7 +1236,7 @@ which should be translated separately and considered part of this sentence. */
 "Connected Stores" = "Lojas conectadas";
 
 /* Title for the Jetpack setup screen when connection is required */
-"Connecting Jetpack" = "Conectando Jetpack";
+"Connecting Jetpack" = "Conexão com o Jetpack";
 
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
 "Connecting reader failed" = "Falha na conexão do leitor";
@@ -2442,7 +2442,7 @@ which should be translated separately and considered part of this sentence. */
 "HTML Content" = "Conteúdo HTML";
 
 /* Subtitle on the Jetpack setup required screen */
-"Have your store credentials ready." = "Deixe as credenciais de sua loja prontas.";
+"Have your store credentials ready." = "Deixe as credenciais da sua loja prontas.";
 
 /* Accessibility label for selecting h1 paragraph style button on the formatting toolbar. */
 "Header 1" = "Cabeçalho 1";
@@ -3113,7 +3113,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "Monitor and approve your product reviews" = "Monitore e aprove avaliações dos seus produtos";
 
 /* Title of the Analytics Hub Month to Date selection range */
-"Month to Date" = "Mês atual";
+"Month to Date" = "Acumulado mensal";
 
 /* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
    Accessibility label for the More button on formatting toolbar. */
@@ -3814,7 +3814,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "Please try a different domain." = "Tente um domínio diferente.";
 
 /* Message of the alert when the WPCOM plan cannot be purchased in the store creation flow. */
-"Please try again and make sure you are signed in to an App Store account eligible for purchase." = "Tente novamente e verifique se você efetuou login em uma conta da App Store qualificada para compra.";
+"Please try again and make sure you are signed in to an App Store account eligible for purchase." = "Tente novamente e verifique se você fez login em uma conta da App Store qualificada para compra.";
 
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "Tente novamente mais tarde ou fale conosco. Teremos prazer em ajudar você!";
@@ -5132,7 +5132,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "Tap or insert card to refund" = "Toque ou insira um cartão para receber o reembolso";
 
 /* Cell tytle on beta features screen to enable Tap to Pay on iPhone: card payments with the phone's built in reader */
-"Tap to Pay on iPhone" = "Toque em Pagar no iPhone";
+"Tap to Pay on iPhone" = "Tap to Pay on iPhone";
 
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
 "Tap to insert a Horizontal Ruler" = "Toque para inserir uma linha horizontal";
@@ -5247,7 +5247,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "Terms of Service" = "Termos de serviço";
 
 /* Cell description on beta features screen to enable in-app purchases */
-"Test out In-Person Payments using your phone's built-in card reader, as we get ready to launch. Supported on iPhone XS and newer phones, running iOS 15.5 or above." = "Teste os pagamentos presenciais usando o leitor de cartão integrado do seu telefone, enquanto nos preparamos para o lançamento. Compatível com iPhone XS e mais recentes, executando iOS 15.5 ou superior.";
+"Test out In-Person Payments using your phone's built-in card reader, as we get ready to launch. Supported on iPhone XS and newer phones, running iOS 15.5 or above." = "Teste os pagamentos presenciais usando o leitor de cartão integrado do seu telefone enquanto nos preparamos para o lançamento. Compatível com o iPhone XS e mais recentes executando iOS 15.5 ou superior.";
 
 /* Cell description on beta features screen to enable in-app purchases */
 "Test out in-app purchases as we get ready to launch" = "Experimente as compras no aplicativo enquanto nos preparamos para o lançamento";
@@ -6284,7 +6284,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "Waiting..." = "Aguardando…";
 
 /* Title of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
-"We are getting ready for your store creation" = "Estamos nos preparando para a criação de sua loja";
+"We are getting ready for your store creation" = "Estamos nos preparando para a criação da sua loja";
 
 /* Error message when the merchant's payment account has been rejected */
 "We are sorry but we can't support In-Person Payments for this store." = "Não é possível aceitar pagamentos presenciais para esta loja.";
@@ -6393,7 +6393,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "Website" = "Site";
 
 /* Title of the Analytics Hub Week to Date selection range */
-"Week to Date" = "Semana atual";
+"Week to Date" = "Acumulado semanal";
 
 /* Title of the cell in Product Shipping Settings > Weight */
 "Weight" = "Peso";
@@ -6498,7 +6498,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "Yahoo Mail" = "Yahoo Mail";
 
 /* Title of the Analytics Hub Year to Date selection range */
-"Year to Date" = "Ano atual";
+"Year to Date" = "Acumulado anual";
 
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "Sim, alterar";

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-11-28 13:54:04+0000 */
+/* Translation-Revision-Date: 2022-11-29 12:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -3113,7 +3113,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "Monitor and approve your product reviews" = "Surveillez et approuvez les avis sur vos produits";
 
 /* Title of the Analytics Hub Month to Date selection range */
-"Month to Date" = "Mois (date à date)";
+"Month to Date" = "Mois à date";
 
 /* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
    Accessibility label for the More button on formatting toolbar. */
@@ -6393,7 +6393,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "Website" = "Site Web";
 
 /* Title of the Analytics Hub Week to Date selection range */
-"Week to Date" = "Semaine (date à date)";
+"Week to Date" = "Semaine à date";
 
 /* Title of the cell in Product Shipping Settings > Weight */
 "Weight" = "Poids";
@@ -6498,7 +6498,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "Yahoo Mail" = "Yahoo Mail";
 
 /* Title of the Analytics Hub Year to Date selection range */
-"Year to Date" = "Année (date à date)";
+"Year to Date" = "Année à date";
 
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "Oui, modifier";

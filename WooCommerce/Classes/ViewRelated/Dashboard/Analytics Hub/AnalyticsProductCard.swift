@@ -14,6 +14,10 @@ struct AnalyticsProductCard: View {
     /// Delta Tag background color.
     let deltaBackgroundColor: UIColor
 
+    /// Items Solds data to render.
+    ///
+    let itemsSoldData: [TopPerformersRow.Data]
+
     /// Indicates if the values should be hidden (for loading state)
     ///
     let isRedacted: Bool
@@ -53,6 +57,10 @@ struct AnalyticsProductCard: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.top, Layout.columnSpacing)
             }
+
+            TopPerformersView(itemTitle: Localization.title.localizedCapitalized, valueTitle: Localization.itemsSold, rows: itemsSoldData)
+                .padding(.top, Layout.columnSpacing)
+
         }
         .padding(Layout.cardPadding)
     }
@@ -78,9 +86,16 @@ private extension AnalyticsProductCard {
 // MARK: Previews
 struct AnalyticsProductCardPreviews: PreviewProvider {
     static var previews: some View {
+        let imageURL = URL(string: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")
         AnalyticsProductCard(itemsSold: "2,234",
                              delta: "+23%",
                              deltaBackgroundColor: .withColorStudio(.green, shade: .shade50),
+                             itemsSoldData: [
+                                .init(imageURL: imageURL, name: "Tabletop Photos", details: "Net Sales: $1,232", value: "32"),
+                                .init(imageURL: imageURL, name: "Kentya Palm", details: "Net Sales: $800", value: "10"),
+                                .init(imageURL: imageURL, name: "Love Ficus", details: "Net Sales: $599", value: "5"),
+                                .init(imageURL: imageURL, name: "Bird Of Paradise", details: "Net Sales: $23.50", value: "2"),
+                             ],
                              isRedacted: false,
                              showSyncError: false)
             .previewLayout(.sizeThatFits)
@@ -88,6 +103,7 @@ struct AnalyticsProductCardPreviews: PreviewProvider {
         AnalyticsProductCard(itemsSold: "-",
                              delta: "0%",
                              deltaBackgroundColor: .withColorStudio(.gray, shade: .shade0),
+                             itemsSoldData: [],
                              isRedacted: false,
                              showSyncError: true)
             .previewLayout(.sizeThatFits)

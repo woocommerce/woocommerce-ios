@@ -2,15 +2,16 @@ import SwiftUI
 
 /// Hosting controller that wraps the `StoreCreationSuccessView`.
 final class StoreCreationSuccessHostingController: UIHostingController<StoreCreationSuccessView> {
-    private let onContinue: () -> Void
-
     init(siteURL: URL,
-         onContinue: @escaping () -> Void) {
-        self.onContinue = onContinue
+         onContinue: @escaping () -> Void,
+         onPreviewSite: @escaping () -> Void) {
         super.init(rootView: StoreCreationSuccessView(siteURL: siteURL))
 
-        rootView.onContinue = { [weak self] in
-            self?.onContinue()
+        rootView.onContinue = {
+            onContinue()
+        }
+        rootView.onPreviewSite = {
+            onPreviewSite()
         }
     }
 
@@ -40,6 +41,9 @@ final class StoreCreationSuccessHostingController: UIHostingController<StoreCrea
 struct StoreCreationSuccessView: View {
     /// Set in the hosting controller.
     var onContinue: () -> Void = {}
+
+    /// Set in the hosting controller.
+    var onPreviewSite: () -> Void = {}
 
     /// URL of the newly created site.
     let siteURL: URL
@@ -84,6 +88,7 @@ struct StoreCreationSuccessView: View {
                     // Preview button.
                     Button(Localization.previewButtonTitle) {
                         isPresentingWebview = true
+                        onPreviewSite()
                     }
                     .buttonStyle(SecondaryButtonStyle())
                 }

@@ -76,7 +76,10 @@ final class StoreCreationCoordinator: Coordinator {
         }
         Task { @MainActor in
             do {
-                presentIAPEligibilityInProgressView()
+                let inProgressView = createIAPEligibilityInProgressView()
+                let storeCreationNavigationController = WooNavigationController(rootViewController: inProgressView)
+                presentStoreCreation(viewController: storeCreationNavigationController)
+
                 guard await purchasesManager.inAppPurchasesAreSupported() else {
                     throw PlanPurchaseError.iapNotSupported
                 }
@@ -90,9 +93,8 @@ final class StoreCreationCoordinator: Coordinator {
                 guard try await purchasesManager.userIsEntitledToProduct(with: product.id) == false else {
                     throw PlanPurchaseError.productNotEligible
                 }
-                navigationController.dismiss(animated: true) { [weak self] in
-                    self?.startStoreCreationM2(planToPurchase: product)
-                }
+
+                startStoreCreationM2(from: storeCreationNavigationController, planToPurchase: product)
             } catch {
                 navigationController.dismiss(animated: true) { [weak self] in
                     self?.startStoreCreationM1()
@@ -119,20 +121,18 @@ private extension StoreCreationCoordinator {
         presentStoreCreation(viewController: webNavigationController)
     }
 
-    func startStoreCreationM2(planToPurchase: WPComPlanProduct) {
-        let storeCreationNavigationController = WooNavigationController()
-        storeCreationNavigationController.navigationBar.prefersLargeTitles = true
+    func startStoreCreationM2(from navigationController: UINavigationController, planToPurchase: WPComPlanProduct) {
+        navigationController.navigationBar.prefersLargeTitles = true
 
         let storeNameForm = StoreNameFormHostingController { [weak self] storeName in
-            self?.showDomainSelector(from: storeCreationNavigationController,
+            self?.showDomainSelector(from: navigationController,
                                      storeName: storeName,
                                      planToPurchase: planToPurchase)
         } onClose: { [weak self] in
-            self?.showDiscardChangesAlert()
+            self?.showDiscardChangesAlert(flow: .native)
         }
-        storeCreationNavigationController.pushViewController(storeNameForm, animated: false)
-
-        presentStoreCreation(viewController: storeCreationNavigationController)
+        navigationController.pushViewController(storeNameForm, animated: true)
+        analytics.track(event: .StoreCreation.siteCreationStep(step: .storeName))
     }
 
     func presentStoreCreation(viewController: UIViewController) {
@@ -148,11 +148,11 @@ private extension StoreCreationCoordinator {
     }
 
     @MainActor
-    func presentIAPEligibilityInProgressView() {
-        let inProgressView = InProgressViewController(viewProperties:
+    func createIAPEligibilityInProgressView() -> UIViewController {
+        InProgressViewController(viewProperties:
                 .init(title: Localization.WaitingForIAPEligibility.title,
-                      message: Localization.WaitingForIAPEligibility.message))
-        presentStoreCreation(viewController: inProgressView)
+                      message: Localization.WaitingForIAPEligibility.message),
+                                 hidesNavigationBar: true)
     }
 }
 
@@ -177,13 +177,13 @@ private extension StoreCreationCoordinator {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] site in
                 guard let self, let site else { return }
+                self.analytics.track(event: .StoreCreation.siteCreated(source: self.source.analyticsValue, siteURL: site.url, flow: .web))
                 self.continueWithSelectedSite(site: site)
             }
     }
 
     @objc func handleStoreCreationCloseAction() {
-        analytics.track(event: .StoreCreation.siteCreationDismissed(source: source.analyticsValue))
-        showDiscardChangesAlert()
+        showDiscardChangesAlert(flow: .web)
     }
 
     func handleStoreCreationResult(_ result: Result<String, Error>) {
@@ -193,7 +193,7 @@ private extension StoreCreationCoordinator {
             // of them matches the final site URL from WPCOM `/me/sites` endpoint.
             possibleSiteURLsFromStoreCreation.insert(siteURL)
         case .failure(let error):
-            analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue, error: error))
+            analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue, error: error, flow: .web))
             DDLogError("Store creation error: \(error)")
         }
     }
@@ -220,7 +220,6 @@ private extension StoreCreationCoordinator {
     }
 
     func continueWithSelectedSite(site: Site) {
-        analytics.track(event: .StoreCreation.siteCreated(source: source.analyticsValue, siteURL: site.url))
         switchStoreUseCase.switchStore(with: site.siteID) { [weak self] siteChanged in
             guard let self else { return }
 
@@ -231,14 +230,16 @@ private extension StoreCreationCoordinator {
         }
     }
 
-    func showDiscardChangesAlert() {
+    func showDiscardChangesAlert(flow: WooAnalyticsEvent.StoreCreation.Flow) {
         let alert = UIAlertController(title: Localization.DiscardChangesAlert.title,
                                       message: Localization.DiscardChangesAlert.message,
                                       preferredStyle: .alert)
         alert.view.tintColor = .text
 
         alert.addDestructiveActionWithTitle(Localization.DiscardChangesAlert.confirmActionTitle) { [weak self] _ in
-            self?.navigationController.dismiss(animated: true)
+            guard let self else { return }
+            self.analytics.track(event: .StoreCreation.siteCreationDismissed(source: self.source.analyticsValue, flow: flow))
+            self.navigationController.dismiss(animated: true)
         }
 
         alert.addCancelActionWithTitle(Localization.DiscardChangesAlert.cancelActionTitle) { _ in }
@@ -263,6 +264,7 @@ private extension StoreCreationCoordinator {
                                                             planToPurchase: planToPurchase)
         })
         navigationController.pushViewController(domainSelector, animated: false)
+        analytics.track(event: .StoreCreation.siteCreationStep(step: .domainPicker))
     }
 
     @MainActor
@@ -275,6 +277,7 @@ private extension StoreCreationCoordinator {
         case .success(let siteResult):
             showStoreSummary(from: navigationController, result: siteResult, planToPurchase: planToPurchase)
         case .failure(let error):
+            analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue, error: error, flow: .native))
             showStoreCreationErrorAlert(from: navigationController, error: error)
         }
     }
@@ -301,6 +304,7 @@ private extension StoreCreationCoordinator {
                                siteSlug: result.siteSlug)
         }
         navigationController.pushViewController(storeSummary, animated: true)
+        analytics.track(event: .StoreCreation.siteCreationStep(step: .storeSummary))
     }
 
     @MainActor
@@ -313,9 +317,10 @@ private extension StoreCreationCoordinator {
             await self.purchasePlan(from: navigationController, siteID: siteID, siteSlug: siteSlug, planToPurchase: planToPurchase)
         } onClose: { [weak self] in
             guard let self else { return }
-            self.showDiscardChangesAlert()
+            self.showDiscardChangesAlert(flow: .native)
         }
         navigationController.pushViewController(storePlan, animated: true)
+        analytics.track(event: .StoreCreation.siteCreationStep(step: .planPurchase))
     }
 
     @MainActor
@@ -353,6 +358,7 @@ private extension StoreCreationCoordinator {
         }
         let checkoutController = AuthenticatedWebViewController(viewModel: checkoutViewModel)
         navigationController.pushViewController(checkoutController, animated: true)
+        analytics.track(event: .StoreCreation.siteCreationStep(step: .webCheckout))
     }
 
     @MainActor
@@ -360,6 +366,7 @@ private extension StoreCreationCoordinator {
                                                       siteID: Int64) {
         waitForSiteToBecomeJetpackSite(from: navigationController, siteID: siteID)
         showInProgressView(from: navigationController, viewProperties: .init(title: Localization.WaitingForJetpackSite.title, message: ""))
+        analytics.track(event: .StoreCreation.siteCreationStep(step: .storeInstallation))
     }
 
     @MainActor
@@ -447,11 +454,16 @@ private extension StoreCreationCoordinator {
 
     @MainActor
     func showSuccessView(from navigationController: UINavigationController, site: Site) {
+        analytics.track(event: .StoreCreation.siteCreated(source: source.analyticsValue, siteURL: site.url, flow: .native))
         guard let url = URL(string: site.url) else {
             return continueWithSelectedSite(site: site)
         }
         let successView = StoreCreationSuccessHostingController(siteURL: url) { [weak self] in
-            self?.continueWithSelectedSite(site: site)
+            guard let self else { return }
+            self.analytics.track(event: .StoreCreation.siteCreationManageStoreTapped())
+            self.continueWithSelectedSite(site: site)
+        } onPreviewSite: { [weak self] in
+            self?.analytics.track(event: .StoreCreation.siteCreationSitePreviewed())
         }
         navigationController.pushViewController(successView, animated: true)
     }

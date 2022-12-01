@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-11-27 02:10:06+0000 */
+/* Translation-Revision-Date: 2022-11-29 12:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -781,6 +781,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the Automattic website */
 "Automattic family" = "Automattic 가족";
 
+/* Label for average value of orders in the Analytics Hub */
+"Average Order Value" = "평균 주문 값";
+
 /* The title on the payment row of the Order Details screen when the payment is still pending */
 "Awaiting payment" = "결제 대기 중";
 
@@ -957,6 +960,9 @@ which should be translated separately and considered part of this sentence. */
    Title for the button to cancel the payment methods screen
    Title for the button to cancel the simple payments screen */
 "Cancel" = "취소";
+
+/* Action button to cancel Jetpack installation. */
+"Cancel Installation" = "설치 취소";
 
 /* Display label for cancelled order status. */
 "Cancelled" = "취소됨";
@@ -1162,6 +1168,9 @@ which should be translated separately and considered part of this sentence. */
    Text field company in Shipping Label Address Validation */
 "Company" = "회사";
 
+/* Subtitle describing the previous analytics period under comparison. E.g. Compared to Oct 1 - 22, 2022 */
+"Compared to **%1$@**" = "**%1$@** 대비";
+
 /* Display label for completed order status. */
 "Completed" = "완료";
 
@@ -1202,6 +1211,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to connect to an existing store from the store picker */
 "Connect an existing store" = "기존 스토어 연결";
 
+/* Name of the connection step on the Jetpack setup screen */
+"Connect store to Jetpack" = "젯팩에 스토어 연결";
+
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "리더에 연결";
 
@@ -1222,6 +1234,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Page title for the list of connected stores */
 "Connected Stores" = "연결된 스토어";
+
+/* Title for the Jetpack setup screen when connection is required */
+"Connecting Jetpack" = "젯팩 연결하기";
 
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
 "Connecting reader failed" = "리더를 연결하지 못했음";
@@ -1478,6 +1493,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Loading text while creating a product from a template */
 "Creating Template Product..." = "템플릿 상품 생성 중...";
+
+/* Title of the in-progress view when waiting for the site to become a Jetpack site after WPCOM plan purchase in the store creation flow. */
+"Creating your store" = "스토어 생성하기";
 
 /* Credit card payment method for shipping label. */
 "Credit card" = "신용카드";
@@ -2065,6 +2083,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title indicating a failed step in Jetpack installation. */
 "Error" = "오류";
 
+/* Error title when Jetpack activation fails */
+"Error activating Jetpack" = "젯팩 활성화 중 오류 발생";
+
+/* Error title when Jetpack connection fails */
+"Error authorizing connection to Jetpack" = "젯팩에 연결하는 권한 부여 중 오류 발생";
+
+/* Error code displayed when the Jetpack setup fails. %1$d is the code. */
+"Error code %1$d" = "오류 코드 %1$d";
+
 /* Error message when enabling analytics fails */
 "Error enabling analytics. Please try again." = "분석을 활성화하는 동안 오류가 발생했습니다. 다시 시도하세요.";
 
@@ -2073,6 +2100,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Apple Maps에서 주소를 찾는 중 오류 발생";
+
+/* Error title when Jetpack install fails */
+"Error installing Jetpack" = "젯팩 설치 중 오류 발생";
 
 /* Message displayed on Coupon Details screen when loading total discounted amount fails */
 "Error loading data" = "데이터 로드 중 오류 발생";
@@ -2132,6 +2162,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the exclusions section in Coupon Usage Restrictions screen */
 "Exclusions" = "제외";
+
+/* Button to cancel installation on the Jetpack setup interrupted screen */
+"Exit Without Connecting" = "연결하지 않고 종료";
 
 /* Accessibility value when a banner is expanded */
 "Expanded" = "확장됨";
@@ -2367,6 +2400,9 @@ which should be translated separately and considered part of this sentence. */
 /* Option to select the Gmail app when logging in with magic links */
 "Gmail" = "Gmail";
 
+/* Title for the button to navigate to the home screen after Jetpack setup completes */
+"Go to Store" = "스토어로 이동";
+
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Google 가입에 실패했습니다.";
 
@@ -2404,6 +2440,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Post HTML content */
 "HTML Content" = "HTML 콘텐츠";
+
+/* Subtitle on the Jetpack setup required screen */
+"Have your store credentials ready." = "스토어 자격 증명을 준비하세요.";
 
 /* Accessibility label for selecting h1 paragraph style button on the formatting toolbar. */
 "Header 1" = "헤더 1";
@@ -2696,6 +2735,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text on the button that starts a new refund process */
 "Issue Refund" = "환불 발행";
 
+/* Title of the alert when the WPCOM plan cannot be purchased in the store creation flow. */
+"Issue purchasing the plan" = "요금제 구매 중 문제 발생";
+
 /* Text of the screen that is displayed while the refund is being created. */
 "Issuing Refund..." = "환불 발행 중...";
 
@@ -2742,6 +2784,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack은 스토어를 최고의 모바일 환경을 제공하는 데 필요한 푸시 알림, 통계 등의 도구와 연결하는 무료 워드프레스 플러그인입니다.";
+
+/* Title of the Jetpack setup interrupted screen */
+"Jetpack is installed, but not connected." = "젯팩이 설치되었지만 연결되지 않았습니다.";
 
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "어디서나 참여";
@@ -3067,6 +3112,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Caption displayed in promotional screens shown during the login flow. */
 "Monitor and approve your product reviews" = "제품 리뷰 모니터링 및 승인";
 
+/* Title of the Analytics Hub Month to Date selection range */
+"Month to Date" = "월간 누계";
+
 /* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
    Accessibility label for the More button on formatting toolbar. */
 "More" = "더 보기";
@@ -3143,6 +3191,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The title for the net amount paid cell */
 "Net Payment" = "순 결제";
 
+/* Label for net sales (net revenue) in the Analytics Hub */
+"Net Sales" = "순매출액";
+
 /* Top performers — label for the total sales of a product */
 "Net sales: %@" = "순매출액: %@";
 
@@ -3203,6 +3254,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
 "No coupons found" = "쿠폰을 찾을 수 없음";
 
+/* A error message when it's not possible to acquirethe Analytics Hub current selection range */
+"No current period available" = "이용 가능한 현재 기간 없음";
+
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "사용 가능한 데이터 없음";
 
@@ -3226,6 +3280,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Message on the detail view of the Orders tab before any order is selected */
 "No order selected" = "선택된 주문이 없습니다.";
+
+/* A error message when it's not possible toacquire the Analytics Hub previous selection range */
+"No previous period available" = "이용 가능한 이전 기간 없음";
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "가격이 설정되지 않음";
@@ -3316,6 +3373,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Header of selected attribute options section in Add Attribute Options screen */
 "OPTIONS OFFERED" = "제공된 옵션";
+
+/* Title for order analytics section in the Analytics Hub */
+"ORDERS" = "주문";
 
 /* Spoken label to indicate switch control is turned off. */
 "Off" = "끔";
@@ -3663,8 +3723,14 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "리더를 충전하세요.";
 
+/* Error message on the Jetpack setup required screen when Jetpack connection is missing. */
+"Please connect your store to Jetpack to access it on this app." = "이 앱에서 스토어에 접근하려면 해당 스토어를 젯팩에 연결하세요.";
+
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app." = "상점 관리자 또는 앱을 사용하는 관리자로 사이트에 초대받으려면 사이트 소유자에게 문의하세요.";
+
+/* Suggestion to be displayed when the user encounters a permission error during Jetpack setup */
+"Please contact your shop manager or administrator for help." = "도움말은 매장 관리자에게 문의하세요.";
 
 /* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to address problems */
 "Please correct your store address to proceed" = "계속하려면 스토어 주소를 수정하세요.";
@@ -3725,6 +3791,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* A short prompt asking the user to properly fill out all login fields. */
 "Please fill out all the fields" = "모든 란을 채워주세요";
 
+/* Error message on the Jetpack setup required screen. */
+"Please install the free Jetpack plugin to access your store on this app." = "이 앱에서 스토어에 접근하려면 무료 젯팩 플러그인을 설치하세요.";
+
 /* Message for alert to prompt user to logout before connecting to a different wordpress.com site. */
 "Please log out before connecting to a different wordpress.com site" = "다른 워드프레스닷컴 사이트에 접속하기 전에 로그아웃하세요.";
 
@@ -3735,14 +3804,23 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Recovery suggestion when we fail to update an address when creating or editing an order */
 "Please make sure you are running the latest version of WooCommerce and try again later." = "실행하는 우커머스가 최신 버전인지 확인하고 나중에 다시 시도하세요.";
 
+/* Message of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
+"Please remain connected." = "연결된 상태를 유지하세요.";
+
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "패키지를 선택하세요.";
 
 /* Message of the alert when the store cannot be created due to the domain in the store creation flow. */
 "Please try a different domain." = "다른 도메인을 시도하세요.";
 
+/* Message of the alert when the WPCOM plan cannot be purchased in the store creation flow. */
+"Please try again and make sure you are signed in to an App Store account eligible for purchase." = "다시 시도하고 구매할 수 있는 앱 스토어 계정에 로그인했는지 확인하세요.";
+
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "나중에 다시 시도해 보세요. 또는 당사에 연락하면 기꺼이 도와드리겠습니다!";
+
+/* Suggestion to be displayed when the user encounters a permission error during Jetpack setup */
+"Please try again or contact support if this error continues." = "다시 시도하거나 이 오류가 계속 발생하면 지원팀에 문의하세요.";
 
 /* Error message when Jetpack connection fails */
 "Please try again or contact us for support." = "다시 시도하거나 지원팀에 문의해 주세요.";
@@ -3777,6 +3855,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Message on the Jetpack Install Progress screen. The %1$@ is the site address. */
 "Please wait while we connect your site %1$@ with Jetpack." = "%1$@ 사이트 젯팩과 연결하는 동안 기다려 주세요.";
+
+/* Message on the Jetpack setup screen. The %1$@ is the site address. */
+"Please wait while we connect your store %1$@ with Jetpack." = "%1$@ 스토어를 젯팩과 연결하는 동안 기다려 주세요.";
 
 /* Instructions for the progress screen while generating a variation */
 "Please wait while we create the new variation" = "새 변형을 만드는 동안 기다려 주세요.";
@@ -4057,6 +4138,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
 "Quickly get up and selling with a beautiful online store." = "아름다운 온라인 스토어로 빠르게 시작하고 판매하세요.";
+
+/* Title for revenue analytics section in the Analytics Hub */
+"REVENUE" = "수익";
 
 /* Title of button that allows the user to rate the app in the App Store */
 "Rate us" = "평가하기";
@@ -4467,6 +4551,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Link title to see all paper size options */
 "See layout and paper sizes options" = "레이아웃 및 용지 크기 옵션 참조";
+
+/* Button on the stats dashboard that navigates user to the analytics hub */
+"See more" = "더 보기";
 
 /* Subtitle of the Jetpack benefits banner. */
 "See the benefits" = "혜택 보기";
@@ -5044,6 +5131,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
 "Tap or insert card to refund" = "환불할 카드 누르기 또는 삽입";
 
+/* Cell tytle on beta features screen to enable Tap to Pay on iPhone: card payments with the phone's built in reader */
+"Tap to Pay on iPhone" = "iPhone에서 눌러서 결제";
+
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
 "Tap to insert a Horizontal Ruler" = "가로 눈금자를 삽입하려면 누르세요.";
 
@@ -5155,6 +5245,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
    The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen.
    Title of button that displays the App's terms of service */
 "Terms of Service" = "서비스 약관";
+
+/* Cell description on beta features screen to enable in-app purchases */
+"Test out In-Person Payments using your phone's built-in card reader, as we get ready to launch. Supported on iPhone XS and newer phones, running iOS 15.5 or above." = "출시 준비가 되면 스마트폰에 내장된 카드 리더를 사용하여 대면 결제를 테스트해 보세요. iOS 15.5 이상이 실행되는 iPhone XS 이상 기종에서 지원됩니다.";
 
 /* Cell description on beta features screen to enable in-app purchases */
 "Test out in-app purchases as we get ready to launch" = "시작할 준비가 되었으니 앱 내 구매를 테스트해 보세요.";
@@ -5420,6 +5513,12 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The details on the placeholder overlay when there is issue syncing site plugins */
 "There was a problem while trying to load plugins. Check your internet and try again." = "플러그인 로드를 시도하는 동안 문제가 발생했습니다. 인터넷을 확인하고 다시 시도하세요.";
 
+/* Message to be displayed when the user encounters a permission error during Jetpack setup */
+"There was an error communicating with your site." = "사이트와 통신 중 오류가 발생했습니다.";
+
+/* Message to be displayed when the user encounters a generic error during Jetpack setup */
+"There was an error completing your request." = "요청 완료 중 오류가 발생했습니다.";
+
 /* Notice text after failing to create a simple payments order. */
 "There was an error creating the order" = "오더 생성 중 오류가 발생했음";
 
@@ -5502,6 +5601,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Footer text for Downloadable File URL */
 "This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "고객이 액세스할 파일의 URL입니다. 입력한 URL은 이미 인코딩되어 있어야 합니다.";
+
+/* Subtitle of the domain selector. */
+"This is where people will find you on the Internet. You can add another domain later." = "사람들이 인터넷에서 회원님을 찾을 수 있는 곳입니다. 나중에 다른 도메인을 추가할 수 있습니다.";
 
 /* Message in action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow.The package name reads like: Package 1: Custom Envelope. */
 "This item is currently in Package %1$d: %2$@. Where would you like to move it?" = "이 아이템은 현재 패키지 %1$d: %2$@에 있습니다. 해당 아이템을 어디로 이동하시겠어요?";
@@ -5618,6 +5720,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Label for total number of orders in the Analytics Hub */
 "Total Orders" = "총 주문 수";
 
+/* Label for total sales (gross revenue) in the Analytics Hub */
+"Total Sales" = "총매출액";
+
 /* Title of the row for adding the package weight in Shipping Label Package Detail screen */
 "Total package weight" = "총 패키지 무게";
 
@@ -5657,6 +5762,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Connect when the SSL certificate is invalid */
 "Trust" = "신뢰함";
 
+/* Action button to retry Jetpack activation. */
+"Try Activating Again" = "다시 활성화 시도";
+
 /* Action displayed in the error prompt when loading total discounted amount in Coupon Details screen fails
    Button to retry a software update. Presented to users when updating the card reader software fails
    Button to try again after connecting to a specific reader fails due to a critically low battery.
@@ -5675,8 +5783,14 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Message from the in-person payment card reader prompting user to retry a payment using a different method, e.g. swipe, tap, insert */
 "Try Another Read Method" = "다른 읽기 방법 시도";
 
+/* Action button to retry Jetpack connection. */
+"Try Authorizing Again" = "다시 권한 부여 시도";
+
 /* Button to try to collect a payment again. Presented to users after collecting a payment fails */
 "Try Collecting Again" = "다시 수집 시도";
+
+/* Action button to retry Jetpack installation. */
+"Try Installing Again" = "다시 설치 시도";
 
 /* Action to resync on the placeholder overlay when there is issue syncing site plugins
    Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
@@ -5684,6 +5798,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
 "Try another means of payment" = "다른 결제 수단 시도";
+
+/* Message on the Jetpack setup interrupted screen */
+"Try connecting again to access your store." = "스토어에 접근하려면 다시 연결해 보세요.";
 
 /* Title for the button on the Linked Products announcement banner */
 "Try it now" = "지금 사용해 보기";
@@ -6043,6 +6160,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* No comment provided by engineer. */
 "Username must be at least 4 characters." = "사용자명은 최소한 4글자 이상이어야 합니다.";
 
+/* Message to be displayed when a Jetpack connection is being authorized */
+"Validating" = "확인 중";
+
 /* Title for the Value row in item details in Customs screen of Shipping Label flow */
 "Value (%1$@ per unit)" = "가격(개당 %1$@)";
 
@@ -6163,11 +6283,17 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* View title during the Google auth process. */
 "Waiting..." = "대기 중...";
 
+/* Title of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
+"We are getting ready for your store creation" = "스토어 생성을 준비 중입니다.";
+
 /* Error message when the merchant's payment account has been rejected */
 "We are sorry but we can't support In-Person Payments for this store." = "죄송합니다. 이 스토어에서는 대면 결제가 지원되지 않습니다.";
 
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "기기에서 제품 애드온을 더 쉽게 보실 수 있도록 하려고 작업하는 중입니다. 지금 당장은 주문에 대한 애드온을 보실 수 있습니다. 웹 대시보드에서 이러한 애드온을 생성하고 편집하실 수 있습니다.";
+
+/* Error message displayed when there is no store matching the site URL that is associated with the user's account */
+"We cannot load the store at the moment." = "지금은 스토어를 로드할 수 없습니다.";
 
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "스토어 분석을 표시할 수 없습니다.";
@@ -6265,6 +6391,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Title of a button linking to the app's website */
 "Website" = "웹사이트";
+
+/* Title of the Analytics Hub Week to Date selection range */
+"Week to Date" = "주간 누계";
 
 /* Title of the cell in Product Shipping Settings > Weight */
 "Weight" = "가중치";
@@ -6368,6 +6497,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Option to select the Yahoo Mail app when logging in with magic links */
 "Yahoo Mail" = "야후 메일";
 
+/* Title of the Analytics Hub Year to Date selection range */
+"Year to Date" = "연간 누계";
+
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "예. 변경합니다.";
 
@@ -6404,6 +6536,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* The description on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
 "You currently have Coupons disabled for this store. Enable coupons to get started." = "현재 이 스토어의 쿠폰이 비활성화되어 있습니다. 시작하려면 쿠폰을 활성화하세요.";
+
+/* Message to be displayed when the user encounters a permission error during Jetpack setup */
+"You don't have permission to manage plugins on this store." = "이 스토어의 플러그인을 관리할 권한이 없습니다.";
 
 /* Title for the mocked order notification needed for the AppStore listing screenshot */
 "You have a new order! 🎉" = "새 주문이 있습니다! 🎉";

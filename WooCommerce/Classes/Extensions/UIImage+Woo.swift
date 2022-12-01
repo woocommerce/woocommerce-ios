@@ -37,6 +37,12 @@ extension UIImage {
         return UIImage(named: "icon-analytics")!
     }
 
+    /// Currency Image
+    ///
+    static var currencyImage: UIImage {
+        UIImage(named: "icon-currency")!
+    }
+
     /// Notice Icon
     ///
     static var noticeImage: UIImage {

@@ -15,14 +15,14 @@ final class AnalyticsHubViewModel: ObservableObject {
     init(siteID: Int64,
          statsTimeRange: StatsTimeRangeV4,
          stores: StoresManager = ServiceLocator.stores) {
-        let selectedType = AnalyticsHubTimeRangeSelection.SelectionType.from(statsTimeRange)
-        let timeRangeSelectionData = AnalyticsHubTimeRangeSelection(selectionType: selectedType)
+        let selectedType = AnalyticsHubTimeRangeSelection.SelectionType(statsTimeRange)
+        let timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: selectedType)
 
         self.siteID = siteID
         self.stores = stores
         self.timeRangeSelectionType = selectedType
-        self.timeRangeSelection = timeRangeSelectionData
-        self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelectionData: timeRangeSelectionData)
+        self.timeRangeSelection = timeRangeSelection
+        self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelection: timeRangeSelection)
 
         bindViewModelsWithData()
     }
@@ -146,7 +146,7 @@ private extension AnalyticsHubViewModel {
             .sink { [weak self] newSelectionType in
                 guard let self else { return }
                 self.timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: newSelectionType)
-                self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelectionData: self.timeRangeSelection)
+                self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelection: self.timeRangeSelection)
                 Task.init {
                     await self.updateData()
                 }
@@ -201,10 +201,10 @@ private extension AnalyticsHubViewModel {
                                              isRedacted: false)
     }
 
-    static func timeRangeCard(timeRangeSelectionData: AnalyticsHubTimeRangeSelection) -> AnalyticsTimeRangeCardViewModel {
-        return AnalyticsTimeRangeCardViewModel(selectedRangeTitle: timeRangeSelectionData.rangeSelectionDescription,
-                                               currentRangeSubtitle: timeRangeSelectionData.generateCurrentRangeDescription(),
-                                               previousRangeSubtitle: timeRangeSelectionData.generatePreviousRangeDescription())
+    static func timeRangeCard(timeRangeSelection: AnalyticsHubTimeRangeSelection) -> AnalyticsTimeRangeCardViewModel {
+        return AnalyticsTimeRangeCardViewModel(selectedRangeTitle: timeRangeSelection.rangeSelectionDescription,
+                                               currentRangeSubtitle: timeRangeSelection.generateCurrentRangeDescription(),
+                                               previousRangeSubtitle: timeRangeSelection.generatePreviousRangeDescription())
     }
 }
 

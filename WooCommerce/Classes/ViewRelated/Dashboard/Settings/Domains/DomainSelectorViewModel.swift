@@ -51,13 +51,13 @@ private extension DomainSelectorViewModel {
             .filter { $0.isNotEmpty }
             .removeDuplicates()
         // In order to always trigger a network request for the initial search query while supporting debounce
-        // for the following user input, the first search query is concatenated with the debounce version except
-        // for the first value.
+        // for the following user input, the first search query is concatenated with the debounce version.
         searchQuerySubscription = Publishers.Concatenate(
             prefix: searchQuery.first(),
-            suffix: searchQuery.dropFirst()
+            suffix: searchQuery
                 .debounce(for: .seconds(debounceDuration), scheduler: DispatchQueue.main)
         )
+            .removeDuplicates()
             .eraseToAnyPublisher()
             .sink { [weak self] searchTerm in
                 guard let self = self else { return }

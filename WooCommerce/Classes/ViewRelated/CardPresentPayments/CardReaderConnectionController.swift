@@ -128,11 +128,8 @@ final class CardReaderConnectionController {
         }
     }
 
-    private let discoveryMethod: CardReaderDiscoveryMethod
-
     init(
         forSiteID: Int64,
-        discoveryMethod: CardReaderDiscoveryMethod,
         storageManager: StorageManagerType = ServiceLocator.storageManager,
         stores: StoresManager = ServiceLocator.stores,
         knownReaderProvider: CardReaderSettingsKnownReaderProvider,
@@ -141,7 +138,6 @@ final class CardReaderConnectionController {
         analyticsTracker: CardReaderConnectionAnalyticsTracker
     ) {
         siteID = forSiteID
-        self.discoveryMethod = discoveryMethod
         self.storageManager = storageManager
         self.stores = stores
         state = .idle
@@ -316,7 +312,7 @@ private extension CardReaderConnectionController {
 
         let action = CardPresentPaymentAction.startCardReaderDiscovery(
             siteID: siteID,
-            discoveryMethod: discoveryMethod,
+            discoveryMethod: .bluetoothScan,
             onReaderDiscovered: { [weak self] cardReaders in
                 guard let self = self else {
                     return

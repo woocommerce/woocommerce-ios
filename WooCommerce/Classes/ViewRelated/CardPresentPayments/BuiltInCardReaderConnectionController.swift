@@ -100,11 +100,8 @@ final class BuiltInCardReaderConnectionController {
         }
     }
 
-    private let discoveryMethod: CardReaderDiscoveryMethod
-
     init(
         forSiteID: Int64,
-        discoveryMethod: CardReaderDiscoveryMethod,
         storageManager: StorageManagerType = ServiceLocator.storageManager,
         stores: StoresManager = ServiceLocator.stores,
         alertsPresenter: CardPresentPaymentAlertsPresenting,
@@ -112,7 +109,6 @@ final class BuiltInCardReaderConnectionController {
         analyticsTracker: CardReaderConnectionAnalyticsTracker
     ) {
         siteID = forSiteID
-        self.discoveryMethod = discoveryMethod
         self.storageManager = storageManager
         self.stores = stores
         state = .idle
@@ -221,7 +217,7 @@ private extension BuiltInCardReaderConnectionController {
 
         let action = CardPresentPaymentAction.startCardReaderDiscovery(
             siteID: siteID,
-            discoveryMethod: discoveryMethod,
+            discoveryMethod: .localMobile,
             onReaderDiscovered: { [weak self] cardReaders in
                 guard let self = self else {
                     return

@@ -68,7 +68,6 @@ final class CardPresentPaymentPreflightController {
                                                                     analytics: analytics)
         self.connectionController = CardReaderConnectionController(
             forSiteID: siteID,
-            discoveryMethod: .bluetoothScan,
             knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
             alertsPresenter: alertsPresenter,
             configuration: configuration,
@@ -76,7 +75,6 @@ final class CardPresentPaymentPreflightController {
 
         self.builtInConnectionController = BuiltInCardReaderConnectionController(
             forSiteID: siteID,
-            discoveryMethod: .localMobile,
             alertsPresenter: alertsPresenter,
             configuration: configuration,
             analyticsTracker: analyticsTracker)

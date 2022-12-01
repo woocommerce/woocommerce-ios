@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-11-28 16:54:04+0000 */
+/* Translation-Revision-Date: 2022-11-29 12:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -3255,7 +3255,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "No coupons found" = "No se han encontrado cupones";
 
 /* A error message when it's not possible to acquirethe Analytics Hub current selection range */
-"No current period available" = "No hay ningún período actual disponible.";
+"No current period available" = "No hay ningún período actual disponible";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "No hay datos disponibles.";
@@ -3282,7 +3282,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "No order selected" = "No se ha seleccionado ningún pedido";
 
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
-"No previous period available" = "No hay ningún período anterior disponible.";
+"No previous period available" = "No hay ningún período anterior disponible";
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "Sin precio";
@@ -3820,7 +3820,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "Please try again later or reach out to us and we'll be happy to assist you!" = "Inténtalo de nuevo más tarde o ponte en contacto con nosotros y estaremos encantados de ayudarte.";
 
 /* Suggestion to be displayed when the user encounters a permission error during Jetpack setup */
-"Please try again or contact support if this error continues." = "Inténtalo de nuevo o ponte en contacto con soporte si el error continúa.";
+"Please try again or contact support if this error continues." = "Inténtalo de nuevo o ponte en contacto con el soporte si el error continúa.";
 
 /* Error message when Jetpack connection fails */
 "Please try again or contact us for support." = "Inténtalo de nuevo o ponte en contacto con nuestro servicio de soporte.";
@@ -5763,7 +5763,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "Trust" = "Confiar";
 
 /* Action button to retry Jetpack activation. */
-"Try Activating Again" = "Prueba a activarlo de nuevo.";
+"Try Activating Again" = "Prueba a activarlo de nuevo";
 
 /* Action displayed in the error prompt when loading total discounted amount in Coupon Details screen fails
    Button to retry a software update. Presented to users when updating the card reader software fails
@@ -5784,13 +5784,13 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "Try Another Read Method" = "Prueba otro método de lectura.";
 
 /* Action button to retry Jetpack connection. */
-"Try Authorizing Again" = "Prueba a autorizarlo de nuevo.";
+"Try Authorizing Again" = "Prueba a autorizarlo de nuevo";
 
 /* Button to try to collect a payment again. Presented to users after collecting a payment fails */
 "Try Collecting Again" = "Intenta recibir el pago de nuevo";
 
 /* Action button to retry Jetpack installation. */
-"Try Installing Again" = "Prueba a instalarlo de nuevo.";
+"Try Installing Again" = "Prueba a instalarlo de nuevo";
 
 /* Action to resync on the placeholder overlay when there is issue syncing site plugins
    Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */

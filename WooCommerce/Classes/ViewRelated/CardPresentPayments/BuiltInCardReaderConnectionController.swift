@@ -35,10 +35,6 @@ final class BuiltInCardReaderConnectionController {
         ///
         case searching
 
-        /// Found one card reader
-        ///
-        case foundReader
-
         /// Attempting to connect to a card reader. The completion passed to `searchAndConnect`
         /// will be called with a `success` `Bool` `True` result if successful, after which the view controller
         /// passed to `searchAndConnect` will be dereferenced and the state set to `idle`
@@ -171,8 +167,6 @@ private extension BuiltInCardReaderConnectionController {
             onBeginSearch()
         case .searching:
             onSearching()
-        case .foundReader:
-            onFoundReader()
         case .retry:
             onRetry()
         case .cancel:
@@ -226,10 +220,7 @@ private extension BuiltInCardReaderConnectionController {
     /// Begins the search for a card reader
     /// Does NOT open any modal
     /// Transitions state to `.searching`
-    /// Later, when a reader is found, state transitions to
-    /// `.foundReader` if one reader is found,
-    /// `.foundMultipleReaders` if two or more readers are found,
-    /// or  to `.connectToReader` if one reader is found
+    /// Later, when a reader is found, state transitions to `.connectToReader`
     ///
     func onBeginSearch() {
         self.state = .searching
@@ -246,11 +237,11 @@ private extension BuiltInCardReaderConnectionController {
                 /// discovered changes, so some care around state must be taken here.
                 ///
 
-                /// If we have a found reader, advance to foundReader
+                /// If we have a found reader, advance to `connectToReader`
                 ///
                 if cardReaders.isNotEmpty {
                     self.candidateReader = cardReaders.first
-                    self.state = .foundReader
+                    self.state = .connectToReader
                     return
                 }
             },
@@ -276,7 +267,7 @@ private extension BuiltInCardReaderConnectionController {
         /// like to connect to it
         ///
         if candidateReader != nil {
-            self.state = .foundReader
+            self.state = .connectToReader
             return
         }
 
@@ -286,29 +277,6 @@ private extension BuiltInCardReaderConnectionController {
         alertsPresenter.present(viewModel: CardPresentModalScanningForReader(cancel: {
             self.state = .cancel
         }))
-    }
-
-    /// A reader has been found
-    /// Opens a confirmation modal for the user to accept the candidate reader (or keep searching)
-    ///
-    func onFoundReader() {
-        guard let candidateReader = candidateReader else {
-            return
-        }
-
-        alertsPresenter.present(
-            viewModel: CardPresentModalFoundReader(
-                name: candidateReader.id,
-                connect: {
-                    self.state = .connectToReader
-                },
-                continueSearch: {
-                    self.candidateReader = nil
-                    self.state = .searching
-                },
-                cancel: { [weak self] in
-                    self?.state = .cancel
-                }))
     }
 
     /// A mandatory update is being installed

@@ -155,10 +155,10 @@ final class StorePickerViewController: UIViewController {
         }
     }
 
-    private lazy var removeAppleIDAccessCoordinator: RemoveAppleIDAccessCoordinator =
-    RemoveAppleIDAccessCoordinator(sourceViewController: self) { [weak self] in
-        guard let self = self else { throw RemoveAppleIDAccessError.presenterDeallocated }
-        return try await self.removeAppleIDAccess()
+    private lazy var closeAccountCoordinator: CloseAccountCoordinator =
+    CloseAccountCoordinator(sourceViewController: self) { [weak self] in
+        guard let self = self else { throw CloseAccountError.presenterDeallocated }
+        return try await self.closeAccount()
     } onRemoveSuccess: { [weak self] in
         self?.restartAuthentication()
     }
@@ -700,13 +700,15 @@ extension StorePickerViewController: UITableViewDataSource {
         guard let site = viewModel.site(at: indexPath) else {
             hideActionButton()
             let cell = tableView.dequeueReusableCell(EmptyStoresTableViewCell.self, for: indexPath)
-            let isRemoveAppleIDAccessButtonVisible = appleIDCredentialChecker.hasAppleUserID()
-            cell.updateRemoveAppleIDAccessButtonVisibility(isVisible: isRemoveAppleIDAccessButtonVisible)
-            if isRemoveAppleIDAccessButtonVisible {
+            let isCloseAccountButtonVisible = appleIDCredentialChecker.hasAppleUserID()
+            || featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
+            || featureFlagService.isFeatureFlagEnabled(.storeCreationM2)
+            cell.updateCloseAccountButtonVisibility(isVisible: isCloseAccountButtonVisible)
+            if isCloseAccountButtonVisible {
                 cell.onCloseAccountButtonTapped = { [weak self] in
                     guard let self = self else { return }
                     ServiceLocator.analytics.track(event: .closeAccountTapped(source: .emptyStores))
-                    self.removeAppleIDAccessCoordinator.start()
+                    self.closeAccountCoordinator.start()
                 }
             }
             return cell
@@ -779,7 +781,7 @@ extension StorePickerViewController: UITableViewDelegate {
 }
 
 private extension StorePickerViewController {
-    func removeAppleIDAccess() async throws {
+    func closeAccount() async throws {
         try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self = self else { return }
             let action = AccountAction.closeAccount { result in

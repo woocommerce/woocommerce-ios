@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 import WordPressKit
 import WordPressAuthenticator
+import enum Alamofire.AFError
 import class Networking.UserAgent
 import class Networking.WordPressOrgNetwork
 
@@ -18,12 +19,8 @@ final class SiteCredentialLoginViewModel: NSObject, ObservableObject {
     @Published var shouldShowErrorAlert = false
 
     private let stores: StoresManager
-    private let successHandler: (_ xmlrpc: String) -> Void
+    private let successHandler: () -> Void
     private let analytics: Analytics
-
-    private lazy var loginFacade = LoginFacade(dotcomClientID: ApiCredentials.dotcomAppId,
-                                               dotcomSecret: ApiCredentials.dotcomSecret,
-                                               userAgent: UserAgent.defaultUserAgent)
 
     private var loginFields: LoginFields {
         let loginFields = LoginFields()
@@ -37,20 +34,18 @@ final class SiteCredentialLoginViewModel: NSObject, ObservableObject {
     init(siteURL: String,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         onLoginSuccess: @escaping (String) -> Void = { _ in }) {
+         onLoginSuccess: @escaping () -> Void = {}) {
         self.siteURL = siteURL
         self.stores = stores
         self.analytics = analytics
         self.successHandler = onLoginSuccess
         super.init()
-        loginFacade.delegate = self
         configurePrimaryButton()
     }
 
     func handleLogin() {
         analytics.track(.loginJetpackSiteCredentialInstallTapped)
-        loginFacade.signIn(with: loginFields)
-        isLoggingIn = true
+        loginAndAttemptFetchingJetpackPluginDetails()
     }
 
     func resetPassword() {
@@ -66,32 +61,71 @@ private extension SiteCredentialLoginViewModel {
             .map { $0.isEmpty || $1.isEmpty }
             .assign(to: &$primaryButtonDisabled)
     }
-}
 
-// MARK: LoginFacadeDelegate conformance
-//
-extension SiteCredentialLoginViewModel: LoginFacadeDelegate {
-    func displayRemoteError(_ error: Error) {
-        isLoggingIn = false
+    func loginAndAttemptFetchingJetpackPluginDetails() {
+        // Makes sure the loading indicator is shown
+        isLoggingIn = true
 
-        let err = error as NSError
-        let wrongCredentials = err.domain == Constants.xmlrpcErrorDomain && err.code == Constants.invalidCredentialErrorCode
-        errorMessage = wrongCredentials ? Localization.wrongCredentials : Localization.genericFailure
+        handleCookieAuthentication()
+        retrieveJetpackPluginDetails()
+    }
+
+    func handleCookieAuthentication() {
+        guard let loginURL = URL(string: siteURL + Constants.loginPath),
+              let adminURL = URL(string: siteURL + Constants.adminPath) else {
+            DDLogWarn("⚠️ Cannot construct login URL and admin URL for site \(siteURL)")
+            isLoggingIn = false
+            return
+        }
+        // Prepares the authenticator with username and password
+        let authenticator = CookieNonceAuthenticator(username: username,
+                                                     password: password,
+                                                     loginURL: loginURL,
+                                                     adminURL: adminURL,
+                                                     version: Constants.defaultWPVersion,
+                                                     nonce: nil)
+        let network = WordPressOrgNetwork(authenticator: authenticator)
+        let authenticationAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
+        stores.dispatch(authenticationAction)
+    }
+
+    func retrieveJetpackPluginDetails() {
+        // Retrieves Jetpack plugin details to see if the authentication succeeds.
+        let jetpackAction = JetpackConnectionAction.retrieveJetpackPluginDetails { [weak self] result in
+            guard let self else { return }
+            self.isLoggingIn = false
+            switch result {
+            case .success:
+                // Success to get the details means the authentication succeeds.
+                self.handleCompletion()
+            case .failure(let error):
+                self.handleRemoteError(error)
+            }
+        }
+        stores.dispatch(jetpackAction)
+    }
+
+    func handleRemoteError(_ error: Error) {
+        switch error {
+        case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)),
+            AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403)):
+            // Error 404 means Jetpack is not installed. Allow this to come through.
+            // Error 403 means the lack of permission to manage plugins. Also allow this error
+            // since we want to show the error on the next screen.
+            return handleCompletion()
+        case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 401)):
+            errorMessage = Localization.wrongCredentials
+        default:
+            errorMessage = Localization.genericFailure
+        }
+
         shouldShowErrorAlert = true
         analytics.track(.loginJetpackSiteCredentialDidShowErrorAlert, withError: error)
     }
 
-    func finishedLogin(withUsername username: String, password: String, xmlrpc: String, options: [AnyHashable: Any] = [:]) {
+    func handleCompletion() {
         analytics.track(.loginJetpackSiteCredentialDidFinishLogin)
-        isLoggingIn = false
-        let credentials = WordPressOrgCredentials(username: username, password: password, xmlrpc: xmlrpc, options: options)
-        guard let authenticator = credentials.makeCookieNonceAuthenticator() else {
-            return
-        }
-        let network = WordPressOrgNetwork(authenticator: authenticator)
-        let action = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
-        stores.dispatch(action)
-        successHandler(xmlrpc)
+        successHandler()
     }
 }
 
@@ -105,7 +139,8 @@ extension SiteCredentialLoginViewModel {
     }
 
     enum Constants {
-        static let xmlrpcErrorDomain = "WPXMLRPCFaultError"
-        static let invalidCredentialErrorCode = 403
+        static let loginPath = "/wp-login.php"
+        static let adminPath = "/wp-admin/"
+        static let defaultWPVersion = "5.6.0" // a default version that supports Ajax nonce retrieval
     }
 }

@@ -75,6 +75,9 @@ struct AnalyticsHubView: View {
         .navigationBarTitleDisplayMode(.inline)
         .background(Color(uiColor: .listBackground))
         .edgesIgnoringSafeArea(.horizontal)
+        .task {
+            await viewModel.updateData()
+        }
     }
 }
 

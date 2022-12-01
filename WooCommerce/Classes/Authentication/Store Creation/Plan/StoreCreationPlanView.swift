@@ -61,6 +61,9 @@ struct StoreCreationPlanView: View {
 
     @State private var isPurchaseInProgress: Bool = false
 
+    /// Scale of the view based on accessibility changes
+    @ScaledMetric private var scale: CGFloat = 1.0
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             ScrollView {
@@ -74,9 +77,11 @@ struct StoreCreationPlanView: View {
                                 .foregroundColor(.white)
 
                             // Price information.
-                            HStack(alignment: .bottom) {
+                            VStack(alignment: .leading, spacing: 0) {
                                 Text(viewModel.plan.displayPrice)
                                     .fontWeight(.bold)
+                                    .minimumScaleFactor(0.3)
+                                    .lineLimit(2)
                                     .foregroundColor(.white)
                                     .largeTitleStyle()
                                 Text(Localization.priceDuration)
@@ -115,6 +120,9 @@ struct StoreCreationPlanView: View {
                                 .foregroundColor(Color(.secondaryLabel))
                                 .footnoteStyle()
                             Image(uiImage: .wpcomLogoImage)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(height: 18 * scale)
                         }
 
                         Spacer()
@@ -147,7 +155,8 @@ struct StoreCreationPlanView: View {
                 Text(Localization.refundableNote)
                     .multilineTextAlignment(.center)
                     .foregroundColor(Color(.secondaryLabel))
-                    .bodyStyle()
+                    .footnoteStyle()
+                    .padding(.horizontal, insets: Layout.defaultPadding)
 
                 Spacer()
                     .frame(height: 24)
@@ -179,7 +188,7 @@ private extension StoreCreationPlanView {
             "/month",
             comment: "The text is preceded by the monthly price on the store creation plan screen.")
         static let subtitle = NSLocalizedString(
-            "All the featues you need, already built in",
+            "All the features you need, already built in",
             comment: "Subtitle of the store creation plan screen.")
         static let poweredByWPCOMPrompt = NSLocalizedString(
             "Powered by",

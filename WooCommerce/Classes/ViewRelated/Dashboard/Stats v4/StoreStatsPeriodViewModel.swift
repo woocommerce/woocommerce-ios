@@ -271,7 +271,7 @@ private extension StoreStatsPeriodViewModel {
 
     func updateOrderDataIfNeeded() {
         let orderStats = orderStatsResultsController.fetchedObjects.first
-        let intervals = StatsDataTextFormatter.sortOrderStatsIntervals(from: orderStats)
+        let intervals = StatsIntervalDataParser.sortOrderStatsIntervals(from: orderStats)
         orderStatsData = (stats: orderStats, intervals: intervals)
     }
 }

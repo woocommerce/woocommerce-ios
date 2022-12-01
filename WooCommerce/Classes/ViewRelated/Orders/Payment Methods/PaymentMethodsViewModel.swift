@@ -101,6 +101,8 @@ final class PaymentMethodsViewModel: ObservableObject {
     ///
     private var legacyCollectPaymentsUseCase: CollectOrderPaymentProtocol?
 
+    private var collectPaymentsUseCase: CollectOrderPaymentProtocol?
+
     private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
     private let upsellCardReadersCampaign = UpsellCardReadersCampaign(source: .paymentMethods)
@@ -197,6 +199,82 @@ final class PaymentMethodsViewModel: ObservableObject {
     /// - parameter useCase: Assign a custom useCase object for testing purposes. If not provided `CollectOrderPaymentUseCase` will be used.
     ///
     func collectPayment(on rootViewController: UIViewController?,
+                        useCase: CollectOrderPaymentProtocol? = nil,
+                        onSuccess: @escaping () -> ()) {
+        switch ServiceLocator.generalAppSettings.settings.isTapToPayOnIPhoneSwitchEnabled {
+        case true:
+            newCollectPayment(on: rootViewController, useCase: useCase, onSuccess: onSuccess)
+        case false:
+            legacyCollectPayment(on: rootViewController, useCase: useCase, onSuccess: onSuccess)
+        }
+    }
+
+    func newCollectPayment(on rootViewController: UIViewController?,
+                        useCase: CollectOrderPaymentProtocol? = nil,
+                        onSuccess: @escaping () -> ()) {
+        trackCollectIntention(method: .card)
+
+        guard let rootViewController = rootViewController else {
+            DDLogError("⛔️ Root ViewController is nil, can't present payment alerts.")
+            return presentNoticeSubject.send(.error(Localization.genericCollectError))
+        }
+
+        // TODO: move onboarding to the CardPresentPaymentPreflightController
+        cardPresentPaymentsOnboardingPresenter.showOnboardingIfRequired(
+            from: rootViewController) { [weak self] in
+                guard let self = self else { return }
+
+                guard let order = self.ordersResultController.fetchedObjects.first else {
+                    DDLogError("⛔️ Order not found, can't collect payment.")
+                    return self.presentNoticeSubject.send(.error(Localization.genericCollectError))
+                }
+
+                let action = CardPresentPaymentAction.selectedPaymentGatewayAccount { paymentGateway in
+                    guard let paymentGateway = paymentGateway else {
+                        return DDLogError("⛔️ Payment Gateway not found, can't collect payment.")
+                    }
+
+                    self.collectPaymentsUseCase = useCase ?? CollectOrderPaymentUseCase(
+                        siteID: self.siteID,
+                        order: order,
+                        formattedAmount: self.formattedTotal,
+                        paymentGatewayAccount: paymentGateway,
+                        rootViewController: rootViewController,
+                        alerts: OrderDetailsPaymentAlerts(transactionType: .collectPayment,
+                                                          presentingController: rootViewController),
+                        configuration: CardPresentConfigurationLoader().configuration)
+
+                    self.collectPaymentsUseCase?.collectPayment(
+                        onCollect: { [weak self] result in
+                            guard result.isFailure else { return }
+                            self?.trackFlowFailed()
+                        },
+                        onCancel: {
+                            // No tracking required because the flow remains on screen to choose other payment methods.
+                        },
+                        onCompleted: { [weak self] in
+                            // Update order in case its status and/or other details are updated after a successful in-person payment
+                            self?.updateOrderAsynchronously()
+
+                            // Inform success to consumer
+                            onSuccess()
+
+                            // Sent notice request
+                            self?.presentNoticeSubject.send(.completed)
+
+                            // Make sure we free all the resources
+                            self?.collectPaymentsUseCase = nil
+
+                            // Tracks completion
+                            self?.trackFlowCompleted(method: .card)
+                        })
+                }
+
+                self.stores.dispatch(action)
+            }
+    }
+
+    func legacyCollectPayment(on rootViewController: UIViewController?,
                         useCase: CollectOrderPaymentProtocol? = nil,
                         onSuccess: @escaping () -> ()) {
         trackCollectIntention(method: .card)

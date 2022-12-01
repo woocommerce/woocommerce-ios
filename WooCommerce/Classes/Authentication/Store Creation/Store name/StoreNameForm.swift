@@ -106,6 +106,8 @@ struct StoreNameForm: View {
         }
         // Disables large title to avoid a large gap below the navigation bar.
         .navigationBarTitleDisplayMode(.inline)
+        // Hides the back button and shows a close button in the hosting controller instead.
+        .navigationBarBackButtonHidden(true)
     }
 }
 

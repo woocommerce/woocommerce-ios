@@ -84,14 +84,6 @@ final class BuiltInCardReaderConnectionController {
     private let alertsPresenter: CardPresentPaymentAlertsPresenting
     private let configuration: CardPresentPaymentsConfiguration
 
-    /// Reader(s) discovered by the card reader service
-    ///
-    private var foundReaders: [CardReader]
-
-    /// Reader(s) discovered by the card reader service that the merchant declined to connect to
-    ///
-    private var skippedReaderIDs: [String]
-
     /// The reader we want the user to consider connecting to
     ///
     private var candidateReader: CardReader?
@@ -135,8 +127,6 @@ final class BuiltInCardReaderConnectionController {
         self.stores = stores
         state = .idle
         self.alertsPresenter = alertsPresenter
-        foundReaders = []
-        skippedReaderIDs = []
         self.configuration = configuration
         self.analyticsTracker = analyticsTracker
 
@@ -206,14 +196,6 @@ private extension BuiltInCardReaderConnectionController {
         }
     }
 
-    /// To avoid presenting the "Do you want to connect to reader XXXX" prompt
-    /// repeatedly for the same reader, keep track of readers the user has tapped
-    /// "Keep Searching" for.
-    ///
-    func pruneSkippedReaders() {
-        foundReaders = foundReaders.filter({!skippedReaderIDs.contains($0.id)})
-    }
-
     /// Initial state of the controller
     ///
     func onIdle() {
@@ -232,9 +214,8 @@ private extension BuiltInCardReaderConnectionController {
     /// Transitions state to `.beginSearch`
     ///
     func onPreparingForSearch() {
-        /// Always start fresh - i.e. we haven't skipped connecting to any reader yet
+        /// Always start fresh
         ///
-        skippedReaderIDs = []
         candidateReader = nil
 
         if case .preparingForSearch = state {
@@ -261,20 +242,14 @@ private extension BuiltInCardReaderConnectionController {
                     return
                 }
 
-                /// Update our copy of the foundReaders, evaluate if we should switch to the list view,
-                /// and prune skipped ones
-                ///
-                self.foundReaders = cardReaders
-                self.pruneSkippedReaders()
-
                 /// Note: This completion will be called repeatedly as the list of readers
                 /// discovered changes, so some care around state must be taken here.
                 ///
 
                 /// If we have a found reader, advance to foundReader
                 ///
-                if self.foundReaders.isNotEmpty {
-                    self.candidateReader = self.foundReaders.first
+                if cardReaders.isNotEmpty {
+                    self.candidateReader = cardReaders.first
                     self.state = .foundReader
                     return
                 }
@@ -300,8 +275,7 @@ private extension BuiltInCardReaderConnectionController {
         /// Display the single view and ask the merchant if they'd
         /// like to connect to it
         ///
-        if foundReaders.isNotEmpty {
-            self.candidateReader = foundReaders.first
+        if candidateReader != nil {
             self.state = .foundReader
             return
         }
@@ -329,9 +303,7 @@ private extension BuiltInCardReaderConnectionController {
                     self.state = .connectToReader
                 },
                 continueSearch: {
-                    self.skippedReaderIDs.append(candidateReader.id)
                     self.candidateReader = nil
-                    self.pruneSkippedReaders()
                     self.state = .searching
                 },
                 cancel: { [weak self] in
@@ -458,11 +430,11 @@ private extension BuiltInCardReaderConnectionController {
     /// An error occurred while connecting
     ///
     private func onConnectingFailed(error: Error) {
-        /// Clear our copy of found readers to avoid connecting to a reader that isn't
+        /// Clear our candidateReader to avoid connecting to a reader that isn't
         /// there while we wait for `onReaderDiscovered` to receive an update.
         /// See also https://github.com/stripe/stripe-terminal-ios/issues/104#issuecomment-916285167
         ///
-        self.foundReaders = []
+        self.candidateReader = nil
 
         if case CardReaderServiceError.softwareUpdate(underlyingError: let underlyingError, batteryLevel: _) = error,
            underlyingError.isSoftwareUpdateError {

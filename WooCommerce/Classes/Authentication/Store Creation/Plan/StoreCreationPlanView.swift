@@ -182,7 +182,7 @@ private extension StoreCreationPlanView {
             "/month",
             comment: "The text is preceded by the monthly price on the store creation plan screen.")
         static let subtitle = NSLocalizedString(
-            "All the featues you need, already built in",
+            "All the features you need, already built in",
             comment: "Subtitle of the store creation plan screen.")
         static let poweredByWPCOMPrompt = NSLocalizedString(
             "Powered by",

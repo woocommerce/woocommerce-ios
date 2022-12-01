@@ -59,6 +59,17 @@ final class DashboardViewController: UIViewController {
     /// When we hide the header, we disable this constraint so the content view can grow to fill the screen
     private var contentTopToHeaderConstraint: NSLayoutConstraint?
 
+    private lazy var hideHeaderAnimator = {
+        let animator = UIViewPropertyAnimator(duration: Constants.animationDurationSeconds, curve: .easeOut)
+        animator.pausesOnCompletion = true
+        animator.addAnimations { [weak self] in
+            self?.contentTopToHeaderConstraint?.isActive = false
+            self?.headerStackView.alpha = 0
+            self?.view.layoutIfNeeded()
+        }
+        return animator
+    }()
+
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
     private let hiddenScrollView = UIScrollView()
 
@@ -123,7 +134,6 @@ final class DashboardViewController: UIViewController {
         configureBottomJetpackBenefitsBanner()
         observeSiteForUIUpdates()
         observeBottomJetpackBenefitsBannerVisibilityUpdates()
-        observeNavigationBarHeightForHeaderVisibility()
         observeStatsVersionForDashboardUIUpdates()
         observeAnnouncements()
         observeShowWebViewSheet()
@@ -140,6 +150,11 @@ final class DashboardViewController: UIViewController {
         configureTitle()
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        observeNavigationBarHeightForHeaderVisibility()
+    }
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         dashboardUI?.view.frame = containerView.bounds
@@ -149,24 +164,22 @@ final class DashboardViewController: UIViewController {
         return true
     }
 
-    func hideHeaderWithAnimation() {
-        contentTopToHeaderConstraint?.isActive = false
-        UIView.animate(withDuration: Constants.animationDurationSeconds, animations: { [headerStackView] in
-            headerStackView.alpha = 0
-            self.view.layoutIfNeeded()
-        }, completion: { [headerStackView] _ in
-            headerStackView.isHidden = true
-        })
+    func startHeaderAnimation() {
+        hideHeaderAnimator.startAnimation()
+    }
 
+    func hideHeaderWithAnimation() {
+        hideHeaderAnimator.isReversed = false
+        hideHeaderAnimator.startAnimation()
     }
 
     func showHeaderWithAnimation() {
-        headerStackView.isHidden = false
-        contentTopToHeaderConstraint?.isActive = true
-        UIView.animate(withDuration: Constants.animationDurationSeconds, animations: { [headerStackView] in
-            self.view.layoutIfNeeded()
-            headerStackView.alpha = 1
-        })
+        // If the view hasn't been hidden yet, don't bother trying to animate showing it
+        guard hideHeaderAnimator.state == .active else {
+            return
+        }
+        hideHeaderAnimator.isReversed = true
+        hideHeaderAnimator.startAnimation()
     }
 }
 

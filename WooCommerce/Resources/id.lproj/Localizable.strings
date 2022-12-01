@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-11-27 02:10:06+0000 */
+/* Translation-Revision-Date: 2022-11-29 12:54:21+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -781,6 +781,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the Automattic website */
 "Automattic family" = "Keluarga Automattic";
 
+/* Label for average value of orders in the Analytics Hub */
+"Average Order Value" = "Nilai Pesanan Rata-Rata";
+
 /* The title on the payment row of the Order Details screen when the payment is still pending */
 "Awaiting payment" = "Menunggu pembayaran";
 
@@ -957,6 +960,9 @@ which should be translated separately and considered part of this sentence. */
    Title for the button to cancel the payment methods screen
    Title for the button to cancel the simple payments screen */
 "Cancel" = "Batalkan";
+
+/* Action button to cancel Jetpack installation. */
+"Cancel Installation" = "Batalkan Instalasi";
 
 /* Display label for cancelled order status. */
 "Cancelled" = "Dibatalkan";
@@ -1162,6 +1168,9 @@ which should be translated separately and considered part of this sentence. */
    Text field company in Shipping Label Address Validation */
 "Company" = "Perusahaan";
 
+/* Subtitle describing the previous analytics period under comparison. E.g. Compared to Oct 1 - 22, 2022 */
+"Compared to **%1$@**" = "Bandingkan dengan **%1$@**";
+
 /* Display label for completed order status. */
 "Completed" = "Selesai";
 
@@ -1202,6 +1211,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to connect to an existing store from the store picker */
 "Connect an existing store" = "Sambungkan toko yang sudah ada";
 
+/* Name of the connection step on the Jetpack setup screen */
+"Connect store to Jetpack" = "Sambungkan toko ke Jetpack";
+
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "Hubungkan ke Pembaca";
 
@@ -1222,6 +1234,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Page title for the list of connected stores */
 "Connected Stores" = "Toko yang Terhubung";
+
+/* Title for the Jetpack setup screen when connection is required */
+"Connecting Jetpack" = "Menyambungkan Jetpack";
 
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
 "Connecting reader failed" = "Menyambungkan pembaca gagal";
@@ -1478,6 +1493,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Loading text while creating a product from a template */
 "Creating Template Product..." = "Membuat Produk Templat...";
+
+/* Title of the in-progress view when waiting for the site to become a Jetpack site after WPCOM plan purchase in the store creation flow. */
+"Creating your store" = "Membuat toko Anda";
 
 /* Credit card payment method for shipping label. */
 "Credit card" = "Kartu Kredit";
@@ -2065,6 +2083,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title indicating a failed step in Jetpack installation. */
 "Error" = "Error";
 
+/* Error title when Jetpack activation fails */
+"Error activating Jetpack" = "Terjadi error saat mengaktifkan Jetpack";
+
+/* Error title when Jetpack connection fails */
+"Error authorizing connection to Jetpack" = "Terjadi error saat memberi izin penyambungan ke Jetpack";
+
+/* Error code displayed when the Jetpack setup fails. %1$d is the code. */
+"Error code %1$d" = "Kode error %1$d";
+
 /* Error message when enabling analytics fails */
 "Error enabling analytics. Please try again." = "Terjadi error saat mengaktifkan analitik. Silakan coba lagi.";
 
@@ -2073,6 +2100,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Terjadi error saat mencari alamat di Apple Maps";
+
+/* Error title when Jetpack install fails */
+"Error installing Jetpack" = "Terjadi error saat menginstal Jetpack";
 
 /* Message displayed on Coupon Details screen when loading total discounted amount fails */
 "Error loading data" = "Terjadi error saat memuat data";
@@ -2132,6 +2162,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the exclusions section in Coupon Usage Restrictions screen */
 "Exclusions" = "Pengecualian";
+
+/* Button to cancel installation on the Jetpack setup interrupted screen */
+"Exit Without Connecting" = "Keluar Tanpa Menyambungkan";
 
 /* Accessibility value when a banner is expanded */
 "Expanded" = "Diperluas";
@@ -2367,6 +2400,9 @@ which should be translated separately and considered part of this sentence. */
 /* Option to select the Gmail app when logging in with magic links */
 "Gmail" = "Gmail";
 
+/* Title for the button to navigate to the home screen after Jetpack setup completes */
+"Go to Store" = "Kunjungi Toko";
+
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Pendaftaran Google gagal.";
 
@@ -2404,6 +2440,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Post HTML content */
 "HTML Content" = "Konten HTML";
+
+/* Subtitle on the Jetpack setup required screen */
+"Have your store credentials ready." = "Siapkan kredensial toko Anda.";
 
 /* Accessibility label for selecting h1 paragraph style button on the formatting toolbar. */
 "Header 1" = "Header 1";
@@ -2696,6 +2735,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text on the button that starts a new refund process */
 "Issue Refund" = "Minta Pengembalian Biaya";
 
+/* Title of the alert when the WPCOM plan cannot be purchased in the store creation flow. */
+"Issue purchasing the plan" = "Pembelian paket terkendala";
+
 /* Text of the screen that is displayed while the refund is being created. */
 "Issuing Refund..." = "Meminta Pengembalian Dana...";
 
@@ -2742,6 +2784,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack adalah plugin WordPress gratis yang menghubungkan toko Anda dengan peralatan yang diperlukan agar dapat memberikan pengalaman seluler terbaik, termasuk pemberitahuan push dan statistik";
+
+/* Title of the Jetpack setup interrupted screen */
+"Jetpack is installed, but not connected." = "Jetpack sudah terinstal tetapi belum tersambung.";
 
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "Bergabunglah dari mana saja";
@@ -3067,6 +3112,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Caption displayed in promotional screens shown during the login flow. */
 "Monitor and approve your product reviews" = "Pantau dan setujui ulasan produk Anda";
 
+/* Title of the Analytics Hub Month to Date selection range */
+"Month to Date" = "Awal Bulan hingga Saat Ini";
+
 /* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
    Accessibility label for the More button on formatting toolbar. */
 "More" = "Lainnya";
@@ -3143,6 +3191,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The title for the net amount paid cell */
 "Net Payment" = "Pembayaran Bersih";
 
+/* Label for net sales (net revenue) in the Analytics Hub */
+"Net Sales" = "Penjualan Bersih";
+
 /* Top performers — label for the total sales of a product */
 "Net sales: %@" = "Penjualan bersih: %@";
 
@@ -3203,6 +3254,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
 "No coupons found" = "Kupon tidak ditemukan";
 
+/* A error message when it's not possible to acquirethe Analytics Hub current selection range */
+"No current period available" = "Periode saat ini tidak tersedia";
+
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Tidak ada data yang tersedia";
 
@@ -3226,6 +3280,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Message on the detail view of the Orders tab before any order is selected */
 "No order selected" = "Tidak ada pesanan terpilih.";
+
+/* A error message when it's not possible toacquire the Analytics Hub previous selection range */
+"No previous period available" = "Periode sebelumnya tidak tersedia";
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "Tidak ada harga yang ditentukan";
@@ -3316,6 +3373,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Header of selected attribute options section in Add Attribute Options screen */
 "OPTIONS OFFERED" = "PILIHAN YANG DITAWARKAN";
+
+/* Title for order analytics section in the Analytics Hub */
+"ORDERS" = "PESANAN";
 
 /* Spoken label to indicate switch control is turned off. */
 "Off" = "Matikan";
@@ -3663,8 +3723,14 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "Isi daya pembaca";
 
+/* Error message on the Jetpack setup required screen when Jetpack connection is missing. */
+"Please connect your store to Jetpack to access it on this app." = "Sambungkan toko Anda ke Jetpack untuk mengaksesnya di aplikasi ini.";
+
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app." = "Hubungi pemilik situs untuk menerima undangan ke situs sebagai manajer toko atau administrator untuk menggunakan aplikasi.";
+
+/* Suggestion to be displayed when the user encounters a permission error during Jetpack setup */
+"Please contact your shop manager or administrator for help." = "Hubungi manajer atau administrator toko Anda untuk mendapatkan bantuan.";
 
 /* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to address problems */
 "Please correct your store address to proceed" = "Mohon koreksi alamat toko Anda untuk melanjutkan";
@@ -3725,6 +3791,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* A short prompt asking the user to properly fill out all login fields. */
 "Please fill out all the fields" = "Silahkan isi semua ruas";
 
+/* Error message on the Jetpack setup required screen. */
+"Please install the free Jetpack plugin to access your store on this app." = "Instal plugin Jetpack gratis untuk mengakses toko Anda di aplikasi ini.";
+
 /* Message for alert to prompt user to logout before connecting to a different wordpress.com site. */
 "Please log out before connecting to a different wordpress.com site" = "Harap logout sebelum menyambungkan ke situs wordpress.com lain";
 
@@ -3735,14 +3804,23 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Recovery suggestion when we fail to update an address when creating or editing an order */
 "Please make sure you are running the latest version of WooCommerce and try again later." = "Harap pastikan Anda menggunakan WooCommerce versi terbaru lalu coba lagi nanti.";
 
+/* Message of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
+"Please remain connected." = "Harap tetap tersambung.";
+
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "Silakan pilih paket";
 
 /* Message of the alert when the store cannot be created due to the domain in the store creation flow. */
 "Please try a different domain." = "Silakan coba domain lain.";
 
+/* Message of the alert when the WPCOM plan cannot be purchased in the store creation flow. */
+"Please try again and make sure you are signed in to an App Store account eligible for purchase." = "Harap coba lagi dan pastikan Anda login ke akun App Store yang memenuhi syarat untuk pembelian.";
+
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "Coba lagi nanti atau hubungi kami dan dengan senang hati kami akan membantu Anda!";
+
+/* Suggestion to be displayed when the user encounters a permission error during Jetpack setup */
+"Please try again or contact support if this error continues." = "Harap coba lagi atau hubungi dukungan jika error ini berlanjut.";
 
 /* Error message when Jetpack connection fails */
 "Please try again or contact us for support." = "Harap coba lagi atau hubungi kami untuk bantuan.";
@@ -3777,6 +3855,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Message on the Jetpack Install Progress screen. The %1$@ is the site address. */
 "Please wait while we connect your site %1$@ with Jetpack." = "Harap tunggu sembari kami menghubungkan situs %1$@ Anda dengan Jetpack.";
+
+/* Message on the Jetpack setup screen. The %1$@ is the site address. */
+"Please wait while we connect your store %1$@ with Jetpack." = "Harap tunggu sembari kami menyambungkan toko %1$@ Anda dengan Jetpack.";
 
 /* Instructions for the progress screen while generating a variation */
 "Please wait while we create the new variation" = "Harap tunggu sembari kami membuat variasi baru";
@@ -4057,6 +4138,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
 "Quickly get up and selling with a beautiful online store." = "Bangun dan jual produk dengan cepat menggunakan toko online yang menawan.";
+
+/* Title for revenue analytics section in the Analytics Hub */
+"REVENUE" = "PENDAPATAN";
 
 /* Title of button that allows the user to rate the app in the App Store */
 "Rate us" = "Beri rating";
@@ -4467,6 +4551,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Link title to see all paper size options */
 "See layout and paper sizes options" = "Lihat opsi tata letak dan ukuran kertas";
+
+/* Button on the stats dashboard that navigates user to the analytics hub */
+"See more" = "Lihat Selengkapnya";
 
 /* Subtitle of the Jetpack benefits banner. */
 "See the benefits" = "Lihat manfaatnya";
@@ -5044,6 +5131,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
 "Tap or insert card to refund" = "Ketuk atau masukkan kartu untuk mengembalikan dana";
 
+/* Cell tytle on beta features screen to enable Tap to Pay on iPhone: card payments with the phone's built in reader */
+"Tap to Pay on iPhone" = "Ketuk untuk Bayar di iPhone";
+
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
 "Tap to insert a Horizontal Ruler" = "Ketuk untuk menyisipkan Penggaris Horizontal";
 
@@ -5155,6 +5245,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
    The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen.
    Title of button that displays the App's terms of service */
 "Terms of Service" = "Ketentuan Layanan";
+
+/* Cell description on beta features screen to enable in-app purchases */
+"Test out In-Person Payments using your phone's built-in card reader, as we get ready to launch. Supported on iPhone XS and newer phones, running iOS 15.5 or above." = "Uji fitur Pembayaran Langsung menggunakan pembaca kartu bawaan ponsel Anda sembari kami menyiapkan peluncuran. Didukung di iPhone XS dan ponsel lebih baru yang menggunakan iOS 15.5 atau di atasnya.";
 
 /* Cell description on beta features screen to enable in-app purchases */
 "Test out in-app purchases as we get ready to launch" = "Uji pembelian dalam aplikasi menjelang peluncuran";
@@ -5420,6 +5513,12 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The details on the placeholder overlay when there is issue syncing site plugins */
 "There was a problem while trying to load plugins. Check your internet and try again." = "Terjadi kesalahan saat mencoba memuat plugin. Periksa koneksi internet, lalu coba lagi.";
 
+/* Message to be displayed when the user encounters a permission error during Jetpack setup */
+"There was an error communicating with your site." = "Terjadi error saat berkomunikasi dengan situs Anda.";
+
+/* Message to be displayed when the user encounters a generic error during Jetpack setup */
+"There was an error completing your request." = "Terjadi error saat menyelesaikan permintaan Anda.";
+
 /* Notice text after failing to create a simple payments order. */
 "There was an error creating the order" = "Terjadi error saat membuat pesanan";
 
@@ -5502,6 +5601,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Footer text for Downloadable File URL */
 "This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "Ini adalah url file yang akan dapat diakses pelanggan. URL yang dimasukkan harus sudah dikodekan.";
+
+/* Subtitle of the domain selector. */
+"This is where people will find you on the Internet. You can add another domain later." = "Inilah tempat orang-orang dapat menemukan Anda di Internet. Anda dapat menambahkan domain lain nanti.";
 
 /* Message in action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow.The package name reads like: Package 1: Custom Envelope. */
 "This item is currently in Package %1$d: %2$@. Where would you like to move it?" = "Saat ini item ini ada dalam Paket %1$d: %2$@. Anda ingin memindahkannya ke mana?";
@@ -5618,6 +5720,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Label for total number of orders in the Analytics Hub */
 "Total Orders" = "Total Pesanan";
 
+/* Label for total sales (gross revenue) in the Analytics Hub */
+"Total Sales" = "Total Penjualan";
+
 /* Title of the row for adding the package weight in Shipping Label Package Detail screen */
 "Total package weight" = "Total berat kemasan";
 
@@ -5657,6 +5762,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Connect when the SSL certificate is invalid */
 "Trust" = "Percayai";
 
+/* Action button to retry Jetpack activation. */
+"Try Activating Again" = "Coba Aktifkan Ulang";
+
 /* Action displayed in the error prompt when loading total discounted amount in Coupon Details screen fails
    Button to retry a software update. Presented to users when updating the card reader software fails
    Button to try again after connecting to a specific reader fails due to a critically low battery.
@@ -5675,8 +5783,14 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Message from the in-person payment card reader prompting user to retry a payment using a different method, e.g. swipe, tap, insert */
 "Try Another Read Method" = "Coba Metode Membaca Lainnya";
 
+/* Action button to retry Jetpack connection. */
+"Try Authorizing Again" = "Coba Beri Izin Lagi";
+
 /* Button to try to collect a payment again. Presented to users after collecting a payment fails */
 "Try Collecting Again" = "Coba Ulangi Pengumpulan";
+
+/* Action button to retry Jetpack installation. */
+"Try Installing Again" = "Coba Instal Ulang";
 
 /* Action to resync on the placeholder overlay when there is issue syncing site plugins
    Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
@@ -5684,6 +5798,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
 "Try another means of payment" = "Coba gunakan metode pembayaran lainnya";
+
+/* Message on the Jetpack setup interrupted screen */
+"Try connecting again to access your store." = "Coba sambungkan lagi untuk mengakses toko Anda.";
 
 /* Title for the button on the Linked Products announcement banner */
 "Try it now" = "Coba Sekarang";
@@ -6043,6 +6160,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* No comment provided by engineer. */
 "Username must be at least 4 characters." = "Nama pengguna harus sekurangnya 4 karakter.";
 
+/* Message to be displayed when a Jetpack connection is being authorized */
+"Validating" = "Memvalidasi";
+
 /* Title for the Value row in item details in Customs screen of Shipping Label flow */
 "Value (%1$@ per unit)" = "Nilai (%1$@ per unit)";
 
@@ -6163,11 +6283,17 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* View title during the Google auth process. */
 "Waiting..." = "Menunggu...";
 
+/* Title of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
+"We are getting ready for your store creation" = "Kami sedang mempersiapkan pembuatan toko Anda.";
+
 /* Error message when the merchant's payment account has been rejected */
 "We are sorry but we can't support In-Person Payments for this store." = "Maaf, kami tidak dapat mendukung Pembayaran Langsung untuk toko ini.";
 
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "Kami berusaha agar Anda bisa lebih mudah melihat add-on produk dari perangkat Anda! Untuk sekarang, Anda akan dapat melihat add-on untuk pesanan Anda. Anda dapat membuat dan menyunting add-on ini pada dasbor web Anda.";
+
+/* Error message displayed when there is no store matching the site URL that is associated with the user's account */
+"We cannot load the store at the moment." = "Saat ini kami tidak dapat memuat toko.";
 
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "Kami tidak dapat menampilkan analisis toko Anda";
@@ -6265,6 +6391,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Title of a button linking to the app's website */
 "Website" = "Situs web";
+
+/* Title of the Analytics Hub Week to Date selection range */
+"Week to Date" = "Awal Minggu hingga Saat ini";
 
 /* Title of the cell in Product Shipping Settings > Weight */
 "Weight" = "Berat";
@@ -6368,6 +6497,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Option to select the Yahoo Mail app when logging in with magic links */
 "Yahoo Mail" = "Yahoo Mail";
 
+/* Title of the Analytics Hub Year to Date selection range */
+"Year to Date" = "Awal Tahun hingga Saat Ini";
+
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "Ya, ubah";
 
@@ -6404,6 +6536,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* The description on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
 "You currently have Coupons disabled for this store. Enable coupons to get started." = "Saat ini, Kupon dinonaktifkan untuk toko ini. Aktifkan kupon untuk memulai.";
+
+/* Message to be displayed when the user encounters a permission error during Jetpack setup */
+"You don't have permission to manage plugins on this store." = "Anda tidak memiliki izin untuk mengelola plugin di toko ini.";
 
 /* Title for the mocked order notification needed for the AppStore listing screenshot */
 "You have a new order! 🎉" = "Ada pesanan baru! 🎉";

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-11-29 08:54:05+0000 */
+/* Translation-Revision-Date: 2022-11-29 14:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -5132,7 +5132,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "Tap or insert card to refund" = "Karte zum Erstatten auflegen oder einstecken";
 
 /* Cell tytle on beta features screen to enable Tap to Pay on iPhone: card payments with the phone's built in reader */
-"Tap to Pay on iPhone" = "Auf dem iPhone zum Bezahlen tippen";
+"Tap to Pay on iPhone" = "Tap to Pay on iPhone";
 
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
 "Tap to insert a Horizontal Ruler" = "Tippen, um einen waagerechten Trenner einzufügen";
@@ -6284,7 +6284,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "Waiting..." = "Warten …";
 
 /* Title of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
-"We are getting ready for your store creation" = "Wir sind bereit für die Erstellung deines Shops";
+"We are getting ready for your store creation" = "Wir machen uns bereit für die Erstellung deines Shops";
 
 /* Error message when the merchant's payment account has been rejected */
 "We are sorry but we can't support In-Person Payments for this store." = "Leider können wir persönliche Zahlungen für diesen Store nicht unterstützen.";

@@ -5,6 +5,12 @@ import Storage
 import SwiftUI
 import Yosemite
 
+/// The final state of the card reader connection to return without errors.
+enum ControllerCardReaderConnectionResult {
+    case connected
+    case canceled
+}
+
 /// Facilitates connecting to a card reader
 ///
 final class BuiltInCardReaderConnectionController {
@@ -69,12 +75,6 @@ final class BuiltInCardReaderConnectionController {
         case discoveryFailed(Error)
     }
 
-    /// The final state of the card reader connection to return without errors.
-    enum ConnectionResult {
-        case connected
-        case canceled
-    }
-
     private let storageManager: StorageManagerType
     private let stores: StoresManager
 
@@ -120,7 +120,7 @@ final class BuiltInCardReaderConnectionController {
 
     private var subscriptions = Set<AnyCancellable>()
 
-    private var onCompletion: ((Result<ConnectionResult, Error>) -> Void)?
+    private var onCompletion: ((Result<ControllerCardReaderConnectionResult, Error>) -> Void)?
 
     private(set) lazy var dataSource: CardReaderSettingsDataSource = {
         return CardReaderSettingsDataSource(siteID: siteID, storageManager: storageManager)
@@ -167,7 +167,7 @@ final class BuiltInCardReaderConnectionController {
         subscriptions.removeAll()
     }
 
-    func searchAndConnect(onCompletion: @escaping (Result<ConnectionResult, Error>) -> Void) {
+    func searchAndConnect(onCompletion: @escaping (Result<ControllerCardReaderConnectionResult, Error>) -> Void) {
         self.onCompletion = onCompletion
         self.state = .initializing
     }
@@ -738,7 +738,7 @@ private extension BuiltInCardReaderConnectionController {
 
     /// Calls the completion with a success result
     ///
-    private func returnSuccess(result: ConnectionResult) {
+    private func returnSuccess(result: ControllerCardReaderConnectionResult) {
         onCompletion?(.success(result))
         alertsPresenter.dismiss()
         state = .idle

@@ -133,7 +133,7 @@ final class CardPresentPaymentPreflightController {
         #endif
     }
 
-    private func handleConnectionResult(_ result: Result<CardReaderConnectionController.ConnectionResult, Error>) {
+    private func handleConnectionResult(_ result: Result<ControllerCardReaderConnectionResult, Error>) {
         let connectionResult = result.map { connection in
             switch connection {
             case .connected:

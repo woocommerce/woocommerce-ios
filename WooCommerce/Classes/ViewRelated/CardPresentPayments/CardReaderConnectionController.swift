@@ -120,7 +120,7 @@ final class CardReaderConnectionController {
 
     private var subscriptions = Set<AnyCancellable>()
 
-    private var onCompletion: ((Result<ConnectionResult, Error>) -> Void)?
+    private var onCompletion: ((Result<ControllerCardReaderConnectionResult, Error>) -> Void)?
 
     private(set) lazy var dataSource: CardReaderSettingsDataSource = {
         return CardReaderSettingsDataSource(siteID: siteID, storageManager: storageManager)
@@ -167,7 +167,7 @@ final class CardReaderConnectionController {
         subscriptions.removeAll()
     }
 
-    func searchAndConnect(onCompletion: @escaping (Result<ConnectionResult, Error>) -> Void) {
+    func searchAndConnect(onCompletion: @escaping (Result<ControllerCardReaderConnectionResult, Error>) -> Void) {
         self.onCompletion = onCompletion
         self.state = .initializing
     }
@@ -738,7 +738,7 @@ private extension CardReaderConnectionController {
 
     /// Calls the completion with a success result
     ///
-    private func returnSuccess(result: ConnectionResult) {
+    private func returnSuccess(result: ControllerCardReaderConnectionResult) {
         onCompletion?(.success(result))
         alertsPresenter.dismiss()
         state = .idle

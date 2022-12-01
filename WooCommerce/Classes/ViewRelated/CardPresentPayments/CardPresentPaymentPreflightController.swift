@@ -66,7 +66,6 @@ final class CardPresentPaymentPreflightController {
         let analyticsTracker = CardReaderConnectionAnalyticsTracker(configuration: configuration,
                                                                     stores: stores,
                                                                     analytics: analytics)
-        // TODO: Replace this with a refactored (New)LegacyCardReaderConnectionController
         self.connectionController = CardReaderConnectionController(
             forSiteID: siteID,
             discoveryMethod: .bluetoothScan,
@@ -132,13 +131,12 @@ final class CardPresentPaymentPreflightController {
         #endif
     }
 
-    private func handleConnectionResult(_ result: Result<ControllerCardReaderConnectionResult, Error>) {
+    private func handleConnectionResult(_ result: Result<CardReaderConnectionResult, Error>) {
         let connectionResult = result.map { connection in
             switch connection {
-            case .connected:
-                // TODO: pass the reader from the (New)CardReaderConnectionController
-                guard let connectedReader = self.connectedReader else { return CardReaderConnectionResult.canceled }
-                return CardReaderConnectionResult.connected(connectedReader)
+            case .connected(let reader):
+                self.connectedReader = reader
+                return CardReaderConnectionResult.connected(reader)
             case .canceled:
                 return CardReaderConnectionResult.canceled
             }

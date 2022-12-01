@@ -5,12 +5,6 @@ import Storage
 import SwiftUI
 import Yosemite
 
-/// The final state of the card reader connection to return without errors.
-enum ControllerCardReaderConnectionResult {
-    case connected
-    case canceled
-}
-
 /// Facilitates connecting to a card reader
 ///
 final class BuiltInCardReaderConnectionController {
@@ -92,7 +86,7 @@ final class BuiltInCardReaderConnectionController {
 
     private var subscriptions = Set<AnyCancellable>()
 
-    private var onCompletion: ((Result<ControllerCardReaderConnectionResult, Error>) -> Void)?
+    private var onCompletion: ((Result<CardReaderConnectionResult, Error>) -> Void)?
 
     private(set) lazy var dataSource: CardReaderSettingsDataSource = {
         return CardReaderSettingsDataSource(siteID: siteID, storageManager: storageManager)
@@ -134,7 +128,7 @@ final class BuiltInCardReaderConnectionController {
         subscriptions.removeAll()
     }
 
-    func searchAndConnect(onCompletion: @escaping (Result<ControllerCardReaderConnectionResult, Error>) -> Void) {
+    func searchAndConnect(onCompletion: @escaping (Result<CardReaderConnectionResult, Error>) -> Void) {
         self.onCompletion = onCompletion
         self.state = .initializing
     }
@@ -375,10 +369,10 @@ private extension BuiltInCardReaderConnectionController {
                 // actually see a success message showing the installation was complete
                 if case .updating(progress: 1) = self.state {
                     DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-                        self.returnSuccess(result: .connected)
+                        self.returnSuccess(result: .connected(reader))
                     }
                 } else {
-                    self.returnSuccess(result: .connected)
+                    self.returnSuccess(result: .connected(reader))
                 }
             case .failure(let error):
                 ServiceLocator.analytics.track(
@@ -538,7 +532,7 @@ private extension BuiltInCardReaderConnectionController {
 
     /// Calls the completion with a success result
     ///
-    private func returnSuccess(result: ControllerCardReaderConnectionResult) {
+    private func returnSuccess(result: CardReaderConnectionResult) {
         onCompletion?(.success(result))
         alertsPresenter.dismiss()
         state = .idle

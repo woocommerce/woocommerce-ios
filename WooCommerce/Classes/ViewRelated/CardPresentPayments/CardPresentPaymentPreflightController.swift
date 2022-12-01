@@ -122,14 +122,15 @@ final class CardPresentPaymentPreflightController {
     }
 
     private func localMobileReaderSupported() -> Bool {
-        #if !targetEnvironment(simulator)
+        #if targetEnvironment(simulator)
+        return true
+        #else
         if #available(iOS 15.4, *) {
             return PaymentCardReader.isSupported
         } else {
             return false
         }
         #endif
-        return true
     }
 
     private func handleConnectionResult(_ result: Result<CardReaderConnectionController.ConnectionResult, Error>) {

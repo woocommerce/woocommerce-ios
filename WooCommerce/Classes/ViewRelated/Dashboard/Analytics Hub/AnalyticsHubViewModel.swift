@@ -47,6 +47,11 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published var timeRangeCard: AnalyticsTimeRangeCardViewModel
 
+    /// Defines the current notice that should be shown.
+    /// Defaults to `nil`.
+    ///
+    @Published var notice: Notice?
+
     // MARK: Private data
 
     /// Order stats for the current selected time period
@@ -63,9 +68,14 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Request stats data from network
     ///
+    @MainActor
     func updateData() async {
         do {
             try await retrieveOrderStats()
+        } catch is AnalyticsHubTimeRangeSelection.TimeRangeGeneratorError {
+            switchToErrorState()
+            notice = Notice(title: Localization.timeRangeGeneratorError, feedbackType: .error)
+            DDLogWarn("⚠️ Error selecting analytics time range: \(timeRangeSelectionType.description)")
         } catch {
             switchToErrorState()
             DDLogWarn("⚠️ Error fetching analytics data: \(error)")
@@ -252,5 +262,8 @@ private extension AnalyticsHubViewModel {
             static let noOrders = NSLocalizedString("Unable to load order analytics",
                                                     comment: "Text displayed when there is an error loading order stats data.")
         }
+
+        static let timeRangeGeneratorError = NSLocalizedString("Sorry, something went wrong. We can't load analytics for the selected date range.",
+                                                               comment: "Error shown when there is a problem retrieving the dates for the selected date range.")
     }
 }

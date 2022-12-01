@@ -79,6 +79,7 @@ struct AnalyticsHubView: View {
         .task {
             await viewModel.updateData()
         }
+        .notice($viewModel.notice)
     }
 }
 

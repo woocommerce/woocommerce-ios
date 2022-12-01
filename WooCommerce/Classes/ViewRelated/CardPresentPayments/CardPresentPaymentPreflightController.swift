@@ -45,7 +45,7 @@ final class CardPresentPaymentPreflightController {
 
     /// Controller to connect a card reader.
     ///
-    private var builtInConnectionController: CardReaderConnectionController
+    private var builtInConnectionController: BuiltInCardReaderConnectionController
 
 
     private(set) var readerConnection = CurrentValueSubject<CardReaderConnectionResult?, Never>(nil)
@@ -75,7 +75,7 @@ final class CardPresentPaymentPreflightController {
             configuration: configuration,
             analyticsTracker: analyticsTracker)
 
-        self.builtInConnectionController = CardReaderConnectionController(
+        self.builtInConnectionController = BuiltInCardReaderConnectionController(
             forSiteID: siteID,
             discoveryMethod: .localMobile,
             knownReaderProvider: CardReaderSettingsKnownReaderStorage(),

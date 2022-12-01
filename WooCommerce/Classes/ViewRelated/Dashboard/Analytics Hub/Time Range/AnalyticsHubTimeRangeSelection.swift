@@ -104,16 +104,16 @@ extension AnalyticsHubTimeRangeSelection {
             }
         }
 
-        static func from(_ statsTimeRange: StatsTimeRangeV4) -> SelectionType {
+        init(_ statsTimeRange: StatsTimeRangeV4) {
             switch statsTimeRange {
             case .today:
-                return .today
+                self = .today
             case .thisWeek:
-                return .weekToDate
+                self = .weekToDate
             case .thisMonth:
-                return .monthToDate
+                self = .monthToDate
             case .thisYear:
-                return .yearToDate
+                self = .yearToDate
             }
         }
     }

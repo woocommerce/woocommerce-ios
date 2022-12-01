@@ -98,6 +98,7 @@ final class DashboardViewModel {
                                                           latestDateToInclude: latestDateToInclude,
                                                           quantity: Constants.topEarnerStatsLimit,
                                                           forceRefresh: forceRefresh,
+                                                          saveInStorage: true,
                                                           onCompletion: { result in
             switch result {
             case .success:
@@ -107,7 +108,9 @@ final class DashboardViewModel {
             case .failure(let error):
                 DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
             }
-            onCompletion?(result)
+
+            let voidResult = result.map { _ in () } // Caller expects no entity in the result.
+            onCompletion?(voidResult)
         })
         stores.dispatch(action)
     }

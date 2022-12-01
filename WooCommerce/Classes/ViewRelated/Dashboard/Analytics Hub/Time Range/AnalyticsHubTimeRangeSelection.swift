@@ -1,20 +1,42 @@
 import Foundation
 import Yosemite
 
-protocol AnalyticsHubTimeRangeSelectionDelegate {
-    var currentTimeRange: AnalyticsHubTimeRange? { get }
-    var previousTimeRange: AnalyticsHubTimeRange? { get }
-    var currentRangeDescription: String? { get }
-    var previousRangeDescription: String? { get }
+protocol AnalyticsHubTimeRangeData {
+    var currentDateStart: Date? { get }
+    var currentDateEnd: Date? { get }
+    var previousDateStart: Date? { get }
+    var previousDateEnd: Date? { get }
 
     init(referenceDate: Date, currentCalendar: Calendar)
+}
+
+private extension AnalyticsHubTimeRangeData {
+    var currentTimeRange: AnalyticsHubTimeRange? {
+        generateTimeRangeFrom(startDate: currentDateStart, endDate: currentDateEnd)
+    }
+
+    var previousTimeRange: AnalyticsHubTimeRange? {
+        generateTimeRangeFrom(startDate: previousDateStart, endDate: previousDateEnd)
+    }
+
+    private func generateTimeRangeFrom(startDate: Date?, endDate: Date?) -> AnalyticsHubTimeRange? {
+        if let startDate = startDate,
+           let endDate = endDate {
+            return AnalyticsHubTimeRange(start: startDate, end: endDate)
+        } else {
+            return nil
+        }
+    }
 }
 
 /// Main source of time ranges of the Analytics Hub, responsible for providing the current and previous dates
 /// for a given Date and range Type alongside their UI descriptions
 ///
 public class AnalyticsHubTimeRangeSelection {
-    private let selectionDelegate: AnalyticsHubTimeRangeSelectionDelegate
+    private let currentTimeRange: AnalyticsHubTimeRange?
+    private let previousTimeRange: AnalyticsHubTimeRange?
+    private let currentRangeDescription: String?
+    private let previousRangeDescription: String?
     let rangeSelectionDescription: String
 
     //TODO: abandon usage of the ISO 8601 Calendar and build one based on the Site calendar configuration
@@ -23,23 +45,33 @@ public class AnalyticsHubTimeRangeSelection {
          currentCalendar: Calendar = Calendar(identifier: .iso8601)) {
         self.rangeSelectionDescription = selectionType.description
 
+        var selectionData: AnalyticsHubTimeRangeData
         switch selectionType {
         case .today:
-            self.selectionDelegate = AnalyticsHubDayRangeSelection(referenceDate: currentDate, currentCalendar: currentCalendar)
+            selectionData = AnalyticsHubDayRangeData(referenceDate: currentDate, currentCalendar: currentCalendar)
         case .weekToDate:
-            self.selectionDelegate = AnalyticsHubWeekRangeSelection(referenceDate: currentDate, currentCalendar: currentCalendar)
+            selectionData = AnalyticsHubWeekRangeData(referenceDate: currentDate, currentCalendar: currentCalendar)
         case .monthToDate:
-            self.selectionDelegate = AnalyticsHubMonthRangeSelection(referenceDate: currentDate, currentCalendar: currentCalendar)
+            selectionData = AnalyticsHubMonthRangeData(referenceDate: currentDate, currentCalendar: currentCalendar)
         case .yearToDate:
-            self.selectionDelegate = AnalyticsHubYearRangeSelection(referenceDate: currentDate, currentCalendar: currentCalendar)
+            selectionData = AnalyticsHubYearRangeData(referenceDate: currentDate, currentCalendar: currentCalendar)
         }
+
+        let currentTimeRange = selectionData.currentTimeRange
+        let previousTimeRange = selectionData.previousTimeRange
+
+        self.currentTimeRange = currentTimeRange
+        self.previousTimeRange = previousTimeRange
+        self.currentRangeDescription = currentTimeRange?.generateDescription(referenceCalendar: currentCalendar)
+        self.previousRangeDescription = previousTimeRange?.generateDescription(referenceCalendar: currentCalendar)
+
     }
 
     /// Unwrap the generated selected `AnalyticsHubTimeRange` based on the `selectedTimeRange`
     /// provided during initialization.
     /// - throws an `.selectedRangeGenerationFailed` error if the unwrap fails.
     func unwrapCurrentTimeRange() throws -> AnalyticsHubTimeRange {
-        guard let currentTimeRange = selectionDelegate.currentTimeRange else {
+        guard let currentTimeRange = currentTimeRange else {
             throw TimeRangeGeneratorError.selectedRangeGenerationFailed
         }
         return currentTimeRange
@@ -49,7 +81,7 @@ public class AnalyticsHubTimeRangeSelection {
     /// based on the `selectedTimeRange` provided during initialization.
     /// - throws a `.previousRangeGenerationFailed` error if the unwrap fails.
     func unwrapPreviousTimeRange() throws -> AnalyticsHubTimeRange {
-        guard let previousTimeRange = selectionDelegate.previousTimeRange else {
+        guard let previousTimeRange = previousTimeRange else {
             throw TimeRangeGeneratorError.previousRangeGenerationFailed
         }
         return previousTimeRange
@@ -59,7 +91,7 @@ public class AnalyticsHubTimeRangeSelection {
     /// - Returns the Time range in a UI friendly format. If the previous time range is not available,
     /// then returns an presentable error message.
     func generateCurrentRangeDescription() -> String {
-        guard let currentTimeRangeDescription = selectionDelegate.currentRangeDescription else {
+        guard let currentTimeRangeDescription = currentRangeDescription else {
             return Localization.noCurrentPeriodAvailable
         }
         return currentTimeRangeDescription
@@ -69,7 +101,7 @@ public class AnalyticsHubTimeRangeSelection {
     /// - Returns the Time range in a UI friendly format. If the previous time range is not available,
     /// then returns an presentable error message.
     func generatePreviousRangeDescription() -> String {
-        guard let previousTimeRangeDescription = selectionDelegate.previousRangeDescription else {
+        guard let previousTimeRangeDescription = previousRangeDescription else {
             return Localization.noPreviousPeriodAvailable
         }
         return previousTimeRangeDescription

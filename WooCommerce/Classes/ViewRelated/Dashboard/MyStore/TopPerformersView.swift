@@ -39,11 +39,8 @@ struct TopPerformersView: View {
             // Rows
             ForEach(rows.indexed(), id: \.0.self) { index, row in
 
-                TopPerformersRow(data: row, textMargin: $rowTextMargin)
-
-                Divider()
-                    .padding(.leading, rowTextMargin)
-                    .renderedIf(index < rows.count - 1) // Do not render the divider for the last row.
+                // Do not render the divider for the last row.
+                TopPerformersRow(data: row, showDivider: index < rows.count - 1)
             }
         }
     }
@@ -81,45 +78,41 @@ struct TopPerformersRow: View {
     ///
     let data: Data
 
-    /// Binding variable where we set in what X position the text labels begin, using the main view coordinate space.
-    /// Useful for letting consumers know where to layout the row divider.
+    /// Indicates if the bottom divider should be displayed
     ///
-    @Binding var textMargin: CGFloat
+    let showDivider: Bool
 
     var body: some View {
-        HStack(alignment: .firstTextBaseline) {
-            AdaptiveStack(horizontalAlignment: .leading) {
+        AdaptiveStack(horizontalAlignment: .leading, verticalAlignment: .top) {
+            // Image
+            KFImage(data.imageURL)
+                .resizable()
+                .frame(width: imageWidth, height: imageWidth)
+                .cornerRadius(Layout.imageCornerRadius)
 
-                // Image
-                KFImage(data.imageURL)
-                    .resizable()
-                    .frame(width: imageWidth, height: imageWidth)
-                    .cornerRadius(Layout.imageCornerRadius)
+            // Text Labels + Value + Divider
+            VStack {
+                // Text Labels + Value
+                HStack(alignment: .firstTextBaseline) {
+                    // Text Labels
+                    VStack(alignment: .leading, spacing: Layout.textSpacing) {
+                        Text(data.name)
+                            .bodyStyle()
+                        Text(data.details)
+                            .subheadlineStyle()
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
 
-                // Text Labels
-                VStack(alignment: .leading, spacing: Layout.textSpacing) {
-                    Text(data.name)
-                        .bodyStyle()
-                    Text(data.details)
+                    // Count
+                    Text(data.value)
+                        .foregroundColor(Color(.text))
                         .subheadlineStyle()
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(
-                    // Trick to get the text labels X position relative to the main parent view.
-                    GeometryReader() { proxy in
-                        Color.clear.task {
-                            textMargin = proxy.frame(in: .named(Layout.mainViewCoordinaateSpace)).minX
-                        }
-                    }
-                )
-            }
 
-            // Count
-            Text(data.value)
-                .foregroundColor(Color(.text))
-                .subheadlineStyle()
+                Divider()
+                    .renderedIf(showDivider)
+            }
         }
-        .coordinateSpace(name: Layout.mainViewCoordinaateSpace)
     }
 }
 
@@ -134,7 +127,6 @@ private extension TopPerformersRow {
         static let standardImageWidth: CGFloat = 40
         static let imageCornerRadius: CGFloat = 4
         static let textSpacing: CGFloat = 2
-        static let mainViewCoordinaateSpace = "main-view-cs"
     }
 }
 

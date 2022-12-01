@@ -6,7 +6,7 @@ import WordPressUI
 
 /// NoticePresenter: Coordinates Notice rendering, in both, FG and BG execution modes.
 ///
-class DefaultNoticePresenter: NoticePresenter {
+class DefaultNoticePresenter: NSObject, NoticePresenter {
 
     /// UIKit Feedback Gen!
     ///
@@ -20,6 +20,8 @@ class DefaultNoticePresenter: NoticePresenter {
     ///
     private var noticeOnScreen: Notice?
 
+    var kvoToken: NSKeyValueObservation?
+
     /// UIViewController to be used as Notice(s) Presenter
     ///
     weak var presentingViewController: UIViewController?
@@ -27,17 +29,6 @@ class DefaultNoticePresenter: NoticePresenter {
     /// Observes keyboard and repositions Notice
     ///
     private var keyboardFrameObserver: KeyboardFrameObserver?
-
-    private weak var noticeContainerView: NoticeContainerView?
-    private var noticeContainerViewBottomConstraint: NSLayoutConstraint?
-
-    init() {
-        NotificationCenter.default.addObserver(self, selector: #selector(handleRotation), name: UIDevice.orientationDidChangeNotification, object: nil)
-    }
-
-    deinit {
-        NotificationCenter.default.removeObserver(self, name: UIDevice.orientationDidChangeNotification, object: nil)
-    }
 
     /// Enqueues the specified Notice for display.
     ///
@@ -82,17 +73,6 @@ private extension DefaultNoticePresenter {
             default:
                 self.presentNoticeInForeground(notice)
             }
-        }
-    }
-
-    @objc func handleRotation() {
-        guard let noticeContainerView = noticeContainerView else {
-            return
-        }
-
-        Task { @MainActor in
-            updateAndActivateBottomConstraintForNoticeContainer(noticeContainerView)
-            noticeContainerView.layoutIfNeeded()
         }
     }
 
@@ -157,9 +137,8 @@ private extension DefaultNoticePresenter {
         NSLayoutConstraint.activate([
             noticeContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             noticeContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            makeBottomConstraintForNoticeContainer(noticeContainerView)
         ])
-
-        updateAndActivateBottomConstraintForNoticeContainer(noticeContainerView)
 
         let offScreenState = { [weak noticeView, weak self] in
             guard let noticeView = noticeView, let self = self else {
@@ -194,8 +173,6 @@ private extension DefaultNoticePresenter {
         animatePresentation(fromState: offScreenState, toState: onScreenState, completion: {
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Animations.dismissDelay, execute: dismiss)
         })
-
-        self.noticeContainerView = noticeContainerView
     }
 
     private func dismissHandler(for noticeContainerView: UIView,
@@ -216,6 +193,7 @@ private extension DefaultNoticePresenter {
     func dismiss() {
         noticeOnScreen = nil
         keyboardFrameObserver = nil
+        kvoToken = nil
         presentNextNoticeIfPossible()
     }
 
@@ -227,23 +205,29 @@ private extension DefaultNoticePresenter {
         }
     }
 
-    func updateAndActivateBottomConstraintForNoticeContainer(_ container: UIView) {
+
+
+    func makeBottomConstraintForNoticeContainer(_ container: UIView) -> NSLayoutConstraint {
         guard let presentingViewController = presentingViewController else {
             fatalError("NoticePresenter requires a presentingViewController!")
         }
 
-        noticeContainerViewBottomConstraint?.isActive = false
+        if let tabBarController = presentingViewController as? UITabBarController,
+           !tabBarController.tabBar.isHidden {
+            if kvoToken == nil {
+                kvoToken = tabBarController.tabBar.observe(\.isHidden, options: .new) { tabBar, _ in
+                    guard tabBar.isHidden else {
+                        return
+                    }
 
-        if let tabBarController = presentingViewController as? UITabBarController {
-            // Constraining the notice container's bottom to the tab bar's top produces unexpected results when the tab bar disappers
-            // e.g navigating to a view without tab bar pushes the notice to the top of the screen
-            noticeContainerViewBottomConstraint = container.bottomAnchor.constraint(equalTo: presentingViewController.view.bottomAnchor,
-                                                                                    constant: -tabBarController.tabBar.frame.height)
+                    container.isHidden = true
+                }
+            }
+
+            return container.bottomAnchor.constraint(equalTo: tabBarController.tabBar.topAnchor)
         } else {
-            noticeContainerViewBottomConstraint = container.bottomAnchor.constraint(equalTo: presentingViewController.view.bottomAnchor)
+            return container.bottomAnchor.constraint(equalTo: presentingViewController.view.bottomAnchor)
         }
-
-        noticeContainerViewBottomConstraint?.isActive = true
     }
 
     var offscreenBottomOffset: CGFloat {

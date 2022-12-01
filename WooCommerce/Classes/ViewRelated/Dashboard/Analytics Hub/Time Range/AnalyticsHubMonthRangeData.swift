@@ -6,14 +6,11 @@ struct AnalyticsHubMonthRangeData: AnalyticsHubTimeRangeData {
     let previousDateStart: Date?
     let previousDateEnd: Date?
 
-    init(referenceDate: Date, currentCalendar: Calendar) {
-        let currentTimezone = currentCalendar.timeZone
-
+    init(referenceDate: Date, timezone: TimeZone, calendar: Calendar) {
         self.currentDateEnd = referenceDate
-        self.currentDateStart = referenceDate.startOfMonth(timezone: currentTimezone)
-
-        let previousDateEnd = currentCalendar.date(byAdding: .month, value: -1, to: referenceDate)
+        self.currentDateStart = referenceDate.startOfMonth(timezone: timezone)
+        let previousDateEnd = calendar.date(byAdding: .month, value: -1, to: referenceDate)
         self.previousDateEnd = previousDateEnd
-        self.previousDateStart = previousDateEnd?.startOfMonth(timezone: currentTimezone)
+        self.previousDateStart = previousDateEnd?.startOfMonth(timezone: timezone)
     }
 }

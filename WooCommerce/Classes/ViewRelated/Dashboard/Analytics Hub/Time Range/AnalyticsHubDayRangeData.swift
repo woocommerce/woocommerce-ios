@@ -6,14 +6,11 @@ struct AnalyticsHubDayRangeData: AnalyticsHubTimeRangeData {
     let previousDateStart: Date?
     let previousDateEnd: Date?
 
-    init(referenceDate: Date, currentCalendar: Calendar) {
-        let currentTimezone = currentCalendar.timeZone
-
+    init(referenceDate: Date, timezone: TimeZone, calendar: Calendar) {
         self.currentDateEnd = referenceDate
-        self.currentDateStart = referenceDate.startOfDay(timezone: currentTimezone)
-
-        let previousDateEnd = currentCalendar.date(byAdding: .day, value: -1, to: referenceDate)
+        self.currentDateStart = referenceDate.startOfDay(timezone: timezone)
+        let previousDateEnd = calendar.date(byAdding: .day, value: -1, to: referenceDate)
         self.previousDateEnd = previousDateEnd
-        self.previousDateStart = previousDateEnd?.startOfDay(timezone: currentTimezone)
+        self.previousDateStart = previousDateEnd?.startOfDay(timezone: timezone)
     }
 }

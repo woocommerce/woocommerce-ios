@@ -14,19 +14,20 @@ public class AnalyticsHubTimeRangeSelection {
     //TODO: abandon usage of the ISO 8601 Calendar and build one based on the Site calendar configuration
     init(selectionType: SelectionType,
          currentDate: Date = Date(),
-         currentCalendar: Calendar = Calendar(identifier: .iso8601)) {
+         timezone: TimeZone = TimeZone.autoupdatingCurrent,
+         calendar: Calendar = Calendar(identifier: .iso8601)) {
         self.rangeSelectionDescription = selectionType.description
 
         var selectionData: AnalyticsHubTimeRangeData
         switch selectionType {
         case .today:
-            selectionData = AnalyticsHubDayRangeData(referenceDate: currentDate, currentCalendar: currentCalendar)
+            selectionData = AnalyticsHubDayRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
         case .weekToDate:
-            selectionData = AnalyticsHubWeekRangeData(referenceDate: currentDate, currentCalendar: currentCalendar)
+            selectionData = AnalyticsHubWeekRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
         case .monthToDate:
-            selectionData = AnalyticsHubMonthRangeData(referenceDate: currentDate, currentCalendar: currentCalendar)
+            selectionData = AnalyticsHubMonthRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
         case .yearToDate:
-            selectionData = AnalyticsHubYearRangeData(referenceDate: currentDate, currentCalendar: currentCalendar)
+            selectionData = AnalyticsHubYearRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
         }
 
         let currentTimeRange = selectionData.currentTimeRange
@@ -35,8 +36,8 @@ public class AnalyticsHubTimeRangeSelection {
         self.previousTimeRange = previousTimeRange
 
         let simplifiedDescription = selectionType == .today
-        self.currentRangeDescription = currentTimeRange?.generateDescription(referenceCalendar: currentCalendar, simplified: simplifiedDescription)
-        self.previousRangeDescription = previousTimeRange?.generateDescription(referenceCalendar: currentCalendar, simplified: simplifiedDescription)
+        self.currentRangeDescription = currentTimeRange?.generateDescription(referenceCalendar: calendar, simplified: simplifiedDescription)
+        self.previousRangeDescription = previousTimeRange?.generateDescription(referenceCalendar: calendar, simplified: simplifiedDescription)
 
     }
 

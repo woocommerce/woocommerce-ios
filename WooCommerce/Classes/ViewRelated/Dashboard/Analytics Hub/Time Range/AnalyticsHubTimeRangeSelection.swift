@@ -33,7 +33,7 @@ public class AnalyticsHubTimeRangeSelection {
         let previousTimeRange = selectionData.previousTimeRange
         self.currentTimeRange = currentTimeRange
         self.previousTimeRange = previousTimeRange
-        
+
         let simplifiedDescription = selectionType == .today
         self.currentRangeDescription = currentTimeRange?.generateDescription(referenceCalendar: currentCalendar, simplified: simplifiedDescription)
         self.previousRangeDescription = previousTimeRange?.generateDescription(referenceCalendar: currentCalendar, simplified: simplifiedDescription)

@@ -8,7 +8,7 @@ struct AnalyticsHubTimeRange {
         if simplified {
             return DateFormatter.Stats.analyticsHubDayMonthYearFormatter.string(from: start)
         }
-        
+
         let startDateDescription = DateFormatter.Stats.analyticsHubDayMonthFormatter.string(from: start)
 
         if start.isSameMonth(as: end, using: referenceCalendar) {

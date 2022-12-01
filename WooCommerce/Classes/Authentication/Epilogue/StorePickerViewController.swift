@@ -318,18 +318,32 @@ private extension StorePickerViewController {
     func presentActionMenu(from sourceView: UIView) {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
+
         let logOutAction = UIAlertAction(title: Localization.ActionMenu.logOut, style: .default) { [weak self] _ in
             self?.restartAuthentication()
         }
+        actionSheet.addAction(logOutAction)
+
         let helpAction = UIAlertAction(title: Localization.ActionMenu.help, style: .default) { [weak self] _ in
             guard let self else { return }
             ServiceLocator.analytics.track(.sitePickerHelpButtonTapped)
             self.presentHelp()
         }
-        let cancelAction = UIAlertAction(title: Localization.cancel, style: .cancel)
-
-        actionSheet.addAction(logOutAction)
         actionSheet.addAction(helpAction)
+
+        let isCloseAccountButtonVisible = appleIDCredentialChecker.hasAppleUserID()
+        || featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
+        || featureFlagService.isFeatureFlagEnabled(.storeCreationM2)
+        if isCloseAccountButtonVisible {
+            let closeAccountAction = UIAlertAction(title: Localization.ActionMenu.closeAccount, style: .destructive) { [weak self] _ in
+                guard let self else { return }
+                ServiceLocator.analytics.track(event: .closeAccountTapped(source: .emptyStores))
+                self.closeAccountCoordinator.start()
+            }
+            actionSheet.addAction(closeAccountAction)
+        }
+
+        let cancelAction = UIAlertAction(title: Localization.cancel, style: .cancel)
         actionSheet.addAction(cancelAction)
 
         if let popoverController = actionSheet.popoverPresentationController {
@@ -698,17 +712,6 @@ extension StorePickerViewController: UITableViewDataSource {
         guard let site = viewModel.site(at: indexPath) else {
             hideActionButton()
             let cell = tableView.dequeueReusableCell(EmptyStoresTableViewCell.self, for: indexPath)
-            let isCloseAccountButtonVisible = appleIDCredentialChecker.hasAppleUserID()
-            || featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
-            || featureFlagService.isFeatureFlagEnabled(.storeCreationM2)
-            cell.updateCloseAccountButtonVisibility(isVisible: isCloseAccountButtonVisible)
-            if isCloseAccountButtonVisible {
-                cell.onCloseAccountButtonTapped = { [weak self] in
-                    guard let self = self else { return }
-                    ServiceLocator.analytics.track(event: .closeAccountTapped(source: .emptyStores))
-                    self.closeAccountCoordinator.start()
-                }
-            }
             return cell
         }
         let cell = tableView.dequeueReusableCell(StoreTableViewCell.self, for: indexPath)
@@ -862,6 +865,10 @@ private extension StorePickerViewController {
                                                   comment: "Button to log out from the current account from the store picker")
             static let help = NSLocalizedString("Help",
                                                 comment: "Button to get help from the store picker")
+            static let closeAccount = NSLocalizedString(
+                "Close Account",
+                comment: "Button to close the WordPress.com account on the store picker."
+            )
         }
     }
 }

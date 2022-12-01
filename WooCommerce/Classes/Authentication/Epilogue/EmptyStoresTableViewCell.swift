@@ -6,8 +6,6 @@ import UIKit
 ///
 final class EmptyStoresTableViewCell: UITableViewCell {
 
-    var onCloseAccountButtonTapped: (() -> Void)?
-
     /// LegendLabel: To be displayed below the ImageView.
     ///
     @IBOutlet private var legendLabel: UILabel! {
@@ -28,19 +26,12 @@ final class EmptyStoresTableViewCell: UITableViewCell {
 
     @IBOutlet private weak var stackView: UIStackView!
     @IBOutlet private weak var emptyStoresImageView: UIImageView!
-    @IBOutlet private weak var closeAccountButton: UIButton!
 
     override func awakeFromNib() {
         super.awakeFromNib()
 
         configureStackView()
         configureImageView()
-        configureCloseAccountButton()
-        updateCloseAccountButtonVisibility(isVisible: false)
-    }
-
-    func updateCloseAccountButtonVisibility(isVisible: Bool) {
-        closeAccountButton.isHidden = !isVisible
     }
 }
 
@@ -56,22 +47,10 @@ private extension EmptyStoresTableViewCell {
         emptyStoresImageView.contentMode = .scaleAspectFit
         emptyStoresImageView.image = .emptyStorePickerImage
     }
-
-    func configureCloseAccountButton() {
-        closeAccountButton.applyLinkButtonStyle()
-        closeAccountButton.setTitle(Localization.closeAccountTitle, for: .normal)
-        closeAccountButton.on(.touchUpInside) { [weak self] _ in
-            self?.onCloseAccountButtonTapped?()
-        }
-    }
 }
 
 private extension EmptyStoresTableViewCell {
     enum Localization {
-        static let closeAccountTitle = NSLocalizedString(
-            "Close Account",
-            comment: "Link on the store picker for users who signed in with Apple to close their WordPress.com account."
-        )
         static let legend =
             NSLocalizedString("Add your first store",
                               comment: "Displayed during the Login flow, whenever the user has no woo stores associated.")

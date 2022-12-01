@@ -2,10 +2,10 @@ import Foundation
 import Yosemite
 
 protocol AnalyticsHubTimeRangeSelectionDelegate {
-    var currentTimeRange: AnalyticsHubTimeRange? { get }
-    var previousTimeRange: AnalyticsHubTimeRange? { get }
-    var currentRangeDescription: String? { get }
-    var previousRangeDescription: String? { get }
+    var currentTimeRange: AnalyticsHubTimeRange? { get set }
+    var previousTimeRange: AnalyticsHubTimeRange? { get set }
+    var currentRangeDescription: String? { get set }
+    var previousRangeDescription: String? { get set }
 
     init(referenceDate: Date, currentCalendar: Calendar)
 }
@@ -162,5 +162,19 @@ extension AnalyticsHubTimeRangeSelection {
         static let noPreviousPeriodAvailable = NSLocalizedString("no previous period",
                                                                  comment: "A error message when it's not possible to"
                                                                  + "acquire the Analytics Hub previous selection range")
+    }
+}
+
+private extension AnalyticsHubTimeRangeSelectionDelegate {
+    init(referenceDate: Date?, currentCalendar: Calendar) {
+        if let referenceDate = referenceDate {
+            self.init(referenceDate: referenceDate, currentCalendar: currentCalendar)
+        } else {
+            self.init(referenceDate: Date(), currentCalendar: Calendar.current)
+            self.currentTimeRange = nil
+            self.previousTimeRange = nil
+            self.previousRangeDescription = nil
+            self.currentRangeDescription = nil
+        }
     }
 }

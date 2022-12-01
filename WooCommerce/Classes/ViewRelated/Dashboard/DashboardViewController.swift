@@ -123,7 +123,7 @@ final class DashboardViewController: UIViewController {
         configureBottomJetpackBenefitsBanner()
         observeSiteForUIUpdates()
         observeBottomJetpackBenefitsBannerVisibilityUpdates()
-        observeNavigationBarHeightForHeaderExtrasVisibility()
+        observeNavigationBarHeightForHeaderVisibility()
         observeStatsVersionForDashboardUIUpdates()
         observeAnnouncements()
         observeShowWebViewSheet()
@@ -147,24 +147,6 @@ final class DashboardViewController: UIViewController {
 
     override var shouldShowOfflineBanner: Bool {
         return true
-    }
-
-    func updateHeaderVisibility() {
-        headerIsHidden = navigationBarIsShort
-    }
-
-    var headerIsHidden: Bool = false {
-        didSet {
-            switch (oldValue, headerIsHidden) {
-            case (false, true):
-                hideHeaderWithAnimation()
-            case (true, false):
-                showHeaderWithAnimation()
-            default:
-                // Ignore calls if the value hasn't changed
-                break
-            }
-        }
     }
 
     func hideHeaderWithAnimation() {
@@ -625,29 +607,28 @@ private extension DashboardViewController {
             }.store(in: &subscriptions)
     }
 
-    func observeNavigationBarHeightForHeaderExtrasVisibility() {
+    func observeNavigationBarHeightForHeaderVisibility() {
         navigationController?.navigationBar.publisher(for: \.frame, options: [.initial, .new])
+            .map({ [collapsedNavigationBarHeight] rect in
+                rect.height <= collapsedNavigationBarHeight
+            }) // true if navigation bar is collapsed
             .removeDuplicates()
-            .sink(receiveValue: { [weak self] _ in
-                self?.updateHeaderVisibility()
+            .sink(receiveValue: { [weak self] navigationBarIsShort in
+                if navigationBarIsShort {
+                    self?.hideHeaderWithAnimation()
+                } else {
+                    self?.showHeaderWithAnimation()
+                }
             })
             .store(in: &subscriptions)
     }
 
-    /// Returns true if the navigation bar has a compact height as opposed to showing a large title
-    ///
-    var navigationBarIsShort: Bool {
-        guard let navigationBarHeight = navigationController?.navigationBar.frame.height else {
-            return false
-        }
-
-        let collapsedNavigationBarHeight: CGFloat
+    var collapsedNavigationBarHeight: CGFloat {
         if self.traitCollection.userInterfaceIdiom == .pad {
-            collapsedNavigationBarHeight = Constants.iPadCollapsedNavigationBarHeight
+            return Constants.iPadCollapsedNavigationBarHeight
         } else {
-            collapsedNavigationBarHeight = Constants.iPhoneCollapsedNavigationBarHeight
+            return Constants.iPhoneCollapsedNavigationBarHeight
         }
-        return navigationBarHeight <= collapsedNavigationBarHeight
     }
 }
 

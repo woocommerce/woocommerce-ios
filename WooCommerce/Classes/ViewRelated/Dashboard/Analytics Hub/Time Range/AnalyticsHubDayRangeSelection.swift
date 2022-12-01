@@ -7,7 +7,7 @@ final class AnalyticsHubDayRangeSelection: AnalyticsHubTimeRangeSelectionDelegat
     var previousRangeDescription: String?
 
     init(referenceDate: Date, currentCalendar: Calendar) {
-        let currentTimezone = TimeZone.autoupdatingCurrent
+        let currentTimezone = currentCalendar.timeZone
 
         let currentDayStart = referenceDate.startOfDay(timezone: currentTimezone)
         let currentTimeRange = AnalyticsHubTimeRange(start: currentDayStart, end: referenceDate)

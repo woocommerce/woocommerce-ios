@@ -7,7 +7,7 @@ final class AnalyticsHubWeekRangeSelection: AnalyticsHubTimeRangeSelectionDelega
     var previousRangeDescription: String?
 
     init(referenceDate: Date, currentCalendar: Calendar) {
-        let currentTimezone = TimeZone.autoupdatingCurrent
+        let currentTimezone = currentCalendar.timeZone
 
         if let currentWeekStart = referenceDate.startOfWeek(timezone: currentTimezone, calendar: currentCalendar) {
             let currentTimeRange = AnalyticsHubTimeRange(start: currentWeekStart, end: referenceDate)

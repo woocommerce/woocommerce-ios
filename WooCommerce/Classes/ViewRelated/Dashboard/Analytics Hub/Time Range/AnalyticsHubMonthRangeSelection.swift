@@ -7,7 +7,7 @@ final class AnalyticsHubMonthRangeSelection: AnalyticsHubTimeRangeSelectionDeleg
     var previousRangeDescription: String?
 
     init(referenceDate: Date, currentCalendar: Calendar) {
-        let currentTimezone = TimeZone.autoupdatingCurrent
+        let currentTimezone = currentCalendar.timeZone
 
         if let currentMonthStart = referenceDate.startOfMonth(timezone: currentTimezone) {
             let currentTimeRange = AnalyticsHubTimeRange(start: currentMonthStart, end: referenceDate)

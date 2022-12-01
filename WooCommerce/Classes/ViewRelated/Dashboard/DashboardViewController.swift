@@ -55,6 +55,10 @@ final class DashboardViewController: UIViewController {
         return view
     }()
 
+    /// Constraint to attach the content view's top to the bottom of the header
+    /// When we hide the header, we disable this constraint so the content view can grow to fill the screen
+    private var contentTopToHeaderConstraint: NSLayoutConstraint?
+
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
     private let hiddenScrollView = UIScrollView()
 
@@ -145,16 +149,42 @@ final class DashboardViewController: UIViewController {
         return true
     }
 
-    /// Hide the announcement card when the navigation bar is compact
-    ///
-    func updateAnnouncementCardVisibility() {
-        announcementView?.isHidden = navigationBarIsShort
+    func updateHeaderVisibility() {
+        headerIsHidden = navigationBarIsShort
     }
 
-    /// Hide the store name when the navigation bar is compact
-    ///
-    func updateStoreNameLabelVisibility() {
-        storeNameLabel.isHidden = !shouldShowStoreNameAsSubtitle || navigationBarIsShort
+    var headerIsHidden: Bool = false {
+        didSet {
+            switch (oldValue, headerIsHidden) {
+            case (false, true):
+                hideHeaderWithAnimation()
+            case (true, false):
+                showHeaderWithAnimation()
+            default:
+                // Ignore calls if the value hasn't changed
+                break
+            }
+        }
+    }
+
+    func hideHeaderWithAnimation() {
+        contentTopToHeaderConstraint?.isActive = false
+        UIView.animate(withDuration: Constants.animationDurationSeconds, animations: { [headerStackView] in
+            headerStackView.alpha = 0
+            self.view.layoutIfNeeded()
+        }, completion: { [headerStackView] _ in
+            headerStackView.isHidden = true
+        })
+
+    }
+
+    func showHeaderWithAnimation() {
+        headerStackView.isHidden = false
+        contentTopToHeaderConstraint?.isActive = true
+        UIView.animate(withDuration: Constants.animationDurationSeconds, animations: { [headerStackView] in
+            self.view.layoutIfNeeded()
+            headerStackView.alpha = 1
+        })
     }
 }
 
@@ -208,8 +238,19 @@ private extension DashboardViewController {
 
     func addViewBelowHeaderStackView(contentView: UIView) {
         contentView.translatesAutoresizingMaskIntoConstraints = false
+
+        // This constraint will pin the bottom of the header to the top of the content
+        // We want this to be active when the header is visible
+        contentTopToHeaderConstraint = contentView.topAnchor.constraint(equalTo: headerStackView.bottomAnchor)
+        contentTopToHeaderConstraint?.isActive = true
+
+        // This constraint has a lower priority and will pin the top of the content view to its superview
+        // This way, it has a defined height when contentTopToHeaderConstraint is disabled
+        let contentTopToContainerConstraint = contentView.topAnchor.constraint(equalTo: containerView.safeTopAnchor)
+        contentTopToContainerConstraint.priority = .defaultLow
+
         NSLayoutConstraint.activate([
-            contentView.topAnchor.constraint(equalTo: headerStackView.bottomAnchor),
+            contentTopToContainerConstraint,
             contentView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
         ])
@@ -377,8 +418,6 @@ private extension DashboardViewController {
         let indexAfterHeader = (headerStackView.arrangedSubviews.firstIndex(of: innerStackView) ?? -1) + 1
         headerStackView.insertArrangedSubview(uiView, at: indexAfterHeader)
 
-        updateAnnouncementCardVisibility()
-
         hostingController.didMove(toParent: self)
         hostingController.view.layoutIfNeeded()
     }
@@ -402,11 +441,12 @@ private extension DashboardViewController {
         guard siteName.isNotEmpty else {
             shouldShowStoreNameAsSubtitle = false
             storeNameLabel.text = nil
+            storeNameLabel.isHidden = true
             return
         }
         shouldShowStoreNameAsSubtitle = true
+        storeNameLabel.isHidden = false
         storeNameLabel.text = siteName
-        updateStoreNameLabelVisibility()
     }
 }
 
@@ -589,9 +629,7 @@ private extension DashboardViewController {
         navigationController?.navigationBar.publisher(for: \.frame, options: [.initial, .new])
             .removeDuplicates()
             .sink(receiveValue: { [weak self] _ in
-                guard let self else { return }
-                self.updateStoreNameLabelVisibility()
-                self.updateAnnouncementCardVisibility()
+                self?.updateHeaderVisibility()
             })
             .store(in: &subscriptions)
     }
@@ -623,6 +661,7 @@ private extension DashboardViewController {
     }
 
     enum Constants {
+        static let animationDurationSeconds = CGFloat(0.3)
         static let bannerBottomMargin = CGFloat(8)
         static let horizontalMargin = CGFloat(16)
         static let storeNameTextColor: UIColor = .secondaryLabel

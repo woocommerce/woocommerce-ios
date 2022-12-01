@@ -90,6 +90,20 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         XCTAssertEqual(previousRangeDescription, "Jan 1 - Jul 1, 2021")
     }
 
+    func test_when_time_range_inits_with_lastYear_then_generate_expected_descriptions() throws {
+        // Given
+        let currentDate = dateFrom("2022-07-01")
+        let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .lastYear, currentDate: currentDate)
+
+        // When
+        let currentRangeDescription = timeRange.generateCurrentRangeDescription()
+        let previousRangeDescription = timeRange.generatePreviousRangeDescription()
+
+        // Then
+        XCTAssertEqual(currentRangeDescription, "Jan 1 - Dec 31, 2021")
+        XCTAssertEqual(previousRangeDescription, "Jan 1 - Dec 31, 2020")
+    }
+
     func test_when_time_range_inits_with_monthToDate_then_generate_expected_descriptions() throws {
         // Given
         let currentDate = dateFrom("2022-07-31")
@@ -102,6 +116,20 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         // Then
         XCTAssertEqual(currentRangeDescription, "Jul 1 - 31, 2022")
         XCTAssertEqual(previousRangeDescription, "Jun 1 - 30, 2022")
+    }
+
+    func test_when_time_range_inits_with_lastMonth_then_generate_expected_descriptions() throws {
+        // Given
+        let currentDate = dateFrom("2022-07-31")
+        let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .lastMonth, currentDate: currentDate)
+
+        // When
+        let currentRangeDescription = timeRange.generateCurrentRangeDescription()
+        let previousRangeDescription = timeRange.generatePreviousRangeDescription()
+
+        // Then
+        XCTAssertEqual(currentRangeDescription, "Jun 1 - 30, 2022")
+        XCTAssertEqual(previousRangeDescription, "May 1 - 31, 2022")
     }
 
     func test_when_time_range_inits_with_weekToDate_then_generate_expected_descriptions() throws {
@@ -132,10 +160,52 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         XCTAssertEqual(previousRangeDescription, "Jun 20 - 25, 2022")
     }
 
+    func test_when_time_range_inits_with_lastWeek_then_generate_expected_descriptions() throws {
+        // Given
+        let currentDate = dateFrom("2022-07-29")
+        let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .lastWeek, currentDate: currentDate)
+
+        // When
+        let currentRangeDescription = timeRange.generateCurrentRangeDescription()
+        let previousRangeDescription = timeRange.generatePreviousRangeDescription()
+
+        // Then
+        XCTAssertEqual(currentRangeDescription, "Jul 18 - 24, 2022")
+        XCTAssertEqual(previousRangeDescription, "Jul 11 - 17, 2022")
+    }
+
+    func test_when_time_range_inits_with_lastWeek_with_different_months_then_generate_expected_descriptions() throws {
+        // Given
+        let currentDate = dateFrom("2022-07-05")
+        let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .lastWeek, currentDate: currentDate)
+
+        // When
+        let currentRangeDescription = timeRange.generateCurrentRangeDescription()
+        let previousRangeDescription = timeRange.generatePreviousRangeDescription()
+
+        // Then
+        XCTAssertEqual(currentRangeDescription, "Jun 27 - Jul 3, 2022")
+        XCTAssertEqual(previousRangeDescription, "Jun 20 - 26, 2022")
+    }
+
     func test_when_time_range_inits_with_today_then_generate_expected_descriptions() throws {
         // Given
         let currentDate = dateFrom("2022-07-01")
         let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .today, currentDate: currentDate)
+
+        // When
+        let currentRangeDescription = timeRange.generateCurrentRangeDescription()
+        let previousRangeDescription = timeRange.generatePreviousRangeDescription()
+
+        // Then
+        XCTAssertEqual(currentRangeDescription, "Jul 1, 2022")
+        XCTAssertEqual(previousRangeDescription, "Jun 30, 2022")
+    }
+
+    func test_when_time_range_inits_with_yesterday_then_generate_expected_descriptions() throws {
+        // Given
+        let currentDate = dateFrom("2022-07-02")
+        let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .yesterday, currentDate: currentDate)
 
         // When
         let currentRangeDescription = timeRange.generateCurrentRangeDescription()

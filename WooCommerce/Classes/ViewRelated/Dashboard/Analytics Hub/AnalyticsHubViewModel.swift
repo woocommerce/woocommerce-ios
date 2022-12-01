@@ -175,9 +175,16 @@ private extension AnalyticsHubViewModel {
         let itemsSold = StatsDataTextFormatter.createItemsSoldText(orderStats: currentPeriodStats)
         let itemsSoldDelta = StatsDataTextFormatter.createOrderItemsSoldDelta(from: previousPeriodStats, to: currentPeriodStats)
 
+        let imageURL = URL(string: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")
         return AnalyticsProductCardViewModel(itemsSold: itemsSold,
                                              delta: itemsSoldDelta.string,
                                              deltaBackgroundColor: Constants.deltaColor(for: itemsSoldDelta.direction),
+                                             itemsSoldData: [ // Temporary data
+                                                .init(imageURL: imageURL, name: "Tabletop Photos", details: "Net Sales: $1,232", value: "32"),
+                                                .init(imageURL: imageURL, name: "Kentya Palm", details: "Net Sales: $800", value: "10"),
+                                                .init(imageURL: imageURL, name: "Love Ficus", details: "Net Sales: $599", value: "5"),
+                                                .init(imageURL: imageURL, name: "Bird Of Paradise", details: "Net Sales: $23.50", value: "2")
+                                             ],
                                              isRedacted: false)
     }
 }

@@ -16,9 +16,8 @@ public class AnalyticsHubTimeRangeSelection {
          currentDate: Date = Date(),
          timezone: TimeZone = TimeZone.autoupdatingCurrent,
          calendar: Calendar = Calendar(identifier: .iso8601)) {
-        self.rangeSelectionDescription = selectionType.description
-
         var selectionData: AnalyticsHubTimeRangeData
+
         switch selectionType {
         case .today:
             selectionData = AnalyticsHubDayRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
@@ -36,9 +35,9 @@ public class AnalyticsHubTimeRangeSelection {
         self.previousTimeRange = previousTimeRange
 
         let simplifiedDescription = selectionType == .today
-        self.currentRangeDescription = currentTimeRange?.generateDescription(referenceCalendar: calendar, simplified: simplifiedDescription)
-        self.previousRangeDescription = previousTimeRange?.generateDescription(referenceCalendar: calendar, simplified: simplifiedDescription)
-
+        self.currentRangeDescription = currentTimeRange?.generateDescription(simplified: simplifiedDescription, calendar: calendar)
+        self.previousRangeDescription = previousTimeRange?.generateDescription(simplified: simplifiedDescription, calendar: calendar)
+        self.rangeSelectionDescription = selectionType.description
     }
 
     /// Unwrap the generated selected `AnalyticsHubTimeRange` based on the `selectedTimeRange`

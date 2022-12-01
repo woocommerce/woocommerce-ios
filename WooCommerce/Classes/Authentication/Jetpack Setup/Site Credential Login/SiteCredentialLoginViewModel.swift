@@ -67,20 +67,7 @@ private extension SiteCredentialLoginViewModel {
         isLoggingIn = true
 
         handleCookieAuthentication()
-
-        // Retrieves Jetpack plugin details to see if the authentication succeeds.
-        let jetpackAction = JetpackConnectionAction.retrieveJetpackPluginDetails { [weak self] result in
-            guard let self else { return }
-            self.isLoggingIn = false
-            switch result {
-            case .success:
-                // Success to get the details means the authentication succeeds.
-                self.handleCompletion()
-            case .failure(let error):
-                self.handleRemoteError(error)
-            }
-        }
-        stores.dispatch(jetpackAction)
+        retrieveJetpackPluginDetails()
     }
 
     func handleCookieAuthentication() {
@@ -100,6 +87,22 @@ private extension SiteCredentialLoginViewModel {
         let network = WordPressOrgNetwork(authenticator: authenticator)
         let authenticationAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
         stores.dispatch(authenticationAction)
+    }
+
+    func retrieveJetpackPluginDetails() {
+        // Retrieves Jetpack plugin details to see if the authentication succeeds.
+        let jetpackAction = JetpackConnectionAction.retrieveJetpackPluginDetails { [weak self] result in
+            guard let self else { return }
+            self.isLoggingIn = false
+            switch result {
+            case .success:
+                // Success to get the details means the authentication succeeds.
+                self.handleCompletion()
+            case .failure(let error):
+                self.handleRemoteError(error)
+            }
+        }
+        stores.dispatch(jetpackAction)
     }
 
     func handleRemoteError(_ error: Error) {

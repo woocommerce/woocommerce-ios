@@ -20,6 +20,10 @@ struct AnalyticsProductCardViewModel {
     /// Indicates if the values should be hidden (for loading state)
     ///
     let isRedacted: Bool
+
+    /// Indicates if there was an error loading the data for the card
+    ///
+    let showSyncError: Bool
 }
 
 extension AnalyticsProductCardViewModel {
@@ -31,7 +35,8 @@ extension AnalyticsProductCardViewModel {
         .init(itemsSold: "1000",
               delta: "+50%",
               deltaBackgroundColor: .lightGray,
-              isRedacted: true)
+              isRedacted: true,
+              showSyncError: false)
     }
 }
 
@@ -43,5 +48,6 @@ extension AnalyticsProductCard {
         self.delta = viewModel.delta
         self.deltaBackgroundColor = viewModel.deltaBackgroundColor
         self.isRedacted = viewModel.isRedacted
+        self.showSyncError = viewModel.showSyncError
     }
 }

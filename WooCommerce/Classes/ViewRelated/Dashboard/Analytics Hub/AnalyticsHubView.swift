@@ -41,13 +41,9 @@ struct AnalyticsHubView: View {
                 VStack(spacing: Layout.dividerSpacing) {
                     Divider()
 
-                    if let viewModel = viewModel.revenueCard {
-                        AnalyticsReportCard(viewModel: viewModel)
-                            .padding(.horizontal, insets: safeAreaInsets)
-                            .background(Color(uiColor: .listForeground))
-                    } else {
-                        emptyCard(message: Localization.noRevenue)
-                    }
+                    AnalyticsReportCard(viewModel: viewModel.revenueCard)
+                        .padding(.horizontal, insets: safeAreaInsets)
+                        .background(Color(uiColor: .listForeground))
 
                     Divider()
                 }
@@ -55,13 +51,9 @@ struct AnalyticsHubView: View {
                 VStack(spacing: Layout.dividerSpacing) {
                     Divider()
 
-                    if let viewModel = viewModel.ordersCard {
-                        AnalyticsReportCard(viewModel: viewModel)
-                            .padding(.horizontal, insets: safeAreaInsets)
-                            .background(Color(uiColor: .listForeground))
-                    } else {
-                        emptyCard(message: Localization.noOrders)
-                    }
+                    AnalyticsReportCard(viewModel: viewModel.ordersCard)
+                        .padding(.horizontal, insets: safeAreaInsets)
+                        .background(Color(uiColor: .listForeground))
 
                     Divider()
                 }
@@ -69,13 +61,9 @@ struct AnalyticsHubView: View {
                 VStack(spacing: Layout.dividerSpacing) {
                     Divider()
 
-                    if let viewModel = viewModel.productCard {
-                        AnalyticsProductCard(viewModel: viewModel)
-                            .padding(.horizontal, insets: safeAreaInsets)
-                            .background(Color(uiColor: .listForeground))
-                    } else {
-                        emptyCard(message: Localization.noProducts)
-                    }
+                    AnalyticsProductCard(viewModel: viewModel.productCard)
+                        .padding(.horizontal, insets: safeAreaInsets)
+                        .background(Color(uiColor: .listForeground))
 
                     Divider()
                 }
@@ -91,16 +79,6 @@ struct AnalyticsHubView: View {
             await viewModel.updateData()
         }
     }
-
-    @ViewBuilder
-    private func emptyCard(message: String) -> some View {
-        Text(message)
-            .frame(maxWidth: .infinity)
-            .foregroundColor(Color(.text))
-            .subheadlineStyle()
-            .padding()
-            .background(Color(uiColor: .listForeground))
-    }
 }
 
 /// Constants
@@ -108,12 +86,6 @@ struct AnalyticsHubView: View {
 private extension AnalyticsHubView {
     struct Localization {
         static let title = NSLocalizedString("Analytics", comment: "Title for the Analytics Hub screen.")
-        static let noRevenue = NSLocalizedString("Unable to load revenue analytics",
-                                                 comment: "Text displayed when there is an error loading revenue stats data.")
-        static let noOrders = NSLocalizedString("Unable to load order analytics",
-                                                comment: "Text displayed when there is an error loading order stats data.")
-        static let noProducts = NSLocalizedString("Unable to load product analytics",
-                                                  comment: "Text displayed when there is an error loading product stats data.")
     }
 
     struct Layout {

@@ -18,6 +18,9 @@ struct AnalyticsReportCard: View {
 
     let isRedacted: Bool
 
+    let showSyncError: Bool
+    let syncErrorMessage: String
+
     // Layout metrics that scale based on accessibility changes
     @ScaledMetric private var scaledChartWidth: CGFloat = Layout.chartWidth
     @ScaledMetric private var scaledChartHeight: CGFloat = Layout.chartHeight
@@ -79,6 +82,13 @@ struct AnalyticsReportCard: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
+
+            if showSyncError {
+               Text(syncErrorMessage)
+                   .foregroundColor(Color(.text))
+                   .subheadlineStyle()
+                   .frame(maxWidth: .infinity, alignment: .leading)
+           }
         }
         .padding(Layout.cardPadding)
     }
@@ -110,7 +120,26 @@ struct Previews: PreviewProvider {
                             trailingDelta: "-3%",
                             trailingDeltaColor: .withColorStudio(.red, shade: .shade40),
                             trailingChartData: [50.0, 15.0, 20.0, 2.0, 10.0, 0.0, 40.0, 15.0, 20.0, 2.0, 10.0, 0.0],
-                            isRedacted: false)
+                            isRedacted: false,
+                            showSyncError: false,
+                            syncErrorMessage: "")
             .previewLayout(.sizeThatFits)
+
+        AnalyticsReportCard(title: "REVENUE",
+                            leadingTitle: "Total Sales",
+                            leadingValue: "-",
+                            leadingDelta: "0%",
+                            leadingDeltaColor: .withColorStudio(.gray, shade: .shade0),
+                            leadingChartData: [],
+                            trailingTitle: "Net Sales",
+                            trailingValue: "-",
+                            trailingDelta: "0%",
+                            trailingDeltaColor: .withColorStudio(.gray, shade: .shade0),
+                            trailingChartData: [],
+                            isRedacted: false,
+                            showSyncError: true,
+                            syncErrorMessage: "Error loading revenue analytics")
+            .previewLayout(.sizeThatFits)
+            .previewDisplayName("No data")
     }
 }

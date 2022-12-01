@@ -24,16 +24,16 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         await vm.updateData()
 
         // Then
-        XCTAssertEqual(vm.revenueCard?.isRedacted, false)
-        XCTAssertEqual(vm.ordersCard?.isRedacted, false)
-        XCTAssertEqual(vm.productCard?.isRedacted, false)
+        XCTAssertFalse(vm.revenueCard.isRedacted)
+        XCTAssertFalse(vm.ordersCard.isRedacted)
+        XCTAssertFalse(vm.productCard.isRedacted)
 
-        XCTAssertEqual(vm.revenueCard?.leadingValue, "$62")
-        XCTAssertEqual(vm.ordersCard?.leadingValue, "15")
-        XCTAssertEqual(vm.productCard?.itemsSold, "5")
+        XCTAssertEqual(vm.revenueCard.leadingValue, "$62")
+        XCTAssertEqual(vm.ordersCard.leadingValue, "15")
+        XCTAssertEqual(vm.productCard.itemsSold, "5")
     }
 
-    func test_cards_viewmodels_nil_after_getting_error_from_network() async {
+    func test_cards_viewmodels_show_sync_error_after_getting_error_from_network() async {
         // Given
         let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, stores: stores)
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
@@ -46,9 +46,9 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         await vm.updateData()
 
         // Then
-        XCTAssertNil(vm.revenueCard)
-        XCTAssertNil(vm.ordersCard)
-        XCTAssertNil(vm.productCard)
+        XCTAssertTrue(vm.revenueCard.showSyncError)
+        XCTAssertTrue(vm.ordersCard.showSyncError)
+        XCTAssertTrue(vm.productCard.showSyncError)
     }
 
     func test_cards_viewmodels_redacted_while_updating_from_network() async {

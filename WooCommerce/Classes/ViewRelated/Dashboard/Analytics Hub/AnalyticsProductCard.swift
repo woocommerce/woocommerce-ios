@@ -18,6 +18,10 @@ struct AnalyticsProductCard: View {
     ///
     let isRedacted: Bool
 
+    /// Indicates if there was an error loading the data for the card
+    ///
+    let showSyncError: Bool
+
     var body: some View {
         VStack(alignment: .leading) {
 
@@ -41,6 +45,14 @@ struct AnalyticsProductCard: View {
                     .redacted(reason: isRedacted ? .placeholder : [])
                     .shimmering(active: isRedacted)
             }
+
+            if showSyncError {
+                Text(Localization.noProducts)
+                    .foregroundColor(Color(.text))
+                    .subheadlineStyle()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.top, Layout.columnSpacing)
+            }
         }
         .padding(Layout.cardPadding)
     }
@@ -51,6 +63,8 @@ private extension AnalyticsProductCard {
     enum Localization {
         static let title = NSLocalizedString("Products", comment: "Title for the products card on the analytics hub screen.").localizedUppercase
         static let itemsSold = NSLocalizedString("Items Sold", comment: "Title for the items sold column on the products card on the analytics hub screen.")
+        static let noProducts = NSLocalizedString("Unable to load product analytics",
+                                                  comment: "Text displayed when there is an error loading product stats data.")
     }
 
     enum Layout {
@@ -67,7 +81,16 @@ struct AnalyticsProductCardPreviews: PreviewProvider {
         AnalyticsProductCard(itemsSold: "2,234",
                              delta: "+23%",
                              deltaBackgroundColor: .withColorStudio(.green, shade: .shade50),
-                             isRedacted: false)
+                             isRedacted: false,
+                             showSyncError: false)
             .previewLayout(.sizeThatFits)
+
+        AnalyticsProductCard(itemsSold: "-",
+                             delta: "0%",
+                             deltaBackgroundColor: .withColorStudio(.gray, shade: .shade0),
+                             isRedacted: false,
+                             showSyncError: true)
+            .previewLayout(.sizeThatFits)
+            .previewDisplayName("No data")
     }
 }

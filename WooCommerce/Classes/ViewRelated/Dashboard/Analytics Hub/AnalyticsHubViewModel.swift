@@ -28,17 +28,11 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Revenue Card ViewModel
     ///
-    /// Setting an `AnalyticsHubViewModel` with `nil` order data displays the revenue card with placeholders.
-    /// Setting the view model to `nil` displays an error message instead of the revenue card.
-    ///
-    @Published var revenueCard: AnalyticsReportCardViewModel? = AnalyticsHubViewModel.revenueCard(currentPeriodStats: nil, previousPeriodStats: nil)
+    @Published var revenueCard = AnalyticsHubViewModel.revenueCard(currentPeriodStats: nil, previousPeriodStats: nil)
 
     /// Orders Card ViewModel
     ///
-    /// Setting an `AnalyticsHubViewModel` with `nil` order data displays the order card with placeholders.
-    /// Setting the view model to `nil` displays an error message instead of the order card.
-    ///
-    @Published var ordersCard: AnalyticsReportCardViewModel? = AnalyticsHubViewModel.ordersCard(currentPeriodStats: nil, previousPeriodStats: nil)
+    @Published var ordersCard = AnalyticsHubViewModel.ordersCard(currentPeriodStats: nil, previousPeriodStats: nil)
 
     /// Time Range ViewModel
     ///
@@ -46,10 +40,7 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Products Card ViewModel
     ///
-    /// Setting an `AnalyticsProductCardViewModel` with `nil` order data displays the product card with placeholders.
-    /// Setting the view model to `nil` displays an error message instead of the product card.
-    ///
-    @Published var productCard: AnalyticsProductCardViewModel? = AnalyticsHubViewModel.productCard(currentPeriodStats: nil, previousPeriodStats: nil)
+    @Published var productCard = AnalyticsHubViewModel.productCard(currentPeriodStats: nil, previousPeriodStats: nil)
 
     // MARK: Private data
 
@@ -120,15 +111,14 @@ private extension AnalyticsHubViewModel {
 private extension AnalyticsHubViewModel {
 
     func switchToLoadingState() {
-        self.revenueCard = revenueCard?.redacted
-        self.ordersCard = ordersCard?.redacted
-        self.productCard = productCard?.redacted
+        self.revenueCard = revenueCard.redacted
+        self.ordersCard = ordersCard.redacted
+        self.productCard = productCard.redacted
     }
 
     func switchToErrorState() {
-        self.revenueCard = nil
-        self.ordersCard = nil
-        self.productCard = nil
+        self.currentOrderStats = nil
+        self.previousOrderStats = nil
     }
 
     func bindViewModelsWithData() {
@@ -144,6 +134,7 @@ private extension AnalyticsHubViewModel {
     }
 
     static func revenueCard(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) -> AnalyticsReportCardViewModel {
+        let showSyncError = currentPeriodStats == nil || previousPeriodStats == nil
         let totalDelta = StatsDataTextFormatter.createTotalRevenueDelta(from: previousPeriodStats, to: currentPeriodStats)
         let netDelta = StatsDataTextFormatter.createNetRevenueDelta(from: previousPeriodStats, to: currentPeriodStats)
 
@@ -159,10 +150,13 @@ private extension AnalyticsHubViewModel {
                                             trailingDelta: netDelta.string,
                                             trailingDeltaColor: Constants.deltaColor(for: netDelta.direction),
                                             trailingChartData: StatsIntervalDataParser.getChartData(for: .netRevenue, from: currentPeriodStats),
-                                            isRedacted: false)
+                                            isRedacted: false,
+                                            showSyncError: showSyncError,
+                                            syncErrorMessage: Localization.RevenueCard.noRevenue)
     }
 
     static func ordersCard(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) -> AnalyticsReportCardViewModel {
+        let showSyncError = currentPeriodStats == nil || previousPeriodStats == nil
         let ordersCountDelta = StatsDataTextFormatter.createOrderCountDelta(from: previousPeriodStats, to: currentPeriodStats)
         let orderValueDelta = StatsDataTextFormatter.createAverageOrderValueDelta(from: previousPeriodStats, to: currentPeriodStats)
 
@@ -178,17 +172,21 @@ private extension AnalyticsHubViewModel {
                                             trailingDelta: orderValueDelta.string,
                                             trailingDeltaColor: Constants.deltaColor(for: orderValueDelta.direction),
                                             trailingChartData: StatsIntervalDataParser.getChartData(for: .averageOrderValue, from: currentPeriodStats),
-                                            isRedacted: false)
+                                            isRedacted: false,
+                                            showSyncError: showSyncError,
+                                            syncErrorMessage: Localization.OrderCard.noOrders)
     }
 
     static func productCard(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) -> AnalyticsProductCardViewModel {
+        let showSyncError = currentPeriodStats == nil || previousPeriodStats == nil
         let itemsSold = StatsDataTextFormatter.createItemsSoldText(orderStats: currentPeriodStats)
         let itemsSoldDelta = StatsDataTextFormatter.createOrderItemsSoldDelta(from: previousPeriodStats, to: currentPeriodStats)
 
         return AnalyticsProductCardViewModel(itemsSold: itemsSold,
                                              delta: itemsSoldDelta.string,
                                              deltaBackgroundColor: Constants.deltaColor(for: itemsSoldDelta.direction),
-                                             isRedacted: false)
+                                             isRedacted: false,
+                                             showSyncError: showSyncError)
     }
 }
 
@@ -210,12 +208,16 @@ private extension AnalyticsHubViewModel {
             static let title = NSLocalizedString("REVENUE", comment: "Title for revenue analytics section in the Analytics Hub")
             static let leadingTitle = NSLocalizedString("Total Sales", comment: "Label for total sales (gross revenue) in the Analytics Hub")
             static let trailingTitle = NSLocalizedString("Net Sales", comment: "Label for net sales (net revenue) in the Analytics Hub")
+            static let noRevenue = NSLocalizedString("Unable to load revenue analytics",
+                                                     comment: "Text displayed when there is an error loading revenue stats data.")
         }
 
         enum OrderCard {
             static let title = NSLocalizedString("ORDERS", comment: "Title for order analytics section in the Analytics Hub")
             static let leadingTitle = NSLocalizedString("Total Orders", comment: "Label for total number of orders in the Analytics Hub")
             static let trailingTitle = NSLocalizedString("Average Order Value", comment: "Label for average value of orders in the Analytics Hub")
+            static let noOrders = NSLocalizedString("Unable to load order analytics",
+                                                    comment: "Text displayed when there is an error loading order stats data.")
         }
     }
 }

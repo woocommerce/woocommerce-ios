@@ -866,7 +866,7 @@ private extension StorePickerViewController {
             static let help = NSLocalizedString("Help",
                                                 comment: "Button to get help from the store picker")
             static let closeAccount = NSLocalizedString(
-                "Close Account",
+                "Close account",
                 comment: "Button to close the WordPress.com account on the store picker."
             )
         }

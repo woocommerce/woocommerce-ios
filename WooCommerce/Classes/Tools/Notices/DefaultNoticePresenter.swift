@@ -218,6 +218,8 @@ private extension DefaultNoticePresenter {
                         return
                     }
 
+                    // If the tab bar hides we also hide the notice, as trying to rearrange the notice accordingly might bring unexpected results
+                    // due to the internal logic of UITabBarController e.g they remove/recreate the tab bar when navigation happens
                     container.isHidden = true
                 }
             }

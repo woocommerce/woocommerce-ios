@@ -78,7 +78,6 @@ final class CardPresentPaymentPreflightController {
         self.builtInConnectionController = BuiltInCardReaderConnectionController(
             forSiteID: siteID,
             discoveryMethod: .localMobile,
-            knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
             alertsPresenter: alertsPresenter,
             configuration: configuration,
             analyticsTracker: analyticsTracker)

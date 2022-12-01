@@ -13,9 +13,9 @@ struct StoreCreationPlanFeaturesView: View {
             ForEach(features, id: \.title) { feature in
                 HStack(spacing: 12) {
                     Image(uiImage: feature.icon)
+                        .resizable()
                         .renderingMode(.template)
                         .foregroundColor(Color(.wooCommercePurple(.shade90)))
-                        .scaledToFit()
                         .frame(width: 18 * scale, height: 18 * scale)
                     Text(feature.title)
                         .foregroundColor(Color(.label))

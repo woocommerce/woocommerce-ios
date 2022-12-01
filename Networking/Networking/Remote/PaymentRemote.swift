@@ -55,6 +55,12 @@ public struct WPComPlan: Decodable, Equatable {
     public let name: String
     public let formattedPrice: String
 
+    public init(productID: Int64, name: String, formattedPrice: String) {
+        self.productID = productID
+        self.name = name
+        self.formattedPrice = formattedPrice
+    }
+
     private enum CodingKeys: String, CodingKey {
         case productID = "product_id"
         case name = "product_name"

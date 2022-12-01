@@ -26,6 +26,38 @@ final class StatsDataTextFormatterTests: XCTestCase {
         XCTAssertEqual(totalRevenue, "$62")
     }
 
+    func test_createTotalRevenueText_does_not_return_decimal_points_for_rounded_integer_value() {
+        // Given
+        let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(grossRevenue: 62.0000000000002))
+
+        // When
+        let totalRevenue = StatsDataTextFormatter.createTotalRevenueText(orderStats: orderStats,
+                                                                    selectedIntervalIndex: nil,
+                                                                    currencyFormatter: currencyFormatter,
+                                                                    currencyCode: currencyCode.rawValue)
+
+        // Then
+        XCTAssertEqual(totalRevenue, "$62")
+    }
+
+    func test_createTotalRevenueText_returns_expected_number_of_fractional_digits() {
+        // Given
+        let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(grossRevenue: 62.0023))
+        let customCurrencySettings = CurrencySettings()
+        customCurrencySettings.fractionDigits = 3
+        let currencyFormatter = CurrencyFormatter(currencySettings: customCurrencySettings)
+
+        // When
+        let totalRevenue = StatsDataTextFormatter.createTotalRevenueText(orderStats: orderStats,
+                                                                         selectedIntervalIndex: nil,
+                                                                         currencyFormatter: currencyFormatter,
+                                                                         currencyCode: currencyCode.rawValue,
+                                                                         numberOfFractionDigits: 3)
+
+        // Then
+        XCTAssertEqual(totalRevenue, "$62.002")
+    }
+
     func test_createTotalRevenueText_returns_decimal_points_from_currency_settings_for_noninteger_value() {
         // Given
         let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(grossRevenue: 62.856))
@@ -86,6 +118,36 @@ final class StatsDataTextFormatterTests: XCTestCase {
 
         // Then
         XCTAssertEqual(netRevenue, "$62")
+    }
+
+    func test_createNetRevenueText_does_not_return_decimal_points_for_rounded_integer_value() {
+        // Given
+        let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(netRevenue: 62.0000000000002))
+
+        // When
+        let netRevenue = StatsDataTextFormatter.createNetRevenueText(orderStats: orderStats,
+                                                                     currencyFormatter: currencyFormatter,
+                                                                     currencyCode: currencyCode.rawValue)
+
+        // Then
+        XCTAssertEqual(netRevenue, "$62")
+    }
+
+    func test_createNetRevenueText_returns_expected_number_of_fractional_digits() {
+        // Given
+        let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(netRevenue: 62.0023))
+        let customCurrencySettings = CurrencySettings()
+        customCurrencySettings.fractionDigits = 3
+        let currencyFormatter = CurrencyFormatter(currencySettings: customCurrencySettings)
+
+        // When
+        let netRevenue = StatsDataTextFormatter.createNetRevenueText(orderStats: orderStats,
+                                                                     currencyFormatter: currencyFormatter,
+                                                                     currencyCode: currencyCode.rawValue,
+                                                                     numberOfFractionDigits: 3)
+
+        // Then
+        XCTAssertEqual(netRevenue, "$62.002")
     }
 
     func test_createNetRevenueText_returns_decimal_points_from_currency_settings_for_noninteger_value() {
@@ -170,6 +232,36 @@ final class StatsDataTextFormatterTests: XCTestCase {
 
         // Then
         XCTAssertEqual(averageOrderValue, "$62")
+    }
+
+    func test_createAverageOrderValueText_does_not_return_decimal_points_for_rounded_integer_value() {
+        // Given
+        let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(averageOrderValue: 62.0000000000002))
+
+        // When
+        let averageOrderValue = StatsDataTextFormatter.createAverageOrderValueText(orderStats: orderStats,
+                                                                              currencyFormatter: currencyFormatter,
+                                                                              currencyCode: currencyCode.rawValue)
+
+        // Then
+        XCTAssertEqual(averageOrderValue, "$62")
+    }
+
+    func test_createAverageOrderValueText_returns_expected_number_of_fractional_digits() {
+        // Given
+        let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(averageOrderValue: 62.0023))
+        let customCurrencySettings = CurrencySettings()
+        customCurrencySettings.fractionDigits = 3
+        let currencyFormatter = CurrencyFormatter(currencySettings: customCurrencySettings)
+
+        // When
+        let averageOrderValue = StatsDataTextFormatter.createAverageOrderValueText(orderStats: orderStats,
+                                                                                   currencyFormatter: currencyFormatter,
+                                                                                   currencyCode: currencyCode.rawValue,
+                                                                                   numberOfFractionDigits: 3)
+
+        // Then
+        XCTAssertEqual(averageOrderValue, "$62.002")
     }
 
     func test_createAverageOrderValueText_returns_decimal_points_from_currency_settings_for_noninteger_value() {
@@ -382,6 +474,54 @@ final class StatsDataTextFormatterTests: XCTestCase {
 
         // Then
         XCTAssertEqual(delta.string, "-100%")
+        XCTAssertEqual(delta.direction, .negative)
+    }
+
+    func test_createItemsSoldText_returns_placeholder_on_nil_stats() {
+        let text = StatsDataTextFormatter.createItemsSoldText(orderStats: nil)
+        XCTAssertEqual(text, "-")
+    }
+
+    func test_createItemsSoldText_returns_formatted_value() {
+        // Given
+        let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(totalItemsSold: 67890))
+
+        // When
+        let text = StatsDataTextFormatter.createItemsSoldText(orderStats: orderStats)
+
+        // Then
+        XCTAssertEqual(text, "67.9k")
+    }
+
+    func test_createOrderItemsSoldDelta_returns_zero_on_nil_stats() {
+        let delta = StatsDataTextFormatter.createOrderItemsSoldDelta(from: nil, to: nil)
+        XCTAssertEqual(delta.string, "+0%")
+        XCTAssertEqual(delta.direction, .zero)
+    }
+
+    func test_createOrderItemsSoldDelta_returns_correct_positive_value() {
+        // Given
+        let previousStats = OrderStatsV4.fake().copy(totals: .fake().copy(totalItemsSold: 100))
+        let currentStats = OrderStatsV4.fake().copy(totals: .fake().copy(totalItemsSold: 133))
+
+        // When
+        let delta = StatsDataTextFormatter.createOrderItemsSoldDelta(from: previousStats, to: currentStats)
+
+        // Then
+        XCTAssertEqual(delta.string, "+33%")
+        XCTAssertEqual(delta.direction, .positive)
+    }
+
+    func test_createOrderItemsSoldDelta_returns_correct_negative_value() {
+        // Given
+        let previousStats = OrderStatsV4.fake().copy(totals: .fake().copy(totalItemsSold: 100))
+        let currentStats = OrderStatsV4.fake().copy(totals: .fake().copy(totalItemsSold: 77))
+
+        // When
+        let delta = StatsDataTextFormatter.createOrderItemsSoldDelta(from: previousStats, to: currentStats)
+
+        // Then
+        XCTAssertEqual(delta.string, "-23%")
         XCTAssertEqual(delta.direction, .negative)
     }
 }

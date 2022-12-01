@@ -25,7 +25,11 @@ struct AnalyticsReportCardViewModel {
     ///
     let leadingDeltaColor: UIColor
 
-    /// Second Column Titlke
+    /// First Column Chart Data
+    ///
+    let leadingChartData: [Double]
+
+    /// Second Column Title
     ///
     let trailingTitle: String
 
@@ -40,6 +44,35 @@ struct AnalyticsReportCardViewModel {
     /// Second Column Delta Background Color
     ///
     let trailingDeltaColor: UIColor
+
+    /// Second Column Chart Data
+    ///
+    let trailingChartData: [Double]
+
+    /// Indicates if the values should be hidden (for loading state)
+    ///
+    let isRedacted: Bool
+}
+
+extension AnalyticsReportCardViewModel {
+
+    /// Make redacted state of the card, replacing values with hardcoded placeholders
+    ///
+    var redacted: Self {
+        // Values here are placeholders and will be redacted in the UI
+        .init(title: title,
+              leadingTitle: leadingTitle,
+              leadingValue: "$1000",
+              leadingDelta: "+50%",
+              leadingDeltaColor: .lightGray,
+              leadingChartData: [],
+              trailingTitle: trailingTitle,
+              trailingValue: "$1000",
+              trailingDelta: "+50%",
+              trailingDeltaColor: .lightGray,
+              trailingChartData: [],
+              isRedacted: true)
+    }
 }
 
 /// Convenience extension to create an `AnalyticsReportCard` from a view model.
@@ -51,9 +84,12 @@ extension AnalyticsReportCard {
         self.leadingValue = viewModel.leadingValue
         self.leadingDelta = viewModel.leadingDelta
         self.leadingDeltaColor = viewModel.leadingDeltaColor
+        self.leadingChartData = viewModel.leadingChartData
         self.trailingTitle = viewModel.trailingTitle
         self.trailingValue = viewModel.trailingValue
         self.trailingDelta = viewModel.trailingDelta
         self.trailingDeltaColor = viewModel.trailingDeltaColor
+        self.trailingChartData = viewModel.trailingChartData
+        self.isRedacted = viewModel.isRedacted
     }
 }

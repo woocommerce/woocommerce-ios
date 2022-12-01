@@ -2,6 +2,7 @@ import XCTest
 @testable import WooCommerce
 import WordPressAuthenticator
 import Yosemite
+import enum Alamofire.AFError
 
 final class SiteCredentialLoginViewModelTests: XCTestCase {
 
@@ -37,17 +38,22 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
 
     func test_isLoggingIn_is_updated_appropriately_when_login_fails() {
         // Given
-        let viewModel = SiteCredentialLoginViewModel(siteURL: "https://test.com")
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = SiteCredentialLoginViewModel(siteURL: "https://test.com", stores: stores)
         XCTAssertFalse(viewModel.isLoggingIn)
+
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .retrieveJetpackPluginDetails(let completion):
+                let error = NSError(domain: "Test", code: 1)
+                completion(.failure(error))
+            default:
+                break
+            }
+        }
 
         // When
         viewModel.handleLogin()
-
-        // Then
-        XCTAssertTrue(viewModel.isLoggingIn)
-
-        // When
-        viewModel.displayRemoteError(NSError(domain: "Test", code: 1))
 
         // Then
         XCTAssertFalse(viewModel.isLoggingIn)
@@ -55,17 +61,20 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
 
     func test_isLoggingIn_is_updated_appropriately_when_login_succeeds() {
         // Given
-        let viewModel = SiteCredentialLoginViewModel(siteURL: "https://test.com")
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = SiteCredentialLoginViewModel(siteURL: "https://test.com", stores: stores)
         XCTAssertFalse(viewModel.isLoggingIn)
 
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .retrieveJetpackPluginDetails(let completion):
+                completion(.success(SitePlugin.fake()))
+            default:
+                break
+            }
+        }
         // When
         viewModel.handleLogin()
-
-        // Then
-        XCTAssertTrue(viewModel.isLoggingIn)
-
-        // When
-        viewModel.finishedLogin(withUsername: "test", password: "secret", xmlrpc: "abcxyz")
 
         // Then
         XCTAssertFalse(viewModel.isLoggingIn)
@@ -73,11 +82,22 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
 
     func test_shouldShowErrorAlert_is_true_when_login_fails() {
         // Given
-        let viewModel = SiteCredentialLoginViewModel(siteURL: "https://test.com")
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = SiteCredentialLoginViewModel(siteURL: "https://test.com", stores: stores)
         XCTAssertFalse(viewModel.shouldShowErrorAlert)
 
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .retrieveJetpackPluginDetails(let completion):
+                let error = NSError(domain: "Test", code: 1)
+                completion(.failure(error))
+            default:
+                break
+            }
+        }
+
         // When
-        viewModel.displayRemoteError(NSError(domain: "Test", code: 1))
+        viewModel.handleLogin()
 
         // Then
         XCTAssertTrue(viewModel.shouldShowErrorAlert)
@@ -86,45 +106,115 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
 
     func test_errorMessage_is_correct_when_login_fails_with_incorrect_credentials() {
         // Given
-        let viewModel = SiteCredentialLoginViewModel(siteURL: "https://test.com")
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = SiteCredentialLoginViewModel(siteURL: "https://test.com", stores: stores)
         XCTAssertFalse(viewModel.shouldShowErrorAlert)
 
-        // When
-        viewModel.displayRemoteError(NSError(domain: "WPXMLRPCFaultError", code: 403))
-
-        // Then
-        XCTAssertTrue(viewModel.shouldShowErrorAlert)
-        XCTAssertEqual(viewModel.errorMessage, SiteCredentialLoginViewModel.Localization.wrongCredentials)
-    }
-
-    func test_finishedLogin_triggers_authentication_in_JetpackConnectionAction_and_successHandler() {
-        // Given
-        var successHandlerTriggered = false
-        var returnedXMLRPC: String?
-        var triggeredAuthentication = false
-        let siteURL = "https://test.com"
-        let xmlrpcURL = "https://test.com/xmlrpc.php"
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, stores: stores) { xmlrpc in
-            successHandlerTriggered = true
-            returnedXMLRPC = xmlrpc
-        }
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
-            case .authenticate:
-                triggeredAuthentication = true
+            case .retrieveJetpackPluginDetails(let completion):
+                let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 401))
+                completion(.failure(error))
             default:
                 break
             }
         }
 
         // When
-        viewModel.finishedLogin(withUsername: "test", password: "secret", xmlrpc: xmlrpcURL)
+        viewModel.handleLogin()
 
         // Then
+        XCTAssertTrue(viewModel.shouldShowErrorAlert)
+        XCTAssertEqual(viewModel.errorMessage, SiteCredentialLoginViewModel.Localization.wrongCredentials)
+    }
+
+    func test_authentication_and_successHandler_are_triggered_when_fetching_plugin_succeeds() {
+        // Given
+        var successHandlerTriggered = false
+        var triggeredAuthentication = false
+        let siteURL = "https://test.com"
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, stores: stores) {
+            successHandlerTriggered = true
+        }
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .authenticate:
+                triggeredAuthentication = true
+            case .retrieveJetpackPluginDetails(let completion):
+                completion(.success(SitePlugin.fake()))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.handleLogin()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowErrorAlert)
         XCTAssertTrue(triggeredAuthentication)
         XCTAssertTrue(successHandlerTriggered)
-        XCTAssertEqual(returnedXMLRPC, xmlrpcURL)
+    }
+
+    func test_authentication_and_successHandler_are_triggered_when_fetching_plugin_fails_with_404() {
+        // Given
+        var successHandlerTriggered = false
+        var triggeredAuthentication = false
+        let siteURL = "https://test.com"
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, stores: stores) {
+            successHandlerTriggered = true
+        }
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .authenticate:
+                triggeredAuthentication = true
+            case .retrieveJetpackPluginDetails(let completion):
+                let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404))
+                completion(.failure(error))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.handleLogin()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowErrorAlert)
+        XCTAssertTrue(triggeredAuthentication)
+        XCTAssertTrue(successHandlerTriggered)
+    }
+
+    func test_authentication_and_successHandler_are_triggered_when_fetching_plugin_fails_with_403() {
+        // Given
+        var successHandlerTriggered = false
+        var triggeredAuthentication = false
+        let siteURL = "https://test.com"
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, stores: stores) {
+            successHandlerTriggered = true
+        }
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .authenticate:
+                triggeredAuthentication = true
+            case .retrieveJetpackPluginDetails(let completion):
+                let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403))
+                completion(.failure(error))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.handleLogin()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowErrorAlert)
+        XCTAssertTrue(triggeredAuthentication)
+        XCTAssertTrue(successHandlerTriggered)
     }
 
     // MARK: - Analytics
@@ -158,13 +248,23 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
 
     func test_it_tracks_login_jetpack_site_credential_did_show_error_alert_when_displaying_remote_error() {
         // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         let siteURL = "https://test.com"
-        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, analytics: analytics)
+        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, stores: stores, analytics: analytics)
+
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .retrieveJetpackPluginDetails(let completion):
+                completion(.failure(MockError()))
+            default:
+                break
+            }
+        }
 
         // When
-        viewModel.displayRemoteError(MockError())
+        viewModel.handleLogin()
 
         // Then
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_site_credential_did_show_error_alert" }))
@@ -172,13 +272,23 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
 
     func test_it_tracks_login_jetpack_site_credential_did_finish_login_when_login_finishes() {
         // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         let siteURL = "https://test.com"
-        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, analytics: analytics)
+        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, stores: stores, analytics: analytics)
+
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .retrieveJetpackPluginDetails(let completion):
+                completion(.success(SitePlugin.fake()))
+            default:
+                break
+            }
+        }
 
         // When
-        viewModel.finishedLogin(withUsername: "", password: "", xmlrpc: "")
+        viewModel.handleLogin()
 
         // Then
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_site_credential_did_finish_login" }))

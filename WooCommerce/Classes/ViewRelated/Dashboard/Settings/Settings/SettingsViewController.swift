@@ -29,10 +29,10 @@ final class SettingsViewController: UIViewController {
     ///
     private var storePickerCoordinator: StorePickerCoordinator?
 
-    private lazy var removeAppleIDAccessCoordinator: RemoveAppleIDAccessCoordinator =
-    RemoveAppleIDAccessCoordinator(sourceViewController: self) { [weak self] in
-        guard let self = self else { throw RemoveAppleIDAccessError.presenterDeallocated }
-        try await self.removeAppleIDAccess()
+    private lazy var closeAccountCoordinator: CloseAccountCoordinator =
+    CloseAccountCoordinator(sourceViewController: self) { [weak self] in
+        guard let self = self else { throw CloseAccountError.presenterDeallocated }
+        try await self.closeAccount()
     } onRemoveSuccess: { [weak self] in
         self?.logOutUser()
     }
@@ -154,8 +154,8 @@ private extension SettingsViewController {
             configureAppSettings(cell: cell)
         case let cell as BasicTableViewCell where row == .wormholy:
             configureWormholy(cell: cell)
-        case let cell as BasicTableViewCell where row == .removeAppleIDAccess:
-            configureRemoveAppleIDAccess(cell: cell)
+        case let cell as BasicTableViewCell where row == .closeAccount:
+            configureCloseAccount(cell: cell)
         case let cell as BasicTableViewCell where row == .logout:
             configureLogout(cell: cell)
         default:
@@ -249,7 +249,7 @@ private extension SettingsViewController {
         cell.textLabel?.text = Localization.whatsNew
     }
 
-    func configureRemoveAppleIDAccess(cell: BasicTableViewCell) {
+    func configureCloseAccount(cell: BasicTableViewCell) {
         cell.selectionStyle = .default
         cell.textLabel?.textAlignment = .center
         cell.textLabel?.textColor = .error
@@ -279,12 +279,12 @@ private extension SettingsViewController {
 // MARK: - Actions
 //
 private extension SettingsViewController {
-    func removeAppleIDAccessWasPressed() {
+    func closeAccountWasPressed() {
         ServiceLocator.analytics.track(event: .closeAccountTapped(source: .settings))
-        removeAppleIDAccessCoordinator.start()
+        closeAccountCoordinator.start()
     }
 
-    func removeAppleIDAccess() async throws {
+    func closeAccount() async throws {
         try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self = self else { return }
             let action = AccountAction.closeAccount { result in
@@ -542,8 +542,8 @@ extension SettingsViewController: UITableViewDelegate {
             wormholyWasPressed()
         case .whatsNew:
             whatsNewWasPressed()
-        case .removeAppleIDAccess:
-            removeAppleIDAccessWasPressed()
+        case .closeAccount:
+            closeAccountWasPressed()
         case .logout:
             logoutWasPressed()
         default:
@@ -621,7 +621,7 @@ extension SettingsViewController {
         case wormholy
 
         // Account deletion
-        case removeAppleIDAccess
+        case closeAccount
 
         // Logout
         case logout
@@ -651,7 +651,7 @@ extension SettingsViewController {
                 return HostingTableViewCell<FeatureAnnouncementCardView>.self
             case .installJetpack:
                 return BasicTableViewCell.self
-            case .logout, .removeAppleIDAccess:
+            case .logout, .closeAccount:
                 return BasicTableViewCell.self
             case .privacy:
                 return BasicTableViewCell.self

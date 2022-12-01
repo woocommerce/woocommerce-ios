@@ -155,10 +155,10 @@ final class StorePickerViewController: UIViewController {
         }
     }
 
-    private lazy var removeAppleIDAccessCoordinator: RemoveAppleIDAccessCoordinator =
-    RemoveAppleIDAccessCoordinator(sourceViewController: self) { [weak self] in
-        guard let self = self else { throw RemoveAppleIDAccessError.presenterDeallocated }
-        return try await self.removeAppleIDAccess()
+    private lazy var closeAccountCoordinator: CloseAccountCoordinator =
+    CloseAccountCoordinator(sourceViewController: self) { [weak self] in
+        guard let self = self else { throw CloseAccountError.presenterDeallocated }
+        return try await self.closeAccount()
     } onRemoveSuccess: { [weak self] in
         self?.restartAuthentication()
     }
@@ -252,15 +252,20 @@ private extension StorePickerViewController {
             return
         }
 
-        accountHeaderView.username = "@" + defaultAccount.username
-        accountHeaderView.fullname = defaultAccount.displayName
+        accountHeaderView.email = defaultAccount.email
         accountHeaderView.downloadGravatar(with: defaultAccount.email)
-        accountHeaderView.isHelpButtonEnabled = configuration == .login || configuration == .standard
-        accountHeaderView.onHelpRequested = { [weak self] in
-            guard let self = self else {
-                return
+        let showsActionButton: Bool = {
+            switch configuration {
+            case .login, .standard, .storeCreationFromLogin:
+                return true
+            case .switchingStores, .listStores:
+                return false
             }
-            self.presentHelp()
+        }()
+        accountHeaderView.isActionButtonEnabled = showsActionButton
+        accountHeaderView.onActionButtonTapped = { [weak self] sourceView in
+            guard let self else { return }
+            self.presentActionMenu(from: sourceView)
         }
     }
 
@@ -308,6 +313,31 @@ private extension StorePickerViewController {
 
     func backgroundColor() -> UIColor {
         return WordPressAuthenticator.shared.unifiedStyle?.viewControllerBackgroundColor ?? .listBackground
+    }
+
+    func presentActionMenu(from sourceView: UIView) {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = .text
+        let logOutAction = UIAlertAction(title: Localization.ActionMenu.logOut, style: .default) { [weak self] _ in
+            self?.restartAuthentication()
+        }
+        let helpAction = UIAlertAction(title: Localization.ActionMenu.help, style: .default) { [weak self] _ in
+            guard let self else { return }
+            ServiceLocator.analytics.track(.sitePickerHelpButtonTapped)
+            self.presentHelp()
+        }
+        let cancelAction = UIAlertAction(title: Localization.cancel, style: .cancel)
+
+        actionSheet.addAction(logOutAction)
+        actionSheet.addAction(helpAction)
+        actionSheet.addAction(cancelAction)
+
+        if let popoverController = actionSheet.popoverPresentationController {
+            popoverController.sourceView = sourceView
+            popoverController.sourceRect = sourceView.bounds
+        }
+
+        present(actionSheet, animated: true)
     }
 
     func presentHelp() {
@@ -422,6 +452,7 @@ private extension StorePickerViewController {
         case .empty:
             updateActionButtonAndTableState(animating: false, enabled: false)
             addStoreButton.isHidden = false
+            secondaryActionButton.isHidden = true
         case .available(let sites):
             addStoreButton.isHidden = true
             if sites.allSatisfy({ $0.isWooCommerceActive == false }) {
@@ -475,6 +506,8 @@ private extension StorePickerViewController {
         guard ServiceLocator.stores.needsDefaultStore else {
             return
         }
+
+        ServiceLocator.analytics.track(.sitePickerLogoutButtonTapped)
 
         delegate?.restartAuthentication()
     }
@@ -667,13 +700,15 @@ extension StorePickerViewController: UITableViewDataSource {
         guard let site = viewModel.site(at: indexPath) else {
             hideActionButton()
             let cell = tableView.dequeueReusableCell(EmptyStoresTableViewCell.self, for: indexPath)
-            let isRemoveAppleIDAccessButtonVisible = appleIDCredentialChecker.hasAppleUserID()
-            cell.updateRemoveAppleIDAccessButtonVisibility(isVisible: isRemoveAppleIDAccessButtonVisible)
-            if isRemoveAppleIDAccessButtonVisible {
+            let isCloseAccountButtonVisible = appleIDCredentialChecker.hasAppleUserID()
+            || featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
+            || featureFlagService.isFeatureFlagEnabled(.storeCreationM2)
+            cell.updateCloseAccountButtonVisibility(isVisible: isCloseAccountButtonVisible)
+            if isCloseAccountButtonVisible {
                 cell.onCloseAccountButtonTapped = { [weak self] in
                     guard let self = self else { return }
                     ServiceLocator.analytics.track(event: .closeAccountTapped(source: .emptyStores))
-                    self.removeAppleIDAccessCoordinator.start()
+                    self.closeAccountCoordinator.start()
                 }
             }
             return cell
@@ -746,7 +781,7 @@ extension StorePickerViewController: UITableViewDelegate {
 }
 
 private extension StorePickerViewController {
-    func removeAppleIDAccess() async throws {
+    func closeAccount() async throws {
         try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self = self else { return }
             let action = AccountAction.closeAccount { result in
@@ -824,6 +859,12 @@ private extension StorePickerViewController {
                                               comment: "Button to dismiss the action sheet on the store picker")
         static let addStoreButton = NSLocalizedString("Add a Store",
                                                       comment: "Button title on the store picker for store creation")
+        enum ActionMenu {
+            static let logOut = NSLocalizedString("Log out",
+                                                  comment: "Button to log out from the current account from the store picker")
+            static let help = NSLocalizedString("Help",
+                                                comment: "Button to get help from the store picker")
+        }
     }
 }
 

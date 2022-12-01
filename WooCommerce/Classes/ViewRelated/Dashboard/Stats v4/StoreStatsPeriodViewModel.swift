@@ -30,10 +30,11 @@ final class StoreStatsPeriodViewModel {
     /// Emits revenue stats text values based on order stats, selected time interval, and currency code.
     private(set) lazy var revenueStatsText: AnyPublisher<String, Never> = $orderStatsData.combineLatest($selectedIntervalIndex, currencySettings.$currencyCode)
         .compactMap { [weak self] orderStatsData, selectedIntervalIndex, currencyCode in
-            StatsDataTextFormatter.createTotalRevenueText(orderStats: orderStatsData.stats,
-                                                     selectedIntervalIndex: selectedIntervalIndex,
-                                                     currencyFormatter: self?.currencyFormatter,
-                                                     currencyCode: currencyCode.rawValue)
+            guard let self else { return "-" }
+            return StatsDataTextFormatter.createTotalRevenueText(orderStats: orderStatsData.stats,
+                                                                 selectedIntervalIndex: selectedIntervalIndex,
+                                                                 currencyFormatter: self.currencyFormatter,
+                                                                 currencyCode: currencyCode.rawValue)
         }
         .removeDuplicates()
         .eraseToAnyPublisher()
@@ -270,7 +271,7 @@ private extension StoreStatsPeriodViewModel {
 
     func updateOrderDataIfNeeded() {
         let orderStats = orderStatsResultsController.fetchedObjects.first
-        let intervals = StatsDataTextFormatter.sortOrderStatsIntervals(from: orderStats)
+        let intervals = StatsIntervalDataParser.sortOrderStatsIntervals(from: orderStats)
         orderStatsData = (stats: orderStats, intervals: intervals)
     }
 }

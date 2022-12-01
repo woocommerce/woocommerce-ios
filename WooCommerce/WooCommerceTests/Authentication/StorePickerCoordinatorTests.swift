@@ -25,7 +25,7 @@ final class StorePickerCoordinatorTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_storeCreationFromLogin_configuration_shows_storePicker_then_presents_storeCreation() throws {
+    func test_storeCreationFromLogin_configuration_shows_storePicker() throws {
         // Given
         let coordinator = StorePickerCoordinator(navigationController, config: .storeCreationFromLogin(source: .prologue))
 
@@ -34,13 +34,8 @@ final class StorePickerCoordinatorTests: XCTestCase {
 
         // Then
         waitUntil {
-            self.navigationController.presentedViewController is WooNavigationController
+            self.navigationController.topViewController is StorePickerViewController
         }
-        // Store picker should be pushed to the navigation stack.
-        assertThat(navigationController.topViewController, isAnInstanceOf: StorePickerViewController.self)
-
-        let storeCreationNavigationController = try XCTUnwrap(navigationController.presentedViewController as? UINavigationController)
-        assertThat(storeCreationNavigationController.topViewController, isAnInstanceOf: AuthenticatedWebViewController.self)
     }
 
     func test_standard_configuration_presents_storePicker() throws {

@@ -17,8 +17,7 @@ struct StoreCreationPlanViewModel {
         .init(icon: .gridicon(.product), title: Localization.productsFeature),
         .init(icon: .gridicon(.gift), title: Localization.subscriptionsFeature),
         .init(icon: .gridicon(.statsAlt), title: Localization.reportFeature),
-        // TODO: 8108 - update icon
-        .init(icon: .gridicon(.money), title: Localization.paymentOptionsFeature),
+        .init(icon: .currencyImage, title: Localization.paymentOptionsFeature),
         .init(icon: .gridicon(.shipping), title: Localization.shippingLabelsFeature),
         .init(icon: .megaphoneIcon, title: Localization.salesChannelsFeature),
     ]

@@ -81,22 +81,26 @@ private extension CardPresentModalScanningForReader {
 
     enum Localization {
         static let title = NSLocalizedString(
-            "Scanning for reader",
+            "cardPresent.modalScanningForReader.title",
+            value: "Scanning for reader",
             comment: "Title label for modal dialog that appears when searching for a card reader"
         )
 
         static let instruction = NSLocalizedString(
-            "To turn on your card reader, briefly press its power button.",
+            "cardPresent.modalScanningForReader.instruction",
+            value: "To turn on your card reader, briefly press its power button.",
             comment: "Label within the modal dialog that appears when searching for a card reader"
         )
 
         static let cancel = NSLocalizedString(
-            "Cancel",
+            "cardPresent.modalScanningForReader.cancelButton",
+            value: "Cancel",
             comment: "Label for a cancel button"
         )
 
         static let learnMoreLink = NSLocalizedString(
-            "Learn more",
+            "cardPresent.modalScanningForReader.learnMore.link",
+            value: "Learn more",
             comment: """
                      A label prompting users to learn more about In-Person Payments.
                      This is the link to the website, and forms part of a longer sentence which it should be considered a part of.
@@ -104,10 +108,12 @@ private extension CardPresentModalScanningForReader {
         )
 
         static let learnMoreText = NSLocalizedString(
-            "%1$@ about In\u{2011}Person Payments",
+            "cardPresent.modalScanningForReader.learnMore.text",
+            value: "%1$@ about In‑Person Payments",
             comment: """
                      A label prompting users to learn more about In-Person Payments.
-                     \u{2011} is a special character that acts as nonbreaking hyphen for "-" in the "In-Person" string.
+                     The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+                     If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
                      %1$@ is a placeholder that always replaced with \"Learn more\" string,
                      which should be translated separately and considered part of this sentence.
                      """

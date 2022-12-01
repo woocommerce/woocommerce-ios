@@ -2,10 +2,11 @@
 
 11.5
 -----
-
+- [*] Account deletion is now supported for all users in settings or in the empty stores screen. [https://github.com/woocommerce/woocommerce-ios/pull/8179]
 
 11.4
 -----
+- [*] In-Person Payments: We removed any references to Simple Payments from Orders, and the red badge from the Menu tab and Menu Payments icon announcing the new Payments section. [https://github.com/woocommerce/woocommerce-ios/pull/8183] 
 - [*] Add System Status Report to ZenDesk support requests. [https://github.com/woocommerce/woocommerce-ios/pull/8171]
 
 

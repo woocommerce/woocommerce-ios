@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import Combine
 import class UIKit.UIColor
 
 /// Main View Model for the Analytics Hub.
@@ -9,6 +10,8 @@ final class AnalyticsHubViewModel: ObservableObject {
     private let siteID: Int64
     private let stores: StoresManager
     private let timeRangeGenerator: AnalyticsHubTimeRangeGenerator
+
+    private var subscriptions = Set<AnyCancellable>()
 
     init(siteID: Int64,
          statsTimeRange: StatsTimeRangeV4,
@@ -20,38 +23,16 @@ final class AnalyticsHubViewModel: ObservableObject {
                                                              currentRangeSubtitle: timeRangeGenerator.generateCurrentRangeDescription(),
                                                              previousRangeSubtitle: timeRangeGenerator.generatePreviousRangeDescription())
 
-        Task.init {
-            do {
-                try await retrieveOrderStats()
-            } catch {
-                DDLogWarn("⚠️ Error fetching analytics data: \(error)")
-            }
-        }
+        bindViewModelsWithData()
     }
 
     /// Revenue Card ViewModel
     ///
-    @Published var revenueCard = AnalyticsReportCardViewModel(title: Localization.RevenueCard.title,
-                                                              leadingTitle: Localization.RevenueCard.leadingTitle,
-                                                              leadingValue: Constants.placeholderValue,
-                                                              leadingDelta: Constants.placeholderDelta.string,
-                                                              leadingDeltaColor: Constants.deltaColor(for: Constants.placeholderDelta.direction),
-                                                              trailingTitle: Localization.RevenueCard.trailingTitle,
-                                                              trailingValue: Constants.placeholderValue,
-                                                              trailingDelta: Constants.placeholderDelta.string,
-                                                              trailingDeltaColor: Constants.deltaColor(for: Constants.placeholderDelta.direction))
+    @Published var revenueCard = AnalyticsHubViewModel.revenueCard(currentPeriodStats: nil, previousPeriodStats: nil)
 
     /// Orders Card ViewModel
     ///
-    @Published var ordersCard = AnalyticsReportCardViewModel(title: Localization.OrderCard.title,
-                                                             leadingTitle: Localization.OrderCard.leadingTitle,
-                                                             leadingValue: Constants.placeholderValue,
-                                                             leadingDelta: Constants.placeholderDelta.string,
-                                                             leadingDeltaColor: Constants.deltaColor(for: Constants.placeholderDelta.direction),
-                                                             trailingTitle: Localization.OrderCard.trailingTitle,
-                                                             trailingValue: Constants.placeholderValue,
-                                                             trailingDelta: Constants.placeholderDelta.string,
-                                                             trailingDeltaColor: Constants.deltaColor(for: Constants.placeholderDelta.direction))
+    @Published var ordersCard = AnalyticsHubViewModel.ordersCard(currentPeriodStats: nil, previousPeriodStats: nil)
 
     /// Time Range ViewModel
     ///
@@ -59,9 +40,7 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Products Card ViewModel
     ///
-    @Published var productCard = AnalyticsProductCardViewModel(itemsSold: "3,234",
-                                                               delta: "+43%",
-                                                               deltaBackgroundColor: .withColorStudio(.green, shade: .shade50))
+    @Published var productCard = AnalyticsHubViewModel.productCard(currentPeriodStats: nil, previousPeriodStats: nil)
 
     // MARK: Private data
 
@@ -72,12 +51,26 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Order stats for the previous time period (for comparison)
     ///
     @Published private var previousOrderStats: OrderStatsV4? = nil
+
+    /// Request stats data from network
+    ///
+    func updateData() async {
+        do {
+            try await retrieveOrderStats()
+        } catch {
+            switchToErrorState()
+            DDLogWarn("⚠️ Error fetching analytics data: \(error)")
+        }
+    }
 }
 
+// MARK: Networking
 private extension AnalyticsHubViewModel {
 
     @MainActor
     func retrieveOrderStats() async throws {
+        switchToLoadingState()
+
         let currentTimeRange = try timeRangeGenerator.unwrapCurrentTimeRange()
         let previousTimeRange = try timeRangeGenerator.unwrapPreviousTimeRange()
 
@@ -114,11 +107,84 @@ private extension AnalyticsHubViewModel {
     }
 }
 
+// MARK: Data - UI mapping
+private extension AnalyticsHubViewModel {
+
+    func switchToLoadingState() {
+        self.revenueCard = revenueCard.redacted
+        self.ordersCard = ordersCard.redacted
+        self.productCard = productCard.redacted
+    }
+
+    func switchToErrorState() {
+        self.currentOrderStats = nil
+        self.previousOrderStats = nil
+    }
+
+    func bindViewModelsWithData() {
+        Publishers.CombineLatest($currentOrderStats, $previousOrderStats)
+            .sink { [weak self] currentOrderStats, previousOrderStats in
+                guard let self else { return }
+
+                self.revenueCard = AnalyticsHubViewModel.revenueCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
+                self.ordersCard = AnalyticsHubViewModel.ordersCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
+                self.productCard = AnalyticsHubViewModel.productCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
+
+            }.store(in: &subscriptions)
+    }
+
+    static func revenueCard(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) -> AnalyticsReportCardViewModel {
+        let totalDelta = StatsDataTextFormatter.createTotalRevenueDelta(from: previousPeriodStats, to: currentPeriodStats)
+        let netDelta = StatsDataTextFormatter.createNetRevenueDelta(from: previousPeriodStats, to: currentPeriodStats)
+
+        return AnalyticsReportCardViewModel(title: Localization.RevenueCard.title,
+                                            leadingTitle: Localization.RevenueCard.leadingTitle,
+                                            leadingValue: StatsDataTextFormatter.createTotalRevenueText(orderStats: currentPeriodStats,
+                                                                                                        selectedIntervalIndex: nil),
+                                            leadingDelta: totalDelta.string,
+                                            leadingDeltaColor: Constants.deltaColor(for: totalDelta.direction),
+                                            leadingChartData: StatsIntervalDataParser.getChartData(for: .totalRevenue, from: currentPeriodStats),
+                                            trailingTitle: Localization.RevenueCard.trailingTitle,
+                                            trailingValue: StatsDataTextFormatter.createNetRevenueText(orderStats: currentPeriodStats),
+                                            trailingDelta: netDelta.string,
+                                            trailingDeltaColor: Constants.deltaColor(for: netDelta.direction),
+                                            trailingChartData: StatsIntervalDataParser.getChartData(for: .netRevenue, from: currentPeriodStats),
+                                            isRedacted: false)
+    }
+
+    static func ordersCard(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) -> AnalyticsReportCardViewModel {
+        let ordersCountDelta = StatsDataTextFormatter.createOrderCountDelta(from: previousPeriodStats, to: currentPeriodStats)
+        let orderValueDelta = StatsDataTextFormatter.createAverageOrderValueDelta(from: previousPeriodStats, to: currentPeriodStats)
+
+        return AnalyticsReportCardViewModel(title: Localization.OrderCard.title,
+                                            leadingTitle: Localization.OrderCard.leadingTitle,
+                                            leadingValue: StatsDataTextFormatter.createOrderCountText(orderStats: currentPeriodStats,
+                                                                                                      selectedIntervalIndex: nil),
+                                            leadingDelta: ordersCountDelta.string,
+                                            leadingDeltaColor: Constants.deltaColor(for: ordersCountDelta.direction),
+                                            leadingChartData: StatsIntervalDataParser.getChartData(for: .orderCount, from: currentPeriodStats),
+                                            trailingTitle: Localization.OrderCard.trailingTitle,
+                                            trailingValue: StatsDataTextFormatter.createAverageOrderValueText(orderStats: currentPeriodStats),
+                                            trailingDelta: orderValueDelta.string,
+                                            trailingDeltaColor: Constants.deltaColor(for: orderValueDelta.direction),
+                                            trailingChartData: StatsIntervalDataParser.getChartData(for: .averageOrderValue, from: currentPeriodStats),
+                                            isRedacted: false)
+    }
+
+    static func productCard(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) -> AnalyticsProductCardViewModel {
+        let itemsSold = StatsDataTextFormatter.createItemsSoldText(orderStats: currentPeriodStats)
+        let itemsSoldDelta = StatsDataTextFormatter.createOrderItemsSoldDelta(from: previousPeriodStats, to: currentPeriodStats)
+
+        return AnalyticsProductCardViewModel(itemsSold: itemsSold,
+                                             delta: itemsSoldDelta.string,
+                                             deltaBackgroundColor: Constants.deltaColor(for: itemsSoldDelta.direction),
+                                             isRedacted: false)
+    }
+}
+
 // MARK: - Constants
 private extension AnalyticsHubViewModel {
     enum Constants {
-        static let placeholderValue = "-"
-        static let placeholderDelta = StatsDataTextFormatter.createDeltaPercentage(from: 0.0, to: 0.0)
         static func deltaColor(for direction: StatsDataTextFormatter.DeltaPercentage.Direction) -> UIColor {
             switch direction {
             case .positive:

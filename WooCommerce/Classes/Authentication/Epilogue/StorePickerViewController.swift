@@ -331,9 +331,17 @@ private extension StorePickerViewController {
         }
         actionSheet.addAction(helpAction)
 
-        let isCloseAccountButtonVisible = appleIDCredentialChecker.hasAppleUserID()
-        || featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
-        || featureFlagService.isFeatureFlagEnabled(.storeCreationM2)
+        let isCloseAccountButtonVisible: Bool = {
+            let hasEmptyStores: Bool = {
+                if case .empty = viewModel.state {
+                    return true
+                }
+                return false
+            }()
+            return (appleIDCredentialChecker.hasAppleUserID()
+                    || featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
+                    || featureFlagService.isFeatureFlagEnabled(.storeCreationM2)) && hasEmptyStores
+        }()
         if isCloseAccountButtonVisible {
             let closeAccountAction = UIAlertAction(title: Localization.ActionMenu.closeAccount, style: .destructive) { [weak self] _ in
                 guard let self else { return }

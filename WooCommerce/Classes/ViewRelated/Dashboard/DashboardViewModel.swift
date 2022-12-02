@@ -4,6 +4,59 @@ import enum Networking.DotcomError
 import enum Storage.StatsVersion
 import protocol Experiments.FeatureFlagService
 
+enum AppScreen {
+    case dashboard
+}
+
+final class JustInTimeMessagesManager {
+    private let stores: StoresManager
+    private let analytics: Analytics
+    private let appScreenJitmSourceMapping: [AppScreen: String] = [.dashboard: "my_store"]
+
+    init(stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
+        self.stores = stores
+        self.analytics = analytics
+    }
+
+    func loadMessage(for screen: AppScreen, siteID: Int64) async throws -> JustInTimeMessageAnnouncementCardViewModel? {
+        guard let source = appScreenJitmSourceMapping[screen] else {
+            return nil
+        }
+
+        return try await withCheckedThrowingContinuation { [weak self] continuation in
+            let action = JustInTimeMessageAction.loadMessage(
+                siteID: siteID,
+                screen: source,
+                hook: .adminNotices) { [weak self] result in
+                    guard let self = self else { return }
+                    switch result {
+                    case let .success(messages):
+                        guard let message = messages.first else {
+                            return continuation.resume(returning: nil)
+                        }
+                        self.analytics.track(event:
+                                .JustInTimeMessage.fetchSuccess(source: source,
+                                                                messageID: message.messageID,
+                                                                count: Int64(messages.count)))
+                        let viewModel = JustInTimeMessageAnnouncementCardViewModel(
+                            justInTimeMessage: message,
+                            screenName: source,
+                            siteID: self.siteID)
+                        continuation.resume(returning: viewModel)
+                    case let .failure(error):
+                        self.analytics.track(event:
+                                .JustInTimeMessage.fetchFailure(source: source,
+                                                                error: error))
+                        throw error
+                    }
+                }
+
+            stores.dispatch(action)
+        }
+    }
+}
+
 /// Syncs data for dashboard stats UI and determines the state of the dashboard UI based on stats version.
 final class DashboardViewModel {
     /// Stats v4 is shown by default, then falls back to v3 if store stats are unavailable.
@@ -20,6 +73,7 @@ final class DashboardViewModel {
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
     private let analytics: Analytics
+    private let justInTimeMessagesManager: JustInTimeMessagesManager = JustInTimeMessagesManager()
 
     init(stores: StoresManager = ServiceLocator.stores,
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -171,34 +225,11 @@ final class DashboardViewModel {
             return
         }
 
-        let action = JustInTimeMessageAction.loadMessage(
-            siteID: siteID,
-            screen: Constants.dashboardScreenName,
-            hook: .adminNotices) { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case let .success(messages):
-                    guard let message = messages.first else {
-                        self.announcementViewModel = nil
-                        return
-                    }
-                    self.analytics.track(event:
-                            .JustInTimeMessage.fetchSuccess(source: Constants.dashboardScreenName,
-                                                            messageID: message.messageID,
-                                                            count: Int64(messages.count)))
-                    let viewModel = JustInTimeMessageAnnouncementCardViewModel(
-                        justInTimeMessage: message,
-                        screenName: Constants.dashboardScreenName,
-                        siteID: siteID)
-                    self.announcementViewModel = viewModel
-                    viewModel.$showWebViewSheet.assign(to: &self.$showWebViewSheet)
-                case let .failure(error):
-                    self.analytics.track(event:
-                            .JustInTimeMessage.fetchFailure(source: Constants.dashboardScreenName,
-                                                            error: error))
-                }
-            }
-        stores.dispatch(action)
+        Task {
+            let viewModel = try? await justInTimeMessagesManager.loadMessage(for: .dashboard, siteID: siteID)
+            viewModel?.$showWebViewSheet.assign(to: &self.$showWebViewSheet)
+            announcementViewModel = viewModel
+        }
     }
 }
 

@@ -59,16 +59,7 @@ final class DashboardViewController: UIViewController {
     /// When we hide the header, we disable this constraint so the content view can grow to fill the screen
     private var contentTopToHeaderConstraint: NSLayoutConstraint?
 
-    private lazy var hideHeaderAnimator = {
-        let animator = UIViewPropertyAnimator(duration: Constants.animationDurationSeconds, curve: .easeOut)
-        animator.pausesOnCompletion = true
-        animator.addAnimations { [weak self] in
-            self?.contentTopToHeaderConstraint?.isActive = false
-            self?.headerStackView.alpha = 0
-            self?.view.layoutIfNeeded()
-        }
-        return animator
-    }()
+    private var headerAnimator: UIViewPropertyAnimator?
 
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
     private let hiddenScrollView = UIScrollView()
@@ -164,22 +155,42 @@ final class DashboardViewController: UIViewController {
         return true
     }
 
-    func startHeaderAnimation() {
-        hideHeaderAnimator.startAnimation()
+    func showHeader() {
+        contentTopToHeaderConstraint?.isActive = true
+        headerStackView.alpha = 1
+        view.layoutIfNeeded()
     }
 
-    func hideHeaderWithAnimation() {
-        hideHeaderAnimator.isReversed = false
-        hideHeaderAnimator.startAnimation()
+    func hideHeader() {
+        contentTopToHeaderConstraint?.isActive = false
+        headerStackView.alpha = 0
+        view.layoutIfNeeded()
     }
 
     func showHeaderWithAnimation() {
-        // If the view hasn't been hidden yet, don't bother trying to animate showing it
-        guard hideHeaderAnimator.state == .active else {
-            return
-        }
-        hideHeaderAnimator.isReversed = true
-        hideHeaderAnimator.startAnimation()
+        headerAnimator?.stopAnimation(true)
+        headerAnimator = UIViewPropertyAnimator.runningPropertyAnimator(
+            withDuration: Constants.animationDurationSeconds,
+            delay: 0,
+            animations: { [weak self] in
+                self?.showHeader()
+            },
+            completion: { [weak self] position in
+                self?.headerAnimator = nil
+            })
+    }
+
+    func hideHeaderWithAnimation() {
+        headerAnimator?.stopAnimation(true)
+        headerAnimator = UIViewPropertyAnimator.runningPropertyAnimator(
+            withDuration: Constants.animationDurationSeconds,
+            delay: 0,
+            animations: { [weak self] in
+                self?.hideHeader()
+            },
+            completion: { [weak self] position in
+                self?.headerAnimator = nil
+            })
     }
 }
 

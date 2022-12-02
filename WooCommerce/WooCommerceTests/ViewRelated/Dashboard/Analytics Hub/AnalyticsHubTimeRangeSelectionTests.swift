@@ -2,9 +2,14 @@ import XCTest
 @testable import WooCommerce
 
 final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
+    private var testTimezone: TimeZone = {
+        TimeZone(abbreviation: "UTC") ?? TimeZone.current
+    }()
+    
     private var dateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
         return dateFormatter
     }()
 
@@ -130,7 +135,9 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
     func test_when_time_range_inits_with_yesterday_then_generate_expected_ranges() throws {
         // Given
         let currentDate = dateFrom("2022-07-01")
-        let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .yesterday, currentDate: currentDate)
+        let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .yesterday,
+                                                       currentDate: currentDate,
+                                                       timezone: testTimezone)
 
         // When
         let currentTimeRange = try timeRange.unwrapCurrentTimeRange()
@@ -138,10 +145,10 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
 
         // Then
         XCTAssertEqual(currentTimeRange.start, dateFrom("2022-06-30"))
-        XCTAssertEqual(currentTimeRange.end, dateFrom("2022-06-30"))
+        XCTAssertEqual(currentTimeRange.end, dateFrom("2022-06-30").endOfDay(timezone: testTimezone))
 
         XCTAssertEqual(previousTimeRange.start, dateFrom("2022-06-29"))
-        XCTAssertEqual(previousTimeRange.end, dateFrom("2022-06-29"))
+        XCTAssertEqual(previousTimeRange.end, dateFrom("2022-06-29").endOfDay(timezone: testTimezone))
     }
 
     func test_when_time_range_inits_with_yearToDate_then_generate_expected_descriptions() throws {

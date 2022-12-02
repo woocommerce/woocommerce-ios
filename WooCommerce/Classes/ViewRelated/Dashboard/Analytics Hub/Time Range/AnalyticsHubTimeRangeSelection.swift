@@ -77,7 +77,7 @@ private extension AnalyticsHubTimeRangeSelectionType {
         case .today:
             return AnalyticsHubDayRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
         case .yesterday:
-            return AnalyticsHubDayRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
+            return AnalyticsHubYesterdayRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
         case .weekToDate:
             return AnalyticsHubWeekRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
         case .lastWeek:

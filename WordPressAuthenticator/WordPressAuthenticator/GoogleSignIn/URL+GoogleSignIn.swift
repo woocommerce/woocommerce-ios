@@ -1,10 +1,15 @@
 import Foundation
 
+// It's acceptable to force-unwrap here because, for this call to fail we'd need a developer error,
+// which we would catch because the unit tests would crash.
 extension URL {
 
-    // It's acceptable to force-unwrap here because, for this call to fail we'd need a developer
-    // error, which we would catch because the unit tests would crash.
     static var googleSignInBaseURL = URL(string: "https://accounts.google.com/o/oauth2/v2/auth")!
+
+    static var googleSignInOAuthTokenURL = URL(string: "https://oauth2.googleapis.com/token")!
+}
+
+extension URL {
 
     static func googleSignInAuthURL(clientId: GoogleClientId, pkce: ProofKeyForCodeExchange) throws -> URL {
         let queryItems = [

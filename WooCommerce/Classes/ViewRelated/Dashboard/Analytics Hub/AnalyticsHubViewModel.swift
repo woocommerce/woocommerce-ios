@@ -234,7 +234,8 @@ private extension AnalyticsHubViewModel {
     static func productCard(currentPeriodStats: OrderStatsV4?,
                             previousPeriodStats: OrderStatsV4?,
                             itemsSoldStats: TopEarnerStats?) -> AnalyticsProductCardViewModel {
-        let showSyncError = currentPeriodStats == nil || previousPeriodStats == nil
+        let showStatsError = currentPeriodStats == nil || previousPeriodStats == nil
+        let showItemsSoldError = itemsSoldStats == nil
         let itemsSold = StatsDataTextFormatter.createItemsSoldText(orderStats: currentPeriodStats)
         let itemsSoldDelta = StatsDataTextFormatter.createOrderItemsSoldDelta(from: previousPeriodStats, to: currentPeriodStats)
 
@@ -243,7 +244,8 @@ private extension AnalyticsHubViewModel {
                                              deltaBackgroundColor: Constants.deltaColor(for: itemsSoldDelta.direction),
                                              itemsSoldData: itemSoldRows(from: itemsSoldStats),
                                              isRedacted: false,
-                                             showSyncError: showSyncError)
+                                             showStatsError: showStatsError,
+                                             showItemsSoldError: showItemsSoldError)
     }
 
     /// Helper functions to create `TopPerformersRow.Data` items rom the provided `TopEarnerStats`.

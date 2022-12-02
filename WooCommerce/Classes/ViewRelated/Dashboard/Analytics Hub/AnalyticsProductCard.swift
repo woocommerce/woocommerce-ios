@@ -22,9 +22,13 @@ struct AnalyticsProductCard: View {
     ///
     let isRedacted: Bool
 
-    /// Indicates if there was an error loading the data for the card
+    /// Indicates if there was an error loading stats part of the card.
     ///
-    let showSyncError: Bool
+    let showStatsError: Bool
+
+    /// Indicates if there was an error loading items sold part of the card.
+    ///
+    let showItemsSoldError: Bool
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -50,7 +54,7 @@ struct AnalyticsProductCard: View {
                     .shimmering(active: isRedacted)
             }
 
-            if showSyncError {
+            if showStatsError {
                 Text(Localization.noProducts)
                     .foregroundColor(Color(.text))
                     .subheadlineStyle()
@@ -62,6 +66,14 @@ struct AnalyticsProductCard: View {
                 .padding(.top, Layout.columnSpacing)
                 .redacted(reason: isRedacted ? .placeholder : [])
                 .shimmering(active: isRedacted)
+
+            if showItemsSoldError {
+                Text(Localization.noItemsSold)
+                    .foregroundColor(Color(.text))
+                    .subheadlineStyle()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.top, Layout.columnSpacing)
+            }
         }
         .padding(Layout.cardPadding)
     }
@@ -74,6 +86,8 @@ private extension AnalyticsProductCard {
         static let itemsSold = NSLocalizedString("Items Sold", comment: "Title for the items sold column on the products card on the analytics hub screen.")
         static let noProducts = NSLocalizedString("Unable to load product analytics",
                                                   comment: "Text displayed when there is an error loading product stats data.")
+        static let noItemsSold = NSLocalizedString("Unable to load product items sold analytics",
+                                                   comment: "Text displayed when there is an error loading items sold stats data.")
     }
 
     enum Layout {
@@ -98,7 +112,8 @@ struct AnalyticsProductCardPreviews: PreviewProvider {
                                 .init(imageURL: imageURL, name: "Bird Of Paradise", details: "Net Sales: $23.50", value: "2"),
                              ],
                              isRedacted: false,
-                             showSyncError: false)
+                             showStatsError: false,
+                             showItemsSoldError: false)
             .previewLayout(.sizeThatFits)
 
         AnalyticsProductCard(itemsSold: "-",
@@ -106,7 +121,8 @@ struct AnalyticsProductCardPreviews: PreviewProvider {
                              deltaBackgroundColor: .withColorStudio(.gray, shade: .shade0),
                              itemsSoldData: [],
                              isRedacted: false,
-                             showSyncError: true)
+                             showStatsError: true,
+                             showItemsSoldError: true)
             .previewLayout(.sizeThatFits)
             .previewDisplayName("No data")
     }

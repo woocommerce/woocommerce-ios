@@ -12,6 +12,13 @@ struct ProofKeyForCodeExchange {
     enum Mode {
         case s256
         case plain
+
+        var method: String {
+            switch self {
+            case .plain: return "plain"
+            case .s256: return "S256"
+            }
+        }
     }
 
     let codeVerifier: String

@@ -36,38 +36,18 @@ public class AnalyticsHubTimeRangeSelection {
          currentDate: Date = Date(),
          timezone: TimeZone = TimeZone.autoupdatingCurrent,
          calendar: Calendar = Calendar(identifier: .iso8601)) {
-        var selectionData: AnalyticsHubTimeRangeData
-
-        switch selectionType {
-        case .today:
-            selectionData = AnalyticsHubDayRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
-        case .yesterday:
-            selectionData = AnalyticsHubDayRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
-        case .weekToDate:
-            selectionData = AnalyticsHubWeekRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
-        case .lastWeek:
-            selectionData = AnalyticsHubWeekRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
-        case .monthToDate:
-            selectionData = AnalyticsHubMonthRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
-        case .lastMonth:
-            selectionData = AnalyticsHubMonthRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
-        case .yearToDate:
-            selectionData = AnalyticsHubYearRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
-        case .lastYear:
-            selectionData = AnalyticsHubYearRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
-        }
-
+        let selectionData = selectionType.mapToRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
         let currentTimeRange = selectionData.currentTimeRange
         let previousTimeRange = selectionData.previousTimeRange
+        let simplifiedDescription = selectionType == .today
+
         self.currentTimeRange = currentTimeRange
         self.previousTimeRange = previousTimeRange
-
-        let simplifiedDescription = selectionType == .today
-        self.formattedCurrentRangeText = currentTimeRange?.formatToString(simplified: simplifiedDescription,
-                                                                               calendar: calendar)
-        self.formattedPreviousRangeText = previousTimeRange?.formatToString(simplified: simplifiedDescription,
-                                                                                 calendar: calendar)
         self.rangeSelectionDescription = selectionType.description
+        self.formattedCurrentRangeText = currentTimeRange?.formatToString(simplified: simplifiedDescription,
+                                                                          calendar: calendar)
+        self.formattedPreviousRangeText = previousTimeRange?.formatToString(simplified: simplifiedDescription,
+                                                                            calendar: calendar)
     }
 
     /// Unwrap the generated selected `AnalyticsHubTimeRange` based on the `selectedTimeRange`
@@ -135,6 +115,30 @@ extension AnalyticsHubTimeRangeSelection {
             case .thisYear:
                 self = .yearToDate
             }
+        }
+    }
+}
+
+// MARK: - Data creation utility
+private extension AnalyticsHubTimeRangeSelection.SelectionType {
+    func mapToRangeData(referenceDate: Date, timezone: TimeZone, calendar: Calendar) -> AnalyticsHubTimeRangeData {
+        switch self {
+        case .today:
+            return AnalyticsHubDayRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
+        case .yesterday:
+            return AnalyticsHubDayRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
+        case .weekToDate:
+            return AnalyticsHubWeekRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
+        case .lastWeek:
+            return AnalyticsHubWeekRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
+        case .monthToDate:
+            return AnalyticsHubMonthRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
+        case .lastMonth:
+            return AnalyticsHubMonthRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
+        case .yearToDate:
+            return AnalyticsHubYearRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
+        case .lastYear:
+            return AnalyticsHubYearRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
         }
     }
 }

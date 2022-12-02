@@ -39,6 +39,8 @@ public class AnalyticsHubTimeRangeSelection {
         switch selectionType {
         case .today:
             selectionData = AnalyticsHubDayRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
+        case .yesterday:
+            selectionData = AnalyticsHubYesterdayRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
         case .weekToDate:
             selectionData = AnalyticsHubWeekRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
         case .monthToDate:
@@ -86,6 +88,7 @@ public class AnalyticsHubTimeRangeSelection {
 extension AnalyticsHubTimeRangeSelection {
     enum SelectionType: CaseIterable {
         case today
+        case yesterday
         case weekToDate
         case monthToDate
         case yearToDate
@@ -94,6 +97,8 @@ extension AnalyticsHubTimeRangeSelection {
             switch self {
             case .today:
                 return Localization.today
+            case .yesterday:
+                return Localization.yesterday
             case .weekToDate:
                 return Localization.weekToDate
             case .monthToDate:
@@ -126,6 +131,7 @@ extension AnalyticsHubTimeRangeSelection {
 
     enum Localization {
         static let today = NSLocalizedString("Today", comment: "Title of the Analytics Hub Today's selection range")
+        static let yesterday = NSLocalizedString("Yesterday", comment: "Title of the Analytics Hub Yesterday selection range")
         static let weekToDate = NSLocalizedString("Week to Date", comment: "Title of the Analytics Hub Week to Date selection range")
         static let monthToDate = NSLocalizedString("Month to Date", comment: "Title of the Analytics Hub Month to Date selection range")
         static let yearToDate = NSLocalizedString("Year to Date", comment: "Title of the Analytics Hub Year to Date selection range")

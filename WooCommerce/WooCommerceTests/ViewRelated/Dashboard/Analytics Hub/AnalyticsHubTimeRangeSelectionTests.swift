@@ -99,15 +99,15 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
                                                        currentDate: today,
                                                        timezone: testTimezone,
                                                        calendar: testCalendar)
-        
+
         // When
         let currentTimeRange = try timeRange.unwrapCurrentTimeRange()
         let previousTimeRange = try timeRange.unwrapPreviousTimeRange()
-        
+
         // Then
         XCTAssertEqual(currentTimeRange.start, startDate(from: "2022-06-30"))
         XCTAssertEqual(currentTimeRange.end, endDate(from: "2022-06-30"))
-        
+
         XCTAssertEqual(previousTimeRange.start, startDate(from: "2022-06-29"))
         XCTAssertEqual(previousTimeRange.end, endDate(from: "2022-06-29"))
     }
@@ -196,7 +196,7 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         XCTAssertEqual(currentRangeDescription, "Jul 1, 2022")
         XCTAssertEqual(previousRangeDescription, "Jun 30, 2022")
     }
- 
+
     func test_when_time_range_inits_with_yesterday_then_generate_expected_descriptions() throws {
         // Given
         let today = currentDate(from: "2022-07-02")
@@ -204,11 +204,11 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
                                                        currentDate: today,
                                                        timezone: testTimezone,
                                                        calendar: testCalendar)
-        
+
         // When
         let currentRangeDescription = timeRange.currentRangeDescription
         let previousRangeDescription = timeRange.previousRangeDescription
-        
+
         // Then
         XCTAssertEqual(currentRangeDescription, "Jul 1, 2022")
         XCTAssertEqual(previousRangeDescription, "Jun 30, 2022")

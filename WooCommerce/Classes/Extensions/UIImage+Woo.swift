@@ -492,6 +492,18 @@ extension UIImage {
         return UIImage(named: "card-reader-scanning")!
     }
 
+    static var tempBuiltInReaderCheck: UIImage {
+        return UIImage(named: "temp-woo-tap-on-mobile-check")!
+    }
+
+    static var tempBuiltInReaderPrepare: UIImage {
+        return UIImage(named: "temp-woo-tap-on-mobile-prepare")!
+    }
+
+    static var tempBuiltInReaderPayment: UIImage {
+        return UIImage(named: "temp-woo-tap-on-mobile")!
+    }
+
     /// Found Card Reader
     ///
     static var cardReaderFound: UIImage {

@@ -128,9 +128,7 @@ private extension TopPerformerDataViewController {
         tableView.applyFooterViewForHidingExtraRowPlaceholders()
 
         // Removes extra top padding in iOS 15+.
-        if #available(iOS 15.0, *) {
-            tableView.sectionHeaderTopPadding = 0
-        }
+        tableView.sectionHeaderTopPadding = 0
     }
 
     func configureResultsController() {

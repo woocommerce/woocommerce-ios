@@ -44,8 +44,10 @@ public class AnalyticsHubTimeRangeSelection {
         self.previousTimeRange = previousTimeRange
         self.rangeSelectionDescription = selectionType.description
         self.formattedCurrentRangeText = currentTimeRange?.formatToString(simplified: simplifiedDescription,
+                                                                          timezone: timezone,
                                                                           calendar: calendar)
         self.formattedPreviousRangeText = previousTimeRange?.formatToString(simplified: simplifiedDescription,
+                                                                            timezone: timezone,
                                                                             calendar: calendar)
     }
 

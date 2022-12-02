@@ -107,31 +107,31 @@ public extension DateFormatter {
         /// Date formatter used for creating the properly-formatted date range info. Typically
         /// used when setting the end date on `AnalyticsHubTimeRangeGenerator`.
         ///
-        public static let analyticsHubDayMonthYearFormatter: DateFormatter = {
+        public static func createAnalyticsHubDayMonthYearFormatter(timezone: TimeZone) -> DateFormatter {
             let formatter = DateFormatter()
-            formatter.locale = Locale(identifier: "en_US_POSIX")
+            formatter.timeZone = timezone
             formatter.dateFormat = "MMM d, yyyy"
             return formatter
-        }()
+        }
 
         /// Date formatter used for creating the properly-formatted date range info. Typically
         /// used when setting the end date of a same-month range on `AnalyticsHubTimeRangeGenerator`.
         ///
-        public static let analyticsHubDayYearFormatter: DateFormatter = {
+        public static func createAnalyticsHubDayYearFormatter(timezone: TimeZone) -> DateFormatter {
             let formatter = DateFormatter()
-            formatter.locale = Locale(identifier: "en_US_POSIX")
+            formatter.timeZone = timezone
             formatter.dateFormat = "d, yyyy"
             return formatter
-        }()
+        }
 
         /// Date formatter used for creating the properly-formatted date range info. Typically
         /// used when setting the start date on `AnalyticsHubTimeRangeGenerator`.
         ///
-        public static let analyticsHubDayMonthFormatter: DateFormatter = {
+        public static func createAnalyticsHubDayMonthFormatter(timezone: TimeZone) -> DateFormatter {
             let formatter = DateFormatter()
-            formatter.locale = Locale(identifier: "en_US_POSIX")
+            formatter.timeZone = timezone
             formatter.dateFormat = "MMM d"
             return formatter
-        }()
+        }
     }
 }

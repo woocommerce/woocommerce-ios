@@ -4,17 +4,19 @@ struct AnalyticsHubTimeRange {
     let start: Date
     let end: Date
 
-    func formatToString(simplified: Bool, calendar: Calendar) -> String {
+    func formatToString(simplified: Bool, timezone: TimeZone, calendar: Calendar) -> String {
         if simplified {
-            return DateFormatter.Stats.analyticsHubDayMonthYearFormatter.string(from: start)
+            return DateFormatter.Stats.createAnalyticsHubDayMonthYearFormatter(timezone: timezone).string(from: start)
         }
 
-        let startDateDescription = DateFormatter.Stats.analyticsHubDayMonthFormatter.string(from: start)
+        let startDateDescription = DateFormatter.Stats.createAnalyticsHubDayMonthFormatter(timezone: timezone).string(from: start)
 
+        var endDateDescription: String
         if start.isSameMonth(as: end, using: calendar) {
-            return "\(startDateDescription) - \(DateFormatter.Stats.analyticsHubDayYearFormatter.string(from: end))"
+            endDateDescription = DateFormatter.Stats.createAnalyticsHubDayYearFormatter(timezone: timezone).string(from: end)
         } else {
-            return "\(startDateDescription) - \(DateFormatter.Stats.analyticsHubDayMonthYearFormatter.string(from: end))"
+            endDateDescription = DateFormatter.Stats.createAnalyticsHubDayMonthYearFormatter(timezone: timezone).string(from: end)
         }
+        return "\(startDateDescription) - \(endDateDescription)"
     }
 }

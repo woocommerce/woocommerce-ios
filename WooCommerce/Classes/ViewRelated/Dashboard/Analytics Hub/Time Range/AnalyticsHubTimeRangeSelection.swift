@@ -38,7 +38,7 @@ public class AnalyticsHubTimeRangeSelection {
         let selectionData = selectionType.mapToRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
         let currentTimeRange = selectionData.currentTimeRange
         let previousTimeRange = selectionData.previousTimeRange
-        let simplifiedDescription = selectionType == .today
+        let simplifiedDescription = selectionType == .today || selectionType == .yesterday
 
         self.currentTimeRange = currentTimeRange
         self.previousTimeRange = previousTimeRange

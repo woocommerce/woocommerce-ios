@@ -37,7 +37,8 @@ public enum StatsActionV4: Action {
         latestDateToInclude: Date,
         onCompletion: (Result<Void, Error>) -> Void)
 
-    /// Synchronizes `TopEarnerStats` for the provided siteID, time range, and date.
+    /// Retrieves `TopEarnerStats` for the provided siteID, time range, and date.
+    /// Conditionally saves it to storage.
     ///
     case retrieveTopEarnerStats(siteID: Int64,
                                 timeRange: StatsTimeRangeV4,
@@ -45,5 +46,6 @@ public enum StatsActionV4: Action {
                                 latestDateToInclude: Date,
                                 quantity: Int,
                                 forceRefresh: Bool,
-                                onCompletion: (Result<Void, Error>) -> Void)
+                                saveInStorage: Bool,
+                                onCompletion: (Result<TopEarnerStats, Error>) -> Void)
 }

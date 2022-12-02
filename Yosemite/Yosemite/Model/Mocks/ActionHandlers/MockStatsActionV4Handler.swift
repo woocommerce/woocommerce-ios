@@ -14,7 +14,7 @@ struct MockStatsActionV4Handler: MockActionHandler {
                 retrieveStats(siteID: siteID, timeRange: timeRange, onCompletion: onCompletion)
             case .retrieveSiteVisitStats(let siteID, _, let timeRange, _, let onCompletion):
                 retrieveSiteVisitStats(siteID: siteID, timeRange: timeRange, onCompletion: onCompletion)
-            case .retrieveTopEarnerStats(let siteID, let timeRange, _, _, _, _, let onCompletion):
+            case .retrieveTopEarnerStats(let siteID, let timeRange, _, _, _, _, _, let onCompletion):
                 retrieveTopEarnerStats(siteID: siteID, timeRange: timeRange, onCompletion: onCompletion)
             default: unimplementedAction(action: action)
         }
@@ -52,19 +52,19 @@ struct MockStatsActionV4Handler: MockActionHandler {
         }
     }
 
-    func retrieveTopEarnerStats(siteID: Int64, timeRange: StatsTimeRangeV4, onCompletion: @escaping (Result<Void, Error>) -> ()) {
+    func retrieveTopEarnerStats(siteID: Int64, timeRange: StatsTimeRangeV4, onCompletion: @escaping (Result<TopEarnerStats, Error>) -> ()) {
         let store = StatsStoreV4(dispatcher: Dispatcher(), storageManager: storageManager, network: NullNetwork())
 
         switch timeRange {
-            case .today:
-                success(onCompletion)
-            case .thisWeek:
-                success(onCompletion)
-            case .thisMonth:
-                store.upsertStoredTopEarnerStats(readOnlyStats: objectGraph.thisMonthTopProducts)
-                onCompletion(.success(()))
-            case .thisYear:
-                success(onCompletion)
+        case .today:
+            onCompletion(.success(objectGraph.thisMonthTopProducts))
+        case .thisWeek:
+            onCompletion(.success(objectGraph.thisMonthTopProducts))
+        case .thisMonth:
+            store.upsertStoredTopEarnerStats(readOnlyStats: objectGraph.thisMonthTopProducts)
+            onCompletion(.success(objectGraph.thisMonthTopProducts))
+        case .thisYear:
+            onCompletion(.success(objectGraph.thisMonthTopProducts))
         }
     }
 }

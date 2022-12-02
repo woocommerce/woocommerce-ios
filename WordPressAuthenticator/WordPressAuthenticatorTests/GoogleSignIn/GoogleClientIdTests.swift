@@ -11,4 +11,9 @@ class GoogleClientIdTests: XCTestCase {
         XCTAssertNotNil(GoogleClientId(string: "com.something.something"))
         XCTAssertNotNil(GoogleClientId(string: "a.b.c"))
     }
+
+    func testRedirectURIGeneration() {
+        XCTAssertEqual(GoogleClientId(string: "a.b.c")?.redirectURI(path: .none), "c.b.a")
+        XCTAssertEqual(GoogleClientId(string: "a.b.c")?.redirectURI(path: "a_path"), "c.b.a:/a_path")
+    }
 }

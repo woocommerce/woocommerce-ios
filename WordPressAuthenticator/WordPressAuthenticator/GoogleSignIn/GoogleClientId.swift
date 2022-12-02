@@ -8,4 +8,15 @@ struct GoogleClientId {
         }
         self.value = string
     }
+
+    /// See https://developers.google.com/identity/protocols/oauth2/native-app#step1-code-verifier
+    func redirectURI(path: String?) -> String {
+        let root = value.split(separator: ".").reversed().joined(separator: ".")
+
+        guard let path else {
+            return root
+        }
+
+        return "\(root):/\(path)"
+    }
 }

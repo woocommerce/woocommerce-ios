@@ -25,6 +25,8 @@
 		3F879FD9293A48B2005C2B48 /* OAuthTokenResponseBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F879FD8293A48B2005C2B48 /* OAuthTokenResponseBody.swift */; };
 		3F879FDD293A500D005C2B48 /* URLRequest+OAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F879FDC293A500D005C2B48 /* URLRequest+OAuth.swift */; };
 		3F879FDF293A501D005C2B48 /* URLRequest+OAuthTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F879FDE293A501D005C2B48 /* URLRequest+OAuthTests.swift */; };
+		3F879FE2293A53F5005C2B48 /* OAuthRequestBody+GoogleSignIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F879FE0293A53CB005C2B48 /* OAuthRequestBody+GoogleSignIn.swift */; };
+		3F879FE4293A545C005C2B48 /* OAuthRequestBody+GoogleSignInTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F879FE3293A545C005C2B48 /* OAuthRequestBody+GoogleSignInTests.swift */; };
 		3F9439BE27D6F9B60067183A /* LoginPrologueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F9439BD27D6F9B60067183A /* LoginPrologueViewController.swift */; };
 		3FE8071529364C410088420C /* Result+ConvenienceInitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE8071429364C410088420C /* Result+ConvenienceInitTests.swift */; };
 		3FE80717293650190088420C /* Result+ConvenienceInit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE80716293650190088420C /* Result+ConvenienceInit.swift */; };
@@ -248,6 +250,8 @@
 		3F879FD8293A48B2005C2B48 /* OAuthTokenResponseBody.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthTokenResponseBody.swift; sourceTree = "<group>"; };
 		3F879FDC293A500D005C2B48 /* URLRequest+OAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLRequest+OAuth.swift"; sourceTree = "<group>"; };
 		3F879FDE293A501D005C2B48 /* URLRequest+OAuthTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLRequest+OAuthTests.swift"; sourceTree = "<group>"; };
+		3F879FE0293A53CB005C2B48 /* OAuthRequestBody+GoogleSignIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OAuthRequestBody+GoogleSignIn.swift"; sourceTree = "<group>"; };
+		3F879FE3293A545C005C2B48 /* OAuthRequestBody+GoogleSignInTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OAuthRequestBody+GoogleSignInTests.swift"; sourceTree = "<group>"; };
 		3F9439BD27D6F9B60067183A /* LoginPrologueViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPrologueViewController.swift; sourceTree = "<group>"; };
 		3FE8071429364C410088420C /* Result+ConvenienceInitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+ConvenienceInitTests.swift"; sourceTree = "<group>"; };
 		3FE80716293650190088420C /* Result+ConvenienceInit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+ConvenienceInit.swift"; sourceTree = "<group>"; };
@@ -517,6 +521,7 @@
 		3FE8072229365F740088420C /* GoogleSignIn */ = {
 			isa = PBXGroup;
 			children = (
+				3F879FE0293A53CB005C2B48 /* OAuthRequestBody+GoogleSignIn.swift */,
 				3FE8072029365F6D0088420C /* URL+GoogleSignIn.swift */,
 			);
 			path = GoogleSignIn;
@@ -525,6 +530,7 @@
 		3FE8072329365FC20088420C /* GoogleSignIn */ = {
 			isa = PBXGroup;
 			children = (
+				3F879FE3293A545C005C2B48 /* OAuthRequestBody+GoogleSignInTests.swift */,
 				3FE8071E2936558F0088420C /* URL+GoogleSignInTests.swift */,
 			);
 			path = GoogleSignIn;
@@ -1380,6 +1386,7 @@
 				B56090F9208A533200399AE4 /* WordPressAuthenticator+Events.swift in Sources */,
 				CEDE0D93242011E000CB3345 /* NSObject+Helpers.swift in Sources */,
 				020DEF6428AA091100C85D51 /* MagicLinkRequester.swift in Sources */,
+				3F879FE2293A53F5005C2B48 /* OAuthRequestBody+GoogleSignIn.swift in Sources */,
 				020BE74A23B0BD2E007FE54C /* WordPressAuthenticatorDisplayImages.swift in Sources */,
 				B560913A208A563800399AE4 /* LoginLinkRequestViewController.swift in Sources */,
 				B560910C208A54F800399AE4 /* WordPressComOAuthClientFacade.m in Sources */,
@@ -1466,6 +1473,7 @@
 				D85C36E6256E0DDE00D56E34 /* NavigationToEnterSiteTests.swift in Sources */,
 				D85C3882256E3FEC00D56E34 /* WordPressComSiteInfoTests.swift in Sources */,
 				D8611A672576236800A5DF27 /* NavigateBackTests.swift in Sources */,
+				3F879FE4293A545C005C2B48 /* OAuthRequestBody+GoogleSignInTests.swift in Sources */,
 				F12F9FB824D8A7FC00771BCE /* AnalyticsTrackerTests.swift in Sources */,
 				B501C046208FC6A700D1E58F /* WordPressAuthenticatorTests.swift in Sources */,
 			);

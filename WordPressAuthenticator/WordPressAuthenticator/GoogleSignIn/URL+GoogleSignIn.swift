@@ -46,7 +46,7 @@ extension URL {
         }
     }
 
-    private static func redirectURI(from clientId: String) -> String {
+    static func redirectURI(from clientId: String) -> String {
         // Google's client id is in the form: 123-abc245def.apps.googleusercontent.com
         // The redirect URI uses the reverse-DNS notation.
         let reverseDNSClientId = clientId.split(separator: ".").reversed().joined(separator: ".")

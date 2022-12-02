@@ -13,7 +13,7 @@ class OAuthTokenRequestBodyTests: XCTestCase {
             redirectURI: "redirectUri"
         )
 
-        let data = body.asURLEncodedData()
+        let data = try body.asURLEncodedData()
 
         let decodedData = try XCTUnwrap(String(data: data, encoding: .utf8))
 

@@ -18,7 +18,7 @@ struct OAuthTokenRequestBody: Encodable {
         case redirectURI = "redirect_uri"
     }
 
-    func asURLEncodedData() -> Data {
+    func asURLEncodedData() throws -> Data {
         let params = [
             (CodingKeys.clientId.rawValue, clientId),
             (CodingKeys.clientSecret.rawValue, clientSecret),
@@ -32,6 +32,15 @@ struct OAuthTokenRequestBody: Encodable {
 
         var components = URLComponents()
         components.queryItems = items
-        return components.query!.data(using: .utf8)!
+
+        guard let query = components.query else {
+            throw OAuthError.failedToBuildURLQuery
+        }
+
+        guard let data = query.data(using: .utf8) else {
+            throw OAuthError.failedToEncodeURLQuery(query: query)
+        }
+
+        return data
     }
 }

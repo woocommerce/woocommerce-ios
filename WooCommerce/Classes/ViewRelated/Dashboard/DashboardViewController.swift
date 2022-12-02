@@ -106,6 +106,7 @@ final class DashboardViewController: UIViewController {
     private let viewModel: DashboardViewModel = .init()
 
     private var subscriptions = Set<AnyCancellable>()
+    private var navbarObserverSubscription: AnyCancellable?
 
     // MARK: View Lifecycle
 
@@ -148,6 +149,11 @@ final class DashboardViewController: UIViewController {
         observeNavigationBarHeightForHeaderVisibility()
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        stopObservingNavigationBarHeightForHeaderVisibility()
+        super.viewWillDisappear(animated)
+    }
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         dashboardUI?.view.frame = containerView.bounds
@@ -170,7 +176,9 @@ final class DashboardViewController: UIViewController {
     }
 
     func showHeaderWithAnimation() {
-        headerAnimator?.stopAnimation(true)
+        if headerAnimator?.isRunning == true {
+            headerAnimator?.stopAnimation(true)
+        }
         headerAnimator = UIViewPropertyAnimator.runningPropertyAnimator(
             withDuration: Constants.animationDurationSeconds,
             delay: 0,
@@ -183,7 +191,9 @@ final class DashboardViewController: UIViewController {
     }
 
     func hideHeaderWithAnimation() {
-        headerAnimator?.stopAnimation(true)
+        if headerAnimator?.isRunning == true {
+            headerAnimator?.stopAnimation(true)
+        }
         headerAnimator = UIViewPropertyAnimator.runningPropertyAnimator(
             withDuration: Constants.animationDurationSeconds,
             delay: 0,
@@ -634,19 +644,25 @@ private extension DashboardViewController {
     }
 
     func observeNavigationBarHeightForHeaderVisibility() {
-        navigationController?.navigationBar.publisher(for: \.frame, options: [.initial, .new])
+        navbarObserverSubscription = navigationController?.navigationBar.publisher(for: \.frame, options: [.initial, .new])
             .map({ [collapsedNavigationBarHeight] rect in
                 rect.height <= collapsedNavigationBarHeight
             }) // true if navigation bar is collapsed
             .removeDuplicates()
             .sink(receiveValue: { [weak self] navigationBarIsShort in
+                guard let self else { return }
+
                 if navigationBarIsShort {
-                    self?.hideHeaderWithAnimation()
+                    self.hideHeaderWithAnimation()
                 } else {
-                    self?.showHeaderWithAnimation()
+                    self.showHeaderWithAnimation()
                 }
             })
-            .store(in: &subscriptions)
+    }
+
+    func stopObservingNavigationBarHeightForHeaderVisibility() {
+        navbarObserverSubscription?.cancel()
+        navbarObserverSubscription = nil
     }
 
     var collapsedNavigationBarHeight: CGFloat {

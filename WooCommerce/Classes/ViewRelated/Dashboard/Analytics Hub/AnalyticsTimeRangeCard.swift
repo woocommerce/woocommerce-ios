@@ -4,17 +4,13 @@ import SwiftUI
 ///
 struct AnalyticsTimeRangeCard: View {
 
-    let timeRangeTitle: String
-    let currentRangeDescription: String
-    let previousRangeDescription: String
+    let viewModel: AnalyticsTimeRangeCardViewModel
     @Binding var selectionType: AnalyticsHubTimeRangeSelection.SelectionType
 
     @State private var showTimeRangeSelectionView: Bool = false
 
     init(viewModel: AnalyticsTimeRangeCardViewModel, selectionType: Binding<AnalyticsHubTimeRangeSelection.SelectionType>) {
-        self.timeRangeTitle = viewModel.selectedRangeTitle
-        self.currentRangeDescription = viewModel.currentRangeSubtitle
-        self.previousRangeDescription = viewModel.previousRangeSubtitle
+        self.viewModel = viewModel
         self._selectionType = selectionType
     }
 
@@ -40,11 +36,11 @@ struct AnalyticsTimeRangeCard: View {
                         .background(Circle().foregroundColor(Color(.systemGray6)))
 
                     VStack(alignment: .leading, spacing: .zero) {
-                        Text(timeRangeTitle)
+                        Text(viewModel.selectedRangeTitle)
                             .foregroundColor(Color(.text))
                             .subheadlineStyle()
 
-                        Text(currentRangeDescription)
+                        Text(viewModel.currentRangeSubtitle)
                             .foregroundColor(Color(.text))
                             .bold()
                     }
@@ -63,7 +59,7 @@ struct AnalyticsTimeRangeCard: View {
 
             Divider()
 
-            BoldableTextView(Localization.comparisonHeaderTextWith(previousRangeDescription))
+            BoldableTextView(Localization.comparisonHeaderTextWith(viewModel.previousRangeSubtitle))
                 .padding(.leading)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .calloutStyle()

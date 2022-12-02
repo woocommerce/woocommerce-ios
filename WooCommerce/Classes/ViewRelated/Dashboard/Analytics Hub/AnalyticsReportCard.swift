@@ -4,22 +4,7 @@ import SwiftUI
 ///
 struct AnalyticsReportCard: View {
 
-    let title: String
-    let leadingTitle: String
-    let leadingValue: String
-    let leadingDelta: String
-    let leadingDeltaColor: UIColor
-    let leadingChartData: [Double]
-    let trailingTitle: String
-    let trailingValue: String
-    let trailingDelta: String
-    let trailingDeltaColor: UIColor
-    let trailingChartData: [Double]
-
-    let isRedacted: Bool
-
-    let showSyncError: Bool
-    let syncErrorMessage: String
+    let viewModel: AnalyticsReportCardViewModel
 
     // Layout metrics that scale based on accessibility changes
     @ScaledMetric private var scaledChartWidth: CGFloat = Layout.chartWidth
@@ -28,7 +13,7 @@ struct AnalyticsReportCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.titleSpacing) {
 
-            Text(title)
+            Text(viewModel.title)
                 .foregroundColor(Color(.text))
                 .footnoteStyle()
 
@@ -38,21 +23,21 @@ struct AnalyticsReportCard: View {
                 ///
                 VStack(alignment: .leading, spacing: Layout.columnInnerSpacing) {
 
-                    Text(leadingTitle)
+                    Text(viewModel.leadingTitle)
                         .calloutStyle()
 
-                    Text(leadingValue)
+                    Text(viewModel.leadingValue)
                         .titleStyle()
-                        .redacted(reason: isRedacted ? .placeholder : [])
-                        .shimmering(active: isRedacted)
+                        .redacted(reason: viewModel.isRedacted ? .placeholder : [])
+                        .shimmering(active: viewModel.isRedacted)
 
                     AdaptiveStack(horizontalAlignment: .leading) {
-                        DeltaTag(value: leadingDelta, backgroundColor: leadingDeltaColor)
+                        DeltaTag(value: viewModel.leadingDelta, backgroundColor: viewModel.leadingDeltaColor)
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .redacted(reason: isRedacted ? .placeholder : [])
-                            .shimmering(active: isRedacted)
+                            .redacted(reason: viewModel.isRedacted ? .placeholder : [])
+                            .shimmering(active: viewModel.isRedacted)
 
-                        AnalyticsLineChart(dataPoints: leadingChartData, lineChartColor: leadingDeltaColor)
+                        AnalyticsLineChart(dataPoints: viewModel.leadingChartData, lineChartColor: viewModel.leadingDeltaColor)
                             .frame(width: scaledChartWidth, height: scaledChartHeight)
                     }
 
@@ -62,29 +47,29 @@ struct AnalyticsReportCard: View {
                 /// Trailing Column
                 ///
                 VStack(alignment: .leading, spacing: Layout.columnInnerSpacing) {
-                    Text(trailingTitle)
+                    Text(viewModel.trailingTitle)
                         .calloutStyle()
 
-                    Text(trailingValue)
+                    Text(viewModel.trailingValue)
                         .titleStyle()
-                        .redacted(reason: isRedacted ? .placeholder : [])
-                        .shimmering(active: isRedacted)
+                        .redacted(reason: viewModel.isRedacted ? .placeholder : [])
+                        .shimmering(active: viewModel.isRedacted)
 
                     AdaptiveStack(horizontalAlignment: .leading) {
-                        DeltaTag(value: trailingDelta, backgroundColor: trailingDeltaColor)
+                        DeltaTag(value: viewModel.trailingDelta, backgroundColor: viewModel.trailingDeltaColor)
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .redacted(reason: isRedacted ? .placeholder : [])
-                            .shimmering(active: isRedacted)
+                            .redacted(reason: viewModel.isRedacted ? .placeholder : [])
+                            .shimmering(active: viewModel.isRedacted)
 
-                        AnalyticsLineChart(dataPoints: trailingChartData, lineChartColor: trailingDeltaColor)
+                        AnalyticsLineChart(dataPoints: viewModel.trailingChartData, lineChartColor: viewModel.trailingDeltaColor)
                             .frame(width: scaledChartWidth, height: scaledChartHeight)
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
 
-            if showSyncError {
-               Text(syncErrorMessage)
+            if viewModel.showSyncError {
+                Text(viewModel.syncErrorMessage)
                    .foregroundColor(Color(.text))
                    .subheadlineStyle()
                    .frame(maxWidth: .infinity, alignment: .leading)
@@ -109,36 +94,36 @@ private extension AnalyticsReportCard {
 // MARK: Previews
 struct Previews: PreviewProvider {
     static var previews: some View {
-        AnalyticsReportCard(title: "REVENUE",
-                            leadingTitle: "Total Sales",
-                            leadingValue: "$3.678",
-                            leadingDelta: "+23%",
-                            leadingDeltaColor: .withColorStudio(.green, shade: .shade40),
-                            leadingChartData: [0.0, 10.0, 2.0, 20.0, 15.0, 40.0, 0.0, 10.0, 2.0, 20.0, 15.0, 50.0],
-                            trailingTitle: "Net Sales",
-                            trailingValue: "$3.232",
-                            trailingDelta: "-3%",
-                            trailingDeltaColor: .withColorStudio(.red, shade: .shade40),
-                            trailingChartData: [50.0, 15.0, 20.0, 2.0, 10.0, 0.0, 40.0, 15.0, 20.0, 2.0, 10.0, 0.0],
-                            isRedacted: false,
-                            showSyncError: false,
-                            syncErrorMessage: "")
+        AnalyticsReportCard(viewModel: .init(title: "REVENUE",
+                                             leadingTitle: "Total Sales",
+                                             leadingValue: "$3.678",
+                                             leadingDelta: "+23%",
+                                             leadingDeltaColor: .withColorStudio(.green, shade: .shade40),
+                                             leadingChartData: [0.0, 10.0, 2.0, 20.0, 15.0, 40.0, 0.0, 10.0, 2.0, 20.0, 15.0, 50.0],
+                                             trailingTitle: "Net Sales",
+                                             trailingValue: "$3.232",
+                                             trailingDelta: "-3%",
+                                             trailingDeltaColor: .withColorStudio(.red, shade: .shade40),
+                                             trailingChartData: [50.0, 15.0, 20.0, 2.0, 10.0, 0.0, 40.0, 15.0, 20.0, 2.0, 10.0, 0.0],
+                                             isRedacted: false,
+                                             showSyncError: false,
+                                             syncErrorMessage: ""))
             .previewLayout(.sizeThatFits)
 
-        AnalyticsReportCard(title: "REVENUE",
-                            leadingTitle: "Total Sales",
-                            leadingValue: "-",
-                            leadingDelta: "0%",
-                            leadingDeltaColor: .withColorStudio(.gray, shade: .shade0),
-                            leadingChartData: [],
-                            trailingTitle: "Net Sales",
-                            trailingValue: "-",
-                            trailingDelta: "0%",
-                            trailingDeltaColor: .withColorStudio(.gray, shade: .shade0),
-                            trailingChartData: [],
-                            isRedacted: false,
-                            showSyncError: true,
-                            syncErrorMessage: "Error loading revenue analytics")
+        AnalyticsReportCard(viewModel: .init(title: "REVENUE",
+                                             leadingTitle: "Total Sales",
+                                             leadingValue: "-",
+                                             leadingDelta: "0%",
+                                             leadingDeltaColor: .withColorStudio(.gray, shade: .shade0),
+                                             leadingChartData: [],
+                                             trailingTitle: "Net Sales",
+                                             trailingValue: "-",
+                                             trailingDelta: "0%",
+                                             trailingDeltaColor: .withColorStudio(.gray, shade: .shade0),
+                                             trailingChartData: [],
+                                             isRedacted: false,
+                                             showSyncError: true,
+                                             syncErrorMessage: "Error loading revenue analytics"))
             .previewLayout(.sizeThatFits)
             .previewDisplayName("No data")
     }

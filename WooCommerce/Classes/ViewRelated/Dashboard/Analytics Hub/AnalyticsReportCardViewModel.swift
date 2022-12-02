@@ -84,24 +84,3 @@ extension AnalyticsReportCardViewModel {
               syncErrorMessage: "")
     }
 }
-
-/// Convenience extension to create an `AnalyticsReportCard` from a view model.
-///
-extension AnalyticsReportCard {
-    init(viewModel: AnalyticsReportCardViewModel) {
-        self.title = viewModel.title
-        self.leadingTitle = viewModel.leadingTitle
-        self.leadingValue = viewModel.leadingValue
-        self.leadingDelta = viewModel.leadingDelta
-        self.leadingDeltaColor = viewModel.leadingDeltaColor
-        self.leadingChartData = viewModel.leadingChartData
-        self.trailingTitle = viewModel.trailingTitle
-        self.trailingValue = viewModel.trailingValue
-        self.trailingDelta = viewModel.trailingDelta
-        self.trailingDeltaColor = viewModel.trailingDeltaColor
-        self.trailingChartData = viewModel.trailingChartData
-        self.isRedacted = viewModel.isRedacted
-        self.showSyncError = viewModel.showSyncError
-        self.syncErrorMessage = viewModel.syncErrorMessage
-    }
-}

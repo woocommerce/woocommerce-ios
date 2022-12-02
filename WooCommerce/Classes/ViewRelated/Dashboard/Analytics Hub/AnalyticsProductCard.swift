@@ -4,27 +4,7 @@ import SwiftUI
 ///
 struct AnalyticsProductCard: View {
 
-    /// Items sold quantity. Needs to be formatted.
-    ///
-    let itemsSold: String
-
-    /// Delta Tag Value. Needs to be formatted
-    let delta: String
-
-    /// Delta Tag background color.
-    let deltaBackgroundColor: UIColor
-
-    /// Items Solds data to render.
-    ///
-    let itemsSoldData: [TopPerformersRow.Data]
-
-    /// Indicates if the values should be hidden (for loading state)
-    ///
-    let isRedacted: Bool
-
-    /// Indicates if there was an error loading the data for the card
-    ///
-    let showSyncError: Bool
+    let viewModel: AnalyticsProductCardViewModel
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -39,18 +19,18 @@ struct AnalyticsProductCard: View {
                 .padding(.bottom, Layout.columnSpacing)
 
             HStack {
-                Text(itemsSold)
+                Text(viewModel.itemsSold)
                     .titleStyle()
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .redacted(reason: isRedacted ? .placeholder : [])
-                    .shimmering(active: isRedacted)
+                    .redacted(reason: viewModel.isRedacted ? .placeholder : [])
+                    .shimmering(active: viewModel.isRedacted)
 
-                DeltaTag(value: delta, backgroundColor: deltaBackgroundColor)
-                    .redacted(reason: isRedacted ? .placeholder : [])
-                    .shimmering(active: isRedacted)
+                DeltaTag(value: viewModel.delta, backgroundColor: viewModel.deltaBackgroundColor)
+                    .redacted(reason: viewModel.isRedacted ? .placeholder : [])
+                    .shimmering(active: viewModel.isRedacted)
             }
 
-            if showSyncError {
+            if viewModel.showSyncError {
                 Text(Localization.noProducts)
                     .foregroundColor(Color(.text))
                     .subheadlineStyle()
@@ -58,7 +38,7 @@ struct AnalyticsProductCard: View {
                     .padding(.top, Layout.columnSpacing)
             }
 
-            TopPerformersView(itemTitle: Localization.title.localizedCapitalized, valueTitle: Localization.itemsSold, rows: itemsSoldData)
+            TopPerformersView(itemTitle: Localization.title.localizedCapitalized, valueTitle: Localization.itemsSold, rows: viewModel.itemsSoldData)
                 .padding(.top, Layout.columnSpacing)
 
         }
@@ -87,25 +67,25 @@ private extension AnalyticsProductCard {
 struct AnalyticsProductCardPreviews: PreviewProvider {
     static var previews: some View {
         let imageURL = URL(string: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")
-        AnalyticsProductCard(itemsSold: "2,234",
-                             delta: "+23%",
-                             deltaBackgroundColor: .withColorStudio(.green, shade: .shade50),
-                             itemsSoldData: [
-                                .init(imageURL: imageURL, name: "Tabletop Photos", details: "Net Sales: $1,232", value: "32"),
-                                .init(imageURL: imageURL, name: "Kentya Palm", details: "Net Sales: $800", value: "10"),
-                                .init(imageURL: imageURL, name: "Love Ficus", details: "Net Sales: $599", value: "5"),
-                                .init(imageURL: imageURL, name: "Bird Of Paradise", details: "Net Sales: $23.50", value: "2"),
-                             ],
-                             isRedacted: false,
-                             showSyncError: false)
+        AnalyticsProductCard(viewModel: .init(itemsSold: "2,234",
+                                              delta: "+23%",
+                                              deltaBackgroundColor: .withColorStudio(.green, shade: .shade50),
+                                              itemsSoldData: [
+                                                .init(imageURL: imageURL, name: "Tabletop Photos", details: "Net Sales: $1,232", value: "32"),
+                                                .init(imageURL: imageURL, name: "Kentya Palm", details: "Net Sales: $800", value: "10"),
+                                                .init(imageURL: imageURL, name: "Love Ficus", details: "Net Sales: $599", value: "5"),
+                                                .init(imageURL: imageURL, name: "Bird Of Paradise", details: "Net Sales: $23.50", value: "2"),
+                                              ],
+                                              isRedacted: false,
+                                              showSyncError: false))
             .previewLayout(.sizeThatFits)
 
-        AnalyticsProductCard(itemsSold: "-",
-                             delta: "0%",
-                             deltaBackgroundColor: .withColorStudio(.gray, shade: .shade0),
-                             itemsSoldData: [],
-                             isRedacted: false,
-                             showSyncError: true)
+        AnalyticsProductCard(viewModel: .init(itemsSold: "-",
+                                              delta: "0%",
+                                              deltaBackgroundColor: .withColorStudio(.gray, shade: .shade0),
+                                              itemsSoldData: [],
+                                              isRedacted: false,
+                                              showSyncError: true))
             .previewLayout(.sizeThatFits)
             .previewDisplayName("No data")
     }

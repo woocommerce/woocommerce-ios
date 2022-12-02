@@ -53,6 +53,14 @@ final class AnalyticsHubViewModelTests: XCTestCase {
             default:
                 break
             }
+            switch action {
+            case let .retrieveCustomStats(_, _, _, _, _, _, completion):
+                completion(.failure(NSError(domain: "Test", code: 1)))
+            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, completion):
+                completion(.failure(NSError(domain: "Test", code: 1)))
+            default:
+                break
+            }
         }
 
         // When
@@ -61,7 +69,8 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(vm.revenueCard.showSyncError)
         XCTAssertTrue(vm.ordersCard.showSyncError)
-        XCTAssertTrue(vm.productCard.showSyncError)
+        XCTAssertTrue(vm.productCard.showStatsError)
+        XCTAssertTrue(vm.productCard.showItemsSoldError)
     }
 
     func test_cards_viewmodels_redacted_while_updating_from_network() async {

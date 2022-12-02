@@ -3,7 +3,6 @@ import Combine
 import enum Networking.DotcomError
 import enum Storage.StatsVersion
 import protocol Experiments.FeatureFlagService
-import enum Experiments.ABTest
 
 /// Syncs data for dashboard stats UI and determines the state of the dashboard UI based on stats version.
 final class DashboardViewModel {
@@ -147,14 +146,9 @@ final class DashboardViewModel {
         stores.dispatch(action)
     }
 
-    /// Sets the view model for the products onboarding banner if the user hasn't dismissed it before,
-    /// and if the user is part of the treatment group for the products onboarding A/B test.
+    /// Sets the view model for the products onboarding banner if the user hasn't dismissed it before.
     ///
     private func setProductsOnboardingBannerIfNeeded() {
-        guard ABTest.productsOnboardingBanner.variation == .treatment(nil) else {
-            return
-        }
-
         let getVisibility = AppSettingsAction.getFeatureAnnouncementVisibility(campaign: .productsOnboarding) { [weak self] result in
             guard let self else { return }
             if case let .success(isVisible) = result, isVisible {

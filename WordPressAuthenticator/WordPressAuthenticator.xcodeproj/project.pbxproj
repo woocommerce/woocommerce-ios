@@ -27,6 +27,8 @@
 		3FE8071D293652BB0088420C /* OAuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE8071C293652BB0088420C /* OAuthError.swift */; };
 		3FE8071F2936558F0088420C /* URL+GoogleSignInTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE8071E2936558F0088420C /* URL+GoogleSignInTests.swift */; };
 		3FE8072129365F6D0088420C /* URL+GoogleSignIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE8072029365F6D0088420C /* URL+GoogleSignIn.swift */; };
+		3FEC44F7293A0E4600EBDECF /* ProofKeyForCodeExchange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FEC44F6293A0E4600EBDECF /* ProofKeyForCodeExchange.swift */; };
+		3FEC44F9293A0F2900EBDECF /* ProofKeyForCodeExchangeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FEC44F8293A0F2900EBDECF /* ProofKeyForCodeExchangeTests.swift */; };
 		3FFF2FC123D7ED7C00D38C77 /* EmailClients.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3FFF2FC023D7ED7C00D38C77 /* EmailClients.plist */; };
 		3FFF2FC323D7F53200D38C77 /* AppSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FFF2FC223D7F53200D38C77 /* AppSelector.swift */; };
 		4A1DEF4A29341B1F00322608 /* LoggingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A1DEF4829341B1F00322608 /* LoggingTests.m */; };
@@ -243,6 +245,8 @@
 		3FE8071C293652BB0088420C /* OAuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthError.swift; sourceTree = "<group>"; };
 		3FE8071E2936558F0088420C /* URL+GoogleSignInTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+GoogleSignInTests.swift"; sourceTree = "<group>"; };
 		3FE8072029365F6D0088420C /* URL+GoogleSignIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+GoogleSignIn.swift"; sourceTree = "<group>"; };
+		3FEC44F6293A0E4600EBDECF /* ProofKeyForCodeExchange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProofKeyForCodeExchange.swift; sourceTree = "<group>"; };
+		3FEC44F8293A0F2900EBDECF /* ProofKeyForCodeExchangeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProofKeyForCodeExchangeTests.swift; sourceTree = "<group>"; };
 		3FFF2FC023D7ED7C00D38C77 /* EmailClients.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = EmailClients.plist; sourceTree = "<group>"; };
 		3FFF2FC223D7F53200D38C77 /* AppSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSelector.swift; sourceTree = "<group>"; };
 		4A1DEF4829341B1F00322608 /* LoggingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoggingTests.m; sourceTree = "<group>"; };
@@ -480,6 +484,7 @@
 			children = (
 				3FE8071A2936515F0088420C /* ASWebAuthenticationSession+Utils.swift .swift */,
 				3FE8071C293652BB0088420C /* OAuthError.swift */,
+				3FEC44F6293A0E4600EBDECF /* ProofKeyForCodeExchange.swift */,
 				3FE80716293650190088420C /* Result+ConvenienceInit.swift */,
 			);
 			path = OAuth;
@@ -488,6 +493,7 @@
 		3FE807192936504F0088420C /* OAuth */ = {
 			isa = PBXGroup;
 			children = (
+				3FEC44F8293A0F2900EBDECF /* ProofKeyForCodeExchangeTests.swift */,
 				3FE8071429364C410088420C /* Result+ConvenienceInitTests.swift */,
 			);
 			path = OAuth;
@@ -1313,6 +1319,7 @@
 				02A526CF28A3A35D00FD1812 /* PasswordCoordinator.swift in Sources */,
 				98ED483624802F8F00992B2D /* GoogleAuthViewController.swift in Sources */,
 				F5C817E72582B2F300BD5A3B /* UIPasteboard+Detect.swift in Sources */,
+				3FEC44F7293A0E4600EBDECF /* ProofKeyForCodeExchange.swift in Sources */,
 				B56090EA208A51D000399AE4 /* LoginFields+Validation.swift in Sources */,
 				F1DE08CC24F4266A007AE6B3 /* StoredCredentialsAuthenticator.swift in Sources */,
 				CE1B18CC20EEC32400BECC3F /* WordPressComCredentials.swift in Sources */,
@@ -1430,6 +1437,7 @@
 				3F550D4E23DA429B007E5897 /* AppSelectorTests.swift in Sources */,
 				BA53D64B24DFE07D001F1ABF /* WordpressAuthenticatorProvider.swift in Sources */,
 				4A1DEF4A29341B1F00322608 /* LoggingTests.m in Sources */,
+				3FEC44F9293A0F2900EBDECF /* ProofKeyForCodeExchangeTests.swift in Sources */,
 				CE16177821B70C1A00B82A47 /* WordPressAuthenticatorDisplayTextTests.swift in Sources */,
 				B501C048208FC79C00D1E58F /* LoginFacadeTests.m in Sources */,
 				3108613125AFA4830022F75E /* PasteboardTests.swift in Sources */,

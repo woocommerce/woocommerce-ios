@@ -32,8 +32,8 @@ final class LoginJetpackSetupCoordinator: Coordinator {
         let siteCredentialUI = SiteCredentialLoginHostingViewController(
             siteURL: siteURL,
             connectionOnly: connectionOnly,
-            onLoginSuccess: { [weak self] xmlrpc in
-                self?.showSetupSteps(xmlrpc: xmlrpc)
+            onLoginSuccess: { [weak self] in
+                self?.showSetupSteps()
         })
         navigationController.present(UINavigationController(rootViewController: siteCredentialUI), animated: true)
     }
@@ -42,13 +42,13 @@ final class LoginJetpackSetupCoordinator: Coordinator {
 // MARK: Private helpers
 //
 private extension LoginJetpackSetupCoordinator {
-    func showSetupSteps(xmlrpc: String) {
+    func showSetupSteps() {
         let setupUI = LoginJetpackSetupHostingController(siteURL: siteURL, connectionOnly: connectionOnly, onStoreNavigation: { [weak self] connectedEmail in
             guard let self, let email = connectedEmail else { return }
             if email != self.stores.sessionManager.defaultAccount?.email {
                 // if the user authorized Jetpack with a different account, support them to log in with that account.
                 self.analytics.track(.loginJetpackSetupAuthorizedUsingDifferentWPCOMAccount)
-                self.showVerifyWPComAccount(email: email, xmlrpc: xmlrpc)
+                self.showVerifyWPComAccount(email: email)
             } else {
                 self.showStorePickerForLogin()
             }
@@ -61,10 +61,10 @@ private extension LoginJetpackSetupCoordinator {
         contentNavigationController.setViewControllers([setupUI], animated: true)
     }
 
-    func showVerifyWPComAccount(email: String, xmlrpc: String) {
+    func showVerifyWPComAccount(email: String) {
         WordPressAuthenticator.showVerifyEmailForWPCom(
             from: navigationController.presentedViewController ?? navigationController,
-            xmlrpc: xmlrpc,
+            xmlrpc: "",
             connectedEmail: email,
             siteURL: siteURL
         )

@@ -3,7 +3,6 @@ import SwiftUI
 /// Hosting controller that wraps the `DomainSelectorView` view.
 final class DomainSelectorHostingController: UIHostingController<DomainSelectorView> {
     private let viewModel: DomainSelectorViewModel
-    private let onDomainSelection: (String) async -> Void
 
     /// - Parameters:
     ///   - viewModel: View model for the domain selector.
@@ -11,11 +10,10 @@ final class DomainSelectorHostingController: UIHostingController<DomainSelectorV
     init(viewModel: DomainSelectorViewModel,
          onDomainSelection: @escaping (String) async -> Void) {
         self.viewModel = viewModel
-        self.onDomainSelection = onDomainSelection
         super.init(rootView: DomainSelectorView(viewModel: viewModel))
 
-        rootView.onDomainSelection = { [weak self] domain in
-            await self?.onDomainSelection(domain)
+        rootView.onDomainSelection = { domain in
+            await onDomainSelection(domain)
         }
     }
 

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-11-27 02:10:06+0000 */
+/* Translation-Revision-Date: 2022-11-30 09:54:20+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -781,6 +781,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the Automattic website */
 "Automattic family" = "Automattic ファミリー";
 
+/* Label for average value of orders in the Analytics Hub */
+"Average Order Value" = "平均注文金額";
+
 /* The title on the payment row of the Order Details screen when the payment is still pending */
 "Awaiting payment" = "支払い待ち";
 
@@ -957,6 +960,9 @@ which should be translated separately and considered part of this sentence. */
    Title for the button to cancel the payment methods screen
    Title for the button to cancel the simple payments screen */
 "Cancel" = "キャンセル";
+
+/* Action button to cancel Jetpack installation. */
+"Cancel Installation" = "インストールをキャンセル";
 
 /* Display label for cancelled order status. */
 "Cancelled" = "キャンセル済み";
@@ -1162,6 +1168,9 @@ which should be translated separately and considered part of this sentence. */
    Text field company in Shipping Label Address Validation */
 "Company" = "会社";
 
+/* Subtitle describing the previous analytics period under comparison. E.g. Compared to Oct 1 - 22, 2022 */
+"Compared to **%1$@**" = "**%1$@** との比較";
+
 /* Display label for completed order status. */
 "Completed" = "完了";
 
@@ -1202,6 +1211,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to connect to an existing store from the store picker */
 "Connect an existing store" = "既存のストアを連携";
 
+/* Name of the connection step on the Jetpack setup screen */
+"Connect store to Jetpack" = "ストアを Jetpack に連携";
+
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "Reader に接続";
 
@@ -1222,6 +1234,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Page title for the list of connected stores */
 "Connected Stores" = "連携ストア";
+
+/* Title for the Jetpack setup screen when connection is required */
+"Connecting Jetpack" = "Jetpack を連携しています";
 
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
 "Connecting reader failed" = "Reader に接続できませんでした";
@@ -1478,6 +1493,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Loading text while creating a product from a template */
 "Creating Template Product..." = "テンプレート商品を作成しています...";
+
+/* Title of the in-progress view when waiting for the site to become a Jetpack site after WPCOM plan purchase in the store creation flow. */
+"Creating your store" = "ストアを作成しています";
 
 /* Credit card payment method for shipping label. */
 "Credit card" = "クレジットカード";
@@ -2065,6 +2083,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title indicating a failed step in Jetpack installation. */
 "Error" = "エラー";
 
+/* Error title when Jetpack activation fails */
+"Error activating Jetpack" = "Jetpack を有効化する際にエラーが発生しました";
+
+/* Error title when Jetpack connection fails */
+"Error authorizing connection to Jetpack" = "Jetpack との連携を認証する際にエラーが発生しました";
+
+/* Error code displayed when the Jetpack setup fails. %1$d is the code. */
+"Error code %1$d" = "エラーコード %1$d";
+
 /* Error message when enabling analytics fails */
 "Error enabling analytics. Please try again." = "分析の有効化中にエラーが発生しました。 もう一度やり直してください。";
 
@@ -2073,6 +2100,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Apple Maps で住所の検索中に発生したエラー";
+
+/* Error title when Jetpack install fails */
+"Error installing Jetpack" = "Jetpack のインストール中にエラーが発生しました";
 
 /* Message displayed on Coupon Details screen when loading total discounted amount fails */
 "Error loading data" = "データ読み込みエラー";
@@ -2132,6 +2162,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the exclusions section in Coupon Usage Restrictions screen */
 "Exclusions" = "除外";
+
+/* Button to cancel installation on the Jetpack setup interrupted screen */
+"Exit Without Connecting" = "連携せずに終了";
 
 /* Accessibility value when a banner is expanded */
 "Expanded" = "展開表示";
@@ -2367,6 +2400,9 @@ which should be translated separately and considered part of this sentence. */
 /* Option to select the Gmail app when logging in with magic links */
 "Gmail" = "Gmail";
 
+/* Title for the button to navigate to the home screen after Jetpack setup completes */
+"Go to Store" = "ストアに移動";
+
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Google の登録に失敗しました。";
 
@@ -2404,6 +2440,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Post HTML content */
 "HTML Content" = "HTML コンテンツ";
+
+/* Subtitle on the Jetpack setup required screen */
+"Have your store credentials ready." = "ストアのログイン情報を用意してください。";
 
 /* Accessibility label for selecting h1 paragraph style button on the formatting toolbar. */
 "Header 1" = "ヘッダー1";
@@ -2696,6 +2735,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text on the button that starts a new refund process */
 "Issue Refund" = "返金を実行";
 
+/* Title of the alert when the WPCOM plan cannot be purchased in the store creation flow. */
+"Issue purchasing the plan" = "プランの購入に関する問題";
+
 /* Text of the screen that is displayed while the refund is being created. */
 "Issuing Refund..." = "返金を実行しています...";
 
@@ -2742,6 +2784,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack は WordPress の無料のプラグインであり、ストアをモバイルでの最適な操作に必要なツール (プッシュ通知および統計を含む) と接続します。";
+
+/* Title of the Jetpack setup interrupted screen */
+"Jetpack is installed, but not connected." = "Jetpack はインストールされていますが、連携されていません。";
 
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "どこからでも参加可能";
@@ -3067,6 +3112,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Caption displayed in promotional screens shown during the login flow. */
 "Monitor and approve your product reviews" = "商品レビューを監視、承認";
 
+/* Title of the Analytics Hub Month to Date selection range */
+"Month to Date" = "今月の現在まで";
+
 /* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
    Accessibility label for the More button on formatting toolbar. */
 "More" = "その他";
@@ -3143,6 +3191,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The title for the net amount paid cell */
 "Net Payment" = "支払額 (正味)";
 
+/* Label for net sales (net revenue) in the Analytics Hub */
+"Net Sales" = "純売上高";
+
 /* Top performers — label for the total sales of a product */
 "Net sales: %@" = "純売上高: %@";
 
@@ -3203,6 +3254,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
 "No coupons found" = "クーポンがありません";
 
+/* A error message when it's not possible to acquirethe Analytics Hub current selection range */
+"No current period available" = "利用できる現在の期間がありません";
+
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "使用可能なデータがありません";
 
@@ -3226,6 +3280,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Message on the detail view of the Orders tab before any order is selected */
 "No order selected" = "注文が選択されていません";
+
+/* A error message when it's not possible toacquire the Analytics Hub previous selection range */
+"No previous period available" = "利用できる前期間がありません";
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "価格未設定";
@@ -3316,6 +3373,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Header of selected attribute options section in Add Attribute Options screen */
 "OPTIONS OFFERED" = "提供されているオプション";
+
+/* Title for order analytics section in the Analytics Hub */
+"ORDERS" = "注文";
 
 /* Spoken label to indicate switch control is turned off. */
 "Off" = "オフ";
@@ -3663,8 +3723,14 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "リーダーを充電してください";
 
+/* Error message on the Jetpack setup required screen when Jetpack connection is missing. */
+"Please connect your store to Jetpack to access it on this app." = "このアプリでアクセスするには、ストアを Jetpack に連携してください。";
+
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app." = "アプリを使用するには、サイトの所有者に連絡し、ショップ運営者または管理者としてサイトへの招待を受けてください。";
+
+/* Suggestion to be displayed when the user encounters a permission error during Jetpack setup */
+"Please contact your shop manager or administrator for help." = "ショップ運営者または管理者にお問い合わせください。";
 
 /* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to address problems */
 "Please correct your store address to proceed" = "続行するにはストアの住所を修正してください";
@@ -3725,6 +3791,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* A short prompt asking the user to properly fill out all login fields. */
 "Please fill out all the fields" = "すべての欄に記入してください";
 
+/* Error message on the Jetpack setup required screen. */
+"Please install the free Jetpack plugin to access your store on this app." = "このアプリでストアにアクセスするには、無料の Jetpack プラグインをインストールしてください。";
+
 /* Message for alert to prompt user to logout before connecting to a different wordpress.com site. */
 "Please log out before connecting to a different wordpress.com site" = "別の wordpress.com サイトに接続する前にログアウトしてください";
 
@@ -3735,14 +3804,23 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Recovery suggestion when we fail to update an address when creating or editing an order */
 "Please make sure you are running the latest version of WooCommerce and try again later." = "最新バージョンの WooCommerce を使用していることを確認し、後でもう一度お試しください。";
 
+/* Message of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
+"Please remain connected." = "連携を維持してください。";
+
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "荷物を選択してください";
 
 /* Message of the alert when the store cannot be created due to the domain in the store creation flow. */
 "Please try a different domain." = "他のドメインをお試しください。";
 
+/* Message of the alert when the WPCOM plan cannot be purchased in the store creation flow. */
+"Please try again and make sure you are signed in to an App Store account eligible for purchase." = "もう一度やり直して、購入可能な App Store アカウントにログインしていることを確認してください。";
+
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "しばらくしてから再度お試しいただくか、サポートをご依頼ください。";
+
+/* Suggestion to be displayed when the user encounters a permission error during Jetpack setup */
+"Please try again or contact support if this error continues." = "もう一度やり直すか、エラーが続く場合はサポートにお問い合わせください。";
 
 /* Error message when Jetpack connection fails */
 "Please try again or contact us for support." = "もう一度やり直すか、サポートにお問い合わせください。";
@@ -3777,6 +3855,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Message on the Jetpack Install Progress screen. The %1$@ is the site address. */
 "Please wait while we connect your site %1$@ with Jetpack." = "サイト %1$@ を Jetpack に接続する間、しばらくお待ちください";
+
+/* Message on the Jetpack setup screen. The %1$@ is the site address. */
+"Please wait while we connect your store %1$@ with Jetpack." = "ストア %1$@ を Jetpack と連携する間、しばらくお待ちください。";
 
 /* Instructions for the progress screen while generating a variation */
 "Please wait while we create the new variation" = "新しいバリエーションが作成されるまでしばらくお待ちください";
@@ -4057,6 +4138,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
 "Quickly get up and selling with a beautiful online store." = "美しいオンラインストアをすぐに立ち上げてそこで販売しましょう。";
+
+/* Title for revenue analytics section in the Analytics Hub */
+"REVENUE" = "収益";
 
 /* Title of button that allows the user to rate the app in the App Store */
 "Rate us" = "評価してください";
@@ -4467,6 +4551,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Link title to see all paper size options */
 "See layout and paper sizes options" = "レイアウトと用紙サイズのオプションを見る";
+
+/* Button on the stats dashboard that navigates user to the analytics hub */
+"See more" = "もっと見る";
 
 /* Subtitle of the Jetpack benefits banner. */
 "See the benefits" = "メリットを見る";
@@ -5044,6 +5131,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
 "Tap or insert card to refund" = "カードをタップまたは挿入して返金";
 
+/* Cell tytle on beta features screen to enable Tap to Pay on iPhone: card payments with the phone's built in reader */
+"Tap to Pay on iPhone" = "iPhone でタップして支払う";
+
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
 "Tap to insert a Horizontal Ruler" = "タップして水平線を挿入します";
 
@@ -5155,6 +5245,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
    The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen.
    Title of button that displays the App's terms of service */
 "Terms of Service" = "利用規約";
+
+/* Cell description on beta features screen to enable in-app purchases */
+"Test out In-Person Payments using your phone's built-in card reader, as we get ready to launch. Supported on iPhone XS and newer phones, running iOS 15.5 or above." = "開始の準備が整ったら、スマートフォンの内蔵カードリーダーを使用してオフラインでの支払いをテストしてください。 iPhone XS 以降のスマートフォンで、iOS 15.5以降のバージョンでサポートされています。";
 
 /* Cell description on beta features screen to enable in-app purchases */
 "Test out in-app purchases as we get ready to launch" = "リリースに向けてアプリ内購入をテストする";
@@ -5420,6 +5513,12 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The details on the placeholder overlay when there is issue syncing site plugins */
 "There was a problem while trying to load plugins. Check your internet and try again." = "プラグインを読み込む際に問題が発生しました。 インターネット接続を確認して再度お試しください。";
 
+/* Message to be displayed when the user encounters a permission error during Jetpack setup */
+"There was an error communicating with your site." = "サイトとの通信でエラーが発生しました。";
+
+/* Message to be displayed when the user encounters a generic error during Jetpack setup */
+"There was an error completing your request." = "リクエストを完了する際にエラーが発生しました。";
+
 /* Notice text after failing to create a simple payments order. */
 "There was an error creating the order" = "注文の作成中にエラーが発生しました";
 
@@ -5502,6 +5601,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Footer text for Downloadable File URL */
 "This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "顧客がアクセスできるファイルの URL です。 入力する URL はエンコード済みである必要があります。";
+
+/* Subtitle of the domain selector. */
+"This is where people will find you on the Internet. You can add another domain later." = "ドメインとは、インターネット上で閲覧者があなたを見つける場所です。 後で別のドメインを追加できます。";
 
 /* Message in action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow.The package name reads like: Package 1: Custom Envelope. */
 "This item is currently in Package %1$d: %2$@. Where would you like to move it?" = "現在この商品は荷物 %1$d: %2$@ に入っています。 どこに移動しますか ?";
@@ -5618,6 +5720,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Label for total number of orders in the Analytics Hub */
 "Total Orders" = "注文合計";
 
+/* Label for total sales (gross revenue) in the Analytics Hub */
+"Total Sales" = "合計売上高";
+
 /* Title of the row for adding the package weight in Shipping Label Package Detail screen */
 "Total package weight" = "荷物の総重量";
 
@@ -5657,6 +5762,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Connect when the SSL certificate is invalid */
 "Trust" = "信用する";
 
+/* Action button to retry Jetpack activation. */
+"Try Activating Again" = "有効化を再試行";
+
 /* Action displayed in the error prompt when loading total discounted amount in Coupon Details screen fails
    Button to retry a software update. Presented to users when updating the card reader software fails
    Button to try again after connecting to a specific reader fails due to a critically low battery.
@@ -5675,8 +5783,14 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Message from the in-person payment card reader prompting user to retry a payment using a different method, e.g. swipe, tap, insert */
 "Try Another Read Method" = "別の読み取り方法をお試しください";
 
+/* Action button to retry Jetpack connection. */
+"Try Authorizing Again" = "認証を再試行";
+
 /* Button to try to collect a payment again. Presented to users after collecting a payment fails */
 "Try Collecting Again" = "もう一度受け取りを試みる";
+
+/* Action button to retry Jetpack installation. */
+"Try Installing Again" = "インストールを再試行";
 
 /* Action to resync on the placeholder overlay when there is issue syncing site plugins
    Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
@@ -5684,6 +5798,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
 "Try another means of payment" = "別の支払方法をお試しください";
+
+/* Message on the Jetpack setup interrupted screen */
+"Try connecting again to access your store." = "ストアにアクセスするには、もう一度接続してみてください。";
 
 /* Title for the button on the Linked Products announcement banner */
 "Try it now" = "今すぐお試しください";
@@ -6043,6 +6160,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* No comment provided by engineer. */
 "Username must be at least 4 characters." = "ユーザー名は4文字以上にしてください。";
 
+/* Message to be displayed when a Jetpack connection is being authorized */
+"Validating" = "検証中";
+
 /* Title for the Value row in item details in Customs screen of Shipping Label flow */
 "Value (%1$@ per unit)" = "価値 (%1$@\/ 個)";
 
@@ -6163,11 +6283,17 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* View title during the Google auth process. */
 "Waiting..." = "待機中";
 
+/* Title of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
+"We are getting ready for your store creation" = "ストア作成の準備を進めています";
+
 /* Error message when the merchant's payment account has been rejected */
 "We are sorry but we can't support In-Person Payments for this store." = "このストアはオフラインでの支払いに対応していません。";
 
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "お使いの端末から Product Add-ons をより簡単に確認できるように取り組んでいます。 当面は、注文のアドオンを表示できるようにする予定です。 ウェブダッシュボードでこれらのアドオンを作成および編集できます。";
+
+/* Error message displayed when there is no store matching the site URL that is associated with the user's account */
+"We cannot load the store at the moment." = "現在、一時的にストアを読み込めません。";
 
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "ストアのアナリティクスを表示できません";
@@ -6265,6 +6391,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Title of a button linking to the app's website */
 "Website" = "サイト";
+
+/* Title of the Analytics Hub Week to Date selection range */
+"Week to Date" = "今週の現在まで";
 
 /* Title of the cell in Product Shipping Settings > Weight */
 "Weight" = "重さ";
@@ -6368,6 +6497,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Option to select the Yahoo Mail app when logging in with magic links */
 "Yahoo Mail" = "Yahoo Mail";
 
+/* Title of the Analytics Hub Year to Date selection range */
+"Year to Date" = "今年の現在まで";
+
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "変更する";
 
@@ -6404,6 +6536,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* The description on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
 "You currently have Coupons disabled for this store. Enable coupons to get started." = "現在、このストアではクーポンが無効になっています。 開始するにはクーポンを有効にしてください。";
+
+/* Message to be displayed when the user encounters a permission error during Jetpack setup */
+"You don't have permission to manage plugins on this store." = "このストアのプラグインを管理する権限がありません。";
 
 /* Title for the mocked order notification needed for the AppStore listing screenshot */
 "You have a new order! 🎉" = "新しい注文があります。🎉";

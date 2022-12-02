@@ -52,7 +52,7 @@ final class DashboardViewModelTests: XCTestCase {
                 completion(.failure(DotcomError.empty))
             } else if case let .retrieveSiteVisitStats(_, _, _, _, completion) = action {
                 completion(.failure(DotcomError.noRestRoute))
-            } else if case let .retrieveTopEarnerStats(_, _, _, _, _, _, completion) = action {
+            } else if case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, completion) = action {
                 completion(.failure(DotcomError.noRestRoute))
             }
         }
@@ -91,7 +91,6 @@ final class DashboardViewModelTests: XCTestCase {
 
     func test_products_onboarding_announcements_take_precedence() {
         // Given
-        MockABTesting.setVariation(.treatment(nil), for: .productsOnboardingBanner)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .checkProductsOnboardingEligibility(_, completion):
@@ -127,7 +126,6 @@ final class DashboardViewModelTests: XCTestCase {
 
     func test_onboarding_announcement_not_displayed_when_previously_dismissed() {
         // Given
-        MockABTesting.setVariation(.treatment(nil), for: .productsOnboardingBanner)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .checkProductsOnboardingEligibility(_, completion):

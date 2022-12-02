@@ -147,10 +147,8 @@ final class StoreCreationCoordinatorTests: XCTestCase {
 
         // Then
         waitUntil {
-            self.navigationController.presentedViewController is UINavigationController
+            (self.navigationController.presentedViewController as? WooNavigationController)?.topViewController is StoreNameFormHostingController
         }
-        let storeCreationNavigationController = try XCTUnwrap(navigationController.presentedViewController as? UINavigationController)
-        assertThat(storeCreationNavigationController.topViewController, isAnInstanceOf: StoreNameFormHostingController.self)
     }
 
     func test_InProgressViewController_is_first_presented_when_fetching_iap_products() throws {
@@ -168,7 +166,7 @@ final class StoreCreationCoordinatorTests: XCTestCase {
 
         // Then
         waitUntil(timeout: 5) {
-            self.navigationController.presentedViewController is InProgressViewController
+            (self.navigationController.presentedViewController as? WooNavigationController)?.topViewController is InProgressViewController
         }
     }
 
@@ -192,10 +190,8 @@ final class StoreCreationCoordinatorTests: XCTestCase {
 
         // Then
         waitUntil {
-            self.navigationController.presentedViewController is WooNavigationController
+            (self.navigationController.presentedViewController as? WooNavigationController)?.topViewController is AuthenticatedWebViewController
         }
-        let storeCreationNavigationController = try XCTUnwrap(navigationController.presentedViewController as? UINavigationController)
-        assertThat(storeCreationNavigationController.topViewController, isAnInstanceOf: AuthenticatedWebViewController.self)
     }
 
     func test_AuthenticatedWebViewController_is_presented_when_user_is_already_entitled_to_iap_product() throws {
@@ -212,9 +208,7 @@ final class StoreCreationCoordinatorTests: XCTestCase {
 
         // Then
         waitUntil {
-            self.navigationController.presentedViewController is WooNavigationController
+            (self.navigationController.presentedViewController as? WooNavigationController)?.topViewController is AuthenticatedWebViewController
         }
-        let storeCreationNavigationController = try XCTUnwrap(navigationController.presentedViewController as? UINavigationController)
-        assertThat(storeCreationNavigationController.topViewController, isAnInstanceOf: AuthenticatedWebViewController.self)
     }
 }

@@ -3,7 +3,6 @@ import Combine
 import enum Networking.DotcomError
 import enum Storage.StatsVersion
 import protocol Experiments.FeatureFlagService
-import enum Experiments.ABTest
 
 /// Syncs data for dashboard stats UI and determines the state of the dashboard UI based on stats version.
 final class DashboardViewModel {
@@ -98,6 +97,7 @@ final class DashboardViewModel {
                                                           latestDateToInclude: latestDateToInclude,
                                                           quantity: Constants.topEarnerStatsLimit,
                                                           forceRefresh: forceRefresh,
+                                                          saveInStorage: true,
                                                           onCompletion: { result in
             switch result {
             case .success:
@@ -107,7 +107,9 @@ final class DashboardViewModel {
             case .failure(let error):
                 DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
             }
-            onCompletion?(result)
+
+            let voidResult = result.map { _ in () } // Caller expects no entity in the result.
+            onCompletion?(voidResult)
         })
         stores.dispatch(action)
     }
@@ -147,14 +149,9 @@ final class DashboardViewModel {
         stores.dispatch(action)
     }
 
-    /// Sets the view model for the products onboarding banner if the user hasn't dismissed it before,
-    /// and if the user is part of the treatment group for the products onboarding A/B test.
+    /// Sets the view model for the products onboarding banner if the user hasn't dismissed it before.
     ///
     private func setProductsOnboardingBannerIfNeeded() {
-        guard ABTest.productsOnboardingBanner.variation == .treatment(nil) else {
-            return
-        }
-
         let getVisibility = AppSettingsAction.getFeatureAnnouncementVisibility(campaign: .productsOnboarding) { [weak self] result in
             guard let self else { return }
             if case let .success(isVisible) = result, isVisible {

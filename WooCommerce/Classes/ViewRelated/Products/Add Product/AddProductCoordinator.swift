@@ -3,7 +3,6 @@ import Yosemite
 import WooFoundation
 import protocol Storage.StorageManagerType
 import class Networking.ProductsRemote
-import enum Experiments.ABTest
 
 /// Controls navigation for the flow to add a product given a navigation controller.
 /// This class is not meant to be retained so that its life cycle is throughout the navigation. Example usage:
@@ -18,7 +17,6 @@ final class AddProductCoordinator: Coordinator {
     private let sourceBarButtonItem: UIBarButtonItem?
     private let sourceView: UIView?
     private let productImageUploader: ProductImageUploaderProtocol
-    private let isProductCreationTypeEnabled: Bool
     private let storage: StorageManagerType
 
     /// ResultController to to track the current product count.
@@ -37,7 +35,6 @@ final class AddProductCoordinator: Coordinator {
     init(siteID: Int64,
          sourceBarButtonItem: UIBarButtonItem,
          sourceNavigationController: UINavigationController,
-         isProductCreationTypeEnabled: Bool = ABTest.productsOnboardingTemplateProducts.variation == .treatment(nil),
          storage: StorageManagerType = ServiceLocator.storageManager,
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
         self.siteID = siteID
@@ -45,14 +42,12 @@ final class AddProductCoordinator: Coordinator {
         self.sourceView = nil
         self.navigationController = sourceNavigationController
         self.productImageUploader = productImageUploader
-        self.isProductCreationTypeEnabled = isProductCreationTypeEnabled
         self.storage = storage
     }
 
     init(siteID: Int64,
          sourceView: UIView,
          sourceNavigationController: UINavigationController,
-         isProductCreationTypeEnabled: Bool = ABTest.productsOnboardingTemplateProducts.variation == .treatment(nil),
          storage: StorageManagerType = ServiceLocator.storageManager,
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
         self.siteID = siteID
@@ -60,7 +55,6 @@ final class AddProductCoordinator: Coordinator {
         self.sourceView = sourceView
         self.navigationController = sourceNavigationController
         self.productImageUploader = productImageUploader
-        self.isProductCreationTypeEnabled = isProductCreationTypeEnabled
         self.storage = storage
     }
 
@@ -84,10 +78,10 @@ final class AddProductCoordinator: Coordinator {
 private extension AddProductCoordinator {
 
     /// Defines if the product creation bottom sheet should be presented.
-    /// Currently returns `true` when the feature is enabled and the store is eligible for displaying template options.
+    /// Currently returns `true` when the store is eligible for displaying template options.
     ///
     func shouldPresentProductCreationBottomSheet() -> Bool {
-        isProductCreationTypeEnabled && isTemplateOptionsEligible()
+        isTemplateOptionsEligible()
     }
 
     /// Returns `true` when the number of products is fewer than 3.

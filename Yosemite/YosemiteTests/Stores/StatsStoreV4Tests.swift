@@ -264,13 +264,14 @@ final class StatsStoreV4Tests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 0)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Networking.TopEarnerStats, Error> = waitFor { promise in
             let action = StatsActionV4.retrieveTopEarnerStats(siteID: self.sampleSiteID,
                                                               timeRange: .thisYear,
                                                               earliestDateToInclude: DateFormatter.dateFromString(with: "2020-01-01T00:00:00"),
                                                               latestDateToInclude: DateFormatter.dateFromString(with: "2020-07-22T12:00:00"),
                                                               quantity: 3,
-                                                              forceRefresh: false) { result in
+                                                              forceRefresh: false,
+                                                              saveInStorage: true) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -299,7 +300,8 @@ final class StatsStoreV4Tests: XCTestCase {
                                                               earliestDateToInclude: DateFormatter.dateFromString(with: "2020-01-01T00:00:00"),
                                                               latestDateToInclude: DateFormatter.dateFromString(with: "2020-07-22T12:00:00"),
                                                               quantity: quantity,
-                                                              forceRefresh: false) { _ in
+                                                              forceRefresh: false,
+                                                              saveInStorage: true) { result in
                 promise(())
             }
             store.onAction(action)
@@ -323,7 +325,8 @@ final class StatsStoreV4Tests: XCTestCase {
                                                               earliestDateToInclude: DateFormatter.dateFromString(with: "2020-01-01T00:00:00"),
                                                               latestDateToInclude: DateFormatter.dateFromString(with: "2020-07-22T12:00:00"),
                                                               quantity: 1,
-                                                              forceRefresh: true) { _ in
+                                                              forceRefresh: true,
+                                                              saveInStorage: true) { result in
                 promise(())
             }
             store.onAction(action)
@@ -368,13 +371,14 @@ final class StatsStoreV4Tests: XCTestCase {
         store.upsertStoredTopEarnerStats(readOnlyStats: sampleTopEarnerStats())
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Networking.TopEarnerStats, Error> = waitFor { promise in
             let action = StatsActionV4.retrieveTopEarnerStats(siteID: self.sampleSiteID,
                                                               timeRange: .thisYear,
                                                               earliestDateToInclude: DateFormatter.dateFromString(with: "2020-01-01T00:00:00"),
                                                               latestDateToInclude: DateFormatter.dateFromString(with: "2020-07-22T12:00:00"),
                                                               quantity: 3,
-                                                              forceRefresh: false) { result in
+                                                              forceRefresh: false,
+                                                              saveInStorage: true) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -398,13 +402,14 @@ final class StatsStoreV4Tests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 0)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Networking.TopEarnerStats, Error> = waitFor { promise in
             let action = StatsActionV4.retrieveTopEarnerStats(siteID: self.sampleSiteID,
                                                               timeRange: .thisYear,
                                                               earliestDateToInclude: DateFormatter.dateFromString(with: "2020-01-01T00:00:00"),
                                                               latestDateToInclude: DateFormatter.dateFromString(with: "2020-07-22T12:00:00"),
                                                               quantity: 3,
-                                                              forceRefresh: false) { result in
+                                                              forceRefresh: false,
+                                                              saveInStorage: true) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -427,13 +432,14 @@ final class StatsStoreV4Tests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/top-earners/", filename: "generic_error")
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Networking.TopEarnerStats, Error> = waitFor { promise in
             let action = StatsActionV4.retrieveTopEarnerStats(siteID: self.sampleSiteID,
                                                               timeRange: .thisMonth,
                                                               earliestDateToInclude: Date(),
                                                               latestDateToInclude: Date(),
                                                               quantity: 3,
-                                                              forceRefresh: false) { result in
+                                                              forceRefresh: false,
+                                                              saveInStorage: true) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -450,13 +456,14 @@ final class StatsStoreV4Tests: XCTestCase {
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Networking.TopEarnerStats, Error> = waitFor { promise in
             let action = StatsActionV4.retrieveTopEarnerStats(siteID: self.sampleSiteID,
                                                               timeRange: .thisMonth,
                                                               earliestDateToInclude: Date(),
                                                               latestDateToInclude: Date(),
                                                               quantity: 3,
-                                                              forceRefresh: false) { result in
+                                                              forceRefresh: false,
+                                                              saveInStorage: true) { result in
                 promise(result)
             }
             store.onAction(action)

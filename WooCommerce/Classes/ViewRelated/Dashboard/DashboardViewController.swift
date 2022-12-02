@@ -59,6 +59,8 @@ final class DashboardViewController: UIViewController {
     /// When we hide the header, we disable this constraint so the content view can grow to fill the screen
     private var contentTopToHeaderConstraint: NSLayoutConstraint?
 
+    /// Stores an animator for showing/hiding the header view while there is an animation in progress
+    /// so we can interrupt and reverse if needed
     private var headerAnimator: UIViewPropertyAnimator?
 
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).

@@ -203,8 +203,8 @@ private extension AnalyticsHubViewModel {
 
     static func timeRangeCard(timeRangeSelection: AnalyticsHubTimeRangeSelection) -> AnalyticsTimeRangeCardViewModel {
         return AnalyticsTimeRangeCardViewModel(selectedRangeTitle: timeRangeSelection.rangeSelectionDescription,
-                                               currentRangeSubtitle: timeRangeSelection.generateCurrentRangeDescription(),
-                                               previousRangeSubtitle: timeRangeSelection.generatePreviousRangeDescription())
+                                               currentRangeSubtitle: timeRangeSelection.currentRangeDescription,
+                                               previousRangeSubtitle: timeRangeSelection.previousRangeDescription)
     }
 }
 

@@ -7,9 +7,29 @@ import Yosemite
 public class AnalyticsHubTimeRangeSelection {
     private let currentTimeRange: AnalyticsHubTimeRange?
     private let previousTimeRange: AnalyticsHubTimeRange?
-    private let currentRangeDescription: String?
-    private let previousRangeDescription: String?
+    private let formattedCurrentRangeText: String?
+    private let formattedPreviousRangeText: String?
     let rangeSelectionDescription: String
+
+    /// Provide a date description of the current time range set internally.
+    /// - Returns the Time range in a UI friendly format. If the current time range is not available,
+    /// then returns an presentable error message.
+    var currentRangeDescription: String {
+        guard let currentTimeRangeDescription = formattedCurrentRangeText else {
+            return Localization.noCurrentPeriodAvailable
+        }
+        return currentTimeRangeDescription
+    }
+
+    /// Generates a date description of the previous time range set internally.
+    /// - Returns the Time range in a UI friendly format. If the previous time range is not available,
+    /// then returns an presentable error message.
+    var previousRangeDescription: String {
+        guard let previousTimeRangeDescription = formattedPreviousRangeText else {
+            return Localization.noPreviousPeriodAvailable
+        }
+        return previousTimeRangeDescription
+    }
 
     //TODO: abandon usage of the ISO 8601 Calendar and build one based on the Site calendar configuration
     init(selectionType: SelectionType,
@@ -35,8 +55,10 @@ public class AnalyticsHubTimeRangeSelection {
         self.previousTimeRange = previousTimeRange
 
         let simplifiedDescription = selectionType == .today
-        self.currentRangeDescription = currentTimeRange?.generateDescription(simplified: simplifiedDescription, calendar: calendar)
-        self.previousRangeDescription = previousTimeRange?.generateDescription(simplified: simplifiedDescription, calendar: calendar)
+        self.formattedCurrentRangeText = currentTimeRange?.formatToString(simplified: simplifiedDescription,
+                                                                               calendar: calendar)
+        self.formattedPreviousRangeText = previousTimeRange?.formatToString(simplified: simplifiedDescription,
+                                                                                 calendar: calendar)
         self.rangeSelectionDescription = selectionType.description
     }
 
@@ -58,26 +80,6 @@ public class AnalyticsHubTimeRangeSelection {
             throw TimeRangeGeneratorError.previousRangeGenerationFailed
         }
         return previousTimeRange
-    }
-
-    /// Generates a date description of the previous time range set internally.
-    /// - Returns the Time range in a UI friendly format. If the previous time range is not available,
-    /// then returns an presentable error message.
-    func generateCurrentRangeDescription() -> String {
-        guard let currentTimeRangeDescription = currentRangeDescription else {
-            return Localization.noCurrentPeriodAvailable
-        }
-        return currentTimeRangeDescription
-    }
-
-    /// Generates a date description of the previous time range set internally.
-    /// - Returns the Time range in a UI friendly format. If the previous time range is not available,
-    /// then returns an presentable error message.
-    func generatePreviousRangeDescription() -> String {
-        guard let previousTimeRangeDescription = previousRangeDescription else {
-            return Localization.noPreviousPeriodAvailable
-        }
-        return previousTimeRangeDescription
     }
 }
 

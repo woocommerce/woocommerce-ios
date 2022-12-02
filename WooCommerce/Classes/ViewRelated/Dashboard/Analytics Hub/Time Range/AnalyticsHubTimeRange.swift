@@ -4,7 +4,7 @@ struct AnalyticsHubTimeRange {
     let start: Date
     let end: Date
 
-    func generateDescription(simplified: Bool, calendar: Calendar) -> String {
+    func formatToString(simplified: Bool, calendar: Calendar) -> String {
         if simplified {
             return DateFormatter.Stats.analyticsHubDayMonthYearFormatter.string(from: start)
         }

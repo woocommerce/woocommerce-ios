@@ -4,6 +4,7 @@
 -----
 - [*] Account deletion is now supported for all users in settings or in the empty stores screen. [https://github.com/woocommerce/woocommerce-ios/pull/8179]
 - [*] In-Person Payments: We removed any references to Simple Payments from Orders, and the red badge from the Menu tab and Menu Payments icon announcing the new Payments section. [https://github.com/woocommerce/woocommerce-ios/pull/8183]
+- [internal] Store creation flow was improved with native implementation. It is available from the login prologue (`Get Started` CTA), login email error screen, and store picker (`Add a store` CTA from the empty stores screen or at the bottom of the store list). [Example testing steps in https://github.com/woocommerce/woocommerce-ios/pull/8251]
 
 11.4
 -----

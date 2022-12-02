@@ -189,8 +189,8 @@ private extension DashboardViewController {
 
     func showHeader(animated: Bool) {
         if animated {
-            animateHeaderVisibility {
-                self.showHeaderWithoutAnimation()
+            animateHeaderVisibility { [weak self] in
+                self?.showHeaderWithoutAnimation()
             }
         } else {
             showHeaderWithoutAnimation()
@@ -199,8 +199,8 @@ private extension DashboardViewController {
 
     func hideHeader(animated: Bool) {
         if animated {
-            animateHeaderVisibility {
-                self.hideHeaderWithoutAnimation()
+            animateHeaderVisibility { [weak self] in
+                self?.hideHeaderWithoutAnimation()
             }
         } else {
             hideHeaderWithoutAnimation()

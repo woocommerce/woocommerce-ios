@@ -6,12 +6,19 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         TimeZone(abbreviation: "UTC") ?? TimeZone.current
     }()
 
+    private var testCalendar: Calendar = {
+        var calendar = Calendar(identifier: .iso8601)
+        calendar.timeZone = TimeZone(abbreviation: "UTC") ?? TimeZone.current
+        return calendar
+    }()
+
     func test_when_time_range_inits_with_yearToDate_then_generate_expected_ranges() throws {
         // Given
         let today = currentDate(from: "2020-02-29")
         let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .yearToDate,
                                                        currentDate: today,
-                                                       timezone: testTimezone)
+                                                       timezone: testTimezone,
+                                                       calendar: testCalendar)
 
         // When
         let currentTimeRange = try timeRange.unwrapCurrentTimeRange()
@@ -30,7 +37,8 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         let today = currentDate(from: "2010-07-31")
         let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .monthToDate,
                                                        currentDate: today,
-                                                       timezone: testTimezone)
+                                                       timezone: testTimezone,
+                                                       calendar: testCalendar)
 
         // When
         let currentTimeRange = try timeRange.unwrapCurrentTimeRange()
@@ -49,7 +57,8 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         let today = currentDate(from: "2022-07-01")
         let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .weekToDate,
                                                        currentDate: today,
-                                                       timezone: testTimezone)
+                                                       timezone: testTimezone,
+                                                       calendar: testCalendar)
 
         // When
         let currentTimeRange = try timeRange.unwrapCurrentTimeRange()
@@ -68,7 +77,8 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         let today = currentDate(from: "2022-07-01")
         let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .today,
                                                        currentDate: today,
-                                                       timezone: testTimezone)
+                                                       timezone: testTimezone,
+                                                       calendar: testCalendar)
 
         // When
         let currentTimeRange = try timeRange.unwrapCurrentTimeRange()
@@ -87,7 +97,8 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         let today = currentDate(from: "2022-07-01")
         let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .yesterday,
                                                        currentDate: today,
-                                                       timezone: testTimezone)
+                                                       timezone: testTimezone,
+                                                       calendar: testCalendar)
 
         // When
         let currentTimeRange = try timeRange.unwrapCurrentTimeRange()
@@ -106,7 +117,8 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         let today = currentDate(from: "2022-07-01")
         let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .yearToDate,
                                                        currentDate: today,
-                                                       timezone: testTimezone)
+                                                       timezone: testTimezone,
+                                                       calendar: testCalendar)
 
         // When
         let currentRangeDescription = timeRange.currentRangeDescription
@@ -122,7 +134,8 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         let today = currentDate(from: "2022-07-31")
         let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .monthToDate,
                                                        currentDate: today,
-                                                       timezone: testTimezone)
+                                                       timezone: testTimezone,
+                                                       calendar: testCalendar)
 
         // When
         let currentRangeDescription = timeRange.currentRangeDescription
@@ -138,7 +151,8 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         let today = currentDate(from: "2022-07-29")
         let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .weekToDate,
                                                        currentDate: today,
-                                                       timezone: testTimezone)
+                                                       timezone: testTimezone,
+                                                       calendar: testCalendar)
 
         // When
         let currentRangeDescription = timeRange.currentRangeDescription
@@ -154,7 +168,8 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         let today = currentDate(from: "2022-07-02")
         let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .weekToDate,
                                                        currentDate: today,
-                                                       timezone: testTimezone)
+                                                       timezone: testTimezone,
+                                                       calendar: testCalendar)
 
         // When
         let currentRangeDescription = timeRange.currentRangeDescription
@@ -170,7 +185,8 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         let today = currentDate(from: "2022-07-01")
         let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .today,
                                                        currentDate: today,
-                                                       timezone: testTimezone)
+                                                       timezone: testTimezone,
+                                                       calendar: testCalendar)
 
         // When
         let currentRangeDescription = timeRange.currentRangeDescription
@@ -186,7 +202,8 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         let today = currentDate(from: "2022-07-02")
         let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .yesterday,
                                                        currentDate: today,
-                                                       timezone: testTimezone)
+                                                       timezone: testTimezone,
+                                                       calendar: testCalendar)
 
         // When
         let currentRangeDescription = timeRange.currentRangeDescription

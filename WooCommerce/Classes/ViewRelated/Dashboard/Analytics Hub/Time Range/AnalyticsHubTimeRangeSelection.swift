@@ -1,5 +1,4 @@
 import Foundation
-import Yosemite
 
 /// Main source of time ranges of the Analytics Hub, responsible for providing the current and previous dates
 /// for a given Date and range Type alongside their UI descriptions
@@ -32,7 +31,7 @@ public class AnalyticsHubTimeRangeSelection {
     }
 
     //TODO: abandon usage of the ISO 8601 Calendar and build one based on the Site calendar configuration
-    init(selectionType: SelectionType,
+    init(selectionType: AnalyticsHubTimeRangeSelectionType,
          currentDate: Date = Date(),
          timezone: TimeZone = TimeZone.autoupdatingCurrent,
          calendar: Calendar = Calendar(identifier: .iso8601)) {
@@ -71,56 +70,8 @@ public class AnalyticsHubTimeRangeSelection {
     }
 }
 
-// MARK: - Time Range Selection Type
-extension AnalyticsHubTimeRangeSelection {
-    enum SelectionType: CaseIterable {
-        case today
-        case yesterday
-        case lastWeek
-        case lastMonth
-        case lastYear
-        case weekToDate
-        case monthToDate
-        case yearToDate
-
-        var description: String {
-            switch self {
-            case .today:
-                return Localization.today
-            case .yesterday:
-                return Localization.yesterday
-            case .lastWeek:
-                return Localization.lastWeek
-            case .lastMonth:
-                return Localization.lastMonth
-            case .lastYear:
-                return Localization.lastYear
-            case .weekToDate:
-                return Localization.weekToDate
-            case .monthToDate:
-                return Localization.monthToDate
-            case .yearToDate:
-                return Localization.yearToDate
-            }
-        }
-
-        init(_ statsTimeRange: StatsTimeRangeV4) {
-            switch statsTimeRange {
-            case .today:
-                self = .today
-            case .thisWeek:
-                self = .weekToDate
-            case .thisMonth:
-                self = .monthToDate
-            case .thisYear:
-                self = .yearToDate
-            }
-        }
-    }
-}
-
 // MARK: - Data creation utility
-private extension AnalyticsHubTimeRangeSelection.SelectionType {
+private extension AnalyticsHubTimeRangeSelectionType {
     func mapToRangeData(referenceDate: Date, timezone: TimeZone, calendar: Calendar) -> AnalyticsHubTimeRangeData {
         switch self {
         case .today:
@@ -152,14 +103,6 @@ extension AnalyticsHubTimeRangeSelection {
     }
 
     enum Localization {
-        static let today = NSLocalizedString("Today", comment: "Title of the Analytics Hub Today's selection range")
-        static let yesterday = NSLocalizedString("Yesterday", comment: "Title of the Analytics Hub Yesterday selection range")
-        static let lastWeek = NSLocalizedString("Last Week", comment: "Title of the Analytics Hub Last Week selection range")
-        static let lastMonth = NSLocalizedString("Last Month", comment: "Title of the Analytics Hub Last Month selection range")
-        static let lastYear = NSLocalizedString("Last Year", comment: "Title of the Analytics Hub Last Year selection range")
-        static let weekToDate = NSLocalizedString("Week to Date", comment: "Title of the Analytics Hub Week to Date selection range")
-        static let monthToDate = NSLocalizedString("Month to Date", comment: "Title of the Analytics Hub Month to Date selection range")
-        static let yearToDate = NSLocalizedString("Year to Date", comment: "Title of the Analytics Hub Year to Date selection range")
         static let selectionTitle = NSLocalizedString("Date Range", comment: "Title of the range selection list")
         static let noCurrentPeriodAvailable = NSLocalizedString("No current period available",
                                                                 comment: "A error message when it's not possible to acquire"

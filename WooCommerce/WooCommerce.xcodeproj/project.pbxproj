@@ -7449,16 +7449,24 @@
 			path = CustomerNoteSection;
 			sourceTree = "<group>";
 		};
-		B6F379662937831D00718561 /* Time Range */ = {
+		B66D6CEF293A4D990075D4AF /* Range Data Generation */ = {
 			isa = PBXGroup;
 			children = (
-				B6440FB5292E72DA0012D506 /* AnalyticsHubTimeRangeSelection.swift */,
-				B6F379672937836700718561 /* AnalyticsHubTimeRange.swift */,
 				B6F3796929378B3900718561 /* AnalyticsHubMonthRangeData.swift */,
 				B6F3796B293794A000718561 /* AnalyticsHubYearRangeData.swift */,
 				B6F3796D293796BC00718561 /* AnalyticsHubWeekRangeData.swift */,
 				B6F3796F293798ED00718561 /* AnalyticsHubDayRangeData.swift */,
 				B66D6CEB29396A3E0075D4AF /* AnalyticsHubTimeRangeData.swift */,
+			);
+			path = "Range Data Generation";
+			sourceTree = "<group>";
+		};
+		B6F379662937831D00718561 /* Time Range */ = {
+			isa = PBXGroup;
+			children = (
+				B66D6CEF293A4D990075D4AF /* Range Data Generation */,
+				B6440FB5292E72DA0012D506 /* AnalyticsHubTimeRangeSelection.swift */,
+				B6F379672937836700718561 /* AnalyticsHubTimeRange.swift */,
 				B66D6CED293A49D10075D4AF /* AnalyticsHubTimeRangeSelectionType.swift */,
 			);
 			path = "Time Range";

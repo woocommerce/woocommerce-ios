@@ -36,7 +36,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .storeCreationMVP:
             return true
         case .storeCreationM2:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .storeCreationM2WithInAppPurchasesEnabled:
             return false
         case .justInTimeMessagesOnDashboard:

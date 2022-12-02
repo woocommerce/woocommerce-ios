@@ -164,8 +164,8 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .lastYear, currentDate: currentDate)
 
         // When
-        let currentRangeDescription = timeRange.generateCurrentRangeDescription()
-        let previousRangeDescription = timeRange.generatePreviousRangeDescription()
+        let currentRangeDescription = timeRange.currentRangeDescription
+        let previousRangeDescription = timeRange.previousRangeDescription
 
         // Then
         XCTAssertEqual(currentRangeDescription, "Jan 1 - Dec 31, 2021")
@@ -192,8 +192,8 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .lastMonth, currentDate: currentDate)
 
         // When
-        let currentRangeDescription = timeRange.generateCurrentRangeDescription()
-        let previousRangeDescription = timeRange.generatePreviousRangeDescription()
+        let currentRangeDescription = timeRange.currentRangeDescription
+        let previousRangeDescription = timeRange.previousRangeDescription
 
         // Then
         XCTAssertEqual(currentRangeDescription, "Jun 1 - 30, 2022")
@@ -234,8 +234,8 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .lastWeek, currentDate: currentDate)
 
         // When
-        let currentRangeDescription = timeRange.generateCurrentRangeDescription()
-        let previousRangeDescription = timeRange.generatePreviousRangeDescription()
+        let currentRangeDescription = timeRange.currentRangeDescription
+        let previousRangeDescription = timeRange.previousRangeDescription
 
         // Then
         XCTAssertEqual(currentRangeDescription, "Jul 18 - 24, 2022")
@@ -248,8 +248,8 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .lastWeek, currentDate: currentDate)
 
         // When
-        let currentRangeDescription = timeRange.generateCurrentRangeDescription()
-        let previousRangeDescription = timeRange.generatePreviousRangeDescription()
+        let currentRangeDescription = timeRange.currentRangeDescription
+        let previousRangeDescription = timeRange.previousRangeDescription
 
         // Then
         XCTAssertEqual(currentRangeDescription, "Jun 27 - Jul 3, 2022")
@@ -276,8 +276,8 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .yesterday, currentDate: currentDate)
 
         // When
-        let currentRangeDescription = timeRange.generateCurrentRangeDescription()
-        let previousRangeDescription = timeRange.generatePreviousRangeDescription()
+        let currentRangeDescription = timeRange.currentRangeDescription
+        let previousRangeDescription = timeRange.previousRangeDescription
 
         // Then
         XCTAssertEqual(currentRangeDescription, "Jul 1, 2022")

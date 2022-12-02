@@ -500,7 +500,10 @@ private extension StripeCardReaderService {
         return Future() { [weak self] promise in
             /// Collect Payment method returns a cancellable
             /// Because we are chaining promises, we need to retain a reference
-            /// to this cancellable if we want to cancel 
+            /// to this cancellable if we want to cancel
+
+            /// At this point, we _could_ cancel the `Preparing to collect payment` spinner.
+            /// We currently do that as a response to `didRequestInput`, which is arguably better.
             self?.paymentCancellable = Terminal.shared.collectPaymentMethod(intent) { (intent, error) in
                 self?.paymentCancellable = nil
 
@@ -531,6 +534,7 @@ private extension StripeCardReaderService {
 
     func processPayment(intent: StripeTerminal.PaymentIntent) -> Future<StripeTerminal.PaymentIntent, Error> {
         return Future() { [weak self] promise in
+            /// This is when we should show a `processing` message on screen, currently we only do that when we send the payment for capture.
             Terminal.shared.processPayment(intent) { (intent, error) in
                 if let error = error {
                     let underlyingError = UnderlyingError(with: error)

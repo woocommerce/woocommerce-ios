@@ -235,6 +235,7 @@ private extension CollectOrderPaymentUseCase {
             paymentMethodTypes: configuration.paymentMethods.map(\.rawValue),
             stripeSmallestCurrencyUnitMultiplier: configuration.stripeSmallestCurrencyUnitMultiplier,
             onWaitingForInput: { [weak self] inputMethods in
+                /// Called as a result of `delegate.didRequestReaderInput`
                 guard let self = self else { return }
                 self.alerts.tapOrInsertCard(title: Localization.collectPaymentTitle(username: self.order.billingAddress?.firstName),
                                             amount: self.formattedAmount,
@@ -246,7 +247,7 @@ private extension CollectOrderPaymentUseCase {
                 })
 
             }, onProcessingMessage: { [weak self] in
-                // Waiting message
+                /// Waiting message – this is actually sent _after_ processing completes, and covers the time we send the intent to WCPay for capture.
                 self?.alerts.processingPayment()
             }, onDisplayMessage: { [weak self] message in
                 // Reader messages. EG: Remove Card

@@ -31,8 +31,12 @@ class URLGoogleSignInTests: XCTestCase {
             includeItemNamed: "redirect_uri",
             withValue: "com.googleusercontent.apps.123-abc245def:/oauth2callback"
         )
+        assertQueryItems(
+            for: url,
+            includeItemNamed: "scope",
+            withValue: "https://www.googleapis.com/auth/userinfo.email"
+        )
         assertQueryItems(for: url, includeItemNamed: "response_type", withValue: "code")
-        // TODO: need to check more parameters
     }
 }
 

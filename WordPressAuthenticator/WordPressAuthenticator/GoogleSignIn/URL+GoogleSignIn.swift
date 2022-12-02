@@ -11,7 +11,19 @@ extension URL {
             ("code_challenge", pkce.codeCallenge),
             ("code_challenge_method", pkce.mode.method),
             ("redirect_uri", redirectURI(from: clientId)),
-            ("response_type", "code")
+            ("response_type", "code"),
+            // TODO: We might want to add some of these or them configurable
+            //
+            // The request we make with the SDK asks for:
+            //
+            // - email
+            // - profile
+            // - https://www.googleapis.com/auth/userinfo.email
+            // - https://www.googleapis.com/auth/userinfo.profile
+            // - openid
+            //
+            // See https://developers.google.com/identity/protocols/oauth2/scopes
+            ("scope", "https://www.googleapis.com/auth/userinfo.email")
         ].map { URLQueryItem(name: $0.0, value: $0.1) }
 
         if #available(iOS 16.0, *) {

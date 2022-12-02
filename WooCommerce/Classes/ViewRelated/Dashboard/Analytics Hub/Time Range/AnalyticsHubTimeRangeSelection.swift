@@ -41,11 +41,19 @@ public class AnalyticsHubTimeRangeSelection {
         switch selectionType {
         case .today:
             selectionData = AnalyticsHubDayRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
+        case .yesterday:
+            selectionData = AnalyticsHubDayRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
         case .weekToDate:
+            selectionData = AnalyticsHubWeekRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
+        case .lastWeek:
             selectionData = AnalyticsHubWeekRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
         case .monthToDate:
             selectionData = AnalyticsHubMonthRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
+        case .lastMonth:
+            selectionData = AnalyticsHubMonthRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
         case .yearToDate:
+            selectionData = AnalyticsHubYearRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
+        case .lastYear:
             selectionData = AnalyticsHubYearRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
         }
 

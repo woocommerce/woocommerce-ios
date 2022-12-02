@@ -19,4 +19,8 @@ struct GoogleClientId {
 
         return "\(root):/\(path)"
     }
+
+    var defaultRedirectURI: String {
+        redirectURI(path: "oauth2callback")
+    }
 }

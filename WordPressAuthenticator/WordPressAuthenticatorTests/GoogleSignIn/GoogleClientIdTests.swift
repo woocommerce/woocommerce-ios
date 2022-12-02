@@ -16,4 +16,8 @@ class GoogleClientIdTests: XCTestCase {
         XCTAssertEqual(GoogleClientId(string: "a.b.c")?.redirectURI(path: .none), "c.b.a")
         XCTAssertEqual(GoogleClientId(string: "a.b.c")?.redirectURI(path: "a_path"), "c.b.a:/a_path")
     }
+
+    func testDefaultRedirectURI() {
+        XCTAssertEqual(GoogleClientId(string: "a.b.c")?.defaultRedirectURI, "c.b.a:/oauth2callback")
+    }
 }

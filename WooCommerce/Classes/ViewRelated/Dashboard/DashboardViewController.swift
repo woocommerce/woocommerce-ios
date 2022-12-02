@@ -146,6 +146,7 @@ final class DashboardViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        updateHeaderVisibility(animated: false)
         observeNavigationBarHeightForHeaderVisibility()
     }
 
@@ -162,47 +163,77 @@ final class DashboardViewController: UIViewController {
     override var shouldShowOfflineBanner: Bool {
         return true
     }
+}
 
-    func showHeader() {
+// MARK: - Header animation
+private extension DashboardViewController {
+    func showHeaderWithoutAnimation() {
         contentTopToHeaderConstraint?.isActive = true
         headerStackView.alpha = 1
         view.layoutIfNeeded()
     }
 
-    func hideHeader() {
+    func hideHeaderWithoutAnimation() {
         contentTopToHeaderConstraint?.isActive = false
         headerStackView.alpha = 0
         view.layoutIfNeeded()
     }
 
-    func showHeaderWithAnimation() {
+    func updateHeaderVisibility(animated: Bool) {
+        if navigationBarIsCollapsed() {
+            hideHeader(animated: animated)
+        } else {
+            showHeader(animated: animated)
+        }
+    }
+
+    func showHeader(animated: Bool) {
+        if animated {
+            animateHeaderVisibility {
+                self.showHeaderWithoutAnimation()
+            }
+        } else {
+            showHeaderWithoutAnimation()
+        }
+    }
+
+    func hideHeader(animated: Bool) {
+        if animated {
+            animateHeaderVisibility {
+                self.hideHeaderWithoutAnimation()
+            }
+        } else {
+            hideHeaderWithoutAnimation()
+        }
+    }
+
+    func animateHeaderVisibility(animations: @escaping () -> Void) {
         if headerAnimator?.isRunning == true {
             headerAnimator?.stopAnimation(true)
         }
         headerAnimator = UIViewPropertyAnimator.runningPropertyAnimator(
             withDuration: Constants.animationDurationSeconds,
             delay: 0,
-            animations: { [weak self] in
-                self?.showHeader()
-            },
+            animations: animations,
             completion: { [weak self] position in
                 self?.headerAnimator = nil
             })
     }
 
-    func hideHeaderWithAnimation() {
-        if headerAnimator?.isRunning == true {
-            headerAnimator?.stopAnimation(true)
+    func navigationBarIsCollapsed() -> Bool {
+        guard let frame = navigationController?.navigationBar.frame else {
+            return false
         }
-        headerAnimator = UIViewPropertyAnimator.runningPropertyAnimator(
-            withDuration: Constants.animationDurationSeconds,
-            delay: 0,
-            animations: { [weak self] in
-                self?.hideHeader()
-            },
-            completion: { [weak self] position in
-                self?.headerAnimator = nil
-            })
+
+        return frame.height <= collapsedNavigationBarHeight
+    }
+
+    var collapsedNavigationBarHeight: CGFloat {
+        if self.traitCollection.userInterfaceIdiom == .pad {
+            return Constants.iPadCollapsedNavigationBarHeight
+        } else {
+            return Constants.iPhoneCollapsedNavigationBarHeight
+        }
     }
 }
 
@@ -644,33 +675,22 @@ private extension DashboardViewController {
     }
 
     func observeNavigationBarHeightForHeaderVisibility() {
-        navbarObserverSubscription = navigationController?.navigationBar.publisher(for: \.frame, options: [.initial, .new])
-            .map({ [collapsedNavigationBarHeight] rect in
-                rect.height <= collapsedNavigationBarHeight
-            }) // true if navigation bar is collapsed
+        navbarObserverSubscription = navigationController?.navigationBar.publisher(for: \.frame, options: [.new])
+            .map({ [weak self] rect in
+                // This seems useless given that we're discarding the value later
+                // and recalculating within updateHeaderVisibility, but this is an easy
+                // way to avoid constant updates with the `removeDuplicates` that follows
+                self?.navigationBarIsCollapsed() ?? false
+            })
             .removeDuplicates()
-            .sink(receiveValue: { [weak self] navigationBarIsShort in
-                guard let self else { return }
-
-                if navigationBarIsShort {
-                    self.hideHeaderWithAnimation()
-                } else {
-                    self.showHeaderWithAnimation()
-                }
+            .sink(receiveValue: { [weak self] _ in
+                self?.updateHeaderVisibility(animated: true)
             })
     }
 
     func stopObservingNavigationBarHeightForHeaderVisibility() {
         navbarObserverSubscription?.cancel()
         navbarObserverSubscription = nil
-    }
-
-    var collapsedNavigationBarHeight: CGFloat {
-        if self.traitCollection.userInterfaceIdiom == .pad {
-            return Constants.iPadCollapsedNavigationBarHeight
-        } else {
-            return Constants.iPhoneCollapsedNavigationBarHeight
-        }
     }
 }
 

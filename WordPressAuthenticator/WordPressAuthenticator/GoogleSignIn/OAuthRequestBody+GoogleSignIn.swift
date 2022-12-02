@@ -1,12 +1,12 @@
 extension OAuthTokenRequestBody {
 
     static func googleSignInRequestBody(
-        clientId: String,
+        clientId: GoogleClientId,
         authCode: String,
         pkce: ProofKeyForCodeExchange
     ) -> Self {
         .init(
-            clientId: clientId,
+            clientId: clientId.value,
             // "The client secret obtained from the API Console Credentials page."
             // - https://developers.google.com/identity/protocols/oauth2/native-app#step-2:-send-a-request-to-googles-oauth-2.0-server
             //
@@ -18,7 +18,7 @@ extension OAuthTokenRequestBody {
             // As defined in the OAuth 2.0 specification, this field's value must be set to authorization_code.
             // – https://developers.google.com/identity/protocols/oauth2/native-app#exchange-authorization-code
             grantType: "authorization_code",
-            redirectURI: URL.redirectURI(from: clientId)
+            redirectURI: clientId.defaultRedirectURI
         )
     }
 }

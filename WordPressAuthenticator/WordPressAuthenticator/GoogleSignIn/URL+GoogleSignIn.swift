@@ -6,12 +6,12 @@ extension URL {
     // error, which we would catch because the unit tests would crash.
     static var googleSignInBaseURL = URL(string: "https://accounts.google.com/o/oauth2/v2/auth")!
 
-    static func googleSignInAuthURL(clientId: String, pkce: ProofKeyForCodeExchange) throws -> URL {
+    static func googleSignInAuthURL(clientId: GoogleClientId, pkce: ProofKeyForCodeExchange) throws -> URL {
         let queryItems = [
-            ("client_id", clientId),
+            ("client_id", clientId.value),
             ("code_challenge", pkce.codeCallenge),
             ("code_challenge_method", pkce.method.urlQueryParameterValue),
-            ("redirect_uri", redirectURI(from: clientId)),
+            ("redirect_uri", clientId.defaultRedirectURI),
             ("response_type", "code"),
             // TODO: We might want to add some of these or them configurable
             //
@@ -39,14 +39,5 @@ extension URL {
             // crashing is appropriate.
             return components.url!
         }
-    }
-
-    static func redirectURI(from clientId: String) -> String {
-        // Google's client id is in the form: 123-abc245def.apps.googleusercontent.com
-        // The redirect URI uses the reverse-DNS notation.
-        let reverseDNSClientId = clientId.split(separator: ".").reversed().joined(separator: ".")
-        // After that, we add "oautha2callback", as per GIDSignIn.m line 421 at
-        // commit 1b0c4ec33a6fe282f4fa35d8ac64263230ddaf36
-        return "\(reverseDNSClientId):/oauth2callback"
     }
 }

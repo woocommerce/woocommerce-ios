@@ -1,7 +1,7 @@
 /// Models the response to an OAuth token request.
 ///
 /// - Note: See documentation at https://developers.google.com/identity/protocols/oauth2/native-app#exchange-authorization-code
-struct OAuthTokenResponseBody: Decodable {
+struct OAuthTokenResponseBody: Codable, Equatable {
     let accessToken: String
     let expiresIn: Int
     /// This value is only returned if the request included an identity scope, such as openid, profile, or email.

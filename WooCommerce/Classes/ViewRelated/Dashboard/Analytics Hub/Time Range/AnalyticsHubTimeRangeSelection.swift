@@ -54,7 +54,7 @@ public class AnalyticsHubTimeRangeSelection {
         self.currentTimeRange = currentTimeRange
         self.previousTimeRange = previousTimeRange
 
-        let simplifiedDescription = selectionType == .today
+        let simplifiedDescription = selectionType == .today || selectionType == .yesterday
         self.formattedCurrentRangeText = currentTimeRange?.formatToString(simplified: simplifiedDescription,
                                                                           timezone: timezone,
                                                                           calendar: calendar)

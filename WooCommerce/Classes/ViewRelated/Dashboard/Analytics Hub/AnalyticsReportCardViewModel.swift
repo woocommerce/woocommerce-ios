@@ -52,6 +52,14 @@ struct AnalyticsReportCardViewModel {
     /// Indicates if the values should be hidden (for loading state)
     ///
     let isRedacted: Bool
+
+    /// Indicates if there was an error loading the data for the card
+    ///
+    let showSyncError: Bool
+
+    /// Message to display if there was an error loading the data for the card
+    ///
+    let syncErrorMessage: String
 }
 
 extension AnalyticsReportCardViewModel {
@@ -71,7 +79,9 @@ extension AnalyticsReportCardViewModel {
               trailingDelta: "+50%",
               trailingDeltaColor: .lightGray,
               trailingChartData: [],
-              isRedacted: true)
+              isRedacted: true,
+              showSyncError: false,
+              syncErrorMessage: "")
     }
 }
 
@@ -91,5 +101,7 @@ extension AnalyticsReportCard {
         self.trailingDeltaColor = viewModel.trailingDeltaColor
         self.trailingChartData = viewModel.trailingChartData
         self.isRedacted = viewModel.isRedacted
+        self.showSyncError = viewModel.showSyncError
+        self.syncErrorMessage = viewModel.syncErrorMessage
     }
 }

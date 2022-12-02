@@ -26,7 +26,9 @@ struct AnalyticsHubView: View {
     @StateObject var viewModel: AnalyticsHubViewModel
 
     var body: some View {
-        ScrollView {
+        RefreshablePlainList(action: {
+            await viewModel.updateData()
+        }) {
             VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
                 VStack(spacing: Layout.dividerSpacing) {
                     Divider()

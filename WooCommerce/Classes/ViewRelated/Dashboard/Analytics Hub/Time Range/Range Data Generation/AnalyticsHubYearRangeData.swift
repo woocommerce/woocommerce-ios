@@ -1,6 +1,6 @@
 import Foundation
 
-struct AnalyticsHubYearToDateRangeData: AnalyticsHubTimeRangeData {
+struct AnalyticsHubYearRangeData: AnalyticsHubTimeRangeData {
     let currentDateStart: Date?
     let currentDateEnd: Date?
     let previousDateStart: Date?

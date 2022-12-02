@@ -92,26 +92,6 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         XCTAssertEqual(previousTimeRange.end, currentDate(from: "2022-06-30"))
     }
 
-    func test_when_time_range_inits_with_yesterday_then_generate_expected_ranges() throws {
-        // Given
-        let today = currentDate(from: "2022-07-01")
-        let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .yesterday,
-                                                       currentDate: today,
-                                                       timezone: testTimezone,
-                                                       calendar: testCalendar)
-
-        // When
-        let currentTimeRange = try timeRange.unwrapCurrentTimeRange()
-        let previousTimeRange = try timeRange.unwrapPreviousTimeRange()
-
-        // Then
-        XCTAssertEqual(currentTimeRange.start, startDate(from: "2022-06-30"))
-        XCTAssertEqual(currentTimeRange.end, endDate(from: "2022-06-30"))
-
-        XCTAssertEqual(previousTimeRange.start, startDate(from: "2022-06-29"))
-        XCTAssertEqual(previousTimeRange.end, endDate(from: "2022-06-29"))
-    }
-
     func test_when_time_range_inits_with_yearToDate_then_generate_expected_descriptions() throws {
         // Given
         let today = currentDate(from: "2022-07-01")
@@ -184,23 +164,6 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         // Given
         let today = currentDate(from: "2022-07-01")
         let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .today,
-                                                       currentDate: today,
-                                                       timezone: testTimezone,
-                                                       calendar: testCalendar)
-
-        // When
-        let currentRangeDescription = timeRange.currentRangeDescription
-        let previousRangeDescription = timeRange.previousRangeDescription
-
-        // Then
-        XCTAssertEqual(currentRangeDescription, "Jul 1, 2022")
-        XCTAssertEqual(previousRangeDescription, "Jun 30, 2022")
-    }
-
-    func test_when_time_range_inits_with_yesterday_then_generate_expected_descriptions() throws {
-        // Given
-        let today = currentDate(from: "2022-07-02")
-        let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .yesterday,
                                                        currentDate: today,
                                                        timezone: testTimezone,
                                                        calendar: testCalendar)

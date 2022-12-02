@@ -15,7 +15,7 @@ final class AnalyticsHubViewModel: ObservableObject {
     init(siteID: Int64,
          statsTimeRange: StatsTimeRangeV4,
          stores: StoresManager = ServiceLocator.stores) {
-        let selectedType = AnalyticsHubTimeRangeSelectionType(statsTimeRange)
+        let selectedType = AnalyticsHubTimeRangeSelection.SelectionType(statsTimeRange)
         let timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: selectedType)
 
         self.siteID = siteID
@@ -41,7 +41,7 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Time Range Selection Type
     ///
-    @Published var timeRangeSelectionType: AnalyticsHubTimeRangeSelectionType
+    @Published var timeRangeSelectionType: AnalyticsHubTimeRangeSelection.SelectionType
 
     /// Time Range ViewModel
     ///

@@ -229,7 +229,7 @@ private extension AnalyticsHubViewModel {
                                             syncErrorMessage: Localization.OrderCard.noOrders)
     }
 
-    /// Helper function to create a `AnalyticsReportCardViewModel` from the fetched stats.
+    /// Helper function to create a `AnalyticsProductCardViewModel` from the fetched stats.
     ///
     static func productCard(currentPeriodStats: OrderStatsV4?,
                             previousPeriodStats: OrderStatsV4?,

@@ -4,13 +4,27 @@ import XCTest
 class URLGoogleSignInTests: XCTestCase {
 
     func testGoogleSignInAuthURL() throws {
-        let url = try URL.googleSignInAuthURL(clientId: "123-abc245def.apps.googleusercontent.com")
+        let pkce = ProofKeyForCodeExchange(codeVerifier: "test", mode: .plain)
+        let url = try URL.googleSignInAuthURL(
+            clientId: "123-abc245def.apps.googleusercontent.com",
+            pkce: pkce
+        )
 
         assert(url, matchesBaseURL: "https://accounts.google.com/o/oauth2/v2/auth")
         assertQueryItems(
             for: url,
             includeItemNamed: "client_id",
             withValue: "123-abc245def.apps.googleusercontent.com"
+        )
+        assertQueryItems(
+            for: url,
+            includeItemNamed: "code_challenge",
+            withValue: pkce.codeCallenge
+        )
+        assertQueryItems(
+            for: url,
+            includeItemNamed: "code_challenge_method",
+            withValue: pkce.mode.method
         )
         assertQueryItems(
             for: url,

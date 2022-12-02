@@ -2,10 +2,12 @@ import Foundation
 
 extension URL {
 
+    // It's acceptable to force-unwrap here because, for this call to fail we'd need a developer
+    // error, which we would catch because the unit tests would crash.
+    static var googleSignInBaseURL = URL(string: "https://accounts.google.com/o/oauth2/v2/auth")!
+
     // TODO: This is incomplete
     static func googleSignInAuthURL(clientId: String, pkce: ProofKeyForCodeExchange) throws -> URL {
-        let baseURL = "https://accounts.google.com/o/oauth2/v2/auth"
-
         let queryItems = [
             ("client_id", clientId),
             ("code_challenge", pkce.codeCallenge),
@@ -27,11 +29,10 @@ extension URL {
         ].map { URLQueryItem(name: $0.0, value: $0.1) }
 
         if #available(iOS 16.0, *) {
-            // FIXME: Throw error
-            return URL(string: baseURL)!.appending(queryItems: queryItems)
+            return googleSignInBaseURL.appending(queryItems: queryItems)
         } else {
             // FIXME: Throw error
-            var components = URLComponents(string: baseURL)!
+            var components = URLComponents(url: googleSignInBaseURL, resolvingAgainstBaseURL: false)!
             components.queryItems = queryItems
             return try components.asURL()
         }

@@ -7,7 +7,7 @@ final class SiteCredentialLoginHostingViewController: UIHostingController<SiteCr
     init(siteURL: String,
          connectionOnly: Bool,
          analytics: Analytics = ServiceLocator.analytics,
-         onLoginSuccess: @escaping (String) -> Void) {
+         onLoginSuccess: @escaping () -> Void) {
         self.analytics = analytics
         let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, onLoginSuccess: onLoginSuccess)
         super.init(rootView: SiteCredentialLoginView(connectionOnly: connectionOnly, viewModel: viewModel))

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-11-27 02:10:06+0000 */
+/* Translation-Revision-Date: 2022-11-30 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -781,6 +781,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the Automattic website */
 "Automattic family" = "משפחת Automattic";
 
+/* Label for average value of orders in the Analytics Hub */
+"Average Order Value" = "ערך הזמנות ממוצע";
+
 /* The title on the payment row of the Order Details screen when the payment is still pending */
 "Awaiting payment" = "ממתין לתשלום";
 
@@ -957,6 +960,9 @@ which should be translated separately and considered part of this sentence. */
    Title for the button to cancel the payment methods screen
    Title for the button to cancel the simple payments screen */
 "Cancel" = "ביטול";
+
+/* Action button to cancel Jetpack installation. */
+"Cancel Installation" = "לבטל את ההתקנה";
 
 /* Display label for cancelled order status. */
 "Cancelled" = "בוטלו";
@@ -1162,6 +1168,9 @@ which should be translated separately and considered part of this sentence. */
    Text field company in Shipping Label Address Validation */
 "Company" = "חברה";
 
+/* Subtitle describing the previous analytics period under comparison. E.g. Compared to Oct 1 - 22, 2022 */
+"Compared to **%1$@**" = "לערוך השוואה מול **%1$@**";
+
 /* Display label for completed order status. */
 "Completed" = "הושלמה";
 
@@ -1202,6 +1211,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to connect to an existing store from the store picker */
 "Connect an existing store" = "לחבר חנות קיימת";
 
+/* Name of the connection step on the Jetpack setup screen */
+"Connect store to Jetpack" = "לחבר את החנות שלך אל Jetpack";
+
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "להתחבר לקורא";
 
@@ -1222,6 +1234,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Page title for the list of connected stores */
 "Connected Stores" = "חנויות מחוברות";
+
+/* Title for the Jetpack setup screen when connection is required */
+"Connecting Jetpack" = "מחבר את Jetpack";
 
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
 "Connecting reader failed" = "החיבור לקורא נכשל";
@@ -1478,6 +1493,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Loading text while creating a product from a template */
 "Creating Template Product..." = "יוצר את תבנית המוצר...";
+
+/* Title of the in-progress view when waiting for the site to become a Jetpack site after WPCOM plan purchase in the store creation flow. */
+"Creating your store" = "יוצר את החנות שלך";
 
 /* Credit card payment method for shipping label. */
 "Credit card" = "כרטיס אשראי";
@@ -2065,6 +2083,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title indicating a failed step in Jetpack installation. */
 "Error" = "שגיאה";
 
+/* Error title when Jetpack activation fails */
+"Error activating Jetpack" = "שגיאה בהפעלת Jetpack";
+
+/* Error title when Jetpack connection fails */
+"Error authorizing connection to Jetpack" = "אירעה שגיאה באישור החיבור אל Jetpack";
+
+/* Error code displayed when the Jetpack setup fails. %1$d is the code. */
+"Error code %1$d" = "קוד שגיאה ⁦%1$d⁩";
+
 /* Error message when enabling analytics fails */
 "Error enabling analytics. Please try again." = "שגיאה בהפעלת הנתונים האנליטיים. יש לנסות שוב.";
 
@@ -2073,6 +2100,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "שגיאה באיתור הכתובת ב-Apple Maps";
+
+/* Error title when Jetpack install fails */
+"Error installing Jetpack" = "אירעה שגיאה בהתקנה של Jetpack";
 
 /* Message displayed on Coupon Details screen when loading total discounted amount fails */
 "Error loading data" = "שגיאה בטעינת הנתונים";
@@ -2132,6 +2162,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the exclusions section in Coupon Usage Restrictions screen */
 "Exclusions" = "החרגות";
+
+/* Button to cancel installation on the Jetpack setup interrupted screen */
+"Exit Without Connecting" = "לצאת בלי להתחבר";
 
 /* Accessibility value when a banner is expanded */
 "Expanded" = "הורחב";
@@ -2367,6 +2400,9 @@ which should be translated separately and considered part of this sentence. */
 /* Option to select the Gmail app when logging in with magic links */
 "Gmail" = "Gmail";
 
+/* Title for the button to navigate to the home screen after Jetpack setup completes */
+"Go to Store" = "מעבר לחנות";
+
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "ההרשמה ל-Google נכשלה.";
 
@@ -2404,6 +2440,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Post HTML content */
 "HTML Content" = "תוכן HTML";
+
+/* Subtitle on the Jetpack setup required screen */
+"Have your store credentials ready." = "יש לוודא שפרטי הכניסה לחנות זמינים לך.";
 
 /* Accessibility label for selecting h1 paragraph style button on the formatting toolbar. */
 "Header 1" = "כותרת עליונה ברמה 1";
@@ -2696,6 +2735,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text on the button that starts a new refund process */
 "Issue Refund" = "להפיק החזר כספי";
 
+/* Title of the alert when the WPCOM plan cannot be purchased in the store creation flow. */
+"Issue purchasing the plan" = "אירעה בעיה ברכישת התוכנית";
+
 /* Text of the screen that is displayed while the refund is being created. */
 "Issuing Refund..." = "מנפיק החזר כספי...";
 
@@ -2742,6 +2784,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack הוא תוסף חינמי של WordPress שמחבר לחנות שלך כלים שיספקו לך את חוויית השימוש הטובה ביותר במכשיר הנייד, כולל הודעות דחיפה ונתונים סטטיסטיים";
+
+/* Title of the Jetpack setup interrupted screen */
+"Jetpack is installed, but not connected." = "השירות של Jetpack מותקן אך לא מחובר.";
 
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "להצטרף מכל מקום";
@@ -3067,6 +3112,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Caption displayed in promotional screens shown during the login flow. */
 "Monitor and approve your product reviews" = "לעקוב אחר ביקורות על מוצרים ולאשר אותן";
 
+/* Title of the Analytics Hub Month to Date selection range */
+"Month to Date" = "חודש עד התאריך הנוכחי";
+
 /* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
    Accessibility label for the More button on formatting toolbar. */
 "More" = "עוד";
@@ -3143,6 +3191,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The title for the net amount paid cell */
 "Net Payment" = "תשלום נטו";
 
+/* Label for net sales (net revenue) in the Analytics Hub */
+"Net Sales" = "סכום מכירות נטו";
+
 /* Top performers — label for the total sales of a product */
 "Net sales: %@" = "סכום מכירות נטו: %@";
 
@@ -3203,6 +3254,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
 "No coupons found" = "לא נמצאו קופונים";
 
+/* A error message when it's not possible to acquirethe Analytics Hub current selection range */
+"No current period available" = "אין תקופה נוכחית זמינה";
+
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "אין נתונים זמינים";
 
@@ -3226,6 +3280,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Message on the detail view of the Orders tab before any order is selected */
 "No order selected" = "לא נבחרו הזמנות";
+
+/* A error message when it's not possible toacquire the Analytics Hub previous selection range */
+"No previous period available" = "אין תקופות קודמות זמינות";
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "טרם צוין מחיר";
@@ -3316,6 +3373,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Header of selected attribute options section in Add Attribute Options screen */
 "OPTIONS OFFERED" = "אפשרויות זמינות";
+
+/* Title for order analytics section in the Analytics Hub */
+"ORDERS" = "הזמנות";
 
 /* Spoken label to indicate switch control is turned off. */
 "Off" = "כבוי";
@@ -3663,8 +3723,14 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "יש להטעין את הקורא";
 
+/* Error message on the Jetpack setup required screen when Jetpack connection is missing. */
+"Please connect your store to Jetpack to access it on this app." = "יש לחבר את החנות שלך אל Jetpack כדי לגשת אליה באפליקציה הזאת.";
+
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app." = "כדי להשתמש באפליקציה, יש לפנות לבעלי האתר כדי לקבל הזמנה לאתר זה כמנהל חנות או כמנהל מערכת.";
+
+/* Suggestion to be displayed when the user encounters a permission error during Jetpack setup */
+"Please contact your shop manager or administrator for help." = "יש ליצור קשר עם מנהל החנות או מנהל המערכת לקבלת עזרה.";
 
 /* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to address problems */
 "Please correct your store address to proceed" = "עליך לתקן את הכתובת של החנות שלך כדי להמשיך";
@@ -3725,6 +3791,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* A short prompt asking the user to properly fill out all login fields. */
 "Please fill out all the fields" = "נא למלא את כל השדות";
 
+/* Error message on the Jetpack setup required screen. */
+"Please install the free Jetpack plugin to access your store on this app." = "יש להתקין את התוסף החינמי של Jetpack כדי לגשת לחנות באפליקציה הזאת.";
+
 /* Message for alert to prompt user to logout before connecting to a different wordpress.com site. */
 "Please log out before connecting to a different wordpress.com site" = "יש להתנתק לפני ההתחברות לאתר WordPress.com שונה";
 
@@ -3735,14 +3804,23 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Recovery suggestion when we fail to update an address when creating or editing an order */
 "Please make sure you are running the latest version of WooCommerce and try again later." = "עליך לוודא שמותקנת באתר שלך הגרסה האחרונה של WooCommerce ולנסות שוב מאוחר יותר.";
 
+/* Message of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
+"Please remain connected." = "אין להתנתק מהמערכת.";
+
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "יש לבחור חבילה";
 
 /* Message of the alert when the store cannot be created due to the domain in the store creation flow. */
 "Please try a different domain." = "יש לנסות דומיין אחר.";
 
+/* Message of the alert when the WPCOM plan cannot be purchased in the store creation flow. */
+"Please try again and make sure you are signed in to an App Store account eligible for purchase." = "עליך לנסות שוב ולוודא שהתחברת לחשבון App Store שזכאי לרכישה.";
+
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "יש לנסות שוב מאוחר יותר או לפנות אלינו בכל עת ואנחנו נשמח לעזור!";
+
+/* Suggestion to be displayed when the user encounters a permission error during Jetpack setup */
+"Please try again or contact support if this error continues." = "יש לנסות שוב או לפנות לתמיכה אם השגיאה ממשיכה להופיע.";
 
 /* Error message when Jetpack connection fails */
 "Please try again or contact us for support." = "יש לנסות שוב או לפנות אלינו לתמיכה.";
@@ -3777,6 +3855,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Message on the Jetpack Install Progress screen. The %1$@ is the site address. */
 "Please wait while we connect your site %1$@ with Jetpack." = "רק רגע, אנחנו מחברים האתר שלך %1$@ אל Jetpack ‎.";
+
+/* Message on the Jetpack setup screen. The %1$@ is the site address. */
+"Please wait while we connect your store %1$@ with Jetpack." = "רק רגע, אנחנו מחברים את החנות שלך %1$@ אל Jetpack‎.";
 
 /* Instructions for the progress screen while generating a variation */
 "Please wait while we create the new variation" = "יש להמתין כמה רגעים בזמן שאנחנו יוצרים את הסוג החדש";
@@ -4057,6 +4138,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
 "Quickly get up and selling with a beautiful online store." = "להקים חנות מקוונת יפה ולהתחיל למכור מהר.";
+
+/* Title for revenue analytics section in the Analytics Hub */
+"REVENUE" = "רווחים";
 
 /* Title of button that allows the user to rate the app in the App Store */
 "Rate us" = "נשמח לקבל ממך דירוג";
@@ -4467,6 +4551,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Link title to see all paper size options */
 "See layout and paper sizes options" = "להציג אפשרויות של פריסה וגודל נייר";
+
+/* Button on the stats dashboard that navigates user to the analytics hub */
+"See more" = "להציג עוד";
 
 /* Subtitle of the Jetpack benefits banner. */
 "See the benefits" = "לצפייה בהטבות";
@@ -5044,6 +5131,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
 "Tap or insert card to refund" = "יש להצמיד או להכניס את הכרטיס לביצוע החזר כספי";
 
+/* Cell tytle on beta features screen to enable Tap to Pay on iPhone: card payments with the phone's built in reader */
+"Tap to Pay on iPhone" = "להקיש לתשלום ב-iPhone";
+
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
 "Tap to insert a Horizontal Ruler" = "יש להקיש כדי להוסיף סרגל אופקי";
 
@@ -5155,6 +5245,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
    The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen.
    Title of button that displays the App's terms of service */
 "Terms of Service" = "תנאי השירות";
+
+/* Cell description on beta features screen to enable in-app purchases */
+"Test out In-Person Payments using your phone's built-in card reader, as we get ready to launch. Supported on iPhone XS and newer phones, running iOS 15.5 or above." = "כדאי לבדוק את 'תשלומים באופן אישי' באמצעות קורא הכרטיסים המובנה בטלפון שלך בזמן שאנחנו מתכוננים להשקה. נתמך ב-iPhone XS ובטלפונים חדשים יותר עם iOS 15.5 ואילך.";
 
 /* Cell description on beta features screen to enable in-app purchases */
 "Test out in-app purchases as we get ready to launch" = "כדאי לבדוק את האפשרות לרכישה באפליקציה בזמן שאנחנו מתכוננים להשקה";
@@ -5420,6 +5513,12 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The details on the placeholder overlay when there is issue syncing site plugins */
 "There was a problem while trying to load plugins. Check your internet and try again." = "אירעה בעיה בטעינת התוספים. יש לבדוק את החיבור לאינטרנט ולנסות שוב.";
 
+/* Message to be displayed when the user encounters a permission error during Jetpack setup */
+"There was an error communicating with your site." = "אירעה שגיאה בתקשורת עם האתר שלך.";
+
+/* Message to be displayed when the user encounters a generic error during Jetpack setup */
+"There was an error completing your request." = "אירעה שגיאה בהשלמת הבקשה שלך.";
+
 /* Notice text after failing to create a simple payments order. */
 "There was an error creating the order" = "אירעה שגיאה ביצירת ההזמנה";
 
@@ -5502,6 +5601,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Footer text for Downloadable File URL */
 "This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "זוהי כתובת ה-URL של הקובץ שאליו הלקוחות יקבלו גישה. כתובות ה-URL שהוזנו צריכות להיות מקודדות כבר.";
+
+/* Subtitle of the domain selector. */
+"This is where people will find you on the Internet. You can add another domain later." = "כאן הגולשים ימצאו אותך באינטרנט. אפשר להוסיף דומיין אחר במועד מאוחר יותר.";
 
 /* Message in action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow.The package name reads like: Package 1: Custom Envelope. */
 "This item is currently in Package %1$d: %2$@. Where would you like to move it?" = "הפריט הזה נמצא כעת בחבילה ⁦%1$d⁩ : %2$@. לאן ברצונך להעביר אותו?";
@@ -5618,6 +5720,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Label for total number of orders in the Analytics Hub */
 "Total Orders" = "סך כל ההזמנות";
 
+/* Label for total sales (gross revenue) in the Analytics Hub */
+"Total Sales" = "סך כל המכירות";
+
 /* Title of the row for adding the package weight in Shipping Label Package Detail screen */
 "Total package weight" = "משקל החבילה הכולל";
 
@@ -5657,6 +5762,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Connect when the SSL certificate is invalid */
 "Trust" = "אמון";
 
+/* Action button to retry Jetpack activation. */
+"Try Activating Again" = "יש לנסות להפעיל שוב";
+
 /* Action displayed in the error prompt when loading total discounted amount in Coupon Details screen fails
    Button to retry a software update. Presented to users when updating the card reader software fails
    Button to try again after connecting to a specific reader fails due to a critically low battery.
@@ -5675,8 +5783,14 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Message from the in-person payment card reader prompting user to retry a payment using a different method, e.g. swipe, tap, insert */
 "Try Another Read Method" = "יש לנסות שיטת קריאה אחרת";
 
+/* Action button to retry Jetpack connection. */
+"Try Authorizing Again" = "יש לנסות לאשר שוב";
+
 /* Button to try to collect a payment again. Presented to users after collecting a payment fails */
 "Try Collecting Again" = "כדאי לנסות לגבות את התשלום שוב";
+
+/* Action button to retry Jetpack installation. */
+"Try Installing Again" = "יש לנסות להתקין שוב";
 
 /* Action to resync on the placeholder overlay when there is issue syncing site plugins
    Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
@@ -5684,6 +5798,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
 "Try another means of payment" = "יש לנסות אמצעי תשלום אחר";
+
+/* Message on the Jetpack setup interrupted screen */
+"Try connecting again to access your store." = "יש לנסות להתחבר שוב כדי לגשת לחנות שלך.";
 
 /* Title for the button on the Linked Products announcement banner */
 "Try it now" = "כדאי לנסות עכשיו";
@@ -6043,6 +6160,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* No comment provided by engineer. */
 "Username must be at least 4 characters." = "שם המשתמש צריך להכיל 4 תווים לפחות.";
 
+/* Message to be displayed when a Jetpack connection is being authorized */
+"Validating" = "מאמת";
+
 /* Title for the Value row in item details in Customs screen of Shipping Label flow */
 "Value (%1$@ per unit)" = "ערך (%1$@ ליחידה)";
 
@@ -6163,11 +6283,17 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* View title during the Google auth process. */
 "Waiting..." = "ממתין...";
 
+/* Title of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
+"We are getting ready for your store creation" = "אנחנו מתכוננים לקראת יצירת החנות שלך";
+
 /* Error message when the merchant's payment account has been rejected */
 "We are sorry but we can't support In-Person Payments for this store." = "אנחנו מצטערים, אבל אין באפשרותנו לתמוך בתשלומים באופן אישי עבור חנות זו.";
 
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "אנחנו עובדים על שיפור התהליך של צפייה בהרחבות המוצרים מהמכשיר שלך! לעת עתה, יש לך אפשרות לראות את ההרחבות שבהזמנות שלך. אפשר ליצור ולערוך את ההרחבות האלה דרך לוח הבקרה במחשב.";
+
+/* Error message displayed when there is no store matching the site URL that is associated with the user's account */
+"We cannot load the store at the moment." = "אין לנו אפשרות לטעון את החנות כרגע.";
 
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "אין לנו אפשרות להציג את הניתוח האנליטי של החנות שלך";
@@ -6265,6 +6391,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Title of a button linking to the app's website */
 "Website" = "אתר";
+
+/* Title of the Analytics Hub Week to Date selection range */
+"Week to Date" = "שבוע עד התאריך הנוכחי";
 
 /* Title of the cell in Product Shipping Settings > Weight */
 "Weight" = "משקל";
@@ -6368,6 +6497,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Option to select the Yahoo Mail app when logging in with magic links */
 "Yahoo Mail" = "Yahoo Mail";
 
+/* Title of the Analytics Hub Year to Date selection range */
+"Year to Date" = "שנה עד התאריך הנוכחי";
+
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "כן, אני רוצה לשנות";
 
@@ -6404,6 +6536,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* The description on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
 "You currently have Coupons disabled for this store. Enable coupons to get started." = "כרגע הקופונים מושבתים בחנות הזאת. יש להפעיל את הקופונים כדי להתחיל.";
+
+/* Message to be displayed when the user encounters a permission error during Jetpack setup */
+"You don't have permission to manage plugins on this store." = "אין לך הרשאה לניהול התוספים בחנות הזאת.";
 
 /* Title for the mocked order notification needed for the AppStore listing screenshot */
 "You have a new order! 🎉" = "יש לך הזמנה חדשה! 🎉";

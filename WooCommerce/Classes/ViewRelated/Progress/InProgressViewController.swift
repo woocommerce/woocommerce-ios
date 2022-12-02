@@ -17,9 +17,14 @@ final class InProgressViewController: UIViewController {
     @IBOutlet private weak var messageLabel: UILabel!
 
     private let viewProperties: InProgressViewProperties
+    private let hidesNavigationBar: Bool
 
-    init(viewProperties: InProgressViewProperties) {
+    /// - Parameters:
+    ///   - viewProperties: Configurable view properties.
+    ///   - hidesNavigationBar: Whether the navigation bar is manually hidden when the view controller is shown in a `UINavigationController`.
+    init(viewProperties: InProgressViewProperties, hidesNavigationBar: Bool = false) {
         self.viewProperties = viewProperties
+        self.hidesNavigationBar = hidesNavigationBar
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -44,6 +49,18 @@ final class InProgressViewController: UIViewController {
         super.viewWillAppear(animated)
 
         activityIndicatorView.startAnimating()
+
+        if hidesNavigationBar {
+            navigationController?.setNavigationBarHidden(true, animated: true)
+        }
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        if hidesNavigationBar {
+            navigationController?.setNavigationBarHidden(false, animated: true)
+        }
+
+        super.viewWillDisappear(animated)
     }
 }
 

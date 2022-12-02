@@ -6,7 +6,7 @@ struct AnalyticsHubTimeRange {
     let end: Date
 }
 
-/// Main source of time ranges of the Analytics Hub, responsible for generating the current and previous dates
+/// Main source of time ranges of the Analytics Hub, responsible for providing the current and previous dates
 /// for a given Date and range Type alongside their UI descriptions
 ///
 public class AnalyticsHubTimeRangeGenerator {
@@ -24,12 +24,12 @@ public class AnalyticsHubTimeRangeGenerator {
     }
 
     //TODO: abandon usage of the ISO 8601 Calendar and build one based on the Site calendar configuration
-    init(selectedTimeRange: StatsTimeRangeV4,
+    init(selectionType: SelectionType,
          currentDate: Date = Date(),
          currentCalendar: Calendar = Calendar(identifier: .iso8601)) {
         self.currentDate = currentDate
         self.currentCalendar = currentCalendar
-        self.selectionType = SelectionType.from(selectedTimeRange)
+        self.selectionType = selectionType
         self.currentTimeRange = generateCurrentTimeRangeFrom(selectionType: selectionType)
         self.previousTimeRange = generatePreviousTimeRangeFrom(selectionType: selectionType)
     }
@@ -155,14 +155,14 @@ public class AnalyticsHubTimeRangeGenerator {
 }
 
 // MARK: - Constants
-private extension AnalyticsHubTimeRangeGenerator {
+extension AnalyticsHubTimeRangeGenerator {
 
     enum TimeRangeGeneratorError: Error {
         case selectedRangeGenerationFailed
         case previousRangeGenerationFailed
     }
 
-    enum SelectionType {
+    enum SelectionType: CaseIterable {
         case today
         case weekToDate
         case monthToDate
@@ -205,8 +205,8 @@ private extension AnalyticsHubTimeRangeGenerator {
         static let noCurrentPeriodAvailable = NSLocalizedString("No current period available",
                                                                 comment: "A error message when it's not possible to acquire"
                                                                 + "the Analytics Hub current selection range")
-        static let noPreviousPeriodAvailable = NSLocalizedString("No previous period available",
+        static let noPreviousPeriodAvailable = NSLocalizedString("no previous period",
                                                                  comment: "A error message when it's not possible to"
-                                                                          + "acquire the Analytics Hub previous selection range")
+                                                                 + "acquire the Analytics Hub previous selection range")
     }
 }

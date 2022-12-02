@@ -75,15 +75,15 @@ private extension AnalyticsHubTimeRangeSelectionType {
     func mapToRangeData(referenceDate: Date, timezone: TimeZone, calendar: Calendar) -> AnalyticsHubTimeRangeData {
         switch self {
         case .today:
-            return AnalyticsHubDayRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
+            return AnalyticsHubTodayRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
         case .yesterday:
             return AnalyticsHubYesterdayRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
         case .weekToDate:
-            return AnalyticsHubWeekRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
+            return AnalyticsHubWeekToDateRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
         case .monthToDate:
-            return AnalyticsHubMonthRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
+            return AnalyticsHubMonthToDateRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
         case .yearToDate:
-            return AnalyticsHubYearRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
+            return AnalyticsHubYearToDateRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
         }
     }
 }

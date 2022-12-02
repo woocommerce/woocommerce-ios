@@ -2,7 +2,6 @@ import SwiftUI
 
 /// Autofocus for `TextField` and `TextEditor` in iOS 15 and later
 ///
-@available(iOS 15.0, *)
 struct AutofocusTextModifier: ViewModifier {
 
     @FocusState private var textFieldIsFocused: Bool

@@ -6,13 +6,6 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         TimeZone(abbreviation: "UTC") ?? TimeZone.current
     }()
 
-    private var dateFormatter: DateFormatter = {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        dateFormatter.timeZone = TimeZone(abbreviation: "UTC") ?? TimeZone.current
-        return dateFormatter
-    }()
-
     func test_when_time_range_inits_with_yearToDate_then_generate_expected_ranges() throws {
         // Given
         let today = currentDate(from: "2020-02-29")
@@ -45,10 +38,10 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
 
         // Then
         XCTAssertEqual(currentTimeRange.start, startDate(from: "2010-07-01"))
-        XCTAssertEqual(currentTimeRange.end, startDate(from: "2010-07-31"))
+        XCTAssertEqual(currentTimeRange.end, currentDate(from: "2010-07-31"))
 
         XCTAssertEqual(previousTimeRange.start, startDate(from: "2010-06-01"))
-        XCTAssertEqual(previousTimeRange.end, startDate(from: "2010-06-30"))
+        XCTAssertEqual(previousTimeRange.end, currentDate(from: "2010-06-30"))
     }
 
     func test_when_time_range_inits_with_weekToDate_then_generate_expected_ranges() throws {
@@ -64,10 +57,10 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
 
         // Then
         XCTAssertEqual(currentTimeRange.start, startDate(from: "2022-06-27"))
-        XCTAssertEqual(currentTimeRange.end, startDate(from: "2022-07-01"))
+        XCTAssertEqual(currentTimeRange.end, currentDate(from: "2022-07-01"))
 
         XCTAssertEqual(previousTimeRange.start, startDate(from: "2022-06-20"))
-        XCTAssertEqual(previousTimeRange.end, startDate(from: "2022-06-24"))
+        XCTAssertEqual(previousTimeRange.end, currentDate(from: "2022-06-24"))
     }
 
     func test_when_time_range_inits_with_today_then_generate_expected_ranges() throws {
@@ -83,10 +76,10 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
 
         // Then
         XCTAssertEqual(currentTimeRange.start, startDate(from: "2022-07-01"))
-        XCTAssertEqual(currentTimeRange.end, startDate(from: "2022-07-01"))
+        XCTAssertEqual(currentTimeRange.end, currentDate(from: "2022-07-01"))
 
         XCTAssertEqual(previousTimeRange.start, startDate(from: "2022-06-30"))
-        XCTAssertEqual(previousTimeRange.end, startDate(from: "2022-06-30"))
+        XCTAssertEqual(previousTimeRange.end, currentDate(from: "2022-06-30"))
     }
 
     func test_when_time_range_inits_with_yesterday_then_generate_expected_ranges() throws {
@@ -190,7 +183,7 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
 
     func test_when_time_range_inits_with_yesterday_then_generate_expected_descriptions() throws {
         // Given
-        let today = currentDate((from: "2022-07-02")
+        let today = currentDate(from: "2022-07-02")
         let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .yesterday,
                                                        currentDate: today,
                                                        timezone: testTimezone)
@@ -205,14 +198,23 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
     }
 
     private func currentDate(from date: String) -> Date {
-        return dateFormatter.date(from: date)!
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+        dateFormatter.timeZone = testTimezone
+        return dateFormatter.date(from: date + "T11:30:00+0000")!
     }
 
     private func startDate(from date: String) -> Date? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.timeZone = testTimezone
         return dateFormatter.date(from: date)?.startOfDay(timezone: testTimezone)
     }
 
     private func endDate(from date: String) -> Date? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.timeZone = testTimezone
         return dateFormatter.date(from: date)?.endOfDay(timezone: testTimezone)
     }
 }

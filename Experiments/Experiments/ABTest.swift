@@ -25,14 +25,6 @@ public enum ABTest: String, CaseIterable {
     ///
     case nativeJetpackSetupFlow = "woocommerceios_login_jetpack_setup_flow_v2"
 
-    /// A/B test for the Products Onboarding banner on the My Store dashboard.
-    /// Experiment ref: pbxNRc-26F-p2
-    case productsOnboardingBanner = "woocommerceios_products_onboarding_first_product_banner"
-
-    /// A/B test for the Products Onboarding product creation type bottom sheet after tapping the "Add Product" CTA.
-    /// Experiment ref: pbxNRc-28r-p2
-    case productsOnboardingTemplateProducts = "woocommerceios_products_onboarding_template_products"
-
     /// Returns a variation for the given experiment
     public var variation: Variation {
         ExPlat.shared?.experiment(rawValue) ?? .control
@@ -43,7 +35,7 @@ public enum ABTest: String, CaseIterable {
     /// When adding a new experiment, add it to the appropriate case depending on its context (logged-in or logged-out experience).
     public var context: ExperimentContext {
         switch self {
-        case .aaTestLoggedIn, .productsOnboardingBanner, .productsOnboardingTemplateProducts, .nativeJetpackSetupFlow:
+        case .aaTestLoggedIn, .nativeJetpackSetupFlow:
             return .loggedIn
         case .aaTestLoggedOut, .abTestLoginWithWPComOnly:
             return .loggedOut

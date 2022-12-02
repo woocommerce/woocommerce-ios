@@ -5,14 +5,32 @@ import SwiftUI
 /// Hosting Controller for the `AnalyticsHubView` view.
 ///
 final class AnalyticsHubHostingViewController: UIHostingController<AnalyticsHubView> {
-    init(siteID: Int64, timeRange: StatsTimeRangeV4) {
+
+    /// Presents an error notice in the tab bar context after this `self` is dismissed.
+    ///
+    private let systemNoticePresenter: NoticePresenter
+
+    init(siteID: Int64, timeRange: StatsTimeRangeV4, systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
         let viewModel = AnalyticsHubViewModel(siteID: siteID, statsTimeRange: timeRange)
+        self.systemNoticePresenter = systemNoticePresenter
         super.init(rootView: AnalyticsHubView(viewModel: viewModel))
+
+        // Needed to pop the hosting controller from within the SwiftUI view
+        rootView.dismiss = { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        }
     }
 
     @available(*, unavailable)
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        // Show any notice that should have been presented before the underlying disappears.
+        enqueuePendingNotice(rootView.viewModel.notice, using: systemNoticePresenter)
     }
 }
 
@@ -22,6 +40,10 @@ struct AnalyticsHubView: View {
 
     /// Environment safe areas
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+
+    /// Set this closure with UIKit code to pop the view controller. Needed because we need access to the UIHostingController `popViewController` method.
+    ///
+    var dismiss: (() -> Void) = {}
 
     @StateObject var viewModel: AnalyticsHubViewModel
 
@@ -78,8 +100,10 @@ struct AnalyticsHubView: View {
         .edgesIgnoringSafeArea(.horizontal)
         .task {
             await viewModel.updateData()
+            if viewModel.errorSelectingTimeRange {
+                dismiss()
+            }
         }
-        .notice($viewModel.notice)
     }
 }
 

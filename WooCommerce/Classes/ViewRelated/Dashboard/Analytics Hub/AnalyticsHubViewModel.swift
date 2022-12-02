@@ -52,6 +52,10 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published var notice: Notice?
 
+    /// Whether selecting a time range failed
+    ///
+    @Published private(set) var errorSelectingTimeRange: Bool = false
+
     // MARK: Private data
 
     /// Order stats for the current selected time period
@@ -73,8 +77,8 @@ final class AnalyticsHubViewModel: ObservableObject {
         do {
             try await retrieveOrderStats()
         } catch is AnalyticsHubTimeRangeSelection.TimeRangeGeneratorError {
-            switchToErrorState()
             notice = Notice(title: Localization.timeRangeGeneratorError, feedbackType: .error)
+            errorSelectingTimeRange = true
             DDLogWarn("⚠️ Error selecting analytics time range: \(timeRangeSelectionType.description)")
         } catch {
             switchToErrorState()

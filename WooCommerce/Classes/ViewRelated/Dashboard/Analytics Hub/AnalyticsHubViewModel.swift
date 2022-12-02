@@ -15,14 +15,14 @@ final class AnalyticsHubViewModel: ObservableObject {
     init(siteID: Int64,
          statsTimeRange: StatsTimeRangeV4,
          stores: StoresManager = ServiceLocator.stores) {
-        let selectedType = AnalyticsHubTimeRangeGenerator.SelectionType.from(statsTimeRange)
-        let timeRangeGenerator = AnalyticsHubTimeRangeGenerator(selectionType: selectedType)
+        let selectedType = AnalyticsHubTimeRangeSelection.SelectionType(statsTimeRange)
+        let timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: selectedType)
 
         self.siteID = siteID
         self.stores = stores
         self.timeRangeSelectionType = selectedType
-        self.timeRangeGenerator = timeRangeGenerator
-        self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeGenerator: timeRangeGenerator)
+        self.timeRangeSelection = timeRangeSelection
+        self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelection: timeRangeSelection)
 
         bindViewModelsWithData()
     }
@@ -41,7 +41,7 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Time Range Selection Type
     ///
-    @Published var timeRangeSelectionType: AnalyticsHubTimeRangeGenerator.SelectionType
+    @Published var timeRangeSelectionType: AnalyticsHubTimeRangeSelection.SelectionType
 
     /// Time Range ViewModel
     ///
@@ -59,7 +59,7 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Time Range selection data defining the current and previous time period
     ///
-    private var timeRangeGenerator: AnalyticsHubTimeRangeGenerator
+    private var timeRangeSelection: AnalyticsHubTimeRangeSelection
 
     /// Request stats data from network
     ///
@@ -80,8 +80,8 @@ private extension AnalyticsHubViewModel {
     func retrieveOrderStats() async throws {
         switchToLoadingState()
 
-        let currentTimeRange = try timeRangeGenerator.unwrapCurrentTimeRange()
-        let previousTimeRange = try timeRangeGenerator.unwrapPreviousTimeRange()
+        let currentTimeRange = try timeRangeSelection.unwrapCurrentTimeRange()
+        let previousTimeRange = try timeRangeSelection.unwrapPreviousTimeRange()
 
         async let currentPeriodRequest = retrieveStats(earliestDateToInclude: currentTimeRange.start,
                                                        latestDateToInclude: currentTimeRange.end,
@@ -145,8 +145,8 @@ private extension AnalyticsHubViewModel {
             .removeDuplicates()
             .sink { [weak self] newSelectionType in
                 guard let self else { return }
-                self.timeRangeGenerator = AnalyticsHubTimeRangeGenerator(selectionType: newSelectionType)
-                self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeGenerator: self.timeRangeGenerator)
+                self.timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: newSelectionType)
+                self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelection: self.timeRangeSelection)
                 Task.init {
                     await self.updateData()
                 }
@@ -208,10 +208,10 @@ private extension AnalyticsHubViewModel {
                                              isRedacted: false)
     }
 
-    static func timeRangeCard(timeRangeGenerator: AnalyticsHubTimeRangeGenerator) -> AnalyticsTimeRangeCardViewModel {
-        return AnalyticsTimeRangeCardViewModel(selectedRangeTitle: timeRangeGenerator.selectionDescription,
-                                               currentRangeSubtitle: timeRangeGenerator.generateCurrentRangeDescription(),
-                                               previousRangeSubtitle: timeRangeGenerator.generatePreviousRangeDescription())
+    static func timeRangeCard(timeRangeSelection: AnalyticsHubTimeRangeSelection) -> AnalyticsTimeRangeCardViewModel {
+        return AnalyticsTimeRangeCardViewModel(selectedRangeTitle: timeRangeSelection.rangeSelectionDescription,
+                                               currentRangeSubtitle: timeRangeSelection.currentRangeDescription,
+                                               previousRangeSubtitle: timeRangeSelection.previousRangeDescription)
     }
 }
 

@@ -27,8 +27,10 @@ extension URL {
         ].map { URLQueryItem(name: $0.0, value: $0.1) }
 
         if #available(iOS 16.0, *) {
+            // FIXME: Throw error
             return URL(string: baseURL)!.appending(queryItems: queryItems)
         } else {
+            // FIXME: Throw error
             var components = URLComponents(string: baseURL)!
             components.queryItems = queryItems
             return try components.asURL()

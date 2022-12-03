@@ -60,7 +60,8 @@ struct AnalyticsProductCard: View {
 
             TopPerformersView(itemTitle: Localization.title.localizedCapitalized, valueTitle: Localization.itemsSold, rows: itemsSoldData)
                 .padding(.top, Layout.columnSpacing)
-
+                .redacted(reason: isRedacted ? .placeholder : [])
+                .shimmering(active: isRedacted)
         }
         .padding(Layout.cardPadding)
     }

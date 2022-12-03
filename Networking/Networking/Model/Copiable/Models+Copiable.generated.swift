@@ -1987,6 +1987,30 @@ extension Networking.SystemPlugin {
     }
 }
 
+extension Networking.TopEarnerStats {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        date: CopiableProp<String> = .copy,
+        granularity: CopiableProp<StatGranularity> = .copy,
+        limit: CopiableProp<String> = .copy,
+        items: NullableCopiableProp<[TopEarnerStatsItem]> = .copy
+    ) -> Networking.TopEarnerStats {
+        let siteID = siteID ?? self.siteID
+        let date = date ?? self.date
+        let granularity = granularity ?? self.granularity
+        let limit = limit ?? self.limit
+        let items = items ?? self.items
+
+        return Networking.TopEarnerStats(
+            siteID: siteID,
+            date: date,
+            granularity: granularity,
+            limit: limit,
+            items: items
+        )
+    }
+}
+
 extension Networking.TopEarnerStatsItem {
     public func copy(
         productID: CopiableProp<Int64> = .copy,

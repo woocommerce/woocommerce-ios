@@ -114,7 +114,7 @@ extension ProductTableViewCell.ViewModel {
         detailText = String.localizedStringWithFormat(
             NSLocalizedString("Net sales: %@",
                               comment: "Top performers — label for the total sales of a product"),
-            statsItem?.totalString(currencyFormatter: currencyFormatter) ?? ""
+            statsItem?.totalString ?? ""
         )
         accessoryText = "\(statsItem?.quantity ?? 0)"
         backgroundColor = ProductTableViewCell.Constants.backgroundColor
@@ -133,12 +133,5 @@ private extension ProductTableViewCell {
 
     enum Constants {
         static let backgroundColor: UIColor = .systemBackground
-    }
-}
-
-private extension TopEarnerStatsItem {
-    /// Returns a total string without rounding up including the currency symbol.
-    func totalString(currencyFormatter: CurrencyFormatter) -> String? {
-        return currencyFormatter.formatAmount(Decimal(total), with: currency)
     }
 }

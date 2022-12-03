@@ -53,14 +53,6 @@ final class AnalyticsHubViewModelTests: XCTestCase {
             default:
                 break
             }
-            switch action {
-            case let .retrieveCustomStats(_, _, _, _, _, _, completion):
-                completion(.failure(NSError(domain: "Test", code: 1)))
-            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, completion):
-                completion(.failure(NSError(domain: "Test", code: 1)))
-            default:
-                break
-            }
         }
 
         // When

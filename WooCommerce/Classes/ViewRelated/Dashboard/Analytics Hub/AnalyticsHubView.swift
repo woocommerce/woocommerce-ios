@@ -109,9 +109,10 @@ struct AnalyticsHubView: View {
         .edgesIgnoringSafeArea(.horizontal)
         .task {
             await viewModel.updateData()
-            if viewModel.errorSelectingTimeRange {
-                dismissWithNotice(notice)
-            }
+        }
+        .onReceive(viewModel.$notice) { notice in
+            guard let notice else { return }
+            dismissWithNotice(notice)
         }
     }
 }

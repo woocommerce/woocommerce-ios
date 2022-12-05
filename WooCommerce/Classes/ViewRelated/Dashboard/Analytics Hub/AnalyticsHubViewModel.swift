@@ -47,14 +47,10 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published var timeRangeCard: AnalyticsTimeRangeCardViewModel
 
-    /// Defines the current notice that should be shown.
+    /// Defines a notice that should be shown after the view is dismissed.
     /// Defaults to `nil`.
     ///
     @Published var notice: Notice?
-
-    /// Whether selecting a time range failed
-    ///
-    @Published private(set) var errorSelectingTimeRange: Bool = false
 
     // MARK: Private data
 
@@ -82,7 +78,6 @@ final class AnalyticsHubViewModel: ObservableObject {
             try await retrieveOrderStats()
         } catch is AnalyticsHubTimeRangeSelection.TimeRangeGeneratorError {
             notice = Notice(title: Localization.timeRangeGeneratorError, feedbackType: .error)
-            errorSelectingTimeRange = true
             DDLogWarn("⚠️ Error selecting analytics time range: \(timeRangeSelectionType.description)")
         } catch {
             switchToErrorState()

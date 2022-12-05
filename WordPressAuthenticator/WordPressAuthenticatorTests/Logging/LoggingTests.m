@@ -32,13 +32,13 @@
 
 @end
 
-@interface LoggingTest : XCTestCase
+@interface ObjCLoggingTest : XCTestCase
 
 @property (nonatomic, strong) CaptureLogs *logger;
 
 @end
 
-@implementation LoggingTest
+@implementation ObjCLoggingTest
 
 - (void)setUp
 {

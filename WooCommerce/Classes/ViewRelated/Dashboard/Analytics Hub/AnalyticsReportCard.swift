@@ -9,11 +9,13 @@ struct AnalyticsReportCard: View {
     let leadingValue: String
     let leadingDelta: String
     let leadingDeltaColor: UIColor
+    let leadingDeltaTextColor: UIColor
     let leadingChartData: [Double]
     let trailingTitle: String
     let trailingValue: String
     let trailingDelta: String
     let trailingDeltaColor: UIColor
+    let trailingDeltaTextColor: UIColor
     let trailingChartData: [Double]
 
     let isRedacted: Bool
@@ -47,7 +49,7 @@ struct AnalyticsReportCard: View {
                         .shimmering(active: isRedacted)
 
                     AdaptiveStack(horizontalAlignment: .leading) {
-                        DeltaTag(value: leadingDelta, backgroundColor: leadingDeltaColor)
+                        DeltaTag(value: leadingDelta, backgroundColor: leadingDeltaColor, textColor: leadingDeltaTextColor)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .redacted(reason: isRedacted ? .placeholder : [])
                             .shimmering(active: isRedacted)
@@ -71,7 +73,7 @@ struct AnalyticsReportCard: View {
                         .shimmering(active: isRedacted)
 
                     AdaptiveStack(horizontalAlignment: .leading) {
-                        DeltaTag(value: trailingDelta, backgroundColor: trailingDeltaColor)
+                        DeltaTag(value: trailingDelta, backgroundColor: trailingDeltaColor, textColor: trailingDeltaTextColor)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .redacted(reason: isRedacted ? .placeholder : [])
                             .shimmering(active: isRedacted)
@@ -114,11 +116,13 @@ struct Previews: PreviewProvider {
                             leadingValue: "$3.678",
                             leadingDelta: "+23%",
                             leadingDeltaColor: .withColorStudio(.green, shade: .shade40),
+                            leadingDeltaTextColor: .textInverted,
                             leadingChartData: [0.0, 10.0, 2.0, 20.0, 15.0, 40.0, 0.0, 10.0, 2.0, 20.0, 15.0, 50.0],
                             trailingTitle: "Net Sales",
                             trailingValue: "$3.232",
                             trailingDelta: "-3%",
                             trailingDeltaColor: .withColorStudio(.red, shade: .shade40),
+                            trailingDeltaTextColor: .textInverted,
                             trailingChartData: [50.0, 15.0, 20.0, 2.0, 10.0, 0.0, 40.0, 15.0, 20.0, 2.0, 10.0, 0.0],
                             isRedacted: false,
                             showSyncError: false,
@@ -130,11 +134,13 @@ struct Previews: PreviewProvider {
                             leadingValue: "-",
                             leadingDelta: "0%",
                             leadingDeltaColor: .withColorStudio(.gray, shade: .shade0),
+                            leadingDeltaTextColor: .text,
                             leadingChartData: [],
                             trailingTitle: "Net Sales",
                             trailingValue: "-",
                             trailingDelta: "0%",
                             trailingDeltaColor: .withColorStudio(.gray, shade: .shade0),
+                            trailingDeltaTextColor: .text,
                             trailingChartData: [],
                             isRedacted: false,
                             showSyncError: true,

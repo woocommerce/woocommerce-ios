@@ -25,6 +25,10 @@ struct AnalyticsReportCardViewModel {
     ///
     let leadingDeltaColor: UIColor
 
+    /// First Column delta text color.
+    ///
+    let leadingDeltaTextColor: UIColor
+
     /// First Column Chart Data
     ///
     let leadingChartData: [Double]
@@ -44,6 +48,10 @@ struct AnalyticsReportCardViewModel {
     /// Second Column Delta Background Color
     ///
     let trailingDeltaColor: UIColor
+
+    /// Second Column delta text color.
+    ///
+    let trailingDeltaTextColor: UIColor
 
     /// Second Column Chart Data
     ///
@@ -73,11 +81,13 @@ extension AnalyticsReportCardViewModel {
               leadingValue: "$1000",
               leadingDelta: "+50%",
               leadingDeltaColor: .lightGray,
+              leadingDeltaTextColor: .text,
               leadingChartData: [],
               trailingTitle: trailingTitle,
               trailingValue: "$1000",
               trailingDelta: "+50%",
               trailingDeltaColor: .lightGray,
+              trailingDeltaTextColor: .text,
               trailingChartData: [],
               isRedacted: true,
               showSyncError: false,
@@ -94,11 +104,13 @@ extension AnalyticsReportCard {
         self.leadingValue = viewModel.leadingValue
         self.leadingDelta = viewModel.leadingDelta
         self.leadingDeltaColor = viewModel.leadingDeltaColor
+        self.leadingDeltaTextColor = viewModel.leadingDeltaTextColor
         self.leadingChartData = viewModel.leadingChartData
         self.trailingTitle = viewModel.trailingTitle
         self.trailingValue = viewModel.trailingValue
         self.trailingDelta = viewModel.trailingDelta
         self.trailingDeltaColor = viewModel.trailingDeltaColor
+        self.trailingDeltaTextColor = viewModel.trailingDeltaTextColor
         self.trailingChartData = viewModel.trailingChartData
         self.isRedacted = viewModel.isRedacted
         self.showSyncError = viewModel.showSyncError

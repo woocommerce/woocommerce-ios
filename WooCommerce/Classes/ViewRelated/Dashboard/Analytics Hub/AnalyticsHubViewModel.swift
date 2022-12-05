@@ -198,11 +198,13 @@ private extension AnalyticsHubViewModel {
                                                                                                         selectedIntervalIndex: nil),
                                             leadingDelta: totalDelta.string,
                                             leadingDeltaColor: Constants.deltaColor(for: totalDelta.direction),
+                                            leadingDeltaTextColor: Constants.deltaTextColor(for: totalDelta.direction),
                                             leadingChartData: StatsIntervalDataParser.getChartData(for: .totalRevenue, from: currentPeriodStats),
                                             trailingTitle: Localization.RevenueCard.trailingTitle,
                                             trailingValue: StatsDataTextFormatter.createNetRevenueText(orderStats: currentPeriodStats),
                                             trailingDelta: netDelta.string,
                                             trailingDeltaColor: Constants.deltaColor(for: netDelta.direction),
+                                            trailingDeltaTextColor: Constants.deltaTextColor(for: netDelta.direction),
                                             trailingChartData: StatsIntervalDataParser.getChartData(for: .netRevenue, from: currentPeriodStats),
                                             isRedacted: false,
                                             showSyncError: showSyncError,
@@ -220,11 +222,13 @@ private extension AnalyticsHubViewModel {
                                                                                                       selectedIntervalIndex: nil),
                                             leadingDelta: ordersCountDelta.string,
                                             leadingDeltaColor: Constants.deltaColor(for: ordersCountDelta.direction),
+                                            leadingDeltaTextColor: Constants.deltaTextColor(for: ordersCountDelta.direction),
                                             leadingChartData: StatsIntervalDataParser.getChartData(for: .orderCount, from: currentPeriodStats),
                                             trailingTitle: Localization.OrderCard.trailingTitle,
                                             trailingValue: StatsDataTextFormatter.createAverageOrderValueText(orderStats: currentPeriodStats),
                                             trailingDelta: orderValueDelta.string,
                                             trailingDeltaColor: Constants.deltaColor(for: orderValueDelta.direction),
+                                            trailingDeltaTextColor: Constants.deltaTextColor(for: orderValueDelta.direction),
                                             trailingChartData: StatsIntervalDataParser.getChartData(for: .averageOrderValue, from: currentPeriodStats),
                                             isRedacted: false,
                                             showSyncError: showSyncError,
@@ -244,6 +248,7 @@ private extension AnalyticsHubViewModel {
         return AnalyticsProductCardViewModel(itemsSold: itemsSold,
                                              delta: itemsSoldDelta.string,
                                              deltaBackgroundColor: Constants.deltaColor(for: itemsSoldDelta.direction),
+                                             deltaTextColor: Constants.deltaTextColor(for: itemsSoldDelta.direction),
                                              itemsSoldData: itemSoldRows(from: itemsSoldStats),
                                              isRedacted: false,
                                              showStatsError: showStatsError,
@@ -281,8 +286,18 @@ private extension AnalyticsHubViewModel {
             switch direction {
             case .positive:
                 return .withColorStudio(.green, shade: .shade50)
-            case .negative, .zero:
+            case .negative:
                 return .withColorStudio(.red, shade: .shade40)
+            case .zero:
+                return .withColorStudio(.gray, shade: .shade0)
+            }
+        }
+        static func deltaTextColor(for direction: StatsDataTextFormatter.DeltaPercentage.Direction) -> UIColor {
+            switch direction {
+            case .positive, .negative:
+                return .textInverted
+            case .zero:
+                return .text
             }
         }
     }

@@ -14,6 +14,9 @@ struct AnalyticsProductCard: View {
     /// Delta Tag background color.
     let deltaBackgroundColor: UIColor
 
+    /// Delta Tag text color.
+    let deltaTextColor: UIColor
+
     /// Items Solds data to render.
     ///
     let itemsSoldData: [TopPerformersRow.Data]
@@ -49,7 +52,7 @@ struct AnalyticsProductCard: View {
                     .redacted(reason: isRedacted ? .placeholder : [])
                     .shimmering(active: isRedacted)
 
-                DeltaTag(value: delta, backgroundColor: deltaBackgroundColor)
+                DeltaTag(value: delta, backgroundColor: deltaBackgroundColor, textColor: deltaTextColor)
                     .redacted(reason: isRedacted ? .placeholder : [])
                     .shimmering(active: isRedacted)
             }
@@ -105,6 +108,7 @@ struct AnalyticsProductCardPreviews: PreviewProvider {
         AnalyticsProductCard(itemsSold: "2,234",
                              delta: "+23%",
                              deltaBackgroundColor: .withColorStudio(.green, shade: .shade50),
+                             deltaTextColor: .textInverted,
                              itemsSoldData: [
                                 .init(imageURL: imageURL, name: "Tabletop Photos", details: "Net Sales: $1,232", value: "32"),
                                 .init(imageURL: imageURL, name: "Kentya Palm", details: "Net Sales: $800", value: "10"),
@@ -119,6 +123,7 @@ struct AnalyticsProductCardPreviews: PreviewProvider {
         AnalyticsProductCard(itemsSold: "-",
                              delta: "0%",
                              deltaBackgroundColor: .withColorStudio(.gray, shade: .shade0),
+                             deltaTextColor: .text,
                              itemsSoldData: [],
                              isRedacted: false,
                              showStatsError: true,

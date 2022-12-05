@@ -430,7 +430,7 @@ extension UnderlyingError: LocalizedError {
                                      "there is an issue with the merchant account or device")
         case .unsupportedMobileDeviceConfiguration:
             return NSLocalizedString("Please check that your phone meets these requirements: " +
-                                     "iPhone XS or newer running iOS 15.4 or above. Contact support if this error " +
+                                     "iPhone XS or newer running iOS 16.0 or above. Contact support if this error " +
                                      "shows on a supported device.",
                                      comment: "Error message shown when the built-in reader cannot be used because " +
                                      "the device does not meet minimum requirements.")

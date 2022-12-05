@@ -37,7 +37,7 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Products Card ViewModel
     ///
-    @Published var productCard = AnalyticsHubViewModel.productCard(currentPeriodStats: nil, previousPeriodStats: nil)
+    @Published var productCard = AnalyticsHubViewModel.productCard(currentPeriodStats: nil, previousPeriodStats: nil, itemsSoldStats: nil)
 
     /// Time Range Selection Type
     ///
@@ -65,6 +65,10 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Order stats for the previous time period (for comparison)
     ///
     @Published private var previousOrderStats: OrderStatsV4? = nil
+
+    /// Stats for the current top items sold. Used in the products card.
+    ///
+    @Published private var itemsSoldStats: TopEarnerStats? = nil
 
     /// Time Range selection data defining the current and previous time period
     ///
@@ -103,9 +107,15 @@ private extension AnalyticsHubViewModel {
         async let previousPeriodRequest = retrieveStats(earliestDateToInclude: previousTimeRange.start,
                                                         latestDateToInclude: previousTimeRange.end,
                                                         forceRefresh: true)
-        let (currentPeriodStats, previousPeriodStats) = try await (currentPeriodRequest, previousPeriodRequest)
+
+        async let itemsSoldRequest = retrieveTopItemsSoldStats(earliestDateToInclude: currentTimeRange.start,
+                                                               latestDateToInclude: currentTimeRange.end,
+                                                               forceRefresh: true)
+
+        let (currentPeriodStats, previousPeriodStats, itemsSoldStats) = try await (currentPeriodRequest, previousPeriodRequest, itemsSoldRequest)
         self.currentOrderStats = currentPeriodStats
         self.previousOrderStats = previousPeriodStats
+        self.itemsSoldStats = itemsSoldStats
     }
 
     @MainActor
@@ -128,6 +138,25 @@ private extension AnalyticsHubViewModel {
             stores.dispatch(action)
         }
     }
+
+    @MainActor
+    /// Retrieves top ItemsSold stats using the `retrieveTopEarnerStats` action but without saving results into storage.
+    ///
+    func retrieveTopItemsSoldStats(earliestDateToInclude: Date, latestDateToInclude: Date, forceRefresh: Bool) async throws -> TopEarnerStats {
+        try await withCheckedThrowingContinuation { continuation in
+            let action = StatsActionV4.retrieveTopEarnerStats(siteID: siteID,
+                                                              timeRange: .thisYear, // Only needed for storing purposes, we can ignore it.
+                                                              earliestDateToInclude: earliestDateToInclude,
+                                                              latestDateToInclude: latestDateToInclude,
+                                                              quantity: Constants.maxNumberOfTopItemsSold,
+                                                              forceRefresh: forceRefresh,
+                                                              saveInStorage: false,
+                                                              onCompletion: { result in
+                continuation.resume(with: result)
+            })
+            stores.dispatch(action)
+        }
+    }
 }
 
 // MARK: Data - UI mapping
@@ -142,16 +171,19 @@ private extension AnalyticsHubViewModel {
     func switchToErrorState() {
         self.currentOrderStats = nil
         self.previousOrderStats = nil
+        self.itemsSoldStats = nil
     }
 
     func bindViewModelsWithData() {
-        Publishers.CombineLatest($currentOrderStats, $previousOrderStats)
-            .sink { [weak self] currentOrderStats, previousOrderStats in
+        Publishers.CombineLatest3($currentOrderStats, $previousOrderStats, $itemsSoldStats)
+            .sink { [weak self] currentOrderStats, previousOrderStats, itemsSoldStats in
                 guard let self else { return }
 
                 self.revenueCard = AnalyticsHubViewModel.revenueCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
                 self.ordersCard = AnalyticsHubViewModel.ordersCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
-                self.productCard = AnalyticsHubViewModel.productCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
+                self.productCard = AnalyticsHubViewModel.productCard(currentPeriodStats: currentOrderStats,
+                                                                     previousPeriodStats: previousOrderStats,
+                                                                     itemsSoldStats: itemsSoldStats)
 
             }.store(in: &subscriptions)
 
@@ -211,23 +243,38 @@ private extension AnalyticsHubViewModel {
                                             syncErrorMessage: Localization.OrderCard.noOrders)
     }
 
-    static func productCard(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) -> AnalyticsProductCardViewModel {
-        let showSyncError = currentPeriodStats == nil || previousPeriodStats == nil
+    /// Helper function to create a `AnalyticsProductCardViewModel` from the fetched stats.
+    ///
+    static func productCard(currentPeriodStats: OrderStatsV4?,
+                            previousPeriodStats: OrderStatsV4?,
+                            itemsSoldStats: TopEarnerStats?) -> AnalyticsProductCardViewModel {
+        let showStatsError = currentPeriodStats == nil || previousPeriodStats == nil
+        let showItemsSoldError = itemsSoldStats == nil
         let itemsSold = StatsDataTextFormatter.createItemsSoldText(orderStats: currentPeriodStats)
         let itemsSoldDelta = StatsDataTextFormatter.createOrderItemsSoldDelta(from: previousPeriodStats, to: currentPeriodStats)
 
-        let imageURL = URL(string: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")
         return AnalyticsProductCardViewModel(itemsSold: itemsSold,
                                              delta: itemsSoldDelta.string,
                                              deltaBackgroundColor: Constants.deltaColor(for: itemsSoldDelta.direction),
-                                             itemsSoldData: [ // Temporary data
-                                                .init(imageURL: imageURL, name: "Tabletop Photos", details: "Net Sales: $1,232", value: "32"),
-                                                .init(imageURL: imageURL, name: "Kentya Palm", details: "Net Sales: $800", value: "10"),
-                                                .init(imageURL: imageURL, name: "Love Ficus", details: "Net Sales: $599", value: "5"),
-                                                .init(imageURL: imageURL, name: "Bird Of Paradise", details: "Net Sales: $23.50", value: "2")
-                                             ],
+                                             itemsSoldData: itemSoldRows(from: itemsSoldStats),
                                              isRedacted: false,
-                                             showSyncError: showSyncError)
+                                             showStatsError: showStatsError,
+                                             showItemsSoldError: showItemsSoldError)
+    }
+
+    /// Helper functions to create `TopPerformersRow.Data` items rom the provided `TopEarnerStats`.
+    ///
+    static func itemSoldRows(from itemSoldStats: TopEarnerStats?) -> [TopPerformersRow.Data] {
+        guard let items = itemSoldStats?.items else {
+            return []
+        }
+
+        return items.map { item in
+            TopPerformersRow.Data(imageURL: URL(string: item.imageUrl ?? ""),
+                                  name: item.productName ?? "",
+                                  details: Localization.ProductCard.netSales(value: item.totalString),
+                                  value: "\(item.quantity)")
+        }
     }
 
     static func timeRangeCard(timeRangeSelection: AnalyticsHubTimeRangeSelection) -> AnalyticsTimeRangeCardViewModel {
@@ -240,6 +287,8 @@ private extension AnalyticsHubViewModel {
 // MARK: - Constants
 private extension AnalyticsHubViewModel {
     enum Constants {
+        static let maxNumberOfTopItemsSold = 5
+
         static func deltaColor(for direction: StatsDataTextFormatter.DeltaPercentage.Direction) -> UIColor {
             switch direction {
             case .positive:
@@ -265,6 +314,13 @@ private extension AnalyticsHubViewModel {
             static let trailingTitle = NSLocalizedString("Average Order Value", comment: "Label for average value of orders in the Analytics Hub")
             static let noOrders = NSLocalizedString("Unable to load order analytics",
                                                     comment: "Text displayed when there is an error loading order stats data.")
+        }
+
+        enum ProductCard {
+            static func netSales(value: String) -> String {
+                String.localizedStringWithFormat(NSLocalizedString("Net sales: %@", comment: "Label for the total sales of a product in the Analytics Hub"),
+                                                 value)
+            }
         }
 
         static let timeRangeGeneratorError = NSLocalizedString("Sorry, something went wrong. We can't load analytics for the selected date range.",

@@ -40,12 +40,6 @@ which should be translated separately and considered part of this sentence. */
 /* A label prompting users to learn more about card readers. %1$@ is a placeholder that is always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
 "%1$@ about adding Pay in Person to your checkout" = "%1$@ about adding Pay in Person to your checkout";
 
-/* A label prompting users to learn more about In-Person Payments.
-\u{2011} is a special character that acts as nonbreaking hyphen for "-" in the "In-Person" string.
-%1$@ is a placeholder that always replaced with \"Learn more\" string,
-which should be translated separately and considered part of this sentence. */
-"%1$@ about In\u{2011}Person Payments" = "%1$@ about In\u{2011}Person Payments";
-
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "%1$@ card ending %2$@";
 
@@ -476,9 +470,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the button to add the Shipping Address in Order Details */
 "Add Shipping Address" = "Add Shipping Address";
 
-/* Navigates to a screen to create a simple payments order */
-"Add simple payments order" = "Add simple payments order";
-
 /* Placeholder text that will be shown in the view for adding the description of a coupon. */
 "Add the description of the coupon." = "Add the description of the coupon.";
 
@@ -497,6 +488,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "Add weight and dimensions";
+
+/* Displayed during the Login flow, whenever the user has no woo stores associated. */
+"Add your first store" = "Add your first store";
 
 /* Text field address in Shipping Label Address Validation */
 "Address" = "Address";
@@ -568,7 +562,7 @@ which should be translated separately and considered part of this sentence. */
 "All reviews marked as read" = "All reviews marked as read";
 
 /* Subtitle of the store creation plan screen. */
-"All the featues you need, already built in" = "All the featues you need, already built in";
+"All the features you need, already built in" = "All the features you need, already built in";
 
 /* Display label for the product's inventory backorders setting option */
 "Allow" = "Allow";
@@ -845,6 +839,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
 "Bluetooth permission required" = "Bluetooth permission required";
 
+/* The button title on the reader type alert, for the user to choose a bluetooth reader. */
+"Bluetooth Reader" = "Bluetooth Reader";
+
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "Bold";
 
@@ -939,6 +936,7 @@ which should be translated separately and considered part of this sentence. */
    Cancel button on the alert when the user is cancelling the action on deleting a variation
    Cancel button on the alert when the user is cancelling the action on moving a product to the trash
    Cancel button on the error alert when fetching system status report fails
+   Cancel button title
    Cancel button title in the issue refund screen
    Cancel prompt for user information.
    Cancel the main more actions menu sheet.
@@ -1029,6 +1027,26 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the card is removed from the reader prematurely. */
 "Card was removed too soon - please try transaction again" = "Card was removed too soon - please try transaction again";
 
+/* Label for a cancel button */
+"cardPresent.modalScanningForReader.cancelButton" = "Cancel";
+
+/* Label within the modal dialog that appears when searching for a card reader */
+"cardPresent.modalScanningForReader.instruction" = "To turn on your card reader, briefly press its power button.";
+
+/* A label prompting users to learn more about In-Person Payments.
+This is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
+"cardPresent.modalScanningForReader.learnMore.link" = "Learn more";
+
+/* A label prompting users to learn more about In-Person Payments.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"cardPresent.modalScanningForReader.learnMore.text" = "%1$@ about In‑Person Payments";
+
+/* Title label for modal dialog that appears when searching for a card reader */
+"cardPresent.modalScanningForReader.title" = "Scanning for reader";
+
 /* Navigation bar title of shipping label carrier and rates screen */
 "Carrier and Rates" = "Carrier and Rates";
 
@@ -1080,6 +1098,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Alert title for check your email during logIn/signUp. */
 "Check your email!" = "Check your email!";
+
+/* Title of the WPCOM checkout web view. */
+"Checkout" = "Checkout";
 
 /* Navigation title on the shipping label country selector screen */
 "Choose a Country" = "Choose a Country";
@@ -1143,9 +1164,11 @@ which should be translated separately and considered part of this sentence. */
    Title of the Close action on the Jetpack Install view */
 "Close" = "Close";
 
-/* Close Account button title to close the user's WordPress.com account
-   Link on the store picker for users who signed in with Apple to close their WordPress.com account. */
+/* Close Account button title to close the user's WordPress.com account */
 "Close Account" = "Close Account";
+
+/* Button to close the WordPress.com account on the store picker. */
+"Close account" = "Close account";
 
 /* Title of the Close Account in-progress view. */
 "Closing account..." = "Closing account...";
@@ -1437,9 +1460,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description for fixed cart discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a fixed total discount for the entire cart" = "Create a fixed total discount for the entire cart";
 
-/* Description of the Action sheet option when the user wants to create full manual order */
-"Create a new manual order" = "Create a new manual order";
-
 /* Button to create a new store from the store picker */
 "Create a new store" = "Create a new store";
 
@@ -1458,9 +1478,6 @@ which should be translated separately and considered part of this sentence. */
 /* Action button linking to create WooCommerce store flow.Presented when logging in with an email address that is not a WordPress.com account */
 "Create An Account" = "Create An Account";
 
-/* Description of the Action sheet option when the user wants to create Simple Payments order */
-"Create an order with minimal information" = "Create an order with minimal information";
-
 /* Title of the create coupon button on the coupon list screen when it's empty */
 "Create Coupon" = "Create Coupon";
 
@@ -1473,11 +1490,8 @@ which should be translated separately and considered part of this sentence. */
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "Create new package";
 
-/* Action sheet option when the user wants to create full manual order */
-"Create order" = "Create order";
-
 /* Title of the banner notice in the Orders tab */
-"Create orders & take payments!" = "Create orders & take payments!";
+"Create orders!" = "Create orders!";
 
 /* Create Shipping Label form navigation title
    Option to create new shipping label from the action sheet on Products section of Order Details screen
@@ -1489,9 +1503,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the button on the store creation plan view to purchase the plan. %1$@ is replaced by the monthly price. */
 "Create Store for %1$@/month" = "Create Store for %1$@/month";
-
-/* Displayed during the Login flow, whenever the user has no woo stores associated. */
-"Create your first store" = "Create your first store";
 
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "Create your first variation";
@@ -1600,7 +1611,9 @@ which should be translated separately and considered part of this sentence. */
 "Date paid" = "Date paid";
 
 /* Navigation title of the orders filter selector screen for date range
-   Row title for filtering orders by date range. */
+   Row title for filtering orders by date range.
+   Title describing the possible date range selections of the Analytics Hub
+   Title of the range selection list */
 "Date Range" = "Date Range";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
@@ -2421,9 +2434,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Google sign up failed.";
 
-/* Confirmation text of the button on the bottom announcement modalwhen a merchant taps on Simple Payment */
-"Got it!" = "Got it!";
-
 /* Display label for grouped product type. */
 "Grouped" = "Grouped";
 
@@ -2485,12 +2495,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action button for opening Help.Presented when logging in with a site address that does not have WooCommerce
    Button to contact support on the Jetpack setup interrupted screen
+   Button to get help from the store picker
    Help and Support navigation title
    Help button
    Help button on account mismatch error screen.
    Help button on Jetpack required error screen.
-   Help button on Jetpack setup required screen.
-   Help button on store picker screen. */
+   Help button on Jetpack setup required screen. */
 "Help" = "Help";
 
 /* My Store > Settings > Help and Feedback settings section title */
@@ -2847,8 +2857,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
-   A label prompting users to learn more about In-Person Payments.
-This is the link to the website, and forms part of a longer sentence which it should be considered a part of.
    Button title in the shipping label creation info screen
    Settings > Privacy Settings. A text link to the cookie policy.
    The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. 
@@ -2997,6 +3005,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Instructions on the WordPress.com username / password log in form. */
 "Log in with your WordPress.com username and password." = "Log in with your WordPress.com username and password.";
+
+/* Button to log out from the current account from the store picker */
+"Log out" = "Log out";
 
 /* Action button triggering a Log Out.Presented when logging in with a store address that does not match the account entered
    Alert button title - confirms and logs out the user
@@ -3300,7 +3311,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "No order selected" = "No order selected";
 
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
-"No previous period available" = "No previous period available";
+"no previous period" = "no previous period";
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "No price set";
@@ -3373,9 +3384,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Info text for the generate first variation screen */
 "Now that you’ve added attributes, you can create your first variation!" = "Now that you’ve added attributes, you can create your first variation!";
-
-/* Message of the bottom announcement modal when a merchant taps on Simple Payment */
-"Now you can quickly access In-Person Payments and other features with ease." = "Now you can quickly access In-Person Payments and other features with ease.";
 
 /* Spoken label to indicate switch control is turned off. */
 "Off" = "Off";
@@ -3688,9 +3696,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of the hub menu payments button */
 "Payments" = "Payments";
 
-/* Title of the bottom announcement modal when a merchant taps on Simple Payment */
-"Payments from the Menu tab" = "Payments from the Menu tab";
-
 /* Display label for pending order status.
    Display label for the review's pending status */
 "Pending" = "Pending";
@@ -3848,6 +3853,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Body text for the default store picker error screen */
 "Please try again or reach out to us and we'll be happy to assist you!" = "Please try again or reach out to us and we'll be happy to assist you!";
+
+/* Message of the alert when the WPCOM plan cannot be purchased in a webview in the store creation flow. */
+"Please try again, or exit the screen and check back on your store if you previously left the checkout screen while payment is in progress." = "Please try again, or exit the screen and check back on your store if you previously left the checkout screen while payment is in progress.";
 
 /* Account creation error when an unexpected error occurs.
    Message of the alert when the store cannot be created in the store creation flow.
@@ -4503,9 +4511,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Scan Products */
 "Scan products" = "Scan products";
 
-/* Title label for modal dialog that appears when searching for a card reader */
-"Scanning for reader" = "Scanning for reader";
-
 /* Label for a cell informing the user that reader scanning is ongoing. */
 "Scanning for readers" = "Scanning for readers";
 
@@ -4606,6 +4611,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Title for the screen to select products for a coupon */
 "Select Products" = "Select Products";
+
+/* The title for the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
+"Select reader type" = "Select reader type";
 
 /* Placeholder value of the cell in Product Price Settings > Schedule sale from a certain date */
 "Select start date" = "Select start date";
@@ -4851,9 +4859,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Display label for simple product type. */
 "Simple" = "Simple";
-
-/* Action sheet option when the user wants to create Simple Payments order */
-"Simple payment" = "Simple payment";
 
 /* Action sheet option when the user wants to change the Product type to simple physical product */
 "Simple physical product" = "Simple physical product";
@@ -5228,7 +5233,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The accessibility hint for the quantity button when selecting an item to refund */
 "Tap to modify the item refund quantity" = "Tap to modify the item refund quantity";
 
-/* Cell tytle on beta features screen to enable Tap to Pay on iPhone: card payments with the phone's built in reader */
+/* Cell tytle on beta features screen to enable Tap to Pay on iPhone: card payments with the phone's built in reader
+   The button title on the reader type alert, for the user to choose the built-in reader. */
 "Tap to Pay on iPhone" = "Tap to Pay on iPhone";
 
 /* VoiceOver accessibility hint for the row that shows information about creating a shipping label */
@@ -5771,9 +5777,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Instructional text shown when requesting the user's password for Google login. */
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once.";
 
-/* Label within the modal dialog that appears when searching for a card reader */
-"To turn on your card reader, briefly press its power button." = "To turn on your card reader, briefly press its power button.";
-
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store.";
 
@@ -5981,8 +5984,17 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Notice message when loading product categories fails */
 "Unable to load categories" = "Unable to load categories";
 
+/* Text displayed when there is an error loading order stats data. */
+"Unable to load order analytics" = "Unable to load order analytics";
+
+/* Text displayed when there is an error loading product stats data. */
+"Unable to load product analytics" = "Unable to load product analytics";
+
 /* Load Product Attributes Action Failed */
 "Unable to load product attributes" = "Unable to load product attributes";
+
+/* Text displayed when there is an error loading revenue stats data. */
+"Unable to load revenue analytics" = "Unable to load revenue analytics";
 
 /* Content of error presented when loading the list of shipment carriers failed. It reads: Unable to load Shipment Carriers */
 "Unable to load Shipment Carriers" = "Unable to load Shipment Carriers";
@@ -6475,7 +6487,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "We're sorry, we were unable to verify In-Person Payments for this store." = "We're sorry, we were unable to verify In-Person Payments for this store.";
 
 /* Content of the banner notice in the Orders tab */
-"We've been working on making it possible to create orders and take payments from your device! You can try these features out by tapping on the \"+\" button" = "We've been working on making it possible to create orders and take payments from your device! You can try these features out by tapping on the \"+\" button";
+"We've been working on making it possible to create orders from your device! You can try this out by tapping on the \"+\" button" = "We've been working on making it possible to create orders from your device! You can try this out by tapping on the \"+\" button";
 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com.";
@@ -6666,6 +6678,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
 "Your email isn't used with a WordPress.com account" = "Your email isn't used with a WordPress.com account";
+
+/* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
+"Your iPhone can be used as a card reader, or you can connect to an external reader via bluetooth." = "Your iPhone can be used as a card reader, or you can connect to an external reader via bluetooth.";
 
 /* Message displayed when a coupon was successfully created */
 "Your new coupon was created!" = "Your new coupon was created!";

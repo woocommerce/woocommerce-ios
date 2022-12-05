@@ -25,9 +25,13 @@ struct AnalyticsProductCardViewModel {
     ///
     let isRedacted: Bool
 
-    /// Indicates if there was an error loading the data for the card
+    /// Indicates if there was an error loading stats part of the card.
     ///
-    let showSyncError: Bool
+    let showStatsError: Bool
+
+    /// Indicates if there was an error loading items sold part of the card.
+    ///
+    let showItemsSoldError: Bool
 }
 
 extension AnalyticsProductCardViewModel {
@@ -41,7 +45,8 @@ extension AnalyticsProductCardViewModel {
               deltaBackgroundColor: .lightGray,
               itemsSoldData: [.init(imageURL: nil, name: "Product Name", details: "Net Sales", value: "$5678")],
               isRedacted: true,
-              showSyncError: false)
+              showStatsError: false,
+              showItemsSoldError: false)
     }
 
 }
@@ -55,6 +60,8 @@ extension AnalyticsProductCard {
         self.deltaBackgroundColor = viewModel.deltaBackgroundColor
         self.itemsSoldData = viewModel.itemsSoldData
         self.isRedacted = viewModel.isRedacted
-        self.showSyncError = viewModel.showSyncError
+        self.showStatsError = viewModel.showStatsError
+        self.showItemsSoldError = viewModel.showItemsSoldError
+
     }
 }

@@ -24,9 +24,7 @@ extension UITabBar {
         /// This is needed because the tab bar background has the wrong color under iOS 15 (using Xcode 13).
         /// More: issue-5018
         ///
-        if #available(iOS 15.0, *) {
-            appearance.scrollEdgeAppearance = appearance.standardAppearance
-        }
+        appearance.scrollEdgeAppearance = appearance.standardAppearance
     }
 
     /// Creates an appearance object for a tabbar with the default WC style.

@@ -52,7 +52,7 @@ final class DashboardViewModelTests: XCTestCase {
                 completion(.failure(DotcomError.empty))
             } else if case let .retrieveSiteVisitStats(_, _, _, _, completion) = action {
                 completion(.failure(DotcomError.noRestRoute))
-            } else if case let .retrieveTopEarnerStats(_, _, _, _, _, _, completion) = action {
+            } else if case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, completion) = action {
                 completion(.failure(DotcomError.noRestRoute))
             }
         }

@@ -272,10 +272,7 @@ class WebKitViewController: UIViewController {
         appearance.backgroundColor = UIColor(light: .white, dark: .gray)
 
         toolBar.standardAppearance = appearance
-
-        if #available(iOS 15.0, *) {
-            toolBar.scrollEdgeAppearance = appearance
-        }
+        toolBar.scrollEdgeAppearance = appearance
 
         fixBarButtonsColorForBoldText(on: toolBar)
     }

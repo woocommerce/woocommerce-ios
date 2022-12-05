@@ -9,8 +9,6 @@ final class CardPresentModalBuiltInConfigurationProgress: CardPresentPaymentsMod
     let textMode: PaymentsModalTextMode = .fullInfo
     let actionsMode: PaymentsModalActionsMode
 
-    var topTitle: String
-
     var topSubtitle: String? = nil
 
     var progress: Float
@@ -21,7 +19,13 @@ final class CardPresentModalBuiltInConfigurationProgress: CardPresentPaymentsMod
 
     let auxiliaryButtonTitle: String? = nil
 
-    var bottomSubtitle: String? = nil
+    var titleComplete: String
+
+    var titleInProgress: String
+
+    var messageComplete: String?
+
+    var messageInProgress: String?
 
     var accessibilityLabel: String? {
         Localization.title
@@ -31,9 +35,10 @@ final class CardPresentModalBuiltInConfigurationProgress: CardPresentPaymentsMod
         self.progress = progress
         self.cancelAction = cancel
 
-        let isComplete = progress == 1
-        topTitle = isComplete ? Localization.titleComplete : Localization.title
-        bottomSubtitle = isComplete ? Localization.messageComplete : Localization.message
+        titleComplete = Localization.titleComplete
+        titleInProgress = Localization.title
+        messageComplete = Localization.messageComplete
+        messageInProgress = Localization.message
         actionsMode = cancel != nil ? .secondaryOnlyAction : .none
     }
 

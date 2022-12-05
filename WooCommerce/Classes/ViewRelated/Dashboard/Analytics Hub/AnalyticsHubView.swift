@@ -110,7 +110,7 @@ struct AnalyticsHubView: View {
         .task {
             await viewModel.updateData()
         }
-        .onReceive(viewModel.$notice) { notice in
+        .onReceive(viewModel.$dismissNotice) { notice in
             guard let notice else { return }
             dismissWithNotice(notice)
         }

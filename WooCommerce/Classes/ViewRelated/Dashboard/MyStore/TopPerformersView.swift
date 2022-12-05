@@ -32,8 +32,8 @@ struct TopPerformersView: View {
                 Spacer()
                 Text(valueTitle)
             }
+            .font(.subheadline.bold())
             .foregroundColor(Color(.text))
-            .subheadlineStyle()
             .padding(.bottom, Layout.tableSpacing)
 
             // Rows

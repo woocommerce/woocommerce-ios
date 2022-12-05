@@ -61,7 +61,8 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(vm.revenueCard.showSyncError)
         XCTAssertTrue(vm.ordersCard.showSyncError)
-        XCTAssertTrue(vm.productCard.showSyncError)
+        XCTAssertTrue(vm.productCard.showStatsError)
+        XCTAssertTrue(vm.productCard.showItemsSoldError)
     }
 
     func test_cards_viewmodels_redacted_while_updating_from_network() async {

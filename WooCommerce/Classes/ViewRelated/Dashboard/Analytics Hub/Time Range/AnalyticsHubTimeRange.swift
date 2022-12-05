@@ -11,7 +11,7 @@ struct AnalyticsHubTimeRange {
 
         let startDateDescription = DateFormatter.Stats.createAnalyticsHubDayMonthFormatter(timezone: timezone).string(from: start)
 
-        var endDateDescription: String
+        let endDateDescription: String
         if start.isSameMonth(as: end, using: calendar) {
             endDateDescription = DateFormatter.Stats.createAnalyticsHubDayYearFormatter(timezone: timezone).string(from: end)
         } else {

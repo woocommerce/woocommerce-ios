@@ -85,9 +85,12 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     ///
     private let configuration: CardPresentPaymentsConfiguration
 
+    /// Celebration UX when the payment is captured successfully.
+    private let paymentCaptureCelebration: PaymentCaptureCelebrationProtocol
+
     /// IPP payments collector.
     ///
-    private lazy var paymentOrchestrator = PaymentCaptureOrchestrator(stores: stores)
+    private lazy var paymentOrchestrator = PaymentCaptureOrchestrator(stores: stores, celebration: paymentCaptureCelebration)
 
     /// Coordinates emailing a receipt after payment success.
     private var receiptEmailCoordinator: CardPresentPaymentReceiptEmailCoordinator?
@@ -104,6 +107,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
          alerts: OrderDetailsPaymentAlertsProtocol,
          configuration: CardPresentPaymentsConfiguration,
          stores: StoresManager = ServiceLocator.stores,
+         paymentCaptureCelebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration(),
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.order = order
@@ -114,6 +118,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
         self.alerts = alerts
         self.configuration = configuration
         self.stores = stores
+        self.paymentCaptureCelebration = paymentCaptureCelebration
         self.analytics = analytics
     }
 

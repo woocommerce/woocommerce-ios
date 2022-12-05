@@ -23,7 +23,9 @@ void WPAuthenticatorSetLoggingDelegate(id<WordPressLoggingDelegate> _Nullable lo
             NSLog(@"[WordPressAuthenticator] Warning: %@ does not implement " #logFunc, logger); \
             return; \
         } \
-        [logger performSelector:@selector(logFunc) withObject:[[NSString alloc] initWithFormat:str arguments:args]]; \
+        /* Originally `performSelector:withObject:` was used to call the logging function, but for unknown reason */ \
+        /* it causes a crash on `objc_retain`. So I have to switch to this strange "syntax" to call the logging function directly. */ \
+        [logger logFunc [[NSString alloc] initWithFormat:str arguments:args]]; \
     })
 
 #define WPAuthenticatorLog(logFunc) \

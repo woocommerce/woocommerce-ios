@@ -10,7 +10,6 @@ public class AnalyticsHubTimeRangeSelection {
     private let formattedCurrentRangeText: String?
     private let formattedPreviousRangeText: String?
     let rangeSelectionDescription: String
-
     /// Provide a date description of the current time range set internally.
     /// - Returns the Time range in a UI friendly format. If the current time range is not available,
     /// then returns an presentable error message.
@@ -20,7 +19,6 @@ public class AnalyticsHubTimeRangeSelection {
         }
         return currentTimeRangeDescription
     }
-
     /// Generates a date description of the previous time range set internally.
     /// - Returns the Time range in a UI friendly format. If the previous time range is not available,
     /// then returns an presentable error message.
@@ -56,9 +54,11 @@ public class AnalyticsHubTimeRangeSelection {
 
         let simplifiedDescription = selectionType == .today
         self.formattedCurrentRangeText = currentTimeRange?.formatToString(simplified: simplifiedDescription,
-                                                                               calendar: calendar)
+                                                                          timezone: timezone,
+                                                                          calendar: calendar)
         self.formattedPreviousRangeText = previousTimeRange?.formatToString(simplified: simplifiedDescription,
-                                                                                 calendar: calendar)
+                                                                            timezone: timezone,
+                                                                            calendar: calendar)
         self.rangeSelectionDescription = selectionType.description
     }
 
@@ -71,7 +71,6 @@ public class AnalyticsHubTimeRangeSelection {
         }
         return currentTimeRange
     }
-
     /// Unwrap the generated previous `AnalyticsHubTimeRange`relative to the selected one
     /// based on the `selectedTimeRange` provided during initialization.
     /// - throws a `.previousRangeGenerationFailed` error if the unwrap fails.
@@ -118,10 +117,8 @@ extension AnalyticsHubTimeRangeSelection {
         }
     }
 }
-
 // MARK: - Constants
 extension AnalyticsHubTimeRangeSelection {
-
     enum TimeRangeGeneratorError: Error {
         case selectedRangeGenerationFailed
         case previousRangeGenerationFailed

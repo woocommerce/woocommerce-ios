@@ -35,6 +35,7 @@
 		3F879FF2293A7F02005C2B48 /* DataGetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F879FF1293A7F02005C2B48 /* DataGetting.swift */; };
 		3F879FF4293A7F46005C2B48 /* GoogleOAuthTokenGetterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F879FF3293A7F46005C2B48 /* GoogleOAuthTokenGetterTests.swift */; };
 		3F879FF6293E1F8E005C2B48 /* OAuthTokenResponseBody+Fixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F879FF5293E1F8E005C2B48 /* OAuthTokenResponseBody+Fixture.swift */; };
+		3F879FF8293E222E005C2B48 /* GoogleOAuthTokenGettingStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F879FF7293E222E005C2B48 /* GoogleOAuthTokenGettingStub.swift */; };
 		3F9439BE27D6F9B60067183A /* LoginPrologueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F9439BD27D6F9B60067183A /* LoginPrologueViewController.swift */; };
 		3FE8071529364C410088420C /* Result+ConvenienceInitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE8071429364C410088420C /* Result+ConvenienceInitTests.swift */; };
 		3FE80717293650190088420C /* Result+ConvenienceInit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE80716293650190088420C /* Result+ConvenienceInit.swift */; };
@@ -268,6 +269,7 @@
 		3F879FF1293A7F02005C2B48 /* DataGetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataGetting.swift; sourceTree = "<group>"; };
 		3F879FF3293A7F46005C2B48 /* GoogleOAuthTokenGetterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleOAuthTokenGetterTests.swift; sourceTree = "<group>"; };
 		3F879FF5293E1F8E005C2B48 /* OAuthTokenResponseBody+Fixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OAuthTokenResponseBody+Fixture.swift"; sourceTree = "<group>"; };
+		3F879FF7293E222E005C2B48 /* GoogleOAuthTokenGettingStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleOAuthTokenGettingStub.swift; sourceTree = "<group>"; };
 		3F9439BD27D6F9B60067183A /* LoginPrologueViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPrologueViewController.swift; sourceTree = "<group>"; };
 		3FE8071429364C410088420C /* Result+ConvenienceInitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+ConvenienceInitTests.swift"; sourceTree = "<group>"; };
 		3FE80716293650190088420C /* Result+ConvenienceInit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+ConvenienceInit.swift"; sourceTree = "<group>"; };
@@ -552,10 +554,11 @@
 			children = (
 				3F879FEF293A7EDE005C2B48 /* DataGettingStub.swift */,
 				3F879FE7293A573E005C2B48 /* GoogleClientIdTests.swift */,
+				3F879FF3293A7F46005C2B48 /* GoogleOAuthTokenGetterTests.swift */,
+				3F879FF7293E222E005C2B48 /* GoogleOAuthTokenGettingStub.swift */,
 				3F879FE3293A545C005C2B48 /* OAuthRequestBody+GoogleSignInTests.swift */,
 				3FE8071E2936558F0088420C /* URL+GoogleSignInTests.swift */,
 				3F879FDE293A501D005C2B48 /* URLRequest+GoogleSignInTests.swift */,
-				3F879FF3293A7F46005C2B48 /* GoogleOAuthTokenGetterTests.swift */,
 			);
 			path = GoogleSignIn;
 			sourceTree = "<group>";
@@ -1504,6 +1507,7 @@
 				D85C36E6256E0DDE00D56E34 /* NavigationToEnterSiteTests.swift in Sources */,
 				D85C3882256E3FEC00D56E34 /* WordPressComSiteInfoTests.swift in Sources */,
 				D8611A672576236800A5DF27 /* NavigateBackTests.swift in Sources */,
+				3F879FF8293E222E005C2B48 /* GoogleOAuthTokenGettingStub.swift in Sources */,
 				3F879FE8293A573E005C2B48 /* GoogleClientIdTests.swift in Sources */,
 				3F879FE4293A545C005C2B48 /* OAuthRequestBody+GoogleSignInTests.swift in Sources */,
 				F12F9FB824D8A7FC00771BCE /* AnalyticsTrackerTests.swift in Sources */,

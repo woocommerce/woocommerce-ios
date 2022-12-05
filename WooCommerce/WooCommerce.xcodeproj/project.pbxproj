@@ -500,6 +500,7 @@
 		03E471C4293A1F8D001A58AD /* BuiltInReaderConnectionAlertsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E471C3293A1F8D001A58AD /* BuiltInReaderConnectionAlertsProvider.swift */; };
 		03E471C6293A2E95001A58AD /* CardPresentModalBuiltInReaderCheckingDeviceSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E471C5293A2E95001A58AD /* CardPresentModalBuiltInReaderCheckingDeviceSupport.swift */; };
 		03E471C8293A3076001A58AD /* CardPresentModalBuiltInConnectingToReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E471C7293A3075001A58AD /* CardPresentModalBuiltInConnectingToReader.swift */; };
+		03E471CA293E0A30001A58AD /* CardPresentModalBuiltInConfigurationProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E471C9293E0A2F001A58AD /* CardPresentModalBuiltInConfigurationProgress.swift */; };
 		03EF24FA28BF5D21006A033E /* InPersonPaymentsCashOnDeliveryToggleRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EF24F928BF5D21006A033E /* InPersonPaymentsCashOnDeliveryToggleRowViewModel.swift */; };
 		03EF24FC28BF996F006A033E /* InPersonPaymentsCashOnDeliveryPaymentGatewayHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EF24FB28BF996F006A033E /* InPersonPaymentsCashOnDeliveryPaymentGatewayHelpers.swift */; };
 		03EF24FE28C0B356006A033E /* CardPresentPaymentsPlugin+CashOnDelivery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EF24FD28C0B356006A033E /* CardPresentPaymentsPlugin+CashOnDelivery.swift */; };
@@ -2511,6 +2512,7 @@
 		03E471C3293A1F8D001A58AD /* BuiltInReaderConnectionAlertsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuiltInReaderConnectionAlertsProvider.swift; sourceTree = "<group>"; };
 		03E471C5293A2E95001A58AD /* CardPresentModalBuiltInReaderCheckingDeviceSupport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPresentModalBuiltInReaderCheckingDeviceSupport.swift; sourceTree = "<group>"; };
 		03E471C7293A3075001A58AD /* CardPresentModalBuiltInConnectingToReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPresentModalBuiltInConnectingToReader.swift; sourceTree = "<group>"; };
+		03E471C9293E0A2F001A58AD /* CardPresentModalBuiltInConfigurationProgress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPresentModalBuiltInConfigurationProgress.swift; sourceTree = "<group>"; };
 		03EF24F928BF5D21006A033E /* InPersonPaymentsCashOnDeliveryToggleRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCashOnDeliveryToggleRowViewModel.swift; sourceTree = "<group>"; };
 		03EF24FB28BF996F006A033E /* InPersonPaymentsCashOnDeliveryPaymentGatewayHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCashOnDeliveryPaymentGatewayHelpers.swift; sourceTree = "<group>"; };
 		03EF24FD28C0B356006A033E /* CardPresentPaymentsPlugin+CashOnDelivery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CardPresentPaymentsPlugin+CashOnDelivery.swift"; sourceTree = "<group>"; };
@@ -8555,6 +8557,7 @@
 			children = (
 				D8815AE626383FD600EDAD62 /* CardPresentPaymentsModalViewModel.swift */,
 				03E471C5293A2E95001A58AD /* CardPresentModalBuiltInReaderCheckingDeviceSupport.swift */,
+				03E471C9293E0A2F001A58AD /* CardPresentModalBuiltInConfigurationProgress.swift */,
 				03E471C7293A3075001A58AD /* CardPresentModalBuiltInConnectingToReader.swift */,
 				311237ED2714DA240033C44E /* CardPresentModalDisplayMessage.swift */,
 				D8815B0026385E3F00EDAD62 /* CardPresentModalTapCard.swift */,
@@ -10012,6 +10015,7 @@
 				E1325EFB28FD544E00EC9B2A /* InAppPurchasesDebugView.swift in Sources */,
 				74460D4022289B7600D7316A /* Coordinator.swift in Sources */,
 				B57C743D20F5493300EEFC87 /* AccountHeaderView.swift in Sources */,
+				03E471CA293E0A30001A58AD /* CardPresentModalBuiltInConfigurationProgress.swift in Sources */,
 				31AD0B1126E9575F000B6391 /* CardPresentModalConnectingFailed.swift in Sources */,
 				576EA39425264C9B00AFC0B3 /* RefundConfirmationViewModel.swift in Sources */,
 				DEC51B00276AEE91009F3DF4 /* SystemStatusReportViewModel.swift in Sources */,

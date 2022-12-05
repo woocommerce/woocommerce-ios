@@ -39,8 +39,10 @@ struct BuiltInReaderConnectionAlertsProvider: CardReaderConnectionAlertsProvidin
             return CardPresentModalUpdateFailedNonRetryable(close: close)
         }
     }
-    func updateProgress(requiredUpdate: Bool, progress: Float,
+
+    func updateProgress(requiredUpdate: Bool,
+                        progress: Float,
                         cancel: (() -> Void)?) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalUpdateProgress(requiredUpdate: requiredUpdate, progress: progress, cancel: cancel)
+        CardPresentModalBuiltInConfigurationProgress(progress: progress, cancel: cancel)
     }
 }

@@ -189,25 +189,17 @@ private extension AnalyticsHubViewModel {
 
     static func revenueCard(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) -> AnalyticsReportCardViewModel {
         let showSyncError = currentPeriodStats == nil || previousPeriodStats == nil
-        let totalDelta = StatsDataTextFormatter.createTotalRevenueDelta(from: previousPeriodStats, to: currentPeriodStats)
-        let netDelta = StatsDataTextFormatter.createNetRevenueDelta(from: previousPeriodStats, to: currentPeriodStats)
 
         return AnalyticsReportCardViewModel(title: Localization.RevenueCard.title,
                                             leadingTitle: Localization.RevenueCard.leadingTitle,
                                             leadingValue: StatsDataTextFormatter.createTotalRevenueText(orderStats: currentPeriodStats,
                                                                                                         selectedIntervalIndex: nil),
-                                            leadingDelta: totalDelta.string,
-                                            leadingDeltaColor: totalDelta.direction.deltaBackgroundColor,
-                                            leadingDeltaTextColor: totalDelta.direction.deltaTextColor,
+                                            leadingDelta: StatsDataTextFormatter.createTotalRevenueDelta(from: previousPeriodStats, to: currentPeriodStats),
                                             leadingChartData: StatsIntervalDataParser.getChartData(for: .totalRevenue, from: currentPeriodStats),
-                                            leadingChartColor: totalDelta.direction.chartColor,
                                             trailingTitle: Localization.RevenueCard.trailingTitle,
                                             trailingValue: StatsDataTextFormatter.createNetRevenueText(orderStats: currentPeriodStats),
-                                            trailingDelta: netDelta.string,
-                                            trailingDeltaColor: netDelta.direction.deltaBackgroundColor,
-                                            trailingDeltaTextColor: netDelta.direction.deltaTextColor,
+                                            trailingDelta: StatsDataTextFormatter.createNetRevenueDelta(from: previousPeriodStats, to: currentPeriodStats),
                                             trailingChartData: StatsIntervalDataParser.getChartData(for: .netRevenue, from: currentPeriodStats),
-                                            trailingChartColor: netDelta.direction.chartColor,
                                             isRedacted: false,
                                             showSyncError: showSyncError,
                                             syncErrorMessage: Localization.RevenueCard.noRevenue)
@@ -215,25 +207,18 @@ private extension AnalyticsHubViewModel {
 
     static func ordersCard(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) -> AnalyticsReportCardViewModel {
         let showSyncError = currentPeriodStats == nil || previousPeriodStats == nil
-        let ordersCountDelta = StatsDataTextFormatter.createOrderCountDelta(from: previousPeriodStats, to: currentPeriodStats)
-        let orderValueDelta = StatsDataTextFormatter.createAverageOrderValueDelta(from: previousPeriodStats, to: currentPeriodStats)
 
         return AnalyticsReportCardViewModel(title: Localization.OrderCard.title,
                                             leadingTitle: Localization.OrderCard.leadingTitle,
                                             leadingValue: StatsDataTextFormatter.createOrderCountText(orderStats: currentPeriodStats,
                                                                                                       selectedIntervalIndex: nil),
-                                            leadingDelta: ordersCountDelta.string,
-                                            leadingDeltaColor: ordersCountDelta.direction.deltaBackgroundColor,
-                                            leadingDeltaTextColor: ordersCountDelta.direction.deltaTextColor,
+                                            leadingDelta: StatsDataTextFormatter.createOrderCountDelta(from: previousPeriodStats, to: currentPeriodStats),
                                             leadingChartData: StatsIntervalDataParser.getChartData(for: .orderCount, from: currentPeriodStats),
-                                            leadingChartColor: ordersCountDelta.direction.chartColor,
                                             trailingTitle: Localization.OrderCard.trailingTitle,
                                             trailingValue: StatsDataTextFormatter.createAverageOrderValueText(orderStats: currentPeriodStats),
-                                            trailingDelta: orderValueDelta.string,
-                                            trailingDeltaColor: orderValueDelta.direction.deltaBackgroundColor,
-                                            trailingDeltaTextColor: orderValueDelta.direction.deltaTextColor,
+                                            trailingDelta: StatsDataTextFormatter.createAverageOrderValueDelta(from: previousPeriodStats,
+                                                                                                               to: currentPeriodStats),
                                             trailingChartData: StatsIntervalDataParser.getChartData(for: .averageOrderValue, from: currentPeriodStats),
-                                            trailingChartColor: orderValueDelta.direction.chartColor,
                                             isRedacted: false,
                                             showSyncError: showSyncError,
                                             syncErrorMessage: Localization.OrderCard.noOrders)
@@ -250,9 +235,7 @@ private extension AnalyticsHubViewModel {
         let itemsSoldDelta = StatsDataTextFormatter.createOrderItemsSoldDelta(from: previousPeriodStats, to: currentPeriodStats)
 
         return AnalyticsProductCardViewModel(itemsSold: itemsSold,
-                                             delta: itemsSoldDelta.string,
-                                             deltaBackgroundColor: itemsSoldDelta.direction.deltaBackgroundColor,
-                                             deltaTextColor: itemsSoldDelta.direction.deltaTextColor,
+                                             delta: itemsSoldDelta,
                                              itemsSoldData: itemSoldRows(from: itemsSoldStats),
                                              isRedacted: false,
                                              showStatsError: showStatsError,

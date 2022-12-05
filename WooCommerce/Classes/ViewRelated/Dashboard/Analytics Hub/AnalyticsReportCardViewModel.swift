@@ -17,25 +17,13 @@ struct AnalyticsReportCardViewModel {
     ///
     let leadingValue: String
 
-    /// First Column Delta Value
+    /// First Column Delta Percentage
     ///
-    let leadingDelta: String
-
-    /// First Column delta background color.
-    ///
-    let leadingDeltaColor: UIColor
-
-    /// First Column delta text color.
-    ///
-    let leadingDeltaTextColor: UIColor
+    let leadingDelta: StatsDataTextFormatter.DeltaPercentage
 
     /// First Column Chart Data
     ///
     let leadingChartData: [Double]
-
-    /// First Column Chart Color
-    ///
-    let leadingChartColor: UIColor
 
     /// Second Column Title
     ///
@@ -45,25 +33,13 @@ struct AnalyticsReportCardViewModel {
     ///
     let trailingValue: String
 
-    /// Second Column Delta Value
+    /// Second Column Delta Percentage
     ///
-    let trailingDelta: String
-
-    /// Second Column Delta Background Color
-    ///
-    let trailingDeltaColor: UIColor
-
-    /// Second Column delta text color.
-    ///
-    let trailingDeltaTextColor: UIColor
+    let trailingDelta: StatsDataTextFormatter.DeltaPercentage
 
     /// Second Column Chart Data
     ///
     let trailingChartData: [Double]
-
-    /// Second Column Chart Color
-    ///
-    let trailingChartColor: UIColor
 
     /// Indicates if the values should be hidden (for loading state)
     ///
@@ -87,18 +63,12 @@ extension AnalyticsReportCardViewModel {
         .init(title: title,
               leadingTitle: leadingTitle,
               leadingValue: "$1000",
-              leadingDelta: "+50%",
-              leadingDeltaColor: .lightGray,
-              leadingDeltaTextColor: .text,
+              leadingDelta: StatsDataTextFormatter.DeltaPercentage(value: 0.5),
               leadingChartData: [],
-              leadingChartColor: .lightGray,
               trailingTitle: trailingTitle,
               trailingValue: "$1000",
-              trailingDelta: "+50%",
-              trailingDeltaColor: .lightGray,
-              trailingDeltaTextColor: .text,
+              trailingDelta: StatsDataTextFormatter.DeltaPercentage(value: 0.5),
               trailingChartData: [],
-              trailingChartColor: .lightGray,
               isRedacted: true,
               showSyncError: false,
               syncErrorMessage: "")
@@ -112,18 +82,18 @@ extension AnalyticsReportCard {
         self.title = viewModel.title
         self.leadingTitle = viewModel.leadingTitle
         self.leadingValue = viewModel.leadingValue
-        self.leadingDelta = viewModel.leadingDelta
-        self.leadingDeltaColor = viewModel.leadingDeltaColor
-        self.leadingDeltaTextColor = viewModel.leadingDeltaTextColor
+        self.leadingDelta = viewModel.leadingDelta.string
+        self.leadingDeltaColor = viewModel.leadingDelta.direction.deltaBackgroundColor
+        self.leadingDeltaTextColor = viewModel.leadingDelta.direction.deltaTextColor
         self.leadingChartData = viewModel.leadingChartData
-        self.leadingChartColor = viewModel.leadingChartColor
+        self.leadingChartColor = viewModel.leadingDelta.direction.chartColor
         self.trailingTitle = viewModel.trailingTitle
         self.trailingValue = viewModel.trailingValue
-        self.trailingDelta = viewModel.trailingDelta
-        self.trailingDeltaColor = viewModel.trailingDeltaColor
-        self.trailingDeltaTextColor = viewModel.trailingDeltaTextColor
+        self.trailingDelta = viewModel.trailingDelta.string
+        self.trailingDeltaColor = viewModel.trailingDelta.direction.deltaBackgroundColor
+        self.trailingDeltaTextColor = viewModel.trailingDelta.direction.deltaTextColor
         self.trailingChartData = viewModel.trailingChartData
-        self.trailingChartColor = viewModel.trailingChartColor
+        self.trailingChartColor = viewModel.trailingDelta.direction.chartColor
         self.isRedacted = viewModel.isRedacted
         self.showSyncError = viewModel.showSyncError
         self.syncErrorMessage = viewModel.syncErrorMessage

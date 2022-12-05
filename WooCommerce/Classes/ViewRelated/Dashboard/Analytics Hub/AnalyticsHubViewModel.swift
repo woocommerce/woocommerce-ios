@@ -200,12 +200,14 @@ private extension AnalyticsHubViewModel {
                                             leadingDeltaColor: Constants.deltaColor(for: totalDelta.direction),
                                             leadingDeltaTextColor: Constants.deltaTextColor(for: totalDelta.direction),
                                             leadingChartData: StatsIntervalDataParser.getChartData(for: .totalRevenue, from: currentPeriodStats),
+                                            leadingChartColor: Constants.chartColor(for: totalDelta.direction),
                                             trailingTitle: Localization.RevenueCard.trailingTitle,
                                             trailingValue: StatsDataTextFormatter.createNetRevenueText(orderStats: currentPeriodStats),
                                             trailingDelta: netDelta.string,
                                             trailingDeltaColor: Constants.deltaColor(for: netDelta.direction),
                                             trailingDeltaTextColor: Constants.deltaTextColor(for: netDelta.direction),
                                             trailingChartData: StatsIntervalDataParser.getChartData(for: .netRevenue, from: currentPeriodStats),
+                                            trailingChartColor: Constants.chartColor(for: netDelta.direction),
                                             isRedacted: false,
                                             showSyncError: showSyncError,
                                             syncErrorMessage: Localization.RevenueCard.noRevenue)
@@ -224,12 +226,14 @@ private extension AnalyticsHubViewModel {
                                             leadingDeltaColor: Constants.deltaColor(for: ordersCountDelta.direction),
                                             leadingDeltaTextColor: Constants.deltaTextColor(for: ordersCountDelta.direction),
                                             leadingChartData: StatsIntervalDataParser.getChartData(for: .orderCount, from: currentPeriodStats),
+                                            leadingChartColor: Constants.chartColor(for: ordersCountDelta.direction),
                                             trailingTitle: Localization.OrderCard.trailingTitle,
                                             trailingValue: StatsDataTextFormatter.createAverageOrderValueText(orderStats: currentPeriodStats),
                                             trailingDelta: orderValueDelta.string,
                                             trailingDeltaColor: Constants.deltaColor(for: orderValueDelta.direction),
                                             trailingDeltaTextColor: Constants.deltaTextColor(for: orderValueDelta.direction),
                                             trailingChartData: StatsIntervalDataParser.getChartData(for: .averageOrderValue, from: currentPeriodStats),
+                                            trailingChartColor: Constants.chartColor(for: orderValueDelta.direction),
                                             isRedacted: false,
                                             showSyncError: showSyncError,
                                             syncErrorMessage: Localization.OrderCard.noOrders)
@@ -298,6 +302,17 @@ private extension AnalyticsHubViewModel {
                 return .textInverted
             case .zero:
                 return .text
+            }
+        }
+
+        static func chartColor(for direction: StatsDataTextFormatter.DeltaPercentage.Direction) -> UIColor {
+            switch direction {
+            case .positive:
+                return .withColorStudio(.green, shade: .shade50)
+            case .negative:
+                return .withColorStudio(.red, shade: .shade40)
+            case .zero:
+                return .withColorStudio(.gray, shade: .shade30)
             }
         }
     }

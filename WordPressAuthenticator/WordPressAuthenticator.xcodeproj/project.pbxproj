@@ -34,6 +34,7 @@
 		3F879FF0293A7EDE005C2B48 /* DataGettingStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F879FEF293A7EDE005C2B48 /* DataGettingStub.swift */; };
 		3F879FF2293A7F02005C2B48 /* DataGetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F879FF1293A7F02005C2B48 /* DataGetting.swift */; };
 		3F879FF4293A7F46005C2B48 /* GoogleOAuthTokenGetterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F879FF3293A7F46005C2B48 /* GoogleOAuthTokenGetterTests.swift */; };
+		3F879FF6293E1F8E005C2B48 /* OAuthTokenResponseBody+Fixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F879FF5293E1F8E005C2B48 /* OAuthTokenResponseBody+Fixture.swift */; };
 		3F9439BE27D6F9B60067183A /* LoginPrologueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F9439BD27D6F9B60067183A /* LoginPrologueViewController.swift */; };
 		3FE8071529364C410088420C /* Result+ConvenienceInitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE8071429364C410088420C /* Result+ConvenienceInitTests.swift */; };
 		3FE80717293650190088420C /* Result+ConvenienceInit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE80716293650190088420C /* Result+ConvenienceInit.swift */; };
@@ -266,6 +267,7 @@
 		3F879FEF293A7EDE005C2B48 /* DataGettingStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataGettingStub.swift; sourceTree = "<group>"; };
 		3F879FF1293A7F02005C2B48 /* DataGetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataGetting.swift; sourceTree = "<group>"; };
 		3F879FF3293A7F46005C2B48 /* GoogleOAuthTokenGetterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleOAuthTokenGetterTests.swift; sourceTree = "<group>"; };
+		3F879FF5293E1F8E005C2B48 /* OAuthTokenResponseBody+Fixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OAuthTokenResponseBody+Fixture.swift"; sourceTree = "<group>"; };
 		3F9439BD27D6F9B60067183A /* LoginPrologueViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPrologueViewController.swift; sourceTree = "<group>"; };
 		3FE8071429364C410088420C /* Result+ConvenienceInitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+ConvenienceInitTests.swift"; sourceTree = "<group>"; };
 		3FE80716293650190088420C /* Result+ConvenienceInit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+ConvenienceInit.swift"; sourceTree = "<group>"; };
@@ -524,6 +526,7 @@
 			isa = PBXGroup;
 			children = (
 				3F879FD6293A44F2005C2B48 /* OAuthTokenRequestBodyTests.swift */,
+				3F879FF5293E1F8E005C2B48 /* OAuthTokenResponseBody+Fixture.swift */,
 				3FEC44F8293A0F2900EBDECF /* ProofKeyForCodeExchangeTests.swift */,
 				3FE8071429364C410088420C /* Result+ConvenienceInitTests.swift */,
 			);
@@ -1485,6 +1488,7 @@
 				D8610CEC2570A60C00A5DF27 /* NavigationToRootTests.swift in Sources */,
 				BA53D64D24DFE4E6001F1ABF /* ModalViewControllerPresentingSpy.swift in Sources */,
 				BA53D64624DFDE1D001F1ABF /* CredentialsTests.swift in Sources */,
+				3F879FF6293E1F8E005C2B48 /* OAuthTokenResponseBody+Fixture.swift in Sources */,
 				D85C36EC256E10EA00D56E34 /* MockNavigationController.swift in Sources */,
 				3F550D4E23DA429B007E5897 /* AppSelectorTests.swift in Sources */,
 				BA53D64B24DFE07D001F1ABF /* WordpressAuthenticatorProvider.swift in Sources */,

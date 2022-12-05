@@ -10,13 +10,19 @@ final class AnalyticsHubHostingViewController: UIHostingController<AnalyticsHubV
     ///
     private let systemNoticePresenter: NoticePresenter
 
+    /// Defines a notice that should be presented after `self` is dismissed.
+    /// Defaults to `nil`.
+    ///
+    var notice: Notice?
+
     init(siteID: Int64, timeRange: StatsTimeRangeV4, systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
         let viewModel = AnalyticsHubViewModel(siteID: siteID, statsTimeRange: timeRange)
         self.systemNoticePresenter = systemNoticePresenter
         super.init(rootView: AnalyticsHubView(viewModel: viewModel))
 
         // Needed to pop the hosting controller from within the SwiftUI view
-        rootView.dismiss = { [weak self] in
+        rootView.dismissWithNotice = { [weak self] notice in
+            self?.notice = notice
             self?.navigationController?.popViewController(animated: true)
         }
     }
@@ -29,8 +35,8 @@ final class AnalyticsHubHostingViewController: UIHostingController<AnalyticsHubV
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
-        // Show any notice that should have been presented before the underlying disappears.
-        enqueuePendingNotice(rootView.viewModel.notice, using: systemNoticePresenter)
+        // Show any notice that should be presented after the underlying disappears.
+        enqueuePendingNotice(notice, using: systemNoticePresenter)
     }
 }
 
@@ -41,9 +47,10 @@ struct AnalyticsHubView: View {
     /// Environment safe areas
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
 
-    /// Set this closure with UIKit code to pop the view controller. Needed because we need access to the UIHostingController `popViewController` method.
+    /// Set this closure with UIKit code to pop the view controller and display the provided notice.
+    /// Needed because we need access to the UIHostingController `popViewController` method.
     ///
-    var dismiss: (() -> Void) = {}
+    var dismissWithNotice: ((Notice) -> Void) = { _ in }
 
     @StateObject var viewModel: AnalyticsHubViewModel
 
@@ -103,7 +110,7 @@ struct AnalyticsHubView: View {
         .task {
             await viewModel.updateData()
             if viewModel.errorSelectingTimeRange {
-                dismiss()
+                dismissWithNotice(notice)
             }
         }
     }

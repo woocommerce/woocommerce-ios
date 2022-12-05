@@ -27,4 +27,46 @@ public final class MyStoreScreen: ScreenObject {
         topBannerCloseButton.tap()
         return self
     }
+
+    func tapTimeframeTab(timeframe: String) -> MyStoreScreen {
+        app.cells.staticTexts[timeframe].tap()
+
+        return self
+    }
+
+    public func goToThisWeekTab() -> MyStoreScreen {
+        return tapTimeframeTab(timeframe: "This Week")
+    }
+
+    public func goToThisMonthTab() -> MyStoreScreen {
+        return tapTimeframeTab(timeframe: "This Month")
+    }
+
+    public func goToThisYearTab() -> MyStoreScreen {
+        return tapTimeframeTab(timeframe: "This Year")
+    }
+
+    func verifyStatsForTimeframeLoaded(timeframe: String) -> MyStoreScreen {
+        let textPredicate = NSPredicate(format: "label MATCHES %@", "Store revenue chart \(timeframe)")
+        XCTAssertTrue(app.images.containing(textPredicate).element.exists, "\(timeframe) chart not displayed")
+
+        return self
+    }
+
+    public func verifyTodayStatsLoaded() -> MyStoreScreen {
+        return verifyStatsForTimeframeLoaded(timeframe: "Today")
+    }
+
+    public func verifyThisWeekStatsLoaded() -> MyStoreScreen {
+        return verifyStatsForTimeframeLoaded(timeframe: "This Week")
+    }
+
+    public func verifyThisMonthStatsLoaded() -> MyStoreScreen {
+        return verifyStatsForTimeframeLoaded(timeframe: "This Month")
+    }
+
+    @discardableResult
+    public func verifyThisYearStatsLoaded() -> MyStoreScreen {
+        return verifyStatsForTimeframeLoaded(timeframe: "This Year")
+    }
 }

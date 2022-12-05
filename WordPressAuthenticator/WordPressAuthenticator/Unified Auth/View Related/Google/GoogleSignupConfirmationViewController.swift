@@ -154,7 +154,7 @@ private extension GoogleSignupConfirmationViewController {
         case let cell as TextLabelTableViewCell where row == .errorMessage:
             configureErrorLabel(cell)
         default:
-            DDLogError("Error: Unidentified tableViewCell type found.")
+            WPAuthenticatorLogError("Error: Unidentified tableViewCell type found.")
         }
     }
 

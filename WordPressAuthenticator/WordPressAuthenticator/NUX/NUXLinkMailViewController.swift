@@ -105,7 +105,7 @@ class NUXLinkMailViewController: LoginViewController {
     @IBAction func handleUsePasswordTapped(_ sender: UIButton) {
         WordPressAuthenticator.track(.loginMagicLinkExited)
         guard let vc = LoginWPComViewController.instantiate(from: .login) else {
-            DDLogError("Failed to navigate to LoginWPComViewController from NUXLinkMailViewController")
+            WPAuthenticatorLogError("Failed to navigate to LoginWPComViewController from NUXLinkMailViewController")
             return
         }
 

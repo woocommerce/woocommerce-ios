@@ -2,9 +2,7 @@
 #import "NSURL+IDN.h"
 #import "WordPressComOAuthClientFacade.h"
 #import "WordPressXMLRPCAPIFacade.h"
-#import <CocoaLumberjack/CocoaLumberjack.h>
 #import "WPAuthenticator-Swift.h"
-#import "WPAuthenticatorLoggingPrivate.h"
 
 @import WordPressKit;
 

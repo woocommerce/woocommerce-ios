@@ -308,7 +308,7 @@ private extension SiteAddressViewController {
         case let cell as TextLabelTableViewCell where row == .errorMessage:
             configureErrorLabel(cell)
         default:
-            DDLogError("Error: Unidentified tableViewCell type found.")
+            WPAuthenticatorLogError("Error: Unidentified tableViewCell type found.")
         }
     }
 
@@ -497,8 +497,8 @@ private extension SiteAddressViewController {
                 }
                 // Intentionally log the attempted address on failures.
                 // It's not guaranteed to be included in the error object depending on the error.
-                DDLogInfo("Error attempting to connect to site address: \(self.loginFields.siteAddress)")
-                DDLogError(error.localizedDescription)
+                WPAuthenticatorLogInfo("Error attempting to connect to site address: \(self.loginFields.siteAddress)")
+                WPAuthenticatorLogError(error.localizedDescription)
 
                 self.tracker.track(failure: .loginFailedToGuessXMLRPC)
 
@@ -641,7 +641,7 @@ private extension SiteAddressViewController {
     func showSelfHostedUsernamePassword() {
         configureViewLoading(false)
         guard let vc = SiteCredentialsViewController.instantiate(from: .siteAddress) else {
-            DDLogError("Failed to navigate from SiteAddressViewController to SiteCredentialsViewController")
+            WPAuthenticatorLogError("Failed to navigate from SiteAddressViewController to SiteCredentialsViewController")
             return
         }
 
@@ -659,7 +659,7 @@ private extension SiteAddressViewController {
         configureViewLoading(false)
 
         guard let vc = LoginUsernamePasswordViewController.instantiate(from: .login) else {
-            DDLogError("Failed to navigate from SiteAddressViewController to LoginUsernamePasswordViewController")
+            WPAuthenticatorLogError("Failed to navigate from SiteAddressViewController to LoginUsernamePasswordViewController")
             return
         }
 
@@ -674,7 +674,7 @@ private extension SiteAddressViewController {
     ///
     func showGetStarted() {
         guard let vc = GetStartedViewController.instantiate(from: .getStarted) else {
-            DDLogError("Failed to navigate from SiteAddressViewController to GetStartedViewController")
+            WPAuthenticatorLogError("Failed to navigate from SiteAddressViewController to GetStartedViewController")
             return
         }
         vc.source = .wpComSiteAddress

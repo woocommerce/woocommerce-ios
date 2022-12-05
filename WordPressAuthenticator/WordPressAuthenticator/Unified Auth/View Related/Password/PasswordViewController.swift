@@ -288,7 +288,7 @@ private extension PasswordViewController {
         case .failure(let error):
             switch error {
             case MagicLinkRequester.MagicLinkRequestError.invalidEmail:
-                DDLogError("Attempted to request authentication link, but the email address did not appear valid.")
+                WPAuthenticatorLogError("Attempted to request authentication link, but the email address did not appear valid.")
                 let alert = buildInvalidEmailAlert()
                 present(alert, animated: true, completion: nil)
             default:
@@ -378,7 +378,7 @@ private extension PasswordViewController {
         case let cell as TextLabelTableViewCell where row == .errorMessage:
             configureErrorLabel(cell)
         default:
-            DDLogError("Error: Unidentified tableViewCell type found.")
+            WPAuthenticatorLogError("Error: Unidentified tableViewCell type found.")
         }
     }
 
@@ -531,7 +531,7 @@ private extension PasswordViewController {
     ///
     func didRequestAuthenticationLink() {
         guard let vc = LoginMagicLinkViewController.instantiate(from: .unifiedLoginMagicLink) else {
-            DDLogError("Failed to navigate to LoginMagicLinkViewController")
+            WPAuthenticatorLogError("Failed to navigate to LoginMagicLinkViewController")
             return
         }
 

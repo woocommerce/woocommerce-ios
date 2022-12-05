@@ -17,7 +17,7 @@ public struct NavigateToEnterAccount: NavigationCommand {
 private extension NavigateToEnterAccount {
     private func continueWithDotCom(navigationController: UINavigationController?) {
         guard let vc = GetStartedViewController.instantiate(from: .getStarted) else {
-            DDLogError("Failed to navigate from LoginPrologueViewController to GetStartedViewController")
+            WPAuthenticatorLogError("Failed to navigate from LoginPrologueViewController to GetStartedViewController")
             return
         }
         vc.source = signInSource

@@ -18,7 +18,7 @@ extension LoginFacade {
                     WordPressAuthenticator.track(.twoFactorSentSMS)
                 }
         }) { _ in
-            DDLogError("Failed to request one time code")
+            WPAuthenticatorLogError("Failed to request one time code")
         }
     }
 
@@ -46,7 +46,7 @@ extension LoginFacade {
             if let newNonce = newNonce {
                 loginFields.nonceInfo?.nonceSMS = newNonce
             }
-            DDLogError("Failed to request one time code")
+            WPAuthenticatorLogError("Failed to request one time code")
         }
     }
 

@@ -70,12 +70,14 @@ final class CardPresentPaymentPreflightController {
             forSiteID: siteID,
             knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
             alertsPresenter: alertsPresenter,
+            alertsProvider: BluetoothReaderConnectionAlertsProvider(),
             configuration: configuration,
             analyticsTracker: analyticsTracker)
 
         self.builtInConnectionController = BuiltInCardReaderConnectionController(
             forSiteID: siteID,
             alertsPresenter: alertsPresenter,
+            alertsProvider: BuiltInReaderConnectionAlertsProvider(),
             configuration: configuration,
             analyticsTracker: analyticsTracker)
     }

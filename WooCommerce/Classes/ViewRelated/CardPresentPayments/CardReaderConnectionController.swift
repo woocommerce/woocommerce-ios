@@ -83,6 +83,8 @@ final class CardReaderConnectionController {
     private let alertsPresenter: CardPresentPaymentAlertsPresenting
     private let configuration: CardPresentPaymentsConfiguration
 
+    private let alertsProvider: BluetoothReaderConnnectionAlertsProviding
+
     /// Reader(s) discovered by the card reader service
     ///
     private var foundReaders: [CardReader]
@@ -134,6 +136,7 @@ final class CardReaderConnectionController {
         stores: StoresManager = ServiceLocator.stores,
         knownReaderProvider: CardReaderSettingsKnownReaderProvider,
         alertsPresenter: CardPresentPaymentAlertsPresenting,
+        alertsProvider: BluetoothReaderConnnectionAlertsProviding,
         configuration: CardPresentPaymentsConfiguration,
         analyticsTracker: CardReaderConnectionAnalyticsTracker
     ) {
@@ -143,6 +146,7 @@ final class CardReaderConnectionController {
         state = .idle
         knownCardReaderProvider = knownReaderProvider
         self.alertsPresenter = alertsPresenter
+        self.alertsProvider = alertsProvider
         foundReaders = []
         knownReaderID = nil
         skippedReaderIDs = []
@@ -419,7 +423,7 @@ private extension CardReaderConnectionController {
         /// If all else fails, display the "scanning" modal and
         /// stay in this state
         ///
-        alertsPresenter.present(viewModel: CardPresentModalScanningForReader(cancel: {
+        alertsPresenter.present(viewModel: alertsProvider.scanningForReader(cancel: {
             self.state = .cancel
         }))
     }
@@ -433,7 +437,7 @@ private extension CardReaderConnectionController {
         }
 
         alertsPresenter.present(
-            viewModel: CardPresentModalFoundReader(
+            viewModel: alertsProvider.foundReader(
                 name: candidateReader.id,
                 connect: {
                     self.state = .connectToReader
@@ -444,7 +448,7 @@ private extension CardReaderConnectionController {
                     self.pruneSkippedReaders()
                     self.state = .searching
                 },
-                cancel: { [weak self] in
+                cancelSearch: { [weak self] in
                     self?.state = .cancel
                 }))
     }
@@ -487,9 +491,9 @@ private extension CardReaderConnectionController {
         }
 
         alertsPresenter.present(
-            viewModel: CardPresentModalUpdateProgress(requiredUpdate: true,
-                                                      progress: progress,
-                                                      cancel: cancel))
+            viewModel: alertsProvider.updateProgress(requiredUpdate: true,
+                                                     progress: progress,
+                                                     cancel: cancel))
     }
 
     /// Retry a search for a card reader
@@ -582,7 +586,7 @@ private extension CardReaderConnectionController {
         }
         stores.dispatch(action)
 
-        alertsPresenter.present(viewModel: CardPresentModalConnectingToReader())
+        alertsPresenter.present(viewModel: alertsProvider.connectingToReader())
     }
 
     /// An error occurred while connecting
@@ -612,13 +616,14 @@ private extension CardReaderConnectionController {
             return
         case .readerSoftwareUpdateFailedBatteryLow:
             alertsPresenter.present(
-                viewModel: CardPresentModalUpdateFailedLowBattery(batteryLevel: batteryLevel,
-                                                                  close: {
-                                                                      self.state = .searching
-                                                                  }))
+                viewModel: alertsProvider.updatingFailedLowBattery(batteryLevel: batteryLevel,
+                                                                   close: {
+                                                                       self.state = .searching
+                                                                   }))
         default:
             alertsPresenter.present(
-                viewModel: CardPresentModalUpdateFailedNonRetryable(close: {
+                viewModel: alertsProvider.updatingFailed(tryAgain: nil,
+                                                         close: {
                     self.state = .searching
                 }))
         }
@@ -639,30 +644,30 @@ private extension CardReaderConnectionController {
 
         guard case CardReaderServiceError.connection(let underlyingError) = error else {
             return alertsPresenter.present(
-                viewModel: CardPresentModalConnectingFailed(continueSearch: continueSearch, cancelSearch: cancelSearch))
+                viewModel: alertsProvider.connectingFailed(continueSearch: continueSearch, cancelSearch: cancelSearch))
         }
 
         switch underlyingError {
         case .incompleteStoreAddress(let adminUrl):
             alertsPresenter.present(
-                viewModel: CardPresentModalConnectingFailedUpdateAddress(
+                viewModel: alertsProvider.connectingFailedIncompleteAddress(
                     openWCSettings: openWCSettingsAction(adminUrl: adminUrl,
                                                          retrySearch: retrySearch),
                     retrySearch: retrySearch,
                     cancelSearch: cancelSearch))
         case .invalidPostalCode:
             alertsPresenter.present(
-                viewModel: CardPresentModalConnectingFailedUpdatePostalCode(
+                viewModel: alertsProvider.connectingFailedInvalidPostalCode(
                     retrySearch: retrySearch,
                     cancelSearch: cancelSearch))
         case .bluetoothConnectionFailedBatteryCriticallyLow:
             alertsPresenter.present(
-                viewModel: CardPresentModalConnectingFailedChargeReader(
+                viewModel: alertsProvider.connectingFailedCriticallyLowBattery(
                     retrySearch: retrySearch,
                     cancelSearch: cancelSearch))
         default:
             alertsPresenter.present(
-                viewModel: CardPresentModalConnectingFailed(
+                viewModel: alertsProvider.connectingFailed(
                     continueSearch: continueSearch,
                     cancelSearch: cancelSearch))
         }
@@ -721,7 +726,7 @@ private extension CardReaderConnectionController {
     ///
     private func onDiscoveryFailed(error: Error) {
         alertsPresenter.present(
-            viewModel: CardPresentModalScanningFailed(error: error) { [weak self] in
+            viewModel: alertsProvider.scanningFailed(error: error) { [weak self] in
             self?.returnFailure(error: error)
         })
     }

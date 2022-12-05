@@ -220,6 +220,40 @@ extension StatsDataTextFormatter {
             case positive
             case negative
             case zero
+
+            /// Background color for a `DeltaTag`
+            var deltaBackgroundColor: UIColor {
+                switch self {
+                case .positive:
+                    return Constants.green
+                case .negative:
+                    return Constants.red
+                case .zero:
+                    return Constants.lightGray
+                }
+            }
+
+            /// Text color for a `DeltaTag`
+            var deltaTextColor: UIColor {
+                switch self {
+                case .positive, .negative:
+                    return .textInverted
+                case .zero:
+                    return .text
+                }
+            }
+
+            /// Line color for an `AnalyticsLineChart`
+            var chartColor: UIColor {
+                switch self {
+                case .positive:
+                    return Constants.green
+                case .negative:
+                    return Constants.red
+                case .zero:
+                    return Constants.darkGray
+                }
+            }
         }
     }
 }
@@ -292,6 +326,10 @@ private extension StatsDataTextFormatter {
 
     enum Constants {
         static let placeholderText = "-"
+        static let green: UIColor = .withColorStudio(.green, shade: .shade50)
+        static let red: UIColor = .withColorStudio(.red, shade: .shade40)
+        static let lightGray: UIColor = .withColorStudio(.gray, shade: .shade0)
+        static let darkGray: UIColor = .withColorStudio(.gray, shade: .shade30)
     }
 
 

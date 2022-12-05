@@ -71,7 +71,7 @@ final class AnalyticsHubViewModel: ObservableObject {
         do {
             try await retrieveOrderStats()
         } catch {
-            switchToErrorState()
+            await switchToErrorState()
             DDLogWarn("⚠️ Error fetching analytics data: \(error)")
         }
     }
@@ -148,12 +148,14 @@ private extension AnalyticsHubViewModel {
 // MARK: Data - UI mapping
 private extension AnalyticsHubViewModel {
 
+    @MainActor
     func switchToLoadingState() {
         self.revenueCard = revenueCard.redacted
         self.ordersCard = ordersCard.redacted
         self.productCard = productCard.redacted
     }
 
+    @MainActor
     func switchToErrorState() {
         self.currentOrderStats = nil
         self.previousOrderStats = nil

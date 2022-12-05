@@ -17,7 +17,7 @@ final class BuiltInCardReaderConnectionController {
         ///
         case initializing
 
-        /// Preparing for search (fetching the list of any known readers)
+        /// Preparing for search
         ///
         case preparingForSearch
 
@@ -28,14 +28,6 @@ final class BuiltInCardReaderConnectionController {
         /// Searching for a card reader
         ///
         case searching
-
-        /// Found one card reader
-        ///
-        case foundReader
-
-        /// Found two or more card readers
-        ///
-        case foundSeveralReaders
 
         /// Attempting to connect to a card reader. The completion passed to `searchAndConnect`
         /// will be called with a `success` `Bool` `True` result if successful, after which the view controller
@@ -69,12 +61,6 @@ final class BuiltInCardReaderConnectionController {
         case discoveryFailed(Error)
     }
 
-    /// The final state of the card reader connection to return without errors.
-    enum ConnectionResult {
-        case connected
-        case canceled
-    }
-
     private let storageManager: StorageManagerType
     private let stores: StoresManager
 
@@ -85,21 +71,8 @@ final class BuiltInCardReaderConnectionController {
     }
 
     private let siteID: Int64
-    private let knownCardReaderProvider: CardReaderSettingsKnownReaderProvider
     private let alertsPresenter: CardPresentPaymentAlertsPresenting
     private let configuration: CardPresentPaymentsConfiguration
-
-    /// Reader(s) discovered by the card reader service
-    ///
-    private var foundReaders: [CardReader]
-
-    /// Reader(s) known to us (i.e. we've connected to them in the past)
-    ///
-    private var knownReaderID: String?
-
-    /// Reader(s) discovered by the card reader service that the merchant declined to connect to
-    ///
-    private var skippedReaderIDs: [String]
 
     /// The reader we want the user to consider connecting to
     ///
@@ -109,18 +82,11 @@ final class BuiltInCardReaderConnectionController {
     ///
     private let analyticsTracker: CardReaderConnectionAnalyticsTracker
 
-    /// Since the number of readers can go greater than 1 and then back to 1, and we don't
-    /// want to keep changing the UI from the several-readers-found list to a single prompt
-    /// and back (as this would be visually quite annoying), this flag will tell us that we've
-    /// already switched to list format for this discovery flow, so that stay in list mode
-    /// even if the number of found readers drops to less than 2
-    private var showSeveralFoundReaders: Bool = false
-
     private var softwareUpdateCancelable: FallibleCancelable? = nil
 
     private var subscriptions = Set<AnyCancellable>()
 
-    private var onCompletion: ((Result<ConnectionResult, Error>) -> Void)?
+    private var onCompletion: ((Result<CardReaderConnectionResult, Error>) -> Void)?
 
     private(set) lazy var dataSource: CardReaderSettingsDataSource = {
         return CardReaderSettingsDataSource(siteID: siteID, storageManager: storageManager)
@@ -134,28 +100,19 @@ final class BuiltInCardReaderConnectionController {
         }
     }
 
-    private let discoveryMethod: CardReaderDiscoveryMethod
-
     init(
         forSiteID: Int64,
-        discoveryMethod: CardReaderDiscoveryMethod,
         storageManager: StorageManagerType = ServiceLocator.storageManager,
         stores: StoresManager = ServiceLocator.stores,
-        knownReaderProvider: CardReaderSettingsKnownReaderProvider,
         alertsPresenter: CardPresentPaymentAlertsPresenting,
         configuration: CardPresentPaymentsConfiguration,
         analyticsTracker: CardReaderConnectionAnalyticsTracker
     ) {
         siteID = forSiteID
-        self.discoveryMethod = discoveryMethod
         self.storageManager = storageManager
         self.stores = stores
         state = .idle
-        knownCardReaderProvider = knownReaderProvider
         self.alertsPresenter = alertsPresenter
-        foundReaders = []
-        knownReaderID = nil
-        skippedReaderIDs = []
         self.configuration = configuration
         self.analyticsTracker = analyticsTracker
 
@@ -167,7 +124,7 @@ final class BuiltInCardReaderConnectionController {
         subscriptions.removeAll()
     }
 
-    func searchAndConnect(onCompletion: @escaping (Result<ConnectionResult, Error>) -> Void) {
+    func searchAndConnect(onCompletion: @escaping (Result<CardReaderConnectionResult, Error>) -> Void) {
         self.onCompletion = onCompletion
         self.state = .initializing
     }
@@ -200,10 +157,6 @@ private extension BuiltInCardReaderConnectionController {
             onBeginSearch()
         case .searching:
             onSearching()
-        case .foundReader:
-            onFoundReader()
-        case .foundSeveralReaders:
-            onFoundSeveralReaders()
         case .retry:
             onRetry()
         case .cancel:
@@ -227,47 +180,6 @@ private extension BuiltInCardReaderConnectionController {
         }
     }
 
-    /// To avoid presenting the "Do you want to connect to reader XXXX" prompt
-    /// repeatedly for the same reader, keep track of readers the user has tapped
-    /// "Keep Searching" for.
-    ///
-    /// If we have switched to the list view, however, don't prune
-    ///
-    func pruneSkippedReaders() {
-        guard !showSeveralFoundReaders else {
-            return
-        }
-        foundReaders = foundReaders.filter({!skippedReaderIDs.contains($0.id)})
-    }
-
-    /// Returns any found reader which is also known
-    ///
-    func getFoundKnownReader() -> CardReader? {
-        foundReaders.filter({knownReaderID == $0.id}).first
-    }
-
-    /// A helper to return an array of found reader IDs
-    ///
-    func getFoundReaderIDs() -> [String] {
-        foundReaders.compactMap({$0.id})
-    }
-
-    /// A helper to return a specific CardReader instance based on the reader ID
-    ///
-    func getFoundReaderByID(readerID: String) -> CardReader? {
-        foundReaders.first(where: {$0.id == readerID})
-    }
-
-    /// Updates the show multiple readers flag to indicate that, for this discovery flow,
-    /// we have already shown the multiple readers UI (so we don't switch back to the
-    /// single reader found UI for this particular discovery)
-    ///
-    func updateShowSeveralFoundReaders() {
-        if foundReaders.containsMoreThanOne {
-            showSeveralFoundReaders = true
-        }
-    }
-
     /// Initial state of the controller
     ///
     func onIdle() {
@@ -281,103 +193,45 @@ private extension BuiltInCardReaderConnectionController {
         }
     }
 
-    /// In preparation for search, initiates a fetch for the list of known readers
+    /// In preparation for search, sets everything to defaults
     /// Does NOT open any modal
-    /// Transitions state to `.beginSearch` after receiving the known readers list
+    /// Transitions state to `.beginSearch`
     ///
     func onPreparingForSearch() {
-        /// Always start fresh - i.e. we haven't skipped connecting to any reader yet
+        /// Always start fresh
         ///
-        skippedReaderIDs = []
         candidateReader = nil
-        showSeveralFoundReaders = false
 
-        /// Fetch the list of known readers - i.e. readers we should automatically connect to when we see them
-        ///
-        knownCardReaderProvider.knownReader.sink(receiveValue: { [weak self] readerID in
-            guard let self = self else {
-                return
-            }
-
-            self.knownReaderID = readerID
-
-            /// Only kick off search if we received a known reader update
-            if case .preparingForSearch = self.state {
-                self.state = .beginSearch
-            }
-        }).store(in: &subscriptions)
+        if case .preparingForSearch = state {
+            state = .beginSearch
+        }
     }
 
     /// Begins the search for a card reader
     /// Does NOT open any modal
     /// Transitions state to `.searching`
-    /// Later, when a reader is found, state transitions to
-    /// `.foundReader` if one unknown reader is found,
-    /// `.foundMultipleReaders` if two or more readers are found,
-    /// or  to `.connectToReader` if one known reader is found
+    /// Later, when a reader is found, state transitions to `.connectToReader`
     ///
     func onBeginSearch() {
         self.state = .searching
-        var didAutoAdvance = false
 
         let action = CardPresentPaymentAction.startCardReaderDiscovery(
             siteID: siteID,
-            discoveryMethod: discoveryMethod,
+            discoveryMethod: .localMobile,
             onReaderDiscovered: { [weak self] cardReaders in
                 guard let self = self else {
                     return
                 }
 
-                /// Update our copy of the foundReaders, evaluate if we should switch to the list view,
-                /// and prune skipped ones
-                ///
-                self.foundReaders = cardReaders
-                self.updateShowSeveralFoundReaders()
-                self.pruneSkippedReaders()
-
                 /// Note: This completion will be called repeatedly as the list of readers
                 /// discovered changes, so some care around state must be taken here.
                 ///
 
-                /// If the found-several-readers view is already presenting, update its list of found readers
+                /// If we have a found reader, advance to `connectToReader`
                 ///
-                if case .foundSeveralReaders = self.state {
-                    self.alertsPresenter.updateSeveralReadersList(readerIDs: self.getFoundReaderIDs())
-                }
-
-                /// To avoid interrupting connecting to a known reader, ensure we are
-                /// in the searching state before proceeding further
-                ///
-                guard case .searching = self.state else {
-                    return
-                }
-
-                /// If we have a known reader, and we haven't auto-advanced to connect
-                /// already, advance immediately to connect.
-                /// We only auto-advance once to avoid loops in case the known reader
-                /// is having connectivity issues (e.g low battery)
-                ///
-                if let foundKnownReader = self.getFoundKnownReader() {
-                    if !didAutoAdvance {
-                        didAutoAdvance = true
-                        self.candidateReader = foundKnownReader
-                        self.state = .connectToReader
-                        return
-                    }
-                }
-
-                /// If we have found multiple readers, advance to foundMultipleReaders
-                ///
-                if self.showSeveralFoundReaders {
-                    self.state = .foundSeveralReaders
-                    return
-                }
-
-                /// If we have a found reader, advance to foundReader
-                ///
-                if self.foundReaders.isNotEmpty {
-                    self.candidateReader = self.foundReaders.first
-                    self.state = .foundReader
+                if cardReaders.isNotEmpty {
+                    self.candidateReader = cardReaders.first
+                    self.state = .connectToReader
                     return
                 }
             },
@@ -399,30 +253,11 @@ private extension BuiltInCardReaderConnectionController {
     /// If the user cancels the modal will trigger a transition to `.endSearch`
     ///
     func onSearching() {
-        /// If we enter this state and another reader was discovered while the
-        /// "Do you want to connect to" modal was being displayed and if that reader
-        /// is known and the merchant tapped keep searching on the first
-        /// (unknown) reader, auto-connect to that known reader
-        if let foundKnownReader = self.getFoundKnownReader() {
-            self.candidateReader = foundKnownReader
-            self.state = .connectToReader
-            return
-        }
-
-        /// If we already have found readers
-        /// display the list view if so enabled, or...
-        ///
-        if showSeveralFoundReaders {
-            self.state = .foundSeveralReaders
-            return
-        }
-
         /// Display the single view and ask the merchant if they'd
         /// like to connect to it
         ///
-        if foundReaders.isNotEmpty {
-            self.candidateReader = foundReaders.first
-            self.state = .foundReader
+        if candidateReader != nil {
+            self.state = .connectToReader
             return
         }
 
@@ -432,50 +267,6 @@ private extension BuiltInCardReaderConnectionController {
         alertsPresenter.present(viewModel: CardPresentModalScanningForReader(cancel: {
             self.state = .cancel
         }))
-    }
-
-    /// A (unknown) reader has been found
-    /// Opens a confirmation modal for the user to accept the candidate reader (or keep searching)
-    ///
-    func onFoundReader() {
-        guard let candidateReader = candidateReader else {
-            return
-        }
-
-        alertsPresenter.present(
-            viewModel: CardPresentModalFoundReader(
-                name: candidateReader.id,
-                connect: {
-                    self.state = .connectToReader
-                },
-                continueSearch: {
-                    self.skippedReaderIDs.append(candidateReader.id)
-                    self.candidateReader = nil
-                    self.pruneSkippedReaders()
-                    self.state = .searching
-                },
-                cancel: { [weak self] in
-                    self?.state = .cancel
-                }))
-    }
-
-    /// Several readers have been found
-    /// Opens a continually updating list modal for the user to pick one (or cancel the search)
-    ///
-    func onFoundSeveralReaders() {
-        alertsPresenter.foundSeveralReaders(
-            readerIDs: getFoundReaderIDs(),
-            connect: { [weak self] readerID in
-                guard let self = self else {
-                    return
-                }
-                self.candidateReader = self.getFoundReaderByID(readerID: readerID)
-                self.state = .connectToReader
-            },
-            cancelSearch: { [weak self] in
-                self?.state = .cancel
-            }
-        )
     }
 
     /// A mandatory update is being installed
@@ -563,7 +354,6 @@ private extension BuiltInCardReaderConnectionController {
 
             switch result {
             case .success(let reader):
-                self.knownCardReaderProvider.rememberCardReader(cardReaderID: reader.id)
                 ServiceLocator.analytics.track(
                     event: WooAnalyticsEvent.InPersonPayments
                         .cardReaderConnectionSuccess(forGatewayID: self.gatewayID,
@@ -575,10 +365,10 @@ private extension BuiltInCardReaderConnectionController {
                 // actually see a success message showing the installation was complete
                 if case .updating(progress: 1) = self.state {
                     DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-                        self.returnSuccess(result: .connected)
+                        self.returnSuccess(result: .connected(reader))
                     }
                 } else {
-                    self.returnSuccess(result: .connected)
+                    self.returnSuccess(result: .connected(reader))
                 }
             case .failure(let error):
                 ServiceLocator.analytics.track(
@@ -598,11 +388,11 @@ private extension BuiltInCardReaderConnectionController {
     /// An error occurred while connecting
     ///
     private func onConnectingFailed(error: Error) {
-        /// Clear our copy of found readers to avoid connecting to a reader that isn't
+        /// Clear our candidateReader to avoid connecting to a reader that isn't
         /// there while we wait for `onReaderDiscovered` to receive an update.
         /// See also https://github.com/stripe/stripe-terminal-ios/issues/104#issuecomment-916285167
         ///
-        self.foundReaders = []
+        self.candidateReader = nil
 
         if case CardReaderServiceError.softwareUpdate(underlyingError: let underlyingError, batteryLevel: _) = error,
            underlyingError.isSoftwareUpdateError {
@@ -738,7 +528,7 @@ private extension BuiltInCardReaderConnectionController {
 
     /// Calls the completion with a success result
     ///
-    private func returnSuccess(result: ConnectionResult) {
+    private func returnSuccess(result: CardReaderConnectionResult) {
         onCompletion?(.success(result))
         alertsPresenter.dismiss()
         state = .idle

@@ -69,12 +69,6 @@ final class CardReaderConnectionController {
         case discoveryFailed(Error)
     }
 
-    /// The final state of the card reader connection to return without errors.
-    enum ConnectionResult {
-        case connected
-        case canceled
-    }
-
     private let storageManager: StorageManagerType
     private let stores: StoresManager
 
@@ -120,7 +114,7 @@ final class CardReaderConnectionController {
 
     private var subscriptions = Set<AnyCancellable>()
 
-    private var onCompletion: ((Result<ConnectionResult, Error>) -> Void)?
+    private var onCompletion: ((Result<CardReaderConnectionResult, Error>) -> Void)?
 
     private(set) lazy var dataSource: CardReaderSettingsDataSource = {
         return CardReaderSettingsDataSource(siteID: siteID, storageManager: storageManager)
@@ -134,11 +128,8 @@ final class CardReaderConnectionController {
         }
     }
 
-    private let discoveryMethod: CardReaderDiscoveryMethod
-
     init(
         forSiteID: Int64,
-        discoveryMethod: CardReaderDiscoveryMethod,
         storageManager: StorageManagerType = ServiceLocator.storageManager,
         stores: StoresManager = ServiceLocator.stores,
         knownReaderProvider: CardReaderSettingsKnownReaderProvider,
@@ -147,7 +138,6 @@ final class CardReaderConnectionController {
         analyticsTracker: CardReaderConnectionAnalyticsTracker
     ) {
         siteID = forSiteID
-        self.discoveryMethod = discoveryMethod
         self.storageManager = storageManager
         self.stores = stores
         state = .idle
@@ -167,7 +157,7 @@ final class CardReaderConnectionController {
         subscriptions.removeAll()
     }
 
-    func searchAndConnect(onCompletion: @escaping (Result<ConnectionResult, Error>) -> Void) {
+    func searchAndConnect(onCompletion: @escaping (Result<CardReaderConnectionResult, Error>) -> Void) {
         self.onCompletion = onCompletion
         self.state = .initializing
     }
@@ -322,7 +312,7 @@ private extension CardReaderConnectionController {
 
         let action = CardPresentPaymentAction.startCardReaderDiscovery(
             siteID: siteID,
-            discoveryMethod: discoveryMethod,
+            discoveryMethod: .bluetoothScan,
             onReaderDiscovered: { [weak self] cardReaders in
                 guard let self = self else {
                     return
@@ -575,10 +565,10 @@ private extension CardReaderConnectionController {
                 // actually see a success message showing the installation was complete
                 if case .updating(progress: 1) = self.state {
                     DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-                        self.returnSuccess(result: .connected)
+                        self.returnSuccess(result: .connected(reader))
                     }
                 } else {
-                    self.returnSuccess(result: .connected)
+                    self.returnSuccess(result: .connected(reader))
                 }
             case .failure(let error):
                 ServiceLocator.analytics.track(
@@ -738,7 +728,7 @@ private extension CardReaderConnectionController {
 
     /// Calls the completion with a success result
     ///
-    private func returnSuccess(result: ConnectionResult) {
+    private func returnSuccess(result: CardReaderConnectionResult) {
         onCompletion?(.success(result))
         alertsPresenter.dismiss()
         state = .idle

@@ -11,8 +11,8 @@ struct AnalyticsHubLastMonthRangeData: AnalyticsHubTimeRangeData {
         self.currentDateEnd = oneMonthAgo?.endOfMonth(timezone: timezone)
         self.currentDateStart = oneMonthAgo?.startOfMonth(timezone: timezone)
 
-        let twoWeeksAgo = calendar.date(byAdding: .month, value: -2, to: referenceDate)
-        self.previousDateEnd = twoWeeksAgo?.endOfMonth(timezone: timezone)
-        self.previousDateStart = twoWeeksAgo?.startOfMonth(timezone: timezone)
+        let twoMonthsAgo = calendar.date(byAdding: .month, value: -2, to: referenceDate)
+        self.previousDateEnd = twoMonthsAgo?.endOfMonth(timezone: timezone)
+        self.previousDateStart = twoMonthsAgo?.startOfMonth(timezone: timezone)
     }
 }

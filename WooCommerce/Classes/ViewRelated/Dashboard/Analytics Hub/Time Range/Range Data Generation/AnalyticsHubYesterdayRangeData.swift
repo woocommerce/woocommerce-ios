@@ -10,8 +10,9 @@ struct AnalyticsHubYesterdayRangeData: AnalyticsHubTimeRangeData {
         let yesterday = calendar.date(byAdding: .day, value: -1, to: referenceDate)
         self.currentDateEnd = yesterday?.endOfDay(timezone: timezone)
         self.currentDateStart = yesterday?.startOfDay(timezone: timezone)
-        let previousDateEnd = calendar.date(byAdding: .day, value: -2, to: referenceDate)
-        self.previousDateEnd = previousDateEnd?.endOfDay(timezone: timezone)
-        self.previousDateStart = previousDateEnd?.startOfDay(timezone: timezone)
+
+        let dayBeforeYesterday = calendar.date(byAdding: .day, value: -2, to: referenceDate)
+        self.previousDateEnd = dayBeforeYesterday?.endOfDay(timezone: timezone)
+        self.previousDateStart = dayBeforeYesterday?.startOfDay(timezone: timezone)
     }
 }

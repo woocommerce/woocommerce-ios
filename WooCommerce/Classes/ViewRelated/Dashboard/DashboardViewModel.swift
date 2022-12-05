@@ -4,59 +4,6 @@ import enum Networking.DotcomError
 import enum Storage.StatsVersion
 import protocol Experiments.FeatureFlagService
 
-enum AppScreen {
-    case dashboard
-}
-
-final class JustInTimeMessagesManager {
-    private let stores: StoresManager
-    private let analytics: Analytics
-    private let appScreenJitmSourceMapping: [AppScreen: String] = [.dashboard: "my_store"]
-
-    init(stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics) {
-        self.stores = stores
-        self.analytics = analytics
-    }
-
-    func loadMessage(for screen: AppScreen, siteID: Int64) async throws -> JustInTimeMessageAnnouncementCardViewModel? {
-        guard let source = appScreenJitmSourceMapping[screen] else {
-            return nil
-        }
-
-        return try await withCheckedThrowingContinuation { [weak self] continuation in
-            let action = JustInTimeMessageAction.loadMessage(
-                siteID: siteID,
-                screen: source,
-                hook: .adminNotices) { [weak self] result in
-                    guard let self = self else { return }
-                    switch result {
-                    case let .success(messages):
-                        guard let message = messages.first else {
-                            return continuation.resume(returning: nil)
-                        }
-                        self.analytics.track(event:
-                                .JustInTimeMessage.fetchSuccess(source: source,
-                                                                messageID: message.messageID,
-                                                                count: Int64(messages.count)))
-                        let viewModel = JustInTimeMessageAnnouncementCardViewModel(
-                            justInTimeMessage: message,
-                            screenName: source,
-                            siteID: self.siteID)
-                        continuation.resume(returning: viewModel)
-                    case let .failure(error):
-                        self.analytics.track(event:
-                                .JustInTimeMessage.fetchFailure(source: source,
-                                                                error: error))
-                        throw error
-                    }
-                }
-
-            stores.dispatch(action)
-        }
-    }
-}
-
 /// Syncs data for dashboard stats UI and determines the state of the dashboard UI based on stats version.
 final class DashboardViewModel {
     /// Stats v4 is shown by default, then falls back to v3 if store stats are unavailable.
@@ -73,7 +20,7 @@ final class DashboardViewModel {
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
     private let analytics: Analytics
-    private let justInTimeMessagesManager: JustInTimeMessagesManager = JustInTimeMessagesManager()
+    private let justInTimeMessagesManager: JustInTimeMessagesManager
 
     init(stores: StoresManager = ServiceLocator.stores,
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -81,6 +28,7 @@ final class DashboardViewModel {
         self.stores = stores
         self.featureFlagService = featureFlags
         self.analytics = analytics
+        self.justInTimeMessagesManager = JustInTimeMessagesManager(stores: stores, analytics: analytics)
     }
 
     /// Syncs store stats for dashboard UI.
@@ -170,37 +118,46 @@ final class DashboardViewModel {
 
     /// Checks for announcements to show on the dashboard
     ///
-    func syncAnnouncements(for siteID: Int64) {
-        syncProductsOnboarding(for: siteID) { [weak self] in
-            self?.syncJustInTimeMessages(for: siteID)
+    func syncAnnouncements(for siteID: Int64) async {
+        guard await !syncProductsOnboarding(for: siteID) else {
+            return
         }
+    
+        await syncJustInTimeMessages(for: siteID)
     }
 
     /// Checks if a store is eligible for products onboarding and prepares the onboarding announcement if needed.
     ///
-    private func syncProductsOnboarding(for siteID: Int64, onCompletion: @escaping () -> Void) {
-        let action = ProductAction.checkProductsOnboardingEligibility(siteID: siteID) { [weak self] result in
-            switch result {
-            case .success(let isEligible):
-                if isEligible {
-                    ServiceLocator.analytics.track(event: .ProductsOnboarding.storeIsEligible())
+    private func syncProductsOnboarding(for siteID: Int64) async -> Bool {
+        await withCheckedContinuation { [weak self] continuation in
+            let action = ProductAction.checkProductsOnboardingEligibility(siteID: siteID) { [weak self] result in
+                switch result {
+                case .success(let isEligible):
+                    if isEligible {
+                        ServiceLocator.analytics.track(event: .ProductsOnboarding.storeIsEligible())
 
-                    self?.setProductsOnboardingBannerIfNeeded()
-                }
+                        self?.setProductsOnboardingBannerIfNeeded()
+                    }
 
-                // For now, products onboarding takes precedence over Just In Time Messages,
-                // so we can stop if there is an onboarding announcement to display.
-                // This should be revisited when either onboarding or JITMs are expanded. See: pe5pgL-11B-p2
-                if self?.announcementViewModel is ProductsOnboardingAnnouncementCardViewModel {
-                    return
+                    // For now, products onboarding takes precedence over Just In Time Messages,
+                    // so we can stop if there is an onboarding announcement to display.
+                    // This should be revisited when either onboarding or JITMs are expanded. See: pe5pgL-11B-p2
+                    if self?.announcementViewModel is ProductsOnboardingAnnouncementCardViewModel {
+                        continuation.resume(returning: true)
+                    } else {
+                        continuation.resume(returning: false)
+                    }
+
+                case .failure(let error):
+                    DDLogError("⛔️ Dashboard — Error checking products onboarding eligibility: \(error)")
+                    continuation.resume(returning: false)
                 }
-                onCompletion()
-            case .failure(let error):
-                DDLogError("⛔️ Dashboard — Error checking products onboarding eligibility: \(error)")
-                onCompletion()
+            }
+
+            Task { @MainActor in
+                stores.dispatch(action)
             }
         }
-        stores.dispatch(action)
     }
 
     /// Sets the view model for the products onboarding banner if the user hasn't dismissed it before.
@@ -220,16 +177,14 @@ final class DashboardViewModel {
 
     /// Checks for Just In Time Messages and prepares the announcement if needed.
     ///
-    private func syncJustInTimeMessages(for siteID: Int64) {
+    private func syncJustInTimeMessages(for siteID: Int64) async {
         guard featureFlagService.isFeatureFlagEnabled(.justInTimeMessagesOnDashboard) else {
             return
         }
 
-        Task {
-            let viewModel = try? await justInTimeMessagesManager.loadMessage(for: .dashboard, siteID: siteID)
-            viewModel?.$showWebViewSheet.assign(to: &self.$showWebViewSheet)
-            announcementViewModel = viewModel
-        }
+        let viewModel = try? await justInTimeMessagesManager.loadMessage(for: .dashboard, siteID: siteID)
+        viewModel?.$showWebViewSheet.assign(to: &self.$showWebViewSheet)
+        announcementViewModel = viewModel
     }
 }
 

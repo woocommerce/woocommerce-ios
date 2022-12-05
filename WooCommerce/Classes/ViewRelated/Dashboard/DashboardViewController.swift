@@ -124,8 +124,9 @@ final class DashboardViewController: UIViewController {
         observeAnnouncements()
         observeShowWebViewSheet()
         observeAddProductTrigger()
-        viewModel.syncAnnouncements(for: siteID)
+
         Task { @MainActor in
+            await viewModel.syncAnnouncements(for: siteID)
             await reloadDashboardUIStatsVersion(forced: true)
         }
     }
@@ -297,7 +298,9 @@ private extension DashboardViewController {
         let webViewSheet = WebViewSheet(viewModel: viewModel) { [weak self] in
             guard let self = self else { return }
             self.dismiss(animated: true)
-            self.viewModel.syncAnnouncements(for: self.siteID)
+            Task { @MainActor in
+                await self.viewModel.syncAnnouncements(for: self.siteID)
+            }
         }
         let hostingController = UIHostingController(rootView: webViewSheet)
         hostingController.presentationController?.delegate = self
@@ -321,7 +324,9 @@ private extension DashboardViewController {
         coordinator.onProductCreated = { [weak self] in
             guard let self else { return }
             self.viewModel.announcementViewModel = nil // Remove the products onboarding banner
-            self.viewModel.syncAnnouncements(for: self.siteID)
+            Task { @MainActor in
+                await self.viewModel.syncAnnouncements(for: self.siteID)
+            }
         }
         coordinator.start()
     }
@@ -350,7 +355,9 @@ private extension DashboardViewController {
                 },
                 callToAction: {})
 
-            self.showAnnouncement(AnnouncementCardWrapper(cardView: cardView))
+            Task { @MainActor in
+                self.showAnnouncement(AnnouncementCardWrapper(cardView: cardView))
+            }
         }
         .store(in: &subscriptions)
     }
@@ -420,7 +427,9 @@ extension DashboardViewController: DashboardUIScrollDelegate {
 extension DashboardViewController: UIAdaptivePresentationControllerDelegate {
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         if presentationController.presentedViewController is UIHostingController<WebViewSheet> {
-            viewModel.syncAnnouncements(for: siteID)
+            Task { @MainActor in
+                await viewModel.syncAnnouncements(for: siteID)
+            }
         }
     }
 }
@@ -533,7 +542,7 @@ private extension DashboardViewController {
 
     func pullToRefresh() async {
         ServiceLocator.analytics.track(.dashboardPulledToRefresh)
-        viewModel.syncAnnouncements(for: siteID)
+        await viewModel.syncAnnouncements(for: siteID)
         await reloadDashboardUIStatsVersion(forced: true)
     }
 }

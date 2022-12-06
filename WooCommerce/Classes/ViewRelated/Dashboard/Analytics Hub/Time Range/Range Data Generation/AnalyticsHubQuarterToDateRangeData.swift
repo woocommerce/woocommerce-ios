@@ -9,7 +9,7 @@ struct AnalyticsHubQuarterToDateRangeData: AnalyticsHubTimeRangeData {
     init(referenceDate: Date, timezone: TimeZone, calendar: Calendar) {
         self.currentDateEnd = referenceDate
         self.currentDateStart = referenceDate.startOfQuarter(timezone: timezone, calendar: calendar)
-        let previousDateEnd = calendar.date(byAdding: .quarter, value: -1, to: referenceDate)
+        let previousDateEnd = calendar.date(byAdding: .month, value: -3, to: referenceDate)
         self.previousDateEnd = previousDateEnd
         self.previousDateStart = previousDateEnd?.startOfQuarter(timezone: timezone, calendar: calendar)
     }

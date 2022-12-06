@@ -240,8 +240,6 @@ final class PaymentMethodsViewModel: ObservableObject {
                         formattedAmount: self.formattedTotal,
                         paymentGatewayAccount: paymentGateway,
                         rootViewController: rootViewController,
-                        alerts: OrderDetailsPaymentAlerts(transactionType: .collectPayment,
-                                                          presentingController: rootViewController),
                         configuration: CardPresentConfigurationLoader().configuration)
 
                     self.collectPaymentsUseCase?.collectPayment(

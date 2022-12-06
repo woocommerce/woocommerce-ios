@@ -5,6 +5,21 @@ import SwiftUI
 /// Consists of two date pickers laid out vertically.
 ///
 struct RangedDatePicker: View {
+
+    @Environment(\.presentationMode) var presentation
+
+    /// Closure invoked when the the custom date range has been confirmed.
+    ///
+    var datesSelected: ((_ start: Date, _ end: Date) -> Void)?
+
+    /// Start date binding variable
+    ///
+    @State private var startDate = Date()
+
+    /// End date binding variable
+    ///
+    @State private var endDate = Date()
+
     var body: some View {
         NavigationView {
             ScrollView {
@@ -17,7 +32,7 @@ struct RangedDatePicker: View {
 
                     Divider()
 
-                    DatePicker("", selection: .constant(Date()), in: ...Date(), displayedComponents: [.date])
+                    DatePicker("", selection: $startDate, in: ...Date(), displayedComponents: [.date])
                         .datePickerStyle(.graphical)
                         .accentColor(Color(.brand))
 
@@ -28,7 +43,7 @@ struct RangedDatePicker: View {
 
                     Divider()
 
-                    DatePicker("", selection: .constant(Date()), in: ...Date(), displayedComponents: [.date])
+                    DatePicker("", selection: $endDate, in: ...Date(), displayedComponents: [.date])
                         .datePickerStyle(.graphical)
                         .accentColor(Color(.brand))
                 }
@@ -47,14 +62,15 @@ struct RangedDatePicker: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button(action: {
-                        // TODO: Send apply action
+                        presentation.wrappedValue.dismiss()
+                        datesSelected?(startDate, endDate)
                     }, label: {
                         Text(Localization.apply)
                     })
                 }
                 ToolbarItem(placement: .cancellationAction) {
                     Button(action: {
-                        // TODO: Send dismiss action
+                        presentation.wrappedValue.dismiss()
                     }, label: {
                         Image(uiImage: .closeButton)
                     })

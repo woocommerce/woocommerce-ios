@@ -2,13 +2,22 @@ import Yosemite
 import PassKit
 import WooFoundation
 
+/// Contains data associated with a payment that has been collected, processed, and captured.
+struct CardPresentCapturedPaymentData {
+    /// Currently used for analytics.
+    let paymentMethod: PaymentMethod
+
+    /// Used for receipt generation for display in the app.
+    let receiptParameters: CardPresentReceiptParameters
+}
+
 /// Orchestrates the sequence of actions required to capture a payment:
 /// 1. Check if there is a card reader connected
 /// 2. Launch the reader discovering and pairing UI if there is no reader connected
 /// 3. Obtain a Payment Intent from the card reader (i.e., create a payment intent, collect a payment method, and process the payment)
 /// 4. Submit the Payment Intent to WCPay to capture a payment
 /// Steps 1 and 2 will be implemented as part of https://github.com/woocommerce/woocommerce-ios/issues/4062
-final class LegacyPaymentCaptureOrchestrator {
+final class PaymentCaptureOrchestrator {
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
     private let personNameComponentsFormatter = PersonNameComponentsFormatter()
     private let paymentReceiptEmailParameterDeterminer: ReceiptEmailParameterDeterminer
@@ -108,7 +117,7 @@ final class LegacyPaymentCaptureOrchestrator {
     }
 }
 
-private extension LegacyPaymentCaptureOrchestrator {
+private extension PaymentCaptureOrchestrator {
     /// Suppress wallet presentation. This requires a special entitlement from Apple:
     /// `com.apple.developer.passkit.pass-presentation-suppression`
     /// See Woo-*.entitlements in WooCommerce/Resources
@@ -156,7 +165,7 @@ private extension LegacyPaymentCaptureOrchestrator {
     }
 }
 
-private extension LegacyPaymentCaptureOrchestrator {
+private extension PaymentCaptureOrchestrator {
     func completePaymentIntentCapture(order: Order,
                                     captureResult: Result<PaymentIntent, Error>,
                                     onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
@@ -247,14 +256,14 @@ private extension LegacyPaymentCaptureOrchestrator {
     }
 }
 
-private extension LegacyPaymentCaptureOrchestrator {
+private extension PaymentCaptureOrchestrator {
     enum Constants {
         static let canadaFlatFee = NSDecimalNumber(string: "0.15")
         static let canadaPercentageFee = NSDecimalNumber(0)
     }
 }
 
-private extension LegacyPaymentCaptureOrchestrator {
+private extension PaymentCaptureOrchestrator {
     enum Localization {
         static let receiptDescription = NSLocalizedString(
             "In-Person Payment for Order #%1$@ for %2$@ blog_id %3$@",

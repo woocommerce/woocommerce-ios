@@ -165,6 +165,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                     self.presentReceiptAlert(receiptParameters: paymentData.receiptParameters, onCompleted: onCompleted)
                 })
             case .canceled:
+                self.alertsPresenter.dismiss()
                 self.trackPaymentCancelation()
                 onCancel()
             case .none:

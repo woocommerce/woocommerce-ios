@@ -24,4 +24,42 @@ final class StatsTests: XCTestCase {
             .goToThisYearTab()
             .verifyThisYearStatsLoaded()
     }
+
+    func test_view_detailed_chart_stats() throws {
+        var hourlyRevenue = ""
+        var dailyRevenue = ""
+        var weeklyRevenue = ""
+        var monthlyRevenue = ""
+        var yearlyRevenue = ""
+
+        try TabNavComponent()
+            .goToMyStoreScreen()
+
+        dailyRevenue = try MyStoreScreen().getRevenueValue()
+        try MyStoreScreen().tapChart()
+        hourlyRevenue = try MyStoreScreen().getRevenueValue()
+
+        try MyStoreScreen().verifyRevenueUpdated(originalRevenue: dailyRevenue, updatedRevenue: hourlyRevenue)
+        try MyStoreScreen().goToThisWeekTab()
+
+        weeklyRevenue = try MyStoreScreen().getRevenueValue()
+        try MyStoreScreen().tapChart()
+        dailyRevenue = try MyStoreScreen().getRevenueValue()
+
+        try MyStoreScreen().verifyRevenueUpdated(originalRevenue: weeklyRevenue, updatedRevenue: dailyRevenue)
+        try MyStoreScreen().goToThisMonthTab()
+
+        monthlyRevenue = try MyStoreScreen().getRevenueValue()
+        try MyStoreScreen().tapChart()
+        weeklyRevenue = try MyStoreScreen().getRevenueValue()
+
+        try MyStoreScreen().verifyRevenueUpdated(originalRevenue: monthlyRevenue, updatedRevenue: weeklyRevenue)
+        try MyStoreScreen().goToThisYearTab()
+
+        yearlyRevenue = try MyStoreScreen().getRevenueValue()
+        try MyStoreScreen().tapChart()
+        monthlyRevenue = try MyStoreScreen().getRevenueValue()
+
+        try MyStoreScreen().verifyRevenueUpdated(originalRevenue: yearlyRevenue, updatedRevenue: monthlyRevenue)
+    }
 }

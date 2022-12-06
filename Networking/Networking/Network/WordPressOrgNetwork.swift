@@ -32,7 +32,7 @@ public final class WordPressOrgNetwork: Network {
         self.userAgent = userAgent
     }
 
-    public func responseData(for request: URLRequestConvertible) async throws -> Data? {
+    public func responseData(for request: Request) async throws -> Data? {
         return try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self = self else { return }
 
@@ -60,7 +60,7 @@ public final class WordPressOrgNetwork: Network {
     ///     - request: Request that should be performed.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
+    public func responseData(for request: Request, completion: @escaping (Data?, Error?) -> Void) {
         sessionManager.request(request)
             .validate()
             .responseData { response in
@@ -77,7 +77,7 @@ public final class WordPressOrgNetwork: Network {
     ///     - request: Request that should be performed.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func responseData(for request: URLRequestConvertible, completion: @escaping (Swift.Result<Data, Error>) -> Void) {
+    public func responseData(for request: Request, completion: @escaping (Swift.Result<Data, Error>) -> Void) {
         sessionManager.request(request)
             .validate()
             .responseData { response in
@@ -93,7 +93,7 @@ public final class WordPressOrgNetwork: Network {
     ///
     /// - Parameter request: Request that should be performed.
     /// - Returns: A publisher that emits the result of the given request.
-    public func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
+    public func responseDataPublisher(for request: Request) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
         return Future() { [weak self] promise in
             guard let self = self else { return }
             self.sessionManager.request(request).validate().responseData { response in
@@ -104,7 +104,7 @@ public final class WordPressOrgNetwork: Network {
     }
 
     public func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
-                                        to request: URLRequestConvertible,
+                                        to request: Request,
                                         completion: @escaping (Data?, Error?) -> Void) {
         backgroundSessionManager.upload(multipartFormData: multipartFormData, with: request) { (encodingResult) in
             switch encodingResult {

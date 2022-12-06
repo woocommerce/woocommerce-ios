@@ -44,9 +44,8 @@ public class AlamofireNetwork: Network {
     ///       the upper layers can properly detect "Jetpack Tunnel" Errors.
     ///     - Yes. We do the above because the Jetpack Tunnel endpoint doesn't properly relay the correct statusCode.
     ///
-    public func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
+    public func responseData(for request: Request, completion: @escaping (Data?, Error?) -> Void) {
         let request = createRequest(wrapping: request)
-
         Alamofire.request(request)
             .responseData { response in
                 completion(response.value, response.networkingError)
@@ -62,9 +61,8 @@ public class AlamofireNetwork: Network {
     ///     - request: Request that should be performed.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func responseData(for request: URLRequestConvertible, completion: @escaping (Swift.Result<Data, Error>) -> Void) {
+    public func responseData(for request: Request, completion: @escaping (Swift.Result<Data, Error>) -> Void) {
         let request = createRequest(wrapping: request)
-
         Alamofire.request(request).responseData { response in
             completion(response.result.toSwiftResult())
         }
@@ -78,9 +76,8 @@ public class AlamofireNetwork: Network {
     ///
     /// - Parameter request: Request that should be performed.
     /// - Returns: A publisher that emits the result of the given request.
-    public func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
+    public func responseDataPublisher(for request: Request) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
         let request = createRequest(wrapping: request)
-
         return Future() { promise in
             Alamofire.request(request).responseData { response in
                 let result = response.result.toSwiftResult()
@@ -90,10 +87,9 @@ public class AlamofireNetwork: Network {
     }
 
     public func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
-                                        to request: URLRequestConvertible,
+                                        to request: Request,
                                         completion: @escaping (Data?, Error?) -> Void) {
         let request = createRequest(wrapping: request)
-
         backgroundSessionManager.upload(multipartFormData: multipartFormData, with: request) { (encodingResult) in
             switch encodingResult {
             case .success(let upload, _, _):
@@ -108,12 +104,11 @@ public class AlamofireNetwork: Network {
 }
 
 private extension AlamofireNetwork {
-    func createRequest(wrapping request: URLRequestConvertible) -> URLRequestConvertible {
+    func createRequest(wrapping request: Request) -> Request {
         credentials.map { AuthenticatedRequest(credentials: $0, request: request) } ??
         UnauthenticatedRequest(request: request)
     }
 }
-
 
 // MARK: - Alamofire.DataResponse: Helper Methods
 //

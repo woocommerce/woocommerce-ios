@@ -4,7 +4,7 @@ import Alamofire
 
 /// Wraps up a URLRequestConvertible Instance, and injects the Credentials + `Settings.userAgent` whenever the actual Request is required.
 ///
-struct AuthenticatedRequest: URLRequestConvertible {
+struct AuthenticatedRequest: Request {
 
     /// WordPress.com Credentials.
     ///
@@ -12,7 +12,7 @@ struct AuthenticatedRequest: URLRequestConvertible {
 
     /// Request that should be authenticated.
     ///
-    let request: URLRequestConvertible
+    let request: Request
 
 
     /// Returns the Wrapped Request, but with a WordPress.com Bearer Token set up.

@@ -1,6 +1,5 @@
 import Combine
 import Foundation
-import Alamofire
 
 /// Constructs `multipart/form-data` for uploads within an HTTP or HTTPS body.
 ///
@@ -27,7 +26,7 @@ public protocol Network {
     ///     - request: Request that should be performed.
     ///     - completion: Closure to be executed upon completion.
     ///
-    func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void)
+    func responseData(for request: Request, completion: @escaping (Data?, Error?) -> Void)
 
     /// Executes the specified Network Request. Upon completion, the payload will be sent back to
     /// the caller as a Data instance.
@@ -36,7 +35,7 @@ public protocol Network {
     ///     - request: Request that should be performed.
     ///     - completion: Closure to be executed upon completion.
     ///
-    func responseData(for request: URLRequestConvertible,
+    func responseData(for request: Request,
                       completion: @escaping (Swift.Result<Data, Error>) -> Void)
 
     /// Executes the specified Network Request. Upon completion, the payload or error will be emitted to the publisher.
@@ -45,7 +44,7 @@ public protocol Network {
     ///     - request: Request that should be performed.
     ///
     /// - Returns: A publisher that emits the result of the given request.
-    func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never>
+    func responseDataPublisher(for request: Request) -> AnyPublisher<Swift.Result<Data, Error>, Never>
 
     /// Executes the specified Network Request for file uploads. Upon completion, the payload will be sent back to the caller as a Data instance.
     ///
@@ -54,6 +53,6 @@ public protocol Network {
     ///   - request: Request that should be performed.
     ///   - completion: Closure to be executed upon completion.
     func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
-                                 to request: URLRequestConvertible,
+                                 to request: Request,
                                  completion: @escaping (Data?, Error?) -> Void)
 }

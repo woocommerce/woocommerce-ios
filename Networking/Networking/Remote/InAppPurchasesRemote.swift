@@ -1,4 +1,3 @@
-import Alamofire
 import Foundation
 
 /// In-app Purchases Endpoints

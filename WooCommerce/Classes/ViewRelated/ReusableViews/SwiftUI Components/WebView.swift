@@ -1,6 +1,5 @@
 import SwiftUI
 import WebKit
-import Alamofire
 import class Networking.UserAgent
 
 /// Mirror of AuthenticatedWebView, for equivalent display of URLs in `WKWebView` that do not need authentication on WPCom.

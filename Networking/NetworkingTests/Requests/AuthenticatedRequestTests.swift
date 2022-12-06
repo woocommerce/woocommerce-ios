@@ -3,6 +3,8 @@ import XCTest
 @testable import Networking
 
 
+extension URLRequest: Request {}
+
 /// AuthenticatedRequest Unit Tests
 ///
 class AuthenticatedRequestTests: XCTestCase {

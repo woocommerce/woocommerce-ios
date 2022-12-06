@@ -25,12 +25,12 @@ class MockNetwork: Network {
 
     /// Keeps a collection of all of the `responseData` requests.
     ///
-    var requestsForResponseData = [URLRequestConvertible]()
+    var requestsForResponseData = [Request]()
 
     /// Note: If the useResponseQueue param is `true`, any responses added via `simulateResponse` will stored in a FIFO queue
     /// and used once for a matching request (then removed from the queue). Subsequent requests will use the next response in the queue, and so on.
     ///
-    /// If the useResponseQueue param is `false`, any responses added via `simulateResponse` will stored in an array and can
+    /// If the kuseResponseQueue param is `false`, any responses added via `simulateResponse` will stored in an array and can
     /// be reused multiple times.
     ///
     /// - Parameter useResponseQueue: Use the response queue. Default is `false`.
@@ -44,7 +44,7 @@ class MockNetwork: Network {
     /// Whenever the Request's URL matches any of the "Mocked Up Patterns", we'll return the specified response file, loaded as *Data*.
     /// Otherwise, an error will be relayed back (.notFound!).
     ///
-    func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
+    func responseData(for request: Request, completion: @escaping (Data?, Error?) -> Void) {
         responseData(for: request) { result in
             switch result {
             case .success(let data):
@@ -58,7 +58,7 @@ class MockNetwork: Network {
     /// Whenever the Request's URL matches any of the "Mocked Up Patterns", we'll return the
     /// specified response file, loaded as *Data*. Otherwise, an error will be relayed back (.notFound!).
     ///
-    func responseData(for request: URLRequestConvertible, completion: @escaping (Swift.Result<Data, Error>) -> Void) {
+    func responseData(for request: Request, completion: @escaping (Swift.Result<Data, Error>) -> Void) {
         requestsForResponseData.append(request)
 
         if let error = error(for: request) {
@@ -74,7 +74,7 @@ class MockNetwork: Network {
         completion(.success(data))
     }
 
-    func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
+    func responseDataPublisher(for request: Request) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
         requestsForResponseData.append(request)
 
         if let error = error(for: request) {
@@ -89,7 +89,7 @@ class MockNetwork: Network {
     }
 
     func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
-                                 to request: URLRequestConvertible,
+                                 to request: Request,
                                  completion: @escaping (Data?, Error?) -> Void) {
         responseData(for: request, completion: completion)
     }
@@ -150,7 +150,7 @@ private extension MockNetwork {
     ///   * the FIFO response queue (where the response is removed from the queue when this func returns)
     ///   * the responseMap (array)
     ///
-    func filename(for request: URLRequestConvertible) -> String? {
+    func filename(for request: Request) -> String? {
         let searchPath = path(for: request)
         if useResponseQueue {
             if let keyAndQueue = responseQueue.first(where: { searchPath.hasSuffix($0.key) }) {
@@ -170,7 +170,7 @@ private extension MockNetwork {
 
     /// Returns the Mock Error for a given URLRequestConvertible.
     ///
-    private func error(for request: URLRequestConvertible) -> Error? {
+    private func error(for request: Request) -> Error? {
         let searchPath = path(for: request)
         for (pattern, error) in errorMap where searchPath.hasSuffix(pattern) {
             return error
@@ -181,7 +181,7 @@ private extension MockNetwork {
 
     /// Returns the "Request Path" for a given URLRequestConvertible instance.
     ///
-    private func path(for request: URLRequestConvertible) -> String {
+    private func path(for request: Request) -> String {
         switch request {
         case let request as AuthenticatedRequest:
             return path(for: request.request)

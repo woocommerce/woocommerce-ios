@@ -87,7 +87,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
 
     /// IPP payments collector.
     ///
-    private lazy var paymentOrchestrator = LegacyPaymentCaptureOrchestrator(stores: stores)
+    private lazy var paymentOrchestrator = PaymentCaptureOrchestrator(stores: stores)
 
     /// Coordinates emailing a receipt after payment success.
     private var receiptEmailCoordinator: CardPresentPaymentReceiptEmailCoordinator?

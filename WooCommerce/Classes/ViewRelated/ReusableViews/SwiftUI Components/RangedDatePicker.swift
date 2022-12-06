@@ -1,14 +1,14 @@
 import Foundation
 import SwiftUI
 
-/// View to reselect a custom date range.
+/// View to select a custom date range.
 /// Consists of two date pickers laid out vertically.
 ///
 struct RangedDatePicker: View {
 
     @Environment(\.presentationMode) var presentation
 
-    /// Closure invoked when the the custom date range has been confirmed.
+    /// Closure invoked when the custom date range has been confirmed.
     ///
     var datesSelected: ((_ start: Date, _ end: Date) -> Void)?
 
@@ -56,7 +56,9 @@ struct RangedDatePicker: View {
                     VStack(spacing: Layout.titleSpacing) {
                         Text(Localization.title)
                             .headlineStyle()
-                        Text("Dec 1 - Dec 6") // TODO: This should be dynamic
+
+                        // TODO: Properly format date ranges outside the view
+                        Text("\(DateFormatter.monthAndDayFormatter.string(from: startDate)) - \(DateFormatter.monthAndDayFormatter.string(from: endDate))")
                             .captionStyle()
                     }
                 }

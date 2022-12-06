@@ -105,53 +105,36 @@ public extension Date {
         }
 
         var components = calendar.dateComponents([.month, .year], from: startOfMonth)
-
-        let quarterFirstMonth: Int
         switch components.month {
         case 1, 2, 3:
-            quarterFirstMonth = 1
+            components.month = 1
         case 4, 5, 6:
-            quarterFirstMonth = 4
+            components.month = 4
         case 7, 8, 9:
-            quarterFirstMonth = 7
+            components.month = 7
         case 10, 11, 12:
-            quarterFirstMonth = 10
+            components.month = 10
         default:
             return nil
         }
-        components.month = quarterFirstMonth
+
         return calendar.date(from: components)
     }
 
     /// Returns self's end of quarter in the given time zone.
     func endOfQuarter(timezone: TimeZone, calendar: Calendar) -> Date? {
-        guard let startOfMonth = startOfMonth(timezone: timezone) else {
+        guard let startOfQuarter = startOfQuarter(timezone: timezone, calendar: calendar) else {
             return nil
         }
 
-        var components = calendar.dateComponents([.month, .day, .year], from: startOfMonth)
-
-        switch components.month {
-        case 1, 2, 3:
-            components.month = 3
-        case 4, 5, 6:
-            components.month = 6
-        case 7, 8, 9:
-            components.month = 9
-        case 10, 11, 12:
-            components.month = 12
-        default:
-            return nil
-        }
-
-        guard let quarterLastMonth = calendar.date(from: components) else {
+        guard let endOfQuarter = calendar.date(byAdding: .month, value: 2, to: startOfQuarter) else {
             return nil
         }
 
         var oneMonthUnit = DateComponents()
         oneMonthUnit.month = 1
         oneMonthUnit.second = -1
-        return calendar.date(byAdding: oneMonthUnit, to: quarterLastMonth)
+        return calendar.date(byAdding: oneMonthUnit, to: endOfQuarter)
     }
 
     // MARK: Year

@@ -103,18 +103,18 @@ public extension Date {
         guard let startOfMonth = startOfMonth(timezone: timezone) else {
             return nil
         }
-        
+
         var components = calendar.dateComponents([.month, .day, .year], from: startOfMonth)
-        
+
         let quarterFirstMonth: Int
         switch components.month {
-        case 1,2,3:
+        case 1, 2, 3:
             quarterFirstMonth = 1
-        case 4,5,6:
+        case 4, 5, 6:
             quarterFirstMonth = 4
-        case 7,8,9:
+        case 7, 8, 9:
             quarterFirstMonth = 7
-        case 10,11,12:
+        case 10, 11, 12:
             quarterFirstMonth = 10
         default:
             return nil
@@ -128,18 +128,18 @@ public extension Date {
         guard let endOfMonth = endOfMonth(timezone: timezone) else {
             return nil
         }
-        
+
         var components = calendar.dateComponents([.month, .day, .year], from: endOfMonth)
-        
+
         let quarterLastMonth: Int
         switch components.month {
-        case 1,2,3:
+        case 1, 2, 3:
             quarterLastMonth = 3
-        case 4,5,6:
+        case 4, 5, 6:
             quarterLastMonth = 6
-        case 7,8,9:
+        case 7, 8, 9:
             quarterLastMonth = 9
-        case 10,11,12:
+        case 10, 11, 12:
             quarterLastMonth = 12
         default:
             return nil

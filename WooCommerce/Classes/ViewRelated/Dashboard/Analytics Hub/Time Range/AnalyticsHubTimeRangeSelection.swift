@@ -29,11 +29,10 @@ public class AnalyticsHubTimeRangeSelection {
         return previousTimeRangeDescription
     }
 
-    //TODO: abandon usage of the ISO 8601 Calendar and build one based on the Site calendar configuration
     init(selectionType: SelectionType,
          currentDate: Date = Date(),
-         timezone: TimeZone = TimeZone.autoupdatingCurrent,
-         calendar: Calendar = Calendar(identifier: .iso8601)) {
+         timezone: TimeZone = TimeZone.current,
+         calendar: Calendar = Locale.current.calendar) {
         let selectionData = selectionType.toRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
         let currentTimeRange = selectionData.currentTimeRange
         let previousTimeRange = selectionData.previousTimeRange

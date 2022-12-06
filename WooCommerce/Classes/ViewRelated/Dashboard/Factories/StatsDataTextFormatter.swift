@@ -156,7 +156,7 @@ struct StatsDataTextFormatter {
     ///
     static func createOrderItemsSoldDelta(from previousPeriod: OrderStatsV4?, to currentPeriod: OrderStatsV4?) -> DeltaPercentage {
         guard let previousPeriod, let currentPeriod else {
-            return DeltaPercentage(value: 0) // Missing data: 0% change
+            return DeltaPercentage(value: 0, formatter: deltaNumberFormatter) // Missing data: 0% change
         }
         let previousItemsSold = Double(previousPeriod.totals.totalItemsSold)
         let currentItemsSold = Double(currentPeriod.totals.totalItemsSold)
@@ -172,55 +172,26 @@ extension StatsDataTextFormatter {
     ///
     static func createDeltaPercentage(from previousValue: Decimal?, to currentValue: Decimal?) -> DeltaPercentage {
         guard let previousValue, let currentValue, previousValue != currentValue else {
-            return DeltaPercentage(value: 0) // Missing or equal values: 0% change
+            return DeltaPercentage(value: 0, formatter: deltaNumberFormatter) // Missing or equal values: 0% change
         }
 
         // If the previous value was 0, return a 100% or -100% change
         guard previousValue != 0 else {
             let deltaValue: Decimal = currentValue > 0 ? 1 : -1
-            return DeltaPercentage(value: deltaValue)
+            return DeltaPercentage(value: deltaValue, formatter: deltaNumberFormatter)
         }
 
-        return DeltaPercentage(value: (currentValue - previousValue) / previousValue)
+        return DeltaPercentage(value: (currentValue - previousValue) / previousValue, formatter: deltaNumberFormatter)
     }
 
     /// Creates the `DeltaPercentage` for the percent change from the previous `Double` value to the current `Double` value
     ///
     static func createDeltaPercentage(from previousValue: Double?, to currentValue: Double?) -> DeltaPercentage {
         guard let previousValue, let currentValue else {
-            return DeltaPercentage(value: 0) // Missing data: 0% change
+            return DeltaPercentage(value: 0, formatter: deltaNumberFormatter) // Missing data: 0% change
         }
 
         return createDeltaPercentage(from: Decimal(previousValue), to: Decimal(currentValue))
-    }
-
-    /// Represents a formatted delta percentage string and its direction of change
-    struct DeltaPercentage {
-        /// The delta percentage formatted as a localized string (e.g. `+100%`)
-        let string: String
-
-        /// The direction of change
-        let direction: Direction
-
-        init(value: Decimal) {
-            self.string = deltaNumberFormatter.string(from: value as NSNumber) ?? Constants.placeholderText
-            self.direction = {
-                if value > 0 {
-                    return .positive
-                } else if value < 0 {
-                    return .negative
-                } else {
-                    return .zero
-                }
-            }()
-        }
-
-        /// Represents the direction of change for a delta value
-        enum Direction {
-            case positive
-            case negative
-            case zero
-        }
     }
 }
 

@@ -198,20 +198,16 @@ private extension AnalyticsHubViewModel {
 
     static func revenueCard(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) -> AnalyticsReportCardViewModel {
         let showSyncError = currentPeriodStats == nil || previousPeriodStats == nil
-        let totalDelta = StatsDataTextFormatter.createTotalRevenueDelta(from: previousPeriodStats, to: currentPeriodStats)
-        let netDelta = StatsDataTextFormatter.createNetRevenueDelta(from: previousPeriodStats, to: currentPeriodStats)
 
         return AnalyticsReportCardViewModel(title: Localization.RevenueCard.title,
                                             leadingTitle: Localization.RevenueCard.leadingTitle,
                                             leadingValue: StatsDataTextFormatter.createTotalRevenueText(orderStats: currentPeriodStats,
                                                                                                         selectedIntervalIndex: nil),
-                                            leadingDelta: totalDelta.string,
-                                            leadingDeltaColor: Constants.deltaColor(for: totalDelta.direction),
+                                            leadingDelta: StatsDataTextFormatter.createTotalRevenueDelta(from: previousPeriodStats, to: currentPeriodStats),
                                             leadingChartData: StatsIntervalDataParser.getChartData(for: .totalRevenue, from: currentPeriodStats),
                                             trailingTitle: Localization.RevenueCard.trailingTitle,
                                             trailingValue: StatsDataTextFormatter.createNetRevenueText(orderStats: currentPeriodStats),
-                                            trailingDelta: netDelta.string,
-                                            trailingDeltaColor: Constants.deltaColor(for: netDelta.direction),
+                                            trailingDelta: StatsDataTextFormatter.createNetRevenueDelta(from: previousPeriodStats, to: currentPeriodStats),
                                             trailingChartData: StatsIntervalDataParser.getChartData(for: .netRevenue, from: currentPeriodStats),
                                             isRedacted: false,
                                             showSyncError: showSyncError,
@@ -220,20 +216,17 @@ private extension AnalyticsHubViewModel {
 
     static func ordersCard(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) -> AnalyticsReportCardViewModel {
         let showSyncError = currentPeriodStats == nil || previousPeriodStats == nil
-        let ordersCountDelta = StatsDataTextFormatter.createOrderCountDelta(from: previousPeriodStats, to: currentPeriodStats)
-        let orderValueDelta = StatsDataTextFormatter.createAverageOrderValueDelta(from: previousPeriodStats, to: currentPeriodStats)
 
         return AnalyticsReportCardViewModel(title: Localization.OrderCard.title,
                                             leadingTitle: Localization.OrderCard.leadingTitle,
                                             leadingValue: StatsDataTextFormatter.createOrderCountText(orderStats: currentPeriodStats,
                                                                                                       selectedIntervalIndex: nil),
-                                            leadingDelta: ordersCountDelta.string,
-                                            leadingDeltaColor: Constants.deltaColor(for: ordersCountDelta.direction),
+                                            leadingDelta: StatsDataTextFormatter.createOrderCountDelta(from: previousPeriodStats, to: currentPeriodStats),
                                             leadingChartData: StatsIntervalDataParser.getChartData(for: .orderCount, from: currentPeriodStats),
                                             trailingTitle: Localization.OrderCard.trailingTitle,
                                             trailingValue: StatsDataTextFormatter.createAverageOrderValueText(orderStats: currentPeriodStats),
-                                            trailingDelta: orderValueDelta.string,
-                                            trailingDeltaColor: Constants.deltaColor(for: orderValueDelta.direction),
+                                            trailingDelta: StatsDataTextFormatter.createAverageOrderValueDelta(from: previousPeriodStats,
+                                                                                                               to: currentPeriodStats),
                                             trailingChartData: StatsIntervalDataParser.getChartData(for: .averageOrderValue, from: currentPeriodStats),
                                             isRedacted: false,
                                             showSyncError: showSyncError,
@@ -251,8 +244,7 @@ private extension AnalyticsHubViewModel {
         let itemsSoldDelta = StatsDataTextFormatter.createOrderItemsSoldDelta(from: previousPeriodStats, to: currentPeriodStats)
 
         return AnalyticsProductCardViewModel(itemsSold: itemsSold,
-                                             delta: itemsSoldDelta.string,
-                                             deltaBackgroundColor: Constants.deltaColor(for: itemsSoldDelta.direction),
+                                             delta: itemsSoldDelta,
                                              itemsSoldData: itemSoldRows(from: itemsSoldStats),
                                              isRedacted: false,
                                              showStatsError: showStatsError,
@@ -285,15 +277,6 @@ private extension AnalyticsHubViewModel {
 private extension AnalyticsHubViewModel {
     enum Constants {
         static let maxNumberOfTopItemsSold = 5
-
-        static func deltaColor(for direction: StatsDataTextFormatter.DeltaPercentage.Direction) -> UIColor {
-            switch direction {
-            case .positive:
-                return .withColorStudio(.green, shade: .shade50)
-            case .negative, .zero:
-                return .withColorStudio(.red, shade: .shade40)
-            }
-        }
     }
 
     enum Localization {

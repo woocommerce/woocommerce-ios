@@ -39,11 +39,14 @@ final class PaymentCaptureOrchestrator {
                         paymentGatewayAccount: PaymentGatewayAccount,
                         paymentMethodTypes: [String],
                         stripeSmallestCurrencyUnitMultiplier: Decimal,
+                        onPreparingReader: () -> Void,
                         onWaitingForInput: @escaping (CardReaderInput) -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onDisplayMessage: @escaping (String) -> Void,
                         onProcessingCompletion: @escaping (PaymentIntent) -> Void,
                         onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
+        onPreparingReader()
+
         /// Set state of CardPresentPaymentStore
         ///
         let setAccount = CardPresentPaymentAction.use(paymentGatewayAccount: paymentGatewayAccount)

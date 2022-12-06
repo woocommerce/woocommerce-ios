@@ -216,17 +216,8 @@ private extension CollectOrderPaymentUseCase {
     func attemptPayment(onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
         guard let orderTotal = orderTotal else {
             onCompletion(.failure(NotValidAmountError.other))
-
             return
         }
-
-        // Show preparing reader alert
-        // TODO: Move this tho the (New)PaymentCaptureOrchestrator
-        alerts.preparingReader(onCancel: { [weak self] in
-            self?.cancelPayment(onCompleted: {
-                onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
-            })
-        })
 
         // Start collect payment process
         paymentOrchestrator.collectPayment(
@@ -235,6 +226,13 @@ private extension CollectOrderPaymentUseCase {
             paymentGatewayAccount: paymentGatewayAccount,
             paymentMethodTypes: configuration.paymentMethods.map(\.rawValue),
             stripeSmallestCurrencyUnitMultiplier: configuration.stripeSmallestCurrencyUnitMultiplier,
+            onPreparingReader: { [weak self] in
+                self?.alertsPresenter.present(viewModel: CardPresentModalPreparingReader(cancelAction: {
+                    self?.cancelPayment(onCompleted: {
+                        onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
+                    })
+                }))
+            },
             onWaitingForInput: { [weak self] inputMethods in
                 guard let self = self else { return }
                 self.alerts.tapOrInsertCard(title: Localization.collectPaymentTitle(username: self.order.billingAddress?.firstName),

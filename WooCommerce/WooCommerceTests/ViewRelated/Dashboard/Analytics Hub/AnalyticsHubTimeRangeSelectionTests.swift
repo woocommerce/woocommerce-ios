@@ -206,6 +206,23 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         XCTAssertEqual(previousRangeDescription, "Jan 1 - Dec 31, 2020")
     }
 
+    func test_when_time_range_inits_with_quarterToDate_then_generate_expected_descriptions() throws {
+        // Given
+        let today = currentDate(from: "2022-05-15")
+        let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .quarterToDate,
+                                                       currentDate: today,
+                                                       timezone: testTimezone,
+                                                       calendar: testCalendar)
+
+        // When
+        let currentRangeDescription = timeRange.currentRangeDescription
+        let previousRangeDescription = timeRange.previousRangeDescription
+
+        // Then
+        XCTAssertEqual(currentRangeDescription, "Jan 1 - Feb 15, 2022")
+        XCTAssertEqual(previousRangeDescription, "Apr 1 - May 15, 2021")
+    }
+
     func test_when_time_range_inits_with_monthToDate_then_generate_expected_descriptions() throws {
         // Given
         let today = currentDate(from: "2022-07-31")

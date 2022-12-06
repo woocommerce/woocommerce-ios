@@ -47,6 +47,11 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published var timeRangeCard: AnalyticsTimeRangeCardViewModel
 
+    /// Defines a notice that, when set, dismisses the view and is then displayed.
+    /// Defaults to `nil`.
+    ///
+    @Published var dismissNotice: Notice?
+
     // MARK: Private data
 
     /// Order stats for the current selected time period
@@ -67,11 +72,15 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Request stats data from network
     ///
+    @MainActor
     func updateData() async {
         do {
             try await retrieveOrderStats()
+        } catch is AnalyticsHubTimeRangeSelection.TimeRangeGeneratorError {
+            dismissNotice = Notice(title: Localization.timeRangeGeneratorError, feedbackType: .error)
+            DDLogWarn("⚠️ Error selecting analytics time range: \(timeRangeSelectionType.description)")
         } catch {
-            switchToErrorState()
+            await switchToErrorState()
             DDLogWarn("⚠️ Error fetching analytics data: \(error)")
         }
     }
@@ -148,12 +157,14 @@ private extension AnalyticsHubViewModel {
 // MARK: Data - UI mapping
 private extension AnalyticsHubViewModel {
 
+    @MainActor
     func switchToLoadingState() {
         self.revenueCard = revenueCard.redacted
         self.ordersCard = ordersCard.redacted
         self.productCard = productCard.redacted
     }
 
+    @MainActor
     func switchToErrorState() {
         self.currentOrderStats = nil
         self.previousOrderStats = nil
@@ -234,7 +245,8 @@ private extension AnalyticsHubViewModel {
     static func productCard(currentPeriodStats: OrderStatsV4?,
                             previousPeriodStats: OrderStatsV4?,
                             itemsSoldStats: TopEarnerStats?) -> AnalyticsProductCardViewModel {
-        let showSyncError = currentPeriodStats == nil || previousPeriodStats == nil
+        let showStatsError = currentPeriodStats == nil || previousPeriodStats == nil
+        let showItemsSoldError = itemsSoldStats == nil
         let itemsSold = StatsDataTextFormatter.createItemsSoldText(orderStats: currentPeriodStats)
         let itemsSoldDelta = StatsDataTextFormatter.createOrderItemsSoldDelta(from: previousPeriodStats, to: currentPeriodStats)
 
@@ -243,7 +255,8 @@ private extension AnalyticsHubViewModel {
                                              deltaBackgroundColor: Constants.deltaColor(for: itemsSoldDelta.direction),
                                              itemsSoldData: itemSoldRows(from: itemsSoldStats),
                                              isRedacted: false,
-                                             showSyncError: showSyncError)
+                                             showStatsError: showStatsError,
+                                             showItemsSoldError: showItemsSoldError)
     }
 
     /// Helper functions to create `TopPerformersRow.Data` items rom the provided `TopEarnerStats`.
@@ -306,5 +319,8 @@ private extension AnalyticsHubViewModel {
                                                  value)
             }
         }
+
+        static let timeRangeGeneratorError = NSLocalizedString("Sorry, something went wrong. We can't load analytics for the selected date range.",
+                                                               comment: "Error shown when there is a problem retrieving the dates for the selected date range.")
     }
 }

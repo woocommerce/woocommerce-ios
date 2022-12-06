@@ -2,7 +2,7 @@ import UIKit
 
 /// Modal presented when a firmware update is being installed
 ///
-final class CardPresentModalUpdateProgress: CardPresentPaymentsModalViewModel, CardPresentModalProgressDisplaying {
+final class CardPresentModalBuiltInConfigurationProgress: CardPresentPaymentsModalViewModel, CardPresentModalProgressDisplaying {
     /// Called when cancel button is tapped
     private let cancelAction: (() -> Void)?
 
@@ -31,16 +31,15 @@ final class CardPresentModalUpdateProgress: CardPresentPaymentsModalViewModel, C
         Localization.title
     }
 
-    init(requiredUpdate: Bool, progress: Float, cancel: (() -> Void)?) {
+    init(progress: Float, cancel: (() -> Void)?) {
         self.progress = progress
         self.cancelAction = cancel
-        actionsMode = cancel != nil ? .secondaryOnlyAction : .none
+
         titleComplete = Localization.titleComplete
         titleInProgress = Localization.title
-
-        if !isComplete {
-            messageInProgress = requiredUpdate ? Localization.messageRequired : Localization.messageOptional
-        }
+        messageComplete = Localization.messageComplete
+        messageInProgress = Localization.message
+        actionsMode = cancel != nil ? .secondaryOnlyAction : .none
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {}
@@ -52,26 +51,26 @@ final class CardPresentModalUpdateProgress: CardPresentPaymentsModalViewModel, C
     func didTapAuxiliaryButton(in viewController: UIViewController?) {}
 }
 
-private extension CardPresentModalUpdateProgress {
+private extension CardPresentModalBuiltInConfigurationProgress {
     enum Localization {
         static let title = NSLocalizedString(
-            "Updating software",
-            comment: "Dialog title that displays when a software update is being installed"
+            "Configuring iPhone",
+            comment: "Dialog title that displays when iPhone configuration is being updated for use as a card reader"
         )
 
         static let titleComplete = NSLocalizedString(
-            "Software updated",
-            comment: "Dialog title that displays when a software update just finished installing"
+            "Configuration updated",
+            comment: "Dialog title that displays when a configuration update just finished installing"
         )
 
-        static let messageRequired = NSLocalizedString(
-            "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection.",
-            comment: "Label that displays when a mandatory software update is happening"
+        static let message = NSLocalizedString(
+            "Your iPhone needs to be configured to collect payments.",
+            comment: "Label that displays when a configuration update is happening"
         )
 
-        static let messageOptional = NSLocalizedString(
-            "Your reader will automatically restart and reconnect after the update is complete.",
-            comment: "Label that displays when an optional software update is happening"
+        static let messageComplete = NSLocalizedString(
+            "Your phone will be ready to collect payments in a moment...",
+            comment: "Dialog message that displays when a configuration update just finished installing"
         )
 
         static let cancel = NSLocalizedString(

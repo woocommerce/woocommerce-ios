@@ -86,10 +86,10 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
 
         // Then
         XCTAssertEqual(currentTimeRange.start, startDate(from: "2022-01-01"))
-        XCTAssertEqual(currentTimeRange.end, currentDate(from: "2022-03-31"))
+        XCTAssertEqual(currentTimeRange.end, endDate(from: "2022-03-31"))
 
         XCTAssertEqual(previousTimeRange.start, startDate(from: "2021-10-01"))
-        XCTAssertEqual(previousTimeRange.end, currentDate(from: "2021-12-31"))
+        XCTAssertEqual(previousTimeRange.end, endDate(from: "2021-12-31"))
     }
 
     func test_when_time_range_inits_with_monthToDate_then_generate_expected_ranges() throws {

@@ -1362,6 +1362,7 @@
 		B651474527D644FF00C9C4E6 /* CustomerNoteSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B651474427D644FF00C9C4E6 /* CustomerNoteSection.swift */; };
 		B66D6CEC29396A3E0075D4AF /* AnalyticsHubTimeRangeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66D6CEB29396A3E0075D4AF /* AnalyticsHubTimeRangeData.swift */; };
 		B687940C27699D420092BCA0 /* RefundFeesCalculationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B687940B27699D410092BCA0 /* RefundFeesCalculationUseCase.swift */; };
+		B6930BDA293FD1EE00C6FFDB /* AnalyticsHubLastQuarterRangeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6930BD9293FD1EE00C6FFDB /* AnalyticsHubLastQuarterRangeData.swift */; };
 		B6A10E9C292E5DEE00790797 /* AnalyticsTimeRangeCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6A10E9B292E5DEE00790797 /* AnalyticsTimeRangeCardViewModel.swift */; };
 		B6C78B8C293BADAA008934A1 /* AnalyticsHubLastWeekRangeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C78B8B293BADAA008934A1 /* AnalyticsHubLastWeekRangeData.swift */; };
 		B6C78B8E293BAE68008934A1 /* AnalyticsHubLastMonthRangeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C78B8D293BAE68008934A1 /* AnalyticsHubLastMonthRangeData.swift */; };
@@ -3382,6 +3383,7 @@
 		B651474427D644FF00C9C4E6 /* CustomerNoteSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerNoteSection.swift; sourceTree = "<group>"; };
 		B66D6CEB29396A3E0075D4AF /* AnalyticsHubTimeRangeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubTimeRangeData.swift; sourceTree = "<group>"; };
 		B687940B27699D410092BCA0 /* RefundFeesCalculationUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundFeesCalculationUseCase.swift; sourceTree = "<group>"; };
+		B6930BD9293FD1EE00C6FFDB /* AnalyticsHubLastQuarterRangeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubLastQuarterRangeData.swift; sourceTree = "<group>"; };
 		B6A10E9B292E5DEE00790797 /* AnalyticsTimeRangeCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsTimeRangeCardViewModel.swift; sourceTree = "<group>"; };
 		B6C78B8B293BADAA008934A1 /* AnalyticsHubLastWeekRangeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubLastWeekRangeData.swift; sourceTree = "<group>"; };
 		B6C78B8D293BAE68008934A1 /* AnalyticsHubLastMonthRangeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubLastMonthRangeData.swift; sourceTree = "<group>"; };
@@ -7482,15 +7484,16 @@
 		B66D6CEF293A4D990075D4AF /* Range Data Generation */ = {
 			isa = PBXGroup;
 			children = (
-				B6F3796929378B3900718561 /* AnalyticsHubMonthToDateRangeData.swift */,
-				B6F3796B293794A000718561 /* AnalyticsHubYearToDateRangeData.swift */,
-				B6F3796D293796BC00718561 /* AnalyticsHubWeekToDateRangeData.swift */,
 				B6F3796F293798ED00718561 /* AnalyticsHubTodayRangeData.swift */,
 				B6E7DB63293A7C390049B001 /* AnalyticsHubYesterdayRangeData.swift */,
 				B6C78B8B293BADAA008934A1 /* AnalyticsHubLastWeekRangeData.swift */,
 				B6C78B8D293BAE68008934A1 /* AnalyticsHubLastMonthRangeData.swift */,
+				B6930BD9293FD1EE00C6FFDB /* AnalyticsHubLastQuarterRangeData.swift */,
 				B6C78B8F293BAF37008934A1 /* AnalyticsHubLastYearRangeData.swift */,
+				B6F3796D293796BC00718561 /* AnalyticsHubWeekToDateRangeData.swift */,
+				B6F3796929378B3900718561 /* AnalyticsHubMonthToDateRangeData.swift */,
 				B63D9008293E56E300BB5C9D /* AnalyticsHubQuarterToDateRangeData.swift */,
+				B6F3796B293794A000718561 /* AnalyticsHubYearToDateRangeData.swift */,
 			);
 			path = "Range Data Generation";
 			sourceTree = "<group>";
@@ -10964,6 +10967,7 @@
 				02C88775245036D400E4470F /* FilterProductListViewModel.swift in Sources */,
 				4590B6A8261F0F8300A6FCE0 /* SegmentedView.swift in Sources */,
 				DE77889826FCA39B008DFF44 /* TitleAndSubtitleRow.swift in Sources */,
+				B6930BDA293FD1EE00C6FFDB /* AnalyticsHubLastQuarterRangeData.swift in Sources */,
 				02DE5CA9279F857D007CBEF3 /* Double+Rounding.swift in Sources */,
 				02A65301246AA63600755A01 /* ProductDetailsFactory.swift in Sources */,
 				D449C51D26DE6B5000D75B02 /* LargeTitle.swift in Sources */,

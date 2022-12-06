@@ -51,6 +51,8 @@ public class AnalyticsHubTimeRangeSelection {
             selectionData = AnalyticsHubWeekToDateRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
         case .monthToDate:
             selectionData = AnalyticsHubMonthToDateRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
+        case .quarterToDate:
+            selectionData = AnalyticsHubQuarterToDateRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
         case .yearToDate:
             selectionData = AnalyticsHubYearToDateRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
         }
@@ -100,6 +102,7 @@ extension AnalyticsHubTimeRangeSelection {
         case lastYear
         case weekToDate
         case monthToDate
+        case quarterToDate
         case yearToDate
 
         var description: String {
@@ -118,6 +121,8 @@ extension AnalyticsHubTimeRangeSelection {
                 return Localization.weekToDate
             case .monthToDate:
                 return Localization.monthToDate
+            case .quarterToDate:
+                return Localization.quarterToDate
             case .yearToDate:
                 return Localization.yearToDate
             }
@@ -152,6 +157,7 @@ extension AnalyticsHubTimeRangeSelection {
         static let lastYear = NSLocalizedString("Last Year", comment: "Title of the Analytics Hub Last Year selection range")
         static let weekToDate = NSLocalizedString("Week to Date", comment: "Title of the Analytics Hub Week to Date selection range")
         static let monthToDate = NSLocalizedString("Month to Date", comment: "Title of the Analytics Hub Month to Date selection range")
+        static let quarterToDate = NSLocalizedString("Quarter to Date", comment: "Title of the Analytics Hub Quarter to Date selection range")
         static let yearToDate = NSLocalizedString("Year to Date", comment: "Title of the Analytics Hub Year to Date selection range")
         static let selectionTitle = NSLocalizedString("Date Range", comment: "Title of the range selection list")
         static let noCurrentPeriodAvailable = NSLocalizedString("No current period available",

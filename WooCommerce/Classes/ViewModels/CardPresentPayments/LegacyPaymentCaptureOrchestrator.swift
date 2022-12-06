@@ -17,7 +17,7 @@ struct CardPresentCapturedPaymentData {
 /// 3. Obtain a Payment Intent from the card reader (i.e., create a payment intent, collect a payment method, and process the payment)
 /// 4. Submit the Payment Intent to WCPay to capture a payment
 /// Steps 1 and 2 will be implemented as part of https://github.com/woocommerce/woocommerce-ios/issues/4062
-final class PaymentCaptureOrchestrator {
+final class LegacyPaymentCaptureOrchestrator {
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
     private let personNameComponentsFormatter = PersonNameComponentsFormatter()
     private let paymentReceiptEmailParameterDeterminer: ReceiptEmailParameterDeterminer
@@ -117,7 +117,7 @@ final class PaymentCaptureOrchestrator {
     }
 }
 
-private extension PaymentCaptureOrchestrator {
+private extension LegacyPaymentCaptureOrchestrator {
     /// Suppress wallet presentation. This requires a special entitlement from Apple:
     /// `com.apple.developer.passkit.pass-presentation-suppression`
     /// See Woo-*.entitlements in WooCommerce/Resources
@@ -165,7 +165,7 @@ private extension PaymentCaptureOrchestrator {
     }
 }
 
-private extension PaymentCaptureOrchestrator {
+private extension LegacyPaymentCaptureOrchestrator {
     func completePaymentIntentCapture(order: Order,
                                     captureResult: Result<PaymentIntent, Error>,
                                     onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
@@ -256,14 +256,14 @@ private extension PaymentCaptureOrchestrator {
     }
 }
 
-private extension PaymentCaptureOrchestrator {
+private extension LegacyPaymentCaptureOrchestrator {
     enum Constants {
         static let canadaFlatFee = NSDecimalNumber(string: "0.15")
         static let canadaPercentageFee = NSDecimalNumber(0)
     }
 }
 
-private extension PaymentCaptureOrchestrator {
+private extension LegacyPaymentCaptureOrchestrator {
     enum Localization {
         static let receiptDescription = NSLocalizedString(
             "In-Person Payment for Order #%1$@ for %2$@ blog_id %3$@",

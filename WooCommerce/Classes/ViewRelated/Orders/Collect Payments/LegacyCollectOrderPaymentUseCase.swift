@@ -66,7 +66,7 @@ final class LegacyCollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProto
 
     /// IPP payments collector.
     ///
-    private lazy var paymentOrchestrator = PaymentCaptureOrchestrator(stores: stores)
+    private lazy var paymentOrchestrator = LegacyPaymentCaptureOrchestrator(stores: stores)
 
     /// Controller to connect a card reader.
     ///

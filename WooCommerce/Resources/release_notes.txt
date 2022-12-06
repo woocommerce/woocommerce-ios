@@ -1,2 +1,1 @@
-We focused on some stability and performance issues to make your experience smoother. Please keep sharing feedback. We read every one of them.
-
+This release includes a few bug fixes and improvements to make your experience smoother. Stay tuned for exciting updates in the coming weeks!

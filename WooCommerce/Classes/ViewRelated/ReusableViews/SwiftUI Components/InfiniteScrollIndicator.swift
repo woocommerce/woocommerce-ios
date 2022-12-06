@@ -6,12 +6,8 @@ struct InfiniteScrollIndicator: View {
     let showContent: Bool
 
     var body: some View {
-        if #available(iOS 15.0, *) {
-            createProgressView()
-                .listRowSeparator(.hidden, edges: .bottom)
-        } else {
-            createProgressView()
-        }
+        createProgressView()
+            .listRowSeparator(.hidden, edges: .bottom)
     }
 
     @ViewBuilder func createProgressView() -> some View {

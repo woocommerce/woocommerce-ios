@@ -78,11 +78,7 @@ private extension AuthenticatedWebViewController {
 
     func extendContentUnderSafeAreas() {
         webView.scrollView.clipsToBounds = false
-        if #available(iOS 15.0, *) {
-            view.backgroundColor = webView.underPageBackgroundColor
-        } else {
-            view.backgroundColor = webView.backgroundColor
-        }
+        view.backgroundColor = webView.underPageBackgroundColor
     }
 
     func configureProgressBar() {

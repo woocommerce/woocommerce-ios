@@ -5,14 +5,38 @@ import SwiftUI
 /// Hosting Controller for the `AnalyticsHubView` view.
 ///
 final class AnalyticsHubHostingViewController: UIHostingController<AnalyticsHubView> {
-    init(siteID: Int64, timeRange: StatsTimeRangeV4) {
+
+    /// Presents an error notice in the tab bar context after this `self` is dismissed.
+    ///
+    private let systemNoticePresenter: NoticePresenter
+
+    /// Defines a notice that should be presented after `self` is dismissed.
+    /// Defaults to `nil`.
+    ///
+    var notice: Notice?
+
+    init(siteID: Int64, timeRange: StatsTimeRangeV4, systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
         let viewModel = AnalyticsHubViewModel(siteID: siteID, statsTimeRange: timeRange)
+        self.systemNoticePresenter = systemNoticePresenter
         super.init(rootView: AnalyticsHubView(viewModel: viewModel))
+
+        // Needed to pop the hosting controller from within the SwiftUI view
+        rootView.dismissWithNotice = { [weak self] notice in
+            self?.notice = notice
+            self?.navigationController?.popViewController(animated: true)
+        }
     }
 
     @available(*, unavailable)
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        // Show any notice that should be presented after the underlying disappears.
+        enqueuePendingNotice(notice, using: systemNoticePresenter)
     }
 }
 
@@ -23,10 +47,17 @@ struct AnalyticsHubView: View {
     /// Environment safe areas
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
 
+    /// Set this closure with UIKit code to pop the view controller and display the provided notice.
+    /// Needed because we need access to the UIHostingController `popViewController` method.
+    ///
+    var dismissWithNotice: ((Notice) -> Void) = { _ in }
+
     @StateObject var viewModel: AnalyticsHubViewModel
 
     var body: some View {
-        ScrollView {
+        RefreshablePlainList(action: {
+            await viewModel.updateData()
+        }) {
             VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
                 VStack(spacing: Layout.dividerSpacing) {
                     Divider()
@@ -78,6 +109,10 @@ struct AnalyticsHubView: View {
         .edgesIgnoringSafeArea(.horizontal)
         .task {
             await viewModel.updateData()
+        }
+        .onReceive(viewModel.$dismissNotice) { notice in
+            guard let notice else { return }
+            dismissWithNotice(notice)
         }
     }
 }

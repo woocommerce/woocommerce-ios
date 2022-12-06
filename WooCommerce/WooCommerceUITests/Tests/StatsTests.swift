@@ -4,7 +4,6 @@ import XCTest
 final class StatsTests: XCTestCase {
 
     override func setUpWithError() throws {
-        try skipTillImplemented()
         continueAfterFailure = false
 
         // UI tests must launch the application that they test.
@@ -15,12 +14,14 @@ final class StatsTests: XCTestCase {
         try LoginFlow.logInWithWPcom()
     }
 
-    func skipped_test_load_stats_screen() throws {
+    func test_load_stats_screen() throws {
         try TabNavComponent().goToMyStoreScreen()
-    }
-
-    func skipTillImplemented(file: StaticString = #file, line: UInt = #line) throws {
-        try XCTSkipIf(true,
-            "Skipping until test is properly implemented", file: file, line: line)
+            .verifyTodayStatsLoaded()
+            .goToThisWeekTab()
+            .verifyThisWeekStatsLoaded()
+            .goToThisMonthTab()
+            .verifyThisMonthStatsLoaded()
+            .goToThisYearTab()
+            .verifyThisYearStatsLoaded()
     }
 }

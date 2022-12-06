@@ -208,7 +208,7 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
 
     func test_when_time_range_inits_with_quarterToDate_then_generate_expected_descriptions() throws {
         // Given
-        let today = currentDate(from: "2022-05-15")
+        let today = currentDate(from: "2022-02-15")
         let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .quarterToDate,
                                                        currentDate: today,
                                                        timezone: testTimezone,
@@ -220,7 +220,7 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
 
         // Then
         XCTAssertEqual(currentRangeDescription, "Jan 1 - Feb 15, 2022")
-        XCTAssertEqual(previousRangeDescription, "Apr 1 - May 15, 2021")
+        XCTAssertEqual(previousRangeDescription, "Oct 1 - Nov 15, 2021")
     }
 
     func test_when_time_range_inits_with_monthToDate_then_generate_expected_descriptions() throws {

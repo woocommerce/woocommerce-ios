@@ -9,17 +9,9 @@ struct AnalyticsProductCardViewModel {
     ///
     let itemsSold: String
 
-    /// Items Sold Delta
+    /// Items Sold Delta Percentage
     ///
-    let delta: String
-
-    /// Delta background color.
-    ///
-    let deltaBackgroundColor: UIColor
-
-    /// Delta text color.
-    ///
-    let deltaTextColor: UIColor
+    let delta: DeltaPercentage
 
     /// Items Solds data to render.
     ///
@@ -45,9 +37,7 @@ extension AnalyticsProductCardViewModel {
     var redacted: Self {
         // Values here are placeholders and will be redacted in the UI
         .init(itemsSold: "1000",
-              delta: "+50%",
-              deltaBackgroundColor: .lightGray,
-              deltaTextColor: .text,
+              delta: DeltaPercentage(string: "0%", direction: .zero),
               itemsSoldData: [.init(imageURL: nil, name: "Product Name", details: "Net Sales", value: "$5678")],
               isRedacted: true,
               showStatsError: false,
@@ -61,9 +51,9 @@ extension AnalyticsProductCardViewModel {
 extension AnalyticsProductCard {
     init(viewModel: AnalyticsProductCardViewModel) {
         self.itemsSold = viewModel.itemsSold
-        self.delta = viewModel.delta
-        self.deltaBackgroundColor = viewModel.deltaBackgroundColor
-        self.deltaTextColor = viewModel.deltaTextColor
+        self.delta = viewModel.delta.string
+        self.deltaBackgroundColor = viewModel.delta.direction.deltaBackgroundColor
+        self.deltaTextColor = viewModel.delta.direction.deltaTextColor
         self.itemsSoldData = viewModel.itemsSoldData
         self.isRedacted = viewModel.isRedacted
         self.showStatsError = viewModel.showStatsError

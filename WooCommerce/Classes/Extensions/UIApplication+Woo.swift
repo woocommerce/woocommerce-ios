@@ -8,7 +8,15 @@ extension UIApplication {
     /// Returns the keyWindow. Accessing `UIApplication.shared.keyWindow` is deprecated from iOS 13.
     ///
     var currentKeyWindow: UIWindow? {
-        UIApplication.shared.windows.filter {$0.isKeyWindow}.first
+        // See https://stackoverflow.com/a/58031897/809944
+        UIApplication
+            .shared
+            // Get all of the currently connected UIScene instances
+            .connectedScenes
+            // Filter the connected UIScene instances for those that are UIWindowScene instances
+            // and map to their keyWindow property
+            .compactMap { ($0 as? UIWindowScene)?.keyWindow }
+            .first
     }
 }
 

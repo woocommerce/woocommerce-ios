@@ -73,6 +73,10 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     ///
     private let alertsPresenter: CardPresentPaymentAlertsPresenting
 
+    /// Payment alerts provider
+    ///
+    private let paymentAlerts: CardReaderTransactionAlertsProviding
+
     /// Stores the card reader listener subscription while trying to connect to one.
     ///
     private var readerSubscription: AnyCancellable?
@@ -109,6 +113,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
         self.paymentGatewayAccount = paymentGatewayAccount
         self.rootViewController = rootViewController
         self.alertsPresenter = CardPresentPaymentAlertsPresenter(rootViewController: rootViewController)
+        self.paymentAlerts = CardReaderPaymentAlertsProvider(transactionType: .collectPayment)
         self.configuration = configuration
         self.stores = stores
         self.analytics = analytics
@@ -205,9 +210,8 @@ private extension CollectOrderPaymentUseCase {
     func handleTotalAmountInvalidError(_ error: Error, onCompleted: @escaping () -> ()) {
         trackPaymentFailure(with: error)
         DDLogError("💳 Error: failed to capture payment for order. Order amount is below minimum or not valid")
-        self.alertsPresenter.present(viewModel: nonRetryableErrorViewModel(amount: formattedAmount,
-                                                                           error: totalAmountInvalidError(),
-                                                                           dismissCompletion: onCompleted))
+        self.alertsPresenter.present(viewModel: paymentAlerts.nonRetryableError(error: totalAmountInvalidError(),
+                                                                                dismissCompletion: onCompleted))
     }
 
     /// Attempts to collect payment for an order.
@@ -226,7 +230,7 @@ private extension CollectOrderPaymentUseCase {
             paymentMethodTypes: configuration.paymentMethods.map(\.rawValue),
             stripeSmallestCurrencyUnitMultiplier: configuration.stripeSmallestCurrencyUnitMultiplier,
             onPreparingReader: { [weak self] in
-                self?.alertsPresenter.present(viewModel: CardPresentModalPreparingReader(cancelAction: {
+                self?.alertsPresenter.present(viewModel: paymentAlerts.preparingReader(onCancel: {
                     self?.cancelPayment(onCompleted: {
                         onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
                     })
@@ -235,10 +239,9 @@ private extension CollectOrderPaymentUseCase {
             onWaitingForInput: { [weak self] inputMethods in
                 guard let self = self else { return }
                 self.alertsPresenter.present(
-                    viewModel: CardPresentModalTapCard(
-                        name: Localization.collectPaymentTitle(username: self.order.billingAddress?.firstName),
+                    viewModel: self.paymentAlerts.tapOrInsertCard(
+                        title: Localization.collectPaymentTitle(username: self.order.billingAddress?.firstName),
                         amount: self.formattedAmount,
-                        transactionType: .collectPayment,
                         inputMethods: inputMethods,
                         onCancel: { [weak self] in
                             self?.cancelPayment {
@@ -249,19 +252,11 @@ private extension CollectOrderPaymentUseCase {
             }, onProcessingMessage: { [weak self] in
                 guard let self = self else { return }
                 // Waiting message
-                self.alertsPresenter.present(
-                    viewModel: CardPresentModalProcessing(
-                        name: Localization.collectPaymentTitle(username: self.order.billingAddress?.firstName),
-                        amount: self.formattedAmount,
-                        transactionType: .collectPayment))
+                self.alertsPresenter.present(viewModel: self.paymentAlerts.processingTransaction())
             }, onDisplayMessage: { [weak self] message in
                 guard let self = self else { return }
                 // Reader messages. EG: Remove Card
-                self.alertsPresenter.present(
-                    viewModel: CardPresentModalDisplayMessage(
-                        name: Localization.collectPaymentTitle(username: self.order.billingAddress?.firstName),
-                        amount: self.formattedAmount,
-                        message: message))
+                self.alertsPresenter.present(viewModel: self.paymentAlerts.displayReaderMessage(message: message))
             }, onProcessingCompletion: { [weak self] intent in
                 self?.trackProcessingCompletion(intent: intent)
                 self?.markOrderAsPaidIfNeeded(intent: intent)
@@ -300,7 +295,7 @@ private extension CollectOrderPaymentUseCase {
 
         // Inform about the error
         alertsPresenter.present(
-            viewModel: errorViewModel(error: error,
+            viewModel: paymentAlerts.error(error: error,
                                       tryAgain: { [weak self] in
 
                                           // Cancel current payment
@@ -314,7 +309,8 @@ private extension CollectOrderPaymentUseCase {
 
                                               case .failure(let cancelError):
                                                   // Inform that payment can't be retried.
-                                                  self.alertsPresenter.present(viewModel: self.nonRetryableErrorViewModel(amount: self.formattedAmount, error: cancelError) {
+                                                  self.alertsPresenter.present(
+                                                    viewModel: self.paymentAlerts.nonRetryableError(error: cancelError) {
                                                       onCompletion(.failure(error))
                                                   })
                                               }
@@ -352,7 +348,7 @@ private extension CollectOrderPaymentUseCase {
     ///
     func presentReceiptAlert(receiptParameters: CardPresentReceiptParameters, onCompleted: @escaping () -> ()) {
         // Present receipt alert
-        alertsPresenter.present(viewModel: successViewModel(printReceipt: { [order, configuration, weak self] in
+        alertsPresenter.present(viewModel: paymentAlerts.success(printReceipt: { [order, configuration, weak self] in
             guard let self = self else { return }
 
             // Inform about flow completion.
@@ -382,60 +378,6 @@ private extension CollectOrderPaymentUseCase {
             // Inform about flow completion.
             onCompleted()
         }))
-    }
-
-    // MARK: - Helpers to move to a PaymentAlertsProvider
-
-    func successViewModel(printReceipt: @escaping () -> Void,
-                          emailReceipt: @escaping () -> Void,
-                          noReceiptAction: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        if MFMailComposeViewController.canSendMail() {
-            return CardPresentModalSuccess(printReceipt: printReceipt,
-                                           emailReceipt: emailReceipt,
-                                           noReceiptAction: noReceiptAction)
-        } else {
-            return CardPresentModalSuccessWithoutEmail(printReceipt: printReceipt, noReceiptAction: noReceiptAction)
-        }
-    }
-
-    func errorViewModel(error: Error,
-                        tryAgain: @escaping () -> Void,
-                        dismissCompletion: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        let errorDescription: String?
-        if let error = error as? CardReaderServiceError {
-            switch error {
-            case .connection(let underlyingError),
-                    .discovery(let underlyingError),
-                    .disconnection(let underlyingError),
-                    .intentCreation(let underlyingError),
-                    .paymentMethodCollection(let underlyingError),
-                    .paymentCapture(let underlyingError),
-                    .paymentCancellation(let underlyingError),
-                    .refundCreation(let underlyingError),
-                    .refundPayment(let underlyingError, _),
-                    .refundCancellation(let underlyingError),
-                    .softwareUpdate(let underlyingError, _):
-                errorDescription = PaymentAlertErrorLocalization.errorDescription(
-                    underlyingError: underlyingError,
-                    transactionType: CardPresentTransactionType.collectPayment)
-            default:
-                errorDescription = error.errorDescription
-            }
-        } else {
-            errorDescription = error.localizedDescription
-        }
-        return CardPresentModalError(errorDescription: errorDescription,
-                                     transactionType: .collectPayment,
-                                     primaryAction: tryAgain,
-                                     dismissCompletion: dismissCompletion)
-    }
-
-    func retryableErrorViewModel(tryAgain: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalRetryableError(primaryAction: tryAgain)
-    }
-
-    func nonRetryableErrorViewModel(amount: String, error: Error, dismissCompletion: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalNonRetryableError(amount: amount, error: error, onDismiss: dismissCompletion)
     }
 
     /// Presents the native email client with the provided content.
@@ -546,63 +488,6 @@ extension CollectOrderPaymentUseCase {
                 "Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@",
                 comment: "Error message when the order amount is below the minimum amount allowed."
             )
-        }
-    }
-
-    enum PaymentAlertErrorLocalization {
-        static func errorDescription(underlyingError: UnderlyingError, transactionType: CardPresentTransactionType) -> String? {
-            switch underlyingError {
-            case .unsupportedReaderVersion:
-                switch transactionType {
-                case .collectPayment:
-                    return NSLocalizedString(
-                        "The card reader software is out-of-date - please update the card reader software before attempting to process payments",
-                        comment: "Error message when the card reader software is too far out of date to process payments."
-                    )
-                case .refund:
-                    return NSLocalizedString(
-                        "The card reader software is out-of-date - please update the card reader software before attempting to process refunds",
-                        comment: "Error message when the card reader software is too far out of date to process in-person refunds."
-                    )
-                }
-            case .paymentDeclinedByCardReader:
-                switch transactionType {
-                case .collectPayment:
-                    return NSLocalizedString("The card was declined by the card reader - please try another means of payment",
-                                             comment: "Error message when the card reader itself declines the card.")
-                case .refund:
-                    return NSLocalizedString("The card was declined by the card reader - please try another means of refund",
-                                             comment: "Error message when the card reader itself declines the card.")
-                }
-            case .processorAPIError:
-                switch transactionType {
-                case .collectPayment:
-                    return NSLocalizedString(
-                        "The payment can not be processed by the payment processor.",
-                        comment: "Error message when the payment can not be processed (i.e. order amount is below the minimum amount allowed.)"
-                    )
-                case .refund:
-                    return NSLocalizedString(
-                        "The refund can not be processed by the payment processor.",
-                        comment: "Error message when the in-person refund can not be processed (i.e. order amount is below the minimum amount allowed.)"
-                    )
-                }
-            case .internalServiceError:
-                switch transactionType {
-                case .collectPayment:
-                    return NSLocalizedString(
-                        "Sorry, this payment couldn’t be processed",
-                        comment: "Error message when the card reader service experiences an unexpected internal service error."
-                    )
-                case .refund:
-                    return NSLocalizedString(
-                        "Sorry, this refund couldn’t be processed",
-                        comment: "Error message when the card reader service experiences an unexpected internal service error."
-                    )
-                }
-            default:
-                return underlyingError.errorDescription
-            }
         }
     }
 }

@@ -7498,10 +7498,10 @@
 		B6F379662937831D00718561 /* Time Range */ = {
 			isa = PBXGroup;
 			children = (
-				B66D6CEB29396A3E0075D4AF /* AnalyticsHubTimeRangeData.swift */,
 				B66D6CEF293A4D990075D4AF /* Range Data Generation */,
-				B6440FB5292E72DA0012D506 /* AnalyticsHubTimeRangeSelection.swift */,
 				B6F379672937836700718561 /* AnalyticsHubTimeRange.swift */,
+				B66D6CEB29396A3E0075D4AF /* AnalyticsHubTimeRangeData.swift */,
+				B6440FB5292E72DA0012D506 /* AnalyticsHubTimeRangeSelection.swift */,
 			);
 			path = "Time Range";
 			sourceTree = "<group>";

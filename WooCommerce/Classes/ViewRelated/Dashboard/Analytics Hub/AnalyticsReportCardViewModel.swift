@@ -25,9 +25,17 @@ struct AnalyticsReportCardViewModel {
     ///
     let leadingDeltaColor: UIColor
 
+    /// First Column delta text color.
+    ///
+    let leadingDeltaTextColor: UIColor
+
     /// First Column Chart Data
     ///
     let leadingChartData: [Double]
+
+    /// First Column Chart Color
+    ///
+    let leadingChartColor: UIColor
 
     /// Second Column Title
     ///
@@ -45,9 +53,17 @@ struct AnalyticsReportCardViewModel {
     ///
     let trailingDeltaColor: UIColor
 
+    /// Second Column delta text color.
+    ///
+    let trailingDeltaTextColor: UIColor
+
     /// Second Column Chart Data
     ///
     let trailingChartData: [Double]
+
+    /// Second Column Chart Color
+    ///
+    let trailingChartColor: UIColor
 
     /// Indicates if the values should be hidden (for loading state)
     ///
@@ -73,12 +89,16 @@ extension AnalyticsReportCardViewModel {
               leadingValue: "$1000",
               leadingDelta: "+50%",
               leadingDeltaColor: .lightGray,
+              leadingDeltaTextColor: .text,
               leadingChartData: [],
+              leadingChartColor: .lightGray,
               trailingTitle: trailingTitle,
               trailingValue: "$1000",
               trailingDelta: "+50%",
               trailingDeltaColor: .lightGray,
+              trailingDeltaTextColor: .text,
               trailingChartData: [],
+              trailingChartColor: .lightGray,
               isRedacted: true,
               showSyncError: false,
               syncErrorMessage: "")
@@ -94,12 +114,16 @@ extension AnalyticsReportCard {
         self.leadingValue = viewModel.leadingValue
         self.leadingDelta = viewModel.leadingDelta
         self.leadingDeltaColor = viewModel.leadingDeltaColor
+        self.leadingDeltaTextColor = viewModel.leadingDeltaTextColor
         self.leadingChartData = viewModel.leadingChartData
+        self.leadingChartColor = viewModel.leadingChartColor
         self.trailingTitle = viewModel.trailingTitle
         self.trailingValue = viewModel.trailingValue
         self.trailingDelta = viewModel.trailingDelta
         self.trailingDeltaColor = viewModel.trailingDeltaColor
+        self.trailingDeltaTextColor = viewModel.trailingDeltaTextColor
         self.trailingChartData = viewModel.trailingChartData
+        self.trailingChartColor = viewModel.trailingChartColor
         self.isRedacted = viewModel.isRedacted
         self.showSyncError = viewModel.showSyncError
         self.syncErrorMessage = viewModel.syncErrorMessage

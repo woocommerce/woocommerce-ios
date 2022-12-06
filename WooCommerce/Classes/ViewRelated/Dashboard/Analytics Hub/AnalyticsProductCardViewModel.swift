@@ -17,6 +17,10 @@ struct AnalyticsProductCardViewModel {
     ///
     let deltaBackgroundColor: UIColor
 
+    /// Delta text color.
+    ///
+    let deltaTextColor: UIColor
+
     /// Items Solds data to render.
     ///
     let itemsSoldData: [TopPerformersRow.Data]
@@ -43,6 +47,7 @@ extension AnalyticsProductCardViewModel {
         .init(itemsSold: "1000",
               delta: "+50%",
               deltaBackgroundColor: .lightGray,
+              deltaTextColor: .text,
               itemsSoldData: [.init(imageURL: nil, name: "Product Name", details: "Net Sales", value: "$5678")],
               isRedacted: true,
               showStatsError: false,
@@ -58,6 +63,7 @@ extension AnalyticsProductCard {
         self.itemsSold = viewModel.itemsSold
         self.delta = viewModel.delta
         self.deltaBackgroundColor = viewModel.deltaBackgroundColor
+        self.deltaTextColor = viewModel.deltaTextColor
         self.itemsSoldData = viewModel.itemsSoldData
         self.isRedacted = viewModel.isRedacted
         self.showStatsError = viewModel.showStatsError

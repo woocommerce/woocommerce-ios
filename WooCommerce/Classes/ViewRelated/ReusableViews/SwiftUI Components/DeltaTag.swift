@@ -13,10 +13,14 @@ struct DeltaTag: View {
     ///
     let backgroundColor: UIColor
 
+    /// Text color.
+    ///
+    let textColor: UIColor
+
     var body: some View {
         Text(value)
             .padding(Layout.backgroundPadding)
-            .foregroundColor(Color(.textInverted))
+            .foregroundColor(Color(textColor))
             .captionStyle()
             .background(Color(backgroundColor))
             .cornerRadius(Layout.cornerRadius)
@@ -31,13 +35,15 @@ private extension DeltaTag {
     }
 }
 
-// MARK: Peviews
+// MARK: Previews
 struct DeltaTagPreviews: PreviewProvider {
     static var previews: some View {
         VStack {
-            DeltaTag(value: "+3.23%", backgroundColor: .systemGreen)
+            DeltaTag(value: "+3.23%", backgroundColor: .systemGreen, textColor: .textInverted)
 
-            DeltaTag(value: "-3.23%", backgroundColor: .systemRed)
+            DeltaTag(value: "-3.23%", backgroundColor: .systemRed, textColor: .textInverted)
+
+            DeltaTag(value: "0%", backgroundColor: .lightGray, textColor: .text)
         }
         .previewLayout(.sizeThatFits)
     }

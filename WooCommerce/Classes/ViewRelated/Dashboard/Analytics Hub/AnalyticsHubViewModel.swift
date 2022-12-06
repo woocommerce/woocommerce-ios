@@ -206,13 +206,17 @@ private extension AnalyticsHubViewModel {
                                             leadingValue: StatsDataTextFormatter.createTotalRevenueText(orderStats: currentPeriodStats,
                                                                                                         selectedIntervalIndex: nil),
                                             leadingDelta: totalDelta.string,
-                                            leadingDeltaColor: Constants.deltaColor(for: totalDelta.direction),
+                                            leadingDeltaColor: totalDelta.direction.deltaBackgroundColor,
+                                            leadingDeltaTextColor: totalDelta.direction.deltaTextColor,
                                             leadingChartData: StatsIntervalDataParser.getChartData(for: .totalRevenue, from: currentPeriodStats),
+                                            leadingChartColor: totalDelta.direction.chartColor,
                                             trailingTitle: Localization.RevenueCard.trailingTitle,
                                             trailingValue: StatsDataTextFormatter.createNetRevenueText(orderStats: currentPeriodStats),
                                             trailingDelta: netDelta.string,
-                                            trailingDeltaColor: Constants.deltaColor(for: netDelta.direction),
+                                            trailingDeltaColor: netDelta.direction.deltaBackgroundColor,
+                                            trailingDeltaTextColor: netDelta.direction.deltaTextColor,
                                             trailingChartData: StatsIntervalDataParser.getChartData(for: .netRevenue, from: currentPeriodStats),
+                                            trailingChartColor: netDelta.direction.chartColor,
                                             isRedacted: false,
                                             showSyncError: showSyncError,
                                             syncErrorMessage: Localization.RevenueCard.noRevenue)
@@ -228,13 +232,17 @@ private extension AnalyticsHubViewModel {
                                             leadingValue: StatsDataTextFormatter.createOrderCountText(orderStats: currentPeriodStats,
                                                                                                       selectedIntervalIndex: nil),
                                             leadingDelta: ordersCountDelta.string,
-                                            leadingDeltaColor: Constants.deltaColor(for: ordersCountDelta.direction),
+                                            leadingDeltaColor: ordersCountDelta.direction.deltaBackgroundColor,
+                                            leadingDeltaTextColor: ordersCountDelta.direction.deltaTextColor,
                                             leadingChartData: StatsIntervalDataParser.getChartData(for: .orderCount, from: currentPeriodStats),
+                                            leadingChartColor: ordersCountDelta.direction.chartColor,
                                             trailingTitle: Localization.OrderCard.trailingTitle,
                                             trailingValue: StatsDataTextFormatter.createAverageOrderValueText(orderStats: currentPeriodStats),
                                             trailingDelta: orderValueDelta.string,
-                                            trailingDeltaColor: Constants.deltaColor(for: orderValueDelta.direction),
+                                            trailingDeltaColor: orderValueDelta.direction.deltaBackgroundColor,
+                                            trailingDeltaTextColor: orderValueDelta.direction.deltaTextColor,
                                             trailingChartData: StatsIntervalDataParser.getChartData(for: .averageOrderValue, from: currentPeriodStats),
+                                            trailingChartColor: orderValueDelta.direction.chartColor,
                                             isRedacted: false,
                                             showSyncError: showSyncError,
                                             syncErrorMessage: Localization.OrderCard.noOrders)
@@ -252,7 +260,8 @@ private extension AnalyticsHubViewModel {
 
         return AnalyticsProductCardViewModel(itemsSold: itemsSold,
                                              delta: itemsSoldDelta.string,
-                                             deltaBackgroundColor: Constants.deltaColor(for: itemsSoldDelta.direction),
+                                             deltaBackgroundColor: itemsSoldDelta.direction.deltaBackgroundColor,
+                                             deltaTextColor: itemsSoldDelta.direction.deltaTextColor,
                                              itemsSoldData: itemSoldRows(from: itemsSoldStats),
                                              isRedacted: false,
                                              showStatsError: showStatsError,
@@ -285,15 +294,6 @@ private extension AnalyticsHubViewModel {
 private extension AnalyticsHubViewModel {
     enum Constants {
         static let maxNumberOfTopItemsSold = 5
-
-        static func deltaColor(for direction: StatsDataTextFormatter.DeltaPercentage.Direction) -> UIColor {
-            switch direction {
-            case .positive:
-                return .withColorStudio(.green, shade: .shade50)
-            case .negative, .zero:
-                return .withColorStudio(.red, shade: .shade40)
-            }
-        }
     }
 
     enum Localization {

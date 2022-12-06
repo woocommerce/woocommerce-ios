@@ -1,6 +1,6 @@
 import SwiftUI
 import WebKit
-import Alamofire
+import struct Networking.URLEncoding
 import class Networking.UserAgent
 
 // Bridge UIKit `WKWebView` component to SwiftUI for URLs that need authentication on WPCom
@@ -63,7 +63,7 @@ struct AuthenticatedWebView: UIViewRepresentable {
                           "redirect_to": url.absoluteString,
                           "authorization": "Bearer " + token]
 
-        return try URLEncoding.default.encode(request, with: parameters)
+        return try URLEncoding().encode(request, with: parameters)
     }
 
     /// For all test cases, to test against the staging server

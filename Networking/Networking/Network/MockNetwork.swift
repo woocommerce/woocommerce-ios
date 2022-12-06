@@ -1,7 +1,5 @@
 import Combine
 import Foundation
-import Alamofire
-
 
 /// Network Mock: Allows us to simulate HTTP Responses.
 ///

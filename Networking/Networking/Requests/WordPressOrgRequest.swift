@@ -1,5 +1,4 @@
 import Foundation
-import Alamofire
 
 /// Represents a WordPress.org REST API Endpoint
 ///
@@ -28,7 +27,7 @@ struct WordPressOrgRequest: Request {
         let url = URL(string: baseURL + Settings.basePath + path.removingPrefix("/"))!
         let request = try URLRequest(url: url, method: method, headers: nil)
 
-        return try URLEncoding.default.encode(request, with: parameters)
+        return try URLEncoding().encode(request, with: parameters)
     }
 
     func responseDataValidator() -> ResponseDataValidator {

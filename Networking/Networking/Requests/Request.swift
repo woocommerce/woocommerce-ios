@@ -14,6 +14,10 @@ public protocol Request: URLRequestConvertible {
     func responseDataValidator() -> ResponseDataValidator
 }
 
+/// Makes URLRequest conform to Request
+///
+extension URLRequest: Request {}
+
 /// Default implementation
 ///
 extension Request {

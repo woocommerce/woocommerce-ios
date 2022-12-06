@@ -1,9 +1,9 @@
-import Alamofire
 import Foundation
 import WebKit
 import struct WordPressAuthenticator.WordPressOrgCredentials
 import struct Yosemite.Credentials
 import class Networking.UserAgent
+import struct Networking.URLEncoding
 
 /// An extension to authenticate WPCom automatically
 ///
@@ -24,7 +24,7 @@ extension WKWebView {
                           "pwd": credentials.password,
                           "redirect_to": redirectLink ?? ""]
 
-        return try URLEncoding.default.encode(request, with: parameters)
+        return try URLEncoding().encode(request, with: parameters)
     }
 
     func authenticateForWPComAndRedirect(to url: URL, credentials: Credentials?) {
@@ -50,6 +50,6 @@ extension WKWebView {
                           "redirect_to": url.absoluteString,
                           "authorization": "Bearer " + token]
 
-        return try URLEncoding.default.encode(request, with: parameters)
+        return try URLEncoding().encode(request, with: parameters)
     }
 }

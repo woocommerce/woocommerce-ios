@@ -1,6 +1,4 @@
 import Foundation
-import Alamofire
-
 
 /// Represents a WordPress.com Request
 ///
@@ -48,7 +46,7 @@ struct DotcomRequest: Request {
         let dotcomURL = URL(string: Settings.wordpressApiBaseURL + wordpressApiVersion.path + path)!
         let dotcomRequest = try URLRequest(url: dotcomURL, method: method, headers: headers)
 
-        return try URLEncoding.default.encode(dotcomRequest, with: parameters)
+        return try URLEncoding().encode(dotcomRequest, with: parameters)
     }
 
     func responseDataValidator() -> ResponseDataValidator {

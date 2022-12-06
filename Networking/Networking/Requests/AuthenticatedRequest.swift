@@ -1,8 +1,6 @@
 import Foundation
-import Alamofire
 
-
-/// Wraps up a URLRequestConvertible Instance, and injects the Credentials + `Settings.userAgent` whenever the actual Request is required.
+/// Wraps up a Request Instance, and injects the Credentials + `Settings.userAgent` whenever the actual Request is required.
 ///
 struct AuthenticatedRequest: Request {
 

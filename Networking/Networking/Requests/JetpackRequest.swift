@@ -1,6 +1,4 @@
 import Foundation
-import Alamofire
-
 
 /// Represents a Jetpack-Tunneled WordPress.com Endpoint
 ///
@@ -63,7 +61,7 @@ struct JetpackRequest: Request {
         let dotcomEndpoint = DotcomRequest(wordpressApiVersion: JetpackRequest.wordpressApiVersion, method: dotcomMethod, path: dotcomPath)
         let dotcomRequest = try dotcomEndpoint.asURLRequest()
 
-        return try dotcomEncoder.encode(dotcomRequest, with: dotcomParams)
+        return try URLEncoding().encode(dotcomRequest, with: dotcomParams)
     }
 
     func responseDataValidator() -> ResponseDataValidator {
@@ -80,12 +78,6 @@ private extension JetpackRequest {
     ///
     var dotcomPath: String {
         return "jetpack-blogs/" + String(siteID) + "/rest-api/"
-    }
-
-    /// Returns the WordPress.com Parameters Encoder
-    ///
-    var dotcomEncoder: ParameterEncoding {
-        return dotcomMethod == .get ? URLEncoding.queryString : URLEncoding.httpBody
     }
 
     /// Returns the WordPress.com HTTP Method

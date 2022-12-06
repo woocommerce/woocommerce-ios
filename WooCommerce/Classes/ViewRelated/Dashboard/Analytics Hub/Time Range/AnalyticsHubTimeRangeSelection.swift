@@ -133,7 +133,7 @@ private extension AnalyticsHubTimeRangeSelection.SelectionType {
         case .lastMonth:
             return AnalyticsHubLastMonthRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
         case .lastQuarter:
-            return AnalyticsHubLastMonthRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
+            return AnalyticsHubLastQuarterRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
         case .lastYear:
             return AnalyticsHubLastYearRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
         case .weekToDate:

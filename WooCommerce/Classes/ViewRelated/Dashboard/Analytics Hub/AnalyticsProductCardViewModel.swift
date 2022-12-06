@@ -11,7 +11,7 @@ struct AnalyticsProductCardViewModel {
 
     /// Items Sold Delta Percentage
     ///
-    let delta: StatsDataTextFormatter.DeltaPercentage
+    let delta: DeltaPercentage
 
     /// Items Solds data to render.
     ///
@@ -37,7 +37,7 @@ extension AnalyticsProductCardViewModel {
     var redacted: Self {
         // Values here are placeholders and will be redacted in the UI
         .init(itemsSold: "1000",
-              delta: StatsDataTextFormatter.DeltaPercentage(value: 0.5),
+              delta: DeltaPercentage(string: "0%", direction: .zero),
               itemsSoldData: [.init(imageURL: nil, name: "Product Name", details: "Net Sales", value: "$5678")],
               isRedacted: true,
               showStatsError: false,

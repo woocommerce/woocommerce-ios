@@ -19,7 +19,7 @@ struct AnalyticsReportCardViewModel {
 
     /// First Column Delta Percentage
     ///
-    let leadingDelta: StatsDataTextFormatter.DeltaPercentage
+    let leadingDelta: DeltaPercentage
 
     /// First Column Chart Data
     ///
@@ -35,7 +35,7 @@ struct AnalyticsReportCardViewModel {
 
     /// Second Column Delta Percentage
     ///
-    let trailingDelta: StatsDataTextFormatter.DeltaPercentage
+    let trailingDelta: DeltaPercentage
 
     /// Second Column Chart Data
     ///
@@ -63,11 +63,11 @@ extension AnalyticsReportCardViewModel {
         .init(title: title,
               leadingTitle: leadingTitle,
               leadingValue: "$1000",
-              leadingDelta: StatsDataTextFormatter.DeltaPercentage(value: 0.5),
+              leadingDelta: DeltaPercentage(string: "0%", direction: .zero),
               leadingChartData: [],
               trailingTitle: trailingTitle,
               trailingValue: "$1000",
-              trailingDelta: StatsDataTextFormatter.DeltaPercentage(value: 0.5),
+              trailingDelta: DeltaPercentage(string: "0%", direction: .zero),
               trailingChartData: [],
               isRedacted: true,
               showSyncError: false,

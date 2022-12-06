@@ -28,22 +28,22 @@ public final class MyStoreScreen: ScreenObject {
         return self
     }
 
-    func tapTimeframeTab(timeframe: String) -> MyStoreScreen {
-        app.cells.staticTexts[timeframe].tap()
+    func tapTimeframeTab(timeframeId: String) -> MyStoreScreen {
+        app.cells[timeframeId].tap()
 
         return self
     }
 
     public func goToThisWeekTab() -> MyStoreScreen {
-        return tapTimeframeTab(timeframe: "This Week")
+        return tapTimeframeTab(timeframeId: "period-data-thisWeek-tab")
     }
 
     public func goToThisMonthTab() -> MyStoreScreen {
-        return tapTimeframeTab(timeframe: "This Month")
+        return tapTimeframeTab(timeframeId: "period-data-thisMonth-tab")
     }
 
     public func goToThisYearTab() -> MyStoreScreen {
-        return tapTimeframeTab(timeframe: "This Year")
+        return tapTimeframeTab(timeframeId: "period-data-thisYear-tab")
     }
 
     func verifyStatsForTimeframeLoaded(timeframe: String) -> MyStoreScreen {

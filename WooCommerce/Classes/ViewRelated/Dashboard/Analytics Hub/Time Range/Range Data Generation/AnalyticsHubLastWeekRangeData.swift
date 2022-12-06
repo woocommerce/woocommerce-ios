@@ -1,5 +1,13 @@
 import Foundation
 
+/// Responsible for defining two ranges of data, one starting from the first day of the last week
+/// until the final day of that week, and the previous one as two weeks ago, also starting
+/// from the first day until the final day of that week. E. g.
+///
+/// Today: 29 Jul 2022
+/// Current range: Jul 18 until Jul 24, 2022
+/// Previous range: Jul 11 until Jul 17, 2022
+///
 struct AnalyticsHubLastWeekRangeData: AnalyticsHubTimeRangeData {
     let currentDateStart: Date?
     let currentDateEnd: Date?

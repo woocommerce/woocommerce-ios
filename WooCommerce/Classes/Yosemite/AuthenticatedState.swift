@@ -24,7 +24,7 @@ class AuthenticatedState: StoresManagerState {
     ///
     init(credentials: Credentials) {
         let storageManager = ServiceLocator.storageManager
-        let network = AlamofireNetwork(credentials: credentials)
+        let network = URLSessionNetwork(credentials: credentials)
 
         services = [
             AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: credentials.authToken),

@@ -1,5 +1,13 @@
 import Foundation
 
+/// Responsible for defining two ranges of data, one starting from the first day of the current quarter
+/// until the current date and the previous one, starting from the first day of the previous quarter
+/// until the same relative day of the previous quarter. E. g.
+///
+/// Today: 15 Feb 2022
+/// Current range: Jan 1 until Feb 15, 2022
+/// Previous range: Oct 1 until Nov 15, 2021
+///
 struct AnalyticsHubQuarterToDateRangeData: AnalyticsHubTimeRangeData {
     let currentDateStart: Date?
     let currentDateEnd: Date?

@@ -19,6 +19,8 @@ public enum NetworkError: Error, Equatable {
 
     case invalidRequest
 
+    case nonceAuthenticationFailed
+
     case multipartEncodingFailed(reason: MultipartFormEncodingFailureReason)
 
     public enum MultipartFormEncodingFailureReason: Equatable {
@@ -35,6 +37,15 @@ public enum NetworkError: Error, Equatable {
         case bodyPartFileSizeNotAvailable(at: URL)
         case bodyPartFileSizeQueryFailedWithError(forURL: URL)
         case bodyPartInputStreamCreationFailed(for: URL)
+    }
+
+    public var responseCode: Int? {
+        switch self {
+        case .unacceptableStatusCode(let statusCode):
+            return statusCode
+        default:
+            return nil
+        }
     }
 }
 

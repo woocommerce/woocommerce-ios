@@ -1,6 +1,6 @@
 import Foundation
 import Yosemite
-import enum Alamofire.AFError
+import enum Networking.NetworkError
 
 /// View model for `LoginJetpackSetupView`.
 ///
@@ -60,7 +60,7 @@ final class LoginJetpackSetupViewModel: ObservableObject {
     }
 
     var hasEncounteredPermissionError: Bool {
-        if case .responseValidationFailed(reason: .unacceptableStatusCode(code: 403)) = setupError as? AFError {
+        if case .unacceptableStatusCode(statusCode: 401) = setupError as? NetworkError {
             return true
         }
         return false
@@ -280,17 +280,17 @@ private extension LoginJetpackSetupViewModel {
 
     func updateErrorMessage() {
         switch setupError {
-        case .some(AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403))):
+        case .some(NetworkError.unacceptableStatusCode(statusCode: 403)):
             setupErrorDetail = .init(setupErrorMessage: Localization.permissionErrorMessage,
                                      setupErrorSuggestion: Localization.permissionErrorSuggestion,
                                      errorCode: 403)
-        case .some(AFError.responseValidationFailed(reason: .unacceptableStatusCode(let code))) where 500...599 ~= code:
+        case .some(NetworkError.unacceptableStatusCode(let code)) where 500...599 ~= code:
             setupErrorDetail = .init(setupErrorMessage: Localization.communicationErrorMessage,
                                      setupErrorSuggestion: Localization.communicationErrorSuggestion,
                                      errorCode: code)
         default:
             let code: Int? = {
-                if let afError = setupError as? AFError, let code = afError.responseCode {
+                if let networkingError = setupError as? NetworkError, let code = networkingError.responseCode {
                     return code
                 }
                 return (setupError as? NSError)?.code

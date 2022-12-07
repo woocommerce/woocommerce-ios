@@ -4,6 +4,10 @@ import enum Networking.DotcomError
 import enum Storage.StatsVersion
 import protocol Experiments.FeatureFlagService
 
+private enum ProductsOnboardingSyncingError: Error {
+    case storeIsNotEligible
+}
+
 /// Syncs data for dashboard stats UI and determines the state of the dashboard UI based on stats version.
 final class DashboardViewModel {
     /// Stats v4 is shown by default, then falls back to v3 if store stats are unavailable.
@@ -20,7 +24,7 @@ final class DashboardViewModel {
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
     private let analytics: Analytics
-    private let justInTimeMessagesManager: JustInTimeMessagesManager
+    private let justInTimeMessagesManager: JustInTimeMessagesProvider
 
     init(stores: StoresManager = ServiceLocator.stores,
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -28,7 +32,7 @@ final class DashboardViewModel {
         self.stores = stores
         self.featureFlagService = featureFlags
         self.analytics = analytics
-        self.justInTimeMessagesManager = JustInTimeMessagesManager(stores: stores, analytics: analytics)
+        self.justInTimeMessagesManager = JustInTimeMessagesProvider(stores: stores, analytics: analytics)
     }
 
     /// Syncs store stats for dashboard UI.
@@ -119,17 +123,20 @@ final class DashboardViewModel {
     /// Checks for announcements to show on the dashboard
     ///
     func syncAnnouncements(for siteID: Int64) async {
-        guard await !syncProductsOnboarding(for: siteID) else {
-            return
+        // For now, products onboarding takes precedence over Just In Time Messages,
+        // so we can stop if there is an onboarding announcement to display.
+        // This should be revisited when either onboarding or JITMs are expanded. See: pe5pgL-11B-p2
+        do {
+            try await syncProductsOnboarding(for: siteID)
+        } catch {
+            await syncJustInTimeMessages(for: siteID)
         }
-    
-        await syncJustInTimeMessages(for: siteID)
     }
 
-    /// Checks if a store is eligible for products onboarding and prepares the onboarding announcement if needed.
+    /// Checks if a store is eligible for products onboarding -returning error otherwise- and prepares the onboarding announcement if needed.
     ///
-    private func syncProductsOnboarding(for siteID: Int64) async -> Bool {
-        await withCheckedContinuation { [weak self] continuation in
+    private func syncProductsOnboarding(for siteID: Int64) async throws {
+        try await withCheckedThrowingContinuation { [weak self] continuation in
             let action = ProductAction.checkProductsOnboardingEligibility(siteID: siteID) { [weak self] result in
                 switch result {
                 case .success(let isEligible):
@@ -139,18 +146,15 @@ final class DashboardViewModel {
                         self?.setProductsOnboardingBannerIfNeeded()
                     }
 
-                    // For now, products onboarding takes precedence over Just In Time Messages,
-                    // so we can stop if there is an onboarding announcement to display.
-                    // This should be revisited when either onboarding or JITMs are expanded. See: pe5pgL-11B-p2
                     if self?.announcementViewModel is ProductsOnboardingAnnouncementCardViewModel {
-                        continuation.resume(returning: true)
+                        continuation.resume(returning: (()))
                     } else {
-                        continuation.resume(returning: false)
+                        continuation.resume(throwing: ProductsOnboardingSyncingError.storeIsNotEligible)
                     }
 
                 case .failure(let error):
                     DDLogError("⛔️ Dashboard — Error checking products onboarding eligibility: \(error)")
-                    continuation.resume(returning: false)
+                    continuation.resume(throwing: error)
                 }
             }
 

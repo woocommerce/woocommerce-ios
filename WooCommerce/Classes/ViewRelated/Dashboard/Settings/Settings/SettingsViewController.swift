@@ -134,8 +134,6 @@ private extension SettingsViewController {
             configurePlugins(cell: cell)
         case let cell as HostingTableViewCell<PluginDetailsRowView> where row == .woocommerceDetails:
             configureWooCommmerceDetails(cell: cell)
-        case let cell as HostingTableViewCell<FeatureAnnouncementCardView> where row == .upsellCardReadersFeatureAnnouncement:
-            configureUpsellCardReadersFeatureAnnouncement(cell: cell)
         case let cell as BasicTableViewCell where row == .installJetpack:
             configureInstallJetpack(cell: cell)
         case let cell as BasicTableViewCell where row == .support:
@@ -189,15 +187,6 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = Localization.helpAndSupport
-    }
-
-    func configureUpsellCardReadersFeatureAnnouncement(cell: HostingTableViewCell<FeatureAnnouncementCardView>) {
-        let view = FeatureAnnouncementCardView(viewModel: viewModel.upsellCardReadersAnnouncementViewModel,
-                                               dismiss: { [weak self] in
-            self?.viewModel.reloadSettings()
-        })
-        cell.host(view, parent: self)
-        cell.selectionStyle = .none
     }
 
     func configureInstallJetpack(cell: BasicTableViewCell) {
@@ -601,7 +590,6 @@ extension SettingsViewController {
         case woocommerceDetails
 
         // Store settings
-        case upsellCardReadersFeatureAnnouncement
         case installJetpack
 
         // Help & Feedback
@@ -628,7 +616,7 @@ extension SettingsViewController {
 
         fileprivate var registerWithNib: Bool {
             switch self {
-            case .upsellCardReadersFeatureAnnouncement, .woocommerceDetails:
+            case .woocommerceDetails:
                 return false
             default:
                 return true
@@ -647,8 +635,6 @@ extension SettingsViewController {
                 return HostingTableViewCell<PluginDetailsRowView>.self
             case .support:
                 return BasicTableViewCell.self
-            case .upsellCardReadersFeatureAnnouncement:
-                return HostingTableViewCell<FeatureAnnouncementCardView>.self
             case .installJetpack:
                 return BasicTableViewCell.self
             case .logout, .closeAccount:

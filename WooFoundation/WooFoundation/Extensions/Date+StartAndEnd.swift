@@ -62,6 +62,18 @@ public extension Date {
         return Date(timeIntervalSince1970: nextWeekStartDate.timeIntervalSince1970 - 1)
     }
 
+    /// Returns self's end of week in the given time zone.
+    func endOfWeek(timezone: TimeZone, calendar: Calendar) -> Date? {
+        guard let weekStartDate = startOfWeek(timezone: timezone, calendar: calendar) else {
+            return nil
+        }
+
+        guard let nextWeekStartDate = calendar.date(byAdding: .weekOfYear, value: 1, to: weekStartDate) else {
+            return nil
+        }
+        return Date(timeIntervalSince1970: nextWeekStartDate.timeIntervalSince1970 - 1)
+    }
+
     // MARK: Month
 
     /// Returns self's start of month in the given time zone.

@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+11.6
+-----
+
+
 11.5
 -----
 - [*] Account deletion is now supported for all users in settings or in the empty stores screen (in the ellipsis menu). [https://github.com/woocommerce/woocommerce-ios/pull/8179, https://github.com/woocommerce/woocommerce-ios/pull/8272]

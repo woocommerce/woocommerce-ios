@@ -14,6 +14,9 @@ struct AnalyticsProductCard: View {
     /// Delta Tag background color.
     let deltaBackgroundColor: UIColor
 
+    /// Delta Tag text color.
+    let deltaTextColor: UIColor
+
     /// Items Solds data to render.
     ///
     let itemsSoldData: [TopPerformersRow.Data]
@@ -22,9 +25,13 @@ struct AnalyticsProductCard: View {
     ///
     let isRedacted: Bool
 
-    /// Indicates if there was an error loading the data for the card
+    /// Indicates if there was an error loading stats part of the card.
     ///
-    let showSyncError: Bool
+    let showStatsError: Bool
+
+    /// Indicates if there was an error loading items sold part of the card.
+    ///
+    let showItemsSoldError: Bool
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -45,12 +52,12 @@ struct AnalyticsProductCard: View {
                     .redacted(reason: isRedacted ? .placeholder : [])
                     .shimmering(active: isRedacted)
 
-                DeltaTag(value: delta, backgroundColor: deltaBackgroundColor)
+                DeltaTag(value: delta, backgroundColor: deltaBackgroundColor, textColor: deltaTextColor)
                     .redacted(reason: isRedacted ? .placeholder : [])
                     .shimmering(active: isRedacted)
             }
 
-            if showSyncError {
+            if showStatsError {
                 Text(Localization.noProducts)
                     .foregroundColor(Color(.text))
                     .subheadlineStyle()
@@ -60,7 +67,16 @@ struct AnalyticsProductCard: View {
 
             TopPerformersView(itemTitle: Localization.title.localizedCapitalized, valueTitle: Localization.itemsSold, rows: itemsSoldData)
                 .padding(.top, Layout.columnSpacing)
+                .redacted(reason: isRedacted ? .placeholder : [])
+                .shimmering(active: isRedacted)
 
+            if showItemsSoldError {
+                Text(Localization.noItemsSold)
+                    .foregroundColor(Color(.text))
+                    .subheadlineStyle()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.top, Layout.columnSpacing)
+            }
         }
         .padding(Layout.cardPadding)
     }
@@ -73,6 +89,8 @@ private extension AnalyticsProductCard {
         static let itemsSold = NSLocalizedString("Items Sold", comment: "Title for the items sold column on the products card on the analytics hub screen.")
         static let noProducts = NSLocalizedString("Unable to load product analytics",
                                                   comment: "Text displayed when there is an error loading product stats data.")
+        static let noItemsSold = NSLocalizedString("Unable to load product items sold analytics",
+                                                   comment: "Text displayed when there is an error loading items sold stats data.")
     }
 
     enum Layout {
@@ -90,6 +108,7 @@ struct AnalyticsProductCardPreviews: PreviewProvider {
         AnalyticsProductCard(itemsSold: "2,234",
                              delta: "+23%",
                              deltaBackgroundColor: .withColorStudio(.green, shade: .shade50),
+                             deltaTextColor: .textInverted,
                              itemsSoldData: [
                                 .init(imageURL: imageURL, name: "Tabletop Photos", details: "Net Sales: $1,232", value: "32"),
                                 .init(imageURL: imageURL, name: "Kentya Palm", details: "Net Sales: $800", value: "10"),
@@ -97,15 +116,18 @@ struct AnalyticsProductCardPreviews: PreviewProvider {
                                 .init(imageURL: imageURL, name: "Bird Of Paradise", details: "Net Sales: $23.50", value: "2"),
                              ],
                              isRedacted: false,
-                             showSyncError: false)
+                             showStatsError: false,
+                             showItemsSoldError: false)
             .previewLayout(.sizeThatFits)
 
         AnalyticsProductCard(itemsSold: "-",
                              delta: "0%",
                              deltaBackgroundColor: .withColorStudio(.gray, shade: .shade0),
+                             deltaTextColor: .text,
                              itemsSoldData: [],
                              isRedacted: false,
-                             showSyncError: true)
+                             showStatsError: true,
+                             showItemsSoldError: true)
             .previewLayout(.sizeThatFits)
             .previewDisplayName("No data")
     }

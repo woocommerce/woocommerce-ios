@@ -10,7 +10,6 @@ public class AnalyticsHubTimeRangeSelection {
     private let formattedCurrentRangeText: String?
     private let formattedPreviousRangeText: String?
     let rangeSelectionDescription: String
-
     /// Provide a date description of the current time range set internally.
     /// - Returns the Time range in a UI friendly format. If the current time range is not available,
     /// then returns an presentable error message.
@@ -20,7 +19,6 @@ public class AnalyticsHubTimeRangeSelection {
         }
         return currentTimeRangeDescription
     }
-
     /// Generates a date description of the previous time range set internally.
     /// - Returns the Time range in a UI friendly format. If the previous time range is not available,
     /// then returns an presentable error message.
@@ -31,22 +29,29 @@ public class AnalyticsHubTimeRangeSelection {
         return previousTimeRangeDescription
     }
 
-    //TODO: abandon usage of the ISO 8601 Calendar and build one based on the Site calendar configuration
     init(selectionType: SelectionType,
          currentDate: Date = Date(),
-         timezone: TimeZone = TimeZone.autoupdatingCurrent,
-         calendar: Calendar = Calendar(identifier: .iso8601)) {
+         timezone: TimeZone = TimeZone.current,
+         calendar: Calendar = Locale.current.calendar) {
         var selectionData: AnalyticsHubTimeRangeData
 
         switch selectionType {
         case .today:
-            selectionData = AnalyticsHubDayRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
+            selectionData = AnalyticsHubTodayRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
+        case .yesterday:
+            selectionData = AnalyticsHubYesterdayRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
+        case .lastWeek:
+            selectionData = AnalyticsHubLastWeekRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
+        case .lastMonth:
+            selectionData = AnalyticsHubLastMonthRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
+        case .lastYear:
+            selectionData = AnalyticsHubLastYearRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
         case .weekToDate:
-            selectionData = AnalyticsHubWeekRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
+            selectionData = AnalyticsHubWeekToDateRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
         case .monthToDate:
-            selectionData = AnalyticsHubMonthRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
+            selectionData = AnalyticsHubMonthToDateRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
         case .yearToDate:
-            selectionData = AnalyticsHubYearRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
+            selectionData = AnalyticsHubYearToDateRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
         }
 
         let currentTimeRange = selectionData.currentTimeRange
@@ -54,11 +59,13 @@ public class AnalyticsHubTimeRangeSelection {
         self.currentTimeRange = currentTimeRange
         self.previousTimeRange = previousTimeRange
 
-        let simplifiedDescription = selectionType == .today
+        let simplifiedDescription = selectionType == .today || selectionType == .yesterday
         self.formattedCurrentRangeText = currentTimeRange?.formatToString(simplified: simplifiedDescription,
-                                                                               calendar: calendar)
+                                                                          timezone: timezone,
+                                                                          calendar: calendar)
         self.formattedPreviousRangeText = previousTimeRange?.formatToString(simplified: simplifiedDescription,
-                                                                                 calendar: calendar)
+                                                                            timezone: timezone,
+                                                                            calendar: calendar)
         self.rangeSelectionDescription = selectionType.description
     }
 
@@ -71,7 +78,6 @@ public class AnalyticsHubTimeRangeSelection {
         }
         return currentTimeRange
     }
-
     /// Unwrap the generated previous `AnalyticsHubTimeRange`relative to the selected one
     /// based on the `selectedTimeRange` provided during initialization.
     /// - throws a `.previousRangeGenerationFailed` error if the unwrap fails.
@@ -87,6 +93,10 @@ public class AnalyticsHubTimeRangeSelection {
 extension AnalyticsHubTimeRangeSelection {
     enum SelectionType: CaseIterable {
         case today
+        case yesterday
+        case lastWeek
+        case lastMonth
+        case lastYear
         case weekToDate
         case monthToDate
         case yearToDate
@@ -95,6 +105,14 @@ extension AnalyticsHubTimeRangeSelection {
             switch self {
             case .today:
                 return Localization.today
+            case .yesterday:
+                return Localization.yesterday
+            case .lastWeek:
+                return Localization.lastWeek
+            case .lastMonth:
+                return Localization.lastMonth
+            case .lastYear:
+                return Localization.lastYear
             case .weekToDate:
                 return Localization.weekToDate
             case .monthToDate:
@@ -118,10 +136,8 @@ extension AnalyticsHubTimeRangeSelection {
         }
     }
 }
-
 // MARK: - Constants
 extension AnalyticsHubTimeRangeSelection {
-
     enum TimeRangeGeneratorError: Error {
         case selectedRangeGenerationFailed
         case previousRangeGenerationFailed
@@ -129,6 +145,10 @@ extension AnalyticsHubTimeRangeSelection {
 
     enum Localization {
         static let today = NSLocalizedString("Today", comment: "Title of the Analytics Hub Today's selection range")
+        static let yesterday = NSLocalizedString("Yesterday", comment: "Title of the Analytics Hub Yesterday selection range")
+        static let lastWeek = NSLocalizedString("Last Week", comment: "Title of the Analytics Hub Last Week selection range")
+        static let lastMonth = NSLocalizedString("Last Month", comment: "Title of the Analytics Hub Last Month selection range")
+        static let lastYear = NSLocalizedString("Last Year", comment: "Title of the Analytics Hub Last Year selection range")
         static let weekToDate = NSLocalizedString("Week to Date", comment: "Title of the Analytics Hub Week to Date selection range")
         static let monthToDate = NSLocalizedString("Month to Date", comment: "Title of the Analytics Hub Month to Date selection range")
         static let yearToDate = NSLocalizedString("Year to Date", comment: "Title of the Analytics Hub Year to Date selection range")

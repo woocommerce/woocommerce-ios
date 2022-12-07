@@ -9,13 +9,9 @@ struct AnalyticsProductCardViewModel {
     ///
     let itemsSold: String
 
-    /// Items Sold Delta
+    /// Items Sold Delta Percentage
     ///
-    let delta: String
-
-    /// Delta background color.
-    ///
-    let deltaBackgroundColor: UIColor
+    let delta: DeltaPercentage
 
     /// Items Solds data to render.
     ///
@@ -25,9 +21,13 @@ struct AnalyticsProductCardViewModel {
     ///
     let isRedacted: Bool
 
-    /// Indicates if there was an error loading the data for the card
+    /// Indicates if there was an error loading stats part of the card.
     ///
-    let showSyncError: Bool
+    let showStatsError: Bool
+
+    /// Indicates if there was an error loading items sold part of the card.
+    ///
+    let showItemsSoldError: Bool
 }
 
 extension AnalyticsProductCardViewModel {
@@ -37,11 +37,11 @@ extension AnalyticsProductCardViewModel {
     var redacted: Self {
         // Values here are placeholders and will be redacted in the UI
         .init(itemsSold: "1000",
-              delta: "+50%",
-              deltaBackgroundColor: .lightGray,
+              delta: DeltaPercentage(string: "0%", direction: .zero),
               itemsSoldData: [.init(imageURL: nil, name: "Product Name", details: "Net Sales", value: "$5678")],
               isRedacted: true,
-              showSyncError: false)
+              showStatsError: false,
+              showItemsSoldError: false)
     }
 
 }
@@ -51,10 +51,13 @@ extension AnalyticsProductCardViewModel {
 extension AnalyticsProductCard {
     init(viewModel: AnalyticsProductCardViewModel) {
         self.itemsSold = viewModel.itemsSold
-        self.delta = viewModel.delta
-        self.deltaBackgroundColor = viewModel.deltaBackgroundColor
+        self.delta = viewModel.delta.string
+        self.deltaBackgroundColor = viewModel.delta.direction.deltaBackgroundColor
+        self.deltaTextColor = viewModel.delta.direction.deltaTextColor
         self.itemsSoldData = viewModel.itemsSoldData
         self.isRedacted = viewModel.isRedacted
-        self.showSyncError = viewModel.showSyncError
+        self.showStatsError = viewModel.showStatsError
+        self.showItemsSoldError = viewModel.showItemsSoldError
+
     }
 }

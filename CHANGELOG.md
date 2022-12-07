@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 11.5
+This release includes a few bug fixes and improvements to make your experience smoother. Stay tuned for exciting updates in the coming weeks!
+
 ## 11.4
 
 We focused on some stability and performance issues to make your experience smoother. Please keep sharing feedback. We read every one of them.

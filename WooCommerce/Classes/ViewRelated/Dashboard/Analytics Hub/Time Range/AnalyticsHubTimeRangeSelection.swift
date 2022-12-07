@@ -104,6 +104,8 @@ extension AnalyticsHubTimeRangeSelection {
             }
         }
 
+        /// The granularity that should be used to request stats from the given SelectedType
+        ///
         var granularity: StatsGranularityV4 {
             switch self {
             case .today, .yesterday:
@@ -119,7 +121,10 @@ extension AnalyticsHubTimeRangeSelection {
             }
         }
 
-        var interval: Int {
+        /// The resopnse interval size that should be used to request stats from the given SelectedType
+        /// in order to proper determine the stats charts and changes
+        ///
+        var intervalSize: Int {
             switch self {
             case .today, .yesterday:
                 return 24

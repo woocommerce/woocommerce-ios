@@ -122,7 +122,7 @@ private extension AnalyticsHubViewModel {
                                                            unit: timeRangeSelectionType.granularity,
                                                            earliestDateToInclude: earliestDateToInclude,
                                                            latestDateToInclude: latestDateToInclude,
-                                                           quantity: timeRangeSelectionType.interval,
+                                                           quantity: timeRangeSelectionType.intervalSize,
                                                            forceRefresh: forceRefresh) { result in
                 continuation.resume(with: result)
             }

@@ -65,8 +65,24 @@ public final class URLSessionNetwork: Network {
         }.eraseToAnyPublisher()
     }
 
-    public func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void, to request: Request, completion: @escaping (Data?, Error?) -> Void) {
-        // TODO
+    public func uploadMultipartFormData(
+        multipartFormData: @escaping (MultipartFormDataType) -> Void,
+        to request: Request,
+        completion: @escaping (Data?, Error?) -> Void
+    ) {
+        let request = createRequest(wrapping: request)
+        Task {
+            do {
+                let data = try await sessionManager.upload(multipartFormData: multipartFormData, with: request)
+                await MainActor.run {
+                    completion(data, nil)
+                }
+            } catch {
+                await MainActor.run {
+                    completion(nil, error)
+                }
+            }
+        }
     }
 }
 

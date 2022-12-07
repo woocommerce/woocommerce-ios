@@ -416,6 +416,23 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         XCTAssertEqual(previousRangeDescription, "Jun 30, 2022")
     }
 
+    func test_custom_ranges_generates_expected_descriptions() throws {
+        // Given
+        let start = startDate(from: "2022-12-05")
+        let end = endDate(from: "2022-12-07")
+        let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .custom(start: start, end: end),
+                                                       timezone: testTimezone,
+                                                       calendar: testCalendar)
+
+        // When
+        let currentRangeDescription = timeRange.currentRangeDescription
+        let previousRangeDescription = timeRange.previousRangeDescription
+
+        // Then
+        XCTAssertEqual(currentRangeDescription, "Dec 5 - 7, 2022")
+        XCTAssertEqual(previousRangeDescription, "Dec 2 - 4, 2022")
+    }
+
     private func currentDate(from date: String) -> Date {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"

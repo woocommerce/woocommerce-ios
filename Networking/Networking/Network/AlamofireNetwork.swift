@@ -3,7 +3,7 @@ import Foundation
 import Alamofire
 
 
-extension Alamofire.MultipartFormData: MultipartFormData {}
+extension Alamofire.MultipartFormData: MultipartFormDataType {}
 
 /// AlamofireWrapper: Encapsulates all of the Alamofire OP's
 ///
@@ -86,7 +86,7 @@ public class AlamofireNetwork: Network {
         }.eraseToAnyPublisher()
     }
 
-    public func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
+    public func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormDataType) -> Void,
                                         to request: Request,
                                         completion: @escaping (Data?, Error?) -> Void) {
         let request = createRequest(wrapping: request)

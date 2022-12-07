@@ -86,7 +86,7 @@ class MockNetwork: Network {
         return Just<Swift.Result<Data, Error>>(.success(data)).eraseToAnyPublisher()
     }
 
-    func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
+    func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormDataType) -> Void,
                                  to request: Request,
                                  completion: @escaping (Data?, Error?) -> Void) {
         responseData(for: request, completion: completion)

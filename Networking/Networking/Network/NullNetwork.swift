@@ -22,7 +22,7 @@ public final class NullNetwork: Network {
         Empty<Swift.Result<Data, Error>, Never>().eraseToAnyPublisher()
     }
 
-    public func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
+    public func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormDataType) -> Void,
                                         to request: Request,
                                         completion: @escaping (Data?, Error?) -> Void) { }
 }

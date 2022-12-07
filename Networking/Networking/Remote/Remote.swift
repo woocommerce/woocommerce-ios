@@ -168,7 +168,7 @@ public class Remote: NSObject {
     ///
     func enqueueMultipartFormDataUpload<M: Mapper>(_ request: Request,
                                                    mapper: M,
-                                                   multipartFormData: @escaping (MultipartFormData) -> Void,
+                                                   multipartFormData: @escaping (MultipartFormDataType) -> Void,
                                                    completion: @escaping (Result<M.Output, Error>) -> Void) {
         network.uploadMultipartFormData(multipartFormData: multipartFormData,
                                         to: request) { [weak self] (data, networkError) in

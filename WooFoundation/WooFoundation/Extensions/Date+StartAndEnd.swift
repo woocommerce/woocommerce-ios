@@ -127,14 +127,10 @@ public extension Date {
             return nil
         }
 
-        guard let endOfQuarter = calendar.date(byAdding: .month, value: 2, to: startOfQuarter) else {
-            return nil
-        }
-
         var oneMonthUnit = DateComponents()
-        oneMonthUnit.month = 1
+        oneMonthUnit.month = 3
         oneMonthUnit.second = -1
-        return calendar.date(byAdding: oneMonthUnit, to: endOfQuarter)
+        return calendar.date(byAdding: oneMonthUnit, to: startOfQuarter)
     }
 
     // MARK: Year

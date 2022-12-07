@@ -188,18 +188,7 @@ private extension AnalyticsHubViewModel {
             .removeDuplicates()
             .sink { [weak self] newSelectionType in
                 guard let self else { return }
-
-                // Temporary while the Custom Range Selection integration
-                let curatedSelection: AnalyticsHubTimeRangeSelection.SelectionType = {
-                    switch newSelectionType {
-                    case .custom(start: nil, end: nil):
-                        return .custom(start: Date().startOfWeek(timezone: .current), end: Date().endOfDay(timezone: .current))
-                    default:
-                        return newSelectionType
-                    }
-                }()
-
-                self.timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: curatedSelection)
+                self.timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: newSelectionType)
                 self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelection: self.timeRangeSelection)
                 Task.init {
                     await self.updateData()

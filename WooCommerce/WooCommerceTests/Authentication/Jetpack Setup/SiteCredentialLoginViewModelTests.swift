@@ -2,7 +2,7 @@ import XCTest
 @testable import WooCommerce
 import WordPressAuthenticator
 import Yosemite
-import enum Alamofire.AFError
+import enum Networking.NetworkError
 
 final class SiteCredentialLoginViewModelTests: XCTestCase {
 
@@ -113,7 +113,7 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case .retrieveJetpackPluginDetails(let completion):
-                let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 401))
+                let error = NetworkError.unacceptableStatusCode(statusCode: 401)
                 completion(.failure(error))
             default:
                 break
@@ -171,7 +171,7 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
             case .authenticate:
                 triggeredAuthentication = true
             case .retrieveJetpackPluginDetails(let completion):
-                let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404))
+                let error = NetworkError.unacceptableStatusCode(statusCode: 404)
                 completion(.failure(error))
             default:
                 break
@@ -201,7 +201,7 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
             case .authenticate:
                 triggeredAuthentication = true
             case .retrieveJetpackPluginDetails(let completion):
-                let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403))
+                let error = NetworkError.unacceptableStatusCode(statusCode: 403)
                 completion(.failure(error))
             default:
                 break

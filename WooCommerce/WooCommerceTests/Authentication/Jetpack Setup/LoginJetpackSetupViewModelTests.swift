@@ -1,7 +1,7 @@
 import XCTest
 import Yosemite
 @testable import WooCommerce
-import enum Alamofire.AFError
+import enum Networking.NetworkError
 
 final class LoginJetpackSetupViewModelTests: XCTestCase {
     private let testURL = "https://test.com"
@@ -67,7 +67,7 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case .retrieveJetpackPluginDetails(let completion):
-                completion(.failure(AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403))))
+                completion(.failure(NetworkError.unacceptableStatusCode(statusCode: 403)))
             default:
                 break
             }
@@ -88,7 +88,7 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case .retrieveJetpackPluginDetails(let completion):
-                completion(.failure(AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404))))
+                completion(.failure(NetworkError.unacceptableStatusCode(statusCode: 404)))
             case .installJetpackPlugin(let completion):
                 completion(.failure(NSError(domain: "Test", code: -1001)))
             default:
@@ -498,7 +498,7 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case .retrieveJetpackPluginDetails(let completion):
-                completion(.failure(AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403))))
+                completion(.failure(NetworkError.unacceptableStatusCode(statusCode: 403)))
             default:
                 break
             }
@@ -524,7 +524,7 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case .retrieveJetpackPluginDetails(let completion):
-                completion(.failure(AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404))))
+                completion(.failure(NetworkError.unacceptableStatusCode(statusCode: 404)))
             case .installJetpackPlugin:
                 installJetpackTriggered = true
             default:
@@ -547,9 +547,9 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case .retrieveJetpackPluginDetails(let completion):
-                completion(.failure(AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404))))
+                completion(.failure(NetworkError.unacceptableStatusCode(statusCode: 404)))
             case .installJetpackPlugin(let completion):
-                completion(.failure(AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 501))))
+                completion(.failure(NetworkError.unacceptableStatusCode(statusCode: 501)))
             default:
                 break
             }

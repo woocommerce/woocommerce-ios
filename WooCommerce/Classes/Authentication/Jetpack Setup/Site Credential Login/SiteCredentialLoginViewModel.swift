@@ -139,6 +139,5 @@ extension SiteCredentialLoginViewModel {
     enum Constants {
         static let loginPath = "/wp-login.php"
         static let adminPath = "/wp-admin/"
-        static let defaultWPVersion = "5.6.0" // a default version that supports Ajax nonce retrieval
     }
 }

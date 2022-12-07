@@ -60,7 +60,7 @@ final class LoginJetpackSetupViewModel: ObservableObject {
     }
 
     var hasEncounteredPermissionError: Bool {
-        if case .unacceptableStatusCode(statusCode: 401) = setupError as? NetworkError {
+        if case .unacceptableStatusCode(statusCode: 403) = setupError as? NetworkError {
             return true
         }
         return false

@@ -3,7 +3,6 @@ import Foundation
 import Yosemite
 import enum Networking.DotcomError
 import class Networking.UserAgent
-import class Networking.WordPressOrgNetwork
 import KeychainAccess
 import class WidgetKit.WidgetCenter
 import Experiments

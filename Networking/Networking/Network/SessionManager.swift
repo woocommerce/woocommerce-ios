@@ -16,7 +16,7 @@ final class SessionManager {
     }()
 
     /// Creates default values for the "Accept-Encoding", "Accept-Language" and "User-Agent" headers.
-    static let defaultHTTPHeaders: [String: String] = {
+    private static let defaultHTTPHeaders: [String: String] = {
         // Accept-Encoding HTTP Header; see https://tools.ietf.org/html/rfc7230#section-4.2.3
         let acceptEncoding: String = "gzip;q=1.0, compress;q=0.5"
 
@@ -33,6 +33,8 @@ final class SessionManager {
         ]
     }()
 
+    private let acceptableStatusCodes = Array(200..<300)
+
     init(configuration: URLSessionConfiguration = URLSessionConfiguration.default) {
         self.session = URLSession(configuration: configuration, delegate: nil, delegateQueue: nil)
     }
@@ -48,7 +50,11 @@ final class SessionManager {
     @discardableResult
     func request(_ urlRequest: Request) async throws -> Data {
         let originalRequest = try urlRequest.asURLRequest()
-        let (data, _) = try await session.data(for: originalRequest)
+        let (data, response) = try await session.data(for: originalRequest)
+        if let httpResponse = response as? HTTPURLResponse,
+           !acceptableStatusCodes.contains(httpResponse.statusCode) {
+            throw NetworkError.unacceptableStatusCode(statusCode: httpResponse.statusCode)
+        }
         return data
     }
 
@@ -73,7 +79,7 @@ final class SessionManager {
         try fileManager.createDirectory(at: directoryURL, withIntermediateDirectories: true, attributes: nil)
 
         try formData.writeEncodedData(to: fileURL)
-        let (data, _) = try await session.upload(for: urlRequestWithContentType, fromFile: fileURL)
+        let (data, response) = try await session.upload(for: urlRequestWithContentType, fromFile: fileURL)
 
         // Cleanup the temp file once the upload is complete
         do {
@@ -82,6 +88,10 @@ final class SessionManager {
             // No-op
         }
 
-        return await MainActor.run { data }
+        if let httpResponse = response as? HTTPURLResponse,
+           !acceptableStatusCodes.contains(httpResponse.statusCode) {
+            throw NetworkError.unacceptableStatusCode(statusCode: httpResponse.statusCode)
+        }
+        return data
     }
 }

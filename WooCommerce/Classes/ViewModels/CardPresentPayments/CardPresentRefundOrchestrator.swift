@@ -44,6 +44,8 @@ final class CardPresentRefundOrchestrator {
                 onWaitingForInput(inputMethods)
             case .displayMessage(let message):
                 onDisplayMessage(message)
+            case .cardDetailsCollected:
+                onProcessingMessage()
             default:
                 break
             }

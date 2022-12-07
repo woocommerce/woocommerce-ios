@@ -228,6 +228,11 @@ extension StripeCardReaderService: CardReaderService {
                 return promise(.success(()))
             }
 
+            // When this is used for a new payment, there is a new subscription to readerEvents, which won't rely the
+            // old `.removeCard` message. If there is a card inserted, we manually send a display message prompting to
+            // remove the card, and wait for that before continuing.
+            self.sendReaderEvent(CardReaderEvent.make(displayMessage: .removeCard))
+
             self.timerCancellable = Timer.publish(every: 1, tolerance: 0.1, on: .main, in: .default)
                 .autoconnect()
                 .receive(on: DispatchQueue.main)
@@ -260,12 +265,6 @@ extension StripeCardReaderService: CardReaderService {
         // steps produce a Future.
 
         // If a card was left from a previous payment attempt, we want that removed before we initiate a new payment.
-        // However, a new payment probably means a new subscription to readerEvents, which won't rely the old `.removeCard`
-        // message. If there is a card inserted, we manually send a display message prompting to remove the card,
-        // and wait for that before continuing.
-        if isChipCardInserted {
-            sendReaderEvent(CardReaderEvent.make(displayMessage: .removeCard))
-        }
         return waitForInsertedCardToBeRemoved()
             .flatMap {
                 self.createPaymentIntent(parameters)

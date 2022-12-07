@@ -18,8 +18,25 @@ public enum NetworkError: Error, Equatable {
     case unacceptableStatusCode(statusCode: Int)
 
     case invalidRequest
-}
 
+    case multipartEncodingFailed(reason: MultipartFormEncodingFailureReason)
+
+    public enum MultipartFormEncodingFailureReason: Equatable {
+        case outputStreamFileAlreadyExists(at: URL)
+        case outputStreamURLInvalid(url: URL)
+        case outputStreamCreationFailed(for: URL)
+        case inputStreamReadFailed
+        case outputStreamWriteFailed
+        case bodyPartFilenameInvalid(in: URL)
+        case bodyPartURLInvalid(url: URL)
+        case bodyPartFileNotReachable(at: URL)
+        case bodyPartFileNotReachableWithError(atURL: URL)
+        case bodyPartFileIsDirectory(at: URL)
+        case bodyPartFileSizeNotAvailable(at: URL)
+        case bodyPartFileSizeQueryFailedWithError(forURL: URL)
+        case bodyPartInputStreamCreationFailed(for: URL)
+    }
+}
 
 // MARK: - Public Methods
 //

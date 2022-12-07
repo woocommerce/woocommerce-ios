@@ -12,7 +12,7 @@ extension ASWebAuthenticationSession {
                     error: error,
                     // Unfortunately we cannot exted `ASWebAuthenticationSessionError.Code` to add
                     // a custom error for this scenario, so we're left to use a "generic" one.
-                    inconsistentStateError: OAuthErrors.inconsistentASWebAuthenticationSessionCompletion
+                    inconsistentStateError: OAuthError.inconsistentWebAuthenticationSessionCompletion
                 )
             )
         }

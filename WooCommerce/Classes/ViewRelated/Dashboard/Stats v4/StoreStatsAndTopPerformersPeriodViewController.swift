@@ -358,7 +358,7 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
 
     @objc func seeMoreButtonTapped() {
         ServiceLocator.analytics.track(event: .AnalyticsHub.seeMoreAnalyticsTapped())
-        let analyticsHubVC = AnalyticsHubHostingViewController(siteID: siteID, timeRange: timeRange)
+        let analyticsHubVC = AnalyticsHubHostingViewController(siteID: siteID, timeRange: timeRange, usageTracksEventEmitter: usageTracksEventEmitter)
         show(analyticsHubVC, sender: self)
     }
 }

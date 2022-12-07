@@ -445,7 +445,6 @@ private extension DashboardViewController {
                         self?.viewModel.announcementViewModel = nil
                     },
                     callToAction: {})
-        
                 self.showAnnouncement(AnnouncementCardWrapper(cardView: cardView))
             }
         }

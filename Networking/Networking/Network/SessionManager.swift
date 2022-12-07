@@ -41,17 +41,47 @@ final class SessionManager {
         session.invalidateAndCancel()
     }
 
-    /// Creates a `DataRequest` to retrieve the contents of a URL based on the specified `urlRequest`.
-    ///
+    /// Executes an input request and returns its contents as Data asynchronously.
     /// - parameter urlRequest: The URL request.
+    /// - returns: The retrieved `Data`.
     ///
-    /// - returns: The created `DataRequest`.
     @discardableResult
     func request(_ urlRequest: Request) async throws -> Data {
-        guard let originalRequest = urlRequest.urlRequest else {
-            throw NetworkError.invalidRequest
-        }
+        let originalRequest = try urlRequest.asURLRequest()
         let (data, _) = try await session.data(for: originalRequest)
         return data
+    }
+
+    /// Uploads multipart form data for the input request.
+    /// - parameter urlRequest: The URL request.
+    /// - returns: The retrieved `Data`.
+    ///
+    func upload(multipartFormData: @escaping (MultipartFormDataType) -> Void,
+                with urlRequest: Request) async throws -> Data {
+        let formData = MultipartFormData()
+        multipartFormData(formData)
+
+        var urlRequestWithContentType = try urlRequest.asURLRequest()
+        urlRequestWithContentType.setValue(formData.contentType, forHTTPHeaderField: "Content-Type")
+
+        let fileManager = FileManager.default
+        let tempDirectoryURL = URL(fileURLWithPath: NSTemporaryDirectory())
+        let directoryURL = tempDirectoryURL.appendingPathComponent("com.automattic.woocommerce/multipart.form.data")
+        let fileName = UUID().uuidString
+        let fileURL = directoryURL.appendingPathComponent(fileName)
+
+        try fileManager.createDirectory(at: directoryURL, withIntermediateDirectories: true, attributes: nil)
+
+        try formData.writeEncodedData(to: fileURL)
+        let (data, _) = try await session.upload(for: urlRequestWithContentType, fromFile: fileURL)
+
+        // Cleanup the temp file once the upload is complete
+        do {
+            try FileManager.default.removeItem(at: fileURL)
+        } catch {
+            // No-op
+        }
+
+        return await MainActor.run { data }
     }
 }

@@ -713,6 +713,7 @@
 		DEE183F8293DD36A008818AB /* URLRequest+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE183F7293DD36A008818AB /* URLRequest+Woo.swift */; };
 		DEE183FA293F32DD008818AB /* URLSessionNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE183F9293F32DD008818AB /* URLSessionNetwork.swift */; };
 		DEE183FC293F6191008818AB /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE183FB293F6191008818AB /* SessionManager.swift */; };
+		DEE183FE294039FF008818AB /* MultipartFormDataType.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE183FD294039FF008818AB /* MultipartFormDataType.swift */; };
 		E12552C526385B05001CEE70 /* ShippingLabelAddressValidationSuccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12552C426385B05001CEE70 /* ShippingLabelAddressValidationSuccess.swift */; };
 		E137619929151C7400FD098F /* error-wp-rest-forbidden.json in Resources */ = {isa = PBXBuildFile; fileRef = E137619829151C7400FD098F /* error-wp-rest-forbidden.json */; };
 		E137619B2915222100FD098F /* WordPressApiValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E137619A2915222100FD098F /* WordPressApiValidatorTests.swift */; };
@@ -1474,6 +1475,7 @@
 		DEE183F7293DD36A008818AB /* URLRequest+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLRequest+Woo.swift"; sourceTree = "<group>"; };
 		DEE183F9293F32DD008818AB /* URLSessionNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionNetwork.swift; sourceTree = "<group>"; };
 		DEE183FB293F6191008818AB /* SessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
+		DEE183FD294039FF008818AB /* MultipartFormDataType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipartFormDataType.swift; sourceTree = "<group>"; };
 		E12552C426385B05001CEE70 /* ShippingLabelAddressValidationSuccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddressValidationSuccess.swift; sourceTree = "<group>"; };
 		E137619829151C7400FD098F /* error-wp-rest-forbidden.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "error-wp-rest-forbidden.json"; sourceTree = "<group>"; };
 		E137619A2915222100FD098F /* WordPressApiValidatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressApiValidatorTests.swift; sourceTree = "<group>"; };
@@ -1703,6 +1705,7 @@
 				D87F6150226591E10031A13B /* NullNetwork.swift */,
 				DEE183F9293F32DD008818AB /* URLSessionNetwork.swift */,
 				DEE183FB293F6191008818AB /* SessionManager.swift */,
+				DEE183FD294039FF008818AB /* MultipartFormDataType.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -3308,6 +3311,7 @@
 				B5C6FCD420A373BB00A4F8E4 /* OrderMapper.swift in Sources */,
 				D88D5A49230BC8C7007B6E01 /* ProductReviewStatus.swift in Sources */,
 				036563DB2906938600D84BFD /* JustInTimeMessage.swift in Sources */,
+				DEE183FE294039FF008818AB /* MultipartFormDataType.swift in Sources */,
 				451A97C92609FF050059D135 /* ShippingLabelPackagesResponse.swift in Sources */,
 				029BA4F0255D7282006171FD /* ShippingLabelRemote.swift in Sources */,
 				B557DA0F20975E07005962F4 /* DotcomRequest.swift in Sources */,

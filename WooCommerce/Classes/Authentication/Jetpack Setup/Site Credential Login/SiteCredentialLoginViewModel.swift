@@ -2,9 +2,9 @@ import Foundation
 import Yosemite
 import WordPressKit
 import WordPressAuthenticator
-import enum Alamofire.AFError
-import class Networking.UserAgent
+import enum Networking.NetworkError
 import class Networking.WordPressOrgNetwork
+import struct Networking.CookieNonceAuthenticatorConfiguration
 
 /// View model for `SiteCredentialLoginView`.
 ///
@@ -78,13 +78,11 @@ private extension SiteCredentialLoginViewModel {
             return
         }
         // Prepares the authenticator with username and password
-        let authenticator = CookieNonceAuthenticator(username: username,
-                                                     password: password,
-                                                     loginURL: loginURL,
-                                                     adminURL: adminURL,
-                                                     version: Constants.defaultWPVersion,
-                                                     nonce: nil)
-        let network = WordPressOrgNetwork(authenticator: authenticator)
+        let configuration = CookieNonceAuthenticatorConfiguration(username: username,
+                                                                  password: password,
+                                                                  loginURL: loginURL,
+                                                                  adminURL: adminURL)
+        let network = WordPressOrgNetwork(configuration: configuration)
         let authenticationAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
         stores.dispatch(authenticationAction)
     }
@@ -107,13 +105,13 @@ private extension SiteCredentialLoginViewModel {
 
     func handleRemoteError(_ error: Error) {
         switch error {
-        case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)),
-            AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403)):
+        case NetworkError.unacceptableStatusCode(statusCode: 404),
+            NetworkError.unacceptableStatusCode(statusCode: 403):
             // Error 404 means Jetpack is not installed. Allow this to come through.
             // Error 403 means the lack of permission to manage plugins. Also allow this error
             // since we want to show the error on the next screen.
             return handleCompletion()
-        case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 401)):
+        case NetworkError.unacceptableStatusCode(statusCode: 401):
             errorMessage = Localization.wrongCredentials
         default:
             errorMessage = Localization.genericFailure

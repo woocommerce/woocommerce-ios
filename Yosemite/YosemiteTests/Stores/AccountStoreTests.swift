@@ -641,7 +641,8 @@ final class AccountStoreTests: XCTestCase {
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error as? SynchronizeSiteError, .unknownSite)
         XCTAssertEqual(network.requestsForResponseData.count, 1)
-        XCTAssertTrue(((network.requestsForResponseData.first?.urlRequest?.url?.absoluteString.contains("me/sites")) == true))
+        let request = try network.requestsForResponseData.first?.asURLRequest()
+        XCTAssertTrue(((request?.url?.absoluteString.contains("me/sites")) == true))
     }
 
     func test_loadAndSynchronizeSite_returns_site_after_syncing_success() throws {

@@ -100,8 +100,8 @@ final class JustInTimeMessagesRemoteTests: XCTestCase {
             locale: "en_US")
 
         // Then
-        let request = try XCTUnwrap(network.requestsForResponseData.first as? JetpackRequest)
-        let url = try XCTUnwrap(request.urlRequest?.url)
+        let request = try XCTUnwrap(network.requestsForResponseData.first as? JetpackRequest).asURLRequest()
+        let url = try XCTUnwrap(request.url)
         let queryItems = try XCTUnwrap(URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems)
         let queryJson = try XCTUnwrap(queryItems.first { $0.name == "query" }?.value)
         assertThat(queryJson, contains: "woomobile:my_store:admin_notices")
@@ -144,8 +144,8 @@ final class JustInTimeMessagesRemoteTests: XCTestCase {
             locale: "en_US")
 
         // Then
-        let request = try XCTUnwrap(network.requestsForResponseData.first as? JetpackRequest)
-        let url = try XCTUnwrap(request.urlRequest?.url)
+        let request = try XCTUnwrap(network.requestsForResponseData.first as? JetpackRequest).asURLRequest()
+        let url = try XCTUnwrap(request.url)
         let queryItems = try XCTUnwrap(URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems)
         let locale = try XCTUnwrap(queryItems.first { $0.name == "locale" }?.value)
         assertEqual("en_US", locale)
@@ -170,7 +170,7 @@ final class JustInTimeMessagesRemoteTests: XCTestCase {
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.first as? JetpackRequest)
-        let url = try XCTUnwrap(request.urlRequest?.url)
+        let url = try XCTUnwrap(request.asURLRequest().url)
         let queryItems = try XCTUnwrap(URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems)
         let queryJson = try XCTUnwrap(queryItems.first { $0.name == "query" }?.value)
         assertThat(queryJson, contains: "\"query\":")

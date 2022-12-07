@@ -1,5 +1,5 @@
 PODS:
-  - Alamofire (4.8.0)
+  - Alamofire (4.8.2)
   - AppAuth (1.6.0):
     - AppAuth/Core (= 1.6.0)
     - AppAuth/ExternalUserAgent (= 1.6.0)
@@ -81,7 +81,6 @@ PODS:
     - ZendeskSupportProvidersSDK (~> 5.3.0)
 
 DEPENDENCIES:
-  - Alamofire (~> 4.8)
   - Automattic-Tracks-iOS (~> 0.13.0)
   - CocoaLumberjack (~> 3.7.4)
   - CocoaLumberjack/Swift (~> 3.7.4)
@@ -141,7 +140,7 @@ SPEC REPOS:
     - ZendeskSupportSDK
 
 SPEC CHECKSUMS:
-  Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
+  Alamofire: ae5c501addb7afdbb13687d7f2f722c78734c2d3
   AppAuth: 8fca6b5563a5baef2c04bee27538025e4ceb2add
   Automattic-Tracks-iOS: 63e55654f500b3e8fb35087e64575e00d12eb2f5
   CocoaLumberjack: 543c79c114dadc3b1aba95641d8738b06b05b646
@@ -178,6 +177,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2bdf8544f7cd0fd4c002546f5704b813845beb2a
   ZendeskSupportSDK: 3a8e508ab1d9dd22dc038df6c694466414e037ba
 
-PODFILE CHECKSUM: d57f522b14409f38c9fb733afac389ebebdb3ffd
+PODFILE CHECKSUM: 58df701cbd5baf66bd5947bdc972b2c87a328b1e
 
 COCOAPODS: 1.11.3

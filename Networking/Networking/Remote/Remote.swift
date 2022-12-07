@@ -1,6 +1,5 @@
 import Combine
 import Foundation
-import protocol Alamofire.URLRequestConvertible
 
 /// Represents a collection of Remote Endpoints
 ///

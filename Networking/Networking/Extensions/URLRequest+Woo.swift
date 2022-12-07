@@ -9,8 +9,6 @@ extension URLRequest {
     ///
     /// - returns: The new `URLRequest` instance.
     init(url: URL, method: HTTPMethod, headers: [String: String]? = nil) throws {
-        let url = try url.asURL()
-
         self.init(url: url)
 
         httpMethod = method.rawValue

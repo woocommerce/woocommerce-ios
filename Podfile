@@ -43,10 +43,6 @@ def keychain
   pod 'KeychainAccess', '~> 4.2.2'
 end
 
-def alamofire
-  pod 'Alamofire', '~> 4.8'
-end
-
 def cocoa_lumberjack
   pod 'CocoaLumberjack', '~> 3.7.4'
   pod 'CocoaLumberjack/Swift', '~> 3.7.4'
@@ -88,7 +84,6 @@ target 'WooCommerce' do
   # External Libraries
   # ==================
   #
-  alamofire
   cocoa_lumberjack
   keychain
   pod 'XLPagerTabStrip', '~> 9.0'
@@ -118,7 +113,6 @@ end
 # ===============
 #
 def yosemite_pods
-  alamofire
   stripe_terminal
   cocoa_lumberjack
   wordpress_kit
@@ -169,7 +163,6 @@ end
 # =================
 #
 def networking_pods
-  alamofire
   cocoa_lumberjack
 
   pod 'Sourcery', '~> 1.0.3', configuration: 'Debug'
@@ -177,7 +170,6 @@ def networking_pods
   # Used for HTML parsing
   aztec
 
-  wordpress_kit
 end
 
 # Networking Target:

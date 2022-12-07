@@ -1,6 +1,4 @@
 import Foundation
-import protocol Alamofire.URLRequestConvertible
-
 
 /// Wraps up a `URLRequestConvertible` instance, and injects the `UserAgent.defaultUserAgent`.
 ///

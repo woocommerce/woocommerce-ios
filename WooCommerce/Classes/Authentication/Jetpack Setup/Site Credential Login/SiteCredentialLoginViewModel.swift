@@ -1,6 +1,5 @@
 import Foundation
 import Yosemite
-import WordPressKit
 import WordPressAuthenticator
 import enum Networking.NetworkError
 import class Networking.WordPressOrgNetwork

@@ -7,14 +7,16 @@ struct JetpackConnectionURLMapper: Mapper {
     /// (Attempts) to convert the response into a URL.
     ///
     func map(response: Data) throws -> URL {
-        guard let escapedString = String(data: response, encoding: .utf8) else {
-            throw JetpackConnectionRemote.ConnectionError.malformedURL
-        }
+        let escapedString = String(data: response, encoding: .utf8)
         // The API returns an escaped string with double quotes, so we need to clean it up.
-        let urlString = escapedString
+        let urlString = escapedString?
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .replacingOccurrences(of: "\"", with: "")
             .replacingOccurrences(of: "\\", with: "")
-        return try urlString.asURL()
+        guard let string = urlString,
+                let url = URL(string: string) else {
+            throw JetpackConnectionRemote.ConnectionError.malformedURL
+        }
+        return url
     }
 }

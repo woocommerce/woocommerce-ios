@@ -107,24 +107,28 @@ extension AnalyticsHubTimeRangeSelection {
         var granularity: StatsGranularityV4 {
             switch self {
             case .today, .yesterday:
-                return .daily
+                return .hourly
             case .weekToDate, .lastWeek:
+                return .daily
+            case .monthToDate, .lastMonth:
+                return .daily
+            case .quarterToDate, .lastQuarter:
                 return .weekly
-            case .monthToDate, .lastMonth, .quarterToDate, .lastQuarter:
-                return .monthly
             case .yearToDate, .lastYear:
                 return .monthly
             }
         }
-        
+
         var interval: Int {
             switch self {
             case .today, .yesterday:
                 return 24
             case .weekToDate, .lastWeek:
                 return 7
-            case .monthToDate, .lastMonth, .quarterToDate, .lastQuarter:
+            case .monthToDate, .lastMonth:
                 return 31
+            case .quarterToDate, .lastQuarter:
+                return 12
             case .yearToDate, .lastYear:
                 return 12
             }

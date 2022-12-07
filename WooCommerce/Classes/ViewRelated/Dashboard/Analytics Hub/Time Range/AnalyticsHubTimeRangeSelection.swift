@@ -91,7 +91,7 @@ public class AnalyticsHubTimeRangeSelection {
 
 // MARK: - Time Range Selection Type
 extension AnalyticsHubTimeRangeSelection {
-    enum SelectionType: CaseIterable {
+    enum SelectionType: String, CaseIterable {
         case today
         case yesterday
         case lastWeek

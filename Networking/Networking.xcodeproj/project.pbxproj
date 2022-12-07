@@ -475,7 +475,6 @@
 		B50A583921AD861700617455 /* APNSDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50A583821AD861700617455 /* APNSDevice.swift */; };
 		B5147876211B9227007562E5 /* broken-orders-mark-2.json in Resources */ = {isa = PBXBuildFile; fileRef = B5147875211B9227007562E5 /* broken-orders-mark-2.json */; };
 		B518662220A097C200037A38 /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518662120A097C200037A38 /* Network.swift */; };
-		B518662420A099BF00037A38 /* AlamofireNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518662320A099BF00037A38 /* AlamofireNetwork.swift */; };
 		B518662A20A09C6F00037A38 /* OrdersRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518662920A09C6F00037A38 /* OrdersRemoteTests.swift */; };
 		B518663520A0A2E800037A38 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518663320A0A2E800037A38 /* Constants.swift */; };
 		B524193F21AC5FE400D6FC0A /* DotcomDeviceMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B524193E21AC5FE400D6FC0A /* DotcomDeviceMapper.swift */; };
@@ -1230,7 +1229,6 @@
 		B50A583821AD861700617455 /* APNSDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APNSDevice.swift; sourceTree = "<group>"; };
 		B5147875211B9227007562E5 /* broken-orders-mark-2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "broken-orders-mark-2.json"; sourceTree = "<group>"; };
 		B518662120A097C200037A38 /* Network.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
-		B518662320A099BF00037A38 /* AlamofireNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlamofireNetwork.swift; sourceTree = "<group>"; };
 		B518662620A09BCC00037A38 /* MockNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockNetwork.swift; sourceTree = "<group>"; };
 		B518662920A09C6F00037A38 /* OrdersRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersRemoteTests.swift; sourceTree = "<group>"; };
 		B518663320A0A2E800037A38 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -1700,7 +1698,6 @@
 				DE34051428BDEB1900CF0D97 /* WordPressOrgNetwork.swift */,
 				B518662120A097C200037A38 /* Network.swift */,
 				B556FD68211CE2EC00B5DAE7 /* NetworkError.swift */,
-				B518662320A099BF00037A38 /* AlamofireNetwork.swift */,
 				B518662620A09BCC00037A38 /* MockNetwork.swift */,
 				D87F6150226591E10031A13B /* NullNetwork.swift */,
 				DEE183F9293F32DD008818AB /* URLSessionNetwork.swift */,
@@ -3230,7 +3227,6 @@
 				68CB800E28D8901B00E169F8 /* CustomerMapper.swift in Sources */,
 				45CCFCE227A2C9BF0012E8CB /* InboxNote.swift in Sources */,
 				311D412C2783BF7400052F64 /* StripeAccount.swift in Sources */,
-				B518662420A099BF00037A38 /* AlamofireNetwork.swift in Sources */,
 				311D412E2783C07D00052F64 /* StripeAccountMapper.swift in Sources */,
 				CE430676234BA7920073CBFF /* RefundListMapper.swift in Sources */,
 				45551F122523E7F1007EF104 /* UserAgent.swift in Sources */,

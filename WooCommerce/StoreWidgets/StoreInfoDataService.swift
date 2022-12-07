@@ -23,10 +23,10 @@ final class StoreInfoDataService {
 
     /// Network helper.
     ///
-    private var network: AlamofireNetwork
+    private var network: URLSessionNetwork
 
     init(authToken: String) {
-        network = AlamofireNetwork(credentials: Credentials(authToken: authToken))
+        network = URLSessionNetwork(credentials: Credentials(authToken: authToken))
         orderStatsRemoteV4 = OrderStatsRemoteV4(network: network)
         siteVisitStatsRemote = SiteVisitStatsRemote(network: network)
     }

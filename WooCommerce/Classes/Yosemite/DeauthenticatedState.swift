@@ -1,6 +1,6 @@
 import Foundation
 import Yosemite
-import class Networking.AlamofireNetwork
+import class Networking.URLSessionNetwork
 
 // MARK: - DeauthenticatedState
 //
@@ -15,7 +15,7 @@ class DeauthenticatedState: StoresManagerState {
 
     init() {
         // Used for logged-out state without a WPCOM auth token.
-        let network = AlamofireNetwork(credentials: nil)
+        let network = URLSessionNetwork(credentials: nil)
         services = [
             JetpackConnectionStore(dispatcher: dispatcher),
             AccountCreationStore(dotcomClientID: ApiCredentials.dotcomAppId,

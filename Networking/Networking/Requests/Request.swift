@@ -1,7 +1,6 @@
 import Foundation
-import Alamofire
 
-public protocol Request: URLRequestConvertible {
+public protocol Request {
     /// Returns a URL request or throws if an `Error` was encountered.
     ///
     /// - throws: An `Error` if the underlying `URLRequest` is `nil`.
@@ -16,7 +15,11 @@ public protocol Request: URLRequestConvertible {
 
 /// Makes URLRequest conform to Request
 ///
-extension URLRequest: Request {}
+extension URLRequest: Request {
+    public func asURLRequest() throws -> URLRequest {
+        return self
+    }
+}
 
 /// Default implementation
 ///

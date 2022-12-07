@@ -75,7 +75,7 @@ final class PaymentCaptureOrchestrator {
                     onWaitingForInput(inputMethods)
                 case .displayMessage(let message):
                     onDisplayMessage(message)
-                case .cardRemovedAfterClientSidePaymentCapture:
+                case .cardDetailsCollected, .cardRemovedAfterClientSidePaymentCapture:
                     onProcessingMessage()
                 default:
                     break

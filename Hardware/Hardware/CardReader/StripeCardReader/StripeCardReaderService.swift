@@ -524,6 +524,7 @@ private extension StripeCardReaderService {
                 }
 
                 if let intent = intent {
+                    self?.sendReaderEvent(.cardDetailsCollected)
                     promise(.success(intent))
                 }
             }

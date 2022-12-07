@@ -735,14 +735,12 @@ private extension CardReaderConnectionController {
     ///
     private func returnSuccess(result: CardReaderConnectionResult) {
         onCompletion?(.success(result))
-        alertsPresenter.dismiss()
         state = .idle
     }
 
     /// Calls the completion with a failure result
     ///
     private func returnFailure(error: Error) {
-        alertsPresenter.dismiss()
         onCompletion?(.failure(error))
         state = .idle
     }

@@ -5,7 +5,7 @@ import enum Storage.StatsVersion
 import protocol Experiments.FeatureFlagService
 
 private enum ProductsOnboardingSyncingError: Error {
-    case storeIsNotEligible
+    case noContentToShow // there is no content to show, because the site is not eligible, it was already shown, or other reason
 }
 
 /// Syncs data for dashboard stats UI and determines the state of the dashboard UI based on stats version.
@@ -149,7 +149,7 @@ final class DashboardViewModel {
                     if self?.announcementViewModel is ProductsOnboardingAnnouncementCardViewModel {
                         continuation.resume(returning: (()))
                     } else {
-                        continuation.resume(throwing: ProductsOnboardingSyncingError.storeIsNotEligible)
+                        continuation.resume(throwing: ProductsOnboardingSyncingError.noContentToShow)
                     }
 
                 case .failure(let error):

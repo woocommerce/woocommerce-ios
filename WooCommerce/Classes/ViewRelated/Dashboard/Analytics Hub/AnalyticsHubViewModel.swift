@@ -80,7 +80,7 @@ final class AnalyticsHubViewModel: ObservableObject {
             dismissNotice = Notice(title: Localization.timeRangeGeneratorError, feedbackType: .error)
             DDLogWarn("⚠️ Error selecting analytics time range: \(timeRangeSelectionType.description)")
         } catch {
-            await switchToErrorState()
+            switchToErrorState()
             DDLogWarn("⚠️ Error fetching analytics data: \(error)")
         }
     }

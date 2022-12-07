@@ -104,6 +104,19 @@ extension AnalyticsHubTimeRangeSelection {
             }
         }
 
+        var granularity: StatsGranularityV4 {
+            switch self {
+            case .today, .yesterday:
+                return .daily
+            case .weekToDate, .lastWeek:
+                return .weekly
+            case .monthToDate, .lastMonth, .quarterToDate, .lastQuarter:
+                return .monthly
+            case .yearToDate, .lastYear:
+                return .monthly
+            }
+        }
+
         init(_ statsTimeRange: StatsTimeRangeV4) {
             switch statsTimeRange {
             case .today:

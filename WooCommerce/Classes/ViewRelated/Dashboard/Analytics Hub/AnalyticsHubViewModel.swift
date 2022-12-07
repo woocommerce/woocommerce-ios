@@ -118,15 +118,13 @@ private extension AnalyticsHubViewModel {
                        latestDateToInclude: Date,
                        forceRefresh: Bool) async throws -> OrderStatsV4 {
         try await withCheckedThrowingContinuation { continuation in
-            // TODO: get unit and quantity from the selected period
-            let unit: StatsGranularityV4 = .daily
-            let quantity = 31
+            let granularity = timeRangeSelectionType.granularity
 
             let action = StatsActionV4.retrieveCustomStats(siteID: siteID,
-                                                           unit: unit,
+                                                           unit: granularity,
                                                            earliestDateToInclude: earliestDateToInclude,
                                                            latestDateToInclude: latestDateToInclude,
-                                                           quantity: quantity,
+                                                           quantity: granularity.quantity,
                                                            forceRefresh: forceRefresh) { result in
                 continuation.resume(with: result)
             }
@@ -305,5 +303,22 @@ private extension AnalyticsHubViewModel {
 
         static let timeRangeGeneratorError = NSLocalizedString("Sorry, something went wrong. We can't load analytics for the selected date range.",
                                                                comment: "Error shown when there is a problem retrieving the dates for the selected date range.")
+    }
+}
+
+private extension StatsGranularityV4 {
+    var quantity: Int {
+        switch self {
+        case .hourly:
+            return 0
+        case .daily:
+            return 1
+        case .weekly:
+            return 2
+        case .monthly:
+            return 3
+        case .yearly:
+            return 4
+        }
     }
 }

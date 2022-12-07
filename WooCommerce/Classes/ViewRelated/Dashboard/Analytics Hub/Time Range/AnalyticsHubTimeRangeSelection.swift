@@ -116,6 +116,19 @@ extension AnalyticsHubTimeRangeSelection {
                 return .monthly
             }
         }
+        
+        var interval: Int {
+            switch self {
+            case .today, .yesterday:
+                return 24
+            case .weekToDate, .lastWeek:
+                return 7
+            case .monthToDate, .lastMonth, .quarterToDate, .lastQuarter:
+                return 31
+            case .yearToDate, .lastYear:
+                return 12
+            }
+        }
 
         init(_ statsTimeRange: StatsTimeRangeV4) {
             switch statsTimeRange {

@@ -229,7 +229,6 @@ final class JetpackConnectionStoreTests: XCTestCase {
 
     func test_fetchJetpackUser_properly_relays_errors() {
         // Given
-        let siteURL = "http://test.com"
         let urlSuffix = "/jetpack/v4/connection/data"
         let error = NetworkError.unacceptableStatusCode(statusCode: 500)
         network.simulateError(requestUrlSuffix: urlSuffix, error: error)

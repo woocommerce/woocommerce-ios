@@ -7,7 +7,7 @@ import Yosemite
 /// Test cases for `AuthenticationManager`.
 final class AuthenticationManagerTests: XCTestCase {
 
-    let testSiteURL = "http://test.com"
+    let testSiteURL = "https://test.com"
 
     /// We do not allow automatic WPCOM account sign-up if the user entered an email that is not
     /// registered in WordPress.com. This configuration is set up in

@@ -3,7 +3,7 @@ import XCTest
 
 final class WordPressOrgRequestTests: XCTestCase {
 
-    private let baseURL = "http://test.com"
+    private let baseURL = "https://test.com"
     private let path = "/test/request"
 
     func test_request_url_is_correct() throws {
@@ -14,7 +14,7 @@ final class WordPressOrgRequestTests: XCTestCase {
         let url = try XCTUnwrap(request.asURLRequest().url)
 
         // Then
-        let expectedURL = "http://test.com/wp-json/test/request"
+        let expectedURL = "https://test.com/wp-json/test/request"
         assertEqual(url.absoluteString, expectedURL)
     }
 

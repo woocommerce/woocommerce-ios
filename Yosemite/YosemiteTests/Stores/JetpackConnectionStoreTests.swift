@@ -4,7 +4,7 @@ import XCTest
 
 final class JetpackConnectionStoreTests: XCTestCase {
 
-    private let siteURL = "http://test.com"
+    private let siteURL = "https://test.com"
 
     /// Mock Dispatcher
     ///

@@ -433,19 +433,19 @@ private extension DashboardViewController {
     func observeAnnouncements() {
         viewModel.$announcementViewModel.sink { [weak self] viewModel in
             guard let self = self else { return }
-            self.removeAnnouncement()
-            guard let viewModel = viewModel else {
-                return
-            }
-
-            let cardView = FeatureAnnouncementCardView(
-                viewModel: viewModel,
-                dismiss: { [weak self] in
-                    self?.viewModel.announcementViewModel = nil
-                },
-                callToAction: {})
-
             Task { @MainActor in
+                self.removeAnnouncement()
+                guard let viewModel = viewModel else {
+                    return
+                }
+
+                let cardView = FeatureAnnouncementCardView(
+                    viewModel: viewModel,
+                    dismiss: { [weak self] in
+                        self?.viewModel.announcementViewModel = nil
+                    },
+                    callToAction: {})
+        
                 self.showAnnouncement(AnnouncementCardWrapper(cardView: cardView))
             }
         }

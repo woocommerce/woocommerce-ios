@@ -12,6 +12,7 @@ final class StatsTests: XCTestCase {
         app.launch()
 
         try LoginFlow.logInWithWPcom()
+
     }
 
     func test_load_stats_screen() throws {
@@ -26,40 +27,32 @@ final class StatsTests: XCTestCase {
     }
 
     func test_view_detailed_chart_stats() throws {
-        var hourlyRevenue = ""
-        var dailyRevenue = ""
-        var weeklyRevenue = ""
-        var monthlyRevenue = ""
-        var yearlyRevenue = ""
+        let myStoreScreen = try MyStoreScreen()
 
-        try TabNavComponent()
+        var dailyRevenue = try TabNavComponent()
             .goToMyStoreScreen()
+            .getRevenueValue()
 
-        dailyRevenue = try MyStoreScreen().getRevenueValue()
-        try MyStoreScreen().tapChart()
-        hourlyRevenue = try MyStoreScreen().getRevenueValue()
+        myStoreScreen.tapChart()
+        let hourlyRevenue = myStoreScreen.getRevenueValue()
+        myStoreScreen.verifyRevenueUpdated(originalRevenue: dailyRevenue, updatedRevenue: hourlyRevenue)
 
-        try MyStoreScreen().verifyRevenueUpdated(originalRevenue: dailyRevenue, updatedRevenue: hourlyRevenue)
-        try MyStoreScreen().goToThisWeekTab()
+        myStoreScreen.goToThisWeekTab()
+        var weeklyRevenue = try MyStoreScreen().getRevenueValue()
+        myStoreScreen.tapChart()
+        dailyRevenue = myStoreScreen.getRevenueValue()
+        myStoreScreen.verifyRevenueUpdated(originalRevenue: weeklyRevenue, updatedRevenue: dailyRevenue)
 
-        weeklyRevenue = try MyStoreScreen().getRevenueValue()
-        try MyStoreScreen().tapChart()
-        dailyRevenue = try MyStoreScreen().getRevenueValue()
+        myStoreScreen.goToThisMonthTab()
+        var monthlyRevenue = try MyStoreScreen().getRevenueValue()
+        myStoreScreen.tapChart()
+        weeklyRevenue = myStoreScreen.getRevenueValue()
+        myStoreScreen.verifyRevenueUpdated(originalRevenue: monthlyRevenue, updatedRevenue: weeklyRevenue)
 
-        try MyStoreScreen().verifyRevenueUpdated(originalRevenue: weeklyRevenue, updatedRevenue: dailyRevenue)
-        try MyStoreScreen().goToThisMonthTab()
-
-        monthlyRevenue = try MyStoreScreen().getRevenueValue()
-        try MyStoreScreen().tapChart()
-        weeklyRevenue = try MyStoreScreen().getRevenueValue()
-
-        try MyStoreScreen().verifyRevenueUpdated(originalRevenue: monthlyRevenue, updatedRevenue: weeklyRevenue)
-        try MyStoreScreen().goToThisYearTab()
-
-        yearlyRevenue = try MyStoreScreen().getRevenueValue()
-        try MyStoreScreen().tapChart()
-        monthlyRevenue = try MyStoreScreen().getRevenueValue()
-
-        try MyStoreScreen().verifyRevenueUpdated(originalRevenue: yearlyRevenue, updatedRevenue: monthlyRevenue)
+        myStoreScreen.goToThisYearTab()
+        let yearlyRevenue = try MyStoreScreen().getRevenueValue()
+        myStoreScreen.tapChart()
+        monthlyRevenue = myStoreScreen.getRevenueValue()
+        myStoreScreen.verifyRevenueUpdated(originalRevenue: yearlyRevenue, updatedRevenue: monthlyRevenue)
     }
 }

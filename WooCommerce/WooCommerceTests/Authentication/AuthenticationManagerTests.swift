@@ -6,6 +6,9 @@ import Yosemite
 
 /// Test cases for `AuthenticationManager`.
 final class AuthenticationManagerTests: XCTestCase {
+
+    let testSiteURL = "http://test.com"
+
     /// We do not allow automatic WPCOM account sign-up if the user entered an email that is not
     /// registered in WordPress.com. This configuration is set up in
     /// `WordPressAuthenticatorConfiguration` in `AuthenticationManager.initialize()`.
@@ -158,15 +161,14 @@ final class AuthenticationManagerTests: XCTestCase {
     func test_it_shows_error_upon_login_epilogue_if_the_self_hosted_site_does_not_have_jetpack() {
         // Given
         let manager = AuthenticationManager()
-        let testSite = "http://test.com"
-        let siteInfo = siteInfo(url: testSite,
+        let siteInfo = siteInfo(url: testSiteURL,
                                 exists: true,
                                 hasWordPress: true,
                                 isWordPressCom: false,
                                 hasJetpack: false,
                                 isJetpackActive: false,
                                 isJetpackConnected: false)
-        let wpcomCredentials = WordPressComCredentials(authToken: "abc", isJetpackLogin: false, multifactor: false, siteURL: testSite)
+        let wpcomCredentials = WordPressComCredentials(authToken: "abc", isJetpackLogin: false, multifactor: false, siteURL: testSiteURL)
         let credentials = AuthenticatorCredentials(wpcom: wpcomCredentials, wporg: nil)
         let navigationController = UINavigationController()
 
@@ -185,15 +187,14 @@ final class AuthenticationManagerTests: XCTestCase {
     func test_it_shows_account_mismatch_upon_login_epilogue_if_the_site_has_active_jetpack_but_not_connected() {
         // Given
         let manager = AuthenticationManager()
-        let testSite = "http://test.com"
-        let siteInfo = siteInfo(url: testSite,
+        let siteInfo = siteInfo(url: testSiteURL,
                                 exists: true,
                                 hasWordPress: true,
                                 isWordPressCom: false,
                                 hasJetpack: true,
                                 isJetpackActive: true,
                                 isJetpackConnected: false)
-        let wpcomCredentials = WordPressComCredentials(authToken: "abc", isJetpackLogin: false, multifactor: false, siteURL: testSite)
+        let wpcomCredentials = WordPressComCredentials(authToken: "abc", isJetpackLogin: false, multifactor: false, siteURL: testSiteURL)
         let credentials = AuthenticatorCredentials(wpcom: wpcomCredentials, wporg: nil)
         let navigationController = UINavigationController()
 
@@ -209,8 +210,7 @@ final class AuthenticationManagerTests: XCTestCase {
     func test_it_can_display_jetpack_error_for_org_site_credentials_sign_in() {
         // Given
         let manager = AuthenticationManager()
-        let testSite = "http://test.com"
-        let siteInfo = WordPressComSiteInfo(remote: ["isWordPress": true, "hasJetpack": false, "urlAfterRedirects": testSite])
+        let siteInfo = WordPressComSiteInfo(remote: ["isWordPress": true, "hasJetpack": false, "urlAfterRedirects": testSiteURL])
         let wporgCredentials = WordPressOrgCredentials(username: "cba", password: "password", xmlrpc: "http://test.com/xmlrpc.php", options: [:])
         let credentials = AuthenticatorCredentials(wpcom: nil, wporg: wporgCredentials)
         let navigationController = UINavigationController()
@@ -227,7 +227,6 @@ final class AuthenticationManagerTests: XCTestCase {
     func test_errorViewController_display_account_mismatch_screen_if_no_site_matches_the_given_self_hosted_site() {
         // Given
         let manager = AuthenticationManager()
-        let testSite = "http://test.com"
         let navigationController = UINavigationController()
         let storage = MockStorageManager()
         let matcher = ULAccountMatcher(storageManager: storage)
@@ -235,7 +234,7 @@ final class AuthenticationManagerTests: XCTestCase {
         let credentials = AuthenticatorCredentials(wpcom: nil, wporg: wporgCredentials)
 
         // When
-        let controller = manager.errorViewController(for: testSite, with: matcher, credentials: credentials, navigationController: navigationController) {}
+        let controller = manager.errorViewController(for: testSiteURL, with: matcher, credentials: credentials, navigationController: navigationController) {}
 
         // Then
         XCTAssertNotNil(controller)
@@ -245,13 +244,12 @@ final class AuthenticationManagerTests: XCTestCase {
     func test_errorViewController_returns_account_mismatch_if_no_site_matches_the_given_url() {
         // Given
         let manager = AuthenticationManager()
-        let testSite = "http://test.com"
         let navigationController = UINavigationController()
         let storage = MockStorageManager()
         let matcher = ULAccountMatcher(storageManager: storage)
 
         // When
-        let controller = manager.errorViewController(for: testSite, with: matcher, navigationController: navigationController) {}
+        let controller = manager.errorViewController(for: testSiteURL, with: matcher, navigationController: navigationController) {}
 
         // Then
         XCTAssertNotNil(controller)
@@ -263,7 +261,6 @@ final class AuthenticationManagerTests: XCTestCase {
         let manager = AuthenticationManager()
         let navigationController = UINavigationController()
 
-        let testSiteURL = "http://test.com"
         let testSite = Site.fake().copy(siteID: 1234, name: "Test", url: testSiteURL, isWooCommerceActive: false)
 
         let storage = MockStorageManager()
@@ -284,7 +281,6 @@ final class AuthenticationManagerTests: XCTestCase {
         let manager = AuthenticationManager()
         let navigationController = UINavigationController()
 
-        let testSiteURL = "http://test.com"
         let testSite = Site.fake().copy(siteID: 1234, name: "Test", url: testSiteURL, isWooCommerceActive: true)
 
         let storage = MockStorageManager()
@@ -303,7 +299,6 @@ final class AuthenticationManagerTests: XCTestCase {
         // Given
         let navigationController = UINavigationController()
 
-        let testSiteURL = "http://test.com"
         let testSite = Site.fake().copy(siteID: 1234, name: "Test", url: testSiteURL, isWooCommerceActive: false) // No Woo
 
         let storage = MockStorageManager()
@@ -326,7 +321,6 @@ final class AuthenticationManagerTests: XCTestCase {
         // Given
         let navigationController = UINavigationController()
 
-        let testSiteURL = "http://test.com"
         let testSite = Site.fake().copy(siteID: 1234, name: "Test", url: testSiteURL, isWooCommerceActive: true)
 
         let storage = MockStorageManager()

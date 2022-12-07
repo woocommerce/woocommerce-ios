@@ -12,7 +12,6 @@ final class StatsTests: XCTestCase {
         app.launch()
 
         try LoginFlow.logInWithWPcom()
-
     }
 
     func test_load_stats_screen() throws {

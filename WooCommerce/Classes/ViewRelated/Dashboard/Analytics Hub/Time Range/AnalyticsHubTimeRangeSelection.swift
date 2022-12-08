@@ -104,6 +104,41 @@ extension AnalyticsHubTimeRangeSelection {
             }
         }
 
+        /// The granularity that should be used to request stats from the given SelectedType
+        ///
+        var granularity: StatsGranularityV4 {
+            switch self {
+            case .today, .yesterday:
+                return .hourly
+            case .weekToDate, .lastWeek:
+                return .daily
+            case .monthToDate, .lastMonth:
+                return .daily
+            case .quarterToDate, .lastQuarter:
+                return .weekly
+            case .yearToDate, .lastYear:
+                return .monthly
+            }
+        }
+
+        /// The response interval size that should be used to request stats from the given SelectedType
+        /// in order to proper determine the stats charts and changes
+        ///
+        var intervalSize: Int {
+            switch self {
+            case .today, .yesterday:
+                return 24
+            case .weekToDate, .lastWeek:
+                return 7
+            case .monthToDate, .lastMonth:
+                return 31
+            case .quarterToDate, .lastQuarter:
+                return 13
+            case .yearToDate, .lastYear:
+                return 12
+            }
+        }
+
         init(_ statsTimeRange: StatsTimeRangeV4) {
             switch statsTimeRange {
             case .today:

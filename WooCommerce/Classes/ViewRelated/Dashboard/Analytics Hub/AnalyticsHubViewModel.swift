@@ -130,15 +130,11 @@ private extension AnalyticsHubViewModel {
                        latestDateToInclude: Date,
                        forceRefresh: Bool) async throws -> OrderStatsV4 {
         try await withCheckedThrowingContinuation { continuation in
-            // TODO: get unit and quantity from the selected period
-            let unit: StatsGranularityV4 = .daily
-            let quantity = 31
-
             let action = StatsActionV4.retrieveCustomStats(siteID: siteID,
-                                                           unit: unit,
+                                                           unit: timeRangeSelectionType.granularity,
                                                            earliestDateToInclude: earliestDateToInclude,
                                                            latestDateToInclude: latestDateToInclude,
-                                                           quantity: quantity,
+                                                           quantity: timeRangeSelectionType.intervalSize,
                                                            forceRefresh: forceRefresh) { result in
                 continuation.resume(with: result)
             }

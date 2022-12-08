@@ -6,14 +6,16 @@ final class CardPresentModalBuiltInReaderCheckingDeviceSupport: CardPresentPayme
     /// Called when cancel button is tapped
     private let cancelAction: () -> Void
 
-    let textMode: PaymentsModalTextMode = .reducedBottomInfo
+    let textMode: PaymentsModalTextMode = .fullInfo
     let actionsMode: PaymentsModalActionsMode = .secondaryActionAndAuxiliaryButton
 
     let topTitle: String = Localization.title
 
     var topSubtitle: String?
 
-    let image: UIImage = .tempBuiltInReaderPrepare
+    let image: UIImage = .preparingBuiltInReader.resizedImage(
+        CGSize(width: 300, height: 227),
+        interpolationQuality: .default)
 
     let primaryButtonTitle: String? = nil
 
@@ -44,15 +46,12 @@ final class CardPresentModalBuiltInReaderCheckingDeviceSupport: CardPresentPayme
         return result
     }
 
-    let bottomTitle: String? = Localization.instruction
+    let bottomTitle: String? = nil
 
-    var bottomSubtitle: String?
+    var bottomSubtitle: String? = Localization.instruction
 
     var accessibilityLabel: String? {
-        guard let bottomTitle = bottomTitle else {
-            return topTitle
-        }
-        return topTitle + bottomTitle
+        return topTitle + Localization.instruction
     }
 
     init(cancel: @escaping () -> Void) {

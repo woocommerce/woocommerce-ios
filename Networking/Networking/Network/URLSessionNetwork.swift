@@ -65,7 +65,10 @@ public final class URLSessionNetwork: Network {
         }.eraseToAnyPublisher()
     }
 
-    public func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void, to request: Request, completion: @escaping (Data?, Error?) -> Void) {
+    public func uploadMultipartFormData(
+        multipartFormData: @escaping (MultipartFormData) -> Void,
+        to request: Request,
+        completion: @escaping (Data?, Error?) -> Void) {
         // TODO
     }
 }

@@ -47,7 +47,6 @@ final class SessionManager {
     /// - parameter urlRequest: The URL request.
     /// - returns: The retrieved `Data`.
     ///
-    @discardableResult
     func request(_ urlRequest: Request) async throws -> Data {
         let originalRequest = try urlRequest.asURLRequest()
         let (data, response) = try await session.data(for: originalRequest)

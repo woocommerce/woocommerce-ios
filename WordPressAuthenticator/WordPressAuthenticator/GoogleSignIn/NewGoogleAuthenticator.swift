@@ -81,8 +81,17 @@ public class NewGoogleAuthenticator: NSObject {
             throw OAuthError.urlDidNotContainCodeParameter(url: url)
         }
 
-        return try await oauthTokenGetter
-            .getToken(clientId: clientId, audience: audience, authCode: authCode, pkce: pkce)
-            .accessToken
+        let response = try await oauthTokenGetter.getToken(
+            clientId: clientId,
+            audience: audience,
+            authCode: authCode,
+            pkce: pkce
+        )
+
+        guard let idToken = response.idToken else {
+            throw OAuthError.tokenResponseDidNotIncludeIdToken
+        }
+
+        return idToken
     }
 }

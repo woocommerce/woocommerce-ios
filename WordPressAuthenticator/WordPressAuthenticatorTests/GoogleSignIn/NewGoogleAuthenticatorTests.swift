@@ -58,13 +58,39 @@ class NewGoogleAuthenticatorTests: XCTestCase {
         }
     }
 
+    func testRequestingOAuthTokenThrowsIfIdTokenMissingFromResponse() async throws {
+        let authenticator = await NewGoogleAuthenticator(
+            clientId: fakeClientId,
+            scheme: "scheme",
+            audience: "audience",
+            contextProvider: FakeContextProvider(),
+            oautTokenGetter: GoogleOAuthTokenGettingStub(response: .fixture(idToken: .none))
+        )
+        let url = URL(string: "https://test.com?code=a_code")!
+
+        do {
+            _ = try await authenticator.requestOAuthToken(
+                url: url,
+                clientId: GoogleClientId(string: "a.b.c")!,
+                audience: "audience",
+                pkce: ProofKeyForCodeExchange(codeVerifier: "code", method: .plain)
+            )
+            XCTFail("Expected an error to be thrown")
+        } catch {
+            let error = try XCTUnwrap(error as? OAuthError)
+            guard case .tokenResponseDidNotIncludeIdToken = error else {
+                return XCTFail("Received unexpected error \(error)")
+            }
+        }
+    }
+
     func testRequestingOAuthTokenReturnsTokenIfSuccessful() async throws {
         let authenticator = await NewGoogleAuthenticator(
             clientId: fakeClientId,
             scheme: "scheme",
             audience: "audience",
             contextProvider: FakeContextProvider(),
-            oautTokenGetter: GoogleOAuthTokenGettingStub(response: .fixture(accessToken: "token"))
+            oautTokenGetter: GoogleOAuthTokenGettingStub(response: .fixture(idToken: "token"))
         )
         let url = URL(string: "https://test.com?code=a_code")!
 

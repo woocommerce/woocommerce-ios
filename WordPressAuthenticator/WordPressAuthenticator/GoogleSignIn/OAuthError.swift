@@ -7,6 +7,7 @@ enum OAuthError: LocalizedError {
 
     // OAuth token response
     case urlDidNotContainCodeParameter(url: URL)
+    case tokenResponseDidNotIncludeIdToken
 
     var errorDescription: String {
         switch self {
@@ -16,6 +17,8 @@ enum OAuthError: LocalizedError {
             return "Could not generate a cryptographically secure random PKCE code verifier value. Underlying error code \(status)"
         case .urlDidNotContainCodeParameter(let url):
             return "Could not find 'code' parameter in URL '\(url)'"
+        case .tokenResponseDidNotIncludeIdToken:
+            return "OAuth token response did not include idToken"
         }
     }
 }

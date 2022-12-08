@@ -65,10 +65,11 @@ struct AnalyticsProductCard: View {
                     .padding(.top, Layout.columnSpacing)
             }
 
-            TopPerformersView(itemTitle: Localization.title.localizedCapitalized, valueTitle: Localization.itemsSold, rows: itemsSoldData)
+            TopPerformersView(itemTitle: Localization.title.localizedCapitalized,
+                              valueTitle: Localization.itemsSold,
+                              rows: itemsSoldData,
+                              isRedacted: isRedacted)
                 .padding(.top, Layout.columnSpacing)
-                .redacted(reason: isRedacted ? .placeholder : [])
-                .shimmering(active: isRedacted)
 
             if showItemsSoldError {
                 Text(Localization.noItemsSold)

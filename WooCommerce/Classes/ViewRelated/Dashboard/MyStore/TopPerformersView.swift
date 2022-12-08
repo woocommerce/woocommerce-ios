@@ -17,6 +17,10 @@ struct TopPerformersView: View {
     ///
     let rows: [TopPerformersRow.Data]
 
+    /// Indicates if the values should be hidden (for loading state)
+    ///
+    let isRedacted: Bool
+
     /// Used to track the text margin value from the top performers row.
     /// Text margin value: Where the row text is placed in the X position.
     /// Needed to properly layout the row divider.
@@ -42,6 +46,8 @@ struct TopPerformersView: View {
                 // Do not render the divider for the last row.
                 TopPerformersRow(data: row, showDivider: index < rows.count - 1)
             }
+            .redacted(reason: isRedacted ? .placeholder : [])
+            .shimmering(active: isRedacted)
         }
     }
 }
@@ -141,7 +147,8 @@ struct TopPerformersPreview: PreviewProvider {
                             .init(imageURL: imageURL, name: "Kentya Palm", details: "Net Sales: $800", value: "10"),
                             .init(imageURL: imageURL, name: "Love Ficus", details: "Net Sales: $599", value: "5"),
                             .init(imageURL: imageURL, name: "Bird Of Paradise", details: "Net Sales: $23.50", value: "2")
-                          ])
+                          ],
+                          isRedacted: false)
         .padding()
         .previewLayout(.sizeThatFits)
     }

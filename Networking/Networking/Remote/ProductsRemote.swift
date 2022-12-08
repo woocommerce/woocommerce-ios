@@ -35,9 +35,7 @@ public protocol ProductsRemoteProtocol {
                              pageNumber: Int,
                              pageSize: Int,
                              completion: @escaping (Result<[Product], Error>) -> Void)
-    func searchSku(for siteID: Int64,
-                   sku: String,
-                   completion: @escaping (Result<String, Error>) -> Void)
+    func searchSku(for siteID: Int64, sku: String) async throws -> String
     func updateProduct(product: Product) async throws -> Product
     func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage]) async throws -> Product
     func loadProductIDs(for siteID: Int64, pageNumber: Int, pageSize: Int) async throws -> [Int64]
@@ -264,9 +262,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     ///     - sku: Product SKU to search for.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func searchSku(for siteID: Int64,
-                               sku: String,
-                               completion: @escaping (Result<String, Error>) -> Void) {
+    public func searchSku(for siteID: Int64, sku: String) async throws -> String {
         let parameters = [
             ParameterKey.sku: sku,
             ParameterKey.fields: ParameterValues.skuFieldValues
@@ -276,7 +272,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
         let mapper = ProductSkuMapper()
 
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Updates a specific `Product`.

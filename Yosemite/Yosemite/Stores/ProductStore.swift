@@ -370,13 +370,12 @@ private extension ProductStore {
             onCompletion(true)
             return
         }
-
-        remote.searchSku(for: siteID, sku: sku) { result in
-            switch result {
-            case .success(let checkResult):
+        Task {
+            do {
+                let checkResult = try await remote.searchSku(for: siteID, sku: sku)
                 let isValid = checkResult != sku
                 onCompletion(isValid)
-            case .failure:
+            } catch {
                 onCompletion(true)
             }
         }

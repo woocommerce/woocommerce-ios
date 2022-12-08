@@ -37,5 +37,4 @@ extension String {
         copy.removePrefix(prefix)
         return copy
     }
-        
 }

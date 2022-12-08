@@ -19,8 +19,7 @@ public protocol ProductsRemoteProtocol {
                          productCategory: ProductCategory?,
                          orderBy: ProductsRemote.OrderKey,
                          order: ProductsRemote.Order,
-                         excludedProductIDs: [Int64],
-                         completion: @escaping (Result<[Product], Error>) -> Void)
+                         excludedProductIDs: [Int64]) async throws -> [Product]
     func searchProducts(for siteID: Int64,
                         keyword: String,
                         pageNumber: Int,
@@ -103,7 +102,6 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     ///     - orderBy: the key to order the remote products. Default to product name.
     ///     - order: ascending or descending order. Default to ascending.
     ///     - excludedProductIDs: a list of product IDs to be excluded from the results.
-    ///     - completion: Closure to be executed upon completion.
     ///
     public func loadAllProducts(for siteID: Int64,
                                 context: String? = nil,
@@ -115,8 +113,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
                                 productCategory: ProductCategory? = nil,
                                 orderBy: OrderKey = .name,
                                 order: Order = .ascending,
-                                excludedProductIDs: [Int64] = [],
-                                completion: @escaping (Result<[Product], Error>) -> Void) {
+                                excludedProductIDs: [Int64] = []) async throws -> [Product] {
         let stringOfExcludedProductIDs = excludedProductIDs.map { String($0) }
             .joined(separator: ",")
 
@@ -140,7 +137,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
         let mapper = ProductListMapper(siteID: siteID)
 
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Retrieves a specific list of `Product`s by `productID`.

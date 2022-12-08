@@ -181,32 +181,31 @@ private extension ProductStore {
                              excludedProductIDs: [Int64],
                              shouldDeleteStoredProductsOnFirstPage: Bool,
                              onCompletion: @escaping (Result<Bool, Error>) -> Void) {
-        remote.loadAllProducts(for: siteID,
-                               context: nil,
-                               pageNumber: pageNumber,
-                               pageSize: pageSize,
-                               stockStatus: stockStatus,
-                               productStatus: productStatus,
-                               productType: productType,
-                               productCategory: productCategory,
-                               orderBy: sortOrder.remoteOrderKey,
-                               order: sortOrder.remoteOrder,
-                               excludedProductIDs: excludedProductIDs) { [weak self] result in
-                                switch result {
-                                case .failure(let error):
-                                    onCompletion(.failure(error))
-                                case .success(let products):
-                                    guard let self = self else {
-                                        return
-                                    }
-                                    let shouldDeleteExistingProducts = pageNumber == Default.firstPageNumber && shouldDeleteStoredProductsOnFirstPage
-                                    self.upsertStoredProductsInBackground(readOnlyProducts: products,
-                                                                          siteID: siteID,
-                                                                          shouldDeleteExistingProducts: shouldDeleteExistingProducts) {
-                                        let hasNextPage = products.count == pageSize
-                                        onCompletion(.success(hasNextPage))
-                                    }
-                                }
+
+        Task {
+            do {
+                let products = try await remote.loadAllProducts(for: siteID,
+                                       context: nil,
+                                       pageNumber: pageNumber,
+                                       pageSize: pageSize,
+                                       stockStatus: stockStatus,
+                                       productStatus: productStatus,
+                                       productType: productType,
+                                       productCategory: productCategory,
+                                       orderBy: sortOrder.remoteOrderKey,
+                                       order: sortOrder.remoteOrder,
+                                       excludedProductIDs: excludedProductIDs)
+                let shouldDeleteExistingProducts = pageNumber == Default.firstPageNumber && shouldDeleteStoredProductsOnFirstPage
+                self.upsertStoredProductsInBackground(
+                    readOnlyProducts: products,
+                    siteID: siteID,
+                    shouldDeleteExistingProducts: shouldDeleteExistingProducts) {
+                        let hasNextPage = products.count == pageSize
+                        onCompletion(.success(hasNextPage))
+                }
+            } catch {
+                onCompletion(.failure(error))
+            }
         }
     }
 

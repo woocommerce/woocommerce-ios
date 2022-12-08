@@ -25,7 +25,7 @@ struct WordPressOrgRequest: Request {
     ///
     func asURLRequest() throws -> URLRequest {
         let url = URL(string: baseURL + Settings.basePath + path.removingPrefix("/"))!
-        let request = try URLRequest(url: url, method: method, headers: nil)
+        let request = URLRequest(url: url, method: method, headers: nil)
 
         return try URLEncoding().encode(request, with: parameters)
     }

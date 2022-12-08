@@ -17,7 +17,7 @@ public final class URLSessionNetwork: Network {
 
     public func responseData(for request: Request, completion: @escaping (Data?, Error?) -> Void) {
         let request = createRequest(wrapping: request)
-        Task {
+        Task(priority: .medium) {
             do {
                 let data = try await sessionManager.request(request)
                 await MainActor.run {
@@ -33,7 +33,7 @@ public final class URLSessionNetwork: Network {
 
     public func responseData(for request: Request, completion: @escaping (Result<Data, Error>) -> Void) {
         let request = createRequest(wrapping: request)
-        Task {
+        Task(priority: .medium) {
             do {
                 let data = try await sessionManager.request(request)
                 await MainActor.run {
@@ -50,7 +50,7 @@ public final class URLSessionNetwork: Network {
     public func responseDataPublisher(for request: Request) -> AnyPublisher<Result<Data, Error>, Never> {
         let request = createRequest(wrapping: request)
         return Future() { promise in
-            Task {
+            Task(priority: .medium) {
                 do {
                     let data = try await self.sessionManager.request(request)
                     await MainActor.run {
@@ -71,7 +71,7 @@ public final class URLSessionNetwork: Network {
         completion: @escaping (Data?, Error?) -> Void
     ) {
         let request = createRequest(wrapping: request)
-        Task {
+        Task(priority: .low) {
             do {
                 let data = try await sessionManager.upload(multipartFormData: multipartFormData, with: request)
                 await MainActor.run {

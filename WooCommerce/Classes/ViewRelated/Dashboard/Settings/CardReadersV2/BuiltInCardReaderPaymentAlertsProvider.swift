@@ -32,7 +32,7 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
     }
 
     func processingTransaction() -> CardPresentPaymentsModalViewModel {
-        CardPresentModalProcessing(name: name, amount: amount, transactionType: .collectPayment)
+        CardPresentModalBuiltInReaderProcessing(name: name, amount: amount)
     }
 
     func success(printReceipt: @escaping () -> Void,

@@ -137,33 +137,35 @@ private extension ProductStore {
                         productCategory: ProductCategory?,
                         excludedProductIDs: [Int64],
                         onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        switch filter {
-        case .all:
-            remote.searchProducts(for: siteID,
-                                  keyword: keyword,
-                                  pageNumber: pageNumber,
-                                  pageSize: pageSize,
-                                  stockStatus: stockStatus,
-                                  productStatus: productStatus,
-                                  productType: productType,
-                                  productCategory: productCategory,
-                                  excludedProductIDs: excludedProductIDs) { [weak self] result in
-                self?.handleSearchResults(siteID: siteID,
-                                          keyword: keyword,
-                                          filter: filter,
-                                          result: result,
-                                          onCompletion: onCompletion)
-            }
-        case .sku:
-            remote.searchProductsBySKU(for: siteID,
-                                       keyword: keyword,
-                                       pageNumber: pageNumber,
-                                       pageSize: pageSize) { [weak self] result in
-                self?.handleSearchResults(siteID: siteID,
-                                          keyword: keyword,
-                                          filter: filter,
-                                          result: result,
-                                          onCompletion: onCompletion)
+        Task {
+            switch filter {
+            case .all:
+                let products = try await remote.searchProducts(for: siteID,
+                                                               keyword: keyword,
+                                                               pageNumber: pageNumber,
+                                                               pageSize: pageSize,
+                                                               stockStatus: stockStatus,
+                                                               productStatus: productStatus,
+                                                               productType: productType,
+                                                               productCategory: productCategory,
+                                                               excludedProductIDs: excludedProductIDs)
+                handleSearchResults(
+                    siteID: siteID,
+                    keyword: keyword,
+                    filter: filter,
+                    result: Result.success(products),
+                    onCompletion: onCompletion)
+            case .sku:
+                let products = try await remote.searchProductsBySKU(for: siteID,
+                                                                    keyword: keyword,
+                                                                    pageNumber: pageNumber,
+                                                                    pageSize: pageSize)
+                handleSearchResults(
+                    siteID: siteID,
+                    keyword: keyword,
+                    filter: filter,
+                    result: Result.success(products),
+                    onCompletion: onCompletion)
             }
         }
     }

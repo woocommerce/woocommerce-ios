@@ -88,19 +88,10 @@ extension MockProductsRemote: ProductsRemoteProtocol {
         return Product.fake()
     }
 
-    func loadProducts(for siteID: Int64, by productIDs: [Int64], pageNumber: Int, pageSize: Int, completion: @escaping (Result<[Product], Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else {
-                return
-            }
-
-            let key = ResultKey(siteID: siteID, productIDs: productIDs)
-            if let result = self.productsLoadingResults[key] {
-                completion(result)
-            } else {
-                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
-            }
-        }
+    func loadProducts(for siteID: Int64, by productIDs: [Int64], pageNumber: Int, pageSize: Int) -> [Product] {
+        // TODO: Mock loadProducts. We no longer use the Result<[Product], Error> signature
+        return [Product.fake()]
+        
     }
 
     func loadAllProducts(for siteID: Int64,
@@ -113,9 +104,9 @@ extension MockProductsRemote: ProductsRemoteProtocol {
                          productCategory: ProductCategory?,
                          orderBy: ProductsRemote.OrderKey,
                          order: ProductsRemote.Order,
-                         excludedProductIDs: [Int64],
-                         completion: @escaping (Result<[Product], Error>) -> Void) {
+                         excludedProductIDs: [Int64])  async throws -> [Product] {
         // no-op
+        return [Product.fake()]
     }
 
     func searchProducts(for siteID: Int64,
@@ -126,49 +117,46 @@ extension MockProductsRemote: ProductsRemoteProtocol {
                         productStatus: ProductStatus?,
                         productType: ProductType?,
                         productCategory: ProductCategory?,
-                        excludedProductIDs: [Int64],
-                        completion: @escaping (Result<[Product], Error>) -> Void) {
+                        excludedProductIDs: [Int64]) async throws -> [Product] {
         searchProductTriggered = true
         searchProductWithStockStatus = stockStatus
         searchProductWithProductType = productType
         searchProductWithProductStatus = productStatus
         searchProductWithProductCategory = productCategory
+        // Check:
+        return [Product.fake()]
     }
 
     func searchProductsBySKU(for siteID: Int64,
                              keyword: String,
                              pageNumber: Int,
-                             pageSize: Int,
-                             completion: @escaping (Result<[Product], Error>) -> Void) {
+                             pageSize: Int) async throws -> [Product] {
         // no-op
+        return [Product.fake()]
     }
 
-    func searchSku(for siteID: Int64, sku: String, completion: @escaping (Result<String, Error>) -> Void) {
+    func searchSku(for siteID: Int64, sku: String) async throws -> String {
         // no-op
+        return ""
     }
 
-    func updateProduct(product: Product, completion: @escaping (Result<Product, Error>) -> Void) {
+    func updateProduct(product: Product) async throws -> Product {
         // no-op
+        return Product.fake()
     }
 
-    func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage], completion: @escaping (Result<Product, Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-
-            let key = ResultKey(siteID: siteID, productIDs: [productID])
-            if let result = self.updateProductImagesResultsBySiteID[key] {
-                completion(result)
-            } else {
-                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
-            }
-        }
+    func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage]) async throws -> Product {
+        // TODO: Mock loadProducts. We no longer use the Result<Product, Error> signature
+        return Product.fake()
     }
 
-    func loadProductIDs(for siteID: Int64, pageNumber: Int, pageSize: Int, completion: @escaping (Result<[Int64], Error>) -> Void) {
+    func loadProductIDs(for siteID: Int64, pageNumber: Int, pageSize: Int) async throws -> [Int64] {
         // no-op
+        return []
     }
 
-    func createTemplateProduct(for siteID: Int64, template: ProductsRemote.TemplateType, completion: @escaping (Result<Int64, Error>) -> Void) {
+    func createTemplateProduct(for siteID: Int64, template: ProductsRemote.TemplateType) async throws -> Int64 {
         // no-op
+        return 0
     }
 }

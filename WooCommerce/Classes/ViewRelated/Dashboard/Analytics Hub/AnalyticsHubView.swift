@@ -15,8 +15,11 @@ final class AnalyticsHubHostingViewController: UIHostingController<AnalyticsHubV
     ///
     var notice: Notice?
 
-    init(siteID: Int64, timeRange: StatsTimeRangeV4, systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
-        let viewModel = AnalyticsHubViewModel(siteID: siteID, statsTimeRange: timeRange)
+    init(siteID: Int64,
+         timeRange: StatsTimeRangeV4,
+         systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
+         usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter) {
+        let viewModel = AnalyticsHubViewModel(siteID: siteID, statsTimeRange: timeRange, usageTracksEventEmitter: usageTracksEventEmitter)
         self.systemNoticePresenter = systemNoticePresenter
         super.init(rootView: AnalyticsHubView(viewModel: viewModel))
 
@@ -56,6 +59,7 @@ struct AnalyticsHubView: View {
 
     var body: some View {
         RefreshablePlainList(action: {
+            viewModel.trackAnalyticsInteraction()
             await viewModel.updateData()
         }) {
             VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
@@ -114,6 +118,12 @@ struct AnalyticsHubView: View {
             guard let notice else { return }
             dismissWithNotice(notice)
         }
+        .gesture(
+            // Detects when scrolling begins so it can be tracked.
+            DragGesture().onChanged({ _ in
+                viewModel.trackAnalyticsInteraction()
+            })
+        )
     }
 }
 
@@ -135,7 +145,9 @@ private extension AnalyticsHubView {
 struct AnalyticsHubPreview: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            AnalyticsHubView(viewModel: AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisYear))
+            AnalyticsHubView(viewModel: AnalyticsHubViewModel(siteID: 123,
+                                                              statsTimeRange: .thisYear,
+                                                              usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter()))
         }
     }
 }

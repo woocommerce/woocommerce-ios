@@ -12,8 +12,13 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     private var subscriptions = Set<AnyCancellable>()
 
+    /// Analytics Usage Tracks Event Emitter
+    ///
+    private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
+
     init(siteID: Int64,
          statsTimeRange: StatsTimeRangeV4,
+         usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
          stores: StoresManager = ServiceLocator.stores) {
         let selectedType = AnalyticsHubTimeRangeSelection.SelectionType(statsTimeRange)
         let timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: selectedType)
@@ -22,7 +27,8 @@ final class AnalyticsHubViewModel: ObservableObject {
         self.stores = stores
         self.timeRangeSelectionType = selectedType
         self.timeRangeSelection = timeRangeSelection
-        self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelection: timeRangeSelection)
+        self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelection: timeRangeSelection, usageTracksEventEmitter: usageTracksEventEmitter)
+        self.usageTracksEventEmitter = usageTracksEventEmitter
 
         bindViewModelsWithData()
     }
@@ -83,6 +89,12 @@ final class AnalyticsHubViewModel: ObservableObject {
             switchToErrorState()
             DDLogWarn("⚠️ Error fetching analytics data: \(error)")
         }
+    }
+
+    /// Tracks interactions for analytics usage event
+    ///
+    func trackAnalyticsInteraction() {
+        usageTracksEventEmitter.interacted()
     }
 }
 
@@ -189,7 +201,8 @@ private extension AnalyticsHubViewModel {
             .sink { [weak self] newSelectionType in
                 guard let self else { return }
                 self.timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: newSelectionType)
-                self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelection: self.timeRangeSelection)
+                self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelection: self.timeRangeSelection,
+                                                                         usageTracksEventEmitter: self.usageTracksEventEmitter)
                 Task.init {
                     await self.updateData()
                 }
@@ -266,10 +279,12 @@ private extension AnalyticsHubViewModel {
         }
     }
 
-    static func timeRangeCard(timeRangeSelection: AnalyticsHubTimeRangeSelection) -> AnalyticsTimeRangeCardViewModel {
+    static func timeRangeCard(timeRangeSelection: AnalyticsHubTimeRangeSelection,
+                              usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter) -> AnalyticsTimeRangeCardViewModel {
         return AnalyticsTimeRangeCardViewModel(selectedRangeTitle: timeRangeSelection.rangeSelectionDescription,
                                                currentRangeSubtitle: timeRangeSelection.currentRangeDescription,
-                                               previousRangeSubtitle: timeRangeSelection.previousRangeDescription)
+                                               previousRangeSubtitle: timeRangeSelection.previousRangeDescription,
+                                               usageTracksEventEmitter: usageTracksEventEmitter)
     }
 }
 

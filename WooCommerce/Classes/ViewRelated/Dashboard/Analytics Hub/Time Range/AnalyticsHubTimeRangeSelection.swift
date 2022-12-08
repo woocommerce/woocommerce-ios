@@ -121,7 +121,7 @@ extension AnalyticsHubTimeRangeSelection {
             }
         }
 
-        /// The resopnse interval size that should be used to request stats from the given SelectedType
+        /// The response interval size that should be used to request stats from the given SelectedType
         /// in order to proper determine the stats charts and changes
         ///
         var intervalSize: Int {
@@ -133,7 +133,7 @@ extension AnalyticsHubTimeRangeSelection {
             case .monthToDate, .lastMonth:
                 return 31
             case .quarterToDate, .lastQuarter:
-                return 12
+                return 13
             case .yearToDate, .lastYear:
                 return 12
             }

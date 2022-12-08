@@ -62,6 +62,18 @@ public extension Date {
         return Date(timeIntervalSince1970: nextWeekStartDate.timeIntervalSince1970 - 1)
     }
 
+    /// Returns self's end of week in the given time zone.
+    func endOfWeek(timezone: TimeZone, calendar: Calendar) -> Date? {
+        guard let weekStartDate = startOfWeek(timezone: timezone, calendar: calendar) else {
+            return nil
+        }
+
+        guard let nextWeekStartDate = calendar.date(byAdding: .weekOfYear, value: 1, to: weekStartDate) else {
+            return nil
+        }
+        return Date(timeIntervalSince1970: nextWeekStartDate.timeIntervalSince1970 - 1)
+    }
+
     // MARK: Month
 
     /// Returns self's start of month in the given time zone.
@@ -82,6 +94,43 @@ public extension Date {
         components.month = 1
         components.second = -1
         return calendar.date(byAdding: components, to: startOfMonth)
+    }
+
+    // MARK: Quarter
+
+    /// Returns self's start of quarter in the given time zone.
+    func startOfQuarter(timezone: TimeZone, calendar: Calendar) -> Date? {
+        guard let startOfMonth = startOfMonth(timezone: timezone) else {
+            return nil
+        }
+
+        var components = calendar.dateComponents([.month, .year], from: startOfMonth)
+        switch components.month {
+        case 1, 2, 3:
+            components.month = 1
+        case 4, 5, 6:
+            components.month = 4
+        case 7, 8, 9:
+            components.month = 7
+        case 10, 11, 12:
+            components.month = 10
+        default:
+            return nil
+        }
+
+        return calendar.date(from: components)
+    }
+
+    /// Returns self's end of quarter in the given time zone.
+    func endOfQuarter(timezone: TimeZone, calendar: Calendar) -> Date? {
+        guard let startOfQuarter = startOfQuarter(timezone: timezone, calendar: calendar) else {
+            return nil
+        }
+
+        var oneMonthUnit = DateComponents()
+        oneMonthUnit.month = 3
+        oneMonthUnit.second = -1
+        return calendar.date(byAdding: oneMonthUnit, to: startOfQuarter)
     }
 
     // MARK: Year

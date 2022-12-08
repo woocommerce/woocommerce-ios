@@ -4,6 +4,9 @@ import Yosemite
 import MessageUI
 import WooFoundation
 import protocol Storage.StorageManagerType
+//TODO: Move to alertprovider (and ideally, remove from this target or translate through Yosemite)
+import enum Hardware.CardReaderServiceError
+import enum Hardware.UnderlyingError
 
 enum CollectOrderPaymentUseCaseError: Error {
     case flowCanceledByUser
@@ -70,16 +73,16 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     ///
     private let alertsPresenter: CardPresentPaymentAlertsPresenting
 
+    /// Payment alerts provider
+    ///
+    private let paymentAlerts: CardReaderTransactionAlertsProviding
+
     /// Stores the card reader listener subscription while trying to connect to one.
     ///
     private var readerSubscription: AnyCancellable?
 
     /// Stores the connected card reader for analytics.
     private var connectedReader: CardReader?
-
-    /// Alert manager to inform merchants about reader & card actions.
-    ///
-    private let alerts: OrderDetailsPaymentAlertsProtocol
 
     /// IPP Configuration.
     ///
@@ -104,7 +107,6 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
          formattedAmount: String,
          paymentGatewayAccount: PaymentGatewayAccount,
          rootViewController: UIViewController,
-         alerts: OrderDetailsPaymentAlertsProtocol,
          configuration: CardPresentPaymentsConfiguration,
          stores: StoresManager = ServiceLocator.stores,
          paymentCaptureCelebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration(),
@@ -115,7 +117,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
         self.paymentGatewayAccount = paymentGatewayAccount
         self.rootViewController = rootViewController
         self.alertsPresenter = CardPresentPaymentAlertsPresenter(rootViewController: rootViewController)
-        self.alerts = alerts
+        self.paymentAlerts = CardReaderPaymentAlertsProvider(transactionType: .collectPayment)
         self.configuration = configuration
         self.stores = stores
         self.paymentCaptureCelebration = paymentCaptureCelebration
@@ -170,6 +172,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                     self.presentReceiptAlert(receiptParameters: paymentData.receiptParameters, onCompleted: onCompleted)
                 })
             case .canceled:
+                self.alertsPresenter.dismiss()
                 self.trackPaymentCancelation()
                 onCancel()
             case .none:
@@ -212,7 +215,8 @@ private extension CollectOrderPaymentUseCase {
     func handleTotalAmountInvalidError(_ error: Error, onCompleted: @escaping () -> ()) {
         trackPaymentFailure(with: error)
         DDLogError("💳 Error: failed to capture payment for order. Order amount is below minimum or not valid")
-        self.alerts.nonRetryableError(from: self.rootViewController, error: totalAmountInvalidError(), dismissCompletion: onCompleted)
+        self.alertsPresenter.present(viewModel: paymentAlerts.nonRetryableError(error: totalAmountInvalidError(),
+                                                                                dismissCompletion: onCompleted))
     }
 
     /// Attempts to collect payment for an order.
@@ -220,17 +224,8 @@ private extension CollectOrderPaymentUseCase {
     func attemptPayment(onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
         guard let orderTotal = orderTotal else {
             onCompletion(.failure(NotValidAmountError.other))
-
             return
         }
-
-        // Show preparing reader alert
-        // TODO: Move this tho the (New)PaymentCaptureOrchestrator
-        alerts.preparingReader(onCancel: { [weak self] in
-            self?.cancelPayment(onCompleted: {
-                onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
-            })
-        })
 
         // Start collect payment process
         paymentOrchestrator.collectPayment(
@@ -239,23 +234,34 @@ private extension CollectOrderPaymentUseCase {
             paymentGatewayAccount: paymentGatewayAccount,
             paymentMethodTypes: configuration.paymentMethods.map(\.rawValue),
             stripeSmallestCurrencyUnitMultiplier: configuration.stripeSmallestCurrencyUnitMultiplier,
+            onPreparingReader: { [weak self] in
+                self?.alertsPresenter.present(viewModel: paymentAlerts.preparingReader(onCancel: {
+                    self?.cancelPayment(onCompleted: {
+                        onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
+                    })
+                }))
+            },
             onWaitingForInput: { [weak self] inputMethods in
                 guard let self = self else { return }
-                self.alerts.tapOrInsertCard(title: Localization.collectPaymentTitle(username: self.order.billingAddress?.firstName),
-                                            amount: self.formattedAmount,
-                                            inputMethods: inputMethods,
-                                            onCancel: { [weak self] in
-                    self?.cancelPayment {
-                        onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
-                    }
-                })
-
+                self.alertsPresenter.present(
+                    viewModel: self.paymentAlerts.tapOrInsertCard(
+                        title: Localization.collectPaymentTitle(username: self.order.billingAddress?.firstName),
+                        amount: self.formattedAmount,
+                        inputMethods: inputMethods,
+                        onCancel: { [weak self] in
+                            self?.cancelPayment {
+                                onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
+                            }
+                        })
+                    )
             }, onProcessingMessage: { [weak self] in
+                guard let self = self else { return }
                 // Waiting message
-                self?.alerts.processingPayment()
+                self.alertsPresenter.present(viewModel: self.paymentAlerts.processingTransaction())
             }, onDisplayMessage: { [weak self] message in
+                guard let self = self else { return }
                 // Reader messages. EG: Remove Card
-                self?.alerts.displayReaderMessage(message: message)
+                self.alertsPresenter.present(viewModel: self.paymentAlerts.displayReaderMessage(message: message))
             }, onProcessingCompletion: { [weak self] intent in
                 self?.trackProcessingCompletion(intent: intent)
                 self?.markOrderAsPaidIfNeeded(intent: intent)
@@ -293,28 +299,31 @@ private extension CollectOrderPaymentUseCase {
         trackPaymentFailure(with: error)
 
         // Inform about the error
-        alerts.error(error: error,
-                     tryAgain: { [weak self] in
+        alertsPresenter.present(
+            viewModel: paymentAlerts.error(error: error,
+                                      tryAgain: { [weak self] in
 
-            // Cancel current payment
-            self?.paymentOrchestrator.cancelPayment { [weak self] result in
-                guard let self = self else { return }
+                                          // Cancel current payment
+                                          self?.paymentOrchestrator.cancelPayment { [weak self] result in
+                                              guard let self = self else { return }
 
-                switch result {
-                case .success:
-                    // Retry payment
-                    self.attemptPayment(onCompletion: onCompletion)
+                                              switch result {
+                                              case .success:
+                                                  // Retry payment
+                                                  self.attemptPayment(onCompletion: onCompletion)
 
-                case .failure(let cancelError):
-                    // Inform that payment can't be retried.
-                    self.alerts.nonRetryableError(from: self.rootViewController, error: cancelError) {
-                        onCompletion(.failure(error))
-                    }
-                }
-            }
-        }, dismissCompletion: {
-            onCompletion(.failure(error))
-        })
+                                              case .failure(let cancelError):
+                                                  // Inform that payment can't be retried.
+                                                  self.alertsPresenter.present(
+                                                    viewModel: self.paymentAlerts.nonRetryableError(error: cancelError) {
+                                                      onCompletion(.failure(error))
+                                                  })
+                                              }
+                                          }
+                                      }, dismissCompletion: {
+                                          onCompletion(.failure(error))
+                                      })
+            )
     }
 
     private func trackPaymentFailure(with error: Error) {
@@ -344,7 +353,7 @@ private extension CollectOrderPaymentUseCase {
     ///
     func presentReceiptAlert(receiptParameters: CardPresentReceiptParameters, onCompleted: @escaping () -> ()) {
         // Present receipt alert
-        alerts.success(printReceipt: { [order, configuration, weak self] in
+        alertsPresenter.present(viewModel: paymentAlerts.success(printReceipt: { [order, configuration, weak self] in
             guard let self = self else { return }
 
             // Inform about flow completion.
@@ -373,7 +382,7 @@ private extension CollectOrderPaymentUseCase {
         }, noReceiptAction: {
             // Inform about flow completion.
             onCompleted()
-        })
+        }))
     }
 
     /// Presents the native email client with the provided content.

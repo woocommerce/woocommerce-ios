@@ -17,13 +17,9 @@ struct AnalyticsReportCardViewModel {
     ///
     let leadingValue: String
 
-    /// First Column Delta Value
+    /// First Column Delta Percentage
     ///
-    let leadingDelta: String
-
-    /// First Column delta background color.
-    ///
-    let leadingDeltaColor: UIColor
+    let leadingDelta: DeltaPercentage
 
     /// First Column Chart Data
     ///
@@ -37,13 +33,9 @@ struct AnalyticsReportCardViewModel {
     ///
     let trailingValue: String
 
-    /// Second Column Delta Value
+    /// Second Column Delta Percentage
     ///
-    let trailingDelta: String
-
-    /// Second Column Delta Background Color
-    ///
-    let trailingDeltaColor: UIColor
+    let trailingDelta: DeltaPercentage
 
     /// Second Column Chart Data
     ///
@@ -71,13 +63,11 @@ extension AnalyticsReportCardViewModel {
         .init(title: title,
               leadingTitle: leadingTitle,
               leadingValue: "$1000",
-              leadingDelta: "+50%",
-              leadingDeltaColor: .lightGray,
+              leadingDelta: DeltaPercentage(string: "0%", direction: .zero),
               leadingChartData: [],
               trailingTitle: trailingTitle,
               trailingValue: "$1000",
-              trailingDelta: "+50%",
-              trailingDeltaColor: .lightGray,
+              trailingDelta: DeltaPercentage(string: "0%", direction: .zero),
               trailingChartData: [],
               isRedacted: true,
               showSyncError: false,
@@ -92,14 +82,18 @@ extension AnalyticsReportCard {
         self.title = viewModel.title
         self.leadingTitle = viewModel.leadingTitle
         self.leadingValue = viewModel.leadingValue
-        self.leadingDelta = viewModel.leadingDelta
-        self.leadingDeltaColor = viewModel.leadingDeltaColor
+        self.leadingDelta = viewModel.leadingDelta.string
+        self.leadingDeltaColor = viewModel.leadingDelta.direction.deltaBackgroundColor
+        self.leadingDeltaTextColor = viewModel.leadingDelta.direction.deltaTextColor
         self.leadingChartData = viewModel.leadingChartData
+        self.leadingChartColor = viewModel.leadingDelta.direction.chartColor
         self.trailingTitle = viewModel.trailingTitle
         self.trailingValue = viewModel.trailingValue
-        self.trailingDelta = viewModel.trailingDelta
-        self.trailingDeltaColor = viewModel.trailingDeltaColor
+        self.trailingDelta = viewModel.trailingDelta.string
+        self.trailingDeltaColor = viewModel.trailingDelta.direction.deltaBackgroundColor
+        self.trailingDeltaTextColor = viewModel.trailingDelta.direction.deltaTextColor
         self.trailingChartData = viewModel.trailingChartData
+        self.trailingChartColor = viewModel.trailingDelta.direction.chartColor
         self.isRedacted = viewModel.isRedacted
         self.showSyncError = viewModel.showSyncError
         self.syncErrorMessage = viewModel.syncErrorMessage

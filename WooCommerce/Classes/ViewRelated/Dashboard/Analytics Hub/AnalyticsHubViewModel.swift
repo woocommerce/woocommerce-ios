@@ -47,6 +47,11 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published var timeRangeCard: AnalyticsTimeRangeCardViewModel
 
+    /// Defines a notice that, when set, dismisses the view and is then displayed.
+    /// Defaults to `nil`.
+    ///
+    @Published var dismissNotice: Notice?
+
     // MARK: Private data
 
     /// Order stats for the current selected time period
@@ -67,9 +72,13 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Request stats data from network
     ///
+    @MainActor
     func updateData() async {
         do {
             try await retrieveOrderStats()
+        } catch is AnalyticsHubTimeRangeSelection.TimeRangeGeneratorError {
+            dismissNotice = Notice(title: Localization.timeRangeGeneratorError, feedbackType: .error)
+            DDLogWarn("⚠️ Error selecting analytics time range: \(timeRangeSelectionType.description)")
         } catch {
             switchToErrorState()
             DDLogWarn("⚠️ Error fetching analytics data: \(error)")
@@ -148,12 +157,14 @@ private extension AnalyticsHubViewModel {
 // MARK: Data - UI mapping
 private extension AnalyticsHubViewModel {
 
+    @MainActor
     func switchToLoadingState() {
         self.revenueCard = revenueCard.redacted
         self.ordersCard = ordersCard.redacted
         self.productCard = productCard.redacted
     }
 
+    @MainActor
     func switchToErrorState() {
         self.currentOrderStats = nil
         self.previousOrderStats = nil
@@ -187,20 +198,16 @@ private extension AnalyticsHubViewModel {
 
     static func revenueCard(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) -> AnalyticsReportCardViewModel {
         let showSyncError = currentPeriodStats == nil || previousPeriodStats == nil
-        let totalDelta = StatsDataTextFormatter.createTotalRevenueDelta(from: previousPeriodStats, to: currentPeriodStats)
-        let netDelta = StatsDataTextFormatter.createNetRevenueDelta(from: previousPeriodStats, to: currentPeriodStats)
 
         return AnalyticsReportCardViewModel(title: Localization.RevenueCard.title,
                                             leadingTitle: Localization.RevenueCard.leadingTitle,
                                             leadingValue: StatsDataTextFormatter.createTotalRevenueText(orderStats: currentPeriodStats,
                                                                                                         selectedIntervalIndex: nil),
-                                            leadingDelta: totalDelta.string,
-                                            leadingDeltaColor: Constants.deltaColor(for: totalDelta.direction),
+                                            leadingDelta: StatsDataTextFormatter.createTotalRevenueDelta(from: previousPeriodStats, to: currentPeriodStats),
                                             leadingChartData: StatsIntervalDataParser.getChartData(for: .totalRevenue, from: currentPeriodStats),
                                             trailingTitle: Localization.RevenueCard.trailingTitle,
                                             trailingValue: StatsDataTextFormatter.createNetRevenueText(orderStats: currentPeriodStats),
-                                            trailingDelta: netDelta.string,
-                                            trailingDeltaColor: Constants.deltaColor(for: netDelta.direction),
+                                            trailingDelta: StatsDataTextFormatter.createNetRevenueDelta(from: previousPeriodStats, to: currentPeriodStats),
                                             trailingChartData: StatsIntervalDataParser.getChartData(for: .netRevenue, from: currentPeriodStats),
                                             isRedacted: false,
                                             showSyncError: showSyncError,
@@ -209,20 +216,17 @@ private extension AnalyticsHubViewModel {
 
     static func ordersCard(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) -> AnalyticsReportCardViewModel {
         let showSyncError = currentPeriodStats == nil || previousPeriodStats == nil
-        let ordersCountDelta = StatsDataTextFormatter.createOrderCountDelta(from: previousPeriodStats, to: currentPeriodStats)
-        let orderValueDelta = StatsDataTextFormatter.createAverageOrderValueDelta(from: previousPeriodStats, to: currentPeriodStats)
 
         return AnalyticsReportCardViewModel(title: Localization.OrderCard.title,
                                             leadingTitle: Localization.OrderCard.leadingTitle,
                                             leadingValue: StatsDataTextFormatter.createOrderCountText(orderStats: currentPeriodStats,
                                                                                                       selectedIntervalIndex: nil),
-                                            leadingDelta: ordersCountDelta.string,
-                                            leadingDeltaColor: Constants.deltaColor(for: ordersCountDelta.direction),
+                                            leadingDelta: StatsDataTextFormatter.createOrderCountDelta(from: previousPeriodStats, to: currentPeriodStats),
                                             leadingChartData: StatsIntervalDataParser.getChartData(for: .orderCount, from: currentPeriodStats),
                                             trailingTitle: Localization.OrderCard.trailingTitle,
                                             trailingValue: StatsDataTextFormatter.createAverageOrderValueText(orderStats: currentPeriodStats),
-                                            trailingDelta: orderValueDelta.string,
-                                            trailingDeltaColor: Constants.deltaColor(for: orderValueDelta.direction),
+                                            trailingDelta: StatsDataTextFormatter.createAverageOrderValueDelta(from: previousPeriodStats,
+                                                                                                               to: currentPeriodStats),
                                             trailingChartData: StatsIntervalDataParser.getChartData(for: .averageOrderValue, from: currentPeriodStats),
                                             isRedacted: false,
                                             showSyncError: showSyncError,
@@ -234,16 +238,17 @@ private extension AnalyticsHubViewModel {
     static func productCard(currentPeriodStats: OrderStatsV4?,
                             previousPeriodStats: OrderStatsV4?,
                             itemsSoldStats: TopEarnerStats?) -> AnalyticsProductCardViewModel {
-        let showSyncError = currentPeriodStats == nil || previousPeriodStats == nil
+        let showStatsError = currentPeriodStats == nil || previousPeriodStats == nil
+        let showItemsSoldError = itemsSoldStats == nil
         let itemsSold = StatsDataTextFormatter.createItemsSoldText(orderStats: currentPeriodStats)
         let itemsSoldDelta = StatsDataTextFormatter.createOrderItemsSoldDelta(from: previousPeriodStats, to: currentPeriodStats)
 
         return AnalyticsProductCardViewModel(itemsSold: itemsSold,
-                                             delta: itemsSoldDelta.string,
-                                             deltaBackgroundColor: Constants.deltaColor(for: itemsSoldDelta.direction),
+                                             delta: itemsSoldDelta,
                                              itemsSoldData: itemSoldRows(from: itemsSoldStats),
                                              isRedacted: false,
-                                             showSyncError: showSyncError)
+                                             showStatsError: showStatsError,
+                                             showItemsSoldError: showItemsSoldError)
     }
 
     /// Helper functions to create `TopPerformersRow.Data` items rom the provided `TopEarnerStats`.
@@ -272,15 +277,6 @@ private extension AnalyticsHubViewModel {
 private extension AnalyticsHubViewModel {
     enum Constants {
         static let maxNumberOfTopItemsSold = 5
-
-        static func deltaColor(for direction: StatsDataTextFormatter.DeltaPercentage.Direction) -> UIColor {
-            switch direction {
-            case .positive:
-                return .withColorStudio(.green, shade: .shade50)
-            case .negative, .zero:
-                return .withColorStudio(.red, shade: .shade40)
-            }
-        }
     }
 
     enum Localization {
@@ -306,5 +302,8 @@ private extension AnalyticsHubViewModel {
                                                  value)
             }
         }
+
+        static let timeRangeGeneratorError = NSLocalizedString("Sorry, something went wrong. We can't load analytics for the selected date range.",
+                                                               comment: "Error shown when there is a problem retrieving the dates for the selected date range.")
     }
 }

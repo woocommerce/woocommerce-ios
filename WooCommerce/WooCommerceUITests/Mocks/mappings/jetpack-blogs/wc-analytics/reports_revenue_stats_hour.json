@@ -19,10 +19,10 @@
     "jsonBody": {
       "data": {
         "totals": {
-          "orders_count": 2,
+          "orders_count": 80,
           "num_items_sold": 0,
           "gross_sales": 0,
-          "total_sales": 23,
+          "total_sales": 815,
           "coupons": 0,
           "coupons_count": 0,
           "refunds": 0,

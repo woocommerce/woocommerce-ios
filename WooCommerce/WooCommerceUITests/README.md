@@ -14,8 +14,8 @@ The following flows are covered/planned to be covered by UI tests. Tests that ar
     - [ ] Log in with Apple
     - [ ] Log in with Google
 2. My Store
-    - [ ] Stats Today, This Week, This Month, This Year load
-    - [ ] Tap chart on stats
+    - [x] Stats Today, This Week, This Month, This Year load
+    - [x] View detailed chart stats
 3. Orders
    - [x] Orders list loads
    - [ ] Single Order Screen:

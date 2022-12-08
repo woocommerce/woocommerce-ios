@@ -2,18 +2,18 @@ import XCTest
 import Yosemite
 @testable import WooCommerce
 
-final class PaymentCaptureOrchestratorTests: XCTestCase {
+final class LegacyPaymentCaptureOrchestratorTests: XCTestCase {
 
     private var stores: MockStoresManager!
-    private var sut: PaymentCaptureOrchestrator!
+    private var sut: LegacyPaymentCaptureOrchestrator!
     private let sampleSiteID: Int64 = 1234
 
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
-        sut = PaymentCaptureOrchestrator(stores: stores,
-                                         paymentReceiptEmailParameterDeterminer: MockReceiptEmailParameterDeterminer(),
-                                         celebration: MockPaymentCaptureCelebration())
+        sut = LegacyPaymentCaptureOrchestrator(stores: stores,
+                                               paymentReceiptEmailParameterDeterminer: MockReceiptEmailParameterDeterminer(),
+                                               celebration: MockPaymentCaptureCelebration())
     }
 
     override func tearDown() {

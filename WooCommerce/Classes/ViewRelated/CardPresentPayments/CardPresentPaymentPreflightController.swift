@@ -45,7 +45,7 @@ final class CardPresentPaymentPreflightController {
 
     /// Controller to connect a card reader.
     ///
-    private var builtInConnectionController: CardReaderConnectionController
+    private var builtInConnectionController: BuiltInCardReaderConnectionController
 
 
     private(set) var readerConnection = CurrentValueSubject<CardReaderConnectionResult?, Never>(nil)
@@ -66,20 +66,18 @@ final class CardPresentPaymentPreflightController {
         let analyticsTracker = CardReaderConnectionAnalyticsTracker(configuration: configuration,
                                                                     stores: stores,
                                                                     analytics: analytics)
-        // TODO: Replace this with a refactored (New)LegacyCardReaderConnectionController
         self.connectionController = CardReaderConnectionController(
             forSiteID: siteID,
-            discoveryMethod: .bluetoothScan,
             knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
             alertsPresenter: alertsPresenter,
+            alertsProvider: BluetoothReaderConnectionAlertsProvider(),
             configuration: configuration,
             analyticsTracker: analyticsTracker)
 
-        self.builtInConnectionController = CardReaderConnectionController(
+        self.builtInConnectionController = BuiltInCardReaderConnectionController(
             forSiteID: siteID,
-            discoveryMethod: .localMobile,
-            knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
             alertsPresenter: alertsPresenter,
+            alertsProvider: BuiltInReaderConnectionAlertsProvider(),
             configuration: configuration,
             analyticsTracker: analyticsTracker)
     }
@@ -89,7 +87,8 @@ final class CardPresentPaymentPreflightController {
         observeConnectedReaders()
         // If we're already connected to a reader, return it
         if let connectedReader = connectedReader {
-            readerConnection.send(CardReaderConnectionResult.connected(connectedReader))
+            handleConnectionResult(.success(.connected(connectedReader)))
+            return
         }
 
         // TODO: Run onboarding if needed
@@ -122,23 +121,23 @@ final class CardPresentPaymentPreflightController {
     }
 
     private func localMobileReaderSupported() -> Bool {
-        #if !targetEnvironment(simulator)
+        #if targetEnvironment(simulator)
+        return true
+        #else
         if #available(iOS 15.4, *) {
             return PaymentCardReader.isSupported
         } else {
             return false
         }
         #endif
-        return true
     }
 
-    private func handleConnectionResult(_ result: Result<CardReaderConnectionController.ConnectionResult, Error>) {
+    private func handleConnectionResult(_ result: Result<CardReaderConnectionResult, Error>) {
         let connectionResult = result.map { connection in
             switch connection {
-            case .connected:
-                // TODO: pass the reader from the (New)CardReaderConnectionController
-                guard let connectedReader = self.connectedReader else { return CardReaderConnectionResult.canceled }
-                return CardReaderConnectionResult.connected(connectedReader)
+            case .connected(let reader):
+                self.connectedReader = reader
+                return CardReaderConnectionResult.connected(reader)
             case .canceled:
                 return CardReaderConnectionResult.canceled
             }
@@ -148,7 +147,7 @@ final class CardPresentPaymentPreflightController {
         case .success(let unwrapped):
             self.readerConnection.send(unwrapped)
         default:
-            break
+            alertsPresenter.dismiss()
         }
     }
 

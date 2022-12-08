@@ -174,7 +174,8 @@ extension StripeCardReaderService: CardReaderService {
 
                     self?.internalError(error)
                     discoveryLock.unlock()
-                    promise(.failure(error))
+                    let underlyingError = UnderlyingError(with: error)
+                    promise(.failure(CardReaderServiceError.discovery(underlyingError: underlyingError)))
                 }
             }
         }
@@ -838,7 +839,10 @@ private extension StripeCardReaderService {
 
     func resetDiscoveredReadersSubject(error: Error? = nil) {
         if let error = error {
-            discoveredReadersSubject.send(completion: .failure(error))
+            let underlyingError = UnderlyingError(with: error)
+            discoveredReadersSubject.send(completion:
+                    .failure(CardReaderServiceError.discovery(underlyingError: underlyingError))
+            )
         }
         discoveredReadersSubject.send(completion: .finished)
         discoveredReadersSubject = CurrentValueSubject<[CardReader], Error>([])

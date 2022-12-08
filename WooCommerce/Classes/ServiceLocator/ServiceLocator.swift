@@ -5,6 +5,7 @@ import Storage
 import Yosemite
 import Hardware
 import WooFoundation
+import WordPressShared
 
 /// Provides global dependencies.
 ///
@@ -178,6 +179,9 @@ final class ServiceLocator {
     static var fileLogger: Logs {
         return _fileLogger
     }
+
+    /// Provides an instance of `WordPressLoggingDelegate` for logging in WordPress libraries.
+    static let wordPressLibraryLogger: WordPressLoggingDelegate = WordPressLibraryLogger()
 
     /// Provides the access point to the CrashLogger
     /// - Returns: An implementation

@@ -992,6 +992,7 @@
 		45FBDF3C238D4EA800127F77 /* ExtendedAddProductImageCollectionViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBDF3B238D4EA800127F77 /* ExtendedAddProductImageCollectionViewCellTests.swift */; };
 		45FDDD65267784AD00ADACE8 /* ShippingLabelSummaryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FDDD63267784AD00ADACE8 /* ShippingLabelSummaryTableViewCell.swift */; };
 		45FDDD66267784AD00ADACE8 /* ShippingLabelSummaryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45FDDD64267784AD00ADACE8 /* ShippingLabelSummaryTableViewCell.xib */; };
+		4A68E3E32941D4CE004AC3DC /* WordPressLibraryLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A68E3E22941D4CE004AC3DC /* WordPressLibraryLogger.swift */; };
 		532842FC64B572D4545BD98E /* OrderFormCustomerNoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53284C9FD06F2BDABC554BEE /* OrderFormCustomerNoteViewModel.swift */; };
 		532846FAFFFCA93169B5E0BC /* WaitingTimeTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53284FB62FF7F94F18F0D3FF /* WaitingTimeTracker.swift */; };
 		570AAB052472FACB00516C0C /* OrderDetailsDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570AAB042472FACB00516C0C /* OrderDetailsDataSourceTests.swift */; };
@@ -2990,6 +2991,7 @@
 		45FBDF3B238D4EA800127F77 /* ExtendedAddProductImageCollectionViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtendedAddProductImageCollectionViewCellTests.swift; sourceTree = "<group>"; };
 		45FDDD63267784AD00ADACE8 /* ShippingLabelSummaryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelSummaryTableViewCell.swift; sourceTree = "<group>"; };
 		45FDDD64267784AD00ADACE8 /* ShippingLabelSummaryTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShippingLabelSummaryTableViewCell.xib; sourceTree = "<group>"; };
+		4A68E3E22941D4CE004AC3DC /* WordPressLibraryLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordPressLibraryLogger.swift; sourceTree = "<group>"; };
 		53284C9FD06F2BDABC554BEE /* OrderFormCustomerNoteViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderFormCustomerNoteViewModel.swift; sourceTree = "<group>"; };
 		53284FB62FF7F94F18F0D3FF /* WaitingTimeTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaitingTimeTracker.swift; sourceTree = "<group>"; };
 		570AAB042472FACB00516C0C /* OrderDetailsDataSourceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OrderDetailsDataSourceTests.swift; path = "Order Details/OrderDetailsDataSourceTests.swift"; sourceTree = "<group>"; };
@@ -8676,6 +8678,7 @@
 				575472802452185300A94C3C /* PushNotification.swift */,
 				57532CAB24BFF4DA0032B84E /* MessageComposerPresenter.swift */,
 				02E19B9B284743A40010B254 /* ProductImageUploader.swift */,
+				4A68E3E22941D4CE004AC3DC /* WordPressLibraryLogger.swift */,
 			);
 			path = ServiceLocator;
 			sourceTree = "<group>";
@@ -10561,6 +10564,7 @@
 				B5980A6121AC878900EBF596 /* UIDevice+Woo.swift in Sources */,
 				EEADF624281A421A001B40F1 /* DefaultShippingValueLocalizer.swift in Sources */,
 				0263E3BB290BB21800E5F88F /* WooAnalyticsEvent+StoreCreation.swift in Sources */,
+				4A68E3E32941D4CE004AC3DC /* WordPressLibraryLogger.swift in Sources */,
 				174CA86E27DBFD2D00126524 /* ShareAppTextItemActivitySource.swift in Sources */,
 				262C921F26EEF8B100011F92 /* Binding.swift in Sources */,
 				DE4FB7732812AE96003D20D6 /* FilterListView.swift in Sources */,

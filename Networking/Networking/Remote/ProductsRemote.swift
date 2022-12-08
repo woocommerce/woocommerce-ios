@@ -39,7 +39,7 @@ public protocol ProductsRemoteProtocol {
                    sku: String,
                    completion: @escaping (Result<String, Error>) -> Void)
     func updateProduct(product: Product) async throws -> Product
-    func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage], completion: @escaping (Result<Product, Error>) -> Void)
+    func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage]) async throws -> Product
     func loadProductIDs(for siteID: Int64, pageNumber: Int, pageSize: Int, completion: @escaping (Result<[Int64], Error>) -> Void)
     func createTemplateProduct(for siteID: Int64, template: ProductsRemote.TemplateType, completion: @escaping (Result<Int64, Error>) -> Void)
 }
@@ -295,17 +295,14 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         return try await enqueue(request, mapper: mapper)
     }
 
-    public func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage], completion: @escaping (Result<Product, Error>) -> Void) {
-        do {
-            let parameters = try ([ParameterKey.images: images]).toDictionary()
-            let path = "\(Path.products)/\(productID)"
-            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
-            let mapper = ProductMapper(siteID: siteID)
-
-            enqueue(request, mapper: mapper, completion: completion)
-        } catch {
-            completion(.failure(error))
-        }
+    public func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage]) async throws -> Product {
+        
+        let parameters = try ([ParameterKey.images: images]).toDictionary()
+        let path = "\(Path.products)/\(productID)"
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+        let mapper = ProductMapper(siteID: siteID)
+        
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Retrieves IDs for all of the `Products` available.

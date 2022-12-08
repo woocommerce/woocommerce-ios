@@ -347,17 +347,17 @@ private extension ProductStore {
     }
 
     func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage], onCompletion: @escaping (Result<Product, ProductUpdateError>) -> Void) {
-        remote.updateProductImages(siteID: siteID, productID: productID, images: images) { [weak self] result in
-            switch result {
-            case .failure(let error):
-                onCompletion(.failure(ProductUpdateError(error: error)))
-            case .success(let product):
-                self?.upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: product.siteID) { [weak self] in
+        Task {
+            do {
+                let product = try await remote.updateProductImages(siteID: siteID, productID: productID, images: images)
+                upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: product.siteID) { [weak self] in
                     guard let storageProduct = self?.storageManager.viewStorage.loadProduct(siteID: product.siteID, productID: product.productID) else {
                         return onCompletion(.failure(.notFoundInStorage))
                     }
                     onCompletion(.success(storageProduct.toReadOnly()))
                 }
+            } catch {
+                onCompletion(.failure(ProductUpdateError(error: error)))
             }
         }
     }

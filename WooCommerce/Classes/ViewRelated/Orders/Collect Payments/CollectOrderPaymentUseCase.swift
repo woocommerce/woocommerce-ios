@@ -113,7 +113,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
         self.paymentGatewayAccount = paymentGatewayAccount
         self.rootViewController = rootViewController
         self.alertsPresenter = CardPresentPaymentAlertsPresenter(rootViewController: rootViewController)
-        self.paymentAlerts = CardReaderPaymentAlertsProvider(transactionType: .collectPayment)
+        self.paymentAlerts = BluetoothCardReaderPaymentAlertsProvider(transactionType: .collectPayment)
         self.configuration = configuration
         self.stores = stores
         self.analytics = analytics

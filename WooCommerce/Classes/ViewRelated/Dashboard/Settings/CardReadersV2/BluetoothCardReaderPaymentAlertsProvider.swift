@@ -4,7 +4,7 @@ import MessageUI
 import enum Hardware.CardReaderServiceError
 import enum Hardware.UnderlyingError
 
-final class CardReaderPaymentAlertsProvider: CardReaderTransactionAlertsProviding {
+final class BluetoothCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsProviding {
     var name: String = ""
     var amount: String = ""
     var transactionType: CardPresentTransactionType
@@ -89,7 +89,7 @@ final class CardReaderPaymentAlertsProvider: CardReaderTransactionAlertsProvidin
     }
 }
 
-private extension CardReaderPaymentAlertsProvider {
+private extension BluetoothCardReaderPaymentAlertsProvider {
     enum Localization {
         static func errorDescription(underlyingError: UnderlyingError, transactionType: CardPresentTransactionType) -> String? {
             switch underlyingError {

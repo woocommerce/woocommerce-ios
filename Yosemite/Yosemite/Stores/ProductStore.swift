@@ -399,11 +399,11 @@ private extension ProductStore {
         }
 
         // If there are no locally stored products, then check remote.
-        remote.loadProductIDs(for: siteID, pageNumber: 1, pageSize: 1) { result in
-            switch result {
-            case .success(let ids):
-                onCompletion(.success(ids.isEmpty))
-            case .failure(let error):
+        Task {
+            do {
+                let result = try await remote.loadProductIDs(for: siteID, pageNumber: 1, pageSize: 1)
+                onCompletion(.success(result.isEmpty))
+            } catch {
                 onCompletion(.failure(error))
             }
         }

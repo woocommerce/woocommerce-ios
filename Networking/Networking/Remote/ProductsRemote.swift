@@ -40,7 +40,7 @@ public protocol ProductsRemoteProtocol {
                    completion: @escaping (Result<String, Error>) -> Void)
     func updateProduct(product: Product) async throws -> Product
     func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage]) async throws -> Product
-    func loadProductIDs(for siteID: Int64, pageNumber: Int, pageSize: Int, completion: @escaping (Result<[Int64], Error>) -> Void)
+    func loadProductIDs(for siteID: Int64, pageNumber: Int, pageSize: Int) async throws -> [Int64]
     func createTemplateProduct(for siteID: Int64, template: ProductsRemote.TemplateType, completion: @escaping (Result<Int64, Error>) -> Void)
 }
 
@@ -296,12 +296,11 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     }
 
     public func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage]) async throws -> Product {
-        
         let parameters = try ([ParameterKey.images: images]).toDictionary()
         let path = "\(Path.products)/\(productID)"
         let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
         let mapper = ProductMapper(siteID: siteID)
-        
+
         return try await enqueue(request, mapper: mapper)
     }
 
@@ -311,12 +310,10 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     ///     - siteID: Site for which we'll fetch remote products.
     ///     - pageNumber: Number of page that should be retrieved.
     ///     - pageSize: Number of products to be retrieved per page.
-    ///     - completion: Closure to be executed upon completion.
     ///
     public func loadProductIDs(for siteID: Int64,
                                pageNumber: Int = Default.pageNumber,
-                               pageSize: Int = Default.pageSize,
-                               completion: @escaping (Result<[Int64], Error>) -> Void) {
+                               pageSize: Int = Default.pageSize) async throws -> [Int64] {
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
@@ -327,7 +324,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
         let mapper = ProductIDMapper()
 
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Creates a product using the provided template.

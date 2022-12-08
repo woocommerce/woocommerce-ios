@@ -24,13 +24,16 @@ struct AnalyticsTimeRangeCard: View {
                 SelectionList(title: Localization.timeRangeSelectionTitle,
                               items: AnalyticsHubTimeRangeSelection.SelectionType.allCases,
                               contentKeyPath: \.description,
-                              selected: $selectionType)
+                              selected: $selectionType) { selection in
+                    ServiceLocator.analytics.track(event: .AnalyticsHub.dateRangeOptionSelected(selection.rawValue))
+                }
             }
     }
 
     private func createTimeRangeContent() -> some View {
         VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
             Button(action: {
+                ServiceLocator.analytics.track(event: .AnalyticsHub.dateRangeButtonTapped())
                 showTimeRangeSelectionView.toggle()
             }, label: {
                 HStack {

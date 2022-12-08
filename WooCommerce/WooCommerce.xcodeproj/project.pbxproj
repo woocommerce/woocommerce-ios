@@ -503,6 +503,8 @@
 		03E471CA293E0A30001A58AD /* CardPresentModalBuiltInConfigurationProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E471C9293E0A2F001A58AD /* CardPresentModalBuiltInConfigurationProgress.swift */; };
 		03E471CC293E0FB8001A58AD /* CardPresentModalProgressDisplaying.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E471CB293E0FB8001A58AD /* CardPresentModalProgressDisplaying.swift */; };
 		03E471CE293F63B4001A58AD /* PaymentCaptureOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E471CD293F63B4001A58AD /* PaymentCaptureOrchestrator.swift */; };
+		03E471D0293FA62B001A58AD /* CardReaderTransactionAlertsProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E471CF293FA62B001A58AD /* CardReaderTransactionAlertsProviding.swift */; };
+		03E471D2293FA8B2001A58AD /* CardReaderPaymentAlertsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E471D1293FA8B2001A58AD /* CardReaderPaymentAlertsProvider.swift */; };
 		03EF24FA28BF5D21006A033E /* InPersonPaymentsCashOnDeliveryToggleRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EF24F928BF5D21006A033E /* InPersonPaymentsCashOnDeliveryToggleRowViewModel.swift */; };
 		03EF24FC28BF996F006A033E /* InPersonPaymentsCashOnDeliveryPaymentGatewayHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EF24FB28BF996F006A033E /* InPersonPaymentsCashOnDeliveryPaymentGatewayHelpers.swift */; };
 		03EF24FE28C0B356006A033E /* CardPresentPaymentsPlugin+CashOnDelivery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EF24FD28C0B356006A033E /* CardPresentPaymentsPlugin+CashOnDelivery.swift */; };
@@ -636,6 +638,7 @@
 		26B3D8A0252235C50054C319 /* RefundShippingDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B3D89F252235C50054C319 /* RefundShippingDetailsViewModel.swift */; };
 		26B3EC622744772A0075EAE6 /* SimplePaymentsSummaryViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B3EC612744772A0075EAE6 /* SimplePaymentsSummaryViewModelTests.swift */; };
 		26B3EC642745916F0075EAE6 /* BindableTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B3EC632745916F0075EAE6 /* BindableTextField.swift */; };
+		26B71DB6293FE490004D8052 /* RangedDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B71DB5293FE490004D8052 /* RangedDatePicker.swift */; };
 		26B98758273C5BE30090E8CA /* EditCustomerNoteViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B98757273C5BE30090E8CA /* EditCustomerNoteViewModelProtocol.swift */; };
 		26B9875D273C6A830090E8CA /* SimplePaymentsNoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B9875C273C6A830090E8CA /* SimplePaymentsNoteViewModel.swift */; };
 		26B9875F273CB6AA0090E8CA /* SimplePaymentsNoteViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B9875E273CB6AA0090E8CA /* SimplePaymentsNoteViewModelTests.swift */; };
@@ -2524,6 +2527,8 @@
 		03E471C9293E0A2F001A58AD /* CardPresentModalBuiltInConfigurationProgress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPresentModalBuiltInConfigurationProgress.swift; sourceTree = "<group>"; };
 		03E471CB293E0FB8001A58AD /* CardPresentModalProgressDisplaying.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalProgressDisplaying.swift; sourceTree = "<group>"; };
 		03E471CD293F63B4001A58AD /* PaymentCaptureOrchestrator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaymentCaptureOrchestrator.swift; sourceTree = "<group>"; };
+		03E471CF293FA62B001A58AD /* CardReaderTransactionAlertsProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderTransactionAlertsProviding.swift; sourceTree = "<group>"; };
+		03E471D1293FA8B2001A58AD /* CardReaderPaymentAlertsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderPaymentAlertsProvider.swift; sourceTree = "<group>"; };
 		03EF24F928BF5D21006A033E /* InPersonPaymentsCashOnDeliveryToggleRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCashOnDeliveryToggleRowViewModel.swift; sourceTree = "<group>"; };
 		03EF24FB28BF996F006A033E /* InPersonPaymentsCashOnDeliveryPaymentGatewayHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCashOnDeliveryPaymentGatewayHelpers.swift; sourceTree = "<group>"; };
 		03EF24FD28C0B356006A033E /* CardPresentPaymentsPlugin+CashOnDelivery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CardPresentPaymentsPlugin+CashOnDelivery.swift"; sourceTree = "<group>"; };
@@ -2650,6 +2655,7 @@
 		26B3D89F252235C50054C319 /* RefundShippingDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundShippingDetailsViewModel.swift; sourceTree = "<group>"; };
 		26B3EC612744772A0075EAE6 /* SimplePaymentsSummaryViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplePaymentsSummaryViewModelTests.swift; sourceTree = "<group>"; };
 		26B3EC632745916F0075EAE6 /* BindableTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BindableTextField.swift; sourceTree = "<group>"; };
+		26B71DB5293FE490004D8052 /* RangedDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RangedDatePicker.swift; sourceTree = "<group>"; };
 		26B98757273C5BE30090E8CA /* EditCustomerNoteViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCustomerNoteViewModelProtocol.swift; sourceTree = "<group>"; };
 		26B9875C273C6A830090E8CA /* SimplePaymentsNoteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplePaymentsNoteViewModel.swift; sourceTree = "<group>"; };
 		26B9875E273CB6AA0090E8CA /* SimplePaymentsNoteViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplePaymentsNoteViewModelTests.swift; sourceTree = "<group>"; };
@@ -5662,6 +5668,8 @@
 				311F827326CD897900DF5BAD /* CardReaderSettingsAlertsProvider.swift */,
 				311D21EC264AF0E700102316 /* CardReaderSettingsAlerts.swift */,
 				03E471BF293A158C001A58AD /* CardReaderConnectionAlertsProviding.swift */,
+				03E471CF293FA62B001A58AD /* CardReaderTransactionAlertsProviding.swift */,
+				03E471D1293FA8B2001A58AD /* CardReaderPaymentAlertsProvider.swift */,
 				03E471C1293A1F6B001A58AD /* BluetoothReaderConnectionAlertsProvider.swift */,
 				03E471C3293A1F8D001A58AD /* BuiltInReaderConnectionAlertsProvider.swift */,
 				3178C1F626409216000D771A /* CardReaderSettingsConnectedViewModel.swift */,
@@ -6215,6 +6223,7 @@
 				DE2FE5872925DD950018040A /* JetpackInstallHeaderView.swift */,
 				26E7EE6F29300F6200793045 /* DeltaTag.swift */,
 				AEE9A87F293A3E5500227C92 /* RefreshablePlainList.swift */,
+				26B71DB5293FE490004D8052 /* RangedDatePicker.swift */,
 			);
 			path = "SwiftUI Components";
 			sourceTree = "<group>";
@@ -9964,6 +9973,7 @@
 				7459A6C621B0680300F83A78 /* RequirementsChecker.swift in Sources */,
 				CE1D5A55228A0AD200DF3715 /* TwoColumnTableViewCell.swift in Sources */,
 				02759B9128FFA09600918176 /* StoreCreationWebViewModel.swift in Sources */,
+				26B71DB6293FE490004D8052 /* RangedDatePicker.swift in Sources */,
 				74460D4222289C7A00D7316A /* StorePickerCoordinator.swift in Sources */,
 				FEDD70AF26A7223500194C3A /* StorageEligibilityErrorInfo+Woo.swift in Sources */,
 				AE9E04752776213E003FA09E /* OrderCustomerSection.swift in Sources */,
@@ -10052,6 +10062,7 @@
 				E1325EFB28FD544E00EC9B2A /* InAppPurchasesDebugView.swift in Sources */,
 				74460D4022289B7600D7316A /* Coordinator.swift in Sources */,
 				B57C743D20F5493300EEFC87 /* AccountHeaderView.swift in Sources */,
+				03E471D2293FA8B2001A58AD /* CardReaderPaymentAlertsProvider.swift in Sources */,
 				03E471CA293E0A30001A58AD /* CardPresentModalBuiltInConfigurationProgress.swift in Sources */,
 				31AD0B1126E9575F000B6391 /* CardPresentModalConnectingFailed.swift in Sources */,
 				576EA39425264C9B00AFC0B3 /* RefundConfirmationViewModel.swift in Sources */,
@@ -10569,6 +10580,7 @@
 				020AF6662923C7ED007760E5 /* StoreNameForm.swift in Sources */,
 				DEC51AFD276AEAE3009F3DF4 /* SystemStatusReportView.swift in Sources */,
 				CECC759C23D61C1400486676 /* AggregateDataHelper.swift in Sources */,
+				03E471D0293FA62B001A58AD /* CardReaderTransactionAlertsProviding.swift in Sources */,
 				02645D7D27BA027B0065DC68 /* Inbox.swift in Sources */,
 				D81D9228222E7F0800FFA585 /* OrderStatusListViewController.swift in Sources */,
 				CEE006082077D14C0079161F /* OrderDetailsViewController.swift in Sources */,

@@ -1773,3 +1773,31 @@ extension WooAnalyticsEvent {
         }
     }
 }
+
+// MARK: - Analytics Hub
+//
+extension WooAnalyticsEvent {
+    enum AnalyticsHub {
+        enum Keys: String {
+            case option
+        }
+
+        /// Tracks when the "See more" button is tapped in My Store, to open the Analytics Hub.
+        ///
+        static func seeMoreAnalyticsTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .dashboardSeeMoreAnalyticsTapped, properties: [:])
+        }
+
+        /// Tracks when the date range selector button is tapped.
+        ///
+        static func dateRangeButtonTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .analyticsHubDateRangeButtonTapped, properties: [:])
+        }
+
+        /// Tracks when a date range option is selected like “today”, “yesterday”, or “custom”.
+        ///
+        static func dateRangeOptionSelected(_ option: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .analyticsHubDateRangeOptionSelected, properties: [Keys.option.rawValue: option])
+        }
+    }
+}

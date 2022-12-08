@@ -21,8 +21,6 @@ final class CardPresentModalScanningForReader: CardPresentPaymentsModalViewModel
 
     let auxiliaryButtonTitle: String? = nil
 
-    let auxiliaryButtonimage: UIImage? = .infoOutlineImage
-
     var auxiliaryAttributedButtonTitle: NSAttributedString? {
         let result = NSMutableAttributedString(
             string: .localizedStringWithFormat(

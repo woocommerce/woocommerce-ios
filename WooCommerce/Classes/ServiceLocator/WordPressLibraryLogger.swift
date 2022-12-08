@@ -1,5 +1,4 @@
 import CocoaLumberjack
-import AutomatticTracks
 import WordPressShared
 
 class WordPressLibraryLogger: NSObject, WordPressLoggingDelegate {

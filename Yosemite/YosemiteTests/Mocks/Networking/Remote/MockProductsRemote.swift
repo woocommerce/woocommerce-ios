@@ -91,7 +91,6 @@ extension MockProductsRemote: ProductsRemoteProtocol {
     func loadProducts(for siteID: Int64, by productIDs: [Int64], pageNumber: Int, pageSize: Int) -> [Product] {
         // TODO: Mock loadProducts. We no longer use the Result<[Product], Error> signature
         return [Product.fake()]
-        
     }
 
     func loadAllProducts(for siteID: Int64,

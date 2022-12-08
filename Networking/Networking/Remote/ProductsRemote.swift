@@ -38,7 +38,7 @@ public protocol ProductsRemoteProtocol {
     func searchSku(for siteID: Int64,
                    sku: String,
                    completion: @escaping (Result<String, Error>) -> Void)
-    func updateProduct(product: Product, completion: @escaping (Result<Product, Error>) -> Void)
+    func updateProduct(product: Product) async throws -> Product
     func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage], completion: @escaping (Result<Product, Error>) -> Void)
     func loadProductIDs(for siteID: Int64, pageNumber: Int, pageSize: Int, completion: @escaping (Result<[Int64], Error>) -> Void)
     func createTemplateProduct(for siteID: Int64, template: ProductsRemote.TemplateType, completion: @escaping (Result<Int64, Error>) -> Void)
@@ -283,21 +283,16 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     ///
     /// - Parameters:
     ///     - product: the Product to update remotely.
-    ///     - completion: Closure to be executed upon completion.
     ///
-    public func updateProduct(product: Product, completion: @escaping (Result<Product, Error>) -> Void) {
-        do {
-            let parameters = try product.toDictionary()
-            let productID = product.productID
-            let siteID = product.siteID
-            let path = "\(Path.products)/\(productID)"
-            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
-            let mapper = ProductMapper(siteID: siteID)
+    public func updateProduct(product: Product) async throws -> Product {
+        let parameters = try product.toDictionary()
+        let productID = product.productID
+        let siteID = product.siteID
+        let path = "\(Path.products)/\(productID)"
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+        let mapper = ProductMapper(siteID: siteID)
 
-            enqueue(request, mapper: mapper, completion: completion)
-        } catch {
-            completion(.failure(error))
-        }
+        return try await enqueue(request, mapper: mapper)
     }
 
     public func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage], completion: @escaping (Result<Product, Error>) -> Void) {

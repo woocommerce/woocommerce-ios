@@ -330,18 +330,18 @@ private extension ProductStore {
     /// Updates the product.
     ///
     func updateProduct(product: Product, onCompletion: @escaping (Result<Product, ProductUpdateError>) -> Void) {
-        remote.updateProduct(product: product) { [weak self] result in
-            switch result {
-            case .failure(let error):
-                onCompletion(.failure(ProductUpdateError(error: error)))
-            case .success(let product):
-                self?.upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: product.siteID) { [weak self] in
+        Task {
+            do {
+                let product = try await remote.updateProduct(product: product)
+                upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: product.siteID) { [weak self] in
                     guard let storageProduct = self?.storageManager.viewStorage.loadProduct(siteID: product.siteID, productID: product.productID) else {
                         onCompletion(.failure(.notFoundInStorage))
                         return
                     }
                     onCompletion(.success(storageProduct.toReadOnly()))
                 }
+            } catch {
+                onCompletion(.failure(ProductUpdateError(error: error)))
             }
         }
     }

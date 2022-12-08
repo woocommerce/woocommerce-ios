@@ -508,6 +508,8 @@
 		03E471D42942096B001A58AD /* BuiltInCardReaderPaymentAlertsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E471D32942096B001A58AD /* BuiltInCardReaderPaymentAlertsProvider.swift */; };
 		03E471D62942222E001A58AD /* CardPresentModalBuiltInFollowReaderInstructions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E471D52942222D001A58AD /* CardPresentModalBuiltInFollowReaderInstructions.swift */; };
 		03E471D829424CF9001A58AD /* CardPresentModalBuiltInReaderProcessing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E471D729424CF8001A58AD /* CardPresentModalBuiltInReaderProcessing.swift */; };
+		03E471DA29424E82001A58AD /* CardPresentModalBuiltInSuccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E471D929424E81001A58AD /* CardPresentModalBuiltInSuccess.swift */; };
+		03E471DC29424EC9001A58AD /* CardPresentModalBuiltInSuccessWithoutEmail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E471DB29424EC9001A58AD /* CardPresentModalBuiltInSuccessWithoutEmail.swift */; };
 		03EF24FA28BF5D21006A033E /* InPersonPaymentsCashOnDeliveryToggleRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EF24F928BF5D21006A033E /* InPersonPaymentsCashOnDeliveryToggleRowViewModel.swift */; };
 		03EF24FC28BF996F006A033E /* InPersonPaymentsCashOnDeliveryPaymentGatewayHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EF24FB28BF996F006A033E /* InPersonPaymentsCashOnDeliveryPaymentGatewayHelpers.swift */; };
 		03EF24FE28C0B356006A033E /* CardPresentPaymentsPlugin+CashOnDelivery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EF24FD28C0B356006A033E /* CardPresentPaymentsPlugin+CashOnDelivery.swift */; };
@@ -2532,6 +2534,8 @@
 		03E471D32942096B001A58AD /* BuiltInCardReaderPaymentAlertsProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BuiltInCardReaderPaymentAlertsProvider.swift; sourceTree = "<group>"; };
 		03E471D52942222D001A58AD /* CardPresentModalBuiltInFollowReaderInstructions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPresentModalBuiltInFollowReaderInstructions.swift; sourceTree = "<group>"; };
 		03E471D729424CF8001A58AD /* CardPresentModalBuiltInReaderProcessing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPresentModalBuiltInReaderProcessing.swift; sourceTree = "<group>"; };
+		03E471D929424E81001A58AD /* CardPresentModalBuiltInSuccess.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPresentModalBuiltInSuccess.swift; sourceTree = "<group>"; };
+		03E471DB29424EC9001A58AD /* CardPresentModalBuiltInSuccessWithoutEmail.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPresentModalBuiltInSuccessWithoutEmail.swift; sourceTree = "<group>"; };
 		03EF24F928BF5D21006A033E /* InPersonPaymentsCashOnDeliveryToggleRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCashOnDeliveryToggleRowViewModel.swift; sourceTree = "<group>"; };
 		03EF24FB28BF996F006A033E /* InPersonPaymentsCashOnDeliveryPaymentGatewayHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCashOnDeliveryPaymentGatewayHelpers.swift; sourceTree = "<group>"; };
 		03EF24FD28C0B356006A033E /* CardPresentPaymentsPlugin+CashOnDelivery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CardPresentPaymentsPlugin+CashOnDelivery.swift"; sourceTree = "<group>"; };
@@ -8604,7 +8608,9 @@
 				03E471D52942222D001A58AD /* CardPresentModalBuiltInFollowReaderInstructions.swift */,
 				D8815B0026385E3F00EDAD62 /* CardPresentModalTapCard.swift */,
 				D8815B0C263861A400EDAD62 /* CardPresentModalSuccess.swift */,
+				03E471D929424E81001A58AD /* CardPresentModalBuiltInSuccess.swift */,
 				E16715CA26663B0B00326230 /* CardPresentModalSuccessWithoutEmail.swift */,
+				03E471DB29424EC9001A58AD /* CardPresentModalBuiltInSuccessWithoutEmail.swift */,
 				D8815B122638686200EDAD62 /* CardPresentModalError.swift */,
 				D802541E2655137A001B2CC1 /* CardPresentModalNonRetryableError.swift */,
 				03E471CD293F63B4001A58AD /* PaymentCaptureOrchestrator.swift */,
@@ -9936,6 +9942,7 @@
 				57896D6625362B0C000E8C4D /* TitleAndEditableValueTableViewCellViewModel.swift in Sources */,
 				0205021E27C8B6C600FB1C6B /* InboxEligibilityUseCase.swift in Sources */,
 				26E7EE6E29300E8100793045 /* AnalyticsProductCard.swift in Sources */,
+				03E471DA29424E82001A58AD /* CardPresentModalBuiltInSuccess.swift in Sources */,
 				26E1BECE251CD9F80096D0A1 /* RefundItemViewModel.swift in Sources */,
 				26E7EE6C292D894100793045 /* AnalyticsReportCardViewModel.swift in Sources */,
 				DE7B479027A153C20018742E /* CouponSearchUICommand.swift in Sources */,
@@ -10216,6 +10223,7 @@
 				747AA0892107CEC60047A89B /* AnalyticsProvider.swift in Sources */,
 				D89CFF3A25B43BBB000E4683 /* WrongAccountErrorViewModel.swift in Sources */,
 				02B2829227C4808D004A332A /* InfiniteScrollIndicator.swift in Sources */,
+				03E471DC29424EC9001A58AD /* CardPresentModalBuiltInSuccessWithoutEmail.swift in Sources */,
 				45C91CFE25E55A1200FD8812 /* ShippingLabelAddressTopBannerFactory.swift in Sources */,
 				B5DBF3CB20E149CC00B53AED /* AuthenticatedState.swift in Sources */,
 				DE61979328A20C17005E4362 /* StorePickerViewModel.swift in Sources */,

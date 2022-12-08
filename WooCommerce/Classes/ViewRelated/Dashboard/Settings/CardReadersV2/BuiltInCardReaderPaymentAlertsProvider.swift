@@ -39,11 +39,12 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
                  emailReceipt: @escaping () -> Void,
                  noReceiptAction: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         if MFMailComposeViewController.canSendMail() {
-            return CardPresentModalSuccess(printReceipt: printReceipt,
-                                           emailReceipt: emailReceipt,
-                                           noReceiptAction: noReceiptAction)
+            return CardPresentModalBuiltInSuccess(printReceipt: printReceipt,
+                                                  emailReceipt: emailReceipt,
+                                                  noReceiptAction: noReceiptAction)
         } else {
-            return CardPresentModalSuccessWithoutEmail(printReceipt: printReceipt, noReceiptAction: noReceiptAction)
+            return CardPresentModalBuiltInSuccessWithoutEmail(printReceipt: printReceipt,
+                                                              noReceiptAction: noReceiptAction)
         }
     }
 

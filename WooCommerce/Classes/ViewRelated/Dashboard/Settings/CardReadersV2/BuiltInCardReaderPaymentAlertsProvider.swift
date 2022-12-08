@@ -18,11 +18,11 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
                          onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         name = title
         self.amount = amount
-        return CardPresentModalTapCard(name: title,
-                                       amount: amount,
-                                       transactionType: .collectPayment,
-                                       inputMethods: inputMethods,
-                                       onCancel: onCancel)
+        return CardPresentModalBuiltInFollowReaderInstructions(name: name,
+                                              amount: amount,
+                                              transactionType: .collectPayment,
+                                              inputMethods: inputMethods,
+                                              onCancel: { })
     }
 
     func displayReaderMessage(message: String) -> CardPresentPaymentsModalViewModel {

@@ -62,27 +62,23 @@ public final class JetpackConnectionRemote: Remote {
         }
 
         let session = URLSession(configuration: configuration, delegate: self, delegateQueue: nil)
-        do {
-            let request = try URLRequest(url: url, method: Networking.HTTPMethod.get)
-            let task = session.dataTask(with: request) { [weak self] data, response, error in
-                if let result = self?.accountConnectionURL {
-                    DispatchQueue.main.async {
-                        completion(.success(result))
-                    }
-                    return
-                }
-                // We don't expect any response here since we'll cancel the task as soon as a redirect request is received.
-                // So always complete with a failure here.
-                let returnedError = error ?? ConnectionError.accountConnectionURLNotFound
+        let request = URLRequest(url: url, method: Networking.HTTPMethod.get)
+        let task = session.dataTask(with: request) { [weak self] data, response, error in
+            if let result = self?.accountConnectionURL {
                 DispatchQueue.main.async {
-                    completion(.failure(returnedError))
+                    completion(.success(result))
                 }
                 return
             }
-            task.resume()
-        } catch {
-            completion(.failure(error))
+            // We don't expect any response here since we'll cancel the task as soon as a redirect request is received.
+            // So always complete with a failure here.
+            let returnedError = error ?? ConnectionError.accountConnectionURLNotFound
+            DispatchQueue.main.async {
+                completion(.failure(returnedError))
+            }
+            return
         }
+        task.resume()
     }
 
     /// Fetches the user connection state with the site's Jetpack.

@@ -44,7 +44,7 @@ struct DotcomRequest: Request {
     ///
     func asURLRequest() throws -> URLRequest {
         let dotcomURL = URL(string: Settings.wordpressApiBaseURL + wordpressApiVersion.path + path)!
-        let dotcomRequest = try URLRequest(url: dotcomURL, method: method, headers: headers)
+        let dotcomRequest = URLRequest(url: dotcomURL, method: method, headers: headers)
 
         return try URLEncoding().encode(dotcomRequest, with: parameters)
     }

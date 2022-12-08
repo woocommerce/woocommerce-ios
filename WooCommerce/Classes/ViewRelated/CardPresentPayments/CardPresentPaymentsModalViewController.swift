@@ -318,12 +318,10 @@ private extension CardPresentPaymentsModalViewController {
         UIView.performWithoutAnimation {
             auxiliaryButton.setTitle(viewModel.auxiliaryButtonTitle, for: .normal)
             auxiliaryButton.setAttributedTitle(viewModel.auxiliaryAttributedButtonTitle, for: .normal)
-            auxiliaryButton.setImage(viewModel.auxiliaryButtonimage, for: .normal)
-            if viewModel.auxiliaryButtonimage != nil {
-                var config = UIButton.Configuration.plain()
-                config.imagePadding = Constants.buttonTitleAndImageSpacing
-                auxiliaryButton.configuration = config
-            }
+            var config = UIButton.Configuration.plain()
+            config.contentInsets = Constants.auxiliaryButtonInsets
+            config.titleAlignment = .leading
+            auxiliaryButton.configuration = config
             view.layoutIfNeeded()
         }
     }
@@ -418,7 +416,7 @@ private extension CardPresentPaymentsModalViewController {
         static let extraInfoCustomInsets = UIEdgeInsets(top: 12, left: 10, bottom: 12, right: 10)
         static let modalHeight: CGFloat = 382
         static let modalWidth: CGFloat = 280
-        static let buttonTitleAndImageSpacing: CGFloat = 8
+        static let auxiliaryButtonInsets = NSDirectionalEdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8)
     }
 }
 

@@ -354,6 +354,7 @@ private extension StoreStatsV4PeriodViewController {
                                                                       comment: "VoiceOver accessibility label for the store revenue chart's Y-axis.")
         chartAccessibilityView.isAccessibilityElement = true
         chartAccessibilityView.accessibilityTraits = .image
+        chartAccessibilityView.accessibilityIdentifier = "chart-image"
         chartAccessibilityView.accessibilityLabel = NSLocalizedString("Store revenue chart",
                                                                       comment: "VoiceOver accessibility label for the store revenue chart.")
         chartAccessibilityView.accessibilityLabel = String.localizedStringWithFormat(
@@ -690,6 +691,7 @@ private extension StoreStatsV4PeriodViewController {
     func updateStatsDataToDefaultStyles() {
         revenueData.font = Constants.revenueFont
         revenueData.textColor = Constants.statsTextColor
+        revenueData.accessibilityIdentifier = "revenue-value"
     }
 }
 

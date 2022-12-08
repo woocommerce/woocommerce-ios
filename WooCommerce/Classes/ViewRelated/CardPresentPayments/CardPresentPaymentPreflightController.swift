@@ -87,7 +87,8 @@ final class CardPresentPaymentPreflightController {
         observeConnectedReaders()
         // If we're already connected to a reader, return it
         if let connectedReader = connectedReader {
-            readerConnection.send(CardReaderConnectionResult.connected(connectedReader))
+            handleConnectionResult(.success(.connected(connectedReader)))
+            return
         }
 
         // TODO: Run onboarding if needed
@@ -146,7 +147,7 @@ final class CardPresentPaymentPreflightController {
         case .success(let unwrapped):
             self.readerConnection.send(unwrapped)
         default:
-            break
+            alertsPresenter.dismiss()
         }
     }
 

@@ -217,7 +217,6 @@ private extension ProductStore {
         let itemIDs = order.items.map { $0.productID }
         let productIDs = itemIDs.uniqued()  // removes duplicate product IDs
         let storage = storageManager.viewStorage
-        
         // In order to pass `missingIDs` into the asynchronous context, we need to make these non-mutating to avoid race conditions
         let missingIDs: [Int64] = {
             var IDs = [Int64]()
@@ -235,7 +234,7 @@ private extension ProductStore {
             onCompletion(nil)
             return
         }
-        
+
         Task {
             do {
                 let products = try await remote.loadProducts(for: order.siteID, by: missingIDs)

@@ -487,15 +487,14 @@ private extension StatsStoreV4 {
         }
 
         // Fetch the products that we have not downloaded and stored yet
-        productsRemote.loadProducts(for: siteID, by: missingProductsIDs) { result in
-            switch result {
-            case .success(let products):
+        Task {
+            do {
                 // Return the complete array of products that corresponds to a top product leaderboard
+                let products = try await productsRemote.loadProducts(for: siteID, by: missingProductsIDs)
                 let completeTopProducts = products + topStoredProducts
                 completion(.success(completeTopProducts))
-
-            case .failure:
-                completion(result)
+            } catch {
+                completion(.failure(error))
             }
         }
     }

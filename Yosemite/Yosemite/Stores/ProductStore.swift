@@ -215,29 +215,33 @@ private extension ProductStore {
     func requestMissingProducts(for order: Order, onCompletion: @escaping (Error?) -> Void) {
         let itemIDs = order.items.map { $0.productID }
         let productIDs = itemIDs.uniqued()  // removes duplicate product IDs
-
         let storage = storageManager.viewStorage
-        var missingIDs = [Int64]()
-        for productID in productIDs {
-            let storageProduct = storage.loadProduct(siteID: order.siteID, productID: productID)
-            if storageProduct == nil {
-                missingIDs.append(productID)
+        
+        // In order to pass `missingIDs` into the asynchronous context, we need to make these non-mutating to avoid race conditions
+        let missingIDs: [Int64] = {
+            var IDs = [Int64]()
+            for productID in productIDs {
+                let storageProduct = storage.loadProduct(siteID: order.siteID, productID: productID)
+                if storageProduct == nil {
+                    IDs.append(productID)
+                }
             }
-        }
+            return IDs
+        }()
 
         // Do not trigger API request for empty array of items
         guard !missingIDs.isEmpty else {
             onCompletion(nil)
             return
         }
-
-        remote.loadProducts(for: order.siteID, by: missingIDs) { [weak self] result in
-            switch result {
-            case .success(let products):
-                self?.upsertStoredProductsInBackground(readOnlyProducts: products, siteID: order.siteID, onCompletion: {
+        
+        Task {
+            do {
+                let products = try await remote.loadProducts(for: order.siteID, by: missingIDs)
+                upsertStoredProductsInBackground(readOnlyProducts: products, siteID: order.siteID, onCompletion: {
                     onCompletion(nil)
                 })
-            case .failure(let error):
+            } catch {
                 onCompletion(error)
             }
         }
@@ -256,14 +260,14 @@ private extension ProductStore {
             return
         }
 
-        remote.loadProducts(for: siteID, by: productIDs, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
-            switch result {
-            case .success(let products):
-                self?.upsertStoredProductsInBackground(readOnlyProducts: products, siteID: siteID, onCompletion: {
+        Task {
+            do {
+                let products = try await remote.loadProducts(for: siteID, by: productIDs, pageNumber: pageNumber, pageSize: pageSize)
+                upsertStoredProductsInBackground(readOnlyProducts: products, siteID: siteID, onCompletion: {
                     let hasNextPage = products.count == pageSize
                     onCompletion(.success((products: products, hasNextPage: hasNextPage)))
                 })
-            case .failure(let error):
+            } catch {
                 onCompletion(.failure(error))
             }
         }

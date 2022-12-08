@@ -67,17 +67,17 @@ public class AnalyticsHubTimeRangeSelection {
 
 // MARK: - Time Range Selection Type
 extension AnalyticsHubTimeRangeSelection {
-    enum SelectionType: CaseIterable {
-        case today
-        case yesterday
-        case lastWeek
-        case lastMonth
-        case lastQuarter
-        case lastYear
-        case weekToDate
-        case monthToDate
-        case quarterToDate
-        case yearToDate
+    enum SelectionType: String, CaseIterable {
+        case today = "Today"
+        case yesterday = "Yesterday"
+        case lastWeek = "Last Week"
+        case lastMonth = "Last Month"
+        case lastQuarter = "Last Quarter"
+        case lastYear = "Last Year"
+        case weekToDate = "Week to Date"
+        case monthToDate = "Month to Date"
+        case quarterToDate = "Quarter to Date"
+        case yearToDate = "Year to Date"
 
         var description: String {
             switch self {

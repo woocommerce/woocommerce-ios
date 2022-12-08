@@ -6,7 +6,6 @@ extension URL {
     // error, which we would catch because the unit tests would crash.
     static var googleSignInBaseURL = URL(string: "https://accounts.google.com/o/oauth2/v2/auth")!
 
-    // TODO: This is incomplete
     static func googleSignInAuthURL(clientId: String, pkce: ProofKeyForCodeExchange) throws -> URL {
         let queryItems = [
             ("client_id", clientId),

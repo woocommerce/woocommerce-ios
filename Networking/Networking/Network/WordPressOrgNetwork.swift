@@ -45,7 +45,7 @@ public final class WordPressOrgNetwork: Network {
     ///     - completion: Closure to be executed upon completion.
     ///
     public func responseData(for request: Request, completion: @escaping (Data?, Error?) -> Void) {
-        Task {
+        Task(priority: .medium) {
             do {
                 let request = try await createRequest(wrapping: request)
                 let data = try await sessionManager.request(request)
@@ -67,7 +67,7 @@ public final class WordPressOrgNetwork: Network {
     ///     - completion: Closure to be executed upon completion.
     ///
     public func responseData(for request: Request, completion: @escaping (Result<Data, Error>) -> Void) {
-        Task {
+        Task(priority: .medium) {
             do {
                 let request = try await createRequest(wrapping: request)
                 let data = try await sessionManager.request(request)
@@ -89,7 +89,7 @@ public final class WordPressOrgNetwork: Network {
     /// - Returns: A publisher that emits the result of the given request.
     public func responseDataPublisher(for request: Request) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
         return Future() { promise in
-            Task {
+            Task(priority: .medium) {
                 do {
                     let request = try await self.createRequest(wrapping: request)
                     let data = try await self.sessionManager.request(request)
@@ -108,7 +108,7 @@ public final class WordPressOrgNetwork: Network {
     public func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormDataType) -> Void,
                                         to request: Request,
                                         completion: @escaping (Data?, Error?) -> Void) {
-        Task {
+        Task(priority: .low) {
             let request = try await createRequest(wrapping: request)
             do {
                 let data = try await sessionManager.upload(multipartFormData: multipartFormData, with: request)

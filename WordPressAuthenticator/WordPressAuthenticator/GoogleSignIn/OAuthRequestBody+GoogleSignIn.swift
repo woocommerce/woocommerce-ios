@@ -15,8 +15,6 @@ extension OAuthTokenRequestBody {
             clientSecret: "",
             code: authCode,
             codeVerifier: pkce.codeVerifier,
-            // TODO: This might be hardcoded...
-            //
             // As defined in the OAuth 2.0 specification, this field's value must be set to authorization_code.
             // – https://developers.google.com/identity/protocols/oauth2/native-app#exchange-authorization-code
             grantType: "authorization_code",

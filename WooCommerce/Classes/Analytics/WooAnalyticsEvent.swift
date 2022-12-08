@@ -1780,6 +1780,8 @@ extension WooAnalyticsEvent {
     enum AnalyticsHub {
         enum Keys: String {
             case option
+            case calendar
+            case timezone
         }
 
         /// Tracks when the "See more" button is tapped in My Store, to open the Analytics Hub.
@@ -1798,6 +1800,15 @@ extension WooAnalyticsEvent {
         ///
         static func dateRangeOptionSelected(_ option: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .analyticsHubDateRangeOptionSelected, properties: [Keys.option.rawValue: option])
+        }
+
+        /// Tracks when the date range selection fails, due to an error generating the date range from the selection.
+        /// Includes the current device calendar and timezone, for debugging the failure.
+        ///
+        static func dateRangeSelectionFailed(for option: AnalyticsHubTimeRangeSelection.SelectionType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .analyticsHubDateRangeSelectionFailed, properties: [Keys.option.rawValue: option.rawValue,
+                                                                                            Keys.calendar.rawValue: Locale.current.calendar.debugDescription,
+                                                                                            Keys.timezone.rawValue: TimeZone.current.debugDescription])
         }
     }
 }

@@ -154,6 +154,7 @@ public enum WooAnalyticsStat: String {
     //
     case analyticsHubDateRangeButtonTapped = "analytics_hub_date_range_button_tapped"
     case analyticsHubDateRangeOptionSelected = "analytics_hub_date_range_option_selected"
+    case analyticsHubDateRangeSelectionFailed = "analytics_hub_date_range_selection_failed"
 
     // MARK: Products Onboarding Events
     //

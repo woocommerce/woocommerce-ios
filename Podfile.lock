@@ -96,7 +96,6 @@ DEPENDENCIES:
 SPEC REPOS:
   https://github.com/wordpress-mobile/cocoapods-specs.git:
     - WordPressAuthenticator
-    - WordPressShared
   trunk:
     - Alamofire
     - AppAuth
@@ -119,6 +118,7 @@ SPEC REPOS:
     - WordPress-Aztec-iOS
     - WordPress-Editor-iOS
     - WordPressKit
+    - WordPressShared
     - WordPressUI
     - Wormholy
     - WPMediaPicker
@@ -155,7 +155,7 @@ SPEC CHECKSUMS:
   WordPress-Editor-iOS: 304098424f1051cb271546c99f906aac296b1b81
   WordPressAuthenticator: 0cdf1bff75bd3f58fe733d6457221f27bbbdc9f4
   WordPressKit: 202f529323b079a344f7bc1493b7ebebfd9ed4b5
-  WordPressShared: bc2ee610c4ec06cab411d04a212ad6297edd4288
+  WordPressShared: 04403b43f821c4ed2b84a2112ef9f64f1e7cdceb
   WordPressUI: c5be816f6c7b3392224ac21de9e521e89fa108ac
   Wormholy: 3252bc3e55a1847ef9a0976c1377bd77bf3635fa
   WPMediaPicker: 9011a0ec1f468c039af7485c244576b4c9889a0f

@@ -39,7 +39,7 @@ public protocol ProductsRemoteProtocol {
     func updateProduct(product: Product) async throws -> Product
     func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage]) async throws -> Product
     func loadProductIDs(for siteID: Int64, pageNumber: Int, pageSize: Int) async throws -> [Int64]
-    func createTemplateProduct(for siteID: Int64, template: ProductsRemote.TemplateType, completion: @escaping (Result<Int64, Error>) -> Void)
+    func createTemplateProduct(for siteID: Int64, template: ProductsRemote.TemplateType) async throws -> Int64
 }
 
 extension ProductsRemoteProtocol {
@@ -327,13 +327,13 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     /// Finishes with a completion block with the product ID.
     /// The created product has an `auto-draft` status.
     ///
-    public func createTemplateProduct(for siteID: Int64, template: ProductsRemote.TemplateType, completion: @escaping (Result<Int64, Error>) -> Void) {
+    public func createTemplateProduct(for siteID: Int64, template: ProductsRemote.TemplateType) async throws -> Int64 {
         let parameters = [ParameterKey.templateName: template.rawValue]
         let path = Path.templateProducts
         let request = JetpackRequest(wooApiVersion: .wcAdmin, method: .post, siteID: siteID, path: path, parameters: parameters)
         let mapper = EntityIDMapper()
 
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 }
 

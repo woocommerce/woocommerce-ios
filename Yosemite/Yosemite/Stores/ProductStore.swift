@@ -412,14 +412,12 @@ private extension ProductStore {
     /// The created product is not stored locally.
     ///
     func createTemplateProduct(siteID: Int64, template: ProductsRemote.TemplateType, onCompletion: @escaping (Result<Product, Error>) -> Void) {
-        remote.createTemplateProduct(for: siteID, template: template) { [remote] result in
-            switch result {
-            case .success(let productID):
-                Task {
-                    let result = try await remote.loadProduct(for: siteID, productID: productID)
-                    onCompletion(.success(result))
-                }
-            case .failure(let error):
+        Task {
+            do {
+                let productID = try await remote.createTemplateProduct(for: siteID, template: template)
+                let product = try await remote.loadProduct(for: siteID, productID: productID)
+                onCompletion(.success(product))
+            } catch {
                 onCompletion(.failure(error))
             }
         }

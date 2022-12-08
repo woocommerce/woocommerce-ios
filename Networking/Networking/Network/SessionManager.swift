@@ -46,7 +46,6 @@ final class SessionManager {
     /// - parameter urlRequest: The URL request.
     ///
     /// - returns: The created `DataRequest`.
-    @discardableResult
     func request(_ urlRequest: Request) async throws -> Data {
         guard let originalRequest = urlRequest.urlRequest else {
             throw NetworkError.invalidRequest

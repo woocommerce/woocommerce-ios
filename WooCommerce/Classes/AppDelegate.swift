@@ -54,6 +54,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Setup Components
         setupAnalytics()
         setupCocoaLumberjack()
+        setupLibraryLogger()
         setupLogLevel(.verbose)
         setupPushNotificationsManagerIfPossible()
         setupAppRatingManager()
@@ -276,12 +277,19 @@ private extension AppDelegate {
         DDLog.add(logger)
     }
 
-    /// Sets up the current Log Leve.
+    /// Sets up loggers for WordPress libraries
+    ///
+    func setupLibraryLogger() {
+        let logger = ServiceLocator.wordPressLibraryLogger
+        WPSharedSetLoggingDelegate(logger)
+        WPAuthenticatorSetLoggingDelegate(logger)
+        WPKitSetLoggingDelegate(logger)
+    }
+
+    /// Sets up the current Log Level.
     ///
     func setupLogLevel(_ level: DDLogLevel) {
-        WPSharedSetLoggingLevel(level)
-        WPAuthenticatorSetLoggingLevel(level)
-        WPKitSetLoggingLevel(level)
+        CocoaLumberjack.dynamicLogLevel = level
     }
 
     /// Setup: Notice Presenter

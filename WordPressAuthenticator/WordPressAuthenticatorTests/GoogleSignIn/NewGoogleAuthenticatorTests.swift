@@ -11,6 +11,7 @@ class NewGoogleAuthenticatorTests: XCTestCase {
         let authenticator = await NewGoogleAuthenticator(
             clientId: fakeClientId,
             scheme: "scheme",
+            audience: "audience",
             contextProvider: FakeContextProvider(),
             oautTokenGetter: GoogleOAuthTokenGettingStub(response: .fixture())
         )
@@ -20,6 +21,7 @@ class NewGoogleAuthenticatorTests: XCTestCase {
             _ = try await authenticator.requestOAuthToken(
                 url: url,
                 clientId: GoogleClientId(string: "a.b.c")!,
+                audience: "audience",
                 pkce: ProofKeyForCodeExchange()
             )
             XCTFail("Expected an error to be thrown")
@@ -36,6 +38,7 @@ class NewGoogleAuthenticatorTests: XCTestCase {
         let authenticator = await NewGoogleAuthenticator(
             clientId: fakeClientId,
             scheme: "scheme",
+            audience: "audience",
             contextProvider: FakeContextProvider(),
             oautTokenGetter: GoogleOAuthTokenGettingStub(error: TestError(id: 1))
         )
@@ -45,6 +48,7 @@ class NewGoogleAuthenticatorTests: XCTestCase {
             _ = try await authenticator.requestOAuthToken(
                 url: url,
                 clientId: GoogleClientId(string: "a.b.c")!,
+                audience: "audience",
                 pkce: ProofKeyForCodeExchange()
             )
             XCTFail("Expected an error to be thrown")
@@ -58,6 +62,7 @@ class NewGoogleAuthenticatorTests: XCTestCase {
         let authenticator = await NewGoogleAuthenticator(
             clientId: fakeClientId,
             scheme: "scheme",
+            audience: "audience",
             contextProvider: FakeContextProvider(),
             oautTokenGetter: GoogleOAuthTokenGettingStub(response: .fixture(accessToken: "token"))
         )
@@ -67,6 +72,7 @@ class NewGoogleAuthenticatorTests: XCTestCase {
             let response = try await authenticator.requestOAuthToken(
                 url: url,
                 clientId: GoogleClientId(string: "a.b.c")!,
+                audience: "audience",
                 pkce: ProofKeyForCodeExchange()
             )
             XCTAssertEqual(response, "token")

@@ -2,22 +2,13 @@ import Yosemite
 import PassKit
 import WooFoundation
 
-/// Contains data associated with a payment that has been collected, processed, and captured.
-struct CardPresentCapturedPaymentData {
-    /// Currently used for analytics.
-    let paymentMethod: PaymentMethod
-
-    /// Used for receipt generation for display in the app.
-    let receiptParameters: CardPresentReceiptParameters
-}
-
 /// Orchestrates the sequence of actions required to capture a payment:
-/// 1. Triggers the `preparingReader` alert
-/// 2. Creates the payment intent parameters
-/// 3. Controls (prevents during payment) wallet presentation: we don't want to use the merchant's Apple Pay for their customer's purchase!
-/// 4. Obtain a Payment Intent from the card reader (i.e., create a payment intent, collect a payment method, and process the payment)
-/// 5. Submit the Payment Intent to WCPay to capture a payment
-final class PaymentCaptureOrchestrator {
+/// 1. Check if there is a card reader connected
+/// 2. Launch the reader discovering and pairing UI if there is no reader connected
+/// 3. Obtain a Payment Intent from the card reader (i.e., create a payment intent, collect a payment method, and process the payment)
+/// 4. Submit the Payment Intent to WCPay to capture a payment
+/// Steps 1 and 2 will be implemented as part of https://github.com/woocommerce/woocommerce-ios/issues/4062
+final class LegacyPaymentCaptureOrchestrator {
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
     private let personNameComponentsFormatter = PersonNameComponentsFormatter()
     private let paymentReceiptEmailParameterDeterminer: ReceiptEmailParameterDeterminer
@@ -41,14 +32,11 @@ final class PaymentCaptureOrchestrator {
                         paymentGatewayAccount: PaymentGatewayAccount,
                         paymentMethodTypes: [String],
                         stripeSmallestCurrencyUnitMultiplier: Decimal,
-                        onPreparingReader: () -> Void,
                         onWaitingForInput: @escaping (CardReaderInput) -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onDisplayMessage: @escaping (String) -> Void,
                         onProcessingCompletion: @escaping (PaymentIntent) -> Void,
                         onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
-        onPreparingReader()
-
         /// Set state of CardPresentPaymentStore
         ///
         let setAccount = CardPresentPaymentAction.use(paymentGatewayAccount: paymentGatewayAccount)
@@ -122,7 +110,7 @@ final class PaymentCaptureOrchestrator {
     }
 }
 
-private extension PaymentCaptureOrchestrator {
+private extension LegacyPaymentCaptureOrchestrator {
     /// Suppress wallet presentation. This requires a special entitlement from Apple:
     /// `com.apple.developer.passkit.pass-presentation-suppression`
     /// See Woo-*.entitlements in WooCommerce/Resources
@@ -170,7 +158,7 @@ private extension PaymentCaptureOrchestrator {
     }
 }
 
-private extension PaymentCaptureOrchestrator {
+private extension LegacyPaymentCaptureOrchestrator {
     func completePaymentIntentCapture(order: Order,
                                     captureResult: Result<PaymentIntent, Error>,
                                     onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
@@ -261,14 +249,14 @@ private extension PaymentCaptureOrchestrator {
     }
 }
 
-private extension PaymentCaptureOrchestrator {
+private extension LegacyPaymentCaptureOrchestrator {
     enum Constants {
         static let canadaFlatFee = NSDecimalNumber(string: "0.15")
         static let canadaPercentageFee = NSDecimalNumber(0)
     }
 }
 
-private extension PaymentCaptureOrchestrator {
+private extension LegacyPaymentCaptureOrchestrator {
     enum Localization {
         static let receiptDescription = NSLocalizedString(
             "In-Person Payment for Order #%1$@ for %2$@ blog_id %3$@",

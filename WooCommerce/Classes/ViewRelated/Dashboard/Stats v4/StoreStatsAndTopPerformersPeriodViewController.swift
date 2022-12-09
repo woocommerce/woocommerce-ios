@@ -292,9 +292,7 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
             ])
 
         // Analytics Hub ("See more") button
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.analyticsHub) {
-            stackView.addArrangedSubview(analyticsHubButtonView)
-        }
+        stackView.addArrangedSubview(analyticsHubButtonView)
 
         // In-app Feedback Card
         stackView.addArrangedSubviews(inAppFeedbackCardViewsForStackView)
@@ -357,7 +355,8 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
     }
 
     @objc func seeMoreButtonTapped() {
-        let analyticsHubVC = AnalyticsHubHostingViewController(siteID: siteID, timeRange: timeRange)
+        ServiceLocator.analytics.track(event: .AnalyticsHub.seeMoreAnalyticsTapped())
+        let analyticsHubVC = AnalyticsHubHostingViewController(siteID: siteID, timeRange: timeRange, usageTracksEventEmitter: usageTracksEventEmitter)
         show(analyticsHubVC, sender: self)
     }
 }

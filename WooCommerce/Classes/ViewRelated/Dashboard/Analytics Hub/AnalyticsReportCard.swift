@@ -27,7 +27,6 @@ struct AnalyticsReportCard: View {
 
     // Layout metrics that scale based on accessibility changes
     @ScaledMetric private var scaledChartWidth: CGFloat = Layout.chartWidth
-    @ScaledMetric private var scaledChartHeight: CGFloat = Layout.chartHeight
 
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.titleSpacing) {
@@ -57,7 +56,8 @@ struct AnalyticsReportCard: View {
                             .shimmering(active: isRedacted)
 
                         AnalyticsLineChart(dataPoints: leadingChartData, lineChartColor: leadingChartColor)
-                            .frame(width: scaledChartWidth, height: scaledChartHeight)
+                            .aspectRatio(Layout.chartAspectRatio, contentMode: .fit)
+                            .frame(maxWidth: scaledChartWidth)
                     }
 
                 }
@@ -81,7 +81,8 @@ struct AnalyticsReportCard: View {
                             .shimmering(active: isRedacted)
 
                         AnalyticsLineChart(dataPoints: trailingChartData, lineChartColor: trailingChartColor)
-                            .frame(width: scaledChartWidth, height: scaledChartHeight)
+                            .aspectRatio(Layout.chartAspectRatio, contentMode: .fit)
+                            .frame(maxWidth: scaledChartWidth)
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -107,6 +108,7 @@ private extension AnalyticsReportCard {
         static let columnInnerSpacing: CGFloat = 10
         static let chartHeight: CGFloat = 32
         static let chartWidth: CGFloat = 72
+        static let chartAspectRatio: CGFloat = 2.25
     }
 }
 

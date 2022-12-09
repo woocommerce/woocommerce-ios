@@ -89,6 +89,36 @@ extension UnderlyingError {
             self = .readerSessionExpired
         case ErrorCode.Code.stripeAPIError.rawValue:
             self = .processorAPIError
+        case ErrorCode.Code.passcodeNotEnabled.rawValue:
+            self = .passcodeNotEnabled
+        case ErrorCode.Code.appleBuiltInReaderTOSAcceptanceRequiresiCloudSignIn.rawValue:
+            self = .appleBuiltInReaderTOSAcceptanceRequiresiCloudSignIn
+        case ErrorCode.Code.nfcDisabled.rawValue:
+            self = .nfcDisabled
+        case ErrorCode.Code.appleBuiltInReaderFailedToPrepare.rawValue:
+            self = .appleBuiltInReaderFailedToPrepare
+        case ErrorCode.Code.appleBuiltInReaderTOSAcceptanceCanceled.rawValue:
+            self = .appleBuiltInReaderTOSAcceptanceCanceled
+        case ErrorCode.Code.appleBuiltInReaderTOSNotYetAccepted.rawValue:
+            self = .appleBuiltInReaderTOSNotYetAccepted
+        case ErrorCode.Code.appleBuiltInReaderTOSAcceptanceFailed.rawValue:
+            self = .appleBuiltInReaderTOSAcceptanceFailed
+        case ErrorCode.Code.appleBuiltInReaderMerchantBlocked.rawValue:
+            self = .appleBuiltInReaderMerchantBlocked
+        case ErrorCode.Code.appleBuiltInReaderInvalidMerchant.rawValue:
+            self = .appleBuiltInReaderInvalidMerchant
+        case ErrorCode.Code.appleBuiltInReaderDeviceBanned.rawValue:
+            self = .appleBuiltInReaderDeviceBanned
+        case ErrorCode.Code.unsupportedMobileDeviceConfiguration.rawValue:
+            self = .unsupportedMobileDeviceConfiguration
+        case ErrorCode.Code.readerNotAccessibleInBackground.rawValue:
+            self = .readerNotAccessibleInBackground
+        case ErrorCode.Code.commandNotAllowedDuringCall.rawValue:
+            self = .commandNotAllowedDuringCall
+        case ErrorCode.Code.invalidAmount.rawValue:
+            self = .invalidAmount
+        case ErrorCode.Code.invalidCurrency.rawValue:
+            self = .invalidCurrency
         default:
             return nil
         }

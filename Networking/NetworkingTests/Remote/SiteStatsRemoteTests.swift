@@ -57,4 +57,42 @@ class SiteStatsRemoteTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
     }
+
+    /// Verifies that loadSiteSummaryStats properly parses the `SiteSummaryStats` sample response.
+    ///
+    func test_loadSiteSummaryStats_properly_returns_parsed_stats() throws {
+        // Given
+        let remote = SiteStatsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/summary/", filename: "site-summary-stats")
+
+        // When
+        let result: Result<SiteSummaryStats, Error> = waitFor { promise in
+            remote.loadSiteSummaryStats(for: self.sampleSiteID, period: .day, includingDate: Date()) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let siteSummaryStats = try result.get()
+        XCTAssertEqual(siteSummaryStats.visitors, 12)
+        XCTAssertEqual(siteSummaryStats.views, 123)
+    }
+
+    /// Verifies that loadSiteSummaryStats properly relays Networking Layer errors.
+    ///
+    func test_loadSiteSummaryStats_properly_relays_networking_errors() {
+        // Given
+        let remote = SiteStatsRemote(network: network)
+
+        // When
+        let result: Result<SiteSummaryStats, Error> = waitFor { promise in
+            remote.loadSiteSummaryStats(for: self.sampleSiteID, period: .day, includingDate: Date()) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
 }

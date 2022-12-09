@@ -22,16 +22,18 @@ final class PaymentCaptureOrchestrator {
     private let personNameComponentsFormatter = PersonNameComponentsFormatter()
     private let paymentReceiptEmailParameterDeterminer: ReceiptEmailParameterDeterminer
 
-    private let celebration = PaymentCaptureCelebration()
+    private let celebration: PaymentCaptureCelebrationProtocol
 
     private var walletSuppressionRequestToken: PKSuppressionRequestToken?
 
     private let stores: StoresManager
 
     init(stores: StoresManager = ServiceLocator.stores,
-         paymentReceiptEmailParameterDeterminer: ReceiptEmailParameterDeterminer = PaymentReceiptEmailParameterDeterminer()) {
+         paymentReceiptEmailParameterDeterminer: ReceiptEmailParameterDeterminer = PaymentReceiptEmailParameterDeterminer(),
+         celebration: PaymentCaptureCelebrationProtocol) {
         self.stores = stores
         self.paymentReceiptEmailParameterDeterminer = paymentReceiptEmailParameterDeterminer
+        self.celebration = celebration
     }
 
     func collectPayment(for order: Order,

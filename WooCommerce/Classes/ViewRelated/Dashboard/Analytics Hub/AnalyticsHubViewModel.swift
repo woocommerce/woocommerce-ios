@@ -45,6 +45,17 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published var productCard = AnalyticsHubViewModel.productCard(currentPeriodStats: nil, previousPeriodStats: nil, itemsSoldStats: nil)
 
+    /// Sessions Card ViewModel
+    ///
+    @Published var sessionsCard = AnalyticsReportCardCurrentPeriodViewModel(title: "SESSIONS",
+                                                                            leadingTitle: "Views",
+                                                                            leadingValue: "1,458",
+                                                                            trailingTitle: "Conversion Rate",
+                                                                            trailingValue: "4.5%",
+                                                                            isRedacted: false,
+                                                                            showSyncError: false,
+                                                                            syncErrorMessage: "")
+
     /// Time Range Selection Type
     ///
     @Published var timeRangeSelectionType: AnalyticsHubTimeRangeSelection.SelectionType

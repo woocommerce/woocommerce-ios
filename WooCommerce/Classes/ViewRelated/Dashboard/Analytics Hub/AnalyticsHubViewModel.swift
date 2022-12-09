@@ -100,13 +100,14 @@ private extension AnalyticsHubViewModel {
         let currentTimeRange = try timeRangeSelection.unwrapCurrentTimeRange()
         let previousTimeRange = try timeRangeSelection.unwrapPreviousTimeRange()
 
-        await withThrowingTaskGroup(of: Void.self) { group in
+        try await withThrowingTaskGroup(of: Void.self) { group in
             group.addTask {
                 try await self.retrieveOrderStats(currentTimeRange: currentTimeRange, previousTimeRange: previousTimeRange)
             }
             group.addTask {
                 try await self.retrieveVisitorStats(currentTimeRange: currentTimeRange, previousTimeRange: previousTimeRange)
             }
+            try await group.waitForAll()
         }
     }
 

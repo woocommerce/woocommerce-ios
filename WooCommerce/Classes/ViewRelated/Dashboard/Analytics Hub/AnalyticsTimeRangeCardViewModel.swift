@@ -15,4 +15,8 @@ struct AnalyticsTimeRangeCardViewModel {
     /// Previous Range Subtitle.
     ///
     let previousRangeSubtitle: String
+
+    /// Analytics Usage Tracks Event Emitter
+    ///
+    let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
 }

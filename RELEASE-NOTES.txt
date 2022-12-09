@@ -2,6 +2,7 @@
 
 11.6
 -----
+- [***] We added a new Analytics Hub inside the My Store area of the app. Simply click on the See More button under the store stats to check more detailed information on Revenue, Orders and Products. [https://github.com/woocommerce/woocommerce-ios/pull/8356]
 - [*] In-Person Payments: fixed timing issues in payments flow, which caused "Remove card" to be shown for too long [https://github.com/woocommerce/woocommerce-ios/pull/8351]
 
 11.5

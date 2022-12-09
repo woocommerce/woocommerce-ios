@@ -1056,19 +1056,25 @@ final class ProductStoreTests: XCTestCase {
         let filteredProductCategory: Networking.ProductCategory = .init(categoryID: 123, siteID: sampleSiteID, parentID: 1, name: "Test", slug: "test")
 
         // When
-        let searchAction = ProductAction.searchProducts(siteID: sampleSiteID,
-                                                        keyword: "hiii",
-                                                        pageNumber: defaultPageNumber,
-                                                        pageSize: defaultPageSize,
-                                                        stockStatus: filteredStockStatus,
-                                                        productStatus: filteredProductStatus,
-                                                        productType: filteredProductType,
-                                                        productCategory: filteredProductCategory,
-                                                        excludedProductIDs: [],
-                                                        onCompletion: { _ in })
-        productStore.onAction(searchAction)
+
 
         // Then
+        waitForExpectation() { expectation in
+            let searchAction = ProductAction.searchProducts(siteID: sampleSiteID,
+                                                            keyword: "hiii",
+                                                            pageNumber: defaultPageNumber,
+                                                            pageSize: defaultPageSize,
+                                                            stockStatus: filteredStockStatus,
+                                                            productStatus: filteredProductStatus,
+                                                            productType: filteredProductType,
+                                                            productCategory: filteredProductCategory,
+                                                            excludedProductIDs: [],
+                                                            onCompletion: { _ in
+                expectation.fulfill()
+            })
+            productStore.onAction(searchAction)
+        }
+    
         XCTAssertTrue(remote.searchProductTriggered)
         assertEqual(filteredStockStatus, remote.searchProductWithStockStatus)
         assertEqual(filteredProductType, remote.searchProductWithProductType)
@@ -1456,8 +1462,13 @@ final class ProductStoreTests: XCTestCase {
         // Action
         let pageNumber = 6
         let pageSize = 36
-        let action = ProductAction.retrieveProducts(siteID: sampleSiteID, productIDs: [sampleProductID], pageNumber: pageNumber, pageSize: pageSize) { _ in }
-        productStore.onAction(action)
+
+        waitForExpectation() { expectation in
+            let action = ProductAction.retrieveProducts(siteID: sampleSiteID, productIDs: [sampleProductID], pageNumber: pageNumber, pageSize: pageSize) { _ in
+                expectation.fulfill()
+            }
+            productStore.onAction(action)
+        }
 
         // Assert
         guard let queryParameters = network.queryParameters else {

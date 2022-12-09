@@ -84,6 +84,7 @@ final class AnalyticsHubViewModel: ObservableObject {
             try await retrieveOrderStats()
         } catch is AnalyticsHubTimeRangeSelection.TimeRangeGeneratorError {
             dismissNotice = Notice(title: Localization.timeRangeGeneratorError, feedbackType: .error)
+            ServiceLocator.analytics.track(event: .AnalyticsHub.dateRangeSelectionFailed(for: timeRangeSelectionType))
             DDLogWarn("⚠️ Error selecting analytics time range: \(timeRangeSelectionType.description)")
         } catch {
             switchToErrorState()

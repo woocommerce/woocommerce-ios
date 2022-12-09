@@ -29,6 +29,10 @@ public enum UnderlyingError: Error, Equatable {
     /// A command was cancelled
     case commandCancelled
 
+    /// A command was cancelled on the reader.
+    /// Note that this is not produced by Stripe, we have to infer it from commandCancelled.
+    case commandCancelledOnReader
+
     /// Access to location services is currently disabled. This may be because:
     /// - The user disabled location services in the system settings.
     /// - The user denied access to location services for your app.
@@ -285,6 +289,9 @@ extension UnderlyingError: LocalizedError {
         case .commandCancelled:
             return NSLocalizedString("The system canceled the command unexpectedly - please try again",
                                      comment: "Error message when the system cancels a command.")
+        case .commandCancelledOnReader:
+            return NSLocalizedString("The payment was canceled on the reader",
+                                     comment: "Error message when the cancel button on the reader is used.")
         case .locationServicesDisabled:
             return NSLocalizedString("Unable to access Location Services - please enable Location Services and try again",
                                      comment: "Error message when location services is not enabled for this application.")

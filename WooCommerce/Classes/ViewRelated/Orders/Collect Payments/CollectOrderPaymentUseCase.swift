@@ -274,6 +274,8 @@ private extension CollectOrderPaymentUseCase {
                 switch result {
                 case .success(let capturedPaymentData):
                     self?.handleSuccessfulPayment(capturedPaymentData: capturedPaymentData, onCompletion: onCompletion)
+                case .failure(CardReaderServiceError.paymentMethodCollection(.commandCancelledOnReader)):
+                    self?.handlePaymentCancellationFromReader(alertProvider: paymentAlerts)
                 case .failure(CardReaderServiceError.paymentMethodCollection(.commandCancelled)):
                     self?.handlePaymentCancellation()
                 case .failure(let error):
@@ -301,6 +303,14 @@ private extension CollectOrderPaymentUseCase {
     func handlePaymentCancellation() {
         trackPaymentCancelation()
         alertsPresenter.dismiss()
+    }
+
+    func handlePaymentCancellationFromReader(alertProvider paymentAlerts: CardReaderTransactionAlertsProviding) {
+        trackPaymentCancelation()
+        guard let dismissedOnReaderAlert = paymentAlerts.cancelledOnReader() else {
+            return alertsPresenter.dismiss()
+        }
+        alertsPresenter.present(viewModel: dismissedOnReaderAlert)
     }
 
     /// Log the failure reason, cancel the current payment and retry it if possible.

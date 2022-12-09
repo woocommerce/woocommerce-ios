@@ -502,24 +502,26 @@ private extension StripeCardReaderService {
             /// Because we are chaining promises, we need to retain a reference
             /// to this cancellable if we want to cancel 
             self?.paymentCancellable = Terminal.shared.collectPaymentMethod(intent) { (intent, error) in
-                self?.paymentCancellable = nil
-
                 if let error = error {
-                    let underlyingError = UnderlyingError(with: error)
+                    var underlyingError = UnderlyingError(with: error)
                     /// the completion block for collectPaymentMethod will be called
                     /// with error Canceled when collectPaymentMethod is canceled
                     /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)collectPaymentMethod:delegate:completion:
                     if underlyingError == .commandCancelled {
                         DDLogWarn("💳 Warning: collect payment cancelled \(error)")
+                        /// If we've not used the cancellable in the app, the cancellation must have come from the reader
+                        if self?.paymentCancellable != nil {
+                            underlyingError = .commandCancelledOnReader
+                        }
                     } else {
                         DDLogError("💳 Error: collect payment method \(underlyingError)")
                     }
-
+                    self?.paymentCancellable = nil
                     promise(.failure(CardReaderServiceError.paymentMethodCollection(underlyingError: underlyingError)))
-
                 }
 
                 if let intent = intent {
+                    self?.paymentCancellable = nil
                     self?.sendReaderEvent(.cardDetailsCollected)
                     promise(.success(intent))
                 }

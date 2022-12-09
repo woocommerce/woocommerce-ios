@@ -79,6 +79,10 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
     func retryableError(tryAgain: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalRetryableError(primaryAction: tryAgain)
     }
+
+    func cancelledOnReader() -> CardPresentPaymentsModalViewModel? {
+        return nil
+    }
 }
 
 private extension BuiltInCardReaderPaymentAlertsProvider {

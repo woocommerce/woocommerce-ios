@@ -87,6 +87,12 @@ final class BluetoothCardReaderPaymentAlertsProvider: CardReaderTransactionAlert
     func retryableError(tryAgain: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalRetryableError(primaryAction: tryAgain)
     }
+
+    func cancelledOnReader() -> CardPresentPaymentsModalViewModel? {
+        CardPresentModalNonRetryableError(amount: amount,
+                                          error: CardReaderServiceError.paymentMethodCollection(underlyingError: .commandCancelledOnReader),
+                                          onDismiss: { })
+    }
 }
 
 private extension BluetoothCardReaderPaymentAlertsProvider {

@@ -45,4 +45,8 @@ protocol CardReaderTransactionAlertsProviding {
     /// An alert to display a retriable error
     ///
     func retryableError(tryAgain: @escaping () -> Void) -> CardPresentPaymentsModalViewModel
+
+    /// An alert to notify the merchant that the transaction was cancelled using a button on the reader
+    ///
+    func cancelledOnReader() -> CardPresentPaymentsModalViewModel?
 }

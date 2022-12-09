@@ -1,2 +1,1 @@
-Nous nous sommes concentrés sur des problèmes de stabilité et de performances pour améliorer la fluidité de votre expérience. Continuez de nous faire parvenir vos commentaires. Nous les lisons tous.
-
+Dans cette version, nous avons résolu des bugs et apporté des améliorations pour vous offrir une expérience plus fluide. Tenez-vous informé, car des annonces intéressantes arriveront dans les prochaines semaines !

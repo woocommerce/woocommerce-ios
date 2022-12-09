@@ -160,7 +160,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                         return onCompleted()
                     }
                     self.presentReceiptAlert(receiptParameters: paymentData.receiptParameters,
-                                             alertProvider: reader.paymentAlertProvider,
+                                             alertProvider: reader.paymentAlertProvider(),
                                              onCompleted: onCompleted)
                 })
             case .canceled:
@@ -178,7 +178,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
 }
 
 private extension CardReader {
-    var paymentAlertProvider: CardReaderTransactionAlertsProviding {
+    func paymentAlertProvider() -> CardReaderTransactionAlertsProviding {
         switch readerType {
         case .appleBuiltIn:
             return BuiltInCardReaderPaymentAlertsProvider()

@@ -178,8 +178,16 @@ extension MockProductsRemote: ProductsRemoteProtocol {
     }
 
     func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage]) async throws -> Product {
-        // TODO: Mock loadProducts. We no longer use the Result<Product, Error> signature
-        return Product.fake()
+        let key = ResultKey(siteID: siteID, productIDs: [productID])
+        if let result = self.updateProductImagesResultsBySiteID[key] {
+            switch result {
+            case .success(let product):
+                return product
+            case .failure(let error):
+                throw error
+            }
+        }
+        fatalError("MockProductsRemote: updateProductImages not returning a Product or throwing an Error")
     }
 
     func loadProductIDs(for siteID: Int64, pageNumber: Int, pageSize: Int) async throws -> [Int64] {

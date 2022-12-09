@@ -388,7 +388,7 @@ private extension DashboardViewController {
         let webViewSheet = WebViewSheet(viewModel: viewModel) { [weak self] in
             guard let self = self else { return }
             self.dismiss(animated: true)
-            Task { @MainActor in
+            Task {
                 await self.viewModel.syncAnnouncements(for: self.siteID)
             }
         }
@@ -414,7 +414,7 @@ private extension DashboardViewController {
         coordinator.onProductCreated = { [weak self] in
             guard let self else { return }
             self.viewModel.announcementViewModel = nil // Remove the products onboarding banner
-            Task { @MainActor in
+            Task {
                 await self.viewModel.syncAnnouncements(for: self.siteID)
             }
         }
@@ -515,7 +515,7 @@ extension DashboardViewController: DashboardUIScrollDelegate {
 extension DashboardViewController: UIAdaptivePresentationControllerDelegate {
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         if presentationController.presentedViewController is UIHostingController<WebViewSheet> {
-            Task { @MainActor in
+            Task {
                 await viewModel.syncAnnouncements(for: siteID)
             }
         }

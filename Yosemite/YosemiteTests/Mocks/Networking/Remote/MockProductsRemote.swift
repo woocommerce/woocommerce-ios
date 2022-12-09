@@ -74,23 +74,56 @@ final class MockProductsRemote {
 
 extension MockProductsRemote: ProductsRemoteProtocol {
     func addProduct(product: Product) async throws -> Product {
-        // TODO: Mock addProduct. We no longer use the Result<Product, Error> signature
-        return product
+        if let result = self.addProductResultsBySiteID[product.siteID] {
+            switch result {
+            case .success(let product):
+                return product
+            case .failure(let error):
+                throw error
+            }
+        }
+        fatalError("MockProductsRemote: addProduct not returning a Product or throwing an Error")
     }
 
     func deleteProduct(for siteID: Int64, productID: Int64) async throws -> Product {
-        // TODO: Mock deleteProduct. We no longer use the Result<Product, Error> signature
-        return Product.fake()
+        if let result = self.deleteProductResultsBySiteID[siteID] {
+            switch result {
+            case .success(let product):
+                return product
+            case .failure(let error):
+                throw error
+            }
+        }
+        fatalError("MockProductsRemote: deleteProduct not returning a Product or throwing an Error")
     }
 
     func loadProduct(for siteID: Int64, productID: Int64) async throws -> Product {
-        // TODO: Mock loadProduct. We no longer use the Result<Product, Error> signature
-        return Product.fake()
+        self.invocationCountOfLoadProduct += 1
+        let key = ResultKey(siteID: siteID, productIDs: [productID])
+
+        if let result = self.productLoadingResults[key] {
+            switch result {
+            case .success(let product):
+                return product
+            case .failure(let error):
+                throw error
+            }
+        }
+        fatalError("MockProductsRemote: loadProduct not returning a Product or throwing an Error")
     }
 
-    func loadProducts(for siteID: Int64, by productIDs: [Int64], pageNumber: Int, pageSize: Int) -> [Product] {
-        // TODO: Mock loadProducts. We no longer use the Result<[Product], Error> signature
-        return [Product.fake()]
+    func loadProducts(for siteID: Int64, by productIDs: [Int64], pageNumber: Int, pageSize: Int) async throws -> [Product] {
+        let key = ResultKey(siteID: siteID, productIDs: productIDs)
+
+        if let result = self.productsLoadingResults[key] {
+            switch result {
+            case .success(let products):
+                return products
+            case .failure(let error):
+                throw error
+            }
+        }
+        fatalError("MockProductsRemote: loadProducts not returning [Product] or throwing an Error")
     }
 
     func loadAllProducts(for siteID: Int64,

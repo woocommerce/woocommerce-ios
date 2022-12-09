@@ -559,6 +559,7 @@
 		CC9A253C26442C71005DE56E /* shipping-label-eligibility-success.json in Resources */ = {isa = PBXBuildFile; fileRef = CC9A253B26442C71005DE56E /* shipping-label-eligibility-success.json */; };
 		CC9A254626442CA7005DE56E /* shipping-label-eligibility-failure.json in Resources */ = {isa = PBXBuildFile; fileRef = CC9A254526442CA7005DE56E /* shipping-label-eligibility-failure.json */; };
 		CC9A254A26442D26005DE56E /* ShippingLabelCreationEligibilityMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC9A254926442D26005DE56E /* ShippingLabelCreationEligibilityMapperTests.swift */; };
+		CCA1D60429437B2C00B40560 /* SiteSummaryStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA1D60329437B2C00B40560 /* SiteSummaryStats.swift */; };
 		CCAAD10F2683974000909664 /* ShippingLabelPackagePurchase.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCAAD10E2683974000909664 /* ShippingLabelPackagePurchase.swift */; };
 		CCB2CA9E262091CB00285CA0 /* SuccessDataResultMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB2CA9D262091CB00285CA0 /* SuccessDataResultMapper.swift */; };
 		CCB2CAA226209A1200285CA0 /* generic_success_data.json in Resources */ = {isa = PBXBuildFile; fileRef = CCB2CAA126209A1200285CA0 /* generic_success_data.json */; };
@@ -1316,6 +1317,7 @@
 		CC9A253B26442C71005DE56E /* shipping-label-eligibility-success.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "shipping-label-eligibility-success.json"; sourceTree = "<group>"; };
 		CC9A254526442CA7005DE56E /* shipping-label-eligibility-failure.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "shipping-label-eligibility-failure.json"; sourceTree = "<group>"; };
 		CC9A254926442D26005DE56E /* ShippingLabelCreationEligibilityMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCreationEligibilityMapperTests.swift; sourceTree = "<group>"; };
+		CCA1D60329437B2C00B40560 /* SiteSummaryStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteSummaryStats.swift; sourceTree = "<group>"; };
 		CCAAD10E2683974000909664 /* ShippingLabelPackagePurchase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackagePurchase.swift; sourceTree = "<group>"; };
 		CCB2CA9D262091CB00285CA0 /* SuccessDataResultMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuccessDataResultMapper.swift; sourceTree = "<group>"; };
 		CCB2CAA126209A1200285CA0 /* generic_success_data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = generic_success_data.json; sourceTree = "<group>"; };
@@ -1650,6 +1652,7 @@
 				74D522B52113607F00042831 /* StatGranularity.swift */,
 				74A1D26721189A7000931DFA /* SiteVisitStats.swift */,
 				74A1D26A21189B8100931DFA /* SiteVisitStatsItem.swift */,
+				CCA1D60329437B2C00B40560 /* SiteSummaryStats.swift */,
 				74ABA1CC213F1B6B00FFAD30 /* TopEarnerStats.swift */,
 				74ABA1CE213F1D1600FFAD30 /* TopEarnerStatsItem.swift */,
 				D8FBFF0C22D3AF4A006E3336 /* StatsGranularityV4.swift */,
@@ -3285,6 +3288,7 @@
 				B5C6FCD420A373BB00A4F8E4 /* OrderMapper.swift in Sources */,
 				D88D5A49230BC8C7007B6E01 /* ProductReviewStatus.swift in Sources */,
 				036563DB2906938600D84BFD /* JustInTimeMessage.swift in Sources */,
+				CCA1D60429437B2C00B40560 /* SiteSummaryStats.swift in Sources */,
 				451A97C92609FF050059D135 /* ShippingLabelPackagesResponse.swift in Sources */,
 				029BA4F0255D7282006171FD /* ShippingLabelRemote.swift in Sources */,
 				B557DA0F20975E07005962F4 /* DotcomRequest.swift in Sources */,

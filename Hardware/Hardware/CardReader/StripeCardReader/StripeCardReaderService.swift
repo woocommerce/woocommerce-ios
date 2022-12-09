@@ -509,16 +509,13 @@ private extension StripeCardReaderService {
                     /// the completion block for collectPaymentMethod will be called
                     /// with error Canceled when collectPaymentMethod is canceled
                     /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)collectPaymentMethod:delegate:completion:
-
-                    if underlyingError != .commandCancelled {
-                        DDLogError("💳 Error: collect payment method \(underlyingError)")
-                        promise(.failure(CardReaderServiceError.paymentMethodCollection(underlyingError: underlyingError)))
-                    }
-
                     if underlyingError == .commandCancelled {
-                        DDLogWarn("💳 Warning: collect payment error cancelled. We actively ignore this error \(error)")
-                        promise(.failure(CardReaderServiceError.paymentCancellation(underlyingError: underlyingError)))
+                        DDLogWarn("💳 Warning: collect payment cancelled \(error)")
+                    } else {
+                        DDLogError("💳 Error: collect payment method \(underlyingError)")
                     }
+
+                    promise(.failure(CardReaderServiceError.paymentMethodCollection(underlyingError: underlyingError)))
 
                 }
 

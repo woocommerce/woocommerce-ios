@@ -164,8 +164,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                                              onCompleted: onCompleted)
                 })
             case .canceled:
-                self.alertsPresenter.dismiss()
-                self.trackPaymentCancelation()
+                self.handlePaymentCancellation()
                 onCancel()
             case .none:
                 break
@@ -275,6 +274,8 @@ private extension CollectOrderPaymentUseCase {
                 switch result {
                 case .success(let capturedPaymentData):
                     self?.handleSuccessfulPayment(capturedPaymentData: capturedPaymentData, onCompletion: onCompletion)
+                case .failure(CardReaderServiceError.paymentMethodCollection(.commandCancelled)):
+                    self?.handlePaymentCancellation()
                 case .failure(let error):
                     self?.handlePaymentFailureAndRetryPayment(error, alertProvider: paymentAlerts, onCompletion: onCompletion)
                 }
@@ -295,6 +296,11 @@ private extension CollectOrderPaymentUseCase {
 
         // Success Callback
         onCompletion(.success(capturedPaymentData))
+    }
+
+    func handlePaymentCancellation() {
+        trackPaymentCancelation()
+        alertsPresenter.dismiss()
     }
 
     /// Log the failure reason, cancel the current payment and retry it if possible.

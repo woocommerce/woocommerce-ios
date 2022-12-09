@@ -202,11 +202,14 @@ private extension AnalyticsHubViewModel {
             }.store(in: &subscriptions)
 
         $timeRangeSelectionType
+            .dropFirst() // do not trigger refresh action on initial value
             .removeDuplicates()
             .sink { [weak self] newSelectionType in
                 guard let self else { return }
                 self.timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: newSelectionType)
                 self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelection: self.timeRangeSelection)
+
+                // Update data on range selection change
                 Task.init {
                     await self.updateData()
                 }

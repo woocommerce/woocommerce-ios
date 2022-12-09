@@ -291,6 +291,7 @@ private extension ProductStore {
                 if case ProductLoadError.notFound = error {
                     self.deleteStoredProduct(siteID: siteID, productID: productID)
                 }
+                onCompletion(.failure(error))
             }
         }
     }

@@ -145,7 +145,8 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
             switch connectionResult {
             case .connected(let reader):
                 self.connectedReader = reader
-                self.attemptPayment(alertProvider: reader.paymentAlertProvider, onCompletion: { [weak self] result in
+                let paymentAlertProvider = reader.paymentAlertProvider()
+                self.attemptPayment(alertProvider: paymentAlertProvider, onCompletion: { [weak self] result in
                     guard let self = self else { return }
                     // Inform about the collect payment state
                     switch result {
@@ -160,7 +161,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                         return onCompleted()
                     }
                     self.presentReceiptAlert(receiptParameters: paymentData.receiptParameters,
-                                             alertProvider: reader.paymentAlertProvider(),
+                                             alertProvider: paymentAlertProvider,
                                              onCompleted: onCompleted)
                 })
             case .canceled:

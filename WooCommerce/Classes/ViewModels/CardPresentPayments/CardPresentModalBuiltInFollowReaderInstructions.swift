@@ -39,8 +39,7 @@ final class CardPresentModalBuiltInFollowReaderInstructions: CardPresentPayments
     init(name: String,
          amount: String,
          transactionType: CardPresentTransactionType,
-         inputMethods: CardReaderInput,
-         onCancel: @escaping () -> Void) {
+         inputMethods: CardReaderInput) {
         self.name = name
         self.amount = amount
 

@@ -21,8 +21,7 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
         return CardPresentModalBuiltInFollowReaderInstructions(name: name,
                                               amount: amount,
                                               transactionType: .collectPayment,
-                                              inputMethods: inputMethods,
-                                              onCancel: { })
+                                              inputMethods: inputMethods)
     }
 
     func displayReaderMessage(message: String) -> CardPresentPaymentsModalViewModel {

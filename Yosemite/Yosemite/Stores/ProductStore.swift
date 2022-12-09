@@ -308,7 +308,6 @@ private extension ProductStore {
                     }
                     onCompletion(.success(storageProduct.toReadOnly()))
                 }
-
             } catch {
                 onCompletion(.failure(ProductUpdateError(error: error)))
             }
@@ -320,7 +319,9 @@ private extension ProductStore {
     func deleteProduct(siteID: Int64, productID: Int64, onCompletion: @escaping (Result<Product, ProductUpdateError>) -> Void) {
         Task {
             do {
+                // TODO: Double check the logic for this one. Why are we calling the deleteProduct async method.
                 let product = try await remote.deleteProduct(for: siteID, productID: productID)
+                self.deleteStoredProduct(siteID: siteID, productID: productID)
                 onCompletion(.success(product))
             } catch {
                 onCompletion(.failure(ProductUpdateError(error: error)))

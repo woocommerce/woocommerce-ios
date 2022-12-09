@@ -38,7 +38,7 @@ final class OrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
          presentingController: UIViewController) {
         self.transactionType = transactionType
         self.presentingController = presentingController
-        self.alertsProvider = CardReaderPaymentAlertsProvider(transactionType: transactionType)
+        self.alertsProvider = BluetoothCardReaderPaymentAlertsProvider(transactionType: transactionType)
     }
 
     func presentViewModel(viewModel: CardPresentPaymentsModalViewModel) {

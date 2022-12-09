@@ -1,2 +1,1 @@
-Ci siamo concentrati su alcuni problemi di stabilità e prestazioni per rendere la tua esperienza più fluida. Continua a condividere il feedback. Li leggiamo uno a uno.
-
+Questo rilascio include alcune piccole correzioni ai bug e miglioramenti che rendono l'esperienza più agevole. Non perderti gli emozionanti aggiornamenti delle prossime settimane.

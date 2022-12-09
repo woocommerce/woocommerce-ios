@@ -1,2 +1,1 @@
-Nos hemos centrado en solucionar algunos problemas de estabilidad y rendimiento para que tu experiencia sea más fluida. No dejes de compartir tu opinión. Leemos todos los comentarios.
-
+Esta versión incluye mejoras y correcciones de varios errores para que tu experiencia sea más fluida. Las próximas semanas llegarán grandes novedades, ¡no te las pierdas!

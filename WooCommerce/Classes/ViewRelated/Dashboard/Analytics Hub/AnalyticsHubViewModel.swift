@@ -35,9 +35,13 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published var ordersCard = AnalyticsHubViewModel.ordersCard(currentPeriodStats: nil, previousPeriodStats: nil)
 
-    /// Products Card ViewModel
+    /// Products Stats Card ViewModel
     ///
-    @Published var productCard = AnalyticsHubViewModel.productCard(currentPeriodStats: nil, previousPeriodStats: nil, itemsSoldStats: nil)
+    @Published var productsStatsCard = AnalyticsHubViewModel.productsStatsCard(currentPeriodStats: nil, previousPeriodStats: nil)
+
+    /// Items Sold Card ViewModel
+    ///
+    @Published var itemsSoldCard = AnalyticsHubViewModel.productsItemsSoldCard(itemsSoldStats: nil)
 
     /// Time Range Selection Type
     ///
@@ -178,7 +182,8 @@ private extension AnalyticsHubViewModel {
     func switchToLoadingState() {
         self.revenueCard = revenueCard.redacted
         self.ordersCard = ordersCard.redacted
-        self.productCard = productCard.redacted
+        self.productsStatsCard = productsStatsCard.redacted
+        self.itemsSoldCard = itemsSoldCard.redacted
     }
 
     @MainActor
@@ -189,16 +194,21 @@ private extension AnalyticsHubViewModel {
     }
 
     func bindViewModelsWithData() {
-        Publishers.CombineLatest3($currentOrderStats, $previousOrderStats, $itemsSoldStats)
-            .sink { [weak self] currentOrderStats, previousOrderStats, itemsSoldStats in
+        Publishers.CombineLatest($currentOrderStats, $previousOrderStats)
+            .sink { [weak self] currentOrderStats, previousOrderStats in
                 guard let self else { return }
 
                 self.revenueCard = AnalyticsHubViewModel.revenueCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
                 self.ordersCard = AnalyticsHubViewModel.ordersCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
-                self.productCard = AnalyticsHubViewModel.productCard(currentPeriodStats: currentOrderStats,
-                                                                     previousPeriodStats: previousOrderStats,
-                                                                     itemsSoldStats: itemsSoldStats)
+                self.productsStatsCard = AnalyticsHubViewModel.productsStatsCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
 
+            }.store(in: &subscriptions)
+
+        $itemsSoldStats
+            .sink { [weak self] itemsSoldStats in
+                guard let self else { return }
+
+                self.itemsSoldCard = AnalyticsHubViewModel.productsItemsSoldCard(itemsSoldStats: itemsSoldStats)
             }.store(in: &subscriptions)
 
         $timeRangeSelectionType
@@ -253,22 +263,26 @@ private extension AnalyticsHubViewModel {
                                             syncErrorMessage: Localization.OrderCard.noOrders)
     }
 
-    /// Helper function to create a `AnalyticsProductCardViewModel` from the fetched stats.
+    /// Helper function to create a `AnalyticsProductsStatsCardViewModel` from the fetched stats.
     ///
-    static func productCard(currentPeriodStats: OrderStatsV4?,
-                            previousPeriodStats: OrderStatsV4?,
-                            itemsSoldStats: TopEarnerStats?) -> AnalyticsProductCardViewModel {
+    static func productsStatsCard(currentPeriodStats: OrderStatsV4?,
+                                  previousPeriodStats: OrderStatsV4?) -> AnalyticsProductsStatsCardViewModel {
         let showStatsError = currentPeriodStats == nil || previousPeriodStats == nil
-        let showItemsSoldError = itemsSoldStats == nil
         let itemsSold = StatsDataTextFormatter.createItemsSoldText(orderStats: currentPeriodStats)
         let itemsSoldDelta = StatsDataTextFormatter.createOrderItemsSoldDelta(from: previousPeriodStats, to: currentPeriodStats)
 
-        return AnalyticsProductCardViewModel(itemsSold: itemsSold,
-                                             delta: itemsSoldDelta,
-                                             itemsSoldData: itemSoldRows(from: itemsSoldStats),
-                                             isRedacted: false,
-                                             showStatsError: showStatsError,
-                                             showItemsSoldError: showItemsSoldError)
+        return AnalyticsProductsStatsCardViewModel(itemsSold: itemsSold,
+                                                   delta: itemsSoldDelta,
+                                                   isRedacted: false,
+                                                   showStatsError: showStatsError)
+    }
+
+    /// Helper function to create a `AnalyticsItemsSoldViewModel` from the fetched stats.
+    ///
+    static func productsItemsSoldCard(itemsSoldStats: TopEarnerStats?) -> AnalyticsItemsSoldViewModel {
+        let showItemsSoldError = itemsSoldStats == nil
+
+        return AnalyticsItemsSoldViewModel(itemsSoldData: itemSoldRows(from: itemsSoldStats), isRedacted: false, showItemsSoldError: showItemsSoldError)
     }
 
     /// Helper functions to create `TopPerformersRow.Data` items rom the provided `TopEarnerStats`.

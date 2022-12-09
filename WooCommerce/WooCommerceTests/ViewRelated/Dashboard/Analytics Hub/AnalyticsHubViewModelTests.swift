@@ -70,7 +70,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, stores: stores)
         var loadingRevenueCard: AnalyticsReportCardViewModel?
         var loadingOrdersCard: AnalyticsReportCardViewModel?
-        var loadingProductsCard: AnalyticsProductCardViewModel?
+        var loadingProductsCard: AnalyticsProductsStatsCardViewModel?
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
             case let .retrieveCustomStats(_, _, _, _, _, _, completion):

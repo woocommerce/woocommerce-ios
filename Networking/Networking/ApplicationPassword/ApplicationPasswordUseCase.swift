@@ -24,7 +24,7 @@ protocol ApplicationPasswordUseCase {
 
     /// Deletes the application password
     ///
-    ///  Deletes locally and also send a API request to delete it from the site
+    ///  Deletes locally and also sends an API request to delete it from the site
     ///
     func deletePassword() async throws
 }

@@ -1914,7 +1914,6 @@
 		E1F52DC62668E03B00349D75 /* CardPresentModalBluetoothRequired.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F52DC52668E03B00349D75 /* CardPresentModalBluetoothRequired.swift */; };
 		EE0EE7A628B7415200F6061E /* CustomHelpCenterContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0EE7A528B7415200F6061E /* CustomHelpCenterContent.swift */; };
 		EE0EE7A828B74EF300F6061E /* CustomHelpCenterContentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0EE7A728B74EF300F6061E /* CustomHelpCenterContentTests.swift */; };
-		EE54C8912946F14B00A9BF61 /* ApplicationPasswordUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE54C8902946F14B00A9BF61 /* ApplicationPasswordUseCase.swift */; };
 		EE81B1382865BB0B0032E0D4 /* ProductImagesProductIDUpdaterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE81B1372865BB0B0032E0D4 /* ProductImagesProductIDUpdaterTests.swift */; };
 		EE8DCA8028BF964700F23B23 /* MockAuthentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8DCA7F28BF964700F23B23 /* MockAuthentication.swift */; };
 		EEAA45FD293073FE0047D125 /* JetpackInstallStepTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEAA45FC293073FE0047D125 /* JetpackInstallStepTests.swift */; };
@@ -3956,7 +3955,6 @@
 		E1F52DC52668E03B00349D75 /* CardPresentModalBluetoothRequired.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalBluetoothRequired.swift; sourceTree = "<group>"; };
 		EE0EE7A528B7415200F6061E /* CustomHelpCenterContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomHelpCenterContent.swift; sourceTree = "<group>"; };
 		EE0EE7A728B74EF300F6061E /* CustomHelpCenterContentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomHelpCenterContentTests.swift; sourceTree = "<group>"; };
-		EE54C8902946F14B00A9BF61 /* ApplicationPasswordUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordUseCase.swift; sourceTree = "<group>"; };
 		EE81B1372865BB0B0032E0D4 /* ProductImagesProductIDUpdaterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImagesProductIDUpdaterTests.swift; sourceTree = "<group>"; };
 		EE8DCA7F28BF964700F23B23 /* MockAuthentication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAuthentication.swift; sourceTree = "<group>"; };
 		EEAA45FC293073FE0047D125 /* JetpackInstallStepTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackInstallStepTests.swift; sourceTree = "<group>"; };
@@ -7020,7 +7018,6 @@
 		B55D4C0420B6026700D7A50F /* Authentication */ = {
 			isa = PBXGroup;
 			children = (
-				EE54C88F2946F12600A9BF61 /* Application password */,
 				DE2FE5842925D9040018040A /* Jetpack Setup */,
 				AEB4DB95290AE72D00AE4340 /* WebAuth */,
 				D881A318256B5C9C00FE5605 /* Navigation Exceptions */,
@@ -9039,14 +9036,6 @@
 			path = "In-Person Payments";
 			sourceTree = "<group>";
 		};
-		EE54C88F2946F12600A9BF61 /* Application password */ = {
-			isa = PBXGroup;
-			children = (
-				EE54C8902946F14B00A9BF61 /* ApplicationPasswordUseCase.swift */,
-			);
-			path = "Application password";
-			sourceTree = "<group>";
-		};
 		EE6BAAB428EF093D0099288E /* me */ = {
 			isa = PBXGroup;
 			children = (
@@ -10497,7 +10486,6 @@
 				0386CFEB2852108B00134466 /* PaymentMethodsHostingController.swift in Sources */,
 				B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */,
 				451750B224470CD5004FDA65 /* EnhancedTextView.swift in Sources */,
-				EE54C8912946F14B00A9BF61 /* ApplicationPasswordUseCase.swift in Sources */,
 				02279586237A50C900787C63 /* AztecUnorderedListFormatBarCommand.swift in Sources */,
 				E1E125B226EB8EE80068A9B0 /* UpdateProgressImage.swift in Sources */,
 				B5A82EE7210263460053ADC8 /* UIViewController+Helpers.swift in Sources */,

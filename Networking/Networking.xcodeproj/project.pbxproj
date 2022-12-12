@@ -725,6 +725,7 @@
 		E1BAB2C32913FA6400C3982B /* ResponseDataValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BAB2C22913FA6400C3982B /* ResponseDataValidator.swift */; };
 		E1BAB2C52913FB1800C3982B /* WordPressApiValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BAB2C42913FB1800C3982B /* WordPressApiValidator.swift */; };
 		E1BAB2C72913FB5800C3982B /* WordPressApiError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BAB2C62913FB5800C3982B /* WordPressApiError.swift */; };
+		EE54C8942947229800A9BF61 /* ApplicationPasswordUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE54C8932947229800A9BF61 /* ApplicationPasswordUseCase.swift */; };
 		EE8A86F1286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json in Resources */ = {isa = PBXBuildFile; fileRef = EE8A86F0286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json */; };
 		EECB7EE8286555180028C888 /* media-update-product-id.json in Resources */ = {isa = PBXBuildFile; fileRef = EECB7EE7286555180028C888 /* media-update-product-id.json */; };
 		FE28F6E226840DED004465C7 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6E126840DED004465C7 /* User.swift */; };
@@ -1482,6 +1483,7 @@
 		E1BAB2C22913FA6400C3982B /* ResponseDataValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseDataValidator.swift; sourceTree = "<group>"; };
 		E1BAB2C42913FB1800C3982B /* WordPressApiValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressApiValidator.swift; sourceTree = "<group>"; };
 		E1BAB2C62913FB5800C3982B /* WordPressApiError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressApiError.swift; sourceTree = "<group>"; };
+		EE54C8932947229800A9BF61 /* ApplicationPasswordUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordUseCase.swift; sourceTree = "<group>"; };
 		EE8A86F0286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-update-product-id-in-wordpress-site.json"; sourceTree = "<group>"; };
 		EECB7EE7286555180028C888 /* media-update-product-id.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-update-product-id.json"; sourceTree = "<group>"; };
 		F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1805,6 +1807,7 @@
 		B557D9E5209753AA005962F4 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
+				EE54C8922947227900A9BF61 /* ApplicationPassword */,
 				B5A0369F214C0F4C00774E2C /* Internal */,
 				B5BB1D0A20A204F400112D92 /* Extensions */,
 				B567AF2720A0FA0A00AB6C62 /* Mapper */,
@@ -2563,6 +2566,14 @@
 			path = SystemStatusDetails;
 			sourceTree = "<group>";
 		};
+		EE54C8922947227900A9BF61 /* ApplicationPassword */ = {
+			isa = PBXGroup;
+			children = (
+				EE54C8932947229800A9BF61 /* ApplicationPasswordUseCase.swift */,
+			);
+			path = ApplicationPassword;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -3048,6 +3059,7 @@
 				743E84EE2217244C00FAC9D7 /* ShipmentTrackingListMapper.swift in Sources */,
 				451A97E5260B631E0059D135 /* ShippingLabelPredefinedPackage.swift in Sources */,
 				BAB373722795A1FB00837B4A /* OrderTaxLine.swift in Sources */,
+				EE54C8942947229800A9BF61 /* ApplicationPasswordUseCase.swift in Sources */,
 				B567AF2520A0CCA300AB6C62 /* AuthenticatedRequest.swift in Sources */,
 				453305E92459DF2100264E50 /* PostMapper.swift in Sources */,
 				E12552C526385B05001CEE70 /* ShippingLabelAddressValidationSuccess.swift in Sources */,

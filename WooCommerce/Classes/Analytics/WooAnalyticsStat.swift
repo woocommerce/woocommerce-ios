@@ -130,6 +130,7 @@ public enum WooAnalyticsStat: String {
     case dashboardPulledToRefresh = "dashboard_pulled_to_refresh"
     case dashboardNewOrdersButtonTapped = "dashboard_unfulfilled_orders_button_tapped"
     case dashboardShareStoreButtonTapped = "dashboard_share_your_store_button_tapped"
+    case dashboardSeeMoreAnalyticsTapped = "dashboard_see_more_analytics_tapped"
 
     // MARK: Dashboard Data/Action Events
     //
@@ -148,6 +149,12 @@ public enum WooAnalyticsStat: String {
     case dashboardNewStatsRevertedBannerDismissTapped = "dashboard_new_stats_reverted_banner_dismiss_tapped"
     case dashboardNewStatsRevertedBannerLearnMoreTapped = "dashboard_new_stats_reverted_banner_learn_more_tapped"
     case usedAnalytics = "used_analytics"
+
+    // MARK: Analytics Hub Events
+    //
+    case analyticsHubDateRangeButtonTapped = "analytics_hub_date_range_button_tapped"
+    case analyticsHubDateRangeOptionSelected = "analytics_hub_date_range_option_selected"
+    case analyticsHubDateRangeSelectionFailed = "analytics_hub_date_range_selection_failed"
 
     // MARK: Products Onboarding Events
     //

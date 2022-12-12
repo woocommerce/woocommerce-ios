@@ -15,9 +15,6 @@ PODS:
   - CocoaLumberjack/Core (3.7.4)
   - CocoaLumberjack/Swift (3.7.4):
     - CocoaLumberjack/Core
-  - FormatterKit/Resources (1.9.0)
-  - FormatterKit/TimeIntervalFormatter (1.9.0):
-    - FormatterKit/Resources
   - GoogleSignIn (6.0.2):
     - AppAuth (~> 1.4)
     - GTMAppAuth (~> 1.0)
@@ -42,29 +39,25 @@ PODS:
   - WordPress-Aztec-iOS (1.11.0)
   - WordPress-Editor-iOS (1.11.0):
     - WordPress-Aztec-iOS (= 1.11.0)
-  - WordPressAuthenticator (4.3.0):
-    - CocoaLumberjack (~> 3.5)
+  - WordPressAuthenticator (5.0.0):
     - GoogleSignIn (~> 6.0.1)
     - Gridicons (~> 1.0)
     - "NSURL+IDN (= 0.4)"
     - SVProgressHUD (~> 2.2.5)
-    - WordPressKit (~> 4.18-beta)
-    - WordPressShared (~> 1.12-beta)
+    - WordPressKit (~> 5.0-beta)
+    - WordPressShared (~> 2.0-beta)
     - WordPressUI (~> 1.7-beta)
-  - WordPressKit (4.49.0):
+  - WordPressKit (5.0.0):
     - Alamofire (~> 4.8.0)
-    - CocoaLumberjack (~> 3.4)
     - NSObject-SafeExpectations (= 0.0.4)
     - UIDeviceIdentifier (~> 2.0)
-    - WordPressShared (~> 1.15-beta)
+    - WordPressShared (~> 2.0-beta)
     - wpxmlrpc (~> 0.9)
-  - WordPressShared (1.16.1):
-    - CocoaLumberjack (~> 3.4)
-    - FormatterKit/TimeIntervalFormatter (~> 1.8)
+  - WordPressShared (2.0.0)
   - WordPressUI (1.12.5)
   - Wormholy (1.6.5)
   - WPMediaPicker (1.8.1)
-  - wpxmlrpc (0.9.0)
+  - wpxmlrpc (0.10.0)
   - XLPagerTabStrip (9.0.0)
   - ZendeskCommonUISDK (6.1.1)
   - ZendeskCoreSDK (2.5.1)
@@ -91,9 +84,9 @@ DEPENDENCIES:
   - Sourcery (~> 1.0.3)
   - StripeTerminal (~> 2.14)
   - WordPress-Editor-iOS (~> 1.11.0)
-  - WordPressAuthenticator (~> 4.3.0)
-  - WordPressKit (~> 4.49.0)
-  - WordPressShared (~> 1.15)
+  - WordPressAuthenticator (~> 5.0.0)
+  - WordPressKit (~> 5.0.0)
+  - WordPressShared (~> 2.0)
   - WordPressUI (~> 1.12.5)
   - Wormholy (~> 1.6.5)
   - WPMediaPicker (~> 1.8.1)
@@ -108,7 +101,6 @@ SPEC REPOS:
     - AppAuth
     - Automattic-Tracks-iOS
     - CocoaLumberjack
-    - FormatterKit
     - GoogleSignIn
     - Gridicons
     - GTMAppAuth
@@ -145,7 +137,6 @@ SPEC CHECKSUMS:
   AppAuth: 8fca6b5563a5baef2c04bee27538025e4ceb2add
   Automattic-Tracks-iOS: 63e55654f500b3e8fb35087e64575e00d12eb2f5
   CocoaLumberjack: 543c79c114dadc3b1aba95641d8738b06b05b646
-  FormatterKit: 184db51bf120b633693a73624a4cede89ec51a41
   GoogleSignIn: fd381840dbe7c1137aa6dc30849a5c3e070c034a
   Gridicons: 4455b9f366960121430e45997e32112ae49ffe1d
   GTMAppAuth: 0ff230db599948a9ad7470ca667337803b3fc4dd
@@ -162,13 +153,13 @@ SPEC CHECKSUMS:
   UIDeviceIdentifier: af4e11e25a2ea670078e2bd677bb0e8144f9f063
   WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348
   WordPress-Editor-iOS: 304098424f1051cb271546c99f906aac296b1b81
-  WordPressAuthenticator: fd1084278edc077c48026c9080a1d9b0ca9c2304
-  WordPressKit: 96deb6ba37ea5eaec4ddcaa53eca04d653246152
-  WordPressShared: 5477f179c7fe03b5d574f91adda66f67d131827e
+  WordPressAuthenticator: 0cdf1bff75bd3f58fe733d6457221f27bbbdc9f4
+  WordPressKit: 202f529323b079a344f7bc1493b7ebebfd9ed4b5
+  WordPressShared: 35d41bdf0927e714af1fc85fa9cb692f934473be
   WordPressUI: c5be816f6c7b3392224ac21de9e521e89fa108ac
   Wormholy: 3252bc3e55a1847ef9a0976c1377bd77bf3635fa
   WPMediaPicker: 9011a0ec1f468c039af7485c244576b4c9889a0f
-  wpxmlrpc: bf55a43a7e710bd2a4fb8c02dfe83b1246f14f13
+  wpxmlrpc: 68db063041e85d186db21f674adf08d9c70627fd
   XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
   ZendeskCommonUISDK: 5808802951ad2bb424f0bed4259dc3c0ce9b52ec
   ZendeskCoreSDK: 19a18e5ef2edcb18f4dbc0ea0d12bd31f515712a
@@ -178,6 +169,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2bdf8544f7cd0fd4c002546f5704b813845beb2a
   ZendeskSupportSDK: 3a8e508ab1d9dd22dc038df6c694466414e037ba
 
-PODFILE CHECKSUM: d57f522b14409f38c9fb733afac389ebebdb3ffd
+PODFILE CHECKSUM: cc3c6d9d046f232dba2b1be5dad549543da973bd
 
 COCOAPODS: 1.11.3

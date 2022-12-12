@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-11-30 09:54:04+0000 */
+/* Translation-Revision-Date: 2022-12-06 14:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -38,12 +38,6 @@
 
 /* Title for the plugin version detail row in settings. %1$@ is a placeholder for the plugin name. This is displayed with the current version number, and whether an update is available. */
 "%1$@ Version" = "%1$@ Versie";
-
-/* A label prompting users to learn more about In-Person Payments.
-\u{2011} is a special character that acts as nonbreaking hyphen for "-" in the "In-Person" string.
-%1$@ is a placeholder that always replaced with \"Learn more\" string,
-which should be translated separately and considered part of this sentence. */
-"%1$@ about Inu{2011}Person Payments" = "%1$@ over {2011}Fysieke betalingen";
 
 /* A label prompting users to learn more about card readers"
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
@@ -487,9 +481,6 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "De gegevens van downloadbare bestanden van producten op afstand toevoegen";
 
-/* Navigates to a screen to create a simple payments order */
-"Add simple payments order" = "Bestelling voor eenvoudige betalingen toevoegen";
-
 /* Placeholder text that will be shown in the view for adding the description of a coupon. */
 "Add the description of the coupon." = "Voeg de beschrijving van de coupon toe.";
 
@@ -501,6 +492,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "Gewicht en afmetingen toevoegen";
+
+/* Displayed during the Login flow, whenever the user has no woo stores associated. */
+"Add your first store" = "Voeg je eerste winkel toe";
 
 /* Text field address in Shipping Label Address Validation */
 "Address" = "Adres";
@@ -566,7 +560,7 @@ which should be translated separately and considered part of this sentence. */
 "All reviews marked as read" = "Alle beoordelingen zijn gemarkeerd als gelezen";
 
 /* Subtitle of the store creation plan screen. */
-"All the featues you need, already built in" = "Alle functies die je nodig hebt, zijn al geïntegreerd";
+"All the features you need, already built in" = "Alle functies die je nodig hebt, zijn al geïntegreerd";
 
 /* Display label for the product's inventory backorders setting option */
 "Allow" = "Toestaan";
@@ -834,6 +828,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the app's blog */
 "Blog" = "Blog";
 
+/* The button title on the reader type alert, for the user to choose a bluetooth reader. */
+"Bluetooth Reader" = "Lezer met bluetooth";
+
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
 "Bluetooth permission required" = "Bluetooth-machtiging vereist";
 
@@ -934,6 +931,7 @@ which should be translated separately and considered part of this sentence. */
    Cancel button on the alert when the user is cancelling the action on deleting a variation
    Cancel button on the alert when the user is cancelling the action on moving a product to the trash
    Cancel button on the error alert when fetching system status report fails
+   Cancel button title
    Cancel button title in the issue refund screen
    Cancel prompt for user information.
    Cancel the main more actions menu sheet.
@@ -1076,6 +1074,9 @@ which should be translated separately and considered part of this sentence. */
 /* Alert title for check your email during logIn/signUp. */
 "Check your email!" = "Controleer je e-mail!";
 
+/* Title of the WPCOM checkout web view. */
+"Checkout" = "Kassa";
+
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "Kies papierformaat";
 
@@ -1138,9 +1139,11 @@ which should be translated separately and considered part of this sentence. */
    Title of the Close action on the Jetpack Install view */
 "Close" = "Sluit";
 
-/* Close Account button title to close the user's WordPress.com account
-   Link on the store picker for users who signed in with Apple to close their WordPress.com account. */
+/* Close Account button title to close the user's WordPress.com account */
 "Close Account" = "Sluit account";
+
+/* Button to close the WordPress.com account on the store picker. */
+"Close account" = "Sluit account";
 
 /* Title of the Close Account in-progress view. */
 "Closing account..." = "Account aan het sluiten…";
@@ -1452,9 +1455,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description for fixed cart discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a fixed total discount for the entire cart" = "Maak een korting van een vast bedrag voor de gehele winkelwagen";
 
-/* Description of the Action sheet option when the user wants to create full manual order */
-"Create a new manual order" = "Maak een nieuwe handmatige bestelling aan";
-
 /* Button to create a new store from the store picker */
 "Create a new store" = "Maak een nieuwe winkel";
 
@@ -1463,9 +1463,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the store creation web view. */
 "Create a store" = "Store aanmaken";
-
-/* Description of the Action sheet option when the user wants to create Simple Payments order */
-"Create an order with minimal information" = "Maak een bestelling met de minimaal vereiste gegevens aan";
 
 /* Title of the Create coupon screen */
 "Create coupon" = "Coupon aanmaken";
@@ -1476,17 +1473,11 @@ which should be translated separately and considered part of this sentence. */
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "Nieuw pakket aanmaken";
 
-/* Action sheet option when the user wants to create full manual order */
-"Create order" = "Bestelling aanmaken";
-
 /* Title of the banner notice in the Orders tab */
-"Create orders & take payments!" = "Maak bestellingen aan en neem betalingen aan!";
+"Create orders!" = "Maak bestellingen aan!";
 
 /* The title of the shipping labels top banner in order details */
 "Create shipping labels from your device!" = "Maak verzendlabels vanaf je apparaat!";
-
-/* Displayed during the Login flow, whenever the user has no woo stores associated. */
-"Create your first store" = "Maak je eerste winkel aan";
 
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "Je eerste variatie maken";
@@ -1592,7 +1583,9 @@ which should be translated separately and considered part of this sentence. */
 "DETAILS" = "details";
 
 /* Navigation title of the orders filter selector screen for date range
-   Row title for filtering orders by date range. */
+   Row title for filtering orders by date range.
+   Title describing the possible date range selections of the Analytics Hub
+   Title of the range selection list */
 "Date Range" = "Datumbereik";
 
 /* Title of 'Date Paid' section in the receipt */
@@ -2406,9 +2399,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Aanmelden met Google mislukt.";
 
-/* Confirmation text of the button on the bottom announcement modalwhen a merchant taps on Simple Payment */
-"Got it!" = "Begrepen!";
-
 /* Display label for grouped product type. */
 "Grouped" = "Gegroepeerd";
 
@@ -2486,12 +2476,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action button for opening Help.Presented when logging in with a site address that does not have WooCommerce
    Button to contact support on the Jetpack setup interrupted screen
+   Button to get help from the store picker
    Help and Support navigation title
    Help button
    Help button on account mismatch error screen.
    Help button on Jetpack required error screen.
-   Help button on Jetpack setup required screen.
-   Help button on store picker screen. */
+   Help button on Jetpack setup required screen. */
 "Help" = "Help";
 
 /* My Store > Settings > Help and Feedback settings section title */
@@ -2829,8 +2819,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
-   A label prompting users to learn more about In-Person Payments.
-This is the link to the website, and forms part of a longer sentence which it should be considered a part of.
    Button title in the shipping label creation info screen
    Settings > Privacy Settings. A text link to the cookie policy.
    The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. 
@@ -2984,6 +2972,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Instructions on the WordPress.com username / password log in form. */
 "Log in with your WordPress.com username and password." = "Inloggen met je WordPress.com-gebruikersnaam en -wachtwoord.";
+
+/* Button to log out from the current account from the store picker */
+"Log out" = "Uitloggen";
 
 /* A generic error during site credential login */
 "Login failed. Please try again." = "Login mislukt. Probeer het opnieuw.";
@@ -3281,9 +3272,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Message on the detail view of the Orders tab before any order is selected */
 "No order selected" = "Geen bestelling geselecteerd";
 
-/* A error message when it's not possible toacquire the Analytics Hub previous selection range */
-"No previous period available" = "Geen eerdere periode beschikbaar";
-
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "Geen prijs ingesteld";
 
@@ -3352,9 +3340,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Info text for the generate first variation screen */
 "Now that you’ve added attributes, you can create your first variation!" = "Nu je eigenschappen hebt toegevoegd, kun je je eerste variatie aanmaken!";
-
-/* Message of the bottom announcement modal when a merchant taps on Simple Payment */
-"Now you can quickly access In-Person Payments and other features with ease." = "Nu heb je snel toegang tot Fysieke betalingen en andere functies.";
 
 /* Alert dismissal title
    Button title to dismiss the alert when the store cannot be created in the store creation flow.
@@ -3667,9 +3652,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of the hub menu payments button */
 "Payments" = "Betalingen";
 
-/* Title of the bottom announcement modal when a merchant taps on Simple Payment */
-"Payments from the Menu tab" = "Betalingen van het tabblad Menu";
-
 /* Display label for pending order status.
    Display label for the review's pending status */
 "Pending" = "In afwachting";
@@ -3827,6 +3809,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Body text for the default store picker error screen */
 "Please try again or reach out to us and we'll be happy to assist you!" = "Probeer het opnieuw of neem contact met ons op zodat wij je kunnen helpen.";
+
+/* Message of the alert when the WPCOM plan cannot be purchased in a webview in the store creation flow. */
+"Please try again, or exit the screen and check back on your store if you previously left the checkout screen while payment is in progress." = "Probeer het opnieuw of sluit dit venster en ga terug naar je winkel als je het afrekenvenster hebt verlaten tijdens het betalen.";
 
 /* Account creation error when an unexpected error occurs.
    Message of the alert when the store cannot be created in the store creation flow.
@@ -4499,9 +4484,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Scan Products */
 "Scan products" = "Producten scannen";
 
-/* Title label for modal dialog that appears when searching for a card reader */
-"Scanning for reader" = "Er wordt gescand op lezer";
-
 /* Label for a cell informing the user that reader scanning is ongoing. */
 "Scanning for readers" = "Er wordt gescand op lezers";
 
@@ -4608,6 +4590,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "Alineastijl selecteren";
+
+/* The title for the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
+"Select reader type" = "Selecteer lezertype";
 
 /* Placeholder value of the cell in Product Price Settings > Schedule sale from a certain date */
 "Select start date" = "Selecteer startdatum";
@@ -4840,9 +4825,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Display label for simple product type. */
 "Simple" = "Simpel";
-
-/* Action sheet option when the user wants to create Simple Payments order */
-"Simple payment" = "Eenvoudige betaling";
 
 /* Action sheet option when the user wants to change the Product type to simple physical product */
 "Simple physical product" = "Eenvoudig fysiek product";
@@ -5131,7 +5113,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
 "Tap or insert card to refund" = "Tik of voer een kaart in om terug te betalen";
 
-/* Cell tytle on beta features screen to enable Tap to Pay on iPhone: card payments with the phone's built in reader */
+/* Cell tytle on beta features screen to enable Tap to Pay on iPhone: card payments with the phone's built in reader
+   The button title on the reader type alert, for the user to choose the built-in reader. */
 "Tap to Pay on iPhone" = "Tik om te betalen op iPhone";
 
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
@@ -5686,9 +5669,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Sign in instructions asking user to enter WordPress.com password to proceed with sign in using Apple process */
 "To proceed with this account, please first log in with your WordPress.com password. This will only be asked once." = "Om door te gaan met dit account moet je eerst inloggen met je wachtwoord van WordPress.com. Je wordt hier slechts eenmaal om gevraagd.";
 
-/* Label within the modal dialog that appears when searching for a card reader */
-"To turn on your card reader, briefly press its power button." = "Zet je kaartlezer aan door kort op de aan-uitknop te drukken.";
-
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "Om deze app te gebruiken voor %@, moet de Jetpack-plugin geïnstalleerd en gekoppeld zijn aan je winkel.";
 
@@ -5900,8 +5880,17 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Notice message when loading product categories fails */
 "Unable to load categories" = "Kan categorieën niet laden";
 
+/* Text displayed when there is an error loading order stats data. */
+"Unable to load order analytics" = "Kan bestellingsanalyses niet laden";
+
+/* Text displayed when there is an error loading product stats data. */
+"Unable to load product analytics" = "Kan productanalyses niet laden";
+
 /* Load Product Attributes Action Failed */
 "Unable to load product attributes" = "Kon producteigenschappen niet laden";
+
+/* Text displayed when there is an error loading revenue stats data. */
+"Unable to load revenue analytics" = "Kan inkomstenanalyses niet laden";
 
 /* Notice displayed when data cannot be synced for new order */
 "Unable to load taxes for order" = "Kan belasting niet laden voor bestelling";
@@ -6384,7 +6373,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "We're sorry, we were unable to verify In-Person Payments for this store." = "We kunnen fysieke betalingen helaas niet verifiëren voor deze winkel.";
 
 /* Content of the banner notice in the Orders tab */
-"We've been working on making it possible to create orders and take payments from your device! You can try these features out by tapping on the \"+\" button" = "We hebben hard gewerkt zodat je bestellingen kunt aanmaken en betalingen kunt aannemen vanaf je apparaat! Je kunt deze functies uitproberen door op de + knop te klikken";
+"We've been working on making it possible to create orders from your device! You can try this out by tapping on the \"+\" button" = "We hebben hard gewerkt zodat jij vanaf je apparaat bestellingen aan kunt maken! Je kunt dit uitproberen door op de knop '+' te klikken";
 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "We hebben je een aanmeldlink toegestuurd om je nieuwe WordPress.com-account aan te maken. Controleer je e-mail op dit apparaat en tik op de link in de e-mail die je van WordPress.com ontvangt.";
@@ -6570,6 +6559,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
 "Your email isn't used with a WordPress.com account" = "Je e-mailadres wordt niet gebruikt met een WordPress.com-account";
 
+/* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
+"Your iPhone can be used as a card reader, or you can connect to an external reader via bluetooth." = "Je iPhone kan als kaartlezer worden gebruikt. Je kan ook met een externe kaartlezer verbinden via bluetooth.";
+
 /* Message displayed when a coupon was successfully created */
 "Your new coupon was created!" = "Je nieuwe coupon is aangemaakt!";
 
@@ -6609,6 +6601,26 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "Pictogram";
 
+/* Label for a cancel button */
+"cardPresent.modalScanningForReader.cancelButton" = "Annuleren";
+
+/* Label within the modal dialog that appears when searching for a card reader */
+"cardPresent.modalScanningForReader.instruction" = "Zet je kaartlezer aan door kort op de aan-uitknop te drukken.";
+
+/* A label prompting users to learn more about In-Person Payments.
+This is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
+"cardPresent.modalScanningForReader.learnMore.link" = "Meer informatie";
+
+/* A label prompting users to learn more about In-Person Payments.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"cardPresent.modalScanningForReader.learnMore.text" = "%1$@ over fysieke betalingen";
+
+/* Title label for modal dialog that appears when searching for a card reader */
+"cardPresent.modalScanningForReader.title" = "Scannen op lezer";
+
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "eCommerce";
 
@@ -6636,6 +6648,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "handmatige restitutie";
+
+/* A error message when it's not possible toacquire the Analytics Hub previous selection range */
+"no previous period" = "geen vorige periode";
 
 /* No comment provided by engineer. */
 "password" = "Wachtwoord";

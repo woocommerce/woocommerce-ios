@@ -1,2 +1,1 @@
-Kami fokus pada sejumlah masalah stabilitas dan performa untuk melancarkan pengalaman Anda. Mohon terus berikan feedback kepada kami. Kami membaca semuanya.
-
+Rilis ini mencakup sejumlah peningkatan dan perbaikan bug agar pengalaman Anda makin mulus. Nantikan pembaruan menarik yang akan rilis beberapa minggu ke depan!

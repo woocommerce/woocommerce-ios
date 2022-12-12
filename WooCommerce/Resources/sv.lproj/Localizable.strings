@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-11-27 10:12:59+0000 */
+/* Translation-Revision-Date: 2022-12-06 11:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -38,12 +38,6 @@
 
 /* Title for the plugin version detail row in settings. %1$@ is a placeholder for the plugin name. This is displayed with the current version number, and whether an update is available. */
 "%1$@ Version" = "%1$@-version";
-
-/* A label prompting users to learn more about In-Person Payments.
-\u{2011} is a special character that acts as nonbreaking hyphen for "-" in the "In-Person" string.
-%1$@ is a placeholder that always replaced with \"Learn more\" string,
-which should be translated separately and considered part of this sentence. */
-"%1$@ about Inu{2011}Person Payments" = "%1$@ om {2011}Personliga betalningar";
 
 /* A label prompting users to learn more about card readers"
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
@@ -487,9 +481,6 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "Lägg till produktinformation för nedladdningsbara filer på distans";
 
-/* Navigates to a screen to create a simple payments order */
-"Add simple payments order" = "Lägg till beställning med enkel betalning";
-
 /* Placeholder text that will be shown in the view for adding the description of a coupon. */
 "Add the description of the coupon." = "Lägg till beskrivningen för rabattkoden";
 
@@ -501,6 +492,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "Lägg till vikt och dimensioner";
+
+/* Displayed during the Login flow, whenever the user has no woo stores associated. */
+"Add your first store" = "Lägg till din första butik";
 
 /* Text field address in Shipping Label Address Validation */
 "Address" = "Adress";
@@ -566,7 +560,7 @@ which should be translated separately and considered part of this sentence. */
 "All reviews marked as read" = "Alla recensioner har markerats som lästa";
 
 /* Subtitle of the store creation plan screen. */
-"All the featues you need, already built in" = "Alla funktioner du behöver, inbyggda från början";
+"All the features you need, already built in" = "Alla funktioner du behöver, redan inbyggda";
 
 /* Display label for the product's inventory backorders setting option */
 "Allow" = "Tillåt";
@@ -834,6 +828,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the app's blog */
 "Blog" = "Blogg";
 
+/* The button title on the reader type alert, for the user to choose a bluetooth reader. */
+"Bluetooth Reader" = "Bluetooth-läsare";
+
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
 "Bluetooth permission required" = "Bluetooth-behörighet krävs";
 
@@ -934,6 +931,7 @@ which should be translated separately and considered part of this sentence. */
    Cancel button on the alert when the user is cancelling the action on deleting a variation
    Cancel button on the alert when the user is cancelling the action on moving a product to the trash
    Cancel button on the error alert when fetching system status report fails
+   Cancel button title
    Cancel button title in the issue refund screen
    Cancel prompt for user information.
    Cancel the main more actions menu sheet.
@@ -1076,6 +1074,9 @@ which should be translated separately and considered part of this sentence. */
 /* Alert title for check your email during logIn/signUp. */
 "Check your email!" = "Kontrollera din e-post!";
 
+/* Title of the WPCOM checkout web view. */
+"Checkout" = "Kassa";
+
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "Välj pappersstorlek";
 
@@ -1138,9 +1139,11 @@ which should be translated separately and considered part of this sentence. */
    Title of the Close action on the Jetpack Install view */
 "Close" = "Stäng";
 
-/* Close Account button title to close the user's WordPress.com account
-   Link on the store picker for users who signed in with Apple to close their WordPress.com account. */
+/* Close Account button title to close the user's WordPress.com account */
 "Close Account" = "Avsluta kontot";
+
+/* Button to close the WordPress.com account on the store picker. */
+"Close account" = "Avsluta kontot";
 
 /* Title of the Close Account in-progress view. */
 "Closing account..." = "Avslutar kontot …";
@@ -1167,6 +1170,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text field company in Edit Address Form
    Text field company in Shipping Label Address Validation */
 "Company" = "Företag";
+
+/* Subtitle describing the previous analytics period under comparison. E.g. Compared to Oct 1 - 22, 2022 */
+"Compared to **%1$@**" = "Jämfört med **%1$@**";
 
 /* Display label for completed order status. */
 "Completed" = "Färdig";
@@ -1449,9 +1455,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description for fixed cart discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a fixed total discount for the entire cart" = "Skapa en fast totalrabatt för hela varukorgen";
 
-/* Description of the Action sheet option when the user wants to create full manual order */
-"Create a new manual order" = "Skapa en ny manuell beställning";
-
 /* Button to create a new store from the store picker */
 "Create a new store" = "Skapa en ny butik";
 
@@ -1460,9 +1463,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the store creation web view. */
 "Create a store" = "Skapa en butik";
-
-/* Description of the Action sheet option when the user wants to create Simple Payments order */
-"Create an order with minimal information" = "Skapa en beställning med minimalt med information";
 
 /* Title of the Create coupon screen */
 "Create coupon" = "Skapa rabattkod";
@@ -1473,17 +1473,11 @@ which should be translated separately and considered part of this sentence. */
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "Skapa nytt paket";
 
-/* Action sheet option when the user wants to create full manual order */
-"Create order" = "Skapa beställning";
-
 /* Title of the banner notice in the Orders tab */
-"Create orders & take payments!" = "Skapa beställningar och ta emot betalningar!";
+"Create orders!" = "Skapa beställningar!";
 
 /* The title of the shipping labels top banner in order details */
 "Create shipping labels from your device!" = "Skapa fraktetiketter från din enhet!";
-
-/* Displayed during the Login flow, whenever the user has no woo stores associated. */
-"Create your first store" = "Skapa din första butik";
 
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "Skapa din första variation";
@@ -1589,7 +1583,9 @@ which should be translated separately and considered part of this sentence. */
 "DETAILS" = "DETALJER";
 
 /* Navigation title of the orders filter selector screen for date range
-   Row title for filtering orders by date range. */
+   Row title for filtering orders by date range.
+   Title describing the possible date range selections of the Analytics Hub
+   Title of the range selection list */
 "Date Range" = "Datumintervall";
 
 /* Title of 'Date Paid' section in the receipt */
@@ -2080,6 +2076,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title indicating a failed step in Jetpack installation. */
 "Error" = "Fel";
 
+/* Error title when Jetpack activation fails */
+"Error activating Jetpack" = "Det gick inte att aktivera Jetpack";
+
+/* Error title when Jetpack connection fails */
+"Error authorizing connection to Jetpack" = "Det gick inte att auktorisera anslutningen till Jetpack";
+
 /* Error code displayed when the Jetpack setup fails. %1$d is the code. */
 "Error code %1$d" = "Felkod %1$d";
 
@@ -2091,6 +2093,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Det gick inte att hitta adressen i Apple Maps";
+
+/* Error title when Jetpack install fails */
+"Error installing Jetpack" = "Det gick inte att installera Jetpack";
 
 /* Message displayed on Coupon Details screen when loading total discounted amount fails */
 "Error loading data" = "Fel vid laddning av data";
@@ -2150,6 +2155,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the exclusions section in Coupon Usage Restrictions screen */
 "Exclusions" = "Exkluderingar";
+
+/* Button to cancel installation on the Jetpack setup interrupted screen */
+"Exit Without Connecting" = "Lämna utan att ansluta";
 
 /* Accessibility value when a banner is expanded */
 "Expanded" = "Expanderad";
@@ -2391,9 +2399,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Registrering via Google misslyckades.";
 
-/* Confirmation text of the button on the bottom announcement modalwhen a merchant taps on Simple Payment */
-"Got it!" = "Jag förstår!";
-
 /* Display label for grouped product type. */
 "Grouped" = "Grupperad";
 
@@ -2425,6 +2430,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Post HTML content */
 "HTML Content" = "HTML-innehåll";
+
+/* Subtitle on the Jetpack setup required screen */
+"Have your store credentials ready." = "Ha autentiseringsuppgifterna för din butik redo.";
 
 /* Accessibility label for selecting h1 paragraph style button on the formatting toolbar. */
 "Header 1" = "Rubrik 1";
@@ -2468,12 +2476,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action button for opening Help.Presented when logging in with a site address that does not have WooCommerce
    Button to contact support on the Jetpack setup interrupted screen
+   Button to get help from the store picker
    Help and Support navigation title
    Help button
    Help button on account mismatch error screen.
    Help button on Jetpack required error screen.
-   Help button on Jetpack setup required screen.
-   Help button on store picker screen. */
+   Help button on Jetpack setup required screen. */
 "Help" = "Hjälp";
 
 /* My Store > Settings > Help and Feedback settings section title */
@@ -2717,6 +2725,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text on the button that starts a new refund process */
 "Issue Refund" = "Utfärda återbetalning";
 
+/* Title of the alert when the WPCOM plan cannot be purchased in the store creation flow. */
+"Issue purchasing the plan" = "Problem att köpa paketet";
+
 /* Text of the screen that is displayed while the refund is being created. */
 "Issuing Refund..." = "Utfärdar återbetalning...";
 
@@ -2764,6 +2775,9 @@ which should be translated separately and considered part of this sentence. */
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack är ett gratis WordPress-tillägg som ansluter din butik till de verktyg som behövs för att ge dig den bästa möjliga mobilupplevelsen, inklusive pushmeddelanden och statistik";
 
+/* Title of the Jetpack setup interrupted screen */
+"Jetpack is installed, but not connected." = "Jetpack är installerat men inte anslutet.";
+
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "Gå med var du än är";
 
@@ -2805,8 +2819,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
-   A label prompting users to learn more about In-Person Payments.
-This is the link to the website, and forms part of a longer sentence which it should be considered a part of.
    Button title in the shipping label creation info screen
    Settings > Privacy Settings. A text link to the cookie policy.
    The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. 
@@ -2960,6 +2972,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Instructions on the WordPress.com username / password log in form. */
 "Log in with your WordPress.com username and password." = "Logga in med ditt WordPress.com-användarnamn och lösenord.";
+
+/* Button to log out from the current account from the store picker */
+"Log out" = "Logga ut";
 
 /* A generic error during site credential login */
 "Login failed. Please try again." = "Inloggning misslyckades. Försök igen.";
@@ -3167,6 +3182,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The title for the net amount paid cell */
 "Net Payment" = "Nettobetalning";
 
+/* Label for net sales (net revenue) in the Analytics Hub */
+"Net Sales" = "Nettoförsäljning";
+
 /* Top performers — label for the total sales of a product */
 "Net sales: %@" = "Nettoförsäljning: %@";
 
@@ -3226,6 +3244,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
 "No coupons found" = "Inga rabattkoder hittades";
+
+/* A error message when it's not possible to acquirethe Analytics Hub current selection range */
+"No current period available" = "Ingen nuvarande period tillgänglig";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Inga data tillgängliga";
@@ -3320,9 +3341,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Info text for the generate first variation screen */
 "Now that you’ve added attributes, you can create your first variation!" = "Nu när du har lagt till attribut kan du skapa din första variation!";
 
-/* Message of the bottom announcement modal when a merchant taps on Simple Payment */
-"Now you can quickly access In-Person Payments and other features with ease." = "Nu kan du snabbt och enkelt komma åt Personliga betalningar och andra funktioner.";
-
 /* Alert dismissal title
    Button title to dismiss the alert when the store cannot be created in the store creation flow.
    Button title to dismiss the alert when the WPCOM plan cannot be purchased in the store creation flow.
@@ -3340,6 +3358,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Header of selected attribute options section in Add Attribute Options screen */
 "OPTIONS OFFERED" = "ALTERNATIV SOM ERBJUDS";
+
+/* Title for order analytics section in the Analytics Hub */
+"ORDERS" = "BESTÄLLNINGAR";
 
 /* Spoken label to indicate switch control is turned off. */
 "Off" = "Av";
@@ -3631,9 +3652,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of the hub menu payments button */
 "Payments" = "Betalningar";
 
-/* Title of the bottom announcement modal when a merchant taps on Simple Payment */
-"Payments from the Menu tab" = "Betalningar från menyfliken";
-
 /* Display label for pending order status.
    Display label for the review's pending status */
 "Pending" = "Inväntar granskning";
@@ -3687,8 +3705,14 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "Ladda läsare";
 
+/* Error message on the Jetpack setup required screen when Jetpack connection is missing. */
+"Please connect your store to Jetpack to access it on this app." = "Anslut din butik till Jetpack för att komma åt den på denna app.";
+
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app." = "Kontakta webbplatsens ägare för en inbjudan till webbplatsen som butikschef eller administratör för att använda appen.";
+
+/* Suggestion to be displayed when the user encounters a permission error during Jetpack setup */
+"Please contact your shop manager or administrator for help." = "Kontakta din butikshanterare eller -administratör för att få hjälp.";
 
 /* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to address problems */
 "Please correct your store address to proceed" = "Korrigera din butiksadress för att fortsätta";
@@ -3749,6 +3773,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* A short prompt asking the user to properly fill out all login fields. */
 "Please fill out all the fields" = "Fyll i alla fälten";
 
+/* Error message on the Jetpack setup required screen. */
+"Please install the free Jetpack plugin to access your store on this app." = "Installera det kostnadsfria Jetpack-tillägget för att komma åt din butik med den här appen.";
+
 /* Message for alert to prompt user to logout before connecting to a different wordpress.com site. */
 "Please log out before connecting to a different wordpress.com site" = "Logga ut innan du ansluter till någon annan webbplats på wordpress.com";
 
@@ -3759,20 +3786,32 @@ This is the link to the website, and forms part of a longer sentence which it sh
    Recovery suggestion when we fail to update an address when creating or editing an order */
 "Please make sure you are running the latest version of WooCommerce and try again later." = "Se till att du kör den senaste versionen av WooCommerce och försök igen senare.";
 
+/* Message of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
+"Please remain connected." = "Förbli ansluten.";
+
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "Välj ett paket";
 
 /* Message of the alert when the store cannot be created due to the domain in the store creation flow. */
 "Please try a different domain." = "Prova en annan domän.";
 
+/* Message of the alert when the WPCOM plan cannot be purchased in the store creation flow. */
+"Please try again and make sure you are signed in to an App Store account eligible for purchase." = "Försök igen och se till att du är inloggad på ett App Store-konto som är berättigat till köp.";
+
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "Försök igen senare eller kontakta oss så hjälper vi dig gärna!";
+
+/* Suggestion to be displayed when the user encounters a permission error during Jetpack setup */
+"Please try again or contact support if this error continues." = "Försök igen eller kontakta supporten om detta fel fortsätter.";
 
 /* Error message when Jetpack connection fails */
 "Please try again or contact us for support." = "Försök igen eller kontakta oss för support.";
 
 /* Body text for the default store picker error screen */
 "Please try again or reach out to us and we'll be happy to assist you!" = "Försök igen eller kontakta oss så hjälper vi dig gärna!";
+
+/* Message of the alert when the WPCOM plan cannot be purchased in a webview in the store creation flow. */
+"Please try again, or exit the screen and check back on your store if you previously left the checkout screen while payment is in progress." = "Försök igen, eller lämna skärmen och kontrollera din butik om du tidigare har lämnat kassaskärmen under en pågående betalning.";
 
 /* Account creation error when an unexpected error occurs.
    Message of the alert when the store cannot be created in the store creation flow.
@@ -3801,6 +3840,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Message on the Jetpack Install Progress screen. The %1$@ is the site address. */
 "Please wait while we connect your site %1$@ with Jetpack." = "Vänta medan vi ansluter din webbplats %1$@ till Jetpack.";
+
+/* Message on the Jetpack setup screen. The %1$@ is the site address. */
+"Please wait while we connect your store %1$@ with Jetpack." = "Vänta medan vi ansluter din butik %1$@ med Jetpack.";
 
 /* Instructions for the progress screen while generating a variation */
 "Please wait while we create the new variation" = "Vänta medan vi skapar den nya variationen";
@@ -4081,6 +4123,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
 "Quickly get up and selling with a beautiful online store." = "Kom igång och börja sälj snabbt med en vacker onlinebutik.";
+
+/* Title for revenue analytics section in the Analytics Hub */
+"REVENUE" = "INTÄKTER";
 
 /* Title of button that allows the user to rate the app in the App Store */
 "Rate us" = "Betygsätt oss";
@@ -4439,9 +4484,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Scan Products */
 "Scan products" = "Skanna produkter";
 
-/* Title label for modal dialog that appears when searching for a card reader */
-"Scanning for reader" = "Skannar efter läsare";
-
 /* Label for a cell informing the user that reader scanning is ongoing. */
 "Scanning for readers" = "Skannar efter läsare";
 
@@ -4548,6 +4590,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "Välj styckeformatering";
+
+/* The title for the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
+"Select reader type" = "Välj läsartyp";
 
 /* Placeholder value of the cell in Product Price Settings > Schedule sale from a certain date */
 "Select start date" = "Välj startdatum";
@@ -4780,9 +4825,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Display label for simple product type. */
 "Simple" = "Enkel";
-
-/* Action sheet option when the user wants to create Simple Payments order */
-"Simple payment" = "Enkel betalning";
 
 /* Action sheet option when the user wants to change the Product type to simple physical product */
 "Simple physical product" = "Enkel fysisk produkt";
@@ -5071,6 +5113,10 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
 "Tap or insert card to refund" = "Tryck på eller sätt i kort för att återbetala";
 
+/* Cell tytle on beta features screen to enable Tap to Pay on iPhone: card payments with the phone's built in reader
+   The button title on the reader type alert, for the user to choose the built-in reader. */
+"Tap to Pay on iPhone" = "Tryck för att betala på iPhone";
+
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
 "Tap to insert a Horizontal Ruler" = "Tryck för att infoga en vågrät linjal";
 
@@ -5182,6 +5228,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
    The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen.
    Title of button that displays the App's terms of service */
 "Terms of Service" = "Användarvillkor";
+
+/* Cell description on beta features screen to enable in-app purchases */
+"Test out In-Person Payments using your phone's built-in card reader, as we get ready to launch. Supported on iPhone XS and newer phones, running iOS 15.5 or above." = "Medan vi gör oss redo för lansering, testa personliga betalningar med hjälp av din telefons inbyggda kortläsare. Stöds på iPhone XS och nyare telefoner som kör iOS 15.5 eller senare.";
 
 /* Cell description on beta features screen to enable in-app purchases */
 "Test out in-app purchases as we get ready to launch" = "Testa köp i appen medan vi gör oss redo för lansering";
@@ -5447,6 +5496,12 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The details on the placeholder overlay when there is issue syncing site plugins */
 "There was a problem while trying to load plugins. Check your internet and try again." = "Det var ett problem vid försöket att ladda tilläggen. Kontrollera ditt internet och försök igen.";
 
+/* Message to be displayed when the user encounters a permission error during Jetpack setup */
+"There was an error communicating with your site." = "Ett fel uppstod vid kommunikationen med din webbplats.";
+
+/* Message to be displayed when the user encounters a generic error during Jetpack setup */
+"There was an error completing your request." = "Det gick inte att slutföra din begäran.";
+
 /* Notice text after failing to create a simple payments order. */
 "There was an error creating the order" = "Det gick inte att skapa beställningen";
 
@@ -5614,9 +5669,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Sign in instructions asking user to enter WordPress.com password to proceed with sign in using Apple process */
 "To proceed with this account, please first log in with your WordPress.com password. This will only be asked once." = "För att fortsätta med detta konto, logga först in med ditt WordPress.com-lösenord. Detta kommer bara att frågas en gång.";
 
-/* Label within the modal dialog that appears when searching for a card reader */
-"To turn on your card reader, briefly press its power button." = "För att starta din kortläsare, tryck kort på dess strömknapp.";
-
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "För att använda den här appen för %@ måste du ha installerat och anslutit Jetpack-tillägget på din butik.";
 
@@ -5727,6 +5779,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
 "Try another means of payment" = "Prova en annan betalningsmetod";
 
+/* Message on the Jetpack setup interrupted screen */
+"Try connecting again to access your store." = "Försök att ansluta igen för att komma åt din butik.";
+
 /* Title for the button on the Linked Products announcement banner */
 "Try it now" = "Prova det nu";
 
@@ -5825,8 +5880,17 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Notice message when loading product categories fails */
 "Unable to load categories" = "Kan inte ladda kategorier";
 
+/* Text displayed when there is an error loading order stats data. */
+"Unable to load order analytics" = "Det gick inte att ladda beställningsanalysen";
+
+/* Text displayed when there is an error loading product stats data. */
+"Unable to load product analytics" = "Det gick inte att ladda produktanalysen";
+
 /* Load Product Attributes Action Failed */
 "Unable to load product attributes" = "Det gick inte att läsa in produktattributen";
+
+/* Text displayed when there is an error loading revenue stats data. */
+"Unable to load revenue analytics" = "Det gick inte att ladda intäktsanalysen";
 
 /* Notice displayed when data cannot be synced for new order */
 "Unable to load taxes for order" = "Det gick inte att läsa in moms för beställningen";
@@ -6208,6 +6272,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* View title during the Google auth process. */
 "Waiting..." = "Väntar …";
 
+/* Title of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
+"We are getting ready for your store creation" = "Vi gör oss redo för att skapa din butik";
+
 /* Error message when the merchant's payment account has been rejected */
 "We are sorry but we can't support In-Person Payments for this store." = "Tyvärr kan vi inte erbjuda personliga betalningar för den här butiken.";
 
@@ -6306,7 +6373,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "We're sorry, we were unable to verify In-Person Payments for this store." = "Vi kunde inte verifiera personliga betalningar för den här butiken.";
 
 /* Content of the banner notice in the Orders tab */
-"We've been working on making it possible to create orders and take payments from your device! You can try these features out by tapping on the \"+\" button" = "Vi har arbetat med att göra det möjligt att skapa beställningar och ta emot betalningar från din enhet! Du kan prova dessa funktioner genom att trycka på  knappen ”+”";
+"We've been working on making it possible to create orders from your device! You can try this out by tapping on the \"+\" button" = "Vi har jobbat på att göra det möjligt att skapa beställningar från din enhet. Du kan prova detta genom att trycka på \"+\"-knappen";
 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Vi har skickat en registreringslänk till dig via e-post, så att du kan skapa ditt nya WordPress.com-konto. Kontrollera din e-post på den här enheten och tryck på länken i e-postmeddelandet som du får från WordPress.com.";
@@ -6492,6 +6559,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
 "Your email isn't used with a WordPress.com account" = "Din e-post används inte med ett WordPress.com-konto";
 
+/* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
+"Your iPhone can be used as a card reader, or you can connect to an external reader via bluetooth." = "Din iPhone kan användas som kortläsare, eller så kan du ansluta till en extern läsare via bluetooth.";
+
 /* Message displayed when a coupon was successfully created */
 "Your new coupon was created!" = "Din nya rabattkod skapades!";
 
@@ -6531,6 +6601,26 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "Ikon";
 
+/* Label for a cancel button */
+"cardPresent.modalScanningForReader.cancelButton" = "Avbryt";
+
+/* Label within the modal dialog that appears when searching for a card reader */
+"cardPresent.modalScanningForReader.instruction" = "För att slå på din kortläsare, tryck kort på dess strömknapp.";
+
+/* A label prompting users to learn more about In-Person Payments.
+This is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
+"cardPresent.modalScanningForReader.learnMore.link" = "Lär dig mer";
+
+/* A label prompting users to learn more about In-Person Payments.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"cardPresent.modalScanningForReader.learnMore.text" = "%1$@ om personliga betalningar";
+
+/* Title label for modal dialog that appears when searching for a card reader */
+"cardPresent.modalScanningForReader.title" = "Skannar efter läsare";
+
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "eCommerce";
 
@@ -6558,6 +6648,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "manuell återbetalning";
+
+/* A error message when it's not possible toacquire the Analytics Hub previous selection range */
+"no previous period" = "Ingen föregående period";
 
 /* No comment provided by engineer. */
 "password" = "lösenord";

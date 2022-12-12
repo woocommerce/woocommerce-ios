@@ -125,6 +125,68 @@ extension AnalyticsHubTimeRangeSelection {
             }
         }
 
+        /// The granularity that should be used to request stats from the given SelectedType
+        ///
+        var granularity: StatsGranularityV4 {
+            switch self {
+            case .today, .yesterday:
+                return .hourly
+            case .custom, .weekToDate, .lastWeek:
+                return .daily
+            case .monthToDate, .lastMonth:
+                return .daily
+            case .quarterToDate, .lastQuarter:
+                return .weekly
+            case .yearToDate, .lastYear:
+                return .monthly
+            }
+        }
+
+        /// The response interval size that should be used to request stats from the given SelectedType
+        /// in order to proper determine the stats charts and changes
+        ///
+        var intervalSize: Int {
+            switch self {
+            case .custom, .today, .yesterday:
+                return 24
+            case .weekToDate, .lastWeek:
+                return 7
+            case .monthToDate, .lastMonth:
+                return 31
+            case .quarterToDate, .lastQuarter:
+                return 13
+            case .yearToDate, .lastYear:
+                return 12
+            }
+        }
+
+        var tracksIdentifier: String {
+            switch self {
+            case .custom:
+                return "Custom"
+            case .today:
+                return "Today"
+            case .yesterday:
+                return "Yesterday"
+            case .lastWeek:
+                return "Last Week"
+            case .lastMonth:
+                return "Last Month"
+            case .lastQuarter:
+                return "Last Quarter"
+            case .lastYear:
+                return "Last Year"
+            case .weekToDate:
+                return "Week to Date"
+            case .monthToDate:
+                return "Month to Date"
+            case .quarterToDate:
+                return "Quarter to Date"
+            case .yearToDate:
+                return "Year to Date"
+            }
+        }
+
         init(_ statsTimeRange: StatsTimeRangeV4) {
             switch statsTimeRange {
             case .today:

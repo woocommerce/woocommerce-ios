@@ -4,15 +4,18 @@ import Foundation
 /// considered as a _usage_ of the UI.
 ///
 /// See p91TBi-6Cl-p2 for more information about the algorithm.
+/// See pe5pgL-153-p2 for background about adding Analytics Hub interactions to the algorithm.
 ///
 /// The UI should call `interacted` when these events happen:
 ///
-/// - Scrolling
-/// - Pull-to-refresh
+/// - Scrolling (My Store or Analytics)
+/// - Pull-to-refresh (My Store or Analytics)
 /// - Tapping on the bars in the chart
 /// - Changing the tab
 /// - Navigating to the My Store tab
 /// - Tapping on a product in the Top Performers list
+/// - Tapping on the Analytics date range
+/// - Selecting an Analytics date range option
 ///
 /// If we ever change the algorithm in the future, we should probably consider renaming the Tracks event to avoid
 /// incorrect comparisons with old events. We should also make sure to change the Android code if we're changing anything
@@ -35,6 +38,8 @@ final class StoreStatsUsageTracksEventEmitter {
     /// - Changing the tab
     /// - Navigating to the My Store tab
     /// - Tapping on a product in the Top Performers list
+    /// - Tapping on the date range in the Analytics Hub
+    /// - Selecting a date range option in the Analytics Hub
     private let interactionsThreshold = 5
 
     /// The maximum number of seconds in between interactions before we will consider the

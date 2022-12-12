@@ -1,2 +1,1 @@
-Vi har fokuserat på att åtgärda vissa stabilitets- och prestandaproblem för att göra din upplevelse smidigare. Fortsätt lämna feedback. Vi läser allt.
-
+Den här versionen inkluderar ett antal buggkorrigeringar och förbättringar som gör din upplevelse smidigare. Håll ögonen öppna efter spännande uppdateringar under de kommande veckorna.

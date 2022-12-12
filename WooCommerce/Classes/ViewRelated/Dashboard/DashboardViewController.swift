@@ -132,8 +132,9 @@ final class DashboardViewController: UIViewController {
         observeAnnouncements()
         observeShowWebViewSheet()
         observeAddProductTrigger()
-        viewModel.syncAnnouncements(for: siteID)
+
         Task { @MainActor in
+            await viewModel.syncAnnouncements(for: siteID)
             await reloadDashboardUIStatsVersion(forced: true)
         }
     }
@@ -387,7 +388,9 @@ private extension DashboardViewController {
         let webViewSheet = WebViewSheet(viewModel: viewModel) { [weak self] in
             guard let self = self else { return }
             self.dismiss(animated: true)
-            self.viewModel.syncAnnouncements(for: self.siteID)
+            Task {
+                await self.viewModel.syncAnnouncements(for: self.siteID)
+            }
         }
         let hostingController = UIHostingController(rootView: webViewSheet)
         hostingController.presentationController?.delegate = self
@@ -411,7 +414,9 @@ private extension DashboardViewController {
         coordinator.onProductCreated = { [weak self] in
             guard let self else { return }
             self.viewModel.announcementViewModel = nil // Remove the products onboarding banner
-            self.viewModel.syncAnnouncements(for: self.siteID)
+            Task {
+                await self.viewModel.syncAnnouncements(for: self.siteID)
+            }
         }
         coordinator.start()
     }
@@ -428,19 +433,20 @@ private extension DashboardViewController {
     func observeAnnouncements() {
         viewModel.$announcementViewModel.sink { [weak self] viewModel in
             guard let self = self else { return }
-            self.removeAnnouncement()
-            guard let viewModel = viewModel else {
-                return
+            Task { @MainActor in
+                self.removeAnnouncement()
+                guard let viewModel = viewModel else {
+                    return
+                }
+
+                let cardView = FeatureAnnouncementCardView(
+                    viewModel: viewModel,
+                    dismiss: { [weak self] in
+                        self?.viewModel.announcementViewModel = nil
+                    },
+                    callToAction: {})
+                self.showAnnouncement(AnnouncementCardWrapper(cardView: cardView))
             }
-
-            let cardView = FeatureAnnouncementCardView(
-                viewModel: viewModel,
-                dismiss: { [weak self] in
-                    self?.viewModel.announcementViewModel = nil
-                },
-                callToAction: {})
-
-            self.showAnnouncement(AnnouncementCardWrapper(cardView: cardView))
         }
         .store(in: &subscriptions)
     }
@@ -509,7 +515,9 @@ extension DashboardViewController: DashboardUIScrollDelegate {
 extension DashboardViewController: UIAdaptivePresentationControllerDelegate {
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         if presentationController.presentedViewController is UIHostingController<WebViewSheet> {
-            viewModel.syncAnnouncements(for: siteID)
+            Task {
+                await viewModel.syncAnnouncements(for: siteID)
+            }
         }
     }
 }
@@ -622,7 +630,7 @@ private extension DashboardViewController {
 
     func pullToRefresh() async {
         ServiceLocator.analytics.track(.dashboardPulledToRefresh)
-        viewModel.syncAnnouncements(for: siteID)
+        await viewModel.syncAnnouncements(for: siteID)
         await reloadDashboardUIStatsVersion(forced: true)
     }
 }

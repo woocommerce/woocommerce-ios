@@ -756,6 +756,7 @@
     </entity>
     <entity name="SiteVisitStatsItem" representedClassName="SiteVisitStatsItem" syncable="YES">
         <attribute name="period" optional="YES" attributeType="String"/>
+        <attribute name="views" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="visitors" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="stats" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SiteVisitStats" inverseName="items" inverseEntity="SiteVisitStats"/>
     </entity>

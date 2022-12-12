@@ -81,8 +81,19 @@ extension AnalyticsHubTimeRangeSelection {
         /// Wee need to provide a custom `allCases` because the `.custom(Date?, Date?)`case  disables its synthetization.
         ///
         static var allCases: [AnalyticsHubTimeRangeSelection.SelectionType] {
-            [.custom(start: nil, end: nil), .today, .yesterday, .lastWeek, .lastMonth, .lastQuarter, .lastYear, .weekToDate, .monthToDate, .quarterToDate,
-             .yearToDate]
+            [
+                ServiceLocator.featureFlagService.isFeatureFlagEnabled(.analyticsHub) ? .custom(start: nil, end: nil) : nil,
+                .today,
+                .yesterday,
+                .lastWeek,
+                .lastMonth,
+                .lastQuarter,
+                .lastYear,
+                .weekToDate,
+                .monthToDate,
+                .quarterToDate,
+                yearToDate
+            ].compactMap { $0 }
         }
 
         // When adding a new case, remember to add it to `allCases`.

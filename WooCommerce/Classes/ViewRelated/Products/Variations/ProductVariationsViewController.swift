@@ -170,7 +170,7 @@ private extension ProductVariationsViewController {
     /// Shows or hides the "more" navigation bar button.
     ///
     func showOrHideMoreActionsNavigationBarButton() {
-        guard featureFlagService.isFeatureFlagEnabled(.bulkEditProductVariations) && resultsController.fetchedObjects.isNotEmpty else {
+        guard resultsController.fetchedObjects.isNotEmpty else {
             // Do not display the "more" button with the bulk update option if we do not have any variations
             hideMoreActionsNavigationBarButton()
             return
@@ -575,11 +575,16 @@ private extension ProductVariationsViewController {
         actionSheet.addDefaultActionWithTitle(ActionSheetStrings.bulkUpdate) { [weak self] _ in
             guard let self = self else { return }
 
-            let viewModel = BulkUpdateViewModel(siteID: self.siteID, productID: self.productID, onCancelButtonTapped: { [weak self] in
+            let viewModel = BulkUpdateViewModel(siteID: self.siteID,
+                                                productID: self.productID,
+                                                variationCount: self.product.variations.count,
+                                                onCancelButtonTapped: { [weak self] in
                 self?.dismiss(animated: true)
             })
             let navigationController = WooNavigationController(rootViewController: BulkUpdateViewController(viewModel: viewModel))
             self.present(navigationController, animated: true)
+
+            self.analytics.track(event: .Variations.bulkUpdateSectionTapped())
         }
 
         actionSheet.addCancelActionWithTitle(ActionSheetStrings.cancel)

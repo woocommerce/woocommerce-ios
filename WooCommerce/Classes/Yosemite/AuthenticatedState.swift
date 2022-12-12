@@ -35,8 +35,12 @@ class AuthenticatedState: StoresManagerState {
             AddOnGroupStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             CouponStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            CustomerStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             DataStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            DomainStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            InAppPurchaseStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             InboxNotesStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            JustInTimeMessageStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             MediaStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             NotificationCountStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: PListFileStorage()),
@@ -44,6 +48,7 @@ class AuthenticatedState: StoresManagerState {
             OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            PaymentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             PaymentGatewayStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductAttributeStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductAttributeTermStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
@@ -59,6 +64,11 @@ class AuthenticatedState: StoresManagerState {
             ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             SitePluginStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             SitePostStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            SiteStore(dotcomClientID: ApiCredentials.dotcomAppId,
+                      dotcomClientSecret: ApiCredentials.dotcomSecret,
+                      dispatcher: dispatcher,
+                      storageManager: storageManager,
+                      network: network),
             StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network),
             SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             TaxClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
@@ -76,7 +86,8 @@ class AuthenticatedState: StoresManagerState {
             AnnouncementsStore(dispatcher: dispatcher,
                                storageManager: storageManager,
                                network: network,
-                               fileStorage: PListFileStorage())
+                               fileStorage: PListFileStorage()),
+            JetpackConnectionStore(dispatcher: dispatcher)
         ]
 
         startListeningToNotifications()

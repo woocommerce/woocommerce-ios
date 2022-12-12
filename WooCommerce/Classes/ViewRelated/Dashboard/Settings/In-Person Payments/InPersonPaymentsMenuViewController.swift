@@ -12,6 +12,18 @@ final class InPersonPaymentsMenuViewController: UIViewController {
     private let featureFlagService: FeatureFlagService
     private let cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCase
     private var cancellables: Set<AnyCancellable> = []
+    private lazy var learnMoreViewModel: LearnMoreViewModel = {
+        LearnMoreViewModel(url: WooConstants.URLs.wcPayCashOnDeliveryLearnMore.asURL(),
+                           linkText: Localization.toggleEnableCashOnDeliveryLearnMoreLink,
+                           formatText: Localization.toggleEnableCashOnDeliveryLearnMoreFormat,
+                           tappedAnalyticEvent: WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingLearnMoreTapped(
+                            reason: "reason",
+                            countryCode: configurationLoader.configuration.countryCode))
+    }()
+
+    private let viewModel: InPersonPaymentsMenuViewModel = InPersonPaymentsMenuViewModel()
+
+    private let cashOnDeliveryToggleRowViewModel: InPersonPaymentsCashOnDeliveryToggleRowViewModel
 
     /// No Manuals to be shown in a country where IPP is not supported
     /// 
@@ -44,6 +56,7 @@ final class InPersonPaymentsMenuViewController: UIViewController {
         self.featureFlagService = featureFlagService
         self.cardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase()
         configurationLoader = CardPresentConfigurationLoader()
+        self.cashOnDeliveryToggleRowViewModel = InPersonPaymentsCashOnDeliveryToggleRowViewModel()
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -55,10 +68,14 @@ final class InPersonPaymentsMenuViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        setupNavigationBar()
         configureSections()
         configureTableView()
         registerTableViewCells()
+        configureTableReload()
         runCardPresentPaymentsOnboarding()
+        configureWebViewPresentation()
+        viewModel.viewDidLoad()
     }
 }
 
@@ -77,7 +94,7 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     func refreshAfterNewOnboardingState(_ state: CardPresentPaymentOnboardingState) {
-        self.pluginState = nil
+        pluginState = nil
 
         guard state != .loading else {
             self.activityIndicator?.startAnimating()
@@ -86,22 +103,24 @@ private extension InPersonPaymentsMenuViewController {
 
         switch state {
         case let .completed(newPluginState):
-            self.pluginState = newPluginState
-            self.dismissCardPresentPaymentsOnboardingNoticeIfPresent()
-            self.dismissOnboardingIfPresented()
+            pluginState = newPluginState
+            dismissCardPresentPaymentsOnboardingNoticeIfPresent()
+            dismissOnboardingIfPresented()
         case let .selectPlugin(pluginSelectionWasCleared):
             // If it was cleared it means that we triggered it manually (e.g by tapping in this view on the plugin selection row)
             // No need to show the onboarding notice
             if !pluginSelectionWasCleared {
-                self.showCardPresentPaymentsOnboardingNotice()
+                showCardPresentPaymentsOnboardingNotice()
             }
         default:
-            self.showCardPresentPaymentsOnboardingNotice()
+            showCardPresentPaymentsOnboardingNotice()
         }
 
-        self.activityIndicator?.stopAnimating()
-        self.configureSections()
-        self.tableView.reloadData()
+        updateViewModelSelectedPlugin(state: state)
+
+        activityIndicator?.stopAnimating()
+        configureSections()
+        tableView.reloadData()
     }
 
     func showCardPresentPaymentsOnboardingNotice() {
@@ -117,6 +136,17 @@ private extension InPersonPaymentsMenuViewController {
 
     func dismissCardPresentPaymentsOnboardingNoticeIfPresent() {
         permanentNoticePresenter.dismiss()
+    }
+
+    func updateViewModelSelectedPlugin(state: CardPresentPaymentOnboardingState) {
+        switch state {
+        case let .completed(pluginState):
+            cashOnDeliveryToggleRowViewModel.selectedPlugin = pluginState.preferred
+        case let .codPaymentGatewayNotSetUp(plugin):
+            cashOnDeliveryToggleRowViewModel.selectedPlugin = plugin
+        default:
+            cashOnDeliveryToggleRowViewModel.selectedPlugin = nil
+        }
     }
 
     func showOnboarding() {
@@ -138,6 +168,11 @@ private extension InPersonPaymentsMenuViewController {
 // MARK: - View configuration
 //
 private extension InPersonPaymentsMenuViewController {
+    func setupNavigationBar() {
+        navigationController?.setNavigationBarHidden(false, animated: true)
+        navigationItem.title = InPersonPaymentsView.Localization.title
+    }
+
     func configureSections() {
         sections = [
             actionsSection,
@@ -147,7 +182,7 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     var actionsSection: Section? {
-        return Section(header: Localization.paymentActionsSectionTitle, rows: [.collectPayment])
+        return Section(header: Localization.paymentActionsSectionTitle, rows: [.collectPayment, .toggleEnableCashOnDelivery])
     }
 
     var cardReadersSection: Section? {
@@ -211,6 +246,8 @@ private extension InPersonPaymentsMenuViewController {
             configureCardReaderManuals(cell: cell)
         case let cell as LeftImageTableViewCell where row == .collectPayment:
             configureCollectPayment(cell: cell)
+        case let cell as LeftImageTitleSubtitleToggleTableViewCell where row == .toggleEnableCashOnDelivery:
+            configureToggleEnableCashOnDelivery(cell: cell)
         default:
             fatalError()
         }
@@ -259,10 +296,41 @@ private extension InPersonPaymentsMenuViewController {
         updateEnabledState(in: cell)
     }
 
+    func configureToggleEnableCashOnDelivery(cell: LeftImageTitleSubtitleToggleTableViewCell) {
+        cell.leftImageView?.tintColor = .text
+        cell.accessoryType = .none
+        cell.selectionStyle = .none
+        cell.configure(image: .creditCardIcon,
+                       text: Localization.toggleEnableCashOnDelivery,
+                       subtitle: learnMoreViewModel.learnMoreAttributedString,
+                       switchState: cashOnDeliveryToggleRowViewModel.cashOnDeliveryEnabledState,
+                       switchAction: cashOnDeliveryToggleRowViewModel.updateCashOnDeliverySetting(enabled:),
+                       subtitleTapAction: { [weak self] in
+            guard let self = self else { return }
+            self.cashOnDeliveryToggleRowViewModel.learnMoreTapped(from: self)
+        })
+    }
+
     func updateEnabledState(in cell: UITableViewCell, shouldBeEnabled: Bool = true) {
         let alpha = shouldBeEnabled ? 1 : 0.3
         cell.imageView?.alpha = alpha
         cell.textLabel?.alpha = alpha
+    }
+
+    func configureTableReload() {
+        cashOnDeliveryToggleRowViewModel.$cashOnDeliveryEnabledState.sink { [weak self] _ in
+            self?.tableView.reloadData()
+        }.store(in: &cancellables)
+    }
+
+    private func configureWebViewPresentation() {
+        viewModel.$showWebView.sink { viewModel in
+            guard let viewModel = viewModel else {
+                return
+            }
+            let connectionController = AuthenticatedWebViewController(viewModel: viewModel)
+            self.navigationController?.show(connectionController, sender: nil)
+        }.store(in: &cancellables)
     }
 }
 
@@ -278,8 +346,7 @@ private extension InPersonPaymentsMenuViewController {
 //
 extension InPersonPaymentsMenuViewController {
     func orderCardReaderWasPressed() {
-        ServiceLocator.analytics.track(.paymentsMenuOrderCardReaderTapped)
-        WebviewHelper.launch(configurationLoader.configuration.purchaseCardReaderUrl(), with: self)
+        viewModel.orderCardReaderPressed()
     }
 
     func manageCardReaderWasPressed() {
@@ -375,6 +442,17 @@ extension InPersonPaymentsMenuViewController: UITableViewDelegate {
             managePaymentGatewaysWasPressed()
         case .collectPayment:
             collectPaymentWasPressed()
+        case .toggleEnableCashOnDelivery:
+            break
+        }
+    }
+
+    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        switch rowAtIndexPath(indexPath) {
+        case .toggleEnableCashOnDelivery:
+            return nil
+        default:
+            return indexPath
         }
     }
 }
@@ -410,6 +488,22 @@ private extension InPersonPaymentsMenuViewController {
             comment: "Navigates to Payment Gateway management screen"
         )
 
+        static let toggleEnableCashOnDelivery = NSLocalizedString(
+            "Pay in Person",
+            comment: "Title for a switch on the In-Person Payments menu to enable Cash on Delivery"
+        )
+
+        static let toggleEnableCashOnDeliveryLearnMoreFormat = NSLocalizedString(
+            "The Pay in Person checkout option lets you accept payments for website orders, on collection or delivery. %1$@",
+            comment: "A label prompting users to learn more about adding Pay in Person to their checkout. " +
+            "%1$@ is a placeholder that always replaced with \"Learn more\" string, " +
+            "which should be translated separately and considered part of this sentence.")
+
+        static let toggleEnableCashOnDeliveryLearnMoreLink = NSLocalizedString(
+            "Learn more",
+            comment: "The \"Learn more\" string replaces the placeholder in a label prompting users to learn " +
+            "more about adding Pay in Person to their checkout. ")
+
         static let cardReaderManuals = NSLocalizedString(
             "Card Reader Manuals",
             comment: "Navigates to Card Reader Manuals screen"
@@ -443,11 +537,14 @@ private enum Row: CaseIterable {
     case cardReaderManuals
     case managePaymentGateways
     case collectPayment
+    case toggleEnableCashOnDelivery
 
     var type: UITableViewCell.Type {
         switch self {
         case .managePaymentGateways:
             return LeftImageTitleSubtitleTableViewCell.self
+        case .toggleEnableCashOnDelivery:
+            return LeftImageTitleSubtitleToggleTableViewCell.self
         default:
             return LeftImageTableViewCell.self
         }

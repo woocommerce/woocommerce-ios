@@ -4,9 +4,9 @@ import Foundation
 /// A universal link route, used to encapsulate a URL path and action
 /// 
 protocol Route {
-    /// The url path to match so this route can perform its navigation
+    /// The universal link subpath (without the /mobile segment) to be matched so this route can perform its navigation
     ///
-    var path: String { get }
+    var subPath: String { get }
 
     /// Performs the action related to this route, usually a navigation.
     /// - Parameter parameters: The parameters dictionary that was contained in the URL

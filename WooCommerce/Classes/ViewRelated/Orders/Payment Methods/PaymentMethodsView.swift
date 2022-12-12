@@ -104,7 +104,15 @@ struct PaymentMethodsView: View {
             }
         }
         .sheet(isPresented: $showingPurchaseCardReaderView) {
-            SafariView(url: viewModel.purchaseCardReaderUrl)
+            WebViewSheet(
+                viewModel: WebViewSheetViewModel(
+                    url: viewModel.purchaseCardReaderUrl,
+                    navigationTitle: UpsellCardReadersCampaign.Localization.cardReaderWebViewTitle,
+                    wpComAuthenticated: true),
+                done: {
+                    showingPurchaseCardReaderView = false
+                })
+            .navigationViewStyle(.stack)
         }
         .shareSheet(isPresented: $sharingPaymentLink) {
             // If paymentLink is available it already contains a valid URL.

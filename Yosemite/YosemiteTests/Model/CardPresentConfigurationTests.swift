@@ -1,6 +1,7 @@
 import Foundation
 import XCTest
 @testable import Yosemite
+import WooFoundation
 
 class CardPresentConfigurationTests: XCTestCase {
     // MARK: - US Tests
@@ -10,7 +11,7 @@ class CardPresentConfigurationTests: XCTestCase {
         XCTAssertEqual(configuration.currencies, [.USD])
         XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay, Constants.PaymentGateway.stripe])
         XCTAssertEqual(configuration.paymentMethods, [.cardPresent])
-        XCTAssertEqual(configuration.purchaseCardReaderUrl().absoluteString, Constants.PurchaseURL.us)
+        XCTAssertEqual(configuration.purchaseCardReaderUrl(utmProvider: MockUTMParameterProvider()).absoluteString, Constants.PurchaseURL.us)
     }
 
     // MARK: - Canada Tests
@@ -20,7 +21,7 @@ class CardPresentConfigurationTests: XCTestCase {
         XCTAssertEqual(configuration.currencies, [.CAD])
         XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay])
         XCTAssertEqual(configuration.paymentMethods, [.cardPresent, .interacPresent])
-        XCTAssertEqual(configuration.purchaseCardReaderUrl().absoluteString, Constants.PurchaseURL.ca)
+        XCTAssertEqual(configuration.purchaseCardReaderUrl(utmProvider: MockUTMParameterProvider()).absoluteString, Constants.PurchaseURL.ca)
     }
 
     private enum Constants {
@@ -33,8 +34,8 @@ class CardPresentConfigurationTests: XCTestCase {
         enum PurchaseURL {
             /// The URL format directs users to a country specific page
             ///
-            static let us = "https://woocommerce.com/products/hardware/US"
-            static let ca = "https://woocommerce.com/products/hardware/CA"
+            static let us = "https://woocommerce.com/products/hardware/US?utm_medium=woo_ios"
+            static let ca = "https://woocommerce.com/products/hardware/CA?utm_medium=woo_ios"
         }
     }
 }

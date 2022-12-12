@@ -24,6 +24,10 @@ extension UIFont {
         return .preferredFont(forTextStyle: .title3)
     }
 
+    static var title3SemiBold: UIFont {
+        font(forStyle: .title3, weight: .semibold)
+    }
+
     static var headline: UIFont {
         return .preferredFont(forTextStyle: .headline)
     }

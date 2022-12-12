@@ -1,0 +1,10 @@
+{
+    "success": true,
+    "blog_details": {
+        "url": "https://wapuu.store/",
+        "blogid": "202211",
+        "blogname": "Wapuu swags",
+        "xmlrpc": "https://adventuresofwapuu.wordpress.com/xmlrpc.php",
+        "site_slug": "wapuu.store"
+    }
+}

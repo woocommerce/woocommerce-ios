@@ -5,6 +5,7 @@ import Storage
 import Yosemite
 import Hardware
 import WooFoundation
+import WordPressShared
 
 /// Provides global dependencies.
 ///
@@ -38,8 +39,7 @@ final class ServiceLocator {
 
     /// Product image uploader
     ///
-    private static var _productImageUploader: ProductImageUploaderProtocol =
-    featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) ? ProductImageUploader(): LegacyProductImageUploader()
+    private static var _productImageUploader: ProductImageUploaderProtocol = ProductImageUploader()
 
     /// Push Notifications Manager
     ///
@@ -67,7 +67,9 @@ final class ServiceLocator {
 
     /// Crash Logging Stack
     ///
-    private static var _crashLogging: CrashLoggingStack = WooCrashLoggingStack()
+    private static var _crashLogging: CrashLoggingStack = WooCrashLoggingStack(
+        featureFlagService: featureFlagService
+    )
 
     /// Support for external Card Readers
     ///
@@ -177,6 +179,9 @@ final class ServiceLocator {
     static var fileLogger: Logs {
         return _fileLogger
     }
+
+    /// Provides an instance of `WordPressLoggingDelegate` for logging in WordPress libraries.
+    static let wordPressLibraryLogger: WordPressLoggingDelegate = WordPressLibraryLogger()
 
     /// Provides the access point to the CrashLogger
     /// - Returns: An implementation

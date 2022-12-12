@@ -50,7 +50,6 @@ protocol SettingsViewModelActionsHandler {
 
 protocol SettingsViewModelInput: AnyObject {
     var presenter: SettingsViewPresenter? { get set }
-    var upsellCardReadersAnnouncementViewModel: FeatureAnnouncementCardViewModel { get }
 }
 
 final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActionsHandler, SettingsViewModelInput {
@@ -103,12 +102,10 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     private let storageManager: StorageManagerType
     private let featureFlagService: FeatureFlagService
     private let appleIDCredentialChecker: AppleIDCredentialCheckerProtocol
-    private let upsellCardReadersCampaign = UpsellCardReadersCampaign(source: .settings)
 
-    var upsellCardReadersAnnouncementViewModel: FeatureAnnouncementCardViewModel {
-        .init(analytics: ServiceLocator.analytics,
-              configuration: upsellCardReadersCampaign.configuration)
-    }
+    /// Reference to the Zendesk shared instance
+    ///
+    private let zendeskShared: ZendeskManagerProtocol = ZendeskProvider.shared
 
     init(stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -134,6 +131,18 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
         } else {
             paymentGatewayAccountsResultsController = nil
         }
+
+        /// Synchronize system plugins for the WooCommerce plugin version row
+        ///
+        if let siteID = stores.sessionManager.defaultSite?.siteID {
+            let action = SystemStatusAction.synchronizeSystemPlugins(siteID: siteID, onCompletion: { _ in })
+            stores.dispatch(action)
+        }
+
+        /// Fetch System Status Report from Zendesk
+        /// so it will be ready to be attached to a a support request when needed
+        ///
+        zendeskShared.fetchSystemStatusReport()
     }
 
     /// Sets up the view model and loads the settings.
@@ -195,20 +204,6 @@ private extension SettingsViewModel {
     }
 
     func configureSections() {
-        // Selected Store
-        let selectedStoreSection: Section? = {
-            if featureFlagService.isFeatureFlagEnabled(.hubMenu) {
-                return nil
-            }
-            else {
-                let storeRows: [Row] = sites.count > 1 ?
-                [.selectedStore, .switchStore] : [.selectedStore]
-                return Section(title: Localization.selectedStoreTitle,
-                               rows: storeRows,
-                               footerHeight: UITableView.automaticDimension)
-            }
-        }()
-
         // Plugins
         let pluginsSection: Section? = {
             // Show the plugins section only if the user has an `admin` role for the default store site.
@@ -218,7 +213,7 @@ private extension SettingsViewModel {
             }
 
             return Section(title: Localization.pluginsTitle,
-                           rows: [.plugins],
+                           rows: [.plugins, .woocommerceDetails],
                            footerHeight: UITableView.automaticDimension)
         }()
 
@@ -226,8 +221,7 @@ private extension SettingsViewModel {
         let storeSettingsSection: Section? = {
             var rows: [Row] = []
 
-            if stores.sessionManager.defaultSite?.isJetpackCPConnected == true,
-                featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport) {
+            if stores.sessionManager.defaultSite?.isJetpackCPConnected == true {
                 rows.append(.installJetpack)
             }
 
@@ -285,13 +279,15 @@ private extension SettingsViewModel {
                            footerHeight: CGFloat.leastNonzeroMagnitude)
         }()
 
-        // Remove Apple ID Access
-        let removeAppleIDAccessSection: Section? = {
-            guard appleIDCredentialChecker.hasAppleUserID(), featureFlagService.isFeatureFlagEnabled(.appleIDAccountDeletion) else {
+        // Close account
+        let closeAccountSection: Section? = {
+            guard appleIDCredentialChecker.hasAppleUserID()
+                    || featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
+                    || featureFlagService.isFeatureFlagEnabled(.storeCreationM2) else {
                 return nil
             }
             return Section(title: nil,
-                           rows: [.removeAppleIDAccess],
+                           rows: [.closeAccount],
                            footerHeight: CGFloat.leastNonzeroMagnitude)
         }()
 
@@ -301,14 +297,13 @@ private extension SettingsViewModel {
                                     footerHeight: CGFloat.leastNonzeroMagnitude)
 
         sections = [
-            selectedStoreSection,
             pluginsSection,
             storeSettingsSection,
             helpAndFeedbackSection,
             appSettingsSection,
             aboutTheAppSection,
             otherSection,
-            removeAppleIDAccessSection,
+            closeAccountSection,
             logoutSection
         ]
         .compactMap { $0 }
@@ -371,12 +366,6 @@ private extension SettingsViewModel {
 //
 private extension SettingsViewModel {
     enum Localization {
-        static let selectedStoreTitle = NSLocalizedString(
-            "Selected Store",
-            comment: "My Store > Settings > Selected Store information section. " +
-                "This is the heading listed above the information row that displays the store website and their username."
-        ).uppercased()
-
         static let pluginsTitle = NSLocalizedString(
             "Plugins",
             comment: "My Store > Settings > Plugins section title"

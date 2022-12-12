@@ -199,6 +199,45 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         saveProduct(status: .draft)
     }
 
+    // MARK: Product preview action handling
+
+    @objc private func saveDraftAndDisplayProductPreview() {
+        if viewModel.formType == .add {
+            ServiceLocator.analytics.track(.addProductSaveAsDraftTapped, withProperties: ["product_type": product.productType.rawValue])
+        }
+
+        guard viewModel.canSaveAsDraft() || viewModel.hasUnsavedChanges() else {
+            displayProductPreview()
+            return
+        }
+
+        saveProduct(status: .draft) { [weak self] result in
+            if result.isSuccess {
+                self?.displayProductPreview()
+            }
+        }
+    }
+
+    private func displayProductPreview() {
+        ServiceLocator.analytics.track(event: .ProductDetail.previewTapped())
+
+        guard var permalink = URLComponents(string: product.permalink),
+              let nonce = ServiceLocator.stores.sessionManager.defaultSite?.frameNonce else {
+            return
+        }
+
+        var updatedQueryItems = permalink.queryItems ?? []
+        updatedQueryItems.append(.init(name: "preview", value: "true"))
+        updatedQueryItems.append(.init(name: "frame-nonce", value: nonce))
+        permalink.queryItems = updatedQueryItems
+
+        let configuration = WebViewControllerConfiguration(url: permalink.url)
+        configuration.secureInteraction = true
+        let webKitVC = WebKitViewController(configuration: configuration)
+        let nc = WooNavigationController(rootViewController: webKitVC)
+        present(nc, animated: true)
+    }
+
     // MARK: Navigation actions
 
     @objc func closeNavigationBarButtonTapped() {
@@ -248,6 +287,13 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             actionSheet.addDefaultActionWithTitle(ActionSheetStrings.productSettings) { [weak self] _ in
                 ServiceLocator.analytics.track(.productDetailViewSettingsButtonTapped)
                 self?.displayProductSettings()
+            }
+        }
+
+        if viewModel.canDuplicateProduct() {
+            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.duplicate) { [weak self] _ in
+                ServiceLocator.analytics.track(.productDetailDuplicateButtonTapped)
+                self?.duplicateProduct()
             }
         }
 
@@ -667,7 +713,7 @@ private extension ProductFormViewController {
     func moreDetailsButtonTapped(button: UIButton) {
         let title = NSLocalizedString("Add more details",
                                       comment: "Title of the bottom sheet from the product form to add more product details.")
-        let viewProperties = BottomSheetListSelectorViewProperties(title: title)
+        let viewProperties = BottomSheetListSelectorViewProperties(subtitle: title)
         let actions = viewModel.actionsFactory.bottomSheetActions()
         let dataSource = ProductFormBottomSheetListSelectorCommand(actions: actions) { [weak self] action in
                                                                     self?.dismiss(animated: true) { [weak self] in
@@ -709,57 +755,14 @@ private extension ProductFormViewController {
 // MARK: Navigation actions
 //
 private extension ProductFormViewController {
-    func saveProduct(status: ProductStatus? = nil) {
+    func saveProduct(status: ProductStatus? = nil, onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void = { _ in }) {
         let productStatus = status ?? product.status
         let messageType = viewModel.saveMessageType(for: productStatus)
         showSavingProgress(messageType)
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
-            saveProductRemotely(status: status)
-        } else {
-            saveImagesAndProductRemotely(status: status)
-        }
+        saveProductRemotely(status: status, onCompletion: onCompletion)
     }
 
-    func saveImagesAndProductRemotely(status: ProductStatus?) {
-        waitUntilAllImagesAreUploaded { [weak self] in
-            self?.saveProductRemotely(status: status)
-        }
-    }
-
-    func waitUntilAllImagesAreUploaded(onCompletion: @escaping () -> Void) {
-        let group = DispatchGroup()
-
-        // Waits for all product images to be uploaded before updating the product remotely.
-        group.enter()
-        // Since `group.leave()` should only be called once to balance `group.enter()`, we track whether there are images pending upload in the image closure.
-        var hasNoImagesPendingUpload = false
-        let observationToken = productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
-            guard hasNoImagesPendingUpload == false else {
-                return
-            }
-
-            guard let self = self else {
-                group.leave()
-                return
-            }
-
-            guard productImageStatuses.hasPendingUpload == false else {
-                return
-            }
-
-            hasNoImagesPendingUpload = true
-
-            self.viewModel.updateImages(productImageStatuses.images)
-            group.leave()
-        }
-
-        group.notify(queue: .main) {
-            observationToken.cancel()
-            onCompletion()
-        }
-    }
-
-    func saveProductRemotely(status: ProductStatus?) {
+    func saveProductRemotely(status: ProductStatus?, onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void = { _ in }) {
         viewModel.saveProductRemotely(status: status) { [weak self] result in
             switch result {
             case .failure(let error):
@@ -768,6 +771,7 @@ private extension ProductFormViewController {
                 // Dismisses the in-progress UI then presents the error alert.
                 self?.navigationController?.dismiss(animated: true) {
                     self?.displayError(error: error)
+                    onCompletion(.failure(error))
                 }
             case .success:
                 // Dismisses the in-progress UI, then presents the confirmation alert.
@@ -777,15 +781,13 @@ private extension ProductFormViewController {
                 // Show linked products promo banner after product save
                 (self?.viewModel as? ProductFormViewModel)?.isLinkedProductsPromoEnabled = true
                 self?.reloadLinkedPromoCellAnimated()
+                onCompletion(.success(()))
             }
         }
     }
 
-    func displayError(error: ProductUpdateError?) {
-        let title = NSLocalizedString("Cannot update product", comment: "The title of the alert when there is an error updating the product")
-
+    func displayError(error: ProductUpdateError?, title: String = Localization.updateProductError) {
         let message = error?.errorDescription
-
         displayErrorAlert(title: title, message: message)
     }
 
@@ -815,6 +817,27 @@ private extension ProductFormViewController {
         }
 
         SharingHelper.shareURL(url: url, title: product.name, from: view, in: self)
+    }
+
+    func duplicateProduct() {
+        showSavingProgress(.duplicate)
+        viewModel.duplicateProduct(onCompletion: { [weak self] result in
+            switch result {
+            case .failure(let error):
+                DDLogError("⛔️ Error duplicating Product: \(error)")
+
+                // Dismisses the in-progress UI then presents the error alert.
+                self?.navigationController?.dismiss(animated: true) {
+                    self?.displayError(error: error, title: Localization.duplicateProductError)
+                }
+            case .success:
+                // Dismisses the in-progress UI, then presents the confirmation alert.
+                self?.navigationController?.dismiss(animated: true) {
+                    let alertTitle =  Localization.presentProductCopiedAlert
+                    self?.presentProductConfirmationSaveAlert(title: alertTitle)
+                }
+            }
+        })
     }
 
     func displayDeleteProductAlert() {
@@ -926,6 +949,8 @@ private extension ProductFormViewController {
         // Create action buttons based on view model
         let rightBarButtonItems: [UIBarButtonItem] = viewModel.actionButtons.reversed().map { buttonType in
             switch buttonType {
+            case .preview:
+                return createPreviewBarButtonItem()
             case .publish:
                 return createPublishBarButtonItem()
             case .save:
@@ -950,6 +975,12 @@ private extension ProductFormViewController {
 
     func createSaveBarButtonItem() -> UIBarButtonItem {
         return UIBarButtonItem(title: Localization.saveTitle, style: .done, target: self, action: #selector(saveProductAndLogEvent))
+    }
+
+    func createPreviewBarButtonItem() -> UIBarButtonItem {
+        let previewButton = UIBarButtonItem(title: Localization.previewTitle, style: .done, target: self, action: #selector(saveDraftAndDisplayProductPreview))
+        previewButton.isEnabled = viewModel.shouldEnablePreviewButton()
+        return previewButton
     }
 
     func createMoreOptionsBarButtonItem() -> UIBarButtonItem {
@@ -1122,7 +1153,7 @@ private extension ProductFormViewController {
     func editProductType(cell: UITableViewCell?) {
         let title = NSLocalizedString("Change product type",
                                       comment: "Message title of bottom sheet for selecting a product type")
-        let viewProperties = BottomSheetListSelectorViewProperties(title: title)
+        let viewProperties = BottomSheetListSelectorViewProperties(subtitle: title)
         let productType = BottomSheetProductType(productType: viewModel.productModel.productType, isVirtual: viewModel.productModel.virtual)
         let command = ProductTypeBottomSheetListSelectorCommand(selected: productType) { [weak self] (selectedProductType) in
             self?.dismiss(animated: true, completion: nil)
@@ -1553,6 +1584,7 @@ private extension ProductFormViewController {
 private enum Localization {
     static let publishTitle = NSLocalizedString("Publish", comment: "Action for creating a new product remotely with a published status")
     static let saveTitle = NSLocalizedString("Save", comment: "Action for saving a Product remotely")
+    static let previewTitle = NSLocalizedString("Preview", comment: "Action for previewing draft Product changes in the webview")
     static let groupedProductsViewTitle = NSLocalizedString("Grouped Products",
                                                             comment: "Navigation bar title for editing linked products for a grouped product")
     static let unnamedProduct = NSLocalizedString("Unnamed product",
@@ -1562,6 +1594,12 @@ private enum Localization {
         let titleFormat = NSLocalizedString("Variation #%1$@", comment: "Navigation bar title for variation. Parameters: %1$@ - Product variation ID")
         return String.localizedStringWithFormat(titleFormat, variationID)
     }
+    static let updateProductError = NSLocalizedString("Cannot update product", comment: "The title of the alert when there is an error updating the product")
+    static let duplicateProductError = NSLocalizedString(
+        "Cannot duplicate product",
+        comment: "The title of the alert when there is an error duplicating the product"
+    )
+    static let presentProductCopiedAlert = NSLocalizedString("Product copied", comment: "Title of the alert when a user has copied a product")
 }
 
 private enum ActionSheetStrings {
@@ -1573,6 +1611,7 @@ private enum ActionSheetStrings {
     static let delete = NSLocalizedString("Delete", comment: "Button title Delete in Edit Product More Options Action Sheet")
     static let productSettings = NSLocalizedString("Product Settings", comment: "Button title Product Settings in Edit Product More Options Action Sheet")
     static let cancel = NSLocalizedString("Cancel", comment: "Button title Cancel in Edit Product More Options Action Sheet")
+    static let duplicate = NSLocalizedString("Duplicate", comment: "Button title to duplicate a product in Product More Options Action Sheet")
 }
 
 private enum Constants {

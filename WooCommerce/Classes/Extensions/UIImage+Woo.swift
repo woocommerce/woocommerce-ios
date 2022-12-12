@@ -37,6 +37,12 @@ extension UIImage {
         return UIImage(named: "icon-analytics")!
     }
 
+    /// Currency Image
+    ///
+    static var currencyImage: UIImage {
+        UIImage(named: "icon-currency")!
+    }
+
     /// Notice Icon
     ///
     static var noticeImage: UIImage {
@@ -67,7 +73,7 @@ extension UIImage {
     static var cameraImage: UIImage {
         return UIImage.gridicon(.camera)
             .imageFlippedForRightToLeftLayoutDirection()
-            .applyTintColor(.placeholderImage)!
+            .withTintColor(.placeholderImage)
     }
 
     /// Product categories Icon
@@ -226,6 +232,12 @@ extension UIImage {
         return UIImage.gridicon(.cross, size: CGSize(width: 22, height: 22))
     }
 
+    /// Domain search placeholder image.
+    ///
+    static var domainSearchPlaceholderImage: UIImage {
+        return UIImage(named: "domain-search-placeholder")!
+    }
+
     /// Ellipsis Icon
     ///
     static var ellipsisImage: UIImage {
@@ -323,7 +335,7 @@ extension UIImage {
     static var giftWithTopRightRedDotImage: UIImage {
         guard let image = UIImage.gridicon(.gift, size: CGSize(width: 24, height: 24))
             // Applies a constant gray color that looks fine in both Light/Dark modes, since we are generating an image with multiple colors.
-            .applyTintColor(.gray(.shade30))?
+            .withTintColor(.gray(.shade30))
             .imageWithTopRightDot(imageOrigin: CGPoint(x: 0, y: 2),
                                   finalSize: CGSize(width: 26, height: 26)) else {
                                     fatalError()
@@ -361,10 +373,22 @@ extension UIImage {
         return UIImage(named: "icon-mailbox")!
     }
 
+    /// Store plan image used in the store creation flow.
+    ///
+    static var storeCreationPlanImage: UIImage {
+        UIImage(named: "store-creation-plan")!
+    }
+
     /// Store Image
     ///
     static var storeImage: UIImage {
         UIImage(named: "icon-store")!
+    }
+
+    /// Store summary image used in the store creation flow.
+    ///
+    static var storeSummaryImage: UIImage {
+        return UIImage(named: "store-summary")!
     }
 
     /// Cog Image
@@ -404,6 +428,13 @@ extension UIImage {
     ///
     static var prologueReviewsImage: UIImage {
         return UIImage(named: "login-prologue-reviews")!
+            .imageFlippedForRightToLeftLayoutDirection()
+    }
+
+    /// Login prologue Woo Mobile
+    ///
+    static var prologueWooMobileImage: UIImage {
+        UIImage(named: "login-prologue-woo-mobile")!
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
@@ -465,6 +496,18 @@ extension UIImage {
     ///
     static var cardReaderScanning: UIImage {
         return UIImage(named: "card-reader-scanning")!
+    }
+
+    static var tempBuiltInReaderCheck: UIImage {
+        return UIImage(named: "temp-woo-tap-on-mobile-check")!
+    }
+
+    static var tempBuiltInReaderPrepare: UIImage {
+        return UIImage(named: "temp-woo-tap-on-mobile-prepare")!
+    }
+
+    static var tempBuiltInReaderPayment: UIImage {
+        return UIImage(named: "temp-woo-tap-on-mobile")!
     }
 
     /// Found Card Reader
@@ -804,6 +847,12 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Reply Icon
+    ///
+    static var replyImage: UIImage {
+        return UIImage.gridicon(.reply)
+    }
+
     /// Search Icon - used in `UIBarButtonItem`
     ///
     static var searchBarButtonItemImage: UIImage {
@@ -1045,6 +1094,48 @@ extension UIImage {
     ///
     static var lockImage: UIImage {
         UIImage.gridicon(.lock, size: CGSize(width: 24, height: 24))
+    }
+
+    /// Sites Image
+    ///
+    static var sitesImage: UIImage {
+        UIImage.gridicon(.site).imageFlippedForRightToLeftLayoutDirection()
+    }
+
+    /// Image on the empty store picker screen
+    ///
+    static var emptyStorePickerImage: UIImage {
+        UIImage(named: "woo-empty-store-picker")!
+    }
+
+    /// Image on the Jetpack required screen
+    ///
+    static var jetpackSetupImage: UIImage {
+        UIImage(named: "woo-jetpack-setup")!
+    }
+
+    /// Image on the Jetpack required screen when a Jetpack connection is missing
+    ///
+    static var jetpackConnectionImage: UIImage {
+        UIImage(named: "woo-jetpack-connection")!
+    }
+
+    /// WordPress.com logo image.
+    ///
+    static var wpcomLogoImage: UIImage {
+        UIImage(named: "wpcom-logo")!
+    }
+
+    /// Image on the Jetpack setup interrupted screen
+    ///
+    static var jetpackSetupInterruptedImage: UIImage {
+        UIImage(named: "woo-jetpack-setup-interrupted")!
+    }
+
+    /// Calendar Icon
+    ///
+    static var calendar: UIImage {
+        return UIImage.gridicon(.calendar)
     }
 }
 

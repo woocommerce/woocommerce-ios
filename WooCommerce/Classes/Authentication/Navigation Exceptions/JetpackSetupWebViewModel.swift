@@ -3,7 +3,7 @@ import WebKit
 
 /// View model used for the web view controller to install Jetpack the plugin during the login flow.
 ///
-final class JetpackSetupWebViewModel: PluginSetupWebViewModel {
+final class JetpackSetupWebViewModel: AuthenticatedWebViewModel {
 
     /// The site URL to set up Jetpack for.
     private let siteURL: String
@@ -15,7 +15,9 @@ final class JetpackSetupWebViewModel: PluginSetupWebViewModel {
     /// The email address that the user uses to authorize Jetpack
     private var authorizedEmailAddress: String?
 
-    init(siteURL: String, analytics: Analytics = ServiceLocator.analytics, onCompletion: @escaping (String?) -> Void) {
+    init(siteURL: String,
+         analytics: Analytics = ServiceLocator.analytics,
+         onCompletion: @escaping (String?) -> Void) {
         self.siteURL = siteURL
         self.analytics = analytics
         self.completionHandler = onCompletion

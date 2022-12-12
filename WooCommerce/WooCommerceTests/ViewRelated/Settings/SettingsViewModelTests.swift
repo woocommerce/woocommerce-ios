@@ -48,45 +48,13 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.sections.count > 0)
     }
 
-    func test_selectedStoreSection_is_hidden_if_hub_menu_feature_flag_is_on() {
+    func test_sections_contain_install_jetpack_row_when_default_site_is_jcp() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isHubMenuOn: true)
-        let viewModel = SettingsViewModel(stores: stores,
-                                          storageManager: storageManager,
-                                          featureFlagService: featureFlagService,
-                                          appleIDCredentialChecker: appleIDCredentialChecker)
-
-        // When
-        viewModel.onViewDidLoad()
-
-        // Then
-        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.selectedStore) })
-    }
-
-    func test_selectedStoreSection_is_shown_if_hub_menu_feature_flag_is_off() {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isHubMenuOn: false)
-        let viewModel = SettingsViewModel(stores: stores,
-                                          storageManager: storageManager,
-                                          featureFlagService: featureFlagService,
-                                          appleIDCredentialChecker: appleIDCredentialChecker)
-
-        // When
-        viewModel.onViewDidLoad()
-
-        // Then
-        XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(.selectedStore) })
-    }
-
-    func test_sections_contain_install_jetpack_row_when_JCP_support_feature_flag_is_on_and_default_site_is_jcp() {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isJetpackConnectionPackageSupportOn: true)
         let site = Site.fake().copy(isJetpackThePluginInstalled: false, isJetpackConnected: true)
         sessionManager.defaultSite = site
         let viewModel = SettingsViewModel(
             stores: stores,
             storageManager: storageManager,
-            featureFlagService: featureFlagService,
             appleIDCredentialChecker: appleIDCredentialChecker)
 
         // When
@@ -96,31 +64,13 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.installJetpack) })
     }
 
-    func test_sections_do_not_contain_install_jetpack_row_when_JCP_support_feature_flag_is_on_and_default_site_is_not_jcp() {
+    func test_sections_do_not_contain_install_jetpack_row_when_default_site_is_not_jcp() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isJetpackConnectionPackageSupportOn: true)
         let site = Site.fake().copy(isJetpackThePluginInstalled: true, isJetpackConnected: true)
         sessionManager.defaultSite = site
         let viewModel = SettingsViewModel(
             stores: stores,
             storageManager: storageManager,
-            featureFlagService: featureFlagService,
-            appleIDCredentialChecker: appleIDCredentialChecker)
-
-        // When
-        viewModel.onViewDidLoad()
-
-        // Then
-        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.installJetpack) })
-    }
-
-    func test_sections_do_not_contain_install_jetpack_row_when_JCP_support_feature_flag_is_off() {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isJetpackConnectionPackageSupportOn: false)
-        let viewModel = SettingsViewModel(
-            stores: stores,
-            storageManager: storageManager,
-            featureFlagService: featureFlagService,
             appleIDCredentialChecker: appleIDCredentialChecker)
 
         // When
@@ -167,13 +117,11 @@ final class SettingsViewModelTests: XCTestCase {
 
     func test_onJetpackInstallDismiss_updates_sections_correctly() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isJetpackConnectionPackageSupportOn: true)
         let site = Site.fake().copy(isJetpackThePluginInstalled: false, isJetpackConnected: true)
         sessionManager.defaultSite = site
         let viewModel = SettingsViewModel(
             stores: stores,
             storageManager: storageManager,
-            featureFlagService: featureFlagService,
             appleIDCredentialChecker: appleIDCredentialChecker)
 
         viewModel.onViewDidLoad()
@@ -188,28 +136,26 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.installJetpack) })
     }
 
-    // MARK: - `removeAppleIDAccess` row visibility
+    // MARK: - `closeAccount` row visibility
 
-    func test_removeAppleIDAccess_section_is_shown_when_user_apple_id_exists() {
+    func test_closeAccount_section_is_shown_when_user_apple_id_exists() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isAppleIDAccountDeletionEnabled: true)
         let appleIDCredentialChecker = MockAppleIDCredentialChecker(hasAppleUserID: true)
         let viewModel = SettingsViewModel(stores: stores,
                                           storageManager: storageManager,
-                                          featureFlagService: featureFlagService,
                                           appleIDCredentialChecker: appleIDCredentialChecker)
 
         // When
         viewModel.onViewDidLoad()
 
         // Then
-        XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.removeAppleIDAccess) })
+        XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.closeAccount) })
     }
 
-    func test_removeAppleIDAccess_section_is_not_shown_when_user_apple_id_does_not_exist() {
+    func test_closeAccount_section_is_hidden_when_apple_id_does_not_exist_and_store_creation_features_disabled() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isAppleIDAccountDeletionEnabled: true)
         let appleIDCredentialChecker = MockAppleIDCredentialChecker(hasAppleUserID: false)
+        let featureFlagService = MockFeatureFlagService(isStoreCreationMVPEnabled: false, isStoreCreationM2Enabled: false)
         let viewModel = SettingsViewModel(stores: stores,
                                           storageManager: storageManager,
                                           featureFlagService: featureFlagService,
@@ -219,23 +165,7 @@ final class SettingsViewModelTests: XCTestCase {
         viewModel.onViewDidLoad()
 
         // Then
-        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.removeAppleIDAccess) })
-    }
-
-    func test_removeAppleIDAccess_section_is_not_shown_when_user_apple_id_exists_but_feature_flag_disabled() {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isAppleIDAccountDeletionEnabled: false)
-        let appleIDCredentialChecker = MockAppleIDCredentialChecker(hasAppleUserID: true)
-        let viewModel = SettingsViewModel(stores: stores,
-                                          storageManager: storageManager,
-                                          featureFlagService: featureFlagService,
-                                          appleIDCredentialChecker: appleIDCredentialChecker)
-
-        // When
-        viewModel.onViewDidLoad()
-
-        // Then
-        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.removeAppleIDAccess) })
+        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.closeAccount) })
     }
 }
 

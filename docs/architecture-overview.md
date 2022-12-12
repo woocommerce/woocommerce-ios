@@ -171,10 +171,12 @@ of performing this task for us:
 
 3.  **AuthenticatedRequest**
 
-        Injects a set of Credentials into anything that conforms to the URLConvertible protocol. Usually wraps up
+        Injects a set of Credentials and a custom user-agent header into anything that conforms to the URLConvertible protocol. Usually wraps up
         a DotcomRequest (OR) JetpackRequest.
 
+4. **UnauthenticatedRequest**
 
+        Wraps up a `URLConvertible` with a custom user-agent header. Used when the request does not require WordPress.com authentication.
 
 ### Remote Endpoints
 
@@ -346,6 +348,22 @@ It is important to note that at the moment there is not a global unified archite
 
 That being said, there are some high-level abstractions that are starting to pop up.
 
-### Global Dependencies
+### Global Dependencies and the Service Locator pattern
 
 Global dependencies are provided by an implementation of the Service Locator pattern. In WooCommerce, a [`ServiceLocator`](../WooCommerce/Classes/ServiceLocator/ServiceLocator.swift) is just a set of static getters to the high-level global abstractions (i.e. stats, stores manager) and set of setters that allow overriding the actual implementation of those abstractions for better testability.
+
+The Service Locator acts as a central point of access to the different services: When a component needs a service it no longer has to instantiate the class itself, it gets it through `ServiceLocator` instead.
+
+Despite its convenience, its usage comes with some downsides:
+
+- Harder testability 
+- Hides class dependencies, which could cause runtime errors rather than catching these at compile time
+- There are objects that are loaded once in the app’s lifetime but may change later. These need to rely on something else when updating data. A typical case is the store `siteID` when switching sites, or logging out. These should almost always be injected and retained instead.
+
+While we shouldn't avoid using the `ServiceLocator` on demand, dependencies should preferably be declared at the top of each class and injected via the constructor, this provides certain benefits:
+
+- Makes dependencies explicit rather than hidden. Making the communication between different objects clear
+- We want to be able to inject a certain level of abstraction and have decoupled code, so we can provide different implementations details without breaking the system, for example using a  common protocol.
+- Dependencies will exist along the object's lifecycle
+- It guarantees that all necessary dependencies are available to our components at compile time
+- For dependencies that don't change, injecting them into the constructor enforces type safety ands avoid inconsistent behavior later at runtime

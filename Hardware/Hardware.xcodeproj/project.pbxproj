@@ -10,6 +10,8 @@
 		028C39E028255CFE0007BA25 /* Models+Copiable.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028C39DF28255CFE0007BA25 /* Models+Copiable.generated.swift */; };
 		02B5147A28254ED300750B71 /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 02B5147928254ED300750B71 /* Codegen */; };
 		030338102705F7D400764131 /* ReceiptTotalLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0303380F2705F7D400764131 /* ReceiptTotalLine.swift */; };
+		035DBA3929251ED6003E5125 /* CardReaderInputOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035DBA3829251ED6003E5125 /* CardReaderInputOptions.swift */; };
+		035DBA41292BBEB2003E5125 /* CardReaderDiscoveryMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035DBA40292BBEB2003E5125 /* CardReaderDiscoveryMethod.swift */; };
 		039D948B2760C0660044EF38 /* NoOpCardReaderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039D948A2760C0660044EF38 /* NoOpCardReaderService.swift */; };
 		03B440AA2754DFC400759429 /* UnderlyingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B440A92754DFC400759429 /* UnderlyingError.swift */; };
 		03CF78D327C6710C00523706 /* interac.svg in Resources */ = {isa = PBXBuildFile; fileRef = 03CF78D227C6710B00523706 /* interac.svg */; };
@@ -153,6 +155,8 @@
 		02351FF56149ADCD11338B19 /* Pods-SampleReceiptPrinter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SampleReceiptPrinter.release.xcconfig"; path = "Target Support Files/Pods-SampleReceiptPrinter/Pods-SampleReceiptPrinter.release.xcconfig"; sourceTree = "<group>"; };
 		028C39DF28255CFE0007BA25 /* Models+Copiable.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Models+Copiable.generated.swift"; sourceTree = "<group>"; };
 		0303380F2705F7D400764131 /* ReceiptTotalLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptTotalLine.swift; sourceTree = "<group>"; };
+		035DBA3829251ED6003E5125 /* CardReaderInputOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderInputOptions.swift; sourceTree = "<group>"; };
+		035DBA40292BBEB2003E5125 /* CardReaderDiscoveryMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderDiscoveryMethod.swift; sourceTree = "<group>"; };
 		039D948A2760C0660044EF38 /* NoOpCardReaderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoOpCardReaderService.swift; sourceTree = "<group>"; };
 		03B440A92754DFC400759429 /* UnderlyingError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnderlyingError.swift; sourceTree = "<group>"; };
 		03CF78D227C6710B00523706 /* interac.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = interac.svg; sourceTree = "<group>"; };
@@ -439,6 +443,7 @@
 				D88FDB3625DD21BE00CB0DBD /* StripeCardReader */,
 				D88FDB2725DD21B000CB0DBD /* CardReader.swift */,
 				D88FDB2425DD21B000CB0DBD /* CardReaderEvent.swift */,
+				035DBA3829251ED6003E5125 /* CardReaderInputOptions.swift */,
 				D88FDB2625DD21B000CB0DBD /* CardReaderService.swift */,
 				D88FDB1F25DD21AF00CB0DBD /* CardReaderServiceDiscoveryStatus.swift */,
 				D88FDB2125DD21AF00CB0DBD /* CardReaderServiceStatus.swift */,
@@ -475,6 +480,7 @@
 				D845BDCB262D9B7700A3E40F /* CardBrand+Stripe.swift */,
 				D845BDC5262D9A4200A3E40F /* CardPresentDetails+Stripe.swift */,
 				D8DF5F4925DD9F7A008AFE25 /* CardReader+Stripe.swift */,
+				035DBA40292BBEB2003E5125 /* CardReaderDiscoveryMethod.swift */,
 				D865C61D261CE001006717B8 /* CardReaderEvent+Stripe.swift */,
 				D8DF5F4D25DD9F91008AFE25 /* CardReaderType+Stripe.swift */,
 				D89B8F1125DDCBCD0001C726 /* Charge+Stripe.swift */,
@@ -826,7 +832,9 @@
 				D845BE54262ED7CC00A3E40F /* PrinterService.swift in Sources */,
 				D845BDDE262DAB8300A3E40F /* PaymentMethod+Stripe.swift in Sources */,
 				D89B8F0C25DDC9D30001C726 /* ChargeStatus.swift in Sources */,
+				035DBA3929251ED6003E5125 /* CardReaderInputOptions.swift in Sources */,
 				E140F61C2668CDC900FDB5FF /* Logging.swift in Sources */,
+				035DBA41292BBEB2003E5125 /* CardReaderDiscoveryMethod.swift in Sources */,
 				03CF78D727DF9BE600523706 /* RefundParameters.swift in Sources */,
 				03B440AA2754DFC400759429 /* UnderlyingError.swift in Sources */,
 				E1E125AC26EB582B0068A9B0 /* CardReaderSoftwareUpdateState.swift in Sources */,
@@ -980,7 +988,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -1039,7 +1047,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -1066,6 +1074,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Hardware/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1095,6 +1104,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Hardware/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1119,6 +1129,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				INFOPLIST_FILE = HardwareTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1142,6 +1153,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				INFOPLIST_FILE = HardwareTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1200,7 +1212,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -1227,6 +1239,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Hardware/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1236,6 +1249,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = ALPHA;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1251,6 +1265,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				INFOPLIST_FILE = HardwareTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1272,7 +1287,7 @@
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = SampleReceiptPrinter/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1293,7 +1308,7 @@
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = SampleReceiptPrinter/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1314,7 +1329,7 @@
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = SampleReceiptPrinter/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

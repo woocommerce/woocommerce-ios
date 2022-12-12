@@ -10,7 +10,9 @@ final class OrderListViewModelTests: XCTestCase {
     /// The `siteID` value doesn't matter.
     private let siteID: Int64 = 1_000_000
 
-    private var storageManager: StorageManagerType!
+    private var storageManager: MockStorageManager!
+
+    private var stores: MockStoresManager!
 
     private var storage: StorageType {
         storageManager.viewStorage
@@ -21,10 +23,16 @@ final class OrderListViewModelTests: XCTestCase {
     override func setUp() {
         super.setUp()
         storageManager = MockStorageManager()
+        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.sessionManager.setStoreId(siteID)
+        ServiceLocator.setSelectedSiteSettings(SelectedSiteSettings(stores: stores, storageManager: storageManager))
     }
 
     override func tearDown() {
+        ServiceLocator.setSelectedSiteSettings(SelectedSiteSettings())
+        storageManager.reset()
         storageManager = nil
+        stores = nil
 
         cancellables.forEach {
             $0.cancel()
@@ -204,7 +212,7 @@ final class OrderListViewModelTests: XCTestCase {
         viewModel.activate()
 
         // Act
-        let notification = PushNotification(noteID: 1, kind: .storeOrder, title: "", subtitle: "", message: "")
+        let notification = PushNotification(noteID: 1, siteID: 1, kind: .storeOrder, title: "", subtitle: "", message: "")
         pushNotificationsManager.sendForegroundNotification(notification)
 
         // Assert
@@ -224,44 +232,19 @@ final class OrderListViewModelTests: XCTestCase {
         viewModel.activate()
 
         // Act
-        let notification = PushNotification(noteID: 1, kind: .comment, title: "", subtitle: "", message: "")
+        let notification = PushNotification(noteID: 1, siteID: 1, kind: .comment, title: "", subtitle: "", message: "")
         pushNotificationsManager.sendForegroundNotification(notification)
 
         // Assert
         XCTAssertFalse(resynchronizeRequested)
     }
 
-    func test_when_having_no_error_and_upsellCardReaders_banner_should_be_shown_showns_upsellCardReaders_banner() {
+    func test_when_having_no_error__and_orders_banner_should_not_be_shown_shows_nothing() {
         // Given
-        let storesManager = MockStoresManager(sessionManager: .testingInstance)
-        storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case let .getFeatureAnnouncementVisibility(FeatureAnnouncementCampaign.upsellCardReaders, onCompletion):
-                onCompletion(.success(true))
-            default:
-                break
-            }
-        }
-        let viewModel = OrderListViewModel(siteID: siteID, stores: storesManager, filters: nil)
-
-        // When
-        viewModel.activate()
-
-        // Then
-        waitUntil {
-            viewModel.topBanner == .upsellCardReaders
-        }
-    }
-
-    func test_when_having_no_error_and_upsellCardReaders_banner_should_not_be_shown_and_orders_banner_should_not_be_shown_shows_nothing() {
-        // Given
-        let storesManager = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = OrderListViewModel(siteID: siteID, stores: storesManager, filters: nil)
-        storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
             case let .loadFeedbackVisibility(_, onCompletion):
-                onCompletion(.success(false))
-            case let .getFeatureAnnouncementVisibility(FeatureAnnouncementCampaign.upsellCardReaders, onCompletion):
                 onCompletion(.success(false))
             default:
                 break
@@ -277,16 +260,13 @@ final class OrderListViewModelTests: XCTestCase {
         }
     }
 
-    func test_when_having_no_error_and_upsellCardReaders_banner_should_not_be_shown_and_orders_banner_should_be_shown_shows_orders_banner() {
+    func test_when_having_no_error_and_orders_banner_should_be_shown_shows_orders_banner() {
         // Given
-        let storesManager = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = OrderListViewModel(siteID: siteID, stores: storesManager, filters: nil)
-        storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
             case let .loadFeedbackVisibility(_, onCompletion):
                 onCompletion(.success(true))
-            case let .getFeatureAnnouncementVisibility(FeatureAnnouncementCampaign.upsellCardReaders, onCompletion):
-                onCompletion(.success(false))
             default:
                 break
             }
@@ -303,9 +283,8 @@ final class OrderListViewModelTests: XCTestCase {
 
     func test_when_having_no_error_and_orders_banner_visibility_loading_fails_shows_nothing() {
         // Given
-        let storesManager = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = OrderListViewModel(siteID: siteID, stores: storesManager, filters: nil)
-        storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
             case let .loadFeedbackVisibility(_, onCompletion):
                 let error = NSError(domain: "Test", code: 503, userInfo: nil)
@@ -340,7 +319,6 @@ final class OrderListViewModelTests: XCTestCase {
 
     func test_dismissing_orders_banners_does_not_show_banners() {
         // Given
-        let stores = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
 
         // When
@@ -418,6 +396,26 @@ private extension OrderListViewModel {
         Set(snapshot.itemIdentifiers.compactMap { objectID in
             detailsViewModel(withID: objectID)?.order.orderID
         })
+    }
+}
+
+private extension OrderListViewModelTests {
+    // MARK: - Country helpers
+    func setupCountry(country: Country) {
+        let setting = SiteSetting.fake()
+            .copy(
+                siteID: siteID,
+                settingID: "woocommerce_default_country",
+                value: country.rawValue,
+                settingGroupKey: SiteSettingGroup.general.rawValue
+            )
+        storageManager.insertSampleSiteSetting(readOnlySiteSetting: setting)
+        ServiceLocator.selectedSiteSettings.refresh()
+    }
+
+    enum Country: String {
+        case us = "US:CA"
+        case es = "ES"
     }
 }
 

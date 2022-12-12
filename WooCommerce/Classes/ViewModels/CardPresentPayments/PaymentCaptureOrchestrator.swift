@@ -12,26 +12,28 @@ struct CardPresentCapturedPaymentData {
 }
 
 /// Orchestrates the sequence of actions required to capture a payment:
-/// 1. Check if there is a card reader connected
-/// 2. Launch the reader discovering and pairing UI if there is no reader connected
-/// 3. Obtain a Payment Intent from the card reader (i.e., create a payment intent, collect a payment method, and process the payment)
-/// 4. Submit the Payment Intent to WCPay to capture a payment
-/// Steps 1 and 2 will be implemented as part of https://github.com/woocommerce/woocommerce-ios/issues/4062
+/// 1. Triggers the `preparingReader` alert
+/// 2. Creates the payment intent parameters
+/// 3. Controls (prevents during payment) wallet presentation: we don't want to use the merchant's Apple Pay for their customer's purchase!
+/// 4. Obtain a Payment Intent from the card reader (i.e., create a payment intent, collect a payment method, and process the payment)
+/// 5. Submit the Payment Intent to WCPay to capture a payment
 final class PaymentCaptureOrchestrator {
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
     private let personNameComponentsFormatter = PersonNameComponentsFormatter()
     private let paymentReceiptEmailParameterDeterminer: ReceiptEmailParameterDeterminer
 
-    private let celebration = PaymentCaptureCelebration()
+    private let celebration: PaymentCaptureCelebrationProtocol
 
     private var walletSuppressionRequestToken: PKSuppressionRequestToken?
 
     private let stores: StoresManager
 
     init(stores: StoresManager = ServiceLocator.stores,
-         paymentReceiptEmailParameterDeterminer: ReceiptEmailParameterDeterminer = PaymentReceiptEmailParameterDeterminer()) {
+         paymentReceiptEmailParameterDeterminer: ReceiptEmailParameterDeterminer = PaymentReceiptEmailParameterDeterminer(),
+         celebration: PaymentCaptureCelebrationProtocol) {
         self.stores = stores
         self.paymentReceiptEmailParameterDeterminer = paymentReceiptEmailParameterDeterminer
+        self.celebration = celebration
     }
 
     func collectPayment(for order: Order,
@@ -39,68 +41,62 @@ final class PaymentCaptureOrchestrator {
                         paymentGatewayAccount: PaymentGatewayAccount,
                         paymentMethodTypes: [String],
                         stripeSmallestCurrencyUnitMultiplier: Decimal,
-                        onWaitingForInput: @escaping () -> Void,
+                        onPreparingReader: () -> Void,
+                        onWaitingForInput: @escaping (CardReaderInput) -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onDisplayMessage: @escaping (String) -> Void,
                         onProcessingCompletion: @escaping (PaymentIntent) -> Void,
                         onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
+        onPreparingReader()
+
         /// Set state of CardPresentPaymentStore
         ///
         let setAccount = CardPresentPaymentAction.use(paymentGatewayAccount: paymentGatewayAccount)
 
         stores.dispatch(setAccount)
 
-        paymentParameters(
-                order: order,
-                orderTotal: orderTotal,
-                country: paymentGatewayAccount.country,
-                statementDescriptor: paymentGatewayAccount.statementDescriptor,
-                paymentMethodTypes: paymentMethodTypes,
-                stripeSmallestCurrencyUnitMultiplier: stripeSmallestCurrencyUnitMultiplier
-        ) { [weak self] result in
-            guard let self = self else { return }
+        let parameters = paymentParameters(order: order,
+                                           orderTotal: orderTotal,
+                                           country: paymentGatewayAccount.country,
+                                           statementDescriptor: paymentGatewayAccount.statementDescriptor,
+                                           paymentMethodTypes: paymentMethodTypes,
+                                           stripeSmallestCurrencyUnitMultiplier: stripeSmallestCurrencyUnitMultiplier)
 
-            switch result {
-            case let .success(parameters):
-                /// Briefly suppress pass (wallet) presentation so that the merchant doesn't attempt to pay for the buyer's order when the
-                /// reader begins to collect payment.
-                ///
-                self.suppressPassPresentation()
+        /// Briefly suppress pass (wallet) presentation so that the merchant doesn't attempt to pay for the buyer's order when the
+        /// reader begins to collect payment.
+        ///
+        suppressPassPresentation()
 
-                let paymentAction = CardPresentPaymentAction.collectPayment(
-                    siteID: order.siteID,
-                    orderID: order.orderID,
-                    parameters: parameters,
-                    onCardReaderMessage: { event in
-                        switch event {
-                        case .waitingForInput:
-                            onWaitingForInput()
-                        case .displayMessage(let message):
-                            onDisplayMessage(message)
-                        case .cardRemovedAfterClientSidePaymentCapture:
-                            onProcessingMessage()
-                        default:
-                            break
-                        }
-                    },
-                    onProcessingCompletion: { intent in
-                        onProcessingCompletion(intent)
-                    },
-                    onCompletion: { [weak self] result in
-                        self?.allowPassPresentation()
-                        self?.completePaymentIntentCapture(
-                            order: order,
-                            captureResult: result,
-                            onCompletion: onCompletion
-                        )
-                    }
+        let paymentAction = CardPresentPaymentAction.collectPayment(
+            siteID: order.siteID,
+            orderID: order.orderID,
+            parameters: parameters,
+            onCardReaderMessage: { event in
+                switch event {
+                case .waitingForInput(let inputMethods):
+                    onWaitingForInput(inputMethods)
+                case .displayMessage(let message):
+                    onDisplayMessage(message)
+                case .cardDetailsCollected, .cardRemovedAfterClientSidePaymentCapture:
+                    onProcessingMessage()
+                default:
+                    break
+                }
+            },
+            onProcessingCompletion: { intent in
+                onProcessingCompletion(intent)
+            },
+            onCompletion: { [weak self] result in
+                self?.allowPassPresentation()
+                self?.completePaymentIntentCapture(
+                    order: order,
+                    captureResult: result,
+                    onCompletion: onCompletion
                 )
-
-                self.stores.dispatch(paymentAction)
-            case let .failure(error):
-                onCompletion(Result.failure(error))
             }
-        }
+        )
+
+        stores.dispatch(paymentAction)
     }
 
     func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void) {
@@ -204,37 +200,25 @@ private extension PaymentCaptureOrchestrator {
                            country: String,
                            statementDescriptor: String?,
                            paymentMethodTypes: [String],
-                           stripeSmallestCurrencyUnitMultiplier: Decimal,
-                           onCompletion: @escaping ((Result<PaymentParameters, Error>) -> Void)) {
-        paymentReceiptEmailParameterDeterminer.receiptEmail(from: order) { [weak self] result in
-            guard let self = self else { return }
+                           stripeSmallestCurrencyUnitMultiplier: Decimal) -> PaymentParameters {
+        let metadata = PaymentIntent.initMetadata(
+            store: stores.sessionManager.defaultSite?.name,
+            customerName: buildCustomerNameFromBillingAddress(order.billingAddress),
+            customerEmail: order.billingAddress?.email,
+            siteURL: stores.sessionManager.defaultSite?.url,
+            orderID: order.orderID,
+            paymentType: PaymentIntent.PaymentTypes.single
+        )
 
-            var receiptEmail: String?
-            if case let .success(email) = result {
-                receiptEmail = email
-            }
-
-            let metadata = PaymentIntent.initMetadata(
-                store: self.stores.sessionManager.defaultSite?.name,
-                customerName: self.buildCustomerNameFromBillingAddress(order.billingAddress),
-                customerEmail: order.billingAddress?.email,
-                siteURL: self.stores.sessionManager.defaultSite?.url,
-                orderID: order.orderID,
-                paymentType: PaymentIntent.PaymentTypes.single
-            )
-
-            let parameters = PaymentParameters(amount: orderTotal as Decimal,
-                                               currency: order.currency,
-                                               stripeSmallestCurrencyUnitMultiplier: stripeSmallestCurrencyUnitMultiplier,
-                                               applicationFee: self.applicationFee(for: orderTotal, country: country),
-                                               receiptDescription: self.receiptDescription(orderNumber: order.number),
-                                               statementDescription: statementDescriptor,
-                                               receiptEmail: receiptEmail,
-                                               paymentMethodTypes: paymentMethodTypes,
-                                               metadata: metadata)
-
-            onCompletion(Result.success(parameters))
-        }
+        return PaymentParameters(amount: orderTotal as Decimal,
+                                 currency: order.currency,
+                                 stripeSmallestCurrencyUnitMultiplier: stripeSmallestCurrencyUnitMultiplier,
+                                 applicationFee: applicationFee(for: orderTotal, country: country),
+                                 receiptDescription: receiptDescription(orderNumber: order.number),
+                                 statementDescription: statementDescriptor,
+                                 receiptEmail: paymentReceiptEmailParameterDeterminer.receiptEmail(from: order),
+                                 paymentMethodTypes: paymentMethodTypes,
+                                 metadata: metadata)
     }
 
     private func applicationFee(for orderTotal: NSDecimalNumber, country: String) -> Decimal? {

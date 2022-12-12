@@ -1,4 +1,5 @@
 import UIKit
+import Combine
 
 /// Abstracts different configurations and logic related to user interaction
 /// for error view controllers presented as part of the Unified Login flow
@@ -24,6 +25,9 @@ protocol ULErrorViewModel {
     /// Indicates whether the primary button is visible
     var isPrimaryButtonHidden: Bool { get }
 
+    /// Indicates whether the primary button is showing the loading indicator
+    var isPrimaryButtonLoading: AnyPublisher<Bool, Never> { get }
+
     /// Provides a title for a secondary action button
     var secondaryButtonTitle: String { get }
 
@@ -32,6 +36,22 @@ protocol ULErrorViewModel {
 
     /// Additional view to the bottom of the vertical stack view that contains the image, text, and auxiliary button.
     var auxiliaryView: UIView? { get }
+
+    /// A text explaining the terms when the primary button is tapped.
+    ///
+    var termsLabelText: NSAttributedString? { get }
+
+    /// Indicates whether the site address view should be hidden.
+    ///
+    var isSiteAddressViewHidden: Bool { get }
+
+    /// Address of the site.
+    ///
+    var siteURL: String { get }
+
+    /// Favicon of the site with error.
+    ///
+    var siteFavicon: AnyPublisher<UIImage?, Never> { get }
 
     /// Executed by the view controller when its view was loaded.
     /// - Parameter viewController: the view controller that loads the view.
@@ -69,15 +89,27 @@ extension ULErrorViewModel {
 
     var isPrimaryButtonHidden: Bool { false }
 
+    var isPrimaryButtonLoading: AnyPublisher<Bool, Never> { Just(false).eraseToAnyPublisher() }
+
     var isSecondaryButtonHidden: Bool { false }
 
     var auxiliaryView: UIView? { nil }
+
+    var isSiteAddressViewHidden: Bool { true }
+
+    var siteURL: String { "" }
+
+    var siteFavicon: AnyPublisher<UIImage?, Never> {
+        Just(nil).eraseToAnyPublisher()
+    }
 }
 
 // MARK: Default implementation for optional right bar button item
 //
 extension ULErrorViewModel {
     var rightBarButtonItemTitle: String? { nil }
+
+    var termsLabelText: NSAttributedString? { nil }
 
     func didTapRightBarButtonItem(in viewController: UIViewController?) {
         // NO-OP

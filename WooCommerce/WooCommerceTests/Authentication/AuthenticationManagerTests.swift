@@ -159,18 +159,51 @@ final class AuthenticationManagerTests: XCTestCase {
         // Given
         let manager = AuthenticationManager()
         let testSite = "http://test.com"
-        let siteInfo = WordPressComSiteInfo(remote: ["isWordPress": true, "hasJetpack": false, "urlAfterRedirects": testSite])
+        let siteInfo = siteInfo(url: testSite,
+                                exists: true,
+                                hasWordPress: true,
+                                isWordPressCom: false,
+                                hasJetpack: false,
+                                isJetpackActive: false,
+                                isJetpackConnected: false)
         let wpcomCredentials = WordPressComCredentials(authToken: "abc", isJetpackLogin: false, multifactor: false, siteURL: testSite)
         let credentials = AuthenticatorCredentials(wpcom: wpcomCredentials, wporg: nil)
         let navigationController = UINavigationController()
 
         // When
         manager.shouldPresentUsernamePasswordController(for: siteInfo, onCompletion: { _ in })
-        manager.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: {})
+        manager.presentLoginEpilogue(in: navigationController, for: credentials, source: nil, onDismiss: {})
+        waitUntil {
+            navigationController.viewControllers.isNotEmpty
+        }
 
         // Then
         let rootController = navigationController.viewControllers.first
         XCTAssertTrue(rootController is ULErrorViewController)
+    }
+
+    func test_it_shows_account_mismatch_upon_login_epilogue_if_the_site_has_active_jetpack_but_not_connected() {
+        // Given
+        let manager = AuthenticationManager()
+        let testSite = "http://test.com"
+        let siteInfo = siteInfo(url: testSite,
+                                exists: true,
+                                hasWordPress: true,
+                                isWordPressCom: false,
+                                hasJetpack: true,
+                                isJetpackActive: true,
+                                isJetpackConnected: false)
+        let wpcomCredentials = WordPressComCredentials(authToken: "abc", isJetpackLogin: false, multifactor: false, siteURL: testSite)
+        let credentials = AuthenticatorCredentials(wpcom: wpcomCredentials, wporg: nil)
+        let navigationController = UINavigationController()
+
+        // When
+        manager.shouldPresentUsernamePasswordController(for: siteInfo, onCompletion: { _ in })
+        manager.presentLoginEpilogue(in: navigationController, for: credentials, source: nil, onDismiss: {})
+
+        // Then
+        let rootController = navigationController.viewControllers.first
+        XCTAssertTrue(rootController is ULAccountMismatchViewController)
     }
 
     func test_it_can_display_jetpack_error_for_org_site_credentials_sign_in() {
@@ -184,11 +217,29 @@ final class AuthenticationManagerTests: XCTestCase {
 
         // When
         manager.shouldPresentUsernamePasswordController(for: siteInfo, onCompletion: { _ in })
-        manager.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: {})
+        manager.presentLoginEpilogue(in: navigationController, for: credentials, source: nil, onDismiss: {})
 
         // Then
         let rootController = navigationController.viewControllers.first
         XCTAssertTrue(rootController is ULErrorViewController)
+    }
+
+    func test_errorViewController_display_account_mismatch_screen_if_no_site_matches_the_given_self_hosted_site() {
+        // Given
+        let manager = AuthenticationManager()
+        let testSite = "http://test.com"
+        let navigationController = UINavigationController()
+        let storage = MockStorageManager()
+        let matcher = ULAccountMatcher(storageManager: storage)
+        let wporgCredentials = WordPressOrgCredentials(username: "test", password: "pwd", xmlrpc: "http://test.com/xmlrpc.php", options: [:])
+        let credentials = AuthenticatorCredentials(wpcom: nil, wporg: wporgCredentials)
+
+        // When
+        let controller = manager.errorViewController(for: testSite, with: matcher, credentials: credentials, navigationController: navigationController) {}
+
+        // Then
+        XCTAssertNotNil(controller)
+        XCTAssertTrue(controller is ULAccountMismatchViewController)
     }
 
     func test_errorViewController_returns_account_mismatch_if_no_site_matches_the_given_url() {
@@ -265,7 +316,7 @@ final class AuthenticationManagerTests: XCTestCase {
         let credentials = AuthenticatorCredentials(wpcom: wpcomCredentials, wporg: nil)
 
         // When
-        manager.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: {})
+        manager.presentLoginEpilogue(in: navigationController, for: credentials, source: nil, onDismiss: {})
 
         // Then
         XCTAssertEqual(settings.errorLoginSiteAddress, testSiteURL)
@@ -288,7 +339,7 @@ final class AuthenticationManagerTests: XCTestCase {
         let credentials = AuthenticatorCredentials(wpcom: wpcomCredentials, wporg: nil)
 
         // When
-        manager.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: {})
+        manager.presentLoginEpilogue(in: navigationController, for: credentials, source: nil, onDismiss: {})
 
         // Then
         XCTAssertNil(settings.errorLoginSiteAddress)
@@ -348,10 +399,10 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(topController is ULErrorViewController)
     }
 
-    func test_troubleshootSite_displays_account_mismatch_screen_if_site_is_self_hosted_with_jetpack() {
+    func test_troubleshootSite_displays_error_screen_if_site_is_self_hosted_with_jetpack_not_connected() {
         // Given
         let navigationController = UINavigationController()
-        let siteInfo = siteInfo(exists: true, hasWordPress: true, isWordPressCom: false, hasJetpack: true)
+        let siteInfo = siteInfo(exists: true, hasWordPress: true, isWordPressCom: false, hasJetpack: true, isJetpackActive: true, isJetpackConnected: false)
         let storage = MockStorageManager()
         let manager = AuthenticationManager(storageManager: storage)
 
@@ -363,17 +414,64 @@ final class AuthenticationManagerTests: XCTestCase {
             navigationController.viewControllers.isNotEmpty
         }
         let topController = navigationController.topViewController
-        XCTAssertTrue(topController is ULAccountMismatchViewController)
+        XCTAssertTrue(topController is ULAccountMismatchViewController || topController is ULErrorViewController)
+    }
+
+    func test_troubleshootSite_displays_error_screen_if_site_is_self_hosted_with_jetpack() {
+        // Given
+        let navigationController = UINavigationController()
+        let siteInfo = siteInfo(exists: true, hasWordPress: true, isWordPressCom: false, hasJetpack: true, isJetpackActive: true, isJetpackConnected: true)
+        let storage = MockStorageManager()
+        let manager = AuthenticationManager(storageManager: storage)
+
+        // When
+        manager.troubleshootSite(siteInfo, in: navigationController)
+
+        // Then
+        waitUntil {
+            navigationController.viewControllers.isNotEmpty
+        }
+        let topController = navigationController.topViewController
+        XCTAssertTrue(topController is ULAccountMismatchViewController || topController is ULErrorViewController)
+    }
+
+    func test_troubleshootSite_tracks_site_discovery_event() throws {
+        // Given
+        let navigationController = UINavigationController()
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+
+        let siteInfo = siteInfo(exists: true, hasWordPress: true, isWordPressCom: true, hasJetpack: true, isJetpackActive: true, isJetpackConnected: true)
+        let storage = MockStorageManager()
+        let manager = AuthenticationManager(storageManager: storage, analytics: analytics)
+
+        // When
+        manager.troubleshootSite(siteInfo, in: navigationController)
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.sitePickerSiteDiscovery.rawValue])
+        XCTAssertTrue(try XCTUnwrap(analyticsProvider.receivedProperties.first?["has_wordpress"] as? Bool))
+        XCTAssertTrue(try XCTUnwrap(analyticsProvider.receivedProperties.first?["is_wpcom"] as? Bool))
+        XCTAssertTrue(try XCTUnwrap(analyticsProvider.receivedProperties.first?["is_jetpack_installed"] as? Bool))
+        XCTAssertTrue(try XCTUnwrap(analyticsProvider.receivedProperties.first?["is_jetpack_active"] as? Bool))
+        XCTAssertTrue(try XCTUnwrap(analyticsProvider.receivedProperties.first?["is_jetpack_connected"] as? Bool))
     }
 }
 
 private extension AuthenticationManagerTests {
-    func siteInfo(exists: Bool = false, hasWordPress: Bool = false, isWordPressCom: Bool = false, hasJetpack: Bool = false) -> WordPressComSiteInfo {
-        WordPressComSiteInfo(remote: ["exists": exists,
+    func siteInfo(url: String = "",
+                  exists: Bool = false,
+                  hasWordPress: Bool = false,
+                  isWordPressCom: Bool = false,
+                  hasJetpack: Bool = false,
+                  isJetpackActive: Bool = false,
+                  isJetpackConnected: Bool = false) -> WordPressComSiteInfo {
+        WordPressComSiteInfo(remote: ["urlAfterRedirects": url,
+                                      "exists": exists,
                                       "isWordPress": hasWordPress,
                                       "hasJetpack": hasJetpack,
-                                      "isJetpackActive": hasJetpack,
-                                      "isJetpackConnected": hasJetpack,
+                                      "isJetpackActive": isJetpackActive,
+                                      "isJetpackConnected": isJetpackConnected,
                                       "isWordPressDotCom": isWordPressCom])
     }
 }

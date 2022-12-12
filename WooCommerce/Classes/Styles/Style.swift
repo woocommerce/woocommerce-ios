@@ -59,16 +59,10 @@ final class StyleManager {
 private extension StyleManager {
     class func fontForTextStyle(_ style: UIFont.TextStyle, weight: UIFont.Weight, maximumPointSize: CGFloat = maxFontSize) -> UIFont {
         let traits = [UIFontDescriptor.TraitKey.weight: weight]
-        if #available(iOS 11, *) {
-            var fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: style)
-            fontDescriptor = fontDescriptor.addingAttributes([.traits: traits])
-            let fontToGetSize = UIFont(descriptor: fontDescriptor, size: CGFloat(0.0))
-            return UIFontMetrics(forTextStyle: style).scaledFont(for: fontToGetSize, maximumPointSize: maximumPointSize)
-        }
-
-        var scaledFontDescriptor = fontDescriptor(style, maximumPointSize: maximumPointSize)
-        scaledFontDescriptor = scaledFontDescriptor.addingAttributes([.traits: traits])
-        return UIFont(descriptor: scaledFontDescriptor, size: CGFloat(0.0))
+        var fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: style)
+        fontDescriptor = fontDescriptor.addingAttributes([.traits: traits])
+        let fontToGetSize = UIFont(descriptor: fontDescriptor, size: CGFloat(0.0))
+        return UIFontMetrics(forTextStyle: style).scaledFont(for: fontToGetSize, maximumPointSize: maximumPointSize)
     }
 
 

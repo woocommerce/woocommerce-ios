@@ -14,18 +14,6 @@ public enum FeatureFlag: Int {
     ///
     case reviews
 
-    /// Allows sites with plugins that include Jetpack Connection Package and without Jetpack-the-plugin to connect to the app
-    ///
-    case jetpackConnectionPackageSupport
-
-    /// Display the new tab "Menu" in the tab bar.
-    ///
-    case hubMenu
-
-    /// Displays the option to view coupons
-    ///
-    case couponView
-
     /// Barcode scanner for product SKU input
     ///
     case productSKUInputScanner
@@ -34,25 +22,9 @@ public enum FeatureFlag: Int {
     ///
     case inbox
 
-    /// Displays the bulk update option in product variations
-    ///
-    case bulkEditProductVariations
-
     /// Displays the Orders tab in a split view
     ///
     case splitViewInOrdersTab
-
-    /// Displays the option to delete coupons
-    ///
-    case couponDeletion
-
-    /// Displays the option to edit a coupon
-    ///
-    case couponEditing
-
-    /// Displays the option to create a coupon
-    ///
-    case couponCreation
 
     /// Enable optimistic updates for orders
     ///
@@ -62,17 +34,9 @@ public enum FeatureFlag: Int {
     ///
     case shippingLabelsOnboardingM1
 
-    /// Enable image upload after leaving the product form
-    ///
-    case backgroundProductImageUpload
-
     /// Enable IPP reader manuals consolidation screen
     ///
     case consolidatedCardReaderManuals
-
-    /// Apple ID account deletion
-    ///
-    case appleIDAccountDeletion
 
     /// Showing a "New to WooCommerce" link in the login prologue screen
     ///
@@ -86,10 +50,6 @@ public enum FeatureFlag: Int {
     ///
     case loginErrorNotifications
 
-    /// Whether to show a survey at the end of the login onboarding screen after feature carousel
-    ///
-    case loginPrologueOnboardingSurvey
-
     /// Whether to prefer magic link to password in the login flow
     ///
     case loginMagicLinkEmphasis
@@ -101,4 +61,76 @@ public enum FeatureFlag: Int {
     /// Whether to include the Cash on Delivery enable step in In-Person Payment onboarding
     ///
     case promptToEnableCodInIppOnboarding
+
+    /// Enables searching products by partial SKU for WC version 6.6+.
+    ///
+    case searchProductsBySKU
+
+    /// Enables In-app purchases for buying Hosted WooCommerce plans
+    ///
+    case inAppPurchases
+
+    /// Enables Tap to Pay on iPhone flow in In-Person Payments, on eligible devices.
+    ///
+    case tapToPayOnIPhone
+
+    /// Store creation MVP.
+    ///
+    case storeCreationMVP
+
+    /// Store creation milestone 2. https://wp.me/pe5sF9-I3
+    ///
+    case storeCreationM2
+
+    /// Whether in-app purchases are enabled for store creation milestone 2 behind `storeCreationM2` feature flag.
+    /// If disabled, purchases are backed by `WebPurchasesForWPComPlans` for checkout in a webview.
+    ///
+    case storeCreationM2WithInAppPurchasesEnabled
+
+    /// Just In Time Messages on Dashboard
+    ///
+    case justInTimeMessagesOnDashboard
+
+    /// Adds the System Status Report to support requests
+    ///
+    case systemStatusReportInSupportRequest
+
+    // MARK: - Performance Monitoring
+    //
+    // These flags are not transient. That is, they are not here to help us rollout a feature,
+    // but to serve a safety switches to granularly turn off performance monitoring if it looks
+    // like we are consuming too many events.
+
+    /// Whether to enable performance monitoring.
+    ///
+    case performanceMonitoring
+
+    /// Whether to enable performance monitoring for Core Data operations.
+    ///
+    /// - Note: The app will ignore this if `performanceMonitoring` is `false`
+    case performanceMonitoringCoreData
+
+    /// Whether to enable performance monitoring for file IO operations.
+    ///
+    /// - Note: The app will ignore this if `performanceMonitoring` is `false`
+    case performanceMonitoringFileIO
+
+    /// Whether to enable performance monitoring for networking operations.
+    ///
+    /// - Note: The app will ignore this if `performanceMonitoring` is `false`
+    case performanceMonitoringNetworking
+
+    /// Whether to enable performance monitoring for user interaction events.
+    ///
+    /// - Note: The app will ignore this if `performanceMonitoring` is `false`
+    case performanceMonitoringUserInteraction
+
+    /// Whether to enable performance monitoring for `UIViewController` life-cycle events.
+    ///
+    /// - Note: The app will ignore this if `performanceMonitoring` is `false`.
+    case performanceMonitoringViewController
+
+    /// Temporary feature flag for the native Jetpack setup flow.
+    ///
+    case analyticsHub
 }

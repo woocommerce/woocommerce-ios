@@ -150,12 +150,12 @@ private extension AppCoordinator {
             guard let self = self else { return }
             self.tabBarController.removeViewControllers()
         }
-        ServiceLocator.analytics.track(.openedLogin, withProperties: ["prologue_experiment_variant": ABTest.loginPrologueButtonOrder.variation.analyticsValue])
+        ServiceLocator.analytics.track(.openedLogin)
     }
 
     /// Configures the WPAuthenticator for usage in both logged-in and logged-out states.
     func configureAuthenticator() {
-        authenticationManager.initialize()
+        authenticationManager.initialize(loggedOutAppSettings: loggedOutAppSettings)
         appleIDCredentialChecker.observeLoggedInStateForAppleIDObservations()
     }
 
@@ -226,6 +226,7 @@ private extension AppCoordinator {
             if let authenticationUI = authenticationManager.authenticationUI() as? UINavigationController,
                let errorController = authenticationManager.errorViewController(for: siteURL,
                                                                                with: matcher,
+                                                                               credentials: nil,
                                                                                navigationController: authenticationUI,
                                                                                onStorePickerDismiss: {}) {
                 window.rootViewController = authenticationUI
@@ -321,7 +322,7 @@ private extension AppCoordinator {
                   let viewController = loginNavigationController.topViewController else {
                 return
             }
-            let command = NavigateToEnterAccount()
+            let command = NavigateToEnterAccount(signInSource: .wpCom)
             command.execute(from: viewController)
             analytics.track(.loginLocalNotificationTapped, withProperties: [
                 "action": "login_with_wpcom",

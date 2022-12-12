@@ -27,7 +27,9 @@ In the default implementation of `FeatureFlagService`, some of the feature flags
 
 To add an ExPlat experiment to the app, add a new case to the `ABTest` enum in the `Experiments` framework.
 
-Once the experiment is added to the app, define the behavior for each variation:
+Define the experiment context (`loggedOut` or `loggedIn`) in `ABTest`, depending on whether the experience being experimented on occurs in the logged-out or logged-in context. This determines whether the test assignment prioritizes the `anonid` (for logged-out experiments) or `userid` (for logged-in experiments).
+
+Once the experiment is added to the app, define the behavior for each variation (this must be in the context specified above):
 
 ```
 if ABTest.experimentName.variation == .control {
@@ -36,3 +38,13 @@ if ABTest.experimentName.variation == .control {
     // Treatment logic
 }
 ```
+### Experiment Design Considerations
+
+If your experiment uses an exposure event, watch out for race conditions between the exposure event and the test assignment or experiment metrics. The exposure event must be triggered _after_ the app receives the test assignment from the experiments endpoint, and _before_ any of the experiment metrics are triggered.
+
+Due to potential race conditions, do not use these as exposure events:
+
+- `woocommerceios_application_opened`
+- `woocommerceios_application_installed`
+
+When designing a logged-out experiment, consider that you may not need an exposure event at all.

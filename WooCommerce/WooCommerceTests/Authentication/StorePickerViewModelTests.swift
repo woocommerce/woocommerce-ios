@@ -26,7 +26,7 @@ final class StorePickerViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
-            case let .synchronizeSites(_, _, onCompletion):
+            case let .synchronizeSites(_, onCompletion):
                 onCompletion(.success(false))
             default:
                 break
@@ -50,7 +50,7 @@ final class StorePickerViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
-            case let .synchronizeSites(_, _, onCompletion):
+            case let .synchronizeSites(_, onCompletion):
                 onCompletion(.success(false))
             default:
                 break
@@ -70,7 +70,7 @@ final class StorePickerViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
-            case let .synchronizeSites(_, _, onCompletion):
+            case let .synchronizeSites(_, onCompletion):
                 onCompletion(.success(false))
             default:
                 break
@@ -95,7 +95,7 @@ final class StorePickerViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
-            case let .synchronizeSites(_, _, onCompletion):
+            case let .synchronizeSites(_, onCompletion):
                 onCompletion(.success(false))
             default:
                 break
@@ -109,7 +109,6 @@ final class StorePickerViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.titleForSection(at: 0), Localization.connectedStore)
         XCTAssertEqual(viewModel.numberOfRows(inSection: 0), 1)
         XCTAssertEqual(viewModel.site(at: IndexPath(row: 0, section: 0))?.siteID, testSite1.siteID)
-        XCTAssertEqual(viewModel.indexPath(for: testSite1.siteID), IndexPath(row: 0, section: 0))
     }
 
     func test_table_view_configs_are_correct_for_list_with_both_woo_and_non_woo_sites() {
@@ -126,7 +125,7 @@ final class StorePickerViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
-            case let .synchronizeSites(_, _, onCompletion):
+            case let .synchronizeSites(_, onCompletion):
                 onCompletion(.success(false))
             default:
                 break
@@ -143,7 +142,6 @@ final class StorePickerViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.numberOfRows(inSection: 1), 1)
         XCTAssertEqual(viewModel.site(at: IndexPath(row: 1, section: 0))?.siteID, testSite2.siteID)
         XCTAssertEqual(viewModel.site(at: IndexPath(row: 0, section: 1))?.siteID, testSite3.siteID)
-        XCTAssertEqual(viewModel.indexPath(for: testSite3.siteID), IndexPath(row: 0, section: 1))
     }
 
     func test_trackScreenView_tracks_both_number_of_woo_and_non_woo_sites() throws {
@@ -164,7 +162,7 @@ final class StorePickerViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
-            case let .synchronizeSites(_, _, onCompletion):
+            case let .synchronizeSites(_, onCompletion):
                 onCompletion(.success(false))
             default:
                 break

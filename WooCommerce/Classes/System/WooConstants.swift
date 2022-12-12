@@ -25,6 +25,14 @@ enum WooConstants {
     ///
     static let anonymousIDKey = "anonymousID"
 
+    /// Keychain Access's Key for auth token
+    ///
+    static let authToken = "authToken"
+
+    /// Shared UsersDefaults Suite Name
+    ///
+    static let sharedUserDefaultsSuiteName = "group.com.automattic.woocommerce"
+
     /// Push Notifications ApplicationID
     ///
 #if DEBUG
@@ -41,6 +49,14 @@ enum WooConstants {
     /// before an app review prompt appears
     ///
     static let systemEventCount = 10
+
+    /// Store Info Widget Identifier.
+    ///
+    static let storeInfoWidgetKind = "StoreInfoWidget"
+
+    /// App link Widget Identifier.
+    ///
+    static let appLinkWidgetKind = "AppLinkWidget"
 }
 
 // MARK: URLs
@@ -55,7 +71,7 @@ extension WooConstants {
         ///
         /// Displayed by the Authenticator in the Continue with WordPress.com flow.
         ///
-        case whatIsWPComURL = "https://woocommerce.com/document/what-is-a-wordpress-com-account/"
+        case whatIsWPCom = "https://woocommerce.com/document/what-is-a-wordpress-com-account/"
 
         /// Terms of Service Website. Displayed by the Authenticator (when / if needed).
         ///
@@ -95,6 +111,14 @@ extension WooConstants {
         // swiftlint:disable:next line_length
         case helpCenterForWPCOMEmailFromSiteAddressFlow = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#enter-wordpress-com-email-address-login-using-store-address-flow"
 
+        /// Help Center for "Open magic link from email " screen
+        ///
+        case helpCenterForOpenEmail = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#open-mail-to-find-login-link"
+
+        /// Help Center for "Enter WordPress.com password" screen
+        ///
+        case helpCenterForWPCOMPasswordScreen = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#enter-wordpress-com-password"
+
         /// Help Center for "Enter Store Credentials" screen
         ///
         case helpCenterForEnterStoreCredentials = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#enter-store-credentials"
@@ -102,6 +126,18 @@ extension WooConstants {
         /// Help Center for "Jetpack required error" screen
         ///
         case helpCenterForJetpackRequiredError = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#jetpack-required"
+
+        /// Help Center for "Wrong Account error" screen
+        ///
+        case helpCenterForWrongAccountError = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#wrong-account"
+
+        /// Help Center for No WooCommerce site error
+        ///
+        case helpCenterForNoWooError = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#not-a-woocommerce-site"
+
+        /// Help Center for "Store picker" screen
+        ///
+        case helpCenterForStorePicker = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#pick-store-after-entering-password"
 
         /// URL used for Learn More button in Orders empty state.
         ///
@@ -186,12 +222,15 @@ extension WooConstants {
 #endif
         /// URL for the Enable Cash on Delivery (or Pay in Person) onboarding step's learn more link using the Stripe plugin
         /// 
-        case stripeCashOnDeliveryLearnMoreUrl = "https://woocommerce.com/document/stripe/accept-in-person-payments-with-stripe/#section-8"
+        case stripeCashOnDeliveryLearnMore = "https://woocommerce.com/document/stripe/accept-in-person-payments-with-stripe/#section-8"
 
         /// URL for the Enable Cash on Delivery (or Pay in Person) onboarding step's learn more link using the WCPay plugin
         ///
-        case wcPayCashOnDeliveryLearnMoreUrl =
+        case wcPayCashOnDeliveryLearnMore =
                 "https://woocommerce.com/document/payments/getting-started-with-in-person-payments-with-woocommerce-payments/#add-cod-payment-method"
+
+        /// URL for creating a store.
+        case storeCreation = "https://woocommerce.com/start"
 
         /// Returns the URL version of the receiver
         ///

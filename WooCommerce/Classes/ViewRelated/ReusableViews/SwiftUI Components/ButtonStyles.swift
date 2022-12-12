@@ -34,6 +34,13 @@ struct LinkButtonStyle: ButtonStyle {
     }
 }
 
+/// Button that looks like text without the default padding and size assumption.
+struct TextButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        TextButton(configuration: configuration)
+    }
+}
+
 struct PlusButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         return PlusButton(configuration: configuration)
@@ -268,6 +275,27 @@ private struct LinkButton: View {
     }
 }
 
+private struct TextButton: View {
+    @Environment(\.isEnabled) var isEnabled
+
+    let configuration: ButtonStyleConfiguration
+
+    var body: some View {
+        configuration.label
+            .contentShape(Rectangle())
+            .foregroundColor(Color(foregroundColor))
+            .background(Color(.clear))
+    }
+
+    var foregroundColor: UIColor {
+        if isEnabled {
+            return configuration.isPressed ? .accentDark : .accent
+        } else {
+            return .buttonDisabledTitle
+        }
+    }
+}
+
 private struct PlusButton: View {
     @Environment(\.isEnabled) var isEnabled
 
@@ -343,39 +371,58 @@ struct PrimaryButton_Previews: PreviewProvider {
         .padding()
 
         VStack(spacing: 20) {
-            Button("Primary button") {}
-                .buttonStyle(PrimaryButtonStyle())
+            Group {
+                Button("Primary button") {}
+                    .buttonStyle(PrimaryButtonStyle())
 
-            Button("Primary button (disabled)") {}
-                .buttonStyle(PrimaryButtonStyle())
-                .disabled(true)
+                Button("Primary button (disabled)") {}
+                    .buttonStyle(PrimaryButtonStyle())
+                    .disabled(true)
+            }
 
-            Button("Secondary button") {}
-                .buttonStyle(SecondaryButtonStyle())
+            Group {
+                Button("Secondary button") {}
+                    .buttonStyle(SecondaryButtonStyle())
 
-            Button("Secondary button (disabled)") {}
-                .buttonStyle(SecondaryButtonStyle())
-                .disabled(true)
+                Button("Secondary button (disabled)") {}
+                    .buttonStyle(SecondaryButtonStyle())
+                    .disabled(true)
+            }
 
-            Button("Selectable secondary button (selected)") {}
-                .buttonStyle(SelectableSecondaryButtonStyle(isSelected: true))
+            Group {
+                Button("Selectable secondary button (selected)") {}
+                    .buttonStyle(SelectableSecondaryButtonStyle(isSelected: true))
 
-            Button("Selectable secondary button") {}
-                .buttonStyle(SelectableSecondaryButtonStyle(isSelected: false))
+                Button("Selectable secondary button") {}
+                    .buttonStyle(SelectableSecondaryButtonStyle(isSelected: false))
+            }
 
-            Button("Link button") {}
-                .buttonStyle(LinkButtonStyle())
+            Group {
+                Button("Link button") {}
+                    .buttonStyle(LinkButtonStyle())
 
-            Button("Link button (Disabled)") {}
-                .buttonStyle(LinkButtonStyle())
-                .disabled(true)
+                Button("Link button (Disabled)") {}
+                    .buttonStyle(LinkButtonStyle())
+                    .disabled(true)
+            }
 
-            Button("Plus button") {}
-                .buttonStyle(PlusButtonStyle())
+            Group {
+                Button("Text button") {}
+                    .buttonStyle(TextButtonStyle())
 
-            Button("Plus button (disabled)") {}
-                .buttonStyle(PlusButtonStyle())
-                .disabled(true)
+                Button("Text button (disabled)") {}
+                    .buttonStyle(TextButtonStyle())
+                    .disabled(true)
+            }
+
+            Group {
+                Button("Plus button") {}
+                    .buttonStyle(PlusButtonStyle())
+
+                Button("Plus button (disabled)") {}
+                    .buttonStyle(PlusButtonStyle())
+                    .disabled(true)
+            }
         }
         .preferredColorScheme(.dark)
         .padding()

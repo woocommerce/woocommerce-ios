@@ -4,8 +4,8 @@ import Gridicons
 import Yosemite
 import WordPressUI
 import SafariServices
-import StoreKit
 import SwiftUI
+import WooFoundation
 
 // Used for protocol conformance of IndicatorInfoProvider only.
 import XLPagerTabStrip
@@ -185,8 +185,6 @@ final class OrderListViewController: UIViewController, GhostableViewController {
             // Reload table view to update selected state on the list when changing rotation
             tableView.reloadData()
         }
-
-        updateUpsellCardReaderTopBannerVisibility(with: newCollection)
     }
 
     /// Returns a function that creates cells for `dataSource`.
@@ -248,11 +246,6 @@ private extension OrderListViewController {
                 switch topBannerType {
                 case .none:
                     self.hideTopBannerView()
-                case .upsellCardReaders:
-                    // The banner is too large to be shown when the vertical size class is compact
-                    if self.traitCollection.verticalSizeClass == .regular {
-                        self.showUpsellCardReadersBanner()
-                    }
                 case .error:
                     self.setErrorTopBanner()
                 case .orderCreation:
@@ -410,34 +403,6 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
         }
 
         tableView.updateHeaderHeight()
-    }
-
-    private func showUpsellCardReadersBanner() {
-        let view = FeatureAnnouncementCardView(viewModel: viewModel.upsellCardReadersAnnouncementViewModel,
-                                               dismiss: { [weak self] in
-            self?.viewModel.dismissUpsellCardReadersBanner()
-        }, callToAction: {
-            let configuration = CardPresentConfigurationLoader().configuration
-            WebviewHelper.launch(configuration.purchaseCardReaderUrl(), with: self)
-        })
-            .background(Color(.listForeground))
-
-        guard let hostingView = UIHostingController(rootView: view).view else {
-            return
-        }
-
-        hostingView.translatesAutoresizingMaskIntoConstraints = false
-        topBannerView = hostingView
-
-        showTopBannerView()
-    }
-
-    func updateUpsellCardReaderTopBannerVisibility(with newCollection: UITraitCollection) {
-        guard viewModel.topBanner == .upsellCardReaders else {
-            return
-        }
-
-        newCollection.verticalSizeClass == .regular ? showUpsellCardReadersBanner() : hideTopBannerView()
     }
 }
 

@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -13,58 +11,68 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="wsJ-iY-FyE" customClass="AccountHeaderView" customModule="WooCommerce" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="375" height="154"/>
+            <rect key="frame" x="0.0" y="0.0" width="375" height="208"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="vOQ-CP-fZ1" customClass="CircularImageView" customModule="WooCommerce" customModuleProvider="target">
-                    <rect key="frame" x="157.5" y="29" width="60" height="60"/>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Iu9-0K-UMw">
+                    <rect key="frame" x="16" y="51" width="343" height="141"/>
+                    <subviews>
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="lCv-yX-Ygz">
+                            <rect key="frame" x="8" y="8" width="327" height="125"/>
+                            <subviews>
+                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="vOQ-CP-fZ1" customClass="CircularImageView" customModule="WooCommerce" customModuleProvider="target">
+                                    <rect key="frame" x="133.5" y="0.0" width="60" height="60"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="60" id="IcJ-wJ-Tra"/>
+                                        <constraint firstAttribute="width" constant="60" id="cwR-2d-T4e"/>
+                                    </constraints>
+                                </imageView>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="750" text="Email" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xHF-gJ-reo">
+                                    <rect key="frame" x="142" y="66" width="43" height="59"/>
+                                    <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                        </stackView>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="60" id="IcJ-wJ-Tra"/>
-                        <constraint firstAttribute="width" constant="60" id="cwR-2d-T4e"/>
+                        <constraint firstAttribute="bottom" secondItem="lCv-yX-Ygz" secondAttribute="bottom" constant="8" id="CAy-lR-XLj"/>
+                        <constraint firstAttribute="trailing" secondItem="lCv-yX-Ygz" secondAttribute="trailing" constant="8" id="Etl-Jd-unS"/>
+                        <constraint firstItem="lCv-yX-Ygz" firstAttribute="leading" secondItem="Iu9-0K-UMw" secondAttribute="leading" constant="8" id="nO2-oS-Mlt"/>
+                        <constraint firstItem="lCv-yX-Ygz" firstAttribute="top" secondItem="Iu9-0K-UMw" secondAttribute="top" constant="8" id="qTU-dD-YDN"/>
                     </constraints>
-                </imageView>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="750" text="Full Name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xHF-gJ-reo">
-                    <rect key="frame" x="10" y="97" width="355" height="20.5"/>
-                    <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
-                    <nil key="textColor"/>
-                    <nil key="highlightedColor"/>
-                </label>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="@username" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LiJ-G2-nZS">
-                    <rect key="frame" x="10" y="121.5" width="355" height="18"/>
-                    <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
-                    <color key="textColor" cocoaTouchSystemColor="scrollViewTexturedBackgroundColor"/>
-                    <nil key="highlightedColor"/>
-                </label>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VVa-5o-MfJ">
+                </view>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VVa-5o-MfJ">
                     <rect key="frame" x="316" y="2" width="36" height="33"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="33" id="wCF-Hj-x8z"/>
+                    </constraints>
                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                     <state key="normal" title="Help"/>
                 </button>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="DAy-rN-ump"/>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
-                <constraint firstItem="LiJ-G2-nZS" firstAttribute="leading" secondItem="DAy-rN-ump" secondAttribute="leading" constant="10" id="4a0-8q-Z34"/>
-                <constraint firstItem="xHF-gJ-reo" firstAttribute="top" secondItem="vOQ-CP-fZ1" secondAttribute="bottom" constant="8" id="BTx-oz-REg"/>
-                <constraint firstItem="DAy-rN-ump" firstAttribute="trailing" secondItem="xHF-gJ-reo" secondAttribute="trailing" constant="10" id="JKO-gN-oNe"/>
-                <constraint firstItem="vOQ-CP-fZ1" firstAttribute="centerX" secondItem="wsJ-iY-FyE" secondAttribute="centerX" id="NgM-Yn-gMx"/>
+                <constraint firstItem="DAy-rN-ump" firstAttribute="bottom" secondItem="Iu9-0K-UMw" secondAttribute="bottom" constant="16" id="AXk-rz-eP9"/>
                 <constraint firstItem="VVa-5o-MfJ" firstAttribute="top" secondItem="DAy-rN-ump" secondAttribute="top" constant="2" id="OI5-8Y-b7J"/>
-                <constraint firstItem="xHF-gJ-reo" firstAttribute="leading" secondItem="DAy-rN-ump" secondAttribute="leading" constant="10" id="bvI-bc-8La"/>
-                <constraint firstItem="LiJ-G2-nZS" firstAttribute="top" secondItem="xHF-gJ-reo" secondAttribute="bottom" constant="4" id="gOl-k9-naS"/>
-                <constraint firstItem="DAy-rN-ump" firstAttribute="trailing" secondItem="LiJ-G2-nZS" secondAttribute="trailing" constant="10" id="je2-Uv-FAR"/>
+                <constraint firstItem="Iu9-0K-UMw" firstAttribute="top" secondItem="VVa-5o-MfJ" secondAttribute="bottom" constant="16" id="T4v-ze-N1X"/>
+                <constraint firstAttribute="trailing" secondItem="Iu9-0K-UMw" secondAttribute="trailing" constant="16" id="Wws-a4-OMa"/>
+                <constraint firstItem="Iu9-0K-UMw" firstAttribute="leading" secondItem="wsJ-iY-FyE" secondAttribute="leading" constant="16" id="YGI-I2-0ib"/>
                 <constraint firstItem="DAy-rN-ump" firstAttribute="trailing" secondItem="VVa-5o-MfJ" secondAttribute="trailing" constant="23" id="pHG-lI-j8V"/>
-                <constraint firstItem="vOQ-CP-fZ1" firstAttribute="top" secondItem="DAy-rN-ump" secondAttribute="top" constant="29" id="yHD-B7-H48"/>
             </constraints>
             <nil key="simulatedTopBarMetrics"/>
             <nil key="simulatedBottomBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="DAy-rN-ump"/>
             <connections>
-                <outlet property="fullnameLabel" destination="xHF-gJ-reo" id="ba9-Sw-RJO"/>
+                <outlet property="actionButton" destination="VVa-5o-MfJ" id="jqF-NU-aZe"/>
+                <outlet property="containerView" destination="Iu9-0K-UMw" id="2vR-o9-OI1"/>
+                <outlet property="emailLabel" destination="xHF-gJ-reo" id="ba9-Sw-RJO"/>
                 <outlet property="gravatarImageView" destination="vOQ-CP-fZ1" id="K0E-fC-gY9"/>
-                <outlet property="helpButton" destination="VVa-5o-MfJ" id="jqF-NU-aZe"/>
-                <outlet property="usernameLabel" destination="LiJ-G2-nZS" id="SiG-bv-eTM"/>
             </connections>
-            <point key="canvasLocation" x="-7.2000000000000002" y="-333.7331334332834"/>
+            <point key="canvasLocation" x="-7.2000000000000002" y="-309.44527736131937"/>
         </view>
     </objects>
 </document>

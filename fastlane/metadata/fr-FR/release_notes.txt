@@ -1,3 +1,1 @@
-Il est désormais plus facile de trouver tout ce qui concerne l’acceptation des paiements dans l’application. Accédez à la section des paiements depuis le menu ! Nous avons également résolu un problème qui était susceptible de vous empêcher sans raison d’accepter des paiements.
-De plus, nous avons apporté diverses améliorations à notre flux de connexion afin de vous permettre d’utiliser l'application plus rapidement.
-Enfin, nous avons effectué quelques ajustements au niveau des performances. Mais ce n’est pas tout. Attendez-vous à plus d’améliorations à l'avenir. Continuez de nous donner votre avis !
+Dans cette version, nous avons résolu des bugs et apporté des améliorations pour vous offrir une expérience plus fluide. Tenez-vous informé, car des annonces intéressantes arriveront dans les prochaines semaines !

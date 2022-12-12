@@ -4,7 +4,7 @@ import Codegen
 import UIKit
 
 
-extension CardPresentReceiptParameters {
+extension Hardware.CardPresentReceiptParameters {
     public func copy(
         amount: CopiableProp<UInt> = .copy,
         formattedAmount: CopiableProp<String> = .copy,
@@ -13,7 +13,7 @@ extension CardPresentReceiptParameters {
         storeName: NullableCopiableProp<String> = .copy,
         cardDetails: CopiableProp<CardPresentTransactionDetails> = .copy,
         orderID: NullableCopiableProp<Int64> = .copy
-    ) -> CardPresentReceiptParameters {
+    ) -> Hardware.CardPresentReceiptParameters {
         let amount = amount ?? self.amount
         let formattedAmount = formattedAmount ?? self.formattedAmount
         let currency = currency ?? self.currency
@@ -22,7 +22,7 @@ extension CardPresentReceiptParameters {
         let cardDetails = cardDetails ?? self.cardDetails
         let orderID = orderID ?? self.orderID
 
-        return CardPresentReceiptParameters(
+        return Hardware.CardPresentReceiptParameters(
             amount: amount,
             formattedAmount: formattedAmount,
             currency: currency,
@@ -34,7 +34,7 @@ extension CardPresentReceiptParameters {
     }
 }
 
-extension Charge {
+extension Hardware.Charge {
     public func copy(
         id: CopiableProp<String> = .copy,
         amount: CopiableProp<UInt> = .copy,
@@ -43,7 +43,7 @@ extension Charge {
         description: NullableCopiableProp<String> = .copy,
         metadata: NullableCopiableProp<[AnyHashable: Any]> = .copy,
         paymentMethod: NullableCopiableProp<PaymentMethod> = .copy
-    ) -> Charge {
+    ) -> Hardware.Charge {
         let id = id ?? self.id
         let amount = amount ?? self.amount
         let currency = currency ?? self.currency
@@ -52,7 +52,7 @@ extension Charge {
         let metadata = metadata ?? self.metadata
         let paymentMethod = paymentMethod ?? self.paymentMethod
 
-        return Charge(
+        return Hardware.Charge(
             id: id,
             amount: amount,
             currency: currency,
@@ -64,7 +64,7 @@ extension Charge {
     }
 }
 
-extension PaymentIntent {
+extension Hardware.PaymentIntent {
     public func copy(
         id: CopiableProp<String> = .copy,
         status: CopiableProp<PaymentIntentStatus> = .copy,
@@ -73,7 +73,7 @@ extension PaymentIntent {
         currency: CopiableProp<String> = .copy,
         metadata: NullableCopiableProp<[String: String]> = .copy,
         charges: CopiableProp<[Charge]> = .copy
-    ) -> PaymentIntent {
+    ) -> Hardware.PaymentIntent {
         let id = id ?? self.id
         let status = status ?? self.status
         let created = created ?? self.created
@@ -82,7 +82,7 @@ extension PaymentIntent {
         let metadata = metadata ?? self.metadata
         let charges = charges ?? self.charges
 
-        return PaymentIntent(
+        return Hardware.PaymentIntent(
             id: id,
             status: status,
             created: created,

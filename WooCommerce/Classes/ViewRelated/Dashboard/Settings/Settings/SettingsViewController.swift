@@ -17,6 +17,10 @@ final class SettingsViewController: UIViewController {
 
     private let viewModel: ViewModel
 
+    private lazy var woocommercePluginViewModel: PluginDetailsViewModel = PluginDetailsViewModel(
+        siteID: stores.sessionManager.defaultStoreID ?? 0,
+        pluginName: "WooCommerce")
+
     /// Main TableView
     ///
     @IBOutlet private weak var tableView: UITableView!
@@ -25,10 +29,10 @@ final class SettingsViewController: UIViewController {
     ///
     private var storePickerCoordinator: StorePickerCoordinator?
 
-    private lazy var removeAppleIDAccessCoordinator: RemoveAppleIDAccessCoordinator =
-    RemoveAppleIDAccessCoordinator(sourceViewController: self) { [weak self] in
-        guard let self = self else { return .failure(RemoveAppleIDAccessError.presenterDeallocated) }
-        return await self.removeAppleIDAccess()
+    private lazy var closeAccountCoordinator: CloseAccountCoordinator =
+    CloseAccountCoordinator(sourceViewController: self) { [weak self] in
+        guard let self = self else { throw CloseAccountError.presenterDeallocated }
+        try await self.closeAccount()
     } onRemoveSuccess: { [weak self] in
         self?.logOutUser()
     }
@@ -128,10 +132,8 @@ private extension SettingsViewController {
             configureSwitchStore(cell: cell)
         case let cell as BasicTableViewCell where row == .plugins:
             configurePlugins(cell: cell)
-        case let cell as HostingTableViewCell<FeatureAnnouncementCardView> where row == .upsellCardReadersFeatureAnnouncement:
-            configureUpsellCardReadersFeatureAnnouncement(cell: cell)
-        case let cell as BasicTableViewCell where row == .inPersonPayments:
-            configureInPersonPayments(cell: cell)
+        case let cell as HostingTableViewCell<PluginDetailsRowView> where row == .woocommerceDetails:
+            configureWooCommmerceDetails(cell: cell)
         case let cell as BasicTableViewCell where row == .installJetpack:
             configureInstallJetpack(cell: cell)
         case let cell as BasicTableViewCell where row == .support:
@@ -150,8 +152,8 @@ private extension SettingsViewController {
             configureAppSettings(cell: cell)
         case let cell as BasicTableViewCell where row == .wormholy:
             configureWormholy(cell: cell)
-        case let cell as BasicTableViewCell where row == .removeAppleIDAccess:
-            configureRemoveAppleIDAccess(cell: cell)
+        case let cell as BasicTableViewCell where row == .closeAccount:
+            configureCloseAccount(cell: cell)
         case let cell as BasicTableViewCell where row == .logout:
             configureLogout(cell: cell)
         default:
@@ -175,25 +177,16 @@ private extension SettingsViewController {
         cell.textLabel?.text = Localization.plugins
     }
 
-    func configureSupport(cell: BasicTableViewCell) {
-        cell.accessoryType = .disclosureIndicator
-        cell.selectionStyle = .default
-        cell.textLabel?.text = Localization.helpAndSupport
-    }
-
-    func configureUpsellCardReadersFeatureAnnouncement(cell: HostingTableViewCell<FeatureAnnouncementCardView>) {
-        let view = FeatureAnnouncementCardView(viewModel: viewModel.upsellCardReadersAnnouncementViewModel,
-                                               dismiss: { [weak self] in
-            self?.viewModel.reloadSettings()
-        })
+    func configureWooCommmerceDetails(cell: HostingTableViewCell<PluginDetailsRowView>) {
+        let view = PluginDetailsRowView.init(viewModel: woocommercePluginViewModel)
         cell.host(view, parent: self)
         cell.selectionStyle = .none
     }
 
-    func configureInPersonPayments(cell: BasicTableViewCell) {
+    func configureSupport(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = Localization.inPersonPayments
+        cell.textLabel?.text = Localization.helpAndSupport
     }
 
     func configureInstallJetpack(cell: BasicTableViewCell) {
@@ -245,7 +238,7 @@ private extension SettingsViewController {
         cell.textLabel?.text = Localization.whatsNew
     }
 
-    func configureRemoveAppleIDAccess(cell: BasicTableViewCell) {
+    func configureCloseAccount(cell: BasicTableViewCell) {
         cell.selectionStyle = .default
         cell.textLabel?.textAlignment = .center
         cell.textLabel?.textColor = .error
@@ -275,16 +268,16 @@ private extension SettingsViewController {
 // MARK: - Actions
 //
 private extension SettingsViewController {
-    func removeAppleIDAccessWasPressed() {
+    func closeAccountWasPressed() {
         ServiceLocator.analytics.track(event: .closeAccountTapped(source: .settings))
-        removeAppleIDAccessCoordinator.start()
+        closeAccountCoordinator.start()
     }
 
-    func removeAppleIDAccess() async -> Result<Void, Error> {
-        await withCheckedContinuation { [weak self] continuation in
+    func closeAccount() async throws {
+        try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self = self else { return }
             let action = AccountAction.closeAccount { result in
-                continuation.resume(returning: result)
+                continuation.resume(with: result)
             }
             self.stores.dispatch(action)
         }
@@ -339,13 +332,6 @@ private extension SettingsViewController {
         show(viewController, sender: self)
     }
 
-    func inPersonPaymentsWasPressed() {
-        let viewModel = InPersonPaymentsViewModel()
-        viewModel.refresh()
-        let viewController = InPersonPaymentsViewController(viewModel: viewModel)
-        show(viewController, sender: self)
-    }
-
     func installJetpackWasPressed() {
         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
             return
@@ -383,7 +369,7 @@ private extension SettingsViewController {
 
     func betaFeaturesWasPressed() {
         ServiceLocator.analytics.track(.settingsBetaFeaturesButtonTapped)
-        let betaFeaturesViewController = BetaFeaturesViewController()
+        let betaFeaturesViewController = BetaFeaturesConfigurationViewController()
         navigationController?.pushViewController(betaFeaturesViewController, animated: true)
     }
 
@@ -529,8 +515,6 @@ extension SettingsViewController: UITableViewDelegate {
             sitePluginsWasPressed()
         case .support:
             supportWasPressed()
-        case .inPersonPayments:
-            inPersonPaymentsWasPressed()
         case .installJetpack:
             installJetpackWasPressed()
         case .privacy:
@@ -547,8 +531,8 @@ extension SettingsViewController: UITableViewDelegate {
             wormholyWasPressed()
         case .whatsNew:
             whatsNewWasPressed()
-        case .removeAppleIDAccess:
-            removeAppleIDAccessWasPressed()
+        case .closeAccount:
+            closeAccountWasPressed()
         case .logout:
             logoutWasPressed()
         default:
@@ -603,10 +587,9 @@ extension SettingsViewController {
 
         // Plugins
         case plugins
+        case woocommerceDetails
 
         // Store settings
-        case upsellCardReadersFeatureAnnouncement
-        case inPersonPayments
         case installJetpack
 
         // Help & Feedback
@@ -626,14 +609,14 @@ extension SettingsViewController {
         case wormholy
 
         // Account deletion
-        case removeAppleIDAccess
+        case closeAccount
 
         // Logout
         case logout
 
         fileprivate var registerWithNib: Bool {
             switch self {
-            case .upsellCardReadersFeatureAnnouncement:
+            case .woocommerceDetails:
                 return false
             default:
                 return true
@@ -648,15 +631,13 @@ extension SettingsViewController {
                 return BasicTableViewCell.self
             case .plugins:
                 return BasicTableViewCell.self
+            case .woocommerceDetails:
+                return HostingTableViewCell<PluginDetailsRowView>.self
             case .support:
-                return BasicTableViewCell.self
-            case .upsellCardReadersFeatureAnnouncement:
-                return HostingTableViewCell<FeatureAnnouncementCardView>.self
-            case .inPersonPayments:
                 return BasicTableViewCell.self
             case .installJetpack:
                 return BasicTableViewCell.self
-            case .logout, .removeAppleIDAccess:
+            case .logout, .closeAccount:
                 return BasicTableViewCell.self
             case .privacy:
                 return BasicTableViewCell.self

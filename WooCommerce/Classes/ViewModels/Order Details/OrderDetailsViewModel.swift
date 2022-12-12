@@ -15,7 +15,6 @@ final class OrderDetailsViewModel {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let currencyFormatter: CurrencyFormatter
-    private let addressValidator: AddressValidator
 
     private(set) var order: Order
 
@@ -35,7 +34,6 @@ final class OrderDetailsViewModel {
         self.stores = stores
         self.storageManager = storageManager
         self.currencyFormatter = currencyFormatter
-        addressValidator = AddressValidator(siteID: order.siteID, stores: stores)
     }
 
     func update(order newOrder: Order) {
@@ -395,7 +393,7 @@ extension OrderDetailsViewModel {
             viewController.show(productListVC, sender: nil)
         case .billingDetail:
             ServiceLocator.analytics.track(.orderDetailShowBillingTapped)
-            let billingInformationViewController = BillingInformationViewController(order: order, editingEnabled: false)
+            let billingInformationViewController = BillingInformationViewController(order: order, editingEnabled: true)
             viewController.navigationController?.pushViewController(billingInformationViewController, animated: true)
         case .customFields:
             ServiceLocator.analytics.track(.orderViewCustomFieldsTapped)
@@ -546,10 +544,6 @@ extension OrderDetailsViewModel {
     func syncShippingLabels(onCompletion: ((Error?) -> ())? = nil) {
         // If the plugin is not active, there is no point on continuing with a request that will fail.
         isPluginActive(SitePlugin.SupportedPlugin.WCShip) { [weak self] isActive in
-            // We're looking to measure how often an order contains an invalid address
-            // and validate it through the Shipping label plugin, so we need to trigger
-            // this call when it's possible to verify the plugin presence
-            self?.startAddressValidation(shippingLabelPluginIsActive: isActive)
 
             guard let self = self, isActive else {
                 onCompletion?(nil)
@@ -573,20 +567,6 @@ extension OrderDetailsViewModel {
             }
             self.stores.dispatch(action)
 
-        }
-    }
-
-    func startAddressValidation(shippingLabelPluginIsActive: Bool) {
-        guard let orderShippingAddress = order.shippingAddress, orderShippingAddress != Address.empty else {
-            return
-        }
-
-        let orderID = order.orderID
-
-        addressValidator.validate(address: orderShippingAddress, onlyLocally: !shippingLabelPluginIsActive) { result in
-            if let error = result.failure {
-                ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.addressValidationFailed(error: error, orderID: orderID))
-            }
         }
     }
 

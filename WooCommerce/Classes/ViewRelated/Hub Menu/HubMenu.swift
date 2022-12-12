@@ -16,6 +16,7 @@ struct HubMenu: View {
     @State private var showingInbox = false
     @State private var showingReviews = false
     @State private var showingCoupons = false
+    @State private var showingIAPDebug = false
 
     /// State to disable multiple taps on menu items
     /// Make sure to reset the value to false after dismissing sub-flows
@@ -61,7 +62,6 @@ struct HubMenu: View {
                                                            ])
                             switch type(of: menu).id {
                             case HubMenuViewModel.Payments.id:
-                                viewModel.paymentsScreenWasOpened()
                                 showingPayments = true
                             case HubMenuViewModel.WoocommerceAdmin.id:
                                 showingWooCommerceAdmin = true
@@ -73,6 +73,8 @@ struct HubMenu: View {
                                 showingReviews = true
                             case HubMenuViewModel.Coupons.id:
                                 showingCoupons = true
+                            case HubMenuViewModel.InAppPurchases.id:
+                                showingIAPDebug = true
                             default:
                                 break
                             }
@@ -108,6 +110,9 @@ struct HubMenu: View {
                 EmptyView()
             }.hidden()
             NavigationLink(destination: CouponListView(siteID: viewModel.siteID), isActive: $showingCoupons) {
+                EmptyView()
+            }.hidden()
+            NavigationLink(destination: InAppPurchasesDebugView(), isActive: $showingIAPDebug) {
                 EmptyView()
             }.hidden()
             LazyNavigationLink(destination: viewModel.getReviewDetailDestination(), isActive: $viewModel.showingReviewDetail) {

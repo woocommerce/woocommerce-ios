@@ -12,6 +12,10 @@ final class LoginTests: XCTestCase {
     }
 
     func test_site_address_login_logout() throws {
+        // do not test this case for simplified login since site address login is not available
+        guard PrologueScreen.isSiteAddressLoginAvailable() else {
+            return
+        }
         try PrologueScreen()
             .selectSiteAddress()
             .proceedWith(siteUrl: TestCredentials.siteUrl)
@@ -33,7 +37,7 @@ final class LoginTests: XCTestCase {
             .proceedWith(password: TestCredentials.password)
 
         try LoginEpilogueScreen()
-            .verifyEpilogueDisplays(displayName: TestCredentials.displayName, siteUrl: TestCredentials.siteUrl)
+            .verifyEpilogueDisplays(email: "e2eflowtestingmobile@example.com", siteUrl: TestCredentials.siteUrl)
             .continueWithSelectedSite()
 
         try TabNavComponent()

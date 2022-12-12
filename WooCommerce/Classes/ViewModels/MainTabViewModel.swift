@@ -92,9 +92,6 @@ final class MainTabViewModel {
 
         listenToReviewsBadgeReloadRequired()
         retrieveShouldShowReviewsBadgeOnHubMenuTabValue()
-
-        listenToNewFeatureBadgeReloadRequired()
-        retrieveShouldShowNewFeatureBadgeOnHubMenuTabValue()
     }
 }
 
@@ -200,23 +197,6 @@ private extension MainTabViewModel {
                                                object: nil)
     }
 
-    func listenToNewFeatureBadgeReloadRequired() {
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(hubMenuViewDidAppear),
-                                               name: .hubMenuViewDidAppear,
-                                               object: nil)
-
-    }
-
-    /// Updates the badge after the hub menu did appear
-    ///
-    @objc func hubMenuViewDidAppear() {
-        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .paymentsInMenuTabBarButton, remindLater: false, onCompletion: nil)
-        storesManager.dispatch(action)
-
-        shouldShowNewFeatureBadgeOnHubMenuTab = false
-    }
-
     /// Retrieves whether we should show the reviews on the Menu button and updates `shouldShowReviewsBadge`
     ///
     @objc func retrieveShouldShowReviewsBadgeOnHubMenuTabValue() {
@@ -229,22 +209,6 @@ private extension MainTabViewModel {
         }
 
         storesManager.dispatch(notificationCountAction)
-    }
-
-    /// Retrieves whether we should show the new feature badge on the Menu button and updates `shouldShowReviewsBadge`
-    ///
-    func retrieveShouldShowNewFeatureBadgeOnHubMenuTabValue() {
-        let action = AppSettingsAction.getFeatureAnnouncementVisibility(campaign: .paymentsInMenuTabBarButton) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let visible):
-                self.shouldShowNewFeatureBadgeOnHubMenuTab = visible
-            case .failure:
-                self.shouldShowNewFeatureBadgeOnHubMenuTab = false
-            }
-        }
-
-        storesManager.dispatch(action)
     }
 
     /// Listens for changes on the menu badge display logic and updates it depending on them

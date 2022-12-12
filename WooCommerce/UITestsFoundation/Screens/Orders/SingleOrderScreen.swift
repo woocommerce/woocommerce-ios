@@ -24,7 +24,7 @@ public final class SingleOrderScreen: ScreenObject {
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
-            expectedElementGetters: [ summaryCellGetter ],
+            expectedElementGetters: [ summaryCellGetter, editOrderButtonGetter ],
             app: app
         )
     }
@@ -58,7 +58,6 @@ public final class SingleOrderScreen: ScreenObject {
         return self
     }
 
-    @discardableResult
     public func tapCollectPaymentButton() throws -> PaymentMethodsScreen {
         let orderDetailTableView = app.tables["order-details-table-view"]
         while !collectPaymentButton.isFullyVisibleOnScreen() {
@@ -68,13 +67,14 @@ public final class SingleOrderScreen: ScreenObject {
         return try PaymentMethodsScreen()
     }
 
-    @discardableResult
     public func goBackToOrdersScreen() throws -> OrdersScreen {
-        pop()
+        // Only needed for iPhone because iPad shows both Orders and Single Order screens on the same view
+        if XCUIDevice.isPhone {
+            pop()
+        }
         return try OrdersScreen()
     }
 
-    @discardableResult
     public func tapEditOrderButton() throws -> UnifiedOrderScreen {
         editOrderButton.tap()
         return try UnifiedOrderScreen(flow: .editing)

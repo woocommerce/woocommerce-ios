@@ -2,42 +2,35 @@
 import Experiments
 
 struct MockFeatureFlagService: FeatureFlagService {
-    private let isJetpackConnectionPackageSupportOn: Bool
-    private let isHubMenuOn: Bool
     private let isInboxOn: Bool
     private let isSplitViewInOrdersTabOn: Bool
     private let isUpdateOrderOptimisticallyOn: Bool
     private let shippingLabelsOnboardingM1: Bool
-    private let isAppleIDAccountDeletionEnabled: Bool
-    private let isBackgroundImageUploadEnabled: Bool
     private let isLoginPrologueOnboardingEnabled: Bool
+    private let isStoreCreationMVPEnabled: Bool
+    private let isStoreCreationM2Enabled: Bool
+    private let isStoreCreationM2WithInAppPurchasesEnabled: Bool
 
-    init(isJetpackConnectionPackageSupportOn: Bool = false,
-         isHubMenuOn: Bool = false,
-         isInboxOn: Bool = false,
+    init(isInboxOn: Bool = false,
          isSplitViewInOrdersTabOn: Bool = false,
          isUpdateOrderOptimisticallyOn: Bool = false,
          shippingLabelsOnboardingM1: Bool = false,
-         isAppleIDAccountDeletionEnabled: Bool = false,
-         isBackgroundImageUploadEnabled: Bool = false,
-         isLoginPrologueOnboardingEnabled: Bool = false) {
-        self.isJetpackConnectionPackageSupportOn = isJetpackConnectionPackageSupportOn
-        self.isHubMenuOn = isHubMenuOn
+         isLoginPrologueOnboardingEnabled: Bool = false,
+         isStoreCreationMVPEnabled: Bool = true,
+         isStoreCreationM2Enabled: Bool = false,
+         isStoreCreationM2WithInAppPurchasesEnabled: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isSplitViewInOrdersTabOn = isSplitViewInOrdersTabOn
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
         self.shippingLabelsOnboardingM1 = shippingLabelsOnboardingM1
-        self.isAppleIDAccountDeletionEnabled = isAppleIDAccountDeletionEnabled
-        self.isBackgroundImageUploadEnabled = isBackgroundImageUploadEnabled
         self.isLoginPrologueOnboardingEnabled = isLoginPrologueOnboardingEnabled
+        self.isStoreCreationMVPEnabled = isStoreCreationMVPEnabled
+        self.isStoreCreationM2Enabled = isStoreCreationM2Enabled
+        self.isStoreCreationM2WithInAppPurchasesEnabled = isStoreCreationM2WithInAppPurchasesEnabled
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
         switch featureFlag {
-        case .jetpackConnectionPackageSupport:
-            return isJetpackConnectionPackageSupportOn
-        case .hubMenu:
-            return isHubMenuOn
         case .inbox:
             return isInboxOn
         case .splitViewInOrdersTab:
@@ -46,12 +39,14 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isUpdateOrderOptimisticallyOn
         case .shippingLabelsOnboardingM1:
             return shippingLabelsOnboardingM1
-        case .appleIDAccountDeletion:
-            return isAppleIDAccountDeletionEnabled
-        case .backgroundProductImageUpload:
-            return isBackgroundImageUploadEnabled
         case .loginPrologueOnboarding:
             return isLoginPrologueOnboardingEnabled
+        case .storeCreationMVP:
+            return isStoreCreationMVPEnabled
+        case .storeCreationM2:
+            return isStoreCreationM2Enabled
+        case .storeCreationM2WithInAppPurchasesEnabled:
+            return isStoreCreationM2WithInAppPurchasesEnabled
         default:
             return false
         }

@@ -32,15 +32,20 @@ At the time of writing this document, these are the subclasses of `Remote`:
 ## [`Network`](../Networking/Networking/Network/Network.swift)
 A protocol that abstracts the networking stack. 
 
-There are two implementations of this protocol: [`AlamofireNetwork`](../Networking/Networking/Network/AlamofireNetwork.swift) which manages a networking stack based on the third party library [Alamofire](https://github.com/Alamofire), and [`MockNetwork`](../Networking/Networking/Network/MockNetwork.swift) which is a mock networking stack that does not actually hit the network, to be used in the unit tests.
+There are three implementations of this protocol:
+* [`AlamofireNetwork`](../Networking/Networking/Network/AlamofireNetwork.swift) manages a networking stack based on the third party library [Alamofire](https://github.com/Alamofire). This is the default stack used for API requests in the app that require authentication with WordPress.com.
+* [`WordPressOrgNetwork`](../Networking/Networking/Network/WordPressOrgNetwork.swift) also uses Alamofire to manage network requests, but with cookie-based authentication for working with the WordPress.org REST API.
+* [`MockNetwork`](../Networking/Networking/Network/MockNetwork.swift): a mock networking stack that does not actually hit the network, to be used in the unit tests.
 
 ## `URLRequestConvertible`
 A protocol the abstracts the actual URL requests. 
 
-At the moment, we provide three implementations of `URLRequestConvertible`:
+At the moment, we provide four implementations of `URLRequestConvertible`:
 * [`DotcomRequest`](../Networking/Networking/Requests/DotcomRequest.swift) models requests to WordPress.com
 * [`JetpackRequest`](../Networking/Networking/Requests/JetpackRequest.swift) represents a Jetpack-Tunneled WordPress.com 
 * [`AuthenticatedRequest`](../Networking/Networking/Requests/AuthenticatedRequest.swift) Wraps up a `URLRequestConvertible` instance, and injects credentials (username and token) when required
+* [`WordPressOrgRequest`](../Networking/Networking/Requests/WordPressOrgRequest.swift) model requests to the WordPress.org REST API.
+* [`UnauthenticatedRequest`](../Networking/Networking/Requests/UnauthenticatedRequest.swift) Wraps up a `URLRequestConvertible` instance, and injects a custom user-agent header
 
 ## [`Mapper`](../Networking/Networking/Mapper/Mapper.swift)
 A protocol that abstracts the different parsers.

@@ -20,6 +20,11 @@ protocol PushNotesManager {
     ///
     var inactiveNotifications: AnyPublisher<PushNotification, Never> { get }
 
+    /// An observable that emits values when a Remote Notification is received while the app is
+    /// in the background.
+    ///
+    var backgroundNotifications: AnyPublisher<PushNotification, Never> { get }
+
     /// An observable that emits values when a local notification response is received.
     ///
     var localNotificationUserResponses: AnyPublisher<UNNotificationResponse, Never> { get }

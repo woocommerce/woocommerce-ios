@@ -7,41 +7,21 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         switch featureFlag {
         case .barcodeScanner:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .jetpackConnectionPackageSupport:
-            return true
-        case .hubMenu:
-            return true
-        case .couponView:
-            return true
         case .productSKUInputScanner:
             return true
         case .inbox:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .bulkEditProductVariations:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .splitViewInOrdersTab:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .couponDeletion:
-            return true
-        case .couponEditing:
-            return true
-        case .couponCreation:
-            return true
         case .updateOrderOptimistically:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .shippingLabelsOnboardingM1:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .backgroundProductImageUpload:
-            return true
-        case .appleIDAccountDeletion:
-            return true
         case .newToWooCommerceLinkInLoginPrologue:
-            return true
+            return false
         case .loginPrologueOnboarding:
             return true
         case .loginErrorNotifications:
-            return true
-        case .loginPrologueOnboardingSurvey:
             return true
         case .loginMagicLinkEmphasis:
             return true
@@ -49,6 +29,32 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .promptToEnableCodInIppOnboarding:
             return true
+        case .searchProductsBySKU:
+            return true
+        case .inAppPurchases:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .storeCreationMVP:
+            return true
+        case .storeCreationM2:
+            return true
+        case .storeCreationM2WithInAppPurchasesEnabled:
+            return false
+        case .justInTimeMessagesOnDashboard:
+            return true
+        case .systemStatusReportInSupportRequest:
+            return true
+        case .performanceMonitoring,
+                .performanceMonitoringCoreData,
+                .performanceMonitoringFileIO,
+                .performanceMonitoringNetworking,
+                .performanceMonitoringViewController,
+                .performanceMonitoringUserInteraction:
+            // Disabled by default to avoid costs spikes, unless in internal testing builds.
+            return buildConfig == .alpha
+        case .analyticsHub:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .tapToPayOnIPhone:
+            return buildConfig == .localDeveloper
         default:
             return true
         }

@@ -27,8 +27,26 @@ SCREENSHOT_DEVICES = [
   'iPad Pro (12.9-inch) (3rd generation)'
 ].freeze
 
-MAIN_BUNDLE_IDENTIFIERS = %w[com.automattic.woocommerce].freeze        # Registered in our main account, for development and AppStore
-ALPHA_BUNDLE_IDENTIFIERS = %w[com.automattic.alpha.woocommerce].freeze # Registered in our Enterprise account, for App Center / Installable Builds
+APP_STORE_VERSION_BUNDLE_IDENTIFIER = 'com.automattic.woocommerce'
+# Registered in our main account, for development and App Store
+MAIN_BUNDLE_IDENTIFIERS = [
+  APP_STORE_VERSION_BUNDLE_IDENTIFIER,
+  "#{APP_STORE_VERSION_BUNDLE_IDENTIFIER}.storewidgets"
+].freeze
+
+ALPHA_VERSION_BUNDLE_IDENTIFIER = 'com.automattic.alpha.woocommerce'
+# Registered in our Enterprise account, for App Center / Installable Builds
+ALPHA_BUNDLE_IDENTIFIERS = [
+  ALPHA_VERSION_BUNDLE_IDENTIFIER,
+  "#{ALPHA_VERSION_BUNDLE_IDENTIFIER}.storewidgets"
+].freeze
+
+# Shared options to use when invoking `gym` / `build_app`.
+#
+# - `manageAppVersionAndBuildNumber: false` prevents `xcodebuild` from bumping
+#   the build number when extracting an archive into an IPA file. We want to
+#   use the build number we set!
+COMMON_EXPORT_OPTIONS = { manageAppVersionAndBuildNumber: false }.freeze
 
 TEST_SCHEME = 'WooCommerce'
 
@@ -192,18 +210,10 @@ platform :ios do
     end
   end
 
-  #####################################################################################
-  # update_appstore_strings
-  # -----------------------------------------------------------------------------------
-  # This lane updates the AppStoreStrings.pot files with the latest content from
-  # the release_notes.txt file and the other text sources
-  # -----------------------------------------------------------------------------------
-  # Usage:
-  # bundle exec fastlane update_appstore_strings version:<release note version>
+  # Updates the `AppStoreStrings.pot` file with the latest content from the `release_notes.txt` files and the other text sources.
   #
-  # Example:
-  # bundle exec fastlane update_appstore_strings version:1.1
-  #####################################################################################
+  # @option [String] version The current `x.y[.z]` version of the app. Optional. Used to derive the `vx.y[.z]-whats-new` key to use in the `.pot` file.
+  #
   desc 'Updates the AppStoreStrings.pot file with the latest data'
   lane :update_appstore_strings do |options|
     source_metadata_folder = File.join(PROJECT_ROOT_FOLDER, 'fastlane', 'appstoreres', 'metadata', 'source')
@@ -224,7 +234,7 @@ platform :ios do
     ios_update_metadata_source(
       po_file_path: File.join(RESOURCES_FOLDER, 'AppStoreStrings.pot'),
       source_files: files,
-      release_version: options[:version]
+      release_version: options.fetch(:version, ios_get_app_version)
     )
   end
 
@@ -426,16 +436,21 @@ platform :ios do
   lane :build_and_upload_itc do |options|
     ensure_sentry_installed
 
-    ios_build_prechecks(skip_confirm: options[:skip_confirm], external: true) unless options[:skip_prechecks]
-    ios_build_preflight unless options[:skip_prechecks]
+    unless options[:skip_prechecks]
+      ios_build_prechecks(skip_confirm: options[:skip_confirm], external: true)
+      ios_build_preflight
+      xcversion() # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
+    end
 
     appstore_code_signing
 
-    gym(scheme: 'WooCommerce', workspace: './WooCommerce.xcworkspace',
-        clean: true, export_team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
-        export_options: {
-          method: 'app-store'
-        })
+    gym(
+      scheme: 'WooCommerce',
+      workspace: './WooCommerce.xcworkspace',
+      clean: true,
+      export_team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
+      export_options: { **COMMON_EXPORT_OPTIONS, method: 'app-store' }
+    )
 
     testflight(
       skip_waiting_for_build_processing: true,
@@ -481,6 +496,7 @@ platform :ios do
   desc 'Builds and uploads an installable build'
   lane :build_and_upload_installable_build do
     ensure_sentry_installed
+    xcversion() # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
 
     alpha_code_signing
 
@@ -500,7 +516,11 @@ platform :ios do
       clean: true,
       output_directory: 'build',
       export_team_id: ENV.fetch('INT_EXPORT_TEAM_ID'),
-      export_options: { method: 'enterprise', iCloudContainerEnvironment: 'Production' }
+      export_options: {
+        **COMMON_EXPORT_OPTIONS,
+        method: 'enterprise',
+        iCloudContainerEnvironment: 'Production'
+      }
     )
 
     appcenter_upload(
@@ -508,7 +528,7 @@ platform :ios do
       owner_name: 'automattic',
       owner_type: 'organization',
       app_name: 'WooCommerce-Installable-Builds',
-      destinations: 'All-users-of-WooCommerce-Installable-Builds',
+      destinations: 'Collaborators',
       notify_testers: false
     )
 
@@ -553,6 +573,8 @@ platform :ios do
   #####################################################################################
   desc 'Build for Testing'
   lane :build_for_testing do |options|
+    xcversion() # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
+
     run_tests(
       workspace: 'WooCommerce.xcworkspace',
       scheme: TEST_SCHEME,
@@ -625,8 +647,8 @@ platform :ios do
     # Ensure we're using the latest Pods
     sh('bundle exec pod install --verbose')
 
-    # Ensure we're using the right version of Xcode
-    xcversion(version: '~> 13.4')
+    # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
+    xcversion()
 
     scan(
       workspace: 'WooCommerce.xcworkspace',
@@ -638,8 +660,8 @@ platform :ios do
 
   desc 'Take Screenshots'
   lane :take_screenshots do |options|
-    # Ensure we're using the right version of Xcode
-    xcversion(version: '~> 13.4')
+    # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
+    xcversion()
 
     # By default, clear previous screenshots
     languages = IOS_LOCALES
@@ -932,8 +954,8 @@ platform :ios do
     match(
       type: 'enterprise',
       team_id: get_required_env('INT_EXPORT_TEAM_ID'),
-      readonly: true,
-      app_identifier: ALPHA_BUNDLE_IDENTIFIERS
+      app_identifier: ALPHA_BUNDLE_IDENTIFIERS,
+      readonly: true
     )
   end
 
@@ -941,9 +963,8 @@ platform :ios do
     match(
       type: 'appstore',
       team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
-      readonly: false,
       app_identifier: MAIN_BUNDLE_IDENTIFIERS,
-      template_name: 'Apple Pay Pass Suppression'
+      readonly: true
     )
   end
 
@@ -955,8 +976,15 @@ platform :ios do
     configure_validate
   end
 
+  # Generates the `.strings` file to be imported by GlotPress, by parsing source code (using `genstrings` under the hood).
+  #
+  #
+  # @option [Boolean] skip_commit (default: false) If true, does not commit the changes made to the `.strings` file.
+  #
+  # @called_by complete_code_freeze
+  #
   desc 'Updates the main `Localizable.strings` file — that will be imported by GlotPress — from code and `Info.plist` files'
-  lane :generate_strings_file_for_glotpress do
+  lane :generate_strings_file_for_glotpress do |options|
     cocoapods
 
     en_lproj_path = File.join(RESOURCES_FOLDER, 'en.lproj')
@@ -970,8 +998,10 @@ platform :ios do
       ],
       exclude: [
         '*Vendor*',
+        '**/AppLocalizedString.swift',
         'WooCommerce/WooCommerceTests/**' # Some unit tests include localized strings, but we don't want to crowd GlotPress with them
       ],
+      routines: ['AppLocalizedString'],
       output_dir: en_lproj_path
     )
 
@@ -982,6 +1012,8 @@ platform :ios do
       paths_to_merge: MANUALLY_MAINTAINED_STRINGS_FILES,
       destination: File.join(en_lproj_path, 'Localizable.strings')
     )
+
+    next if options.fetch(:skip_commit, false)
 
     git_commit(
       path: en_lproj_path,
@@ -1065,7 +1097,6 @@ lane :test_without_building do |options|
     workspace: 'WooCommerce.xcworkspace',
     scheme: TEST_SCHEME,
     device: options[:device],
-    deployment_target_version: options[:ios_version],
     test_without_building: true,
     xctestrun: xctestrun_path,
     result_bundle: true,

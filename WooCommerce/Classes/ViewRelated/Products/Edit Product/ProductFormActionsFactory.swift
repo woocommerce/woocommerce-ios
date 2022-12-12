@@ -1,5 +1,4 @@
 import Yosemite
-import Experiments
 
 /// Edit actions in the product form. Each action allows the user to edit a subset of product properties.
 enum ProductFormEditAction: Equatable {
@@ -77,8 +76,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         let shouldShowDescriptionRow = editable || product.description?.isNotEmpty == true
 
         let newLinkedProductsPromoViewModel = linkedProductsPromoViewModel
-        let shouldShowLinkedProductsPromo = ABTest.linkedProductsPromo.variation == .treatment(nil)
-        && isLinkedProductsPromoEnabled
+        let shouldShowLinkedProductsPromo = isLinkedProductsPromoEnabled
         && newLinkedProductsPromoViewModel.shouldBeVisible
         && product.upsellIDs.isEmpty
         && product.crossSellIDs.isEmpty

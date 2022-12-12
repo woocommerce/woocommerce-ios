@@ -38,7 +38,7 @@ public struct CardPresentPaymentsConfiguration {
                 paymentMethods: [.cardPresent],
                 currencies: [.USD],
                 paymentGateways: [WCPayAccount.gatewayID, StripeAccount.gatewayID],
-                supportedReaders: [.chipper, .stripeM2],
+                supportedReaders: [.chipper, .stripeM2, .appleBuiltIn],
                 supportedPluginVersions: [
                     .init(plugin: .wcPay, minimumVersion: "3.2.1"),
                     .init(plugin: .stripe, minimumVersion: "6.2.0")
@@ -77,8 +77,9 @@ public struct CardPresentPaymentsConfiguration {
 
     /// Given a two character country code, returns a URL where the merchant can purchase a card reader.
     ///
-    public func purchaseCardReaderUrl() -> URL {
-        URL(string: Constants.purchaseReaderForCountryUrlBase + countryCode) ?? Constants.fallbackInPersonPaymentsUrl
+    public func purchaseCardReaderUrl(utmProvider: UTMParametersProviding) -> URL {
+        let urlString = Constants.purchaseReaderForCountryUrlBase + countryCode
+        return utmProvider.urlWithUtmParams(string: urlString) ?? Constants.fallbackInPersonPaymentsUrl
     }
 }
 

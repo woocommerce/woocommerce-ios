@@ -29,6 +29,7 @@ final class CustomerNoteTableViewCell: UITableViewCell {
         }
         set {
             bodyTextView.text = newValue
+            bodyTextView.isHidden = newValue == nil || newValue?.isEmpty == true
         }
     }
 
@@ -127,8 +128,10 @@ private extension CustomerNoteTableViewCell {
         addButton.setImage(.plusImage, for: .normal)
         addButton.contentHorizontalAlignment = .leading
         addButton.contentVerticalAlignment = .bottom
-        addButton.contentEdgeInsets = .zero
-        addButton.distributeTitleAndImage(spacing: Constants.buttonTitleAndImageSpacing)
+        var configuration = UIButton.Configuration.plain()
+        configuration.contentInsets = .init(.zero)
+        configuration.imagePadding = Constants.buttonTitleAndImageSpacing
+        addButton.configuration = configuration
         addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
     }
 

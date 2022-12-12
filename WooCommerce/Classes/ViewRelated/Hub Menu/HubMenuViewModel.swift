@@ -4,6 +4,7 @@ import SwiftUI
 import Combine
 import Experiments
 import Yosemite
+import Storage
 
 extension NSNotification.Name {
     /// Posted whenever the hub menu view did appear.
@@ -54,6 +55,7 @@ final class HubMenuViewModel: ObservableObject {
 
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
+    private let generalAppSettings: GeneralAppSettingsStorage
 
     private var productReviewFromNoteParcel: ProductReviewFromNoteParcel?
 
@@ -64,11 +66,13 @@ final class HubMenuViewModel: ObservableObject {
     init(siteID: Int64,
          navigationController: UINavigationController? = nil,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         generalAppSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings) {
         self.siteID = siteID
         self.navigationController = navigationController
         self.stores = stores
         self.featureFlagService = featureFlagService
+        self.generalAppSettings = generalAppSettings
         observeSiteForUIUpdates()
     }
 
@@ -80,6 +84,9 @@ final class HubMenuViewModel: ObservableObject {
     ///
     func setupMenuElements() {
         menuElements = [Payments(), WoocommerceAdmin(), ViewStore(), Reviews()]
+        if generalAppSettings.betaFeatureEnabled(.inAppPurchases) {
+            menuElements.append(InAppPurchases())
+        }
 
         let inboxUseCase = InboxEligibilityUseCase(stores: stores, featureFlagService: featureFlagService)
         inboxUseCase.isEligibleForInbox(siteID: siteID) { [weak self] isInboxMenuShown in
@@ -106,33 +113,6 @@ final class HubMenuViewModel: ObservableObject {
         }
 
         stores.dispatch(action)
-
-        setupPaymentsBadge()
-    }
-
-    private func setupPaymentsBadge() {
-        let featureAnnouncementVisibilityAction = AppSettingsAction.getFeatureAnnouncementVisibility(campaign: .paymentsInHubMenuButton) {
-            [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case .success(let visible):
-                    if visible {
-                        self.updatePaymentsBadge(type: .newFeature)
-                    }
-                default:
-                    break
-                }
-        }
-
-        stores.dispatch(featureAnnouncementVisibilityAction)
-    }
-
-    private func updatePaymentsBadge(type badge: HubMenuBadgeType) {
-        if let paymentsMenuItemIndex = self.menuElements.firstIndex(where: { item in
-            type(of: item).id == Payments.id
-        }) {
-            self.menuElements[paymentsMenuItemIndex] = Payments(badge: badge)
-        }
     }
 
     /// Present the `StorePickerViewController` using the `StorePickerCoordinator`, passing the navigation controller from the entry point.
@@ -148,15 +128,6 @@ final class HubMenuViewModel: ObservableObject {
     func showReviewDetails(using parcel: ProductReviewFromNoteParcel) {
         productReviewFromNoteParcel = parcel
         showingReviewDetail = true
-    }
-
-    func paymentsScreenWasOpened() {
-        updatePaymentsBadge(type: .number(number: 0))
-
-        let featureAnnouncementVisibilityAction = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .paymentsInHubMenuButton,
-                                                                                                    remindLater: false,
-                                                                                                    onCompletion: nil)
-        stores.dispatch(featureAnnouncementVisibilityAction)
     }
 
     func getReviewDetailDestination() -> ReviewDetailView? {
@@ -257,6 +228,17 @@ extension HubMenuViewModel {
         let badge: HubMenuBadgeType = .number(number: 0)
         let accessibilityIdentifier: String = "menu-reviews"
         let trackingOption: String = "reviews"
+    }
+
+    struct InAppPurchases: HubMenuItem {
+        static var id = "iap"
+
+        let title: String = "[Debug] IAP"
+        let icon: UIImage = UIImage(systemName: "ladybug.fill")!
+        let iconColor: UIColor = .red
+        let badge: HubMenuBadgeType = .number(number: 0)
+        let accessibilityIdentifier: String = "menu-iap"
+        let trackingOption: String = "debug-iap"
     }
 
     private enum Localization {

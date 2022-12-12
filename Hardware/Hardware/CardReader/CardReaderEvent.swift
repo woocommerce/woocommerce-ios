@@ -2,7 +2,7 @@
 public enum CardReaderEvent: Equatable {
     /// The reader begins waiting for input.
     /// The app should prompt the customer to present a payment method
-    case waitingForInput(String)
+    case waitingForInput(CardReaderInput)
 
     /// Request that a prompt be displayed in the app.
     /// For example, if the prompt is SwipeCard,
@@ -17,6 +17,9 @@ public enum CardReaderEvent: Equatable {
 
     /// A card was removed after client-side payment capture.
     case cardRemovedAfterClientSidePaymentCapture
+
+    /// Card details were collected, and can be used to process a payment.
+    case cardDetailsCollected
 
     /// Low battery warning.
     case lowBattery

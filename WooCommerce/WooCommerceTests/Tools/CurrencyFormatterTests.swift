@@ -434,6 +434,22 @@ class CurrencyFormatterTests: XCTestCase {
         XCTAssertEqual(amount, expectedResult)
     }
 
+    func testFormatHumanReadableWorksWithNSDecimalNumberInput() {
+        let inputValue: NSDecimalNumber = 7867818684.64
+        let expectedResult = "£7.9b"
+        let locale = sampleLocale
+        let amount = CurrencyFormatter(currencySettings: sampleCurrencySettings).formatHumanReadableAmount(inputValue, with: "GBP", locale: locale)
+        XCTAssertEqual(amount, expectedResult)
+    }
+
+    func testFormatHumanReadableWorksWithDecimalNumberInput() {
+        let inputValue: Decimal = -7867818684.64
+        let expectedResult = "-£7.9b"
+        let locale = sampleLocale
+        let amount = CurrencyFormatter(currencySettings: sampleCurrencySettings).formatHumanReadableAmount(inputValue, with: "GBP", locale: locale)
+        XCTAssertEqual(amount, expectedResult)
+    }
+
     func testFormatHumanReadableWorksUsingLargeNegativeDecimalValueAndSpecificCountryCode() {
         let inputValue = "-7867818684.64"
         let expectedResult = "-£7.9b"

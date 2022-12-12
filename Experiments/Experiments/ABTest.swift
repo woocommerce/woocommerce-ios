@@ -7,39 +7,57 @@ public enum ABTest: String, CaseIterable {
     /// `An enum with no cases cannot declare a raw type`
     case null
 
-    /// A/A test for ExPlat integration in the logged in state.
+    /// A/A test to make sure there is no bias in the logged out state.
     /// Experiment ref: pbxNRc-1QS-p2
-    ///
-    case aaTest202209 = "woocommerceios_explat_aa_test_logged_in_202209"
+    case aaTestLoggedIn = "woocommerceios_explat_aa_test_logged_in_202212_v2"
 
     /// A/A test to make sure there is no bias in the logged out state.
     /// Experiment ref: pbxNRc-1S0-p2
-    case aaTestLoggedOut202208 = "woocommerceios_explat_aa_test_logged_out_202208"
+    case aaTestLoggedOut = "woocommerceios_explat_aa_test_logged_out_202212_v2"
 
-    /// A/B test for promoting linked products in Product Details.
-    /// Experiment ref: pbxNRc-1Pp-p2
-    case linkedProductsPromo = "woocommerceios_product_details_linked_products_banner"
+    /// A/B test to measure the sign-in success rate when only WPCom login is enabled.
+    /// Experiment ref: pbxNRc-27s-p2
+    ///
+    case abTestLoginWithWPComOnly = "woocommerceios_login_wpcom_only"
 
-    /// A/B test for the login button order on the prologues screen.
-    /// Experiment ref: pbxNRc-1VA-p2
-    case loginPrologueButtonOrder = "woocommerceios_login_prologue_button_order"
+    /// A/B test to measure the sign-in success rate when native Jetpack installation experience is enabled
+    /// Experiment ref: pbxNRc-29W-p2
+    ///
+    case nativeJetpackSetupFlow = "woocommerceios_login_jetpack_setup_flow_v2"
 
     /// Returns a variation for the given experiment
     public var variation: Variation {
         ExPlat.shared?.experiment(rawValue) ?? .control
     }
+
+    /// Returns the context for the given experiment.
+    ///
+    /// When adding a new experiment, add it to the appropriate case depending on its context (logged-in or logged-out experience).
+    public var context: ExperimentContext {
+        switch self {
+        case .aaTestLoggedIn, .nativeJetpackSetupFlow:
+            return .loggedIn
+        case .aaTestLoggedOut, .abTestLoginWithWPComOnly:
+            return .loggedOut
+        case .null:
+            return .none
+        }
+    }
 }
 
 public extension ABTest {
-    /// Start the AB Testing platform if any experiment exists
+    /// Start the AB Testing platform if any experiment exists for the provided context
     ///
-    static func start() async {
+    @MainActor
+    static func start(for context: ExperimentContext) async {
+        let experiments = ABTest.allCases.filter { $0.context == context }
+
         await withCheckedContinuation { continuation in
-            guard ABTest.allCases.count > 1 else {
+            guard !experiments.isEmpty else {
                 return continuation.resume(returning: ())
             }
 
-            let experimentNames = ABTest.allCases.filter { $0 != .null }.map { $0.rawValue }
+            let experimentNames = experiments.map { $0.rawValue }
             ExPlat.shared?.register(experiments: experimentNames)
 
             ExPlat.shared?.refresh {
@@ -59,4 +77,12 @@ public extension Variation {
             return string.map { "treatment: \($0)" } ?? "treatment"
         }
     }
+}
+
+/// The context for an A/B testing experiment (where the experience being tested occurs).
+///
+public enum ExperimentContext: Equatable {
+    case loggedOut
+    case loggedIn
+    case none // For the `null` experiment case
 }

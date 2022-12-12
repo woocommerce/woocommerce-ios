@@ -43,11 +43,12 @@ class WooCommerceScreenshots: XCTestCase {
 
         // My Store
         .dismissTopBannerIfNeeded()
-        .then { ($0 as! MyStoreScreen).periodStatsTable.switchToMonthsTab() }
+        .then { ($0 as! MyStoreScreen).goToThisMonthTab() }
         .thenTakeScreenshot(named: "order-dashboard")
 
         // Orders
-        .tabBar.goToOrdersScreen()
+        try TabNavComponent()
+        .goToOrdersScreen()
         .startOrderCreation()
         .thenTakeScreenshot(named: "order-creation")
         .cancelOrderCreation()
@@ -62,7 +63,8 @@ class WooCommerceScreenshots: XCTestCase {
         .goBackToOrdersScreen()
 
         // Products
-        .tabBar.goToProductsScreen()
+        try TabNavComponent()
+        .goToProductsScreen()
         .selectAddProduct()
         .thenTakeScreenshot(named: "product-add")
 

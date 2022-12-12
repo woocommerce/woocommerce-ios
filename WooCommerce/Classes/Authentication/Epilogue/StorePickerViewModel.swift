@@ -25,6 +25,7 @@ final class StorePickerViewModel {
     private let storageManager: StorageManagerType
     private let stores: StoresManager
     private let analytics: Analytics
+    private let roleEligibilityUseCase: RoleEligibilityUseCase
 
     init(configuration: StorePickerConfiguration,
          stores: StoresManager = ServiceLocator.stores,
@@ -34,6 +35,7 @@ final class StorePickerViewModel {
         self.stores = stores
         self.storageManager = storageManager
         self.analytics = analytics
+        self.roleEligibilityUseCase = RoleEligibilityUseCase(stores: stores)
     }
 
     func trackScreenView() {
@@ -46,12 +48,24 @@ final class StorePickerViewModel {
         ])
     }
 
-    func refreshSites(currentlySelectedSiteID: Int64?) {
+    func refreshSites(currentlySelectedSiteID: Int64?, completion: (() -> Void)? = nil) {
         refetchSitesAndUpdateState()
 
         synchronizeSites(selectedSiteID: currentlySelectedSiteID) { [weak self] _ in
             self?.refetchSitesAndUpdateState()
+            completion?()
         }
+    }
+
+    /// Checks whether the current authenticated session has the correct role to manage the store.
+    /// Any error returned from the block means that the user is not eligible.
+    ///
+    /// - Parameters:
+    ///   - storeID: The dotcom site ID of the store.
+    ///   - completion: The block to be called when the check completes, with an optional RoleEligibilityError.
+    ///
+    func checkEligibility(for storeID: Int64, completion: @escaping (Result<Void, RoleEligibilityError>) -> Void) {
+        roleEligibilityUseCase.checkEligibility(for: storeID, completion: completion)
     }
 }
 
@@ -64,10 +78,8 @@ private extension StorePickerViewModel {
 
     func synchronizeSites(selectedSiteID: Int64?, onCompletion: @escaping (Result<Void, Error>) -> Void) {
         let syncStartTime = Date()
-        let isJetpackConnectionPackageSupported = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport)
         let action = AccountAction
-            .synchronizeSites(selectedSiteID: selectedSiteID,
-                              isJetpackConnectionPackageSupported: isJetpackConnectionPackageSupported) { result in
+            .synchronizeSites(selectedSiteID: selectedSiteID) { result in
                 switch result {
                 case .success(let containsJCPSites):
                     if containsJCPSites {
@@ -149,19 +161,27 @@ extension StorePickerViewModel {
         return resultsController.safeObject(at: indexPath)
     }
 
-    /// Returns the IndexPath for the specified Site.
+    /// Returns the site that matches the given URL.
     ///
-    func indexPath(for siteID: Int64) -> IndexPath? {
+    func site(thatMatchesPossibleURLs possibleURLs: Set<String>) -> Site? {
         guard resultsController.numberOfObjects > 0 else {
             return nil
         }
-
-        for (sectionIndex, section) in resultsController.sections.enumerated() {
-            if let rowIndex = section.objects.firstIndex(where: { $0.siteID == siteID }) {
-                return IndexPath(row: rowIndex, section: sectionIndex)
+        return resultsController.fetchedObjects.first(where: { site in
+            guard let siteURL = URL(string: site.url)?.host else {
+                return false
             }
+            return possibleURLs.contains(siteURL)
+        })
+    }
+
+    /// Returns the site that matches the given site ID.
+    ///
+    func site(thatMatchesSiteID siteID: Int64) -> Site? {
+        guard resultsController.numberOfObjects > 0 else {
+            return nil
         }
-        return nil
+        return resultsController.fetchedObjects.first(where: { $0.siteID == siteID })
     }
 }
 

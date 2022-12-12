@@ -1,3 +1,1 @@
-Es ist jetzt viel einfacher, alle Informationen zum Empfangen von Zahlungen in der App zu finden. Geh im Menü einfach zum Bereich „Zahlungen“. Wir haben auch ein Problem behoben, dass das Empfangen von Zahlungen blockieren konnte.
-Und wir haben verschiedene Verbesserungen am Anmeldevorgang vorgenommen, damit du die App schneller nutzen kannst.
-Außerdem haben wir ein paar raffinierte Änderungen vorgenommen, um die Performance zu verbessern. Aber das war noch nicht alles. Du darfst dich auf weitere kommende Verbesserungen freuen. Sende uns bitte weiterhin dein Feedback!
+Diese Version enthält einige Fehlerkorrekturen und Verbesserungen für ein optimiertes Nutzererlebnis. Bleib dran – in den nächsten Wochen erwarten dich weitere spannende Updates!

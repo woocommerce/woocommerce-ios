@@ -135,7 +135,6 @@ private extension OrderCustomerSectionContent {
     }
 }
 
-@available(iOS 15.0, *)
 struct OrderCustomerSection_Previews: PreviewProvider {
     static var previews: some View {
         let emptyViewModel = EditableOrderViewModel.CustomerDataViewModel(billingAddress: nil, shippingAddress: nil)

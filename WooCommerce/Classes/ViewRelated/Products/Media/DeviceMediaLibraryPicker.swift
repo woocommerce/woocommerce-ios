@@ -22,7 +22,7 @@ final class DeviceMediaLibraryPicker: NSObject {
         options.showMostRecentFirst = true
         options.filter = [.image]
         options.allowCaptureOfMedia = false
-        options.badgedUTTypes = [String(kUTTypeGIF)]
+        options.badgedUTTypes = [UTType.gif.identifier]
         options.allowMultipleSelection = allowsMultipleImages
 
         let picker = WPNavigationMediaPickerViewController(options: options)

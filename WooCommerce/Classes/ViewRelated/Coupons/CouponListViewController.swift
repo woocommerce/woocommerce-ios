@@ -154,12 +154,8 @@ final class CouponListViewController: UIViewController, GhostableViewController 
                 snapshot.appendSections([.main])
                 snapshot.appendItems(viewModels, toSection: Section.main)
 
-                if #available(iOS 15.0, *) {
-                    // minimally reloads the list without computing diff or animation
-                    self.dataSource.applySnapshotUsingReloadData(snapshot)
-                } else {
-                    self.dataSource.apply(snapshot)
-                }
+                // minimally reloads the list without computing diff or animation
+                self.dataSource.applySnapshotUsingReloadData(snapshot)
             }
             .store(in: &subscriptions)
 
@@ -253,13 +249,9 @@ private extension CouponListViewController {
 
     func configureNavigationBarItems(hasCoupons: Bool) {
         if hasCoupons {
-            navigationItem.rightBarButtonItems = viewModel.isCreationEnabled
-            ? [createCouponButtonItem, searchBarButtonItem]
-            : [searchBarButtonItem]
+            navigationItem.rightBarButtonItems = [createCouponButtonItem, searchBarButtonItem]
         } else {
-            navigationItem.rightBarButtonItems = viewModel.isCreationEnabled
-            ? [createCouponButtonItem]
-            : []
+            navigationItem.rightBarButtonItems = [createCouponButtonItem]
         }
     }
 
@@ -306,7 +298,7 @@ private extension CouponListViewController {
 
     @objc private func displayCouponTypeBottomSheet() {
         ServiceLocator.analytics.track(.couponsListCreateTapped)
-        let viewProperties = BottomSheetListSelectorViewProperties(title: Localization.createCouponAction)
+        let viewProperties = BottomSheetListSelectorViewProperties(subtitle: Localization.createCouponAction)
         let command = DiscountTypeBottomSheetListSelectorCommand(selected: nil) { [weak self] selectedType in
             guard let self = self else { return }
             self.presentedViewController?.dismiss(animated: true, completion: nil)
@@ -382,21 +374,14 @@ private extension CouponListViewController {
     }
 
     func buildNoResultConfig() -> EmptyStateViewController.Config {
-        if viewModel.isCreationEnabled {
-            return .withButton(
-                    message: .init(string: Localization.couponCreationSuggestionMessage),
-                    image: .emptyCouponsImage,
-                    details: Localization.emptyStateDetails,
-                    buttonTitle: Localization.createCouponAction
-            ) { [weak self] button in
-                guard let self = self else { return }
-                self.displayCouponTypeBottomSheet()
-            }
-        } else {
-            return .simple(
-                    message: .init(string: Localization.emptyStateMessage),
-                    image: .emptyCouponsImage
-            )
+        return .withButton(
+            message: .init(string: Localization.couponCreationSuggestionMessage),
+            image: .emptyCouponsImage,
+            details: Localization.emptyStateDetails,
+            buttonTitle: Localization.createCouponAction
+        ) { [weak self] button in
+            guard let self = self else { return }
+            self.displayCouponTypeBottomSheet()
         }
     }
 

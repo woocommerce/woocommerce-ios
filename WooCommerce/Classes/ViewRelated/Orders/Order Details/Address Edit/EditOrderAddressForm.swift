@@ -2,6 +2,7 @@ import Combine
 import SwiftUI
 import UIKit
 import Yosemite
+import Experiments
 
 /// Hosting controller that wraps an `EditOrderAddressForm`.
 ///
@@ -88,6 +89,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
     @ObservedObject private(set) var viewModel: ViewModel
 
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+    @State private var showingCustomerSearch: Bool = false
 
     var body: some View {
         Group {
@@ -146,6 +148,13 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                     viewModel.userDidCancelFlow()
                 })
             }
+            ToolbarItem(placement: .automatic) {
+                Button(action: {
+                    showingCustomerSearch = true
+                }, label: {
+                    Image(systemName: "magnifyingglass")
+                })
+            }
             ToolbarItem(placement: .confirmationAction) {
                 navigationBarTrailingItem()
             }
@@ -157,6 +166,12 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
             viewModel.onLoadTrigger.send()
         }
         .notice($viewModel.notice)
+        .sheet(isPresented: $showingCustomerSearch, content: {
+            OrderCustomerListView(siteID: viewModel.siteID, onCustomerTapped: { customer in
+                viewModel.customerSelectedFromSearch(customer: customer)
+                showingCustomerSearch = false
+            })
+        })
     }
 
     /// Decides if the navigation trailing item should be a done button or a loading indicator.

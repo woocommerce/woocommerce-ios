@@ -2,7 +2,36 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
-## Model 71 (Release 9.6.0.0)
+## Model 78 (Release 11.4.0.0)
+- @rachelmcr 2022-11-18
+    - Added `averageOrderValue` attribute to `OrderStatsV4Totals` entity.
+
+## Model 77 (Release 11.2.0.0)
+- @ealeksandrov 2022-11-07
+    - Added `frameNonce` attribute to `Site` entity.
+
+## Model 76 (Release 11.0.0.0)
+- @ealeksandrov 2022-10-26
+    - Added `loginURL` attribute to `Site` entity.
+
+## Model 75 (Release 10.9.0.0)
+- @iamgabrielma 2022-10-17
+    - Added `siteID` attribute to `Customer` entity.
+    - Added `siteID` attribute to `CustomerSearchResult` entity.
+    - Added `keyword` attribute to `CustomerSearchResult` entity.
+    - Removed `customerID` attribute from `CustomerSearchResult` entity.
+    - Added `WooCommerceModelV74toV75` mapping model.
+
+## Model 74 (Release 10.8.0.0)
+- @iamgabrielma 2022-10-12
+    - Added `Customer` entity.
+    - Added `CustomerSearchResult` entity.
+
+## Model 73 (Release 10.6.0.0)
+- @jaclync 2022-09-14
+    - Added `filterKey` attribute to `ProductSearchResults` entity.
+
+## Model 72 (Release 9.6.0.0)
 - @joshheald 2022-08-19
     - Added `instructions` attribute to `PaymentGateway` entity.
 
@@ -10,6 +39,10 @@ This file documents changes in the WCiOS Storage data model. Please explain any 
 - @rachelmcr 2022-07-07
     - Added `OrderMetaData` entity.
     - Added `customFields` to-many relationship from `Order` to `OrderMetaData`.
+
+## Model 70 (Release 9.5.0.0)
+- @toupper 2022-06-22
+    - Update `OrderItemRefund` entity to include the `refundedItemID` property.
 
 ## Model 69 (Release 9.4.0.0)
 - @ecarrion 2022-06-08

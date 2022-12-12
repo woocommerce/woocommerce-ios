@@ -345,8 +345,8 @@ public extension StorageType {
 
     /// Retrieves the Stored ProductSearchResults Lookup.
     ///
-    func loadProductSearchResults(keyword: String) -> ProductSearchResults? {
-        let predicate = \ProductSearchResults.keyword == keyword
+    func loadProductSearchResults(keyword: String, filterKey: String) -> ProductSearchResults? {
+        let predicate = \ProductSearchResults.keyword == keyword && \ProductSearchResults.filterKey == filterKey
         return firstObject(ofType: ProductSearchResults.self, matching: predicate)
     }
 
@@ -597,6 +597,21 @@ public extension StorageType {
     func loadWCPayCharge(siteID: Int64, chargeID: String) -> WCPayCharge? {
         let predicate = \WCPayCharge.siteID == siteID && \WCPayCharge.chargeID == chargeID
         return firstObject(ofType: WCPayCharge.self, matching: predicate)
+    }
+
+    // MARK: - Customers
+
+    /// Returns a single Customer given a `siteID` and `customerID`
+    ///
+    func loadCustomer(siteID: Int64, customerID: Int64) -> Customer? {
+        let predicate = \Customer.siteID == siteID && \Customer.customerID == customerID
+        return firstObject(ofType: Customer.self, matching: predicate)
+    }
+    /// Returns a CustomerSearchResult given a `siteID` and a `keyword`
+    ///
+    func loadCustomerSearchResult(siteID: Int64, keyword: String) -> CustomerSearchResult? {
+        let predicate = \CustomerSearchResult.siteID == siteID && \CustomerSearchResult.keyword == keyword
+        return firstObject(ofType: CustomerSearchResult.self, matching: predicate)
     }
 
     // MARK: - System plugins

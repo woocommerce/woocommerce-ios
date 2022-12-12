@@ -102,6 +102,13 @@ final class OrdersRootViewController: UIViewController {
         }
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        // Clears application icon badge
+        ServiceLocator.pushNotesManager.resetBadgeCount(type: .storeOrder)
+    }
+
     override var shouldShowOfflineBanner: Bool {
         if featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
             return false
@@ -344,24 +351,32 @@ private extension OrdersRootViewController {
         return button
     }
 
-    /// Presents Order Creation or Simple Payments flows.
+    /// Presents the Order Creation flow.
     ///
     @objc func presentOrderCreationFlow(sender: UIBarButtonItem) {
         guard let navigationController = navigationController else {
             return
         }
 
-        let coordinatingController = AddOrderCoordinator(siteID: siteID,
-                                                         sourceBarButtonItem: sender,
-                                                         sourceNavigationController: navigationController)
-        coordinatingController.onOrderCreated = { [weak self] order in
+        let viewModel = EditableOrderViewModel(siteID: siteID)
+        viewModel.onFinished = { [weak self] order in
             guard let self = self else { return }
 
             self.dismiss(animated: true) {
                 self.navigateToOrderDetail(order)
             }
         }
-        coordinatingController.start()
+
+        let viewController = OrderFormHostingController(viewModel: viewModel)
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+            let newOrderNavigationController = WooNavigationController(rootViewController: viewController)
+            navigationController.present(newOrderNavigationController, animated: true)
+        } else {
+            viewController.hidesBottomBarWhenPushed = true
+            navigationController.pushViewController(viewController, animated: true)
+        }
+
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderAddNew())
     }
 
     /// Pushes an `OrderDetailsViewController` onto the navigation stack.
@@ -395,8 +410,7 @@ private extension OrdersRootViewController {
             "Retrieves a list of orders that contain a given keyword.",
             comment: "VoiceOver accessibility hint, informing the user the button can be used to search orders."
         )
-        static let accessibilityLabelAddSimplePayment = NSLocalizedString("Add simple payments order",
-                                                                          comment: "Navigates to a screen to create a simple payments order")
+
         static let emptyOrderDetails = NSLocalizedString("No order selected",
                                                          comment: "Message on the detail view of the Orders tab before any order is selected")
     }

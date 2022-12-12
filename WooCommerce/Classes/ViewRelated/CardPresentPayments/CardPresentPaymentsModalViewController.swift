@@ -1,10 +1,11 @@
 import UIKit
+import SwiftUI
 import WordPressAuthenticator
 import SafariServices
 
 
 /// UI containing modals presented in the Card Present Payments flows.
-final class CardPresentPaymentsModalViewController: UIViewController {
+final class CardPresentPaymentsModalViewController: UIViewController, CardReaderModalFlowViewControllerProtocol {
     /// The view model providing configuration for this view controller
     /// and support for user actions
     private var viewModel: CardPresentPaymentsModalViewModel
@@ -32,7 +33,7 @@ final class CardPresentPaymentsModalViewController: UIViewController {
     @IBOutlet weak var heightConstraint: NSLayoutConstraint!
     @IBOutlet weak var widthConstraint: NSLayoutConstraint!
 
-
+    private var loadingView: UIView?
 
     init(viewModel: CardPresentPaymentsModalViewModel) {
         self.viewModel = viewModel
@@ -46,6 +47,7 @@ final class CardPresentPaymentsModalViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        createViews()
         initializeContent()
         setBackgroundColor()
         setButtonsActions()
@@ -93,6 +95,24 @@ final class CardPresentPaymentsModalViewController: UIViewController {
 private extension CardPresentPaymentsModalViewController {
     func setBackgroundColor() {
         containerView.backgroundColor = .tertiarySystemBackground
+    }
+
+    func createViews() {
+        createLoadingIndicator()
+    }
+
+    func createLoadingIndicator() {
+        let loadingIndicator = ProgressView()
+            .progressViewStyle(IndefiniteCircularProgressViewStyle(size: 96.0))
+        let host = ConstraintsUpdatingHostingController(rootView: loadingIndicator)
+        host.view.backgroundColor = .tertiarySystemBackground
+        add(host)
+
+        guard let index = mainStackView.arrangedSubviews.firstIndex(of: imageView) else {
+            return
+        }
+        mainStackView.insertArrangedSubview(host.view, at: index)
+        loadingView = host.view
     }
 
     func styleContent() {
@@ -182,6 +202,8 @@ private extension CardPresentPaymentsModalViewController {
 
         configureImageView()
 
+        configureLoadingIndicator()
+
         if shouldShowActionButtons() {
             configureActionButtonsView()
             styleActionButtons()
@@ -226,6 +248,11 @@ private extension CardPresentPaymentsModalViewController {
 
     func configureImageView() {
         imageView.image = viewModel.image
+        imageView.isHidden = viewModel.showLoadingIndicator
+    }
+
+    func configureLoadingIndicator() {
+        loadingView?.isHidden = !viewModel.showLoadingIndicator
     }
 
     func setButtonsActions() {
@@ -291,10 +318,10 @@ private extension CardPresentPaymentsModalViewController {
         UIView.performWithoutAnimation {
             auxiliaryButton.setTitle(viewModel.auxiliaryButtonTitle, for: .normal)
             auxiliaryButton.setAttributedTitle(viewModel.auxiliaryAttributedButtonTitle, for: .normal)
-            auxiliaryButton.setImage(viewModel.auxiliaryButtonimage, for: .normal)
-            if viewModel.auxiliaryButtonimage != nil {
-                auxiliaryButton.distributeTitleAndImage(spacing: 8.0)
-            }
+            var config = UIButton.Configuration.plain()
+            config.contentInsets = Constants.auxiliaryButtonInsets
+            config.titleAlignment = .leading
+            auxiliaryButton.configuration = config
             view.layoutIfNeeded()
         }
     }
@@ -389,6 +416,7 @@ private extension CardPresentPaymentsModalViewController {
         static let extraInfoCustomInsets = UIEdgeInsets(top: 12, left: 10, bottom: 12, right: 10)
         static let modalHeight: CGFloat = 382
         static let modalWidth: CGFloat = 280
+        static let auxiliaryButtonInsets = NSDirectionalEdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8)
     }
 }
 

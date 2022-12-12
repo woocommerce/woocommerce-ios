@@ -32,6 +32,7 @@ struct InPersonPaymentsOnboardingErrorMainContentView: View {
             Text(message)
                 .font(.callout)
                 .padding(.bottom, isCompact ? 12 : 24)
+                .fixedSize(horizontal: false, vertical: true)
             if supportLink {
                 InPersonPaymentsSupportLink()
             }

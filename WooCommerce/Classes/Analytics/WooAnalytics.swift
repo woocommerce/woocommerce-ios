@@ -1,6 +1,8 @@
+import Experiments
 import Foundation
 import UIKit
 import WordPressShared
+import WidgetKit
 
 public class WooAnalytics: Analytics {
 
@@ -59,6 +61,15 @@ public extension WooAnalytics {
         }
 
         analyticsProvider.refreshUserData()
+
+        // Refreshes A/B experiments since `ExPlat.shared` is reset after each `TracksProvider.refreshUserData` call
+        // and any A/B test assignments that come back after the shared instance is reset won't be saved for later
+        // access.
+        let context: ExperimentContext = ServiceLocator.stores.isAuthenticated ?
+            .loggedIn: .loggedOut
+        Task { @MainActor in
+            await ABTest.start(for: context)
+        }
     }
 
     /// Track a spcific event without any associated properties
@@ -180,7 +191,10 @@ private extension WooAnalytics {
     }
 
     @objc func trackApplicationOpened() {
-        track(.applicationOpened)
+        WidgetCenter.shared.getCurrentConfigurations { [weak self] configurationResult in
+            guard let self = self else { return }
+            self.track(.applicationOpened, withProperties: self.applicationOpenedProperties(configurationResult))
+        }
         applicationOpenedTime = Date()
     }
 
@@ -208,8 +222,31 @@ private extension WooAnalytics {
         var updatedProperties = properties ?? [:]
         let site = ServiceLocator.stores.sessionManager.defaultSite
         updatedProperties[PropertyKeys.blogIDKey] = site?.siteID
-        updatedProperties[PropertyKeys.wpcomStoreKey] = site?.isWordPressStore
+        updatedProperties[PropertyKeys.wpcomStoreKey] = site?.isWordPressComStore
         return updatedProperties
+    }
+
+    /// Builds the necesary properties for the `application_opened` event.
+    ///
+    func applicationOpenedProperties(_ configurationResult: Result<[WidgetInfo], Error>) -> [String: String] {
+        guard let installedWidgets = try? configurationResult.get() else {
+            return ["widgets": ""]
+        }
+
+        // Translate the widget kind into a name recognized by tracks.
+        let widgetAnalyticNames: [String] = installedWidgets.map { widgetInfo in
+            switch widgetInfo.kind {
+            case WooConstants.storeInfoWidgetKind:
+                return "\(WooAnalyticsEvent.Widgets.Name.todayStats.rawValue)-\(widgetInfo.family)"
+            case WooConstants.appLinkWidgetKind:
+                return WooAnalyticsEvent.Widgets.Name.appLink.rawValue
+            default:
+                DDLogWarn("⚠️ Make sure the widget: \(widgetInfo.kind), has the correct tracks name.")
+                return widgetInfo.kind
+            }
+        }
+
+        return ["widgets": widgetAnalyticNames.joined(separator: ",")]
     }
 }
 

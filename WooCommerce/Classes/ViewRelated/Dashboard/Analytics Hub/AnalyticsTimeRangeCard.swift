@@ -17,10 +17,13 @@ struct AnalyticsTimeRangeCard: View {
     ///
     @State private var showCustomRangeSelectionView: Bool = false
 
+    private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
+
     init(viewModel: AnalyticsTimeRangeCardViewModel, selectionType: Binding<AnalyticsHubTimeRangeSelection.SelectionType>) {
         self.timeRangeTitle = viewModel.selectedRangeTitle
         self.currentRangeDescription = viewModel.currentRangeSubtitle
         self.previousRangeDescription = viewModel.previousRangeSubtitle
+        self.usageTracksEventEmitter = viewModel.usageTracksEventEmitter
         self._selectionType = selectionType
     }
 
@@ -30,7 +33,10 @@ struct AnalyticsTimeRangeCard: View {
                 SelectionList(title: Localization.timeRangeSelectionTitle,
                               items: AnalyticsHubTimeRangeSelection.SelectionType.allCases,
                               contentKeyPath: \.description,
-                              selected: internalSelectionBinding())
+                              selected: internalSelectionBinding()) { selection in
+                    usageTracksEventEmitter.interacted()
+                    ServiceLocator.analytics.track(event: .AnalyticsHub.dateRangeOptionSelected(selection.tracksIdentifier))
+                }
                 .sheet(isPresented: $showCustomRangeSelectionView) {
                     RangedDatePicker() { start, end in
                         showTimeRangeSelectionView = false // Dismiss the initial sheet for a smooth transition
@@ -43,6 +49,8 @@ struct AnalyticsTimeRangeCard: View {
     private func createTimeRangeContent() -> some View {
         VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
             Button(action: {
+                usageTracksEventEmitter.interacted()
+                ServiceLocator.analytics.track(event: .AnalyticsHub.dateRangeButtonTapped())
                 showTimeRangeSelectionView.toggle()
             }, label: {
                 HStack {
@@ -61,6 +69,7 @@ struct AnalyticsTimeRangeCard: View {
                             .bold()
                     }
                     .padding(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
                     .frame(maxWidth: .infinity, alignment: .leading)
 
                     Image(uiImage: .chevronDownImage)
@@ -133,7 +142,8 @@ struct TimeRangeCard_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = AnalyticsTimeRangeCardViewModel(selectedRangeTitle: "Month to Date",
                                                         currentRangeSubtitle: "Nov 1 - 23, 2022",
-                                                        previousRangeSubtitle: "Oct 1 - 23, 2022")
+                                                        previousRangeSubtitle: "Oct 1 - 23, 2022",
+                                                        usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter())
         AnalyticsTimeRangeCard(viewModel: viewModel, selectionType: .constant(.monthToDate))
     }
 }

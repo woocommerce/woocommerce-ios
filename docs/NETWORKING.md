@@ -25,7 +25,7 @@ At the time of writing this document, these are the subclasses of `Remote`:
 * `ShipmentsRemote` All things Shipment Tracking, from tracking providers to actual tracking associated to an order
 * `SiteAPIRemote` Loads the API information associated to a site.
 * `SiteSettingsRemote` Loads a site’s settings
-* `SiteVisitStatsremote` fetches visitor stats for a given site
+* `SiteStatsremote` fetches Jetpack stats for a given site
 * `TaxClassesRemote` fetches tax classes for a given site.
 * `TopEarnersStatsRemote`fetches the top earner stats for a given site.
 

@@ -1,2 +1,1 @@
-Nós nos concentramos em alguns problemas de estabilidade e desempenho para tornar sua experiência melhor. Continue compartilhando seus feedbacks. Lemos cada um deles.
-
+Esta versão inclui algumas correções de bug e melhorias para tornar sua experiência mais agradável. Fique de olho porque teremos novidades incríveis nas próximas semanas!

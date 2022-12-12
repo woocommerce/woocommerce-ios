@@ -3,11 +3,6 @@ import XCTest
 
 public final class MyStoreScreen: ScreenObject {
 
-    // TODO: Remove force `try` once `ScreenObject` migration is completed
-    public let tabBar = try! TabNavComponent()
-    // TODO: Remove force `try` once `ScreenObject` migration is completed
-    public let periodStatsTable = try! PeriodStatsTable()
-
     static var isVisible: Bool {
         (try? MyStoreScreen().isLoaded) ?? false
     }
@@ -34,14 +29,17 @@ public final class MyStoreScreen: ScreenObject {
         return self
     }
 
+    @discardableResult
     public func goToThisWeekTab() -> MyStoreScreen {
         return tapTimeframeTab(timeframeId: "period-data-thisWeek-tab")
     }
 
+    @discardableResult
     public func goToThisMonthTab() -> MyStoreScreen {
         return tapTimeframeTab(timeframeId: "period-data-thisMonth-tab")
     }
 
+    @discardableResult
     public func goToThisYearTab() -> MyStoreScreen {
         return tapTimeframeTab(timeframeId: "period-data-thisYear-tab")
     }
@@ -68,5 +66,17 @@ public final class MyStoreScreen: ScreenObject {
     @discardableResult
     public func verifyThisYearStatsLoaded() -> MyStoreScreen {
         return verifyStatsForTimeframeLoaded(timeframe: "This Year")
+    }
+
+    public func getRevenueValue() -> String {
+        return app.staticTexts["revenue-value"].label
+    }
+
+    public func tapChart() {
+        app.images["chart-image"].tap()
+    }
+
+    public func verifyRevenueUpdated(originalRevenue: String, updatedRevenue: String) {
+        XCTAssertNotEqual(originalRevenue, updatedRevenue, "Revenue is not updated!")
     }
 }

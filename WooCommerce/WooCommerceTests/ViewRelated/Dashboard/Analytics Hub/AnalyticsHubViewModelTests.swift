@@ -5,14 +5,18 @@ import Yosemite
 final class AnalyticsHubViewModelTests: XCTestCase {
 
     private var stores: MockStoresManager!
+    private var eventEmitter: StoreStatsUsageTracksEventEmitter!
 
     override func setUp() {
         stores = MockStoresManager(sessionManager: .makeForTesting())
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        eventEmitter = StoreStatsUsageTracksEventEmitter(analytics: analytics)
     }
 
     func test_cards_viewmodels_show_correct_data_after_updating_from_network() async {
         // Given
-        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, stores: stores)
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores)
 
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
@@ -43,7 +47,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
 
     func test_cards_viewmodels_show_sync_error_after_getting_error_from_network() async {
         // Given
-        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, stores: stores)
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores)
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
             case let .retrieveCustomStats(_, _, _, _, _, _, completion):
@@ -67,7 +71,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
 
     func test_cards_viewmodels_redacted_while_updating_from_network() async {
         // Given
-        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, stores: stores)
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores)
         var loadingRevenueCard: AnalyticsReportCardViewModel?
         var loadingOrdersCard: AnalyticsReportCardViewModel?
         var loadingProductsCard: AnalyticsProductCardViewModel?

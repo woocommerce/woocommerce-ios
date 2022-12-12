@@ -12,7 +12,8 @@ final class LegacyPaymentCaptureOrchestratorTests: XCTestCase {
         super.setUp()
         stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
         sut = LegacyPaymentCaptureOrchestrator(stores: stores,
-                                         paymentReceiptEmailParameterDeterminer: MockReceiptEmailParameterDeterminer())
+                                               paymentReceiptEmailParameterDeterminer: MockReceiptEmailParameterDeterminer(),
+                                               celebration: MockPaymentCaptureCelebration())
     }
 
     override func tearDown() {

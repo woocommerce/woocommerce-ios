@@ -23,6 +23,7 @@ public struct SiteVisitStatsItem: Equatable, GeneratedCopiable, GeneratedFakeabl
 extension SiteVisitStatsItem: Comparable {
     public static func < (lhs: SiteVisitStatsItem, rhs: SiteVisitStatsItem) -> Bool {
         return lhs.period < rhs.period ||
-            (lhs.period == rhs.period && lhs.visitors < rhs.visitors && lhs.views < rhs.views)
+            (lhs.period == rhs.period && lhs.visitors < rhs.visitors) ||
+            (lhs.period == rhs.period && lhs.visitors == rhs.visitors && lhs.views < rhs.views)
     }
 }

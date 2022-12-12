@@ -32,6 +32,10 @@ public final class StripeCardReaderService: NSObject {
     /// Keeps track of whether a chip card needs to be removed
     private var timerCancellable: Cancellable?
     private var isChipCardInserted: Bool = false
+
+    /// Stripe don't tell us where a cancellation comes from: if we keep track of when we trigger one,
+    /// we can infer when it comes from the cancel button on the reader instead
+    private var cancellationStartedInApp: Bool?
 }
 
 
@@ -285,6 +289,8 @@ extension StripeCardReaderService: CardReaderService {
                 return
             }
 
+            self.cancellationStartedInApp = true
+
             let cancelPaymentIntent = { [weak self] in
                 Terminal.shared.cancelPaymentIntent(activePaymentIntent) { (intent, error) in
                     if let error = error {
@@ -296,6 +302,7 @@ extension StripeCardReaderService: CardReaderService {
                         self?.activePaymentIntent = nil
                         promise(.success(()))
                     }
+                    self?.cancellationStartedInApp = nil
                 }
             }
             guard let paymentCancellable = self.paymentCancellable,
@@ -502,27 +509,29 @@ private extension StripeCardReaderService {
             /// Because we are chaining promises, we need to retain a reference
             /// to this cancellable if we want to cancel 
             self?.paymentCancellable = Terminal.shared.collectPaymentMethod(intent) { (intent, error) in
-                self?.paymentCancellable = nil
-
                 if let error = error {
-                    let underlyingError = UnderlyingError(with: error)
+                    var underlyingError = UnderlyingError(with: error)
                     /// the completion block for collectPaymentMethod will be called
                     /// with error Canceled when collectPaymentMethod is canceled
                     /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)collectPaymentMethod:delegate:completion:
-
-                    if underlyingError != .commandCancelled {
+                    if case .commandCancelled(let cancellationSource) = underlyingError {
+                        DDLogWarn("💳 Warning: collect payment cancelled \(error)")
+                        if case .unknown = cancellationSource {
+                            if self?.cancellationStartedInApp != nil {
+                                underlyingError = .commandCancelled(from: .app)
+                            } else {
+                                underlyingError = .commandCancelled(from: .reader)
+                            }
+                        }
+                    } else {
                         DDLogError("💳 Error: collect payment method \(underlyingError)")
-                        promise(.failure(CardReaderServiceError.paymentMethodCollection(underlyingError: underlyingError)))
                     }
-
-                    if underlyingError == .commandCancelled {
-                        DDLogWarn("💳 Warning: collect payment error cancelled. We actively ignore this error \(error)")
-                        promise(.failure(CardReaderServiceError.paymentCancellation(underlyingError: underlyingError)))
-                    }
-
+                    self?.paymentCancellable = nil
+                    promise(.failure(CardReaderServiceError.paymentMethodCollection(underlyingError: underlyingError)))
                 }
 
                 if let intent = intent {
+                    self?.paymentCancellable = nil
                     self?.sendReaderEvent(.cardDetailsCollected)
                     promise(.success(intent))
                 }

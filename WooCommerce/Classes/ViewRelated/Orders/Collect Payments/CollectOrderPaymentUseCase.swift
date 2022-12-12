@@ -170,8 +170,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                                              onCompleted: onCompleted)
                 })
             case .canceled:
-                self.alertsPresenter.dismiss()
-                self.trackPaymentCancelation()
+                self.handlePaymentCancellation()
                 onCancel()
             case .none:
                 break
@@ -281,6 +280,13 @@ private extension CollectOrderPaymentUseCase {
                 switch result {
                 case .success(let capturedPaymentData):
                     self?.handleSuccessfulPayment(capturedPaymentData: capturedPaymentData, onCompletion: onCompletion)
+                case .failure(CardReaderServiceError.paymentMethodCollection(.commandCancelled(let cancellationSource))):
+                    switch cancellationSource {
+                    case .reader:
+                        self?.handlePaymentCancellationFromReader(alertProvider: paymentAlerts)
+                    default:
+                        self?.handlePaymentCancellation()
+                    }
                 case .failure(let error):
                     self?.handlePaymentFailureAndRetryPayment(error, alertProvider: paymentAlerts, onCompletion: onCompletion)
                 }
@@ -301,6 +307,19 @@ private extension CollectOrderPaymentUseCase {
 
         // Success Callback
         onCompletion(.success(capturedPaymentData))
+    }
+
+    func handlePaymentCancellation() {
+        trackPaymentCancelation()
+        alertsPresenter.dismiss()
+    }
+
+    func handlePaymentCancellationFromReader(alertProvider paymentAlerts: CardReaderTransactionAlertsProviding) {
+        trackPaymentCancelation()
+        guard let dismissedOnReaderAlert = paymentAlerts.cancelledOnReader() else {
+            return alertsPresenter.dismiss()
+        }
+        alertsPresenter.present(viewModel: dismissedOnReaderAlert)
     }
 
     /// Log the failure reason, cancel the current payment and retry it if possible.

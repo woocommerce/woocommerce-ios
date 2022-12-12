@@ -39,7 +39,7 @@ final class CardReaderServiceErrorTests: XCTestCase {
     }
 
     func test_stripe_cancelled_maps_to_expected_error() {
-        XCTAssertEqual(.commandCancelled, domainError(stripeCode: 2020))
+        XCTAssertEqual(.commandCancelled(from: .unknown), domainError(stripeCode: 2020))
     }
 
     func test_stripe_location_services_disabled_maps_to_expected_error() {

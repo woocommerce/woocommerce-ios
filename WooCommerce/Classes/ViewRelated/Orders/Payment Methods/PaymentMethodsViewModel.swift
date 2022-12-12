@@ -203,13 +203,10 @@ final class PaymentMethodsViewModel: ObservableObject {
                         onSuccess: @escaping () -> ()) {
         switch ServiceLocator.generalAppSettings.settings.isTapToPayOnIPhoneSwitchEnabled {
         case true:
-            Task {
-                do {
-                    await newCollectPayment(on: rootViewController, useCase: useCase, onSuccess: onSuccess)
-                }
-            }
+            newCollectPayment(on: rootViewController, useCase: useCase, onSuccess: onSuccess)
         case false:
-            break
+            #warning("Temporary for the POC while we refactor new and legacyCollectPayment methods")
+            newCollectPayment(on: rootViewController, useCase: useCase, onSuccess: onSuccess)
         }
     }
 

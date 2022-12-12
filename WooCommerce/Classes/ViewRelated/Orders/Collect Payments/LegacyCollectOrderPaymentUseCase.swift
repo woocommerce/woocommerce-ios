@@ -293,8 +293,7 @@ private extension LegacyCollectOrderPaymentUseCase {
                 switch result {
                 case .success(let capturedPaymentData):
                     self?.handleSuccessfulPayment(capturedPaymentData: capturedPaymentData, onCompletion: onCompletion)
-                case .failure(CardReaderServiceError.paymentMethodCollection(.commandCancelledOnReader)),
-                        .failure(CardReaderServiceError.paymentMethodCollection(.commandCancelled)):
+                case .failure(CardReaderServiceError.paymentMethodCollection(.commandCancelled(_))):
                     self?.trackPaymentCancelation()
                     onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
                 case .failure(let error):

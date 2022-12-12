@@ -274,10 +274,13 @@ private extension CollectOrderPaymentUseCase {
                 switch result {
                 case .success(let capturedPaymentData):
                     self?.handleSuccessfulPayment(capturedPaymentData: capturedPaymentData, onCompletion: onCompletion)
-                case .failure(CardReaderServiceError.paymentMethodCollection(.commandCancelledOnReader)):
-                    self?.handlePaymentCancellationFromReader(alertProvider: paymentAlerts)
-                case .failure(CardReaderServiceError.paymentMethodCollection(.commandCancelled)):
-                    self?.handlePaymentCancellation()
+                case .failure(CardReaderServiceError.paymentMethodCollection(.commandCancelled(let cancellationSource))):
+                    switch cancellationSource {
+                    case .reader:
+                        self?.handlePaymentCancellationFromReader(alertProvider: paymentAlerts)
+                    default:
+                        self?.handlePaymentCancellation()
+                    }
                 case .failure(let error):
                     self?.handlePaymentFailureAndRetryPayment(error, alertProvider: paymentAlerts, onCompletion: onCompletion)
                 }

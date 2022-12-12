@@ -507,11 +507,15 @@ private extension StripeCardReaderService {
                     /// the completion block for collectPaymentMethod will be called
                     /// with error Canceled when collectPaymentMethod is canceled
                     /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)collectPaymentMethod:delegate:completion:
-                    if underlyingError == .commandCancelled {
+                    if case .commandCancelled(let cancellationSource) = underlyingError {
                         DDLogWarn("💳 Warning: collect payment cancelled \(error)")
                         /// If we've not used the cancellable in the app, the cancellation must have come from the reader
-                        if self?.paymentCancellable != nil {
-                            underlyingError = .commandCancelledOnReader
+                        if case .unknown = cancellationSource {
+                            if self?.paymentCancellable != nil {
+                                underlyingError = .commandCancelled(from: .reader)
+                            } else {
+                                underlyingError = .commandCancelled(from: .app)
+                            }
                         }
                     } else {
                         DDLogError("💳 Error: collect payment method \(underlyingError)")

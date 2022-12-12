@@ -90,7 +90,7 @@ final class BluetoothCardReaderPaymentAlertsProvider: CardReaderTransactionAlert
 
     func cancelledOnReader() -> CardPresentPaymentsModalViewModel? {
         CardPresentModalNonRetryableError(amount: amount,
-                                          error: CardReaderServiceError.paymentMethodCollection(underlyingError: .commandCancelledOnReader),
+                                          error: CardReaderServiceError.paymentMethodCollection(underlyingError: .commandCancelled(from: .reader)),
                                           onDismiss: { })
     }
 }

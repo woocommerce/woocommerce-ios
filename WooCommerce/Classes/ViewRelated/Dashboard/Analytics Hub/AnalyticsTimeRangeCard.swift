@@ -99,7 +99,14 @@ struct AnalyticsTimeRangeCard: View {
     private func internalSelectionBinding() -> Binding<AnalyticsHubTimeRangeSelection.SelectionType> {
         .init(
             get: {
-                selectionType
+                // Temporary
+                switch selectionType {
+                    // If a `custom` case is set return one with nil values so the Custom row is selected
+                case .custom:
+                    return .custom(start: nil, end: nil)
+                default:
+                    return selectionType
+                }
             },
             set: { newValue in
                 switch newValue {

@@ -1,8 +1,8 @@
 import Foundation
 
-/// SiteVisitStats: Remote Endpoints
+/// SiteStats: Remote Endpoints
 ///
-public class SiteVisitStatsRemote: Remote {
+public class SiteStatsRemote: Remote {
 
     /// Fetch the visitor stats for a given site up to the current day, week, month, or year (depending on the given granularity of the `unit` parameter).
     ///
@@ -19,7 +19,7 @@ public class SiteVisitStatsRemote: Remote {
                                      latestDateToInclude: Date,
                                      quantity: Int,
                                      completion: @escaping (Result<SiteVisitStats, Error>) -> Void) {
-        let path = "\(Constants.sitesPath)/\(siteID)/\(Constants.siteVisitStatsPath)/"
+        let path = "\(Path.sites)/\(siteID)/\(Path.siteVisitStats)/"
         let dateFormatter = DateFormatter.Stats.statsDayFormatter
         if let siteTimezone = siteTimezone {
             dateFormatter.timeZone = siteTimezone
@@ -27,7 +27,7 @@ public class SiteVisitStatsRemote: Remote {
         let parameters = [ParameterKeys.unit: unit.rawValue,
                           ParameterKeys.date: dateFormatter.string(from: latestDateToInclude),
                           ParameterKeys.quantity: String(quantity),
-                          ParameterKeys.statFields: Constants.visitorStatFieldValue]
+                          ParameterKeys.statFields: ParameterValues.visitors]
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
         let mapper = SiteVisitStatsMapper(siteID: siteID)
         enqueue(request, mapper: mapper, completion: completion)
@@ -37,11 +37,10 @@ public class SiteVisitStatsRemote: Remote {
 
 // MARK: - Constants!
 //
-private extension SiteVisitStatsRemote {
-    enum Constants {
-        static let sitesPath: String             = "sites"
-        static let siteVisitStatsPath: String    = "stats/visits"
-        static let visitorStatFieldValue: String = "visitors"
+private extension SiteStatsRemote {
+    enum Path {
+        static let sites: String             = "sites"
+        static let siteVisitStats: String    = "stats/visits"
     }
 
     enum ParameterKeys {
@@ -49,5 +48,9 @@ private extension SiteVisitStatsRemote {
         static let date: String       = "date"
         static let quantity: String   = "quantity"
         static let statFields: String = "stat_fields"
+    }
+
+    enum ParameterValues {
+        static let visitors: String = "visitors"
     }
 }

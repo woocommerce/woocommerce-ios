@@ -2,9 +2,9 @@ import XCTest
 @testable import Networking
 
 
-/// SiteVisitStatsRemote Unit Tests
+/// SiteStatsRemote Unit Tests
 ///
-class SiteVisitStatsRemoteTests: XCTestCase {
+class SiteStatsRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///
@@ -25,7 +25,7 @@ class SiteVisitStatsRemoteTests: XCTestCase {
     ///
     func test_loadSiteVisitorStats_properly_returns_parsed_stats() throws {
         // Given
-        let remote = SiteVisitStatsRemote(network: network)
+        let remote = SiteStatsRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/visits/", filename: "site-visits-day")
 
         // When
@@ -45,7 +45,7 @@ class SiteVisitStatsRemoteTests: XCTestCase {
     ///
     func test_loadSiteVisitorStats_properly_relays_netwoking_errors() {
         // Given
-        let remote = SiteVisitStatsRemote(network: network)
+        let remote = SiteStatsRemote(network: network)
 
         // When
         let result: Result<SiteVisitStats, Error> = waitFor { promise in

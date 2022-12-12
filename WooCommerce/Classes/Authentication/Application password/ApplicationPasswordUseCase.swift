@@ -4,7 +4,7 @@ import WordPressShared
 struct ApplicationPassword {
     /// WordPress org username that the application password belongs to
     ///
-    let wpOrgUername: String
+    let wpOrgUsername: String
 
     /// Application password
     ///

@@ -121,13 +121,20 @@ private extension StoreCreationCoordinator {
         presentStoreCreation(viewController: webNavigationController)
     }
 
+    @MainActor
     func startStoreCreationM2(from navigationController: UINavigationController, planToPurchase: WPComPlanProduct) {
         navigationController.navigationBar.prefersLargeTitles = true
 
+        let isProfilerEnabled = featureFlagService.isFeatureFlagEnabled(.storeCreationM3Profiler)
         let storeNameForm = StoreNameFormHostingController { [weak self] storeName in
-            self?.showDomainSelector(from: navigationController,
-                                     storeName: storeName,
-                                     planToPurchase: planToPurchase)
+            if isProfilerEnabled {
+                self?.showCategoryQuestion(from: navigationController, storeName: storeName, planToPurchase: planToPurchase)
+            } else {
+                self?.showDomainSelector(from: navigationController,
+                                         storeName: storeName,
+                                         categoryName: nil,
+                                         planToPurchase: planToPurchase)
+            }
         } onClose: { [weak self] in
             self?.showDiscardChangesAlert(flow: .native)
         }
@@ -252,30 +259,50 @@ private extension StoreCreationCoordinator {
 // MARK: - Store creation M2
 
 private extension StoreCreationCoordinator {
+    @MainActor
+    func showCategoryQuestion(from navigationController: UINavigationController,
+                              storeName: String,
+                              planToPurchase: WPComPlanProduct) {
+        let questionController = StoreCreationCategoryQuestionHostingController(storeName: storeName) { [weak self] categoryName in
+            guard let self else { return }
+            self.showDomainSelector(from: navigationController, storeName: storeName, categoryName: categoryName, planToPurchase: planToPurchase)
+        } onSkip: { [weak self] in
+            // TODO: analytics
+            guard let self else { return }
+            self.showDomainSelector(from: navigationController, storeName: storeName, categoryName: nil, planToPurchase: planToPurchase)
+        }
+        navigationController.pushViewController(questionController, animated: true)
+        // TODO: analytics
+    }
+
+    @MainActor
     func showDomainSelector(from navigationController: UINavigationController,
                             storeName: String,
+                            categoryName: String?,
                             planToPurchase: WPComPlanProduct) {
         let domainSelector = DomainSelectorHostingController(viewModel: .init(initialSearchTerm: storeName),
                                                              onDomainSelection: { [weak self] domain in
             guard let self else { return }
             await self.createStoreAndContinueToStoreSummary(from: navigationController,
                                                             name: storeName,
+                                                            categoryName: categoryName,
                                                             domain: domain,
                                                             planToPurchase: planToPurchase)
         })
-        navigationController.pushViewController(domainSelector, animated: false)
+        navigationController.pushViewController(domainSelector, animated: true)
         analytics.track(event: .StoreCreation.siteCreationStep(step: .domainPicker))
     }
 
     @MainActor
     func createStoreAndContinueToStoreSummary(from navigationController: UINavigationController,
                                               name: String,
+                                              categoryName: String?,
                                               domain: String,
                                               planToPurchase: WPComPlanProduct) async {
         let result = await createStore(name: name, domain: domain)
         switch result {
         case .success(let siteResult):
-            showStoreSummary(from: navigationController, result: siteResult, planToPurchase: planToPurchase)
+            showStoreSummary(from: navigationController, result: siteResult, categoryName: categoryName, planToPurchase: planToPurchase)
         case .failure(let error):
             analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue, error: error, flow: .native))
             showStoreCreationErrorAlert(from: navigationController, error: error)
@@ -294,8 +321,9 @@ private extension StoreCreationCoordinator {
     @MainActor
     func showStoreSummary(from navigationController: UINavigationController,
                           result: SiteCreationResult,
+                          categoryName: String?,
                           planToPurchase: WPComPlanProduct) {
-        let viewModel = StoreCreationSummaryViewModel(storeName: result.name, storeSlug: result.siteSlug)
+        let viewModel = StoreCreationSummaryViewModel(storeName: result.name, storeSlug: result.siteSlug, categoryName: categoryName)
         let storeSummary = StoreCreationSummaryHostingController(viewModel: viewModel) { [weak self] in
             guard let self else { return }
             self.showWPCOMPlan(from: navigationController,

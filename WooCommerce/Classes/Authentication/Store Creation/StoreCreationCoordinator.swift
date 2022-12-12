@@ -263,14 +263,15 @@ private extension StoreCreationCoordinator {
     func showCategoryQuestion(from navigationController: UINavigationController,
                               storeName: String,
                               planToPurchase: WPComPlanProduct) {
-        let questionController = StoreCreationCategoryQuestionHostingController(storeName: storeName) { [weak self] categoryName in
-            guard let self else { return }
-            self.showDomainSelector(from: navigationController, storeName: storeName, categoryName: categoryName, planToPurchase: planToPurchase)
-        } onSkip: { [weak self] in
-            // TODO: analytics
-            guard let self else { return }
-            self.showDomainSelector(from: navigationController, storeName: storeName, categoryName: nil, planToPurchase: planToPurchase)
-        }
+        let questionController = StoreCreationCategoryQuestionHostingController(viewModel:
+                .init(storeName: storeName) { [weak self] categoryName in
+                    guard let self else { return }
+                    self.showDomainSelector(from: navigationController, storeName: storeName, categoryName: categoryName, planToPurchase: planToPurchase)
+                } onSkip: { [weak self] in
+                    // TODO: analytics
+                    guard let self else { return }
+                    self.showDomainSelector(from: navigationController, storeName: storeName, categoryName: nil, planToPurchase: planToPurchase)
+                })
         navigationController.pushViewController(questionController, animated: true)
         // TODO: analytics
     }

@@ -2,11 +2,8 @@ import SwiftUI
 
 /// Hosting controller that wraps the `StoreCreationCategoryQuestionView`.
 final class StoreCreationCategoryQuestionHostingController: UIHostingController<StoreCreationCategoryQuestionView> {
-
-    init(storeName: String,
-         onContinue: @escaping (String) -> Void,
-         onSkip: @escaping () -> Void) {
-        super.init(rootView: StoreCreationCategoryQuestionView(storeName: storeName, onContinue: onContinue, onSkip: onSkip))
+    init(viewModel: StoreCreationCategoryQuestionViewModel) {
+        super.init(rootView: StoreCreationCategoryQuestionView(viewModel: viewModel))
     }
 
     @available(*, unavailable)
@@ -36,10 +33,8 @@ final class StoreCreationCategoryQuestionHostingController: UIHostingController<
 struct StoreCreationCategoryQuestionView: View {
     @ObservedObject private var viewModel: StoreCreationCategoryQuestionViewModel
 
-    init(storeName: String,
-         onContinue: @escaping (String) -> Void,
-         onSkip: @escaping () -> Void) {
-        self.viewModel = StoreCreationCategoryQuestionViewModel(storeName: storeName, onContinue: onContinue, onSkip: onSkip)
+    init(viewModel: StoreCreationCategoryQuestionViewModel) {
+        self.viewModel = viewModel
     }
 
     var body: some View {
@@ -63,6 +58,8 @@ struct StoreCreationCategoryQuestionView: View {
 
 struct StoreCreationCategoryQuestionView_Previews: PreviewProvider {
     static var previews: some View {
-        StoreCreationCategoryQuestionView(storeName: "Holiday store", onContinue: { _ in }, onSkip: {})
+        StoreCreationCategoryQuestionView(viewModel: .init(storeName: "Holiday store",
+                                                           onContinue: { _ in },
+                                                           onSkip: {}))
     }
 }

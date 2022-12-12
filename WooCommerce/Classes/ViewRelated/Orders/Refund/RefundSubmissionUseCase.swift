@@ -155,9 +155,11 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
                       showInProgressUI: @escaping (() -> Void),
                       onCompletion: @escaping (Result<Void, Error>) -> Void) {
         if let charge = details.charge, shouldRefundWithCardReader(details: details) {
-            cardPresentPaymentsOnboardingPresenter.showOnboardingIfRequired(
-                from: rootViewController) { [weak self] in
-                guard let self = self else { return }
+            Task {
+                do {
+                    await cardPresentPaymentsOnboardingPresenter.showOnboardingIfRequired(from: rootViewController)
+                }
+            }
                 guard let refundAmount = self.currencyFormatter.convertToDecimal(self.details.amount) else {
                     DDLogError("Error: attempted to refund an order without a valid amount.")
                     return onCompletion(.failure(RefundSubmissionError.invalidRefundAmount))
@@ -189,7 +191,7 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
                         onCompletion(result)
                     }
                 }
-            }
+            //
         } else {
             showInProgressUI()
             submitRefundToSite(refund: refund, onCompletion: onCompletion)

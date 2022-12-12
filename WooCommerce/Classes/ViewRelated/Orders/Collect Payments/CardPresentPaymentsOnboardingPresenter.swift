@@ -3,8 +3,7 @@ import Yosemite
 import Combine
 
 protocol CardPresentPaymentsOnboardingPresenting {
-    func showOnboardingIfRequired(from: UIViewController,
-                                  readyToCollectPayment: @escaping (() -> ()))
+    func showOnboardingIfRequired(from: UIViewController) async -> Void
 
     func refresh()
 }
@@ -31,35 +30,31 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
         onboardingViewModel = InPersonPaymentsViewModel(useCase: onboardingUseCase)
     }
 
-    func showOnboardingIfRequired(from viewController: UIViewController,
-                                  readyToCollectPayment completion: @escaping (() -> ())) {
+    func showOnboardingIfRequired(from viewController: UIViewController) async -> Void {
         guard case .ready = readinessUseCase.readiness else {
-            return showOnboarding(from: viewController, readyToCollectPayment: completion)
+            return await showOnboarding(from: viewController)
         }
-        completion()
     }
 
-    private func showOnboarding(from viewController: UIViewController,
-                                readyToCollectPayment completion: @escaping (() -> ())) {
-        let onboardingViewController = InPersonPaymentsViewController(viewModel: onboardingViewModel,
+    private func showOnboarding(from viewController: UIViewController) async -> Void {
+        let onboardingViewController = await InPersonPaymentsViewController(viewModel: onboardingViewModel,
                                                                       onWillDisappear: { [weak self] in
             self?.readinessSubscription?.cancel()
         })
-        viewController.show(onboardingViewController, sender: viewController)
+        await viewController.show(onboardingViewController, sender: viewController)
 
         readinessSubscription = readinessUseCase.$readiness
             .sink(receiveValue: { readiness in
                 guard case .ready = readiness else {
                     return
                 }
-
-                if let navigationController = viewController as? UINavigationController {
-                    navigationController.popViewController(animated: true)
-                } else {
-                    viewController.navigationController?.popViewController(animated: true)
+                Task {
+                    if let navigationController = viewController as? UINavigationController {
+                        await navigationController.popViewController(animated: true)
+                    } else {
+                        await viewController.navigationController?.popViewController(animated: true)
+                    }
                 }
-
-                completion()
             })
     }
 

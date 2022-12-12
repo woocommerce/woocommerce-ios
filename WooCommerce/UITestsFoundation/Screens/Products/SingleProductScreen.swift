@@ -30,4 +30,20 @@ public final class SingleProductScreen: ScreenObject {
 
         return self
     }
+
+    public func addProductTitle(productTitle: String) throws -> Self {
+        app.cells["product-title"].tap()
+        app.cells["product-title"].typeText(productTitle)
+        return self
+    }
+
+    public func publishProduct() throws -> Self {
+        app.buttons["publish-product-button"].tap()
+        return self
+    }
+
+    public func verifyNewProductScreenLoaded() {
+        XCTAssertTrue(app.buttons["save-product-button"].exists)
+        XCTAssertTrue(app.staticTexts["TIP"].exists)
+    }
 }

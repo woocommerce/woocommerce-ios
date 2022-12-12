@@ -75,4 +75,15 @@ public final class ProductsScreen: ScreenObject {
         XCTAssertTrue(isLoaded)
         return self
     }
+
+    public func tapAddProduct() throws -> Self {
+        app.buttons["product-add-button"].tap()
+        return self
+    }
+
+    public func selectProductType(productType: String) throws -> SingleProductScreen {
+        app.staticTexts[productType].tap()
+
+        return try SingleProductScreen()
+    }
 }

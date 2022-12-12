@@ -17,6 +17,7 @@ extension Storage.SiteVisitStatsItem: ReadOnlyConvertible {
     ///
     public func toReadOnly() -> Yosemite.SiteVisitStatsItem {
         return SiteVisitStatsItem(period: period ?? "",
-                                  visitors: Int(visitors))
+                                  visitors: Int(visitors),
+                                  views: 0) // TODO-8363: Update Storage with views count
     }
 }

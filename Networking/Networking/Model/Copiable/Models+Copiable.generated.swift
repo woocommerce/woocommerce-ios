@@ -1936,14 +1936,17 @@ extension Networking.SiteVisitStats {
 extension Networking.SiteVisitStatsItem {
     public func copy(
         period: CopiableProp<String> = .copy,
-        visitors: CopiableProp<Int> = .copy
+        visitors: CopiableProp<Int> = .copy,
+        views: CopiableProp<Int> = .copy
     ) -> Networking.SiteVisitStatsItem {
         let period = period ?? self.period
         let visitors = visitors ?? self.visitors
+        let views = views ?? self.views
 
         return Networking.SiteVisitStatsItem(
             period: period,
-            visitors: visitors
+            visitors: visitors,
+            views: views
         )
     }
 }

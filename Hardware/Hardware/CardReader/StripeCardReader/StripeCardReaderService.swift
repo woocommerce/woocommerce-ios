@@ -32,6 +32,10 @@ public final class StripeCardReaderService: NSObject {
     /// Keeps track of whether a chip card needs to be removed
     private var timerCancellable: Cancellable?
     private var isChipCardInserted: Bool = false
+
+    /// Stripe don't tell us where a cancellation comes from: if we keep track of when we trigger one,
+    /// we can infer when it comes from the cancel button on the reader instead
+    private var cancellationStartedInApp: Bool?
 }
 
 
@@ -285,6 +289,8 @@ extension StripeCardReaderService: CardReaderService {
                 return
             }
 
+            self.cancellationStartedInApp = true
+
             let cancelPaymentIntent = { [weak self] in
                 Terminal.shared.cancelPaymentIntent(activePaymentIntent) { (intent, error) in
                     if let error = error {
@@ -296,6 +302,7 @@ extension StripeCardReaderService: CardReaderService {
                         self?.activePaymentIntent = nil
                         promise(.success(()))
                     }
+                    self?.cancellationStartedInApp = nil
                 }
             }
             guard let paymentCancellable = self.paymentCancellable,
@@ -509,12 +516,11 @@ private extension StripeCardReaderService {
                     /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)collectPaymentMethod:delegate:completion:
                     if case .commandCancelled(let cancellationSource) = underlyingError {
                         DDLogWarn("💳 Warning: collect payment cancelled \(error)")
-                        /// If we've not used the cancellable in the app, the cancellation must have come from the reader
                         if case .unknown = cancellationSource {
-                            if self?.paymentCancellable != nil {
-                                underlyingError = .commandCancelled(from: .reader)
-                            } else {
+                            if self?.cancellationStartedInApp != nil {
                                 underlyingError = .commandCancelled(from: .app)
+                            } else {
+                                underlyingError = .commandCancelled(from: .reader)
                             }
                         }
                     } else {

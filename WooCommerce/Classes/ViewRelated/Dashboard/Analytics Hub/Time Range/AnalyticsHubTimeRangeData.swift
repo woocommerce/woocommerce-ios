@@ -5,8 +5,6 @@ protocol AnalyticsHubTimeRangeData {
     var currentDateEnd: Date? { get }
     var previousDateStart: Date? { get }
     var previousDateEnd: Date? { get }
-
-    init(referenceDate: Date, timezone: TimeZone, calendar: Calendar)
 }
 
 extension AnalyticsHubTimeRangeData {

@@ -29,7 +29,7 @@ struct AnalyticsTimeRangeCard: View {
                               contentKeyPath: \.description,
                               selected: $selectionType) { selection in
                     usageTracksEventEmitter.interacted()
-                    ServiceLocator.analytics.track(event: .AnalyticsHub.dateRangeOptionSelected(selection.rawValue))
+                    ServiceLocator.analytics.track(event: .AnalyticsHub.dateRangeOptionSelected(selection.tracksIdentifier))
                 }
             }
     }

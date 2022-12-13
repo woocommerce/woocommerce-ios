@@ -78,7 +78,7 @@ final class StoreCreationCoordinator: Coordinator {
             do {
                 let inProgressView = createIAPEligibilityInProgressView()
                 let storeCreationNavigationController = WooNavigationController(rootViewController: inProgressView)
-                presentStoreCreation(viewController: storeCreationNavigationController)
+                await presentStoreCreation(viewController: storeCreationNavigationController)
 
                 guard await purchasesManager.inAppPurchasesAreSupported() else {
                     throw PlanPurchaseError.iapNotSupported
@@ -124,7 +124,9 @@ private extension StoreCreationCoordinator {
         // Disables interactive dismissal of the store creation modal.
         webNavigationController.isModalInPresentation = true
 
-        presentStoreCreation(viewController: webNavigationController)
+        Task { @MainActor in
+            await presentStoreCreation(viewController: webNavigationController)
+        }
     }
 
     func startStoreCreationM2(from navigationController: UINavigationController, planToPurchase: WPComPlanProduct) {
@@ -141,15 +143,25 @@ private extension StoreCreationCoordinator {
         analytics.track(event: .StoreCreation.siteCreationStep(step: .storeName))
     }
 
-    func presentStoreCreation(viewController: UIViewController) {
-        // If the navigation controller is already presenting another view, the view needs to be dismissed before store
-        // creation view can be presented.
-        if navigationController.presentedViewController != nil {
-            navigationController.dismiss(animated: true) { [weak self] in
-                self?.navigationController.present(viewController, animated: true)
+    @MainActor
+    func presentStoreCreation(viewController: UIViewController) async {
+        await withCheckedContinuation { continuation in
+            // If the navigation controller is already presenting another view, the view needs to be dismissed before store
+            // creation view can be presented.
+            if navigationController.presentedViewController != nil {
+                navigationController.dismiss(animated: true) { [weak self] in
+                    guard let self else {
+                        return continuation.resume()
+                    }
+                    self.navigationController.present(viewController, animated: true) {
+                        continuation.resume()
+                    }
+                }
+            } else {
+                navigationController.present(viewController, animated: true) {
+                    continuation.resume()
+                }
             }
-        } else {
-            navigationController.present(viewController, animated: true)
         }
     }
 

@@ -90,6 +90,16 @@ public final class StatsStoreV4: Store {
                                    forceRefresh: forceRefresh,
                                    saveInStorage: saveInStorage,
                                    onCompletion: onCompletion)
+        case .retrieveSiteSummaryStats(let siteID,
+                                       let period,
+                                       let quantity,
+                                       let latestDateToInclude,
+                                       let onCompletion):
+            retrieveSiteSummaryStats(siteID: siteID,
+                                     period: period,
+                                     quantity: quantity,
+                                     latestDateToInclude: latestDateToInclude,
+                                     onCompletion: onCompletion)
         }
     }
 }
@@ -175,6 +185,49 @@ private extension StatsStoreV4 {
                 onCompletion(.success(()))
             case .failure(let error):
                 onCompletion(.failure(SiteStatsStoreError(error: error)))
+            }
+        }
+    }
+
+    /// Retrieves the site summary stats for the provided site ID, period(s), and date, without saving them to the Storage layer.
+    ///
+    func retrieveSiteSummaryStats(siteID: Int64,
+                                  period: StatGranularity,
+                                  quantity: Int,
+                                  latestDateToInclude: Date,
+                                  onCompletion: @escaping (Result<SiteSummaryStats, Error>) -> Void) {
+        if quantity == 1 {
+            siteStatsRemote.loadSiteSummaryStats(for: siteID,
+                                                 period: period,
+                                                 includingDate: latestDateToInclude) { result in
+                switch result {
+                case .success(let siteSummaryStats):
+                    onCompletion(.success(siteSummaryStats))
+                case .failure(let error):
+                    onCompletion(.failure(SiteStatsStoreError(error: error)))
+                }
+            }
+        } else {
+            // If we are not fetching stats for a single period, we need to summarize the stats manually.
+            // The remote summary stats endpoint only retrieves visitor stats for a single period.
+            // We should only do this for periods of a month or greater; otherwise the visitor total is inaccurate.
+            // See: pe5uwI-5c-p2
+            siteStatsRemote.loadSiteVisitorStats(for: siteID,
+                                                 unit: period,
+                                                 latestDateToInclude: latestDateToInclude,
+                                                 quantity: quantity) { result in
+                switch result {
+                case .success(let siteVisitStats):
+                    let totalViews = siteVisitStats.items?.map({ $0.views }).reduce(0, +) ?? 0
+                    let summaryStats = SiteSummaryStats(siteID: siteID,
+                                                        date: siteVisitStats.date,
+                                                        period: siteVisitStats.granularity,
+                                                        visitors: siteVisitStats.totalVisitors,
+                                                        views: totalViews)
+                    onCompletion(.success(summaryStats))
+                case .failure(let error):
+                    onCompletion(.failure(SiteStatsStoreError(error: error)))
+                }
             }
         }
     }

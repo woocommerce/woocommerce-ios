@@ -125,6 +125,7 @@ public typealias SitePlugin = Networking.SitePlugin
 public typealias SitePluginStatusEnum = Networking.SitePluginStatusEnum
 public typealias SiteSetting = Networking.SiteSetting
 public typealias SiteSettingGroup = Networking.SiteSettingGroup
+public typealias SiteSummaryStats = Networking.SiteSummaryStats
 public typealias SiteVisitStats = Networking.SiteVisitStats
 public typealias SiteVisitStatsItem = Networking.SiteVisitStatsItem
 public typealias StateOfACountry = Networking.StateOfACountry

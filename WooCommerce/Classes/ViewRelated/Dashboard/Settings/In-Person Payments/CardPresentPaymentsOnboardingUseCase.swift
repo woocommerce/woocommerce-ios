@@ -77,9 +77,19 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     }
 
     private func refreshOnboardingState() {
-        Task {
-            try await synchronizeStoreCountryAndPlugins()
-            //TODO: call self?.updateAccounts() upon completion.
+        Task { @MainActor in
+            let errors = [Error]()
+            do {
+                try await synchronizeStoreCountryAndPlugins()
+                self.updateAccounts()
+            } catch {
+                DDLogError("[CardPresentPaymentsOnboarding] Error syncing site: \(error)")
+                if errors.contains(where: self.isNetworkError(_:)) {
+                    self.state = .noConnectionError
+                } else {
+                    self.updateAccounts()
+                }
+            }
         }
     }
 
@@ -169,26 +179,11 @@ private extension CardPresentPaymentsOnboardingUseCase {
             return
         }
 
-        let _ = [Error]()
+        // We need to sync settings to check the store's country
+        try await async_synchronizeGeneralSiteSettings(siteID: siteID)
+        // We need to sync plugins to see which CPP-supporting plugins are installed, up to date, and active
+        try await async_synchronizeSystemPlugins(siteID: siteID)
 
-        Task {
-            do {
-                // We need to sync settings to check the store's country
-                try await async_synchronizeGeneralSiteSettings(siteID: siteID)
-                // We need to sync plugins to see which CPP-supporting plugins are installed, up to date, and active
-                try await async_synchronizeSystemPlugins(siteID: siteID)
-                // TODO: Add error & updateAccounts()
-//                if errors.isNotEmpty,
-//                   errors.contains(where: self.isNetworkError(_:)) {
-//                    self.state = .noConnectionError
-//                } else {
-//                    self.updateAccounts()
-//                }
-            } catch {
-                DDLogError("[CardPresentPaymentsOnboarding] Error syncing site: \(error)")
-                //errors.append(error)
-            }
-        }
     }
 
     func checkOnboardingState() -> CardPresentPaymentOnboardingState {

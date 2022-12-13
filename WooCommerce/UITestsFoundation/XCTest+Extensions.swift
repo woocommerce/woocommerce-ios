@@ -22,6 +22,11 @@ extension XCUIElement {
         self.tap()
         self.typeText(text)
     }
+
+    func enterText(text: String) -> Void {
+        self.tap()
+        self.typeText(text)
+    }
 }
 
 extension XCTestCase {

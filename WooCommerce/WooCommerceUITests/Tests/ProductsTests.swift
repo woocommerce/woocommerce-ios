@@ -5,7 +5,7 @@ final class ProductsTests: XCTestCase {
 
     let productTypes = [
         "physical": "Simple physical product",
-        "virtual": "Virtual physical product",
+        "virtual": "Simple virtual product",
         "variable": "Variable product",
         "grouped": "Grouped product",
         "external": "External product"
@@ -40,6 +40,6 @@ final class ProductsTests: XCTestCase {
             .selectProductType(productType: productTypes["physical"]!)
             .addProductTitle(productTitle: product.name)
             .publishProduct()
-            .verifyNewProductScreenLoaded()
+            .verifyNewProductScreenLoaded(productName: product.name)
     }
 }

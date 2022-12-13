@@ -83,7 +83,6 @@ public final class ProductsScreen: ScreenObject {
 
     public func selectProductType(productType: String) throws -> SingleProductScreen {
         app.staticTexts[productType].tap()
-
         return try SingleProductScreen()
     }
 }

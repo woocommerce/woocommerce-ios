@@ -7,13 +7,13 @@ import Combine
 final class CountrySelectorViewModelTests: XCTestCase {
 
     var subscriptions = Set<AnyCancellable>()
-    var binding: Binding<AddressSelectorCommandProtocol?>!
+    var binding: Binding<AreaSelectorCommandProtocol?>!
     var viewModel: CountrySelectorViewModel!
 
     override func setUp () {
         super.setUp()
 
-        binding = Binding<AddressSelectorCommandProtocol?>(get: { nil }, set: { _ in })
+        binding = Binding<AreaSelectorCommandProtocol?>(get: { nil }, set: { _ in })
         viewModel = CountrySelectorViewModel(countries: Self.sampleCountries, selected: binding)
     }
 
@@ -105,7 +105,7 @@ final class CountrySelectorViewModelTests: XCTestCase {
 
     func test_providing_a_selected_country_is_reflected_on_command() {
         // Given
-        let binding = Binding<AddressSelectorCommandProtocol?>(get: { Self.sampleCountries[0]}, set: { _ in })
+        let binding = Binding<AreaSelectorCommandProtocol?>(get: { Self.sampleCountries[0]}, set: { _ in })
 
         // When
         let viewModel = CountrySelectorViewModel(countries: Self.sampleCountries, selected: binding)
@@ -118,7 +118,7 @@ final class CountrySelectorViewModelTests: XCTestCase {
         // Given
         let expectedCountry = Self.sampleCountries[0]
         var selectedCountry: Country? = nil
-        let binding = Binding<AddressSelectorCommandProtocol?>(get: { selectedCountry }, set: { selectedCountry = $0 as? Country})
+        let binding = Binding<AreaSelectorCommandProtocol?>(get: { selectedCountry }, set: { selectedCountry = $0 as? Country})
         let viewModel = CountrySelectorViewModel(countries: Self.sampleCountries, selected: binding)
 
         // When

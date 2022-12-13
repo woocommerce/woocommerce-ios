@@ -9,13 +9,13 @@ final class CountrySelectorViewModel: FilterListSelectorViewModelable, Observabl
     /// Each update will trigger an update to the `command` that contains the country data.
     var searchTerm: String = "" {
         didSet {
-            command.filterCountriesOrStates(term: searchTerm)
+            command.filterAreas(term: searchTerm)
         }
     }
 
     /// Command that powers the `ListSelector` view.
     ///
-    let command: AddressSelectorCommand
+    let command: AreaSelectorCommand
 
     /// Navigation title
     ///
@@ -25,8 +25,8 @@ final class CountrySelectorViewModel: FilterListSelectorViewModelable, Observabl
     ///
     let filterPlaceholder = Localization.placeholder
 
-    init(countries: [Country], selected: Binding<AddressSelectorCommandProtocol?>) {
-        self.command = AddressSelectorCommand( countriesOrStates: countries, selected: selected)
+    init(countries: [Country], selected: Binding<AreaSelectorCommandProtocol?>) {
+        self.command = AreaSelectorCommand( areas: countries, selected: selected)
     }
 }
 

@@ -45,3 +45,24 @@ struct RESTRequest: URLRequestConvertible {
         return try URLEncoding.default.encode(request, with: parameters)
     }
 }
+
+extension RESTRequest {
+    /// Updates the request headers with authentication information.
+    ///
+    func updateRequest(with applicationPassword: ApplicationPassword) throws -> URLRequest {
+        var request = try asURLRequest()
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")
+
+        let username = "username"
+        let password = "password"
+        let loginString = "\(username):\(password)"
+        guard let loginData = loginString.data(using: .utf8) else {
+            return request
+        }
+        let base64LoginString = loginData.base64EncodedString()
+
+        request.setValue("Basic \(base64LoginString)", forHTTPHeaderField: "Authorization")
+        return request
+    }
+}

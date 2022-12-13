@@ -17,12 +17,25 @@ final class AnalyticsHubTimeRangeTests: XCTestCase {
         let startDate = startDate(from: "2022-07-01")!
         let endDate = endDate(from: "2022-07-02")!
         let timeRange = AnalyticsHubTimeRange(start: startDate, end: endDate)
-        
+
         // When
         let description = timeRange.formatToString(simplified: true, timezone: testTimezone, calendar: testCalendar)
-        
+
         //Then
         XCTAssertEqual(description, "Jul 1, 2022")
+    }
+
+    func test_when_time_range_format_is_not_simplified_then_describes_both_dates() {
+        // Given
+        let startDate = startDate(from: "2022-07-01")!
+        let endDate = endDate(from: "2022-08-02")!
+        let timeRange = AnalyticsHubTimeRange(start: startDate, end: endDate)
+
+        // When
+        let description = timeRange.formatToString(simplified: false, timezone: testTimezone, calendar: testCalendar)
+
+        //Then
+        XCTAssertEqual(description, "Jul 1 - Aug 2, 2022")
     }
 
     private func startDate(from date: String) -> Date? {

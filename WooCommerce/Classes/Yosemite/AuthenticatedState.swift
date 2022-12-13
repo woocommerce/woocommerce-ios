@@ -132,7 +132,7 @@ class AuthenticatedState: StoresManagerState {
     /// Updates the network with the currently selected site.
     ///
     func updateCurrentSite(siteID: Int64) {
-        network.updateCurrentSite(siteID: siteID)
+        network.configureApplicationPasswordHandler(with: siteID)
     }
 }
 

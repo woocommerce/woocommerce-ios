@@ -195,6 +195,10 @@ class DefaultStoresManager: StoresManager {
         restoreSessionSiteIfPossible()
         ServiceLocator.pushNotesManager.reloadBadgeCount()
 
+        if let state = self.state as? AuthenticatedState {
+            state.updateCurrentSite(siteID: storeID)
+        }
+
         NotificationCenter.default.post(name: .StoresManagerDidUpdateDefaultSite, object: nil)
     }
 

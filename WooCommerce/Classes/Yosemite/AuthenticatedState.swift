@@ -19,12 +19,16 @@ class AuthenticatedState: StoresManagerState {
     ///
     private var errorObserverToken: NSObjectProtocol?
 
+    /// The network to handle network requests.
+    ///
+    private let network: AlamofireNetwork
+
 
     /// Designated Initializer
     ///
     init(credentials: Credentials) {
         let storageManager = ServiceLocator.storageManager
-        let network = AlamofireNetwork(credentials: credentials)
+        network = AlamofireNetwork(credentials: credentials)
 
         services = [
             AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: credentials.authToken),
@@ -123,6 +127,12 @@ class AuthenticatedState: StoresManagerState {
     ///
     func onAction(_ action: Action) {
         dispatcher.dispatch(action)
+    }
+
+    /// Updates the network with the currently selected site.
+    ///
+    func updateCurrentSite(siteID: Int64) {
+        network.updateCurrentSite(siteID: siteID)
     }
 }
 

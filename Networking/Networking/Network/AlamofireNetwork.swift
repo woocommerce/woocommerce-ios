@@ -15,6 +15,10 @@ public class AlamofireNetwork: Network {
     ///
     private let credentials: Credentials?
 
+    /// Currently selected site ID if any.
+    ///
+    private var siteID: Int64?
+
     public var session: URLSession { SessionManager.default.session }
 
     /// Public Initializer
@@ -104,6 +108,14 @@ public class AlamofireNetwork: Network {
                 completion(nil, error)
             }
         }
+    }
+}
+
+public extension AlamofireNetwork {
+    /// Updates the current site ID.
+    ///
+    func updateCurrentSite(siteID: Int64) {
+        self.siteID = siteID
     }
 }
 

@@ -1611,7 +1611,8 @@ extension Networking.SiteVisitStatsItem {
     public static func fake() -> Networking.SiteVisitStatsItem {
         .init(
             period: .fake(),
-            visitors: .fake()
+            visitors: .fake(),
+            views: .fake()
         )
     }
 }

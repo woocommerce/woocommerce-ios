@@ -24,10 +24,12 @@ class SiteVisitStatsMapperTests: XCTestCase {
         let sampleItem1 = dayStats.items![0]
         XCTAssertEqual(sampleItem1.period, "2018-07-26")
         XCTAssertEqual(sampleItem1.visitors, 101)
+        XCTAssertEqual(sampleItem1.views, 202)
 
         let sampleItem2 = dayStats.items![11]
         XCTAssertEqual(sampleItem2.period, "2018-08-06")
         XCTAssertEqual(sampleItem2.visitors, 2)
+        XCTAssertEqual(sampleItem2.views, 4)
     }
 
     /// Verifies that all of the week unit SiteVisitStats fields are parsed correctly.
@@ -47,10 +49,12 @@ class SiteVisitStatsMapperTests: XCTestCase {
         let sampleItem1 = weekStats.items![0]
         XCTAssertEqual(sampleItem1.period, "2018W05W21")
         XCTAssertEqual(sampleItem1.visitors, 4)
+        XCTAssertEqual(sampleItem1.views, 8)
 
         let sampleItem2 = weekStats.items![11]
         XCTAssertEqual(sampleItem2.period, "2018W08W06")
         XCTAssertEqual(sampleItem2.visitors, 123123123)
+        XCTAssertEqual(sampleItem2.views, 246246246)
     }
 
     /// Verifies that all of the month unit SiteVisitStats fields are parsed correctly.
@@ -70,10 +74,12 @@ class SiteVisitStatsMapperTests: XCTestCase {
         let sampleItem1 = monthStats.items![0]
         XCTAssertEqual(sampleItem1.period, "2017-09-01")
         XCTAssertEqual(sampleItem1.visitors, 224)
+        XCTAssertEqual(sampleItem1.views, 448)
 
         let sampleItem2 = monthStats.items![10]
         XCTAssertEqual(sampleItem2.period, "2018-07-01")
         XCTAssertEqual(sampleItem2.visitors, 6)
+        XCTAssertEqual(sampleItem2.views, 12)
     }
 
     /// Verifies that all of the year unit SiteVisitStats fields are parsed correctly.
@@ -93,10 +99,12 @@ class SiteVisitStatsMapperTests: XCTestCase {
         let sampleItem1 = yearStats.items![0]
         XCTAssertEqual(sampleItem1.period, "2014-01-01")
         XCTAssertEqual(sampleItem1.visitors, 1145)
+        XCTAssertEqual(sampleItem1.views, 2290)
 
         let sampleItem2 = yearStats.items![3]
         XCTAssertEqual(sampleItem2.period, "2017-01-01")
         XCTAssertEqual(sampleItem2.visitors, 144)
+        XCTAssertEqual(sampleItem2.views, 288)
     }
 }
 

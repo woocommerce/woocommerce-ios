@@ -27,7 +27,7 @@ public class SiteStatsRemote: Remote {
         let parameters = [ParameterKeys.unit: unit.rawValue,
                           ParameterKeys.date: dateFormatter.string(from: latestDateToInclude),
                           ParameterKeys.quantity: String(quantity),
-                          ParameterKeys.statFields: ParameterValues.visitors]
+                          ParameterKeys.statFields: "\(ParameterValues.visitors),\(ParameterValues.views)"]
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
         let mapper = SiteVisitStatsMapper(siteID: siteID)
         enqueue(request, mapper: mapper, completion: completion)
@@ -83,5 +83,6 @@ private extension SiteStatsRemote {
 
     enum ParameterValues {
         static let visitors: String = "visitors"
+        static let views: String    = "views"
     }
 }

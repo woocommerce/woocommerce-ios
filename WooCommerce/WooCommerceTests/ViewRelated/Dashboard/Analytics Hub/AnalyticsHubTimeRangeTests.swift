@@ -38,6 +38,19 @@ final class AnalyticsHubTimeRangeTests: XCTestCase {
         XCTAssertEqual(description, "Jul 1 - Aug 2, 2022")
     }
 
+    func test_when_time_range_is_in_the_same_month_then_describe_month_only_in_the_start_date() {
+        // Given
+        let startDate = startDate(from: "2022-07-01")!
+        let endDate = endDate(from: "2022-07-05")!
+        let timeRange = AnalyticsHubTimeRange(start: startDate, end: endDate)
+
+        // When
+        let description = timeRange.formatToString(simplified: false, timezone: testTimezone, calendar: testCalendar)
+
+        //Then
+        XCTAssertEqual(description, "Jul 1 - 5, 2022")
+    }
+
     private func startDate(from date: String) -> Date? {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"

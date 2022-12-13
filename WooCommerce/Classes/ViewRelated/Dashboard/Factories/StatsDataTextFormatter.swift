@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import WooFoundation
+import struct Networking.SiteSummaryStats
 
 /// Helpers for calculating and formatting stats data for display.
 ///
@@ -116,6 +117,16 @@ struct StatsDataTextFormatter {
         let previousCount = visitorCount(at: nil, siteStats: previousPeriod)
         let currentCount = visitorCount(at: nil, siteStats: currentPeriod)
         return createDeltaPercentage(from: previousCount, to: currentCount)
+    }
+
+    /// Creates the text to display for the views count.
+    ///
+    static func createViewsCountText(siteStats: SiteSummaryStats?) -> String {
+        guard let viewsCount = siteStats?.views else {
+            return Constants.placeholderText
+        }
+
+        return Double(viewsCount).humanReadableString()
     }
 
     // MARK: Conversion Stats

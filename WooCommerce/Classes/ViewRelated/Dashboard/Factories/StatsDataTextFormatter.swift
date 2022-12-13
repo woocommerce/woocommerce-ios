@@ -134,22 +134,22 @@ struct StatsDataTextFormatter {
     /// Creates the text to display for the conversion rate.
     ///
     static func createConversionRateText(orderStats: OrderStatsV4?, siteStats: SiteVisitStats?, selectedIntervalIndex: Int?) -> String {
-        let visitors = visitorCount(at: selectedIntervalIndex, siteStats: siteStats)
-        let orders = orderCount(at: selectedIntervalIndex, orderStats: orderStats)
-
-        let numberFormatter = NumberFormatter()
-        numberFormatter.numberStyle = .percent
-        numberFormatter.minimumFractionDigits = 1
-
-        if let visitors, let orders {
-            // Maximum conversion rate is 100%.
-            let conversionRate = visitors > 0 ? min(orders/visitors, 1): 0
-            let minimumFractionDigits = floor(conversionRate * 100.0) == conversionRate * 100.0 ? 0: 1
-            numberFormatter.minimumFractionDigits = minimumFractionDigits
-            return numberFormatter.string(from: conversionRate as NSNumber) ?? Constants.placeholderText
-        } else {
+        guard let visitors = visitorCount(at: selectedIntervalIndex, siteStats: siteStats),
+              let orders = orderCount(at: selectedIntervalIndex, orderStats: orderStats) else {
             return Constants.placeholderText
         }
+
+        return createConversionRateText(converted: orders, total: visitors)
+    }
+
+    /// Creates the text to display for the conversion rate based on SiteSummaryStats data.
+    ///
+    static func createConversionRateText(orderStats: OrderStatsV4?, siteStats: SiteSummaryStats?) -> String {
+        guard let visitors = siteStats?.visitors, let orders = orderStats?.totals.totalOrders else {
+            return Constants.placeholderText
+        }
+
+        return createConversionRateText(converted: Double(orders), total: Double(visitors))
     }
 
     // MARK: Product Stats
@@ -272,9 +272,21 @@ private extension StatsDataTextFormatter {
         }
     }
 
+    /// Creates the text to display for the conversion rate from 2 input values.
+    ///
+    static func createConversionRateText(converted: Double, total: Double) -> String {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .percent
+        numberFormatter.minimumFractionDigits = 1
+
+        // Maximum conversion rate is 100%.
+        let conversionRate = total > 0 ? min(converted/total, 1) : 0
+        let minimumFractionDigits = floor(conversionRate * 100.0) == conversionRate * 100.0 ? 0 : 1
+        numberFormatter.minimumFractionDigits = minimumFractionDigits
+        return numberFormatter.string(from: conversionRate as NSNumber) ?? Constants.placeholderText
+    }
+
     enum Constants {
         static let placeholderText = "-"
     }
-
-
 }

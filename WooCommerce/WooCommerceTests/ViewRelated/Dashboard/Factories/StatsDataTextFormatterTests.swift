@@ -1,6 +1,7 @@
 import XCTest
 import Yosemite
 import WooFoundation
+import struct Networking.SiteSummaryStats
 @testable import WooCommerce
 
 /// `StatsDataTextFormatter` tests.
@@ -331,6 +332,17 @@ final class StatsDataTextFormatterTests: XCTestCase {
         // Then
         XCTAssertEqual(visitorCountDelta.string, "+50%")
         XCTAssertEqual(visitorCountDelta.direction, .positive)
+    }
+
+    func test_createViewsCountText_returns_expected_views_stats() {
+        // Given
+        let siteVisitStats = Networking.SiteSummaryStats.fake().copy(views: 250)
+
+        // When
+        let viewsCount = StatsDataTextFormatter.createViewsCountText(siteStats: siteVisitStats)
+
+        // Then
+        XCTAssertEqual(viewsCount, "250")
     }
 
     // MARK: Conversion Stats

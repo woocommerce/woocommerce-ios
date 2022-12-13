@@ -1524,6 +1524,34 @@ final class MigrationTests: XCTestCase {
         let newAverageOrderValue = try XCTUnwrap(migratedOrderStatsV4Totals.value(forKey: "averageOrderValue") as? Double)
         XCTAssertEqual(newAverageOrderValue, averageOrderValue)
     }
+
+    func test_migrating_from_78_to_79_adds_views_attribute() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 78")
+        let sourceContext = sourceContainer.viewContext
+
+        let siteVisitStatsItem = insertSiteVisitStatsItem(to: sourceContainer.viewContext)
+        try sourceContext.save()
+
+        XCTAssertNil(siteVisitStatsItem.entity.attributesByName["views"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 79")
+        let targetContext = targetContainer.viewContext
+
+        let migratedSiteVisitStatsItem = try XCTUnwrap(targetContext.first(entityName: "SiteVisitStatsItem"))
+        let defaultViewsCount = try XCTUnwrap(migratedSiteVisitStatsItem.value(forKey: "views") as? Int)
+
+        let viewsCount = 12
+        migratedSiteVisitStatsItem.setValue(viewsCount, forKey: "views")
+
+        // Then
+        // Default value is 0.
+        XCTAssertEqual(defaultViewsCount, 0)
+
+        let newViewsCount = try XCTUnwrap(migratedSiteVisitStatsItem.value(forKey: "views") as? Int)
+        XCTAssertEqual(newViewsCount, viewsCount)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -1940,6 +1968,14 @@ private extension MigrationTests {
         context.insert(entityName: "SiteVisitStats", properties: [
             "date": "2021-01-22",
             "granularity": "day"
+        ])
+    }
+
+    @discardableResult
+    func insertSiteVisitStatsItem(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "SiteVisitStatsItem", properties: [
+            "period": "day",
+            "visitors": 3
         ])
     }
 

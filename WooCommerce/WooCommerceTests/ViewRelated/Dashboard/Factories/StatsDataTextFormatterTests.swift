@@ -1,7 +1,6 @@
 import XCTest
 import Yosemite
 import WooFoundation
-import struct Networking.SiteSummaryStats
 @testable import WooCommerce
 
 /// `StatsDataTextFormatter` tests.
@@ -336,7 +335,7 @@ final class StatsDataTextFormatterTests: XCTestCase {
 
     func test_createViewsCountText_returns_expected_views_stats() {
         // Given
-        let siteVisitStats = Networking.SiteSummaryStats.fake().copy(views: 250)
+        let siteVisitStats = SiteSummaryStats.fake().copy(views: 250)
 
         // When
         let viewsCount = StatsDataTextFormatter.createViewsCountText(siteStats: siteVisitStats)
@@ -398,7 +397,7 @@ final class StatsDataTextFormatterTests: XCTestCase {
 
     func test_createConversionRateText_for_SiteSummaryStats_returns_placeholder_when_visitor_count_is_zero() {
         // Given
-        let siteVisitStats = Networking.SiteSummaryStats.fake().copy(visitors: 0)
+        let siteVisitStats = SiteSummaryStats.fake().copy(visitors: 0)
         let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 3))
 
         // When
@@ -410,7 +409,7 @@ final class StatsDataTextFormatterTests: XCTestCase {
 
     func test_createConversionRateText_for_SiteSummaryStats_returns_one_decimal_point_when_percentage_value_has_two_decimal_points() {
         // Given
-        let siteVisitStats = Networking.SiteSummaryStats.fake().copy(visitors: 10000)
+        let siteVisitStats = SiteSummaryStats.fake().copy(visitors: 10000)
         let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 3557))
 
         // When
@@ -422,7 +421,7 @@ final class StatsDataTextFormatterTests: XCTestCase {
 
     func test_createConversionRateText_for_SiteSummaryStats_returns_no_decimal_point_when_percentage_value_is_integer() {
         // Given
-        let siteVisitStats = Networking.SiteSummaryStats.fake().copy(visitors: 10)
+        let siteVisitStats = SiteSummaryStats.fake().copy(visitors: 10)
         let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 3))
 
         // When

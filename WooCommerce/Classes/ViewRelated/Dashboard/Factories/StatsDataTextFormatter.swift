@@ -1,7 +1,6 @@
 import Foundation
 import Yosemite
 import WooFoundation
-import struct Networking.SiteSummaryStats
 
 /// Helpers for calculating and formatting stats data for display.
 ///

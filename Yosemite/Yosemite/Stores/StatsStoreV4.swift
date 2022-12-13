@@ -6,13 +6,13 @@ import WooFoundation
 // MARK: - StatsStoreV4
 //
 public final class StatsStoreV4: Store {
-    private let siteVisitStatsRemote: SiteStatsRemote
+    private let siteStatsRemote: SiteStatsRemote
     private let leaderboardsRemote: LeaderboardsRemote
     private let orderStatsRemote: OrderStatsRemoteV4
     private let productsRemote: ProductsRemote
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
-        self.siteVisitStatsRemote = SiteStatsRemote(network: network)
+        self.siteStatsRemote = SiteStatsRemote(network: network)
         self.leaderboardsRemote = LeaderboardsRemote(network: network)
         self.orderStatsRemote = OrderStatsRemoteV4(network: network)
         self.productsRemote = ProductsRemote(network: network)
@@ -164,7 +164,7 @@ private extension StatsStoreV4 {
 
         let quantity = timeRange.siteVisitStatsQuantity(date: latestDateToInclude, siteTimezone: siteTimezone)
 
-        siteVisitStatsRemote.loadSiteVisitorStats(for: siteID,
+        siteStatsRemote.loadSiteVisitorStats(for: siteID,
                                     siteTimezone: siteTimezone,
                                     unit: timeRange.siteVisitStatsGranularity,
                                     latestDateToInclude: latestDateToInclude,
@@ -174,7 +174,7 @@ private extension StatsStoreV4 {
                 self?.upsertStoredSiteVisitStats(readOnlyStats: siteVisitStats, timeRange: timeRange)
                 onCompletion(.success(()))
             case .failure(let error):
-                onCompletion(.failure(SiteVisitStatsStoreError(error: error)))
+                onCompletion(.failure(SiteStatsStoreError(error: error)))
             }
         }
     }
@@ -571,7 +571,7 @@ public enum StatsStoreV4Error: Error {
 /// - statsModuleDisabled: Jetpack site stats module is disabled for the site.
 /// - unknown: other error cases.
 ///
-public enum SiteVisitStatsStoreError: Error {
+public enum SiteStatsStoreError: Error {
     case statsModuleDisabled
     case noPermission
     case unknown

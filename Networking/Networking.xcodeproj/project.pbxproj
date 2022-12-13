@@ -559,6 +559,10 @@
 		CC9A253C26442C71005DE56E /* shipping-label-eligibility-success.json in Resources */ = {isa = PBXBuildFile; fileRef = CC9A253B26442C71005DE56E /* shipping-label-eligibility-success.json */; };
 		CC9A254626442CA7005DE56E /* shipping-label-eligibility-failure.json in Resources */ = {isa = PBXBuildFile; fileRef = CC9A254526442CA7005DE56E /* shipping-label-eligibility-failure.json */; };
 		CC9A254A26442D26005DE56E /* ShippingLabelCreationEligibilityMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC9A254926442D26005DE56E /* ShippingLabelCreationEligibilityMapperTests.swift */; };
+		CCA1D60429437B2C00B40560 /* SiteSummaryStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA1D60329437B2C00B40560 /* SiteSummaryStats.swift */; };
+		CCA1D60629437D8F00B40560 /* SiteSummaryStatsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA1D60529437D8F00B40560 /* SiteSummaryStatsMapper.swift */; };
+		CCA1D6082943804C00B40560 /* site-summary-stats.json in Resources */ = {isa = PBXBuildFile; fileRef = CCA1D6072943804C00B40560 /* site-summary-stats.json */; };
+		CCA1D60A2943809700B40560 /* SiteSummaryStatsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA1D6092943809700B40560 /* SiteSummaryStatsMapperTests.swift */; };
 		CCAAD10F2683974000909664 /* ShippingLabelPackagePurchase.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCAAD10E2683974000909664 /* ShippingLabelPackagePurchase.swift */; };
 		CCB2CA9E262091CB00285CA0 /* SuccessDataResultMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB2CA9D262091CB00285CA0 /* SuccessDataResultMapper.swift */; };
 		CCB2CAA226209A1200285CA0 /* generic_success_data.json in Resources */ = {isa = PBXBuildFile; fileRef = CCB2CAA126209A1200285CA0 /* generic_success_data.json */; };
@@ -1317,6 +1321,10 @@
 		CC9A253B26442C71005DE56E /* shipping-label-eligibility-success.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "shipping-label-eligibility-success.json"; sourceTree = "<group>"; };
 		CC9A254526442CA7005DE56E /* shipping-label-eligibility-failure.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "shipping-label-eligibility-failure.json"; sourceTree = "<group>"; };
 		CC9A254926442D26005DE56E /* ShippingLabelCreationEligibilityMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCreationEligibilityMapperTests.swift; sourceTree = "<group>"; };
+		CCA1D60329437B2C00B40560 /* SiteSummaryStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteSummaryStats.swift; sourceTree = "<group>"; };
+		CCA1D60529437D8F00B40560 /* SiteSummaryStatsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteSummaryStatsMapper.swift; sourceTree = "<group>"; };
+		CCA1D6072943804C00B40560 /* site-summary-stats.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "site-summary-stats.json"; sourceTree = "<group>"; };
+		CCA1D6092943809700B40560 /* SiteSummaryStatsMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteSummaryStatsMapperTests.swift; sourceTree = "<group>"; };
 		CCAAD10E2683974000909664 /* ShippingLabelPackagePurchase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackagePurchase.swift; sourceTree = "<group>"; };
 		CCB2CA9D262091CB00285CA0 /* SuccessDataResultMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuccessDataResultMapper.swift; sourceTree = "<group>"; };
 		CCB2CAA126209A1200285CA0 /* generic_success_data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = generic_success_data.json; sourceTree = "<group>"; };
@@ -1652,6 +1660,7 @@
 				74D522B52113607F00042831 /* StatGranularity.swift */,
 				74A1D26721189A7000931DFA /* SiteVisitStats.swift */,
 				74A1D26A21189B8100931DFA /* SiteVisitStatsItem.swift */,
+				CCA1D60329437B2C00B40560 /* SiteSummaryStats.swift */,
 				74ABA1CC213F1B6B00FFAD30 /* TopEarnerStats.swift */,
 				74ABA1CE213F1D1600FFAD30 /* TopEarnerStatsItem.swift */,
 				D8FBFF0C22D3AF4A006E3336 /* StatsGranularityV4.swift */,
@@ -2207,6 +2216,7 @@
 				74A1D262211898F000931DFA /* site-visits-year.json */,
 				743BF8BD21191B63008A9D87 /* site-visits.json */,
 				74E30950216E8DCE00ABCE4C /* site-visits-alt.json */,
+				CCA1D6072943804C00B40560 /* site-summary-stats.json */,
 				022902D122E2436300059692 /* stats_module_disabled_error.json */,
 				45ED4F11239E8C57004F1BE3 /* taxes-classes.json */,
 				74ABA1C4213F17AA00FFAD30 /* top-performers-day.json */,
@@ -2335,6 +2345,7 @@
 				DE74F29927E08F5A0002FE59 /* SiteSettingMapper.swift */,
 				B53EF53B21814900003E146F /* SuccessResultMapper.swift */,
 				74A1D26C21189DFE00931DFA /* SiteVisitStatsMapper.swift */,
+				CCA1D60529437D8F00B40560 /* SiteSummaryStatsMapper.swift */,
 				CCB2CA9D262091CB00285CA0 /* SuccessDataResultMapper.swift */,
 				450106902399B2C800E24722 /* TaxClassListMapper.swift */,
 				74ABA1D2213F25AE00FFAD30 /* TopEarnerStatsMapper.swift */,
@@ -2475,6 +2486,7 @@
 				74A7B4BB217A807400E85A8B /* SiteSettingsMapperTests.swift */,
 				DE74F29D27E0A6800002FE59 /* SiteSettingMapperTests.swift */,
 				74002D692118B26000A63C19 /* SiteVisitStatsMapperTests.swift */,
+				CCA1D6092943809700B40560 /* SiteSummaryStatsMapperTests.swift */,
 				45ED4F0F239E8A54004F1BE3 /* TaxClassListMapperTest.swift */,
 				74ABA1D4213F26B300FFAD30 /* TopEarnerStatsMapperTests.swift */,
 				D8FBFF0E22D3B25E006E3336 /* WooAPIVersionTests.swift */,
@@ -2821,6 +2833,7 @@
 				4515282B257A8C010076B03C /* product-attribute-delete.json in Resources */,
 				020C907B24C6E108001E2BEB /* product-variation-update.json in Resources */,
 				D8FBFF1822D4DDB9006E3336 /* order-stats-v4-hour.json in Resources */,
+				CCA1D6082943804C00B40560 /* site-summary-stats.json in Resources */,
 				B554FA8D2180B59700C54DFF /* notifications-load-hashes.json in Resources */,
 				022902D622E2436400059692 /* no_stats_permission_error.json in Resources */,
 				FE28F6E826842D57004465C7 /* user-complete.json in Resources */,
@@ -3292,11 +3305,13 @@
 				45A4B84A25D2DECD00776FB4 /* ShippingLabelAddressValidationResponse.swift in Sources */,
 				CE17C6B1229462C000AACE1C /* ProductStockStatus.swift in Sources */,
 				B557DA0420975500005962F4 /* OrdersRemote.swift in Sources */,
+				CCA1D60629437D8F00B40560 /* SiteSummaryStatsMapper.swift in Sources */,
 				CE43066C2347C5F90073CBFF /* OrderItemRefund.swift in Sources */,
 				45CCFCE427A2DC270012E8CB /* InboxAction.swift in Sources */,
 				B5C6FCD420A373BB00A4F8E4 /* OrderMapper.swift in Sources */,
 				D88D5A49230BC8C7007B6E01 /* ProductReviewStatus.swift in Sources */,
 				036563DB2906938600D84BFD /* JustInTimeMessage.swift in Sources */,
+				CCA1D60429437B2C00B40560 /* SiteSummaryStats.swift in Sources */,
 				451A97C92609FF050059D135 /* ShippingLabelPackagesResponse.swift in Sources */,
 				029BA4F0255D7282006171FD /* ShippingLabelRemote.swift in Sources */,
 				B557DA0F20975E07005962F4 /* DotcomRequest.swift in Sources */,
@@ -3452,6 +3467,7 @@
 				B57B1E6721C916850046E764 /* NetworkErrorTests.swift in Sources */,
 				D8FBFF0F22D3B25E006E3336 /* WooAPIVersionTests.swift in Sources */,
 				45152831257A8E1A0076B03C /* ProductAttributeMapperTests.swift in Sources */,
+				CCA1D60A2943809700B40560 /* SiteSummaryStatsMapperTests.swift in Sources */,
 				26B2F74924C55ACE0065CCC8 /* LeaderboardsRemoteTests.swift in Sources */,
 				45CCFCE827A2E5020012E8CB /* InboxNoteListMapperTests.swift in Sources */,
 				74002D6C2118B88200A63C19 /* SiteStatsRemoteTests.swift in Sources */,

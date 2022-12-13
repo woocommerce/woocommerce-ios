@@ -32,6 +32,35 @@ public class SiteStatsRemote: Remote {
         let mapper = SiteVisitStatsMapper(siteID: siteID)
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Fetch the summary stats for the period (day, week, month, or year) that includes the provided date.
+    ///
+    /// The endpoint supports a `num` parameter for fetching summary data across multiple periods.
+    /// However, we do not use this parameter because summary visitor data is only returned for a single period, even if multiple periods are requested.
+    /// See p3hLNG-Nm-p2 for more details.
+    ///
+    /// - Parameters:
+    ///   - siteID: The site ID
+    ///   - period: The summary stats will include results across this period (one of 'day', 'week', 'month', or 'year').
+    ///   - includingDate: The date that determines the period for which results are returned.
+    ///   - completion: Closure to be executed upon completion.
+    ///
+    public func loadSiteSummaryStats(for siteID: Int64,
+                                     siteTimezone: TimeZone? = nil,
+                                     period: StatGranularity,
+                                     includingDate date: Date,
+                                     completion: @escaping (Result<SiteSummaryStats, Error>) -> Void) {
+        let path = "\(Path.sites)/\(siteID)/\(Path.siteSummaryStats)/"
+        let dateFormatter = DateFormatter.Stats.statsDayFormatter
+        if let siteTimezone = siteTimezone {
+            dateFormatter.timeZone = siteTimezone
+        }
+        let parameters = [ParameterKeys.period: period.rawValue,
+                          ParameterKeys.date: dateFormatter.string(from: date)]
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
+        let mapper = SiteSummaryStatsMapper(siteID: siteID)
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 
@@ -41,6 +70,7 @@ private extension SiteStatsRemote {
     enum Path {
         static let sites: String             = "sites"
         static let siteVisitStats: String    = "stats/visits"
+        static let siteSummaryStats: String  = "stats/summary"
     }
 
     enum ParameterKeys {
@@ -48,6 +78,7 @@ private extension SiteStatsRemote {
         static let date: String       = "date"
         static let quantity: String   = "quantity"
         static let statFields: String = "stat_fields"
+        static let period: String     = "period"
     }
 
     enum ParameterValues {

@@ -77,8 +77,9 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     }
 
     private func refreshOnboardingState() {
-        synchronizeStoreCountryAndPlugins { [weak self] in
-            self?.updateAccounts()
+        Task {
+            try await synchronizeStoreCountryAndPlugins()
+            //TODO: call self?.updateAccounts() upon completion.
         }
     }
 
@@ -136,49 +137,58 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     }
 }
 
+// MARK: - Async Helpers
+// async throw wrappers around Actions
+//
+private extension CardPresentPaymentsOnboardingUseCase {
+    func async_synchronizeGeneralSiteSettings(siteID: Int64) async throws -> Void {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            let settingsAction = SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { _ in
+                continuation.resume(returning: ())
+            }
+            stores.dispatch(settingsAction)
+        }
+    }
+
+    func async_synchronizeSystemPlugins(siteID: Int64) async throws -> Void {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            let pluginsAction = SystemStatusAction.synchronizeSystemPlugins(siteID: siteID) { _ in
+                continuation.resume(returning: ())
+            }
+            stores.dispatch(pluginsAction)
+        }
+    }
+}
+
 // MARK: - Internal state
 //
 private extension CardPresentPaymentsOnboardingUseCase {
-    func synchronizeStoreCountryAndPlugins(completion: () -> Void) {
+    func synchronizeStoreCountryAndPlugins() async throws -> Void {
+
         guard let siteID = siteID else {
-            completion()
             return
         }
 
-        let group = DispatchGroup()
-        var errors = [Error]()
+        let _ = [Error]()
 
-        // We need to sync settings to check the store's country
-        let settingsAction = SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { error in
-            if let error = error {
-                DDLogError("[CardPresentPaymentsOnboarding] Error syncing site settings: \(error)")
-                errors.append(error)
+        Task {
+            do {
+                // We need to sync settings to check the store's country
+                try await async_synchronizeGeneralSiteSettings(siteID: siteID)
+                // We need to sync plugins to see which CPP-supporting plugins are installed, up to date, and active
+                try await async_synchronizeSystemPlugins(siteID: siteID)
+                // TODO: Add error & updateAccounts()
+//                if errors.isNotEmpty,
+//                   errors.contains(where: self.isNetworkError(_:)) {
+//                    self.state = .noConnectionError
+//                } else {
+//                    self.updateAccounts()
+//                }
+            } catch {
+                DDLogError("[CardPresentPaymentsOnboarding] Error syncing site: \(error)")
+                //errors.append(error)
             }
-            group.leave()
         }
-        group.enter()
-        stores.dispatch(settingsAction)
-
-        // We need to sync plugins to see which CPP-supporting plugins are installed, up to date, and active
-        let systemPluginsAction = SystemStatusAction.synchronizeSystemPlugins(siteID: siteID) { result in
-            if case let .failure(error) = result {
-                DDLogError("[CardPresentPaymentsOnboarding] Error syncing system plugins: \(error)")
-                errors.append(error)
-            }
-            group.leave()
-        }
-        group.enter()
-        stores.dispatch(systemPluginsAction)
-
-        group.notify(queue: .main, execute: { [weak self] in
-            guard let self = self else { return }
-            if errors.isNotEmpty,
-               errors.contains(where: self.isNetworkError(_:)) {
-                self.state = .noConnectionError
-            } else {
-                self.updateAccounts()
-            }
-        })
     }
 
     func checkOnboardingState() -> CardPresentPaymentOnboardingState {

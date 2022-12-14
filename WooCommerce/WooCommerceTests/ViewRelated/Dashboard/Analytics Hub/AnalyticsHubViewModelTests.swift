@@ -26,6 +26,9 @@ final class AnalyticsHubViewModelTests: XCTestCase {
             case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, completion):
                 let topEarners = TopEarnerStats.fake().copy(items: [.fake()])
                 completion(.success(topEarners))
+            case let .retrieveSiteSummaryStats(_, _, _, _, completion):
+                let siteStats = SiteSummaryStats.fake().copy(visitors: 30, views: 53)
+                completion(.success(siteStats))
             default:
                 break
             }
@@ -39,12 +42,14 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertFalse(vm.ordersCard.isRedacted)
         XCTAssertFalse(vm.productsStatsCard.isRedacted)
         XCTAssertFalse(vm.itemsSoldCard.isRedacted)
+        XCTAssertFalse(vm.sessionsCard.isRedacted)
 
         XCTAssertEqual(vm.revenueCard.leadingValue, "$62")
         XCTAssertEqual(vm.ordersCard.leadingValue, "15")
         XCTAssertEqual(vm.productsStatsCard.itemsSold, "5")
-
         XCTAssertEqual(vm.itemsSoldCard.itemsSoldData.count, 1)
+        XCTAssertEqual(vm.sessionsCard.leadingValue, "53")
+        XCTAssertEqual(vm.sessionsCard.trailingValue, "50%")
     }
 
     func test_cards_viewmodels_show_sync_error_after_getting_error_from_network() async {
@@ -55,6 +60,8 @@ final class AnalyticsHubViewModelTests: XCTestCase {
             case let .retrieveCustomStats(_, _, _, _, _, _, completion):
                 completion(.failure(NSError(domain: "Test", code: 1)))
             case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, completion):
+                completion(.failure(NSError(domain: "Test", code: 1)))
+            case let .retrieveSiteSummaryStats(_, _, _, _, completion):
                 completion(.failure(NSError(domain: "Test", code: 1)))
             default:
                 break
@@ -69,6 +76,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertTrue(vm.ordersCard.showSyncError)
         XCTAssertTrue(vm.productsStatsCard.showStatsError)
         XCTAssertTrue(vm.itemsSoldCard.showItemsSoldError)
+        XCTAssertTrue(vm.sessionsCard.showSyncError)
     }
 
     func test_cards_viewmodels_redacted_while_updating_from_network() async {
@@ -78,6 +86,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         var loadingOrdersCard: AnalyticsReportCardViewModel?
         var loadingProductsCard: AnalyticsProductsStatsCardViewModel?
         var loadingItemsSoldCard: AnalyticsItemsSoldViewModel?
+        var loadingSessionsCard: AnalyticsReportCardCurrentPeriodViewModel?
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
             case let .retrieveCustomStats(_, _, _, _, _, _, completion):
@@ -90,6 +99,9 @@ final class AnalyticsHubViewModelTests: XCTestCase {
             case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, completion):
                 let topEarners = TopEarnerStats.fake().copy(items: [.fake()])
                 completion(.success(topEarners))
+            case let .retrieveSiteSummaryStats(_, _, _, _, completion):
+                let siteStats = SiteSummaryStats.fake()
+                completion(.success(siteStats))
             default:
                 break
             }
@@ -103,5 +115,6 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertEqual(loadingOrdersCard?.isRedacted, true)
         XCTAssertEqual(loadingProductsCard?.isRedacted, true)
         XCTAssertEqual(loadingItemsSoldCard?.isRedacted, true)
+        XCTAssertEqual(loadingSessionsCard?.isRedacted, true)
     }
 }

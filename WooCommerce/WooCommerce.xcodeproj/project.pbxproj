@@ -21,6 +21,11 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		0201E4272945B01800C793C7 /* StoreCreationProfilerQuestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0201E4262945B01800C793C7 /* StoreCreationProfilerQuestionView.swift */; };
+		0201E4292945B8B600C793C7 /* StoreCreationCategoryQuestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0201E4282945B8B600C793C7 /* StoreCreationCategoryQuestionView.swift */; };
+		0201E42B2946151100C793C7 /* StoreCreationCategoryQuestionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0201E42A2946151100C793C7 /* StoreCreationCategoryQuestionViewModel.swift */; };
+		0201E42D2946C23600C793C7 /* OptionalStoreCreationProfilerQuestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0201E42C2946C23600C793C7 /* OptionalStoreCreationProfilerQuestionView.swift */; };
+		0201E4312946FFDB00C793C7 /* StoreCreationCategoryQuestionViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0201E4302946FFDB00C793C7 /* StoreCreationCategoryQuestionViewModelTests.swift */; };
 		0202B68D23876BC100F3EBE0 /* ProductsTabProductViewModel+ProductVariation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0202B68C23876BC100F3EBE0 /* ProductsTabProductViewModel+ProductVariation.swift */; };
 		0202B6922387AB0C00F3EBE0 /* WooTab+Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0202B6912387AB0C00F3EBE0 /* WooTab+Tag.swift */; };
 		0202B6952387AD1B00F3EBE0 /* UITabBar+Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0202B6942387AD1B00F3EBE0 /* UITabBar+Order.swift */; };
@@ -2049,6 +2054,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0201E4262945B01800C793C7 /* StoreCreationProfilerQuestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCreationProfilerQuestionView.swift; sourceTree = "<group>"; };
+		0201E4282945B8B600C793C7 /* StoreCreationCategoryQuestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCreationCategoryQuestionView.swift; sourceTree = "<group>"; };
+		0201E42A2946151100C793C7 /* StoreCreationCategoryQuestionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCreationCategoryQuestionViewModel.swift; sourceTree = "<group>"; };
+		0201E42C2946C23600C793C7 /* OptionalStoreCreationProfilerQuestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionalStoreCreationProfilerQuestionView.swift; sourceTree = "<group>"; };
+		0201E4302946FFDB00C793C7 /* StoreCreationCategoryQuestionViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCreationCategoryQuestionViewModelTests.swift; sourceTree = "<group>"; };
 		0202B68C23876BC100F3EBE0 /* ProductsTabProductViewModel+ProductVariation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductsTabProductViewModel+ProductVariation.swift"; sourceTree = "<group>"; };
 		0202B6912387AB0C00F3EBE0 /* WooTab+Tag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooTab+Tag.swift"; sourceTree = "<group>"; };
 		0202B6942387AD1B00F3EBE0 /* UITabBar+Order.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITabBar+Order.swift"; sourceTree = "<group>"; };
@@ -4094,6 +4104,33 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0201E4252945AFFC00C793C7 /* Profiler */ = {
+			isa = PBXGroup;
+			children = (
+				0201E4262945B01800C793C7 /* StoreCreationProfilerQuestionView.swift */,
+				0201E42C2946C23600C793C7 /* OptionalStoreCreationProfilerQuestionView.swift */,
+				0201E42E2946F9F400C793C7 /* Category */,
+			);
+			path = Profiler;
+			sourceTree = "<group>";
+		};
+		0201E42E2946F9F400C793C7 /* Category */ = {
+			isa = PBXGroup;
+			children = (
+				0201E4282945B8B600C793C7 /* StoreCreationCategoryQuestionView.swift */,
+				0201E42A2946151100C793C7 /* StoreCreationCategoryQuestionViewModel.swift */,
+			);
+			path = Category;
+			sourceTree = "<group>";
+		};
+		0201E42F2946FFCA00C793C7 /* Profiler */ = {
+			isa = PBXGroup;
+			children = (
+				0201E4302946FFDB00C793C7 /* StoreCreationCategoryQuestionViewModelTests.swift */,
+			);
+			path = Profiler;
+			sourceTree = "<group>";
+		};
 		0202B6932387ACE000F3EBE0 /* TabBar */ = {
 			isa = PBXGroup;
 			children = (
@@ -4106,6 +4143,7 @@
 		0203C11D2930643700EE61BF /* Store Creation */ = {
 			isa = PBXGroup;
 			children = (
+				0201E42F2946FFCA00C793C7 /* Profiler */,
 				0269A5E62913FD22003B20EB /* StoreCreationCoordinatorTests.swift */,
 				020D0BFE2914F6BA00BB3DCE /* LoggedOutStoreCreationCoordinatorTests.swift */,
 				0203C11B293058CB00EE61BF /* WebPurchasesForWPComPlansTests.swift */,
@@ -4688,6 +4726,7 @@
 		02759B8F28FFA06F00918176 /* Store Creation */ = {
 			isa = PBXGroup;
 			children = (
+				0201E4252945AFFC00C793C7 /* Profiler */,
 				020AF6642923C745007760E5 /* Store name */,
 				02EEA92929233F0F00D05F47 /* Plan */,
 				02063C8729260A6500130906 /* Installations */,
@@ -10160,6 +10199,7 @@
 				D817586222BB64C300289CFE /* OrderDetailsNotices.swift in Sources */,
 				022F7A0324A05F6400012601 /* LinkedProductsListSelectorViewController.swift in Sources */,
 				2602A63F27BD880A00B347F1 /* NewOrderInitialStatusResolver.swift in Sources */,
+				0201E42B2946151100C793C7 /* StoreCreationCategoryQuestionViewModel.swift in Sources */,
 				E120F63826C26B550005A029 /* InPersonPaymentsLoadingView.swift in Sources */,
 				456417F4247D5434001203F6 /* UITableView+Helpers.swift in Sources */,
 				E15FC74326BC1D2700CF83E6 /* SafariSheet.swift in Sources */,
@@ -10413,6 +10453,7 @@
 				DE1B030D268DD01A00804330 /* ReviewOrderViewController.swift in Sources */,
 				B5FD111621D3F13700560344 /* BordersView.swift in Sources */,
 				0262DA5B23A244830029AF30 /* Product+ShippingSettingsViewModels.swift in Sources */,
+				0201E42D2946C23600C793C7 /* OptionalStoreCreationProfilerQuestionView.swift in Sources */,
 				0216272B2379662C000208D2 /* DefaultProductFormTableViewModel.swift in Sources */,
 				45E9A6E424DAE1EA00A600E8 /* ProductReviewsViewController.swift in Sources */,
 				03E471C4293A1F8D001A58AD /* BuiltInReaderConnectionAlertsProvider.swift in Sources */,
@@ -10696,6 +10737,7 @@
 				DEE183F1292E0ED0008818AB /* LoginJetpackSetupInterruptedView.swift in Sources */,
 				2676F4CC2908284800C7A15B /* ProductCreationTypeCommand.swift in Sources */,
 				45A24E5F2451DF1A0050606B /* ProductMenuOrderViewController.swift in Sources */,
+				0201E4272945B01800C793C7 /* StoreCreationProfilerQuestionView.swift in Sources */,
 				2667BFE1252FA117008099D4 /* RefundItemQuantityListSelectorCommand.swift in Sources */,
 				261AA30C2753119E009530FE /* PaymentMethodsViewModel.swift in Sources */,
 				DE68B81F26F86B1700C86CFB /* OfflineBannerView.swift in Sources */,
@@ -10780,6 +10822,7 @@
 				57EBC92024EEE61800C1D45B /* WooAnalyticsEvent.swift in Sources */,
 				57CDABB9252E9BEB00BED88C /* ButtonTableFooterView.swift in Sources */,
 				021940E8291FDBF90090354E /* StoreCreationSummaryView.swift in Sources */,
+				0201E4292945B8B600C793C7 /* StoreCreationCategoryQuestionView.swift in Sources */,
 				B63D9009293E56E300BB5C9D /* AnalyticsHubQuarterToDateRangeData.swift in Sources */,
 				02E4FD7E2306A8180049610C /* StatsTimeRangeBarViewModel.swift in Sources */,
 				45D875D22611EA2100226C3F /* ListHeaderView.swift in Sources */,
@@ -11501,6 +11544,7 @@
 				6856DE479EC3B2265AC1F775 /* Calendar+Extensions.swift in Sources */,
 				4596854B254071C000D17B90 /* DownloadableFileBottomSheetListSelectorCommandTests.swift in Sources */,
 				26B9875F273CB6AA0090E8CA /* SimplePaymentsNoteViewModelTests.swift in Sources */,
+				0201E4312946FFDB00C793C7 /* StoreCreationCategoryQuestionViewModelTests.swift in Sources */,
 				EE8DCA8028BF964700F23B23 /* MockAuthentication.swift in Sources */,
 				6856D49DB7DCF4D87745C0B1 /* MockPushNotificationsManager.swift in Sources */,
 				4569D3C925DC065B00CDC3E2 /* SiteAddressTests.swift in Sources */,

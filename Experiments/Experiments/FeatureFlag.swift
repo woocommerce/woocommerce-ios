@@ -87,6 +87,10 @@ public enum FeatureFlag: Int {
     ///
     case storeCreationM2WithInAppPurchasesEnabled
 
+    /// Store creation milestone 3 - profiler questions
+    ///
+    case storeCreationM3Profiler
+
     /// Just In Time Messages on Dashboard
     ///
     case justInTimeMessagesOnDashboard

@@ -603,11 +603,11 @@ private extension StatsStoreV4Tests {
 
 
     func sampleSiteVisitStatsItem1() -> Networking.SiteVisitStatsItem {
-        return SiteVisitStatsItem(period: "2014-01-01", visitors: 1135)
+        return SiteVisitStatsItem(period: "2014-01-01", visitors: 1135, views: 12821)
     }
 
     func sampleSiteVisitStatsItem2() -> Networking.SiteVisitStatsItem {
-        return SiteVisitStatsItem(period: "2015-01-01", visitors: 1629)
+        return SiteVisitStatsItem(period: "2015-01-01", visitors: 1629, views: 14808)
     }
 
     func sampleSiteVisitStatsMutated() -> Networking.SiteVisitStats {
@@ -619,11 +619,11 @@ private extension StatsStoreV4Tests {
 
 
     func sampleSiteVisitStatsItem1Mutated() -> Networking.SiteVisitStatsItem {
-        return SiteVisitStatsItem(period: "2014-01-01", visitors: 1140)
+        return SiteVisitStatsItem(period: "2014-01-01", visitors: 1140, views: 12831)
     }
 
     func sampleSiteVisitStatsItem2Mutated() -> Networking.SiteVisitStatsItem {
-        return SiteVisitStatsItem(period: "2015-01-01", visitors: 1634)
+        return SiteVisitStatsItem(period: "2015-01-01", visitors: 1634, views: 14818)
     }
 
     // MARK: - Top Earner Stats Sample

@@ -15,16 +15,19 @@ struct MockInAppPurchases {
     private let fetchProductsDuration: UInt64
     private let products: [WPComPlanProduct]
     private let userIsEntitledToProduct: Bool
+    private let isIAPSupported: Bool
 
     /// - Parameter fetchProductsDuration: How long to wait until the mock plan is returned, in nanoseconds.
     /// - Parameter products: WPCOM products to return for purchase.
     /// - Parameter userIsEntitledToProduct: Whether the user is entitled to the matched IAP product.
     init(fetchProductsDuration: UInt64 = 1_000_000_000,
          products: [WPComPlanProduct] = Defaults.products,
-         userIsEntitledToProduct: Bool = false) {
+         userIsEntitledToProduct: Bool = false,
+         isIAPSupported: Bool = true) {
         self.fetchProductsDuration = fetchProductsDuration
         self.products = products
         self.userIsEntitledToProduct = userIsEntitledToProduct
+        self.isIAPSupported = isIAPSupported
     }
 }
 
@@ -48,7 +51,7 @@ extension MockInAppPurchases: InAppPurchasesForWPComPlansProtocol {
     }
 
     func inAppPurchasesAreSupported() async -> Bool {
-        true
+        isIAPSupported
     }
 }
 

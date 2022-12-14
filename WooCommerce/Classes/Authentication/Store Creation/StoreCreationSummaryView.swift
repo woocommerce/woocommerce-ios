@@ -43,6 +43,8 @@ struct StoreCreationSummaryViewModel {
     let storeName: String
     /// The URL slug of the store.
     let storeSlug: String
+    /// Optional category name from the previous profiler question.
+    let categoryName: String?
 }
 
 /// Displays a summary of the store creation flow with the store information (e.g. store name, store slug).
@@ -84,6 +86,12 @@ struct StoreCreationSummaryView: View {
                                 Text(viewModel.storeSlug)
                                     .foregroundColor(Color(.secondaryLabel))
                                     .bodyStyle()
+                                // Store category (optional).
+                                if let categoryName = viewModel.categoryName {
+                                    Text(categoryName)
+                                        .foregroundColor(Color(.label))
+                                        .bodyStyle()
+                                }
                             }
                         }
                         .padding(Layout.storeInfoPadding)
@@ -141,9 +149,9 @@ private extension StoreCreationSummaryView {
 struct StoreCreationSummaryView_Previews: PreviewProvider {
     static var previews: some View {
         StoreCreationSummaryView(viewModel:
-                .init(storeName: "Fruity shop", storeSlug: "fruityshop.com"))
+                .init(storeName: "Fruity shop", storeSlug: "fruityshop.com", categoryName: "Arts and Crafts"))
         StoreCreationSummaryView(viewModel:
-                .init(storeName: "Fruity shop", storeSlug: "fruityshop.com"))
+                .init(storeName: "Fruity shop", storeSlug: "fruityshop.com", categoryName: "Arts and Crafts"))
         .preferredColorScheme(.dark)
     }
 }

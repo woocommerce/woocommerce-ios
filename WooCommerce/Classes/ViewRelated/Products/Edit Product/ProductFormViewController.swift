@@ -970,11 +970,21 @@ private extension ProductFormViewController {
     }
 
     func createPublishBarButtonItem() -> UIBarButtonItem {
-        return UIBarButtonItem(title: Localization.publishTitle, style: .done, target: self, action: #selector(publishProduct))
+        let publishButton = UIBarButtonItem(title: Localization.publishTitle,
+                                            style: .done,
+                                            target: self,
+                                            action: #selector(publishProduct))
+        publishButton.accessibilityIdentifier = "publish-product-button"
+        return publishButton
     }
 
     func createSaveBarButtonItem() -> UIBarButtonItem {
-        return UIBarButtonItem(title: Localization.saveTitle, style: .done, target: self, action: #selector(saveProductAndLogEvent))
+        let saveButton = UIBarButtonItem(title: Localization.saveTitle,
+                                         style: .done,
+                                         target: self,
+                                         action: #selector(saveProductAndLogEvent))
+        saveButton.accessibilityIdentifier = "save-product-button"
+        return saveButton
     }
 
     func createPreviewBarButtonItem() -> UIBarButtonItem {

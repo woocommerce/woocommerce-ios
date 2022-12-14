@@ -217,7 +217,8 @@ struct ScreenshotObjectGraph: MockObjectGraph {
                 Self.createVisitStatsItem(
                     granularity: .day,
                     periodDate: date.monthStart.addingDays(dayIndex),
-                    visitors: Int.random(in: 0 ... 20)
+                    visitors: Int.random(in: 0 ... 20),
+                    views: Int.random(in: 0...40)
                 )
             }
         )

@@ -147,6 +147,7 @@ private extension ProductFormTableViewDataSource {
         }
 
         cell.accessoryType = .none
+        cell.accessibilityIdentifier = "product-title"
 
         let placeholder = NSLocalizedString("Title", comment: "Placeholder in the Product Title row on Product form screen.")
 
@@ -193,6 +194,7 @@ private extension ProductFormTableViewDataSource {
             cell.textLabel?.text = placeholder
             cell.textLabel?.applyBodyStyle()
             cell.textLabel?.textColor = .textSubtle
+            cell.accessibilityIdentifier = "product-description"
         }
         if isEditable {
             cell.accessoryType = .disclosureIndicator

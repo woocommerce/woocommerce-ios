@@ -177,6 +177,9 @@ def networking_pods
   # Used for HTML parsing
   aztec
 
+  # Used for storing application password
+  keychain
+
   wordpress_kit
 end
 

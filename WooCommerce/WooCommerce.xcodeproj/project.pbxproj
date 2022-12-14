@@ -1368,6 +1368,7 @@
 		B5FD111221D3CE7700560344 /* NewNoteViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5FD111121D3CE7700560344 /* NewNoteViewController.xib */; };
 		B5FD111621D3F13700560344 /* BordersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5FD111521D3F13700560344 /* BordersView.swift */; };
 		B60B5026292D308A00178C26 /* AnalyticsTimeRangeCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60B5025292D308A00178C26 /* AnalyticsTimeRangeCard.swift */; };
+		B61C17722947981C002E9881 /* AnalyticsHubTimeRangeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B61C17712947981C002E9881 /* AnalyticsHubTimeRangeTests.swift */; };
 		B622BC74289CF19400B10CEC /* WaitingTimeTrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B622BC73289CF19400B10CEC /* WaitingTimeTrackerTests.swift */; };
 		B626C71B287659D60083820C /* OrderCustomFieldsDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = B626C71A287659D60083820C /* OrderCustomFieldsDetails.swift */; };
 		B63AAF4B254AD2C6000B28A2 /* URL+SurveyViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63AAF4A254AD2C6000B28A2 /* URL+SurveyViewControllerTests.swift */; };
@@ -3407,6 +3408,7 @@
 		B5FD111121D3CE7700560344 /* NewNoteViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NewNoteViewController.xib; sourceTree = "<group>"; };
 		B5FD111521D3F13700560344 /* BordersView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BordersView.swift; sourceTree = "<group>"; };
 		B60B5025292D308A00178C26 /* AnalyticsTimeRangeCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsTimeRangeCard.swift; sourceTree = "<group>"; };
+		B61C17712947981C002E9881 /* AnalyticsHubTimeRangeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubTimeRangeTests.swift; sourceTree = "<group>"; };
 		B622BC73289CF19400B10CEC /* WaitingTimeTrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaitingTimeTrackerTests.swift; sourceTree = "<group>"; };
 		B626C71A287659D60083820C /* OrderCustomFieldsDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCustomFieldsDetails.swift; sourceTree = "<group>"; };
 		B63AAF4A254AD2C6000B28A2 /* URL+SurveyViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+SurveyViewControllerTests.swift"; sourceTree = "<group>"; };
@@ -7540,6 +7542,7 @@
 			children = (
 				AE4CCCEA29365CFD00B47EE8 /* AnalyticsHubViewModelTests.swift */,
 				B6440FB8292E74230012D506 /* AnalyticsHubTimeRangeSelectionTests.swift */,
+				B61C17712947981C002E9881 /* AnalyticsHubTimeRangeTests.swift */,
 			);
 			path = "Analytics Hub";
 			sourceTree = "<group>";
@@ -11497,6 +11500,7 @@
 				022C658C2863BBAC00EC35A9 /* ProductFormViewController+ProductImageUploaderTests.swift in Sources */,
 				093B265927DF15100026F92D /* BulkUpdatePriceViewControllerTests.swift in Sources */,
 				2614EB1C24EB611200968D4B /* TopBannerViewTests.swift in Sources */,
+				B61C17722947981C002E9881 /* AnalyticsHubTimeRangeTests.swift in Sources */,
 				B5DBF3C320E1484400B53AED /* StoresManagerTests.swift in Sources */,
 				DE3404EA28B4C1D000CF0D97 /* NonAtomicSiteViewModelTests.swift in Sources */,
 				02E493EF245C1087000AEA9E /* ProductFormBottomSheetListSelectorCommandTests.swift in Sources */,

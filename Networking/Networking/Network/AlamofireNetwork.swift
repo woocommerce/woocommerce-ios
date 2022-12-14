@@ -67,12 +67,7 @@ public class AlamofireNetwork: Network {
     ///     - Yes. We do the above because the Jetpack Tunnel endpoint doesn't properly relay the correct statusCode.
     ///
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
-        Task(priority: .medium) {
-            do {
-                let request = try await createRequest(wrapping: request)
-            } catch {
-                completion(nil, error)
-            }
+        createRequest(wrapping: request) { request in
             Alamofire.request(request)
                 .responseData { response in
                     completion(response.value, response.networkingError)
@@ -90,12 +85,7 @@ public class AlamofireNetwork: Network {
     ///     - completion: Closure to be executed upon completion.
     ///
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Swift.Result<Data, Error>) -> Void) {
-        Task(priority: .medium) {
-            do {
-                let request = try await createRequest(wrapping: request)
-            } catch {
-                completion(.failure(error))
-            }
+        createRequest(wrapping: request) { request in
             Alamofire.request(request).responseData { response in
                 completion(response.result.toSwiftResult())
             }
@@ -112,12 +102,7 @@ public class AlamofireNetwork: Network {
     /// - Returns: A publisher that emits the result of the given request.
     public func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
         return Future() { promise in
-            Task(priority: .medium) {
-                do {
-                    let request = try await self.createRequest(wrapping: request)
-                } catch {
-                    promise(Swift.Result.success(.failure(error)))
-                }
+            self.createRequest(wrapping: request) { request in
                 Alamofire.request(request).responseData { response in
                     let result = response.result.toSwiftResult()
                     promise(Swift.Result.success(result))
@@ -129,13 +114,9 @@ public class AlamofireNetwork: Network {
     public func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
                                         to request: URLRequestConvertible,
                                         completion: @escaping (Data?, Error?) -> Void) {
-        Task(priority: .medium) {
-            do {
-                let request = try await createRequest(wrapping: request)
-            } catch {
-                completion(nil, error)
-            }
-            backgroundSessionManager.upload(multipartFormData: multipartFormData, with: request) { (encodingResult) in
+        createRequest(wrapping: request) { [weak self] request in
+            guard let self else { return }
+            self.backgroundSessionManager.upload(multipartFormData: multipartFormData, with: request) { (encodingResult) in
                 switch encodingResult {
                 case .success(let upload, _, _):
                     upload.responseData { response in
@@ -161,20 +142,33 @@ public extension AlamofireNetwork {
 }
 
 private extension AlamofireNetwork {
-    func createRequest(wrapping request: URLRequestConvertible) async throws -> URLRequestConvertible {
+    /// Wraps a request with application password or WPCOM token if possible.
+    ///
+    func createRequest(wrapping request: URLRequestConvertible, completion: @escaping (URLRequestConvertible) -> Void) {
         guard let restRequest = request as? RESTRequest,
               let useCase = applicationPasswordUseCase else {
-            return credentials.map { AuthenticatedRequest(credentials: $0, request: request) } ??
-            UnauthenticatedRequest(request: request)
+            return completion(createAuthenticatedRequestIfPossible(for: request))
         }
-
-        let applicationPassword: ApplicationPassword = try await {
-            if let password = useCase.applicationPassword {
-                return password
+        Task(priority: .medium) {
+            do {
+                let applicationPassword: ApplicationPassword = try await {
+                    if let password = useCase.applicationPassword {
+                        return password
+                    }
+                    return try await useCase.generateNewPassword()
+                }()
+                completion(try restRequest.updateRequest(with: applicationPassword))
+            } catch {
+                completion(createAuthenticatedRequestIfPossible(for: request))
             }
-            return try await useCase.generateNewPassword()
-        }()
-        return try restRequest.updateRequest(with: applicationPassword)
+        }
+    }
+
+    /// Attempts to create a request with WPCOM token if possible.
+    ///
+    func createAuthenticatedRequestIfPossible(for request: URLRequestConvertible) -> URLRequestConvertible {
+        credentials.map { AuthenticatedRequest(credentials: $0, request: request) } ??
+        UnauthenticatedRequest(request: request)
     }
 }
 

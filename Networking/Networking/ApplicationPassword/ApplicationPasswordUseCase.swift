@@ -94,7 +94,7 @@ final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
     /// - Returns: Generated `ApplicationPassword` instance
     ///
     func generateNewPassword() async throws -> ApplicationPassword {
-        let password = try await {
+        async let password = try {
             do {
                 return try await createApplicationPasswordUsingWPCOMAuthToken()
             } catch ApplicationPasswordUseCaseError.duplicateName {
@@ -102,9 +102,9 @@ final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
                 return try await createApplicationPasswordUsingWPCOMAuthToken()
             }
         }()
-        let username = try await fetchWPAdminUsername()
+        async let username = try fetchWPAdminUsername()
 
-        let applicationPassword = ApplicationPassword(wpOrgUsername: username, password: Secret(password))
+        let applicationPassword = try await ApplicationPassword(wpOrgUsername: username, password: Secret(password))
         saveApplicationPassword(applicationPassword)
         return applicationPassword
     }

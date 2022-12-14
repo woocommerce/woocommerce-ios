@@ -2,25 +2,6 @@ import Combine
 import Foundation
 import Alamofire
 
-// TODO: Replace with actual implementation.
-final class TemporaryApplicationPasswordUseCase: ApplicationPasswordUseCase {
-    init(siteID: Int64, credentials: Credentials) {
-        // no-op
-    }
-
-    var applicationPassword: ApplicationPassword? {
-        return nil
-    }
-
-    func generateNewPassword() async throws -> ApplicationPassword {
-        return .init(wpOrgUsername: "test", password: .init("12345"))
-    }
-
-    func deletePassword() async throws {
-        // no-op
-    }
-}
-
 extension Alamofire.MultipartFormData: MultipartFormData {}
 
 /// AlamofireWrapper: Encapsulates all of the Alamofire OP's
@@ -29,20 +10,16 @@ public class AlamofireNetwork: Network {
 
     private let backgroundSessionManager: Alamofire.SessionManager
 
-    /// WordPress.com Credentials.
+    /// Authenticator to update requests authorization header if possible.
     ///
-    private let credentials: Credentials?
-
-    /// The use case to handle authentication with application passwords.
-    ///
-    private var applicationPasswordUseCase: ApplicationPasswordUseCase?
+    private let requestAuthenticator: RequestAuthenticator
 
     public var session: URLSession { SessionManager.default.session }
 
     /// Public Initializer
     ///
     public required init(credentials: Credentials?) {
-        self.credentials = credentials
+        self.requestAuthenticator = RequestAuthenticator(credentials: credentials)
 
         // A unique ID is included in the background session identifier so that the session does not get invalidated when the initializer is called multiple
         // times (e.g. when logging in).
@@ -67,7 +44,7 @@ public class AlamofireNetwork: Network {
     ///     - Yes. We do the above because the Jetpack Tunnel endpoint doesn't properly relay the correct statusCode.
     ///
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
-        createRequest(wrapping: request) { request in
+        requestAuthenticator.authenticateRequest(request) { request in
             Alamofire.request(request)
                 .responseData { response in
                     completion(response.value, response.networkingError)
@@ -85,7 +62,7 @@ public class AlamofireNetwork: Network {
     ///     - completion: Closure to be executed upon completion.
     ///
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Swift.Result<Data, Error>) -> Void) {
-        createRequest(wrapping: request) { request in
+        requestAuthenticator.authenticateRequest(request) { request in
             Alamofire.request(request).responseData { response in
                 completion(response.result.toSwiftResult())
             }
@@ -102,7 +79,7 @@ public class AlamofireNetwork: Network {
     /// - Returns: A publisher that emits the result of the given request.
     public func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
         return Future() { promise in
-            self.createRequest(wrapping: request) { request in
+            self.requestAuthenticator.authenticateRequest(request) { request in
                 Alamofire.request(request).responseData { response in
                     let result = response.result.toSwiftResult()
                     promise(Swift.Result.success(result))
@@ -114,7 +91,7 @@ public class AlamofireNetwork: Network {
     public func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
                                         to request: URLRequestConvertible,
                                         completion: @escaping (Data?, Error?) -> Void) {
-        createRequest(wrapping: request) { [weak self] request in
+        requestAuthenticator.authenticateRequest(request) { [weak self] request in
             guard let self else { return }
             self.backgroundSessionManager.upload(multipartFormData: multipartFormData, with: request) { (encodingResult) in
                 switch encodingResult {
@@ -134,46 +111,7 @@ public extension AlamofireNetwork {
     /// Updates the application password use case with a new site ID.
     ///
     func configureApplicationPasswordHandler(with siteID: Int64) {
-        guard let credentials else {
-            return
-        }
-        self.applicationPasswordUseCase = TemporaryApplicationPasswordUseCase(siteID: siteID, credentials: credentials)
-    }
-}
-
-private extension AlamofireNetwork {
-    /// Updates a request with application password or WPCOM token if possible.
-    ///
-    func createRequest(wrapping request: URLRequestConvertible, completion: @escaping (URLRequestConvertible) -> Void) {
-        guard let restRequest = request as? RESTRequest,
-              let useCase = applicationPasswordUseCase else {
-            // Handle non-REST requests as before
-            return completion(createAuthenticatedRequestIfPossible(for: request))
-        }
-        Task(priority: .medium) {
-            do {
-                let applicationPassword: ApplicationPassword = try await {
-                    if let password = useCase.applicationPassword {
-                        return password
-                    }
-                    return try await useCase.generateNewPassword()
-                }()
-                completion(try restRequest.updateRequest(with: applicationPassword))
-            } catch {
-                DDLogWarn("⚠️ Error generating application password and update request: \(error)")
-                // TODO: add Tracks
-                // Get the fallback Jetpack request to handle if possible.
-                let fallbackRequest = restRequest.fallbackRequest ?? request
-                completion(createAuthenticatedRequestIfPossible(for: fallbackRequest))
-            }
-        }
-    }
-
-    /// Attempts creating a request with WPCOM token if possible.
-    ///
-    func createAuthenticatedRequestIfPossible(for request: URLRequestConvertible) -> URLRequestConvertible {
-        credentials.map { AuthenticatedRequest(credentials: $0, request: request) } ??
-        UnauthenticatedRequest(request: request)
+        requestAuthenticator.updateApplicationPasswordHandler(with: siteID)
     }
 }
 

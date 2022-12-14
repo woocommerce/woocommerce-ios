@@ -16,6 +16,11 @@ struct OrdersUpsertUseCase {
         self.storage = storage
     }
 
+    func storedOrders() -> [StorageOrder] {
+        let descriptor = NSSortDescriptor(key: "dateCreated", ascending: true)
+        return storage.allObjects(ofType: StorageOrder.self, matching: nil, sortedBy: [descriptor])
+    }
+
     /// Updates or inserts the given `Networking.Order` objects.
     ///
     /// - Parameter insertingSearchResults: Indicates if the "Newly Inserted Entities" should be

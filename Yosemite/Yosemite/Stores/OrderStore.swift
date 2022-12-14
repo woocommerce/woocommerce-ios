@@ -1,4 +1,5 @@
 import Combine
+import CoreData
 import Foundation
 import Networking
 import Storage
@@ -35,6 +36,8 @@ public class OrderStore: Store {
         }
 
         switch action {
+        case .retrieveStoredOrders(let onCompletion):
+            retrieveStoredOrders(onCompletion: onCompletion)
         case .resetStoredOrders(let onCompletion):
             resetStoredOrders(onCompletion: onCompletion)
         case .retrieveOrder(let siteID, let orderID, let onCompletion):
@@ -93,6 +96,12 @@ public class OrderStore: Store {
 // MARK: - Services!
 //
 private extension OrderStore {
+    func retrieveStoredOrders(onCompletion: ([Order]) -> Void) {
+        let descriptor = NSSortDescriptor(key: "orderID", ascending: true)
+        let orders = storageManager.viewStorage.allObjects(ofType: StorageOrder.self, matching: nil, sortedBy: [descriptor])
+
+        onCompletion(orders.compactMap { $0.toReadOnly() })
+    }
 
     /// Nukes all of the Stored Orders.
     ///

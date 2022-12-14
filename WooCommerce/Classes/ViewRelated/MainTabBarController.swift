@@ -368,7 +368,13 @@ extension MainTabBarController {
     }
 
     private static func switchToStore(with siteID: Int64, onCompletion: @escaping (Bool) -> Void) {
-        SwitchStoreUseCase(stores: ServiceLocator.stores).switchToStoreIfSiteIsStored(with: siteID) { siteChanged in
+        let storeManager = ServiceLocator.stores
+        guard siteID != storeManager.sessionManager.defaultStoreID else {
+            onCompletion(true)
+            return
+        }
+
+        SwitchStoreUseCase(stores: storeManager).switchToStoreIfSiteIsStored(with: siteID) { siteChanged in
             guard siteChanged else {
                 return onCompletion(false)
             }
@@ -404,6 +410,19 @@ extension MainTabBarController {
                 }
             }
         })
+    }
+
+    static func presentOrderCreationFlow() {
+        switchToOrdersTab {
+            let tabBar = AppDelegate.shared.tabBarController
+            let ordersNavigationController = tabBar?.ordersNavigationController
+
+            guard let ordersRootViewController = ordersNavigationController?.viewControllers.first as? OrdersSplitViewWrapperController else {
+                return
+            }
+
+            ordersRootViewController.presentOrderCreationFlow()
+        }
     }
 
     private static func presentDetails(for orderID: Int64, siteID: Int64) {

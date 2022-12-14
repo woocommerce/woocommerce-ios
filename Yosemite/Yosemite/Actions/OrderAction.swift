@@ -50,6 +50,8 @@ public enum OrderAction: Action {
                            pageSize: Int,
                            onCompletion: (TimeInterval, Error?) -> Void)
 
+    case retrieveStoredOrders(onCompletion: ([Order]) -> Void)
+
     /// Nukes all of the cached orders.
     ///
     case resetStoredOrders(onCompletion: () -> Void)

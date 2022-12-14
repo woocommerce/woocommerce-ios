@@ -3,7 +3,7 @@ import Foundation
 
 /// Abstracts the Stores coordination
 ///
-public protocol StoresManager {
+public protocol StoresManager: Sendable {
 
     /// Forwards the Action to the current State.
     ///

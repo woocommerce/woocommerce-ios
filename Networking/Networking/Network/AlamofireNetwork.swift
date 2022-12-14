@@ -159,7 +159,9 @@ private extension AlamofireNetwork {
                 }()
                 completion(try restRequest.updateRequest(with: applicationPassword))
             } catch {
-                completion(createAuthenticatedRequestIfPossible(for: request))
+                // Get the fallback Jetpack request to handle if possible.
+                let fallbackRequest = restRequest.fallbackRequest ?? request
+                completion(createAuthenticatedRequestIfPossible(for: fallbackRequest))
             }
         }
     }

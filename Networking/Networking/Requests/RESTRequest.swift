@@ -21,6 +21,9 @@ struct RESTRequest: URLRequestConvertible {
     /// HTTP Headers
     let headers: [String: String]
 
+    /// A fallback JetpackRequest if the REST request cannot be made with an application password.
+    let fallbackRequest: JetpackRequest?
+
     /// Designated Initializer.
     ///
     /// - Parameters:
@@ -28,12 +31,13 @@ struct RESTRequest: URLRequestConvertible {
     ///     - path: RPC that should be executed.
     ///     - parameters: Collection of String parameters to be passed over to our target RPC.
     ///
-    init(siteURL: String, method: HTTPMethod, path: String, parameters: [String: Any]? = nil, headers: [String: String]? = nil) {
+    init(siteURL: String, method: HTTPMethod, path: String, parameters: [String: Any]? = nil, headers: [String: String]? = nil, fallbackRequest: JetpackRequest?) {
         self.siteURL = siteURL
         self.method = method
         self.path = path
         self.parameters = parameters ?? [:]
         self.headers = headers ?? [:]
+        self.fallbackRequest = fallbackRequest
     }
 
     /// Returns a URLRequest instance representing the current WordPress.com Request.

@@ -1397,6 +1397,7 @@
 		B94251F12949E58C00CA6BC5 /* CreateOrderAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B94251F02949E58C00CA6BC5 /* CreateOrderAppIntent.swift */; };
 		B94251F42949EE0900CA6BC5 /* ShortcutProductAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B94251F32949EE0900CA6BC5 /* ShortcutProductAppEntity.swift */; };
 		B94251F6294A10FE00CA6BC5 /* MarkOrderAsCompletedAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B94251F5294A10FE00CA6BC5 /* MarkOrderAsCompletedAppIntent.swift */; };
+		B94251F8294A177100CA6BC5 /* CollectPaymentAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B94251F7294A177100CA6BC5 /* CollectPaymentAppIntent.swift */; };
 		B94403C9289ABB4D00323FC2 /* SimplePaymentsAmountFlowOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = B94403C8289ABB4D00323FC2 /* SimplePaymentsAmountFlowOpener.swift */; };
 		B95112DA28BF79CA00D9578D /* PaymentsRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95112D928BF79CA00D9578D /* PaymentsRoute.swift */; };
 		B958A7C728B3D44A00823EEF /* UniversalLinkRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A7C628B3D44A00823EEF /* UniversalLinkRouter.swift */; };
@@ -3432,6 +3433,7 @@
 		B94251F02949E58C00CA6BC5 /* CreateOrderAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOrderAppIntent.swift; sourceTree = "<group>"; };
 		B94251F32949EE0900CA6BC5 /* ShortcutProductAppEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutProductAppEntity.swift; sourceTree = "<group>"; };
 		B94251F5294A10FE00CA6BC5 /* MarkOrderAsCompletedAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkOrderAsCompletedAppIntent.swift; sourceTree = "<group>"; };
+		B94251F7294A177100CA6BC5 /* CollectPaymentAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectPaymentAppIntent.swift; sourceTree = "<group>"; };
 		B94403C8289ABB4D00323FC2 /* SimplePaymentsAmountFlowOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplePaymentsAmountFlowOpener.swift; sourceTree = "<group>"; };
 		B95112D928BF79CA00D9578D /* PaymentsRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsRoute.swift; sourceTree = "<group>"; };
 		B958A7C628B3D44A00823EEF /* UniversalLinkRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniversalLinkRouter.swift; sourceTree = "<group>"; };
@@ -7573,6 +7575,7 @@
 				B94251EC2948840500CA6BC5 /* OpenOrderAppIntent.swift */,
 				B94251F02949E58C00CA6BC5 /* CreateOrderAppIntent.swift */,
 				B94251F5294A10FE00CA6BC5 /* MarkOrderAsCompletedAppIntent.swift */,
+				B94251F7294A177100CA6BC5 /* CollectPaymentAppIntent.swift */,
 			);
 			path = Intents;
 			sourceTree = "<group>";
@@ -10067,6 +10070,7 @@
 				02FE1B9F287F51F400EC03B3 /* LoginOnboardingViewController.swift in Sources */,
 				E15F163126C5117300D3059B /* InPersonPaymentsNoConnectionView.swift in Sources */,
 				CC41E70C29310C1F008B3FB9 /* AnalyticsLineChart.swift in Sources */,
+				B94251F8294A177100CA6BC5 /* CollectPaymentAppIntent.swift in Sources */,
 				456CB50D2444BFAC00992A05 /* ProductPurchaseNoteViewController.swift in Sources */,
 				6827140F28A3988300E6E3F6 /* DismissableNoticeView.swift in Sources */,
 				D802541F2655137A001B2CC1 /* CardPresentModalNonRetryableError.swift in Sources */,

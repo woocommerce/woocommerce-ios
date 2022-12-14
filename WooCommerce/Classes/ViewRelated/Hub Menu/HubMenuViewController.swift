@@ -28,8 +28,11 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
         viewModel.showReviewDetails(using: parcel)
     }
 
-    func showPaymentsMenu() {
-        show(InPersonPaymentsMenuViewController(), sender: self)
+    func showPaymentsMenu() -> InPersonPaymentsMenuViewController {
+        let inPersonPaymentsMenuViewController = InPersonPaymentsMenuViewController()
+        show(inPersonPaymentsMenuViewController, sender: self)
+
+        return inPersonPaymentsMenuViewController
     }
 
     override func viewWillAppear(_ animated: Bool) {

@@ -31,7 +31,12 @@ struct RESTRequest: URLRequestConvertible {
     ///     - path: RPC that should be executed.
     ///     - parameters: Collection of String parameters to be passed over to our target RPC.
     ///
-    init(siteURL: String, method: HTTPMethod, path: String, parameters: [String: Any]? = nil, headers: [String: String]? = nil, fallbackRequest: JetpackRequest?) {
+    init(siteURL: String,
+         method: HTTPMethod,
+         path: String,
+         parameters: [String: Any]? = nil,
+         headers: [String: String]? = nil,
+         fallbackRequest: JetpackRequest?) {
         self.siteURL = siteURL
         self.method = method
         self.path = path

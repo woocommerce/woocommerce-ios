@@ -38,8 +38,7 @@ struct AnalyticsTimeRangeCard: View {
                     ServiceLocator.analytics.track(event: .AnalyticsHub.dateRangeOptionSelected(selection.tracksIdentifier))
                 }
                 .sheet(isPresented: $showCustomRangeSelectionView) {
-                    // TODO: Pass real dates here
-                    RangedDatePicker() { start, end in
+                    RangedDatePicker(startDate: selectionType.startDate, endDate: selectionType.endDate) { start, end in
                         showTimeRangeSelectionView = false // Dismiss the initial sheet for a smooth transition
                         self.selectionType = .custom(start: start, end: end)
                     }

@@ -8,7 +8,7 @@ struct AnalyticsHubRangeAdapter {
 
     /// Converts an `AnalyticsHubTimeRangeSelection.SelectionType` range into a `AnalyticsTimeRangeCard.Range`.
     ///
-    fileprivate static func timeCardRange(from analyticsHubRange: AnalyticsHubTimeRangeSelection.SelectionType) -> AnalyticsTimeRangeCard.Range {
+    static func timeCardRange(from analyticsHubRange: AnalyticsHubTimeRangeSelection.SelectionType) -> AnalyticsTimeRangeCard.Range {
         switch analyticsHubRange {
         case .custom:
             return .custom
@@ -37,7 +37,7 @@ struct AnalyticsHubRangeAdapter {
 
     /// Converts an `AnalyticsTimeRangeCard.Range` into a `AnalyticsHubTimeRangeSelection.SelectionType` range.
     ///
-    fileprivate static func analyticsHubRange(from timeCardRange: AnalyticsTimeRangeCard.Range) -> AnalyticsHubTimeRangeSelection.SelectionType {
+    static func analyticsHubRange(from timeCardRange: AnalyticsTimeRangeCard.Range) -> AnalyticsHubTimeRangeSelection.SelectionType {
         switch timeCardRange {
         case .custom:
             return .custom(start: Date(), end: Date())
@@ -179,6 +179,17 @@ struct AnalyticsHubRangeAdapter {
             return TracksIdentifier.yearToDate
         }
     }
+
+    /// Extracts the dates from an analytics hub range custom type.
+    ///
+    static func customDates(from analyticsHubRange: AnalyticsHubTimeRangeSelection.SelectionType) -> (start: Date, end: Date)? {
+        switch analyticsHubRange {
+        case let .custom(startDate, endDate):
+            return (startDate, endDate)
+        default:
+            return nil
+        }
+    }
 }
 
 // MARK: Constants
@@ -240,5 +251,17 @@ extension AnalyticsHubTimeRangeSelection.SelectionType {
 
     var asTimeCardRange: AnalyticsTimeRangeCard.Range {
         AnalyticsHubRangeAdapter.timeCardRange(from: self)
+    }
+
+    /// Extracts the start date from custom range type.
+    ///
+    var startDate: Date? {
+        AnalyticsHubRangeAdapter.customDates(from: self)?.start
+    }
+
+    /// Extracts the end date from custom range type.
+    ///
+    var endDate: Date? {
+        AnalyticsHubRangeAdapter.customDates(from: self)?.end
     }
 }

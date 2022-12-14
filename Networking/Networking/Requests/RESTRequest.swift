@@ -1,6 +1,8 @@
 import Foundation
 import Alamofire
 
+/// Wraps up a URLRequestConvertible Instance, and injects the Authorization + User Agent whenever the actual Request is required.
+///
 struct RESTRequest: URLRequestConvertible {
     /// URL of the site to make the request with
     ///
@@ -27,9 +29,10 @@ struct RESTRequest: URLRequestConvertible {
     /// Designated Initializer.
     ///
     /// - Parameters:
+    ///     - siteURL: URL of the site to send the REST request to.
     ///     - method: HTTP Method we should use.
-    ///     - path: RPC that should be executed.
-    ///     - parameters: Collection of String parameters to be passed over to our target RPC.
+    ///     - path: path to the target endpoint.
+    ///     - parameters: Collection of String parameters to be passed over to our target endpoint.
     ///     - headers: Headers to be added to the request.
     ///     - fallbackRequest: A fallback Jetpack request to trigger if the REST request cannot be made.
     ///
@@ -47,7 +50,7 @@ struct RESTRequest: URLRequestConvertible {
         self.fallbackRequest = fallbackRequest
     }
 
-    /// Returns a URLRequest instance representing the current WordPress.com Request.
+    /// Returns a URLRequest instance representing the current REST API Request.
     ///
     func asURLRequest() throws -> URLRequest {
         let url = try (siteURL + path).asURL()

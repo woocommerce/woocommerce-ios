@@ -492,9 +492,13 @@ private extension StatsStoreV4 {
                 // Return the complete array of products that corresponds to a top product leaderboard
                 let products = try await productsRemote.loadProducts(for: siteID, by: missingProductsIDs)
                 let completeTopProducts = products + topStoredProducts
-                completion(.success(completeTopProducts))
+                await MainActor.run(body: {
+                    completion(.success(completeTopProducts))
+                })
             } catch {
-                completion(.failure(error))
+                await MainActor.run(body: {
+                    completion(.failure(error))
+                })
             }
         }
     }

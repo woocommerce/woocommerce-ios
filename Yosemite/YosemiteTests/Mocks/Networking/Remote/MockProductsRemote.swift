@@ -155,7 +155,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
         searchProductWithProductType = productType
         searchProductWithProductStatus = productStatus
         searchProductWithProductCategory = productCategory
-        // Check:
+
         return [Product.fake()]
     }
 

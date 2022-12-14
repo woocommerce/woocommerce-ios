@@ -35,7 +35,7 @@ protocol ApplicationPasswordUseCase {
     func deletePassword() async throws
 }
 
-final class DefaultApplicationPasswordUseCase {
+final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
     /// WordPress.com Credentials.
     ///
     private let credentials: Credentials
@@ -83,6 +83,27 @@ final class DefaultApplicationPasswordUseCase {
             return nil
         }
         return ApplicationPassword(wpOrgUsername: username, password: Secret(password))
+    }
+
+    /// Generates new ApplicationPassword
+    ///
+    /// - Returns: Generated `ApplicationPassword` instance
+    ///
+    func generateNewPassword() async throws -> ApplicationPassword {
+        let password = try await createApplicationPasswordUsingWPCOMAuthToken()
+        let username = try await fetchWPAdminUsername()
+
+        let applicationPassword = ApplicationPassword(wpOrgUsername: username, password: Secret(password))
+        saveApplicationPassword(applicationPassword)
+        return applicationPassword
+    }
+
+    /// Deletes the application password
+    ///
+    ///  Deletes locally and also sends an API request to delete it from the site
+    ///
+    func deletePassword() async throws {
+        try await deleteApplicationPasswordUsingWPCOMAuthToken()
     }
 }
 

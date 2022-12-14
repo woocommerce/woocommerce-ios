@@ -57,8 +57,8 @@ final class RequestAuthenticator {
                     }
                     return try await useCase.generateNewPassword()
                 }()
-                let updatedRequest = try restRequest.updateRequest(with: applicationPassword)
-                await MainActor.run {
+                try await MainActor.run {
+                    let updatedRequest = try restRequest.updateRequest(with: applicationPassword)
                     completion(updatedRequest)
                 }
             } catch {

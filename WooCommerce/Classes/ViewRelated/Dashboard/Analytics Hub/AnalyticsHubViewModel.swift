@@ -41,9 +41,13 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published var ordersCard = AnalyticsHubViewModel.ordersCard(currentPeriodStats: nil, previousPeriodStats: nil)
 
-    /// Products Card ViewModel
+    /// Products Stats Card ViewModel
     ///
-    @Published var productCard = AnalyticsHubViewModel.productCard(currentPeriodStats: nil, previousPeriodStats: nil, itemsSoldStats: nil)
+    @Published var productsStatsCard = AnalyticsHubViewModel.productsStatsCard(currentPeriodStats: nil, previousPeriodStats: nil)
+
+    /// Items Sold Card ViewModel
+    ///
+    @Published var itemsSoldCard = AnalyticsHubViewModel.productsItemsSoldCard(itemsSoldStats: nil)
 
     /// Sessions Card ViewModel
     ///
@@ -89,7 +93,7 @@ final class AnalyticsHubViewModel: ObservableObject {
     @MainActor
     func updateData() async {
         do {
-            try await retrieveOrderStats()
+            try await retrieveData()
         } catch is AnalyticsHubTimeRangeSelection.TimeRangeGeneratorError {
             dismissNotice = Notice(title: Localization.timeRangeGeneratorError, feedbackType: .error)
             ServiceLocator.analytics.track(event: .AnalyticsHub.dateRangeSelectionFailed(for: timeRangeSelectionType))
@@ -111,12 +115,25 @@ final class AnalyticsHubViewModel: ObservableObject {
 private extension AnalyticsHubViewModel {
 
     @MainActor
-    func retrieveOrderStats() async throws {
+    func retrieveData() async throws {
         switchToLoadingState()
 
         let currentTimeRange = try timeRangeSelection.unwrapCurrentTimeRange()
         let previousTimeRange = try timeRangeSelection.unwrapPreviousTimeRange()
 
+        try await withThrowingTaskGroup(of: Void.self) { group in
+            group.addTask {
+                try await self.retrieveOrderStats(currentTimeRange: currentTimeRange, previousTimeRange: previousTimeRange)
+            }
+            group.addTask {
+                try await self.retrieveVisitorStats(currentTimeRange: currentTimeRange, previousTimeRange: previousTimeRange)
+            }
+            try await group.waitForAll()
+        }
+    }
+
+    @MainActor
+    func retrieveOrderStats(currentTimeRange: AnalyticsHubTimeRange, previousTimeRange: AnalyticsHubTimeRange) async throws {
         async let currentPeriodRequest = retrieveStats(earliestDateToInclude: currentTimeRange.start,
                                                        latestDateToInclude: currentTimeRange.end,
                                                        forceRefresh: true)
@@ -124,13 +141,18 @@ private extension AnalyticsHubViewModel {
                                                         latestDateToInclude: previousTimeRange.end,
                                                         forceRefresh: true)
 
+        let (currentPeriodStats, previousPeriodStats) = try await (currentPeriodRequest, previousPeriodRequest)
+        self.currentOrderStats = currentPeriodStats
+        self.previousOrderStats = previousPeriodStats
+    }
+
+    @MainActor
+    func retrieveVisitorStats(currentTimeRange: AnalyticsHubTimeRange, previousTimeRange: AnalyticsHubTimeRange) async throws {
         async let itemsSoldRequest = retrieveTopItemsSoldStats(earliestDateToInclude: currentTimeRange.start,
                                                                latestDateToInclude: currentTimeRange.end,
                                                                forceRefresh: true)
 
-        let (currentPeriodStats, previousPeriodStats, itemsSoldStats) = try await (currentPeriodRequest, previousPeriodRequest, itemsSoldRequest)
-        self.currentOrderStats = currentPeriodStats
-        self.previousOrderStats = previousPeriodStats
+        let itemsSoldStats = try await itemsSoldRequest
         self.itemsSoldStats = itemsSoldStats
     }
 
@@ -178,7 +200,8 @@ private extension AnalyticsHubViewModel {
     func switchToLoadingState() {
         self.revenueCard = revenueCard.redacted
         self.ordersCard = ordersCard.redacted
-        self.productCard = productCard.redacted
+        self.productsStatsCard = productsStatsCard.redacted
+        self.itemsSoldCard = itemsSoldCard.redacted
     }
 
     @MainActor
@@ -189,25 +212,33 @@ private extension AnalyticsHubViewModel {
     }
 
     func bindViewModelsWithData() {
-        Publishers.CombineLatest3($currentOrderStats, $previousOrderStats, $itemsSoldStats)
-            .sink { [weak self] currentOrderStats, previousOrderStats, itemsSoldStats in
+        Publishers.CombineLatest($currentOrderStats, $previousOrderStats)
+            .sink { [weak self] currentOrderStats, previousOrderStats in
                 guard let self else { return }
 
                 self.revenueCard = AnalyticsHubViewModel.revenueCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
                 self.ordersCard = AnalyticsHubViewModel.ordersCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
-                self.productCard = AnalyticsHubViewModel.productCard(currentPeriodStats: currentOrderStats,
-                                                                     previousPeriodStats: previousOrderStats,
-                                                                     itemsSoldStats: itemsSoldStats)
+                self.productsStatsCard = AnalyticsHubViewModel.productsStatsCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
 
             }.store(in: &subscriptions)
 
+        $itemsSoldStats
+            .sink { [weak self] itemsSoldStats in
+                guard let self else { return }
+
+                self.itemsSoldCard = AnalyticsHubViewModel.productsItemsSoldCard(itemsSoldStats: itemsSoldStats)
+            }.store(in: &subscriptions)
+
         $timeRangeSelectionType
+            .dropFirst() // do not trigger refresh action on initial value
             .removeDuplicates()
             .sink { [weak self] newSelectionType in
                 guard let self else { return }
                 self.timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: newSelectionType)
                 self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelection: self.timeRangeSelection,
                                                                          usageTracksEventEmitter: self.usageTracksEventEmitter)
+
+                // Update data on range selection change
                 Task.init {
                     await self.updateData()
                 }
@@ -251,22 +282,26 @@ private extension AnalyticsHubViewModel {
                                             syncErrorMessage: Localization.OrderCard.noOrders)
     }
 
-    /// Helper function to create a `AnalyticsProductCardViewModel` from the fetched stats.
+    /// Helper function to create a `AnalyticsProductsStatsCardViewModel` from the fetched stats.
     ///
-    static func productCard(currentPeriodStats: OrderStatsV4?,
-                            previousPeriodStats: OrderStatsV4?,
-                            itemsSoldStats: TopEarnerStats?) -> AnalyticsProductCardViewModel {
+    static func productsStatsCard(currentPeriodStats: OrderStatsV4?,
+                                  previousPeriodStats: OrderStatsV4?) -> AnalyticsProductsStatsCardViewModel {
         let showStatsError = currentPeriodStats == nil || previousPeriodStats == nil
-        let showItemsSoldError = itemsSoldStats == nil
         let itemsSold = StatsDataTextFormatter.createItemsSoldText(orderStats: currentPeriodStats)
         let itemsSoldDelta = StatsDataTextFormatter.createOrderItemsSoldDelta(from: previousPeriodStats, to: currentPeriodStats)
 
-        return AnalyticsProductCardViewModel(itemsSold: itemsSold,
-                                             delta: itemsSoldDelta,
-                                             itemsSoldData: itemSoldRows(from: itemsSoldStats),
-                                             isRedacted: false,
-                                             showStatsError: showStatsError,
-                                             showItemsSoldError: showItemsSoldError)
+        return AnalyticsProductsStatsCardViewModel(itemsSold: itemsSold,
+                                                   delta: itemsSoldDelta,
+                                                   isRedacted: false,
+                                                   showStatsError: showStatsError)
+    }
+
+    /// Helper function to create a `AnalyticsItemsSoldViewModel` from the fetched stats.
+    ///
+    static func productsItemsSoldCard(itemsSoldStats: TopEarnerStats?) -> AnalyticsItemsSoldViewModel {
+        let showItemsSoldError = itemsSoldStats == nil
+
+        return AnalyticsItemsSoldViewModel(itemsSoldData: itemSoldRows(from: itemsSoldStats), isRedacted: false, showItemsSoldError: showItemsSoldError)
     }
 
     /// Helper function to create a `AnalyticsReportCardCurrentPeriodViewModel` from the fetched stats.

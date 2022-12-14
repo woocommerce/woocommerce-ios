@@ -120,11 +120,12 @@ public extension AlamofireNetwork {
 }
 
 private extension AlamofireNetwork {
-    /// Wraps a request with application password or WPCOM token if possible.
+    /// Updates a request with application password or WPCOM token if possible.
     ///
     func createRequest(wrapping request: URLRequestConvertible, completion: @escaping (URLRequestConvertible) -> Void) {
         guard let restRequest = request as? RESTRequest,
               let useCase = applicationPasswordUseCase else {
+            // Handle non-REST requests as before
             return completion(createAuthenticatedRequestIfPossible(for: request))
         }
         Task(priority: .medium) {
@@ -137,6 +138,8 @@ private extension AlamofireNetwork {
                 }()
                 completion(try restRequest.updateRequest(with: applicationPassword))
             } catch {
+                DDLogWarn("⚠️ Error generating application password and update request: \(error)")
+                // TODO: add Tracks
                 // Get the fallback Jetpack request to handle if possible.
                 let fallbackRequest = restRequest.fallbackRequest ?? request
                 completion(createAuthenticatedRequestIfPossible(for: fallbackRequest))
@@ -144,7 +147,7 @@ private extension AlamofireNetwork {
         }
     }
 
-    /// Attempts to create a request with WPCOM token if possible.
+    /// Attempts creating a request with WPCOM token if possible.
     ///
     func createAuthenticatedRequestIfPossible(for request: URLRequestConvertible) -> URLRequestConvertible {
         credentials.map { AuthenticatedRequest(credentials: $0, request: request) } ??

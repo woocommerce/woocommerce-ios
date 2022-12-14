@@ -37,12 +37,14 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(vm.revenueCard.isRedacted)
         XCTAssertFalse(vm.ordersCard.isRedacted)
-        XCTAssertFalse(vm.productCard.isRedacted)
+        XCTAssertFalse(vm.productsStatsCard.isRedacted)
+        XCTAssertFalse(vm.itemsSoldCard.isRedacted)
 
         XCTAssertEqual(vm.revenueCard.leadingValue, "$62")
         XCTAssertEqual(vm.ordersCard.leadingValue, "15")
-        XCTAssertEqual(vm.productCard.itemsSold, "5")
-        XCTAssertEqual(vm.productCard.itemsSoldData.count, 1)
+        XCTAssertEqual(vm.productsStatsCard.itemsSold, "5")
+
+        XCTAssertEqual(vm.itemsSoldCard.itemsSoldData.count, 1)
     }
 
     func test_cards_viewmodels_show_sync_error_after_getting_error_from_network() async {
@@ -65,8 +67,8 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(vm.revenueCard.showSyncError)
         XCTAssertTrue(vm.ordersCard.showSyncError)
-        XCTAssertTrue(vm.productCard.showStatsError)
-        XCTAssertTrue(vm.productCard.showItemsSoldError)
+        XCTAssertTrue(vm.productsStatsCard.showStatsError)
+        XCTAssertTrue(vm.itemsSoldCard.showItemsSoldError)
     }
 
     func test_cards_viewmodels_redacted_while_updating_from_network() async {
@@ -74,14 +76,16 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores)
         var loadingRevenueCard: AnalyticsReportCardViewModel?
         var loadingOrdersCard: AnalyticsReportCardViewModel?
-        var loadingProductsCard: AnalyticsProductCardViewModel?
+        var loadingProductsCard: AnalyticsProductsStatsCardViewModel?
+        var loadingItemsSoldCard: AnalyticsItemsSoldViewModel?
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
             case let .retrieveCustomStats(_, _, _, _, _, _, completion):
                 let stats = OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 15, totalItemsSold: 5, grossRevenue: 62))
                 loadingRevenueCard = vm.revenueCard
                 loadingOrdersCard = vm.ordersCard
-                loadingProductsCard = vm.productCard
+                loadingProductsCard = vm.productsStatsCard
+                loadingItemsSoldCard = vm.itemsSoldCard
                 completion(.success(stats))
             case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, completion):
                 let topEarners = TopEarnerStats.fake().copy(items: [.fake()])
@@ -98,5 +102,6 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertEqual(loadingRevenueCard?.isRedacted, true)
         XCTAssertEqual(loadingOrdersCard?.isRedacted, true)
         XCTAssertEqual(loadingProductsCard?.isRedacted, true)
+        XCTAssertEqual(loadingItemsSoldCard?.isRedacted, true)
     }
 }

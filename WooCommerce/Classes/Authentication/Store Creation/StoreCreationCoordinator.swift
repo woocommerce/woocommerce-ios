@@ -78,7 +78,7 @@ final class StoreCreationCoordinator: Coordinator {
             do {
                 let inProgressView = createIAPEligibilityInProgressView()
                 let storeCreationNavigationController = WooNavigationController(rootViewController: inProgressView)
-                presentStoreCreation(viewController: storeCreationNavigationController)
+                await presentStoreCreation(viewController: storeCreationNavigationController)
 
                 guard await purchasesManager.inAppPurchasesAreSupported() else {
                     throw PlanPurchaseError.iapNotSupported
@@ -96,8 +96,14 @@ final class StoreCreationCoordinator: Coordinator {
 
                 startStoreCreationM2(from: storeCreationNavigationController, planToPurchase: product)
             } catch {
+                let isWebviewFallbackAllowed = featureFlagService.isFeatureFlagEnabled(.storeCreationM2WithInAppPurchasesEnabled) == false
                 navigationController.dismiss(animated: true) { [weak self] in
-                    self?.startStoreCreationM1()
+                    guard let self else { return }
+                    if isWebviewFallbackAllowed {
+                        self.startStoreCreationM1()
+                    } else {
+                        self.showIneligibleUI(from: self.navigationController, error: error)
+                    }
                 }
             }
         }
@@ -118,7 +124,9 @@ private extension StoreCreationCoordinator {
         // Disables interactive dismissal of the store creation modal.
         webNavigationController.isModalInPresentation = true
 
-        presentStoreCreation(viewController: webNavigationController)
+        Task { @MainActor in
+            await presentStoreCreation(viewController: webNavigationController)
+        }
     }
 
     func startStoreCreationM2(from navigationController: UINavigationController, planToPurchase: WPComPlanProduct) {
@@ -135,15 +143,25 @@ private extension StoreCreationCoordinator {
         analytics.track(event: .StoreCreation.siteCreationStep(step: .storeName))
     }
 
-    func presentStoreCreation(viewController: UIViewController) {
-        // If the navigation controller is already presenting another view, the view needs to be dismissed before store
-        // creation view can be presented.
-        if navigationController.presentedViewController != nil {
-            navigationController.dismiss(animated: true) { [weak self] in
-                self?.navigationController.present(viewController, animated: true)
+    @MainActor
+    func presentStoreCreation(viewController: UIViewController) async {
+        await withCheckedContinuation { continuation in
+            // If the navigation controller is already presenting another view, the view needs to be dismissed before store
+            // creation view can be presented.
+            if navigationController.presentedViewController != nil {
+                navigationController.dismiss(animated: true) { [weak self] in
+                    guard let self else {
+                        return continuation.resume()
+                    }
+                    self.navigationController.present(viewController, animated: true) {
+                        continuation.resume()
+                    }
+                }
+            } else {
+                navigationController.present(viewController, animated: true) {
+                    continuation.resume()
+                }
             }
-        } else {
-            navigationController.present(viewController, animated: true)
         }
     }
 
@@ -153,6 +171,28 @@ private extension StoreCreationCoordinator {
                 .init(title: Localization.WaitingForIAPEligibility.title,
                       message: Localization.WaitingForIAPEligibility.message),
                                  hidesNavigationBar: true)
+    }
+
+    /// Shows UI when the user is not eligible for store creation.
+    func showIneligibleUI(from navigationController: UINavigationController, error: Error) {
+        let message: String
+        switch error {
+        case PlanPurchaseError.iapNotSupported:
+            message = Localization.IAPIneligibleAlert.notSupportedMessage
+        case PlanPurchaseError.productNotEligible:
+            message = Localization.IAPIneligibleAlert.productNotEligibleMessage
+        default:
+            message = Localization.IAPIneligibleAlert.defaultMessage
+        }
+
+        let alert = UIAlertController(title: nil,
+                                      message: message,
+                                      preferredStyle: .alert)
+        alert.view.tintColor = .text
+
+        alert.addCancelActionWithTitle(Localization.IAPIneligibleAlert.dismissActionTitle) { _ in }
+
+        navigationController.present(alert, animated: true)
     }
 }
 
@@ -484,6 +524,23 @@ private extension StoreCreationCoordinator {
                 "Please remain connected.",
                 comment: "Message of the in-progress view when waiting for the in-app purchase status before the store creation flow."
             )
+        }
+
+        enum IAPIneligibleAlert {
+            static let notSupportedMessage = NSLocalizedString(
+                "We're sorry, but store creation is not currently available in your country in the app.",
+                comment: "Message of the alert when the user cannot create a store because their App Store country is not supported."
+            )
+            static let productNotEligibleMessage = NSLocalizedString(
+                "Sorry, but you can only create one store. Your account is already associated with an active store.",
+                comment: "Message of the alert when the user cannot create a store because they already created one before."
+            )
+            static let defaultMessage = NSLocalizedString(
+                "We're sorry, but store creation is not currently available in the app.",
+                comment: "Message of the alert when the user cannot create a store for some reason."
+            )
+            static let dismissActionTitle = NSLocalizedString("OK",
+                                                             comment: "Button title to cancel the alert when the user cannot create a store.")
         }
 
         enum DiscardChangesAlert {

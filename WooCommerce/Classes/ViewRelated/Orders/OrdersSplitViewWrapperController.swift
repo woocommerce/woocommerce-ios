@@ -49,8 +49,8 @@ final class OrdersSplitViewWrapperController: UIViewController {
         ordersSplitViewController.showDetailViewController(loaderNavigationController, sender: nil)
     }
 
-    func presentOrderCreationFlow() {
-        ordersViewController.presentOrderCreationFlow()
+    func presentOrderCreationFlow(with product: Product? = nil) {
+        ordersViewController.presentOrderCreationFlow(with: product)
     }
 }
 

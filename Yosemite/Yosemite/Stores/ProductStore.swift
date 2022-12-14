@@ -36,6 +36,8 @@ public class ProductStore: Store {
         }
 
         switch action {
+        case .retrieveStoredProducts(let onCompletion):
+            retrieveStoredProducts(onCompletion: onCompletion)
         case .addProduct(let product, let onCompletion):
             addProduct(product: product, onCompletion: onCompletion)
         case .deleteProduct(let siteID, let productID, let onCompletion):
@@ -112,6 +114,12 @@ public class ProductStore: Store {
 // MARK: - Services!
 //
 private extension ProductStore {
+    func retrieveStoredProducts(onCompletion: ([Product]) -> Void) {
+        let descriptor = NSSortDescriptor(key: "name", ascending: true)
+        let orders = storageManager.viewStorage.allObjects(ofType: StorageProduct.self, matching: nil, sortedBy: [descriptor])
+
+        onCompletion(orders.compactMap { $0.toReadOnly() })
+    }
 
     /// Deletes all of the Stored Products.
     ///

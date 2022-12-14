@@ -412,16 +412,16 @@ extension MainTabBarController {
         })
     }
 
-    static func presentOrderCreationFlow() {
+    static func presentOrderCreationFlow(with product: Product? = nil) {
         switchToOrdersTab {
             let tabBar = AppDelegate.shared.tabBarController
             let ordersNavigationController = tabBar?.ordersNavigationController
 
-            guard let ordersRootViewController = ordersNavigationController?.viewControllers.first as? OrdersSplitViewWrapperController else {
+            guard let ordersSplitViewWrapperController = ordersNavigationController?.viewControllers.first as? OrdersSplitViewWrapperController else {
                 return
             }
 
-            ordersRootViewController.presentOrderCreationFlow()
+            ordersSplitViewWrapperController.presentOrderCreationFlow(with: product)
         }
     }
 

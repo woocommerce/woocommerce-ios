@@ -192,12 +192,18 @@ final class OrdersRootViewController: UIViewController {
 
     /// Presents the Order Creation flow.
     ///
-    @objc func presentOrderCreationFlow() {
+    @objc func presentEmptyOrderCreationFlow() {
+        presentOrderCreationFlow(with: nil)
+    }
+
+    /// Presents the Order Creation flow.
+    ///
+    func presentOrderCreationFlow(with product: Product?) {
         guard let navigationController = navigationController else {
             return
         }
 
-        let viewModel = EditableOrderViewModel(siteID: siteID)
+        let viewModel = EditableOrderViewModel(siteID: siteID, product: product)
         viewModel.onFinished = { [weak self] order in
             guard let self = self else { return }
 
@@ -372,7 +378,7 @@ private extension OrdersRootViewController {
         let button = UIBarButtonItem(image: .plusBarButtonItemImage,
                                      style: .plain,
                                      target: self,
-                                     action: #selector(presentOrderCreationFlow))
+                                     action: #selector(presentEmptyOrderCreationFlow))
         button.accessibilityTraits = .button
         button.accessibilityLabel = NSLocalizedString("Choose new order type", comment: "Opens action sheet to choose a type of a new order")
         button.accessibilityIdentifier = "new-order-type-sheet-button"

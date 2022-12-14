@@ -255,6 +255,7 @@ final class EditableOrderViewModel: ObservableObject {
     private let orderSynchronizer: OrderSynchronizer
 
     init(siteID: Int64,
+         product: Product? = nil,
          flow: Flow = .creation,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -285,6 +286,10 @@ final class EditableOrderViewModel: ObservableObject {
         configureNonEditableIndicators()
         configureMultipleLinesMessage()
         resetAddressForm()
+
+        if let product = product {
+            addProductToOrder(product)
+        }
     }
 
     /// Selects an order item by setting the `selectedProductViewModel`.

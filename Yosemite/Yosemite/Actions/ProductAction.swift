@@ -51,6 +51,8 @@ public enum ProductAction: Action {
         pageSize: Int = ProductsRemote.Default.pageSize,
         onCompletion: (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void)
 
+    case retrieveStoredProducts(onCompletion: ([Product]) -> Void)
+
     /// Deletes all of the cached products.
     ///
     case resetStoredProducts(onCompletion: () -> Void)

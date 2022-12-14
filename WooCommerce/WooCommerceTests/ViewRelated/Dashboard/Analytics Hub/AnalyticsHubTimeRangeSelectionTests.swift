@@ -418,8 +418,8 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
 
     func test_custom_ranges_generates_expected_descriptions() throws {
         // Given
-        let start = startDate(from: "2022-12-05")
-        let end = endDate(from: "2022-12-07")
+        let start = startDate(from: "2022-12-05") ?? Date()
+        let end = endDate(from: "2022-12-07") ?? Date()
         let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .custom(start: start, end: end),
                                                        timezone: testTimezone,
                                                        calendar: testCalendar)

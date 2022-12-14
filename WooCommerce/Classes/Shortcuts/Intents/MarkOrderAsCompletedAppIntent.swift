@@ -24,7 +24,7 @@ struct MarkOrderAsCompletedAppIntent: AppIntent {
 
         let dialog = await withCheckedContinuation { continuation in
             let action = OrderAction.updateOrderStatus(siteID: siteID, orderID: Int64(order.id), status: .completed) { error in
-                let dialogMessage = error == nil ? "Order was marked as completed succesfully.": "Order couldn't be marked as completed"
+                let dialogMessage = error == nil ? "Order was marked as completed succesfully.": "Error: Order couldn't be marked as completed"
 
                 continuation.resume(returning: dialogMessage)
             }

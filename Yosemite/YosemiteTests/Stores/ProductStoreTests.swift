@@ -1074,7 +1074,7 @@ final class ProductStoreTests: XCTestCase {
             })
             productStore.onAction(searchAction)
         }
-    
+
         XCTAssertTrue(remote.searchProductTriggered)
         assertEqual(filteredStockStatus, remote.searchProductWithStockStatus)
         assertEqual(filteredProductType, remote.searchProductWithProductType)

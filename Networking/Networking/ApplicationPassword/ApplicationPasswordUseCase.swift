@@ -154,6 +154,37 @@ private extension DefaultApplicationPasswordUseCase {
         }
     }
 
+    /// Deletes application password using WordPress.com authentication token
+    ///
+    func deleteApplicationPasswordUsingWPCOMAuthToken() async throws {
+
+        // Delete password from keychain
+        keychain.applicationPassword = nil
+        keychain.applicationPasswordUsername = nil
+
+        let passwordName = await applicationPasswordName
+
+        let parameters = [ParameterKey.name: passwordName]
+        let request = JetpackRequest(wooApiVersion: .none, method: .delete, siteID: siteID, path: Path.applicationPasswords, parameters: parameters)
+
+        try await withCheckedThrowingContinuation { continuation in
+            network.responseData(for: request) { result in
+                switch result {
+                case .success(let data):
+                    do {
+                        let validator = request.responseDataValidator()
+                        try validator.validate(data: data)
+                        continuation.resume()
+                    } catch {
+                        continuation.resume(throwing: error)
+                    }
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+
     /// Saves application password into keychain
     ///
     /// - Parameter password: `ApplicationPasword` to be saved

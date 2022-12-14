@@ -1593,6 +1593,19 @@ extension SiteSettingGroup {
         .general
     }
 }
+extension Networking.SiteSummaryStats {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.SiteSummaryStats {
+        .init(
+            siteID: .fake(),
+            date: .fake(),
+            period: .fake(),
+            visitors: .fake(),
+            views: .fake()
+        )
+    }
+}
 extension Networking.SiteVisitStats {
     /// Returns a "ready to use" type filled with fake values.
     ///

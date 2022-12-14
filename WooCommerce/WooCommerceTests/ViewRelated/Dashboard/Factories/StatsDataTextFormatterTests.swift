@@ -333,9 +333,20 @@ final class StatsDataTextFormatterTests: XCTestCase {
         XCTAssertEqual(visitorCountDelta.direction, .positive)
     }
 
+    func test_createViewsCountText_returns_expected_views_stats() {
+        // Given
+        let siteVisitStats = SiteSummaryStats.fake().copy(views: 250)
+
+        // When
+        let viewsCount = StatsDataTextFormatter.createViewsCountText(siteStats: siteVisitStats)
+
+        // Then
+        XCTAssertEqual(viewsCount, "250")
+    }
+
     // MARK: Conversion Stats
 
-    func test_createConversionRateText_returns_placeholder_when_visitor_count_is_zero() {
+    func test_createConversionRateText_for_SiteVisitStats_returns_placeholder_when_visitor_count_is_zero() {
         // Given
         let siteVisitStats = Yosemite.SiteVisitStats.fake().copy(items: [.fake().copy(visitors: 0)])
         let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 3))
@@ -347,7 +358,7 @@ final class StatsDataTextFormatterTests: XCTestCase {
         XCTAssertEqual(conversionRate, "0%")
     }
 
-    func test_createConversionRateText_returns_one_decimal_point_when_percentage_value_has_two_decimal_points() {
+    func test_createConversionRateText_for_SiteVisitStats_returns_one_decimal_point_when_percentage_value_has_two_decimal_points() {
         // Given
         let siteVisitStats = Yosemite.SiteVisitStats.fake().copy(items: [.fake().copy(visitors: 10000)])
         let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 3557))
@@ -359,7 +370,7 @@ final class StatsDataTextFormatterTests: XCTestCase {
         XCTAssertEqual(conversionRate, "35.6%") // order count: 3557, visitor count: 10000 => 0.3557 (35.57%)
     }
 
-    func test_createConversionRateText_returns_no_decimal_point_when_percentage_value_is_integer() {
+    func test_createConversionRateText_for_SiteVisitStats_returns_no_decimal_point_when_percentage_value_is_integer() {
         // Given
         let siteVisitStats = Yosemite.SiteVisitStats.fake().copy(items: [.fake().copy(visitors: 10)])
         let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 3))
@@ -371,7 +382,7 @@ final class StatsDataTextFormatterTests: XCTestCase {
         XCTAssertEqual(conversionRate, "30%") // order count: 3, visitor count: 10 => 0.3 (30%)
     }
 
-    func test_createConversionRateText_returns_expected_text_for_selected_interval() {
+    func test_createConversionRateText_for_SiteVisitStats_returns_expected_text_for_selected_interval() {
         // Given
         let siteVisitStats = Yosemite.SiteVisitStats.fake().copy(items: [.fake().copy(visitors: 10)])
         let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 2),
@@ -382,6 +393,42 @@ final class StatsDataTextFormatterTests: XCTestCase {
 
         // Then
         XCTAssertEqual(conversionRate, "10%")
+    }
+
+    func test_createConversionRateText_for_SiteSummaryStats_returns_placeholder_when_visitor_count_is_zero() {
+        // Given
+        let siteSummaryStats = SiteSummaryStats.fake().copy(visitors: 0)
+        let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 3))
+
+        // When
+        let conversionRate = StatsDataTextFormatter.createConversionRateText(orderStats: orderStats, siteStats: siteSummaryStats)
+
+        // Then
+        XCTAssertEqual(conversionRate, "0%")
+    }
+
+    func test_createConversionRateText_for_SiteSummaryStats_returns_one_decimal_point_when_percentage_value_has_two_decimal_points() {
+        // Given
+        let siteSummaryStats = SiteSummaryStats.fake().copy(visitors: 10000)
+        let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 3557))
+
+        // When
+        let conversionRate = StatsDataTextFormatter.createConversionRateText(orderStats: orderStats, siteStats: siteSummaryStats)
+
+        // Then
+        XCTAssertEqual(conversionRate, "35.6%") // order count: 3557, visitor count: 10000 => 0.3557 (35.57%)
+    }
+
+    func test_createConversionRateText_for_SiteSummaryStats_returns_no_decimal_point_when_percentage_value_is_integer() {
+        // Given
+        let siteSummaryStats = SiteSummaryStats.fake().copy(visitors: 10)
+        let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 3))
+
+        // When
+        let conversionRate = StatsDataTextFormatter.createConversionRateText(orderStats: orderStats, siteStats: siteSummaryStats)
+
+        // Then
+        XCTAssertEqual(conversionRate, "30%") // order count: 3, visitor count: 10 => 0.3 (30%)
     }
 
     // MARK: Delta Calculations

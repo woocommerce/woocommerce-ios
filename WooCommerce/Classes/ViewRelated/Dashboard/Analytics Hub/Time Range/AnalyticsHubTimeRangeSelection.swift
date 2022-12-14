@@ -77,27 +77,9 @@ public class AnalyticsHubTimeRangeSelection {
 
 // MARK: - Time Range Selection Type
 extension AnalyticsHubTimeRangeSelection {
-    enum SelectionType: CaseIterable, Equatable, Hashable {
-        /// Wee need to provide a custom `allCases` because the `.custom(Date?, Date?)`case  disables its synthetization.
-        ///
-        static var allCases: [AnalyticsHubTimeRangeSelection.SelectionType] {
-            [
-                ServiceLocator.featureFlagService.isFeatureFlagEnabled(.analyticsHub) ? .custom(start: nil, end: nil) : nil,
-                .today,
-                .yesterday,
-                .lastWeek,
-                .lastMonth,
-                .lastQuarter,
-                .lastYear,
-                .weekToDate,
-                .monthToDate,
-                .quarterToDate,
-                yearToDate
-            ].compactMap { $0 }
-        }
+    enum SelectionType: Equatable {
 
-        // When adding a new case, remember to add it to `allCases`.
-        case custom(start: Date?, end: Date?)
+        case custom(start: Date, end: Date)
         case today
         case yesterday
         case lastWeek
@@ -108,33 +90,6 @@ extension AnalyticsHubTimeRangeSelection {
         case monthToDate
         case quarterToDate
         case yearToDate
-
-        var description: String {
-            switch self {
-            case .custom:
-                return Localization.custom
-            case .today:
-                return Localization.today
-            case .yesterday:
-                return Localization.yesterday
-            case .lastWeek:
-                return Localization.lastWeek
-            case .lastMonth:
-                return Localization.lastMonth
-            case .lastQuarter:
-                return Localization.lastQuarter
-            case .lastYear:
-                return Localization.lastYear
-            case .weekToDate:
-                return Localization.weekToDate
-            case .monthToDate:
-                return Localization.monthToDate
-            case .quarterToDate:
-                return Localization.quarterToDate
-            case .yearToDate:
-                return Localization.yearToDate
-            }
-        }
 
         /// The granularity that should be used to request stats from the given SelectedType
         ///
@@ -171,33 +126,6 @@ extension AnalyticsHubTimeRangeSelection {
             }
         }
 
-        var tracksIdentifier: String {
-            switch self {
-            case .custom:
-                return "Custom"
-            case .today:
-                return "Today"
-            case .yesterday:
-                return "Yesterday"
-            case .lastWeek:
-                return "Last Week"
-            case .lastMonth:
-                return "Last Month"
-            case .lastQuarter:
-                return "Last Quarter"
-            case .lastYear:
-                return "Last Year"
-            case .weekToDate:
-                return "Week to Date"
-            case .monthToDate:
-                return "Month to Date"
-            case .quarterToDate:
-                return "Quarter to Date"
-            case .yearToDate:
-                return "Year to Date"
-            }
-        }
-
         init(_ statsTimeRange: StatsTimeRangeV4) {
             switch statsTimeRange {
             case .today:
@@ -217,12 +145,8 @@ extension AnalyticsHubTimeRangeSelection {
 private extension AnalyticsHubTimeRangeSelection.SelectionType {
     func toRangeData(referenceDate: Date, timezone: TimeZone, calendar: Calendar) -> AnalyticsHubTimeRangeData? {
         switch self {
-        case let .custom(start?, end?):
+        case let .custom(start, end):
             return AnalyticsHubCustomRangeData(start: start, end: end, timezone: timezone, calendar: calendar)
-        case .custom:
-            // Nil custom dates are not supported but can exists when the user has selected the custom range option but hasn't choosen dates yet.
-            // To properly fix this, we should decouple UI selection types, from ranges selection types.
-            return nil
         case .today:
             return AnalyticsHubTodayRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
         case .yesterday:
@@ -255,17 +179,6 @@ extension AnalyticsHubTimeRangeSelection {
     }
 
     enum Localization {
-        static let custom = NSLocalizedString("Custom", comment: "Title of the Analytics Hub Custom selection range")
-        static let today = NSLocalizedString("Today", comment: "Title of the Analytics Hub Today's selection range")
-        static let yesterday = NSLocalizedString("Yesterday", comment: "Title of the Analytics Hub Yesterday selection range")
-        static let lastWeek = NSLocalizedString("Last Week", comment: "Title of the Analytics Hub Last Week selection range")
-        static let lastMonth = NSLocalizedString("Last Month", comment: "Title of the Analytics Hub Last Month selection range")
-        static let lastQuarter = NSLocalizedString("Last Quarter", comment: "Title of the Analytics Hub Last Quarter selection range")
-        static let lastYear = NSLocalizedString("Last Year", comment: "Title of the Analytics Hub Last Year selection range")
-        static let weekToDate = NSLocalizedString("Week to Date", comment: "Title of the Analytics Hub Week to Date selection range")
-        static let monthToDate = NSLocalizedString("Month to Date", comment: "Title of the Analytics Hub Month to Date selection range")
-        static let quarterToDate = NSLocalizedString("Quarter to Date", comment: "Title of the Analytics Hub Quarter to Date selection range")
-        static let yearToDate = NSLocalizedString("Year to Date", comment: "Title of the Analytics Hub Year to Date selection range")
         static let selectionTitle = NSLocalizedString("Date Range", comment: "Title of the range selection list")
         static let noCurrentPeriodAvailable = NSLocalizedString("No current period available",
                                                                 comment: "A error message when it's not possible to acquire"

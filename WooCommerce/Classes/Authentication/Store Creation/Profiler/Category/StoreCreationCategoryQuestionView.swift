@@ -14,18 +14,7 @@ final class StoreCreationCategoryQuestionHostingController: UIHostingController<
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        configureNavigationBarAppearance()
-    }
-
-    /// Shows a transparent navigation bar without a bottom border and with a close button to dismiss.
-    func configureNavigationBarAppearance() {
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithTransparentBackground()
-        appearance.backgroundColor = .systemBackground
-
-        navigationItem.standardAppearance = appearance
-        navigationItem.scrollEdgeAppearance = appearance
-        navigationItem.compactAppearance = appearance
+        configureTransparentNavigationBar()
     }
 }
 

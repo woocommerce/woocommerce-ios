@@ -425,6 +425,20 @@ extension MainTabBarController {
         }
     }
 
+    static func presentSearchOrders() {
+        switchToOrdersTab {
+            let tabBar = AppDelegate.shared.tabBarController
+            let ordersNavigationController = tabBar?.ordersNavigationController
+
+            guard let ordersSplitViewWrapperController = ordersNavigationController?.viewControllers.first as? OrdersSplitViewWrapperController else {
+                return
+            }
+
+            ordersSplitViewWrapperController.displaySearchOrders()
+        }
+
+    }
+
     private static func presentDetails(for orderID: Int64, siteID: Int64) {
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
             (childViewController() as? OrdersSplitViewWrapperController)?.presentDetails(for: orderID, siteID: siteID)

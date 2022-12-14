@@ -52,6 +52,10 @@ final class OrdersSplitViewWrapperController: UIViewController {
     func presentOrderCreationFlow(with product: Product? = nil) {
         ordersViewController.presentOrderCreationFlow(with: product)
     }
+
+    func displaySearchOrders() {
+        ordersViewController.displaySearchOrders()
+    }
 }
 
 private extension OrdersSplitViewWrapperController {

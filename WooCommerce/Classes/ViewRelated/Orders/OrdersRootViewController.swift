@@ -118,7 +118,7 @@ final class OrdersRootViewController: UIViewController {
 
     /// Shows `SearchViewController`.
     ///
-    @objc private func displaySearchOrders() {
+    @objc func displaySearchOrders() {
         analytics.track(.ordersListSearchTapped)
 
         let searchViewController = SearchViewController<OrderTableViewCell, OrderSearchUICommand>(storeID: siteID,

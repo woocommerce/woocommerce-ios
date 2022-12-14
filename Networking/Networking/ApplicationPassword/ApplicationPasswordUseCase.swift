@@ -63,7 +63,7 @@ final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
     init(siteID: Int64,
          networkcredentials: Credentials,
          network: Network? = nil,
-         keychain: Keychain = Keychain(service: "com.automattic.woocommerce.applicationpassword")) {
+         keychain: Keychain = Keychain(service: KeychainServiceName.name)) {
         self.siteID = siteID
         self.credentials = networkcredentials
         self.keychain = keychain
@@ -219,6 +219,12 @@ private extension DefaultApplicationPasswordUseCase {
 // MARK: - Constants
 //
 private extension DefaultApplicationPasswordUseCase {
+    enum KeychainServiceName {
+        /// Matching `WooConstants.keychainServiceName`
+        ///
+        static let name = "com.automattic.woocommerce"
+    }
+
     enum Path {
         static let applicationPasswords = "wp/v2/users/me/application-passwords"
         static let users = "wp/v2/users/me"

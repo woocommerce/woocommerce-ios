@@ -31,14 +31,14 @@ struct AnalyticsTimeRangeCard: View {
         createTimeRangeContent()
             .sheet(isPresented: $showTimeRangeSelectionView) {
                 SelectionList(title: Localization.timeRangeSelectionTitle,
-                              items: AnalyticsHubTimeRangeSelection.SelectionType.allCases,
+                              items: Range.allCases,
                               contentKeyPath: \.description,
                               selected: internalSelectionBinding()) { selection in
                     usageTracksEventEmitter.interacted()
                     ServiceLocator.analytics.track(event: .AnalyticsHub.dateRangeOptionSelected(selection.tracksIdentifier))
                 }
                 .sheet(isPresented: $showCustomRangeSelectionView) {
-                    RangedDatePicker() { start, end in
+                    RangedDatePicker(startDate: selectionType.startDate, endDate: selectionType.endDate) { start, end in
                         showTimeRangeSelectionView = false // Dismiss the initial sheet for a smooth transition
                         self.selectionType = .custom(start: start, end: end)
                     }
@@ -96,26 +96,19 @@ struct AnalyticsTimeRangeCard: View {
     /// Tracks the range selection internally to determine if the custom range selection should be presented or not.
     /// If custom range selection is not needed, the internal selection is forwarded to `selectionType`.
     ///
-    private func internalSelectionBinding() -> Binding<AnalyticsHubTimeRangeSelection.SelectionType> {
+    private func internalSelectionBinding() -> Binding<Range> {
         .init(
             get: {
-                // Temporary
-                switch selectionType {
-                    // If a `custom` case is set return one with nil values so the Custom row is selected
-                case .custom:
-                    return .custom(start: nil, end: nil)
-                default:
-                    return selectionType
-                }
+                return selectionType.asTimeCardRange
             },
             set: { newValue in
                 switch newValue {
-                    // If we get a `custom` case with nil dates it is because we need to present the custom range selection
-                case .custom(start: nil, end: nil):
+                    // If we get a `custom` case it is because we need to present the custom range selection
+                case .custom:
                     showCustomRangeSelectionView = true
                 default:
                     // Any other selection should be forwarded to our parent binding.
-                    selectionType = newValue
+                    selectionType = newValue.asAnalyticsHubRange
                 }
             }
         )
@@ -152,5 +145,41 @@ struct TimeRangeCard_Previews: PreviewProvider {
                                                         previousRangeSubtitle: "Oct 1 - 23, 2022",
                                                         usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter())
         AnalyticsTimeRangeCard(viewModel: viewModel, selectionType: .constant(.monthToDate))
+    }
+}
+
+
+extension AnalyticsTimeRangeCard {
+    enum Range: CaseIterable {
+        case custom
+        case today
+        case yesterday
+        case lastWeek
+        case lastMonth
+        case lastQuarter
+        case lastYear
+        case weekToDate
+        case monthToDate
+        case quarterToDate
+        case yearToDate
+
+        /// Wee need to provide a custom `allCases` in order to evict `.custom` while the feature flag is active.
+        /// We should delete this once the feature flag has been removed.
+        ///
+        static var allCases: [Range] {
+            [
+                ServiceLocator.featureFlagService.isFeatureFlagEnabled(.analyticsHub) ? .custom : nil,
+                .today,
+                .yesterday,
+                .lastWeek,
+                .lastMonth,
+                .lastQuarter,
+                .lastYear,
+                .weekToDate,
+                .monthToDate,
+                .quarterToDate,
+                yearToDate
+            ].compactMap { $0 }
+        }
     }
 }

@@ -162,24 +162,5 @@ extension AnalyticsTimeRangeCard {
         case monthToDate
         case quarterToDate
         case yearToDate
-
-        /// Wee need to provide a custom `allCases` in order to evict `.custom` while the feature flag is active.
-        /// We should delete this once the feature flag has been removed.
-        ///
-        static var allCases: [Range] {
-            [
-                ServiceLocator.featureFlagService.isFeatureFlagEnabled(.analyticsHub) ? .custom : nil,
-                .today,
-                .yesterday,
-                .lastWeek,
-                .lastMonth,
-                .lastQuarter,
-                .lastYear,
-                .weekToDate,
-                .monthToDate,
-                .quarterToDate,
-                yearToDate
-            ].compactMap { $0 }
-        }
     }
 }

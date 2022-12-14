@@ -30,18 +30,20 @@ struct RESTRequest: URLRequestConvertible {
     ///     - method: HTTP Method we should use.
     ///     - path: RPC that should be executed.
     ///     - parameters: Collection of String parameters to be passed over to our target RPC.
+    ///     - headers: Headers to be added to the request.
+    ///     - fallbackRequest: A fallback Jetpack request to trigger if the REST request cannot be made.
     ///
     init(siteURL: String,
          method: HTTPMethod,
          path: String,
-         parameters: [String: Any]? = nil,
-         headers: [String: String]? = nil,
+         parameters: [String: Any] = [:],
+         headers: [String: String] = [:],
          fallbackRequest: JetpackRequest?) {
         self.siteURL = siteURL
         self.method = method
         self.path = path
-        self.parameters = parameters ?? [:]
-        self.headers = headers ?? [:]
+        self.parameters = parameters
+        self.headers = headers
         self.fallbackRequest = fallbackRequest
     }
 

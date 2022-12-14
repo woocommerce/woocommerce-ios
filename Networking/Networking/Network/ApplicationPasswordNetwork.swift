@@ -2,6 +2,11 @@ import Combine
 import Foundation
 import Alamofire
 
+/// This Network is specific for generating and deleting application passwords
+///
+///  - We cannot use the AlamofireNetwork as we will be initiating the application password generation from there. (By listening to other API calls)
+///  - `ApplicationPasswordNetwork` currently takes in WPCOM credentials. In future it will also work with .org site credentials as well.
+///
 public class ApplicationPasswordNetwork: Network {
     /// WordPress.com Credentials.
     ///

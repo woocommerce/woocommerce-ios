@@ -14,11 +14,19 @@ struct RangedDatePicker: View {
 
     /// Start date binding variable
     ///
-    @State private var startDate = Date()
+    @State private var startDate: Date
 
     /// End date binding variable
     ///
-    @State private var endDate = Date()
+    @State private var endDate: Date
+
+    /// Custom `init` to provide intial start and end dates.
+    ///
+    init(startDate: Date = Date(), endDate: Date = Date(), datesSelected: ((_ start: Date, _ end: Date) -> Void)? = nil) {
+        self._startDate = State(initialValue: startDate)
+        self._endDate = State(initialValue: endDate)
+        self.datesSelected = datesSelected
+    }
 
     var body: some View {
         NavigationView {

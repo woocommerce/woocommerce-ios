@@ -18,12 +18,11 @@ struct OpenOrderAppIntent: AppIntent {
     }
 
     @MainActor // <-- include if the code needs to be run on the main thread
-    func perform() async throws -> some IntentResult & ProvidesDialog {
+    func perform() async throws -> some IntentResult {
         let siteID = stores.sessionManager.defaultStoreID ?? Int64.min
-        debugPrint("site id \(siteID) order id \(order.id)")
         MainTabBarController.navigateToOrderDetails(with: Int64(order.id), siteID: siteID)
 
-        return .result(dialog: "Order Opened")
+        return .result()
 
     }
 }

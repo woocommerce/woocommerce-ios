@@ -33,7 +33,17 @@ public class AnalyticsHubTimeRangeSelection {
          currentDate: Date = Date(),
          timezone: TimeZone = TimeZone.current,
          calendar: Calendar = Locale.current.calendar) {
-        let selectionData = selectionType.toRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
+
+        // Exit early if we can't generate a selection Data.
+        guard let selectionData = selectionType.toRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar) else {
+            self.currentTimeRange = nil
+            self.previousTimeRange = nil
+            self.formattedCurrentRangeText = nil
+            self.formattedPreviousRangeText = nil
+            self.rangeSelectionDescription = ""
+            return
+        }
+
         let currentTimeRange = selectionData.currentTimeRange
         let previousTimeRange = selectionData.previousTimeRange
         let useShortFormat = selectionType == .today || selectionType == .yesterday
@@ -67,20 +77,42 @@ public class AnalyticsHubTimeRangeSelection {
 
 // MARK: - Time Range Selection Type
 extension AnalyticsHubTimeRangeSelection {
-    enum SelectionType: String, CaseIterable {
-        case today = "Today"
-        case yesterday = "Yesterday"
-        case lastWeek = "Last Week"
-        case lastMonth = "Last Month"
-        case lastQuarter = "Last Quarter"
-        case lastYear = "Last Year"
-        case weekToDate = "Week to Date"
-        case monthToDate = "Month to Date"
-        case quarterToDate = "Quarter to Date"
-        case yearToDate = "Year to Date"
+    enum SelectionType: CaseIterable, Equatable, Hashable {
+        /// Wee need to provide a custom `allCases` because the `.custom(Date?, Date?)`case  disables its synthetization.
+        ///
+        static var allCases: [AnalyticsHubTimeRangeSelection.SelectionType] {
+            [
+                ServiceLocator.featureFlagService.isFeatureFlagEnabled(.analyticsHub) ? .custom(start: nil, end: nil) : nil,
+                .today,
+                .yesterday,
+                .lastWeek,
+                .lastMonth,
+                .lastQuarter,
+                .lastYear,
+                .weekToDate,
+                .monthToDate,
+                .quarterToDate,
+                yearToDate
+            ].compactMap { $0 }
+        }
+
+        // When adding a new case, remember to add it to `allCases`.
+        case custom(start: Date?, end: Date?)
+        case today
+        case yesterday
+        case lastWeek
+        case lastMonth
+        case lastQuarter
+        case lastYear
+        case weekToDate
+        case monthToDate
+        case quarterToDate
+        case yearToDate
 
         var description: String {
             switch self {
+            case .custom:
+                return Localization.custom
             case .today:
                 return Localization.today
             case .yesterday:
@@ -110,7 +142,7 @@ extension AnalyticsHubTimeRangeSelection {
             switch self {
             case .today, .yesterday:
                 return .hourly
-            case .weekToDate, .lastWeek:
+            case .custom, .weekToDate, .lastWeek:
                 return .daily
             case .monthToDate, .lastMonth:
                 return .daily
@@ -126,7 +158,7 @@ extension AnalyticsHubTimeRangeSelection {
         ///
         var intervalSize: Int {
             switch self {
-            case .today, .yesterday:
+            case .custom, .today, .yesterday:
                 return 24
             case .weekToDate, .lastWeek:
                 return 7
@@ -136,6 +168,33 @@ extension AnalyticsHubTimeRangeSelection {
                 return 13
             case .yearToDate, .lastYear:
                 return 12
+            }
+        }
+
+        var tracksIdentifier: String {
+            switch self {
+            case .custom:
+                return "Custom"
+            case .today:
+                return "Today"
+            case .yesterday:
+                return "Yesterday"
+            case .lastWeek:
+                return "Last Week"
+            case .lastMonth:
+                return "Last Month"
+            case .lastQuarter:
+                return "Last Quarter"
+            case .lastYear:
+                return "Last Year"
+            case .weekToDate:
+                return "Week to Date"
+            case .monthToDate:
+                return "Month to Date"
+            case .quarterToDate:
+                return "Quarter to Date"
+            case .yearToDate:
+                return "Year to Date"
             }
         }
 
@@ -156,8 +215,14 @@ extension AnalyticsHubTimeRangeSelection {
 
 // MARK: - SelectionType helper functions
 private extension AnalyticsHubTimeRangeSelection.SelectionType {
-    func toRangeData(referenceDate: Date, timezone: TimeZone, calendar: Calendar) -> AnalyticsHubTimeRangeData {
+    func toRangeData(referenceDate: Date, timezone: TimeZone, calendar: Calendar) -> AnalyticsHubTimeRangeData? {
         switch self {
+        case let .custom(start?, end?):
+            return AnalyticsHubCustomRangeData(start: start, end: end, timezone: timezone, calendar: calendar)
+        case .custom:
+            // Nil custom dates are not supported but can exists when the user has selected the custom range option but hasn't choosen dates yet.
+            // To properly fix this, we should decouple UI selection types, from ranges selection types.
+            return nil
         case .today:
             return AnalyticsHubTodayRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
         case .yesterday:
@@ -190,6 +255,7 @@ extension AnalyticsHubTimeRangeSelection {
     }
 
     enum Localization {
+        static let custom = NSLocalizedString("Custom", comment: "Title of the Analytics Hub Custom selection range")
         static let today = NSLocalizedString("Today", comment: "Title of the Analytics Hub Today's selection range")
         static let yesterday = NSLocalizedString("Yesterday", comment: "Title of the Analytics Hub Yesterday selection range")
         static let lastWeek = NSLocalizedString("Last Week", comment: "Title of the Analytics Hub Last Week selection range")

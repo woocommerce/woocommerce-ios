@@ -9,7 +9,13 @@ struct AnalyticsTimeRangeCard: View {
     let previousRangeDescription: String
     @Binding var selectionType: AnalyticsHubTimeRangeSelection.SelectionType
 
+    /// Determines if the time range selection should be shown.
+    ///
     @State private var showTimeRangeSelectionView: Bool = false
+
+    /// Determines if the custom range selection should be shown.
+    ///
+    @State private var showCustomRangeSelectionView: Bool = false
 
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
 
@@ -27,9 +33,15 @@ struct AnalyticsTimeRangeCard: View {
                 SelectionList(title: Localization.timeRangeSelectionTitle,
                               items: AnalyticsHubTimeRangeSelection.SelectionType.allCases,
                               contentKeyPath: \.description,
-                              selected: $selectionType) { selection in
+                              selected: internalSelectionBinding()) { selection in
                     usageTracksEventEmitter.interacted()
-                    ServiceLocator.analytics.track(event: .AnalyticsHub.dateRangeOptionSelected(selection.rawValue))
+                    ServiceLocator.analytics.track(event: .AnalyticsHub.dateRangeOptionSelected(selection.tracksIdentifier))
+                }
+                .sheet(isPresented: $showCustomRangeSelectionView) {
+                    RangedDatePicker() { start, end in
+                        showTimeRangeSelectionView = false // Dismiss the initial sheet for a smooth transition
+                        self.selectionType = .custom(start: start, end: end)
+                    }
                 }
             }
     }
@@ -79,6 +91,34 @@ struct AnalyticsTimeRangeCard: View {
         }
         .padding([.top, .bottom])
         .frame(maxWidth: .infinity)
+    }
+
+    /// Tracks the range selection internally to determine if the custom range selection should be presented or not.
+    /// If custom range selection is not needed, the internal selection is forwarded to `selectionType`.
+    ///
+    private func internalSelectionBinding() -> Binding<AnalyticsHubTimeRangeSelection.SelectionType> {
+        .init(
+            get: {
+                // Temporary
+                switch selectionType {
+                    // If a `custom` case is set return one with nil values so the Custom row is selected
+                case .custom:
+                    return .custom(start: nil, end: nil)
+                default:
+                    return selectionType
+                }
+            },
+            set: { newValue in
+                switch newValue {
+                    // If we get a `custom` case with nil dates it is because we need to present the custom range selection
+                case .custom(start: nil, end: nil):
+                    showCustomRangeSelectionView = true
+                default:
+                    // Any other selection should be forwarded to our parent binding.
+                    selectionType = newValue
+                }
+            }
+        )
     }
 }
 

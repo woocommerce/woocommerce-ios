@@ -1,24 +1,24 @@
 import SwiftUI
 
-/// Resuable report card made for the Analytics Hub.
+/// Reusable report card made for the Analytics Hub.
 ///
 struct AnalyticsReportCard: View {
 
     let title: String
     let leadingTitle: String
     let leadingValue: String
-    let leadingDelta: String
-    let leadingDeltaColor: UIColor
-    let leadingDeltaTextColor: UIColor
+    let leadingDelta: String?
+    let leadingDeltaColor: UIColor?
+    let leadingDeltaTextColor: UIColor?
     let leadingChartData: [Double]
-    let leadingChartColor: UIColor
+    let leadingChartColor: UIColor?
     let trailingTitle: String
     let trailingValue: String
-    let trailingDelta: String
-    let trailingDeltaColor: UIColor
-    let trailingDeltaTextColor: UIColor
+    let trailingDelta: String?
+    let trailingDeltaColor: UIColor?
+    let trailingDeltaTextColor: UIColor?
     let trailingChartData: [Double]
-    let trailingChartColor: UIColor
+    let trailingChartColor: UIColor?
 
     let isRedacted: Bool
 
@@ -50,14 +50,18 @@ struct AnalyticsReportCard: View {
                         .shimmering(active: isRedacted)
 
                     AdaptiveStack(horizontalAlignment: .leading) {
-                        DeltaTag(value: leadingDelta, backgroundColor: leadingDeltaColor, textColor: leadingDeltaTextColor)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .redacted(reason: isRedacted ? .placeholder : [])
-                            .shimmering(active: isRedacted)
+                        if let leadingDelta, let leadingDeltaColor, let leadingDeltaTextColor {
+                            DeltaTag(value: leadingDelta, backgroundColor: leadingDeltaColor, textColor: leadingDeltaTextColor)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .redacted(reason: isRedacted ? .placeholder : [])
+                                .shimmering(active: isRedacted)
+                        }
 
-                        AnalyticsLineChart(dataPoints: leadingChartData, lineChartColor: leadingChartColor)
-                            .aspectRatio(Layout.chartAspectRatio, contentMode: .fit)
-                            .frame(maxWidth: scaledChartWidth)
+                        if leadingChartData.isNotEmpty, let leadingChartColor {
+                            AnalyticsLineChart(dataPoints: leadingChartData, lineChartColor: leadingChartColor)
+                                .aspectRatio(Layout.chartAspectRatio, contentMode: .fit)
+                                .frame(maxWidth: scaledChartWidth)
+                        }
                     }
 
                 }
@@ -75,14 +79,18 @@ struct AnalyticsReportCard: View {
                         .shimmering(active: isRedacted)
 
                     AdaptiveStack(horizontalAlignment: .leading) {
-                        DeltaTag(value: trailingDelta, backgroundColor: trailingDeltaColor, textColor: trailingDeltaTextColor)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .redacted(reason: isRedacted ? .placeholder : [])
-                            .shimmering(active: isRedacted)
+                        if let trailingDelta, let trailingDeltaColor, let trailingDeltaTextColor {
+                            DeltaTag(value: trailingDelta, backgroundColor: trailingDeltaColor, textColor: trailingDeltaTextColor)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .redacted(reason: isRedacted ? .placeholder : [])
+                                .shimmering(active: isRedacted)
+                        }
 
-                        AnalyticsLineChart(dataPoints: trailingChartData, lineChartColor: trailingChartColor)
-                            .aspectRatio(Layout.chartAspectRatio, contentMode: .fit)
-                            .frame(maxWidth: scaledChartWidth)
+                        if trailingChartData.isNotEmpty, let trailingChartColor {
+                            AnalyticsLineChart(dataPoints: trailingChartData, lineChartColor: trailingChartColor)
+                                .aspectRatio(Layout.chartAspectRatio, contentMode: .fit)
+                                .frame(maxWidth: scaledChartWidth)
+                        }
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -155,5 +163,26 @@ struct Previews: PreviewProvider {
                             syncErrorMessage: "Error loading revenue analytics")
             .previewLayout(.sizeThatFits)
             .previewDisplayName("No data")
+
+        AnalyticsReportCard(title: "SESSIONS",
+                            leadingTitle: "Views",
+                            leadingValue: "1,458",
+                            leadingDelta: nil,
+                            leadingDeltaColor: nil,
+                            leadingDeltaTextColor: nil,
+                            leadingChartData: [],
+                            leadingChartColor: nil,
+                            trailingTitle: "Conversion Rate",
+                            trailingValue: "4.5%",
+                            trailingDelta: nil,
+                            trailingDeltaColor: nil,
+                            trailingDeltaTextColor: nil,
+                            trailingChartData: [],
+                            trailingChartColor: nil,
+                            isRedacted: false,
+                            showSyncError: true,
+                            syncErrorMessage: "")
+            .previewLayout(.sizeThatFits)
+            .previewDisplayName("Current period only")
     }
 }

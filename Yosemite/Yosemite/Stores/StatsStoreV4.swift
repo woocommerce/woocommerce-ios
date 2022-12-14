@@ -6,13 +6,13 @@ import WooFoundation
 // MARK: - StatsStoreV4
 //
 public final class StatsStoreV4: Store {
-    private let siteVisitStatsRemote: SiteVisitStatsRemote
+    private let siteVisitStatsRemote: SiteStatsRemote
     private let leaderboardsRemote: LeaderboardsRemote
     private let orderStatsRemote: OrderStatsRemoteV4
     private let productsRemote: ProductsRemote
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
-        self.siteVisitStatsRemote = SiteVisitStatsRemote(network: network)
+        self.siteVisitStatsRemote = SiteStatsRemote(network: network)
         self.leaderboardsRemote = LeaderboardsRemote(network: network)
         self.orderStatsRemote = OrderStatsRemoteV4(network: network)
         self.productsRemote = ProductsRemote(network: network)

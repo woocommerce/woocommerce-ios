@@ -104,6 +104,17 @@ struct AnalyticsHubView: View {
                     Divider()
                 }
 
+                VStack(spacing: Layout.dividerSpacing) {
+                    Divider()
+
+                    AnalyticsReportCard(viewModel: viewModel.sessionsCard)
+                        .padding(.horizontal, insets: safeAreaInsets)
+                        .background(Color(uiColor: .listForeground))
+
+                    Divider()
+                }
+                .renderedIf(ServiceLocator.featureFlagService.isFeatureFlagEnabled(.analyticsHub))
+
                 Spacer()
             }
         }

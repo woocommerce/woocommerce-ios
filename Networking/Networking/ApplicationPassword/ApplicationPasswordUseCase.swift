@@ -121,6 +121,39 @@ private extension DefaultApplicationPasswordUseCase {
         }
     }
 
+    /// Fetches wpadmin username using WordPress.com authentication token
+    ///
+    /// - Returns: wpadmin username
+    ///
+    func fetchWPAdminUsername() async throws -> String {
+        let parameters = [
+            "context": "edit",
+            "fields": "id,username,id_wpcom,email,first_name,last_name,nickname,roles"
+        ]
+        let request = JetpackRequest(wooApiVersion: .none, method: .get, siteID: siteID, path: Path.users, parameters: parameters)
+
+        return try await withCheckedThrowingContinuation { continuation in
+            network.responseData(for: request) { [weak self] result in
+                guard let self else { return }
+
+                switch result {
+                case .success(let data):
+                    do {
+                        let validator = request.responseDataValidator()
+                        try validator.validate(data: data)
+                        let mapper = UserMapper(siteID: self.siteID)
+                        let username =  try mapper.map(response: data).username
+                        continuation.resume(returning: username)
+                    } catch {
+                        continuation.resume(throwing: error)
+                    }
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+
     /// Saves application password into keychain
     ///
     /// - Parameter password: `ApplicationPasword` to be saved
@@ -136,6 +169,7 @@ private extension DefaultApplicationPasswordUseCase {
 private extension DefaultApplicationPasswordUseCase {
     enum Path {
         static let applicationPasswords = "wp/v2/users/me/application-passwords"
+        static let users = "wp/v2/users/me"
     }
 
     enum ParameterKey {

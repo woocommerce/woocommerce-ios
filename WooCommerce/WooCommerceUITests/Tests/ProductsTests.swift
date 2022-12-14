@@ -3,14 +3,6 @@ import XCTest
 
 final class ProductsTests: XCTestCase {
 
-    let productTypes = [
-        "physical": "Simple physical product",
-        "virtual": "Simple virtual product",
-        "variable": "Variable product",
-        "grouped": "Grouped product",
-        "external": "External product"
-    ]
-
     override func setUpWithError() throws {
         continueAfterFailure = false
 
@@ -33,13 +25,14 @@ final class ProductsTests: XCTestCase {
     }
 
     func test_add_simple_physical_product() throws {
-        let product = try GetMocks.readNewProductData()
+        try ProductFlow.addAndVerifyNewProduct(productType: "physical")
+    }
 
-        try TabNavComponent().goToProductsScreen()
-            .tapAddProduct()
-            .selectProductType(productType: productTypes["physical"]!)
-            .addProductTitle(productTitle: product.name)
-            .publishProduct()
-            .verifyNewProductScreenLoaded(productName: product.name)
+    func test_add_simple_virtual_product() throws {
+        try ProductFlow.addAndVerifyNewProduct(productType: "virtual")
+    }
+
+    func test_add_variable_product() throws {
+        try ProductFlow.addAndVerifyNewProduct(productType: "variable")
     }
 }

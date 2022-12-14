@@ -82,7 +82,8 @@ public final class ProductsScreen: ScreenObject {
     }
 
     public func selectProductType(productType: String) throws -> SingleProductScreen {
-        app.staticTexts[productType].tap()
+        let productTypeLabel = NSPredicate(format: "label CONTAINS[c] %@", productType)
+        app.staticTexts.containing(productTypeLabel).firstMatch.tap()
         return try SingleProductScreen()
     }
 }

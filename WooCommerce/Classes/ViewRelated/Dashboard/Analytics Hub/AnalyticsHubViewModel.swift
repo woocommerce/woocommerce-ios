@@ -51,14 +51,7 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Sessions Card ViewModel
     ///
-    @Published var sessionsCard = AnalyticsReportCardCurrentPeriodViewModel(title: "SESSIONS",
-                                                                            leadingTitle: "Views",
-                                                                            leadingValue: "1,458",
-                                                                            trailingTitle: "Conversion Rate",
-                                                                            trailingValue: "4.5%",
-                                                                            isRedacted: false,
-                                                                            showSyncError: false,
-                                                                            syncErrorMessage: "")
+    @Published var sessionsCard = AnalyticsHubViewModel.sessionsCard(currentPeriodStats: nil, siteStats: nil)
 
     /// Time Range Selection Type
     ///
@@ -86,6 +79,10 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Stats for the current top items sold. Used in the products card.
     ///
     @Published private var itemsSoldStats: TopEarnerStats? = nil
+
+    /// Site summary stats for visitors and views. Used in the sessions card.
+    ///
+    @Published private var siteStats: SiteSummaryStats? = nil
 
     /// Time Range selection data defining the current and previous time period
     ///
@@ -232,6 +229,13 @@ private extension AnalyticsHubViewModel {
                 self.itemsSoldCard = AnalyticsHubViewModel.productsItemsSoldCard(itemsSoldStats: itemsSoldStats)
             }.store(in: &subscriptions)
 
+        Publishers.CombineLatest($currentOrderStats, $siteStats)
+            .sink { [weak self] currentOrderStats, siteStats in
+                guard let self else { return }
+
+                self.sessionsCard = AnalyticsHubViewModel.sessionsCard(currentPeriodStats: currentOrderStats, siteStats: siteStats)
+            }.store(in: &subscriptions)
+
         $timeRangeSelectionType
             .dropFirst() // do not trigger refresh action on initial value
             .removeDuplicates()
@@ -307,6 +311,22 @@ private extension AnalyticsHubViewModel {
         return AnalyticsItemsSoldViewModel(itemsSoldData: itemSoldRows(from: itemsSoldStats), isRedacted: false, showItemsSoldError: showItemsSoldError)
     }
 
+    /// Helper function to create a `AnalyticsReportCardCurrentPeriodViewModel` from the fetched stats.
+    ///
+    static func sessionsCard(currentPeriodStats: OrderStatsV4?, siteStats: SiteSummaryStats?) -> AnalyticsReportCardCurrentPeriodViewModel {
+        let showSyncError = currentPeriodStats == nil || siteStats == nil
+
+        return AnalyticsReportCardCurrentPeriodViewModel(title: Localization.SessionsCard.title,
+                                                         leadingTitle: Localization.SessionsCard.leadingTitle,
+                                                         leadingValue: StatsDataTextFormatter.createViewsCountText(siteStats: siteStats),
+                                                         trailingTitle: Localization.SessionsCard.trailingTitle,
+                                                         trailingValue: StatsDataTextFormatter.createConversionRateText(orderStats: currentPeriodStats,
+                                                                                                                        siteStats: siteStats),
+                                                         isRedacted: false,
+                                                         showSyncError: showSyncError,
+                                                         syncErrorMessage: Localization.SessionsCard.noSessions)
+    }
+
     /// Helper functions to create `TopPerformersRow.Data` items rom the provided `TopEarnerStats`.
     ///
     static func itemSoldRows(from itemSoldStats: TopEarnerStats?) -> [TopPerformersRow.Data] {
@@ -359,6 +379,14 @@ private extension AnalyticsHubViewModel {
                 String.localizedStringWithFormat(NSLocalizedString("Net sales: %@", comment: "Label for the total sales of a product in the Analytics Hub"),
                                                  value)
             }
+        }
+
+        enum SessionsCard {
+            static let title = NSLocalizedString("SESSIONS", comment: "Title for sessions section in the Analytics Hub")
+            static let leadingTitle = NSLocalizedString("Views", comment: "Label for total store views in the Analytics Hub")
+            static let trailingTitle = NSLocalizedString("Conversion Rate", comment: "Label for the conversion rate (orders per visitor) in the Analytics Hub")
+            static let noSessions = NSLocalizedString("Unable to load session analytics",
+                                                      comment: "Text displayed when there is an error loading session stats data.")
         }
 
         static let timeRangeGeneratorError = NSLocalizedString("Sorry, something went wrong. We can't load analytics for the selected date range.",

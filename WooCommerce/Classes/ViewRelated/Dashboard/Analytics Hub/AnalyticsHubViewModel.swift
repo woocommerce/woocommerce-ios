@@ -229,6 +229,13 @@ private extension AnalyticsHubViewModel {
                 self.itemsSoldCard = AnalyticsHubViewModel.productsItemsSoldCard(itemsSoldStats: itemsSoldStats)
             }.store(in: &subscriptions)
 
+        Publishers.CombineLatest($currentOrderStats, $siteStats)
+            .sink { [weak self] currentOrderStats, siteStats in
+                guard let self else { return }
+
+                self.sessionsCard = AnalyticsHubViewModel.sessionsCard(currentPeriodStats: currentOrderStats, siteStats: siteStats)
+            }.store(in: &subscriptions)
+
         $timeRangeSelectionType
             .dropFirst() // do not trigger refresh action on initial value
             .removeDuplicates()

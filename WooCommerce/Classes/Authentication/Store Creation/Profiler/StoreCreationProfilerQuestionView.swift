@@ -22,7 +22,7 @@ struct StoreCreationProfilerQuestionView<QuestionContent: View>: View {
         VStack(alignment: .leading, spacing: 40) {
             VStack(alignment: .leading, spacing: 16) {
                 // Top header label.
-                Text(viewModel.topHeader)
+                Text(viewModel.topHeader.uppercased())
                     .foregroundColor(Color(.secondaryLabel))
                     .footnoteStyle()
 

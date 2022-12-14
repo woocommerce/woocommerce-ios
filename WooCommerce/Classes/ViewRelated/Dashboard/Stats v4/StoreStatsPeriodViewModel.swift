@@ -41,20 +41,31 @@ final class StoreStatsPeriodViewModel {
 
     /// Emits visitor stats text values based on site visit stats and selected time interval.
     private(set) lazy var visitorStatsText: AnyPublisher<String, Never> =
-    Publishers.CombineLatest($siteStats.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
-        .compactMap { siteStats, selectedIntervalIndex in
-            StatsDataTextFormatter.createVisitorCountText(siteStats: siteStats, selectedIntervalIndex: selectedIntervalIndex)
+    Publishers.CombineLatest3($siteStats.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher(), $summaryStats.eraseToAnyPublisher())
+        .compactMap { siteStats, selectedIntervalIndex, summaryStats in
+            if let selectedIntervalIndex {
+                return StatsDataTextFormatter.createVisitorCountText(siteStats: siteStats, selectedIntervalIndex: selectedIntervalIndex)
+            } else {
+                return StatsDataTextFormatter.createVisitorCountText(siteStats: summaryStats)
+            }
         }
         .removeDuplicates()
         .eraseToAnyPublisher()
 
     /// Emits conversion stats text values based on order stats, site visit stats, and selected time interval.
     private(set) lazy var conversionStatsText: AnyPublisher<String, Never> =
-    Publishers.CombineLatest3($orderStatsData.eraseToAnyPublisher(), $siteStats.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
-        .compactMap { orderStatsData, siteStats, selectedIntervalIndex in
-            StatsDataTextFormatter.createConversionRateText(orderStats: orderStatsData.stats,
-                                                            siteStats: siteStats,
-                                                            selectedIntervalIndex: selectedIntervalIndex)
+    Publishers.CombineLatest4($orderStatsData.eraseToAnyPublisher(),
+                              $siteStats.eraseToAnyPublisher(),
+                              $selectedIntervalIndex.eraseToAnyPublisher(),
+                              $summaryStats.eraseToAnyPublisher())
+        .compactMap { orderStatsData, siteStats, selectedIntervalIndex, summaryStats in
+            if let selectedIntervalIndex {
+                return StatsDataTextFormatter.createConversionRateText(orderStats: orderStatsData.stats,
+                                                                       siteStats: siteStats,
+                                                                       selectedIntervalIndex: selectedIntervalIndex)
+            } else {
+                return StatsDataTextFormatter.createConversionRateText(orderStats: orderStatsData.stats, siteStats: summaryStats)
+            }
         }
         .removeDuplicates()
         .eraseToAnyPublisher()

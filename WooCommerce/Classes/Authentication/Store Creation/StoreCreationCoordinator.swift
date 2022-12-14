@@ -124,6 +124,8 @@ private extension StoreCreationCoordinator {
     @MainActor
     func startStoreCreationM2(from navigationController: UINavigationController, planToPurchase: WPComPlanProduct) {
         navigationController.navigationBar.prefersLargeTitles = true
+        // Disables interactive dismissal of the store creation modal.
+        navigationController.isModalInPresentation = true
 
         let isProfilerEnabled = featureFlagService.isFeatureFlagEnabled(.storeCreationM3Profiler)
         let storeNameForm = StoreNameFormHostingController { [weak self] storeName in

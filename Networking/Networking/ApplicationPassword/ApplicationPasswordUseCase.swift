@@ -2,6 +2,11 @@ import Foundation
 import WordPressShared
 import KeychainAccess
 
+enum ApplicationPasswordUseCaseError: Error {
+    case duplicateName
+    case applicationPasswordsDisabled
+}
+
 struct ApplicationPassword {
     /// WordPress org username that the application password belongs to
     ///
@@ -82,6 +87,40 @@ final class DefaultApplicationPasswordUseCase {
 }
 
 private extension DefaultApplicationPasswordUseCase {
+    /// Creates application password using WordPress.com authentication token
+    ///
+    /// - Returns: Application password as `String`
+    ///
+    func createApplicationPasswordUsingWPCOMAuthToken() async throws -> String {
+        let passwordName = await applicationPasswordName
+
+        let parameters = [ParameterKey.name: passwordName]
+        let request = JetpackRequest(wooApiVersion: .none, method: .post, siteID: siteID, path: Path.applicationPasswords, parameters: parameters)
+
+        return try await withCheckedThrowingContinuation { continuation in
+            network.responseData(for: request) { result in
+                switch result {
+                case .success(let data):
+                    do {
+                        let validator = request.responseDataValidator()
+                        try validator.validate(data: data)
+                        let mapper = ApplicationPasswordMapper()
+                        let password = try mapper.map(response: data)
+                        continuation.resume(returning: password)
+                    } catch let DotcomError.unknown(code, _) where code == ErrorCode.applicationPasswordsDisabledErrorCode {
+                        continuation.resume(throwing: ApplicationPasswordUseCaseError.applicationPasswordsDisabled)
+                    } catch let DotcomError.unknown(code, _) where code == ErrorCode.duplicateNameErrorCode {
+                        continuation.resume(throwing: ApplicationPasswordUseCaseError.duplicateName)
+                    } catch {
+                        continuation.resume(throwing: error)
+                    }
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+
     /// Saves application password into keychain
     ///
     /// - Parameter password: `ApplicationPasword` to be saved
@@ -89,6 +128,23 @@ private extension DefaultApplicationPasswordUseCase {
     func saveApplicationPassword(_ password: ApplicationPassword) {
         keychain.applicationPassword = password.wpOrgUsername
         keychain.applicationPasswordUsername = password.password.secretValue
+    }
+}
+
+// MARK: - Constants
+//
+private extension DefaultApplicationPasswordUseCase {
+    enum Path {
+        static let applicationPasswords = "wp/v2/users/me/application-passwords"
+    }
+
+    enum ParameterKey {
+        static let name = "name"
+    }
+
+    enum ErrorCode {
+        static let applicationPasswordsDisabledErrorCode = "application_passwords_disabled"
+        static let duplicateNameErrorCode = "application_password_duplicate_name"
     }
 }
 

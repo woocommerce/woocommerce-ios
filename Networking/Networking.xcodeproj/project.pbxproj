@@ -552,6 +552,7 @@
 		CC0786C7267BB10700BA9AC1 /* shipping-label-status-success.json in Resources */ = {isa = PBXBuildFile; fileRef = CC0786C6267BB10700BA9AC1 /* shipping-label-status-success.json */; };
 		CC0786C9267BB32800BA9AC1 /* ShippingLabelStatusMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0786C8267BB32800BA9AC1 /* ShippingLabelStatusMapperTests.swift */; };
 		CC6A1FF5270E042200F6AF4A /* OrderMetaData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6A1FF4270E042200F6AF4A /* OrderMetaData.swift */; };
+		CC80E3F92948C8BC00D5FF45 /* site-visits-quarter.json in Resources */ = {isa = PBXBuildFile; fileRef = CC80E3F82948C8BC00D5FF45 /* site-visits-quarter.json */; };
 		CC851D0625E51ADF00249E9C /* Decimal+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC851D0525E51ADF00249E9C /* Decimal+Extensions.swift */; };
 		CC851D1425E52AB500249E9C /* Decimal+ExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC851D1325E52AB500249E9C /* Decimal+ExtensionsTests.swift */; };
 		CC9A24A32641BCF2005DE56E /* ShippingLabelCreationEligibilityResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC9A24A22641BCF2005DE56E /* ShippingLabelCreationEligibilityResponse.swift */; };
@@ -1314,6 +1315,7 @@
 		CC0786C6267BB10700BA9AC1 /* shipping-label-status-success.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "shipping-label-status-success.json"; sourceTree = "<group>"; };
 		CC0786C8267BB32800BA9AC1 /* ShippingLabelStatusMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelStatusMapperTests.swift; sourceTree = "<group>"; };
 		CC6A1FF4270E042200F6AF4A /* OrderMetaData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderMetaData.swift; sourceTree = "<group>"; };
+		CC80E3F82948C8BC00D5FF45 /* site-visits-quarter.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "site-visits-quarter.json"; sourceTree = "<group>"; };
 		CC851D0525E51ADF00249E9C /* Decimal+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Decimal+Extensions.swift"; sourceTree = "<group>"; };
 		CC851D1325E52AB500249E9C /* Decimal+ExtensionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Decimal+ExtensionsTests.swift"; sourceTree = "<group>"; };
 		CC9A24A22641BCF2005DE56E /* ShippingLabelCreationEligibilityResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCreationEligibilityResponse.swift; sourceTree = "<group>"; };
@@ -2213,6 +2215,7 @@
 				74A1D25F211898F000931DFA /* site-visits-day.json */,
 				74A1D260211898F000931DFA /* site-visits-week.json */,
 				74A1D261211898F000931DFA /* site-visits-month.json */,
+				CC80E3F82948C8BC00D5FF45 /* site-visits-quarter.json */,
 				74A1D262211898F000931DFA /* site-visits-year.json */,
 				743BF8BD21191B63008A9D87 /* site-visits.json */,
 				74E30950216E8DCE00ABCE4C /* site-visits-alt.json */,
@@ -2942,6 +2945,7 @@
 				45AB8B2024AB3E1F00B5B36E /* product-tags-empty.json in Resources */,
 				0359EA2127AAE58C0048DE2D /* wcpay-charge-card-present.json in Resources */,
 				451274A625276C82009911FF /* product-variation.json in Resources */,
+				CC80E3F92948C8BC00D5FF45 /* site-visits-quarter.json in Resources */,
 				020D07C223D858BB00FD9580 /* media-upload.json in Resources */,
 				31A451D127863A2E00FE81AA /* stripe-account-rejected-other.json in Resources */,
 				74ABA1CA213F19FE00FFAD30 /* top-performers-year.json in Resources */,

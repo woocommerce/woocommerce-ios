@@ -2,25 +2,6 @@ import Combine
 import Foundation
 import Alamofire
 
-// TODO: Replace with actual implementation.
-final class TemporaryApplicationPasswordUseCase: ApplicationPasswordUseCase {
-    init(siteID: Int64, credentials: Credentials) {
-        // no-op
-    }
-
-    var applicationPassword: ApplicationPassword? {
-        return nil
-    }
-
-    func generateNewPassword() async throws -> ApplicationPassword {
-        return .init(wpOrgUsername: "test", password: .init("12345"))
-    }
-
-    func deletePassword() async throws {
-        // no-op
-    }
-}
-
 extension Alamofire.MultipartFormData: MultipartFormData {}
 
 /// AlamofireWrapper: Encapsulates all of the Alamofire OP's
@@ -133,11 +114,8 @@ public class AlamofireNetwork: Network {
 public extension AlamofireNetwork {
     /// Updates the application password use case with a new site ID.
     ///
-    func configureApplicationPasswordHandler(with siteID: Int64) {
-        guard let credentials else {
-            return
-        }
-        self.applicationPasswordUseCase = TemporaryApplicationPasswordUseCase(siteID: siteID, credentials: credentials)
+    func configureApplicationPasswordHandler(with applicationPasswordUseCase: ApplicationPasswordUseCase) {
+        self.applicationPasswordUseCase = applicationPasswordUseCase
     }
 }
 

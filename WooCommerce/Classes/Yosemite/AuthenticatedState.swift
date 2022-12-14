@@ -23,10 +23,14 @@ class AuthenticatedState: StoresManagerState {
     ///
     private let network: AlamofireNetwork
 
+    /// WordPress.com Credentials.
+    ///
+    private let credentials: Credentials
 
     /// Designated Initializer
     ///
     init(credentials: Credentials) {
+        self.credentials = credentials
         let storageManager = ServiceLocator.storageManager
         network = AlamofireNetwork(credentials: credentials)
 
@@ -132,10 +136,29 @@ class AuthenticatedState: StoresManagerState {
     /// Updates the network with the currently selected site.
     ///
     func updateCurrentSite(siteID: Int64) {
-        network.configureApplicationPasswordHandler(with: siteID)
+        let useCase = TemporaryApplicationPasswordUseCase(siteID: siteID, credentials: credentials)
+        network.configureApplicationPasswordHandler(with: useCase)
     }
 }
 
+// TODO: Replace with actual implementation.
+final class TemporaryApplicationPasswordUseCase: ApplicationPasswordUseCase {
+    init(siteID: Int64, credentials: Credentials) {
+        // no-op
+    }
+
+    var applicationPassword: ApplicationPassword? {
+        return nil
+    }
+
+    func generateNewPassword() async throws -> ApplicationPassword {
+        return .init(wpOrgUsername: "test", password: .init("12345"))
+    }
+
+    func deletePassword() async throws {
+        // no-op
+    }
+}
 
 // MARK: - Private Methods
 //

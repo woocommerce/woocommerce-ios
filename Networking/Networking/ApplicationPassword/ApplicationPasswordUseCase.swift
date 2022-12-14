@@ -1,7 +1,7 @@
 import Foundation
 import WordPressShared
 
-struct ApplicationPassword {
+public struct ApplicationPassword {
     /// WordPress org username that the application password belongs to
     ///
     let wpOrgUsername: String
@@ -9,9 +9,14 @@ struct ApplicationPassword {
     /// Application password
     ///
     let password: Secret<String>
+
+    public init(wpOrgUsername: String, password: Secret<String>) {
+        self.wpOrgUsername = wpOrgUsername
+        self.password = password
+    }
 }
 
-protocol ApplicationPasswordUseCase {
+public protocol ApplicationPasswordUseCase {
     /// Returns the locally saved ApplicationPassword if available
     ///
     var applicationPassword: ApplicationPassword? { get }

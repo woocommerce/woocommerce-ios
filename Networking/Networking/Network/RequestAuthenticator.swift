@@ -37,11 +37,8 @@ final class RequestAuthenticator {
 
     /// Updates the application password use case with a new site ID.
     ///
-    func updateApplicationPasswordHandler(with siteID: Int64) {
-        guard let credentials else {
-            return
-        }
-        self.applicationPasswordUseCase = TemporaryApplicationPasswordUseCase(siteID: siteID, credentials: credentials)
+    func updateApplicationPasswordHandler(with useCase: ApplicationPasswordUseCase) {
+        applicationPasswordUseCase = useCase
     }
 
     /// Updates a request with application password or WPCOM token if possible.

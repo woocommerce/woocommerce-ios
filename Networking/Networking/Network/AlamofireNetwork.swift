@@ -7,6 +7,9 @@ extension Alamofire.MultipartFormData: MultipartFormData {}
 /// AlamofireWrapper: Encapsulates all of the Alamofire OP's
 ///
 public class AlamofireNetwork: Network {
+    /// WordPress.com Credentials.
+    ///
+    private let credentials: Credentials?
 
     private let backgroundSessionManager: Alamofire.SessionManager
 
@@ -19,6 +22,7 @@ public class AlamofireNetwork: Network {
     /// Public Initializer
     ///
     public required init(credentials: Credentials?) {
+        self.credentials = credentials
         self.requestAuthenticator = RequestAuthenticator(credentials: credentials)
 
         // A unique ID is included in the background session identifier so that the session does not get invalidated when the initializer is called multiple
@@ -111,7 +115,11 @@ public extension AlamofireNetwork {
     /// Updates the application password use case with a new site ID.
     ///
     func configureApplicationPasswordHandler(with siteID: Int64) {
-        requestAuthenticator.updateApplicationPasswordHandler(with: siteID)
+        guard let credentials else {
+            return
+        }
+        let applicationPasswordUseCase = TemporaryApplicationPasswordUseCase(siteID: siteID, credentials: credentials)
+        requestAuthenticator.updateApplicationPasswordHandler(with: applicationPasswordUseCase)
     }
 }
 

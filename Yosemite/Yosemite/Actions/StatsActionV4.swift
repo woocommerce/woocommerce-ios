@@ -48,4 +48,12 @@ public enum StatsActionV4: Action {
                                 forceRefresh: Bool,
                                 saveInStorage: Bool,
                                 onCompletion: (Result<TopEarnerStats, Error>) -> Void)
+
+    /// Retrieves the site summary stats for the provided site ID, period(s), and date, without saving them to the Storage layer.
+    ///
+    case retrieveSiteSummaryStats(siteID: Int64,
+                                  period: StatGranularity,
+                                  quantity: Int,
+                                  latestDateToInclude: Date,
+                                  onCompletion: (Result<SiteSummaryStats, Error>) -> Void)
 }

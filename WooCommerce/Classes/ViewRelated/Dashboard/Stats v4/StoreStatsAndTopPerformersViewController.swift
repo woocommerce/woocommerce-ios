@@ -483,7 +483,7 @@ private extension StoreStatsAndTopPerformersViewController {
         }
     }
 
-    func handleSiteVisitStatsStoreError(error: SiteVisitStatsStoreError) {
+    func handleSiteStatsStoreError(error: SiteStatsStoreError) {
         switch error {
         case .noPermission:
             updateSiteVisitors(mode: .hidden)
@@ -501,8 +501,8 @@ private extension StoreStatsAndTopPerformersViewController {
 
     private func handleSyncError(error: Error) {
         switch error {
-        case let siteVisitStatsStoreError as SiteVisitStatsStoreError:
-            handleSiteVisitStatsStoreError(error: siteVisitStatsStoreError)
+        case let siteStatsStoreError as SiteStatsStoreError:
+            handleSiteStatsStoreError(error: siteStatsStoreError)
         default:
             displaySyncingError()
         }

@@ -67,6 +67,10 @@ struct TopPerformersRow: View {
         ///
         let imageURL: URL?
 
+        /// Image placeholder.
+        ///
+        let placeHolder = UIImage.productPlaceholderImage
+
         /// Item name or title.
         ///
         let name: String
@@ -92,6 +96,7 @@ struct TopPerformersRow: View {
         AdaptiveStack(horizontalAlignment: .leading, verticalAlignment: .top) {
             // Image
             KFImage(data.imageURL)
+                .placeholder { Image(uiImage: data.placeHolder).foregroundColor(Color(.listIcon)) }
                 .resizable()
                 .frame(width: imageWidth, height: imageWidth)
                 .cornerRadius(Layout.imageCornerRadius)

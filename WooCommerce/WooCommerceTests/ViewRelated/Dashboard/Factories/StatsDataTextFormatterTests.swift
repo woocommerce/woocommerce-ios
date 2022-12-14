@@ -292,21 +292,18 @@ final class StatsDataTextFormatterTests: XCTestCase {
 
     // MARK: Views and Visitors Stats
 
-    // This test reflects the current method for computing total visitor count.
-    // It needs to be updated once this issue is fixed: https://github.com/woocommerce/woocommerce-ios/issues/8173
-    func test_createVisitorCountText_returns_expected_visitor_stats() {
+    func test_createVisitorCountText_for_SiteSummaryStats_returns_expected_visitor_stats() {
         // Given
-        let siteVisitStats = Yosemite.SiteVisitStats.fake().copy(items: [.fake().copy(period: "1", visitors: 17),
-                                                                         .fake().copy(period: "0", visitors: 5)])
+        let siteSummaryStats = Yosemite.SiteSummaryStats.fake().copy(visitors: 20)
 
         // When
-        let visitorCount = StatsDataTextFormatter.createVisitorCountText(siteStats: siteVisitStats, selectedIntervalIndex: nil)
+        let visitorCount = StatsDataTextFormatter.createVisitorCountText(siteStats: siteSummaryStats)
 
         // Then
-        XCTAssertEqual(visitorCount, "22")
+        XCTAssertEqual(visitorCount, "20")
     }
 
-    func test_createVisitorCountText_returns_expected_text_for_selected_interval() {
+    func test_createVisitorCountText_for_SiteVisitStats_returns_expected_text_for_selected_interval() {
         // Given
         let siteVisitStats = Yosemite.SiteVisitStats.fake().copy(items: [.fake().copy(period: "1", visitors: 17),
                                                                          .fake().copy(period: "0", visitors: 5)])
@@ -318,19 +315,6 @@ final class StatsDataTextFormatterTests: XCTestCase {
 
         // Then
         XCTAssertEqual(visitorCount, "17")
-    }
-
-    func test_createVisitorCountDelta_returns_expected_delta() {
-        // Given
-        let previousSiteStats = SiteVisitStats.fake().copy(items: [.fake().copy(period: "0", visitors: 10)])
-        let currentSiteStats = SiteVisitStats.fake().copy(items: [.fake().copy(period: "0", visitors: 15)])
-
-        // When
-        let visitorCountDelta = StatsDataTextFormatter.createVisitorCountDelta(from: previousSiteStats, to: currentSiteStats)
-
-        // Then
-        XCTAssertEqual(visitorCountDelta.string, "+50%")
-        XCTAssertEqual(visitorCountDelta.direction, .positive)
     }
 
     func test_createViewsCountText_returns_expected_views_stats() {
@@ -352,7 +336,7 @@ final class StatsDataTextFormatterTests: XCTestCase {
         let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 3))
 
         // When
-        let conversionRate = StatsDataTextFormatter.createConversionRateText(orderStats: orderStats, siteStats: siteVisitStats, selectedIntervalIndex: nil)
+        let conversionRate = StatsDataTextFormatter.createConversionRateText(orderStats: orderStats, siteStats: siteVisitStats, selectedIntervalIndex: 0)
 
         // Then
         XCTAssertEqual(conversionRate, "0%")
@@ -364,7 +348,7 @@ final class StatsDataTextFormatterTests: XCTestCase {
         let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 3557))
 
         // When
-        let conversionRate = StatsDataTextFormatter.createConversionRateText(orderStats: orderStats, siteStats: siteVisitStats, selectedIntervalIndex: nil)
+        let conversionRate = StatsDataTextFormatter.createConversionRateText(orderStats: orderStats, siteStats: siteVisitStats, selectedIntervalIndex: 0)
 
         // Then
         XCTAssertEqual(conversionRate, "35.6%") // order count: 3557, visitor count: 10000 => 0.3557 (35.57%)
@@ -376,23 +360,10 @@ final class StatsDataTextFormatterTests: XCTestCase {
         let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 3))
 
         // When
-        let conversionRate = StatsDataTextFormatter.createConversionRateText(orderStats: orderStats, siteStats: siteVisitStats, selectedIntervalIndex: nil)
-
-        // Then
-        XCTAssertEqual(conversionRate, "30%") // order count: 3, visitor count: 10 => 0.3 (30%)
-    }
-
-    func test_createConversionRateText_for_SiteVisitStats_returns_expected_text_for_selected_interval() {
-        // Given
-        let siteVisitStats = Yosemite.SiteVisitStats.fake().copy(items: [.fake().copy(visitors: 10)])
-        let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 2),
-                                                  intervals: [.fake().copy(subtotals: .fake().copy(totalOrders: 1))])
-
-        // When
         let conversionRate = StatsDataTextFormatter.createConversionRateText(orderStats: orderStats, siteStats: siteVisitStats, selectedIntervalIndex: 0)
 
         // Then
-        XCTAssertEqual(conversionRate, "10%")
+        XCTAssertEqual(conversionRate, "30%") // order count: 3, visitor count: 10 => 0.3 (30%)
     }
 
     func test_createConversionRateText_for_SiteSummaryStats_returns_placeholder_when_visitor_count_is_zero() {

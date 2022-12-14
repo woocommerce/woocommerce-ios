@@ -100,7 +100,7 @@ struct StatsDataTextFormatter {
 
     // MARK: Views and Visitors Stats
 
-    /// Creates the text to display for the visitor count.
+    /// Creates the text to display for the visitor count based on SiteVisitStats data and a given interval.
     ///
     static func createVisitorCountText(siteStats: SiteVisitStats?, selectedIntervalIndex: Int?) -> String {
         if let visitorCount = visitorCount(at: selectedIntervalIndex, siteStats: siteStats) {
@@ -110,12 +110,14 @@ struct StatsDataTextFormatter {
         }
     }
 
-    /// Creates the text to display for the visitor count delta.
+    /// Creates the text to display for the visitor count based on SiteSummaryStats data.
     ///
-    static func createVisitorCountDelta(from previousPeriod: SiteVisitStats?, to currentPeriod: SiteVisitStats?) -> DeltaPercentage {
-        let previousCount = visitorCount(at: nil, siteStats: previousPeriod)
-        let currentCount = visitorCount(at: nil, siteStats: currentPeriod)
-        return createDeltaPercentage(from: previousCount, to: currentCount)
+    static func createVisitorCountText(siteStats: SiteSummaryStats?) -> String {
+        guard let visitorCount = siteStats?.visitors else {
+            return Constants.placeholderText
+        }
+
+        return Double(visitorCount).humanReadableString()
     }
 
     /// Creates the text to display for the views count.
@@ -130,7 +132,7 @@ struct StatsDataTextFormatter {
 
     // MARK: Conversion Stats
 
-    /// Creates the text to display for the conversion rate.
+    /// Creates the text to display for the conversion rate based on SiteVisitStats data and a given interval.
     ///
     static func createConversionRateText(orderStats: OrderStatsV4?, siteStats: SiteVisitStats?, selectedIntervalIndex: Int?) -> String {
         guard let visitors = visitorCount(at: selectedIntervalIndex, siteStats: siteStats),
@@ -218,7 +220,7 @@ private extension StatsDataTextFormatter {
         return numberFormatter
     }()
 
-    /// Retrieves the visitor count for the provided order stats and, optionally, a specific interval.
+    /// Retrieves the visitor count for the provided site stats and a specific interval.
     ///
     static func visitorCount(at selectedIndex: Int?, siteStats: SiteVisitStats?) -> Double? {
         let siteStatsItems = siteStats?.items?.sorted(by: { (lhs, rhs) -> Bool in
@@ -226,8 +228,6 @@ private extension StatsDataTextFormatter {
         }) ?? []
         if let selectedIndex, selectedIndex < siteStatsItems.count {
             return Double(siteStatsItems[selectedIndex].visitors)
-        } else if let siteStats {
-            return Double(siteStats.totalVisitors)
         } else {
             return nil
         }

@@ -56,7 +56,9 @@ final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
     ///
     private var applicationPasswordName: String {
         get async {
-            await UIDevice.current.model
+            let bundleIdentifier = Bundle.main.bundleIdentifier ?? "Unknown"
+            let model = await UIDevice.current.model
+            return bundleIdentifier + ".ios-app-client." + model
         }
     }
 

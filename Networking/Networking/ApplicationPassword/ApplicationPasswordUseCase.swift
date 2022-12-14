@@ -69,4 +69,42 @@ final class DefaultApplicationPasswordUseCase {
             self.network = ApplicationPasswordNetwork(credentials: networkcredentials)
         }
     }
+
+    /// Returns the locally saved ApplicationPassword if available
+    ///
+    var applicationPassword: ApplicationPassword? {
+        guard let password = keychain.applicationPassword,
+              let username = keychain.applicationPasswordUsername else {
+            return nil
+        }
+        return ApplicationPassword(wpOrgUsername: username, password: Secret(password))
+    }
+}
+
+private extension DefaultApplicationPasswordUseCase {
+    /// Saves application password into keychain
+    ///
+    /// - Parameter password: `ApplicationPasword` to be saved
+    ///
+    func saveApplicationPassword(_ password: ApplicationPassword) {
+        keychain.applicationPassword = password.wpOrgUsername
+        keychain.applicationPasswordUsername = password.password.secretValue
+    }
+}
+
+// MARK: - For storing the application password in keychain
+//
+private extension Keychain {
+    private static let keychainApplicationPassword = "ApplicationPassword"
+    private static let keychainApplicationPasswordUsername = "ApplicationPasswordUsername"
+
+    var applicationPassword: String? {
+        get { self[Keychain.keychainApplicationPassword] }
+        set { self[Keychain.keychainApplicationPassword] = newValue }
+    }
+
+    var applicationPasswordUsername: String? {
+        get { self[Keychain.keychainApplicationPasswordUsername] }
+        set { self[Keychain.keychainApplicationPasswordUsername] = newValue }
+    }
 }

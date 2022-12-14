@@ -89,10 +89,19 @@ final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
 
     /// Generates new ApplicationPassword
     ///
+    /// When `duplicateName` error occurs this method will delete the password and try generating again
+    ///
     /// - Returns: Generated `ApplicationPassword` instance
     ///
     func generateNewPassword() async throws -> ApplicationPassword {
-        let password = try await createApplicationPasswordUsingWPCOMAuthToken()
+        let password = try await {
+            do {
+                return try await createApplicationPasswordUsingWPCOMAuthToken()
+            } catch ApplicationPasswordUseCaseError.duplicateName {
+                try await deletePassword()
+                return try await createApplicationPasswordUsingWPCOMAuthToken()
+            }
+        }()
         let username = try await fetchWPAdminUsername()
 
         let applicationPassword = ApplicationPassword(wpOrgUsername: username, password: Secret(password))
@@ -180,7 +189,6 @@ private extension DefaultApplicationPasswordUseCase {
     /// Deletes application password using WordPress.com authentication token
     ///
     func deleteApplicationPasswordUsingWPCOMAuthToken() async throws {
-
         // Delete password from keychain
         keychain.applicationPassword = nil
         keychain.applicationPasswordUsername = nil

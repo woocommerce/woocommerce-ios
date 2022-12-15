@@ -57,6 +57,7 @@ struct RangedDatePicker: View {
                     DatePicker("", selection: $startDate, in: ...Date(), displayedComponents: [.date])
                         .datePickerStyle(.graphical)
                         .accentColor(Color(.brand))
+                        .padding(.horizontal, Layout.calendarPadding)
 
                     // End Picker
                     Text(Localization.endDate)
@@ -68,6 +69,7 @@ struct RangedDatePicker: View {
                     DatePicker("", selection: $endDate, in: ...Date(), displayedComponents: [.date])
                         .datePickerStyle(.graphical)
                         .accentColor(Color(.brand))
+                        .padding(.horizontal, Layout.calendarPadding)
                 }
                 .padding()
             }
@@ -116,6 +118,7 @@ private extension RangedDatePicker {
     }
     enum Layout {
         static let titleSpacing: CGFloat = 4.0
+        static let calendarPadding: CGFloat = -8.0
     }
 }
 

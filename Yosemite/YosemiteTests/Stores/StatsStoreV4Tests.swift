@@ -518,7 +518,8 @@ final class StatsStoreV4Tests: XCTestCase {
             let action = StatsActionV4.retrieveSiteSummaryStats(siteID: self.sampleSiteID,
                                                                 period: .day,
                                                                 quantity: 1,
-                                                                latestDateToInclude: DateFormatter.dateFromString(with: "2022-12-09T17:06:55")) { result in
+                                                                latestDateToInclude: DateFormatter.dateFromString(with: "2022-12-09T17:06:55"),
+                                                                saveInStorage: false) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -541,7 +542,8 @@ final class StatsStoreV4Tests: XCTestCase {
             let action = StatsActionV4.retrieveSiteSummaryStats(siteID: self.sampleSiteID,
                                                                 period: .month,
                                                                 quantity: 3,
-                                                                latestDateToInclude: DateFormatter.dateFromString(with: "2022-12-31T17:06:55")) { _ in
+                                                                latestDateToInclude: DateFormatter.dateFromString(with: "2022-12-31T17:06:55"),
+                                                                saveInStorage: false) { _ in
                 promise(())
             }
             store.onAction(action)
@@ -567,7 +569,8 @@ final class StatsStoreV4Tests: XCTestCase {
             let action = StatsActionV4.retrieveSiteSummaryStats(siteID: self.sampleSiteID,
                                                                 period: .month,
                                                                 quantity: 3,
-                                                                latestDateToInclude: DateFormatter.dateFromString(with: "2022-12-31T17:06:55")) { result in
+                                                                latestDateToInclude: DateFormatter.dateFromString(with: "2022-12-31T17:06:55"),
+                                                                saveInStorage: false) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -591,7 +594,8 @@ final class StatsStoreV4Tests: XCTestCase {
             let action = StatsActionV4.retrieveSiteSummaryStats(siteID: self.sampleSiteID,
                                                                 period: .day,
                                                                 quantity: 1,
-                                                                latestDateToInclude: DateFormatter.dateFromString(with: "2022-12-09T17:06:55")) { result in
+                                                                latestDateToInclude: DateFormatter.dateFromString(with: "2022-12-09T17:06:55"),
+                                                                saveInStorage: false) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -612,7 +616,8 @@ final class StatsStoreV4Tests: XCTestCase {
             let action = StatsActionV4.retrieveSiteSummaryStats(siteID: self.sampleSiteID,
                                                                 period: .day,
                                                                 quantity: 1,
-                                                                latestDateToInclude: DateFormatter.dateFromString(with: "2022-12-09T17:06:55")) { result in
+                                                                latestDateToInclude: DateFormatter.dateFromString(with: "2022-12-09T17:06:55"),
+                                                                saveInStorage: false) { result in
                 promise(result)
             }
             store.onAction(action)

@@ -94,11 +94,13 @@ public final class StatsStoreV4: Store {
                                        let period,
                                        let quantity,
                                        let latestDateToInclude,
+                                       let saveInStorage,
                                        let onCompletion):
             retrieveSiteSummaryStats(siteID: siteID,
                                      period: period,
                                      quantity: quantity,
                                      latestDateToInclude: latestDateToInclude,
+                                     saveInStorage: saveInStorage,
                                      onCompletion: onCompletion)
         }
     }
@@ -189,19 +191,24 @@ private extension StatsStoreV4 {
         }
     }
 
-    /// Retrieves the site summary stats for the provided site ID, period(s), and date, without saving them to the Storage layer.
+    /// Retrieves the site summary stats for the provided site ID, period(s), and date.
+    /// Conditionally saves them to storage, if a single period is retrieved.
     ///
     func retrieveSiteSummaryStats(siteID: Int64,
                                   period: StatGranularity,
                                   quantity: Int,
                                   latestDateToInclude: Date,
+                                  saveInStorage: Bool,
                                   onCompletion: @escaping (Result<SiteSummaryStats, Error>) -> Void) {
         if quantity == 1 {
             siteStatsRemote.loadSiteSummaryStats(for: siteID,
                                                  period: period,
-                                                 includingDate: latestDateToInclude) { result in
+                                                 includingDate: latestDateToInclude) { [weak self] result in
                 switch result {
                 case .success(let siteSummaryStats):
+                    if saveInStorage {
+                        self?.upsertStoredSiteSummaryStats(readOnlyStats: siteSummaryStats)
+                    }
                     onCompletion(.success(siteSummaryStats))
                 case .failure(let error):
                     onCompletion(.failure(SiteStatsStoreError(error: error)))
@@ -486,6 +493,19 @@ extension StatsStoreV4 {
     }
 }
 
+// MARK: Site summary stats
+extension StatsStoreV4 {
+    /// Updates (OR Inserts) the specified ReadOnly SiteSummaryStats Entity into the Storage Layer.
+    ///
+    func upsertStoredSiteSummaryStats(readOnlyStats: Networking.SiteSummaryStats) {
+        assert(Thread.isMainThread)
+
+        let storage = storageManager.viewStorage
+        let storageSiteSummaryStats = storage.loadSiteSummaryStats(date: readOnlyStats.date, period: readOnlyStats.period.rawValue) ?? storage.insertNewObject(ofType: Storage.SiteSummaryStats.self)
+        storageSiteSummaryStats.update(with: readOnlyStats)
+        storage.saveIfNeeded()
+    }
+}
 
 // MARK: Convert Leaderboard into TopEarnerStats
 //

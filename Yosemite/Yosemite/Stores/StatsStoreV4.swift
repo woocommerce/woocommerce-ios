@@ -501,7 +501,8 @@ extension StatsStoreV4 {
         assert(Thread.isMainThread)
 
         let storage = storageManager.viewStorage
-        let storageSiteSummaryStats = storage.loadSiteSummaryStats(date: readOnlyStats.date, period: readOnlyStats.period.rawValue) ?? storage.insertNewObject(ofType: Storage.SiteSummaryStats.self)
+        let storageSiteSummaryStats = storage.loadSiteSummaryStats(date: readOnlyStats.date, period: readOnlyStats.period.rawValue)
+            ?? storage.insertNewObject(ofType: Storage.SiteSummaryStats.self)
         storageSiteSummaryStats.update(with: readOnlyStats)
         storage.saveIfNeeded()
     }

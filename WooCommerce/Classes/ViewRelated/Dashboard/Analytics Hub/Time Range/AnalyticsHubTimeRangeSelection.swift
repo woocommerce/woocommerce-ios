@@ -126,6 +126,38 @@ extension AnalyticsHubTimeRangeSelection {
             }
         }
 
+        /// The period used to request site summary stats from the given SelectedType.
+        ///
+        /// Returns `nil` if there isn't a `StatGranularity` period that can be used to fetch stats for the given SelectedType.
+        ///
+        var period: StatGranularity? {
+            switch self {
+            case .custom:
+                return nil
+            case .today, .yesterday:
+                return .day
+            case .weekToDate, .lastWeek:
+                return .week
+            case .monthToDate, .lastMonth, .quarterToDate, .lastQuarter:
+                return .month
+            case .yearToDate, .lastYear:
+                return .year
+            }
+        }
+
+        /// The quantity of periods used to request site summary stats from the given SelectedType.
+        ///
+        /// Defaults to 1 (a single period) except for ranges not matching a `StatGranularity` period.
+        ///
+        var quantity: Int {
+            switch self {
+            case .quarterToDate, .lastQuarter:
+                return 3 // Stats summary calculated from 3 months of data
+            default:
+                return 1
+            }
+        }
+
         init(_ statsTimeRange: StatsTimeRangeV4) {
             switch statsTimeRange {
             case .today:

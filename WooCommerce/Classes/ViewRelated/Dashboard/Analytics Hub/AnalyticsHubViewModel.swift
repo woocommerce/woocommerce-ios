@@ -126,7 +126,10 @@ private extension AnalyticsHubViewModel {
                 try await self.retrieveOrderStats(currentTimeRange: currentTimeRange, previousTimeRange: previousTimeRange)
             }
             group.addTask {
-                try await self.retrieveVisitorStats(currentTimeRange: currentTimeRange, previousTimeRange: previousTimeRange)
+                try await self.retrieveItemsSoldStats(currentTimeRange: currentTimeRange, previousTimeRange: previousTimeRange)
+            }
+            group.addTask {
+                try await self.retrieveSiteStats(currentTimeRange: currentTimeRange)
             }
             try await group.waitForAll()
         }
@@ -147,13 +150,21 @@ private extension AnalyticsHubViewModel {
     }
 
     @MainActor
-    func retrieveVisitorStats(currentTimeRange: AnalyticsHubTimeRange, previousTimeRange: AnalyticsHubTimeRange) async throws {
+    func retrieveItemsSoldStats(currentTimeRange: AnalyticsHubTimeRange, previousTimeRange: AnalyticsHubTimeRange) async throws {
         async let itemsSoldRequest = retrieveTopItemsSoldStats(earliestDateToInclude: currentTimeRange.start,
                                                                latestDateToInclude: currentTimeRange.end,
                                                                forceRefresh: true)
 
         let itemsSoldStats = try await itemsSoldRequest
         self.itemsSoldStats = itemsSoldStats
+    }
+
+    @MainActor
+    func retrieveSiteStats(currentTimeRange: AnalyticsHubTimeRange) async throws {
+        async let siteStatsRequest = retrieveSiteSummaryStats(latestDateToInclude: currentTimeRange.end)
+
+        let summaryStats = try await siteStatsRequest
+        self.siteStats = summaryStats
     }
 
     @MainActor
@@ -191,6 +202,25 @@ private extension AnalyticsHubViewModel {
             stores.dispatch(action)
         }
     }
+
+    @MainActor
+    /// Retrieves site summary stats using the `retrieveSiteSummaryStats` action.
+    ///
+    func retrieveSiteSummaryStats(latestDateToInclude: Date) async throws -> SiteSummaryStats? {
+        guard let period = timeRangeSelectionType.period else {
+            return nil
+        }
+
+        return try await withCheckedThrowingContinuation { continuation in
+            let action = StatsActionV4.retrieveSiteSummaryStats(siteID: siteID,
+                                                                period: period,
+                                                                quantity: timeRangeSelectionType.quantity,
+                                                                latestDateToInclude: latestDateToInclude) { result in
+                continuation.resume(with: result)
+            }
+            stores.dispatch(action)
+        }
+    }
 }
 
 // MARK: Data - UI mapping
@@ -202,6 +232,7 @@ private extension AnalyticsHubViewModel {
         self.ordersCard = ordersCard.redacted
         self.productsStatsCard = productsStatsCard.redacted
         self.itemsSoldCard = itemsSoldCard.redacted
+        self.sessionsCard = sessionsCard.redacted
     }
 
     @MainActor
@@ -209,6 +240,7 @@ private extension AnalyticsHubViewModel {
         self.currentOrderStats = nil
         self.previousOrderStats = nil
         self.itemsSoldStats = nil
+        self.siteStats = nil
     }
 
     func bindViewModelsWithData() {
@@ -229,8 +261,8 @@ private extension AnalyticsHubViewModel {
                 self.itemsSoldCard = AnalyticsHubViewModel.productsItemsSoldCard(itemsSoldStats: itemsSoldStats)
             }.store(in: &subscriptions)
 
-        Publishers.CombineLatest($currentOrderStats, $siteStats)
-            .sink { [weak self] currentOrderStats, siteStats in
+        $currentOrderStats.zip($siteStats)
+            .sink { [weak self] (currentOrderStats, siteStats) in
                 guard let self else { return }
 
                 self.sessionsCard = AnalyticsHubViewModel.sessionsCard(currentPeriodStats: currentOrderStats, siteStats: siteStats)

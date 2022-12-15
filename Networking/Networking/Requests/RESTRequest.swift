@@ -4,7 +4,6 @@ import Alamofire
 /// Wraps up a URLRequestConvertible Instance, and injects the Authorization + User Agent whenever the actual Request is required.
 ///
 struct RESTRequest: Request {
-    
     /// URL of the site to make the request with
     ///
     let siteURL: String

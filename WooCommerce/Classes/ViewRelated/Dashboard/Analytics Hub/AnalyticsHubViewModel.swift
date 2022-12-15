@@ -53,6 +53,17 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published var sessionsCard = AnalyticsHubViewModel.sessionsCard(currentPeriodStats: nil, siteStats: nil)
 
+    /// Sessions Card display state
+    ///
+    var showSessionsCard: Bool {
+        switch timeRangeSelectionType {
+        case .custom:
+            return false
+        default:
+            return true
+        }
+    }
+
     /// Time Range Selection Type
     ///
     @Published var timeRangeSelectionType: AnalyticsHubTimeRangeSelection.SelectionType

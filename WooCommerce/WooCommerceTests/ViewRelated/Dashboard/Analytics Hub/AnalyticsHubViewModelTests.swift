@@ -118,4 +118,22 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertEqual(loadingItemsSoldCard?.isRedacted, true)
         XCTAssertEqual(loadingSessionsCard?.isRedacted, true)
     }
+
+    func test_session_card_is_hidden_for_custom_range() async {
+        // Given
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, stores: stores)
+        XCTAssertTrue(vm.showSessionsCard)
+
+        // When
+        vm.timeRangeSelectionType = .custom(start: Date(), end: Date())
+
+        // Then
+        XCTAssertFalse(vm.showSessionsCard)
+
+        // When
+        vm.timeRangeSelectionType = .lastMonth
+
+        // Then
+        XCTAssertTrue(vm.showSessionsCard)
+    }
 }

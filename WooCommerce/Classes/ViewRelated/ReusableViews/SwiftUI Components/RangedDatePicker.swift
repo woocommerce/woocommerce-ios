@@ -1,6 +1,12 @@
 import Foundation
 import SwiftUI
 
+/// Defines a decoupled way to format selected dates
+///
+protocol RangedDateTextFormatter {
+    func format(start: Date, end: Date) -> String
+}
+
 /// View to select a custom date range.
 /// Consists of two date pickers laid out vertically.
 ///
@@ -20,11 +26,19 @@ struct RangedDatePicker: View {
     ///
     @State private var endDate: Date
 
+    /// Type to format the subtitle range.
+    ///
+    private let datesFormatter: RangedDateTextFormatter
+
     /// Custom `init` to provide intial start and end dates.
     ///
-    init(startDate: Date? = nil, endDate: Date? = nil, datesSelected: ((_ start: Date, _ end: Date) -> Void)? = nil) {
+    init(startDate: Date? = nil,
+         endDate: Date? = nil,
+         datesFormatter: RangedDateTextFormatter,
+         datesSelected: ((_ start: Date, _ end: Date) -> Void)? = nil) {
         self._startDate = State(initialValue: startDate ?? Date())
         self._endDate = State(initialValue: endDate ?? Date())
+        self.datesFormatter = datesFormatter
         self.datesSelected = datesSelected
     }
 
@@ -43,6 +57,7 @@ struct RangedDatePicker: View {
                     DatePicker("", selection: $startDate, in: ...Date(), displayedComponents: [.date])
                         .datePickerStyle(.graphical)
                         .accentColor(Color(.brand))
+                        .padding(.horizontal, Layout.calendarPadding)
 
                     // End Picker
                     Text(Localization.endDate)
@@ -54,6 +69,7 @@ struct RangedDatePicker: View {
                     DatePicker("", selection: $endDate, in: ...Date(), displayedComponents: [.date])
                         .datePickerStyle(.graphical)
                         .accentColor(Color(.brand))
+                        .padding(.horizontal, Layout.calendarPadding)
                 }
                 .padding()
             }
@@ -65,8 +81,7 @@ struct RangedDatePicker: View {
                         Text(Localization.title)
                             .headlineStyle()
 
-                        // TODO: Properly format date ranges outside the view
-                        Text("\(DateFormatter.monthAndDayFormatter.string(from: startDate)) - \(DateFormatter.monthAndDayFormatter.string(from: endDate))")
+                        Text(datesFormatter.format(start: startDate, end: endDate))
                             .captionStyle()
                     }
                 }
@@ -103,13 +118,21 @@ private extension RangedDatePicker {
     }
     enum Layout {
         static let titleSpacing: CGFloat = 4.0
+        static let calendarPadding: CGFloat = -8.0
     }
 }
 
 // MARK: Previews
 
 struct RangedDatePickerPreview: PreviewProvider {
+
+    private struct PreviewFormatter: RangedDateTextFormatter {
+        func format(start: Date, end: Date) -> String {
+            "\(start.description) - \(end.description)"
+        }
+    }
+
     static var previews: some View {
-        RangedDatePicker()
+        RangedDatePicker(datesFormatter: PreviewFormatter())
     }
 }

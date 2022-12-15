@@ -47,35 +47,41 @@ final class RequestAuthenticator {
         guard let restRequest = request as? RESTRequest,
               let useCase = applicationPasswordUseCase else {
             // Handle non-REST requests as before
-            return completion(createAuthenticatedRequestIfPossible(for: request))
+            return completion(authenticateUsingWPCOMTokenIfPossible(request))
         }
         Task(priority: .medium) {
-            do {
-                let applicationPassword: ApplicationPassword = try await {
-                    if let password = useCase.applicationPassword {
-                        return password
-                    }
-                    return try await useCase.generateNewPassword()
-                }()
-                try await MainActor.run {
-                    let updatedRequest = try restRequest.authenticateRequest(with: applicationPassword)
-                    completion(updatedRequest)
-                }
-            } catch {
-                DDLogWarn("⚠️ Error generating application password and update request: \(error)")
-                // TODO: add Tracks
-                // Get the fallback Jetpack request to handle if possible.
-                let fallbackRequest = restRequest.fallbackRequest ?? request
-                await MainActor.run {
-                    completion(createAuthenticatedRequestIfPossible(for: fallbackRequest))
-                }
+            let result = await authenticateUsingApplicationPassword(restRequest, useCase: useCase)
+            await MainActor.run {
+                completion(result)
             }
+        }
+    }
+
+    /// Attempts authenticating a request with application password.
+    ///
+    private func authenticateUsingApplicationPassword(_ restRequest: RESTRequest, useCase: ApplicationPasswordUseCase) async -> URLRequestConvertible {
+        do {
+            let applicationPassword: ApplicationPassword = try await {
+                if let password = useCase.applicationPassword {
+                    return password
+                }
+                return try await useCase.generateNewPassword()
+            }()
+            return try await MainActor.run {
+                return try restRequest.authenticateRequest(with: applicationPassword)
+            }
+        } catch {
+            DDLogWarn("⚠️ Error generating application password and update request: \(error)")
+            // TODO: add Tracks
+            // Get the fallback Jetpack request to handle if possible.
+            let fallbackRequest: URLRequestConvertible = restRequest.fallbackRequest ?? restRequest
+            return authenticateUsingWPCOMTokenIfPossible(fallbackRequest)
         }
     }
 
     /// Attempts creating a request with WPCOM token if possible.
     ///
-    private func createAuthenticatedRequestIfPossible(for request: URLRequestConvertible) -> URLRequestConvertible {
+    private func authenticateUsingWPCOMTokenIfPossible(_ request: URLRequestConvertible) -> URLRequestConvertible {
         credentials.map { AuthenticatedRequest(credentials: $0, request: request) } ??
         UnauthenticatedRequest(request: request)
     }

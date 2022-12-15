@@ -113,7 +113,6 @@ struct AnalyticsHubView: View {
 
                     Divider()
                 }
-                .renderedIf(ServiceLocator.featureFlagService.isFeatureFlagEnabled(.analyticsHub))
 
                 Spacer()
             }

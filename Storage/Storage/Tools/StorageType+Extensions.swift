@@ -149,6 +149,13 @@ public extension StorageType {
         return firstObject(ofType: OrderStatsV4Interval.self, matching: predicate)
     }
 
+    /// Retrieves the Stored SiteSummaryStats.
+    ///
+    func loadSiteSummaryStats(date: String, period: String) -> SiteSummaryStats? {
+        let predicate = \SiteSummaryStats.date =~ date && \SiteSummaryStats.period =~ period
+        return firstObject(ofType: SiteSummaryStats.self, matching: predicate)
+    }
+
     // MARK: - Order Statuses
 
     /// Retrieves all of the Stores OrderStatuses for the provided siteID.

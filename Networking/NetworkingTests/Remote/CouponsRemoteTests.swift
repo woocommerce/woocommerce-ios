@@ -10,6 +10,7 @@ final class CouponsRemoteTests: XCTestCase {
     /// Dummy Site ID
     ///
     private let sampleSiteID: Int64 = 1234
+    private let sampleSiteURL: String = "https://test.com"
 
     override func setUp() {
         super.setUp()
@@ -33,7 +34,7 @@ final class CouponsRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.loadAllCoupons(for: self.sampleSiteID) { result in
+            remote.loadAllCoupons(for: self.sampleSiteID, siteURL: self.sampleSiteURL) { result in
                 promise(result)
             }
         }
@@ -51,7 +52,7 @@ final class CouponsRemoteTests: XCTestCase {
         let remote = CouponsRemote(network: network)
 
         // When
-        remote.loadAllCoupons(for: sampleSiteID, pageNumber: 2, pageSize: 17) { _ in }
+        remote.loadAllCoupons(for: sampleSiteID, siteURL: sampleSiteURL, pageNumber: 2, pageSize: 17) { _ in }
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.first as? JetpackRequest)
@@ -71,7 +72,7 @@ final class CouponsRemoteTests: XCTestCase {
         let remote = CouponsRemote(network: network)
 
         // When
-        remote.loadAllCoupons(for: sampleSiteID) { _ in }
+        remote.loadAllCoupons(for: sampleSiteID, siteURL: sampleSiteURL) { _ in }
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.first as? JetpackRequest)
@@ -88,7 +89,7 @@ final class CouponsRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.loadAllCoupons(for: self.sampleSiteID) { result in
+            remote.loadAllCoupons(for: self.sampleSiteID, siteURL: self.sampleSiteURL) { result in
                 promise(result)
             }
         }
@@ -110,6 +111,7 @@ final class CouponsRemoteTests: XCTestCase {
         // When
         let result = waitFor { promise in
             remote.loadAllCoupons(for: self.sampleSiteID,
+                                  siteURL: self.sampleSiteURL,
                                   completion: { (result) in
                                     promise(result)
                                 })
@@ -134,7 +136,7 @@ final class CouponsRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.deleteCoupon(for: self.sampleSiteID, couponID: sampleCouponID) { result in
+            remote.deleteCoupon(for: self.sampleSiteID, siteURL: self.sampleSiteURL, couponID: sampleCouponID) { result in
                 promise(result)
             }
         }
@@ -158,6 +160,7 @@ final class CouponsRemoteTests: XCTestCase {
         // When
         let result = waitFor { promise in
             remote.deleteCoupon(for: self.sampleSiteID,
+                                siteURL: self.sampleSiteURL,
                                 couponID: sampleCouponID,
                                 completion: { (result) in
                 promise(result)
@@ -182,7 +185,7 @@ final class CouponsRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.updateCoupon(coupon) { result in
+            remote.updateCoupon(coupon, siteURL: self.sampleSiteURL) { result in
                 promise(result)
             }
         }
@@ -205,7 +208,7 @@ final class CouponsRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.updateCoupon(coupon) { (result) in
+            remote.updateCoupon(coupon, siteURL: self.sampleSiteURL) { (result) in
                 promise(result)
             }
         }
@@ -228,7 +231,7 @@ final class CouponsRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.createCoupon(coupon) { result in
+            remote.createCoupon(coupon, siteURL: self.sampleSiteURL) { result in
                 promise(result)
             }
         }
@@ -251,7 +254,7 @@ final class CouponsRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.createCoupon(coupon) { (result) in
+            remote.createCoupon(coupon, siteURL: self.sampleSiteURL) { (result) in
                 promise(result)
             }
         }
@@ -273,7 +276,7 @@ final class CouponsRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.loadCouponReport(for: self.sampleSiteID, couponID: 571, from: Date()) { (result) in
+            remote.loadCouponReport(for: self.sampleSiteID, siteURL: self.sampleSiteURL, couponID: 571, from: Date()) { (result) in
                 promise(result)
             }
         }
@@ -296,7 +299,7 @@ final class CouponsRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.loadCouponReport(for: self.sampleSiteID, couponID: 571, from: Date()) { (result) in
+            remote.loadCouponReport(for: self.sampleSiteID, siteURL: self.sampleSiteURL, couponID: 571, from: Date()) { (result) in
                 promise(result)
             }
         }
@@ -318,7 +321,7 @@ final class CouponsRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.searchCoupons(for: self.sampleSiteID, keyword: "test", pageNumber: 0, pageSize: 20) { (result) in
+            remote.searchCoupons(for: self.sampleSiteID, siteURL: self.sampleSiteURL, keyword: "test", pageNumber: 0, pageSize: 20) { (result) in
                 promise(result)
             }
         }
@@ -340,7 +343,7 @@ final class CouponsRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.searchCoupons(for: self.sampleSiteID, keyword: "test", pageNumber: 0, pageSize: 20) { (result) in
+            remote.searchCoupons(for: self.sampleSiteID, siteURL: self.sampleSiteURL, keyword: "test", pageNumber: 0, pageSize: 20) { (result) in
                 promise(result)
             }
         }
@@ -363,7 +366,7 @@ final class CouponsRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.retrieveCoupon(for: self.sampleSiteID, couponID: sampleCouponID) { (result) in
+            remote.retrieveCoupon(for: self.sampleSiteID, siteURL: self.sampleSiteURL, couponID: sampleCouponID) { (result) in
                 promise(result)
             }
         }
@@ -386,7 +389,7 @@ final class CouponsRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.retrieveCoupon(for: self.sampleSiteID, couponID: sampleCouponID) { (result) in
+            remote.retrieveCoupon(for: self.sampleSiteID, siteURL: self.sampleSiteURL, couponID: sampleCouponID) { (result) in
                 promise(result)
             }
         }

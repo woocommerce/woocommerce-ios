@@ -39,6 +39,7 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
 
     // MARK: - CouponsRemoteProtocol conformance
     func loadAllCoupons(for siteID: Int64,
+                        siteURL: String,
                         pageNumber: Int,
                         pageSize: Int,
                         completion: @escaping (Result<[Coupon], Error>) -> ()) {
@@ -51,6 +52,7 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
     }
 
     func searchCoupons(for siteID: Int64,
+                       siteURL: String,
                        keyword: String,
                        pageNumber: Int,
                        pageSize: Int,
@@ -63,6 +65,7 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
     }
 
     func deleteCoupon(for siteID: Int64,
+                      siteURL: String,
                       couponID: Int64,
                       completion: @escaping (Result<Coupon, Error>) -> Void) {
         didCallDeleteCoupon = true
@@ -71,6 +74,7 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
     }
 
     func updateCoupon(_ coupon: Coupon,
+                      siteURL: String,
                       siteTimezone: TimeZone?,
                       completion: @escaping (Result<Coupon, Error>) -> Void) {
         didCallUpdateCoupon = true
@@ -78,20 +82,25 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
     }
 
     func createCoupon(_ coupon: Coupon,
+                      siteURL: String,
                       siteTimezone: TimeZone?,
                       completion: @escaping (Result<Coupon, Error>) -> Void) {
         didCallCreateCoupon = true
         spyCreateCoupon = coupon
     }
 
-    func loadCouponReport(for siteID: Int64, couponID: Int64, from startDate: Date, completion: @escaping (Result<CouponReport, Error>) -> Void) {
+    func loadCouponReport(for siteID: Int64,
+                          siteURL: String,
+                          couponID: Int64,
+                          from startDate: Date,
+                          completion: @escaping (Result<CouponReport, Error>) -> Void) {
         didCallLoadCouponReport = true
         spyLoadCouponReportDate = startDate
         spyLoadCouponReportSiteID = siteID
         spyLoadCouponReportCouponID = couponID
     }
 
-    func retrieveCoupon(for siteID: Int64, couponID: Int64, completion: @escaping (Result<Coupon, Error>) -> Void) {
+    func retrieveCoupon(for siteID: Int64, siteURL: String, couponID: Int64, completion: @escaping (Result<Coupon, Error>) -> Void) {
         didCallRetrieveCoupon = true
         spyRetrieveSiteID = siteID
         spyRetrieveCouponID = couponID

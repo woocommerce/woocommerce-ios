@@ -17,10 +17,12 @@ final class CouponListViewModelTests: XCTestCase {
         mockStorageManager.viewStorage
     }
 
+    private let sampleSiteURL = "https://test.com"
+
     override func setUp() {
         super.setUp()
         createMocks()
-        sut = CouponListViewModel(siteID: 123)
+        sut = CouponListViewModel(siteID: 123, siteURL: sampleSiteURL)
     }
 
     private func createMocks() {
@@ -34,10 +36,12 @@ final class CouponListViewModelTests: XCTestCase {
         mockStorageManager.insertSampleCoupon(readOnlyCoupon: coupon)
         if let stores = injectedStores {
             sut = CouponListViewModel(siteID: 123,
+                                      siteURL: sampleSiteURL,
                                       storesManager: stores,
                                       storageManager: mockStorageManager)
         } else {
             sut = CouponListViewModel(siteID: 123,
+                                      siteURL: sampleSiteURL,
                                       storageManager: mockStorageManager)
         }
         sut.buildCouponViewModels()
@@ -56,6 +60,7 @@ final class CouponListViewModelTests: XCTestCase {
     func test_viewDidLoad_calls_synchronizeFirstPage_on_syncCoordinator() {
         // Given
         sut = CouponListViewModel(siteID: 123,
+                                  siteURL: sampleSiteURL,
                                   syncingCoordinator: mockSyncingCoordinator)
 
         // When
@@ -76,6 +81,7 @@ final class CouponListViewModelTests: XCTestCase {
     func test_sync_sends_correct_synchronize_coupons_action_to_store() throws {
         // Given
         sut = CouponListViewModel(siteID: 123,
+                                  siteURL: sampleSiteURL,
                                   storesManager: mockStoresManager)
         // When
         sut.sync(pageNumber: 4, pageSize: 8, reason: nil, onCompletion: nil)
@@ -83,7 +89,7 @@ final class CouponListViewModelTests: XCTestCase {
         // Then
         let action = try XCTUnwrap(mockStoresManager.receivedActions.last as? CouponAction)
         switch action {
-        case let .synchronizeCoupons(siteID, pageNumber, pageSize, _):
+        case let .synchronizeCoupons(siteID, _, pageNumber, pageSize, _):
             XCTAssertEqual(siteID, 123)
             XCTAssertEqual(pageNumber, 4)
             XCTAssertEqual(pageSize, 8)
@@ -133,7 +139,7 @@ final class CouponListViewModelTests: XCTestCase {
 
     func test_refreshCoupons_calls_resynchronize_on_syncCoordinator() {
         // Given
-        sut = CouponListViewModel(siteID: 123, syncingCoordinator: mockSyncingCoordinator)
+        sut = CouponListViewModel(siteID: 123, siteURL: sampleSiteURL, syncingCoordinator: mockSyncingCoordinator)
 
         // When
         sut.refreshCoupons()
@@ -156,7 +162,7 @@ final class CouponListViewModelTests: XCTestCase {
 
     func test_tableWillDisplayCellAtIndexPath_calls_ensureNextPageIsSynchronized_on_syncCoordinator() {
         // Given
-        sut = CouponListViewModel(siteID: 123, syncingCoordinator: mockSyncingCoordinator)
+        sut = CouponListViewModel(siteID: 123, siteURL: sampleSiteURL, syncingCoordinator: mockSyncingCoordinator)
 
         // When
         sut.tableWillDisplayCell(at: IndexPath(row: 3, section: 0))
@@ -176,7 +182,7 @@ final class CouponListViewModelTests: XCTestCase {
 
     func test_shouldDisplayFeedbackBanner_returns_false_if_state_is_initialized() {
         // Given
-        sut = CouponListViewModel(siteID: 123, syncingCoordinator: mockSyncingCoordinator)
+        sut = CouponListViewModel(siteID: 123, siteURL: sampleSiteURL, syncingCoordinator: mockSyncingCoordinator)
         XCTAssertEqual(sut.state, .empty) // confidence check
 
         // Then
@@ -384,6 +390,7 @@ final class CouponListViewModelTests: XCTestCase {
             }
         }
         sut = CouponListViewModel(siteID: 123,
+                                  siteURL: sampleSiteURL,
                                   storesManager: stores)
 
         // When
@@ -411,13 +418,14 @@ final class CouponListViewModelTests: XCTestCase {
         }
         stores.whenReceivingAction(ofType: CouponAction.self) { action in
             switch action {
-            case let .synchronizeCoupons(_, _, _, onCompletion):
+            case let .synchronizeCoupons(_, _, _, _, onCompletion):
                 onCompletion(.success(true))
             default:
                 break
             }
         }
         sut = CouponListViewModel(siteID: sampleSiteID,
+                                  siteURL: sampleSiteURL,
                                   storesManager: stores,
                                   storageManager: mockStorageManager)
 
@@ -443,6 +451,7 @@ final class CouponListViewModelTests: XCTestCase {
             }
         }
         sut = CouponListViewModel(siteID: sampleSiteID,
+                                  siteURL: sampleSiteURL,
                                   storesManager: stores,
                                   storageManager: mockStorageManager)
 
@@ -456,7 +465,7 @@ final class CouponListViewModelTests: XCTestCase {
     func test_state_is_empty_when_all_coupons_gets_deleted() {
         // Given
         mockStorageManager.insertSampleCoupon(readOnlyCoupon: Coupon.fake().copy(siteID: 123))
-        sut = CouponListViewModel(siteID: 123, storageManager: mockStorageManager)
+        sut = CouponListViewModel(siteID: 123, siteURL: sampleSiteURL, storageManager: mockStorageManager)
         assertEqual(.coupons, sut.state)
 
         // When

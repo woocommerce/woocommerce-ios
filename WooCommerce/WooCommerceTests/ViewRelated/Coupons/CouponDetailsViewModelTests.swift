@@ -5,6 +5,7 @@ import WooFoundation
 @testable import WooCommerce
 
 final class CouponDetailsViewModelTests: XCTestCase {
+    private let sampleSiteURL = "https://test.com"
 
     func test_amount_is_correct_for_fixedProduct_discount_type() {
         // Given
@@ -12,7 +13,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
             amount: "10.00",
             discountType: .fixedProduct
         )
-        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, currencySettings: CurrencySettings())
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, siteURL: sampleSiteURL, currencySettings: CurrencySettings())
 
         // Then
         XCTAssertEqual(viewModel.amount, "$10.00")
@@ -24,7 +25,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
             amount: "10.00",
             discountType: .percent
         )
-        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon)
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, siteURL: sampleSiteURL)
 
         // Then
         XCTAssertEqual(viewModel.amount, "10%")
@@ -47,7 +48,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
             minimumAmount: "5.00",
             emailRestrictions: ["*@a8c.com", "someone.else@example.com"]
         )
-        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, currencySettings: .init())
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, siteURL: sampleSiteURL, currencySettings: .init())
 
         // Then
         XCTAssertEqual(viewModel.couponCode, "AGK32FD")
@@ -71,13 +72,13 @@ final class CouponDetailsViewModelTests: XCTestCase {
         let sampleCoupon = Coupon.fake().copy(amount: "15.00", discountType: .percent)
         let updatedCoupon = sampleCoupon.copy(amount: "10.00")
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, stores: stores)
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, siteURL: sampleSiteURL, stores: stores)
         XCTAssertEqual(viewModel.amount, "15%")
 
         // When
         stores.whenReceivingAction(ofType: CouponAction.self) { action in
             switch action {
-            case let .retrieveCoupon(_, _, onCompletion):
+            case let .retrieveCoupon(_, _, _, onCompletion):
                 onCompletion(.success(updatedCoupon))
             default:
                 break
@@ -94,14 +95,14 @@ final class CouponDetailsViewModelTests: XCTestCase {
         let sampleCoupon = Coupon.fake().copy(usageCount: 0)
         let sampleReport = CouponReport.fake().copy(amount: 0, ordersCount: 0)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, stores: stores, currencySettings: CurrencySettings())
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, siteURL: sampleSiteURL, stores: stores, currencySettings: CurrencySettings())
         XCTAssertEqual(viewModel.discountedOrdersCount, "0")
         XCTAssertEqual(viewModel.discountedAmount, "$0.00")
 
         // When
         stores.whenReceivingAction(ofType: CouponAction.self) { action in
             switch action {
-            case let .loadCouponReport(_, _, _, onCompletion):
+            case let .loadCouponReport(_, _, _, _, onCompletion):
                 onCompletion(.success(sampleReport))
             default:
                 break
@@ -119,14 +120,14 @@ final class CouponDetailsViewModelTests: XCTestCase {
         let sampleCoupon = Coupon.fake().copy(usageCount: 10)
         let sampleReport = CouponReport.fake().copy(amount: 220.0, ordersCount: 10)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, stores: stores, currencySettings: CurrencySettings())
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, siteURL: sampleSiteURL, stores: stores, currencySettings: CurrencySettings())
         XCTAssertEqual(viewModel.discountedOrdersCount, "10")
         XCTAssertEqual(viewModel.discountedAmount, nil)
 
         // When
         stores.whenReceivingAction(ofType: CouponAction.self) { action in
             switch action {
-            case let .loadCouponReport(_, _, _, onCompletion):
+            case let .loadCouponReport(_, _, _, _, onCompletion):
                 onCompletion(.success(sampleReport))
             default:
                 break
@@ -142,7 +143,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
     func test_coupon_share_message_is_correct_if_there_is_no_restriction() {
         // Given
         let sampleCoupon = Coupon.fake().copy(code: "TEST", amount: "10.00", discountType: .percent)
-        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon)
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, siteURL: sampleSiteURL)
 
         // Then
         let shareMessage = String(format: NSLocalizedString("Apply %@ off to all products with the promo code “%@”.", comment: ""), "10%", "TEST")
@@ -152,7 +153,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
     func test_coupon_share_message_is_correct_if_there_is_product_restriction() {
         // Given
         let sampleCoupon = Coupon.fake().copy(code: "TEST", amount: "10.00", discountType: .percent, productIds: [12, 23])
-        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon)
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, siteURL: sampleSiteURL)
 
         // Then
         let shareMessage = String(format: NSLocalizedString("Apply %@ off to some products with the promo code “%@”.", comment: ""), "10%", "TEST")
@@ -162,7 +163,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
     func test_hasErrorLoadingAmount_and_hasWCAnalyticsDisabled_return_false_initially() {
         // Given
         let sampleCoupon = Coupon.fake().copy(code: "TEST", amount: "10.00", discountType: .percent, productIds: [12, 23])
-        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon)
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, siteURL: sampleSiteURL)
 
         // Then
         XCTAssertFalse(viewModel.hasErrorLoadingAmount)
@@ -173,12 +174,12 @@ final class CouponDetailsViewModelTests: XCTestCase {
         // Given
         let sampleCoupon = Coupon.fake().copy(code: "TEST", amount: "10.00", discountType: .percent, productIds: [12, 23])
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, stores: stores)
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, siteURL: sampleSiteURL, stores: stores)
 
         // When
         stores.whenReceivingAction(ofType: CouponAction.self) { action in
             switch action {
-            case .loadCouponReport(_, _, _, let onCompletion):
+            case .loadCouponReport(_, _, _, _, let onCompletion):
                 onCompletion(.success(CouponReport(couponID: 234, amount: 20, ordersCount: 1)))
             default:
                 break
@@ -194,12 +195,12 @@ final class CouponDetailsViewModelTests: XCTestCase {
         // Given
         let sampleCoupon = Coupon.fake().copy(code: "TEST", amount: "10.00", discountType: .percent, productIds: [12, 23])
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, stores: stores)
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, siteURL: sampleSiteURL, stores: stores)
 
         // When
         stores.whenReceivingAction(ofType: CouponAction.self) { action in
             switch action {
-            case .loadCouponReport(_, _, _, let onCompletion):
+            case .loadCouponReport(_, _, _, _, let onCompletion):
                 let error = NSError(domain: "Test", code: 0, userInfo: [:])
                 onCompletion(.failure(error))
             default:
@@ -225,12 +226,12 @@ final class CouponDetailsViewModelTests: XCTestCase {
         // Given
         let sampleCoupon = Coupon.fake().copy(code: "TEST", amount: "10.00", discountType: .percent, productIds: [12, 23])
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, stores: stores)
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, siteURL: sampleSiteURL, stores: stores)
 
         // When
         stores.whenReceivingAction(ofType: CouponAction.self) { action in
             switch action {
-            case .loadCouponReport(_, _, _, let onCompletion):
+            case .loadCouponReport(_, _, _, _, let onCompletion):
                 let error = NSError(domain: "Test", code: 0, userInfo: [:])
                 onCompletion(.failure(error))
             default:
@@ -256,12 +257,12 @@ final class CouponDetailsViewModelTests: XCTestCase {
         // Given
         let sampleCoupon = Coupon.fake().copy(code: "TEST", amount: "10.00", discountType: .percent, usageCount: 0, productIds: [12, 23])
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, stores: stores)
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, siteURL: sampleSiteURL, stores: stores)
 
         // When
         stores.whenReceivingAction(ofType: CouponAction.self) { action in
             switch action {
-            case .loadCouponReport(_, _, _, let onCompletion):
+            case .loadCouponReport(_, _, _, _, let onCompletion):
                 let error = NSError(domain: "Test", code: 0, userInfo: [:])
                 onCompletion(.failure(error))
             default:
@@ -287,12 +288,12 @@ final class CouponDetailsViewModelTests: XCTestCase {
         // Given
         let sampleCoupon = Coupon.fake().copy(code: "TEST", amount: "10.00", discountType: .percent, usageCount: 1, productIds: [12, 23])
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, stores: stores)
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, siteURL: sampleSiteURL, stores: stores)
 
         // When
         stores.whenReceivingAction(ofType: CouponAction.self) { action in
             switch action {
-            case .loadCouponReport(_, _, _, let onCompletion):
+            case .loadCouponReport(_, _, _, _, let onCompletion):
                 let error = NSError(domain: "Test", code: 0, userInfo: [:])
                 onCompletion(.failure(error))
             default:
@@ -318,7 +319,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
         // Given
         let sampleCoupon = Coupon.fake().copy(siteID: 123, couponID: 456)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, stores: stores)
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, siteURL: sampleSiteURL, stores: stores)
         var onSuccessTriggered = false
         var onFailureTriggered = false
         let onSuccess: () -> Void = {
@@ -331,7 +332,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: CouponAction.self) { action in
             switch action {
-            case let .deleteCoupon(siteID, couponID, onCompletion):
+            case let .deleteCoupon(siteID, _, couponID, onCompletion):
                 // Confidence check
                 XCTAssertEqual(siteID, sampleCoupon.siteID)
                 XCTAssertEqual(couponID, sampleCoupon.couponID)
@@ -351,7 +352,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
         // Given
         let sampleCoupon = Coupon.fake().copy(siteID: 123, couponID: 456)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, stores: stores)
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, siteURL: sampleSiteURL, stores: stores)
         var onSuccessTriggered = false
         var onFailureTriggered = false
         let onSuccess: () -> Void = {
@@ -364,7 +365,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: CouponAction.self) { action in
             switch action {
-            case let .deleteCoupon(_, _, onCompletion):
+            case let .deleteCoupon(_, _, _, onCompletion):
                 let error = NSError(domain: "test", code: 400, userInfo: nil)
                 onCompletion(.failure(error))
             default:
@@ -382,13 +383,13 @@ final class CouponDetailsViewModelTests: XCTestCase {
         // Given
         let sampleCoupon = Coupon.fake().copy(siteID: 123, couponID: 456)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, stores: stores)
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, siteURL: sampleSiteURL, stores: stores)
         XCTAssertFalse(viewModel.isDeletionInProgress)
 
         // When
         stores.whenReceivingAction(ofType: CouponAction.self) { action in
             switch action {
-            case let .deleteCoupon(_, _, onCompletion):
+            case let .deleteCoupon(_, _, _, onCompletion):
                 XCTAssertTrue(viewModel.isDeletionInProgress)
                 onCompletion(.success(()))
             default:
@@ -409,7 +410,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
             discountType: .fixedCart,
             limitUsageToXItems: 5
         )
-        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon)
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, siteURL: sampleSiteURL)
 
         // Then
         XCTAssertFalse(viewModel.shouldDisplayLimitUsageToXItems)
@@ -423,7 +424,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
             discountType: .percent,
             limitUsageToXItems: 0
         )
-        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon)
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, siteURL: sampleSiteURL)
 
         // Then
         XCTAssertFalse(viewModel.shouldDisplayLimitUsageToXItems)
@@ -437,7 +438,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
             discountType: .percent,
             limitUsageToXItems: 5
         )
-        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon)
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, siteURL: sampleSiteURL)
 
         // Then
         XCTAssertTrue(viewModel.shouldDisplayLimitUsageToXItems)

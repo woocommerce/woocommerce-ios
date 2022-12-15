@@ -48,6 +48,7 @@ final class CouponStoreTests: XCTestCase {
     /// SiteID
     ///
     private let sampleSiteID: Int64 = 120934
+    private let sampleSiteURL: String = "https://test.com"
 
     /// Default page number
     ///
@@ -84,6 +85,7 @@ final class CouponStoreTests: XCTestCase {
         setUpUsingSpyRemote()
         // Given
         let action = CouponAction.synchronizeCoupons(siteID: 1092,
+                                                     siteURL: sampleSiteURL,
                                                      pageNumber: 12,
                                                      pageSize: 3) { _ in }
 
@@ -106,6 +108,7 @@ final class CouponStoreTests: XCTestCase {
         // When
         let result: Result<Bool, Error> = waitFor { promise in
             let action = CouponAction.synchronizeCoupons(siteID: 1092,
+                                                         siteURL: self.sampleSiteURL,
                                                          pageNumber: 12,
                                                          pageSize: 3) { result in
                 promise(result)
@@ -127,6 +130,7 @@ final class CouponStoreTests: XCTestCase {
         let result: Result<Bool, Error> = waitFor { promise in
             let action: CouponAction
             action = .synchronizeCoupons(siteID: self.sampleSiteID,
+                                         siteURL: self.sampleSiteURL,
                                          pageNumber: self.defaultPageNumber,
                                          pageSize: 2) { result in
                 promise(result)
@@ -149,6 +153,7 @@ final class CouponStoreTests: XCTestCase {
         let result: Result<Bool, Error> = waitFor { promise in
             let action: CouponAction
             action = .synchronizeCoupons(siteID: self.sampleSiteID,
+                                         siteURL: self.sampleSiteURL,
                                          pageNumber: self.defaultPageNumber,
                                          pageSize: 10) { result in
                 promise(result)
@@ -171,6 +176,7 @@ final class CouponStoreTests: XCTestCase {
         let result: Result<Bool, Error> = waitFor { promise in
             let action: CouponAction
             action = .synchronizeCoupons(siteID: self.sampleSiteID,
+                                         siteURL: self.sampleSiteURL,
                                          pageNumber: self.defaultPageNumber,
                                          pageSize: self.defaultPageSize) { result in
                 promise(result)
@@ -194,6 +200,7 @@ final class CouponStoreTests: XCTestCase {
         let result: Result<Bool, Error> = waitFor { promise in
             let action: CouponAction
             action = .synchronizeCoupons(siteID: self.sampleSiteID,
+                                         siteURL: self.sampleSiteURL,
                                          pageNumber: 1,
                                          pageSize: self.defaultPageSize) { result in
                 promise(result)
@@ -217,6 +224,7 @@ final class CouponStoreTests: XCTestCase {
         let result: Result<Bool, Error> = waitFor { promise in
             let action: CouponAction
             action = .synchronizeCoupons(siteID: self.sampleSiteID,
+                                         siteURL: self.sampleSiteURL,
                                          pageNumber: 2,
                                          pageSize: self.defaultPageSize) { result in
                 promise(result)
@@ -232,7 +240,7 @@ final class CouponStoreTests: XCTestCase {
     func test_deleteCoupon_calls_remote_using_correct_request_parameters() {
         setUpUsingSpyRemote()
         // Given
-        let action = CouponAction.deleteCoupon(siteID: sampleSiteID, couponID: 10) { _ in }
+        let action = CouponAction.deleteCoupon(siteID: sampleSiteID, siteURL: sampleSiteURL, couponID: 10) { _ in }
 
         // When
         store.onAction(action)
@@ -255,7 +263,7 @@ final class CouponStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            let action = CouponAction.deleteCoupon(siteID: self.sampleSiteID, couponID: sampleCouponID) { result in
+            let action = CouponAction.deleteCoupon(siteID: self.sampleSiteID, siteURL: self.sampleSiteURL, couponID: sampleCouponID) { result in
                 promise(result)
             }
             self.store.onAction(action)
@@ -278,7 +286,7 @@ final class CouponStoreTests: XCTestCase {
         // When
         let result: Result<Void, Error> = waitFor { promise in
             let action: CouponAction
-            action = .deleteCoupon(siteID: self.sampleSiteID, couponID: sampleCouponID) { result in
+            action = .deleteCoupon(siteID: self.sampleSiteID, siteURL: self.sampleSiteURL, couponID: sampleCouponID) { result in
                 promise(result)
             }
             self.store.onAction(action)
@@ -294,7 +302,7 @@ final class CouponStoreTests: XCTestCase {
         // Given
         let sampleCouponID: Int64 = 720
         let coupon = Coupon.fake().copy(siteID: sampleSiteID, couponID: sampleCouponID, amount: "10", discountType: .percent)
-        let action = CouponAction.updateCoupon(coupon, siteTimezone: nil) { _ in }
+        let action = CouponAction.updateCoupon(coupon, siteURL: self.sampleSiteURL, siteTimezone: nil) { _ in }
 
         // When
         store.onAction(action)
@@ -317,7 +325,7 @@ final class CouponStoreTests: XCTestCase {
         // When
         let updatedCoupon = sampleCoupon.copy(amount: "9")
         let result: Result<Networking.Coupon, Error> = waitFor { promise in
-            let action = CouponAction.updateCoupon(updatedCoupon, siteTimezone: nil) { result in
+            let action = CouponAction.updateCoupon(updatedCoupon, siteURL: self.sampleSiteURL, siteTimezone: nil) { result in
                 promise(result)
             }
             self.store.onAction(action)
@@ -343,7 +351,7 @@ final class CouponStoreTests: XCTestCase {
         let updatedCoupon = sampleCoupon.copy(amount: "10.00", discountType: .fixedCart)
         let result: Result<Networking.Coupon, Error> = waitFor { promise in
             let action: CouponAction
-            action = .updateCoupon(updatedCoupon, siteTimezone: nil) { result in
+            action = .updateCoupon(updatedCoupon, siteURL: self.sampleSiteURL, siteTimezone: nil) { result in
                 promise(result)
             }
             self.store.onAction(action)
@@ -362,7 +370,7 @@ final class CouponStoreTests: XCTestCase {
         // Given
         let sampleCouponID: Int64 = 720
         let coupon = Coupon.fake().copy(siteID: sampleSiteID, couponID: sampleCouponID, amount: "10", discountType: .percent)
-        let action = CouponAction.createCoupon(coupon, siteTimezone: nil) { _ in }
+        let action = CouponAction.createCoupon(coupon, siteURL: self.sampleSiteURL, siteTimezone: nil) { _ in }
 
         // When
         store.onAction(action)
@@ -382,7 +390,7 @@ final class CouponStoreTests: XCTestCase {
 
         // When
         let result: Result<Networking.Coupon, Error> = waitFor { promise in
-            let action = CouponAction.createCoupon(sampleCoupon, siteTimezone: nil) { result in
+            let action = CouponAction.createCoupon(sampleCoupon, siteURL: self.sampleSiteURL, siteTimezone: nil) { result in
                 promise(result)
             }
             self.store.onAction(action)
@@ -404,7 +412,7 @@ final class CouponStoreTests: XCTestCase {
         // When
         let result: Result<Networking.Coupon, Error> = waitFor { promise in
             let action: CouponAction
-            action = .createCoupon(sampleCoupon, siteTimezone: nil) { result in
+            action = .createCoupon(sampleCoupon, siteURL: self.sampleSiteURL, siteTimezone: nil) { result in
                 promise(result)
             }
             self.store.onAction(action)
@@ -423,7 +431,7 @@ final class CouponStoreTests: XCTestCase {
         // Given
         let sampleCouponID: Int64 = 571
         let sampleDate = Date(timeIntervalSince1970: 1)
-        let action = CouponAction.loadCouponReport(siteID: sampleSiteID, couponID: sampleCouponID, startDate: sampleDate) { _ in }
+        let action = CouponAction.loadCouponReport(siteID: sampleSiteID, siteURL: sampleSiteURL, couponID: sampleCouponID, startDate: sampleDate) { _ in }
 
         // When
         store.onAction(action)
@@ -444,7 +452,7 @@ final class CouponStoreTests: XCTestCase {
 
         // When
         let result: Result<Networking.CouponReport, Error> = waitFor { promise in
-            let action = CouponAction.loadCouponReport(siteID: self.sampleSiteID, couponID: sampleCouponID, startDate: sampleDate) { result in
+            let action = CouponAction.loadCouponReport(siteID: self.sampleSiteID, siteURL: self.sampleSiteURL, couponID: sampleCouponID, startDate: sampleDate) { result in
                 promise(result)
             }
             self.store.onAction(action)
@@ -463,7 +471,7 @@ final class CouponStoreTests: XCTestCase {
 
         // When
         let result: Result<Networking.CouponReport, Error> = waitFor { promise in
-            let action = CouponAction.loadCouponReport(siteID: self.sampleSiteID, couponID: sampleCouponID, startDate: sampleDate) { result in
+            let action = CouponAction.loadCouponReport(siteID: self.sampleSiteID, siteURL: self.sampleSiteURL, couponID: sampleCouponID, startDate: sampleDate) { result in
                 promise(result)
             }
             self.store.onAction(action)
@@ -481,6 +489,7 @@ final class CouponStoreTests: XCTestCase {
         let expectedPageNumber = 1
         let expectedPageSize = 20
         let action = CouponAction.searchCoupons(siteID: sampleSiteID,
+                                                siteURL: sampleSiteURL,
                                                 keyword: expectedKeyword,
                                                 pageNumber: expectedPageNumber,
                                                 pageSize: expectedPageSize) { _ in }
@@ -503,7 +512,7 @@ final class CouponStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            let action = CouponAction.searchCoupons(siteID: self.sampleSiteID, keyword: "test keyword", pageNumber: 1, pageSize: 20) { result in
+            let action = CouponAction.searchCoupons(siteID: self.sampleSiteID, siteURL: self.sampleSiteURL, keyword: "test keyword", pageNumber: 1, pageSize: 20) { result in
                 promise(result)
             }
             self.store.onAction(action)
@@ -522,7 +531,7 @@ final class CouponStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            let action = CouponAction.searchCoupons(siteID: self.sampleSiteID, keyword: "test keyword", pageNumber: 1, pageSize: 20) { result in
+            let action = CouponAction.searchCoupons(siteID: self.sampleSiteID, siteURL: self.sampleSiteURL, keyword: "test keyword", pageNumber: 1, pageSize: 20) { result in
                 promise(result)
             }
             self.store.onAction(action)
@@ -541,7 +550,7 @@ final class CouponStoreTests: XCTestCase {
         setUpUsingSpyRemote()
         // Given
         let sampleCouponID: Int64 = 134
-        let action = CouponAction.retrieveCoupon(siteID: sampleSiteID, couponID: sampleCouponID) { _ in }
+        let action = CouponAction.retrieveCoupon(siteID: sampleSiteID, siteURL: sampleSiteURL, couponID: sampleCouponID) { _ in }
 
         // When
         store.onAction(action)
@@ -560,7 +569,7 @@ final class CouponStoreTests: XCTestCase {
 
         // When
         let result: Result<Networking.Coupon, Error> = waitFor { promise in
-            let action = CouponAction.retrieveCoupon(siteID: self.sampleSiteID, couponID: sampleCouponID) { result in
+            let action = CouponAction.retrieveCoupon(siteID: self.sampleSiteID, siteURL: self.sampleSiteURL, couponID: sampleCouponID) { result in
                 promise(result)
             }
             self.store.onAction(action)
@@ -579,7 +588,7 @@ final class CouponStoreTests: XCTestCase {
 
         // When
         let result: Result<Networking.Coupon, Error> = waitFor { promise in
-            let action = CouponAction.retrieveCoupon(siteID: self.sampleSiteID, couponID: sampleCouponID) { result in
+            let action = CouponAction.retrieveCoupon(siteID: self.sampleSiteID, siteURL: self.sampleSiteURL, couponID: sampleCouponID) { result in
                 promise(result)
             }
             self.store.onAction(action)

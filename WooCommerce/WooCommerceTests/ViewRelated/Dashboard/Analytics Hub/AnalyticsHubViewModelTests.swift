@@ -101,6 +101,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
                 completion(.success(topEarners))
             case let .retrieveSiteSummaryStats(_, _, _, _, completion):
                 let siteStats = SiteSummaryStats.fake()
+                loadingSessionsCard = vm.sessionsCard
                 completion(.success(siteStats))
             default:
                 break

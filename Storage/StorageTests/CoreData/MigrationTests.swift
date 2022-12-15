@@ -1552,6 +1552,30 @@ final class MigrationTests: XCTestCase {
         let newViewsCount = try XCTUnwrap(migratedSiteVisitStatsItem.value(forKey: "views") as? Int)
         XCTAssertEqual(newViewsCount, viewsCount)
     }
+
+    func test_migrating_from_79_to_80_enables_creating_new_SiteSummaryStats_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 79")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. This entity should not exist in Model 79
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "SiteSummaryStats", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 80")
+        let targetContext = targetContainer.viewContext
+
+        // Then
+        XCTAssertEqual(try targetContext.count(entityName: "SiteSummaryStats"), 0)
+
+        let summaryStats = insertSiteSummaryStats(to: targetContext)
+        let insertedStats = try XCTUnwrap(targetContext.firstObject(ofType: SiteSummaryStats.self))
+
+        XCTAssertEqual(try targetContext.count(entityName: "SiteSummaryStats"), 1)
+        XCTAssertEqual(insertedStats, summaryStats)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -1960,6 +1984,16 @@ private extension MigrationTests {
             "shipping": 0,
             "netRevenue": 800,
             "totalProducts": 2,
+        ])
+    }
+
+    @discardableResult
+    func insertSiteSummaryStats(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "SiteSummaryStats", properties: [
+            "date": "2022-12-15",
+            "period": "day",
+            "visitors": 3,
+            "views": 9
         ])
     }
 

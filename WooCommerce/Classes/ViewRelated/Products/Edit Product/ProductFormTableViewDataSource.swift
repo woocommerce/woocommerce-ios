@@ -271,6 +271,7 @@ private extension ProductFormTableViewDataSource {
                        ratingCount: ratingCount,
                        averageRating: averageRating)
         cell.accessoryType = .disclosureIndicator
+        cell.accessibilityIdentifier = "product-review-cell"
     }
 
     func configureSettingsRowWithASwitch(cell: UITableViewCell, viewModel: ProductFormSection.SettingsRow.SwitchableViewModel) {

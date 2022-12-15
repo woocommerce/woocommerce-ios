@@ -1135,6 +1135,7 @@
 		7E7C5F872719A93C00315B61 /* ProductCategoryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E7C5F812719A93C00315B61 /* ProductCategoryListViewController.swift */; };
 		7E7C5F8B2719AEDA00315B61 /* EditProductCategoryListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E7C5F8A2719AEDA00315B61 /* EditProductCategoryListViewModelTests.swift */; };
 		7E7C5F8F2719BA7300315B61 /* ProductCategoryCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E7C5F8E2719BA7300315B61 /* ProductCategoryCellViewModel.swift */; };
+		80089F182949B92D0078C671 /* ProductFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80089F172949B92D0078C671 /* ProductFlow.swift */; };
 		800A5B58275483D6009DE2CD /* OrdersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 800A5B57275483D6009DE2CD /* OrdersTests.swift */; };
 		800A5B5F27548F31009DE2CD /* site_info_wordpress_com.json in Resources */ = {isa = PBXBuildFile; fileRef = 800A5B5E27548F31009DE2CD /* site_info_wordpress_com.json */; };
 		800A5B6127548F53009DE2CD /* sites_posts_password.json in Resources */ = {isa = PBXBuildFile; fileRef = 800A5B6027548F53009DE2CD /* sites_posts_password.json */; };
@@ -3149,6 +3150,7 @@
 		7E7C5F812719A93C00315B61 /* ProductCategoryListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductCategoryListViewController.swift; sourceTree = "<group>"; };
 		7E7C5F8A2719AEDA00315B61 /* EditProductCategoryListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProductCategoryListViewModelTests.swift; sourceTree = "<group>"; };
 		7E7C5F8E2719BA7300315B61 /* ProductCategoryCellViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductCategoryCellViewModel.swift; sourceTree = "<group>"; };
+		80089F172949B92D0078C671 /* ProductFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFlow.swift; sourceTree = "<group>"; };
 		800A5B57275483D6009DE2CD /* OrdersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersTests.swift; sourceTree = "<group>"; };
 		800A5B5E27548F31009DE2CD /* site_info_wordpress_com.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = site_info_wordpress_com.json; sourceTree = "<group>"; };
 		800A5B6027548F53009DE2CD /* sites_posts_password.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = sites_posts_password.json; sourceTree = "<group>"; };
@@ -6823,6 +6825,7 @@
 			children = (
 				80E6FC742763579D0086CD67 /* MockDataReader.swift */,
 				800A5B9D275623FC009DE2CD /* LoginFlow.swift */,
+				80089F172949B92D0078C671 /* ProductFlow.swift */,
 			);
 			path = Flows;
 			sourceTree = "<group>";
@@ -11574,6 +11577,7 @@
 				80C3626F277453E8005CEAD3 /* ReviewsTests.swift in Sources */,
 				80E6FC79276C3FD60086CD67 /* MockDataReader.swift in Sources */,
 				CCDC49CD23FFFFF4003166BA /* LoginTests.swift in Sources */,
+				80089F182949B92D0078C671 /* ProductFlow.swift in Sources */,
 				800A5B58275483D6009DE2CD /* OrdersTests.swift in Sources */,
 				80AD2CA427858BAB00A63DE8 /* StatsTests.swift in Sources */,
 				800A5BCB2759CE4B009DE2CD /* ProductsTests.swift in Sources */,

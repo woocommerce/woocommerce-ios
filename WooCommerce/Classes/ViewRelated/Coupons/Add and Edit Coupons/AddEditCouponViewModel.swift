@@ -12,6 +12,8 @@ final class AddEditCouponViewModel: ObservableObject {
 
     private let siteID: Int64
 
+    private let siteURL: String
+
     /// Based on the Editing Option, the `AddEditCoupon` view can be in Creation or Editing mode.
     ///
     private let editingOption: EditingOption
@@ -211,6 +213,7 @@ final class AddEditCouponViewModel: ObservableObject {
     /// Init method for coupon creation
     ///
     init(siteID: Int64,
+         siteURL: String,
          discountType: Coupon.DiscountType,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -220,6 +223,7 @@ final class AddEditCouponViewModel: ObservableObject {
          timezone: TimeZone = .siteTimezone,
          onSuccess: @escaping (Coupon) -> Void) {
         self.siteID = siteID
+        self.siteURL = siteURL
         editingOption = .creation
         self.discountType = discountType
         self.stores = stores
@@ -250,6 +254,7 @@ final class AddEditCouponViewModel: ObservableObject {
     /// Init method for coupon editing
     ///
     init(existingCoupon: Coupon,
+         siteURL: String,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
@@ -261,6 +266,7 @@ final class AddEditCouponViewModel: ObservableObject {
         coupon = existingCoupon
         editingOption = .editing
         discountType = existingCoupon.discountType
+        self.siteURL = siteURL
         self.stores = stores
         self.storageManager = storageManager
         self.currencySettings = currencySettings
@@ -379,7 +385,7 @@ final class AddEditCouponViewModel: ObservableObject {
         }
 
         isLoading = true
-        let action = CouponAction.createCoupon(coupon, siteTimezone: timezone) { [weak self] result in
+        let action = CouponAction.createCoupon(coupon, siteURL: siteURL, siteTimezone: timezone) { [weak self] result in
             guard let self = self else { return }
             self.isLoading = false
             switch result {
@@ -408,7 +414,7 @@ final class AddEditCouponViewModel: ObservableObject {
         }
 
         isLoading = true
-        let action = CouponAction.updateCoupon(coupon, siteTimezone: timezone) { [weak self] result in
+        let action = CouponAction.updateCoupon(coupon, siteURL: siteURL, siteTimezone: timezone) { [weak self] result in
             guard let self = self else { return }
             self.isLoading = false
             switch result {

@@ -7,6 +7,7 @@ import WooFoundation
 ///
 final class CouponDetailsViewModel: ObservableObject {
     let siteID: Int64
+    let siteURL: String
 
     /// Code of the coupon
     ///
@@ -136,12 +137,14 @@ final class CouponDetailsViewModel: ObservableObject {
     let onDeletion: () -> Void
 
     init(coupon: Coupon,
+         siteURL: String,
          stores: StoresManager = ServiceLocator.stores,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
          onUpdate: @escaping () -> Void = {},
          onDeletion: @escaping () -> Void = {}) {
         self.siteID = coupon.siteID
+        self.siteURL = siteURL
         self.coupon = coupon
         self.stores = stores
         self.currencySettings = currencySettings
@@ -153,7 +156,7 @@ final class CouponDetailsViewModel: ObservableObject {
     }
 
     func syncCoupon() {
-        let action = CouponAction.retrieveCoupon(siteID: coupon.siteID, couponID: coupon.couponID) { [weak self] result in
+        let action = CouponAction.retrieveCoupon(siteID: coupon.siteID, siteURL: siteURL, couponID: coupon.couponID) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let coupon):
@@ -175,7 +178,7 @@ final class CouponDetailsViewModel: ObservableObject {
         hasErrorLoadingAmount = false
         // Get "ancient" date to fetch all possible reports
         let startDate = Date(timeIntervalSince1970: 1)
-        let action = CouponAction.loadCouponReport(siteID: siteID, couponID: coupon.couponID, startDate: startDate) { [weak self] result in
+        let action = CouponAction.loadCouponReport(siteID: siteID, siteURL: siteURL, couponID: coupon.couponID, startDate: startDate) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let report):
@@ -206,7 +209,7 @@ final class CouponDetailsViewModel: ObservableObject {
 
     func deleteCoupon(onSuccess: @escaping () -> Void, onFailure: @escaping () -> Void) {
         isDeletionInProgress = true
-        let action = CouponAction.deleteCoupon(siteID: siteID, couponID: coupon.couponID) { [weak self] result in
+        let action = CouponAction.deleteCoupon(siteID: siteID, siteURL: siteURL, couponID: coupon.couponID) { [weak self] result in
             self?.isDeletionInProgress = false
             switch result {
             case .success:
@@ -278,7 +281,7 @@ private extension CouponDetailsViewModel {
     }
 
     func createAddEditCouponViewModel(with coupon: Coupon) -> AddEditCouponViewModel {
-        .init(existingCoupon: coupon, onSuccess: { [weak self] updatedCoupon in
+        .init(existingCoupon: coupon, siteURL: siteURL, onSuccess: { [weak self] updatedCoupon in
             guard let self = self else { return }
             self.updateCoupon(updatedCoupon)
             self.onUpdate()

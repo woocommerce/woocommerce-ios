@@ -6,33 +6,40 @@ import Foundation
 ///
 public protocol CouponsRemoteProtocol {
     func loadAllCoupons(for siteID: Int64,
+                        siteURL: String,
                         pageNumber: Int,
                         pageSize: Int,
                         completion: @escaping (Result<[Coupon], Error>) -> ())
 
     func searchCoupons(for siteID: Int64,
+                       siteURL: String,
                        keyword: String,
                        pageNumber: Int,
                        pageSize: Int,
                        completion: @escaping (Result<[Coupon], Error>) -> ())
 
     func retrieveCoupon(for siteID: Int64,
+                        siteURL: String,
                         couponID: Int64,
                         completion: @escaping (Result<Coupon, Error>) -> Void)
 
     func deleteCoupon(for siteID: Int64,
+                      siteURL: String,
                       couponID: Int64,
                       completion: @escaping (Result<Coupon, Error>) -> Void)
 
     func updateCoupon(_ coupon: Coupon,
+                      siteURL: String,
                       siteTimezone: TimeZone?,
                       completion: @escaping (Result<Coupon, Error>) -> Void)
 
     func createCoupon(_ coupon: Coupon,
+                      siteURL: String,
                       siteTimezone: TimeZone?,
                       completion: @escaping (Result<Coupon, Error>) -> Void)
 
     func loadCouponReport(for siteID: Int64,
+                          siteURL: String,
                           couponID: Int64,
                           from startDate: Date,
                           completion: @escaping (Result<CouponReport, Error>) -> Void)
@@ -48,11 +55,13 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
     ///
     /// - Parameters:
     ///     - siteID: The site for which we'll fetch coupons.
+    ///     - siteURL: Address of the site to fetch coupons for.
     ///     - pageNumber: The page number of the coupon list to be fetched.
     ///     - pageSize: The maximum number of coupons to be fetched for the current page.
     ///     - completion: Closure to be executed upon completion.
     ///
     public func loadAllCoupons(for siteID: Int64,
+                               siteURL: String,
                                pageNumber: Int = Default.pageNumber,
                                pageSize: Int = Default.pageSize,
                                completion: @escaping (Result<[Coupon], Error>) -> ()) {
@@ -73,6 +82,7 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
     }
 
     public func searchCoupons(for siteID: Int64,
+                              siteURL: String,
                               keyword: String,
                               pageNumber: Int,
                               pageSize: Int,
@@ -98,10 +108,12 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
     ///
     /// - Parameters:
     ///     - siteID: Site for which we'll fetch the coupon.
+    ///     - siteURL: Address of the site that the coupon belongs to.
     ///     - couponID: ID of the Coupon that will be retrieved.
     ///     - completion: Closure to be executed upon completion.
     ///
     public func retrieveCoupon(for siteID: Int64,
+                               siteURL: String,
                                couponID: Int64,
                                completion: @escaping (Result<Coupon, Error>) -> Void) {
         let request = JetpackRequest(wooApiVersion: .mark3,
@@ -120,10 +132,12 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
     ///
     /// - Parameters:
     ///     - siteID: Site for which we'll delete the coupon.
+    ///     - siteURL: Address of the site that the coupon belongs to.
     ///     - couponID: ID of the Coupon that will be deleted.
     ///     - completion: Closure to be executed upon completion.
     ///
     public func deleteCoupon(for siteID: Int64,
+                             siteURL: String,
                              couponID: Int64,
                              completion: @escaping (Result<Coupon, Error>) -> Void) {
         let request = JetpackRequest(wooApiVersion: .mark3,
@@ -143,10 +157,12 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
     ///
     /// - Parameters:
     ///     - coupon: The coupon to be updated remotely.
+    ///     - siteURL: Address of the site that the coupon belongs to.
     ///     - siteTimezone: the timezone configured on the site (also know as local time of the site).
     ///     - completion: Closure to be executed upon completion.
     ///
     public func updateCoupon(_ coupon: Coupon,
+                             siteURL: String,
                              siteTimezone: TimeZone? = nil,
                              completion: @escaping (Result<Coupon, Error>) -> Void) {
         do {
@@ -174,10 +190,12 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
     ///
     /// - Parameters:
     ///     - coupon: The coupon to be created remotely.
+    ///     - siteURL: Address of the site to create the coupon for.
     ///     - siteTimezone: the timezone configured on the site (also know as local time of the site).
     ///     - completion: Closure to be executed upon completion.
     ///
     public func createCoupon(_ coupon: Coupon,
+                             siteURL: String,
                              siteTimezone: TimeZone? = nil,
                              completion: @escaping (Result<Coupon, Error>) -> Void) {
         do {
@@ -203,11 +221,13 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
     ///
     /// - Parameters:
     ///     - siteID: The site from which we'll fetch the analytics report.
+    ///     - siteURL: Address of the site from which we'll fetch the analytics report.
     ///     - couponID: The coupon for which we'll fetch the analytics report.
     ///     - startDate: The start of the date range for which we'll fetch the analytics report.
     ///     - completion: Closure to be executed upon completion.
     ///
     public func loadCouponReport(for siteID: Int64,
+                                 siteURL: String,
                                  couponID: Int64,
                                  from startDate: Date,
                                  completion: @escaping (Result<CouponReport, Error>) -> Void) {

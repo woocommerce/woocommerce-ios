@@ -191,6 +191,11 @@ private extension MockNetwork {
             return request.path
         case let request as DotcomRequest:
             return request.path
+        case let request as RESTRequest:
+            if let fallbackRequest = request.fallbackRequest {
+                return path(for: fallbackRequest)
+            }
+            fallthrough
         default:
             let targetURL = try! request.asURLRequest().url?.absoluteString
             return targetURL ?? ""

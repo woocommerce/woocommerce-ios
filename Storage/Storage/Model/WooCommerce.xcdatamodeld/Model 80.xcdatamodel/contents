@@ -747,6 +747,13 @@
         <attribute name="siteID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="value" optional="YES" attributeType="String"/>
     </entity>
+    <entity name="SiteSummaryStats" representedClassName="SiteSummaryStats" syncable="YES">
+        <attribute name="date" attributeType="String" defaultValueString=""/>
+        <attribute name="period" attributeType="String" defaultValueString=""/>
+        <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="views" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="visitors" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+    </entity>
     <entity name="SiteVisitStats" representedClassName="SiteVisitStats" syncable="YES">
         <attribute name="date" attributeType="String"/>
         <attribute name="granularity" attributeType="String"/>

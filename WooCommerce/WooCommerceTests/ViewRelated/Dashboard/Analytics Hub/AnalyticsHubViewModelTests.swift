@@ -79,6 +79,37 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertTrue(vm.sessionsCard.showSyncError)
     }
 
+    func test_cards_viewmodels_show_sync_error_only_if_underlying_request_fails() async {
+        // Given
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores)
+        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
+            switch action {
+            case let .retrieveCustomStats(_, _, _, _, _, _, completion):
+                completion(.failure(NSError(domain: "Test", code: 1)))
+            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, completion):
+                let topEarners = TopEarnerStats.fake().copy(items: [.fake()])
+                completion(.success(topEarners))
+            case let .retrieveSiteSummaryStats(_, _, _, _, completion):
+                completion(.failure(NSError(domain: "Test", code: 1)))
+            default:
+                break
+            }
+        }
+
+        // When
+        await vm.updateData()
+
+        // Then
+        XCTAssertTrue(vm.revenueCard.showSyncError)
+        XCTAssertTrue(vm.ordersCard.showSyncError)
+        XCTAssertTrue(vm.productsStatsCard.showStatsError)
+
+        XCTAssertFalse(vm.itemsSoldCard.showItemsSoldError)
+        XCTAssertEqual(vm.itemsSoldCard.itemsSoldData.count, 1)
+
+        XCTAssertTrue(vm.sessionsCard.showSyncError)
+    }
+
     func test_cards_viewmodels_redacted_while_updating_from_network() async {
         // Given
         let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores)

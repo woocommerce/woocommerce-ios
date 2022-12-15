@@ -48,10 +48,10 @@ public final class SingleProductScreen: ScreenObject {
     }
 
     public func verifyProductTypeScreenLoaded(productType: String) throws -> Self {
-        let priceLabel = NSPredicate(format: "label CONTAINS[c] %@", "price")
-        let inventoryLabel = NSPredicate(format: "label CONTAINS[c] %@", "inventory")
-        let productTypeLabel = NSPredicate(format: "label CONTAINS[c] %@", productType)
-        let addVariationLabel = NSPredicate(format: "label CONTAINS[c] %@", "add variations")
+        let addPriceLabel = NSPredicate(format: "label == 'Add Price'")
+        let inventoryLabel = NSPredicate(format: "label == 'Inventory'")
+        let productTypeLabel = NSPredicate(format: "label ==[c] '\(productType)'")
+        let addVariationLabel = NSPredicate(format: "label == 'Add variations'")
 
         // the common fields on add product screen
         XCTAssertTrue(app.cells["product-review-cell"].exists)
@@ -61,13 +61,12 @@ public final class SingleProductScreen: ScreenObject {
         // this is to validate that the correct screens are displayed
         switch productType {
         case "physical", "virtual":
-            XCTAssertTrue(app.staticTexts.containing(priceLabel).firstMatch.exists)
+            XCTAssertTrue(app.staticTexts.containing(addPriceLabel).firstMatch.exists)
             XCTAssertTrue(app.staticTexts.containing(inventoryLabel).firstMatch.exists)
         case "variable":
             XCTAssertTrue(app.staticTexts.containing(addVariationLabel).firstMatch.exists)
             XCTAssertTrue(app.staticTexts.containing(inventoryLabel).firstMatch.exists)
         default:
-            // fail test if product type doesn't exist
             fatalError("Product Type \(productType) doesn't exist!")
         }
         return self

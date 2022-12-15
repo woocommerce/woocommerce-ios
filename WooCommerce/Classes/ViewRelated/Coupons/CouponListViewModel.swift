@@ -44,6 +44,10 @@ final class CouponListViewModel {
     ///
     private let siteID: Int64
 
+    /// URL of the currently active site
+    ///
+    private let siteURL: String
+
     /// resultsController: provides models from storage used for creation of cell ViewModels
     ///
     private let resultsController: ResultsController<StorageCoupon>
@@ -64,11 +68,13 @@ final class CouponListViewModel {
     // MARK: - Initialization and setup
     //
     init(siteID: Int64,
+         siteURL: String,
          syncingCoordinator: SyncingCoordinatorProtocol = SyncingCoordinator(),
          storesManager: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
+        self.siteURL = siteURL
         self.syncingCoordinator = syncingCoordinator
         self.storesManager = storesManager
         self.storageManager = storageManager
@@ -241,6 +247,7 @@ extension CouponListViewModel: SyncingCoordinatorDelegate {
         transitionToSyncingState(pageNumber: pageNumber, hasData: couponViewModels.isNotEmpty)
         let action = CouponAction
             .synchronizeCoupons(siteID: siteID,
+                                siteURL: siteURL,
                                 pageNumber: pageNumber,
                                 pageSize: pageSize) { [weak self] result in
                 guard let self = self else { return }

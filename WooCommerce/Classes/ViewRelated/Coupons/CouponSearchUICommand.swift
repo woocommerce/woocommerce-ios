@@ -18,9 +18,11 @@ final class CouponSearchUICommand: SearchUICommand {
     var resynchronizeModels: (() -> Void) = {}
 
     private let siteID: Int64
+    private let siteURL: String
 
-    init(siteID: Int64) {
+    init(siteID: Int64, siteURL: String) {
         self.siteID = siteID
+        self.siteURL = siteURL
     }
 
     func createResultsController() -> ResultsController<StorageCoupon> {
@@ -44,7 +46,7 @@ final class CouponSearchUICommand: SearchUICommand {
     }
 
     func synchronizeModels(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
-        let action = CouponAction.searchCoupons(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize) { result in
+        let action = CouponAction.searchCoupons(siteID: siteID, siteURL: siteURL, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize) { result in
 
             if case .failure(let error) = result {
                 DDLogError("☠️ Coupon Search Failure! \(error)")
@@ -57,7 +59,7 @@ final class CouponSearchUICommand: SearchUICommand {
     }
 
     func didSelectSearchResult(model: Coupon, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void) {
-        let detailsViewModel = CouponDetailsViewModel(coupon: model, onUpdate: { [weak self] in
+        let detailsViewModel = CouponDetailsViewModel(coupon: model, siteURL: siteURL, onUpdate: { [weak self] in
             try? self?.createResultsController().performFetch()
         }, onDeletion: {
             viewController.navigationController?.popViewController(animated: true)

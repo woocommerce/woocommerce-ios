@@ -462,7 +462,7 @@ private extension CouponDetails {
 #if DEBUG
 struct CouponDetails_Previews: PreviewProvider {
     static var previews: some View {
-        CouponDetails(viewModel: CouponDetailsViewModel(coupon: Coupon.sampleCoupon))
+        CouponDetails(viewModel: CouponDetailsViewModel(coupon: Coupon.sampleCoupon, siteURL: "http://test.com"))
     }
 }
 #endif

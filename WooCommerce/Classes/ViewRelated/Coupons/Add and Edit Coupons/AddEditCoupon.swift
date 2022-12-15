@@ -410,7 +410,7 @@ struct AddEditCoupon_Previews: PreviewProvider {
 
         /// Edit Coupon
         ///
-        let editingViewModel = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon, onSuccess: { _ in })
+        let editingViewModel = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon, siteURL: "", onSuccess: { _ in })
         AddEditCoupon(editingViewModel)
     }
 }

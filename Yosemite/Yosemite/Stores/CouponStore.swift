@@ -53,27 +53,29 @@ public final class CouponStore: Store {
         }
 
         switch action {
-        case .synchronizeCoupons(let siteID, let pageNumber, let pageSize, let onCompletion):
+        case .synchronizeCoupons(let siteID, let siteURL, let pageNumber, let pageSize, let onCompletion):
             synchronizeCoupons(siteID: siteID,
+                               siteURL: siteURL,
                                pageNumber: pageNumber,
                                pageSize: pageSize,
                                onCompletion: onCompletion)
-        case .deleteCoupon(let siteID, let couponID, let onCompletion):
-            deleteCoupon(siteID: siteID, couponID: couponID, onCompletion: onCompletion)
-        case .updateCoupon(let coupon, let siteTimezone, let onCompletion):
-            updateCoupon(coupon, siteTimezone: siteTimezone, onCompletion: onCompletion)
-        case .createCoupon(let coupon, let siteTimezone, let onCompletion):
-            createCoupon(coupon, siteTimezone: siteTimezone, onCompletion: onCompletion)
-        case .loadCouponReport(let siteID, let couponID, let startDate, let onCompletion):
-            loadCouponReport(siteID: siteID, couponID: couponID, startDate: startDate, onCompletion: onCompletion)
-        case .searchCoupons(let siteID, let keyword, let pageNumber, let pageSize, let onCompletion):
+        case .deleteCoupon(let siteID, let siteURL, let couponID, let onCompletion):
+            deleteCoupon(siteID: siteID, siteURL: siteURL, couponID: couponID, onCompletion: onCompletion)
+        case .updateCoupon(let coupon, let siteURL, let siteTimezone, let onCompletion):
+            updateCoupon(coupon, siteURL: siteURL, siteTimezone: siteTimezone, onCompletion: onCompletion)
+        case .createCoupon(let coupon, let siteURL, let siteTimezone, let onCompletion):
+            createCoupon(coupon, siteURL: siteURL, siteTimezone: siteTimezone, onCompletion: onCompletion)
+        case .loadCouponReport(let siteID, let siteURL, let couponID, let startDate, let onCompletion):
+            loadCouponReport(siteID: siteID, siteURL: siteURL, couponID: couponID, startDate: startDate, onCompletion: onCompletion)
+        case .searchCoupons(let siteID, let siteURL, let keyword, let pageNumber, let pageSize, let onCompletion):
             searchCoupons(siteID: siteID,
+                          siteURL: siteURL,
                           keyword: keyword,
                           pageNumber: pageNumber,
                           pageSize: pageSize,
                           onCompletion: onCompletion)
-        case .retrieveCoupon(let siteID, let couponID, let onCompletion):
-            retrieveCoupon(siteID: siteID, couponID: couponID, onCompletion: onCompletion)
+        case .retrieveCoupon(let siteID, let siteURL, let couponID, let onCompletion):
+            retrieveCoupon(siteID: siteID, siteURL: siteURL, couponID: couponID, onCompletion: onCompletion)
         }
     }
 }
@@ -89,16 +91,19 @@ private extension CouponStore {
     ///
     /// - Parameters:
     ///   - siteId: The site to synchronizes coupons for.
+    ///   - siteURL: Address of the site to fetch coupons for.
     ///   - pageNumber: Page number of coupons to fetch from the API
     ///   - pageSize: Number of coupons per page to fetch from the API
     ///   - onCompletion: Closure to call after sychronizing is complete. Called on the main thread.
     ///   - result: `.success(hasNextPage: Bool)` or `.failure(error: Error)`
     ///
     func synchronizeCoupons(siteID: Int64,
+                            siteURL: String,
                             pageNumber: Int,
                             pageSize: Int,
                             onCompletion: @escaping (_ result: Result<Bool, Error>) -> Void) {
         remote.loadAllCoupons(for: siteID,
+                              siteURL: siteURL,
                               pageNumber: pageNumber,
                               pageSize: pageSize) { [weak self] result in
             guard let self = self else { return }
@@ -122,11 +127,12 @@ private extension CouponStore {
     /// After the API request succeeds, the stored coupon should be removed from the local storage.
     /// - Parameters:
     ///   - siteID: The site that the deleted coupon belongs to.
+    ///   - siteURL: Address of the site that the coupon belongs to.
     ///   - couponID: The ID of the coupon to be deleted.
     ///   - onCompletion: Closure to call after deletion is complete. Called on the main thread.
     ///
-    func deleteCoupon(siteID: Int64, couponID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        remote.deleteCoupon(for: siteID, couponID: couponID) { [weak self] result in
+    func deleteCoupon(siteID: Int64, siteURL: String, couponID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        remote.deleteCoupon(for: siteID, siteURL: siteURL, couponID: couponID) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .failure(let error):
@@ -150,13 +156,15 @@ private extension CouponStore {
     /// After the API request succeeds, the stored coupon should be updated accordingly.
     /// - Parameters:
     ///   - coupon: The coupon to be updated
+    ///   - siteURL: Address of the site that the coupon belongs to.
     ///   - siteTimezone: the timezone configured on the site (also know as local time of the site).
     ///   - onCompletion: Closure to call after update is complete. Called on the main thread.
     ///
     func updateCoupon(_ coupon: Coupon,
+                      siteURL: String,
                       siteTimezone: TimeZone? = nil,
                       onCompletion: @escaping (Result<Coupon, Error>) -> Void) {
-        remote.updateCoupon(coupon, siteTimezone: siteTimezone) { [weak self] result in
+        remote.updateCoupon(coupon, siteURL: siteURL, siteTimezone: siteTimezone) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .failure(let error):
@@ -173,13 +181,15 @@ private extension CouponStore {
     /// After the API request succeeds, a new stored coupon should be inserted into the local storage.
     /// - Parameters:
     ///   - coupon: The coupon to be created
+    ///   - siteURL: Address of the site to create the coupon for.
     ///   - siteTimezone: the timezone configured on the site (also know as local time of the site).
     ///   - onCompletion: Closure to call after creation is complete. Called on the main thread.
     ///
     func createCoupon(_ coupon: Coupon,
+                      siteURL: String,
                       siteTimezone: TimeZone? = nil,
                       onCompletion: @escaping (Result<Coupon, Error>) -> Void) {
-        remote.createCoupon(coupon, siteTimezone: siteTimezone) { [weak self] result in
+        remote.createCoupon(coupon, siteURL: siteURL, siteTimezone: siteTimezone) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .failure(let error):
@@ -196,12 +206,17 @@ private extension CouponStore {
     ///
     /// - Parameters:
     ///     - siteID: ID of the site that the coupon belongs to.
+    ///     - siteURL: Address of the site from which we'll fetch the analytics report.
     ///     - couponID: ID of the coupon to load the analytics report for.
     ///     - startDate: the start of the date range to load the analytics report for.
     ///     - onCompletion: invoked when the creation finishes.
     ///
-    func loadCouponReport(siteID: Int64, couponID: Int64, startDate: Date, onCompletion: @escaping (Result<CouponReport, Error>) -> Void) {
-        remote.loadCouponReport(for: siteID, couponID: couponID, from: startDate, completion: onCompletion)
+    func loadCouponReport(siteID: Int64,
+                          siteURL: String,
+                          couponID: Int64,
+                          startDate: Date,
+                          onCompletion: @escaping (Result<CouponReport, Error>) -> Void) {
+        remote.loadCouponReport(for: siteID, siteURL: siteURL, couponID: couponID, from: startDate, completion: onCompletion)
     }
 
     /// Search coupons from a Site that match a specified keyword.
@@ -210,17 +225,20 @@ private extension CouponStore {
     ///
     /// - Parameters:
     ///   - siteId: The site to search coupons for.
+    ///   - siteURL: address of the site to search coupons for.
     ///   - keyword: The string to match the results with.
     ///   - pageNumber: Page number of coupons to fetch from the API
     ///   - pageSize: Number of coupons per page to fetch from the API
     ///   - onCompletion: Closure to call after the search is complete. Called on the main thread.
     ///
     func searchCoupons(siteID: Int64,
+                       siteURL: String,
                        keyword: String,
                        pageNumber: Int,
                        pageSize: Int,
                        onCompletion: @escaping (_ result: Result<Void, Error>) -> Void) {
         remote.searchCoupons(for: siteID,
+                             siteURL: siteURL,
                              keyword: keyword,
                              pageNumber: pageNumber,
                              pageSize: pageSize) { [weak self] result in
@@ -243,13 +261,16 @@ private extension CouponStore {
     ///
     /// - Parameters:
     ///   - siteID: The site to retrieve the coupon for.
+    ///   - siteURL: Address of the site that the coupon belongs to.
     ///   - couponID: ID of the coupon to be retrieved.
     ///   - onCompletion: Closure to call upon completion. Called on the main thread.
     ///
     func retrieveCoupon(siteID: Int64,
+                        siteURL: String,
                         couponID: Int64,
                         onCompletion: @escaping (_ result: Result<Coupon, Error>) -> Void) {
         remote.retrieveCoupon(for: siteID,
+                              siteURL: siteURL,
                               couponID: couponID) { [weak self] result in
             guard let self = self else { return }
             switch result {

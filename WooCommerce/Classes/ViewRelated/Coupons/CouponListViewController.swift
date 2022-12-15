@@ -7,6 +7,7 @@ final class CouponListViewController: UIViewController, GhostableViewController 
     @IBOutlet private weak var tableView: UITableView!
     private let viewModel: CouponListViewModel
     private let siteID: Int64
+    private let siteURL: String
 
     /// Set when an empty state view controller is displayed.
     ///
@@ -74,9 +75,10 @@ final class CouponListViewController: UIViewController, GhostableViewController 
         return noticePresenter
     }()
 
-    init(siteID: Int64) {
+    init(siteID: Int64, siteURL: String) {
         self.siteID = siteID
-        self.viewModel = CouponListViewModel(siteID: siteID)
+        self.siteURL = siteURL
+        self.viewModel = CouponListViewModel(siteID: siteID, siteURL: siteURL)
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -201,6 +203,7 @@ private extension CouponListViewController {
     ///
     func startCouponCreation(discountType: Coupon.DiscountType) {
         let viewModel = AddEditCouponViewModel(siteID: siteID,
+                                               siteURL: siteURL,
                                                discountType: discountType,
                                                onSuccess: { [weak self] _ in
             self?.refreshCouponList()
@@ -225,7 +228,7 @@ extension CouponListViewController: UITableViewDelegate {
         guard let coupon = viewModel.coupon(at: indexPath) else {
             return
         }
-        let detailsViewModel = CouponDetailsViewModel(coupon: coupon, onUpdate: { [weak self] in
+        let detailsViewModel = CouponDetailsViewModel(coupon: coupon, siteURL: siteURL, onUpdate: { [weak self] in
             guard let self = self else { return }
             self.viewModel.refreshCoupons()
         }, onDeletion: { [weak self] in
@@ -288,7 +291,7 @@ private extension CouponListViewController {
         ServiceLocator.analytics.track(.couponsListSearchTapped)
         let searchViewController = SearchViewController<TitleAndSubtitleAndStatusTableViewCell, CouponSearchUICommand>(
             storeID: siteID,
-            command: CouponSearchUICommand(siteID: siteID),
+            command: CouponSearchUICommand(siteID: siteID, siteURL: siteURL),
             cellType: TitleAndSubtitleAndStatusTableViewCell.self,
             cellSeparator: .singleLine
         )

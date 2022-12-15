@@ -215,7 +215,8 @@ private extension AnalyticsHubViewModel {
             let action = StatsActionV4.retrieveSiteSummaryStats(siteID: siteID,
                                                                 period: period,
                                                                 quantity: timeRangeSelectionType.quantity,
-                                                                latestDateToInclude: latestDateToInclude) { result in
+                                                                latestDateToInclude: latestDateToInclude,
+                                                                saveInStorage: false) { result in
                 continuation.resume(with: result)
             }
             stores.dispatch(action)

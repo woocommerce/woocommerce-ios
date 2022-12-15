@@ -712,7 +712,7 @@
 		DEFBA74E29485A7600C35BA9 /* RESTRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFBA74D29485A7600C35BA9 /* RESTRequest.swift */; };
 		DEFBA7542949CE6600C35BA9 /* RequestAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFBA7532949CE6600C35BA9 /* RequestAuthenticator.swift */; };
 		DEFBA7562949D17400C35BA9 /* RequestAuthenticatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFBA7552949D17300C35BA9 /* RequestAuthenticatorTests.swift */; };
-		DEFBA759294AC3C200C35BA9 /* coupon-without_data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEFBA757294AC3C200C35BA9 /* coupon-without_data.json */; };
+		DEFBA759294AC3C200C35BA9 /* coupon-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEFBA757294AC3C200C35BA9 /* coupon-without-data.json */; };
 		DEFBA75A294AC3C200C35BA9 /* coupons-all-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEFBA758294AC3C200C35BA9 /* coupons-all-without-data.json */; };
 		E12552C526385B05001CEE70 /* ShippingLabelAddressValidationSuccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12552C426385B05001CEE70 /* ShippingLabelAddressValidationSuccess.swift */; };
 		E137619929151C7400FD098F /* error-wp-rest-forbidden.json in Resources */ = {isa = PBXBuildFile; fileRef = E137619829151C7400FD098F /* error-wp-rest-forbidden.json */; };
@@ -1475,7 +1475,7 @@
 		DEFBA74D29485A7600C35BA9 /* RESTRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RESTRequest.swift; sourceTree = "<group>"; };
 		DEFBA7532949CE6600C35BA9 /* RequestAuthenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestAuthenticator.swift; sourceTree = "<group>"; };
 		DEFBA7552949D17300C35BA9 /* RequestAuthenticatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestAuthenticatorTests.swift; sourceTree = "<group>"; };
-		DEFBA757294AC3C200C35BA9 /* coupon-without_data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "coupon-without_data.json"; sourceTree = "<group>"; };
+		DEFBA757294AC3C200C35BA9 /* coupon-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "coupon-without-data.json"; sourceTree = "<group>"; };
 		DEFBA758294AC3C200C35BA9 /* coupons-all-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "coupons-all-without-data.json"; sourceTree = "<group>"; };
 		E12552C426385B05001CEE70 /* ShippingLabelAddressValidationSuccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddressValidationSuccess.swift; sourceTree = "<group>"; };
 		E137619829151C7400FD098F /* error-wp-rest-forbidden.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "error-wp-rest-forbidden.json"; sourceTree = "<group>"; };
@@ -2073,7 +2073,7 @@
 				74A7B4BD217A841400E85A8B /* broken-settings-general.json */,
 				03DCB7512624B3BE00C8953D /* coupons-all.json */,
 				03DCB77D262738E200C8953D /* coupon.json */,
-				DEFBA757294AC3C200C35BA9 /* coupon-without_data.json */,
+				DEFBA757294AC3C200C35BA9 /* coupon-without-data.json */,
 				DEFBA758294AC3C200C35BA9 /* coupons-all-without-data.json */,
 				DE2095C027966EC800171F1C /* coupon-reports.json */,
 				B58D10C72114D21C00107ED4 /* generic_error.json */,
@@ -2850,7 +2850,7 @@
 				45CCFCEA27A2E59B0012E8CB /* inbox-note-list.json in Resources */,
 				025CA2C8238F4FF400B05C81 /* product-shipping-classes-load-all.json in Resources */,
 				74046E21217A73D0007DD7BF /* settings-general.json in Resources */,
-				DEFBA759294AC3C200C35BA9 /* coupon-without_data.json in Resources */,
+				DEFBA759294AC3C200C35BA9 /* coupon-without-data.json in Resources */,
 				03E8FEC427B40E3F00F5FC7D /* wcpay-charge-card-present-minimal.json in Resources */,
 				31054724262E2FC600C5C02B /* wcpay-payment-intent-requires-capture.json in Resources */,
 				7492FAE3217FBDBC00ED2C69 /* settings-general-alt.json in Resources */,

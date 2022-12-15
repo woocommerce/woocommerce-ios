@@ -55,8 +55,15 @@ final class CouponsRemoteTests: XCTestCase {
         remote.loadAllCoupons(for: sampleSiteID, siteURL: sampleSiteURL, pageNumber: 2, pageSize: 17) { _ in }
 
         // Then
-        let request = network.requestsForResponseData.first
-        let jetpackRequest = try XCTUnwrap((request as? RESTRequest)?.fallbackRequest ?? request as? JetpackRequest)
+        let request = try XCTUnwrap(network.requestsForResponseData.first as? RESTRequest)
+        let restURL = try XCTUnwrap(request.urlRequest?.url)
+        let queryItems = try XCTUnwrap(URLComponents(string: restURL.absoluteString)?.queryItems)
+        let queryPageItem = queryItems.first(where: { $0.name == "page" })
+        XCTAssertEqual(queryPageItem?.value, "2")
+        let queryPageSizeItem = queryItems.first(where: { $0.name == "per_page" })
+        XCTAssertEqual(queryPageSizeItem?.value, "17")
+
+        let jetpackRequest = try XCTUnwrap(request.fallbackRequest)
         guard let page = jetpackRequest.parameters["page"] as? String,
               let pageSize = jetpackRequest.parameters["per_page"] as? String else {
             XCTFail("Pagination parameters not found")
@@ -76,9 +83,8 @@ final class CouponsRemoteTests: XCTestCase {
         remote.loadAllCoupons(for: sampleSiteID, siteURL: sampleSiteURL) { _ in }
 
         // Then
-        let request = network.requestsForResponseData.first
-        let jetpackRequest = try XCTUnwrap((request as? RESTRequest)?.fallbackRequest ?? request as? JetpackRequest)
-        XCTAssertEqual(jetpackRequest.siteID, sampleSiteID)
+        let request = try XCTUnwrap(network.requestsForResponseData.first as? RESTRequest)
+        XCTAssertEqual(request.fallbackRequest?.siteID, sampleSiteID)
     }
 
     /// Verifies that loadAllCoupons uses the SiteID passed in to build the models.

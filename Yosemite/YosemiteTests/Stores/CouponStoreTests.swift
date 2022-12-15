@@ -452,7 +452,10 @@ final class CouponStoreTests: XCTestCase {
 
         // When
         let result: Result<Networking.CouponReport, Error> = waitFor { promise in
-            let action = CouponAction.loadCouponReport(siteID: self.sampleSiteID, siteURL: self.sampleSiteURL, couponID: sampleCouponID, startDate: sampleDate) { result in
+            let action = CouponAction.loadCouponReport(siteID: self.sampleSiteID,
+                                                       siteURL: self.sampleSiteURL,
+                                                       couponID: sampleCouponID,
+                                                       startDate: sampleDate) { result in
                 promise(result)
             }
             self.store.onAction(action)
@@ -471,7 +474,10 @@ final class CouponStoreTests: XCTestCase {
 
         // When
         let result: Result<Networking.CouponReport, Error> = waitFor { promise in
-            let action = CouponAction.loadCouponReport(siteID: self.sampleSiteID, siteURL: self.sampleSiteURL, couponID: sampleCouponID, startDate: sampleDate) { result in
+            let action = CouponAction.loadCouponReport(siteID: self.sampleSiteID,
+                                                       siteURL: self.sampleSiteURL,
+                                                       couponID: sampleCouponID,
+                                                       startDate: sampleDate) { result in
                 promise(result)
             }
             self.store.onAction(action)
@@ -512,7 +518,10 @@ final class CouponStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            let action = CouponAction.searchCoupons(siteID: self.sampleSiteID, siteURL: self.sampleSiteURL, keyword: "test keyword", pageNumber: 1, pageSize: 20) { result in
+            let action = CouponAction.searchCoupons(siteID: self.sampleSiteID,
+                                                    siteURL: self.sampleSiteURL,
+                                                    keyword: "test keyword",
+                                                    pageNumber: 1, pageSize: 20) { result in
                 promise(result)
             }
             self.store.onAction(action)
@@ -531,7 +540,11 @@ final class CouponStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            let action = CouponAction.searchCoupons(siteID: self.sampleSiteID, siteURL: self.sampleSiteURL, keyword: "test keyword", pageNumber: 1, pageSize: 20) { result in
+            let action = CouponAction.searchCoupons(siteID: self.sampleSiteID,
+                                                    siteURL: self.sampleSiteURL,
+                                                    keyword: "test keyword",
+                                                    pageNumber: 1,
+                                                    pageSize: 20) { result in
                 promise(result)
             }
             self.store.onAction(action)

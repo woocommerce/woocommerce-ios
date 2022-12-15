@@ -636,6 +636,7 @@ private extension StoreStatsPeriodViewModelTests {
         StoreStatsPeriodViewModel(siteID: siteID,
                                   timeRange: timeRange,
                                   siteTimezone: defaultSiteTimezone,
+                                  currentDate: Date(),
                                   currencyFormatter: currencyFormatter,
                                   currencySettings: currencySettings,
                                   storageManager: storageManager)

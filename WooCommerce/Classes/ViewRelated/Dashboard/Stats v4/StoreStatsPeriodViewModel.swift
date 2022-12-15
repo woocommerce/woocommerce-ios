@@ -106,6 +106,7 @@ final class StoreStatsPeriodViewModel {
     // MARK: - Private data
 
     @Published private var siteStats: SiteVisitStats?
+    @Published private var summaryStats: SiteSummaryStats?
 
     typealias OrderStatsData = (stats: OrderStatsV4?, intervals: [OrderStatsV4Interval])
     @Published private var orderStatsData: OrderStatsData = (nil, [])
@@ -128,6 +129,19 @@ final class StoreStatsPeriodViewModel {
         return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [])
     }()
 
+    /// SiteSummaryStats ResultsController: Loads site summary stats from the Storage Layer
+    private lazy var summaryStatsResultsController: ResultsController<StorageSiteSummaryStats> = {
+        let formattedDateString: String = {
+            let date = timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimezone)
+            return StatsStoreV4.buildDateString(from: date, with: .day)
+        }()
+        let predicate = NSPredicate(format: "siteID = %ld AND period == %@ AND date == %@",
+                                    siteID,
+                                    timeRange.summaryStatsGranularity.rawValue,
+                                    formattedDateString)
+        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }()
+
     // MARK: - Configurations
 
     /// Updated externally when reloading data.
@@ -135,6 +149,7 @@ final class StoreStatsPeriodViewModel {
 
     private let siteID: Int64
     private let timeRange: StatsTimeRangeV4
+    private let currentDate: Date
     private let currencyFormatter: CurrencyFormatter
     private let storageManager: StorageManagerType
     private let currencySettings: CurrencySettings
@@ -144,12 +159,14 @@ final class StoreStatsPeriodViewModel {
     init(siteID: Int64,
          timeRange: StatsTimeRangeV4,
          siteTimezone: TimeZone,
+         currentDate: Date,
          currencyFormatter: CurrencyFormatter,
          currencySettings: CurrencySettings,
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
         self.timeRange = timeRange
         self.siteTimezone = siteTimezone
+        self.currentDate = currentDate
         self.currencyFormatter = currencyFormatter
         self.currencySettings = currencySettings
         self.storageManager = storageManager
@@ -239,6 +256,7 @@ private extension StoreStatsPeriodViewModel {
     func configureResultsControllers() {
         configureSiteStatsResultsController()
         configureOrderStatsResultsController()
+        configureSummaryStatsResultsController()
     }
 
     func configureOrderStatsResultsController() {
@@ -260,6 +278,16 @@ private extension StoreStatsPeriodViewModel {
         }
         try? siteStatsResultsController.performFetch()
     }
+
+    func configureSummaryStatsResultsController() {
+        summaryStatsResultsController.onDidChangeContent = { [weak self] in
+            self?.updateSiteSummaryDataIfNeeded()
+        }
+        summaryStatsResultsController.onDidResetContent = { [weak self] in
+            self?.updateSiteSummaryDataIfNeeded()
+        }
+        try? summaryStatsResultsController.performFetch()
+    }
 }
 
 // MARK: - Private Helpers
@@ -267,6 +295,10 @@ private extension StoreStatsPeriodViewModel {
 private extension StoreStatsPeriodViewModel {
     func updateSiteVisitDataIfNeeded() {
         siteStats = siteStatsResultsController.fetchedObjects.first
+    }
+
+    func updateSiteSummaryDataIfNeeded() {
+        summaryStats = summaryStatsResultsController.fetchedObjects.first
     }
 
     func updateOrderDataIfNeeded() {

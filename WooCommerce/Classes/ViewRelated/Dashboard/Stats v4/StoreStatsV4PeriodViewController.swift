@@ -128,6 +128,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     ///
     init(siteID: Int64,
          timeRange: StatsTimeRangeV4,
+         currentDate: Date,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter) {
@@ -136,6 +137,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
         self.viewModel = StoreStatsPeriodViewModel(siteID: siteID,
                                                    timeRange: timeRange,
                                                    siteTimezone: siteTimezone,
+                                                   currentDate: currentDate,
                                                    currencyFormatter: currencyFormatter,
                                                    currencySettings: currencySettings)
         self.usageTracksEventEmitter = usageTracksEventEmitter

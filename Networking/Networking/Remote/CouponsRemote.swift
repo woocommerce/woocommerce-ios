@@ -75,10 +75,11 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
                                      siteID: siteID,
                                      path: Path.coupons,
                                      parameters: parameters)
+        let restRequest = RESTRequest(siteURL: siteURL, fallbackRequest: request)
 
         let mapper = CouponListMapper(siteID: siteID)
 
-        enqueue(request, mapper: mapper, completion: completion)
+        enqueue(restRequest, mapper: mapper, completion: completion)
     }
 
     public func searchCoupons(for siteID: Int64,
@@ -98,10 +99,10 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
                                      siteID: siteID,
                                      path: Path.coupons,
                                      parameters: parameters)
+        let restRequest = RESTRequest(siteURL: siteURL, fallbackRequest: request)
 
         let mapper = CouponListMapper(siteID: siteID)
-
-        enqueue(request, mapper: mapper, completion: completion)
+        enqueue(restRequest, mapper: mapper, completion: completion)
     }
 
     /// Retrieves a `Coupon`.
@@ -120,10 +121,10 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
                                      method: .get,
                                      siteID: siteID,
                                      path: Path.coupons + "/\(couponID)")
-
+        let restRequest = RESTRequest(siteURL: siteURL, fallbackRequest: request)
         let mapper = CouponMapper(siteID: siteID)
 
-        enqueue(request, mapper: mapper, completion: completion)
+        enqueue(restRequest, mapper: mapper, completion: completion)
     }
 
     // MARK: - Delete Coupon
@@ -145,10 +146,10 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
                                      siteID: siteID,
                                      path: Path.coupons + "/\(couponID)",
                                      parameters: [ParameterKey.force: true])
-
+        let restRequest = RESTRequest(siteURL: siteURL, fallbackRequest: request)
         let mapper = CouponMapper(siteID: siteID)
 
-        enqueue(request, mapper: mapper, completion: completion)
+        enqueue(restRequest, mapper: mapper, completion: completion)
     }
 
     // MARK: - Update Coupon
@@ -176,9 +177,10 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
             let siteID = coupon.siteID
             let path = Path.coupons + "/\(couponID)"
             let request = JetpackRequest(wooApiVersion: .mark3, method: .put, siteID: siteID, path: path, parameters: parameters)
+            let restRequest = RESTRequest(siteURL: siteURL, fallbackRequest: request)
             let mapper = CouponMapper(siteID: siteID)
 
-            enqueue(request, mapper: mapper, completion: completion)
+            enqueue(restRequest, mapper: mapper, completion: completion)
         } catch {
             completion(.failure(error))
         }
@@ -208,9 +210,10 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
             let siteID = coupon.siteID
             let path = Path.coupons
             let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+            let restRequest = RESTRequest(siteURL: siteURL, fallbackRequest: request)
             let mapper = CouponMapper(siteID: siteID)
 
-            enqueue(request, mapper: mapper, completion: completion)
+            enqueue(restRequest, mapper: mapper, completion: completion)
         } catch {
             completion(.failure(error))
         }
@@ -244,10 +247,10 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
                                      siteID: siteID,
                                      path: Path.couponReports,
                                      parameters: parameters)
-
+        let restRequest = RESTRequest(siteURL: siteURL, fallbackRequest: request)
         let mapper = CouponReportListMapper()
 
-        enqueue(request, mapper: mapper, completion: { result in
+        enqueue(restRequest, mapper: mapper, completion: { result in
             switch result {
             case .success(let couponReports):
                 if let report = couponReports.first {

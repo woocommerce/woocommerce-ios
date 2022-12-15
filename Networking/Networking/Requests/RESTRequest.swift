@@ -3,7 +3,8 @@ import Alamofire
 
 /// Wraps up a URLRequestConvertible Instance, and injects the Authorization + User Agent whenever the actual Request is required.
 ///
-struct RESTRequest: URLRequestConvertible {
+struct RESTRequest: Request {
+    
     /// URL of the site to make the request with
     ///
     let siteURL: String
@@ -20,9 +21,6 @@ struct RESTRequest: URLRequestConvertible {
     ///
     let parameters: [String: Any]?
 
-    /// HTTP Headers
-    let headers: [String: String]
-
     /// A fallback JetpackRequest if the REST request cannot be made with an application password.
     let fallbackRequest: JetpackRequest?
 
@@ -33,30 +31,39 @@ struct RESTRequest: URLRequestConvertible {
     ///     - method: HTTP Method we should use.
     ///     - path: path to the target endpoint.
     ///     - parameters: Collection of String parameters to be passed over to our target endpoint.
-    ///     - headers: Headers to be added to the request.
     ///     - fallbackRequest: A fallback Jetpack request to trigger if the REST request cannot be made.
     ///
     init(siteURL: String,
          method: HTTPMethod,
          path: String,
          parameters: [String: Any] = [:],
-         headers: [String: String] = [:],
          fallbackRequest: JetpackRequest?) {
         self.siteURL = siteURL
         self.method = method
         self.path = path
         self.parameters = parameters
-        self.headers = headers
         self.fallbackRequest = fallbackRequest
+    }
+
+    init(siteURL: String, fallbackRequest: JetpackRequest) {
+        self.init(siteURL: siteURL,
+                  method: fallbackRequest.method,
+                  path: fallbackRequest.path,
+                  parameters: fallbackRequest.parameters,
+                  fallbackRequest: fallbackRequest)
     }
 
     /// Returns a URLRequest instance representing the current REST API Request.
     ///
     func asURLRequest() throws -> URLRequest {
         let url = try (siteURL + path).asURL()
-        let request = try URLRequest(url: url, method: method, headers: headers)
+        let request = try URLRequest(url: url, method: method)
 
         return try URLEncoding.default.encode(request, with: parameters)
+    }
+
+    func responseDataValidator() -> ResponseDataValidator {
+        DummyResponseDataValidator()
     }
 }
 

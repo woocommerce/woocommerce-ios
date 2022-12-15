@@ -403,6 +403,7 @@ extension MainTabBarController {
     static func navigateToOrderDetails(with orderID: Int64, siteID: Int64) {
         showStore(with: siteID, onCompletion: { storeIsShown in
             switchToOrdersTab {
+                // It failed to show the order's store. We navigate to the orders tab and stop, as we cannot show the order details screen
                 guard storeIsShown else {
                     return
                 }

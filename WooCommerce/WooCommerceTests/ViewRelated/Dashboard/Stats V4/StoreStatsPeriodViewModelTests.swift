@@ -153,23 +153,20 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
         observeStatsEmittedValues(viewModel: viewModel)
 
         // When
-        let siteVisitStats = Yosemite.SiteVisitStats.fake().copy(siteID: siteID, items: [
-            .fake().copy(visitors: 17),
-            .fake().copy(visitors: 15)
-        ])
+        let siteVisitStats = Yosemite.SiteVisitStats.fake().copy(siteID: siteID, items: [.fake().copy(visitors: 15)])
         insertSiteVisitStats(siteVisitStats, timeRange: timeRange)
 
         XCTAssertEqual(conversionStatsTextValues, ["-"])
 
         let orderStats = OrderStatsV4(siteID: siteID,
                                       granularity: timeRange.intervalGranularity,
-                                      totals: .fake().copy(totalOrders: 3, grossRevenue: 62.7),
-                                      intervals: [.fake()])
+                                      totals: .fake(),
+                                      intervals: [ .fake().copy(subtotals: .fake().copy(totalOrders: 3, grossRevenue: 62.7)) ])
         insertOrderStats(orderStats, timeRange: timeRange)
 
         XCTAssertEqual(conversionStatsTextValues, ["-"])
 
-        viewModel.selectedIntervalIndex = 1
+        viewModel.selectedIntervalIndex = 0
 
         // Then
         XCTAssertEqual(conversionStatsTextValues, ["-", "20%"]) // order count: 3, visitor count: 15 => 0.2 (20%)

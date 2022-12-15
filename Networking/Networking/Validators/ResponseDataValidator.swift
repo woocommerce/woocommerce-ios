@@ -3,3 +3,9 @@ protocol ResponseDataValidator {
     ///
     func validate(data: Data) throws -> Void
 }
+
+struct DummyResponseDataValidator: ResponseDataValidator {
+    func validate(data: Data) throws -> Void {
+        // no-op
+    }
+}

@@ -626,6 +626,50 @@ final class StatsStoreV4Tests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
     }
+
+    /// Verifies that `StatsActionV4.retrieveSiteSummaryStats` effectively persists any retrieved SiteSummaryStats.
+    ///
+    func test_retrieveSiteSummaryStats_effectively_persists_retrieved_stats() {
+        // Given
+        let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/summary/", filename: "site-summary-stats")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSummaryStats.self), 0)
+
+        // When
+        let result: Result<Networking.SiteSummaryStats, Error> = waitFor { promise in
+            let action = StatsActionV4.retrieveSiteSummaryStats(siteID: self.sampleSiteID,
+                                                                period: .day,
+                                                                quantity: 1,
+                                                                latestDateToInclude: DateFormatter.dateFromString(with: "2022-12-09T17:06:55"),
+                                                                saveInStorage: true) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSummaryStats.self), 1)
+
+        let readOnlySiteSummaryStats = viewStorage.firstObject(ofType: Storage.SiteSummaryStats.self)?.toReadOnly()
+        XCTAssertEqual(readOnlySiteSummaryStats, sampleSiteSummaryStats())
+    }
+
+    /// Verifies that `upsertStoredSiteSummaryStats` does not produce duplicate entries.
+    ///
+    func test_upsertStoredSiteSummaryStats_effectively_updates_preexistant_SiteSummaryStats() {
+        let statsStore = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        XCTAssertNil(viewStorage.loadSiteSummaryStats(date: "2022-12-09", period: StatGranularity.day.rawValue))
+        statsStore.upsertStoredSiteSummaryStats(readOnlyStats: sampleSiteSummaryStats())
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSummaryStats.self), 1)
+        statsStore.upsertStoredSiteSummaryStats(readOnlyStats: sampleSiteSummaryStatsMutated())
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSummaryStats.self), 1)
+
+        let expectedSiteSummaryStats = sampleSiteSummaryStatsMutated()
+        let storageSiteSummaryStats = viewStorage.loadSiteSummaryStats(date: "2022-12-09", period: StatGranularity.day.rawValue)
+        XCTAssertEqual(storageSiteSummaryStats?.toReadOnly(), expectedSiteSummaryStats)
+    }
 }
 
 
@@ -815,6 +859,14 @@ private extension StatsStoreV4Tests {
                                 period: .day,
                                 visitors: 12,
                                 views: 123)
+    }
+
+    func sampleSiteSummaryStatsMutated() -> Networking.SiteSummaryStats {
+        return SiteSummaryStats(siteID: sampleSiteID,
+                                date: "2022-12-09",
+                                period: .day,
+                                visitors: 15,
+                                views: 127)
     }
 
     func sampleSiteSummaryStatsQuarter() -> Networking.SiteSummaryStats {

@@ -514,7 +514,7 @@ final class StatsStoreV4Tests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/summary/", filename: "site-summary-stats")
 
         // When
-        let result: Result<SiteSummaryStats, Error> = waitFor { promise in
+        let result: Result<Networking.SiteSummaryStats, Error> = waitFor { promise in
             let action = StatsActionV4.retrieveSiteSummaryStats(siteID: self.sampleSiteID,
                                                                 period: .day,
                                                                 quantity: 1,
@@ -563,7 +563,7 @@ final class StatsStoreV4Tests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/visits/", filename: "site-visits-quarter")
 
         // When
-        let result: Result<SiteSummaryStats, Error> = waitFor { promise in
+        let result: Result<Networking.SiteSummaryStats, Error> = waitFor { promise in
             let action = StatsActionV4.retrieveSiteSummaryStats(siteID: self.sampleSiteID,
                                                                 period: .month,
                                                                 quantity: 3,
@@ -587,7 +587,7 @@ final class StatsStoreV4Tests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/summary/", filename: "generic_error")
 
         // When
-        let result: Result<SiteSummaryStats, Error> = waitFor { promise in
+        let result: Result<Networking.SiteSummaryStats, Error> = waitFor { promise in
             let action = StatsActionV4.retrieveSiteSummaryStats(siteID: self.sampleSiteID,
                                                                 period: .day,
                                                                 quantity: 1,
@@ -608,7 +608,7 @@ final class StatsStoreV4Tests: XCTestCase {
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let result: Result<SiteSummaryStats, Error> = waitFor { promise in
+        let result: Result<Networking.SiteSummaryStats, Error> = waitFor { promise in
             let action = StatsActionV4.retrieveSiteSummaryStats(siteID: self.sampleSiteID,
                                                                 period: .day,
                                                                 quantity: 1,

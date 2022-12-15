@@ -48,12 +48,17 @@ final class DashboardViewModelTests: XCTestCase {
     func test_statsVersion_remains_v4_when_non_store_stats_sync_returns_noRestRoute_error() {
         // Given
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
-            if case let .retrieveStats(_, _, _, _, _, _, completion) = action {
+            switch action {
+            case let .retrieveStats(_, _, _, _, _, _, completion):
                 completion(.failure(DotcomError.empty))
-            } else if case let .retrieveSiteVisitStats(_, _, _, _, completion) = action {
+            case let .retrieveSiteVisitStats(_, _, _, _, completion):
                 completion(.failure(DotcomError.noRestRoute))
-            } else if case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, completion) = action {
+            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, completion):
                 completion(.failure(DotcomError.noRestRoute))
+            case let .retrieveSiteSummaryStats(_, _, _, _, _, completion):
+                completion(.failure(DotcomError.noRestRoute))
+            default:
+                XCTFail("Received unsupported action: \(action)")
             }
         }
         let viewModel = DashboardViewModel(stores: stores)
@@ -63,6 +68,7 @@ final class DashboardViewModelTests: XCTestCase {
         viewModel.syncStats(for: sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init(), forceRefresh: false)
         viewModel.syncSiteVisitStats(for: sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init())
         viewModel.syncTopEarnersStats(for: sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init(), forceRefresh: false)
+        viewModel.syncSiteSummaryStats(for: sampleSiteID, timeRange: .thisMonth, latestDateToInclude: .init())
 
         // Then
         XCTAssertEqual(viewModel.statsVersion, .v4)

@@ -289,6 +289,21 @@ private extension StoreStatsAndTopPerformersViewController {
 
             group.enter()
             periodGroup.enter()
+            periodStoreStatsGroup.enter()
+            self.dashboardViewModel.syncSiteSummaryStats(for: siteID,
+                                                         timeRange: vc.timeRange,
+                                                         latestDateToInclude: latestDateToInclude) { result in
+                if case let .failure(error) = result {
+                    DDLogError("⛔️ Error synchronizing summary stats: \(error)")
+                    periodSyncError = error
+                }
+                group.leave()
+                periodGroup.leave()
+                periodStoreStatsGroup.leave()
+            }
+
+            group.enter()
+            periodGroup.enter()
             self.dashboardViewModel.syncTopEarnersStats(for: siteID,
                                                         siteTimezone: timezoneForSync,
                                                         timeRange: vc.timeRange,

@@ -28,7 +28,6 @@ final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
         static let usersMe = "users/me"
     }
 
-
     override func setUp() {
         super.setUp()
         network = MockNetwork(useResponseQueue: true)

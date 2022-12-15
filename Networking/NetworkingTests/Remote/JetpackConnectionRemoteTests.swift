@@ -3,7 +3,7 @@ import XCTest
 
 final class JetpackConnectionRemoteTests: XCTestCase {
 
-    private let siteURL = "http://test.com"
+    private let siteURL = "https://test.com"
 
     /// Dummy Network Wrapper
     ///

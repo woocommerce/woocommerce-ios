@@ -121,22 +121,21 @@ private extension AnalyticsHubViewModel {
         let currentTimeRange = try timeRangeSelection.unwrapCurrentTimeRange()
         let previousTimeRange = try timeRangeSelection.unwrapPreviousTimeRange()
 
-        try await withThrowingTaskGroup(of: Void.self) { group in
+        await withTaskGroup(of: Void.self) { group in
             group.addTask {
-                try await self.retrieveOrderStats(currentTimeRange: currentTimeRange, previousTimeRange: previousTimeRange)
+                await self.retrieveOrderStats(currentTimeRange: currentTimeRange, previousTimeRange: previousTimeRange)
             }
             group.addTask {
-                try await self.retrieveItemsSoldStats(currentTimeRange: currentTimeRange, previousTimeRange: previousTimeRange)
+                await self.retrieveItemsSoldStats(currentTimeRange: currentTimeRange, previousTimeRange: previousTimeRange)
             }
             group.addTask {
-                try await self.retrieveSiteStats(currentTimeRange: currentTimeRange)
+                await self.retrieveSiteStats(currentTimeRange: currentTimeRange)
             }
-            try await group.waitForAll()
         }
     }
 
     @MainActor
-    func retrieveOrderStats(currentTimeRange: AnalyticsHubTimeRange, previousTimeRange: AnalyticsHubTimeRange) async throws {
+    func retrieveOrderStats(currentTimeRange: AnalyticsHubTimeRange, previousTimeRange: AnalyticsHubTimeRange) async {
         async let currentPeriodRequest = retrieveStats(earliestDateToInclude: currentTimeRange.start,
                                                        latestDateToInclude: currentTimeRange.end,
                                                        forceRefresh: true)
@@ -144,27 +143,26 @@ private extension AnalyticsHubViewModel {
                                                         latestDateToInclude: previousTimeRange.end,
                                                         forceRefresh: true)
 
-        let (currentPeriodStats, previousPeriodStats) = try await (currentPeriodRequest, previousPeriodRequest)
-        self.currentOrderStats = currentPeriodStats
-        self.previousOrderStats = previousPeriodStats
+        let allStats: (currentPeriodStats: OrderStatsV4, previousPeriodStats: OrderStatsV4)?
+        allStats = try? await (currentPeriodRequest, previousPeriodRequest)
+        self.currentOrderStats = allStats?.currentPeriodStats
+        self.previousOrderStats = allStats?.previousPeriodStats
     }
 
     @MainActor
-    func retrieveItemsSoldStats(currentTimeRange: AnalyticsHubTimeRange, previousTimeRange: AnalyticsHubTimeRange) async throws {
+    func retrieveItemsSoldStats(currentTimeRange: AnalyticsHubTimeRange, previousTimeRange: AnalyticsHubTimeRange) async {
         async let itemsSoldRequest = retrieveTopItemsSoldStats(earliestDateToInclude: currentTimeRange.start,
                                                                latestDateToInclude: currentTimeRange.end,
                                                                forceRefresh: true)
 
-        let itemsSoldStats = try await itemsSoldRequest
-        self.itemsSoldStats = itemsSoldStats
+        self.itemsSoldStats = try? await itemsSoldRequest
     }
 
     @MainActor
-    func retrieveSiteStats(currentTimeRange: AnalyticsHubTimeRange) async throws {
+    func retrieveSiteStats(currentTimeRange: AnalyticsHubTimeRange) async {
         async let siteStatsRequest = retrieveSiteSummaryStats(latestDateToInclude: currentTimeRange.end)
 
-        let summaryStats = try await siteStatsRequest
-        self.siteStats = summaryStats
+        self.siteStats = try? await siteStatsRequest
     }
 
     @MainActor

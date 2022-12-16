@@ -34,6 +34,10 @@ struct JetpackRequest: Request {
     ///
     let parameters: [String: Any]
 
+    /// Whether this request should be transformed to a REST request if application password is available.
+    ///
+    let availableAsRESTRequest: Bool
+
 
     /// Designated Initializer.
     ///
@@ -43,8 +47,15 @@ struct JetpackRequest: Request {
     ///     - siteID: Identifier of the Jetpack-Connected site we'll query.
     ///     - path: RPC that should be called.
     ///     - parameters: Collection of Key/Value parameters, to be forwarded to the Jetpack Connected site.
+    ///     - availableAsRESTRequest: Whether the request should be transformed to a REST request if application password is available.
     ///
-    init(wooApiVersion: WooAPIVersion, method: HTTPMethod, siteID: Int64, locale: String? = nil, path: String, parameters: [String: Any]? = nil) {
+    init(wooApiVersion: WooAPIVersion,
+         method: HTTPMethod,
+         siteID: Int64,
+         locale: String? = nil,
+         path: String,
+         parameters: [String: Any]? = nil,
+         availableAsRESTRequest: Bool = false) {
         if [.mark1, .mark2].contains(wooApiVersion) {
             DDLogWarn("⚠️ You are using an older version of the Woo REST API: \(wooApiVersion.rawValue), for path: \(path)")
         }
@@ -54,6 +65,7 @@ struct JetpackRequest: Request {
         self.locale = locale
         self.path = path
         self.parameters = parameters ?? [:]
+        self.availableAsRESTRequest = availableAsRESTRequest
     }
 
 
@@ -68,6 +80,10 @@ struct JetpackRequest: Request {
 
     func responseDataValidator() -> ResponseDataValidator {
         return DotcomValidator()
+    }
+
+    func createRESTRequest(with siteURL: String) -> RESTRequest {
+        RESTRequest(siteURL: siteURL, method: method, path: path, parameters: parameters)
     }
 }
 

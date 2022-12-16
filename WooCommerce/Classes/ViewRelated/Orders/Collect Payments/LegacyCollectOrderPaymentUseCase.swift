@@ -124,7 +124,7 @@ final class LegacyCollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProto
         guard isTotalAmountValid() else {
             let error = totalAmountInvalidError()
             onCollect(.failure(error))
-            return handleTotalAmountInvalidError(totalAmountInvalidError(), onCompleted: onCompleted)
+            return handleTotalAmountInvalidError(totalAmountInvalidError(), onCompleted: onCancel)
         }
 
         configureBackend()

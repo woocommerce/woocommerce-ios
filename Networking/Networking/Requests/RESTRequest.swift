@@ -20,42 +20,31 @@ struct RESTRequest: URLRequestConvertible {
     ///
     let parameters: [String: Any]?
 
-    /// HTTP Headers
-    let headers: [String: String]
-
-    /// A fallback JetpackRequest if the REST request cannot be made with an application password.
-    let fallbackRequest: JetpackRequest?
-
     /// Designated Initializer.
     ///
     /// - Parameters:
     ///     - siteURL: URL of the site to send the REST request to.
     ///     - method: HTTP Method we should use.
     ///     - path: path to the target endpoint.
-    ///     - parameters: Collection of String parameters to be passed over to our target endpoint.
+    ///     - parameters: Collection of String parameters to be passed over to our target endpoint. This can be encoded to the URL request query if the HTTP method is `.get`.
     ///     - headers: Headers to be added to the request.
     ///     - fallbackRequest: A fallback Jetpack request to trigger if the REST request cannot be made.
     ///
     init(siteURL: String,
          method: HTTPMethod,
          path: String,
-         parameters: [String: Any] = [:],
-         headers: [String: String] = [:],
-         fallbackRequest: JetpackRequest?) {
+         parameters: [String: Any] = [:]) {
         self.siteURL = siteURL
         self.method = method
         self.path = path
         self.parameters = parameters
-        self.headers = headers
-        self.fallbackRequest = fallbackRequest
     }
 
     /// Returns a URLRequest instance representing the current REST API Request.
     ///
     func asURLRequest() throws -> URLRequest {
         let url = try (siteURL + path).asURL()
-        let request = try URLRequest(url: url, method: method, headers: headers)
-
+        let request = try URLRequest(url: url, method: method)
         return try URLEncoding.default.encode(request, with: parameters)
     }
 }

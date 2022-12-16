@@ -41,20 +41,31 @@ final class StoreStatsPeriodViewModel {
 
     /// Emits visitor stats text values based on site visit stats and selected time interval.
     private(set) lazy var visitorStatsText: AnyPublisher<String, Never> =
-    Publishers.CombineLatest($siteStats.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
-        .compactMap { siteStats, selectedIntervalIndex in
-            StatsDataTextFormatter.createVisitorCountText(siteStats: siteStats, selectedIntervalIndex: selectedIntervalIndex)
+    Publishers.CombineLatest3($siteStats.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher(), $summaryStats.eraseToAnyPublisher())
+        .compactMap { siteStats, selectedIntervalIndex, summaryStats in
+            if let selectedIntervalIndex {
+                return StatsDataTextFormatter.createVisitorCountText(siteStats: siteStats, selectedIntervalIndex: selectedIntervalIndex)
+            } else {
+                return StatsDataTextFormatter.createVisitorCountText(siteStats: summaryStats)
+            }
         }
         .removeDuplicates()
         .eraseToAnyPublisher()
 
     /// Emits conversion stats text values based on order stats, site visit stats, and selected time interval.
     private(set) lazy var conversionStatsText: AnyPublisher<String, Never> =
-    Publishers.CombineLatest3($orderStatsData.eraseToAnyPublisher(), $siteStats.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
-        .compactMap { orderStatsData, siteStats, selectedIntervalIndex in
-            StatsDataTextFormatter.createConversionRateText(orderStats: orderStatsData.stats,
-                                                            siteStats: siteStats,
-                                                            selectedIntervalIndex: selectedIntervalIndex)
+    Publishers.CombineLatest4($orderStatsData.eraseToAnyPublisher(),
+                              $siteStats.eraseToAnyPublisher(),
+                              $selectedIntervalIndex.eraseToAnyPublisher(),
+                              $summaryStats.eraseToAnyPublisher())
+        .compactMap { orderStatsData, siteStats, selectedIntervalIndex, summaryStats in
+            if let selectedIntervalIndex {
+                return StatsDataTextFormatter.createConversionRateText(orderStats: orderStatsData.stats,
+                                                                       siteStats: siteStats,
+                                                                       selectedIntervalIndex: selectedIntervalIndex)
+            } else {
+                return StatsDataTextFormatter.createConversionRateText(orderStats: orderStatsData.stats, siteStats: summaryStats)
+            }
         }
         .removeDuplicates()
         .eraseToAnyPublisher()
@@ -106,6 +117,7 @@ final class StoreStatsPeriodViewModel {
     // MARK: - Private data
 
     @Published private var siteStats: SiteVisitStats?
+    @Published private var summaryStats: SiteSummaryStats?
 
     typealias OrderStatsData = (stats: OrderStatsV4?, intervals: [OrderStatsV4Interval])
     @Published private var orderStatsData: OrderStatsData = (nil, [])
@@ -128,6 +140,19 @@ final class StoreStatsPeriodViewModel {
         return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [])
     }()
 
+    /// SiteSummaryStats ResultsController: Loads site summary stats from the Storage Layer
+    private lazy var summaryStatsResultsController: ResultsController<StorageSiteSummaryStats> = {
+        let formattedDateString: String = {
+            let date = timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimezone)
+            return StatsStoreV4.buildDateString(from: date, with: .day)
+        }()
+        let predicate = NSPredicate(format: "siteID = %ld AND period == %@ AND date == %@",
+                                    siteID,
+                                    timeRange.summaryStatsGranularity.rawValue,
+                                    formattedDateString)
+        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }()
+
     // MARK: - Configurations
 
     /// Updated externally when reloading data.
@@ -135,6 +160,7 @@ final class StoreStatsPeriodViewModel {
 
     private let siteID: Int64
     private let timeRange: StatsTimeRangeV4
+    private let currentDate: Date
     private let currencyFormatter: CurrencyFormatter
     private let storageManager: StorageManagerType
     private let currencySettings: CurrencySettings
@@ -144,12 +170,14 @@ final class StoreStatsPeriodViewModel {
     init(siteID: Int64,
          timeRange: StatsTimeRangeV4,
          siteTimezone: TimeZone,
+         currentDate: Date,
          currencyFormatter: CurrencyFormatter,
          currencySettings: CurrencySettings,
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
         self.timeRange = timeRange
         self.siteTimezone = siteTimezone
+        self.currentDate = currentDate
         self.currencyFormatter = currencyFormatter
         self.currencySettings = currencySettings
         self.storageManager = storageManager
@@ -239,6 +267,7 @@ private extension StoreStatsPeriodViewModel {
     func configureResultsControllers() {
         configureSiteStatsResultsController()
         configureOrderStatsResultsController()
+        configureSummaryStatsResultsController()
     }
 
     func configureOrderStatsResultsController() {
@@ -260,6 +289,16 @@ private extension StoreStatsPeriodViewModel {
         }
         try? siteStatsResultsController.performFetch()
     }
+
+    func configureSummaryStatsResultsController() {
+        summaryStatsResultsController.onDidChangeContent = { [weak self] in
+            self?.updateSiteSummaryDataIfNeeded()
+        }
+        summaryStatsResultsController.onDidResetContent = { [weak self] in
+            self?.updateSiteSummaryDataIfNeeded()
+        }
+        try? summaryStatsResultsController.performFetch()
+    }
 }
 
 // MARK: - Private Helpers
@@ -267,6 +306,10 @@ private extension StoreStatsPeriodViewModel {
 private extension StoreStatsPeriodViewModel {
     func updateSiteVisitDataIfNeeded() {
         siteStats = siteStatsResultsController.fetchedObjects.first
+    }
+
+    func updateSiteSummaryDataIfNeeded() {
+        summaryStats = summaryStatsResultsController.fetchedObjects.first
     }
 
     func updateOrderDataIfNeeded() {

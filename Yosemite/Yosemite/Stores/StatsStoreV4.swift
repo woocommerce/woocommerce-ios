@@ -6,13 +6,13 @@ import WooFoundation
 // MARK: - StatsStoreV4
 //
 public final class StatsStoreV4: Store {
-    private let siteVisitStatsRemote: SiteVisitStatsRemote
+    private let siteStatsRemote: SiteStatsRemote
     private let leaderboardsRemote: LeaderboardsRemote
     private let orderStatsRemote: OrderStatsRemoteV4
     private let productsRemote: ProductsRemote
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
-        self.siteVisitStatsRemote = SiteVisitStatsRemote(network: network)
+        self.siteStatsRemote = SiteStatsRemote(network: network)
         self.leaderboardsRemote = LeaderboardsRemote(network: network)
         self.orderStatsRemote = OrderStatsRemoteV4(network: network)
         self.productsRemote = ProductsRemote(network: network)
@@ -90,6 +90,18 @@ public final class StatsStoreV4: Store {
                                    forceRefresh: forceRefresh,
                                    saveInStorage: saveInStorage,
                                    onCompletion: onCompletion)
+        case .retrieveSiteSummaryStats(let siteID,
+                                       let period,
+                                       let quantity,
+                                       let latestDateToInclude,
+                                       let saveInStorage,
+                                       let onCompletion):
+            retrieveSiteSummaryStats(siteID: siteID,
+                                     period: period,
+                                     quantity: quantity,
+                                     latestDateToInclude: latestDateToInclude,
+                                     saveInStorage: saveInStorage,
+                                     onCompletion: onCompletion)
         }
     }
 }
@@ -164,7 +176,7 @@ private extension StatsStoreV4 {
 
         let quantity = timeRange.siteVisitStatsQuantity(date: latestDateToInclude, siteTimezone: siteTimezone)
 
-        siteVisitStatsRemote.loadSiteVisitorStats(for: siteID,
+        siteStatsRemote.loadSiteVisitorStats(for: siteID,
                                     siteTimezone: siteTimezone,
                                     unit: timeRange.siteVisitStatsGranularity,
                                     latestDateToInclude: latestDateToInclude,
@@ -174,7 +186,55 @@ private extension StatsStoreV4 {
                 self?.upsertStoredSiteVisitStats(readOnlyStats: siteVisitStats, timeRange: timeRange)
                 onCompletion(.success(()))
             case .failure(let error):
-                onCompletion(.failure(SiteVisitStatsStoreError(error: error)))
+                onCompletion(.failure(SiteStatsStoreError(error: error)))
+            }
+        }
+    }
+
+    /// Retrieves the site summary stats for the provided site ID, period(s), and date.
+    /// Conditionally saves them to storage, if a single period is retrieved.
+    ///
+    func retrieveSiteSummaryStats(siteID: Int64,
+                                  period: StatGranularity,
+                                  quantity: Int,
+                                  latestDateToInclude: Date,
+                                  saveInStorage: Bool,
+                                  onCompletion: @escaping (Result<SiteSummaryStats, Error>) -> Void) {
+        if quantity == 1 {
+            siteStatsRemote.loadSiteSummaryStats(for: siteID,
+                                                 period: period,
+                                                 includingDate: latestDateToInclude) { [weak self] result in
+                switch result {
+                case .success(let siteSummaryStats):
+                    if saveInStorage {
+                        self?.upsertStoredSiteSummaryStats(readOnlyStats: siteSummaryStats)
+                    }
+                    onCompletion(.success(siteSummaryStats))
+                case .failure(let error):
+                    onCompletion(.failure(SiteStatsStoreError(error: error)))
+                }
+            }
+        } else {
+            // If we are not fetching stats for a single period, we need to summarize the stats manually.
+            // The remote summary stats endpoint only retrieves visitor stats for a single period.
+            // We should only do this for periods of a month or greater; otherwise the visitor total is inaccurate.
+            // See: pe5uwI-5c-p2
+            siteStatsRemote.loadSiteVisitorStats(for: siteID,
+                                                 unit: period,
+                                                 latestDateToInclude: latestDateToInclude,
+                                                 quantity: quantity) { result in
+                switch result {
+                case .success(let siteVisitStats):
+                    let totalViews = siteVisitStats.items?.map({ $0.views }).reduce(0, +) ?? 0
+                    let summaryStats = SiteSummaryStats(siteID: siteID,
+                                                        date: siteVisitStats.date,
+                                                        period: siteVisitStats.granularity,
+                                                        visitors: siteVisitStats.totalVisitors,
+                                                        views: totalViews)
+                    onCompletion(.success(summaryStats))
+                case .failure(let error):
+                    onCompletion(.failure(SiteStatsStoreError(error: error)))
+                }
             }
         }
     }
@@ -433,6 +493,20 @@ extension StatsStoreV4 {
     }
 }
 
+// MARK: Site summary stats
+extension StatsStoreV4 {
+    /// Updates (OR Inserts) the specified ReadOnly SiteSummaryStats Entity into the Storage Layer.
+    ///
+    func upsertStoredSiteSummaryStats(readOnlyStats: Networking.SiteSummaryStats) {
+        assert(Thread.isMainThread)
+
+        let storage = storageManager.viewStorage
+        let storageSiteSummaryStats = storage.loadSiteSummaryStats(date: readOnlyStats.date, period: readOnlyStats.period.rawValue)
+            ?? storage.insertNewObject(ofType: Storage.SiteSummaryStats.self)
+        storageSiteSummaryStats.update(with: readOnlyStats)
+        storage.saveIfNeeded()
+    }
+}
 
 // MARK: Convert Leaderboard into TopEarnerStats
 //
@@ -571,7 +645,7 @@ public enum StatsStoreV4Error: Error {
 /// - statsModuleDisabled: Jetpack site stats module is disabled for the site.
 /// - unknown: other error cases.
 ///
-public enum SiteVisitStatsStoreError: Error {
+public enum SiteStatsStoreError: Error {
     case statsModuleDisabled
     case noPermission
     case unknown

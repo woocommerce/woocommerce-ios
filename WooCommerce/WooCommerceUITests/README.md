@@ -43,9 +43,9 @@ The following flows are covered/planned to be covered by UI tests. Tests that ar
    - [x] Order Creation flow can be dismissed
 4. Products
     - [x] Products list and single product screens load
-    - [ ] Add new product - Simple physical product
-    - [ ] Add new product - Simple virtual product
-    - [ ] Add new product - Variable product
+    - [x] Add new product - Simple physical product
+    - [x] Add new product - Simple virtual product
+    - [x] Add new product - Variable product
     - [ ] Add new product - Grouped product
     - [ ] Add new product - External product
     - [ ] Search for product

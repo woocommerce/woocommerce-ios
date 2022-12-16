@@ -9,7 +9,13 @@ struct AnalyticsTimeRangeCard: View {
     let previousRangeDescription: String
     @Binding var selectionType: AnalyticsHubTimeRangeSelection.SelectionType
 
+    /// Determines if the time range selection should be shown.
+    ///
     @State private var showTimeRangeSelectionView: Bool = false
+
+    /// Determines if the custom range selection should be shown.
+    ///
+    @State private var showCustomRangeSelectionView: Bool = false
 
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
 
@@ -25,11 +31,17 @@ struct AnalyticsTimeRangeCard: View {
         createTimeRangeContent()
             .sheet(isPresented: $showTimeRangeSelectionView) {
                 SelectionList(title: Localization.timeRangeSelectionTitle,
-                              items: AnalyticsHubTimeRangeSelection.SelectionType.allCases,
+                              items: Range.allCases,
                               contentKeyPath: \.description,
-                              selected: $selectionType) { selection in
+                              selected: internalSelectionBinding()) { selection in
                     usageTracksEventEmitter.interacted()
-                    ServiceLocator.analytics.track(event: .AnalyticsHub.dateRangeOptionSelected(selection.rawValue))
+                    ServiceLocator.analytics.track(event: .AnalyticsHub.dateRangeOptionSelected(selection.tracksIdentifier))
+                }
+                .sheet(isPresented: $showCustomRangeSelectionView) {
+                    RangedDatePicker(startDate: selectionType.startDate, endDate: selectionType.endDate, datesFormatter: DatesFormatter()) { start, end in
+                        showTimeRangeSelectionView = false // Dismiss the initial sheet for a smooth transition
+                        self.selectionType = .custom(start: start, end: end)
+                    }
                 }
             }
     }
@@ -80,6 +92,37 @@ struct AnalyticsTimeRangeCard: View {
         .padding([.top, .bottom])
         .frame(maxWidth: .infinity)
     }
+
+    /// Tracks the range selection internally to determine if the custom range selection should be presented or not.
+    /// If custom range selection is not needed, the internal selection is forwarded to `selectionType`.
+    ///
+    private func internalSelectionBinding() -> Binding<Range> {
+        .init(
+            get: {
+                return selectionType.asTimeCardRange
+            },
+            set: { newValue in
+                switch newValue {
+                    // If we get a `custom` case it is because we need to present the custom range selection
+                case .custom:
+                    showCustomRangeSelectionView = true
+                default:
+                    // Any other selection should be forwarded to our parent binding.
+                    selectionType = newValue.asAnalyticsHubRange
+                }
+            }
+        )
+    }
+}
+
+private extension AnalyticsTimeRangeCard {
+    /// Specific `DatesFormatter` for the `RangedDatePicker` when presented in the analytics hub module.
+    ///
+    struct DatesFormatter: RangedDateTextFormatter {
+        func format(start: Date, end: Date) -> String {
+            AnalyticsHubTimeRange(start: start, end: end).formatToString(simplified: false, timezone: .current, calendar: Locale.current.calendar)
+        }
+    }
 }
 
 // MARK: Constants
@@ -112,5 +155,22 @@ struct TimeRangeCard_Previews: PreviewProvider {
                                                         previousRangeSubtitle: "Oct 1 - 23, 2022",
                                                         usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter())
         AnalyticsTimeRangeCard(viewModel: viewModel, selectionType: .constant(.monthToDate))
+    }
+}
+
+
+extension AnalyticsTimeRangeCard {
+    enum Range: CaseIterable {
+        case custom
+        case today
+        case yesterday
+        case lastWeek
+        case lastMonth
+        case lastQuarter
+        case lastYear
+        case weekToDate
+        case monthToDate
+        case quarterToDate
+        case yearToDate
     }
 }

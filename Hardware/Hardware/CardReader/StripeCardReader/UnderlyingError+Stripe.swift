@@ -26,7 +26,7 @@ extension UnderlyingError {
         case ErrorCode.Code.featureNotAvailableWithConnectedReader.rawValue:
             self = .featureNotAvailableWithConnectedReader
         case ErrorCode.Code.canceled.rawValue:
-            self = .commandCancelled
+            self = .commandCancelled(from: .unknown)
         case ErrorCode.Code.locationServicesDisabled.rawValue:
             self = .locationServicesDisabled
         case ErrorCode.Code.bluetoothDisabled.rawValue:

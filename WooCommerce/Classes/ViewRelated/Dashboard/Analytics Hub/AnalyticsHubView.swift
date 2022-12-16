@@ -97,12 +97,23 @@ struct AnalyticsHubView: View {
                 VStack(spacing: Layout.dividerSpacing) {
                     Divider()
 
-                    AnalyticsProductCard(viewModel: viewModel.productCard)
+                    AnalyticsProductCard(statsViewModel: viewModel.productsStatsCard, itemsViewModel: viewModel.itemsSoldCard)
                         .padding(.horizontal, insets: safeAreaInsets)
                         .background(Color(uiColor: .listForeground))
 
                     Divider()
                 }
+
+                VStack(spacing: Layout.dividerSpacing) {
+                    Divider()
+
+                    AnalyticsReportCard(viewModel: viewModel.sessionsCard)
+                        .padding(.horizontal, insets: safeAreaInsets)
+                        .background(Color(uiColor: .listForeground))
+
+                    Divider()
+                }
+                .renderedIf(viewModel.showSessionsCard)
 
                 Spacer()
             }

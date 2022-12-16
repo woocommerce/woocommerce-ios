@@ -27,7 +27,15 @@ public enum UnderlyingError: Error, Equatable {
     case featureNotAvailableWithConnectedReader
 
     /// A command was cancelled
-    case commandCancelled
+    case commandCancelled(from: CancellationSource)
+
+    /// A command can be cancelled on the reader, or in the app.
+    /// Note that this is not produced by Stripe, we have to infer it from commandCancelled, so we start with `.unknown`.
+    public enum CancellationSource {
+        case unknown
+        case app
+        case reader
+    }
 
     /// Access to location services is currently disabled. This may be because:
     /// - The user disabled location services in the system settings.
@@ -282,9 +290,15 @@ extension UnderlyingError: LocalizedError {
         case .featureNotAvailableWithConnectedReader:
             return NSLocalizedString("Unable to perform request with the connected reader - unsupported feature - please try again with another reader",
                                      comment: "Error message when the card reader cannot be used to perform the requested task.")
-        case .commandCancelled:
-            return NSLocalizedString("The system canceled the command unexpectedly - please try again",
-                                     comment: "Error message when the system cancels a command.")
+        case .commandCancelled(let cancellationSource):
+            switch cancellationSource {
+            case .reader:
+                return NSLocalizedString("The payment was canceled on the reader",
+                                         comment: "Error message when the cancel button on the reader is used.")
+            default:
+                return NSLocalizedString("The system canceled the command unexpectedly - please try again",
+                                         comment: "Error message when the system cancels a command.")
+            }
         case .locationServicesDisabled:
             return NSLocalizedString("Unable to access Location Services - please enable Location Services and try again",
                                      comment: "Error message when location services is not enabled for this application.")

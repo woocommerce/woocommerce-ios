@@ -345,9 +345,9 @@ open class AddressFormViewModel: ObservableObject {
     /// Creates a view model to be used when selecting a country for primary fields
     ///
     func createCountryViewModel() -> CountrySelectorViewModel {
-        let selectedCountryBinding = Binding(
+        let selectedCountryBinding = Binding<AreaSelectorCommandProtocol?>(
             get: { self.fields.selectedCountry },
-            set: { self.fields.selectedCountry = $0 }
+            set: { self.fields.selectedCountry = $0 as? Country}
         )
         return CountrySelectorViewModel(countries: allCountries, selected: selectedCountryBinding)
     }
@@ -355,9 +355,9 @@ open class AddressFormViewModel: ObservableObject {
     /// Creates a view model to be used when selecting a state for primary fields
     ///
     func createStateViewModel() -> StateSelectorViewModel {
-        let selectedStateBinding = Binding(
+        let selectedStateBinding = Binding<AreaSelectorCommandProtocol?>(
             get: { self.fields.selectedState },
-            set: { self.fields.selectedState = $0 }
+            set: { self.fields.selectedState = $0 as? StateOfACountry}
         )
 
         // Sort states from the selected country
@@ -368,9 +368,9 @@ open class AddressFormViewModel: ObservableObject {
     /// Creates a view model to be used when selecting a country for secondary fields
     ///
     func createSecondaryCountryViewModel() -> CountrySelectorViewModel {
-        let selectedCountryBinding = Binding(
+        let selectedCountryBinding = Binding<AreaSelectorCommandProtocol?>(
             get: { self.secondaryFields.selectedCountry },
-            set: { self.secondaryFields.selectedCountry = $0 }
+            set: { self.secondaryFields.selectedCountry = $0 as? Country}
         )
         return CountrySelectorViewModel(countries: allCountries, selected: selectedCountryBinding)
     }
@@ -378,9 +378,9 @@ open class AddressFormViewModel: ObservableObject {
     /// Creates a view model to be used when selecting a state for secondary fields
     ///
     func createSecondaryStateViewModel() -> StateSelectorViewModel {
-        let selectedStateBinding = Binding(
+        let selectedStateBinding = Binding<AreaSelectorCommandProtocol?>(
             get: { self.secondaryFields.selectedState },
-            set: { self.secondaryFields.selectedState = $0 }
+            set: { self.secondaryFields.selectedState = $0 as? StateOfACountry}
         )
 
         // Sort states from the selected country

@@ -10,7 +10,6 @@ import WooFoundation
 final class StoreStatsPeriodViewModelTests: XCTestCase {
     private let siteID: Int64 = 300
     private let defaultSiteTimezone = TimeZone(identifier: "GMT") ?? .current
-    private let defaultDate = Date(timeIntervalSince1970: 1671123600) // Dec 15, 2022, 5:00:00 PM GMT
     private var storageManager: StorageManagerType!
     private var storage: StorageType {
         storageManager.viewStorage
@@ -79,11 +78,8 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
         XCTAssertEqual(conversionStatsTextValues, ["-"])
 
         // When
-        let siteSummaryStats = Yosemite.SiteSummaryStats.fake().copy(siteID: siteID,
-                                                                     date: "2022-12-15",
-                                                                     period: timeRange.summaryStatsGranularity,
-                                                                     visitors: 22)
-        insertSiteSummaryStats(siteSummaryStats)
+        let siteSummaryStats = Yosemite.SiteSummaryStats.fake().copy(siteID: siteID, date: "2022-12-15", visitors: 22)
+        insertSiteSummaryStats(siteSummaryStats, timeRange: timeRange)
 
         // Then
         XCTAssertEqual(orderStatsTextValues, ["-"])
@@ -128,11 +124,8 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
         observeStatsEmittedValues(viewModel: viewModel)
 
         // When
-        let siteSummaryStats = Yosemite.SiteSummaryStats.fake().copy(siteID: siteID,
-                                                                     date: "2022-12-15",
-                                                                     period: timeRange.summaryStatsGranularity,
-                                                                     visitors: 15)
-        insertSiteSummaryStats(siteSummaryStats)
+        let siteSummaryStats = Yosemite.SiteSummaryStats.fake().copy(siteID: siteID, date: "2022-12-15", visitors: 15)
+        insertSiteSummaryStats(siteSummaryStats, timeRange: timeRange)
 
         XCTAssertEqual(conversionStatsTextValues, ["-"])
 
@@ -688,11 +681,13 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
 }
 
 private extension StoreStatsPeriodViewModelTests {
-    func createViewModel(timeRange: StatsTimeRangeV4) -> StoreStatsPeriodViewModel {
+    static private let defaultDate = Date(timeIntervalSince1970: 1671123600) // Dec 15, 2022, 5:00:00 PM GMT
+
+    func createViewModel(timeRange: StatsTimeRangeV4, date: Date = defaultDate) -> StoreStatsPeriodViewModel {
         StoreStatsPeriodViewModel(siteID: siteID,
                                   timeRange: timeRange,
                                   siteTimezone: defaultSiteTimezone,
-                                  currentDate: defaultDate,
+                                  currentDate: date,
                                   currencyFormatter: currencyFormatter,
                                   currencySettings: currencySettings,
                                   storageManager: storageManager)
@@ -749,8 +744,9 @@ private extension StoreStatsPeriodViewModelTests {
         storage.saveIfNeeded()
     }
 
-    func insertSiteSummaryStats(_ readOnlySiteSummaryStats: Yosemite.SiteSummaryStats) {
+    func insertSiteSummaryStats(_ readOnlySiteSummaryStats: Yosemite.SiteSummaryStats, timeRange: StatsTimeRangeV4) {
         let storageSiteSummaryStats = storage.insertNewObject(ofType: StorageSiteSummaryStats.self)
+        storageSiteSummaryStats.period = timeRange.summaryStatsGranularity.rawValue
         storageSiteSummaryStats.update(with: readOnlySiteSummaryStats)
         storage.saveIfNeeded()
     }

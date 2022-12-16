@@ -13,13 +13,13 @@ public class AlamofireNetwork: Network {
 
     /// WordPress.com Credentials.
     ///
-    private let credentials: Credentials?
+    private let credentials: (any Credentials)?
 
     public var session: URLSession { SessionManager.default.session }
 
     /// Public Initializer
     ///
-    public required init(credentials: Credentials?) {
+    public required init(credentials: (any Credentials)?) {
         self.credentials = credentials
 
         // A unique ID is included in the background session identifier so that the session does not get invalidated when the initializer is called multiple
@@ -109,8 +109,11 @@ public class AlamofireNetwork: Network {
 
 private extension AlamofireNetwork {
     func createRequest(wrapping request: URLRequestConvertible) -> URLRequestConvertible {
-        credentials.map { AuthenticatedRequest(credentials: $0, request: request) } ??
-        UnauthenticatedRequest(request: request)
+        guard let credentials = credentials as? WPCOMCredentials else {
+            return UnauthenticatedRequest(request: request)
+        }
+
+        return AuthenticatedRequest(credentials: credentials, request: request)
     }
 }
 

@@ -38,7 +38,7 @@ protocol ApplicationPasswordUseCase {
 final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
     /// WordPress.com Credentials.
     ///
-    private let credentials: Credentials
+    private let credentials: WPCOMCredentials
 
     /// SiteID needed when using WPCOM credentials
     ///
@@ -63,7 +63,7 @@ final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
     }
 
     init(siteID: Int64,
-         networkcredentials: Credentials,
+         networkcredentials: WPCOMCredentials,
          network: Network? = nil,
          keychain: Keychain = Keychain(service: KeychainServiceName.name)) {
         self.siteID = siteID

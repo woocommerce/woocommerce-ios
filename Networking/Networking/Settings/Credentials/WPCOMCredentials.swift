@@ -1,28 +1,31 @@
 import Foundation
 
-
-/// Authenticated Requests Credentials
+/// WPCOM authentication Credentials
 ///
-public struct Credentials: Equatable {
-
+public struct WPCOMCredentials: Credentials {
     /// WordPress.com Username
     ///
     public let username: String
 
+    /// WordPress.com secret (Holds the authentication token)
+    ///
+    public let secret: WPCOMSecret
+
     /// WordPress.com Authentication Token
     ///
-    public let authToken: String
+    public var authToken: String {
+        secret.authToken
+    }
 
     /// Site Address
     ///
     public let siteAddress: String
 
-
     /// Designated Initializer
     ///
     public init(username: String, authToken: String, siteAddress: String? = nil) {
         self.username = username
-        self.authToken = authToken
+        self.secret = WPCOMSecret(authToken: authToken)
         self.siteAddress = siteAddress ?? Constants.placeholderSiteAddress
     }
 
@@ -45,7 +48,7 @@ public struct Credentials: Equatable {
     }
 }
 
-private extension Credentials {
+private extension WPCOMCredentials {
     struct Constants {
         static let placeholderSiteAddress = "https://wordpress.com"
     }

@@ -119,7 +119,7 @@ class DefaultStoresManager: StoresManager {
     /// Switches the internal state to Authenticated.
     ///
     @discardableResult
-    func authenticate(credentials: Credentials) -> StoresManager {
+    func authenticate(credentials: WPCOMCredentials) -> StoresManager {
         state = AuthenticatedState(credentials: credentials)
         sessionManager.defaultCredentials = credentials
 

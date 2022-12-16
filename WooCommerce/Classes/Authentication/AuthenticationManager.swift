@@ -495,11 +495,11 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         }
         appleUserID = nil
 
-        ServiceLocator.stores.authenticate(credentials: .init(authToken: wpcom.authToken))
+        ServiceLocator.stores.authenticate(credentials: WPCOMCredentials(authToken: wpcom.authToken))
         let action = AccountAction.synchronizeAccount { result in
             switch result {
             case .success(let account):
-                let credentials = Credentials(username: account.username, authToken: wpcom.authToken, siteAddress: wpcom.siteURL)
+                let credentials = WPCOMCredentials(username: account.username, authToken: wpcom.authToken, siteAddress: wpcom.siteURL)
                 ServiceLocator.stores
                     .authenticate(credentials: credentials)
                     .synchronizeEntities(onCompletion: onCompletion)

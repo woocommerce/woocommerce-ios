@@ -737,6 +737,7 @@
 		EE8A86F1286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json in Resources */ = {isa = PBXBuildFile; fileRef = EE8A86F0286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json */; };
 		EE8DE42F294AFC58005054E7 /* generate-application-password-using-wpcom-token-success.json in Resources */ = {isa = PBXBuildFile; fileRef = EE8DE42E294AFC58005054E7 /* generate-application-password-using-wpcom-token-success.json */; };
 		EE8DE432294B17CD005054E7 /* DefaultApplicationPasswordUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8DE431294B17CD005054E7 /* DefaultApplicationPasswordUseCaseTests.swift */; };
+		EEC7C064294C8DE3005648B0 /* WPCOMCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC7C063294C8DE3005648B0 /* WPCOMCredentials.swift */; };
 		EECB7EE8286555180028C888 /* media-update-product-id.json in Resources */ = {isa = PBXBuildFile; fileRef = EECB7EE7286555180028C888 /* media-update-product-id.json */; };
 		FE28F6E226840DED004465C7 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6E126840DED004465C7 /* User.swift */; };
 		FE28F6E426842848004465C7 /* UserMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6E326842848004465C7 /* UserMapper.swift */; };
@@ -1505,6 +1506,7 @@
 		EE8A86F0286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-update-product-id-in-wordpress-site.json"; sourceTree = "<group>"; };
 		EE8DE42E294AFC58005054E7 /* generate-application-password-using-wpcom-token-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "generate-application-password-using-wpcom-token-success.json"; sourceTree = "<group>"; };
 		EE8DE431294B17CD005054E7 /* DefaultApplicationPasswordUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultApplicationPasswordUseCaseTests.swift; sourceTree = "<group>"; };
+		EEC7C063294C8DE3005648B0 /* WPCOMCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPCOMCredentials.swift; sourceTree = "<group>"; };
 		EECB7EE7286555180028C888 /* media-update-product-id.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-update-product-id.json"; sourceTree = "<group>"; };
 		F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6CEE1CA2AD376C0C28AE9F6 /* Pods-NetworkingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -1935,7 +1937,7 @@
 		B557DA1020975F60005962F4 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				B557DA1720979D51005962F4 /* Credentials.swift */,
+				EEC7C062294C8DD5005648B0 /* Credentials */,
 				B557DA1920979D66005962F4 /* Settings.swift */,
 				45551F112523E7F1007EF104 /* UserAgent.swift */,
 				B557DA0A20975D7E005962F4 /* WooAPIVersion.swift */,
@@ -2620,6 +2622,15 @@
 			path = ApplicationPassword;
 			sourceTree = "<group>";
 		};
+		EEC7C062294C8DD5005648B0 /* Credentials */ = {
+			isa = PBXGroup;
+			children = (
+				B557DA1720979D51005962F4 /* Credentials.swift */,
+				EEC7C063294C8DE3005648B0 /* WPCOMCredentials.swift */,
+			);
+			path = Credentials;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -3231,6 +3242,7 @@
 				31884A3B2603F3C7003FE338 /* SitePluginStatusEnum.swift in Sources */,
 				3192F21C260D32550067FEF9 /* WCPayAccountMapper.swift in Sources */,
 				CE50345E21B571A7007573C6 /* SitePlanMapper.swift in Sources */,
+				EEC7C064294C8DE3005648B0 /* WPCOMCredentials.swift in Sources */,
 				DE34051528BDEB1900CF0D97 /* WordPressOrgNetwork.swift in Sources */,
 				3192F224260D34C40067FEF9 /* WCPayAccountStatusEnum.swift in Sources */,
 				D8FBFF2022D52553006E3336 /* OrderStatsV4Totals.swift in Sources */,

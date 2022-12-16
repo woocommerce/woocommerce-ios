@@ -3,7 +3,7 @@ import Storage
 import Hardware
 
 public protocol MockObjectGraph {
-    var userCredentials: Credentials { get }
+    var userCredentials: WPCOMCredentials { get }
     var defaultAccount: Account { get }
     var defaultSite: Site { get }
     var defaultSiteAPI: SiteAPI { get }

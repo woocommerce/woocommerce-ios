@@ -8,7 +8,7 @@ struct AuthenticatedRequest: URLRequestConvertible {
 
     /// WordPress.com Credentials.
     ///
-    let credentials: Credentials
+    let credentials: WPCOMCredentials
 
     /// Request that should be authenticated.
     ///

@@ -10,13 +10,13 @@ import Alamofire
 public class ApplicationPasswordNetwork: Network {
     /// WordPress.com Credentials.
     ///
-    private let credentials: Credentials
+    private let credentials: WPCOMCredentials
 
     public var session: URLSession { SessionManager.default.session }
 
     /// Public Initializer
     ///
-    public required init(credentials: Credentials) {
+    public required init(credentials: WPCOMCredentials) {
         self.credentials = credentials
     }
 

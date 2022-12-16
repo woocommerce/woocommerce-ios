@@ -26,7 +26,7 @@ final class StoreInfoDataService {
     private var network: AlamofireNetwork
 
     init(authToken: String) {
-        network = AlamofireNetwork(credentials: Credentials(authToken: authToken))
+        network = AlamofireNetwork(credentials: WPCOMCredentials(authToken: authToken))
         orderStatsRemoteV4 = OrderStatsRemoteV4(network: network)
         siteVisitStatsRemote = SiteStatsRemote(network: network)
     }

@@ -37,7 +37,7 @@ public protocol SessionManagerProtocol {
 
     /// Default Credentials.
     ///
-    var defaultCredentials: Credentials? { get set}
+    var defaultCredentials: WPCOMCredentials? { get set}
 
     /// Nukes all of the known Session's properties.
     ///

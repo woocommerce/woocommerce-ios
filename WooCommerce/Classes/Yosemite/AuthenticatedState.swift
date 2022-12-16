@@ -22,7 +22,7 @@ class AuthenticatedState: StoresManagerState {
 
     /// Designated Initializer
     ///
-    init(credentials: Credentials) {
+    init(credentials: WPCOMCredentials) {
         let storageManager = ServiceLocator.storageManager
         let network = AlamofireNetwork(credentials: credentials)
 

@@ -1,7 +1,7 @@
 import Combine
 import Foundation
 import struct Yosemite.CreateAccountResult
-import struct Yosemite.Credentials
+import struct Yosemite.WPCOMCredentials
 import enum Yosemite.AccountAction
 import enum Yosemite.AccountCreationAction
 import enum Yosemite.CreateAccountError
@@ -79,7 +79,7 @@ private extension AccountCreationFormViewModel {
     @MainActor
     func handleSuccess(data: CreateAccountResult) async {
         await withCheckedContinuation { continuation in
-            stores.authenticate(credentials: .init(username: data.username, authToken: data.authToken))
+            stores.authenticate(credentials: WPCOMCredentials(username: data.username, authToken: data.authToken))
                 .synchronizeEntities(onCompletion: {
                     continuation.resume(returning: ())
                 })

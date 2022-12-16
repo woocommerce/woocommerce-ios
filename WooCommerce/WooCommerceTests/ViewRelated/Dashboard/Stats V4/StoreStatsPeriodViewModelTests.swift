@@ -681,7 +681,7 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
 }
 
 private extension StoreStatsPeriodViewModelTests {
-    static private let defaultDate = Date(timeIntervalSince1970: 1671123600) // Dec 15, 2022, 5:00:00 PM GMT
+    static let defaultDate = Date(timeIntervalSince1970: 1671123600) // Dec 15, 2022, 5:00:00 PM GMT
 
     func createViewModel(timeRange: StatsTimeRangeV4, date: Date = defaultDate) -> StoreStatsPeriodViewModel {
         StoreStatsPeriodViewModel(siteID: siteID,

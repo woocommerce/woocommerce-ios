@@ -459,7 +459,11 @@ extension MainTabBarController {
     }
 
     static func presentCollectPayment() {
-        presentPayments()?.openSimplePaymentsAmountFlow()
+        let viewController = presentPayments()
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            viewController?.openSimplePaymentsAmountFlow()
+        }
     }
 }
 

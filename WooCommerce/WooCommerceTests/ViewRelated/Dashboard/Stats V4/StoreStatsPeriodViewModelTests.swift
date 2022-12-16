@@ -100,10 +100,7 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
         XCTAssertEqual(conversionStatsTextValues, ["-"])
 
         // When
-        let siteVisitStats = Yosemite.SiteVisitStats.fake().copy(siteID: siteID, items: [
-            .fake().copy(visitors: 17),
-            .fake().copy(visitors: 15)
-        ])
+        let siteVisitStats = Yosemite.SiteVisitStats.fake().copy(siteID: siteID, items: [ .fake().copy(visitors: 17) ])
         insertSiteVisitStats(siteVisitStats, timeRange: timeRange)
 
         XCTAssertEqual(visitorStatsTextValues, ["-"])

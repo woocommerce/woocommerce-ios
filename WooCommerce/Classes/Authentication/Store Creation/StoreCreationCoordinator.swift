@@ -484,7 +484,14 @@ private extension StoreCreationCoordinator {
             .replaceError(with: nil)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] site in
-                guard let self, let site else { return }
+                guard let self else { return }
+                guard let site else {
+                    navigationController.dismiss(animated: true) { [weak self] in
+                        guard let self else { return }
+                        self.showJetpackSiteTimeoutAlert(from: self.navigationController)
+                    }
+                    return
+                }
                 self.showSuccessView(from: navigationController, site: site)
             }
     }
@@ -537,6 +544,16 @@ private extension StoreCreationCoordinator {
             self?.analytics.track(event: .StoreCreation.siteCreationSitePreviewed())
         }
         navigationController.pushViewController(successView, animated: true)
+    }
+
+    @MainActor
+    func showJetpackSiteTimeoutAlert(from navigationController: UINavigationController) {
+        let alertController = UIAlertController(title: Localization.WaitingForJetpackSite.TimeoutAlert.title,
+                                                message: Localization.WaitingForJetpackSite.TimeoutAlert.message,
+                                                preferredStyle: .alert)
+        alertController.view.tintColor = .text
+        _ = alertController.addCancelActionWithTitle(Localization.WaitingForJetpackSite.TimeoutAlert.cancelActionTitle) { _ in }
+        navigationController.present(alertController, animated: true)
     }
 }
 
@@ -621,6 +638,21 @@ private extension StoreCreationCoordinator {
                 comment: "Title of the in-progress view when waiting for the site to become a Jetpack site " +
                 "after WPCOM plan purchase in the store creation flow."
             )
+
+            enum TimeoutAlert {
+                static let title = NSLocalizedString(
+                    "Store creation still in progress",
+                    comment: "Title of the alert when the created store never becomes a Jetpack site in the store creation flow."
+                )
+                static let message = NSLocalizedString(
+                    "The new store will be available soon in the store picker. If you have any issues, please contact support.",
+                    comment: "Message of the alert when the created store never becomes a Jetpack site in the store creation flow."
+                )
+                static let cancelActionTitle = NSLocalizedString(
+                    "OK",
+                    comment: "Button title to dismiss the alert when the created store never becomes a Jetpack site in the store creation flow."
+                )
+            }
         }
     }
 

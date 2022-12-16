@@ -113,6 +113,7 @@ struct AnalyticsHubView: View {
 
                     Divider()
                 }
+                .renderedIf(viewModel.showSessionsCard)
 
                 Spacer()
             }

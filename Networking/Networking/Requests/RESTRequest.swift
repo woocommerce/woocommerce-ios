@@ -26,7 +26,8 @@ struct RESTRequest: URLRequestConvertible {
     ///     - siteURL: URL of the site to send the REST request to.
     ///     - method: HTTP Method we should use.
     ///     - path: path to the target endpoint.
-    ///     - parameters: Collection of String parameters to be passed over to our target endpoint. This can be encoded to the URL request query if the HTTP method is `.get`.
+    ///     - parameters: Collection of String parameters to be passed over to our target endpoint.
+    ///      This can be encoded to the URL request query if the HTTP method is `.get`.
     ///     - headers: Headers to be added to the request.
     ///     - fallbackRequest: A fallback Jetpack request to trigger if the REST request cannot be made.
     ///

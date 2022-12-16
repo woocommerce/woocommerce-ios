@@ -43,14 +43,23 @@ final class RequestAuthenticator {
 
     /// Updates a request with application password or WPCOM token if possible.
     ///
-    func authenticateRequest(_ request: URLRequestConvertible, completion: @escaping (URLRequestConvertible) -> Void) {
-        guard let restRequest = request as? RESTRequest,
+    func authenticateRequest(_ request: URLRequestConvertible, completion: @escaping (Swift.Result<URLRequestConvertible, Error>) -> Void) {
+        guard let jetpackRequest = request as? JetpackRequest,
+              jetpackRequest.availableAsRESTRequest,
               let useCase = applicationPasswordUseCase else {
             // Handle non-REST requests as before
-            return completion(authenticateUsingWPCOMTokenIfPossible(request))
+            return completion(.success(authenticateUsingWPCOMTokenIfPossible(request)))
         }
+        // TODO: get site URL from wporg credentials
+        let restRequest = jetpackRequest.createRESTRequest(with: "")
         Task(priority: .medium) {
-            let result = await authenticateUsingApplicationPassword(restRequest, useCase: useCase)
+            let result: Swift.Result<URLRequestConvertible, Error>
+            do {
+                let authenticatedRequest = try await authenticateUsingApplicationPassword(restRequest, useCase: useCase)
+                result = .success(authenticatedRequest)
+            } catch {
+                result = .failure(error)
+            }
             await MainActor.run {
                 completion(result)
             }
@@ -59,23 +68,15 @@ final class RequestAuthenticator {
 
     /// Attempts authenticating a request with application password.
     ///
-    private func authenticateUsingApplicationPassword(_ restRequest: RESTRequest, useCase: ApplicationPasswordUseCase) async -> URLRequestConvertible {
-        do {
-            let applicationPassword: ApplicationPassword = try await {
-                if let password = useCase.applicationPassword {
-                    return password
-                }
-                return try await useCase.generateNewPassword()
-            }()
-            return try await MainActor.run {
-                return try restRequest.authenticateRequest(with: applicationPassword)
+    private func authenticateUsingApplicationPassword(_ restRequest: RESTRequest, useCase: ApplicationPasswordUseCase) async throws -> URLRequestConvertible {
+        let applicationPassword: ApplicationPassword = try await {
+            if let password = useCase.applicationPassword {
+                return password
             }
-        } catch {
-            DDLogWarn("⚠️ Error generating application password and update request: \(error)")
-            // TODO: add Tracks
-            // Get the fallback Jetpack request to handle if possible.
-            let fallbackRequest: URLRequestConvertible = restRequest.fallbackRequest ?? restRequest
-            return authenticateUsingWPCOMTokenIfPossible(fallbackRequest)
+            return try await useCase.generateNewPassword()
+        }()
+        return try await MainActor.run {
+            return try restRequest.authenticateRequest(with: applicationPassword)
         }
     }
 

@@ -89,6 +89,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupMainWindow()
         setupComponentsAppearance()
         setupNoticePresenter()
+        disableAnimationsIfNeeded()
 
         // Start app navigation.
         appCoordinator?.start()
@@ -365,22 +366,26 @@ private extension AppDelegate {
             ServiceLocator.setStores(ScreenshotStoresManager(storageManager: ServiceLocator.storageManager))
         }
 
-        if ProcessConfiguration.shouldDisableAnimations {
-            UIView.setAnimationsEnabled(false)
-
-            /// Trick found at: https://twitter.com/twannl/status/1232966604142653446
-            UIApplication
-                .shared
-                .connectedScenes
-                .flatMap { ($0 as? UIWindowScene)?.windows ?? [] }
-                .forEach {
-                    $0.layer.speed = 100
-                }
-        }
-
         if ProcessConfiguration.shouldSimulatePushNotification {
             UNUserNotificationCenter.current().requestAuthorization(options: [.alert]) { _, _ in }
         }
+    }
+
+    func disableAnimationsIfNeeded() {
+        guard ProcessConfiguration.shouldDisableAnimations else {
+            return
+        }
+
+        UIView.setAnimationsEnabled(false)
+
+        /// Trick found at: https://twitter.com/twannl/status/1232966604142653446
+        UIApplication
+            .shared
+            .connectedScenes
+            .flatMap { ($0 as? UIWindowScene)?.windows ?? [] }
+            .forEach {
+                $0.layer.speed = 100
+            }
     }
 
     /// Tracks if the application was opened via a widget tap.

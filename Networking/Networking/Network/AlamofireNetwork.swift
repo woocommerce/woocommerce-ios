@@ -131,19 +131,6 @@ public class AlamofireNetwork: Network {
     }
 }
 
-public extension AlamofireNetwork {
-    /// Updates the application password use case with a new site ID.
-    ///
-    func configureApplicationPasswordHandler(with siteID: Int64) {
-        guard let credentials else {
-            return
-        }
-        let applicationPasswordUseCase = TemporaryApplicationPasswordUseCase(siteID: siteID, credentials: credentials)
-        requestAuthenticator.updateApplicationPasswordHandler(with: applicationPasswordUseCase)
-    }
-}
-
-
 // MARK: - Alamofire.DataResponse: Helper Methods
 //
 extension Alamofire.DataResponse {

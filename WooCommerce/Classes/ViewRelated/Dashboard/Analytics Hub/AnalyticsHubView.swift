@@ -113,7 +113,7 @@ struct AnalyticsHubView: View {
 
                     Divider()
                 }
-                .renderedIf(ServiceLocator.featureFlagService.isFeatureFlagEnabled(.analyticsHub))
+                .renderedIf(ServiceLocator.featureFlagService.isFeatureFlagEnabled(.analyticsHub) && viewModel.showSessionsCard)
 
                 Spacer()
             }

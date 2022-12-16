@@ -88,6 +88,26 @@ final class DashboardViewModel {
         stores.dispatch(action)
     }
 
+    /// Syncs summary stats for dashboard UI.
+    func syncSiteSummaryStats(for siteID: Int64,
+                              timeRange: StatsTimeRangeV4,
+                              latestDateToInclude: Date,
+                              onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
+        let action = StatsActionV4.retrieveSiteSummaryStats(siteID: siteID,
+                                                            period: timeRange.summaryStatsGranularity,
+                                                            quantity: 1,
+                                                            latestDateToInclude: latestDateToInclude,
+                                                            saveInStorage: true) { result in
+            if case let .failure(error) = result {
+                DDLogError("⛔️ Error synchronizing summary stats: \(error)")
+            }
+
+            let voidResult = result.map { _ in () } // Caller expects no entity in the result.
+            onCompletion?(voidResult)
+        }
+        stores.dispatch(action)
+    }
+
     /// Syncs top performers data for dashboard UI.
     func syncTopEarnersStats(for siteID: Int64,
                              siteTimezone: TimeZone,

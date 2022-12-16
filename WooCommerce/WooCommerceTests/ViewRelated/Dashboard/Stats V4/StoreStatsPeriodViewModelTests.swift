@@ -66,7 +66,29 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
         XCTAssertEqual(conversionStatsTextValues, ["-"])
     }
 
-    func test_visitorStatsText_is_emitted_after_visitor_stats_updated() {
+    func test_visitorStatsText_is_emitted_after_summary_stats_updated() {
+        // Given
+        let timeRange: StatsTimeRangeV4 = .today
+        let viewModel = createViewModel(timeRange: timeRange)
+        observeStatsEmittedValues(viewModel: viewModel)
+
+        XCTAssertEqual(orderStatsTextValues, ["-"])
+        XCTAssertEqual(revenueStatsTextValues, ["-"])
+        XCTAssertEqual(visitorStatsTextValues, ["-"])
+        XCTAssertEqual(conversionStatsTextValues, ["-"])
+
+        // When
+        let siteSummaryStats = Yosemite.SiteSummaryStats.fake().copy(siteID: siteID, date: "2022-12-15", visitors: 22)
+        insertSiteSummaryStats(siteSummaryStats, timeRange: timeRange)
+
+        // Then
+        XCTAssertEqual(orderStatsTextValues, ["-"])
+        XCTAssertEqual(revenueStatsTextValues, ["-"])
+        XCTAssertEqual(visitorStatsTextValues, ["-", "22"])
+        XCTAssertEqual(conversionStatsTextValues, ["-"])
+    }
+
+    func test_visitorStatsText_is_emitted_after_visitor_stats_updated_and_selecting_interval() {
         // Given
         let timeRange: StatsTimeRangeV4 = .today
         let viewModel = createViewModel(timeRange: timeRange)
@@ -80,29 +102,30 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
         // When
         let siteVisitStats = Yosemite.SiteVisitStats.fake().copy(siteID: siteID, items: [
             .fake().copy(visitors: 17),
-            .fake().copy(visitors: 5)
+            .fake().copy(visitors: 15)
         ])
         insertSiteVisitStats(siteVisitStats, timeRange: timeRange)
+
+        XCTAssertEqual(visitorStatsTextValues, ["-"])
+
+        viewModel.selectedIntervalIndex = 0
 
         // Then
         XCTAssertEqual(orderStatsTextValues, ["-"])
         XCTAssertEqual(revenueStatsTextValues, ["-"])
-        XCTAssertEqual(visitorStatsTextValues, ["-", "22"])
+        XCTAssertEqual(visitorStatsTextValues, ["-", "17"])
         XCTAssertEqual(conversionStatsTextValues, ["-"])
     }
 
-    func test_conversionStatsText_is_emitted_after_order_and_visitor_stats_updated() {
+    func test_conversionStatsText_is_emitted_after_order_and_summary_stats_updated() {
         // Given
         let timeRange: StatsTimeRangeV4 = .today
         let viewModel = createViewModel(timeRange: timeRange)
         observeStatsEmittedValues(viewModel: viewModel)
 
         // When
-        let siteVisitStats = Yosemite.SiteVisitStats.fake().copy(siteID: siteID, items: [
-            .fake().copy(visitors: 10),
-            .fake().copy(visitors: 5)
-        ])
-        insertSiteVisitStats(siteVisitStats, timeRange: timeRange)
+        let siteSummaryStats = Yosemite.SiteSummaryStats.fake().copy(siteID: siteID, date: "2022-12-15", visitors: 15)
+        insertSiteSummaryStats(siteSummaryStats, timeRange: timeRange)
 
         XCTAssertEqual(conversionStatsTextValues, ["-"])
 
@@ -111,6 +134,32 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
                                       totals: .fake().copy(totalOrders: 3, grossRevenue: 62.7),
                                       intervals: [.fake()])
         insertOrderStats(orderStats, timeRange: timeRange)
+
+        // Then
+        XCTAssertEqual(conversionStatsTextValues, ["-", "20%"]) // order count: 3, visitor count: 15 => 0.2 (20%)
+    }
+
+    func test_conversionStatsText_is_emitted_after_order_and_visitors_stats_updated_and_selecting_interval() {
+        // Given
+        let timeRange: StatsTimeRangeV4 = .today
+        let viewModel = createViewModel(timeRange: timeRange)
+        observeStatsEmittedValues(viewModel: viewModel)
+
+        // When
+        let siteVisitStats = Yosemite.SiteVisitStats.fake().copy(siteID: siteID, items: [.fake().copy(visitors: 15)])
+        insertSiteVisitStats(siteVisitStats, timeRange: timeRange)
+
+        XCTAssertEqual(conversionStatsTextValues, ["-"])
+
+        let orderStats = OrderStatsV4(siteID: siteID,
+                                      granularity: timeRange.intervalGranularity,
+                                      totals: .fake(),
+                                      intervals: [ .fake().copy(subtotals: .fake().copy(totalOrders: 3, grossRevenue: 62.7)) ])
+        insertOrderStats(orderStats, timeRange: timeRange)
+
+        XCTAssertEqual(conversionStatsTextValues, ["-"])
+
+        viewModel.selectedIntervalIndex = 0
 
         // Then
         XCTAssertEqual(conversionStatsTextValues, ["-", "20%"]) // order count: 3, visitor count: 15 => 0.2 (20%)
@@ -632,10 +681,13 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
 }
 
 private extension StoreStatsPeriodViewModelTests {
-    func createViewModel(timeRange: StatsTimeRangeV4) -> StoreStatsPeriodViewModel {
+    static let defaultDate = Date(timeIntervalSince1970: 1671123600) // Dec 15, 2022, 5:00:00 PM GMT
+
+    func createViewModel(timeRange: StatsTimeRangeV4, date: Date = defaultDate) -> StoreStatsPeriodViewModel {
         StoreStatsPeriodViewModel(siteID: siteID,
                                   timeRange: timeRange,
                                   siteTimezone: defaultSiteTimezone,
+                                  currentDate: date,
                                   currencyFormatter: currencyFormatter,
                                   currencySettings: currencySettings,
                                   storageManager: storageManager)
@@ -689,6 +741,13 @@ private extension StoreStatsPeriodViewModelTests {
             newStorageItem.update(with: readOnlyItem)
             storageSiteVisitStats.addToItems(newStorageItem)
         }
+        storage.saveIfNeeded()
+    }
+
+    func insertSiteSummaryStats(_ readOnlySiteSummaryStats: Yosemite.SiteSummaryStats, timeRange: StatsTimeRangeV4) {
+        let storageSiteSummaryStats = storage.insertNewObject(ofType: StorageSiteSummaryStats.self)
+        storageSiteSummaryStats.period = timeRange.summaryStatsGranularity.rawValue
+        storageSiteSummaryStats.update(with: readOnlySiteSummaryStats)
         storage.saveIfNeeded()
     }
 }

@@ -225,6 +225,7 @@ public typealias StorageShippingLineTax = Storage.ShippingLineTax
 public typealias StorageSite = Storage.Site
 public typealias StorageSitePlugin = Storage.SitePlugin
 public typealias StorageSiteSetting = Storage.SiteSetting
+public typealias StorageSiteSummaryStats = Storage.SiteSummaryStats
 public typealias StorageSiteVisitStats = Storage.SiteVisitStats
 public typealias StorageSiteVisitStatsItem = Storage.SiteVisitStatsItem
 public typealias StorageStateOfACountry = Storage.StateOfACountry

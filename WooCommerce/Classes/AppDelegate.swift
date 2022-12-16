@@ -369,7 +369,13 @@ private extension AppDelegate {
             UIView.setAnimationsEnabled(false)
 
             /// Trick found at: https://twitter.com/twannl/status/1232966604142653446
-            UIApplication.shared.currentKeyWindow?.layer.speed = 100
+            UIApplication
+                .shared
+                .connectedScenes
+                .flatMap { ($0 as? UIWindowScene)?.windows ?? [] }
+                .forEach {
+                    $0.layer.speed = 100
+                }
         }
 
         if ProcessConfiguration.shouldSimulatePushNotification {

@@ -105,22 +105,27 @@ final class RefundConfirmationViewModel {
                 analytics: analytics))
 
         self.submissionUseCase = submissionUseCase
-        submissionUseCase.submitRefund(refund,
-                                       showInProgressUI: showInProgressUI,
-                                       onCompletion: { [weak self] result in
-            guard let self = self else { return }
 
-            switch result {
-            case .success:
-                // We don't care if the "update order" fails. We return .success() as the refund creation already succeeded.
-                self.updateOrder { _ in
-                    onCompletion(.success(()))
+        Task {
+            do {
+                for try await event in submissionUseCase.asyncSubmitRefund(refund) {
+                    switch event {
+                    case .completed:
+                        // We don't care if the "update order" fails. We return .success() as the refund creation already succeeded.
+                        self.updateOrder { _ in
+                            onCompletion(.success(()))
+                            self.submissionUseCase = nil
+                        }
+                    case .showInProgressUI:
+                        showInProgressUI()
+                    }
                 }
-            default:
-                onCompletion(result)
             }
-            self.submissionUseCase = nil
-        })
+            catch {
+                onCompletion(.failure(error))
+                self.submissionUseCase = nil
+            }
+        }
     }
 
     /// Updates the order associated with the refund to reflect the latest refund status.

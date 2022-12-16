@@ -4,6 +4,11 @@ import Yosemite
 import WooFoundation
 import protocol Storage.StorageManagerType
 
+enum RefundStatus {
+    case showInProgressUI
+    case completed
+}
+
 /// Protocol to abstract the `RefundSubmissionUseCase`.
 /// TODO: 5983 - Use this to facilitate unit tests.
 ///
@@ -13,9 +18,8 @@ protocol RefundSubmissionProtocol {
     /// - Parameter refund: the refund to submit.
     /// - Parameter showInProgressUI: called when the in-progress UI should be shown during refund submission.
     /// - Parameter onCompletion: called when the refund completes.
-    func submitRefund(_ refund: Refund,
-                      showInProgressUI: @escaping (() -> Void),
-                      onCompletion: @escaping (Result<Void, Error>) -> Void)
+    
+    func asyncSubmitRefund(_ refund: Refund) -> AsyncThrowingStream<RefundStatus,Error>
 }
 
 /// Use case to submit a refund for an order.
@@ -136,7 +140,7 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
         self.storageManager = dependencies.storageManager
         self.analytics = dependencies.analytics
     }
-
+    /// AsyncStream version of submitRefund
     /// Starts the refund submission flow.
     ///
     /// If in-person refund is required:
@@ -148,51 +152,52 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
     /// Otherwise, if in-person refund is not required, the refund is submitted directly to the site.
     ///
     /// - Parameters:
-    ///   - refund: the refund to submit.
-    ///   - showInProgressUI: called when the in-progress UI should be shown during refund submission.
-    ///   - onCompletion: called when the refund completes.
-    func submitRefund(_ refund: Refund,
-                      showInProgressUI: @escaping (() -> Void),
-                      onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        if let charge = details.charge, shouldRefundWithCardReader(details: details) {
-            cardPresentPaymentsOnboardingPresenter.showOnboardingIfRequired(
-                from: rootViewController) { [weak self] in
-                guard let self = self else { return }
-                guard let refundAmount = self.currencyFormatter.convertToDecimal(self.details.amount) else {
-                    DDLogError("Error: attempted to refund an order without a valid amount.")
-                    return onCompletion(.failure(RefundSubmissionError.invalidRefundAmount))
-                }
+    ///   - refund: The refund to submit.
+    ///    - returns AsyncThrowingStream<RefundStatus,Error>:
+    ///     - RefundStatus: inProgress, completed
+    ///     - Error: RefundSubmissionError
+    func asyncSubmitRefund(_ refund: Refund) -> AsyncThrowingStream<RefundStatus, Error> {
+        return AsyncThrowingStream { continuation in
 
-                guard let paymentGatewayAccount = self.details.paymentGatewayAccount else {
-                    return onCompletion(.failure(RefundSubmissionError.unknownPaymentGatewayAccount))
-                }
-
-                self.observeConnectedReadersForAnalytics()
-                self.connectReader(charge: charge, paymentGatewayAccount: paymentGatewayAccount) { [weak self] result in
+            if let charge = details.charge, shouldRefundWithCardReader(details: details) {
+                cardPresentPaymentsOnboardingPresenter.showOnboardingIfRequired(from: rootViewController) { [weak self] in
                     guard let self = self else { return }
-                    switch result {
-                    case .success:
-                        self.attemptCardPresentRefund(refundAmount: refundAmount as Decimal,
-                                                      charge: charge,
-                                                      paymentGatewayAccount: paymentGatewayAccount) { [weak self] result in
-                            guard let self = self else { return }
-                            switch result {
-                            case .success:
-                                self.submitRefundToSite(refund: refund) { result in
-                                    onCompletion(result)
+
+                    guard let refundAmount = self.currencyFormatter.convertToDecimal(self.details.amount) else {
+                        DDLogError("Error: attempted to refund an order without a valid amount.")
+                        return continuation.finish(throwing: RefundSubmissionError.invalidRefundAmount)
+                    }
+
+                    guard let paymentGatewayAccount = self.details.paymentGatewayAccount else {
+                        return continuation.finish(throwing: RefundSubmissionError.unknownPaymentGatewayAccount)
+                    }
+
+                    self.observeConnectedReadersForAnalytics()
+
+                    self.connectReader(charge: charge, paymentGatewayAccount: paymentGatewayAccount) { [weak self] result in
+                        guard let self = self else { return }
+                        switch result {
+                        case .success:
+                            self.attemptCardPresentRefund(refundAmount: refundAmount as Decimal,
+                                                          charge: charge,
+                                                          paymentGatewayAccount: paymentGatewayAccount) { [weak self] result in
+                                guard let self = self else { return }
+                                switch result {
+                                case .success:
+                                    self.submitRefundToSite(refund: refund) { result in
+                                        continuation.yield(.completed)
+                                        continuation.finish()
+                                    }
+                                case .failure(let error):
+                                    continuation.finish(throwing: error)
                                 }
-                            case .failure(let error):
-                                onCompletion(.failure(error))
                             }
+                        case .failure:
+                            continuation.finish()
                         }
-                    case .failure:
-                        onCompletion(result)
                     }
                 }
             }
-        } else {
-            showInProgressUI()
-            submitRefundToSite(refund: refund, onCompletion: onCompletion)
         }
     }
 }

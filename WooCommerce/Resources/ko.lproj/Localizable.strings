@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-12-06 14:54:04+0000 */
+/* Translation-Revision-Date: 2022-12-14 18:00:06+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -9,7 +9,7 @@
 /* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
 "#%@ %@" = "%1$@ › %2$@";
 
-/* Label that describes the completed progress of a software update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
 "%.0f%% complete" = "%.0f%% 완료";
 
 /* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
@@ -691,7 +691,8 @@ which should be translated separately and considered part of this sentence. */
 /* Reads as 'Application name'. Part of the mandatory data in receipts */
 "Application Name" = "애플리케이션 이름";
 
-/* Change order status screen - button title to apply selection */
+/* Apply navigation button in custom range date picker
+   Change order status screen - button title to apply selection */
 "Apply" = "적용";
 
 /* Message to share the coupon code if it is applicable to all products. Reads like: Apply 10% off to all products with the promo code “20OFF”. */
@@ -1180,6 +1181,12 @@ which should be translated separately and considered part of this sentence. */
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "새 주문 메모를 작성합니다.";
 
+/* Dialog title that displays when a configuration update just finished installing */
+"Configuration updated" = "구성 업데이트됨";
+
+/* Dialog title that displays when iPhone configuration is being updated for use as a card reader */
+"Configuring iPhone" = "iPhone 구성 중";
+
 /* Close Account confirmation alert title. */
 "Confirm Close Account" = "계정 종료 확인";
 
@@ -1523,6 +1530,9 @@ which should be translated separately and considered part of this sentence. */
    Placeholder name of a custom shipment tracking carrier
    Title of button to add a custom tracking carrier if filtering the list yields no results. */
 "Custom Carrier" = "사용자 정의 운송업체";
+
+/* Title in custom range date picker */
+"Custom Date Range" = "사용자 정의 날짜 범위";
 
 /* Title for the order custom fields list */
 "Custom Fields" = "사용자 정의 필드";
@@ -1943,7 +1953,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the status row on Product Variation main screen to enable/disable a variation */
 "Enabled" = "활성화";
 
-/* Label for one of the filters in order custom date range */
+/* End Date label in custom range date picker
+   Label for one of the filters in order custom date range */
 "End Date" = "종료 날짜";
 
 /* The title used when asking the user for feedback for the app. */
@@ -2295,6 +2306,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "정률 상품 할인";
+
+/* Label asking users to follow the built in reader instruction. Presented to users when a payment is going to be collected using the iPhone's built in reader */
+"Follow reader instructions to pay" = "리더의 결제 지침을 따르세요.";
 
 /* User role badge */
 "Follower" = "팔로워";
@@ -2811,6 +2825,18 @@ which should be translated separately and considered part of this sentence. */
 /* Last 7 days section header */
 "Last 7 days" = "지난 7일간";
 
+/* Title of the Analytics Hub Last Month selection range */
+"Last Month" = "지난달";
+
+/* Title of the Analytics Hub Last Quarter selection range */
+"Last Quarter" = "지난 분기";
+
+/* Title of the Analytics Hub Last Week selection range */
+"Last Week" = "지난주";
+
+/* Title of the Analytics Hub Last Year selection range */
+"Last Year" = "작년";
+
 /* Text field name in Edit Address Form */
 "Last name" = "성";
 
@@ -3185,7 +3211,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label for net sales (net revenue) in the Analytics Hub */
 "Net Sales" = "순매출액";
 
-/* Top performers — label for the total sales of a product */
+/* Label for the total sales of a product in the Analytics Hub
+   Top performers — label for the total sales of a product */
 "Net sales: %@" = "순매출액: %@";
 
 /* Title for table view section of network active plugins */
@@ -3705,8 +3732,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "리더를 충전하세요.";
 
+/* Error message shown when the built-in reader cannot be used because the device does not meet minimum requirements. */
+"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.0 or above. Contact support if this error shows on a supported device." = "iOS 16.0 이상이 실행되는 iPhone XS 이상 기종이라는 요구 사항을 스마트폰에서 충족하는지 확인하세요. 지원되는 기기에서 이 오류가 표시되면 지원팀에 문의하세요.";
+
+/* Error message shown when the built-in reader cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
+"Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service" = "Apple ID가 유효한지 확인한 다음에 다시 시도하세요. Apple의 서비스 약관에 동의하려면 유효한 Apple ID가 필요합니다.";
+
 /* Error message on the Jetpack setup required screen when Jetpack connection is missing. */
 "Please connect your store to Jetpack to access it on this app." = "이 앱에서 스토어에 접근하려면 해당 스토어를 젯팩에 연결하세요.";
+
+/* Error message shown when the built-in reader cannot be used because there is an issue with the merchant account or device */
+"Please contact support – there was an issue connecting to the built-in reader" = "지원팀에 문의하세요. 기본 제공 리더 연결 중 문제가 발생했습니다.";
 
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app." = "상점 관리자 또는 앱을 사용하는 관리자로 사이트에 초대받으려면 사이트 소유자에게 문의하세요.";
@@ -3792,6 +3828,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "패키지를 선택하세요.";
 
+/* Error message shown when the built-in reader cannot be used because the device is not signed in to iCloud. */
+"Please sign in to iCloud on this device, so you can use the built-in card reader" = "기본 제공 리더를 사용할 수 있도록 이 기기에서 iCloud에 로그인하세요.";
+
 /* Message of the alert when the store cannot be created due to the domain in the store creation flow. */
 "Please try a different domain." = "다른 도메인을 시도하세요.";
 
@@ -3809,6 +3848,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Body text for the default store picker error screen */
 "Please try again or reach out to us and we'll be happy to assist you!" = "다시 시도해 보세요. 또는 당사에 연락하면 기꺼이 도와드리겠습니다!";
+
+/* Error message shown when the built-in reader cannot be used because the merchant cancelled or did not complete the Terms of Service acceptance flow */
+"Please try again, and accept Apple's Terms of Service, so you can use the built-in card reader" = "다시 시도하고, 기본 제공 카드 리더를 사용할 수 있도록 Apple의 서비스 약관에 동의하세요.";
 
 /* Message of the alert when the WPCOM plan cannot be purchased in a webview in the store creation flow. */
 "Please try again, or exit the screen and check back on your store if you previously left the checkout screen while payment is in progress." = "다시 시도하거나, 이전에 결제가 진행 중인 동안 계산 화면에서 나간 경우 화면을 종료하고 스토어를 다시 확인하세요.";
@@ -3894,6 +3936,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of in-progress modal when preparing for printing customs invoice */
 "Preparing document" = "문서 준비 중";
+
+/* Title label for modal dialog that appears when connecting to a built in card reader */
+"Preparing iPhone card reader..." = "iPhone 카드 리더 준비 중...";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Present card to pay" = "결제할 카드 제시";
@@ -4120,6 +4165,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Restriction type Quarantine for contents declared in the customs form for Shipping Label flow */
 "Quarantine" = "격리";
+
+/* Title of the Analytics Hub Quarter to Date selection range */
+"Quarter to Date" = "분기 누계";
 
 /* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
 "Quickly get up and selling with a beautiful online store." = "아름다운 온라인 스토어로 빠르게 시작하고 판매하세요.";
@@ -4893,6 +4941,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error title when Jetpack install fails */
 "Sorry, something went wrong during install" = "죄송합니다. 설치 중 문제가 발생했습니다";
 
+/* Error shown when there is a problem retrieving the dates for the selected date range. */
+"Sorry, something went wrong. We can't load analytics for the selected date range." = "죄송합니다. 문제가 발생했습니다 선택한 날짜 범위의 분석을 로드할 수 없습니다.";
+
 /* Error message displayed when the entered email is not available. */
 "Sorry, that email address is already being used!" = "죄송합니다. 해당 이메일 주소는 이미 사용되고 있습니다!";
 
@@ -4949,7 +5000,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "표준 요율";
 
-/* Label for one of the filters in order custom date range */
+/* Label for one of the filters in order custom date range
+   Start Date label in custom range date picker */
 "Start Date" = "시작 날짜";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to create coupons. */
@@ -5299,11 +5351,20 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "URL에 올바른 호스트가 없습니다.";
 
+/* Error message shown when the built-in reader cannot be used because the amount for payment is not supported by the built in reader. */
+"The amount is not supported by the built in reader – please try a hardware reader or another payment method." = "금액이 기본 제공 리더에서 지원되지 않습니다. 하드웨어 리더 또는 다른 결제 수단을 시도하세요.";
+
+/* Error message shown when the built-in reader cannot be used because the device's NFC chipset has been disabled by a device management policy. */
+"The app could not enable the card reader, because the NFC chip is disabled. Please contact support for more details." = "NFC 칩이 비활성화되어서 카드 리더를 앱에서 활성화할 수 없습니다. 자세한 내용은 지원팀에 문의하세요.";
+
 /* Error title when trying to remove an attribute remotely. */
 "The attribute couldn't be removed." = "속성을 제거할 수 없습니다.";
 
 /* Error title when trying to update or create an attribute remotely. */
 "The attribute couldn't be saved." = "속성을 저장할 수 없습니다.";
+
+/* Error message shown when the built-in reader cannot be used because there is a call in progress */
+"The built-in reader cannot be used during a phone call. Please try again after you finish your call" = "통화 중에는 기본 제공 리더를 사용할 수 없습니다. 통화를 마치고 다시 시도하세요.";
 
 /* Message when the card presented does not support the order currency. */
 "The card does not support this currency. Try another means of payment" = "카드에서 이 통화가 지원되지 않습니다. 다른 결제 수단 시도";
@@ -5350,6 +5411,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the card reader - please try another means of refund" = "카드가 카드 리더에서 거부되었습니다. 다른 환불 수단을 사용해 보세요.";
 
+/* Error message when the card reader itself declines the card. */
+"The card was declined by the iPhone card reader - please try another means of payment" = "카드가 iPhone 카드 리더에서 거부되었습니다. 다른 결제 수단을 시도하세요.";
+
 /* Error message when the card processor declines the payment. */
 "The card was declined by the payment processor - please try another means of payment" = "결제 처리기에서 카드가 거부되었음 - 다른 결제 수단을 시도하세요.";
 
@@ -5362,8 +5426,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message in the Add Edit Coupon screen when the coupon code is empty. */
 "The coupon code couldn't be empty" = "쿠폰 코드는 비워둘 수 없음";
 
+/* Error message shown when the built-in reader cannot be used because the currency for payment is not supported by the built in reader. */
+"The currency is not supported by the built in reader – please try a hardware reader or another payment method." = "통화가 기본 제공 리더에서 지원되지 않습니다. 하드웨어 리더 또는 다른 결제 수단을 시도하세요.";
+
 /* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
 "The customer will receive an email once order is completed" = "주문이 완료되면 고객에게 이메일이 수신됩니다.";
+
+/* Label within the modal dialog that appears when connecting to a built in card reader */
+"The first time you connect, you may be prompted to accept Apple's Terms of Service." = "처음 연결하면 Apple의 서비스 약관에 동의하라는 메시지가 표시될 수 있습니다.";
 
 /* The message of the alert when another custom package has the same name */
 "The new custom package name is not unique." = "새 사용자 정의 패키지 이름이 고유하지 않습니다.";
@@ -5529,6 +5599,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Text when there is an unknown error while trying to collect payments */
 "There was an error while trying to collect the payment." = "결제를 받는 동안 오류가 발생했습니다.";
+
+/* Error message shown when the built-in reader cannot be used because there was some issue with the connection. Retryable. */
+"There was an issue preparing the built in reader for payment – please try again." = "기본 제공 리더를 결제용으로 준비하는 중 문제가 발생했습니다. 다시 시도하세요.";
 
 /* Refund policy under the purchase button on the store creation plan screen. */
 "There’s no risk, you can cancel for a full refund within 30 days." = "30일 이내에 취소하면 전액 환불받을 수 있으며 손해가 발생하지 않습니다.";
@@ -5888,6 +5961,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Load Product Attributes Action Failed */
 "Unable to load product attributes" = "제품 속성을 로드할 수 없음";
+
+/* Text displayed when there is an error loading items sold stats data. */
+"Unable to load product items sold analytics" = "판매한 상품 아이템 분석을 로드할 수 없음";
 
 /* Text displayed when there is an error loading revenue stats data. */
 "Unable to load revenue analytics" = "수익 분석을 로드할 수 없음";
@@ -6413,7 +6489,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "What is WooCommerce Shipping?" = "우커머스 배송이 무엇인가요?";
 
 /* Navigates to page with details about What is WordPress.com. */
-"What is WordPress.com?" = "_워드프레스닷컴이란 무엇인가요?_";
+"What is WordPress.com?" = "워드프레스닷컴이란 무엇인가요?";
 
 /* Navigates to screen containing the latest WooCommerce Features */
 "What's New in WooCommerce" = "우커머스의 새로운 기능";
@@ -6492,7 +6568,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "예. 변경합니다.";
 
-/* Yesterday Section Header */
+/* Title of the Analytics Hub Yesterday selection range
+   Yesterday Section Header */
 "Yesterday" = "어제";
 
 /* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
@@ -6553,6 +6630,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "결제 대금을 수령하려면 카드 리더 소프트웨어를 업데이트해야 합니다. 취소하면 리더 연결이 차단됩니다.";
 
+/* Error message shown when the built-in reader cannot be used because the device does not have a passcode set. */
+"Your device needs a lock screen passcode set to use the built-in card reader" = "기본 제공 카드 리더를 사용하도록 설정된 잠금 화면 패스코드가 기기에 필요합니다.";
+
 /* Title of the email field on the account creation form. */
 "Your email address" = "사용 중인 이메일 주소";
 
@@ -6562,11 +6642,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
 "Your iPhone can be used as a card reader, or you can connect to an external reader via bluetooth." = "iPhone을 카드 리더로 사용하거나, 블루투스를 통해 외부 리더에 연결할 수 있습니다.";
 
+/* Label that displays when a configuration update is happening */
+"Your iPhone needs to be configured to collect payments." = "결제받도록 iPhone을 구성해야 합니다.";
+
 /* Message displayed when a coupon was successfully created */
 "Your new coupon was created!" = "새 쿠폰이 생성되었습니다.";
 
 /* Title for the error screen when the merchant's In-Person Payments account has pending requirements which will result in their account being restricted if not resolved by a deadline */
 "Your payments account has pending requirements" = "결제 계정에 대기 중인 요구 사항이 있습니다.";
+
+/* Dialog message that displays when a configuration update just finished installing */
+"Your phone will be ready to collect payments in a moment..." = "곧 스마트폰으로 결제받을 준비가 완료됩니다...";
 
 /* Label that displays when an optional software update is happening */
 "Your reader will automatically restart and reconnect after the update is complete." = "업데이트를 완료하면 리더가 자동으로 다시 시작하고 다시 연결됩니다.";
@@ -6602,6 +6688,26 @@ This part is the link to the website, and forms part of a longer sentence which 
 "appLinkWidget.displayName" = "아이콘";
 
 /* Label for a cancel button */
+"cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "취소";
+
+/* Label within the modal dialog that appears when checking the built in card reader */
+"cardPresent.builtIn.modalCheckingDeviceSupport.instruction" = "iPhone의 눌러서 결제가 기기에서 준비되었는지 확인하는 동안 기다려 주세요.";
+
+/* A label prompting users to learn more about In-Person Payments.
+This is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
+"cardPresent.builtIn.modalCheckingDeviceSupport.learnMore.link" = "더 알아보기";
+
+/* A label prompting users to learn more about In-Person Payments.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"cardPresent.builtIn.modalCheckingDeviceSupport.learnMore.text" = "직접 결제에 대한 %1$@";
+
+/* Title label for modal dialog that appears when searching for a card reader */
+"cardPresent.builtIn.modalCheckingDeviceSupport.title" = "기기 확인 중";
+
+/* Label for a cancel button */
 "cardPresent.modalScanningForReader.cancelButton" = "취소";
 
 /* Label within the modal dialog that appears when searching for a card reader */
@@ -6627,6 +6733,9 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "example.com";
+
+/* Indicates the status of a built in card reader. Presented to users when payment collection starts */
+"iPhone reader is ready" = "iPhone 리더가 준비되었습니다.";
 
 /* A message that tells the user why the app needs access to Bluetooth. */
 "infoplist.NSBluetoothAlwaysUsageDescription" = "이 앱에서는 블루투스를 사용하여 지원되는 카드 리더에 연결합니다.";
@@ -6715,9 +6824,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "오늘의 통계를 가져올 수 없음";
-
-/* Today */
-"today" = "오늘";
 
 /* Value for the WooCommerce plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "알 수 없음";

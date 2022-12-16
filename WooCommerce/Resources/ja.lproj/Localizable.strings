@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-12-06 11:54:05+0000 */
+/* Translation-Revision-Date: 2022-12-14 18:00:02+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -9,7 +9,7 @@
 /* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
 "#%@ %@" = "#%1$@ %2$@";
 
-/* Label that describes the completed progress of a software update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
 "%.0f%% complete" = "%.0f%% 完了";
 
 /* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
@@ -691,7 +691,8 @@ which should be translated separately and considered part of this sentence. */
 /* Reads as 'Application name'. Part of the mandatory data in receipts */
 "Application Name" = "アプリケーション名";
 
-/* Change order status screen - button title to apply selection */
+/* Apply navigation button in custom range date picker
+   Change order status screen - button title to apply selection */
 "Apply" = "適用";
 
 /* Message to share the coupon code if it is applicable to all products. Reads like: Apply 10% off to all products with the promo code “20OFF”. */
@@ -1180,6 +1181,12 @@ which should be translated separately and considered part of this sentence. */
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "新しい注文メモを作成します。";
 
+/* Dialog title that displays when a configuration update just finished installing */
+"Configuration updated" = "設定を更新しました";
+
+/* Dialog title that displays when iPhone configuration is being updated for use as a card reader */
+"Configuring iPhone" = "iPhone を設定しています";
+
 /* Close Account confirmation alert title. */
 "Confirm Close Account" = "アカウントの閉鎖を確認";
 
@@ -1523,6 +1530,9 @@ which should be translated separately and considered part of this sentence. */
    Placeholder name of a custom shipment tracking carrier
    Title of button to add a custom tracking carrier if filtering the list yields no results. */
 "Custom Carrier" = "カスタムの配送業者";
+
+/* Title in custom range date picker */
+"Custom Date Range" = "カスタムの日付の範囲";
 
 /* Title for the order custom fields list */
 "Custom Fields" = "カスタムフィールド";
@@ -1943,7 +1953,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the status row on Product Variation main screen to enable/disable a variation */
 "Enabled" = "有効";
 
-/* Label for one of the filters in order custom date range */
+/* End Date label in custom range date picker
+   Label for one of the filters in order custom date range */
 "End Date" = "終了日";
 
 /* The title used when asking the user for feedback for the app. */
@@ -2295,6 +2306,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "商品毎に割引";
+
+/* Label asking users to follow the built in reader instruction. Presented to users when a payment is going to be collected using the iPhone's built in reader */
+"Follow reader instructions to pay" = "リーダーの支払い手順に従います";
 
 /* User role badge */
 "Follower" = "フォロワー";
@@ -2811,6 +2825,18 @@ which should be translated separately and considered part of this sentence. */
 /* Last 7 days section header */
 "Last 7 days" = "過去1週間";
 
+/* Title of the Analytics Hub Last Month selection range */
+"Last Month" = "先月";
+
+/* Title of the Analytics Hub Last Quarter selection range */
+"Last Quarter" = "前四半期";
+
+/* Title of the Analytics Hub Last Week selection range */
+"Last Week" = "先週";
+
+/* Title of the Analytics Hub Last Year selection range */
+"Last Year" = "去年";
+
 /* Text field name in Edit Address Form */
 "Last name" = "姓";
 
@@ -3185,7 +3211,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label for net sales (net revenue) in the Analytics Hub */
 "Net Sales" = "純売上高";
 
-/* Top performers — label for the total sales of a product */
+/* Label for the total sales of a product in the Analytics Hub
+   Top performers — label for the total sales of a product */
 "Net sales: %@" = "純売上高: %@";
 
 /* Title for table view section of network active plugins */
@@ -3705,8 +3732,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "リーダーを充電してください";
 
+/* Error message shown when the built-in reader cannot be used because the device does not meet minimum requirements. */
+"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.0 or above. Contact support if this error shows on a supported device." = "お使いのスマートフォンが次の要件を満たしていることを確認してください: iOS 16.0以降対応の iPhone XS 以降。 対応の端末でこのエラーが表示される場合は、サポートにお問い合わせください。";
+
+/* Error message shown when the built-in reader cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
+"Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service" = "Apple ID が有効であることを確認してから、もう一度お試しください。 Apple の利用規約に同意するには、有効な Apple ID が必要です";
+
 /* Error message on the Jetpack setup required screen when Jetpack connection is missing. */
 "Please connect your store to Jetpack to access it on this app." = "このアプリでアクセスするには、ストアを Jetpack に連携してください。";
+
+/* Error message shown when the built-in reader cannot be used because there is an issue with the merchant account or device */
+"Please contact support – there was an issue connecting to the built-in reader" = "サポートにお問い合わせください。内蔵リーダーへの接続中に問題が発生しました";
 
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app." = "アプリを使用するには、サイトの所有者に連絡し、ショップ運営者または管理者としてサイトへの招待を受けてください。";
@@ -3792,6 +3828,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "荷物を選択してください";
 
+/* Error message shown when the built-in reader cannot be used because the device is not signed in to iCloud. */
+"Please sign in to iCloud on this device, so you can use the built-in card reader" = "この端末で iCloud にログインすると、内蔵カードリーダーを使用できるようになります";
+
 /* Message of the alert when the store cannot be created due to the domain in the store creation flow. */
 "Please try a different domain." = "他のドメインをお試しください。";
 
@@ -3809,6 +3848,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Body text for the default store picker error screen */
 "Please try again or reach out to us and we'll be happy to assist you!" = "再度お試しいただくか、サポートをご依頼ください。";
+
+/* Error message shown when the built-in reader cannot be used because the merchant cancelled or did not complete the Terms of Service acceptance flow */
+"Please try again, and accept Apple's Terms of Service, so you can use the built-in card reader" = "もう一度試し、Apple の利用規約に同意すると、内蔵カートリーダーを使用できるようになります";
 
 /* Message of the alert when the WPCOM plan cannot be purchased in a webview in the store creation flow. */
 "Please try again, or exit the screen and check back on your store if you previously left the checkout screen while payment is in progress." = "もう一度お試しいただくか、支払いの進行中に購入手続き画面から離れていた場合は、画面を終了してストアをもう一度確認してください。";
@@ -3894,6 +3936,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of in-progress modal when preparing for printing customs invoice */
 "Preparing document" = "Document を準備中";
+
+/* Title label for modal dialog that appears when connecting to a built in card reader */
+"Preparing iPhone card reader..." = "iPhone カートリーダーを準備しています...";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Present card to pay" = "カードを提示して支払う";
@@ -4120,6 +4165,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Restriction type Quarantine for contents declared in the customs form for Shipping Label flow */
 "Quarantine" = "検疫";
+
+/* Title of the Analytics Hub Quarter to Date selection range */
+"Quarter to Date" = "今四半期の現在まで";
 
 /* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
 "Quickly get up and selling with a beautiful online store." = "美しいオンラインストアをすぐに立ち上げてそこで販売しましょう。";
@@ -4893,6 +4941,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error title when Jetpack install fails */
 "Sorry, something went wrong during install" = "インストール中にエラーが発生しました";
 
+/* Error shown when there is a problem retrieving the dates for the selected date range. */
+"Sorry, something went wrong. We can't load analytics for the selected date range." = "エラーが発生しました。 選択した期間の分析を読み込めません。";
+
 /* Error message displayed when the entered email is not available. */
 "Sorry, that email address is already being used!" = "ご指定のメールアドレスはすでに使われています。";
 
@@ -4949,7 +5000,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "標準税率";
 
-/* Label for one of the filters in order custom date range */
+/* Label for one of the filters in order custom date range
+   Start Date label in custom range date picker */
 "Start Date" = "開始日";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to create coupons. */
@@ -5299,11 +5351,20 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "この URL には有効なホストがありません。";
 
+/* Error message shown when the built-in reader cannot be used because the amount for payment is not supported by the built in reader. */
+"The amount is not supported by the built in reader – please try a hardware reader or another payment method." = "内蔵リーダーが金額に対応していません。ハードウェアリーダーか、別の支払い方法をお試しください。";
+
+/* Error message shown when the built-in reader cannot be used because the device's NFC chipset has been disabled by a device management policy. */
+"The app could not enable the card reader, because the NFC chip is disabled. Please contact support for more details." = "NFC チップが無効になっているため、アプリでカードリーダーを有効化できませんでした。 詳細についてはサポートにお問い合わせください。";
+
 /* Error title when trying to remove an attribute remotely. */
 "The attribute couldn't be removed." = "属性を削除できませんでした。";
 
 /* Error title when trying to update or create an attribute remotely. */
 "The attribute couldn't be saved." = "属性を保存できませんでした。";
+
+/* Error message shown when the built-in reader cannot be used because there is a call in progress */
+"The built-in reader cannot be used during a phone call. Please try again after you finish your call" = "通話中は内蔵リーダーを使用できません。 通話を終了してからもう一度お試しください";
 
 /* Message when the card presented does not support the order currency. */
 "The card does not support this currency. Try another means of payment" = "カードはこの通貨をサポートしていません。 別の支払方法をお試しください";
@@ -5350,6 +5411,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the card reader - please try another means of refund" = "カードリーダーでカードが拒否されました。別の支払方法をお試しください。";
 
+/* Error message when the card reader itself declines the card. */
+"The card was declined by the iPhone card reader - please try another means of payment" = "カードが iPhone カードリーダーに拒否されました。別の支払い方法をお試しください";
+
 /* Error message when the card processor declines the payment. */
 "The card was declined by the payment processor - please try another means of payment" = "カードが決済業者により拒否されました。別の支払方法をお試しください。";
 
@@ -5362,8 +5426,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message in the Add Edit Coupon screen when the coupon code is empty. */
 "The coupon code couldn't be empty" = "クーポンコードを空にできませんでした";
 
+/* Error message shown when the built-in reader cannot be used because the currency for payment is not supported by the built in reader. */
+"The currency is not supported by the built in reader – please try a hardware reader or another payment method." = "内蔵リーダーが通貨に対応していません。ハードウェアリーダーか、別の支払い方法をお試しください。";
+
 /* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
 "The customer will receive an email once order is completed" = "お客様は注文を完了するとメールを受信します";
+
+/* Label within the modal dialog that appears when connecting to a built in card reader */
+"The first time you connect, you may be prompted to accept Apple's Terms of Service." = "最初に接続した際は、Apple の利用規約への同意を促す通知が表示されます。";
 
 /* The message of the alert when another custom package has the same name */
 "The new custom package name is not unique." = "新しいカスタムパッケージの名前が一意ではありません。";
@@ -5529,6 +5599,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Text when there is an unknown error while trying to collect payments */
 "There was an error while trying to collect the payment." = "支払いの受け取り中にエラーが発生しました。";
+
+/* Error message shown when the built-in reader cannot be used because there was some issue with the connection. Retryable. */
+"There was an issue preparing the built in reader for payment – please try again." = "支払いの際の内蔵カードリーダーの準備中に問題が発生しました。もう一度お試しください。";
 
 /* Refund policy under the purchase button on the store creation plan screen. */
 "There’s no risk, you can cancel for a full refund within 30 days." = "リスクは一切ありません。30日以内にキャンセルすれば全額が返金されます。";
@@ -5888,6 +5961,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Load Product Attributes Action Failed */
 "Unable to load product attributes" = "商品属性を読み込めません";
+
+/* Text displayed when there is an error loading items sold stats data. */
+"Unable to load product items sold analytics" = "販売済み商品の分析を読み込めません";
 
 /* Text displayed when there is an error loading revenue stats data. */
 "Unable to load revenue analytics" = "収益分析を読み込めません";
@@ -6413,7 +6489,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "What is WooCommerce Shipping?" = "WooCommerce Shipping とは";
 
 /* Navigates to page with details about What is WordPress.com. */
-"What is WordPress.com?" = "_WordPress.com とは何ですか ?_";
+"What is WordPress.com?" = "WordPress.com とは何ですか ?";
 
 /* Navigates to screen containing the latest WooCommerce Features */
 "What's New in WooCommerce" = "WooCommerce の最新情報";
@@ -6492,7 +6568,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "変更する";
 
-/* Yesterday Section Header */
+/* Title of the Analytics Hub Yesterday selection range
+   Yesterday Section Header */
 "Yesterday" = "昨日";
 
 /* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
@@ -6553,6 +6630,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "支払いを受け取るには、カードリーダーのソフトウェアを更新する必要があります。 キャンセルするとリーダーの接続がブロックされます。";
 
+/* Error message shown when the built-in reader cannot be used because the device does not have a passcode set. */
+"Your device needs a lock screen passcode set to use the built-in card reader" = "内蔵カートリーダーを使用するには、端末のロック画面のパスコードを設定する必要があります";
+
 /* Title of the email field on the account creation form. */
 "Your email address" = "あなたのメールアドレス";
 
@@ -6562,11 +6642,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
 "Your iPhone can be used as a card reader, or you can connect to an external reader via bluetooth." = "iPhone をカードリーダーとして使用するか、Bluetooth 経由で外付けリーダーに接続できます。";
 
+/* Label that displays when a configuration update is happening */
+"Your iPhone needs to be configured to collect payments." = "お使いの iPhone で支払いの受け取りを設定する必要があります。";
+
 /* Message displayed when a coupon was successfully created */
 "Your new coupon was created!" = "新しいクーポンが作成されました。";
 
 /* Title for the error screen when the merchant's In-Person Payments account has pending requirements which will result in their account being restricted if not resolved by a deadline */
 "Your payments account has pending requirements" = "お使いの支払いアカウントに保留中の要件があります";
+
+/* Dialog message that displays when a configuration update just finished installing */
+"Your phone will be ready to collect payments in a moment..." = "まもなくお使いのスマートフォンで支払いを受け取ることができるようになります...";
 
 /* Label that displays when an optional software update is happening */
 "Your reader will automatically restart and reconnect after the update is complete." = "更新が完了すると、Reader が自動的に再度起動し接続されます";
@@ -6602,6 +6688,26 @@ This part is the link to the website, and forms part of a longer sentence which 
 "appLinkWidget.displayName" = "アイコン";
 
 /* Label for a cancel button */
+"cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = " キャンセル";
+
+/* Label within the modal dialog that appears when checking the built in card reader */
+"cardPresent.builtIn.modalCheckingDeviceSupport.instruction" = "しばらくお待ちください。お使いの端末で iPhone の Tap to Pay が利用できることを確認しています。";
+
+/* A label prompting users to learn more about In-Person Payments.
+This is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
+"cardPresent.builtIn.modalCheckingDeviceSupport.learnMore.link" = "さらに詳しく";
+
+/* A label prompting users to learn more about In-Person Payments.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"cardPresent.builtIn.modalCheckingDeviceSupport.learnMore.text" = "オフラインでの支払いについて%1$@";
+
+/* Title label for modal dialog that appears when searching for a card reader */
+"cardPresent.builtIn.modalCheckingDeviceSupport.title" = "端末を確認しています";
+
+/* Label for a cancel button */
 "cardPresent.modalScanningForReader.cancelButton" = " キャンセル";
 
 /* Label within the modal dialog that appears when searching for a card reader */
@@ -6627,6 +6733,9 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "example.com";
+
+/* Indicates the status of a built in card reader. Presented to users when payment collection starts */
+"iPhone reader is ready" = "iPhone リーダーの準備ができました";
 
 /* A message that tells the user why the app needs access to Bluetooth. */
 "infoplist.NSBluetoothAlwaysUsageDescription" = "このアプリでは Bluetooth を使用してサポートされているカードリーダーに接続します。";
@@ -6715,9 +6824,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "今日の統計情報を取得できません";
-
-/* Today */
-"today" = "今日";
 
 /* Value for the WooCommerce plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "不明";

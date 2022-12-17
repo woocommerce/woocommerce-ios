@@ -65,6 +65,6 @@ class SessionManagerTests: XCTestCase {
 private enum Settings {
     static let keychainServiceName = "com.automattic.woocommerce.tests"
     static let defaults = UserDefaults(suiteName: "sessionManagerTests")!
-    static let credentials1 = Credentials(username: "lalala", authToken: "1234", siteAddress: "https://example.com")
-    static let credentials2 = Credentials(username: "yayaya", authToken: "5678", siteAddress: "https://wordpress.com")
+    static let credentials1 = WPCOMCredentials(username: "lalala", authToken: "1234", siteAddress: "https://example.com")
+    static let credentials2 = WPCOMCredentials(username: "yayaya", authToken: "5678", siteAddress: "https://wordpress.com")
 }

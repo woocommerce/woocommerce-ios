@@ -15,11 +15,11 @@ final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
 
     /// Dummy WPCOM auth token
     ///
-    private let credentials = Credentials(authToken: "dummy-token")
+    private let credentials = WPCOMCredentials(authToken: "dummy-token")
 
     /// Dummy WPCOM auth token
     ///
-    private let applicationPasswordURLSuffix = Credentials(authToken: "dummy-token")
+    private let applicationPasswordURLSuffix = WPCOMCredentials(authToken: "dummy-token")
 
     /// URL suffixes
     ///

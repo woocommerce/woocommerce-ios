@@ -1,5 +1,1 @@
-- [**] Analytics Hub: Now you can select custom date ranges. [https://github.com/woocommerce/woocommerce-ios/pull/8414]
-- [**] Analytics Hub: Now you can see Views and Conversion Rate analytics in the new Sessions card. [https://github.com/woocommerce/woocommerce-ios/pull/8428]
-- [*] My Store: We fixed an issue with Visitors and Conversion stats where sometimes visitors could be counted more than once in the selected period. [https://github.com/woocommerce/woocommerce-ios/pull/8427]
-
-
+Did you know we've added a new analytics section? It's now possible to select custom date ranges when viewing your stats! Simply click on the See More button under the store stats to check it out.

@@ -1,1 +1,5 @@
-Good news! We added a new analytics section to the app! Simply click on the See More button under the store stats to check more detailed information on Revenue and Orders. This isn’t the last of it – more updates to come in the next few weeks!
+- [**] Analytics Hub: Now you can select custom date ranges. [https://github.com/woocommerce/woocommerce-ios/pull/8414]
+- [**] Analytics Hub: Now you can see Views and Conversion Rate analytics in the new Sessions card. [https://github.com/woocommerce/woocommerce-ios/pull/8428]
+- [*] My Store: We fixed an issue with Visitors and Conversion stats where sometimes visitors could be counted more than once in the selected period. [https://github.com/woocommerce/woocommerce-ios/pull/8427]
+
+

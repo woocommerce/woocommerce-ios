@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-12-06 11:54:03+0000 */
+/* Translation-Revision-Date: 2022-12-14 17:59:33+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -9,7 +9,7 @@
 /* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
 "#%@ %@" = "#%1$@ %2$@";
 
-/* Label that describes the completed progress of a software update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
 "%.0f%% complete" = "%.0f %% abgeschlossen";
 
 /* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
@@ -691,7 +691,8 @@ which should be translated separately and considered part of this sentence. */
 /* Reads as 'Application name'. Part of the mandatory data in receipts */
 "Application Name" = "Anwendungsname";
 
-/* Change order status screen - button title to apply selection */
+/* Apply navigation button in custom range date picker
+   Change order status screen - button title to apply selection */
 "Apply" = "Übernehmen";
 
 /* Message to share the coupon code if it is applicable to all products. Reads like: Apply 10% off to all products with the promo code “20OFF”. */
@@ -1180,6 +1181,12 @@ which should be translated separately and considered part of this sentence. */
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "Verfasst einen neuen Bestellhinweis.";
 
+/* Dialog title that displays when a configuration update just finished installing */
+"Configuration updated" = "Konfiguration aktualisiert";
+
+/* Dialog title that displays when iPhone configuration is being updated for use as a card reader */
+"Configuring iPhone" = "iPhone wird konfiguriert";
+
 /* Close Account confirmation alert title. */
 "Confirm Close Account" = "Bestätige das Schließen des Kontos";
 
@@ -1523,6 +1530,9 @@ which should be translated separately and considered part of this sentence. */
    Placeholder name of a custom shipment tracking carrier
    Title of button to add a custom tracking carrier if filtering the list yields no results. */
 "Custom Carrier" = "Individueller Versanddienstleister";
+
+/* Title in custom range date picker */
+"Custom Date Range" = "Angepasster Zeitraum";
 
 /* Title for the order custom fields list */
 "Custom Fields" = "Eigene Felder";
@@ -1943,7 +1953,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the status row on Product Variation main screen to enable/disable a variation */
 "Enabled" = "Aktiviert";
 
-/* Label for one of the filters in order custom date range */
+/* End Date label in custom range date picker
+   Label for one of the filters in order custom date range */
 "End Date" = "End-Datum";
 
 /* The title used when asking the user for feedback for the app. */
@@ -2295,6 +2306,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "Fester Rabatt auf Produkt";
+
+/* Label asking users to follow the built in reader instruction. Presented to users when a payment is going to be collected using the iPhone's built in reader */
+"Follow reader instructions to pay" = "Befolge die Anweisungen des Kartenlesers, um zu zahlen";
 
 /* User role badge */
 "Follower" = "Follower";
@@ -2811,6 +2825,18 @@ which should be translated separately and considered part of this sentence. */
 /* Last 7 days section header */
 "Last 7 days" = "Letzte 7 Tage";
 
+/* Title of the Analytics Hub Last Month selection range */
+"Last Month" = "Letzter Monat";
+
+/* Title of the Analytics Hub Last Quarter selection range */
+"Last Quarter" = "Letztes Quartal";
+
+/* Title of the Analytics Hub Last Week selection range */
+"Last Week" = "Letzte Woche";
+
+/* Title of the Analytics Hub Last Year selection range */
+"Last Year" = "Letztes Jahr";
+
 /* Text field name in Edit Address Form */
 "Last name" = "Nachname";
 
@@ -3185,7 +3211,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label for net sales (net revenue) in the Analytics Hub */
 "Net Sales" = "Nettoumsatz";
 
-/* Top performers — label for the total sales of a product */
+/* Label for the total sales of a product in the Analytics Hub
+   Top performers — label for the total sales of a product */
 "Net sales: %@" = "Nettoumsatz: %@";
 
 /* Title for table view section of network active plugins */
@@ -3705,8 +3732,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "Lade bitte den Akku deines Lesegeräts auf";
 
+/* Error message shown when the built-in reader cannot be used because the device does not meet minimum requirements. */
+"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.0 or above. Contact support if this error shows on a supported device." = "Bitte stelle sicher, dass dein Gerät die folgenden Anforderungen erfühlt: iPhone XS oder ein neueres Modell mit iOS 16.0 oder höher. Kontaktiere den Support, wenn dieser Fehler auf einem unterstützten Gerät angezeigt wird.";
+
+/* Error message shown when the built-in reader cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
+"Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service" = "Bitte überprüfe, ob deine Apple ID gültig ist, und versuche es dann erneut. Du benötigst eine gültige Apple ID, um die Geschäftsbedingungen von Apple akzeptieren zu können";
+
 /* Error message on the Jetpack setup required screen when Jetpack connection is missing. */
 "Please connect your store to Jetpack to access it on this app." = "Bitte verbinde deinen Shop mit Jetpack, um in dieser App darauf zuzugreifen.";
+
+/* Error message shown when the built-in reader cannot be used because there is an issue with the merchant account or device */
+"Please contact support – there was an issue connecting to the built-in reader" = "Bitte wende dich an den Support – bei der Verbindung mit dem integrierten Kartenleser ist ein Problem aufgetreten";
 
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app." = "Bitte wende dich an den Website-Betreiber, um eine Einladung zur Nutzung der App als Shop-Manager oder Administrator zu erhalten.";
@@ -3792,6 +3828,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "Bitte wähle ein Paket aus";
 
+/* Error message shown when the built-in reader cannot be used because the device is not signed in to iCloud. */
+"Please sign in to iCloud on this device, so you can use the built-in card reader" = "Bitte melde dich in iCloud an, damit du den integrierten Kartenleser nutzen kannst";
+
 /* Message of the alert when the store cannot be created due to the domain in the store creation flow. */
 "Please try a different domain." = "Bitte versuche es mit einer anderen Domain.";
 
@@ -3809,6 +3848,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Body text for the default store picker error screen */
 "Please try again or reach out to us and we'll be happy to assist you!" = "Versuche es erneut oder kontaktiere uns, wir helfen dir gerne weiter!";
+
+/* Error message shown when the built-in reader cannot be used because the merchant cancelled or did not complete the Terms of Service acceptance flow */
+"Please try again, and accept Apple's Terms of Service, so you can use the built-in card reader" = "Bitte versuche es erneut und akzeptiere die Geschäftsbedingungen von Apple, damit du den integrierten Kartenleser nutzen kannst";
 
 /* Message of the alert when the WPCOM plan cannot be purchased in a webview in the store creation flow. */
 "Please try again, or exit the screen and check back on your store if you previously left the checkout screen while payment is in progress." = "Bitte versuche es erneut. Solltest du zuvor den Bezahlbildschirm während der laufenden Zahlung verlassen haben, kannst du alternativ diese Seite schließen und zum Shop zurückkehren.";
@@ -3894,6 +3936,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of in-progress modal when preparing for printing customs invoice */
 "Preparing document" = "Dokument wird vorbereitet";
+
+/* Title label for modal dialog that appears when connecting to a built in card reader */
+"Preparing iPhone card reader..." = "Der iPhone-Kartenleser wird vorbereitet …";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Present card to pay" = "Zum Bezahlen Karte vorlegen";
@@ -4120,6 +4165,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Restriction type Quarantine for contents declared in the customs form for Shipping Label flow */
 "Quarantine" = "Quarantäne";
+
+/* Title of the Analytics Hub Quarter to Date selection range */
+"Quarter to Date" = "Bisheriges Quartal";
 
 /* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
 "Quickly get up and selling with a beautiful online store." = "Richte einen attraktiven Onlineshop ein und starte mit dem Verkauf – einfach und schnell.";
@@ -4893,6 +4941,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error title when Jetpack install fails */
 "Sorry, something went wrong during install" = "Leider ist während der Installation etwas schiefgelaufen";
 
+/* Error shown when there is a problem retrieving the dates for the selected date range. */
+"Sorry, something went wrong. We can't load analytics for the selected date range." = "Es ist ein Fehler aufgetreten. Für den ausgewählten Zeitraum konnten keine Analysen geladen werden.";
+
 /* Error message displayed when the entered email is not available. */
 "Sorry, that email address is already being used!" = "Diese E-Mail-Adresse wird leider bereits genutzt!";
 
@@ -4949,7 +5000,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "Standardpreis";
 
-/* Label for one of the filters in order custom date range */
+/* Label for one of the filters in order custom date range
+   Start Date label in custom range date picker */
 "Start Date" = "Start-Datum";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to create coupons. */
@@ -5299,11 +5351,20 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "Diese URL hat keinen gültigen Host.";
 
+/* Error message shown when the built-in reader cannot be used because the amount for payment is not supported by the built in reader. */
+"The amount is not supported by the built in reader – please try a hardware reader or another payment method." = "Die Summe wird vom integrierten Kartenleser nicht unterstützt – bitte verwende ein Hardware-Lesegerät oder eine andere Zahlungsmethode.";
+
+/* Error message shown when the built-in reader cannot be used because the device's NFC chipset has been disabled by a device management policy. */
+"The app could not enable the card reader, because the NFC chip is disabled. Please contact support for more details." = "Die App konnte den Kartenleser nicht aktivieren, da der NFC-Chip deaktiviert ist. Bitte wende dich an den Support, um weitere Informationen zu erhalten.";
+
 /* Error title when trying to remove an attribute remotely. */
 "The attribute couldn't be removed." = "Die Eigenschaft konnte nicht entfernt werden.";
 
 /* Error title when trying to update or create an attribute remotely. */
 "The attribute couldn't be saved." = "Das Attribut konnte nicht gespeichert werden.";
+
+/* Error message shown when the built-in reader cannot be used because there is a call in progress */
+"The built-in reader cannot be used during a phone call. Please try again after you finish your call" = "Der integrierte Kartenleser kann nicht während eines Anrufs verwendet werden. Bitte versuche es erneut, nachdem du den Anruf beendet hast";
 
 /* Message when the card presented does not support the order currency. */
 "The card does not support this currency. Try another means of payment" = "Diese Währung wird von der Karte nicht unterstützt. Versuche es mit einer anderen Zahlungsmethode";
@@ -5350,6 +5411,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the card reader - please try another means of refund" = "Die Karte wurde vom Kartenlesegerät abgelehnt – bitte versuche es mit einer anderen Erstattungsmethode";
 
+/* Error message when the card reader itself declines the card. */
+"The card was declined by the iPhone card reader - please try another means of payment" = "Die Karte wurde vom iPhone-Kartenleser abgelehnt – bitte versuche es mit einer anderen Zahlungsmethode";
+
 /* Error message when the card processor declines the payment. */
 "The card was declined by the payment processor - please try another means of payment" = "Die Karte wurde vom Zahlungsabwickler abgelehnt – bitte versuche es mit einer anderen Zahlungsmethode";
 
@@ -5362,8 +5426,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message in the Add Edit Coupon screen when the coupon code is empty. */
 "The coupon code couldn't be empty" = "Der Gutscheincode darf nicht leer sein";
 
+/* Error message shown when the built-in reader cannot be used because the currency for payment is not supported by the built in reader. */
+"The currency is not supported by the built in reader – please try a hardware reader or another payment method." = "Die Währung wird vom integrierten Kartenleser nicht unterstützt – bitte verwende ein Hardware-Lesegerät oder eine andere Zahlungsmethode.";
+
 /* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
 "The customer will receive an email once order is completed" = "Der Kunde erhält eine E-Mail, sobald die Bestellung abgeschlossen ist.";
+
+/* Label within the modal dialog that appears when connecting to a built in card reader */
+"The first time you connect, you may be prompted to accept Apple's Terms of Service." = "Wenn du dich das erste Mal verbindest, wirst du möglicherweise gebeten, die Geschäftsbedingungen von Apple zu akzeptieren.";
 
 /* The message of the alert when another custom package has the same name */
 "The new custom package name is not unique." = "Der neue Name des individuellen Pakets ist nicht einzigartig.";
@@ -5529,6 +5599,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Text when there is an unknown error while trying to collect payments */
 "There was an error while trying to collect the payment." = "Beim Empfangen der Zahlung ist ein Fehler aufgetreten.";
+
+/* Error message shown when the built-in reader cannot be used because there was some issue with the connection. Retryable. */
+"There was an issue preparing the built in reader for payment – please try again." = "Bei der Vorbereitung des integrierten Kartenlesers für Zahlungen ist ein Fehler aufgetreten – bitte versuche es erneut.";
 
 /* Refund policy under the purchase button on the store creation plan screen. */
 "There’s no risk, you can cancel for a full refund within 30 days." = "Es besteht kein Risiko, du kannst innerhalb von 30 Tagen kündigen und erhältst eine vollständige Rückerstattung.";
@@ -5888,6 +5961,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Load Product Attributes Action Failed */
 "Unable to load product attributes" = "Produktattribute können nicht geladen werden";
+
+/* Text displayed when there is an error loading items sold stats data. */
+"Unable to load product items sold analytics" = "Analysedaten zu den verkauften Produktartikeln konnte nicht geladen werden";
 
 /* Text displayed when there is an error loading revenue stats data. */
 "Unable to load revenue analytics" = "Analysedaten zu den Einnahmen konnten nicht geladen werden";
@@ -6413,7 +6489,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "What is WooCommerce Shipping?" = "Was ist WooCommerce Shipping?";
 
 /* Navigates to page with details about What is WordPress.com. */
-"What is WordPress.com?" = "_Was ist WordPress.com?_";
+"What is WordPress.com?" = "Was ist WordPress.com?";
 
 /* Navigates to screen containing the latest WooCommerce Features */
 "What's New in WooCommerce" = "Neu in WooCommerce";
@@ -6492,7 +6568,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "Ja, ändern";
 
-/* Yesterday Section Header */
+/* Title of the Analytics Hub Yesterday selection range
+   Yesterday Section Header */
 "Yesterday" = "Gestern";
 
 /* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
@@ -6553,6 +6630,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "Die Software deines Kartenlesers muss aktualisiert werden, um Zahlungen zu empfangen. Wenn du abbrichst, wird die Verbindung deines Lesegeräts blockiert.";
 
+/* Error message shown when the built-in reader cannot be used because the device does not have a passcode set. */
+"Your device needs a lock screen passcode set to use the built-in card reader" = "Für dein Gerät muss ein Zugangscode für den Sperrbildschirm eingerichtet sein, damit du den integrierten Kartenleser nutzen kannst";
+
 /* Title of the email field on the account creation form. */
 "Your email address" = "Deine E-Mail-Adresse";
 
@@ -6562,11 +6642,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
 "Your iPhone can be used as a card reader, or you can connect to an external reader via bluetooth." = "Du kannst dein iPhone als Kartenlesegerät nutzen oder per Bluetooth eine Verbindung zu einem externen Lesegerät herstellen.";
 
+/* Label that displays when a configuration update is happening */
+"Your iPhone needs to be configured to collect payments." = "Dein iPhone muss konfiguriert werden, um Zahlungen entgegenzunehmen.";
+
 /* Message displayed when a coupon was successfully created */
 "Your new coupon was created!" = "Dein neuer Gutschein wurde erstellt!";
 
 /* Title for the error screen when the merchant's In-Person Payments account has pending requirements which will result in their account being restricted if not resolved by a deadline */
 "Your payments account has pending requirements" = "Dein Zahlungskonto weist ausstehende Anforderungen auf";
+
+/* Dialog message that displays when a configuration update just finished installing */
+"Your phone will be ready to collect payments in a moment..." = "Dein Telefon ist gleich zum Empfang von Zahlungen bereit …";
 
 /* Label that displays when an optional software update is happening */
 "Your reader will automatically restart and reconnect after the update is complete." = "Dein Kartenlesegerät wird nach Abschluss des Updates automatisch neu gestartet und neu verbunden";
@@ -6602,6 +6688,26 @@ This part is the link to the website, and forms part of a longer sentence which 
 "appLinkWidget.displayName" = "Icon";
 
 /* Label for a cancel button */
+"cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "Abbrechen";
+
+/* Label within the modal dialog that appears when checking the built in card reader */
+"cardPresent.builtIn.modalCheckingDeviceSupport.instruction" = "Bitte warte, während wir überprüfen, ob dein Gerät für „Tap to Pay on iPhone“ bereit ist.";
+
+/* A label prompting users to learn more about In-Person Payments.
+This is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
+"cardPresent.builtIn.modalCheckingDeviceSupport.learnMore.link" = "Weitere Informationen";
+
+/* A label prompting users to learn more about In-Person Payments.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"cardPresent.builtIn.modalCheckingDeviceSupport.learnMore.text" = "%1$@ zu Persönlichen Zahlungen";
+
+/* Title label for modal dialog that appears when searching for a card reader */
+"cardPresent.builtIn.modalCheckingDeviceSupport.title" = "Gerät wird überprüft";
+
+/* Label for a cancel button */
 "cardPresent.modalScanningForReader.cancelButton" = "Abbrechen";
 
 /* Label within the modal dialog that appears when searching for a card reader */
@@ -6627,6 +6733,9 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "example.com";
+
+/* Indicates the status of a built in card reader. Presented to users when payment collection starts */
+"iPhone reader is ready" = "iPhone-Kartenleser ist bereit";
 
 /* A message that tells the user why the app needs access to Bluetooth. */
 "infoplist.NSBluetoothAlwaysUsageDescription" = "Diese App verwendet Bluetooth, um sich mit unterstützten Kartenlesegeräten zu verbinden.";
@@ -6715,9 +6824,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "Die heutigen Statistiken konnten nicht abgerufen werden";
-
-/* Today */
-"today" = "heute";
 
 /* Value for the WooCommerce plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "Unbekannt";

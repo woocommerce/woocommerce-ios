@@ -37,7 +37,16 @@ public struct Credentials: Equatable {
         return authToken
     }
 
-    /// Designated Initializer
+    /// .org site credentials password
+    ///
+    public var password: String? {
+        guard case let .wporg(password) = authenticationType else {
+            return nil
+        }
+        return password
+    }
+
+    /// For WPCOM credentials
     ///
     public init(username: String, authToken: String, siteAddress: String? = nil) {
         self.username = username

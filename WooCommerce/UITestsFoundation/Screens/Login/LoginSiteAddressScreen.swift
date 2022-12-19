@@ -1,42 +1,27 @@
+import ScreenObject
 import XCTest
 
-private struct ElementStringIDs {
-    static let navBar = "WordPressAuthenticator.LoginSiteAddressView"
-    static let nextButton = "Site Address Next Button"
+public final class LoginSiteAddressScreen: ScreenObject {
 
-    // TODO: clean up comments when unifiedSiteAddress is permanently enabled.
-
-    // For original Site Address. This matches accessibilityIdentifier in Login.storyboard.
-    // Leaving here for now in case unifiedSiteAddress is disabled.
-    // static let siteAddressTextField = "usernameField"
-
-    // For unified Site Address. This matches TextFieldTableViewCell.accessibilityIdentifier.
-    static let siteAddressTextField = "Site address"
-}
-
-public final class LoginSiteAddressScreen: BaseScreen {
-    private let navBar: XCUIElement
-    private let siteAddressTextField: XCUIElement
-    private let nextButton: XCUIElement
-
-    init() {
-        let app = XCUIApplication()
-        navBar = app.navigationBars[ElementStringIDs.navBar]
-        siteAddressTextField = app.textFields[ElementStringIDs.siteAddressTextField]
-        nextButton = app.buttons[ElementStringIDs.nextButton]
-
-        super.init(element: siteAddressTextField)
+    public init(app: XCUIApplication = XCUIApplication()) throws {
+        try super.init(
+              expectedElementGetters: [
+                  // swiftlint:disable opening_brace
+                  { $0.buttons["Site Address Next Button"] },
+                  { $0.textFields["Site address"] }
+                  // swiftlint:enable opening_brace
+              ],
+            app: app
+        )
     }
 
-    public func proceedWith(siteUrl: String) -> GetStartedScreen {
-        siteAddressTextField.tap()
-        siteAddressTextField.typeText(siteUrl)
-        nextButton.tap()
-
-        return GetStartedScreen()
+    public func proceedWith(siteUrl: String) throws -> GetStartedScreen {
+        app.textFields["Site address"].enterText(text: siteUrl)
+        app.buttons["Site Address Next Button"].tap()
+        return try GetStartedScreen()
     }
 
-    static func isLoaded() -> Bool {
-        return XCUIApplication().buttons[ElementStringIDs.nextButton].exists
+    func isLoaded() -> Bool {
+        return app.buttons["Site Address Next Button"].exists
     }
 }

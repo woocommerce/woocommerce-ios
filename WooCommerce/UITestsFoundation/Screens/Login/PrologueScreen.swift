@@ -10,15 +10,15 @@ public final class PrologueScreen: ScreenObject {
         )
     }
 
-    public func selectContinueWithWordPress() -> GetStartedScreen {
+    public func selectContinueWithWordPress() throws -> GetStartedScreen {
         Self.findContinueButton(in: app).tap()
-        return GetStartedScreen()
+        return try GetStartedScreen()
     }
 
-    public func selectSiteAddress() -> LoginSiteAddressScreen {
+    public func selectSiteAddress() throws -> LoginSiteAddressScreen {
         app.buttons["Prologue Self Hosted Button"].tap()
 
-        return LoginSiteAddressScreen()
+        return try LoginSiteAddressScreen()
     }
 
     @discardableResult

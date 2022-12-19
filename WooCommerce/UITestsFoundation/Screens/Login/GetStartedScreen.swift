@@ -1,40 +1,32 @@
+import ScreenObject
 import XCTest
 
-private struct ElementStringIDs {
-    static let navBar = "WordPress.GetStartedView"
-    static let emailTextField = "Email address"
-    static let continueButton = "Get Started Email Continue Button"
-}
+public final class GetStartedScreen: ScreenObject {
 
-public final class GetStartedScreen: BaseScreen {
-    private let navBar: XCUIElement
-    private let emailTextField: XCUIElement
-    private let continueButton: XCUIElement
-
-    init() {
-        let app = XCUIApplication()
-        navBar = app.navigationBars[ElementStringIDs.navBar]
-        emailTextField = app.textFields[ElementStringIDs.emailTextField]
-        continueButton = app.buttons[ElementStringIDs.continueButton]
-
-        super.init(element: emailTextField)
+    public init(app: XCUIApplication = XCUIApplication()) throws {
+        try super.init(
+              expectedElementGetters: [
+                  // swiftlint:disable opening_brace
+                  { $0.textFields["Email address"] },
+                  { $0.buttons["Get Started Email Continue Button"] },
+                  // swiftlint:enable opening_brace
+              ],
+            app: app
+        )
     }
 
-    public func proceedWith(email: String) -> PasswordScreen {
-        emailTextField.tap()
-        emailTextField.typeText(email)
-        continueButton.tap()
+    public func proceedWith(email: String) throws -> PasswordScreen {
+        app.textFields["Email address"].enterText(text: email)
+        app.buttons["Get Started Email Continue Button"].tap()
 
-        return PasswordScreen()
+        return try PasswordScreen()
     }
 
-    static func isLoaded() -> Bool {
-        return XCUIApplication().buttons[ElementStringIDs.continueButton].exists
+    func isLoaded() -> Bool {
+        return app.buttons["Get Started Email Continue Button"].exists
     }
 
-    static func isEmailEntered() -> Bool {
-        let emailTextField = XCUIApplication().textFields[ElementStringIDs.emailTextField]
-        return emailTextField.value != nil
+    func isEmailEntered() -> Bool {
+        return app.textFields["Email address"].value != nil
     }
-
 }

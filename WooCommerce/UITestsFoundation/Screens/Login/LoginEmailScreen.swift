@@ -1,49 +1,41 @@
+import ScreenObject
 import XCTest
 
-private struct ElementStringIDs {
-    static let navBar = "WordPress.LoginEmailView"
-    static let emailTextField = "Login Email Address"
-    static let nextButton = "Login Email Next Button"
-    static let siteAddressButton = "Self Hosted Login Button"
-}
+public final class LoginEmailScreen: ScreenObject {
 
-final class LoginEmailScreen: BaseScreen {
-    private let navBar: XCUIElement
-    private let emailTextField: XCUIElement
-    private let nextButton: XCUIElement
-    private let siteAddressButton: XCUIElement
-
-    init() {
-        let app = XCUIApplication()
-        navBar = app.navigationBars[ElementStringIDs.navBar]
-        emailTextField = app.textFields[ElementStringIDs.emailTextField]
-        nextButton = app.buttons[ElementStringIDs.nextButton]
-        siteAddressButton = app.buttons[ElementStringIDs.siteAddressButton]
-
-        super.init(element: emailTextField)
+    public init(app: XCUIApplication = XCUIApplication()) throws {
+        try super.init(
+              expectedElementGetters: [
+                  // swiftlint:disable opening_brace
+                  { $0.buttons["Login Email Address"] },
+                  { $0.buttons["Login Email Next Button"] },
+                  { $0.buttons["Self Hosted Login Button"] }
+                  // swiftlint:enable opening_brace
+              ],
+            app: app
+        )
     }
 
-    func proceedWith(email: String) -> LinkOrPasswordScreen {
-        emailTextField.tap()
-        emailTextField.typeText(email)
-        nextButton.tap()
+    func proceedWith(email: String) throws -> LinkOrPasswordScreen {
+        app.buttons["Login Email Address"].enterText(text: email)
+        app.buttons["Login Email Next Button"].tap()
 
-        return LinkOrPasswordScreen()
+        return try LinkOrPasswordScreen()
     }
 
-    func goToSiteAddressLogin() -> LoginSiteAddressScreen {
-        siteAddressButton.tap()
+    func goToSiteAddressLogin() throws -> LoginSiteAddressScreen {
+        app.buttons["Self Hosted Login Button"].tap()
 
-        return LoginSiteAddressScreen()
+        return try LoginSiteAddressScreen()
     }
 
-    static func isLoaded() -> Bool {
-        let expectedElement = XCUIApplication().textFields[ElementStringIDs.emailTextField]
+    func isLoaded() -> Bool {
+        let expectedElement = app.textFields["Login Email Address"]
         return expectedElement.exists && expectedElement.isHittable
     }
 
-    static func isEmailEntered() -> Bool {
-        let emailTextField = XCUIApplication().textFields[ElementStringIDs.emailTextField]
+    func isEmailEntered() -> Bool {
+        let emailTextField = app.textFields["Login Email Address"]
         return emailTextField.value != nil
     }
 }

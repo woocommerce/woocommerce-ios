@@ -1,39 +1,30 @@
+import ScreenObject
 import XCTest
 
-private struct ElementStringIDs {
-    static let navBar = "WordPressAuthenticator.LoginSelfHostedView"
-    static let usernameTextField = "usernameField"
-    static let passwordTextField = "passwordField"
-    static let nextButton = "submitButton"
-}
+public final class LoginUsernamePasswordScreen: ScreenObject {
 
-final class LoginUsernamePasswordScreen: BaseScreen {
-    private let navBar: XCUIElement
-    private let usernameTextField: XCUIElement
-    private let passwordTextField: XCUIElement
-    private let nextButton: XCUIElement
-
-    init() {
-        let app = XCUIApplication()
-        navBar = app.navigationBars[ElementStringIDs.navBar]
-        usernameTextField = app.textFields[ElementStringIDs.usernameTextField]
-        passwordTextField = app.secureTextFields[ElementStringIDs.passwordTextField]
-        nextButton = app.buttons[ElementStringIDs.nextButton]
-
-        super.init(element: passwordTextField)
+    public init(app: XCUIApplication = XCUIApplication()) throws {
+        try super.init(
+              expectedElementGetters: [
+                  // swiftlint:disable opening_brace
+                  { $0.buttons["submitButton"] },
+                  { $0.textFields["usernameField"] },
+                  { $0.textFields["passwordField"] }
+                  // swiftlint:enable opening_brace
+              ],
+            app: app
+        )
     }
 
-    func proceedWith(username: String, password: String) -> LoginEpilogueScreen {
-        usernameTextField.tap()
-        usernameTextField.typeText(username)
-        passwordTextField.tap()
-        passwordTextField.typeText(password)
-        nextButton.tap()
+    func proceedWith(username: String, password: String) throws -> LoginEpilogueScreen {
+        app.textFields["usernameField"].enterText(text: username)
+        app.textFields["passwordField"].enterText(text: password)
+        app.buttons["submitButton"].tap()
 
-        return LoginEpilogueScreen()
+        return try LoginEpilogueScreen()
     }
 
-    static func isLoaded() -> Bool {
-        return XCUIApplication().buttons[ElementStringIDs.nextButton].exists
+    func isLoaded() -> Bool {
+        return app.buttons["submitButton"].exists
     }
 }

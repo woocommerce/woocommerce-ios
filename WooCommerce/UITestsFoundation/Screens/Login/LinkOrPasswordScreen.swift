@@ -1,34 +1,33 @@
+import ScreenObject
 import XCTest
 
-private struct ElementStringIDs {
-    static let passwordOption = "Use Password"
-    static let linkButton = "Send Link Button"
-}
+public final class LinkOrPasswordScreen: ScreenObject {
 
-final class LinkOrPasswordScreen: BaseScreen {
-    private let passwordOption: XCUIElement
-    private let linkButton: XCUIElement
-
-    init() {
-        passwordOption = XCUIApplication().buttons[ElementStringIDs.passwordOption]
-        linkButton = XCUIApplication().buttons[ElementStringIDs.linkButton]
-
-        super.init(element: passwordOption)
+    public init(app: XCUIApplication = XCUIApplication()) throws {
+        try super.init(
+              expectedElementGetters: [
+                  // swiftlint:disable opening_brace
+                  { $0.buttons["Use Password"] },
+                  { $0.buttons["Send Link Button"] },
+                  // swiftlint:enable opening_brace
+              ],
+            app: app
+        )
     }
 
-    func proceedWithPassword() -> LoginPasswordScreen {
-        passwordOption.tap()
+    func proceedWithPassword() throws -> LoginPasswordScreen {
+        app.buttons["Use Password"].tap()
 
-        return LoginPasswordScreen()
+        return try LoginPasswordScreen()
     }
 
-    func proceedWithLink() -> LoginCheckMagicLinkScreen {
-        linkButton.tap()
+    func proceedWithLink() throws -> LoginCheckMagicLinkScreen {
+        app.buttons["Send Link Button"].tap()
 
-        return LoginCheckMagicLinkScreen()
+        return try LoginCheckMagicLinkScreen()
     }
 
-    static func isLoaded() -> Bool {
-        return XCUIApplication().buttons[ElementStringIDs.passwordOption].exists
+    func isLoaded() -> Bool {
+        return app.buttons["Use Password"].exists
     }
 }

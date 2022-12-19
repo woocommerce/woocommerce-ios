@@ -190,6 +190,7 @@ private extension SessionManager {
     func saveCredentials(_ credentials: Credentials) {
         defaults[.defaultUsername] = credentials.username
         defaults[.defaultSiteAddress] = credentials.siteAddress
+        defaults[.defaultCredentialsType] = AuthenticationTypeIdentifier(type: credentials.authenticationType)
         keychain[credentials.username] = credentials.authToken
     }
 

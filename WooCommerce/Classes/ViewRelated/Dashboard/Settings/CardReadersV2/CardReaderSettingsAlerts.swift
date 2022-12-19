@@ -224,6 +224,10 @@ private extension CardReaderSettingsAlerts {
         CardPresentModalFoundReader(name: name, connect: connect, continueSearch: continueSearch, cancel: cancel)
     }
 
+    func preparingReader(from: UIViewController, cancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalPreparingReader(cancelAction: cancel)
+    }
+
     func setViewModelAndPresent(from: UIViewController, viewModel: CardPresentPaymentsModalViewModel) {
         guard modalController == nil else {
             modalController?.setViewModel(viewModel)

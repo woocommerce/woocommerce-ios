@@ -582,6 +582,61 @@ final class ProductsRemoteTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
     }
+
+    // MARK: - Product IDs
+
+    /// Verifies that loadProductIDs properly parses the `products-ids-only` sample response.
+    ///
+    func test_loadProductIDs_properly_returns_parsed_ids() throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-ids-only")
+
+        // When
+        let result = waitFor { promise in
+            remote.loadProductIDs(for: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let productIDs = try XCTUnwrap(result.get())
+        XCTAssertEqual(productIDs, [3946])
+    }
+
+    /// Verifies that loadProductIDs properly relays Networking Layer errors.
+    ///
+    func test_loadProductIDs_properly_relays_networking_error() {
+        // Given
+        let remote = ProductsRemote(network: network)
+
+        // When
+        let result = waitFor { promise in
+            remote.loadProductIDs(for: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
+
+    func test_create_template_product_returns_product_id() throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "onboarding/tasks/create_product_from_template", filename: "product-id-only")
+
+        // When
+        let result = waitFor { promise in
+            remote.createTemplateProduct(for: self.sampleSiteID, template: .physical) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let productID = try XCTUnwrap(result.get())
+        XCTAssertEqual(productID, 3946)
+    }
 }
 
 // MARK: - Private Helpers

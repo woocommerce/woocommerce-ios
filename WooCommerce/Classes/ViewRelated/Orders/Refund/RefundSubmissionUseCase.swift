@@ -60,10 +60,10 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
     /// In-person refund orchestrator.
     private lazy var cardPresentRefundOrchestrator = CardPresentRefundOrchestrator(stores: stores)
 
-    /// Alert manager to inform merchants about card reader connection actions used in `CardReaderConnectionController`.
+    /// Alert manager to inform merchants about card reader connection actions used in `LegacyCardReaderConnectionController`.
     private let cardReaderConnectionAlerts: CardReaderSettingsAlertsProvider
 
-    /// Provides any known card reader to be used in `CardReaderConnectionController`.
+    /// Provides any known card reader to be used in `LegacyCardReaderConnectionController`.
     private let knownReaderProvider: CardReaderSettingsKnownReaderProvider
 
     /// Presents the card present onboarding flow, when required.
@@ -72,7 +72,7 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
 
     /// Controller to connect a card reader for in-person refund.
     private lazy var cardReaderConnectionController =
-    CardReaderConnectionController(forSiteID: order.siteID,
+    LegacyCardReaderConnectionController(forSiteID: order.siteID,
                                    storageManager: storageManager,
                                    stores: stores,
                                    knownReaderProvider: knownReaderProvider,
@@ -295,9 +295,7 @@ private extension RefundSubmissionUseCase {
                                   paymentGatewayAccount: PaymentGatewayAccount,
                                   onCompletion: @escaping (Result<Void, Error>) -> ()) {
         // Shows reader ready alert.
-        alerts.readerIsReady(title: Localization.refundPaymentTitle(username: order.billingAddress?.firstName),
-                             amount: formattedAmount,
-                             onCancel: { [weak self] in
+        alerts.preparingReader(onCancel: { [weak self] in
             self?.cancelRefund(charge: charge, paymentGatewayAccount: paymentGatewayAccount, onCompletion: onCompletion)
         })
 
@@ -305,9 +303,13 @@ private extension RefundSubmissionUseCase {
         cardPresentRefundOrchestrator.refund(amount: refundAmount,
                                              charge: charge,
                                              paymentGatewayAccount: paymentGatewayAccount,
-                                             onWaitingForInput: { [weak self] in
+                                             onWaitingForInput: { [weak self] inputMethods in
             // Requests card input.
-            self?.alerts.tapOrInsertCard(onCancel: { [weak self] in
+            guard let self = self else { return }
+            self.alerts.tapOrInsertCard(title: Localization.refundPaymentTitle(username: self.order.billingAddress?.firstName),
+                                        amount: self.formattedAmount,
+                                        inputMethods: inputMethods,
+                                        onCancel: { [weak self] in
                 self?.cancelRefund(charge: charge, paymentGatewayAccount: paymentGatewayAccount, onCompletion: onCompletion)
             })
         }, onProcessingMessage: { [weak self] in

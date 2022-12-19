@@ -3,6 +3,7 @@ import UIKit
 import Gridicons
 import WordPressUI
 import Yosemite
+import SwiftUI
 
 // MARK: - DashboardViewController
 //
@@ -54,6 +55,14 @@ final class DashboardViewController: UIViewController {
         return view
     }()
 
+    /// Constraint to attach the content view's top to the bottom of the header
+    /// When we hide the header, we disable this constraint so the content view can grow to fill the screen
+    private var contentTopToHeaderConstraint: NSLayoutConstraint?
+
+    /// Stores an animator for showing/hiding the header view while there is an animation in progress
+    /// so we can interrupt and reverse if needed
+    private var headerAnimator: UIViewPropertyAnimator?
+
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
     private let hiddenScrollView = UIScrollView()
 
@@ -72,6 +81,10 @@ final class DashboardViewController: UIViewController {
                                                 ZendeskProvider.shared.showNewRequestIfPossible(from: self, with: nil)
                                               })
     }()
+
+    private var announcementViewHostingController: ConstraintsUpdatingHostingController<AnnouncementCardWrapper>?
+
+    private var announcementView: UIView?
 
     /// Bottom Jetpack benefits banner, shown when the site is connected to Jetpack without Jetpack-the-plugin.
     private lazy var bottomJetpackBenefitsBannerController = JetpackBenefitsBannerHostingController()
@@ -93,6 +106,7 @@ final class DashboardViewController: UIViewController {
     private let viewModel: DashboardViewModel = .init()
 
     private var subscriptions = Set<AnyCancellable>()
+    private var navbarObserverSubscription: AnyCancellable?
 
     // MARK: View Lifecycle
 
@@ -114,9 +128,13 @@ final class DashboardViewController: UIViewController {
         configureBottomJetpackBenefitsBanner()
         observeSiteForUIUpdates()
         observeBottomJetpackBenefitsBannerVisibilityUpdates()
-        observeNavigationBarHeightForStoreNameLabelVisibility()
         observeStatsVersionForDashboardUIUpdates()
+        observeAnnouncements()
+        observeShowWebViewSheet()
+        observeAddProductTrigger()
+
         Task { @MainActor in
+            await viewModel.syncAnnouncements(for: siteID)
             await reloadDashboardUIStatsVersion(forced: true)
         }
     }
@@ -127,6 +145,17 @@ final class DashboardViewController: UIViewController {
         configureTitle()
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        updateHeaderVisibility(animated: false)
+        observeNavigationBarHeightForHeaderVisibility()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        stopObservingNavigationBarHeightForHeaderVisibility()
+        super.viewWillDisappear(animated)
+    }
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         dashboardUI?.view.frame = containerView.bounds
@@ -134,6 +163,78 @@ final class DashboardViewController: UIViewController {
 
     override var shouldShowOfflineBanner: Bool {
         return true
+    }
+}
+
+// MARK: - Header animation
+private extension DashboardViewController {
+    func showHeaderWithoutAnimation() {
+        contentTopToHeaderConstraint?.isActive = true
+        headerStackView.alpha = 1
+        view.layoutIfNeeded()
+    }
+
+    func hideHeaderWithoutAnimation() {
+        contentTopToHeaderConstraint?.isActive = false
+        headerStackView.alpha = 0
+        view.layoutIfNeeded()
+    }
+
+    func updateHeaderVisibility(animated: Bool) {
+        if navigationBarIsCollapsed() {
+            hideHeader(animated: animated)
+        } else {
+            showHeader(animated: animated)
+        }
+    }
+
+    func showHeader(animated: Bool) {
+        if animated {
+            animateHeaderVisibility { [weak self] in
+                self?.showHeaderWithoutAnimation()
+            }
+        } else {
+            showHeaderWithoutAnimation()
+        }
+    }
+
+    func hideHeader(animated: Bool) {
+        if animated {
+            animateHeaderVisibility { [weak self] in
+                self?.hideHeaderWithoutAnimation()
+            }
+        } else {
+            hideHeaderWithoutAnimation()
+        }
+    }
+
+    func animateHeaderVisibility(animations: @escaping () -> Void) {
+        if headerAnimator?.isRunning == true {
+            headerAnimator?.stopAnimation(true)
+        }
+        headerAnimator = UIViewPropertyAnimator.runningPropertyAnimator(
+            withDuration: Constants.animationDurationSeconds,
+            delay: 0,
+            animations: animations,
+            completion: { [weak self] position in
+                self?.headerAnimator = nil
+            })
+    }
+
+    func navigationBarIsCollapsed() -> Bool {
+        guard let frame = navigationController?.navigationBar.frame else {
+            return false
+        }
+
+        return frame.height <= collapsedNavigationBarHeight
+    }
+
+    var collapsedNavigationBarHeight: CGFloat {
+        if self.traitCollection.userInterfaceIdiom == .pad {
+            return Constants.iPadCollapsedNavigationBarHeight
+        } else {
+            return Constants.iPhoneCollapsedNavigationBarHeight
+        }
     }
 }
 
@@ -187,8 +288,19 @@ private extension DashboardViewController {
 
     func addViewBelowHeaderStackView(contentView: UIView) {
         contentView.translatesAutoresizingMaskIntoConstraints = false
+
+        // This constraint will pin the bottom of the header to the top of the content
+        // We want this to be active when the header is visible
+        contentTopToHeaderConstraint = contentView.topAnchor.constraint(equalTo: headerStackView.bottomAnchor)
+        contentTopToHeaderConstraint?.isActive = true
+
+        // This constraint has a lower priority and will pin the top of the content view to its superview
+        // This way, it has a defined height when contentTopToHeaderConstraint is disabled
+        let contentTopToContainerConstraint = contentView.topAnchor.constraint(equalTo: containerView.safeTopAnchor)
+        contentTopToContainerConstraint.priority = .defaultLow
+
         NSLayoutConstraint.activate([
-            contentView.topAnchor.constraint(equalTo: headerStackView.bottomAnchor),
+            contentTopToContainerConstraint,
             contentView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
         ])
@@ -263,6 +375,108 @@ private extension DashboardViewController {
         }.store(in: &subscriptions)
     }
 
+    func observeShowWebViewSheet() {
+        viewModel.$showWebViewSheet.sink { [weak self] viewModel in
+            guard let self = self else { return }
+            guard let viewModel = viewModel else { return }
+            self.openWebView(viewModel: viewModel)
+        }
+        .store(in: &subscriptions)
+    }
+
+    private func openWebView(viewModel: WebViewSheetViewModel) {
+        let webViewSheet = WebViewSheet(viewModel: viewModel) { [weak self] in
+            guard let self = self else { return }
+            self.dismiss(animated: true)
+            Task {
+                await self.viewModel.syncAnnouncements(for: self.siteID)
+            }
+        }
+        let hostingController = UIHostingController(rootView: webViewSheet)
+        hostingController.presentationController?.delegate = self
+        present(hostingController, animated: true, completion: nil)
+    }
+
+    /// Subscribes to the trigger to start the Add Product flow for products onboarding
+    ///
+    private func observeAddProductTrigger() {
+        viewModel.addProductTrigger.sink { [weak self] _ in
+            self?.startAddProductFlow()
+        }
+        .store(in: &subscriptions)
+    }
+
+    /// Starts the Add Product flow (without switching tabs)
+    ///
+    private func startAddProductFlow() {
+        guard let announcementView, let navigationController else { return }
+        let coordinator = AddProductCoordinator(siteID: siteID, sourceView: announcementView, sourceNavigationController: navigationController)
+        coordinator.onProductCreated = { [weak self] in
+            guard let self else { return }
+            self.viewModel.announcementViewModel = nil // Remove the products onboarding banner
+            Task {
+                await self.viewModel.syncAnnouncements(for: self.siteID)
+            }
+        }
+        coordinator.start()
+    }
+
+    // This is used so we have a specific type for the view while applying modifiers.
+    struct AnnouncementCardWrapper: View {
+        let cardView: FeatureAnnouncementCardView
+
+        var body: some View {
+            cardView.background(Color(.listForeground))
+        }
+    }
+
+    func observeAnnouncements() {
+        viewModel.$announcementViewModel.sink { [weak self] viewModel in
+            guard let self = self else { return }
+            Task { @MainActor in
+                self.removeAnnouncement()
+                guard let viewModel = viewModel else {
+                    return
+                }
+
+                let cardView = FeatureAnnouncementCardView(
+                    viewModel: viewModel,
+                    dismiss: { [weak self] in
+                        self?.viewModel.announcementViewModel = nil
+                    },
+                    callToAction: {})
+                self.showAnnouncement(AnnouncementCardWrapper(cardView: cardView))
+            }
+        }
+        .store(in: &subscriptions)
+    }
+
+    private func removeAnnouncement() {
+        guard let announcementView = announcementView else {
+            return
+        }
+        announcementView.removeFromSuperview()
+        announcementViewHostingController?.removeFromParent()
+        announcementViewHostingController = nil
+        self.announcementView = nil
+    }
+
+    private func showAnnouncement(_ cardView: AnnouncementCardWrapper) {
+        let hostingController = ConstraintsUpdatingHostingController(rootView: cardView)
+        guard let uiView = hostingController.view else {
+            return
+        }
+        announcementViewHostingController = hostingController
+        announcementView = uiView
+
+        addChild(hostingController)
+        let indexAfterHeader = (headerStackView.arrangedSubviews.firstIndex(of: innerStackView) ?? -1) + 1
+        headerStackView.insertArrangedSubview(uiView, at: indexAfterHeader)
+
+        hostingController.didMove(toParent: self)
+        hostingController.view.layoutIfNeeded()
+    }
+
     /// Display the error banner at the top of the dashboard content (below the site title)
     ///
     func showTopBannerView() {
@@ -282,16 +496,29 @@ private extension DashboardViewController {
         guard siteName.isNotEmpty else {
             shouldShowStoreNameAsSubtitle = false
             storeNameLabel.text = nil
+            storeNameLabel.isHidden = true
             return
         }
         shouldShowStoreNameAsSubtitle = true
+        storeNameLabel.isHidden = false
         storeNameLabel.text = siteName
     }
 }
 
+// MARK: - Delegate conformance
 extension DashboardViewController: DashboardUIScrollDelegate {
     func dashboardUIScrollViewDidScroll(_ scrollView: UIScrollView) {
         hiddenScrollView.updateFromScrollViewDidScrollEventForLargeTitleWorkaround(scrollView)
+    }
+}
+
+extension DashboardViewController: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        if presentationController.presentedViewController is UIHostingController<WebViewSheet> {
+            Task {
+                await viewModel.syncAnnouncements(for: siteID)
+            }
+        }
     }
 }
 
@@ -403,6 +630,7 @@ private extension DashboardViewController {
 
     func pullToRefresh() async {
         ServiceLocator.analytics.track(.dashboardPulledToRefresh)
+        await viewModel.syncAnnouncements(for: siteID)
         await reloadDashboardUIStatsVersion(forced: true)
     }
 }
@@ -454,19 +682,23 @@ private extension DashboardViewController {
             }.store(in: &subscriptions)
     }
 
-    func observeNavigationBarHeightForStoreNameLabelVisibility() {
-        navigationController?.navigationBar.publisher(for: \.frame, options: [.initial, .new])
-            .map { $0.height }
-            .removeDuplicates()
-            .sink(receiveValue: { [weak self] navigationBarHeight in
-                guard let self = self else { return }
-
-                guard self.shouldShowStoreNameAsSubtitle else {
-                    return
-                }
-                self.storeNameLabel.isHidden = navigationBarHeight <= Constants.collapsedNavigationBarHeight
+    func observeNavigationBarHeightForHeaderVisibility() {
+        navbarObserverSubscription = navigationController?.navigationBar.publisher(for: \.frame, options: [.new])
+            .map({ [weak self] rect in
+                // This seems useless given that we're discarding the value later
+                // and recalculating within updateHeaderVisibility, but this is an easy
+                // way to avoid constant updates with the `removeDuplicates` that follows
+                self?.navigationBarIsCollapsed() ?? false
             })
-            .store(in: &subscriptions)
+            .removeDuplicates()
+            .sink(receiveValue: { [weak self] _ in
+                self?.updateHeaderVisibility(animated: true)
+            })
+    }
+
+    func stopObservingNavigationBarHeightForHeaderVisibility() {
+        navbarObserverSubscription?.cancel()
+        navbarObserverSubscription = nil
     }
 }
 
@@ -480,10 +712,12 @@ private extension DashboardViewController {
     }
 
     enum Constants {
+        static let animationDurationSeconds = CGFloat(0.3)
         static let bannerBottomMargin = CGFloat(8)
         static let horizontalMargin = CGFloat(16)
         static let storeNameTextColor: UIColor = .secondaryLabel
         static let backgroundColor: UIColor = .systemBackground
-        static let collapsedNavigationBarHeight = CGFloat(44)
+        static let iPhoneCollapsedNavigationBarHeight = CGFloat(44)
+        static let iPadCollapsedNavigationBarHeight = CGFloat(50)
     }
 }

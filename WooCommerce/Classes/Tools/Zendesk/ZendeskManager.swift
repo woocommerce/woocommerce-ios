@@ -8,7 +8,7 @@ import WordPressShared
 import CoreTelephony
 import SafariServices
 import Yosemite
-
+import Experiments
 
 extension NSNotification.Name {
     static let ZDPNReceived = NSNotification.Name(rawValue: "ZDPNReceived")
@@ -22,6 +22,8 @@ extension NSNotification.Name {
 ///
 protocol ZendeskManagerProtocol: SupportManagerAdapter {
     typealias onUserInformationCompletion = (_ success: Bool, _ email: String?) -> Void
+
+    func observeStoreSwitch()
 
     /// Displays the Zendesk New Request view from the given controller, for users to submit new tickets.
     ///
@@ -40,11 +42,16 @@ protocol ZendeskManagerProtocol: SupportManagerAdapter {
     func showTicketListIfPossible(from controller: UIViewController)
     func showSupportEmailPrompt(from controller: UIViewController, completion: @escaping onUserInformationCompletion)
     func getTags(supportSourceTag: String?) -> [String]
+    func fetchSystemStatusReport()
     func initialize()
     func reset()
 }
 
 struct NoZendeskManager: ZendeskManagerProtocol {
+    func observeStoreSwitch() {
+        // no-op
+    }
+
     func showNewRequestIfPossible(from controller: UIViewController) {
         // no-op
     }
@@ -85,6 +92,10 @@ struct NoZendeskManager: ZendeskManagerProtocol {
 
     func getTags(supportSourceTag: String?) -> [String] {
         []
+    }
+
+    func fetchSystemStatusReport() {
+        // no-op
     }
 
     func initialize() {
@@ -138,6 +149,86 @@ struct ZendeskProvider {
 ///
 #if !targetEnvironment(macCatalyst)
 final class ZendeskManager: NSObject, ZendeskManagerProtocol {
+    private let stores = ServiceLocator.stores
+    private let storageManager = ServiceLocator.storageManager
+
+    private let isSSRFeatureFlagEnabled = DefaultFeatureFlagService().isFeatureFlagEnabled(.systemStatusReportInSupportRequest)
+
+    /// Controller for fetching site plugins from Storage
+    ///
+    private lazy var pluginResultsController: ResultsController<StorageSitePlugin> = createPluginResultsController()
+
+    /// Returns a `pluginResultsController` using the latest selected site ID for predicate
+    ///
+    private func createPluginResultsController() -> ResultsController<StorageSitePlugin> {
+        var sitePredicate: NSPredicate? = nil
+        if let siteID = stores.sessionManager.defaultSite?.siteID {
+            sitePredicate = NSPredicate(format: "siteID == %lld", siteID)
+        } else {
+            DDLogError("ZendeskManager: No siteID found when attempting to initialize Plugins Results predicate.")
+        }
+
+        let pluginStatusDescriptor = [NSSortDescriptor(keyPath: \StorageSitePlugin.status, ascending: true)]
+
+        return ResultsController(storageManager: storageManager,
+                                 matching: sitePredicate,
+                                 sortedBy: pluginStatusDescriptor)
+    }
+
+    func observeStoreSwitch() {
+        pluginResultsController = createPluginResultsController()
+        do {
+            try pluginResultsController.performFetch()
+        } catch {
+            DDLogError("ZendeskManager: Unable to update plugin results")
+        }
+    }
+
+    /// List of tags that reflect Stripe and WCPay plugin statuses
+    ///
+    private var ippPluginStatuses: [String] {
+        var ippTags = [PluginStatus]()
+        if let stripe = pluginResultsController.fetchedObjects.first(where: { $0.plugin == PluginSlug.stripe }) {
+            if stripe.status == .active {
+                ippTags.append(.stripeInstalledAndActivated)
+            } else if stripe.status == .inactive {
+                ippTags.append(.stripeInstalledButNotActivated)
+            }
+        } else {
+            ippTags.append(.stripeNotInstalled)
+        }
+        if let wcpay = pluginResultsController.fetchedObjects.first(where: { $0.plugin == PluginSlug.wcpay }) {
+            if wcpay.status == .active {
+                ippTags.append(.wcpayInstalledAndActivated)
+            } else if wcpay.status == .inactive {
+                ippTags.append(.wcpayInstalledButNotActivated)
+            }
+        }
+        else {
+            ippTags.append(.wcpayNotInstalled)
+        }
+        return ippTags.map { $0.rawValue }
+    }
+
+    /// Instantiates the SystemStatusReportViewModel as soon as the Zendesk instance needs it
+    /// This generally happens in the SettingsViewModel if we need to fetch the site's System Status Report
+    ///
+    private lazy var systemStatusReportViewModel: SystemStatusReportViewModel = SystemStatusReportViewModel(
+        siteID: ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0
+    )
+
+    /// Formatted system status report to be displayed on-screen
+    ///
+    private var systemStatusReport: String {
+        systemStatusReportViewModel.statusReport
+    }
+
+    /// Handles fetching the site's System Status Report
+    ///
+    func fetchSystemStatusReport() {
+        systemStatusReportViewModel.fetchReport()
+    }
+
     func showNewRequestIfPossible(from controller: UIViewController) {
         showNewRequestIfPossible(from: controller, with: nil)
     }
@@ -185,11 +276,11 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         return ZDKPushProvider(zendesk: zendesk)
     }
 
-
     /// Designated Initialier
     ///
     fileprivate override init() {
         super.init()
+        try? pluginResultsController.performFetch()
         observeZendeskNotifications()
     }
 
@@ -324,8 +415,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     /// The SDK tag is used in a trigger and displays tickets in Woo > Mobile Apps New.
     ///
     func getTags(supportSourceTag: String?) -> [String] {
-        let tags = [Constants.platformTag, Constants.sdkTag, Constants.jetpackTag]
-
+        let tags = [Constants.platformTag, Constants.sdkTag, Constants.jetpackTag] + ippPluginStatuses
         return decorateTags(tags: tags, supportSourceTag: supportSourceTag)
     }
 
@@ -347,7 +437,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
 
         var decoratedTags = tags
 
-        if site.isWordPressStore == true {
+        if site.isWordPressComStore == true {
             decoratedTags.append(Constants.wpComTag)
         }
 
@@ -575,11 +665,23 @@ private extension ZendeskManager {
     /// Without it, the tickets won't appear in the correct view(s) in the web portal and they won't contain all the metadata needed to solve a ticket.
     ///
     func createRequest(supportSourceTag: String?) -> RequestUiConfiguration {
+
+        var logsFieldID: Int64 = TicketFieldIDs.legacyLogs
+        var systemStatusReportFieldID: Int64 = 0
+        if isSSRFeatureFlagEnabled {
+            /// If the feature flag is enabled, `legacyLogs` Field ID is used to send the SSR logs,
+            /// and `logs` Field ID is used to send the logs.
+            ///
+            logsFieldID = TicketFieldIDs.logs
+            systemStatusReportFieldID = TicketFieldIDs.legacyLogs
+        }
+
         let ticketFields = [
             CustomField(fieldId: TicketFieldIDs.appVersion, value: Bundle.main.version),
             CustomField(fieldId: TicketFieldIDs.deviceFreeSpace, value: getDeviceFreeSpace()),
             CustomField(fieldId: TicketFieldIDs.networkInformation, value: getNetworkInformation()),
-            CustomField(fieldId: TicketFieldIDs.logs, value: getLogFile()),
+            CustomField(fieldId: logsFieldID, value: getLogFile()),
+            CustomField(fieldId: systemStatusReportFieldID, value: systemStatusReport),
             CustomField(fieldId: TicketFieldIDs.currentSite, value: getCurrentSiteDescription()),
             CustomField(fieldId: TicketFieldIDs.sourcePlatform, value: Constants.sourcePlatform),
             CustomField(fieldId: TicketFieldIDs.appLanguage, value: Locale.preferredLanguage),
@@ -594,12 +696,23 @@ private extension ZendeskManager {
 
     func createWCPayRequest(supportSourceTag: String?) -> RequestUiConfiguration {
 
+        var logsFieldID: Int64 = TicketFieldIDs.legacyLogs
+        var systemStatusReportFieldID: Int64 = 0
+        if isSSRFeatureFlagEnabled {
+            /// If the feature flag is enabled, `legacyLogs` Field ID is used to send the SSR logs,
+            /// and `logs` Field ID is used to send the logs.
+            ///
+            logsFieldID = TicketFieldIDs.logs
+            systemStatusReportFieldID = TicketFieldIDs.legacyLogs
+        }
+
         // Set form field values
         let ticketFields = [
             CustomField(fieldId: TicketFieldIDs.appVersion, value: Bundle.main.version),
             CustomField(fieldId: TicketFieldIDs.deviceFreeSpace, value: getDeviceFreeSpace()),
             CustomField(fieldId: TicketFieldIDs.networkInformation, value: getNetworkInformation()),
-            CustomField(fieldId: TicketFieldIDs.logs, value: getLogFile()),
+            CustomField(fieldId: logsFieldID, value: getLogFile()),
+            CustomField(fieldId: systemStatusReportFieldID, value: systemStatusReport),
             CustomField(fieldId: TicketFieldIDs.currentSite, value: getCurrentSiteDescription()),
             CustomField(fieldId: TicketFieldIDs.sourcePlatform, value: Constants.sourcePlatform),
             CustomField(fieldId: TicketFieldIDs.appLanguage, value: Locale.preferredLanguage),
@@ -1024,7 +1137,8 @@ private extension ZendeskManager {
         static let allBlogs: Int64 = 360000087183
         static let deviceFreeSpace: Int64 = 360000089123
         static let networkInformation: Int64 = 360000086966
-        static let logs: Int64 = 22871957
+        static let legacyLogs: Int64 = 22871957
+        static let logs: Int64 = 10901699622036
         static let currentSite: Int64 = 360000103103
         static let sourcePlatform: Int64 = 360009311651
         static let appLanguage: Int64 = 360008583691
@@ -1066,6 +1180,20 @@ private extension ZendeskManager {
     }
 }
 
+private extension ZendeskManager {
+    enum PluginSlug {
+        static let stripe = "woocommerce-gateway-stripe/woocommerce-gateway-stripe"
+        static let wcpay = "woocommerce-payments/woocommerce-payments"
+    }
+    enum PluginStatus: String {
+        case stripeNotInstalled = "woo_mobile_stripe_not_installed"
+        case stripeInstalledAndActivated = "woo_mobile_stripe_installed_and_activated"
+        case stripeInstalledButNotActivated = "woo_mobile_stripe_installed_and_not_activated"
+        case wcpayNotInstalled = "woo_mobile_wcpay_not_installed"
+        case wcpayInstalledAndActivated = "woo_mobile_wcpay_installed_and_activated"
+        case wcpayInstalledButNotActivated = "woo_mobile_wcpay_installed_and_not_activated"
+    }
+}
 
 // MARK: - UITextFieldDelegate
 //

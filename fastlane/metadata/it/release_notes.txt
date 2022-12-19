@@ -1,3 +1,1 @@
-Notizie straordinarie! Ora puoi modificare i prezzi delle varianti in blocco. Tutto ciò di cui hai bisogno è avere l'ultima versione di WooCommerce disponibile nel tuo negozio! Ci siamo anche concentrati sul perfezionamento di alcuni dettagli e ci siamo occupati dei piccoli bug riscontrati dal nostro team.
-
-Continua a inviarci il tuo feedback; ci aiuta a capire su cosa lavorare in futuro.
+Buone notizie! Abbiamo aggiunto una nuova sezione di analisi all'app! Basta fare clic sul pulsante Vedi di più sotto le statistiche del negozio per controllare informazioni più dettagliate su Entrate e Ordini. Questa non è l'ultima novità: altri aggiornamenti saranno disponibili nelle prossime settimane.

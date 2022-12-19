@@ -239,58 +239,12 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssertFalse(resynchronizeRequested)
     }
 
-    func test_when_having_no_error_and_upsellCardReaders_banner_should_be_shown_shows_upsellCardReaders_banner_if_country_supported() {
-        // Given
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case let .getFeatureAnnouncementVisibility(FeatureAnnouncementCampaign.upsellCardReaders, onCompletion):
-                onCompletion(.success(true))
-            default:
-                break
-            }
-        }
-        setupCountry(country: .us)
-        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
-
-        // When
-        viewModel.activate()
-
-        // Then
-        waitUntil {
-            viewModel.topBanner == .upsellCardReaders
-        }
-    }
-
-    func test_when_having_no_error_and_upsellCardReaders_banner_should_be_shown_shows_nothing_if_country_unsupported() {
-        // Given
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case let .getFeatureAnnouncementVisibility(FeatureAnnouncementCampaign.upsellCardReaders, onCompletion):
-                onCompletion(.success(true))
-            default:
-                break
-            }
-        }
-        setupCountry(country: .es)
-        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
-
-        // When
-        viewModel.activate()
-
-        // Then
-        waitUntil {
-            viewModel.topBanner == .none
-        }
-    }
-
-    func test_when_having_no_error_and_upsellCardReaders_banner_should_not_be_shown_and_orders_banner_should_not_be_shown_shows_nothing() {
+    func test_when_having_no_error__and_orders_banner_should_not_be_shown_shows_nothing() {
         // Given
         let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
             case let .loadFeedbackVisibility(_, onCompletion):
-                onCompletion(.success(false))
-            case let .getFeatureAnnouncementVisibility(FeatureAnnouncementCampaign.upsellCardReaders, onCompletion):
                 onCompletion(.success(false))
             default:
                 break
@@ -306,15 +260,13 @@ final class OrderListViewModelTests: XCTestCase {
         }
     }
 
-    func test_when_having_no_error_and_upsellCardReaders_banner_should_not_be_shown_and_orders_banner_should_be_shown_shows_orders_banner() {
+    func test_when_having_no_error_and_orders_banner_should_be_shown_shows_orders_banner() {
         // Given
         let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
             case let .loadFeedbackVisibility(_, onCompletion):
                 onCompletion(.success(true))
-            case let .getFeatureAnnouncementVisibility(FeatureAnnouncementCampaign.upsellCardReaders, onCompletion):
-                onCompletion(.success(false))
             default:
                 break
             }

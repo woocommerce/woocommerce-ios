@@ -14,6 +14,7 @@ final class AuthenticatedWebViewController: UIViewController {
         let webView = WKWebView(frame: .zero)
         webView.translatesAutoresizingMaskIntoConstraints = false
         webView.navigationDelegate = self
+        webView.uiDelegate = self
         return webView
     }()
 
@@ -77,11 +78,7 @@ private extension AuthenticatedWebViewController {
 
     func extendContentUnderSafeAreas() {
         webView.scrollView.clipsToBounds = false
-        if #available(iOS 15.0, *) {
-            view.backgroundColor = webView.underPageBackgroundColor
-        } else {
-            view.backgroundColor = webView.backgroundColor
-        }
+        view.backgroundColor = webView.underPageBackgroundColor
     }
 
     func configureProgressBar() {
@@ -154,5 +151,19 @@ extension AuthenticatedWebViewController: WKNavigationDelegate {
 
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
         progressBar.setProgress(0, animated: false)
+    }
+}
+
+extension AuthenticatedWebViewController: WKUIDelegate {
+    func webView(_ webView: WKWebView,
+                 createWebViewWith configuration: WKWebViewConfiguration,
+                 for navigationAction: WKNavigationAction,
+                 windowFeatures: WKWindowFeatures) -> WKWebView? {
+        // Allows `target=_blank` links by opening them in the same view, otherwise tapping on these links is no-op.
+        // Reference: https://stackoverflow.com/a/25853806/9185596
+        if navigationAction.targetFrame == nil {
+            webView.load(navigationAction.request)
+        }
+        return nil
     }
 }

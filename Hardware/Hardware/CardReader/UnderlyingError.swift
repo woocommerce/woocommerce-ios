@@ -27,7 +27,15 @@ public enum UnderlyingError: Error, Equatable {
     case featureNotAvailableWithConnectedReader
 
     /// A command was cancelled
-    case commandCancelled
+    case commandCancelled(from: CancellationSource)
+
+    /// A command can be cancelled on the reader, or in the app.
+    /// Note that this is not produced by Stripe, we have to infer it from commandCancelled, so we start with `.unknown`.
+    public enum CancellationSource {
+        case unknown
+        case app
+        case reader
+    }
 
     /// Access to location services is currently disabled. This may be because:
     /// - The user disabled location services in the system settings.
@@ -140,6 +148,72 @@ public enum UnderlyingError: Error, Equatable {
 
     /// There was no refund in progress to cancel
     case noRefundInProgress
+
+    // MARK: - Built-in reader related errors
+
+    /// The device must have a passcode in order to use the built-in reader
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorPasscodeNotEnabled
+    case passcodeNotEnabled
+
+    /// The phone must have a signed-in iCloud account in order to accept the TOS for the built in reader.
+    /// The signed-in account does not need to be the one used to connect the reader.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorAppleBuiltInReaderTOSAcceptanceRequiresiCloudSignIn
+    case appleBuiltInReaderTOSAcceptanceRequiresiCloudSignIn
+
+    /// NFC is disabled on the device. This could be a permissions issue, in particular due to a device management profile.
+    /// It's unlikely that the user can directly correct this issue
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorNFCDisabled
+    case nfcDisabled
+
+    /// Preparing the built-in reader failed. This is a retriable error
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorAppleBuiltInReaderFailedToPrepare
+    case appleBuiltInReaderFailedToPrepare
+
+    /// The user cancelled the built-in reader Terms of Service acceptance
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorAppleBuiltInReaderTOSAcceptanceCanceled
+    case appleBuiltInReaderTOSAcceptanceCanceled
+
+    /// The built-in reader Terms of Service have not been accepted. This error is retriable
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorAppleBuiltInReaderTOSNotYetAccepted
+    case appleBuiltInReaderTOSNotYetAccepted
+
+    /// The built-in reader Terms of Service could not be accepted. This may indicate an issue with the Apple ID used.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorAppleBuiltInReaderTOSAcceptanceFailed
+    case appleBuiltInReaderTOSAcceptanceFailed
+
+    /// This (Stripe) merchant account cannot be used with the built-in reader as it has been blocked
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorAppleBuiltInReaderMerchantBlocked
+    case appleBuiltInReaderMerchantBlocked
+
+    /// The merchant account is invalid and cannot be used with the built-in reader
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorAppleBuiltInReaderInvalidMerchant
+    case appleBuiltInReaderInvalidMerchant
+
+    /// The built-in reader on this device cannot be used because it has been banned
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorAppleBuiltInReaderDeviceBanned
+    case appleBuiltInReaderDeviceBanned
+
+    /// The device does not meet the minimum requirements for using the built-in reader
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorUnsupportedMobileDeviceConfiguration
+    case unsupportedMobileDeviceConfiguration
+
+    /// The built-in reader cannot be used while the app is in the background
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorReaderNotAccessibleInBackground
+    case readerNotAccessibleInBackground
+
+    /// The built-in reader cannot be used during a phone call
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorCommandNotAllowedDuringCall
+    case commandNotAllowedDuringCall
+
+    /// The amount charged was not supported by the reader.
+    /// (This may be a different amount than the minimum for a payment with Stripe. There is a maximum too.)
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorInvalidAmount
+    case invalidAmount
+
+    /// The currency used was not supported by the reader.
+    /// The reader may support a different set of currencies than WCPay or Stripe.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorInvalidCurrency
+    case invalidCurrency
 }
 
 extension UnderlyingError {
@@ -216,9 +290,15 @@ extension UnderlyingError: LocalizedError {
         case .featureNotAvailableWithConnectedReader:
             return NSLocalizedString("Unable to perform request with the connected reader - unsupported feature - please try again with another reader",
                                      comment: "Error message when the card reader cannot be used to perform the requested task.")
-        case .commandCancelled:
-            return NSLocalizedString("The system canceled the command unexpectedly - please try again",
-                                     comment: "Error message when the system cancels a command.")
+        case .commandCancelled(let cancellationSource):
+            switch cancellationSource {
+            case .reader:
+                return NSLocalizedString("The payment was canceled on the reader",
+                                         comment: "Error message when the cancel button on the reader is used.")
+            default:
+                return NSLocalizedString("The system canceled the command unexpectedly - please try again",
+                                         comment: "Error message when the system cancels a command.")
+            }
         case .locationServicesDisabled:
             return NSLocalizedString("Unable to access Location Services - please enable Location Services and try again",
                                      comment: "Error message when location services is not enabled for this application.")
@@ -328,6 +408,61 @@ extension UnderlyingError: LocalizedError {
             return NSLocalizedString("Sorry, this refund could not be canceled",
                                      comment: "Error message shown when a refund could not be canceled (likely because " +
                                      "it had already completed)")
+
+            // MARK: - Built-in reader errors
+        case .passcodeNotEnabled:
+            return NSLocalizedString("Your device needs a lock screen passcode set to use the built-in card reader",
+                                     comment: "Error message shown when the built-in reader cannot be used because " +
+                                     "the device does not have a passcode set.")
+        case .appleBuiltInReaderTOSAcceptanceRequiresiCloudSignIn:
+            return NSLocalizedString("Please sign in to iCloud on this device, so you can use the built-in card reader",
+                                     comment: "Error message shown when the built-in reader cannot be used because " +
+                                     "the device is not signed in to iCloud.")
+        case .nfcDisabled:
+            return NSLocalizedString("The app could not enable the card reader, because the NFC chip is disabled. " +
+                                     "Please contact support for more details.",
+                                     comment: "Error message shown when the built-in reader cannot be used because " +
+                                     "the device's NFC chipset has been disabled by a device management policy.")
+        case .appleBuiltInReaderFailedToPrepare, .readerNotAccessibleInBackground:
+            return NSLocalizedString("There was an issue preparing the built in reader for payment – please try again.",
+                                     comment: "Error message shown when the built-in reader cannot be used because " +
+                                     "there was some issue with the connection. Retryable.")
+        case .appleBuiltInReaderTOSAcceptanceCanceled, .appleBuiltInReaderTOSNotYetAccepted:
+            return NSLocalizedString("Please try again, and accept Apple's Terms of Service, so you can use the " +
+                                     "built-in card reader",
+                                     comment: "Error message shown when the built-in reader cannot be used because " +
+                                     "the merchant cancelled or did not complete the Terms of Service acceptance flow")
+        case .appleBuiltInReaderTOSAcceptanceFailed:
+            return NSLocalizedString("Please check your Apple ID is valid, and then try again. A valid Apple ID is " +
+                                     "required to accept Apple's Terms of Service",
+                                     comment: "Error message shown when the built-in reader cannot be used because " +
+                                     "the Terms of Service acceptance flow failed, possibly due to issues with " +
+                                     "the Apple ID")
+        case .appleBuiltInReaderMerchantBlocked, .appleBuiltInReaderInvalidMerchant, .appleBuiltInReaderDeviceBanned:
+            return NSLocalizedString("Please contact support – there was an issue connecting to the built-in reader",
+                                     comment: "Error message shown when the built-in reader cannot be used because " +
+                                     "there is an issue with the merchant account or device")
+        case .unsupportedMobileDeviceConfiguration:
+            return NSLocalizedString("Please check that your phone meets these requirements: " +
+                                     "iPhone XS or newer running iOS 16.0 or above. Contact support if this error " +
+                                     "shows on a supported device.",
+                                     comment: "Error message shown when the built-in reader cannot be used because " +
+                                     "the device does not meet minimum requirements.")
+        case .commandNotAllowedDuringCall:
+            return NSLocalizedString("The built-in reader cannot be used during a phone call. Please try again after " +
+                                     "you finish your call",
+                                     comment: "Error message shown when the built-in reader cannot be used because " +
+                                     "there is a call in progress")
+        case .invalidAmount:
+            return NSLocalizedString("The amount is not supported by the built in reader – please try a hardware " +
+                                     "reader or another payment method.",
+                                     comment: "Error message shown when the built-in reader cannot be used because " +
+                                     "the amount for payment is not supported by the built in reader.")
+        case .invalidCurrency:
+            return NSLocalizedString("The currency is not supported by the built in reader – please try a hardware " +
+                                     "reader or another payment method.",
+                                     comment: "Error message shown when the built-in reader cannot be used because " +
+                                     "the currency for payment is not supported by the built in reader.")
         }
     }
 }

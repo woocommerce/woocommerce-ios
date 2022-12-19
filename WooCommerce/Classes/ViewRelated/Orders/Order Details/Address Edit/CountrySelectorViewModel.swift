@@ -5,18 +5,17 @@ import Yosemite
 /// View Model for the `CountrySelector` view.
 ///
 final class CountrySelectorViewModel: FilterListSelectorViewModelable, ObservableObject {
-
     /// Current search term entered by the user.
     /// Each update will trigger an update to the `command` that contains the country data.
     var searchTerm: String = "" {
         didSet {
-            command.filterCountries(term: searchTerm)
+            command.filterAreas(term: searchTerm)
         }
     }
 
     /// Command that powers the `ListSelector` view.
     ///
-    let command: CountrySelectorCommand
+    let command: AreaSelectorCommand
 
     /// Navigation title
     ///
@@ -26,8 +25,8 @@ final class CountrySelectorViewModel: FilterListSelectorViewModelable, Observabl
     ///
     let filterPlaceholder = Localization.placeholder
 
-    init(countries: [Country], selected: Binding<Country?>) {
-        self.command = CountrySelectorCommand(countries: countries, selected: selected)
+    init(countries: [Country], selected: Binding<AreaSelectorCommandProtocol?>) {
+        self.command = AreaSelectorCommand( areas: countries, selected: selected)
     }
 }
 

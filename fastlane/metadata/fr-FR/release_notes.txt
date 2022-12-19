@@ -1,3 +1,1 @@
-Grande nouvelle ! Vous pouvez désormais modifier les variantes de prix de manière groupée. Il vous suffit de disposer de la toute dernière version de WooCommerce disponible dans votre boutique. Nous nous sommes concentrés sur l’apport d’améliorations et la résolution de bogues mineurs détectés par notre équipe.
-
-Continuez à nous faire part de vos commentaires ; ils nous aident à nous améliorer.
+Bonne nouvelle ! Nous avons ajouté une nouvelle section d’analyses à l’application. Cliquez simplement sur le bouton En savoir plus sous les statistiques de la boutique pour obtenir plus d’informations sur les revenus et les commandes. Ce n’est pas tout : d’autres mises à jour sont à venir dans les prochaines semaines !

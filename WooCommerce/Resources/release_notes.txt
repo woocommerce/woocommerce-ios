@@ -1,1 +1,1 @@
-Are you loving the new stats widget in the app? Today is your lucky day! It's now possible to view your Stats Widget on your lock screen. This is available for iOS 16 only. We also improved the card reader purchase flow with better autofill so it's easier to purchase a card reader directly from the app.
+Good news! We added a new analytics section to the app! Simply click on the See More button under the store stats to check more detailed information on Revenue and Orders. This isn’t the last of it – more updates to come in the next few weeks!

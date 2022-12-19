@@ -104,20 +104,14 @@ struct PaymentMethodsView: View {
             }
         }
         .sheet(isPresented: $showingPurchaseCardReaderView) {
-            NavigationView {
-                AuthenticatedWebView(isPresented: .constant(true),
-                                     url: viewModel.purchaseCardReaderUrl)
-                .navigationTitle(Text(UpsellCardReadersCampaign.Localization.cardReaderWebViewTitle))
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(UpsellCardReadersCampaign.Localization.cardReaderWebViewDoneButtonTitle) {
-                            showingPurchaseCardReaderView = false
-                        }
-                    }
-                }
-            }
-            .wooNavigationBarStyle()
+            WebViewSheet(
+                viewModel: WebViewSheetViewModel(
+                    url: viewModel.purchaseCardReaderUrl,
+                    navigationTitle: UpsellCardReadersCampaign.Localization.cardReaderWebViewTitle,
+                    wpComAuthenticated: true),
+                done: {
+                    showingPurchaseCardReaderView = false
+                })
             .navigationViewStyle(.stack)
         }
         .shareSheet(isPresented: $sharingPaymentLink) {

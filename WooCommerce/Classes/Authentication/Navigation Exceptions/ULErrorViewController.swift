@@ -13,12 +13,21 @@ final class ULErrorViewController: UIViewController {
     private let viewModel: ULErrorViewModel
 
     /// Contains a vertical stack of the image, error message, and extra info button by default.
-    @IBOutlet private weak var contentStackView: UIStackView!
+    @IBOutlet private weak var containerStackViewWithSeparatorLines: UIStackView!
+    @IBOutlet private weak var extraButtonsStackView: UIStackView!
+    @IBOutlet private weak var extraInfoButton: UIButton!
+    @IBOutlet private weak var topSeparatorLine: UIView!
+    @IBOutlet private weak var bottomSeparatorLine: UIView!
+
     @IBOutlet private weak var primaryButton: ButtonActivityIndicator!
     @IBOutlet private weak var secondaryButton: UIButton!
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var errorMessage: UILabel!
-    @IBOutlet private weak var extraInfoButton: UIButton!
+    @IBOutlet private weak var termsLabel: UITextView!
+
+    @IBOutlet private weak var siteAddressContainerView: UIView!
+    @IBOutlet private weak var siteAddressImageView: UIImageView!
+    @IBOutlet private weak var siteAddressLabel: UILabel!
 
     /// Constraints on the view containing the action buttons
     /// and the stack view containing the image and error text
@@ -29,6 +38,7 @@ final class ULErrorViewController: UIViewController {
     @IBOutlet private weak var stackViewTrailingConstraint: NSLayoutConstraint!
 
     private var primaryButtonSubscription: AnyCancellable?
+    private var siteFaviconSubscription: AnyCancellable?
 
     private let viewDidAppearSubject = PassthroughSubject<Void, Never>()
 
@@ -54,9 +64,12 @@ final class ULErrorViewController: UIViewController {
         configureErrorMessage()
         configureExtraInfoButton()
         configureAuxiliaryView()
+        configureSeparatorLines()
+        configureSiteAddressView()
 
         configurePrimaryButton()
         configureSecondaryButton()
+        configureTermsLabel()
 
         configureButtonLabels()
 
@@ -111,6 +124,9 @@ private extension ULErrorViewController {
         guard viewModel.isAuxiliaryButtonHidden == false else {
             extraInfoButton.isHidden = true
 
+            // Hide the whole stackview to avoid showing separator lines with no views inside.
+            containerStackViewWithSeparatorLines.isHidden = viewModel.auxiliaryView == nil
+
             return
         }
 
@@ -123,11 +139,52 @@ private extension ULErrorViewController {
         }
     }
 
+    func configureTermsLabel() {
+        let linkAttributes: [NSAttributedString.Key: Any] = [
+            NSAttributedString.Key.foregroundColor: UIColor.accent,
+            NSAttributedString.Key.underlineColor: UIColor.accent,
+            NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue
+        ]
+        termsLabel.linkTextAttributes = linkAttributes
+        termsLabel.isSelectable = true
+        termsLabel.isHidden = viewModel.termsLabelText == nil
+        if let text = viewModel.termsLabelText {
+            termsLabel.attributedText = text
+        }
+    }
+
     func configureAuxiliaryView() {
         guard let auxiliaryView = viewModel.auxiliaryView else {
             return
         }
-        contentStackView.addArrangedSubview(auxiliaryView)
+        extraButtonsStackView.addArrangedSubview(auxiliaryView)
+    }
+
+    func configureSeparatorLines() {
+        topSeparatorLine.backgroundColor = .systemColor(.separator)
+        bottomSeparatorLine.backgroundColor = .systemColor(.separator)
+    }
+
+    func configureSiteAddressView() {
+        guard !viewModel.isSiteAddressViewHidden else {
+            siteAddressContainerView.isHidden = true
+            return
+        }
+        siteAddressContainerView.isHidden = false
+        siteAddressContainerView.layer.borderWidth = 0.5
+        siteAddressContainerView.layer.borderColor = UIColor.border.cgColor
+        siteAddressContainerView.layer.cornerRadius = 4
+        siteAddressContainerView.clipsToBounds = true
+
+        siteAddressLabel.applyBodyStyle()
+        siteAddressLabel.numberOfLines = 0
+        siteAddressLabel.text = viewModel.siteURL.trimHTTPScheme()
+
+        siteAddressImageView.tintColor = .text
+        siteFaviconSubscription = viewModel.siteFavicon
+            .sink { [weak self] icon in
+                self?.siteAddressImageView.image = icon
+            }
     }
 
     func configurePrimaryButton() {
@@ -248,5 +305,9 @@ extension ULErrorViewController {
 
     func secondaryActionButton() -> UIButton {
         return secondaryButton
+    }
+
+    func getTermsLabel() -> UITextView {
+        return termsLabel
     }
 }

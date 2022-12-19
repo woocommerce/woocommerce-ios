@@ -45,13 +45,15 @@ class WCAnalyticsCustomerRemoteTests: XCTestCase {
         let customers = try XCTUnwrap(result.get())
         let hasSearchParameter = network.queryParameters?.contains(where: { $0 == "search=John" }) ?? false
         XCTAssertTrue(hasSearchParameter)
-        assertEqual(3, customers.count)
-        assertEqual(1, customers[0].userID)
-        assertEqual(2, customers[1].userID)
-        assertEqual(3, customers[2].userID)
-        assertEqual("John", customers[0].name)
-        assertEqual("Paul", customers[1].name)
-        assertEqual("John Doe", customers[2].name)
+        assertEqual(4, customers.count)
+        assertEqual(0, customers[0].userID)
+        assertEqual(1, customers[1].userID)
+        assertEqual(2, customers[2].userID)
+        assertEqual(3, customers[3].userID)
+        assertEqual("Matt The Unregistered", customers[0].name)
+        assertEqual("John", customers[1].name)
+        assertEqual("Paul", customers[2].name)
+        assertEqual("John Doe", customers[3].name)
     }
 
     func test_WCAnalyticsCustomerRemote_when_calls_retrieveCustomersByName_fails_then_returns_result_isFailure() {

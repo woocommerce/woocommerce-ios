@@ -6,6 +6,9 @@ public final class CustomerStore: Store {
 
     private let customerRemote: CustomerRemote
     private let searchRemote: WCAnalyticsCustomerRemote
+    private lazy var sharedDerivedStorage: StorageType = {
+        return storageManager.writerDerivedStorage
+    }()
 
     init(dispatcher: Dispatcher,
          storageManager: StorageManagerType,
@@ -69,7 +72,7 @@ public final class CustomerStore: Store {
                 guard let self else { return }
                 switch result {
                 case .success(let customers):
-                    self.mapSearchResultsToCustomerObjects(for: siteID, with: customers, onCompletion: onCompletion)
+                    self.mapSearchResultsToCustomerObjects(for: siteID, with: keyword, with: customers, onCompletion: onCompletion)
                 case .failure(let error):
                     onCompletion(.failure(error))
                 }
@@ -92,8 +95,9 @@ public final class CustomerStore: Store {
                 guard let self else { return }
                 switch result {
                 case .success(let customer):
-                    self.upsertCustomer(siteID: siteID, readOnlyCustomer: customer, onCompletion: {})
-                    onCompletion(.success(customer))
+                    self.upsertCustomer(siteID: siteID, readOnlyCustomer: customer, in: self.sharedDerivedStorage, onCompletion: {
+                        onCompletion(.success(customer))
+                    })
                 case .failure(let error):
                     onCompletion(.failure(error))
                 }
@@ -104,42 +108,91 @@ public final class CustomerStore: Store {
     ///
     /// - Parameters:
     ///   - siteID: The site for which customers should be fetched.
+    ///   - keyword: The keyword used for the Customer search query.
     ///   - searchResults: A WCAnalyticsCustomer collection that represents the matches we've got from the API based in our keyword search.
     ///   - onCompletion: Invoked when the operation finishes. Will map the result to a `[Customer]` entity.
     ///
     private func mapSearchResultsToCustomerObjects(for siteID: Int64,
+                                                   with keyword: String,
                                           with searchResults: [WCAnalyticsCustomer],
                                                   onCompletion: @escaping (Result<[Customer], Error>) -> Void) {
-        var results = [Customer]()
+        var customers = [Customer]()
         let group = DispatchGroup()
         for result in searchResults {
+            // At the moment, we're not searching through non-registered customers
+            // As we only search by customer ID, calls to /wc/v3/customers/0 will always fail
+            // https://github.com/woocommerce/woocommerce-ios/issues/7741
+            if result.userID == 0 {
+                continue
+            }
             group.enter()
             self.retrieveCustomer(for: siteID, with: result.userID, onCompletion: { result in
                 if let customer = try? result.get() {
-                    results.append(customer)
+                    customers.append(customer)
                 }
                 group.leave()
             })
         }
 
         group.notify(queue: .main) {
-            self.upsertSearchCustomerResults(siteID: siteID, readOnlySearchResults: searchResults, onCompletion: {})
-            onCompletion(.success(results))
+            self.upsertSearchCustomerResult(
+                siteID: siteID,
+                keyword: keyword,
+                readOnlyCustomers: customers,
+                onCompletion: {
+                    onCompletion(.success(customers))
+                }
+            )
+        }
+    }
+}
+
+// MARK: Storage operations
+private extension CustomerStore {
+    /// Inserts or updates CustomerSearchResults in Storage
+    ///
+    private func upsertSearchCustomerResult(siteID: Int64,
+                                            keyword: String,
+                                            readOnlyCustomers: [Networking.Customer],
+                                            onCompletion: @escaping () -> Void) {
+        sharedDerivedStorage.perform { [weak self] in
+            guard let self = self else { return }
+            let storedSearchResult = self.sharedDerivedStorage.loadCustomerSearchResult(siteID: siteID, keyword: keyword) ??
+            self.sharedDerivedStorage.insertNewObject(ofType: Storage.CustomerSearchResult.self)
+
+            storedSearchResult.siteID = siteID
+            storedSearchResult.keyword = keyword
+
+            for result in readOnlyCustomers {
+                if let storedCustomer = self.sharedDerivedStorage.loadCustomer(siteID: siteID, customerID: result.customerID) {
+                    storedSearchResult.addToCustomers(storedCustomer)
+                }
+            }
+        }
+        storageManager.saveDerivedType(derivedStorage: self.sharedDerivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
         }
     }
 
-    /// Inserts or updates CustomerSearchResults in Storage
+    /// Inserts or updates Customer entities into Storage
     ///
-    private func upsertSearchCustomerResults(siteID: Int64, readOnlySearchResults: [Networking.WCAnalyticsCustomer], onCompletion: @escaping () -> Void) {
-        for _ in readOnlySearchResults {
-            // Logic for inserting or updating in Storage will go here. Not implemented yet.
-            // https://github.com/woocommerce/woocommerce-ios/issues/7741
+    private func upsertCustomer(siteID: Int64, readOnlyCustomer: Networking.Customer, in storage: StorageType, onCompletion: @escaping () -> Void) {
+
+        storage.perform {
+            let storageCustomer: Storage.Customer = {
+                // If the specific customerID for that siteID already exists, return it
+                // If doesn't, insert a new one in Storage
+                if let storedCustomer = storage.loadCustomer(siteID: siteID, customerID: readOnlyCustomer.customerID) {
+                    return storedCustomer
+                } else {
+                    return storage.insertNewObject(ofType: Storage.Customer.self)
+                }
+            }()
+            storageCustomer.update(with: readOnlyCustomer)
         }
-    }
-    /// Inserts or updates Customers in Storage
-    ///
-    private func upsertCustomer(siteID: Int64, readOnlyCustomer: Networking.Customer, onCompletion: @escaping () -> Void) {
-        // Logic for inserting or updating in Storage will go here. Not implemented yet.
-        // https://github.com/woocommerce/woocommerce-ios/issues/7741
+
+        storageManager.saveDerivedType(derivedStorage: storage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
     }
 }

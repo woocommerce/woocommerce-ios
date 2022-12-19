@@ -100,6 +100,10 @@ public class ProductStore: Store {
             validateProductSKU(sku, siteID: siteID, onCompletion: onCompletion)
         case let .replaceProductLocally(product, onCompletion):
             replaceProductLocally(product: product, onCompletion: onCompletion)
+        case let .checkProductsOnboardingEligibility(siteID: siteID, onCompletion: onCompletion):
+            checkProductsOnboardingEligibility(siteID: siteID, onCompletion: onCompletion)
+        case let .createTemplateProduct(siteID, template, onCompletion):
+            createTemplateProduct(siteID: siteID, template: template, onCompletion: onCompletion)
         }
     }
 }
@@ -386,6 +390,42 @@ private extension ProductStore {
     ///
     func replaceProductLocally(product: Product, onCompletion: @escaping () -> Void) {
         upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: product.siteID, onCompletion: onCompletion)
+    }
+
+    /// Checks if the store is eligible for products onboarding.
+    /// Returns `true` if the store has no products.
+    ///
+    func checkProductsOnboardingEligibility(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+        // Check for locally stored products first.
+        let storage = storageManager.viewStorage
+        if let products = storage.loadProducts(siteID: siteID), !products.isEmpty {
+            return onCompletion(.success(false))
+        }
+
+        // If there are no locally stored products, then check remote.
+        remote.loadProductIDs(for: siteID, pageNumber: 1, pageSize: 1) { result in
+            switch result {
+            case .success(let ids):
+                onCompletion(.success(ids.isEmpty))
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Creates a product using the provided template type.
+    /// The created product is not stored locally.
+    ///
+    func createTemplateProduct(siteID: Int64, template: ProductsRemote.TemplateType, onCompletion: @escaping (Result<Product, Error>) -> Void) {
+        remote.createTemplateProduct(for: siteID, template: template) { [remote] result in
+            switch result {
+            case .success(let productID):
+                remote.loadProduct(for: siteID, productID: productID, completion: onCompletion)
+
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
     }
 }
 

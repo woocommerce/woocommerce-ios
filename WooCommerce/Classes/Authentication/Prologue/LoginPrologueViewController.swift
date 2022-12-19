@@ -11,6 +11,8 @@ final class LoginPrologueViewController: UIViewController {
     /// The feature carousel is not shown right after finishing the onboarding.
     private let isFeatureCarouselShown: Bool
     private let analytics: Analytics
+    private let featureFlagService: FeatureFlagService
+    private let isSimplifiedLogin: Bool
 
     /// Background View, to be placed surrounding the bottom area.
     ///
@@ -42,6 +44,8 @@ final class LoginPrologueViewController: UIViewController {
         isNewToWooCommerceButtonShown = featureFlagService.isFeatureFlagEnabled(.newToWooCommerceLinkInLoginPrologue)
         self.isFeatureCarouselShown = isFeatureCarouselShown
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
+        self.isSimplifiedLogin = ABTest.abTestLoginWithWPComOnly.variation != .control
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -92,7 +96,15 @@ private extension LoginPrologueViewController {
     /// This is contained in a child view so that this view's background doesn't scroll.
     ///
     func setupCarousel(isNewToWooCommerceButtonShown: Bool) {
-        let pageTypes: [LoginProloguePageType] = isFeatureCarouselShown ? [.stats, .orderManagement, .products, .reviews]: [.getStarted]
+        let pageTypes: [LoginProloguePageType] = {
+            if isFeatureCarouselShown {
+                return [.stats, .orderManagement, .products, .reviews]
+            } else if isSimplifiedLogin {
+                return [.simplifiedLoginI1Intro]
+            } else {
+                return [.getStarted]
+            }
+        }()
         let carousel = LoginProloguePageViewController(pageTypes: pageTypes, showsSubtitle: !isFeatureCarouselShown)
         carousel.view.translatesAutoresizingMaskIntoConstraints = false
 
@@ -115,7 +127,8 @@ private extension LoginPrologueViewController {
         guard isNewToWooCommerceButtonShown else {
             return newToWooCommerceButton.isHidden = true
         }
-        newToWooCommerceButton.setTitle(Localization.newToWooCommerce, for: .normal)
+        let title = isSimplifiedLogin ? Localization.learnMoreAboutWoo : Localization.newToWooCommerce
+        newToWooCommerceButton.setTitle(title, for: .normal)
         newToWooCommerceButton.applyLinkButtonStyle()
         newToWooCommerceButton.titleLabel?.numberOfLines = 0
         newToWooCommerceButton.titleLabel?.textAlignment = .center
@@ -142,5 +155,8 @@ private extension LoginPrologueViewController {
     enum Localization {
         static let newToWooCommerce = NSLocalizedString("New to WooCommerce?",
                                                         comment: "Title of button in the login prologue screen for users who are new to WooCommerce.")
+        static let learnMoreAboutWoo = NSLocalizedString("Learn more about WooCommerce",
+                                                         comment: "Title of button in the simplified login prologue screen " +
+                                                         "for learning more about WooCommerce.")
     }
 }

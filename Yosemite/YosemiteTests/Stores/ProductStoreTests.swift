@@ -1527,6 +1527,90 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(newProduct, replacedProduct)
         XCTAssertTrue(finished)
     }
+
+    // MARK: - ProductAction.checkProductsOnboardingEligibility
+
+    /// Verifies that ProductAction.checkProductsOnboardingEligibility returns false result when remote returns an array with a product ID.
+    ///
+    func test_checkProductsOnboardingEligibility_returns_expected_result_when_remote_returns_product() throws {
+        // Given
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-ids-only")
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = ProductAction.checkProductsOnboardingEligibility(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            productStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let isEligible = try XCTUnwrap(result.get())
+        XCTAssertFalse(isEligible)
+    }
+
+    /// Verifies that ProductAction.checkProductsOnboardingEligibility returns false result when a product already exists in local storage.
+    ///
+    func test_checkProductsOnboardingEligibility_with_IDs_returns_expected_result_when_local_storage_has_product() throws {
+        // Given
+        storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(siteID: sampleSiteID))
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = ProductAction.checkProductsOnboardingEligibility(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            productStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let isEligible = try XCTUnwrap(result.get())
+        XCTAssertFalse(isEligible)
+    }
+
+    /// Verifies that ProductAction.checkProductsOnboardingEligibility returns true result for an empty array.
+    ///
+    func test_checkProductsOnboardingEligibility_returns_expected_result_when_remote_returns_empty_array() throws {
+        // Given
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-ids-only-empty")
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = ProductAction.checkProductsOnboardingEligibility(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            productStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let isEligible = try XCTUnwrap(result.get())
+        XCTAssertTrue(isEligible)
+    }
+
+    func test_create_template_product_invokes_correct_network_calls() {
+        // Given
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "onboarding/tasks/create_product_from_template", filename: "product-id-only")
+        network.simulateResponse(requestUrlSuffix: "products/3946", filename: "product")
+
+        // When
+        let result: Result<Networking.Product, Error> = waitFor { promise in
+            let action = ProductAction.createTemplateProduct(siteID: self.sampleSiteID, template: .physical) { result in
+                promise(result)
+            }
+            productStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertNotNil(try? result.get())
+    }
 }
 
 // MARK: - Private Helpers

@@ -1,3 +1,1 @@
-Berita menarik! Anda kini dapat mengedit harga variasi secara massal. Anda hanya membutuhkan versi terbaru WooCommerce yang tersedia di toko Anda. Kami juga berfokus pada penyempurnaan beberapa hal dan penanganan bug minor yang ditemukan oleh tim kami.
-
-Terus kirimkan feedback Anda untuk memberi tahu kami apa yang harus ditingkatkan selanjutnya.
+Kabar baik! Kami menambahkan bagian analitik baru dalam aplikasi! Klik tombol Lihat Selengkapnya di bawah statistik toko untuk melihat informasi terperinci tentang Pendapatan dan Pesanan. Pembaruan ini bukanlah yang terakhir – masih akan ada yang lainnya dalam beberapa minggu ke depan!

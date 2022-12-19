@@ -50,7 +50,6 @@ protocol SettingsViewModelActionsHandler {
 
 protocol SettingsViewModelInput: AnyObject {
     var presenter: SettingsViewPresenter? { get set }
-    var upsellCardReadersAnnouncementViewModel: FeatureAnnouncementCardViewModel { get }
 }
 
 final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActionsHandler, SettingsViewModelInput {
@@ -103,12 +102,10 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     private let storageManager: StorageManagerType
     private let featureFlagService: FeatureFlagService
     private let appleIDCredentialChecker: AppleIDCredentialCheckerProtocol
-    private let upsellCardReadersCampaign = UpsellCardReadersCampaign(source: .settings)
 
-    var upsellCardReadersAnnouncementViewModel: FeatureAnnouncementCardViewModel {
-        .init(analytics: ServiceLocator.analytics,
-              configuration: upsellCardReadersCampaign.configuration)
-    }
+    /// Reference to the Zendesk shared instance
+    ///
+    private let zendeskShared: ZendeskManagerProtocol = ZendeskProvider.shared
 
     init(stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -141,6 +138,11 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
             let action = SystemStatusAction.synchronizeSystemPlugins(siteID: siteID, onCompletion: { _ in })
             stores.dispatch(action)
         }
+
+        /// Fetch System Status Report from Zendesk
+        /// so it will be ready to be attached to a a support request when needed
+        ///
+        zendeskShared.fetchSystemStatusReport()
     }
 
     /// Sets up the view model and loads the settings.
@@ -277,13 +279,15 @@ private extension SettingsViewModel {
                            footerHeight: CGFloat.leastNonzeroMagnitude)
         }()
 
-        // Remove Apple ID Access
-        let removeAppleIDAccessSection: Section? = {
-            guard appleIDCredentialChecker.hasAppleUserID() else {
+        // Close account
+        let closeAccountSection: Section? = {
+            guard appleIDCredentialChecker.hasAppleUserID()
+                    || featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
+                    || featureFlagService.isFeatureFlagEnabled(.storeCreationM2) else {
                 return nil
             }
             return Section(title: nil,
-                           rows: [.removeAppleIDAccess],
+                           rows: [.closeAccount],
                            footerHeight: CGFloat.leastNonzeroMagnitude)
         }()
 
@@ -299,7 +303,7 @@ private extension SettingsViewModel {
             appSettingsSection,
             aboutTheAppSection,
             otherSection,
-            removeAppleIDAccessSection,
+            closeAccountSection,
             logoutSection
         ]
         .compactMap { $0 }

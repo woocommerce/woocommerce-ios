@@ -6,8 +6,8 @@ final class InAppPurchasesProductsMapperTests: XCTestCase {
         // Given
         let jsonData = try XCTUnwrap(Loader.contentsOf("iap-products"))
         let expectedProductIdentifiers = [
-            "woocommerce_entry_monthly",
-            "woocommerce_entry_yearly"]
+            "debug.woocommerce.ecommerce.monthly"
+        ]
 
         // When
         let products = try InAppPurchasesProductMapper().map(response: jsonData)

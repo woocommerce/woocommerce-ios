@@ -1,6 +1,7 @@
 import Foundation
 
 public protocol UTMParametersProviding {
+    var limitToHosts: [String]? { get }
     var parameters: [UTMParameterKey: String?] { get }
     var utmQueryItems: [URLQueryItem] { get }
 }
@@ -26,9 +27,28 @@ public extension UTMParametersProviding {
     }
 
     func urlWithUtmParams(string urlString: String) -> URL? {
-        guard var components = URLComponents(string: urlString) else {
+        guard let components = URLComponents(string: urlString) else {
             return nil
         }
+
+        if let limitToHosts = limitToHosts {
+            return urlAddingUTMParamsForAllowedHosts(limitToHosts, urlComponents: components)
+        } else {
+            return urlAddingUTMParams(urlComponents: components)
+        }
+    }
+
+    private func urlAddingUTMParamsForAllowedHosts(_ allowedHosts: [String], urlComponents: URLComponents) -> URL? {
+        if let host = urlComponents.host,
+           allowedHosts.contains(host) {
+            return urlAddingUTMParams(urlComponents: urlComponents)
+        } else {
+            return urlComponents.url
+        }
+    }
+
+    private func urlAddingUTMParams(urlComponents: URLComponents) -> URL? {
+        var components = urlComponents
         var queryItems = components.queryItems ?? [URLQueryItem]()
         let newQueryItems = utmQueryItems
 

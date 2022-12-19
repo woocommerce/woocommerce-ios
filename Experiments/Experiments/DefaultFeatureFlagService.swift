@@ -18,12 +18,10 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .shippingLabelsOnboardingM1:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .newToWooCommerceLinkInLoginPrologue:
-            return true
+            return false
         case .loginPrologueOnboarding:
             return true
         case .loginErrorNotifications:
-            return true
-        case .loginPrologueOnboardingSurvey:
             return true
         case .loginMagicLinkEmphasis:
             return true
@@ -33,12 +31,30 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .searchProductsBySKU:
             return true
-        case .orderCreationSearchCustomers:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .wpcomSignup:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .inAppPurchases:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .storeCreationMVP:
+            return true
+        case .storeCreationM2:
+            return true
+        case .storeCreationM2WithInAppPurchasesEnabled:
+            return false
+        case .storeCreationM3Profiler:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .justInTimeMessagesOnDashboard:
+            return true
+        case .systemStatusReportInSupportRequest:
+            return true
+        case .performanceMonitoring,
+                .performanceMonitoringCoreData,
+                .performanceMonitoringFileIO,
+                .performanceMonitoringNetworking,
+                .performanceMonitoringViewController,
+                .performanceMonitoringUserInteraction:
+            // Disabled by default to avoid costs spikes, unless in internal testing builds.
+            return buildConfig == .alpha
+        case .tapToPayOnIPhone:
+            return buildConfig == .localDeveloper
         default:
             return true
         }

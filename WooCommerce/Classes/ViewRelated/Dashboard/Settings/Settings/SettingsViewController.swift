@@ -29,10 +29,10 @@ final class SettingsViewController: UIViewController {
     ///
     private var storePickerCoordinator: StorePickerCoordinator?
 
-    private lazy var removeAppleIDAccessCoordinator: RemoveAppleIDAccessCoordinator =
-    RemoveAppleIDAccessCoordinator(sourceViewController: self) { [weak self] in
-        guard let self = self else { return .failure(RemoveAppleIDAccessError.presenterDeallocated) }
-        return await self.removeAppleIDAccess()
+    private lazy var closeAccountCoordinator: CloseAccountCoordinator =
+    CloseAccountCoordinator(sourceViewController: self) { [weak self] in
+        guard let self = self else { throw CloseAccountError.presenterDeallocated }
+        try await self.closeAccount()
     } onRemoveSuccess: { [weak self] in
         self?.logOutUser()
     }
@@ -134,8 +134,6 @@ private extension SettingsViewController {
             configurePlugins(cell: cell)
         case let cell as HostingTableViewCell<PluginDetailsRowView> where row == .woocommerceDetails:
             configureWooCommmerceDetails(cell: cell)
-        case let cell as HostingTableViewCell<FeatureAnnouncementCardView> where row == .upsellCardReadersFeatureAnnouncement:
-            configureUpsellCardReadersFeatureAnnouncement(cell: cell)
         case let cell as BasicTableViewCell where row == .installJetpack:
             configureInstallJetpack(cell: cell)
         case let cell as BasicTableViewCell where row == .support:
@@ -154,8 +152,8 @@ private extension SettingsViewController {
             configureAppSettings(cell: cell)
         case let cell as BasicTableViewCell where row == .wormholy:
             configureWormholy(cell: cell)
-        case let cell as BasicTableViewCell where row == .removeAppleIDAccess:
-            configureRemoveAppleIDAccess(cell: cell)
+        case let cell as BasicTableViewCell where row == .closeAccount:
+            configureCloseAccount(cell: cell)
         case let cell as BasicTableViewCell where row == .logout:
             configureLogout(cell: cell)
         default:
@@ -189,15 +187,6 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = Localization.helpAndSupport
-    }
-
-    func configureUpsellCardReadersFeatureAnnouncement(cell: HostingTableViewCell<FeatureAnnouncementCardView>) {
-        let view = FeatureAnnouncementCardView(viewModel: viewModel.upsellCardReadersAnnouncementViewModel,
-                                               dismiss: { [weak self] in
-            self?.viewModel.reloadSettings()
-        })
-        cell.host(view, parent: self)
-        cell.selectionStyle = .none
     }
 
     func configureInstallJetpack(cell: BasicTableViewCell) {
@@ -249,7 +238,7 @@ private extension SettingsViewController {
         cell.textLabel?.text = Localization.whatsNew
     }
 
-    func configureRemoveAppleIDAccess(cell: BasicTableViewCell) {
+    func configureCloseAccount(cell: BasicTableViewCell) {
         cell.selectionStyle = .default
         cell.textLabel?.textAlignment = .center
         cell.textLabel?.textColor = .error
@@ -279,16 +268,16 @@ private extension SettingsViewController {
 // MARK: - Actions
 //
 private extension SettingsViewController {
-    func removeAppleIDAccessWasPressed() {
+    func closeAccountWasPressed() {
         ServiceLocator.analytics.track(event: .closeAccountTapped(source: .settings))
-        removeAppleIDAccessCoordinator.start()
+        closeAccountCoordinator.start()
     }
 
-    func removeAppleIDAccess() async -> Result<Void, Error> {
-        await withCheckedContinuation { [weak self] continuation in
+    func closeAccount() async throws {
+        try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self = self else { return }
             let action = AccountAction.closeAccount { result in
-                continuation.resume(returning: result)
+                continuation.resume(with: result)
             }
             self.stores.dispatch(action)
         }
@@ -542,8 +531,8 @@ extension SettingsViewController: UITableViewDelegate {
             wormholyWasPressed()
         case .whatsNew:
             whatsNewWasPressed()
-        case .removeAppleIDAccess:
-            removeAppleIDAccessWasPressed()
+        case .closeAccount:
+            closeAccountWasPressed()
         case .logout:
             logoutWasPressed()
         default:
@@ -601,7 +590,6 @@ extension SettingsViewController {
         case woocommerceDetails
 
         // Store settings
-        case upsellCardReadersFeatureAnnouncement
         case installJetpack
 
         // Help & Feedback
@@ -621,14 +609,14 @@ extension SettingsViewController {
         case wormholy
 
         // Account deletion
-        case removeAppleIDAccess
+        case closeAccount
 
         // Logout
         case logout
 
         fileprivate var registerWithNib: Bool {
             switch self {
-            case .upsellCardReadersFeatureAnnouncement, .woocommerceDetails:
+            case .woocommerceDetails:
                 return false
             default:
                 return true
@@ -647,11 +635,9 @@ extension SettingsViewController {
                 return HostingTableViewCell<PluginDetailsRowView>.self
             case .support:
                 return BasicTableViewCell.self
-            case .upsellCardReadersFeatureAnnouncement:
-                return HostingTableViewCell<FeatureAnnouncementCardView>.self
             case .installJetpack:
                 return BasicTableViewCell.self
-            case .logout, .removeAppleIDAccess:
+            case .logout, .closeAccount:
                 return BasicTableViewCell.self
             case .privacy:
                 return BasicTableViewCell.self

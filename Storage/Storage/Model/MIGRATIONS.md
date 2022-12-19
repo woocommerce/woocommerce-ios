@@ -2,6 +2,26 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 80 (Release 11.7.0.0)
+- @rachelmcr 2022-12-15
+    - Added `SiteSummaryStats` entity.
+
+## Model 79 (Release 11.7.0.0)
+- @rachelmcr 2022-12-12
+    - Added `views` attribute to `SiteVisitStatsItem` entity.
+
+## Model 78 (Release 11.4.0.0)
+- @rachelmcr 2022-11-18
+    - Added `averageOrderValue` attribute to `OrderStatsV4Totals` entity.
+
+## Model 77 (Release 11.2.0.0)
+- @ealeksandrov 2022-11-07
+    - Added `frameNonce` attribute to `Site` entity.
+
+## Model 76 (Release 11.0.0.0)
+- @ealeksandrov 2022-10-26
+    - Added `loginURL` attribute to `Site` entity.
+
 ## Model 75 (Release 10.9.0.0)
 - @iamgabrielma 2022-10-17
     - Added `siteID` attribute to `Customer` entity.

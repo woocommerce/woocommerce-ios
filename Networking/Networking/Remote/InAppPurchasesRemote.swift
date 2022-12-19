@@ -10,8 +10,7 @@ public class InAppPurchasesRemote: Remote {
     ///     - completion: Closure to be executed upon completion
     ///
     public func loadProducts(completion: @escaping (Swift.Result<[String], Error>) -> Void) {
-        let dotComRequest = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: Constants.productsPath)
-        let request = augmentedRequestWithAppId(dotComRequest)
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: Constants.productsPath, headers: headersWithAppId)
         let mapper = InAppPurchasesProductMapper()
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -39,8 +38,13 @@ public class InAppPurchasesRemote: Remote {
                 Constants.appStoreCountryCodeKey: appStoreCountryCode,
                 Constants.receiptDataKey: receiptData.base64EncodedString()
             ]
-            let dotComRequest = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: Constants.ordersPath, parameters: parameters)
-            let request = augmentedRequestWithAppId(dotComRequest)
+            let request = DotcomRequest(
+                wordpressApiVersion: .wpcomMark2,
+                method: .post,
+                path: Constants.ordersPath,
+                parameters: parameters,
+                headers: headersWithAppId
+            )
             let mapper = InAppPurchaseOrderResultMapper()
             enqueue(request, mapper: mapper, completion: completion)
         }
@@ -93,15 +97,14 @@ public extension InAppPurchasesRemote {
 }
 
 private extension InAppPurchasesRemote {
-    func augmentedRequestWithAppId(_ request: URLRequestConvertible) -> URLRequestConvertible {
-        guard let bundleIdentifier = Bundle.main.bundleIdentifier,
-              var augmented = try? request.asURLRequest() else {
-            return request
+    var headersWithAppId: [String: String]? {
+        guard let bundleIdentifier = Bundle.main.bundleIdentifier else {
+            return nil
         }
 
-        augmented.setValue(bundleIdentifier, forHTTPHeaderField: "X-APP-ID")
-
-        return augmented
+        return [
+            "X-APP-ID": bundleIdentifier
+        ]
     }
 }
 

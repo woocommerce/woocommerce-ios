@@ -1440,6 +1440,142 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(newCustomerSearchResult.value(forKey: "siteID") as? Int64, 1)
         XCTAssertEqual(newCustomerSearchResult.value(forKey: "keyword") as? String, "")
     }
+
+    func test_migrating_from_75_to_76_adds_loginURL_attribute() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 75")
+        let sourceContext = sourceContainer.viewContext
+
+        let site = insertSite(to: sourceContainer.viewContext)
+        try sourceContext.save()
+
+        XCTAssertNil(site.entity.attributesByName["loginURL"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 76")
+        let targetContext = targetContainer.viewContext
+
+        let migratedSite = try XCTUnwrap(targetContext.first(entityName: "Site"))
+        let defaultLoginURL = migratedSite.value(forKey: "loginURL")
+
+        let loginURL = "https://test.blog/wp-login.php"
+        migratedSite.setValue(loginURL, forKey: "loginURL")
+
+        // Then
+        // Default value is nil.
+        XCTAssertNil(defaultLoginURL)
+
+        let newLoginURL = try XCTUnwrap(migratedSite.value(forKey: "loginURL") as? String)
+        XCTAssertEqual(newLoginURL, loginURL)
+    }
+
+    func test_migrating_from_76_to_77_adds_frameNonce_attribute() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 76")
+        let sourceContext = sourceContainer.viewContext
+
+        let site = insertSite(to: sourceContainer.viewContext)
+        try sourceContext.save()
+
+        XCTAssertNil(site.entity.attributesByName["frameNonce"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 77")
+        let targetContext = targetContainer.viewContext
+
+        let migratedSite = try XCTUnwrap(targetContext.first(entityName: "Site"))
+        let defaultFrameNonce = migratedSite.value(forKey: "frameNonce")
+
+        let frameNonce = "e7bfd785f0"
+        migratedSite.setValue(frameNonce, forKey: "frameNonce")
+
+        // Then
+        // Default value is nil.
+        XCTAssertNil(defaultFrameNonce)
+
+        let newFrameNonce = try XCTUnwrap(migratedSite.value(forKey: "frameNonce") as? String)
+        XCTAssertEqual(newFrameNonce, frameNonce)
+    }
+
+    func test_migrating_from_77_to_78_adds_averageOrderValue_attribute() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 77")
+        let sourceContext = sourceContainer.viewContext
+
+        let orderStatsV4Totals = insertOrderStatsTotals(to: sourceContainer.viewContext)
+        try sourceContext.save()
+
+        XCTAssertNil(orderStatsV4Totals.entity.attributesByName["averageOrderValue"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 78")
+        let targetContext = targetContainer.viewContext
+
+        let migratedOrderStatsV4Totals = try XCTUnwrap(targetContext.first(entityName: "OrderStatsV4Totals"))
+        let defaultAverageOrderValue = try XCTUnwrap(migratedOrderStatsV4Totals.value(forKey: "averageOrderValue") as? Double)
+
+        let averageOrderValue = 123.45
+        migratedOrderStatsV4Totals.setValue(averageOrderValue, forKey: "averageOrderValue")
+
+        // Then
+        // Default value is 0.
+        XCTAssertEqual(defaultAverageOrderValue, 0)
+
+        let newAverageOrderValue = try XCTUnwrap(migratedOrderStatsV4Totals.value(forKey: "averageOrderValue") as? Double)
+        XCTAssertEqual(newAverageOrderValue, averageOrderValue)
+    }
+
+    func test_migrating_from_78_to_79_adds_views_attribute() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 78")
+        let sourceContext = sourceContainer.viewContext
+
+        let siteVisitStatsItem = insertSiteVisitStatsItem(to: sourceContainer.viewContext)
+        try sourceContext.save()
+
+        XCTAssertNil(siteVisitStatsItem.entity.attributesByName["views"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 79")
+        let targetContext = targetContainer.viewContext
+
+        let migratedSiteVisitStatsItem = try XCTUnwrap(targetContext.first(entityName: "SiteVisitStatsItem"))
+        let defaultViewsCount = try XCTUnwrap(migratedSiteVisitStatsItem.value(forKey: "views") as? Int)
+
+        let viewsCount = 12
+        migratedSiteVisitStatsItem.setValue(viewsCount, forKey: "views")
+
+        // Then
+        // Default value is 0.
+        XCTAssertEqual(defaultViewsCount, 0)
+
+        let newViewsCount = try XCTUnwrap(migratedSiteVisitStatsItem.value(forKey: "views") as? Int)
+        XCTAssertEqual(newViewsCount, viewsCount)
+    }
+
+    func test_migrating_from_79_to_80_enables_creating_new_SiteSummaryStats_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 79")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. This entity should not exist in Model 79
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "SiteSummaryStats", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 80")
+        let targetContext = targetContainer.viewContext
+
+        // Then
+        XCTAssertEqual(try targetContext.count(entityName: "SiteSummaryStats"), 0)
+
+        let summaryStats = insertSiteSummaryStats(to: targetContext)
+        let insertedStats = try XCTUnwrap(targetContext.firstObject(ofType: SiteSummaryStats.self))
+
+        XCTAssertEqual(try targetContext.count(entityName: "SiteSummaryStats"), 1)
+        XCTAssertEqual(insertedStats, summaryStats)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -1836,10 +1972,44 @@ private extension MigrationTests {
     }
 
     @discardableResult
+    func insertOrderStatsTotals(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "OrderStatsV4Totals", properties: [
+            "totalOrders": 3,
+            "totalItemsSold": 5,
+            "grossRevenue": 800,
+            "couponDiscount": 0,
+            "totalCoupons": 0,
+            "refunds": 0,
+            "taxes": 0,
+            "shipping": 0,
+            "netRevenue": 800,
+            "totalProducts": 2,
+        ])
+    }
+
+    @discardableResult
+    func insertSiteSummaryStats(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "SiteSummaryStats", properties: [
+            "date": "2022-12-15",
+            "period": "day",
+            "visitors": 3,
+            "views": 9
+        ])
+    }
+
+    @discardableResult
     func insertSiteVisitStats(to context: NSManagedObjectContext) -> NSManagedObject {
         context.insert(entityName: "SiteVisitStats", properties: [
             "date": "2021-01-22",
             "granularity": "day"
+        ])
+    }
+
+    @discardableResult
+    func insertSiteVisitStatsItem(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "SiteVisitStatsItem", properties: [
+            "period": "day",
+            "visitors": 3
         ])
     }
 

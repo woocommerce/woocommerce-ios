@@ -4,7 +4,7 @@
         "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
         "bodyPatterns": [
             { "matches": ".*path=/wc/v3/orders/3337%26_method%3Dpost.*" },
-            { "contains": "%22product_id%22%3A2129" },
+            { "contains": "%22product_id%22%3A2130" },
             { "contains": "%22fee_lines%22%3A%5B%5D" },
             { "contains": "%22method_title%22%3A%22Flat%20Rate%22" },
             { "contains": "%22first_name%22%3A%22Mira%22" }
@@ -70,19 +70,19 @@
                 "meta_data": [],
                 "line_items": [{
                     "id": 1,
-                    "name": "Akoya Pearl shades",
-                    "product_id": 2129,
+                    "name": "Black Coral shades",
+                    "product_id": 2130,
                     "variation_id": 0,
                     "quantity": 1,
                     "tax_class": "",
-                    "subtotal": "110.00",
+                    "subtotal": "150.00",
                     "subtotal_tax": "0.00",
-                    "total": "110.00",
+                    "total": "150.00",
                     "total_tax": "0.00",
                     "taxes": [],
                     "meta_data": [],
                     "sku": "",
-                    "price": 110
+                    "price": 150
                 }],
                 "tax_lines": [],
                 "shipping_lines": [{

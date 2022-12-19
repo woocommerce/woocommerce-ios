@@ -12,6 +12,7 @@ struct i18n {
         static let name = NSLocalizedString("Your WooCommerce Store", comment: "Store Name for the screenshot demo account")
         static let url = NSLocalizedString("example.com", comment: "")
         static let adminURL = NSLocalizedString("example.com/wp-admin", comment: "")
+        static let loginURL = NSLocalizedString("example.com/wp-login.php", comment: "")
     }
 }
 
@@ -37,11 +38,13 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         description: "",
         url: i18n.DefaultSite.url,
         adminURL: i18n.DefaultSite.adminURL,
+        loginURL: i18n.DefaultSite.loginURL,
+        frameNonce: "",
         plan: "",
         isJetpackThePluginInstalled: true,
         isJetpackConnected: true,
         isWooCommerceActive: true,
-        isWordPressStore: true,
+        isWordPressComStore: true,
         jetpackConnectionActivePlugins: [],
         timezone: "UTC",
         gmtOffset: 0
@@ -214,7 +217,8 @@ struct ScreenshotObjectGraph: MockObjectGraph {
                 Self.createVisitStatsItem(
                     granularity: .day,
                     periodDate: date.monthStart.addingDays(dayIndex),
-                    visitors: Int.random(in: 0 ... 20)
+                    visitors: Int.random(in: 0 ... 20),
+                    views: Int.random(in: 0...40)
                 )
             }
         )

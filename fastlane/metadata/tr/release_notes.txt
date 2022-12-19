@@ -1,3 +1,1 @@
-Heyecan verici haberlerimiz var! Artık varyasyon fiyatlarını toplu olarak düzenleyebilirsiniz. Tek ihtiyacınız olan, mağazanızda WooCommerce'in en son sürümünü kullanmak! Ayrıca bu sürümde birkaç şeyi düzeltmeye ve ekibimizin bulduğu küçük hataları gidermeye odaklandık.
-
-Geri bildirimleriniz devam etsin; üzerinde çalışacağımız bir sonraki özelliği bulmamıza yardımcı oluyor.
+İyi haber! Uygulamaya yeni bir analiz bölümü ekledik! Gelir ve Siparişler'le ilgili daha ayrıntılı bilgileri kontrol etmek için mağaza istatistiklerinin altındaki Daha Fazlasını Gör düğmesine tıklamanız yeterlidir. Bu son değil - önümüzdeki birkaç hafta içinde daha fazla güncelleme gelecek!

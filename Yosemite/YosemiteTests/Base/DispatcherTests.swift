@@ -21,17 +21,17 @@ class DispatcherTests: XCTestCase {
     ///
     func testProcessorEffectivelyGetsRegistered() {
         let processor = MockActionsProcessor()
-        dispatcher.register(processor: processor, for: SiteAction.self)
-        XCTAssertTrue(dispatcher.isProcessorRegistered(processor, for: SiteAction.self))
+        dispatcher.register(processor: processor, for: MockSiteAction.self)
+        XCTAssertTrue(dispatcher.isProcessorRegistered(processor, for: MockSiteAction.self))
     }
 
     /// Verifies that a processor only receives the actions it's been registered to.
     ///
     func testProcessorsReceiveOnlyRegisteredActions() {
-        dispatcher.register(processor: processor, for: SiteAction.self)
+        dispatcher.register(processor: processor, for: MockSiteAction.self)
 
         XCTAssertTrue(processor.receivedActions.isEmpty)
-        dispatcher.dispatch(SiteAction.refreshSites)
+        dispatcher.dispatch(MockSiteAction.refreshSites)
         XCTAssertEqual(processor.receivedActions.count, 1)
 
         dispatcher.dispatch(MockAccountAction.authenticate)
@@ -41,13 +41,13 @@ class DispatcherTests: XCTestCase {
     /// Verifies that a registered processor receive all of the posted actions.
     ///
     func testProcessorsReceiveRegisteredActions() {
-        dispatcher.register(processor: processor, for: SiteAction.self)
+        dispatcher.register(processor: processor, for: MockSiteAction.self)
         XCTAssertTrue(processor.receivedActions.isEmpty)
 
-        dispatcher.dispatch(SiteAction.refreshSites)
+        dispatcher.dispatch(MockSiteAction.refreshSites)
         XCTAssertEqual(processor.receivedActions.count, 1)
 
-        dispatcher.dispatch(SiteAction.refreshSite(identifier: 123))
+        dispatcher.dispatch(MockSiteAction.refreshSite(identifier: 123))
         XCTAssertEqual(processor.receivedActions.count, 2)
     }
 
@@ -56,12 +56,12 @@ class DispatcherTests: XCTestCase {
     func testUnregisteredProcessorsDoNotReceiveAnyActions() {
         XCTAssertTrue(processor.receivedActions.isEmpty)
 
-        dispatcher.register(processor: processor, for: SiteAction.self)
-        dispatcher.dispatch(SiteAction.refreshSites)
+        dispatcher.register(processor: processor, for: MockSiteAction.self)
+        dispatcher.dispatch(MockSiteAction.refreshSites)
         XCTAssertEqual(processor.receivedActions.count, 1)
 
         dispatcher.unregister(processor: processor)
-        dispatcher.dispatch(SiteAction.refreshSites)
+        dispatcher.dispatch(MockSiteAction.refreshSites)
         dispatcher.dispatch(MockAccountAction.authenticate)
         XCTAssertEqual(processor.receivedActions.count, 1)
     }
@@ -69,10 +69,10 @@ class DispatcherTests: XCTestCase {
     /// Verifies that the Dispatcher does not strongly retain the ActionsProcessors.
     ///
     func testProcessorsAreNotStronglyRetainedByDispatcher() {
-        dispatcher.register(processor: processor, for: SiteAction.self)
-        XCTAssertNotNil(dispatcher.processor(for: SiteAction.self))
+        dispatcher.register(processor: processor, for: MockSiteAction.self)
+        XCTAssertNotNil(dispatcher.processor(for: MockSiteAction.self))
         processor = nil
 
-        XCTAssertNil(dispatcher.processor(for: SiteAction.self))
+        XCTAssertNil(dispatcher.processor(for: MockSiteAction.self))
     }
 }

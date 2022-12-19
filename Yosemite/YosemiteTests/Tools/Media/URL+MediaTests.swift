@@ -1,5 +1,6 @@
 import MobileCoreServices
 import XCTest
+import UniformTypeIdentifiers
 @testable import Yosemite
 
 final class URL_MediaTests: XCTestCase {
@@ -38,16 +39,16 @@ final class URL_MediaTests: XCTestCase {
 
     func testFileExtensionForJPEGType() {
         let expectedFileExtension = "jpeg"
-        XCTAssertEqual(URL.fileExtensionForUTType(kUTTypeJPEG as String), expectedFileExtension)
+        XCTAssertEqual(URL.fileExtensionForUTType(UTType.jpeg.identifier), expectedFileExtension)
     }
 
     func testFileExtensionForGIFType() {
         let expectedFileExtension = "gif"
-        XCTAssertEqual(URL.fileExtensionForUTType(kUTTypeGIF as String), expectedFileExtension)
+        XCTAssertEqual(URL.fileExtensionForUTType(UTType.gif.identifier), expectedFileExtension)
     }
 
     func testFileExtensionForPNGType() {
         let expectedFileExtension = "png"
-        XCTAssertEqual(URL.fileExtensionForUTType(kUTTypePNG as String), expectedFileExtension)
+        XCTAssertEqual(URL.fileExtensionForUTType(UTType.png.identifier), expectedFileExtension)
     }
 }

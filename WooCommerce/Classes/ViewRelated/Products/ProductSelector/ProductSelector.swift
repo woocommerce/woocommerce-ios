@@ -42,7 +42,7 @@ struct ProductSelector: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
-                SearchHeader(filterText: $viewModel.searchTerm, filterPlaceholder: Localization.searchPlaceholder)
+                SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder)
                     .padding(.horizontal, insets: safeAreaInsets)
                     .accessibilityIdentifier("product-selector-search-bar")
                 HStack {

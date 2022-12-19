@@ -20,7 +20,7 @@ final class StoreInfoDataService {
 
     /// Visitors remote source
     ///
-    private var siteVisitStatsRemote: SiteVisitStatsRemote
+    private var siteVisitStatsRemote: SiteStatsRemote
 
     /// Network helper.
     ///
@@ -29,7 +29,7 @@ final class StoreInfoDataService {
     init(authToken: String) {
         network = AlamofireNetwork(credentials: Credentials(authToken: authToken))
         orderStatsRemoteV4 = OrderStatsRemoteV4(network: network)
-        siteVisitStatsRemote = SiteVisitStatsRemote(network: network)
+        siteVisitStatsRemote = SiteStatsRemote(network: network)
     }
 
     /// Async function that fetches stats data for given time range.

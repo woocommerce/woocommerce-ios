@@ -1,3 +1,1 @@
-Tolle Neuigkeiten! Du kannst jetzt Variantenpreise gesammelt bearbeiten. Dafür muss lediglich die neueste Version von WooCommerce in deinem Shop verfügbar sein! Wir haben auch einige Dinge verbessert und kleinere Bugs behoben, die unser Team gefunden hat.
-
-Sende uns weiterhin Feedback! So finden wir heraus, was wir als Nächstes optimieren können.
+Gute Nachrichten! Wir haben die App um einen neuen Analyse-Abschnitt erweitert! Klicke einfach unter den Shop-Statistiken auf den Button „Mehr anzeigen“, um dir ausführlichere Informationen zu Einnahmen und Bestellungen anzusehen. Das war aber noch nicht alles: In den nächsten Wochen halten wir weitere Updates für dich bereit!

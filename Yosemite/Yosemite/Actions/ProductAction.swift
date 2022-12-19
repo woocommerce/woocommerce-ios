@@ -82,4 +82,13 @@ public enum ProductAction: Action {
     /// Upserts a product in our local storage
     ///
     case replaceProductLocally(product: Product, onCompletion: () -> Void)
+
+    /// Checks if the store is eligible for products onboarding.
+    /// Returns `true` if the store has no products.
+    ///
+    case checkProductsOnboardingEligibility(siteID: Int64, onCompletion: (Result<Bool, Error>) -> Void)
+
+    /// Creates a product using the provided template type.
+    ///
+    case createTemplateProduct(siteID: Int64, template: ProductsRemote.TemplateType, onCompletion: (Result<Product, Error>) -> Void)
 }

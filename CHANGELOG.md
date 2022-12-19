@@ -1,6 +1,35 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 11.7
+Did you know we've added a new analytics section? It's now possible to select custom date ranges when viewing your stats! Simply click on the See More button under the store stats to check it out.
+
+## 11.6
+Good news! We added a new analytics section to the app! Simply click on the See More button under the store stats to check more detailed information on Revenue and Orders. This isn’t the last of it – more updates to come in the next few weeks!
+
+## 11.5
+This release includes a few bug fixes and improvements to make your experience smoother. Stay tuned for exciting updates in the coming weeks!
+
+## 11.4
+
+We focused on some stability and performance issues to make your experience smoother. Please keep sharing feedback. We read every one of them.
+
+## 11.3
+
+Merchants using the app for taking payments in person will be happy to hear of improvements we’ve made. This and many other tiny improvements were made to make your experience smoother. We hope you notice the love we put into our software.
+
+## 11.2
+For this release, we focused on polishing a few things and taking care of minor bugs that our team found, including the option to preview your products before publishing them. Don’t be fooled – we are working on some pretty cool stuff for you all! Keep sharing feedback 💜
+
+## 11.1
+Have you tried to create or update an order from the app? It's now possible to search for customers when you do! Check it out and please share your feedback! 
+
+## 11.0
+Even though this release doesn’t have any surprising new features, we still put a lot of love into it! We fixed a few bugs and made several improvements to make your experience smoother. 
+
+## 10.9
+This release includes a lot more stability fixes to help you log in much easier. You can now connect your WordPress.com account with Jetpack and access your store that much faster. We've also updated our app to support devices with iOS 15+ only. Please update your device to iOS 15 to continue to use the app.
+
 ## 10.8
 Are you loving the new stats widget in the app? Today is your lucky day! It's now possible to view your Stats Widget on your lock screen. This is available for iOS 16 only. We also improved the card reader purchase flow with better autofill so it's easier to purchase a card reader directly from the app.
 

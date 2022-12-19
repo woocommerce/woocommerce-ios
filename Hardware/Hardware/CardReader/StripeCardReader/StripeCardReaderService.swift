@@ -32,6 +32,10 @@ public final class StripeCardReaderService: NSObject {
     /// Keeps track of whether a chip card needs to be removed
     private var timerCancellable: Cancellable?
     private var isChipCardInserted: Bool = false
+
+    /// Stripe don't tell us where a cancellation comes from: if we keep track of when we trigger one,
+    /// we can infer when it comes from the cancel button on the reader instead
+    private var cancellationStartedInApp: Bool?
 }
 
 
@@ -58,7 +62,8 @@ extension StripeCardReaderService: CardReaderService {
 
     // MARK: - CardReaderService conformance. Commands
 
-    public func start(_ configProvider: CardReaderConfigProvider) throws {
+    public func start(_ configProvider: CardReaderConfigProvider,
+                      discoveryMethod: CardReaderDiscoveryMethod) throws {
         setConfigProvider(configProvider)
 
         Terminal.setLogListener {  message in
@@ -85,13 +90,12 @@ extension StripeCardReaderService: CardReaderService {
         }
 
         let config = DiscoveryConfiguration(
-            discoveryMethod: .bluetoothScan,
+            discoveryMethod: discoveryMethod.toStripe(),
             simulated: shouldUseSimulatedCardReader
         )
 
-        // If we're using the simulated reader, we don't want to check for Bluetooth permissions
-        // as the simulator won't have Bluetooth available.
-        guard shouldUseSimulatedCardReader || CBCentralManager.authorization != .denied else {
+        guard shouldSkipBluetoothCheck(discoveryConfiguration: config) ||
+                CBCentralManager.authorization != .denied else {
             throw CardReaderServiceError.bluetoothDenied
         }
 
@@ -121,6 +125,14 @@ extension StripeCardReaderService: CardReaderService {
 
             self?.switchStatusToFault(error: error)
         })
+    }
+
+
+    // If we're using the simulated reader, we don't want to check for Bluetooth permissions
+    // as the simulator won't have Bluetooth available.
+    // If we're using the built-in reader, bluetooth is not required.
+    private func shouldSkipBluetoothCheck(discoveryConfiguration: DiscoveryConfiguration) -> Bool {
+        shouldUseSimulatedCardReader || discoveryConfiguration.discoveryMethod == .localMobile
     }
 
     public func cancelDiscovery() -> Future <Void, Error> {
@@ -166,7 +178,8 @@ extension StripeCardReaderService: CardReaderService {
 
                     self?.internalError(error)
                     discoveryLock.unlock()
-                    promise(.failure(error))
+                    let underlyingError = UnderlyingError(with: error)
+                    promise(.failure(CardReaderServiceError.discovery(underlyingError: underlyingError)))
                 }
             }
         }
@@ -219,6 +232,11 @@ extension StripeCardReaderService: CardReaderService {
                 return promise(.success(()))
             }
 
+            // When this is used for a new payment, there is a new subscription to readerEvents, which won't rely the
+            // old `.removeCard` message. If there is a card inserted, we manually send a display message prompting to
+            // remove the card, and wait for that before continuing.
+            self.sendReaderEvent(CardReaderEvent.make(displayMessage: .removeCard))
+
             self.timerCancellable = Timer.publish(every: 1, tolerance: 0.1, on: .main, in: .default)
                 .autoconnect()
                 .receive(on: DispatchQueue.main)
@@ -251,12 +269,6 @@ extension StripeCardReaderService: CardReaderService {
         // steps produce a Future.
 
         // If a card was left from a previous payment attempt, we want that removed before we initiate a new payment.
-        // However, a new payment probably means a new subscription to readerEvents, which won't rely the old `.removeCard`
-        // message. If there is a card inserted, we manually send a display message prompting to remove the card,
-        // and wait for that before continuing.
-        if isChipCardInserted {
-            sendReaderEvent(CardReaderEvent.make(displayMessage: .removeCard))
-        }
         return waitForInsertedCardToBeRemoved()
             .flatMap {
                 self.createPaymentIntent(parameters)
@@ -277,6 +289,8 @@ extension StripeCardReaderService: CardReaderService {
                 return
             }
 
+            self.cancellationStartedInApp = true
+
             let cancelPaymentIntent = { [weak self] in
                 Terminal.shared.cancelPaymentIntent(activePaymentIntent) { (intent, error) in
                     if let error = error {
@@ -288,6 +302,7 @@ extension StripeCardReaderService: CardReaderService {
                         self?.activePaymentIntent = nil
                         promise(.success(()))
                     }
+                    self?.cancellationStartedInApp = nil
                 }
             }
             guard let paymentCancellable = self.paymentCancellable,
@@ -311,9 +326,20 @@ extension StripeCardReaderService: CardReaderService {
             }.eraseToAnyPublisher()
         }
 
-        return getBluetoothConfiguration(stripeReader).flatMap { configuration in
-            self.connect(stripeReader, configuration: configuration)
-        }.eraseToAnyPublisher()
+        switch stripeReader.deviceType {
+        case .appleBuiltIn:
+            return getLocalMobileConfiguration(stripeReader).flatMap { configuration in
+                self.connect(stripeReader, configuration: configuration)
+            }
+            .share()
+            .eraseToAnyPublisher()
+        default:
+            return getBluetoothConfiguration(stripeReader).flatMap { configuration in
+                self.connect(stripeReader, configuration: configuration)
+            }
+            .share()
+            .eraseToAnyPublisher()
+        }
     }
 
     private func getBluetoothConfiguration(_ reader: StripeTerminal.Reader) -> Future<BluetoothConnectionConfiguration, Error> {
@@ -329,6 +355,27 @@ extension StripeCardReaderService: CardReaderService {
                 switch result {
                 case .success(let locationId):
                     return promise(.success(BluetoothConnectionConfiguration(locationId: locationId)))
+                case .failure(let error):
+                    let underlyingError = UnderlyingError(with: error)
+                    return promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
+                }
+            }
+        }
+    }
+
+    private func getLocalMobileConfiguration(_ reader: StripeTerminal.Reader) -> Future<LocalMobileConnectionConfiguration, Error> {
+        return Future() { [weak self] promise in
+            guard let self = self else {
+                promise(.failure(CardReaderServiceError.connection()))
+                return
+            }
+
+            // TODO - If we've recently connected to this reader, use the cached locationId from the
+            // Terminal SDK instead of making this fetch. See #5116 and #5087
+            self.readerLocationProvider?.fetchDefaultLocationID { result in
+                switch result {
+                case .success(let locationId):
+                    return promise(.success(LocalMobileConnectionConfiguration(locationId: locationId)))
                 case .failure(let error):
                     let underlyingError = UnderlyingError(with: error)
                     return promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
@@ -363,6 +410,40 @@ extension StripeCardReaderService: CardReaderService {
                     // Any error related to that will be reported here, but we don't want to treat it as a connection error
                     let serviceError: CardReaderServiceError = underlyingError.isSoftwareUpdateError ?
                         .softwareUpdate(underlyingError: underlyingError, batteryLevel: batteryLevel) :
+                        .connection(underlyingError: underlyingError)
+                    promise(.failure(serviceError))
+                }
+
+                if let reader = reader {
+                    self.connectedReadersSubject.send([CardReader(reader: reader)])
+                    self.switchStatusToIdle()
+                    promise(.success(CardReader(reader: reader)))
+                }
+            }
+        }
+    }
+
+    public func connect(_ reader: StripeTerminal.Reader, configuration: LocalMobileConnectionConfiguration) -> Future <CardReader, Error> {
+        return Future { [weak self] promise in
+            guard let self = self else {
+                promise(.failure(CardReaderServiceError.connection()))
+                return
+            }
+
+            Terminal.shared.connectLocalMobileReader(reader, delegate: self, connectionConfig: configuration) { [weak self] (reader, error) in
+                guard let self = self else {
+                    promise(.failure(CardReaderServiceError.connection()))
+                    return
+                }
+                // Clear cached readers, as per Stripe's documentation.
+                self.discoveredStripeReadersCache.clear()
+
+                if let error = error {
+                    let underlyingError = UnderlyingError(with: error)
+                    // Starting with StripeTerminal 2.0, required software updates happen transparently on connection
+                    // Any error related to that will be reported here, but we don't want to treat it as a connection error
+                    let serviceError: CardReaderServiceError = underlyingError.isSoftwareUpdateError ?
+                        .softwareUpdate(underlyingError: underlyingError, batteryLevel: nil) :
                         .connection(underlyingError: underlyingError)
                     promise(.failure(serviceError))
                 }
@@ -428,26 +509,30 @@ private extension StripeCardReaderService {
             /// Because we are chaining promises, we need to retain a reference
             /// to this cancellable if we want to cancel 
             self?.paymentCancellable = Terminal.shared.collectPaymentMethod(intent) { (intent, error) in
-                self?.paymentCancellable = nil
-
                 if let error = error {
-                    let underlyingError = UnderlyingError(with: error)
+                    var underlyingError = UnderlyingError(with: error)
                     /// the completion block for collectPaymentMethod will be called
                     /// with error Canceled when collectPaymentMethod is canceled
                     /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)collectPaymentMethod:delegate:completion:
-
-                    if underlyingError != .commandCancelled {
+                    if case .commandCancelled(let cancellationSource) = underlyingError {
+                        DDLogWarn("💳 Warning: collect payment cancelled \(error)")
+                        if case .unknown = cancellationSource {
+                            if self?.cancellationStartedInApp != nil {
+                                underlyingError = .commandCancelled(from: .app)
+                            } else {
+                                underlyingError = .commandCancelled(from: .reader)
+                            }
+                        }
+                    } else {
                         DDLogError("💳 Error: collect payment method \(underlyingError)")
-                        promise(.failure(CardReaderServiceError.paymentMethodCollection(underlyingError: underlyingError)))
                     }
-
-                    if underlyingError == .commandCancelled {
-                        DDLogWarn("💳 Warning: collect payment error cancelled. We actively ignore this error \(error)")
-                    }
-
+                    self?.paymentCancellable = nil
+                    promise(.failure(CardReaderServiceError.paymentMethodCollection(underlyingError: underlyingError)))
                 }
 
                 if let intent = intent {
+                    self?.paymentCancellable = nil
+                    self?.sendReaderEvent(.cardDetailsCollected)
                     promise(.success(intent))
                 }
             }
@@ -646,7 +731,7 @@ extension StripeCardReaderService: BluetoothReaderDelegate {
     /// This method is called by the Stripe Terminal SDK when it wants client apps
     /// to request users to tap / insert / swipe a card.
     public func reader(_ reader: Reader, didRequestReaderInput inputOptions: ReaderInputOptions = []) {
-        sendReaderEvent(CardReaderEvent.make(readerInputOptions: inputOptions))
+        sendReaderEvent(CardReaderEvent.make(stripeReaderInputOptions: inputOptions))
     }
 
     /// In this case the Stripe Terminal SDK wants us to present a string on screen
@@ -696,6 +781,46 @@ extension StripeCardReaderService: BluetoothReaderDelegate {
     }
 }
 
+extension StripeCardReaderService: LocalMobileReaderDelegate {
+    public func localMobileReader(_ reader: Reader, didRequestReaderInput inputOptions: ReaderInputOptions = []) {
+        sendReaderEvent(CardReaderEvent.make(stripeReaderInputOptions: inputOptions))
+    }
+
+    public func localMobileReader(_ reader: Reader, didRequestReaderDisplayMessage displayMessage: ReaderDisplayMessage) {
+        sendReaderEvent(CardReaderEvent.make(displayMessage: displayMessage))
+    }
+
+
+    // TODO: use a specific `deviceSetup` in these three functions instead of reusing the softwareUpdateSubject
+    // https://github.com/woocommerce/woocommerce-ios/issues/8088
+    public func localMobileReader(_ reader: Reader, didStartInstallingUpdate update: ReaderSoftwareUpdate, cancelable: Cancelable?) {
+        softwareUpdateSubject.send(.started(cancelable: cancelable.map(StripeCancelable.init(cancelable:))))
+    }
+
+    public func localMobileReader(_ reader: Reader, didReportReaderSoftwareUpdateProgress progress: Float) {
+        softwareUpdateSubject.send(.installing(progress: progress))
+    }
+
+    public func localMobileReader(_ reader: Reader, didFinishInstallingUpdate update: ReaderSoftwareUpdate?, error: Error?) {
+        if let error = error {
+            softwareUpdateSubject.send(.failed(
+                error: CardReaderServiceError.softwareUpdate(underlyingError: UnderlyingError(with: error),
+                                                             batteryLevel: reader.batteryLevel?.doubleValue))
+            )
+            if let requiredDate = update?.requiredAt,
+               requiredDate > Date() {
+                softwareUpdateSubject.send(.available)
+            } else {
+                softwareUpdateSubject.send(.none)
+            }
+        } else {
+            softwareUpdateSubject.send(.completed)
+            connectedReadersSubject.send([CardReader(reader: reader)])
+            softwareUpdateSubject.send(.none)
+        }
+    }
+}
+
 // MARK: - Terminal delegate
 extension StripeCardReaderService: TerminalDelegate {
     public func terminal(_ terminal: Terminal, didReportUnexpectedReaderDisconnect reader: Reader) {
@@ -723,7 +848,10 @@ private extension StripeCardReaderService {
 
     func resetDiscoveredReadersSubject(error: Error? = nil) {
         if let error = error {
-            discoveredReadersSubject.send(completion: .failure(error))
+            let underlyingError = UnderlyingError(with: error)
+            discoveredReadersSubject.send(completion:
+                    .failure(CardReaderServiceError.discovery(underlyingError: underlyingError))
+            )
         }
         discoveredReadersSubject.send(completion: .finished)
         discoveredReadersSubject = CurrentValueSubject<[CardReader], Error>([])

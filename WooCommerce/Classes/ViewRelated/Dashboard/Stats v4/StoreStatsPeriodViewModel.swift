@@ -22,7 +22,7 @@ final class StoreStatsPeriodViewModel {
     private(set) lazy var orderStatsText: AnyPublisher<String, Never> =
     Publishers.CombineLatest($orderStatsData.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
         .compactMap { [weak self] orderStatsData, selectedIntervalIndex in
-            return self?.createOrderStatsText(orderStatsData: orderStatsData, selectedIntervalIndex: selectedIntervalIndex)
+            StatsDataTextFormatter.createOrderCountText(orderStats: orderStatsData.stats, selectedIntervalIndex: selectedIntervalIndex)
         }
         .removeDuplicates()
         .eraseToAnyPublisher()
@@ -30,25 +30,42 @@ final class StoreStatsPeriodViewModel {
     /// Emits revenue stats text values based on order stats, selected time interval, and currency code.
     private(set) lazy var revenueStatsText: AnyPublisher<String, Never> = $orderStatsData.combineLatest($selectedIntervalIndex, currencySettings.$currencyCode)
         .compactMap { [weak self] orderStatsData, selectedIntervalIndex, currencyCode in
-            self?.createRevenueStats(orderStatsData: orderStatsData, selectedIntervalIndex: selectedIntervalIndex, currencyCode: currencyCode.rawValue)
+            guard let self else { return "-" }
+            return StatsDataTextFormatter.createTotalRevenueText(orderStats: orderStatsData.stats,
+                                                                 selectedIntervalIndex: selectedIntervalIndex,
+                                                                 currencyFormatter: self.currencyFormatter,
+                                                                 currencyCode: currencyCode.rawValue)
         }
         .removeDuplicates()
         .eraseToAnyPublisher()
 
     /// Emits visitor stats text values based on site visit stats and selected time interval.
     private(set) lazy var visitorStatsText: AnyPublisher<String, Never> =
-    Publishers.CombineLatest($siteStats.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
-        .compactMap { [weak self] siteStats, selectedIntervalIndex in
-            self?.createVisitorStatsText(siteStats: siteStats, selectedIntervalIndex: selectedIntervalIndex)
+    Publishers.CombineLatest3($siteStats.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher(), $summaryStats.eraseToAnyPublisher())
+        .compactMap { siteStats, selectedIntervalIndex, summaryStats in
+            if let selectedIntervalIndex {
+                return StatsDataTextFormatter.createVisitorCountText(siteStats: siteStats, selectedIntervalIndex: selectedIntervalIndex)
+            } else {
+                return StatsDataTextFormatter.createVisitorCountText(siteStats: summaryStats)
+            }
         }
         .removeDuplicates()
         .eraseToAnyPublisher()
 
     /// Emits conversion stats text values based on order stats, site visit stats, and selected time interval.
     private(set) lazy var conversionStatsText: AnyPublisher<String, Never> =
-    Publishers.CombineLatest3($orderStatsData.eraseToAnyPublisher(), $siteStats.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
-        .compactMap { [weak self] orderStatsData, siteStats, selectedIntervalIndex in
-            self?.createConversionStats(orderStatsData: orderStatsData, siteStats: siteStats, selectedIntervalIndex: selectedIntervalIndex)
+    Publishers.CombineLatest4($orderStatsData.eraseToAnyPublisher(),
+                              $siteStats.eraseToAnyPublisher(),
+                              $selectedIntervalIndex.eraseToAnyPublisher(),
+                              $summaryStats.eraseToAnyPublisher())
+        .compactMap { orderStatsData, siteStats, selectedIntervalIndex, summaryStats in
+            if let selectedIntervalIndex {
+                return StatsDataTextFormatter.createConversionRateText(orderStats: orderStatsData.stats,
+                                                                       siteStats: siteStats,
+                                                                       selectedIntervalIndex: selectedIntervalIndex)
+            } else {
+                return StatsDataTextFormatter.createConversionRateText(orderStats: orderStatsData.stats, siteStats: summaryStats)
+            }
         }
         .removeDuplicates()
         .eraseToAnyPublisher()
@@ -100,6 +117,7 @@ final class StoreStatsPeriodViewModel {
     // MARK: - Private data
 
     @Published private var siteStats: SiteVisitStats?
+    @Published private var summaryStats: SiteSummaryStats?
 
     typealias OrderStatsData = (stats: OrderStatsV4?, intervals: [OrderStatsV4Interval])
     @Published private var orderStatsData: OrderStatsData = (nil, [])
@@ -122,6 +140,19 @@ final class StoreStatsPeriodViewModel {
         return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [])
     }()
 
+    /// SiteSummaryStats ResultsController: Loads site summary stats from the Storage Layer
+    private lazy var summaryStatsResultsController: ResultsController<StorageSiteSummaryStats> = {
+        let formattedDateString: String = {
+            let date = timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimezone)
+            return StatsStoreV4.buildDateString(from: date, with: .day)
+        }()
+        let predicate = NSPredicate(format: "siteID = %ld AND period == %@ AND date == %@",
+                                    siteID,
+                                    timeRange.summaryStatsGranularity.rawValue,
+                                    formattedDateString)
+        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }()
+
     // MARK: - Configurations
 
     /// Updated externally when reloading data.
@@ -129,6 +160,7 @@ final class StoreStatsPeriodViewModel {
 
     private let siteID: Int64
     private let timeRange: StatsTimeRangeV4
+    private let currentDate: Date
     private let currencyFormatter: CurrencyFormatter
     private let storageManager: StorageManagerType
     private let currencySettings: CurrencySettings
@@ -138,12 +170,14 @@ final class StoreStatsPeriodViewModel {
     init(siteID: Int64,
          timeRange: StatsTimeRangeV4,
          siteTimezone: TimeZone,
+         currentDate: Date,
          currencyFormatter: CurrencyFormatter,
          currencySettings: CurrencySettings,
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
         self.timeRange = timeRange
         self.siteTimezone = siteTimezone
+        self.currentDate = currentDate
         self.currencyFormatter = currencyFormatter
         self.currencySettings = currencySettings
         self.storageManager = storageManager
@@ -174,51 +208,6 @@ private extension StoreStatsPeriodViewModel {
                                           selectedDate: date,
                                           timeRange: timeRange,
                                           timezone: siteTimezone)
-    }
-
-    func createOrderStatsText(orderStatsData: OrderStatsData, selectedIntervalIndex: Int?) -> String {
-        if let count = orderCount(at: selectedIntervalIndex, orderStats: orderStatsData.stats, orderStatsIntervals: orderStatsData.intervals) {
-            return Double(count).humanReadableString()
-        } else {
-            return Constants.placeholderText
-        }
-    }
-
-    func createRevenueStats(orderStatsData: OrderStatsData, selectedIntervalIndex: Int?, currencyCode: String) -> String {
-        if let revenue = revenue(at: selectedIntervalIndex, orderStats: orderStatsData.stats, orderStatsIntervals: orderStatsData.intervals) {
-            // If revenue is an integer, no decimal points are shown.
-            let numberOfDecimals: Int? = revenue.isInteger ? 0: nil
-            return currencyFormatter.formatAmount(revenue, with: currencyCode, numberOfDecimals: numberOfDecimals) ?? String()
-        } else {
-            return Constants.placeholderText
-        }
-    }
-
-    func createVisitorStatsText(siteStats: SiteVisitStats?, selectedIntervalIndex: Int?) -> String {
-        if let visitorCount = visitorCount(at: selectedIntervalIndex, siteStats: siteStats) {
-            return Double(visitorCount).humanReadableString()
-        } else {
-            return Constants.placeholderText
-        }
-    }
-
-    func createConversionStats(orderStatsData: OrderStatsData, siteStats: SiteVisitStats?, selectedIntervalIndex: Int?) -> String {
-        let visitors = visitorCount(at: selectedIntervalIndex, siteStats: siteStats)
-        let orders = orderCount(at: selectedIntervalIndex, orderStats: orderStatsData.stats, orderStatsIntervals: orderStatsData.intervals)
-
-        let numberFormatter = NumberFormatter()
-        numberFormatter.numberStyle = .percent
-        numberFormatter.minimumFractionDigits = 1
-
-        if let visitors = visitors, let orders = orders {
-            // Maximum conversion rate is 100%.
-            let conversionRate = visitors > 0 ? min(orders/visitors, 1): 0
-            let minimumFractionDigits = floor(conversionRate * 100.0) == conversionRate * 100.0 ? 0: 1
-            numberFormatter.minimumFractionDigits = minimumFractionDigits
-            return numberFormatter.string(from: conversionRate as NSNumber) ?? Constants.placeholderText
-        } else {
-            return Constants.placeholderText
-        }
     }
 
     func visitorStatsViewState(siteVisitStatsMode: SiteVisitStatsMode, selectedIntervalIndex: Int?) -> StoreStatsDataOrRedactedView.State {
@@ -272,57 +261,13 @@ private extension StoreStatsPeriodViewModel {
     }
 }
 
-// MARK: - Private data helpers
-//
-private extension StoreStatsPeriodViewModel {
-    func visitorCount(at selectedIndex: Int?, siteStats: SiteVisitStats?) -> Double? {
-        let siteStatsItems = siteStats?.items?.sorted(by: { (lhs, rhs) -> Bool in
-            return lhs.period < rhs.period
-        }) ?? []
-        if let selectedIndex = selectedIndex, selectedIndex < siteStatsItems.count {
-            return Double(siteStatsItems[selectedIndex].visitors)
-        } else if let siteStats = siteStats {
-            return Double(siteStats.totalVisitors)
-        } else {
-            return nil
-        }
-    }
-
-    func orderCount(at selectedIndex: Int?, orderStats: OrderStatsV4?, orderStatsIntervals: [OrderStatsV4Interval]) -> Double? {
-        if let selectedIndex = selectedIndex, selectedIndex < orderStatsIntervals.count {
-            let orderStats = orderStatsIntervals[selectedIndex]
-            return Double(orderStats.subtotals.totalOrders)
-        } else if let orderStats = orderStats {
-            return Double(orderStats.totals.totalOrders)
-        } else {
-            return nil
-        }
-    }
-
-    func revenue(at selectedIndex: Int?, orderStats: OrderStatsV4?, orderStatsIntervals: [OrderStatsV4Interval]) -> Decimal? {
-        if let selectedIndex = selectedIndex, selectedIndex < orderStatsIntervals.count {
-            let orderStats = orderStatsIntervals[selectedIndex]
-            return orderStats.subtotals.grossRevenue
-        } else if let orderStats = orderStats {
-            return orderStats.totals.grossRevenue
-        } else {
-            return nil
-        }
-    }
-
-    func orderStatsIntervals(from orderStats: OrderStatsV4?) -> [OrderStatsV4Interval] {
-        return orderStats?.intervals.sorted(by: { (lhs, rhs) -> Bool in
-            return lhs.dateStart(timeZone: siteTimezone) < rhs.dateStart(timeZone: siteTimezone)
-        }) ?? []
-    }
-}
-
 // MARK: - Results controller
 //
 private extension StoreStatsPeriodViewModel {
     func configureResultsControllers() {
         configureSiteStatsResultsController()
         configureOrderStatsResultsController()
+        configureSummaryStatsResultsController()
     }
 
     func configureOrderStatsResultsController() {
@@ -344,6 +289,16 @@ private extension StoreStatsPeriodViewModel {
         }
         try? siteStatsResultsController.performFetch()
     }
+
+    func configureSummaryStatsResultsController() {
+        summaryStatsResultsController.onDidChangeContent = { [weak self] in
+            self?.updateSiteSummaryDataIfNeeded()
+        }
+        summaryStatsResultsController.onDidResetContent = { [weak self] in
+            self?.updateSiteSummaryDataIfNeeded()
+        }
+        try? summaryStatsResultsController.performFetch()
+    }
 }
 
 // MARK: - Private Helpers
@@ -353,16 +308,19 @@ private extension StoreStatsPeriodViewModel {
         siteStats = siteStatsResultsController.fetchedObjects.first
     }
 
+    func updateSiteSummaryDataIfNeeded() {
+        summaryStats = summaryStatsResultsController.fetchedObjects.first
+    }
+
     func updateOrderDataIfNeeded() {
         let orderStats = orderStatsResultsController.fetchedObjects.first
-        let intervals = orderStatsIntervals(from: orderStats)
+        let intervals = StatsIntervalDataParser.sortOrderStatsIntervals(from: orderStats)
         orderStatsData = (stats: orderStats, intervals: intervals)
     }
 }
 
 private extension StoreStatsPeriodViewModel {
     enum Constants {
-        static let placeholderText = "-"
         static let yAxisMaximumValueWithoutRevenue: Double = 1
         static let yAxisMinimumValueWithoutRevenue: Double = -1
     }

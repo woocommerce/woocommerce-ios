@@ -15,11 +15,7 @@ extension UIViewController {
     /// Removes the text of the navigation bar back button in the next view controller of the navigation stack.
     ///
     func removeNavigationBackBarButtonText() {
-        if #available(iOS 14.0, *) {
-            navigationItem.backButtonDisplayMode = .minimal
-        } else {
-            navigationItem.backBarButtonItem = UIBarButtonItem(image: UIImage(), style: .plain, target: nil, action: nil)
-        }
+        navigationItem.backButtonDisplayMode = .minimal
     }
 
     /// Show the X close button or a custom close button with title on the left bar button item position
@@ -37,6 +33,17 @@ extension UIViewController {
         }
     }
 
+    /// Shows a transparent navigation bar without a bottom border.
+    ///
+    func configureTransparentNavigationBar() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithTransparentBackground()
+        appearance.backgroundColor = .systemBackground
+
+        navigationItem.standardAppearance = appearance
+        navigationItem.scrollEdgeAppearance = appearance
+        navigationItem.compactAppearance = appearance
+    }
 }
 
 /// Private methods

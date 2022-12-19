@@ -5,14 +5,13 @@ public final class PrologueScreen: ScreenObject {
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
-            expectedElementGetter: { $0.buttons["Prologue Continue Button"] },
+            expectedElementGetter: { Self.findContinueButton(in: $0) },
             app: app
         )
     }
 
     public func selectContinueWithWordPress() -> GetStartedScreen {
-        app.buttons["Prologue Continue Button"].tap()
-
+        Self.findContinueButton(in: app).tap()
         return GetStartedScreen()
     }
 
@@ -26,5 +25,15 @@ public final class PrologueScreen: ScreenObject {
     public func verifyPrologueScreenLoaded() throws -> Self {
         XCTAssertTrue(isLoaded)
         return self
+    }
+}
+
+extension PrologueScreen {
+    static func findContinueButton(in app: XCUIApplication) -> XCUIElement {
+        app.buttons["Prologue Continue Button"]
+    }
+
+    public static func isSiteAddressLoginAvailable(in app: XCUIApplication = .init()) -> Bool {
+        app.buttons["Prologue Self Hosted Button"].waitForExistence(timeout: 1)
     }
 }

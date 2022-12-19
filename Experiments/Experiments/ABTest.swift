@@ -7,18 +7,23 @@ public enum ABTest: String, CaseIterable {
     /// `An enum with no cases cannot declare a raw type`
     case null
 
-    /// A/A test for ExPlat integration in the logged in state.
+    /// A/A test to make sure there is no bias in the logged out state.
     /// Experiment ref: pbxNRc-1QS-p2
-    ///
-    case aaTestLoggedIn202210 = "woocommerceios_explat_aa_test_logged_in_202210"
+    case aaTestLoggedIn = "woocommerceios_explat_aa_test_logged_in_202212_v2"
 
     /// A/A test to make sure there is no bias in the logged out state.
     /// Experiment ref: pbxNRc-1S0-p2
-    case aaTestLoggedOut202209 = "woocommerceios_explat_aa_test_logged_out_202209"
+    case aaTestLoggedOut = "woocommerceios_explat_aa_test_logged_out_202212_v2"
 
-    /// A/B test for the login button order on the prologues screen.
-    /// Experiment ref: pbxNRc-1VA-p2
-    case loginPrologueButtonOrder = "woocommerceios_login_prologue_button_order_202209"
+    /// A/B test to measure the sign-in success rate when only WPCom login is enabled.
+    /// Experiment ref: pbxNRc-27s-p2
+    ///
+    case abTestLoginWithWPComOnly = "woocommerceios_login_wpcom_only"
+
+    /// A/B test to measure the sign-in success rate when native Jetpack installation experience is enabled
+    /// Experiment ref: pbxNRc-29W-p2
+    ///
+    case nativeJetpackSetupFlow = "woocommerceios_login_jetpack_setup_flow_v2"
 
     /// Returns a variation for the given experiment
     public var variation: Variation {
@@ -30,9 +35,9 @@ public enum ABTest: String, CaseIterable {
     /// When adding a new experiment, add it to the appropriate case depending on its context (logged-in or logged-out experience).
     public var context: ExperimentContext {
         switch self {
-        case .aaTestLoggedIn202210:
+        case .aaTestLoggedIn, .nativeJetpackSetupFlow:
             return .loggedIn
-        case .aaTestLoggedOut202209, .loginPrologueButtonOrder:
+        case .aaTestLoggedOut, .abTestLoginWithWPComOnly:
             return .loggedOut
         case .null:
             return .none
@@ -43,6 +48,7 @@ public enum ABTest: String, CaseIterable {
 public extension ABTest {
     /// Start the AB Testing platform if any experiment exists for the provided context
     ///
+    @MainActor
     static func start(for context: ExperimentContext) async {
         let experiments = ABTest.allCases.filter { $0.context == context }
 

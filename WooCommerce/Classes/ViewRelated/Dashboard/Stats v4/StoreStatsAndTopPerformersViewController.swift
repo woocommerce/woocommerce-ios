@@ -289,6 +289,21 @@ private extension StoreStatsAndTopPerformersViewController {
 
             group.enter()
             periodGroup.enter()
+            periodStoreStatsGroup.enter()
+            self.dashboardViewModel.syncSiteSummaryStats(for: siteID,
+                                                         timeRange: vc.timeRange,
+                                                         latestDateToInclude: latestDateToInclude) { result in
+                if case let .failure(error) = result {
+                    DDLogError("⛔️ Error synchronizing summary stats: \(error)")
+                    periodSyncError = error
+                }
+                group.leave()
+                periodGroup.leave()
+                periodStoreStatsGroup.leave()
+            }
+
+            group.enter()
+            periodGroup.enter()
             self.dashboardViewModel.syncTopEarnersStats(for: siteID,
                                                         siteTimezone: timezoneForSync,
                                                         timeRange: vc.timeRange,
@@ -483,7 +498,7 @@ private extension StoreStatsAndTopPerformersViewController {
         }
     }
 
-    func handleSiteVisitStatsStoreError(error: SiteVisitStatsStoreError) {
+    func handleSiteStatsStoreError(error: SiteStatsStoreError) {
         switch error {
         case .noPermission:
             updateSiteVisitors(mode: .hidden)
@@ -501,8 +516,8 @@ private extension StoreStatsAndTopPerformersViewController {
 
     private func handleSyncError(error: Error) {
         switch error {
-        case let siteVisitStatsStoreError as SiteVisitStatsStoreError:
-            handleSiteVisitStatsStoreError(error: siteVisitStatsStoreError)
+        case let siteStatsStoreError as SiteStatsStoreError:
+            handleSiteStatsStoreError(error: siteStatsStoreError)
         default:
             displaySyncingError()
         }

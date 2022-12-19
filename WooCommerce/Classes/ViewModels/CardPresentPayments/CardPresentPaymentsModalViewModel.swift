@@ -18,6 +18,8 @@ protocol CardPresentPaymentsModalViewModel {
     /// An illustration accompanying the modal
     var image: UIImage { get }
 
+    var showLoadingIndicator: Bool { get }
+
     /// Provides a title for a primary action button
     var primaryButtonTitle: String? { get }
 
@@ -29,9 +31,6 @@ protocol CardPresentPaymentsModalViewModel {
 
     /// Provides a title as a NSAttributedString for an auxiliary button
     var auxiliaryAttributedButtonTitle: NSAttributedString? { get }
-
-    /// Provides an image for the auxiliary button
-    var auxiliaryButtonimage: UIImage? { get }
 
     /// The title in the bottom section of the modal. Right below the image
     var bottomTitle: String? { get }
@@ -107,7 +106,7 @@ extension CardPresentPaymentsModalViewModel {
         get { return nil }
     }
 
-    var auxiliaryButtonimage: UIImage? {
-        get { return nil }
+    var showLoadingIndicator: Bool {
+        get { return false }
     }
 }

@@ -73,7 +73,7 @@ struct AddEditCoupon: View {
     @State private var showingDiscountType: Bool = false
 
     private var idiom: UIUserInterfaceIdiom { UIDevice.current.userInterfaceIdiom }
-    private let viewProperties = BottomSheetListSelectorViewProperties(title: Localization.discountTypeSheetTitle)
+    private let viewProperties = BottomSheetListSelectorViewProperties(subtitle: Localization.discountTypeSheetTitle)
 
     private let categorySelectorConfig = ProductCategorySelector.Configuration.categoriesForCoupons
     private let categoryListConfig = ProductCategoryListViewController.Configuration(searchEnabled: true, clearSelectionEnabled: true)

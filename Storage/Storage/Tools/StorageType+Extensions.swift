@@ -149,6 +149,13 @@ public extension StorageType {
         return firstObject(ofType: OrderStatsV4Interval.self, matching: predicate)
     }
 
+    /// Retrieves the Stored SiteSummaryStats.
+    ///
+    func loadSiteSummaryStats(date: String, period: String) -> SiteSummaryStats? {
+        let predicate = \SiteSummaryStats.date =~ date && \SiteSummaryStats.period =~ period
+        return firstObject(ofType: SiteSummaryStats.self, matching: predicate)
+    }
+
     // MARK: - Order Statuses
 
     /// Retrieves all of the Stores OrderStatuses for the provided siteID.
@@ -597,6 +604,21 @@ public extension StorageType {
     func loadWCPayCharge(siteID: Int64, chargeID: String) -> WCPayCharge? {
         let predicate = \WCPayCharge.siteID == siteID && \WCPayCharge.chargeID == chargeID
         return firstObject(ofType: WCPayCharge.self, matching: predicate)
+    }
+
+    // MARK: - Customers
+
+    /// Returns a single Customer given a `siteID` and `customerID`
+    ///
+    func loadCustomer(siteID: Int64, customerID: Int64) -> Customer? {
+        let predicate = \Customer.siteID == siteID && \Customer.customerID == customerID
+        return firstObject(ofType: Customer.self, matching: predicate)
+    }
+    /// Returns a CustomerSearchResult given a `siteID` and a `keyword`
+    ///
+    func loadCustomerSearchResult(siteID: Int64, keyword: String) -> CustomerSearchResult? {
+        let predicate = \CustomerSearchResult.siteID == siteID && \CustomerSearchResult.keyword == keyword
+        return firstObject(ofType: CustomerSearchResult.self, matching: predicate)
     }
 
     // MARK: - System plugins

@@ -20,7 +20,7 @@ public struct NoOpCardReaderService: CardReaderService {
 
     /// Starts the service.
     /// That could imply, for example, that the reader discovery process starts
-    public func start(_ configProvider: CardReaderConfigProvider) throws {
+    public func start(_ configProvider: CardReaderConfigProvider, discoveryMethod: CardReaderDiscoveryMethod) throws {
         // no-op
     }
 

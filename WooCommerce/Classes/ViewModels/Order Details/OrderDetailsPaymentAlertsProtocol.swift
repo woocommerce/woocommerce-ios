@@ -1,12 +1,13 @@
 import UIKit
+import Yosemite
 
 /// Protocol for `OrderDetailsPaymentAlerts` to enable unit testing.
 protocol OrderDetailsPaymentAlertsProtocol {
     func presentViewModel(viewModel: CardPresentPaymentsModalViewModel)
 
-    func readerIsReady(title: String, amount: String, onCancel: @escaping () -> Void)
+    func preparingReader(onCancel: @escaping () -> Void)
 
-    func tapOrInsertCard(onCancel: @escaping () -> Void)
+    func tapOrInsertCard(title: String, amount: String, inputMethods: CardReaderInput, onCancel: @escaping () -> Void)
 
     func displayReaderMessage(message: String)
 

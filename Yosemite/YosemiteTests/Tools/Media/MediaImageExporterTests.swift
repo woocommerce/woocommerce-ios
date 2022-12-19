@@ -1,5 +1,6 @@
 import MobileCoreServices
 import XCTest
+import UniformTypeIdentifiers
 @testable import Yosemite
 
 final class MediaImageExporterTests: XCTestCase {
@@ -7,7 +8,7 @@ final class MediaImageExporterTests: XCTestCase {
         // Loads the test image into png data.
         let mockData = UIImage(named: "image", in: Bundle(for: type(of: self)), compatibleWith: nil)!.pngData()
         let filename = "test"
-        let typeHint = kUTTypeJPEG as String
+        let typeHint = UTType.jpeg.identifier
         let mockImageSourceWriter = MockImageSourceWriter()
         let exporter = MediaImageExporter(data: mockData!,
                                           filename: filename,
@@ -65,7 +66,7 @@ final class MediaImageExporterTests: XCTestCase {
     func testExportingNonImageData() {
         let mockData = Data()
         let filename = "test"
-        let typeHint = kUTTypeJPEG as String
+        let typeHint = UTType.jpeg.identifier
         let mockImageSourceWriter = MockImageSourceWriter()
         let exporter = MediaImageExporter(data: mockData,
                                           filename: filename,

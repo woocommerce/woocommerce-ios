@@ -32,7 +32,7 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
             }
         }.store(in: &cancellables)
 
-        try! readerService.start(MockTokenProvider())
+        try! readerService.start(MockTokenProvider(), discoveryMethod: .bluetoothScan)
         wait(for: [receivedReaders], timeout: Constants.expectationTimeout)
     }
 
@@ -68,7 +68,7 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
                 .fulfillOnCompletion(expectation: discoveredReaders)
         }.store(in: &cancellables)
 
-        try! readerService.start(MockTokenProvider())
+        try! readerService.start(MockTokenProvider(), discoveryMethod: .bluetoothScan)
         wait(for: [discoveredReaders], timeout: Constants.expectationTimeout)
     }
 
@@ -105,7 +105,7 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
             }
         }.store(in: &self.cancellables)
 
-        try! readerService.start(MockTokenProvider())
+        try! readerService.start(MockTokenProvider(), discoveryMethod: .bluetoothScan)
         wait(for: [discoveredReaders, connectedToReader, connectedreaderIsPublished], timeout: Constants.expectationTimeout)
     }
 }

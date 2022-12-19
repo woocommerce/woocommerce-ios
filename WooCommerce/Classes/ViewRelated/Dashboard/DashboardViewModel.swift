@@ -1,16 +1,38 @@
 import Yosemite
+import Combine
 import enum Networking.DotcomError
 import enum Storage.StatsVersion
+import protocol Experiments.FeatureFlagService
+
+private enum ProductsOnboardingSyncingError: Error {
+    case noContentToShow // there is no content to show, because the site is not eligible, it was already shown, or other reason
+}
 
 /// Syncs data for dashboard stats UI and determines the state of the dashboard UI based on stats version.
 final class DashboardViewModel {
     /// Stats v4 is shown by default, then falls back to v3 if store stats are unavailable.
     @Published private(set) var statsVersion: StatsVersion = .v4
 
-    private let stores: StoresManager
+    @Published var announcementViewModel: AnnouncementCardViewModelProtocol? = nil
 
-    init(stores: StoresManager = ServiceLocator.stores) {
+    @Published private(set) var showWebViewSheet: WebViewSheetViewModel? = nil
+
+    /// Trigger to start the Add Product flow
+    ///
+    let addProductTrigger = PassthroughSubject<Void, Never>()
+
+    private let stores: StoresManager
+    private let featureFlagService: FeatureFlagService
+    private let analytics: Analytics
+    private let justInTimeMessagesManager: JustInTimeMessagesProvider
+
+    init(stores: StoresManager = ServiceLocator.stores,
+         featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.stores = stores
+        self.featureFlagService = featureFlags
+        self.analytics = analytics
+        self.justInTimeMessagesManager = JustInTimeMessagesProvider(stores: stores, analytics: analytics)
     }
 
     /// Syncs store stats for dashboard UI.
@@ -66,6 +88,26 @@ final class DashboardViewModel {
         stores.dispatch(action)
     }
 
+    /// Syncs summary stats for dashboard UI.
+    func syncSiteSummaryStats(for siteID: Int64,
+                              timeRange: StatsTimeRangeV4,
+                              latestDateToInclude: Date,
+                              onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
+        let action = StatsActionV4.retrieveSiteSummaryStats(siteID: siteID,
+                                                            period: timeRange.summaryStatsGranularity,
+                                                            quantity: 1,
+                                                            latestDateToInclude: latestDateToInclude,
+                                                            saveInStorage: true) { result in
+            if case let .failure(error) = result {
+                DDLogError("⛔️ Error synchronizing summary stats: \(error)")
+            }
+
+            let voidResult = result.map { _ in () } // Caller expects no entity in the result.
+            onCompletion?(voidResult)
+        }
+        stores.dispatch(action)
+    }
+
     /// Syncs top performers data for dashboard UI.
     func syncTopEarnersStats(for siteID: Int64,
                              siteTimezone: TimeZone,
@@ -81,6 +123,7 @@ final class DashboardViewModel {
                                                           latestDateToInclude: latestDateToInclude,
                                                           quantity: Constants.topEarnerStatsLimit,
                                                           forceRefresh: forceRefresh,
+                                                          saveInStorage: true,
                                                           onCompletion: { result in
             switch result {
             case .success:
@@ -90,9 +133,82 @@ final class DashboardViewModel {
             case .failure(let error):
                 DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
             }
-            onCompletion?(result)
+
+            let voidResult = result.map { _ in () } // Caller expects no entity in the result.
+            onCompletion?(voidResult)
         })
         stores.dispatch(action)
+    }
+
+    /// Checks for announcements to show on the dashboard
+    ///
+    func syncAnnouncements(for siteID: Int64) async {
+        // For now, products onboarding takes precedence over Just In Time Messages,
+        // so we can stop if there is an onboarding announcement to display.
+        // This should be revisited when either onboarding or JITMs are expanded. See: pe5pgL-11B-p2
+        do {
+            try await syncProductsOnboarding(for: siteID)
+        } catch {
+            await syncJustInTimeMessages(for: siteID)
+        }
+    }
+
+    /// Checks if a store is eligible for products onboarding -returning error otherwise- and prepares the onboarding announcement if needed.
+    ///
+    private func syncProductsOnboarding(for siteID: Int64) async throws {
+        try await withCheckedThrowingContinuation { [weak self] continuation in
+            let action = ProductAction.checkProductsOnboardingEligibility(siteID: siteID) { [weak self] result in
+                switch result {
+                case .success(let isEligible):
+                    if isEligible {
+                        ServiceLocator.analytics.track(event: .ProductsOnboarding.storeIsEligible())
+
+                        self?.setProductsOnboardingBannerIfNeeded()
+                    }
+
+                    if self?.announcementViewModel is ProductsOnboardingAnnouncementCardViewModel {
+                        continuation.resume(returning: (()))
+                    } else {
+                        continuation.resume(throwing: ProductsOnboardingSyncingError.noContentToShow)
+                    }
+
+                case .failure(let error):
+                    DDLogError("⛔️ Dashboard — Error checking products onboarding eligibility: \(error)")
+                    continuation.resume(throwing: error)
+                }
+            }
+
+            Task { @MainActor in
+                stores.dispatch(action)
+            }
+        }
+    }
+
+    /// Sets the view model for the products onboarding banner if the user hasn't dismissed it before.
+    ///
+    private func setProductsOnboardingBannerIfNeeded() {
+        let getVisibility = AppSettingsAction.getFeatureAnnouncementVisibility(campaign: .productsOnboarding) { [weak self] result in
+            guard let self else { return }
+            if case let .success(isVisible) = result, isVisible {
+                let viewModel = ProductsOnboardingAnnouncementCardViewModel(onCTATapped: { [weak self] in
+                    self?.addProductTrigger.send()
+                })
+                self.announcementViewModel = viewModel
+            }
+        }
+        stores.dispatch(getVisibility)
+    }
+
+    /// Checks for Just In Time Messages and prepares the announcement if needed.
+    ///
+    private func syncJustInTimeMessages(for siteID: Int64) async {
+        guard featureFlagService.isFeatureFlagEnabled(.justInTimeMessagesOnDashboard) else {
+            return
+        }
+
+        let viewModel = try? await justInTimeMessagesManager.loadMessage(for: .dashboard, siteID: siteID)
+        viewModel?.$showWebViewSheet.assign(to: &self.$showWebViewSheet)
+        announcementViewModel = viewModel
     }
 }
 
@@ -101,5 +217,6 @@ final class DashboardViewModel {
 private extension DashboardViewModel {
     enum Constants {
         static let topEarnerStatsLimit: Int = 5
+        static let dashboardScreenName = "my_store"
     }
 }

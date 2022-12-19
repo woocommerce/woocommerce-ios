@@ -48,11 +48,12 @@ final class StorePickerViewModel {
         ])
     }
 
-    func refreshSites(currentlySelectedSiteID: Int64?) {
+    func refreshSites(currentlySelectedSiteID: Int64?, completion: (() -> Void)? = nil) {
         refetchSitesAndUpdateState()
 
         synchronizeSites(selectedSiteID: currentlySelectedSiteID) { [weak self] _ in
             self?.refetchSitesAndUpdateState()
+            completion?()
         }
     }
 
@@ -158,6 +159,29 @@ extension StorePickerViewModel {
             return nil
         }
         return resultsController.safeObject(at: indexPath)
+    }
+
+    /// Returns the site that matches the given URL.
+    ///
+    func site(thatMatchesPossibleURLs possibleURLs: Set<String>) -> Site? {
+        guard resultsController.numberOfObjects > 0 else {
+            return nil
+        }
+        return resultsController.fetchedObjects.first(where: { site in
+            guard let siteURL = URL(string: site.url)?.host else {
+                return false
+            }
+            return possibleURLs.contains(siteURL)
+        })
+    }
+
+    /// Returns the site that matches the given site ID.
+    ///
+    func site(thatMatchesSiteID siteID: Int64) -> Site? {
+        guard resultsController.numberOfObjects > 0 else {
+            return nil
+        }
+        return resultsController.fetchedObjects.first(where: { $0.siteID == siteID })
     }
 }
 

@@ -54,6 +54,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Setup Components
         setupAnalytics()
         setupCocoaLumberjack()
+        setupLibraryLogger()
         setupLogLevel(.verbose)
         setupPushNotificationsManagerIfPossible()
         setupAppRatingManager()
@@ -73,15 +74,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // ever new source code is injected into our application.
         Inject.animation = .interactiveSpring()
 
-        Task { @MainActor in
-            await startABTesting()
-
-            // Upgrade check...
-            // This has to be called after A/B testing setup in `startABTesting` if any of the Tracks events
-            // in `checkForUpgrades` is used as an exposure event for an experiment.
-            // For example, `application_installed` could be the exposure event for logged-out experiments.
-            checkForUpgrades()
-        }
+        // Upgrade check...
+        // This has to be called after A/B testing setup in `setupAnalytics` (which calls
+        // `WooAnalytics.refreshUserData`) if any of the Tracks events in `checkForUpgrades` is
+        // used as an exposure event for an experiment.
+        // For example, `application_installed` could be the exposure event for logged-out experiments.
+        checkForUpgrades()
 
         return true
     }
@@ -279,12 +277,19 @@ private extension AppDelegate {
         DDLog.add(logger)
     }
 
-    /// Sets up the current Log Leve.
+    /// Sets up loggers for WordPress libraries
+    ///
+    func setupLibraryLogger() {
+        let logger = ServiceLocator.wordPressLibraryLogger
+        WPSharedSetLoggingDelegate(logger)
+        WPAuthenticatorSetLoggingDelegate(logger)
+        WPKitSetLoggingDelegate(logger)
+    }
+
+    /// Sets up the current Log Level.
     ///
     func setupLogLevel(_ level: DDLogLevel) {
-        WPSharedSetLoggingLevel(level)
-        WPAuthenticatorSetLoggingLevel(level)
-        WPKitSetLoggingLevel(level)
+        CocoaLumberjack.dynamicLogLevel = level
     }
 
     /// Setup: Notice Presenter
@@ -372,13 +377,6 @@ private extension AppDelegate {
         }
     }
 
-    /// Starts the AB testing platform and fetches test assignments for the current context
-    ///
-    func startABTesting() async {
-        let context: ExperimentContext = ServiceLocator.stores.isAuthenticated ? .loggedIn : .loggedOut
-        await ABTest.start(for: context)
-    }
-
     /// Tracks if the application was opened via a widget tap.
     ///
     func trackWidgetTappedIfNeeded(userActivity: NSUserActivity) {
@@ -405,8 +403,7 @@ private extension AppDelegate {
         if versionOfLastRun == nil {
             // First run after a fresh install
             ServiceLocator.analytics.track(.applicationInstalled,
-                                           withProperties: ["after_abtest_setup": true,
-                                                            "prologue_experiment_variant": ABTest.loginPrologueButtonOrder.variation.analyticsValue])
+                                           withProperties: ["after_abtest_setup": true])
         } else if versionOfLastRun != currentVersion {
             // App was upgraded
             ServiceLocator.analytics.track(.applicationUpgraded, withProperties: ["previous_version": versionOfLastRun ?? String()])

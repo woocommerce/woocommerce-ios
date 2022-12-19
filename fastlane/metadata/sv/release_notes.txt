@@ -1,3 +1,1 @@
-Spännande nyheter! Nu kan du massredigera variationer. Allt som krävs är att du har den senaste versionen av WooCommerce för din butik. Vi har också fokuserat på att förfina ett par saker och att åtgärda några mindre fel som vårt team hittade.
-
-Fortsätt att lämna feedback. Det hjälper oss att lista ut vad vi ska hitta på härnäst.
+Goda nyheter! Vi har lagt till en ny analyssektion i appen. Det är bara att klicka på knappen Se mer under butiksstatistiken om du vill se mer detaljerad information om intäkter och beställningar. Det här är inte allt – fler uppdateringar är på väg under de kommande veckorna!

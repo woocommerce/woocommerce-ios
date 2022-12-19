@@ -4,7 +4,7 @@ import Yosemite
 
 // MARK: - Represents a Site Action.
 //
-enum SiteAction: Action {
+enum MockSiteAction: Action {
     case refreshSite(identifier: Int)
     case refreshSites
 }
@@ -14,14 +14,14 @@ enum SiteAction: Action {
 //
 class MockSiteStore: Store {
 
-    var receivedActions = [SiteAction]()
+    var receivedActions = [MockSiteAction]()
 
     override func registerSupportedActions(in dispatcher: Dispatcher) {
-        dispatcher.register(processor: self, for: SiteAction.self)
+        dispatcher.register(processor: self, for: MockSiteAction.self)
     }
 
     override func onAction(_ action: Action) {
-        guard let accountAction = action as? SiteAction else {
+        guard let accountAction = action as? MockSiteAction else {
             return
         }
 

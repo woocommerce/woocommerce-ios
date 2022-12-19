@@ -1,3 +1,1 @@
-Boa notícia! Agora você pode fazer uma edição em massa dos preços de variações. Basta ter a versão mais recente do WooCommerce, disponível na nossa loja. Focamos também em algumas melhorias e na correção de bugs irrelevantes que a nossa equipe encontrou.
-
-Continue dando feedback, ele nos ajuda a saber no que trabalhar em seguida.
+Boas notícias! Incluímos uma nova seção de análise no aplicativo! Basta clicar no botão Ver mais abaixo das estatísticas da loja para conferir informações mais detalhadas de receita e pedidos. E não para por aí: tem mais atualizações a caminho para as próximas semanas!

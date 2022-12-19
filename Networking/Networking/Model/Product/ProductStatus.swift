@@ -8,6 +8,7 @@ public enum ProductStatus: Codable, Hashable, GeneratedFakeable {
     case draft
     case pending
     case privateStatus  // `private` is a reserved keyword
+    case autoDraft
     case custom(String) // in case there are extensions modifying product statuses
 }
 
@@ -28,6 +29,8 @@ extension ProductStatus: RawRepresentable {
             self = .pending
         case Keys.privateStatus:
             self = .privateStatus
+        case Keys.autoDraft:
+            self = .autoDraft
         default:
             self = .custom(rawValue)
         }
@@ -41,6 +44,7 @@ extension ProductStatus: RawRepresentable {
         case .draft:                return Keys.draft
         case .pending:              return Keys.pending
         case .privateStatus:        return Keys.privateStatus
+        case .autoDraft:            return Keys.autoDraft
         case .custom(let payload):  return payload
         }
     }
@@ -57,6 +61,8 @@ extension ProductStatus: RawRepresentable {
             return NSLocalizedString("Pending review", comment: "Display label for the product's pending status")
         case .privateStatus:
             return NSLocalizedString("Privately published", comment: "Display label for the product's private status")
+        case .autoDraft:
+            return "Auto Draft" // We don't need to localize this now.
         case .custom(let payload):
             return payload // unable to localize at runtime.
         }
@@ -71,4 +77,5 @@ private enum Keys {
     static let draft         = "draft"
     static let pending       = "pending"
     static let privateStatus = "private"
+    static let autoDraft     = "auto-draft"
 }

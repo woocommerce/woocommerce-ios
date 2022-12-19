@@ -406,10 +406,10 @@ extension MockObjectGraph {
         )
     }
 
-    static func createVisitStatsItem(granularity: StatGranularity, periodDate: Date, visitors: Int) -> SiteVisitStatsItem {
+    static func createVisitStatsItem(granularity: StatGranularity, periodDate: Date, visitors: Int, views: Int) -> SiteVisitStatsItem {
         switch granularity {
         case .day:
-            return SiteVisitStatsItem(period: periodDate.asVisitStatsMonthString, visitors: visitors)
+            return SiteVisitStatsItem(period: periodDate.asVisitStatsMonthString, visitors: visitors, views: views)
         default:
             fatalError("Not implemented yet")
         }
@@ -426,7 +426,8 @@ extension MockObjectGraph {
             taxes: 0,
             shipping: 0,
             netRevenue: 0,
-            totalProducts: 0
+            totalProducts: 0,
+            averageOrderValue: 0
         )
     }
 
@@ -501,7 +502,8 @@ private extension Array where Element == OrderStatsV4Interval {
             taxes: 0,
             shipping: 0,
             netRevenue: 0,
-            totalProducts: 0
+            totalProducts: 0,
+            averageOrderValue: 0
         )
     }
 }

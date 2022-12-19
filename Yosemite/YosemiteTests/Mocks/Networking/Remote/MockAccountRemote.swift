@@ -19,6 +19,12 @@ final class MockAccountRemote {
     /// The results to return based on the given site ID in `fetchWordPressSiteSettings`
     private var fetchWordPressSiteSettingsResultsBySiteID = [Int64: Result<WordPressSiteSettings, Error>]()
 
+    /// The results to return based on the given site ID in `loadUsernameSuggestions`.
+    private var loadUsernameSuggestionsResult: Result<[String], Error>?
+
+    /// The results to return based on the given site ID in `createAccount`.
+    private var createAccountResult: Result<CreateAccountResult, CreateAccountError>?
+
     /// Returns the value as a publisher when `checkIfWooCommerceIsActive` is called.
     func whenCheckingIfWooCommerceIsActive(siteID: Int64, thenReturn result: Result<Bool, Error>) {
         checkIfWooCommerceIsActiveResultsBySiteID[siteID] = result
@@ -27,6 +33,16 @@ final class MockAccountRemote {
     /// Returns the value as a publisher when `fetchWordPressSiteSettings` is called.
     func whenFetchingWordPressSiteSettings(siteID: Int64, thenReturn result: Result<WordPressSiteSettings, Error>) {
         fetchWordPressSiteSettingsResultsBySiteID[siteID] = result
+    }
+
+    /// Returns the value when `loadUsernameSuggestions` is called.
+    func whenLoadingUsernameSuggestions(thenReturn result: Result<[String], Error>) {
+        loadUsernameSuggestionsResult = result
+    }
+
+    /// Returns the value when `createAccount` is called.
+    func whenCreatingAccount(thenReturn result: Result<CreateAccountResult, CreateAccountError>) {
+        createAccountResult = result
     }
 }
 
@@ -80,5 +96,26 @@ extension MockAccountRemote: AccountRemoteProtocol {
 
     func loadSitePlan(for siteID: Int64, completion: @escaping (Result<SitePlan, Error>) -> Void) {
         // no-op
+    }
+
+    func loadUsernameSuggestions(from text: String) async throws -> [String] {
+        guard let result = loadUsernameSuggestionsResult else {
+            XCTFail("Could not find result for loading username suggestions.")
+            throw NetworkError.notFound
+        }
+
+        return try result.get()
+    }
+
+    func createAccount(email: String,
+                       username: String,
+                       password: String,
+                       clientID: String,
+                       clientSecret: String) async -> Result<CreateAccountResult, CreateAccountError> {
+        guard let result = createAccountResult else {
+            XCTFail("Could not find result for creating an account.")
+            return .failure(.unexpected(error: .empty))
+        }
+        return result
     }
 }

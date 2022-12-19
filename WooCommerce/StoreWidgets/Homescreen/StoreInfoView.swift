@@ -29,13 +29,7 @@ private struct StoreInfoView: View {
     @Environment(\.sizeCategory) var category
 
     var accessibilityCategory: ContentSizeCategory {
-        if #available(iOS 15.0, *) {
-            return .extraLarge
-        } else {
-            // iOS 14 has margins issue with extraLarge text size, so fallback to accessibility style earlier
-            // https://github.com/woocommerce/woocommerce-ios/issues/7797
-            return .large
-        }
+        return .extraLarge
     }
 
     var body: some View {

@@ -10,6 +10,7 @@ enum ProductFormType {
 
 /// The type of action that can be performed in the product.
 enum ActionButtonType {
+    case preview
     case publish
     case save
     case more
@@ -177,6 +178,18 @@ extension ProductFormViewModelProtocol {
             else {
                 return .save
             }
+        }
+    }
+
+    /// Whether the Preview button should be enabled, when it's available in the navigation bar.
+    /// Returns `false` when it's a new blank product without any changes.
+    ///
+    func shouldEnablePreviewButton() -> Bool {
+        switch formType {
+        case .add:
+            return hasUnsavedChanges()
+        case .edit, .readonly:
+            return true
         }
     }
 }

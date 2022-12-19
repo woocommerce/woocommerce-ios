@@ -177,12 +177,21 @@ private extension SessionManager {
     ///
     func loadCredentials() -> Credentials? {
         guard let username = defaults[.defaultUsername] as? String,
-            let authToken = keychain[username],
-            let siteAddress = defaults[.defaultSiteAddress] as? String else {
+              let secret = keychain[username],
+              let siteAddress = defaults[.defaultSiteAddress] as? String else {
             return nil
         }
 
-        return Credentials(username: username, authToken: authToken, siteAddress: siteAddress)
+        guard let identifier = AuthenticationTypeIdentifier(rawValue: defaultCredentialsType) else {
+            return nil
+        }
+
+        switch identifier {
+        case .wpcom:
+            return Credentials(username: username, authToken: secret, siteAddress: siteAddress)
+        case .wporg:
+            return Credentials(username: username, password: secret, siteAddress: siteAddress)
+        }
     }
 
     /// Persists the Credentials's authToken in the keychain, and username in User Settings.

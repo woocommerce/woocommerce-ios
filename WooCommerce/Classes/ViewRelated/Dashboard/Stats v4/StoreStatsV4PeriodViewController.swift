@@ -394,7 +394,7 @@ private extension StoreStatsV4PeriodViewController {
         let xAxis = lineChartView.xAxis
         xAxis.labelPosition = .bottom
         xAxis.yOffset = 8
-        xAxis.labelFont = StyleManager.chartLabelFont
+        xAxis.labelFont = .caption2
         xAxis.labelTextColor = .textSubtle
         xAxis.axisLineColor = .systemColor(.separator)
         xAxis.gridColor = .systemColor(.separator)
@@ -407,7 +407,7 @@ private extension StoreStatsV4PeriodViewController {
         updateChartXAxisLabelCount(xAxis: xAxis, timeRange: timeRange)
 
         let yAxis = lineChartView.leftAxis
-        yAxis.labelFont = StyleManager.chartLabelFont
+        yAxis.labelFont = .caption2
         yAxis.labelTextColor = .textSubtle
         yAxis.axisLineColor = .systemColor(.separator)
         yAxis.gridColor = .systemColor(.separator)

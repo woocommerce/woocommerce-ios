@@ -27,6 +27,7 @@ class SessionManagerTests: XCTestCase {
     /// Verifies that `loadDefaultCredentials` effectively returns the last stored credentials
     ///
     func testDefaultCredentialsAreProperlyPersistedForWPCOM() {
+        // Given
         manager.defaultCredentials = Settings.wpcomCredentials
 
         guard case let .wpcom(username: username, authToken: authToken, siteAddress: siteAddress) = manager.defaultCredentials else {
@@ -34,13 +35,17 @@ class SessionManagerTests: XCTestCase {
             return
         }
 
+        // When
         let retrieved = Credentials(username: username, authToken: authToken, siteAddress: siteAddress)
+
+        // Then
         XCTAssertEqual(retrieved, Settings.wpcomCredentials)
     }
 
     /// Verifies that `loadDefaultCredentials` effectively returns the last stored credentials
     ///
     func testDefaultCredentialsAreProperlyPersistedForWPOrg() {
+        // Given
         manager.defaultCredentials = Settings.wporgCredentials
 
         guard case let .wporg(username: username, password: password, siteAddress: siteAddress) = manager.defaultCredentials else {
@@ -48,7 +53,10 @@ class SessionManagerTests: XCTestCase {
             return
         }
 
+        // When
         let retrieved = Credentials(username: username, password: password, siteAddress: siteAddress)
+
+        // Then
         XCTAssertEqual(retrieved, Settings.wporgCredentials)
     }
 
@@ -74,6 +82,7 @@ class SessionManagerTests: XCTestCase {
     /// Verifies that WPCOM credentials are returned for already installed and logged in versions which don't have type stored in user defaults
     ///
     func test_already_installed_version_without_authentication_type_saved_returns_WPCOM_credentials() {
+        // Given
         let uuid = UUID().uuidString
 
         // Prepare user defaults
@@ -85,10 +94,14 @@ class SessionManagerTests: XCTestCase {
         let keychainServiceName = uuid
         Keychain(service: keychainServiceName)["lalala"] = "1234"
 
+        // When
+
         // Check that credential type isn't available
         XCTAssertNil(defaults[UserDefaults.Key.defaultCredentialsType])
 
         let sut = SessionManager(defaults: defaults, keychainServiceName: keychainServiceName)
+
+        // Then
         XCTAssertEqual(sut.defaultCredentials, Settings.wpcomCredentials)
     }
 }

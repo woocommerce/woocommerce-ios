@@ -53,6 +53,7 @@ public enum StatsActionV4: Action {
     /// Conditionally saves them to storage, if a single period is retrieved.
     ///
     case retrieveSiteSummaryStats(siteID: Int64,
+                                  siteTimezone: TimeZone,
                                   period: StatGranularity,
                                   quantity: Int,
                                   latestDateToInclude: Date,

@@ -1,9 +1,20 @@
 import Foundation
 
-
 /// Authenticated Requests Credentials
 ///
 public struct Credentials: Equatable {
+
+    /// Type of authentication wpcom/wporg
+    ///
+    public enum AuthenticationType: Equatable {
+        /// Holds WordPress.com Authentication Token
+        ///
+        case wpcom(authToken: String)
+
+        /// Holds .org site credentials password
+        ///
+        case wporg(password: String)
+    }
 
     /// WordPress.com Username
     ///
@@ -16,7 +27,6 @@ public struct Credentials: Equatable {
     /// Site Address
     ///
     public let siteAddress: String
-
 
     /// Designated Initializer
     ///

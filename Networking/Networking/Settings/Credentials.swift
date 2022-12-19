@@ -8,8 +8,7 @@ public enum Credentials: Equatable {
     ///
     case wpcom(username: String, authToken: String, siteAddress: String)
 
-    /// For .org site credentials password
-    ///
+    /// For .org site credentials
     ///
     case wporg(username: String, password: String, siteAddress: String)
 

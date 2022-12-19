@@ -30,13 +30,17 @@ public struct Credentials: Equatable {
 
     /// WordPress.com Authentication Token
     ///
-    public let authToken: String
+    public var authToken: String? {
+        guard case let .wpcom(authToken) = authenticationType else {
+            return nil
+        }
+        return authToken
+    }
 
     /// Designated Initializer
     ///
     public init(username: String, authToken: String, siteAddress: String? = nil) {
         self.username = username
-        self.authToken = authToken
         self.siteAddress = siteAddress ?? Constants.placeholderSiteAddress
         self.authenticationType = .wpcom(authToken: authToken)
     }

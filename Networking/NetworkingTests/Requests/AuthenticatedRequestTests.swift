@@ -18,14 +18,16 @@ class AuthenticatedRequestTests: XCTestCase {
 
     /// Verifies that the Bearer Token is injected, as part of the HTTP Headers.
     ///
-    func test_bearer_token_is_injected_as_request_header() {
+    func test_bearer_token_is_injected_as_request_header() throws {
         XCTAssertEqual(unauthenticatedRequest.allHTTPHeaderFields, [:])
 
         let authenticated = AuthenticatedRequest(credentials: credentials, request: unauthenticatedRequest)
         let output = try! authenticated.asURLRequest()
 
+        let authToken = try XCTUnwrap(credentials.authToken)
+
         let generated = output.allHTTPHeaderFields?["Authorization"]
-        let expected = "Bearer \(credentials.authToken)"
+        let expected = "Bearer \(authToken)"
         XCTAssertEqual(generated, expected)
     }
 

@@ -294,10 +294,11 @@ private extension DefaultStoresManager {
     func replaceTempCredentialsIfNecessary(account: Account) {
         guard
             let credentials = sessionManager.defaultCredentials,
+            let authToken = credentials.authToken,
             credentials.hasPlaceholderUsername() else {
                 return
         }
-        authenticate(credentials: .init(username: account.username, authToken: credentials.authToken, siteAddress: credentials.siteAddress))
+        authenticate(credentials: .init(username: account.username, authToken: authToken, siteAddress: credentials.siteAddress))
     }
 
     /// Synchronizes the WordPress.com Sites, associated with the current credentials.

@@ -21,7 +21,7 @@ public final class PasswordScreen: ScreenObject {
 
     public func tryProceed(password: String) throws -> PasswordScreen {
         let continueButton = app.buttons["Continue Button"]
-        
+
         app.secureTextFields["Password"].enterText(text: password)
         continueButton.tap()
         if continueButton.exists && !continueButton.isHittable {

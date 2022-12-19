@@ -23,6 +23,7 @@ public extension ScreenObject {
         return self
     }
 
+    @discardableResult
     func waitFor(element: XCUIElement, predicate: String, timeout: Int? = nil) -> Bool {
         let timeoutValue = timeout ?? 5
 

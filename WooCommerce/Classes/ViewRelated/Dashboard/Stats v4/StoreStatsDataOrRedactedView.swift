@@ -52,6 +52,7 @@ private extension StoreStatsDataOrRedactedView {
     func configureDataLabel() {
         dataLabel.font = Constants.statsFont
         dataLabel.textColor = Constants.statsTextColor
+        dataLabel.adjustsFontSizeToFitWidth = true
     }
 }
 

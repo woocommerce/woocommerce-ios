@@ -10,11 +10,11 @@ public struct WPCOMSecret: SecretType {
 
 /// Holds .org site credentials password
 ///
-public struct WPORGSecret: SecretType {
+public struct WPOrgSecret: SecretType {
     public let password: String
 }
 
-/// Credentials for WPCOM or WPORG
+/// Credentials for WPCOM or WPOrg
 ///
 public protocol Credentials: Equatable {
     associatedtype Element: SecretType

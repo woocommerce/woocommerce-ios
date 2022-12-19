@@ -2,18 +2,18 @@ import UIKit
 
 // MARK: - Base colors.
 public extension UIColor {
-    /// Accent. Pink-50 (< iOS 13 and Light Mode) and Pink-30 (Dark Mode)
+    /// Accent. Purple-50 (Light Mode) and Purple-30 (Dark Mode)
     ///
     static var accent: UIColor {
-        return UIColor(light: .withColorStudio(.pink, shade: .shade50),
-                       dark: .withColorStudio(.pink, shade: .shade30))
+        return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade60),
+                       dark: .withColorStudio(.wooCommercePurple, shade: .shade30))
     }
 
-    /// Accent Dark. Pink-70 (< iOS 13 and Light Mode) and Pink-50 (Dark Mode)
+    /// Accent Dark. Purple-70 (Light Mode) and Purple-50 (Dark Mode)
     ///
     static var accentDark: UIColor {
-        return UIColor(light: .withColorStudio(.pink, shade: .shade70),
-                       dark: .withColorStudio(.pink, shade: .shade50))
+        return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade80),
+                       dark: .withColorStudio(.wooCommercePurple, shade: .shade50))
     }
 
     /// Brand. WooCommercePurple-60 (all versions of iOS, Light and Dark Mode)
@@ -80,7 +80,7 @@ public extension UIColor {
 
 // MARK: - Text Colors.
 public extension UIColor {
-    /// Text link. Pink-50
+    /// Text link. Purple-50
     ///
     static var textLink: UIColor {
         return .accent

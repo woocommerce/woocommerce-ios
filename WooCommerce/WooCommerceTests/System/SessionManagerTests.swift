@@ -40,8 +40,8 @@ class SessionManagerTests: XCTestCase {
         manager.defaultCredentials = Settings.credentials2
 
         let retrieved = manager.defaultCredentials
-        XCTAssertEqual(retrieved?.password, Settings.credentials1.authToken)
-        XCTAssertEqual(retrieved?.username, Settings.credentials1.username)
+        XCTAssertEqual(retrieved?.password, Settings.credentials2.password)
+        XCTAssertEqual(retrieved?.username, Settings.credentials2.username)
     }
 
     /// Verifies that `removeDefaultCredentials` effectively nukes everything from the keychain

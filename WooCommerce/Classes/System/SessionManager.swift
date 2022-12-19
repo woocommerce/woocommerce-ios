@@ -164,12 +164,23 @@ private extension SessionManager {
     ///
     func loadCredentials() -> (any Credentials)? {
         guard let username = defaults[.defaultUsername] as? String,
-            let authToken = keychain[username],
-            let siteAddress = defaults[.defaultSiteAddress] as? String else {
+              let secret = keychain[username],
+              let siteAddress = defaults[.defaultSiteAddress] as? String else {
             return nil
         }
 
-        return WPCOMCredentials(username: username, authToken: authToken, siteAddress: siteAddress)
+        // To cover the case of previous versions which don't have the credential type stored in user defaults
+        guard let defaultCredentialsType = defaults[.defaultCredentialsType] as? String else {
+            return WPCOMCredentials(username: username, authToken: secret, siteAddress: siteAddress)
+        }
+
+        if defaultCredentialsType == String(describing: WPCOMCredentials.self) {
+            return WPCOMCredentials(username: username, authToken: secret, siteAddress: siteAddress)
+        } else if defaultCredentialsType == String(describing: WPOrgCredentials.self) {
+            return WPOrgCredentials(username: username, password: secret, siteAddress: siteAddress)
+        } else {
+            return nil
+        }
     }
 
     /// Persists the Credentials's authToken in the keychain, and username in User Settings.
@@ -177,7 +188,14 @@ private extension SessionManager {
     func saveCredentials(_ credentials: any Credentials) {
         defaults[.defaultUsername] = credentials.username
         defaults[.defaultSiteAddress] = credentials.siteAddress
-        keychain[credentials.username] = credentials.authToken
+
+        if let wpcom = credentials as? WPCOMCredentials {
+            keychain[credentials.username] = wpcom.authToken
+            defaults[.defaultCredentialsType] = String(describing: WPCOMCredentials.self)
+        } else if let wporg = credentials as? WPOrgCredentials {
+            keychain[credentials.username] = wporg.secret.password
+            defaults[.defaultCredentialsType] = String(describing: WPOrgCredentials.self)
+        }
     }
 
     /// Nukes both, the AuthToken and Default Username.
@@ -189,5 +207,6 @@ private extension SessionManager {
 
         keychain[username] = nil
         defaults[.defaultUsername] = nil
+        defaults[.defaultCredentialsType] = nil
     }
 }

@@ -22,12 +22,11 @@ class AuthenticatedState: StoresManagerState {
 
     /// Designated Initializer
     ///
-    init(credentials: WPCOMCredentials) {
+    init(credentials: any Credentials) {
         let storageManager = ServiceLocator.storageManager
         let network = AlamofireNetwork(credentials: credentials)
 
-        services = [
-            AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: credentials.authToken),
+        var services: [ActionsProcessor] = [
             AppSettingsStore(dispatcher: dispatcher,
                              storageManager: storageManager,
                              fileStorage: PListFileStorage(),
@@ -89,6 +88,12 @@ class AuthenticatedState: StoresManagerState {
                                fileStorage: PListFileStorage()),
             JetpackConnectionStore(dispatcher: dispatcher)
         ]
+
+        if let credentials = credentials as? WPCOMCredentials {
+            services.append(AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: credentials.authToken))
+        }
+
+        self.services = services
 
         startListeningToNotifications()
     }

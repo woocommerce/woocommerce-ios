@@ -90,7 +90,7 @@ class AuthenticatedState: StoresManagerState {
         ]
 
 
-        if let authToken = credentials.authToken {
+        if case let .wpcom(username: _, authToken: authToken, siteAddress: _) = credentials {
             services.append(AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: authToken))
         } else {
             DDLogInfo("No WordPress.com auth token found. AccountStore is not initialized.")

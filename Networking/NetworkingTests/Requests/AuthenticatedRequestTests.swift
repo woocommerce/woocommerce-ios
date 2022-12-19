@@ -24,7 +24,10 @@ class AuthenticatedRequestTests: XCTestCase {
         let authenticated = AuthenticatedRequest(credentials: credentials, request: unauthenticatedRequest)
         let output = try! authenticated.asURLRequest()
 
-        let authToken = try XCTUnwrap(credentials.authToken)
+        guard case let .wpcom(username: _, authToken: authToken, siteAddress: _) = credentials else {
+            XCTFail("Missing credentials.")
+            return
+        }
 
         let generated = output.allHTTPHeaderFields?["Authorization"]
         let expected = "Bearer \(authToken)"

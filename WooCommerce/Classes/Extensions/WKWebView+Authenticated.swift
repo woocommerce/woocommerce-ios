@@ -2,7 +2,7 @@ import Alamofire
 import Foundation
 import WebKit
 import struct WordPressAuthenticator.WordPressOrgCredentials
-import struct Yosemite.Credentials
+import enum Yosemite.Credentials
 import class Networking.UserAgent
 
 /// An extension to authenticate WPCom automatically
@@ -37,8 +37,7 @@ extension WKWebView {
     }
 
     private func authenticatedPostData(with credentials: Credentials?, redirectTo url: URL) throws -> URLRequest {
-        guard let username = credentials?.username,
-              let token = credentials?.authToken else {
+        guard case let .wpcom(username: username, authToken: token, siteAddress: _) = credentials else {
             return URLRequest(url: url)
         }
 

@@ -27,27 +27,35 @@ class SessionManagerTests: XCTestCase {
     /// Verifies that `loadDefaultCredentials` effectively returns the last stored credentials
     ///
     func testDefaultCredentialsAreProperlyPersistedForWPCOM() {
-        manager.defaultCredentials = Settings.credentials1
+        manager.defaultCredentials = Settings.wpcomCredentials
 
-        let retrieved = manager.defaultCredentials
-        XCTAssertEqual(retrieved?.authToken, Settings.credentials1.authToken)
-        XCTAssertEqual(retrieved?.username, Settings.credentials1.username)
+        guard case let .wpcom(username: username, authToken: authToken, siteAddress: siteAddress) = manager.defaultCredentials else {
+            XCTFail("Missing credentials.")
+            return
+        }
+
+        let retrieved = Credentials(username: username, authToken: authToken, siteAddress: siteAddress)
+        XCTAssertEqual(retrieved, Settings.wpcomCredentials)
     }
 
     /// Verifies that `loadDefaultCredentials` effectively returns the last stored credentials
     ///
     func testDefaultCredentialsAreProperlyPersistedForWPOrg() {
-        manager.defaultCredentials = Settings.credentials2
+        manager.defaultCredentials = Settings.wporgCredentials
 
-        let retrieved = manager.defaultCredentials
-        XCTAssertEqual(retrieved?.password, Settings.credentials2.password)
-        XCTAssertEqual(retrieved?.username, Settings.credentials2.username)
+        guard case let .wporg(username: username, password: password, siteAddress: siteAddress) = manager.defaultCredentials else {
+            XCTFail("Missing credentials.")
+            return
+        }
+
+        let retrieved = Credentials(username: username, password: password, siteAddress: siteAddress)
+        XCTAssertEqual(retrieved, Settings.wporgCredentials)
     }
 
     /// Verifies that `removeDefaultCredentials` effectively nukes everything from the keychain
     ///
     func testDefaultCredentialsAreEffectivelyNuked() {
-        manager.defaultCredentials = Settings.credentials1
+        manager.defaultCredentials = Settings.wpcomCredentials
         manager.defaultCredentials = nil
 
         XCTAssertNil(manager.defaultCredentials)
@@ -56,11 +64,11 @@ class SessionManagerTests: XCTestCase {
     /// Verifies that `saveDefaultCredentials` overrides previous stored credentials
     ///
     func testDefaultCredentialsCanBeUpdated() {
-        manager.defaultCredentials = Settings.credentials1
-        XCTAssertEqual(manager.defaultCredentials, Settings.credentials1)
+        manager.defaultCredentials = Settings.wpcomCredentials
+        XCTAssertEqual(manager.defaultCredentials, Settings.wpcomCredentials)
 
-        manager.defaultCredentials = Settings.credentials2
-        XCTAssertEqual(manager.defaultCredentials, Settings.credentials2)
+        manager.defaultCredentials = Settings.wporgCredentials
+        XCTAssertEqual(manager.defaultCredentials, Settings.wporgCredentials)
     }
 
     /// Verifies that WPCOM credentials are returned for already installed and logged in versions which don't have type stored in user defaults
@@ -81,7 +89,7 @@ class SessionManagerTests: XCTestCase {
         XCTAssertNil(defaults[UserDefaults.Key.defaultCredentialsType])
 
         let sut = SessionManager(defaults: defaults, keychainServiceName: keychainServiceName)
-        XCTAssertEqual(sut.defaultCredentials, Settings.credentials1)
+        XCTAssertEqual(sut.defaultCredentials, Settings.wpcomCredentials)
     }
 }
 
@@ -91,6 +99,6 @@ class SessionManagerTests: XCTestCase {
 private enum Settings {
     static let keychainServiceName = "com.automattic.woocommerce.tests"
     static let defaults = UserDefaults(suiteName: "sessionManagerTests")!
-    static let credentials1 = Credentials(username: "lalala", authToken: "1234", siteAddress: "https://example.com")
-    static let credentials2 = Credentials(username: "yayaya", password: "5678", siteAddress: "https://wordpress.com")
+    static let wpcomCredentials = Credentials(username: "lalala", authToken: "1234", siteAddress: "https://example.com")
+    static let wporgCredentials = Credentials(username: "yayaya", password: "5678", siteAddress: "https://wordpress.com")
 }

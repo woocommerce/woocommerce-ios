@@ -163,7 +163,7 @@ private extension SessionManager {
         case wpcom = "AuthenticationType.wpcom"
         case wporg = "AuthenticationType.wporg"
 
-        init(type: Credentials.AuthenticationType) {
+        init(type: Credentials) {
             switch type {
             case .wpcom:
                 self = AuthenticationTypeIdentifier.wpcom
@@ -204,8 +204,8 @@ private extension SessionManager {
     func saveCredentials(_ credentials: Credentials) {
         defaults[.defaultUsername] = credentials.username
         defaults[.defaultSiteAddress] = credentials.siteAddress
-        defaults[.defaultCredentialsType] = AuthenticationTypeIdentifier(type: credentials.authenticationType).rawValue
-        keychain[credentials.username] = credentials.authToken ?? credentials.password
+        defaults[.defaultCredentialsType] = AuthenticationTypeIdentifier(type: credentials).rawValue
+        keychain[credentials.username] = credentials.secret
     }
 
     /// Nukes both, the AuthToken and Default Username.
@@ -218,5 +218,36 @@ private extension SessionManager {
         keychain[username] = nil
         defaults[.defaultUsername] = nil
         defaults[.defaultCredentialsType] = nil
+    }
+}
+
+/// MARK: - Helpers to read `Credentials`
+///
+private extension Credentials {
+    var username: String {
+        switch self {
+        case .wpcom(username: let username, authToken: _, siteAddress: _):
+            return username
+        case .wporg(username: let username, password: _, siteAddress: _):
+            return username
+        }
+    }
+
+    var siteAddress: String {
+        switch self {
+        case .wpcom(username: _, authToken: _, siteAddress: let siteAddress):
+            return siteAddress
+        case .wporg(username: _, password: _, siteAddress: let siteAddress):
+            return siteAddress
+        }
+    }
+
+    var secret: String {
+        switch self {
+        case .wpcom(username: _, authToken: let authToken, siteAddress: _):
+            return authToken
+        case .wporg(username: _, password: let password, siteAddress: _):
+            return password
+        }
     }
 }

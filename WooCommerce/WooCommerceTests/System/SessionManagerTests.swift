@@ -19,17 +19,15 @@ class SessionManagerTests: XCTestCase {
         manager.defaultCredentials = nil
     }
 
-
     /// Verifies that `loadDefaultCredentials` returns nil whenever there are no default credentials stored.
     ///
     func testLoadDefaultCredentialsReturnsNilWhenThereAreNoDefaultCredentials() {
         XCTAssertNil(manager.defaultCredentials)
     }
 
-
     /// Verifies that `loadDefaultCredentials` effectively returns the last stored credentials
     ///
-    func testDefaultCredentialsAreProperlyPersisted() {
+    func testDefaultCredentialsAreProperlyPersistedForWPCOM() {
         manager.defaultCredentials = Settings.credentials1
 
         let retrieved = manager.defaultCredentials
@@ -37,6 +35,15 @@ class SessionManagerTests: XCTestCase {
         XCTAssertEqual(retrieved?.username, Settings.credentials1.username)
     }
 
+    /// Verifies that `loadDefaultCredentials` effectively returns the last stored credentials
+    ///
+    func testDefaultCredentialsAreProperlyPersistedForWPOrg() {
+        manager.defaultCredentials = Settings.credentials2
+
+        let retrieved = manager.defaultCredentials
+        XCTAssertEqual(retrieved?.password, Settings.credentials1.authToken)
+        XCTAssertEqual(retrieved?.username, Settings.credentials1.username)
+    }
 
     /// Verifies that `removeDefaultCredentials` effectively nukes everything from the keychain
     ///
@@ -46,7 +53,6 @@ class SessionManagerTests: XCTestCase {
 
         XCTAssertNil(manager.defaultCredentials)
     }
-
 
     /// Verifies that `saveDefaultCredentials` overrides previous stored credentials
     ///
@@ -66,5 +72,5 @@ private enum Settings {
     static let keychainServiceName = "com.automattic.woocommerce.tests"
     static let defaults = UserDefaults(suiteName: "sessionManagerTests")!
     static let credentials1 = Credentials(username: "lalala", authToken: "1234", siteAddress: "https://example.com")
-    static let credentials2 = Credentials(username: "yayaya", authToken: "5678", siteAddress: "https://wordpress.com")
+    static let credentials2 = Credentials(username: "yayaya", password: "5678", siteAddress: "https://wordpress.com")
 }

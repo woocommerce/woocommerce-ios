@@ -221,8 +221,8 @@ private extension SessionManager {
     }
 }
 
-/// MARK: - Helpers to read `Credentials`
-///
+// MARK: - Helpers to read `Credentials`
+//
 private extension Credentials {
     var username: String {
         switch self {

@@ -92,7 +92,7 @@ extension StatsTimeRange {
     /// - Parameters:
     ///   - currentDate: the date which the latest date is based on
     ///   - siteTimezone: site time zone, which the stats data are based on
-    func latestDate(currentDate: Date, siteTimezone: TimeZone) -> Date {
+    func latestDate(currentDate: Date, siteTimezone: TimeZone) -> Date? {
         switch self {
         case .today:
             return currentDate.endOfDay(timezone: siteTimezone)
@@ -110,7 +110,7 @@ extension StatsTimeRange {
     /// - Parameters:
     ///   - latestDate: the date which the earliest date is based on
     ///   - siteTimezone: site time zone, which the stats data are based on
-    func earliestDate(latestDate: Date, siteTimezone: TimeZone) -> Date {
+    func earliestDate(latestDate: Date, siteTimezone: TimeZone) -> Date? {
         switch self {
         case .today:
             return latestDate.startOfDay(timezone: siteTimezone)

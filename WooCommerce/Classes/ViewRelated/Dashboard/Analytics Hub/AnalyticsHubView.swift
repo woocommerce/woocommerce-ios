@@ -97,7 +97,7 @@ struct AnalyticsHubView: View {
                 VStack(spacing: Layout.dividerSpacing) {
                     Divider()
 
-                    AnalyticsProductCard(viewModel: viewModel.productCard)
+                    AnalyticsProductCard(statsViewModel: viewModel.productsStatsCard, itemsViewModel: viewModel.itemsSoldCard)
                         .padding(.horizontal, insets: safeAreaInsets)
                         .background(Color(uiColor: .listForeground))
 
@@ -113,7 +113,7 @@ struct AnalyticsHubView: View {
 
                     Divider()
                 }
-                .renderedIf(ServiceLocator.featureFlagService.isFeatureFlagEnabled(.analyticsHub))
+                .renderedIf(viewModel.showSessionsCard)
 
                 Spacer()
             }

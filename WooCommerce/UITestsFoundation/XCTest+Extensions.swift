@@ -19,6 +19,10 @@ extension XCUIElement {
      */
     func clearAndEnterText(text: String) -> Void {
         clearTextIfNeeded()
+        enterText(text: text)
+    }
+
+    func enterText(text: String) -> Void {
         self.tap()
         self.typeText(text)
     }

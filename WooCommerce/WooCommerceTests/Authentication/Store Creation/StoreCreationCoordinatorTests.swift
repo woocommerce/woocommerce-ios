@@ -92,10 +92,8 @@ final class StoreCreationCoordinatorTests: XCTestCase {
 
         // Then
         waitUntil {
-            self.navigationController.presentedViewController is UINavigationController
+            (self.navigationController.presentedViewController as? UINavigationController)?.topViewController is StoreNameFormHostingController
         }
-        let storeCreationNavigationController = try XCTUnwrap(navigationController.presentedViewController as? UINavigationController)
-        assertThat(storeCreationNavigationController.topViewController, isAnInstanceOf: StoreNameFormHostingController.self)
     }
 
     func test_StoreNameFormHostingController_is_presented_when_navigationController_is_showing_another_view_with_iap_enabled() throws {
@@ -115,10 +113,32 @@ final class StoreCreationCoordinatorTests: XCTestCase {
 
         // Then
         waitUntil {
-            self.navigationController.presentedViewController is UINavigationController
+            (self.navigationController.presentedViewController as? UINavigationController)?.topViewController is StoreNameFormHostingController
         }
-        let storeCreationNavigationController = try XCTUnwrap(navigationController.presentedViewController as? UINavigationController)
-        assertThat(storeCreationNavigationController.topViewController, isAnInstanceOf: StoreNameFormHostingController.self)
+    }
+
+    func test_UIAlertController_is_presented_when_iap_is_not_supported_with_iap_enabled() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isStoreCreationM2Enabled: true,
+                                                        isStoreCreationM2WithInAppPurchasesEnabled: true)
+        let coordinator = StoreCreationCoordinator(source: .storePicker,
+                                                   navigationController: navigationController,
+                                                   featureFlagService: featureFlagService,
+                                                   purchasesManager: MockInAppPurchases(fetchProductsDuration: 0, isIAPSupported: false))
+        waitFor { promise in
+            self.navigationController.present(.init(), animated: false) {
+                promise(())
+            }
+        }
+        XCTAssertNotNil(navigationController.presentedViewController)
+
+        // When
+        coordinator.start()
+
+        // Then
+        waitUntil {
+            self.navigationController.presentedViewController is UIAlertController
+        }
     }
 
     func test_StoreNameFormHostingController_is_presented_when_navigationController_is_presenting_another_view_with_iap_disabled() throws {

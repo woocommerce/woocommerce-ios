@@ -1806,7 +1806,7 @@ extension WooAnalyticsEvent {
         /// Includes the current device calendar and timezone, for debugging the failure.
         ///
         static func dateRangeSelectionFailed(for option: AnalyticsHubTimeRangeSelection.SelectionType) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .analyticsHubDateRangeSelectionFailed, properties: [Keys.option.rawValue: option.rawValue,
+            WooAnalyticsEvent(statName: .analyticsHubDateRangeSelectionFailed, properties: [Keys.option.rawValue: option.tracksIdentifier,
                                                                                             Keys.calendar.rawValue: Locale.current.calendar.debugDescription,
                                                                                             Keys.timezone.rawValue: TimeZone.current.debugDescription])
         }

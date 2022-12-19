@@ -56,6 +56,21 @@ def stripe_terminal
   pod 'StripeTerminal', '~> 2.14'
 end
 
+def networking_pods
+  alamofire
+  cocoa_lumberjack
+
+  pod 'Sourcery', '~> 1.0.3', configuration: 'Debug'
+
+  # Used for HTML parsing
+  aztec
+
+  # Used for storing application password
+  keychain
+
+  wordpress_kit
+end
+
 # Main Target!
 # ============
 #
@@ -122,6 +137,7 @@ def yosemite_pods
   stripe_terminal
   cocoa_lumberjack
   wordpress_kit
+  networking_pods
 
   aztec
 end
@@ -163,21 +179,6 @@ end
 target 'WooFoundationTests' do
   project 'WooFoundation/WooFoundation.xcodeproj'
   woofoundation_pods
-end
-
-# Networking Layer:
-# =================
-#
-def networking_pods
-  alamofire
-  cocoa_lumberjack
-
-  pod 'Sourcery', '~> 1.0.3', configuration: 'Debug'
-
-  # Used for HTML parsing
-  aztec
-
-  wordpress_kit
 end
 
 # Networking Target:

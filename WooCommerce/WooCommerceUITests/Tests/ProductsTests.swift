@@ -23,4 +23,16 @@ final class ProductsTests: XCTestCase {
             .goBackToProductList()
             .verifyProductsScreenLoaded()
     }
+
+    func test_add_simple_physical_product() throws {
+        try ProductFlow.addAndVerifyNewProduct(productType: "physical")
+    }
+
+    func test_add_simple_virtual_product() throws {
+        try ProductFlow.addAndVerifyNewProduct(productType: "virtual")
+    }
+
+    func test_add_variable_product() throws {
+        try ProductFlow.addAndVerifyNewProduct(productType: "variable")
+    }
 }

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-12-06 16:54:04+0000 */
+/* Translation-Revision-Date: 2022-12-14 18:00:38+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -9,7 +9,7 @@
 /* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
 "#%@ %@" = "#%1$@ %2$@";
 
-/* Label that describes the completed progress of a software update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
 "%.0f%% complete" = "%.0f%% tamamlandı";
 
 /* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
@@ -691,7 +691,8 @@ which should be translated separately and considered part of this sentence. */
 /* Reads as 'Application name'. Part of the mandatory data in receipts */
 "Application Name" = "Uygulama Adı";
 
-/* Change order status screen - button title to apply selection */
+/* Apply navigation button in custom range date picker
+   Change order status screen - button title to apply selection */
 "Apply" = "Uygula";
 
 /* Message to share the coupon code if it is applicable to all products. Reads like: Apply 10% off to all products with the promo code “20OFF”. */
@@ -1180,6 +1181,12 @@ which should be translated separately and considered part of this sentence. */
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "Yeni bir sipariş notu oluşturur.";
 
+/* Dialog title that displays when a configuration update just finished installing */
+"Configuration updated" = "Yapılandırma güncellendi";
+
+/* Dialog title that displays when iPhone configuration is being updated for use as a card reader */
+"Configuring iPhone" = "iPhone'u yapılandırıyor";
+
 /* Close Account confirmation alert title. */
 "Confirm Close Account" = "Hesabı Kapatmayı Onayla";
 
@@ -1523,6 +1530,9 @@ which should be translated separately and considered part of this sentence. */
    Placeholder name of a custom shipment tracking carrier
    Title of button to add a custom tracking carrier if filtering the list yields no results. */
 "Custom Carrier" = "Özel Kargo Şirketi";
+
+/* Title in custom range date picker */
+"Custom Date Range" = "Özel Tarih Aralığı";
 
 /* Title for the order custom fields list */
 "Custom Fields" = "Özel Alanlar";
@@ -1943,7 +1953,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the status row on Product Variation main screen to enable/disable a variation */
 "Enabled" = "Etkin";
 
-/* Label for one of the filters in order custom date range */
+/* End Date label in custom range date picker
+   Label for one of the filters in order custom date range */
 "End Date" = "Bitiş tarihi";
 
 /* The title used when asking the user for feedback for the app. */
@@ -2295,6 +2306,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "Sabit Ürün İndirimi";
+
+/* Label asking users to follow the built in reader instruction. Presented to users when a payment is going to be collected using the iPhone's built in reader */
+"Follow reader instructions to pay" = "Ödeme için okuyucu talimatlarını takip edin";
 
 /* User role badge */
 "Follower" = "Takipçi";
@@ -2811,6 +2825,18 @@ which should be translated separately and considered part of this sentence. */
 /* Last 7 days section header */
 "Last 7 days" = "Son 7 gün";
 
+/* Title of the Analytics Hub Last Month selection range */
+"Last Month" = "Geçen ay";
+
+/* Title of the Analytics Hub Last Quarter selection range */
+"Last Quarter" = "Geçen çeyrek";
+
+/* Title of the Analytics Hub Last Week selection range */
+"Last Week" = "Geçen hafta";
+
+/* Title of the Analytics Hub Last Year selection range */
+"Last Year" = "Geçen yıl";
+
 /* Text field name in Edit Address Form */
 "Last name" = "Soyad";
 
@@ -3185,7 +3211,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label for net sales (net revenue) in the Analytics Hub */
 "Net Sales" = "Net satış";
 
-/* Top performers — label for the total sales of a product */
+/* Label for the total sales of a product in the Analytics Hub
+   Top performers — label for the total sales of a product */
 "Net sales: %@" = "Net satışlar: %@";
 
 /* Title for table view section of network active plugins */
@@ -3705,8 +3732,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "Lütfen okuyucuyu şarj edin";
 
+/* Error message shown when the built-in reader cannot be used because the device does not meet minimum requirements. */
+"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.0 or above. Contact support if this error shows on a supported device." = "Lütfen telefonunuzun bu gereksinimleri karşılayıp karşılamadığını kontrol edin: iOS 16.0 veya üst sürümü yüklü iPhone XS veya daha yeni modeli. Desteklenen bir cihazda bu hata gösterilirse desteğe başvurun.";
+
+/* Error message shown when the built-in reader cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
+"Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service" = "Lütfen Apple Kimliğinizin geçerliliğini kontrol edin ve tekrar deneyin. Apple'ın Hizmet Koşullarını kabul etmek için geçerli bir Apple Kimliği gereklidir.";
+
 /* Error message on the Jetpack setup required screen when Jetpack connection is missing. */
 "Please connect your store to Jetpack to access it on this app." = "Bu uygulamada mağazanıza erişmek için lütfen mağazanızı Jetpack'e bağlayın.";
+
+/* Error message shown when the built-in reader cannot be used because there is an issue with the merchant account or device */
+"Please contact support – there was an issue connecting to the built-in reader" = "Lütfen destek ile iletişime geçin – dahili okuyucuya bağlantıda bir sorun oldu.";
 
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app." = "Uygulamayı kullanmak için mağaza yöneticisi veya yönetici olarak siteye davet için lütfen site sahibiyle iletişime geçin.";
@@ -3792,6 +3828,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "Lütfen bir paket seçin";
 
+/* Error message shown when the built-in reader cannot be used because the device is not signed in to iCloud. */
+"Please sign in to iCloud on this device, so you can use the built-in card reader" = "Dahili kart okuyucuyu kullanabilmeniz için lütfen bu cihazda iCloud ile oturum açın.";
+
 /* Message of the alert when the store cannot be created due to the domain in the store creation flow. */
 "Please try a different domain." = "Lütfen farklı bir alan adı deneyin.";
 
@@ -3809,6 +3848,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Body text for the default store picker error screen */
 "Please try again or reach out to us and we'll be happy to assist you!" = "Lütfen tekrar deneyin veya bize ulaşın, size yardımcı olmaktan memnuniyet duyarız!";
+
+/* Error message shown when the built-in reader cannot be used because the merchant cancelled or did not complete the Terms of Service acceptance flow */
+"Please try again, and accept Apple's Terms of Service, so you can use the built-in card reader" = "Lütfen tekrar deneyin ve dahili kart okuyucuyu kullanabilmeniz için Apple'ın Hizmet Koşullarını kabul edin.";
 
 /* Message of the alert when the WPCOM plan cannot be purchased in a webview in the store creation flow. */
 "Please try again, or exit the screen and check back on your store if you previously left the checkout screen while payment is in progress." = "Lütfen tekrar deneyin veya ekrandan çıkın ve önceden ödeme işlemi devam ederken ödeme ekranından ayrıldıysanız mağazanızı tekrar kontrol edin.";
@@ -3894,6 +3936,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of in-progress modal when preparing for printing customs invoice */
 "Preparing document" = "Belge hazırlanıyor";
+
+/* Title label for modal dialog that appears when connecting to a built in card reader */
+"Preparing iPhone card reader..." = "iPhone kart okuyucu hazırlanıyor...";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Present card to pay" = "Ödemek için kartı gösterin";
@@ -4120,6 +4165,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Restriction type Quarantine for contents declared in the customs form for Shipping Label flow */
 "Quarantine" = "Karantina";
+
+/* Title of the Analytics Hub Quarter to Date selection range */
+"Quarter to Date" = "Çeyrekten tarihe";
 
 /* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
 "Quickly get up and selling with a beautiful online store." = "Güzel bir çevrimiçi mağaza ile hızla işinizi kurup satış yapın.";
@@ -4893,6 +4941,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error title when Jetpack install fails */
 "Sorry, something went wrong during install" = "Maalesef yükleme sırasında bir şeyler ters gitti";
 
+/* Error shown when there is a problem retrieving the dates for the selected date range. */
+"Sorry, something went wrong. We can't load analytics for the selected date range." = "Maalesef bir şeyler ters gitti. Seçilen tarih aralığı için analizleri yükleyemiyoruz.";
+
 /* Error message displayed when the entered email is not available. */
 "Sorry, that email address is already being used!" = "Üzgünüz, bu e-posta adresi zaten kullanılıyor!";
 
@@ -4949,7 +5000,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "Standart oran";
 
-/* Label for one of the filters in order custom date range */
+/* Label for one of the filters in order custom date range
+   Start Date label in custom range date picker */
 "Start Date" = "Başlangıç tarihi";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to create coupons. */
@@ -5299,11 +5351,20 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "URL'de geçerli ana bilgisayar yok.";
 
+/* Error message shown when the built-in reader cannot be used because the amount for payment is not supported by the built in reader. */
+"The amount is not supported by the built in reader – please try a hardware reader or another payment method." = "Tutar dahili okuyucu tarafından desteklenmiyor – lütfen bir donanım okuyucu veya başka bir ödeme yöntemi deneyin.";
+
+/* Error message shown when the built-in reader cannot be used because the device's NFC chipset has been disabled by a device management policy. */
+"The app could not enable the card reader, because the NFC chip is disabled. Please contact support for more details." = "NFC çipi devre dışı olduğu için uygulama kart okuyucuyu etkinleştiremedi. Daha fazla ayrıntı için lütfen destek hizmetleriyle iletişime geçin.";
+
 /* Error title when trying to remove an attribute remotely. */
 "The attribute couldn't be removed." = "Nitelik kaldırılamadı.";
 
 /* Error title when trying to update or create an attribute remotely. */
 "The attribute couldn't be saved." = "Özellik kaydedilemedi.";
+
+/* Error message shown when the built-in reader cannot be used because there is a call in progress */
+"The built-in reader cannot be used during a phone call. Please try again after you finish your call" = "Dahili okuyucu telefon görüşmesi sırasında kullanılamaz. Görüşmenizi bitirdikten sonra lütfen tekrar deneyin.";
 
 /* Message when the card presented does not support the order currency. */
 "The card does not support this currency. Try another means of payment" = "Kart bu para birimini desteklemiyor. Başka bir ödeme yöntemi deneyin";
@@ -5350,6 +5411,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the card reader - please try another means of refund" = "Kart, kart okuyucusu tarafından reddedildi; lütfen başka bir geri ödeme yöntemi deneyin";
 
+/* Error message when the card reader itself declines the card. */
+"The card was declined by the iPhone card reader - please try another means of payment" = "Kart, iPhone kart okuyucu tarafından reddedildi - lütfen başka bir ödeme yöntemi deneyin.";
+
 /* Error message when the card processor declines the payment. */
 "The card was declined by the payment processor - please try another means of payment" = "Kart, ödeme işlemcisi tarafından reddedildi - lütfen başka bir ödeme yöntemi deneyin";
 
@@ -5362,8 +5426,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message in the Add Edit Coupon screen when the coupon code is empty. */
 "The coupon code couldn't be empty" = "Kupon kodu boş olamaz";
 
+/* Error message shown when the built-in reader cannot be used because the currency for payment is not supported by the built in reader. */
+"The currency is not supported by the built in reader – please try a hardware reader or another payment method." = "Para birimi dahili okuyucu tarafından desteklenmiyor – lütfen bir donanım okuyucu veya başka bir ödeme yöntemi deneyin.";
+
 /* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
 "The customer will receive an email once order is completed" = "Sipariş tamamlandığında müşteri bir e-posta alacak.";
+
+/* Label within the modal dialog that appears when connecting to a built in card reader */
+"The first time you connect, you may be prompted to accept Apple's Terms of Service." = "İlk kez bağlandığınızda, Apple'ın Hizmet Koşullarını kabul etmeniz istenebilir.";
 
 /* The message of the alert when another custom package has the same name */
 "The new custom package name is not unique." = "Yeni özel paket adı benzersiz değil.";
@@ -5529,6 +5599,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Text when there is an unknown error while trying to collect payments */
 "There was an error while trying to collect the payment." = "Ödeme tahsil edilmeye çalışılırken bir hata oluştu.";
+
+/* Error message shown when the built-in reader cannot be used because there was some issue with the connection. Retryable. */
+"There was an issue preparing the built in reader for payment – please try again." = "Ödeme için dahili okuyucunun hazırlanmasında bir sorun var – lütfen tekrar deneyin.";
 
 /* Refund policy under the purchase button on the store creation plan screen. */
 "There’s no risk, you can cancel for a full refund within 30 days." = "Risk yoktur, 30 gün içinde iptal edip tam geri ödeme alabilirsiniz.";
@@ -5888,6 +5961,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Load Product Attributes Action Failed */
 "Unable to load product attributes" = "Ürün özellikleri yüklenemiyor";
+
+/* Text displayed when there is an error loading items sold stats data. */
+"Unable to load product items sold analytics" = "Satılan ürün analizleri yüklenemiyor";
 
 /* Text displayed when there is an error loading revenue stats data. */
 "Unable to load revenue analytics" = "Gelir analizleri yüklenemiyor";
@@ -6413,7 +6489,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "What is WooCommerce Shipping?" = "WooCommerce Shipping nedir?";
 
 /* Navigates to page with details about What is WordPress.com. */
-"What is WordPress.com?" = "_WordPress.com nedir?_";
+"What is WordPress.com?" = "WordPress.com nedir?";
 
 /* Navigates to screen containing the latest WooCommerce Features */
 "What's New in WooCommerce" = "WooCommerce'deki Yenilikler";
@@ -6492,7 +6568,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "Evet, değiştir";
 
-/* Yesterday Section Header */
+/* Title of the Analytics Hub Yesterday selection range
+   Yesterday Section Header */
 "Yesterday" = "Dün";
 
 /* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
@@ -6553,6 +6630,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "Ödeme almak için kart okuyucu yazılımınızın güncellenmesi gerekiyor.  İptal ederseniz okuyucu bağlantınız engellenir.";
 
+/* Error message shown when the built-in reader cannot be used because the device does not have a passcode set. */
+"Your device needs a lock screen passcode set to use the built-in card reader" = "Cihazınızın dahili kart okuyucuyu kullanması için kilit ekran parolasının ayarlanması gerekir.";
+
 /* Title of the email field on the account creation form. */
 "Your email address" = "E-posta adresiniz";
 
@@ -6562,11 +6642,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
 "Your iPhone can be used as a card reader, or you can connect to an external reader via bluetooth." = "iPhone'unuz kart okuyucu olarak kullanılabilir veya Bluetooth üzerinden harici bir okuyucuya bağlanabilirsiniz.";
 
+/* Label that displays when a configuration update is happening */
+"Your iPhone needs to be configured to collect payments." = "iPhone'unuzun ödemeleri alması için yapılandırılması gerekir.";
+
 /* Message displayed when a coupon was successfully created */
 "Your new coupon was created!" = "Yeni kuponunuz oluşturuldu!";
 
 /* Title for the error screen when the merchant's In-Person Payments account has pending requirements which will result in their account being restricted if not resolved by a deadline */
 "Your payments account has pending requirements" = "Ödeme hesabınızda bekleyen gereksinimler var";
+
+/* Dialog message that displays when a configuration update just finished installing */
+"Your phone will be ready to collect payments in a moment..." = "Telefonunuz ödemeleri almak için birazdan hazır olacaktır...";
 
 /* Label that displays when an optional software update is happening */
 "Your reader will automatically restart and reconnect after the update is complete." = "Güncelleme tamamlandıktan sonra okuyucunuz otomatik olarak yeniden başlayacak ve yeniden bağlanacaktır";
@@ -6602,6 +6688,26 @@ This part is the link to the website, and forms part of a longer sentence which 
 "appLinkWidget.displayName" = "Simge";
 
 /* Label for a cancel button */
+"cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "İptal et";
+
+/* Label within the modal dialog that appears when checking the built in card reader */
+"cardPresent.builtIn.modalCheckingDeviceSupport.instruction" = "Cihazınızın Tap to Pay on iPhone özelliği için hazır olup olmadığını kontrol ederken lütfen bekleyin.";
+
+/* A label prompting users to learn more about In-Person Payments.
+This is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
+"cardPresent.builtIn.modalCheckingDeviceSupport.learnMore.link" = "Daha fazla bilgi edinin";
+
+/* A label prompting users to learn more about In-Person Payments.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"cardPresent.builtIn.modalCheckingDeviceSupport.learnMore.text" = "%1$@‑Yüz yüze ödemeler hakkında";
+
+/* Title label for modal dialog that appears when searching for a card reader */
+"cardPresent.builtIn.modalCheckingDeviceSupport.title" = "Cihazı kontrol ediyor";
+
+/* Label for a cancel button */
 "cardPresent.modalScanningForReader.cancelButton" = "İptal et";
 
 /* Label within the modal dialog that appears when searching for a card reader */
@@ -6627,6 +6733,9 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "örnek.com";
+
+/* Indicates the status of a built in card reader. Presented to users when payment collection starts */
+"iPhone reader is ready" = "iPhone okuyucu hazır";
 
 /* A message that tells the user why the app needs access to Bluetooth. */
 "infoplist.NSBluetoothAlwaysUsageDescription" = "Bu uygulama, desteklenen kart okuyuculara bağlanmak için Bluetooth kullanır.";
@@ -6715,9 +6824,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "Bugünün istatistikleri alınamıyor";
-
-/* Today */
-"today" = "bugün";
 
 /* Value for the WooCommerce plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "bilinmeyor";

@@ -17,17 +17,21 @@ struct AnalyticsProductCard: View {
     /// Delta Tag text color.
     let deltaTextColor: UIColor
 
+    /// Indicates if the values should be hidden (for loading state)
+    ///
+    let isStatsRedacted: Bool
+
+    /// Indicates if there was an error loading stats part of the card.
+    ///
+    let showStatsError: Bool
+
     /// Items Solds data to render.
     ///
     let itemsSoldData: [TopPerformersRow.Data]
 
     /// Indicates if the values should be hidden (for loading state)
     ///
-    let isRedacted: Bool
-
-    /// Indicates if there was an error loading stats part of the card.
-    ///
-    let showStatsError: Bool
+    let isItemsSoldRedacted: Bool
 
     /// Indicates if there was an error loading items sold part of the card.
     ///
@@ -49,12 +53,12 @@ struct AnalyticsProductCard: View {
                 Text(itemsSold)
                     .titleStyle()
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .redacted(reason: isRedacted ? .placeholder : [])
-                    .shimmering(active: isRedacted)
+                    .redacted(reason: isStatsRedacted ? .placeholder : [])
+                    .shimmering(active: isStatsRedacted)
 
                 DeltaTag(value: delta, backgroundColor: deltaBackgroundColor, textColor: deltaTextColor)
-                    .redacted(reason: isRedacted ? .placeholder : [])
-                    .shimmering(active: isRedacted)
+                    .redacted(reason: isStatsRedacted ? .placeholder : [])
+                    .shimmering(active: isStatsRedacted)
             }
 
             if showStatsError {
@@ -65,10 +69,11 @@ struct AnalyticsProductCard: View {
                     .padding(.top, Layout.columnSpacing)
             }
 
-            TopPerformersView(itemTitle: Localization.title.localizedCapitalized, valueTitle: Localization.itemsSold, rows: itemsSoldData)
+            TopPerformersView(itemTitle: Localization.title.localizedCapitalized,
+                              valueTitle: Localization.itemsSold,
+                              rows: itemsSoldData,
+                              isRedacted: isItemsSoldRedacted)
                 .padding(.top, Layout.columnSpacing)
-                .redacted(reason: isRedacted ? .placeholder : [])
-                .shimmering(active: isRedacted)
 
             if showItemsSoldError {
                 Text(Localization.noItemsSold)
@@ -109,14 +114,15 @@ struct AnalyticsProductCardPreviews: PreviewProvider {
                              delta: "+23%",
                              deltaBackgroundColor: .withColorStudio(.green, shade: .shade50),
                              deltaTextColor: .textInverted,
+                             isStatsRedacted: false,
+                             showStatsError: false,
                              itemsSoldData: [
                                 .init(imageURL: imageURL, name: "Tabletop Photos", details: "Net Sales: $1,232", value: "32"),
                                 .init(imageURL: imageURL, name: "Kentya Palm", details: "Net Sales: $800", value: "10"),
                                 .init(imageURL: imageURL, name: "Love Ficus", details: "Net Sales: $599", value: "5"),
                                 .init(imageURL: imageURL, name: "Bird Of Paradise", details: "Net Sales: $23.50", value: "2"),
                              ],
-                             isRedacted: false,
-                             showStatsError: false,
+                             isItemsSoldRedacted: false,
                              showItemsSoldError: false)
             .previewLayout(.sizeThatFits)
 
@@ -124,9 +130,10 @@ struct AnalyticsProductCardPreviews: PreviewProvider {
                              delta: "0%",
                              deltaBackgroundColor: .withColorStudio(.gray, shade: .shade0),
                              deltaTextColor: .text,
-                             itemsSoldData: [],
-                             isRedacted: false,
+                             isStatsRedacted: false,
                              showStatsError: true,
+                             itemsSoldData: [],
+                             isItemsSoldRedacted: false,
                              showItemsSoldError: true)
             .previewLayout(.sizeThatFits)
             .previewDisplayName("No data")

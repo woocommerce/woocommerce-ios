@@ -87,6 +87,10 @@ public enum FeatureFlag: Int {
     ///
     case storeCreationM2WithInAppPurchasesEnabled
 
+    /// Store creation milestone 3 - profiler questions
+    ///
+    case storeCreationM3Profiler
+
     /// Just In Time Messages on Dashboard
     ///
     case justInTimeMessagesOnDashboard
@@ -129,8 +133,4 @@ public enum FeatureFlag: Int {
     ///
     /// - Note: The app will ignore this if `performanceMonitoring` is `false`.
     case performanceMonitoringViewController
-
-    /// Temporary feature flag for the native Jetpack setup flow.
-    ///
-    case analyticsHub
 }

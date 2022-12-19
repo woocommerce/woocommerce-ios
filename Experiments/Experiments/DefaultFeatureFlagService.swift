@@ -39,6 +39,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .storeCreationM2WithInAppPurchasesEnabled:
             return false
+        case .storeCreationM3Profiler:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .justInTimeMessagesOnDashboard:
             return true
         case .systemStatusReportInSupportRequest:
@@ -51,8 +53,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
                 .performanceMonitoringUserInteraction:
             // Disabled by default to avoid costs spikes, unless in internal testing builds.
             return buildConfig == .alpha
-        case .analyticsHub:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .tapToPayOnIPhone:
             return buildConfig == .localDeveloper
         default:

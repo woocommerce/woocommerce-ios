@@ -78,7 +78,10 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     // MARK: Child View Controllers
 
     private lazy var storeStatsPeriodViewController: StoreStatsV4PeriodViewController = {
-        StoreStatsV4PeriodViewController(siteID: siteID, timeRange: timeRange, usageTracksEventEmitter: usageTracksEventEmitter)
+        StoreStatsV4PeriodViewController(siteID: siteID,
+                                         timeRange: timeRange,
+                                         currentDate: currentDate,
+                                         usageTracksEventEmitter: usageTracksEventEmitter)
     }()
 
     private lazy var inAppFeedbackCardViewController = InAppFeedbackCardViewController()

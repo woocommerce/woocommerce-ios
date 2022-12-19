@@ -7,32 +7,32 @@ final class RequestAuthenticatorTests: XCTestCase {
     func test_authenticateRequest_returns_unauthenticated_request_for_non_REST_request_without_WPCOM_credentials() {
         // Given
         let authenticator = RequestAuthenticator(credentials: nil)
-        let request = JetpackRequest(wooApiVersion: .mark1, method: .get, siteID: 123, path: "test")
+        let request = JetpackRequest(wooApiVersion: .mark1, method: .get, siteID: 123, path: "test", availableAsRESTRequest: false)
 
         // When
-        var result: URLRequestConvertible?
-        authenticator.authenticateRequest(request) { updatedRequest in
-            result = updatedRequest
+        var updatedRequest: URLRequestConvertible?
+        authenticator.authenticateRequest(request) { result in
+            updatedRequest = try? result.get()
         }
 
         // Then
-        XCTAssertTrue(result is UnauthenticatedRequest)
+        XCTAssertTrue(updatedRequest is UnauthenticatedRequest)
     }
 
     func test_authenticatedRequest_returns_authenticated_request_for_non_REST_request_with_WPCOM_credentials() {
         // Given
         let credentials = Credentials(authToken: "secret")
         let authenticator = RequestAuthenticator(credentials: credentials)
-        let request = JetpackRequest(wooApiVersion: .mark1, method: .get, siteID: 123, path: "test")
+        let request = JetpackRequest(wooApiVersion: .mark1, method: .get, siteID: 123, path: "test", availableAsRESTRequest: false)
 
         // When
-        var result: URLRequestConvertible?
-        authenticator.authenticateRequest(request) { updatedRequest in
-            result = updatedRequest
+        var updatedRequest: URLRequestConvertible?
+        authenticator.authenticateRequest(request) { result in
+            updatedRequest = try? result.get()
         }
 
         // Then
-        XCTAssertTrue(result is AuthenticatedRequest)
+        XCTAssertTrue(updatedRequest is AuthenticatedRequest)
     }
 
     func test_authenticatedRequest_returns_REST_request_with_authorization_header_if_application_password_is_available() throws {
@@ -41,21 +41,20 @@ final class RequestAuthenticatorTests: XCTestCase {
         let applicationPassword = ApplicationPassword(wpOrgUsername: "admin", password: .init("supersecret"))
         let authenticator = RequestAuthenticator(credentials: credentials)
         let useCase = MockApplicationPasswordUseCase(mockApplicationPassword: applicationPassword)
-        let fallbackRequest = JetpackRequest(wooApiVersion: .mark1, method: .get, siteID: 123, path: "test")
-        let restRequest = RESTRequest(siteURL: "https://test.com", method: .get, path: "/test", fallbackRequest: fallbackRequest)
+        let jetpackRequest = JetpackRequest(wooApiVersion: .mark1, method: .get, siteID: 123, path: "test", availableAsRESTRequest: true)
 
         // When
-        var result: URLRequestConvertible?
+        var updatedRequest: URLRequestConvertible?
         authenticator.updateApplicationPasswordHandler(with: useCase)
         waitForExpectation { expectation in
-            authenticator.authenticateRequest(restRequest) { updatedRequest in
-                result = updatedRequest
+            authenticator.authenticateRequest(jetpackRequest) { result in
+                updatedRequest = try? result.get()
                 expectation.fulfill()
             }
         }
 
         // Then
-        let request = try XCTUnwrap(result as? URLRequest)
+        let request = try XCTUnwrap(updatedRequest as? URLRequest)
         let expectedURL = "https://test.com/test"
         assertEqual(expectedURL, request.url?.absoluteString)
         let authorizationValue = try XCTUnwrap(request.allHTTPHeaderFields?["Authorization"])
@@ -68,49 +67,46 @@ final class RequestAuthenticatorTests: XCTestCase {
         let applicationPassword = ApplicationPassword(wpOrgUsername: "admin", password: .init("supersecret"))
         let authenticator = RequestAuthenticator(credentials: credentials)
         let useCase = MockApplicationPasswordUseCase(mockGeneratedPassword: applicationPassword)
-        let fallbackRequest = JetpackRequest(wooApiVersion: .mark1, method: .get, siteID: 123, path: "test")
-        let restRequest = RESTRequest(siteURL: "https://test.com", method: .get, path: "/test", fallbackRequest: fallbackRequest)
+        let jetpackRequest = JetpackRequest(wooApiVersion: .mark1, method: .get, siteID: 123, path: "test", availableAsRESTRequest: true)
 
         // When
-        var result: URLRequestConvertible?
+        var updatedRequest: URLRequestConvertible?
         authenticator.updateApplicationPasswordHandler(with: useCase)
         waitForExpectation { expectation in
-            authenticator.authenticateRequest(restRequest) { updatedRequest in
-                result = updatedRequest
+            authenticator.authenticateRequest(jetpackRequest) { result in
+                updatedRequest = try? result.get()
                 expectation.fulfill()
             }
         }
 
         // Then
-        let request = try XCTUnwrap(result as? URLRequest)
+        let request = try XCTUnwrap(updatedRequest as? URLRequest)
         let expectedURL = "https://test.com/test"
         assertEqual(expectedURL, request.url?.absoluteString)
         let authorizationValue = try XCTUnwrap(request.allHTTPHeaderFields?["Authorization"])
         XCTAssertTrue(authorizationValue.hasPrefix("Basic"))
     }
 
-    func test_authenticatedRequest_returns_fallback_request_if_generating_application_password_fails_for_REST_request() {
+    func test_authenticatedRequest_returns_error_if_generating_application_password_fails_for_REST_request() throws {
         // Given
         let credentials = Credentials(authToken: "secret")
         let authenticator = RequestAuthenticator(credentials: credentials)
         let useCase = MockApplicationPasswordUseCase(mockGenerationError: NetworkError.timeout)
-        let fallbackRequest = JetpackRequest(wooApiVersion: .mark1, method: .get, siteID: 123, path: "test")
-        let restRequest = RESTRequest(siteURL: "https://test.com", method: .get, path: "/test", fallbackRequest: fallbackRequest)
+        let jetpackRequest = JetpackRequest(wooApiVersion: .mark1, method: .get, siteID: 123, path: "test", availableAsRESTRequest: true)
 
         // When
-        var result: URLRequestConvertible?
+        var error: Error?
         authenticator.updateApplicationPasswordHandler(with: useCase)
         waitForExpectation { expectation in
-            authenticator.authenticateRequest(restRequest) { updatedRequest in
-                result = updatedRequest
+            authenticator.authenticateRequest(jetpackRequest) { result in
+                error = result.failure
                 expectation.fulfill()
             }
         }
 
         // Then
-        XCTAssertTrue(result is AuthenticatedRequest)
-        let expectedURL = "https://public-api.wordpress.com/rest/v1.1/jetpack-blogs/123/rest-api/?json=true&path=/wc/v1/test%26_method%3Dget"
-        assertEqual(expectedURL, result?.urlRequest?.url?.absoluteString)
+        let networkError = try XCTUnwrap(error as? NetworkError)
+        XCTAssertEqual(networkError, NetworkError.timeout)
     }
 }
 

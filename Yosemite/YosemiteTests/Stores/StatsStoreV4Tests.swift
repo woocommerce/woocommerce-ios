@@ -516,6 +516,7 @@ final class StatsStoreV4Tests: XCTestCase {
         // When
         let result: Result<Networking.SiteSummaryStats, Error> = waitFor { promise in
             let action = StatsActionV4.retrieveSiteSummaryStats(siteID: self.sampleSiteID,
+                                                                siteTimezone: .current,
                                                                 period: .day,
                                                                 quantity: 1,
                                                                 latestDateToInclude: DateFormatter.dateFromString(with: "2022-12-09T17:06:55"),
@@ -540,6 +541,7 @@ final class StatsStoreV4Tests: XCTestCase {
         // When
         let _: Void = waitFor { promise in
             let action = StatsActionV4.retrieveSiteSummaryStats(siteID: self.sampleSiteID,
+                                                                siteTimezone: .init(identifier: "GMT") ?? .current,
                                                                 period: .month,
                                                                 quantity: 3,
                                                                 latestDateToInclude: DateFormatter.dateFromString(with: "2022-12-31T17:06:55"),
@@ -567,6 +569,7 @@ final class StatsStoreV4Tests: XCTestCase {
         // When
         let result: Result<Networking.SiteSummaryStats, Error> = waitFor { promise in
             let action = StatsActionV4.retrieveSiteSummaryStats(siteID: self.sampleSiteID,
+                                                                siteTimezone: .current,
                                                                 period: .month,
                                                                 quantity: 3,
                                                                 latestDateToInclude: DateFormatter.dateFromString(with: "2022-12-31T17:06:55"),
@@ -592,6 +595,7 @@ final class StatsStoreV4Tests: XCTestCase {
         // When
         let result: Result<Networking.SiteSummaryStats, Error> = waitFor { promise in
             let action = StatsActionV4.retrieveSiteSummaryStats(siteID: self.sampleSiteID,
+                                                                siteTimezone: .current,
                                                                 period: .day,
                                                                 quantity: 1,
                                                                 latestDateToInclude: DateFormatter.dateFromString(with: "2022-12-09T17:06:55"),
@@ -614,6 +618,7 @@ final class StatsStoreV4Tests: XCTestCase {
         // When
         let result: Result<Networking.SiteSummaryStats, Error> = waitFor { promise in
             let action = StatsActionV4.retrieveSiteSummaryStats(siteID: self.sampleSiteID,
+                                                                siteTimezone: .current,
                                                                 period: .day,
                                                                 quantity: 1,
                                                                 latestDateToInclude: DateFormatter.dateFromString(with: "2022-12-09T17:06:55"),
@@ -638,6 +643,7 @@ final class StatsStoreV4Tests: XCTestCase {
         // When
         let result: Result<Networking.SiteSummaryStats, Error> = waitFor { promise in
             let action = StatsActionV4.retrieveSiteSummaryStats(siteID: self.sampleSiteID,
+                                                                siteTimezone: .current,
                                                                 period: .day,
                                                                 quantity: 1,
                                                                 latestDateToInclude: DateFormatter.dateFromString(with: "2022-12-09T17:06:55"),

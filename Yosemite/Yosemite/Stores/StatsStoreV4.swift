@@ -91,12 +91,14 @@ public final class StatsStoreV4: Store {
                                    saveInStorage: saveInStorage,
                                    onCompletion: onCompletion)
         case .retrieveSiteSummaryStats(let siteID,
+                                       let siteTimezone,
                                        let period,
                                        let quantity,
                                        let latestDateToInclude,
                                        let saveInStorage,
                                        let onCompletion):
             retrieveSiteSummaryStats(siteID: siteID,
+                                     siteTimezone: siteTimezone,
                                      period: period,
                                      quantity: quantity,
                                      latestDateToInclude: latestDateToInclude,
@@ -195,6 +197,7 @@ private extension StatsStoreV4 {
     /// Conditionally saves them to storage, if a single period is retrieved.
     ///
     func retrieveSiteSummaryStats(siteID: Int64,
+                                  siteTimezone: TimeZone,
                                   period: StatGranularity,
                                   quantity: Int,
                                   latestDateToInclude: Date,
@@ -202,6 +205,7 @@ private extension StatsStoreV4 {
                                   onCompletion: @escaping (Result<SiteSummaryStats, Error>) -> Void) {
         if quantity == 1 {
             siteStatsRemote.loadSiteSummaryStats(for: siteID,
+                                                 siteTimezone: siteTimezone,
                                                  period: period,
                                                  includingDate: latestDateToInclude) { [weak self] result in
                 switch result {
@@ -220,6 +224,7 @@ private extension StatsStoreV4 {
             // We should only do this for periods of a month or greater; otherwise the visitor total is inaccurate.
             // See: pe5uwI-5c-p2
             siteStatsRemote.loadSiteVisitorStats(for: siteID,
+                                                 siteTimezone: siteTimezone,
                                                  unit: period,
                                                  latestDateToInclude: latestDateToInclude,
                                                  quantity: quantity) { result in

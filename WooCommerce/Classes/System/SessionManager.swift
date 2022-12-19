@@ -159,6 +159,19 @@ final class SessionManager: SessionManagerProtocol {
 // MARK: - Private Methods
 //
 private extension SessionManager {
+    enum AuthenticationTypeIdentifier: String {
+        case wpcom = "AuthenticationType.wpcom"
+        case wporg = "AuthenticationType.wporg"
+
+        init(type: Credentials.AuthenticationType) {
+            switch type {
+            case .wpcom:
+                self = AuthenticationTypeIdentifier.wpcom
+            case .wporg:
+                self = AuthenticationTypeIdentifier.wporg
+            }
+        }
+    }
 
     /// Returns the Default Credentials, if any.
     ///

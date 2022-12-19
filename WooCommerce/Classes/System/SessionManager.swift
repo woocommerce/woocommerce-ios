@@ -212,5 +212,6 @@ private extension SessionManager {
 
         keychain[username] = nil
         defaults[.defaultUsername] = nil
+        defaults[.defaultCredentialsType] = nil
     }
 }

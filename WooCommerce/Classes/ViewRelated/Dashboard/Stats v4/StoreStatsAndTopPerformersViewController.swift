@@ -477,7 +477,7 @@ private extension StoreStatsAndTopPerformersViewController {
         settings.style.buttonBarItemTitleColor = .textSubtle
         settings.style.buttonBarItemsShouldFillAvailableWidth = false
         settings.style.buttonBarItemLeftRightMargin = TabStrip.buttonLeftRightMargin
-        settings.style.buttonBarHeight = TabStrip.tabHeight
+        settings.style.buttonBarHeight = UIFontMetrics.default.scaledValue(for: TabStrip.tabHeight)
 
         changeCurrentIndexProgressive = {
             (oldCell: ButtonBarViewCell?,

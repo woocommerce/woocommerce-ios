@@ -2,6 +2,7 @@ import Combine
 import UIKit
 import WebKit
 import struct WordPressAuthenticator.WordPressOrgCredentials
+import struct Yosemite.WPCOMCredentials
 
 /// A web view which is authenticated for WordPress.com, when possible.
 ///
@@ -132,7 +133,7 @@ private extension AuthenticatedWebViewController {
 
         /// Authenticate for WP.com automatically if user is logged in.
         ///
-        if let credentials = ServiceLocator.stores.sessionManager.defaultCredentials {
+        if let credentials = ServiceLocator.stores.sessionManager.defaultCredentials as? WPCOMCredentials {
             webView.authenticateForWPComAndRedirect(to: url, credentials: credentials)
         } else {
             let request = URLRequest(url: url)

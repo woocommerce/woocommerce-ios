@@ -119,7 +119,7 @@ class DefaultStoresManager: StoresManager {
     /// Switches the internal state to Authenticated.
     ///
     @discardableResult
-    func authenticate(credentials: WPCOMCredentials) -> StoresManager {
+    func authenticate(credentials: any Credentials) -> StoresManager {
         state = AuthenticatedState(credentials: credentials)
         sessionManager.defaultCredentials = credentials
 
@@ -293,11 +293,11 @@ private extension DefaultStoresManager {
     ///
     func replaceTempCredentialsIfNecessary(account: Account) {
         guard
-            let credentials = sessionManager.defaultCredentials,
+            let credentials = sessionManager.defaultCredentials as? WPCOMCredentials,
             credentials.hasPlaceholderUsername() else {
                 return
         }
-        authenticate(credentials: .init(username: account.username, authToken: credentials.authToken, siteAddress: credentials.siteAddress))
+        authenticate(credentials: WPCOMCredentials(username: account.username, authToken: credentials.authToken, siteAddress: credentials.siteAddress))
     }
 
     /// Synchronizes the WordPress.com Sites, associated with the current credentials.
@@ -506,7 +506,9 @@ private extension DefaultStoresManager {
     ///
     func updateAndReloadWidgetInformation(with siteID: Int64?) {
         // Token to fire network requests
-        keychain.currentAuthToken = sessionManager.defaultCredentials?.authToken
+        if let wpComCredentials = sessionManager.defaultCredentials as? WPCOMCredentials {
+            keychain.currentAuthToken = wpComCredentials.authToken
+        }
 
         // Non-critical store info
         UserDefaults.group?[.defaultStoreID] = siteID

@@ -30,7 +30,7 @@ public struct MockSessionManager: SessionManagerProtocol {
 
     public var defaultStoreIDPublisher: AnyPublisher<Int64?, Never>
 
-    public var defaultCredentials: WPCOMCredentials?
+    public var defaultCredentials: (any Credentials)?
 
     public var anonymousUserID: String? = nil
 

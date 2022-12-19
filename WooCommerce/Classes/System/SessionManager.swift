@@ -46,14 +46,14 @@ final class SessionManager: SessionManagerProtocol {
 
     /// Default Credentials.
     ///
-    var defaultCredentials: WPCOMCredentials? {
+    var defaultCredentials: (any Credentials)? {
         get {
             return loadCredentials()
         }
         set {
-            guard newValue != defaultCredentials else {
-                return
-            }
+//            guard newValue != defaultCredentials.self else {
+//                return
+//            }
 
             removeCredentials()
 
@@ -162,7 +162,7 @@ private extension SessionManager {
 
     /// Returns the Default Credentials, if any.
     ///
-    func loadCredentials() -> WPCOMCredentials? {
+    func loadCredentials() -> (any Credentials)? {
         guard let username = defaults[.defaultUsername] as? String,
             let authToken = keychain[username],
             let siteAddress = defaults[.defaultSiteAddress] as? String else {
@@ -174,7 +174,7 @@ private extension SessionManager {
 
     /// Persists the Credentials's authToken in the keychain, and username in User Settings.
     ///
-    func saveCredentials(_ credentials: WPCOMCredentials) {
+    func saveCredentials(_ credentials: any Credentials) {
         defaults[.defaultUsername] = credentials.username
         defaults[.defaultSiteAddress] = credentials.siteAddress
         keychain[credentials.username] = credentials.authToken

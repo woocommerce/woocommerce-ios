@@ -151,7 +151,7 @@ public class MockStoresManager: StoresManager {
     }
 
     @discardableResult
-    public func authenticate(credentials: WPCOMCredentials) -> StoresManager {
+    public func authenticate(credentials: any Credentials) -> StoresManager {
         return self
     }
 

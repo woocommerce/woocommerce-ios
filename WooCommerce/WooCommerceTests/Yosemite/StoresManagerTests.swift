@@ -108,7 +108,7 @@ final class StoresManagerTests: XCTestCase {
         manager.authenticate(credentials: SessionSettings.credentials)
 
         let session = SessionManager.testingInstance
-        XCTAssertEqual(session.defaultCredentials, SessionSettings.credentials)
+        XCTAssertEqual(session.defaultCredentials as? WPCOMCredentials, SessionSettings.credentials)
     }
 
     /// Verifies the user remains authenticated after site switching

@@ -23,6 +23,7 @@ public typealias CreateAccountResult = Networking.CreateAccountResult
 public typealias CreateAccountError = Networking.CreateAccountError
 public typealias Credentials = Networking.Credentials
 public typealias WPCOMCredentials = Networking.WPCOMCredentials
+public typealias WPOrgCredentials = Networking.WPOrgCredentials
 public typealias CreateProductVariation = Networking.CreateProductVariation
 public typealias Customer = Networking.Customer
 public typealias DotcomDevice = Networking.DotcomDevice

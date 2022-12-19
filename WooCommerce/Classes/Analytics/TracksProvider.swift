@@ -67,7 +67,7 @@ private extension TracksProvider {
         let anonymousID = ServiceLocator.stores.sessionManager.anonymousUserID
         if ServiceLocator.stores.isAuthenticated,
             let account = ServiceLocator.stores.sessionManager.defaultAccount,
-            let credentials = ServiceLocator.stores.sessionManager.defaultCredentials {
+            let credentials = ServiceLocator.stores.sessionManager.defaultCredentials as? WPCOMCredentials {
             if currentAnalyticsUsername.isEmpty {
                 // No previous username logged
                 UserDefaults.standard[.analyticsUsername] = account.username

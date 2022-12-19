@@ -20,7 +20,7 @@ public protocol StoresManager {
     /// Switches the internal state to Authenticated.
     ///
     @discardableResult
-    func authenticate(credentials: WPCOMCredentials) -> StoresManager
+    func authenticate(credentials: any Credentials) -> StoresManager
 
     /// Switches the state to a Deauthenticated one.
     ///

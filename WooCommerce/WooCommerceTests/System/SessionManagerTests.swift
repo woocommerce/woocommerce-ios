@@ -19,29 +19,36 @@ class SessionManagerTests: XCTestCase {
         manager.defaultCredentials = nil
     }
 
-
     /// Verifies that `loadDefaultCredentials` returns nil whenever there are no default credentials stored.
     ///
     func testLoadDefaultCredentialsReturnsNilWhenThereAreNoDefaultCredentials() {
         XCTAssertNil(manager.defaultCredentials)
     }
 
+    /// Verifies that `loadDefaultCredentials` effectively returns the last stored credentials
+    ///
+    func testDefaultCredentialsAreProperlyPersistedForWPCOM() {
+        manager.defaultCredentials = Settings.wpComCredentials
+
+        let retrieved = manager.defaultCredentials as? WPCOMCredentials
+        XCTAssertEqual(retrieved?.authToken, Settings.wpComCredentials.authToken)
+        XCTAssertEqual(retrieved?.username, Settings.wpComCredentials.username)
+    }
 
     /// Verifies that `loadDefaultCredentials` effectively returns the last stored credentials
     ///
-    func testDefaultCredentialsAreProperlyPersisted() {
-        manager.defaultCredentials = Settings.credentials1
+    func testDefaultCredentialsAreProperlyPersistedForWPOrg() {
+        manager.defaultCredentials = Settings.wpOrgCredentials
 
-        let retrieved = manager.defaultCredentials
-        XCTAssertEqual(retrieved?.authToken, Settings.credentials1.authToken)
-        XCTAssertEqual(retrieved?.username, Settings.credentials1.username)
+        let retrieved = manager.defaultCredentials as? WPOrgCredentials
+        XCTAssertEqual(retrieved?.secret.password, Settings.wpOrgCredentials.secret.password)
+        XCTAssertEqual(retrieved?.username, Settings.wpOrgCredentials.username)
     }
-
 
     /// Verifies that `removeDefaultCredentials` effectively nukes everything from the keychain
     ///
     func testDefaultCredentialsAreEffectivelyNuked() {
-        manager.defaultCredentials = Settings.credentials1
+        manager.defaultCredentials = Settings.wpComCredentials
         manager.defaultCredentials = nil
 
         XCTAssertNil(manager.defaultCredentials)
@@ -51,11 +58,11 @@ class SessionManagerTests: XCTestCase {
     /// Verifies that `saveDefaultCredentials` overrides previous stored credentials
     ///
     func testDefaultCredentialsCanBeUpdated() {
-        manager.defaultCredentials = Settings.credentials1
-        XCTAssertEqual(manager.defaultCredentials, Settings.credentials1)
+        manager.defaultCredentials = Settings.wpComCredentials
+        XCTAssertEqual(manager.defaultCredentials as? WPCOMCredentials, Settings.wpComCredentials)
 
-        manager.defaultCredentials = Settings.credentials2
-        XCTAssertEqual(manager.defaultCredentials, Settings.credentials2)
+        manager.defaultCredentials = Settings.wpOrgCredentials
+        XCTAssertEqual(manager.defaultCredentials as? WPOrgCredentials, Settings.wpOrgCredentials)
     }
 }
 
@@ -65,6 +72,6 @@ class SessionManagerTests: XCTestCase {
 private enum Settings {
     static let keychainServiceName = "com.automattic.woocommerce.tests"
     static let defaults = UserDefaults(suiteName: "sessionManagerTests")!
-    static let credentials1 = WPCOMCredentials(username: "lalala", authToken: "1234", siteAddress: "https://example.com")
-    static let credentials2 = WPCOMCredentials(username: "yayaya", authToken: "5678", siteAddress: "https://wordpress.com")
+    static let wpComCredentials = WPCOMCredentials(username: "lalala", authToken: "1234", siteAddress: "https://example.com")
+    static let wpOrgCredentials = WPOrgCredentials(username: "yayaya", password: "5678", siteAddress: "https://wordpress.com")
 }

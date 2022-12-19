@@ -2,6 +2,7 @@ import SwiftUI
 import WebKit
 import Alamofire
 import class Networking.UserAgent
+import struct Yosemite.WPCOMCredentials
 
 // Bridge UIKit `WKWebView` component to SwiftUI for URLs that need authentication on WPCom
 struct AuthenticatedWebView: UIViewRepresentable {
@@ -50,10 +51,12 @@ struct AuthenticatedWebView: UIViewRepresentable {
     }
 
     private func authenticatedPostData() throws -> URLRequest {
-        guard let username = credentials?.username,
-              let token = credentials?.authToken else {
+        guard let wpComCredentials = credentials as? WPCOMCredentials else {
             return URLRequest(url: url)
         }
+
+        let username = wpComCredentials.username
+        let token = wpComCredentials.authToken
 
         var request = URLRequest(url: WooConstants.URLs.loginWPCom.asURL())
         request.httpMethod = "POST"

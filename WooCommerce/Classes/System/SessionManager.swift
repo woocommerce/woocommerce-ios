@@ -205,7 +205,7 @@ private extension SessionManager {
         defaults[.defaultUsername] = credentials.username
         defaults[.defaultSiteAddress] = credentials.siteAddress
         defaults[.defaultCredentialsType] = AuthenticationTypeIdentifier(type: credentials.authenticationType).rawValue
-        keychain[credentials.username] = credentials.authToken
+        keychain[credentials.username] = credentials.authToken ?? credentials.password
     }
 
     /// Nukes both, the AuthToken and Default Username.

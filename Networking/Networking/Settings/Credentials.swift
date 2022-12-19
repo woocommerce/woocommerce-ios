@@ -45,6 +45,14 @@ public struct Credentials: Equatable {
         self.authenticationType = .wpcom(authToken: authToken)
     }
 
+    /// For WPOrg credentials
+    ///
+    public init(username: String, password: String, siteAddress: String) {
+        self.username = username
+        self.siteAddress = siteAddress
+        self.authenticationType = .wporg(password: password)
+    }
+
     /// Convenience initializer. Assigns a UUID as a placeholder for the username.
     ///
     public init(authToken: String) {

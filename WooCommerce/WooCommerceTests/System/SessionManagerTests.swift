@@ -1,7 +1,7 @@
 import XCTest
 @testable import WooCommerce
 import Yosemite
-
+import KeychainAccess
 
 /// SessionManager Unit Tests
 ///
@@ -10,7 +10,6 @@ class SessionManagerTests: XCTestCase {
     /// CredentialsStorage Unit-Testing Instance
     ///
     private var manager = SessionManager(defaults: Settings.defaults, keychainServiceName: Settings.keychainServiceName)
-
 
     // MARK: - Overridden Methods
 
@@ -62,6 +61,27 @@ class SessionManagerTests: XCTestCase {
 
         manager.defaultCredentials = Settings.credentials2
         XCTAssertEqual(manager.defaultCredentials, Settings.credentials2)
+    }
+
+    /// Verifies that WPCOM credentials are returned for already installed and logged in versions which don't have type stored in user defaults
+    ///
+    func test_already_installed_version_without_authentication_type_saved_returns_WPCOM_credentials() {
+        let uuid = UUID().uuidString
+
+        // Prepare user defaults
+        let defaults = UserDefaults(suiteName: uuid)!
+        defaults[UserDefaults.Key.defaultUsername] = "lalala"
+        defaults[UserDefaults.Key.defaultSiteAddress] = "https://example.com"
+
+        // Prepare keychain
+        let keychainServiceName = uuid
+        Keychain(service: keychainServiceName)["lalala"] = "1234"
+
+        // Check that credential type isn't available
+        XCTAssertNil(defaults[UserDefaults.Key.defaultCredentialsType])
+
+        let sut = SessionManager(defaults: defaults, keychainServiceName: keychainServiceName)
+        XCTAssertEqual(sut.defaultCredentials, Settings.credentials1)
     }
 }
 

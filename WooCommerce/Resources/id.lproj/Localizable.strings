@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-12-06 11:54:03+0000 */
+/* Translation-Revision-Date: 2022-12-14 17:59:48+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -9,7 +9,7 @@
 /* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
 "#%@ %@" = "#%1$@ %2$@";
 
-/* Label that describes the completed progress of a software update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
 "%.0f%% complete" = "Selesai %.0f%%";
 
 /* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
@@ -691,7 +691,8 @@ which should be translated separately and considered part of this sentence. */
 /* Reads as 'Application name'. Part of the mandatory data in receipts */
 "Application Name" = "Nama Aplikasi";
 
-/* Change order status screen - button title to apply selection */
+/* Apply navigation button in custom range date picker
+   Change order status screen - button title to apply selection */
 "Apply" = "Terapkan";
 
 /* Message to share the coupon code if it is applicable to all products. Reads like: Apply 10% off to all products with the promo code “20OFF”. */
@@ -1180,6 +1181,12 @@ which should be translated separately and considered part of this sentence. */
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "Menulis catatan pesanan baru.";
 
+/* Dialog title that displays when a configuration update just finished installing */
+"Configuration updated" = "Konfigurasi diperbarui";
+
+/* Dialog title that displays when iPhone configuration is being updated for use as a card reader */
+"Configuring iPhone" = "Mengonfigurasi iPhone";
+
 /* Close Account confirmation alert title. */
 "Confirm Close Account" = "Konfirmasi Penutupan Akun";
 
@@ -1523,6 +1530,9 @@ which should be translated separately and considered part of this sentence. */
    Placeholder name of a custom shipment tracking carrier
    Title of button to add a custom tracking carrier if filtering the list yields no results. */
 "Custom Carrier" = "Operator Kustom";
+
+/* Title in custom range date picker */
+"Custom Date Range" = "Rentang Tanggal Kustom";
 
 /* Title for the order custom fields list */
 "Custom Fields" = "Kolom Khusus";
@@ -1943,7 +1953,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the status row on Product Variation main screen to enable/disable a variation */
 "Enabled" = "Diaktifkan";
 
-/* Label for one of the filters in order custom date range */
+/* End Date label in custom range date picker
+   Label for one of the filters in order custom date range */
 "End Date" = "Tanggal Selesai";
 
 /* The title used when asking the user for feedback for the app. */
@@ -2295,6 +2306,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "Diskon Produk Tetap";
+
+/* Label asking users to follow the built in reader instruction. Presented to users when a payment is going to be collected using the iPhone's built in reader */
+"Follow reader instructions to pay" = "Ikuti instruksi pembaca untuk membayar";
 
 /* User role badge */
 "Follower" = "Pengikut";
@@ -2811,6 +2825,18 @@ which should be translated separately and considered part of this sentence. */
 /* Last 7 days section header */
 "Last 7 days" = "7 hari terakhir";
 
+/* Title of the Analytics Hub Last Month selection range */
+"Last Month" = "Bulan Terakhir";
+
+/* Title of the Analytics Hub Last Quarter selection range */
+"Last Quarter" = "Kuartal Terakhir";
+
+/* Title of the Analytics Hub Last Week selection range */
+"Last Week" = "Minggu Terakhir";
+
+/* Title of the Analytics Hub Last Year selection range */
+"Last Year" = "Tahun Terakhir";
+
 /* Text field name in Edit Address Form */
 "Last name" = "Nama belakang";
 
@@ -3185,7 +3211,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label for net sales (net revenue) in the Analytics Hub */
 "Net Sales" = "Penjualan Bersih";
 
-/* Top performers — label for the total sales of a product */
+/* Label for the total sales of a product in the Analytics Hub
+   Top performers — label for the total sales of a product */
 "Net sales: %@" = "Penjualan bersih: %@";
 
 /* Title for table view section of network active plugins */
@@ -3705,8 +3732,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "Isi daya pembaca";
 
+/* Error message shown when the built-in reader cannot be used because the device does not meet minimum requirements. */
+"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.0 or above. Contact support if this error shows on a supported device." = "Pastikan bahwa ponsel Anda memenuhi persyaratan berikut: iPhone XS atau lebih baru, dengan iOS 16.0 atau lebih baru. Hubungi dukungan jika error ini muncul pada perangkat yang didukung.";
+
+/* Error message shown when the built-in reader cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
+"Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service" = "Pastikan bahwa ID Apple Anda valid, lalu coba lagi. Diperlukan ID Apple yang valid untuk menerima Ketentuan Layanan Apple";
+
 /* Error message on the Jetpack setup required screen when Jetpack connection is missing. */
 "Please connect your store to Jetpack to access it on this app." = "Sambungkan toko Anda ke Jetpack untuk mengaksesnya di aplikasi ini.";
+
+/* Error message shown when the built-in reader cannot be used because there is an issue with the merchant account or device */
+"Please contact support – there was an issue connecting to the built-in reader" = "Silakan hubungi dukungan – terjadi masalah penyambungan ke pembaca bawaan";
 
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app." = "Hubungi pemilik situs untuk menerima undangan ke situs sebagai manajer toko atau administrator untuk menggunakan aplikasi.";
@@ -3792,6 +3828,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "Silakan pilih paket";
 
+/* Error message shown when the built-in reader cannot be used because the device is not signed in to iCloud. */
+"Please sign in to iCloud on this device, so you can use the built-in card reader" = "Silakan login ke iCloud pada perangkat ini agar Anda dapat menggunakan pembaca kartu bawaan";
+
 /* Message of the alert when the store cannot be created due to the domain in the store creation flow. */
 "Please try a different domain." = "Silakan coba domain lain.";
 
@@ -3809,6 +3848,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Body text for the default store picker error screen */
 "Please try again or reach out to us and we'll be happy to assist you!" = "Coba lagi atau hubungi kami dan dengan senang hati kami akan membantu Anda!";
+
+/* Error message shown when the built-in reader cannot be used because the merchant cancelled or did not complete the Terms of Service acceptance flow */
+"Please try again, and accept Apple's Terms of Service, so you can use the built-in card reader" = "Silakan coba lagi, dan terima Ketentuan Layanan Apple agar Anda dapat menggunakan pembaca kartu bawaan";
 
 /* Message of the alert when the WPCOM plan cannot be purchased in a webview in the store creation flow. */
 "Please try again, or exit the screen and check back on your store if you previously left the checkout screen while payment is in progress." = "Harap coba lagi, atau tutup layar lalu periksa toko jika sebelumnya Anda meninggalkan layar checkout saat pembayaran sedang berlangsung.";
@@ -3894,6 +3936,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of in-progress modal when preparing for printing customs invoice */
 "Preparing document" = "Menyiapkan dokumen";
+
+/* Title label for modal dialog that appears when connecting to a built in card reader */
+"Preparing iPhone card reader..." = "Menyiapkan pembaca kartu iPhone...";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Present card to pay" = "Siapkan kartu untuk membayar";
@@ -4120,6 +4165,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Restriction type Quarantine for contents declared in the customs form for Shipping Label flow */
 "Quarantine" = "Karantina";
+
+/* Title of the Analytics Hub Quarter to Date selection range */
+"Quarter to Date" = "Awal Kuartal hingga Saat Ini";
 
 /* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
 "Quickly get up and selling with a beautiful online store." = "Bangun dan jual produk dengan cepat menggunakan toko online yang menawan.";
@@ -4893,6 +4941,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error title when Jetpack install fails */
 "Sorry, something went wrong during install" = "Maaf, terjadi kesalahan selama instalasi";
 
+/* Error shown when there is a problem retrieving the dates for the selected date range. */
+"Sorry, something went wrong. We can't load analytics for the selected date range." = "Maaf, terjadi kesalahan. Kami tidak dapat memuat analitik untuk rentang tanggal yang dipilih.";
+
 /* Error message displayed when the entered email is not available. */
 "Sorry, that email address is already being used!" = "Maaf, alamat surel tersebut sudah terpakai!";
 
@@ -4949,7 +5000,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "Tarif standar";
 
-/* Label for one of the filters in order custom date range */
+/* Label for one of the filters in order custom date range
+   Start Date label in custom range date picker */
 "Start Date" = "Tanggal Mulai";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to create coupons. */
@@ -5299,11 +5351,20 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "URL tidak menemukan host yang valid.";
 
+/* Error message shown when the built-in reader cannot be used because the amount for payment is not supported by the built in reader. */
+"The amount is not supported by the built in reader – please try a hardware reader or another payment method." = "Jumlah ini tidak didukung oleh pembaca bawaan – harap coba menggunakan perangkat keras pembaca atau metode pembayaran lainnya.";
+
+/* Error message shown when the built-in reader cannot be used because the device's NFC chipset has been disabled by a device management policy. */
+"The app could not enable the card reader, because the NFC chip is disabled. Please contact support for more details." = "Aplikasi tidak dapat mengaktifkan pembaca kartu karena cip NFC dinonaktifkan. Hubungi dukungan untuk mengetahui detail selengkapnya.";
+
 /* Error title when trying to remove an attribute remotely. */
 "The attribute couldn't be removed." = "Atribut tidak dapat dihapus.";
 
 /* Error title when trying to update or create an attribute remotely. */
 "The attribute couldn't be saved." = "Atribut tidak dapat disimpan.";
+
+/* Error message shown when the built-in reader cannot be used because there is a call in progress */
+"The built-in reader cannot be used during a phone call. Please try again after you finish your call" = "Pembaca bawaan tidak dapat digunakan selama panggilan telepon berlangsung. Silakan coba lagi setelah panggilan berakhir";
 
 /* Message when the card presented does not support the order currency. */
 "The card does not support this currency. Try another means of payment" = "Kartu tidak mendukung mata uang ini. Coba gunakan metode pembayaran lainnya";
@@ -5350,6 +5411,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the card reader - please try another means of refund" = "Kartu ditolak oleh pembaca. Coba cara pengembalian dana lain";
 
+/* Error message when the card reader itself declines the card. */
+"The card was declined by the iPhone card reader - please try another means of payment" = "Kartu ditolak oleh pembaca kartu iPhone. Coba cara pembayaran lain";
+
 /* Error message when the card processor declines the payment. */
 "The card was declined by the payment processor - please try another means of payment" = "Kartu ditolak oleh pemroses pembayaran - coba gunakan metode pembayaran lainnya";
 
@@ -5362,8 +5426,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message in the Add Edit Coupon screen when the coupon code is empty. */
 "The coupon code couldn't be empty" = "Kode kupon tidak boleh kosong";
 
+/* Error message shown when the built-in reader cannot be used because the currency for payment is not supported by the built in reader. */
+"The currency is not supported by the built in reader – please try a hardware reader or another payment method." = "Mata uang ini tidak didukung oleh pembaca bawaan – harap coba menggunakan perangkat keras pembaca atau metode pembayaran lainnya.";
+
 /* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
 "The customer will receive an email once order is completed" = "Pelanggan akan menerima email saat pesanan selesai";
+
+/* Label within the modal dialog that appears when connecting to a built in card reader */
+"The first time you connect, you may be prompted to accept Apple's Terms of Service." = "Saat pertama kali penyambungan, Anda akan diarahkan untuk menerima Ketentuan Layanan Apple.";
 
 /* The message of the alert when another custom package has the same name */
 "The new custom package name is not unique." = "Nama paket khusus baru tidak unik.";
@@ -5529,6 +5599,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Text when there is an unknown error while trying to collect payments */
 "There was an error while trying to collect the payment." = "Terjadi error saat mencoba menarik pembayaran.";
+
+/* Error message shown when the built-in reader cannot be used because there was some issue with the connection. Retryable. */
+"There was an issue preparing the built in reader for payment – please try again." = "Terjadi masalah saat menyiapkan pembaca bawaan untuk menerima pembayaran – harap coba lagi.";
 
 /* Refund policy under the purchase button on the store creation plan screen. */
 "There’s no risk, you can cancel for a full refund within 30 days." = "Bebas risiko, Anda dapat membatalkan paket dan mendapat pengembalian dana penuh dalam 30 hari.";
@@ -5888,6 +5961,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Load Product Attributes Action Failed */
 "Unable to load product attributes" = "Gagal memuat atribut produk";
+
+/* Text displayed when there is an error loading items sold stats data. */
+"Unable to load product items sold analytics" = "Tidak dapat memuat analitik item produk terjual";
 
 /* Text displayed when there is an error loading revenue stats data. */
 "Unable to load revenue analytics" = "Tidak dapat memuat analitik pendapatan";
@@ -6413,7 +6489,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "What is WooCommerce Shipping?" = "Apa itu WooCommerce Shipping?";
 
 /* Navigates to page with details about What is WordPress.com. */
-"What is WordPress.com?" = "_Apa itu WordPress.com?_";
+"What is WordPress.com?" = "Apa itu WordPress.com?";
 
 /* Navigates to screen containing the latest WooCommerce Features */
 "What's New in WooCommerce" = "Apa yang Baru di WooCommerce";
@@ -6492,7 +6568,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "Ya, ubah";
 
-/* Yesterday Section Header */
+/* Title of the Analytics Hub Yesterday selection range
+   Yesterday Section Header */
 "Yesterday" = "Kemarin";
 
 /* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
@@ -6553,6 +6630,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "Perangkat lunak pembaca kartu Anda perlu diperbarui untuk menerima pembayaran. Pembatalan akan memblok sambungan pembaca Anda.";
 
+/* Error message shown when the built-in reader cannot be used because the device does not have a passcode set. */
+"Your device needs a lock screen passcode set to use the built-in card reader" = "Perangkat Anda memerlukan kode sandi layar kunci agar dapat menggunakan pembaca kartu bawaan";
+
 /* Title of the email field on the account creation form. */
 "Your email address" = "Alamat email Anda";
 
@@ -6562,11 +6642,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
 "Your iPhone can be used as a card reader, or you can connect to an external reader via bluetooth." = "iPhone dapat digunakan sebagai pembaca kartu, atau Anda dapat menghubungkan pembaca eksternal via bluetooth. ";
 
+/* Label that displays when a configuration update is happening */
+"Your iPhone needs to be configured to collect payments." = "Agar dapat menerima pembayaran, iPhone Anda perlu dikonfigurasi.";
+
 /* Message displayed when a coupon was successfully created */
 "Your new coupon was created!" = "Kupon baru Anda telah dibuat!";
 
 /* Title for the error screen when the merchant's In-Person Payments account has pending requirements which will result in their account being restricted if not resolved by a deadline */
 "Your payments account has pending requirements" = "Akun pembayaran Anda memiliki persyaratan tertunda";
+
+/* Dialog message that displays when a configuration update just finished installing */
+"Your phone will be ready to collect payments in a moment..." = "Beberapa saat lagi, ponsel Anda siap digunakan untuk menerima pembayaran...";
 
 /* Label that displays when an optional software update is happening */
 "Your reader will automatically restart and reconnect after the update is complete." = "Pembaca akan otomatis dimulai ulang dan dihubungkan kembali setelah pembaruan selesai.";
@@ -6602,6 +6688,26 @@ This part is the link to the website, and forms part of a longer sentence which 
 "appLinkWidget.displayName" = "Ikon";
 
 /* Label for a cancel button */
+"cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "Batal";
+
+/* Label within the modal dialog that appears when checking the built in card reader */
+"cardPresent.builtIn.modalCheckingDeviceSupport.instruction" = "Harap tunggu selagi kami memastikan bahwa perangkat iPhone Anda siap menggunakan Ketuk untuk Bayar.";
+
+/* A label prompting users to learn more about In-Person Payments.
+This is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
+"cardPresent.builtIn.modalCheckingDeviceSupport.learnMore.link" = "Baca selengkapnya";
+
+/* A label prompting users to learn more about In-Person Payments.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"cardPresent.builtIn.modalCheckingDeviceSupport.learnMore.text" = "%1$@ tentang Pembayaran Langsung";
+
+/* Title label for modal dialog that appears when searching for a card reader */
+"cardPresent.builtIn.modalCheckingDeviceSupport.title" = "Memeriksa perangkat";
+
+/* Label for a cancel button */
 "cardPresent.modalScanningForReader.cancelButton" = "Batal";
 
 /* Label within the modal dialog that appears when searching for a card reader */
@@ -6627,6 +6733,9 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "contoh.com";
+
+/* Indicates the status of a built in card reader. Presented to users when payment collection starts */
+"iPhone reader is ready" = "Pembaca iPhone sudah siap";
 
 /* A message that tells the user why the app needs access to Bluetooth. */
 "infoplist.NSBluetoothAlwaysUsageDescription" = "Aplikasi ini menggunakan Bluetooth untuk terhubung ke pembaca kartu yang didukung.";
@@ -6715,9 +6824,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "Tidak dapat mengambil statistik hari ini";
-
-/* Today */
-"today" = "hari ini";
 
 /* Value for the WooCommerce plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "tidak diketahui";

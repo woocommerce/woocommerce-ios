@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-12-06 11:54:03+0000 */
+/* Translation-Revision-Date: 2022-12-14 18:00:28+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -9,7 +9,7 @@
 /* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
 "#%@ %@" = "#%1$@ %2$@";
 
-/* Label that describes the completed progress of a software update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
 "%.0f%% complete" = "Выполнено %.0f%%";
 
 /* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
@@ -691,7 +691,8 @@ which should be translated separately and considered part of this sentence. */
 /* Reads as 'Application name'. Part of the mandatory data in receipts */
 "Application Name" = "Название приложения";
 
-/* Change order status screen - button title to apply selection */
+/* Apply navigation button in custom range date picker
+   Change order status screen - button title to apply selection */
 "Apply" = "Применить";
 
 /* Message to share the coupon code if it is applicable to all products. Reads like: Apply 10% off to all products with the promo code “20OFF”. */
@@ -1180,6 +1181,12 @@ which should be translated separately and considered part of this sentence. */
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "Составить новое примечание к заказу.";
 
+/* Dialog title that displays when a configuration update just finished installing */
+"Configuration updated" = "Настройки обновлены";
+
+/* Dialog title that displays when iPhone configuration is being updated for use as a card reader */
+"Configuring iPhone" = "Настройка iPhone";
+
 /* Close Account confirmation alert title. */
 "Confirm Close Account" = "Подтвердите закрытие учётной записи";
 
@@ -1523,6 +1530,9 @@ which should be translated separately and considered part of this sentence. */
    Placeholder name of a custom shipment tracking carrier
    Title of button to add a custom tracking carrier if filtering the list yields no results. */
 "Custom Carrier" = "Другой перевозчик";
+
+/* Title in custom range date picker */
+"Custom Date Range" = "Произвольный период";
 
 /* Title for the order custom fields list */
 "Custom Fields" = "Произвольные поля";
@@ -1943,7 +1953,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the status row on Product Variation main screen to enable/disable a variation */
 "Enabled" = "Включить";
 
-/* Label for one of the filters in order custom date range */
+/* End Date label in custom range date picker
+   Label for one of the filters in order custom date range */
 "End Date" = "Дата окончания";
 
 /* The title used when asking the user for feedback for the app. */
@@ -2295,6 +2306,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "Фиксированная скидка на товар";
+
+/* Label asking users to follow the built in reader instruction. Presented to users when a payment is going to be collected using the iPhone's built in reader */
+"Follow reader instructions to pay" = "Для приёма платежей следуйте инструкциям в приложении";
 
 /* User role badge */
 "Follower" = "Читатель";
@@ -2811,6 +2825,18 @@ which should be translated separately and considered part of this sentence. */
 /* Last 7 days section header */
 "Last 7 days" = "Последние 7 дней";
 
+/* Title of the Analytics Hub Last Month selection range */
+"Last Month" = "Прошлый месяц";
+
+/* Title of the Analytics Hub Last Quarter selection range */
+"Last Quarter" = "Прошлый квартал";
+
+/* Title of the Analytics Hub Last Week selection range */
+"Last Week" = "Прошлая неделя";
+
+/* Title of the Analytics Hub Last Year selection range */
+"Last Year" = "Прошлый год";
+
 /* Text field name in Edit Address Form */
 "Last name" = "Фамилия";
 
@@ -3185,7 +3211,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label for net sales (net revenue) in the Analytics Hub */
 "Net Sales" = "Чистый объем продаж";
 
-/* Top performers — label for the total sales of a product */
+/* Label for the total sales of a product in the Analytics Hub
+   Top performers — label for the total sales of a product */
 "Net sales: %@" = "Чистая выручка: %@";
 
 /* Title for table view section of network active plugins */
@@ -3705,8 +3732,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "Зарядите терминал";
 
+/* Error message shown when the built-in reader cannot be used because the device does not meet minimum requirements. */
+"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.0 or above. Contact support if this error shows on a supported device." = "Убедитесь, что ваш телефон отвечает этим требованиям: iPhone XS или более новая модель под управлением iOS версии 16.0 или выше. Если ошибка появляется на поддерживаемом устройстве, обратитесь в службу поддержки.";
+
+/* Error message shown when the built-in reader cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
+"Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service" = "Убедитесь, что ваш Apple ID действителен, и повторите попытку. Чтобы принять условия предоставления услуг Apple, требуется действительный Apple ID";
+
 /* Error message on the Jetpack setup required screen when Jetpack connection is missing. */
 "Please connect your store to Jetpack to access it on this app." = "Подключите магазин к Jetpack, чтобы работать с ним в этом приложении.";
+
+/* Error message shown when the built-in reader cannot be used because there is an issue with the merchant account or device */
+"Please contact support – there was an issue connecting to the built-in reader" = "Обратитесь в службу поддержки — проблема с подключением к приложению чтения карт";
 
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app." = "Чтобы использовать приложение, получите приглашение у владельца сайта, например у директора магазина или администратора.";
@@ -3792,6 +3828,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "Выберите посылку";
 
+/* Error message shown when the built-in reader cannot be used because the device is not signed in to iCloud. */
+"Please sign in to iCloud on this device, so you can use the built-in card reader" = "Войдите в iCloud на этом устройстве, чтобы использовать приложение чтения карт";
+
 /* Message of the alert when the store cannot be created due to the domain in the store creation flow. */
 "Please try a different domain." = "Выберите другой домен.";
 
@@ -3809,6 +3848,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Body text for the default store picker error screen */
 "Please try again or reach out to us and we'll be happy to assist you!" = "Повторите попытку или обратитесь к нам.";
+
+/* Error message shown when the built-in reader cannot be used because the merchant cancelled or did not complete the Terms of Service acceptance flow */
+"Please try again, and accept Apple's Terms of Service, so you can use the built-in card reader" = "Повторите попытку и примите условия предоставления услуг Apple, чтобы использовать приложение чтения карт";
 
 /* Message of the alert when the WPCOM plan cannot be purchased in a webview in the store creation flow. */
 "Please try again, or exit the screen and check back on your store if you previously left the checkout screen while payment is in progress." = "Повторите попытку или закройте экран и вернитесь в магазин, если вы покинули экран оформления заказа в момент оплаты.";
@@ -3894,6 +3936,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of in-progress modal when preparing for printing customs invoice */
 "Preparing document" = "Подготовка документа";
+
+/* Title label for modal dialog that appears when connecting to a built in card reader */
+"Preparing iPhone card reader..." = "Подготовка iPhone к чтению карт...";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Present card to pay" = "Передайте карту для оплаты";
@@ -4120,6 +4165,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Restriction type Quarantine for contents declared in the customs form for Shipping Label flow */
 "Quarantine" = "Карантин";
+
+/* Title of the Analytics Hub Quarter to Date selection range */
+"Quarter to Date" = "С начала квартала до текущего дня";
 
 /* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
 "Quickly get up and selling with a beautiful online store." = "Создайте онлайн-магазин и начните продажи в кротчайшие сроки.";
@@ -4893,6 +4941,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error title when Jetpack install fails */
 "Sorry, something went wrong during install" = "Что-то пошло не так во время установки";
 
+/* Error shown when there is a problem retrieving the dates for the selected date range. */
+"Sorry, something went wrong. We can't load analytics for the selected date range." = "Что-то пошло не так. Не удаётся загрузить данные аналитики для выбранного диапазона дат.";
+
 /* Error message displayed when the entered email is not available. */
 "Sorry, that email address is already being used!" = "Извините, этот адрес e-mail уже используется!";
 
@@ -4949,7 +5000,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "Стандартный тариф";
 
-/* Label for one of the filters in order custom date range */
+/* Label for one of the filters in order custom date range
+   Start Date label in custom range date picker */
 "Start Date" = "Дата начала";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to create coupons. */
@@ -5299,11 +5351,20 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "В URL-адресе отсутствует допустимый хост.";
 
+/* Error message shown when the built-in reader cannot be used because the amount for payment is not supported by the built in reader. */
+"The amount is not supported by the built in reader – please try a hardware reader or another payment method." = "Приложение чтения карт не поддерживает платежи на такую сумму. Используйте внешнее устройство чтения карт или другой способ оплаты.";
+
+/* Error message shown when the built-in reader cannot be used because the device's NFC chipset has been disabled by a device management policy. */
+"The app could not enable the card reader, because the NFC chip is disabled. Please contact support for more details." = "Приложение не может читать карты, поскольку отключён модуль NFC. За подробной информацией обращайтесь в службу поддержки.";
+
 /* Error title when trying to remove an attribute remotely. */
 "The attribute couldn't be removed." = "Не удалось удалить атрибут.";
 
 /* Error title when trying to update or create an attribute remotely. */
 "The attribute couldn't be saved." = "Невозможно сохранить атрибут.";
+
+/* Error message shown when the built-in reader cannot be used because there is a call in progress */
+"The built-in reader cannot be used during a phone call. Please try again after you finish your call" = "Приложение чтения карт нельзя использовать во время телефонного вызова. Повторите попытку после завершения вызова";
 
 /* Message when the card presented does not support the order currency. */
 "The card does not support this currency. Try another means of payment" = "Карта не поддерживает эту валюту. Попробуйте другое средство платежа";
@@ -5350,6 +5411,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the card reader - please try another means of refund" = "Карта отклонена устройством чтения карт. Попробуйте другое средство возврата";
 
+/* Error message when the card reader itself declines the card. */
+"The card was declined by the iPhone card reader - please try another means of payment" = "Карта отклонена приложением iPhone. Попробуйте другое средство платежа.";
+
 /* Error message when the card processor declines the payment. */
 "The card was declined by the payment processor - please try another means of payment" = "Карта отклонена платёжной системой. Попробуйте другое средство платежа";
 
@@ -5362,8 +5426,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message in the Add Edit Coupon screen when the coupon code is empty. */
 "The coupon code couldn't be empty" = "Необходимо указать код купона";
 
+/* Error message shown when the built-in reader cannot be used because the currency for payment is not supported by the built in reader. */
+"The currency is not supported by the built in reader – please try a hardware reader or another payment method." = "Приложение чтения карт не поддерживает эту валюту. Используйте внешнее устройство чтения карт или другой способ оплаты.";
+
 /* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
 "The customer will receive an email once order is completed" = "После выполнения заказа клиент получит сообщение по электронной почте.";
+
+/* Label within the modal dialog that appears when connecting to a built in card reader */
+"The first time you connect, you may be prompted to accept Apple's Terms of Service." = "При первом подключении, возможно, вам будет предложено принять условия предоставления услуг Apple.";
 
 /* The message of the alert when another custom package has the same name */
 "The new custom package name is not unique." = "Такое специальное название посылки уже есть.";
@@ -5529,6 +5599,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Text when there is an unknown error while trying to collect payments */
 "There was an error while trying to collect the payment." = "При сборе платежа произошла ошибка.";
+
+/* Error message shown when the built-in reader cannot be used because there was some issue with the connection. Retryable. */
+"There was an issue preparing the built in reader for payment – please try again." = "При подготовке телефона к чтению карт возникла проблема. Повторите попытку.";
 
 /* Refund policy under the purchase button on the store creation plan screen. */
 "There’s no risk, you can cancel for a full refund within 30 days." = "Никаких рисков: можно отменить подписку в течение 30 дней и получить полную компенсацию.";
@@ -5888,6 +5961,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Load Product Attributes Action Failed */
 "Unable to load product attributes" = "Не удалось загрузить атрибуты продукта";
+
+/* Text displayed when there is an error loading items sold stats data. */
+"Unable to load product items sold analytics" = "Не удалось загрузить данные анализа проданных товаров";
 
 /* Text displayed when there is an error loading revenue stats data. */
 "Unable to load revenue analytics" = "Не удалось загрузить данные анализа доходов";
@@ -6413,7 +6489,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "What is WooCommerce Shipping?" = "Что такое WooCommerce Shipping?";
 
 /* Navigates to page with details about What is WordPress.com. */
-"What is WordPress.com?" = "_Что такое WordPress.com?_";
+"What is WordPress.com?" = "Что такое WordPress.com?";
 
 /* Navigates to screen containing the latest WooCommerce Features */
 "What's New in WooCommerce" = "Что нового в WooCommerce";
@@ -6492,7 +6568,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "Да, изменить";
 
-/* Yesterday Section Header */
+/* Title of the Analytics Hub Yesterday selection range
+   Yesterday Section Header */
 "Yesterday" = "Вчера";
 
 /* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
@@ -6553,6 +6630,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "Для сбора платежей требуется обновить ваш платёжный терминал. Отмена приведёт к блокировке подключения терминала.";
 
+/* Error message shown when the built-in reader cannot be used because the device does not have a passcode set. */
+"Your device needs a lock screen passcode set to use the built-in card reader" = "Чтобы использовать телефон для чтения карт, нужно настроить на нём пароль экрана блокировки";
+
 /* Title of the email field on the account creation form. */
 "Your email address" = "Ваш адрес электронной почты";
 
@@ -6562,11 +6642,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
 "Your iPhone can be used as a card reader, or you can connect to an external reader via bluetooth." = "Используйте свой iPhone для чтения карт или подключитесь к внешнему устройству чтения через Bluetooth.";
 
+/* Label that displays when a configuration update is happening */
+"Your iPhone needs to be configured to collect payments." = "Чтобы собирать платежи, нужно настроить ваш iPhone.";
+
 /* Message displayed when a coupon was successfully created */
 "Your new coupon was created!" = "Новый купон создан.";
 
 /* Title for the error screen when the merchant's In-Person Payments account has pending requirements which will result in their account being restricted if not resolved by a deadline */
 "Your payments account has pending requirements" = "Для вашей учётной записи есть требования на утверждении.";
+
+/* Dialog message that displays when a configuration update just finished installing */
+"Your phone will be ready to collect payments in a moment..." = "Через мгновение ваш телефон будет готов собирать платежи...";
 
 /* Label that displays when an optional software update is happening */
 "Your reader will automatically restart and reconnect after the update is complete." = "Устройство чтения автоматически перезапустится и повторно подключится после завершения обновления";
@@ -6602,6 +6688,26 @@ This part is the link to the website, and forms part of a longer sentence which 
 "appLinkWidget.displayName" = "Иконка";
 
 /* Label for a cancel button */
+"cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "Отмена";
+
+/* Label within the modal dialog that appears when checking the built in card reader */
+"cardPresent.builtIn.modalCheckingDeviceSupport.instruction" = "Подождите, пока мы проверяем готовность вашего iPhone к использованию функции Tap to Pay.";
+
+/* A label prompting users to learn more about In-Person Payments.
+This is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
+"cardPresent.builtIn.modalCheckingDeviceSupport.learnMore.link" = "Подробнее";
+
+/* A label prompting users to learn more about In-Person Payments.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"cardPresent.builtIn.modalCheckingDeviceSupport.learnMore.text" = "%1$@ об очных платежах";
+
+/* Title label for modal dialog that appears when searching for a card reader */
+"cardPresent.builtIn.modalCheckingDeviceSupport.title" = "Проверка устройства";
+
+/* Label for a cancel button */
 "cardPresent.modalScanningForReader.cancelButton" = "Отмена";
 
 /* Label within the modal dialog that appears when searching for a card reader */
@@ -6627,6 +6733,9 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "example.com";
+
+/* Indicates the status of a built in card reader. Presented to users when payment collection starts */
+"iPhone reader is ready" = "iPhone готов к чтению карт";
 
 /* A message that tells the user why the app needs access to Bluetooth. */
 "infoplist.NSBluetoothAlwaysUsageDescription" = "Это приложение использует Bluetooth для подключения к платёжным терминалам.";
@@ -6715,9 +6824,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "Не удаётся получить статистику за сегодня";
-
-/* Today */
-"today" = "сегодня";
 
 /* Value for the WooCommerce plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "неизвестно";

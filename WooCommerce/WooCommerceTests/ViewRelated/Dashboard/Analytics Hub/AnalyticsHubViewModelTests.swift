@@ -89,7 +89,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
             case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, completion):
                 let topEarners = TopEarnerStats.fake().copy(items: [.fake()])
                 completion(.success(topEarners))
-            case let .retrieveSiteSummaryStats(_, _, _, _, completion):
+            case let .retrieveSiteSummaryStats(_, _, _, _, _, completion):
                 completion(.failure(NSError(domain: "Test", code: 1)))
             default:
                 break

@@ -693,6 +693,7 @@ private extension StoreStatsV4PeriodViewController {
     func updateStatsDataToDefaultStyles() {
         revenueData.font = Constants.revenueFont
         revenueData.textColor = Constants.statsTextColor
+        revenueData.adjustsFontSizeToFitWidth = true
         revenueData.accessibilityIdentifier = "revenue-value"
     }
 }

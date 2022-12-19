@@ -18,7 +18,7 @@ class AuthenticatedRequestTests: XCTestCase {
 
     /// Verifies that the Bearer Token is injected, as part of the HTTP Headers.
     ///
-    func test_bearer_token_is_injected_as_request_header() throws {
+    func test_bearer_token_is_injected_as_request_header() {
         XCTAssertEqual(unauthenticatedRequest.allHTTPHeaderFields, [:])
 
         let authenticated = AuthenticatedRequest(credentials: credentials, request: unauthenticatedRequest)

@@ -353,11 +353,11 @@ public extension UIColor {
         return .accent
     }
 
-    /// Stats chart data bar highlighted color.
+    /// Stats highlighted color (chart data bar and text color).
     ///
-    static var chartDataBarHighlighted: UIColor {
-        return UIColor(light: .withColorStudio(.pink, shade: .shade70),
-                       dark: .withColorStudio(.pink, shade: .shade10))
+    static var statsHighlighted: UIColor {
+        return UIColor(light: .withColorStudio(.pink, shade: .shade50),
+                       dark: .withColorStudio(.pink, shade: .shade30))
     }
 }
 

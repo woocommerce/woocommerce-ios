@@ -90,7 +90,7 @@ private extension StoreStatsDataOrRedactedView {
 private extension StoreStatsDataOrRedactedView {
     enum Constants {
         static let statsTextColor: UIColor = .text
-        static let statsHighlightTextColor: UIColor = .accent
+        static let statsHighlightTextColor: UIColor = .statsHighlighted
         static let statsFont: UIFont = .font(forStyle: .title3, weight: .semibold)
     }
 }

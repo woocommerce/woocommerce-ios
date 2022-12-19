@@ -703,7 +703,7 @@ private extension StoreStatsV4PeriodViewController {
 private extension StoreStatsV4PeriodViewController {
     enum Constants {
         static let statsTextColor: UIColor = .text
-        static let statsHighlightTextColor: UIColor = .accent
+        static let statsHighlightTextColor: UIColor = .statsHighlighted
         static let statsFont: UIFont = .font(forStyle: .title3, weight: .semibold)
         static let revenueFont: UIFont = .font(forStyle: .largeTitle, weight: .semibold)
         static let statsTitleFont: UIFont = .caption2
@@ -720,11 +720,8 @@ private extension StoreStatsV4PeriodViewController {
 
         static let chartXAxisGranularity: Double        = 1.0
 
-        static var chartLineColor: UIColor {
-            UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade50),
-                    dark: .withColorStudio(.wooCommercePurple, shade: .shade30))
-        }
-        static let chartHighlightLineColor: UIColor = .accent
+        static var chartLineColor: UIColor = .accent
+        static let chartHighlightLineColor: UIColor = .statsHighlighted
         static let chartGradientTopColor: UIColor = UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade50).withAlphaComponent(0.1),
                                                             dark: UIColor(red: 204.0/256, green: 204.0/256, blue: 204.0/256, alpha: 0.3))
         static let chartGradientBottomColor: UIColor = .clear.withAlphaComponent(0)

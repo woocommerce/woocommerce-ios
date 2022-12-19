@@ -16,17 +16,21 @@ public struct Credentials: Equatable {
         case wporg(password: String)
     }
 
+    /// Authentication type
+    ///
+    public let authenticationType: AuthenticationType
+
     /// WordPress.com Username
     ///
     public let username: String
 
-    /// WordPress.com Authentication Token
-    ///
-    public let authToken: String
-
     /// Site Address
     ///
     public let siteAddress: String
+
+    /// WordPress.com Authentication Token
+    ///
+    public let authToken: String
 
     /// Designated Initializer
     ///
@@ -34,6 +38,7 @@ public struct Credentials: Equatable {
         self.username = username
         self.authToken = authToken
         self.siteAddress = siteAddress ?? Constants.placeholderSiteAddress
+        self.authenticationType = .wpcom(authToken: authToken)
     }
 
     /// Convenience initializer. Assigns a UUID as a placeholder for the username.

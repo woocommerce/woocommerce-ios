@@ -55,7 +55,7 @@ struct OrderPaymentSection: View {
             TitleAndValueRow(title: Localization.orderTotal, value: .content(viewModel.orderTotal), bold: true, selectionStyle: .none) {}
         }
         .padding(.horizontal, insets: safeAreaInsets)
-        .background(Color(.listForeground))
+        .background(Color(.modalListForeground))
 
         Divider()
     }

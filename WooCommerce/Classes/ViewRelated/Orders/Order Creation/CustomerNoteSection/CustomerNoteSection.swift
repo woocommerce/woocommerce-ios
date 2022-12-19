@@ -62,7 +62,7 @@ private struct CustomerNoteSectionContent: View {
             }
         }
         .padding(.horizontal, insets: safeAreaInsets)
-        .background(Color(.listForeground))
+        .background(Color(.modalListForeground))
         .addingTopAndBottomDividers()
     }
 

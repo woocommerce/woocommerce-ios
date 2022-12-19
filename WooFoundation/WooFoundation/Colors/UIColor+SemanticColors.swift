@@ -396,6 +396,13 @@ public extension UIColor {
     static var listForeground: UIColor {
         return .secondarySystemGroupedBackground
     }
+
+    /// List Foreground for modally presented views.
+    /// Uses a darker background in dark mode, for better contrast.
+    static var modalListForeground: UIColor {
+        return UIColor(light: .secondarySystemGroupedBackground,
+                       dark: .systemGroupedBackground)
+    }
 }
 
 

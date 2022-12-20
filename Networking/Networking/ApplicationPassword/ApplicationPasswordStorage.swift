@@ -5,7 +5,11 @@ import WordPressShared
 struct ApplicationPasswordStorage {
     /// Stores the application password
     ///
-    let keychain: Keychain
+    private let keychain: Keychain
+
+    init(keychain: Keychain = Keychain(service: KeychainServiceName.name)) {
+        self.keychain = keychain
+    }
 
     /// Returns the saved application password if available
     ///
@@ -32,6 +36,16 @@ struct ApplicationPasswordStorage {
         // Delete password from keychain
         keychain.password = nil
         keychain.username = nil
+    }
+}
+
+// MARK: - Constants
+//
+private extension ApplicationPasswordStorage {
+    enum KeychainServiceName {
+        /// Matching `WooConstants.keychainServiceName`
+        ///
+        static let name = "com.automattic.woocommerce"
     }
 }
 

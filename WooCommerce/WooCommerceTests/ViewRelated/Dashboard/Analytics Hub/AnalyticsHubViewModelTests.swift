@@ -26,7 +26,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
             case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, completion):
                 let topEarners = TopEarnerStats.fake().copy(items: [.fake()])
                 completion(.success(topEarners))
-            case let .retrieveSiteSummaryStats(_, _, _, _, _, completion):
+            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
                 let siteStats = SiteSummaryStats.fake().copy(visitors: 30, views: 53)
                 completion(.success(siteStats))
             default:
@@ -61,7 +61,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
                 completion(.failure(NSError(domain: "Test", code: 1)))
             case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, completion):
                 completion(.failure(NSError(domain: "Test", code: 1)))
-            case let .retrieveSiteSummaryStats(_, _, _, _, _, completion):
+            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
                 completion(.failure(NSError(domain: "Test", code: 1)))
             default:
                 break
@@ -89,7 +89,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
             case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, completion):
                 let topEarners = TopEarnerStats.fake().copy(items: [.fake()])
                 completion(.success(topEarners))
-            case let .retrieveSiteSummaryStats(_, _, _, _, _, completion):
+            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
                 completion(.failure(NSError(domain: "Test", code: 1)))
             default:
                 break
@@ -130,7 +130,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
             case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, completion):
                 let topEarners = TopEarnerStats.fake().copy(items: [.fake()])
                 completion(.success(topEarners))
-            case let .retrieveSiteSummaryStats(_, _, _, _, _, completion):
+            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
                 let siteStats = SiteSummaryStats.fake()
                 loadingSessionsCard = vm.sessionsCard
                 completion(.success(siteStats))

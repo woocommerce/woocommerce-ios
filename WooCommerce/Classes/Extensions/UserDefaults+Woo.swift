@@ -6,6 +6,7 @@ import Foundation
 //
 extension UserDefaults {
     enum Key: String {
+        case defaultCredentialsType
         case defaultAccountID
         case defaultUsername
         case defaultSiteAddress

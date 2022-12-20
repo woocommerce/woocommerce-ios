@@ -90,10 +90,12 @@ final class DashboardViewModel {
 
     /// Syncs summary stats for dashboard UI.
     func syncSiteSummaryStats(for siteID: Int64,
+                              siteTimezone: TimeZone,
                               timeRange: StatsTimeRangeV4,
                               latestDateToInclude: Date,
                               onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
         let action = StatsActionV4.retrieveSiteSummaryStats(siteID: siteID,
+                                                            siteTimezone: siteTimezone,
                                                             period: timeRange.summaryStatsGranularity,
                                                             quantity: 1,
                                                             latestDateToInclude: latestDateToInclude,

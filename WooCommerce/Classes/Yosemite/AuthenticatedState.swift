@@ -25,8 +25,7 @@ class AuthenticatedState: StoresManagerState {
         let storageManager = ServiceLocator.storageManager
         let network = AlamofireNetwork(credentials: credentials)
 
-        services = [
-            AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: credentials.authToken),
+        var services: [ActionsProcessor] = [
             AppSettingsStore(dispatcher: dispatcher,
                              storageManager: storageManager,
                              fileStorage: PListFileStorage(),
@@ -88,6 +87,15 @@ class AuthenticatedState: StoresManagerState {
                                fileStorage: PListFileStorage()),
             JetpackConnectionStore(dispatcher: dispatcher)
         ]
+
+
+        if case let .wpcom(_, authToken, _) = credentials {
+            services.append(AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: authToken))
+        } else {
+            DDLogInfo("No WordPress.com auth token found. AccountStore is not initialized.")
+        }
+
+        self.services = services
 
         startListeningToNotifications()
     }

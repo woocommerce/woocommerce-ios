@@ -50,8 +50,7 @@ struct AuthenticatedWebView: UIViewRepresentable {
     }
 
     private func authenticatedPostData() throws -> URLRequest {
-        guard let username = credentials?.username,
-              let token = credentials?.authToken else {
+        guard case let .wpcom(username, token, _) = credentials else {
             return URLRequest(url: url)
         }
 

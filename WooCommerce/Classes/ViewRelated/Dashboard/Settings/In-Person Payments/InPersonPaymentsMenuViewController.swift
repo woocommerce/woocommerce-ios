@@ -474,12 +474,12 @@ private extension InPersonPaymentsMenuViewController {
             comment: "Title for the section related to actions inside In-Person Payments settings")
 
         static let orderCardReader = NSLocalizedString(
-            "Order card reader",
+            "Order Card Reader",
             comment: "Navigates to Card Reader ordering screen"
         )
 
         static let manageCardReader = NSLocalizedString(
-            "Manage card reader",
+            "Manage Card Reader",
             comment: "Navigates to Card Reader management screen"
         )
 
@@ -515,12 +515,12 @@ private extension InPersonPaymentsMenuViewController {
         )
 
         static let inPersonPaymentsSetupNotFinishedNotice = NSLocalizedString(
-            "In-Person Payments Setup is incomplete.",
+            "In-Person Payments setup is incomplete.",
             comment: "Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled."
         )
 
         static let inPersonPaymentsSetupNotFinishedNoticeButtonTitle = NSLocalizedString(
-            "Continue Setup",
+            "Continue setup",
             comment: "Call to Action to finish the setup of In-Person Payments in the Menu"
         )
     }

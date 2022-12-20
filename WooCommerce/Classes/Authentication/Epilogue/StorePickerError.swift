@@ -119,7 +119,7 @@ private extension StorePickerError {
                                                     comment: "Text for the button to navigate to troubleshooting tips from the store picker error screen")
         static let contact = NSLocalizedString("Contact Support",
                                                comment: "Text for the button to contact support from the store picker error screen")
-        static let back = NSLocalizedString("Back to Sites",
+        static let back = NSLocalizedString("Back to sites",
                                             comment: "Text for the button to dismiss the store picker error screen")
     }
 

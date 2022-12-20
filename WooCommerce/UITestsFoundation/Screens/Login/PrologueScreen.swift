@@ -3,21 +3,31 @@ import XCTest
 
 public final class PrologueScreen: ScreenObject {
 
+    private let continueButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["Prologue Continue Button"]
+    }
+
+    private let selectSiteButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["Prologue Self Hosted Button"]
+    }
+
+    private var continueButton: XCUIElement { continueButtonGetter(app) }
+    private var selectSiteButton: XCUIElement { selectSiteButtonGetter(app) }
+
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
-            expectedElementGetter: { Self.findContinueButton(in: $0) },
+            expectedElementGetter: continueButtonGetter,
             app: app
         )
     }
 
     public func selectContinueWithWordPress() throws -> GetStartedScreen {
-        Self.findContinueButton(in: app).tap()
+        continueButton.tap()
         return try GetStartedScreen()
     }
 
     public func selectSiteAddress() throws -> LoginSiteAddressScreen {
-        app.buttons["Prologue Self Hosted Button"].tap()
-
+        selectSiteButton.tap()
         return try LoginSiteAddressScreen()
     }
 
@@ -26,14 +36,8 @@ public final class PrologueScreen: ScreenObject {
         XCTAssertTrue(isLoaded)
         return self
     }
-}
 
-extension PrologueScreen {
-    static func findContinueButton(in app: XCUIApplication) -> XCUIElement {
-        app.buttons["Prologue Continue Button"]
-    }
-
-    public static func isSiteAddressLoginAvailable(in app: XCUIApplication = .init()) -> Bool {
-        app.buttons["Prologue Self Hosted Button"].waitForExistence(timeout: 1)
+    public func isSiteAddressLoginAvailable() throws -> Bool {
+        selectSiteButton.waitForExistence(timeout: 1)
     }
 }

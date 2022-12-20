@@ -3,26 +3,35 @@ import XCTest
 
 public final class GetStartedScreen: ScreenObject {
 
+    private let emailFieldGetter: (XCUIApplication) -> XCUIElement = {
+        $0.textFields["Email address"]
+    }
+
+    private let continueButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["Get Started Email Continue Button"]
+    }
+
+    private var emailField: XCUIElement { emailFieldGetter(app) }
+    private var continueButton: XCUIElement { continueButtonGetter(app) }
+
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
-              expectedElementGetters: [
-                  // swiftlint:disable opening_brace
-                  { $0.textFields["Email address"] },
-                  { $0.buttons["Get Started Email Continue Button"] },
-                  // swiftlint:enable opening_brace
-              ],
+            expectedElementGetters: [
+                emailFieldGetter,
+                continueButtonGetter
+            ],
             app: app
         )
     }
 
     public func proceedWith(email: String) throws -> PasswordScreen {
-        app.textFields["Email address"].enterText(text: email)
-        app.buttons["Get Started Email Continue Button"].tap()
+        emailField.enterText(text: email)
+        continueButton.tap()
 
         return try PasswordScreen()
     }
 
     func isEmailEntered() -> Bool {
-        return app.textFields["Email address"].value != nil
+        return emailField.value != nil
     }
 }

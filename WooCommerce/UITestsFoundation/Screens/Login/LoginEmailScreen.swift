@@ -3,34 +3,47 @@ import XCTest
 
 public final class LoginEmailScreen: ScreenObject {
 
+    private let emailButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["Login Email Address"]
+    }
+
+    private let nextButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["Login Email Next Button"]
+    }
+
+    private let siteAddressButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["Self Hosted Login Button"]
+    }
+
+    private var emailButton: XCUIElement { emailButtonGetter(app) }
+    private var nextButton: XCUIElement { nextButtonGetter(app) }
+    private var siteAddressButton: XCUIElement { siteAddressButtonGetter(app) }
+    private var emailTextField: XCUIElement { app.textFields["Login Email Address"] }
+
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
-              expectedElementGetters: [
-                  // swiftlint:disable opening_brace
-                  { $0.buttons["Login Email Address"] },
-                  { $0.buttons["Login Email Next Button"] },
-                  { $0.buttons["Self Hosted Login Button"] }
-                  // swiftlint:enable opening_brace
-              ],
+            expectedElementGetters: [
+                emailButtonGetter,
+                nextButtonGetter,
+                siteAddressButtonGetter
+            ],
             app: app
         )
     }
 
     func proceedWith(email: String) throws -> LinkOrPasswordScreen {
-        app.buttons["Login Email Address"].enterText(text: email)
-        app.buttons["Login Email Next Button"].tap()
+        emailButton.enterText(text: email)
+        nextButton.tap()
 
         return try LinkOrPasswordScreen()
     }
 
     func goToSiteAddressLogin() throws -> LoginSiteAddressScreen {
-        app.buttons["Self Hosted Login Button"].tap()
-
+        siteAddressButton.tap()
         return try LoginSiteAddressScreen()
     }
 
     func isEmailEntered() -> Bool {
-        let emailTextField = app.textFields["Login Email Address"]
         return emailTextField.value != nil
     }
 }

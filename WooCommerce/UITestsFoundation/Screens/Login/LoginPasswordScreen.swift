@@ -4,14 +4,28 @@ import XCUITestHelpers
 
 public final class LoginPasswordScreen: ScreenObject {
 
+    private let passwordFieldGetter: (XCUIApplication) -> XCUIElement = {
+        $0.secureTextFields["Password"]
+    }
+
+    private let nextButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["Password Next Button"]
+    }
+
+    private let passwordErrorLabel: (XCUIApplication) -> XCUIElement = {
+        $0.staticTexts["pswdErrorLabel"]
+    }
+
+    private var passwordField: XCUIElement { passwordFieldGetter(app) }
+    private var nextButton: XCUIElement { nextButtonGetter(app) }
+    private var errorLabel: XCUIElement {passwordErrorLabel(app) }
+
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
-              expectedElementGetters: [
-                  // swiftlint:disable opening_brace
-                  { $0.secureTextFields["Password"] },
-                  { $0.buttons["Password Next Button"] },
-                  // swiftlint:enable opening_brace
-              ],
+            expectedElementGetters: [
+                passwordFieldGetter,
+                nextButtonGetter
+            ],
             app: app
         )
     }
@@ -23,19 +37,16 @@ public final class LoginPasswordScreen: ScreenObject {
     }
 
     func tryProceed(password: String) -> LoginPasswordScreen {
-        XCTAssert(app.secureTextFields["Password"].waitForIsHittable(timeout: 3))
-        app.secureTextFields["Password"].paste(text: password)
+        XCTAssert(passwordField.waitForIsHittable(timeout: 3))
+        passwordField.paste(text: password)
 
-        XCTAssert(app.buttons["Password Next Button"].waitForIsHittable(timeout: 3))
-        app.buttons["Password Next Button"].tap()
+        XCTAssert(nextButton.waitForIsHittable(timeout: 3))
+        nextButton.tap()
 
         return self
     }
 
     func verifyLoginError() -> LoginPasswordScreen {
-        let errorLabel = app.staticTexts["pswdErrorLabel"]
-        _ = errorLabel.waitForExistence(timeout: 2)
-
         XCTAssert(errorLabel.waitForExistence(timeout: 3))
         return self
     }

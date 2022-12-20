@@ -3,29 +3,40 @@ import XCTest
 
 public final class LoginEpilogueScreen: ScreenObject {
 
+    private let emailLabelGetter: (XCUIApplication) -> XCUIElement = {
+        $0.staticTexts["email-label"]
+    }
+
+    private let urlLabelGetter: (XCUIApplication) -> XCUIElement = {
+        $0.staticTexts["url-label"]
+    }
+
+    private let continueButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["login-epilogue-continue-button"]
+    }
+
+    private var actualEmail: String { emailLabelGetter(app).label }
+    private var actualSiteUrl: String { urlLabelGetter(app).label }
+    private var continueButton: XCUIElement { continueButtonGetter(app) }
+
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
-              expectedElementGetters: [
-                  // swiftlint:disable opening_brace
-                  { $0.staticTexts["email-label"] },
-                  { $0.staticTexts["url-label"] },
-                  { $0.buttons["login-epilogue-continue-button"] },
-                  // swiftlint:enable opening_brace
-              ],
+            expectedElementGetters: [
+                emailLabelGetter,
+                urlLabelGetter,
+                continueButtonGetter
+            ],
             app: app
         )
     }
 
     @discardableResult
     public func continueWithSelectedSite() throws -> MyStoreScreen {
-        app.buttons["login-epilogue-continue-button"].tap()
+        continueButton.tap()
         return try MyStoreScreen()
     }
 
     public func verifyEpilogueDisplays(email expectedEmail: String, siteUrl expectedSiteUrl: String) -> LoginEpilogueScreen {
-        let actualEmail = app.staticTexts["email-label"].label
-        let actualSiteUrl = app.staticTexts["url-label"].label
-
         XCTAssertEqual(expectedEmail, actualEmail, "Display name is '\(actualEmail)' but should be '\(expectedEmail)'.")
         XCTAssertEqual(expectedSiteUrl, actualSiteUrl, "Site URL is \(actualSiteUrl) but should be \(expectedSiteUrl)")
 

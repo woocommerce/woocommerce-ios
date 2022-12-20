@@ -3,21 +3,31 @@ import XCTest
 
 public final class LoginSiteAddressScreen: ScreenObject {
 
+    private let nextButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["Site Address Next Button"]
+    }
+
+    private let siteAddressFieldGetter: (XCUIApplication) -> XCUIElement = {
+        $0.textFields["Site address"]
+    }
+
+    private var nextButton: XCUIElement { nextButtonGetter(app) }
+    private var siteAddressField: XCUIElement { siteAddressFieldGetter(app) }
+
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
-              expectedElementGetters: [
-                  // swiftlint:disable opening_brace
-                  { $0.buttons["Site Address Next Button"] },
-                  { $0.textFields["Site address"] }
-                  // swiftlint:enable opening_brace
-              ],
+            expectedElementGetters: [
+                nextButtonGetter,
+                siteAddressFieldGetter
+            ],
             app: app
         )
     }
 
     public func proceedWith(siteUrl: String) throws -> GetStartedScreen {
-        app.textFields["Site address"].enterText(text: siteUrl)
-        app.buttons["Site Address Next Button"].tap()
+        siteAddressField.enterText(text: siteUrl)
+        nextButton.tap()
+
         return try GetStartedScreen()
     }
 }

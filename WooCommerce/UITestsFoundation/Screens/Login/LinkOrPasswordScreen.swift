@@ -3,27 +3,33 @@ import XCTest
 
 public final class LinkOrPasswordScreen: ScreenObject {
 
+    private let passwordButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["Use Password"]
+    }
+
+    private let sendLinkButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["Send Link Button"]
+    }
+
+    private var passwordButton: XCUIElement { passwordButtonGetter(app) }
+
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
-              expectedElementGetters: [
-                  // swiftlint:disable opening_brace
-                  { $0.buttons["Use Password"] },
-                  { $0.buttons["Send Link Button"] },
-                  // swiftlint:enable opening_brace
-              ],
+            expectedElementGetters: [
+                passwordButtonGetter,
+                sendLinkButtonGetter
+            ],
             app: app
         )
     }
 
     func proceedWithPassword() throws -> LoginPasswordScreen {
-        app.buttons["Use Password"].tap()
-
+        passwordButton.tap()
         return try LoginPasswordScreen()
     }
 
     func proceedWithLink() throws -> LoginCheckMagicLinkScreen {
-        app.buttons["Send Link Button"].tap()
-
+        passwordButton.tap()
         return try LoginCheckMagicLinkScreen()
     }
 }

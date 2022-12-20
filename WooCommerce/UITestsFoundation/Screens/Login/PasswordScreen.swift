@@ -3,14 +3,28 @@ import XCTest
 
 public final class PasswordScreen: ScreenObject {
 
+    private let passwordFieldGetter: (XCUIApplication) -> XCUIElement = {
+        $0.secureTextFields["Password"]
+    }
+
+    private let continueButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["Continue Button"]
+    }
+
+    private let passwordErrorLabelGetter: (XCUIApplication) -> XCUIElement = {
+        $0.cells["Password Error"]
+    }
+
+    private var passwordField: XCUIElement { passwordFieldGetter(app) }
+    private var continueButton: XCUIElement { continueButtonGetter(app) }
+    private var passwordErrorLabel: XCUIElement { passwordErrorLabelGetter(app) }
+
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
-              expectedElementGetters: [
-                  // swiftlint:disable opening_brace
-                  { $0.secureTextFields["Password"] },
-                  { $0.buttons["Continue Button"] },
-                  // swiftlint:enable opening_brace
-              ],
+            expectedElementGetters: [
+                passwordFieldGetter,
+                continueButtonGetter
+            ],
             app: app
         )
     }
@@ -20,21 +34,19 @@ public final class PasswordScreen: ScreenObject {
     }
 
     public func tryProceed(password: String) throws -> PasswordScreen {
-        let continueButton = app.buttons["Continue Button"]
-
-        app.secureTextFields["Password"].enterText(text: password)
+        passwordField.enterText(text: password)
         continueButton.tap()
         if continueButton.exists && !continueButton.isHittable {
             waitFor(element: continueButton, predicate: "isEnabled == true")
         }
+
         return self
     }
 
     public func verifyLoginError() throws -> PasswordScreen {
-        let errorLabel = app.cells["Password Error"]
-        _ = errorLabel.waitForExistence(timeout: 2)
+        _ = passwordErrorLabel.waitForExistence(timeout: 2)
+        XCTAssertTrue(passwordErrorLabel.exists)
 
-        XCTAssertTrue(errorLabel.exists)
         return self
     }
 }

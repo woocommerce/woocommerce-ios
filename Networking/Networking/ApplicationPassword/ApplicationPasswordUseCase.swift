@@ -48,9 +48,9 @@ final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
     ///
     private let network: Network
 
-    /// Stores the application password
+    /// To store application password
     ///
-    private let keychain: Keychain
+    private let storage: ApplicationPasswordStorage
 
     /// Used to name the password in wpadmin.
     ///
@@ -68,7 +68,7 @@ final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
          keychain: Keychain = Keychain(service: KeychainServiceName.name)) {
         self.siteID = siteID
         self.credentials = networkcredentials
-        self.keychain = keychain
+        self.storage = ApplicationPasswordStorage(keychain: keychain)
 
         if let network {
             self.network = network
@@ -80,11 +80,7 @@ final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
     /// Returns the locally saved ApplicationPassword if available
     ///
     var applicationPassword: ApplicationPassword? {
-        guard let password = keychain.applicationPassword,
-              let username = keychain.applicationPasswordUsername else {
-            return nil
-        }
-        return ApplicationPassword(wpOrgUsername: username, password: Secret(password))
+        storage.applicationPassword
     }
 
     /// Generates new ApplicationPassword
@@ -105,7 +101,7 @@ final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
         async let username = try fetchWPAdminUsername()
 
         let applicationPassword = try await ApplicationPassword(wpOrgUsername: username, password: Secret(password))
-        saveApplicationPassword(applicationPassword)
+        storage.saveApplicationPassword(applicationPassword)
         return applicationPassword
     }
 
@@ -189,9 +185,8 @@ private extension DefaultApplicationPasswordUseCase {
     /// Deletes application password using WordPress.com authentication token
     ///
     func deleteApplicationPasswordUsingWPCOMAuthToken() async throws {
-        // Delete password from keychain
-        keychain.applicationPassword = nil
-        keychain.applicationPasswordUsername = nil
+        // Remove password from storage
+        storage.removeApplicationPassword()
 
         let passwordName = await applicationPasswordName
 
@@ -214,15 +209,6 @@ private extension DefaultApplicationPasswordUseCase {
                 }
             }
         }
-    }
-
-    /// Saves application password into keychain
-    ///
-    /// - Parameter password: `ApplicationPasword` to be saved
-    ///
-    func saveApplicationPassword(_ password: ApplicationPassword) {
-        keychain.applicationPassword = password.wpOrgUsername
-        keychain.applicationPasswordUsername = password.password.secretValue
     }
 }
 
@@ -247,22 +233,5 @@ private extension DefaultApplicationPasswordUseCase {
     enum ErrorCode {
         static let applicationPasswordsDisabledErrorCode = "application_passwords_disabled"
         static let duplicateNameErrorCode = "application_password_duplicate_name"
-    }
-}
-
-// MARK: - For storing the application password in keychain
-//
-private extension Keychain {
-    private static let keychainApplicationPassword = "ApplicationPassword"
-    private static let keychainApplicationPasswordUsername = "ApplicationPasswordUsername"
-
-    var applicationPassword: String? {
-        get { self[Keychain.keychainApplicationPassword] }
-        set { self[Keychain.keychainApplicationPassword] = newValue }
-    }
-
-    var applicationPasswordUsername: String? {
-        get { self[Keychain.keychainApplicationPasswordUsername] }
-        set { self[Keychain.keychainApplicationPasswordUsername] = newValue }
     }
 }

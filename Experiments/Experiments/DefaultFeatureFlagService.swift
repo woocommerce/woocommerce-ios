@@ -55,6 +55,9 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .alpha
         case .tapToPayOnIPhone:
             return buildConfig == .localDeveloper
+        case .applicationPasswordAuthenticationForSiteCredentialLogin:
+            // Enable this to test application password authentication (WIP)
+            return buildConfig == .localDeveloper
         default:
             return true
         }

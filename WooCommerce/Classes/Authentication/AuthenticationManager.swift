@@ -56,11 +56,12 @@ class AuthenticationManager: Authentication {
     /// Initializes the WordPress Authenticator.
     ///
     func initialize(loggedOutAppSettings: LoggedOutAppSettingsProtocol) {
-        let isWPComMagicLinkPreferredToPassword = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasis)
-        let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasisM2)
+        let isWPComMagicLinkPreferredToPassword = featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasis)
+        let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasisM2)
         let isSimplifiedLoginI1Enabled = ABTest.abTestLoginWithWPComOnly.variation != .control
-        let isStoreCreationMVPEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
+        let isStoreCreationMVPEnabled = featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
         let isNativeJetpackSetupEnabled = ABTest.nativeJetpackSetupFlow.variation != .control
+        let isWPComLoginRequiredForSiteCredentialsLogin = !featureFlagService.isFeatureFlagEnabled(.applicationPasswordAuthenticationForSiteCredentialLogin)
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
                                                                 wpcomScheme: ApiCredentials.dotcomAuthScheme,
@@ -78,7 +79,7 @@ class AuthenticationManager: Authentication {
                                                                 enableUnifiedAuth: true,
                                                                 continueWithSiteAddressFirst: false,
                                                                 enableSiteCredentialsLoginForSelfHostedSites: true,
-                                                                isWPComLoginRequiredForSiteCredentialsLogin: true,
+                                                                isWPComLoginRequiredForSiteCredentialsLogin: isWPComLoginRequiredForSiteCredentialsLogin,
                                                                 isWPComMagicLinkPreferredToPassword: isWPComMagicLinkPreferredToPassword,
                                                                 isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen:
                                                                     isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen,
@@ -380,6 +381,13 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             return DDLogError("⛔️ No site URL found to present Login Epilogue.")
         }
 
+        if credentials.wporg != nil,
+           featureFlagService.isFeatureFlagEnabled(.applicationPasswordAuthenticationForSiteCredentialLogin) {
+            // navigate to home screen immediately with a placeholder store ID
+            startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
+            return
+        }
+
         /// Jetpack is required. Present an error if we don't detect a valid installation for a self-hosted site.
         if isJetpackInvalidForSelfHostedSite(url: siteURL) {
             return presentJetpackError(for: siteURL, with: credentials, in: navigationController, onDismiss: onDismiss)
@@ -485,8 +493,17 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Synchronizes the specified WordPress Account.
     ///
     func sync(credentials: AuthenticatorCredentials, onCompletion: @escaping () -> Void) {
+        if let wporg = credentials.wporg,
+            featureFlagService.isFeatureFlagEnabled(.applicationPasswordAuthenticationForSiteCredentialLogin) {
+            ServiceLocator.stores.authenticate(credentials: .wporg(username: wporg.username,
+                                                                   password: wporg.username,
+                                                                   siteAddress: wporg.siteURL))
+            // TODO: check if application password is enabled & check for role eligibility
+            return onCompletion()
+        }
+
         guard let wpcom = credentials.wpcom else {
-            fatalError("Self Hosted sites are not supported. Please review the Authenticator settings!")
+            fatalError("No valid credentials found!")
         }
 
         // If Apple ID is previously set, saves it to Keychain now that authentication is complete.

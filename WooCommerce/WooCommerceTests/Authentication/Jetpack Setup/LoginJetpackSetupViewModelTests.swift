@@ -176,7 +176,7 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.shouldShowInitialLoadingIndicator)
-        waitUntil(timeout: 1) {
+        waitUntil {
             viewModel.shouldShowInitialLoadingIndicator == false
         }
     }
@@ -203,7 +203,7 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.shouldShowSetupSteps)
-        waitUntil(timeout: 1) {
+        waitUntil {
             viewModel.shouldShowSetupSteps == true
         }
     }
@@ -639,7 +639,7 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
         viewModel.didAuthorizeJetpackConnection()
 
         // Then
-        waitUntil(timeout: 3) {
+        waitUntil {
             viewModel.setupFailed
         }
         XCTAssertEqual(fetchJetpackUserTriggerCount, 3)
@@ -668,7 +668,7 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
         viewModel.didAuthorizeJetpackConnection()
 
         // Then
-        waitUntil(timeout: 3) {
+        waitUntil {
             viewModel.setupFailed
         }
         XCTAssertEqual(fetchJetpackUserTriggerCount, 3)

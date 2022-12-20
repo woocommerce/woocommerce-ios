@@ -55,3 +55,34 @@ private extension Credentials {
         static let placeholderSiteAddress = "https://wordpress.com"
     }
 }
+
+// MARK: - Helpers to read `Credentials`
+//
+public extension Credentials {
+    var username: String {
+        switch self {
+        case .wpcom(let username, _, _):
+            return username
+        case .wporg(let username, _, _):
+            return username
+        }
+    }
+
+    var siteAddress: String {
+        switch self {
+        case .wpcom(_, _, let siteAddress):
+            return siteAddress
+        case .wporg(_, _, let siteAddress):
+            return siteAddress
+        }
+    }
+
+    var secret: String {
+        switch self {
+        case .wpcom(_, let authToken, _):
+            return authToken
+        case .wporg(_, let password, _):
+            return password
+        }
+    }
+}

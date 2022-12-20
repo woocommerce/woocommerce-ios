@@ -26,8 +26,4 @@ public final class LinkOrPasswordScreen: ScreenObject {
 
         return try LoginCheckMagicLinkScreen()
     }
-
-    func isLoaded() -> Bool {
-        return app.buttons["Use Password"].exists
-    }
 }

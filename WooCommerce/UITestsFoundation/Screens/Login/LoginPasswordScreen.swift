@@ -39,8 +39,4 @@ public final class LoginPasswordScreen: ScreenObject {
         XCTAssert(errorLabel.waitForExistence(timeout: 3))
         return self
     }
-
-    func isLoaded() -> Bool {
-        return app.buttons["Password Next Button"].exists
-    }
 }

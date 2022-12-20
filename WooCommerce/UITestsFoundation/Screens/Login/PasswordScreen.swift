@@ -37,8 +37,4 @@ public final class PasswordScreen: ScreenObject {
         XCTAssertTrue(errorLabel.exists)
         return self
     }
-
-    func isLoaded() -> Bool {
-        return app.buttons["Continue Button"].exists
-    }
 }

@@ -23,8 +23,4 @@ public final class LoginUsernamePasswordScreen: ScreenObject {
 
         return try LoginEpilogueScreen()
     }
-
-    func isLoaded() -> Bool {
-        return app.buttons["submitButton"].exists
-    }
 }

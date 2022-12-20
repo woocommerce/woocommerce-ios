@@ -21,8 +21,4 @@ public final class LoginCheckMagicLinkScreen: ScreenObject {
 
         return try LoginPasswordScreen()
     }
-
-    func isLoaded() -> Bool {
-        return app.buttons["Open Mail Button"].exists
-    }
 }

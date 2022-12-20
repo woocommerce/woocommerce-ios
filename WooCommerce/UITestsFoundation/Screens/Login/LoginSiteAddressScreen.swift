@@ -20,8 +20,4 @@ public final class LoginSiteAddressScreen: ScreenObject {
         app.buttons["Site Address Next Button"].tap()
         return try GetStartedScreen()
     }
-
-    func isLoaded() -> Bool {
-        return app.buttons["Site Address Next Button"].exists
-    }
 }

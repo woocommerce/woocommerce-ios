@@ -29,11 +29,6 @@ public final class LoginEmailScreen: ScreenObject {
         return try LoginSiteAddressScreen()
     }
 
-    func isLoaded() -> Bool {
-        let expectedElement = app.textFields["Login Email Address"]
-        return expectedElement.exists && expectedElement.isHittable
-    }
-
     func isEmailEntered() -> Bool {
         let emailTextField = app.textFields["Login Email Address"]
         return emailTextField.value != nil

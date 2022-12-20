@@ -22,10 +22,6 @@ public final class GetStartedScreen: ScreenObject {
         return try PasswordScreen()
     }
 
-    func isLoaded() -> Bool {
-        return app.buttons["Get Started Email Continue Button"].exists
-    }
-
     func isEmailEntered() -> Bool {
         return app.textFields["Email address"].value != nil
     }

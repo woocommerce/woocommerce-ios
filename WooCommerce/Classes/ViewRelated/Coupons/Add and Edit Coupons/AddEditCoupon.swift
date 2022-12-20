@@ -428,7 +428,7 @@ private extension ProductSelector.Configuration {
               variableProductRowAccessibilityHint: Localization.variableProductRowAccessibilityHint)
 
     enum Localization {
-        static let title = NSLocalizedString("Select Products", comment: "Title for the screen to select products for a coupon")
+        static let title = NSLocalizedString("Select products", comment: "Title for the screen to select products for a coupon")
         static let cancel = NSLocalizedString("Cancel", comment: "Text for the cancel button in the Select Products screen")
         static let productRowAccessibilityHint = NSLocalizedString("Toggles selection for this product in a coupon.",
                                                                    comment: "Accessibility hint for selecting a product in the Select Products screen")

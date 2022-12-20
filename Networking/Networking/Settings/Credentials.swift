@@ -33,20 +33,13 @@ public enum Credentials: Equatable {
     /// Returns true if the username is a UUID placeholder.
     ///
     public func hasPlaceholderUsername() -> Bool {
-        guard case let .wpcom(username, _, _) = self else {
-            return false
-        }
-
-        return UUID(uuidString: username) != nil
+        UUID(uuidString: username) != nil
     }
 
     /// Returns true if the siteAddress is a placeholder.
     ///
     public func hasPlaceholderSiteAddress() -> Bool {
-        guard case let .wporg(_, _, siteAddress) = self else {
-            return false
-        }
-        return siteAddress == Constants.placeholderSiteAddress
+        siteAddress == Constants.placeholderSiteAddress
     }
 }
 

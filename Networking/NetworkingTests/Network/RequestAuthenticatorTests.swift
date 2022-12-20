@@ -37,15 +37,14 @@ final class RequestAuthenticatorTests: XCTestCase {
 
     func test_authenticatedRequest_returns_REST_request_with_authorization_header_if_application_password_is_available() throws {
         // Given
-        let credentials = Credentials(authToken: "secret")
-        let applicationPassword = ApplicationPassword(wpOrgUsername: "admin", password: .init("supersecret"))
-        let authenticator = RequestAuthenticator(credentials: credentials)
+        let credentials: Credentials = .wporg(username: "admin", password: "supersecret", siteAddress: "https://test.com/")
+        let applicationPassword = ApplicationPassword(wpOrgUsername: credentials.username, password: .init(credentials.secret))
         let useCase = MockApplicationPasswordUseCase(mockApplicationPassword: applicationPassword)
+        let authenticator = RequestAuthenticator(credentials: credentials, applicationPasswordUseCase: useCase)
         let jetpackRequest = JetpackRequest(wooApiVersion: .mark1, method: .get, siteID: 123, path: "test", availableAsRESTRequest: true)
 
         // When
         var updatedRequest: URLRequestConvertible?
-        authenticator.updateApplicationPasswordHandler(with: useCase)
         waitForExpectation { expectation in
             authenticator.authenticateRequest(jetpackRequest) { result in
                 updatedRequest = try? result.get()
@@ -63,15 +62,14 @@ final class RequestAuthenticatorTests: XCTestCase {
 
     func test_authenticatedRequest_returns_REST_request_with_authorization_header_if_application_password_generation_succeeds() throws {
         // Given
-        let credentials = Credentials(authToken: "secret")
-        let applicationPassword = ApplicationPassword(wpOrgUsername: "admin", password: .init("supersecret"))
-        let authenticator = RequestAuthenticator(credentials: credentials)
+        let credentials: Credentials = .wporg(username: "admin", password: "supersecret", siteAddress: "https://test.com/")
+        let applicationPassword = ApplicationPassword(wpOrgUsername: credentials.username, password: .init(credentials.secret))
         let useCase = MockApplicationPasswordUseCase(mockGeneratedPassword: applicationPassword)
+        let authenticator = RequestAuthenticator(credentials: credentials, applicationPasswordUseCase: useCase)
         let jetpackRequest = JetpackRequest(wooApiVersion: .mark1, method: .get, siteID: 123, path: "test", availableAsRESTRequest: true)
 
         // When
         var updatedRequest: URLRequestConvertible?
-        authenticator.updateApplicationPasswordHandler(with: useCase)
         waitForExpectation { expectation in
             authenticator.authenticateRequest(jetpackRequest) { result in
                 updatedRequest = try? result.get()
@@ -89,14 +87,13 @@ final class RequestAuthenticatorTests: XCTestCase {
 
     func test_authenticatedRequest_returns_error_if_generating_application_password_fails_for_REST_request() throws {
         // Given
-        let credentials = Credentials(authToken: "secret")
-        let authenticator = RequestAuthenticator(credentials: credentials)
+        let credentials: Credentials = .wporg(username: "admin", password: "supersecret", siteAddress: "https://test.com/")
         let useCase = MockApplicationPasswordUseCase(mockGenerationError: NetworkError.timeout)
+        let authenticator = RequestAuthenticator(credentials: credentials, applicationPasswordUseCase: useCase)
         let jetpackRequest = JetpackRequest(wooApiVersion: .mark1, method: .get, siteID: 123, path: "test", availableAsRESTRequest: true)
 
         // When
         var error: Error?
-        authenticator.updateApplicationPasswordHandler(with: useCase)
         waitForExpectation { expectation in
             authenticator.authenticateRequest(jetpackRequest) { result in
                 error = result.failure

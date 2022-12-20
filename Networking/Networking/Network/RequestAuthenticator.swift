@@ -29,16 +29,24 @@ final class RequestAuthenticator {
 
     /// The use case to handle authentication with application passwords.
     ///
-    private var applicationPasswordUseCase: ApplicationPasswordUseCase?
+    private let applicationPasswordUseCase: ApplicationPasswordUseCase?
 
-    init(credentials: Credentials?) {
-        self.credentials = credentials
-    }
-
-    /// Updates the application password use case with a new site ID.
+    /// Sets up the authenticator with optional credentials and application password use case.
+    /// `applicationPasswordUseCase` is injectable for testability.
     ///
-    func updateApplicationPasswordHandler(with useCase: ApplicationPasswordUseCase) {
-        applicationPasswordUseCase = useCase
+    init(credentials: Credentials?, applicationPasswordUseCase: ApplicationPasswordUseCase? = nil) {
+        self.credentials = credentials
+        let useCase: ApplicationPasswordUseCase? = {
+            if let applicationPasswordUseCase {
+                return applicationPasswordUseCase
+            } else if let credentials, case .wporg = credentials {
+                // TODO: setup DefaultApplicationPasswordUseCase
+                return nil
+            } else {
+                return nil
+            }
+        }()
+        self.applicationPasswordUseCase = useCase
     }
 
     /// Updates a request with application password or WPCOM token if possible.
@@ -46,12 +54,13 @@ final class RequestAuthenticator {
     func authenticateRequest(_ request: URLRequestConvertible, completion: @escaping (Swift.Result<URLRequestConvertible, Error>) -> Void) {
         guard let jetpackRequest = request as? JetpackRequest,
               jetpackRequest.availableAsRESTRequest,
-              let useCase = applicationPasswordUseCase else {
+              let useCase = applicationPasswordUseCase,
+              case let .some(.wporg(_, _, siteAddress)) = credentials else {
             // Handle non-REST requests as before
             return completion(.success(authenticateUsingWPCOMTokenIfPossible(request)))
         }
-        // TODO: get site URL from wporg credentials
-        let restRequest = jetpackRequest.createRESTRequest(with: "")
+
+        let restRequest = jetpackRequest.createRESTRequest(with: siteAddress)
         Task(priority: .medium) {
             let result: Swift.Result<URLRequestConvertible, Error>
             do {

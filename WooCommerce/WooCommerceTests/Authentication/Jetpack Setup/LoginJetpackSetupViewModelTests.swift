@@ -154,58 +154,73 @@ final class LoginJetpackSetupViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.tryAgainButtonTitle, JetpackInstallStep.connection.tryAgainButtonTitle)
     }
 
-    func test_shouldShowInitialLoadingIndicator_is_correct() {
+    func test_shouldShowInitialLoadingIndicator_turns_on_correctly_when_startSetup_then_returns_true() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = LoginJetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores)
-        let plugin = SitePlugin.fake().copy(plugin: "Jetpack", status: .inactive)
-
-        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
-            switch action {
-            case .retrieveJetpackPluginDetails(let completion):
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                    completion(.success(plugin))
-                }
-            default:
-                break
-            }
-        }
 
         // When
         viewModel.startSetup()
 
         // Then
         XCTAssertTrue(viewModel.shouldShowInitialLoadingIndicator)
-        waitUntil {
-            viewModel.shouldShowInitialLoadingIndicator == false
-        }
+
     }
 
-    func test_shouldShowSetupSteps_is_correct() {
+    func test_shouldShowInitialLoadingIndicator_turns_off_correctly_when_retrieveJetpackPluginDetails_is_success_then_returns_false() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = LoginJetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores)
         let plugin = SitePlugin.fake().copy(plugin: "Jetpack", status: .inactive)
 
+        // When
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case .retrieveJetpackPluginDetails(let completion):
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                    completion(.success(plugin))
-                }
+                completion(.success(plugin))
             default:
                 break
             }
         }
+        viewModel.startSetup()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowInitialLoadingIndicator)
+
+    }
+
+    func test_shouldShowSetupSteps_when_startSetup_then_returns_false() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = LoginJetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores)
 
         // When
         viewModel.startSetup()
 
         // Then
         XCTAssertFalse(viewModel.shouldShowSetupSteps)
-        waitUntil {
-            viewModel.shouldShowSetupSteps == true
+
+    }
+
+    func test_shouldShowSetupSteps_when_retrieveJetpackPluginDetails_is_success_then_returns_true() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = LoginJetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores)
+        let plugin = SitePlugin.fake().copy(plugin: "Jetpack", status: .inactive)
+
+        // When
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .retrieveJetpackPluginDetails(let completion):
+                    completion(.success(plugin))
+            default:
+                break
+            }
         }
+        viewModel.startSetup()
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowSetupSteps)
     }
 
     func test_shouldShowGoToStoreButton_is_correct() {

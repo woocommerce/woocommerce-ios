@@ -294,7 +294,7 @@ private extension DefaultStoresManager {
     func replaceTempCredentialsIfNecessary(account: Account) {
         guard
             let credentials = sessionManager.defaultCredentials,
-            case let .wpcom(_, authToken, siteAddress) = credentials,
+            case let .wpcom(_, authToken, siteAddress) = credentials, // Only WPCOM creds have placeholder `username`. WPOrg creds have user entered `username`
             credentials.hasPlaceholderUsername() else {
             return
         }

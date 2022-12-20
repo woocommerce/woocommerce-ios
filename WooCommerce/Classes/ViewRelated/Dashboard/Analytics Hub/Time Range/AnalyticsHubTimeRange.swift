@@ -10,7 +10,7 @@ struct AnalyticsHubTimeRange {
         }
 
         let startDateDescription: String
-        if start.isSameYear(as: end) {
+        if start.isSameYear(as: end, using: calendar) {
             startDateDescription = DateFormatter.Stats.createAnalyticsHubDayMonthFormatter(timezone: timezone).string(from: start)
         } else {
             startDateDescription = DateFormatter.Stats.createAnalyticsHubDayMonthYearFormatter(timezone: timezone).string(from: start)

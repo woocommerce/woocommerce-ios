@@ -222,6 +222,7 @@ private extension AnalyticsHubViewModel {
 
         return try await withCheckedThrowingContinuation { continuation in
             let action = StatsActionV4.retrieveSiteSummaryStats(siteID: siteID,
+                                                                siteTimezone: .current,
                                                                 period: period,
                                                                 quantity: timeRangeSelectionType.quantity,
                                                                 latestDateToInclude: latestDateToInclude,

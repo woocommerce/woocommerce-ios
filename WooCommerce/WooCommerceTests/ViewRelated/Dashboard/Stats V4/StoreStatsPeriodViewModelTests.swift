@@ -10,6 +10,7 @@ import WooFoundation
 final class StoreStatsPeriodViewModelTests: XCTestCase {
     private let siteID: Int64 = 300
     private let defaultSiteTimezone = TimeZone(identifier: "GMT") ?? .current
+    private let defaultDate = Date(timeIntervalSince1970: 1671123600) // Dec 15, 2022, 5:00:00 PM GMT
     private var storageManager: StorageManagerType!
     private var storage: StorageType {
         storageManager.viewStorage
@@ -78,7 +79,8 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
         XCTAssertEqual(conversionStatsTextValues, ["-"])
 
         // When
-        let siteSummaryStats = Yosemite.SiteSummaryStats.fake().copy(siteID: siteID, date: "2022-12-15", visitors: 22)
+        let dateString = StatsStoreV4.buildDateString(from: defaultDate, with: .day)
+        let siteSummaryStats = Yosemite.SiteSummaryStats.fake().copy(siteID: siteID, date: dateString, visitors: 22)
         insertSiteSummaryStats(siteSummaryStats, timeRange: timeRange)
 
         // Then
@@ -121,7 +123,8 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
         observeStatsEmittedValues(viewModel: viewModel)
 
         // When
-        let siteSummaryStats = Yosemite.SiteSummaryStats.fake().copy(siteID: siteID, date: "2022-12-15", visitors: 15)
+        let dateString = StatsStoreV4.buildDateString(from: defaultDate, with: .day)
+        let siteSummaryStats = Yosemite.SiteSummaryStats.fake().copy(siteID: siteID, date: dateString, visitors: 15)
         insertSiteSummaryStats(siteSummaryStats, timeRange: timeRange)
 
         XCTAssertEqual(conversionStatsTextValues, ["-"])
@@ -678,13 +681,11 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
 }
 
 private extension StoreStatsPeriodViewModelTests {
-    static let defaultDate = Date(timeIntervalSince1970: 1671123600) // Dec 15, 2022, 5:00:00 PM GMT
-
-    func createViewModel(timeRange: StatsTimeRangeV4, date: Date = defaultDate) -> StoreStatsPeriodViewModel {
+    func createViewModel(timeRange: StatsTimeRangeV4) -> StoreStatsPeriodViewModel {
         StoreStatsPeriodViewModel(siteID: siteID,
                                   timeRange: timeRange,
                                   siteTimezone: defaultSiteTimezone,
-                                  currentDate: date,
+                                  currentDate: defaultDate,
                                   currencyFormatter: currencyFormatter,
                                   currencySettings: currencySettings,
                                   storageManager: storageManager)

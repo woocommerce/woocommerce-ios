@@ -97,8 +97,7 @@ extension Date {
 
     /// Returns `true` if `self` is in the same year as `other`.
     ///
-    func isSameYear(as otherDate: Date) -> Bool {
-        let calendar = Calendar.current
+    func isSameYear(as otherDate: Date, using calendar: Calendar = .current) -> Bool {
         guard let selfYear = calendar.dateComponents([.year], from: self).year,
             let otherYear = calendar.dateComponents([.year], from: otherDate).year else {
                 return false

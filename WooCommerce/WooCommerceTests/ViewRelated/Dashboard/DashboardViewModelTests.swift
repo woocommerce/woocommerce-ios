@@ -55,7 +55,7 @@ final class DashboardViewModelTests: XCTestCase {
                 completion(.failure(DotcomError.noRestRoute))
             case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, completion):
                 completion(.failure(DotcomError.noRestRoute))
-            case let .retrieveSiteSummaryStats(_, _, _, _, _, completion):
+            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
                 completion(.failure(DotcomError.noRestRoute))
             default:
                 XCTFail("Received unsupported action: \(action)")
@@ -68,7 +68,7 @@ final class DashboardViewModelTests: XCTestCase {
         viewModel.syncStats(for: sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init(), forceRefresh: false)
         viewModel.syncSiteVisitStats(for: sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init())
         viewModel.syncTopEarnersStats(for: sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init(), forceRefresh: false)
-        viewModel.syncSiteSummaryStats(for: sampleSiteID, timeRange: .thisMonth, latestDateToInclude: .init())
+        viewModel.syncSiteSummaryStats(for: sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init())
 
         // Then
         XCTAssertEqual(viewModel.statsVersion, .v4)

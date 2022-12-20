@@ -173,9 +173,9 @@ final class LegacyCollectOrderPaymentUseCaseTests: XCTestCase {
         let _: Void = waitFor { [weak self] promise in
             useCase.collectPayment(onCollect: { collectPaymentResult in
                 result = collectPaymentResult
-            }, onCancel: {}, onCompleted: {
+            }, onCancel: {
                 promise(())
-            })
+            }, onCompleted: {})
             // Dismisses error to complete the payment flow for `onCollect` to be triggered.
             self?.alerts.dismissErrorCompletion?()
         }

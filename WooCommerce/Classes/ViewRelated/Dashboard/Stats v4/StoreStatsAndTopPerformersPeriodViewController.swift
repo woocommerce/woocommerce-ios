@@ -383,6 +383,6 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
     }
 
     enum Localization {
-        static let seeMoreButton = NSLocalizedString("See more", comment: "Button on the stats dashboard that navigates user to the analytics hub")
+        static let seeMoreButton = NSLocalizedString("See More", comment: "Button on the stats dashboard that navigates user to the analytics hub")
     }
 }

@@ -115,7 +115,7 @@ private extension StorePickerError {
         static let title = NSLocalizedString("We couldn't load your site", comment: "Title for the default store picker error screen")
         static let body = NSLocalizedString("Please try again or reach out to us and we'll be happy to assist you!",
                                             comment: "Body text for the default store picker error screen")
-        static let troubleshoot = NSLocalizedString("Read our Troubleshooting Tips",
+        static let troubleshoot = NSLocalizedString("Read Our Troubleshooting Tips",
                                                     comment: "Text for the button to navigate to troubleshooting tips from the store picker error screen")
         static let contact = NSLocalizedString("Contact Support",
                                                comment: "Text for the button to contact support from the store picker error screen")

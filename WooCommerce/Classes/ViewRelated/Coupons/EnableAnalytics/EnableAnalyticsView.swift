@@ -150,8 +150,8 @@ private extension EnableAnalyticsView {
             comment: "Message format on enable analytics screen for support. The %@ placeholder is a URL with more information."
         )
         static let contactSupport = NSLocalizedString("Contact support", comment: "Action button to contact support on enable analytics screen")
-        static let enableAction = NSLocalizedString("Enable analytics", comment: "Action title to enable Analytics for a store")
-        static let dismissAction = NSLocalizedString("Not now", comment: "Action title to dismiss enabling Analytics for a store")
+        static let enableAction = NSLocalizedString("Enable Analytics", comment: "Action title to enable Analytics for a store")
+        static let dismissAction = NSLocalizedString("Not Now", comment: "Action title to dismiss enabling Analytics for a store")
         static let analyticsEnabled = NSLocalizedString("Analytics enabled successfully.", comment: "Message when enabling analytics succeeds")
         static let errorEnablingAnalytics = NSLocalizedString(
             "Error enabling analytics. Please try again.",

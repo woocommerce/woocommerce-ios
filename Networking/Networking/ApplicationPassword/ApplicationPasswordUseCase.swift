@@ -1,10 +1,11 @@
 import Foundation
 import WordPressShared
-import KeychainAccess
+import WordPressKit
 
 enum ApplicationPasswordUseCaseError: Error {
     case duplicateName
     case applicationPasswordsDisabled
+    case invalidSiteAddress
 }
 
 struct ApplicationPassword {
@@ -36,13 +37,13 @@ protocol ApplicationPasswordUseCase {
 }
 
 final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
-    /// WordPress.com Credentials.
+    /// Site Address
     ///
-    private let credentials: Credentials
+    private let siteAddress: String
 
-    /// SiteID needed when using WPCOM credentials
+    /// WPOrg username
     ///
-    private let siteID: Int64
+    private let username: String
 
     /// To generate and delete application password
     ///
@@ -50,7 +51,7 @@ final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
 
     /// To store application password
     ///
-    private let storage: ApplicationPasswordStorage
+    private let storage = ApplicationPasswordStorage()
 
     /// Used to name the password in wpadmin.
     ///
@@ -62,18 +63,30 @@ final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
         }
     }
 
-    init(siteID: Int64,
-         networkcredentials: Credentials,
-         network: Network? = nil,
-         keychain: Keychain = Keychain(service: KeychainServiceName.name)) {
-        self.siteID = siteID
-        self.credentials = networkcredentials
-        self.storage = ApplicationPasswordStorage(keychain: keychain)
+    @MainActor
+    init(username: String,
+         password: String,
+         siteAddress: String,
+         network: Network? = nil) async throws {
+        self.siteAddress = siteAddress
+        self.username = username
 
         if let network {
             self.network = network
         } else {
-            self.network = ApplicationPasswordNetwork(credentials: networkcredentials)
+            guard let loginURL = URL(string: siteAddress + Constants.loginPath),
+                  let adminURL = URL(string: siteAddress + Constants.adminPath) else {
+                DDLogWarn("⚠️ Cannot construct login URL and admin URL for site \(siteAddress)")
+                throw ApplicationPasswordUseCaseError.invalidSiteAddress
+            }
+            // Prepares the authenticator with username and password
+            let authenticator = CookieNonceAuthenticator(username: username,
+                                                         password: password,
+                                                         loginURL: loginURL,
+                                                         adminURL: adminURL,
+                                                         version: Constants.defaultWPVersion,
+                                                         nonce: nil)
+            self.network = ApplicationPasswordNetwork(authenticator: authenticator)
         }
     }
 
@@ -92,13 +105,12 @@ final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
     func generateNewPassword() async throws -> ApplicationPassword {
         async let password = try {
             do {
-                return try await createApplicationPasswordUsingWPCOMAuthToken()
+                return try await createApplicationPassword()
             } catch ApplicationPasswordUseCaseError.duplicateName {
                 try await deletePassword()
-                return try await createApplicationPasswordUsingWPCOMAuthToken()
+                return try await createApplicationPassword()
             }
         }()
-        async let username = try fetchWPAdminUsername()
 
         let applicationPassword = try await ApplicationPassword(wpOrgUsername: username, password: Secret(password))
         storage.saveApplicationPassword(applicationPassword)
@@ -110,7 +122,7 @@ final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
     ///  Deletes locally and also sends an API request to delete it from the site
     ///
     func deletePassword() async throws {
-        try await deleteApplicationPasswordUsingWPCOMAuthToken()
+        try await deleteApplicationPassword()
     }
 }
 
@@ -119,12 +131,11 @@ private extension DefaultApplicationPasswordUseCase {
     ///
     /// - Returns: Application password as `String`
     ///
-    func createApplicationPasswordUsingWPCOMAuthToken() async throws -> String {
+    func createApplicationPassword() async throws -> String {
         let passwordName = await applicationPasswordName
 
         let parameters = [ParameterKey.name: passwordName]
-        let request = JetpackRequest(wooApiVersion: .none, method: .post, siteID: siteID, path: Path.applicationPasswords, parameters: parameters)
-
+        let request = WordPressOrgRequest(baseURL: siteAddress, method: .post, path: Path.applicationPasswords, parameters: parameters)
         return try await withCheckedThrowingContinuation { continuation in
             network.responseData(for: request) { result in
                 switch result {
@@ -184,14 +195,13 @@ private extension DefaultApplicationPasswordUseCase {
 
     /// Deletes application password using WordPress.com authentication token
     ///
-    func deleteApplicationPasswordUsingWPCOMAuthToken() async throws {
+    func deleteApplicationPassword() async throws {
         // Remove password from storage
         storage.removeApplicationPassword()
 
         let passwordName = await applicationPasswordName
-
         let parameters = [ParameterKey.name: passwordName]
-        let request = JetpackRequest(wooApiVersion: .none, method: .delete, siteID: siteID, path: Path.applicationPasswords, parameters: parameters)
+        let request = WordPressOrgRequest(baseURL: siteAddress, method: .delete, path: Path.applicationPasswords, parameters: parameters)
 
         try await withCheckedThrowingContinuation { continuation in
             network.responseData(for: request) { result in
@@ -215,15 +225,8 @@ private extension DefaultApplicationPasswordUseCase {
 // MARK: - Constants
 //
 private extension DefaultApplicationPasswordUseCase {
-    enum KeychainServiceName {
-        /// Matching `WooConstants.keychainServiceName`
-        ///
-        static let name = "com.automattic.woocommerce"
-    }
-
     enum Path {
         static let applicationPasswords = "wp/v2/users/me/application-passwords"
-        static let users = "wp/v2/users/me"
     }
 
     enum ParameterKey {
@@ -233,5 +236,11 @@ private extension DefaultApplicationPasswordUseCase {
     enum ErrorCode {
         static let applicationPasswordsDisabledErrorCode = "application_passwords_disabled"
         static let duplicateNameErrorCode = "application_password_duplicate_name"
+    }
+
+    enum Constants {
+        static let loginPath = "/wp-login.php"
+        static let adminPath = "/wp-admin/"
+        static let defaultWPVersion = "5.6.0" // a default version that supports Ajax nonce retrieval
     }
 }

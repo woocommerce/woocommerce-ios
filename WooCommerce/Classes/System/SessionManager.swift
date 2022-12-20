@@ -184,7 +184,7 @@ private extension SessionManager {
 
         // To cover the case of previous versions which don't have the credential type stored in user defaults
         guard let defaultCredentialsType = defaults[.defaultCredentialsType] as? String else {
-            return Credentials(username: username, authToken: secret, siteAddress: siteAddress)
+            return .wpcom(username: username, authToken: secret, siteAddress: siteAddress)
         }
 
         guard let identifier = AuthenticationTypeIdentifier(rawValue: defaultCredentialsType) else {
@@ -193,9 +193,9 @@ private extension SessionManager {
 
         switch identifier {
         case .wpcom:
-            return Credentials(username: username, authToken: secret, siteAddress: siteAddress)
+            return .wpcom(username: username, authToken: secret, siteAddress: siteAddress)
         case .wporg:
-            return Credentials(username: username, password: secret, siteAddress: siteAddress)
+            return .wporg(username: username, password: secret, siteAddress: siteAddress)
         }
     }
 

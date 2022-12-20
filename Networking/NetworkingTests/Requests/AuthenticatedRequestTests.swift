@@ -24,7 +24,7 @@ class AuthenticatedRequestTests: XCTestCase {
         let authenticated = AuthenticatedRequest(credentials: credentials, request: unauthenticatedRequest)
         let output = try! authenticated.asURLRequest()
 
-        guard case let .wpcom(username: _, authToken: authToken, siteAddress: _) = credentials else {
+        guard case let .wpcom(_, authToken, _) = credentials else {
             XCTFail("Missing credentials.")
             return
         }

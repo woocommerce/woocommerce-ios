@@ -294,7 +294,7 @@ private extension DefaultStoresManager {
     func replaceTempCredentialsIfNecessary(account: Account) {
         guard
             let credentials = sessionManager.defaultCredentials,
-            case let .wpcom(username: _, authToken: authToken, siteAddress: siteAddress) = credentials,
+            case let .wpcom(_, authToken, siteAddress) = credentials,
             credentials.hasPlaceholderUsername() else {
             return
         }
@@ -507,7 +507,7 @@ private extension DefaultStoresManager {
     ///
     func updateAndReloadWidgetInformation(with siteID: Int64?) {
         // Token to fire network requests
-        if case let .wpcom(username: _, authToken: authToken, siteAddress: _) = sessionManager.defaultCredentials {
+        if case let .wpcom(_, authToken, _) = sessionManager.defaultCredentials {
             keychain.currentAuthToken = authToken
         }
 

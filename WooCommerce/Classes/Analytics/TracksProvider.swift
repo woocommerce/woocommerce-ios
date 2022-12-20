@@ -67,7 +67,7 @@ private extension TracksProvider {
         let anonymousID = ServiceLocator.stores.sessionManager.anonymousUserID
         if ServiceLocator.stores.isAuthenticated,
            let account = ServiceLocator.stores.sessionManager.defaultAccount,
-           case let .wpcom(username: _, authToken: authToken, siteAddress: _) = ServiceLocator.stores.sessionManager.defaultCredentials {
+           case let .wpcom(_, authToken, _) = ServiceLocator.stores.sessionManager.defaultCredentials {
             if currentAnalyticsUsername.isEmpty {
                 // No previous username logged
                 UserDefaults.standard[.analyticsUsername] = account.username

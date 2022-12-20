@@ -37,7 +37,7 @@ extension WKWebView {
     }
 
     private func authenticatedPostData(with credentials: Credentials?, redirectTo url: URL) throws -> URLRequest {
-        guard case let .wpcom(username: username, authToken: token, siteAddress: _) = credentials else {
+        guard case let .wpcom(username, token, _) = credentials else {
             return URLRequest(url: url)
         }
 

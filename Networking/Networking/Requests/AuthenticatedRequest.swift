@@ -21,7 +21,7 @@ struct AuthenticatedRequest: URLRequestConvertible {
     /// Returns the Wrapped Request, but with a WordPress.com Bearer Token set up.
     ///
     func asURLRequest() throws -> URLRequest {
-        guard case let .wpcom(username: _, authToken: authToken, siteAddress: _) = credentials else {
+        guard case let .wpcom(_, authToken, _) = credentials else {
             throw AuthenticatedRequestError.invalidCredentials
         }
 

@@ -30,7 +30,7 @@ class SessionManagerTests: XCTestCase {
         // Given
         manager.defaultCredentials = Settings.wpcomCredentials
 
-        guard case let .wpcom(username: username, authToken: authToken, siteAddress: siteAddress) = manager.defaultCredentials else {
+        guard case let .wpcom(username, authToken, siteAddress) = manager.defaultCredentials else {
             XCTFail("Missing credentials.")
             return
         }

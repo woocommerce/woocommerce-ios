@@ -487,7 +487,10 @@ private extension StoreStatsAndTopPerformersViewController {
 
             guard changeCurrentIndex == true else { return }
             oldCell?.label.textColor = .textSubtle
+            oldCell?.label.font = StyleManager.subheadlineFont
+
             newCell?.label.textColor = .primary
+            newCell?.label.font = StyleManager.subheadlineSemiBold
         }
     }
 }

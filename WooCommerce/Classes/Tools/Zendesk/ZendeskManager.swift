@@ -283,7 +283,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         do {
             try pluginResultsController.performFetch()
         } catch {
-            DDLogError("Unable to fetch plugins from storage: \(error)")
+            DDLogError("⛔️ Unable to fetch plugins from storage: \(error)")
         }
         observeZendeskNotifications()
     }

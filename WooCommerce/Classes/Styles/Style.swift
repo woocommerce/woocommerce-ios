@@ -11,7 +11,8 @@ final class StyleManager {
     }
 
     static var chartLabelFont: UIFont {
-        return .font(forStyle: .caption2, weight: .regular)
+        // Dashboard chart needs from a slighly smaller maximum font to be able to fit it when using the biggest accessibility font.
+        return self.fontForTextStyle(.caption2, weight: .regular, maximumPointSize: 20.0)
     }
 
     static var headlineSemiBold: UIFont {

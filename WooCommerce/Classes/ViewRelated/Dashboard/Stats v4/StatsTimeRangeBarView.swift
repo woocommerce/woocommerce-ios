@@ -33,6 +33,7 @@ private extension StatsTimeRangeBarView {
         label.font = Constants.labelFont
         label.textColor = Constants.labelColor
         label.textAlignment = Constants.labelTextAlignment
+        label.adjustsFontSizeToFitWidth = true
     }
 }
 

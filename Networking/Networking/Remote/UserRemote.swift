@@ -19,6 +19,22 @@ public final class UserRemote: Remote {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Loads the User associated with the site URL.
+    /// - Parameters:
+    ///    - siteURL: The URL of a WordPress site.
+    ///    - completion: The block to be executed once the request completes.
+    public func loadUserInfo(for siteURL: String, completion: @escaping(Result<User, Error>) -> Void) {
+        let path = Constants.usersPath
+        let parameters = [
+            "context": "edit",
+            "fields": "id,username,id_wpcom,email,first_name,last_name,nickname,roles"
+        ]
+        let request = WordPressOrgRequest(baseURL: siteURL, method: .get, path: path, parameters: parameters)
+        let mapper = UserMapper(siteID: Constants.placeholderSiteID)
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 // MARK: - Constants!
@@ -26,5 +42,6 @@ public final class UserRemote: Remote {
 private extension UserRemote {
     enum Constants {
         static let usersPath: String = "wp/v2/users/me"
+        static let placeholderSiteID: Int64 = -1
     }
 }

@@ -36,7 +36,7 @@ struct JetpackRequest: Request {
 
     /// Whether this request should be transformed to a REST request if application password is available.
     ///
-    let availableAsRESTRequest: Bool
+    private let availableAsRESTRequest: Bool
 
 
     /// Designated Initializer.
@@ -82,8 +82,11 @@ struct JetpackRequest: Request {
         return DotcomValidator()
     }
 
-    func createRESTRequest(with siteURL: String) -> RESTRequest {
-        RESTRequest(siteURL: siteURL, method: method, path: path, parameters: parameters)
+    func asRESTRequest(with siteURL: String) -> RESTRequest? {
+        guard availableAsRESTRequest else {
+            return nil
+        }
+        return RESTRequest(siteURL: siteURL, method: method, path: path, parameters: parameters)
     }
 }
 

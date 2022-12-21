@@ -35,14 +35,13 @@ final class RequestAuthenticator {
     ///
     func authenticateRequest(_ request: URLRequestConvertible, completion: @escaping (Swift.Result<URLRequestConvertible, Error>) -> Void) {
         guard let jetpackRequest = request as? JetpackRequest,
-              jetpackRequest.availableAsRESTRequest,
               let useCase = applicationPasswordUseCase,
-              case let .wporg(_, _, siteAddress) = credentials else {
+              case let .wporg(_, _, siteAddress) = credentials,
+              let restRequest = jetpackRequest.asRESTRequest(with: siteAddress) else {
             // Handle non-REST requests as before
             return completion(.success(authenticateUsingWPCOMTokenIfPossible(request)))
         }
 
-        let restRequest = jetpackRequest.createRESTRequest(with: siteAddress)
         Task(priority: .medium) {
             let result: Swift.Result<URLRequestConvertible, Error>
             do {

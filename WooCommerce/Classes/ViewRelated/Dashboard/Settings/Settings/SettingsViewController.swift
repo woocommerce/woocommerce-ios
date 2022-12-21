@@ -239,6 +239,7 @@ private extension SettingsViewController {
     }
 
     func configureCloseAccount(cell: BasicTableViewCell) {
+        cell.accessoryType = .none
         cell.selectionStyle = .default
         cell.textLabel?.textAlignment = .center
         cell.textLabel?.textColor = .error
@@ -247,6 +248,7 @@ private extension SettingsViewController {
 
     func configureLogout(cell: BasicTableViewCell) {
         cell.selectionStyle = .default
+        cell.accessoryType = .none
         cell.textLabel?.textAlignment = .center
         cell.textLabel?.textColor = .error
         cell.textLabel?.text = Localization.logout

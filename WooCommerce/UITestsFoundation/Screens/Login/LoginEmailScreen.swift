@@ -14,7 +14,7 @@ public final class LoginEmailScreen: ScreenObject {
     private let siteAddressButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["Self Hosted Login Button"]
     }
-    
+
     private let emailTextFieldGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["Self Hosted Login Button"]
     }

@@ -176,19 +176,16 @@ final class InAppPurchaseStoreTests: XCTestCase {
     }
 
     func test_user_is_entitled_to_product_returns_false_when_not_entitled() throws {
-        // Given
-
         // When
-        let result = waitFor { promise in
-            let action = InAppPurchaseAction.userIsEntitledToProduct(productID: self.sampleProductID) { result in
-                    promise(result)
-                }
-            self.store.onAction(action)
+        Task {
+            do {
+                let isEntitled = try await userIsEntitledToProduct()
+                // Then
+                XCTAssertFalse(isEntitled)
+            } catch {
+                XCTAssert(error is WordPressApiError)
+            }
         }
-
-        // Then
-        let isEntitled = try XCTUnwrap(result.get())
-        XCTAssertFalse(isEntitled)
     }
 
     func test_user_is_entitled_to_product_returns_true_when_entitled() throws {
@@ -196,15 +193,26 @@ final class InAppPurchaseStoreTests: XCTestCase {
         try storeKitSession.buyProduct(productIdentifier: sampleProductID)
 
         // When
-        let result = waitFor { promise in
-            let action = InAppPurchaseAction.userIsEntitledToProduct(productID: self.sampleProductID) { result in
-                    promise(result)
-                }
+        Task {
+            do {
+                let isEntitled = try await userIsEntitledToProduct()
+                // Then
+                XCTAssertTrue(isEntitled)
+            } catch {
+                XCTAssert(error is WordPressApiError)
+            }
+        }
+    }
+}
+
+private extension InAppPurchaseStoreTests {
+    // Returns whether the user is entitled the product identified with the passed ID
+    func userIsEntitledToProduct() async throws -> Bool {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
+            let action = InAppPurchaseAction.userIsEntitledToProduct(productID: self.sampleProductID) { _ in
+                continuation.resume(returning: (true))
+            }
             self.store.onAction(action)
         }
-
-        // Then
-        let isEntitled = try XCTUnwrap(result.get())
-        XCTAssertTrue(isEntitled)
     }
 }

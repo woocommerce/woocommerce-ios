@@ -19,7 +19,6 @@ class SiteVisitStatsMapperTests: XCTestCase {
         XCTAssertEqual(dayStats.granularity, .day)
         XCTAssertEqual(dayStats.date, "2018-08-06")
         XCTAssertEqual(dayStats.items!.count, 12)
-        XCTAssertEqual(dayStats.totalVisitors, 105)
 
         let sampleItem1 = dayStats.items![0]
         XCTAssertEqual(sampleItem1.period, "2018-07-26")
@@ -44,7 +43,6 @@ class SiteVisitStatsMapperTests: XCTestCase {
         XCTAssertEqual(weekStats.granularity, .week)
         XCTAssertEqual(weekStats.date, "2018-08-06")
         XCTAssertEqual(weekStats.items!.count, 12)
-        XCTAssertEqual(weekStats.totalVisitors, 123123241)
 
         let sampleItem1 = weekStats.items![0]
         XCTAssertEqual(sampleItem1.period, "2018W05W21")
@@ -69,7 +67,6 @@ class SiteVisitStatsMapperTests: XCTestCase {
         XCTAssertEqual(monthStats.granularity, .month)
         XCTAssertEqual(monthStats.date, "2018-08-06")
         XCTAssertEqual(monthStats.items!.count, 12)
-        XCTAssertEqual(monthStats.totalVisitors, 292)
 
         let sampleItem1 = monthStats.items![0]
         XCTAssertEqual(sampleItem1.period, "2017-09-01")
@@ -94,7 +91,6 @@ class SiteVisitStatsMapperTests: XCTestCase {
         XCTAssertEqual(yearStats.granularity, .year)
         XCTAssertEqual(yearStats.date, "2018-08-06")
         XCTAssertEqual(yearStats.items!.count, 5)
-        XCTAssertEqual(yearStats.totalVisitors, 3336)
 
         let sampleItem1 = yearStats.items![0]
         XCTAssertEqual(sampleItem1.period, "2014-01-01")

@@ -24,6 +24,10 @@ final class StyleManager {
         return .font(forStyle: .subheadline, weight: .regular)
     }
 
+    static var subheadlineSemiBoldFont: UIFont {
+        return .font(forStyle: .subheadline, weight: .semibold)
+    }
+
     static var subheadlineBoldFont: UIFont {
         return self.fontForTextStyle(.subheadline,
         weight: .bold,

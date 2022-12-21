@@ -15,8 +15,8 @@ public final class LoginEpilogueScreen: ScreenObject {
         $0.buttons["login-epilogue-continue-button"]
     }
 
-    private var actualEmail: String { emailLabelGetter(app).label }
-    private var actualSiteUrl: String { urlLabelGetter(app).label }
+    private var emailLabel: String { emailLabelGetter(app).label }
+    private var siteUrlLabel: String { urlLabelGetter(app).label }
     private var continueButton: XCUIElement { continueButtonGetter(app) }
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
@@ -37,8 +37,8 @@ public final class LoginEpilogueScreen: ScreenObject {
     }
 
     public func verifyEpilogueDisplays(email expectedEmail: String, siteUrl expectedSiteUrl: String) -> LoginEpilogueScreen {
-        XCTAssertEqual(expectedEmail, actualEmail, "Display name is '\(actualEmail)' but should be '\(expectedEmail)'.")
-        XCTAssertEqual(expectedSiteUrl, actualSiteUrl, "Site URL is \(actualSiteUrl) but should be \(expectedSiteUrl)")
+        XCTAssertEqual(expectedEmail, emailLabel, "Display name is '\(emailLabel)' but should be '\(expectedEmail)'.")
+        XCTAssertEqual(expectedSiteUrl, siteUrlLabel, "Site URL is \(siteUrlLabel) but should be \(expectedSiteUrl)")
 
         return self
     }

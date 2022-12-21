@@ -7,10 +7,6 @@ public final class LoginCheckMagicLinkScreen: ScreenObject {
         $0.buttons["Use Password"]
     }
 
-    private let mailButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.buttons["Open Mail Button"]
-    }
-
     private let mailAlertGetter: (XCUIApplication) -> XCUIElement = {
         $0.alerts.element(boundBy: 0)
     }

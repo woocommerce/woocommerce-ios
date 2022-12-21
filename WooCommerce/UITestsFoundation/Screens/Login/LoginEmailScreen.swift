@@ -14,16 +14,21 @@ public final class LoginEmailScreen: ScreenObject {
     private let siteAddressButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["Self Hosted Login Button"]
     }
+    
+    private let emailTextFieldGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["Self Hosted Login Button"]
+    }
 
     private var emailButton: XCUIElement { emailButtonGetter(app) }
     private var nextButton: XCUIElement { nextButtonGetter(app) }
     private var siteAddressButton: XCUIElement { siteAddressButtonGetter(app) }
-    private var emailTextField: XCUIElement { app.textFields["Login Email Address"] }
+    private var emailTextField: XCUIElement { emailTextFieldGetter(app) }
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
             expectedElementGetters: [
                 emailButtonGetter,
+                emailTextFieldGetter,
                 nextButtonGetter,
                 siteAddressButtonGetter
             ],

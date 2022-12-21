@@ -16,7 +16,10 @@ public final class PrologueScreen: ScreenObject {
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
-            expectedElementGetter: continueButtonGetter,
+            expectedElementGetters: [
+                continueButtonGetter,
+                selectSiteButtonGetter
+            ],
             app: app
         )
     }

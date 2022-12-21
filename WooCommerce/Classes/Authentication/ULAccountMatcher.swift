@@ -67,7 +67,7 @@ final class ULAccountMatcher {
         do {
             try resultsController.performFetch()
         } catch {
-            DDLogError("Unable to refresh locally stored sites: \(error)")
+            DDLogError("⛔️ Unable to refresh locally stored sites: \(error)")
         }
     }
 }

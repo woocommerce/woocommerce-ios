@@ -20,8 +20,7 @@ final class RequestAuthenticator {
         let useCase: ApplicationPasswordUseCase? = {
             if let applicationPasswordUseCase {
                 return applicationPasswordUseCase
-            } else if let credentials,
-                      case let .wporg(username, password, siteAddress) = credentials {
+            } else if case let .wporg(username, password, siteAddress) = credentials {
                 return try? DefaultApplicationPasswordUseCase(username: username,
                                                               password: password,
                                                               siteAddress: siteAddress)
@@ -38,7 +37,7 @@ final class RequestAuthenticator {
         guard let jetpackRequest = request as? JetpackRequest,
               jetpackRequest.availableAsRESTRequest,
               let useCase = applicationPasswordUseCase,
-              case let .some(.wporg(_, _, siteAddress)) = credentials else {
+              case let .wporg(_, _, siteAddress) = credentials else {
             // Handle non-REST requests as before
             return completion(.success(authenticateUsingWPCOMTokenIfPossible(request)))
         }

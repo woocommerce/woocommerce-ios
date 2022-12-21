@@ -86,7 +86,7 @@ final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
                                                          adminURL: adminURL,
                                                          version: Constants.defaultWPVersion,
                                                          nonce: nil)
-            self.network = ApplicationPasswordNetwork(authenticator: authenticator)
+            self.network = WordPressOrgNetwork(authenticator: authenticator)
         }
     }
 

@@ -111,7 +111,9 @@ public class AlamofireNetwork: Network {
                                         to request: URLRequestConvertible,
                                         completion: @escaping (Data?, Error?) -> Void) {
         requestAuthenticator.authenticateRequest(request) { [weak self] result in
-            guard let self else { return }
+            guard let self else {
+                return completion(nil, nil)
+            }
             switch result {
             case .success(let request):
                 self.backgroundSessionManager.upload(multipartFormData: multipartFormData, with: request) { (encodingResult) in

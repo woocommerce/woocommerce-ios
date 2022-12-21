@@ -9,7 +9,7 @@ final class ApplicationPasswordMapperTests: XCTestCase {
     /// Verifies that generate password using WPCOM token response is parsed properly
     ///
     func test_response_is_properly_parsed_while_generating_password_using_WPCOM_token() {
-        guard let password = mapGenerateUsingWPCOMResponse() else {
+        guard let password = mapGenerateUsingWPOrgResponse() else {
             XCTFail()
             return
         }
@@ -24,8 +24,8 @@ private extension ApplicationPasswordMapperTests {
 
     /// Returns the ApplicationPasswordMapper output upon receiving success response
     ///
-    func mapGenerateUsingWPCOMResponse() -> String? {
-        guard let response = Loader.contentsOf("generate-application-password-using-wpcom-token-success") else {
+    func mapGenerateUsingWPOrgResponse() -> String? {
+        guard let response = Loader.contentsOf("generate-application-password-using-wporg-creds-success") else {
             return nil
         }
 

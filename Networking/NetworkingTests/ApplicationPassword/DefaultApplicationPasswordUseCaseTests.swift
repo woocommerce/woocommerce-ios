@@ -9,23 +9,10 @@ final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
     ///
     private var network: MockNetwork!
 
-    /// Testing SiteID
-    ///
-    private let sampleSiteID: Int64 = 123
-
-    /// Dummy WPCOM auth token
-    ///
-    private let credentials = Credentials(authToken: "dummy-token")
-
-    /// Dummy WPCOM auth token
-    ///
-    private let applicationPasswordURLSuffix = Credentials(authToken: "dummy-token")
-
     /// URL suffixes
     ///
     private enum URLSuffix {
         static let generateApplicationPassword = "users/me/application-passwords"
-        static let usersMe = "users/me"
     }
 
     override func setUp() {
@@ -41,15 +28,19 @@ final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
     func test_password_is_generated_with_correct_values_upon_success_response() async throws {
         // Given
         network.simulateResponse(requestUrlSuffix: URLSuffix.generateApplicationPassword,
-                                 filename: "generate-application-password-using-wpcom-token-success")
-        network.simulateResponse(requestUrlSuffix: URLSuffix.usersMe, filename: "user-complete")
+                                 filename: "generate-application-password-using-wporg-creds-success")
+        let username = "demo"
+        let siteAddress = "https://test.com"
+        let sut = try await DefaultApplicationPasswordUseCase(username: username,
+                                                              password: "qeWOhQ5RUV8W",
+                                                              siteAddress: siteAddress,
+                                                              network: network)
 
-        let sut = DefaultApplicationPasswordUseCase(siteID: sampleSiteID,
-                                                    networkcredentials: credentials,
-                                                    network: network)
-
+        // When
         let password = try await sut.generateNewPassword()
+
+        // Then
         XCTAssertEqual(password.password.secretValue, "passwordvalue")
-        XCTAssertEqual(password.wpOrgUsername, "test-username")
+        XCTAssertEqual(password.wpOrgUsername, username)
     }
 }

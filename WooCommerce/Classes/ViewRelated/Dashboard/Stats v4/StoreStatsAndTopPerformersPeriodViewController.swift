@@ -341,7 +341,7 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
         let button = UIButton(frame: .zero)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.applySecondaryButtonStyle()
-        button.setTitle(Localization.seeMoreButton, for: .normal)
+        button.setTitle(Localization.seeMoreButton.localizedCapitalized, for: .normal)
         button.addTarget(self, action: #selector(seeMoreButtonTapped), for: .touchUpInside)
 
         let view = UIView(frame: .zero)
@@ -383,6 +383,6 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
     }
 
     enum Localization {
-        static let seeMoreButton = NSLocalizedString("See More", comment: "Button on the stats dashboard that navigates user to the analytics hub")
+        static let seeMoreButton = NSLocalizedString("See more", comment: "Button on the stats dashboard that navigates user to the analytics hub")
     }
 }

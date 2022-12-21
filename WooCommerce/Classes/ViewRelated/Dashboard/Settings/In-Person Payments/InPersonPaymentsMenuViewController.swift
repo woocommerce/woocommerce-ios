@@ -257,14 +257,14 @@ private extension InPersonPaymentsMenuViewController {
         cell.imageView?.tintColor = .text
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.configure(image: .shoppingCartIcon, text: Localization.orderCardReader)
+        cell.configure(image: .shoppingCartIcon, text: Localization.orderCardReader.localizedCapitalized)
     }
 
     func configureManageCardReader(cell: LeftImageTableViewCell) {
         cell.imageView?.tintColor = .text
         cell.accessoryType = enableManageCardReaderCell ? .disclosureIndicator : .none
         cell.selectionStyle = enableManageCardReaderCell ? .default : .none
-        cell.configure(image: .creditCardIcon, text: Localization.manageCardReader)
+        cell.configure(image: .creditCardIcon, text: Localization.manageCardReader.localizedCapitalized)
 
         updateEnabledState(in: cell, shouldBeEnabled: enableManageCardReaderCell)
     }
@@ -273,7 +273,9 @@ private extension InPersonPaymentsMenuViewController {
         cell.imageView?.tintColor = .text
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.configure(image: .rectangleOnRectangleAngled, text: Localization.managePaymentGateways, subtitle: pluginState?.preferred.pluginName ?? "")
+        cell.configure(image: .rectangleOnRectangleAngled,
+                       text: Localization.managePaymentGateways.localizedCapitalized,
+                       subtitle: pluginState?.preferred.pluginName ?? "")
 
         updateEnabledState(in: cell)
     }
@@ -282,7 +284,7 @@ private extension InPersonPaymentsMenuViewController {
         cell.imageView?.tintColor = .text
         cell.accessoryType = enableCardReaderManualsCell ? .disclosureIndicator : .none
         cell.selectionStyle = enableCardReaderManualsCell ? .default : .none
-        cell.configure(image: .cardReaderManualIcon, text: Localization.cardReaderManuals)
+        cell.configure(image: .cardReaderManualIcon, text: Localization.cardReaderManuals.localizedCapitalized)
 
         updateEnabledState(in: cell, shouldBeEnabled: enableCardReaderManualsCell)
     }
@@ -291,7 +293,7 @@ private extension InPersonPaymentsMenuViewController {
         cell.imageView?.tintColor = .text
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.configure(image: .moneyIcon, text: Localization.collectPayment)
+        cell.configure(image: .moneyIcon, text: Localization.collectPayment.localizedCapitalized)
 
         updateEnabledState(in: cell)
     }
@@ -474,12 +476,12 @@ private extension InPersonPaymentsMenuViewController {
             comment: "Title for the section related to actions inside In-Person Payments settings")
 
         static let orderCardReader = NSLocalizedString(
-            "Order Card Reader",
+            "Order card reader",
             comment: "Navigates to Card Reader ordering screen"
         )
 
         static let manageCardReader = NSLocalizedString(
-            "Manage Card Reader",
+            "Manage card reader",
             comment: "Navigates to Card Reader management screen"
         )
 

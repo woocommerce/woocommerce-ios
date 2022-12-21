@@ -149,7 +149,7 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
         do {
             try resultsController.performFetch()
         } catch {
-            DDLogError("Unable to refresh stored sites: \(error) ")
+            DDLogError("⛔️ Unable to refresh stored sites: \(error) ")
         }
     }
 }

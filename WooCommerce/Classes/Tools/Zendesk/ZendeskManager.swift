@@ -280,7 +280,11 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     ///
     fileprivate override init() {
         super.init()
-        try? pluginResultsController.performFetch()
+        do {
+            try pluginResultsController.performFetch()
+        } catch {
+            DDLogError("Unable to fetch plugins from storage: \(error)")
+        }
         observeZendeskNotifications()
     }
 

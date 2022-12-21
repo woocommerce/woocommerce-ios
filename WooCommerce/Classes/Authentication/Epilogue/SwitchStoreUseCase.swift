@@ -146,6 +146,10 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
     }
 
     private func refreshStoredSites() {
-        try? resultsController.performFetch()
+        do {
+            try resultsController.performFetch()
+        } catch {
+            DDLogError("Unable to refresh stored sites: \(error) ")
+        }
     }
 }

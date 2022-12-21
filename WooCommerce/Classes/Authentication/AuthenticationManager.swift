@@ -381,11 +381,14 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             return DDLogError("⛔️ No site URL found to present Login Epilogue.")
         }
 
-        if credentials.wporg != nil,
+        /// If the user logged in with site credentials and application password feature flag is enabled,
+        /// check if they can use the app and navigates to the home screen.
+        if let siteCredentials = credentials.wporg,
            featureFlagService.isFeatureFlagEnabled(.applicationPasswordAuthenticationForSiteCredentialLogin) {
-            // navigate to home screen immediately with a placeholder store ID
-            startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
-            return
+            return didAuthenticateUser(to: siteURL,
+                                       with: siteCredentials,
+                                       in: navigationController,
+                                       source: source)
         }
 
         /// Jetpack is required. Present an error if we don't detect a valid installation for a self-hosted site.
@@ -498,7 +501,6 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             ServiceLocator.stores.authenticate(credentials: .wporg(username: wporg.username,
                                                                    password: wporg.username,
                                                                    siteAddress: wporg.siteURL))
-            // TODO: check if application password is enabled & check for role eligibility
             return onCompletion()
         }
 
@@ -792,6 +794,17 @@ private extension AuthenticationManager {
         }
 
         return accountMismatchUI(for: site.url, siteCredentials: nil, with: matcher, in: navigationController)
+    }
+
+    /// Checks if the authenticated user is eligible to use the app and navigates to the home screen.
+    ///
+    func didAuthenticateUser(to siteURL: String,
+                             with siteCredentials: WordPressOrgCredentials,
+                             in navigationController: UINavigationController,
+                             source: SignInSource?) {
+        // TODO: check if application password is enabled & check for role eligibility & check for Woo
+        // then navigate to home screen immediately with a placeholder store ID
+        self.startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
     }
 }
 

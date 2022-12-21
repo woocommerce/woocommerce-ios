@@ -76,7 +76,7 @@ private extension StorePickerViewModel {
             try resultsController.performFetch()
             state = StorePickerState(sites: resultsController.fetchedObjects)
         } catch {
-            DDLogError("Unable to re-fetch sites and update state: \(error)")
+            DDLogError("⛔️ Unable to re-fetch sites and update state: \(error)")
         }
     }
 

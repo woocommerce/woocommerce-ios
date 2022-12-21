@@ -341,7 +341,7 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
         let button = UIButton(frame: .zero)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.applySecondaryButtonStyle()
-        button.setTitle(Localization.seeMoreButton, for: .normal)
+        button.setTitle(Localization.seeMoreButton.localizedCapitalized, for: .normal)
         button.addTarget(self, action: #selector(seeMoreButtonTapped), for: .touchUpInside)
 
         let view = UIView(frame: .zero)

@@ -1,7 +1,7 @@
 import Combine
 import Foundation
 import struct Yosemite.CreateAccountResult
-import struct Yosemite.Credentials
+import enum Yosemite.Credentials
 import enum Yosemite.AccountAction
 import enum Yosemite.AccountCreationAction
 import enum Yosemite.CreateAccountError

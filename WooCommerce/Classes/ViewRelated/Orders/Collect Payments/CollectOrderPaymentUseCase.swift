@@ -138,7 +138,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
         guard isTotalAmountValid() else {
             let error = totalAmountInvalidError()
             onCollect(.failure(error))
-            return handleTotalAmountInvalidError(totalAmountInvalidError(), onCompleted: onCompleted)
+            return handleTotalAmountInvalidError(totalAmountInvalidError(), onCompleted: onCancel)
         }
 
         preflightController = CardPresentPaymentPreflightController(siteID: siteID,

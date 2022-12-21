@@ -3,6 +3,7 @@
 11.8
 -----
 - [*] Design refresh: Buttons, links, and other calls to action are now purple instead of pink. [https://github.com/woocommerce/woocommerce-ios/pull/8451]
+- [internal] Design: Updated capitalization for various pages, links, and buttons to match new design guidelines. [https://github.com/woocommerce/woocommerce-ios/pull/8455]
 
 11.7
 -----

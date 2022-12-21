@@ -1,23 +1,33 @@
+import ScreenObject
 import XCTest
 
-private struct ElementStringIDs {
-    static let emailField = "email-label"
-    static let siteUrlField = "url-label"
-    static let continueButton = "login-epilogue-continue-button"
-}
+public final class LoginEpilogueScreen: ScreenObject {
 
-public final class LoginEpilogueScreen: BaseScreen {
-    private let continueButton: XCUIElement
-    private let emailField: XCUIElement
-    private let siteUrlField: XCUIElement
+    private let emailLabelGetter: (XCUIApplication) -> XCUIElement = {
+        $0.staticTexts["email-label"]
+    }
 
-    public init() {
-        let app = XCUIApplication()
-        emailField = app.staticTexts[ElementStringIDs.emailField]
-        siteUrlField = app.staticTexts[ElementStringIDs.siteUrlField]
-        continueButton = app.buttons[ElementStringIDs.continueButton]
+    private let urlLabelGetter: (XCUIApplication) -> XCUIElement = {
+        $0.staticTexts["url-label"]
+    }
 
-        super.init(element: continueButton)
+    private let continueButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["login-epilogue-continue-button"]
+    }
+
+    private var emailLabel: String { emailLabelGetter(app).label }
+    private var siteUrlLabel: String { urlLabelGetter(app).label }
+    private var continueButton: XCUIElement { continueButtonGetter(app) }
+
+    public init(app: XCUIApplication = XCUIApplication()) throws {
+        try super.init(
+            expectedElementGetters: [
+                emailLabelGetter,
+                urlLabelGetter,
+                continueButtonGetter
+            ],
+            app: app
+        )
     }
 
     @discardableResult
@@ -27,11 +37,8 @@ public final class LoginEpilogueScreen: BaseScreen {
     }
 
     public func verifyEpilogueDisplays(email expectedEmail: String, siteUrl expectedSiteUrl: String) -> LoginEpilogueScreen {
-        let actualEmail = emailField.label
-        let actualSiteUrl = siteUrlField.label
-
-        XCTAssertEqual(expectedEmail, actualEmail, "Display name is '\(actualEmail)' but should be '\(expectedEmail)'.")
-        XCTAssertEqual(expectedSiteUrl, actualSiteUrl, "Site URL is \(actualSiteUrl) but should be \(expectedSiteUrl)")
+        XCTAssertEqual(expectedEmail, emailLabel, "Display name is '\(emailLabel)' but should be '\(expectedEmail)'.")
+        XCTAssertEqual(expectedSiteUrl, siteUrlLabel, "Site URL is \(siteUrlLabel) but should be \(expectedSiteUrl)")
 
         return self
     }

@@ -64,6 +64,10 @@ final class ULAccountMatcher {
 
     /// Refreshes locally stored sites that were synced previously.
     func refreshStoredSites() {
-        try? resultsController.performFetch()
+        do {
+            try resultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Unable to refresh locally stored sites: \(error)")
+        }
     }
 }

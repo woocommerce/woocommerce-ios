@@ -491,7 +491,7 @@ private extension StoreStatsAndTopPerformersViewController {
             oldCell?.label.font = StyleManager.subheadlineFont
 
             newCell?.label.textColor = .primary
-            newCell?.label.font = StyleManager.subheadlineSemiBold
+            newCell?.label.font = StyleManager.subheadlineSemiBoldFont
         }
     }
 }

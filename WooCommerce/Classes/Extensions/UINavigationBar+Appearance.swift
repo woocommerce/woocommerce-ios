@@ -11,7 +11,7 @@ extension UINavigationBar {
     class func applyWooAppearance() {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = .listForeground
+        appearance.backgroundColor = .listForeground(modal: false)
         appearance.titleTextAttributes = [.foregroundColor: UIColor.text]
         appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.text]
 

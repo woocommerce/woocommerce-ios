@@ -23,7 +23,7 @@ struct BetaFeaturesConfiguration: View {
                 }
             }
         }
-        .background(Color(.listForeground))
+        .background(Color(.listForeground(modal: false)))
         .listStyle(.grouped)
         .navigationTitle(Localization.title)
     }

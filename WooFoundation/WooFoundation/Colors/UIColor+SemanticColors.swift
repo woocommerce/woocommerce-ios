@@ -391,17 +391,15 @@ public extension UIColor {
         return UIColor(light: .gray(.shade0), dark: .black)
     }
 
-    /// List ForeGround.
-    ///
-    static var listForeground: UIColor {
-        return .secondarySystemGroupedBackground
-    }
-
-    /// List Foreground for modally presented views.
-    /// Uses a darker background in dark mode, for better contrast.
-    static var modalListForeground: UIColor {
-        return UIColor(light: .secondarySystemGroupedBackground,
-                       dark: .systemGroupedBackground)
+    /// List foreground.
+    /// - Parameter modal: Whether the view is presented modally. When `true`, returns a darker background in dark mode, for better contrast.
+    static func listForeground(modal: Bool) -> UIColor {
+        if modal {
+            return UIColor(light: .secondarySystemGroupedBackground,
+                           dark: .systemGroupedBackground)
+        } else {
+            return .secondarySystemGroupedBackground
+        }
     }
 }
 

@@ -211,7 +211,7 @@ private struct MultipleLinesMessage: View {
 
             Divider()
         }
-        .background(Color(.modalListForeground))
+        .background(Color(.listForeground(modal: true)))
     }
 }
 
@@ -289,7 +289,7 @@ private struct ProductsSection: View {
             }
             .padding(.horizontal, insets: safeAreaInsets)
             .padding()
-            .background(Color(.modalListForeground))
+            .background(Color(.listForeground(modal: true)))
 
             Divider()
         }

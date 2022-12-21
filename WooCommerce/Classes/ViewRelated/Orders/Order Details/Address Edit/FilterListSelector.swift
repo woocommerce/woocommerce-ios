@@ -49,7 +49,7 @@ struct FilterListSelector<ViewModel: FilterListSelectorViewModelable>: View {
     var body: some View {
         VStack(spacing: 0) {
             SearchHeader(text: $searchTerm, placeholder: viewModel.filterPlaceholder)
-                .background(Color(.listForeground))
+                .background(Color(.listForeground(modal: false)))
                 .onChange(of: searchTerm) { newValue in
                     viewModel.searchTerm = newValue
                 }

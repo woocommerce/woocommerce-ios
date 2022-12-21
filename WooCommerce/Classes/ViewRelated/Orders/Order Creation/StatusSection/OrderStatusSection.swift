@@ -52,7 +52,7 @@ struct OrderStatusSection: View {
         }
         .padding(.horizontal, insets: safeAreaInsets)
         .padding([.leading, .trailing, .top])
-        .background(Color(.modalListForeground))
+        .background(Color(.listForeground(modal: true)))
 
         Divider()
     }
